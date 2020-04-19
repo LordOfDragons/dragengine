@@ -1,0 +1,38 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+/**
+ * \brief Connection listener interface.
+ * 
+ * This is a native class.
+ */
+interface ConnectionListener
+	/** \name Notifications */
+	/*@{*/
+	/**
+	 * \brief Connection has been closed by the local or remote host.
+	 */
+	public func void connectionClosed()
+	
+	/** \brief A long message is in progress of receiving. */
+	public func void messageProgress( int bytesReceived )
+	
+	/** \brief A message has been received. */
+	public func void messageReceived( NetworkMessage message )
+	
+	/**
+	 * \brief Host send state to link.
+	 * \param networkState Network state to use for this side of the link.
+	 * \param message Additional information.
+	 * \returns true to accept the link or false to deny it.
+	 */
+	public func bool linkState( NetworkState state, NetworkMessage message )
+	/*@}*/
+end

@@ -1,0 +1,79 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Element class property for use with XML loading.
+ * 
+ * Element class properties reduce the coding effort required to provide typical
+ * element class data. Furthermore they can be used for XML subclassing without
+ * extra code.
+ */
+abstract class ElementClassProperty
+	private var String pName
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+	end
+	
+	/** \brief Dispose of element class property to break reference loops. */
+	public func void dispose()
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	abstract public func void setValue( Object value )
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		return false
+	end
+end

@@ -1,0 +1,101 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Immutable pair of two objects.
+ */
+class Pair
+	private var Object pFirst
+	private var Object pSecond
+	
+	
+	
+	/** \brief Create pair. */
+	public func new( Object first, Object second )
+		this.pFirst = first
+		this.pSecond = second
+	end
+	
+	
+	
+	/** \brief First object. */
+	public func Object getFirst()
+		return this.pFirst
+	end
+	
+	/** \brief Second object. */
+	public func Object getSecond()
+		return this.pSecond
+	end
+	
+	/** \brief Pair with first and second object swapped. */
+	public func Pair swap()
+		return Pair.new( this.pSecond, this.pFirst )
+	end
+	
+	
+	
+	/** \brief String representation. */
+	public func String toString()
+		return "(" + this.pFirst + "," + this.pSecond + ")"
+	end
+	
+	/**
+	 * \brief Pair equals object.
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
+	 * \returns \em true if \em other is of type Pair and first and second object equals.
+	 */
+	public func bool equals( Object other )
+		if other == null or not other castable Pair
+			return false
+		end
+		
+		var Pair pair = other cast Pair
+		return ( ( this.pFirst == null and pair.pFirst == null ) or this.pFirst.equals( pair.pFirst ) ) \
+			and ( ( this.pSecond == null and pair.pSecond == null ) or this.pSecond.equals( pair.pSecond ) )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * 
+	 * Implements Object.hashCode().
+	 */
+	public func int hashCode()
+		var int first = 0
+		if this.pFirst != null
+			first = this.pFirst.hashCode()
+		end
+		
+		var int second = 0
+		if this.pSecond != null
+			second = this.pSecond.hashCode()
+		end
+		
+		return first ^ -second
+	end
+end

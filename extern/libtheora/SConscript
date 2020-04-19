@@ -1,0 +1,155 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libtheora-1.1.1'
+
+libLinkVersion = [ '1' ]
+libLinkName = [ 'theoradec' ]
+
+if buildStaticLinking:
+	libLinkVersion = [ '1', '1' ]
+	libLinkName = [ 'theoradec', 'theoraenc' ]
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = [ 'bin/lib{}-{}.dll'.format( libLinkName[ x ], libLinkVersion[ x ] )
+		for x in range( len( libLinkName ) ) ]
+	staticFileName = [ 'lib/lib{}.a'.format( libLinkName[ x ] )
+		for x in range( len( libLinkName ) ) ]
+else:
+	libFileName = [ envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.
+		format( libLinkName[ x ], libLinkVersion[ x ] ) )
+			for x in range( len( libLinkName ) ) ]
+	staticFileName = [ envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.
+		format( libLinkName[ x ] ) )
+			for x in range( len( libLinkName ) ) ]
+
+# check if system libtheora is present
+hasSystemVorbis = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_libtheora' ] != TernaryVariableNo:
+	hasSystemVorbis = conf.CheckLibWithHeader( libLinkName,
+		'theora/codec.h', 'c++', 'th_version_number();' )
+conf.Finish()
+
+if not hasSystemVorbis and envLibrary[ 'with_system_libtheora' ] == TernaryVariableYes:
+	Exit( 'Requested to use system libtheora but no usable libtheora found.' )
+
+libs = libLinkName[:]
+libs.extend( parent_targets[ 'lib_libvorbis' ][ 'libs' ] )
+
+parent_report[ 'use system libtheora' ] = 'yes' if hasSystemVorbis else 'no'
+
+if hasSystemVorbis:
+	parent_targets[ 'lib_libtheora' ] = {
+		'name' : 'Internal libtheora library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libtheora
+def libtheoraBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	if env['UPDATE_GNU_CONFIG']:
+		untarArchive(buildDir.Dir(srcdir).abspath, env['UPDATE_GNU_CONFIG'].abspath)
+	
+	script = createScriptHeader( env, deps=[ parent_targets[ 'lib_libvorbis' ] ] )
+	
+	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	
+	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline.append( '--disable-examples' )
+	cmdline.append( '--disable-sdltest' )
+	cmdline.append( '--disable-vorbistest' )
+	cmdline.append( '--disable-oggtest' )
+	cmdline.append( '--disable-spec' )
+	
+	if buildStaticLinking:
+		cmdline.append( '--enable-shared=no' )
+		cmdline.append( '--enable-static=yes' )
+		cmdline.append( '--with-pic=yes' )
+	else:
+		cmdline.append( '--enable-shared=yes' )
+		cmdline.append( '--enable-static=no' )
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+		cmdline.append('--target={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+	
+	# fix bugs causing strange compile errors due to newer binutils not liking
+	# windows type line engings
+	script.append( 'sed -i -e "s#\r##g" win32/xmingw32/libtheoradec-all.def' )
+	script.append( 'sed -i -e "s#\r##g" win32/xmingw32/libtheoraenc-all.def' )
+	
+	script.append( 'make install || exit 1' )
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libtheora')
+
+gnuConfigUpdate = None
+if envLibrary['OSBeOS']:
+	# beos needs updated config files for this build to work. they are found under:
+	gnuConfigUpdate = envLibrary.File('#extern/shared/gnuconfig.tar.bz2')
+envLibrary.Replace(UPDATE_GNU_CONFIG=gnuConfigUpdate)
+
+if buildStaticLinking:
+	targets = staticFileName[:]
+else:
+	targets = libFileName[:]
+targets.append( 'include/theora/theoradec.h' )
+targets.append( 'include/theora/theoraenc.h' )
+targets.append( 'include/theora/theora.h' )
+targets.append( 'include/theora/codec.h' )
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
+
+if gnuConfigUpdate:
+	envLibrary.Depends(library, gnuConfigUpdate)
+
+if parent_targets[ 'lib_libvorbis' ][ 'depends' ]:
+	envLibrary.Depends( library, parent_targets[ 'lib_libvorbis' ][ 'depends' ] )
+
+depends = parent_env.Alias( 'lib_libtheora', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+cpppath = [ envLibrary.Dir( 'include' ) ]
+cpppath.extend( parent_targets[ 'lib_libvorbis' ][ 'cpppath' ] )
+
+libpath = [ envLibrary.Dir( 'lib' ) ]
+libpath.extend( parent_targets[ 'lib_libvorbis' ][ 'libpath' ] )
+
+if buildStaticLinking:
+	libs = library[ 0:1 ] #library[ 0:2 ]
+	libs.extend( parent_targets[ 'lib_libvorbis' ][ 'libs' ] )
+	runtimelibs = []
+else:
+	runtimelibs = library[ 0:1 ] #library[ 0:2 ]
+runtimelibs.extend( parent_targets[ 'lib_libvorbis' ][ 'runtimelibs' ] )
+
+parent_targets[ 'lib_libtheora' ] = {
+	'name' : 'Internal libtheora library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

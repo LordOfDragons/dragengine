@@ -1,0 +1,16 @@
+Precision qualifiers declare a minimum range and precision that the underlying implementation must use
+when storing these variables. Implementations may use greater range and precision than requested, but
+not less. The amount of increased range and precision used to implement a particular precision qualifier
+can depend on the variable, the operations involving the variable, and other implementation dependent
+details.
+
+The required minimum ranges and precisions for precision qualifiers are
+
+Qualifier | Floating Point | Floating Point  | Floating Point |    Integer
+          |     Range      | Magnitude Range |   Precision    |     Range
+----------+----------------+-----------------+----------------+--------------
+  highp   | (−2^62, 2^62)  |  (2^62, 2^62)   | Relative 2^-16 | (-2^16, 2^16)
+----------+----------------+-----------------+----------------+--------------
+   medp   | (−2^14, 2^14)  |  (2^14, 2^14)   | Relative 2^-10 | (-2^10, 2^10)
+----------+----------------+-----------------+----------------+--------------
+   lowp   |    (−2, 2)     |    (2^-8, 2)    | Absolute 2^-8  |  (-2^8, 2^8)

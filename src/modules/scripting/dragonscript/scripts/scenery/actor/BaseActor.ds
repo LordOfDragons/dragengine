@@ -1,0 +1,379 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Basic actor class.
+ * 
+ * Basic implementation of an actor in a game. Actors exhibit complex behavior beyond simple
+ * interactions as provided by props. Typically this behavior can be split into two different
+ * groups: actions and AI.
+ * 
+ * BaseActor extends SimpleElement since actor handling requires a visible component as well
+ * as a collider to properly move inside the game world. BaseActor registers itself as thinker.
+ * 
+ * \par Actions
+ * Actions provide an action an actor is currently performing. By using individual classes
+ * for individual groups of actions allows to easily adding and modifying behavior. It is
+ * also possible to represent all actions of an actor through a single class instance for
+ * example if the developer wishes to use more descriptive or visual tools to design
+ * behavior. The important Element actions are forwarded to the active action for each actor.
+ * To change the action an actor performs call setAction().
+ * 
+ * \par AI
+ * AI defines the large scale behavior of an actor. While actions provide handling of a group
+ * of actions in a flexible and extendible way the AI defines when to perform what action.
+ * This allows to reuse behavior between player and non-player actors. To take control of an
+ * actor use BasePlayerActor (or an element with ECBehaviorPlayerControllable support) and
+ * set the AI either to \em null or a subclass of BaseActorAI knowing how to restore a
+ * proper actor AI after the player releases control. If you use \em null as AI you need to
+ * use BasePlayerActor.playerReleasesControl() to restore the AI instead.
+ * 
+ * \par Player input tracker
+ * If actor is controller by player the bindings send player input to the instance of
+ * PlayerInputLook assigned to the actor. This helps to track different kinds of player
+ * input to properly trigger actions. AI does not require this to be present.
+ * 
+ * \par Locomotion
+ * Locomotion is provided using an instance of ECBehaviorLocomotion. This class provides all
+ * the basic behavior to do locomotion for different type of actors. Supports organic locomotion
+ * of 2-legged and 4-legged characters with natural and FPS type movement patterns as well as
+ * mechanical locomotion like vehicles.
+ * 
+ * \par Navigation
+ * Navigation handling is provided using an instance of Navigator. The default configuration
+ * supports mesh type navigation but can be changed to support grid or volumetric. To properly
+ * use navigation with the AI set up the required parameters like navigation space type,
+ * layer and cost parameters.
+ * 
+ * \par Camera director
+ * You can attach the game camera and microphone directly to the actor collider AI. An easier
+ * solution is using PlayerControlledActorCameraDirector class. This uses the actor currently
+ * controlled by the player to update the game camera and microphone without manual management.
+ * Use it like this:
+ * \code{.ds}
+ * windowGameWorld.setCameraDirector(PlayerControlledActorCameraDirector.new())
+ * \endcode
+ * This camera director tracks what actor the player is currently controlling. It is not
+ * required to handle this yourself. If you need different directing parameters for individual
+ * actors you store the camera directory and change its parameters by subclassing the
+ * playerTakesControl() method.
+ */
+class BaseActor extends BehaviorElement
+	private var ECBehaviorComponent.Instance pComponent
+	private var ECBehaviorCollider.Instance pCollider
+	private var ECBehaviorColliderAI.Instance pColliderAI
+	private var ECBehaviorParameterTable.Instance pParameterTable
+	private var ECBehaviorProjectToGround.Instance pProjectToGround
+	private var ECBehaviorLocomotion.Instance pLocomotion
+	private var ECBehaviorActorAnimated.Instance pActorAnimated
+	private var ECBehaviorConversationActor.Instance pConversationActor
+	private var ECBehaviorNavigator.Instance pNavigator
+	private var ECBehaviorFootSteps.Instance pFootSteps
+	private var ECBehaviorRideOn.Instance pRideOn
+	private var ECBehaviorActorMover.Instance pActorMover
+	private var ECBehaviorAlignActor.Instance pAlignActor
+	private var ECBehaviorAvoidedByActor.Instance pAvoidedByActor
+	private var ECBehaviorAvoidCollision.Instance pAvoidCollision
+	private var ECBehaviorPlayerInputLook.Instance pPlayerInputLook
+	private var ECBehaviorPlayerInputTurn.Instance pPlayerInputTurn
+	private var ECBehaviorPlayerInputCrouch.Instance pPlayerInputCrouch
+	private var ECBehaviorPlayerInputMove.Instance pPlayerInputMove
+	private var ECBehaviorPlayerControllable.Instance pPlayerControllable
+	private var ECBehaviorActorAIAction.Instance pAIAction
+	
+	
+	
+	/** \brief Create element. */
+	public func new( BaseActorClass eclass ) super( eclass )
+		this.pComponent = eclass.getComponent().instance( this )
+		this.pCollider = eclass.getCollider().instance( this )
+		this.pColliderAI = eclass.getColliderAI().instance( this )
+		this.pParameterTable = eclass.getParameterTable().instance( this )
+		this.pProjectToGround = eclass.getProjectToGround().instance( this )
+		this.pLocomotion = eclass.getLocomotion().instance( this )
+		this.pActorAnimated = eclass.getActorAnimated().instance( this )
+		this.pConversationActor = eclass.getConversationActor().instance( this )
+		this.pNavigator = eclass.getNavigator().instance( this )
+		this.pFootSteps = eclass.getFootSteps().instance( this )
+		this.pRideOn = eclass.getRideOn().instance( this )
+		this.pActorMover = eclass.getActorMover().instance( this )
+		this.pAlignActor = eclass.getAlignActor().instance( this )
+		this.pAvoidedByActor = eclass.getAvoidedByActor().instance( this )
+		this.pAvoidCollision = eclass.getAvoidCollision().instance( this )
+		this.pPlayerInputLook = eclass.getPlayerInputLook().instance( this )
+		this.pPlayerInputTurn = eclass.getPlayerInputTurn().instance( this )
+		this.pPlayerInputCrouch = eclass.getPlayerInputCrouch().instance( this )
+		this.pPlayerInputMove = eclass.getPlayerInputMove().instance( this )
+		this.pPlayerControllable = eclass.getPlayerControllable().instance( this )
+		this.pAIAction = eclass.getAIAction().instance( this )
+	end
+	
+	
+	
+	/**
+	 * \brief Initialize element from stub.
+	 * 
+	 * Calls these hook methods to do initialization work.
+	 * - initColliderShape()
+	 * - initProjectToGroundShape()
+	 * - initAvoidCollisionShape()
+	 * - initNavigator()
+	 */
+	public func void init( StubElement stub )
+		super.init( stub )
+		
+		this.initColliderShape( stub )
+		this.initProjectToGroundShapes( stub )
+		this.initAvoidCollisionShape( stub )
+		this.initNavigator( stub )
+	end
+	
+	/**
+	 * \brief Initialize collider AI shape.
+	 * 
+	 * Assigns a capsule shape to the collider AI. The capsule has a total height of 1.8m
+	 * and is 0.6m wide. This is a reasonable collider AI shape for a humanoid actor.
+	 */
+	protected func void initColliderShape( StubElement stub )
+		this.pColliderAI.setShapeHumanoid( 0.3, 1.8 )
+	end
+	
+	/**
+	 * \brief Initialize avoid collision collider shape.
+	 * 
+	 * Sets sphere shape with the same size as used for the collider AI shape.
+	 */
+	protected func void initAvoidCollisionShape( StubElement stub )
+		this.pAvoidCollision.setShapesSphere( 0.3, 0.6 )
+	end
+	
+	/**
+	 * \brief Initialize project to ground shapes.
+	 * 
+	 * Assigns a box shape to the project to ground touch sensor. The shape is located at the
+	 * actor position and has a radius of slightly more than the radius used for the collider AI
+	 * (0.31m) and a height of the same value. This is a reasonable collider AI shape for a
+	 * humanoid actor.
+	 * 
+	 * Assigns a sphere shape to the project to ground instance. This is usually the
+	 * same shape as used for the collider AI but can be optimized. For example if the
+	 * shape is a capcule the project to ground shape can be opzimized to a sphere of
+	 * the matching radius. The default implementation does apply this optimization and
+	 * uses a sphere with the same radius as used for the collider AI capsule.
+	 */
+	protected func void initProjectToGroundShapes( StubElement stub )
+		this.pProjectToGround.setShapesHumanoid( 0.3 )
+	end
+	
+	/**
+	 * \brief Initialize navigator.
+	 * 
+	 * See ECBehaviorNavigator.init() . Sets layer to 0 and space type to NavigationSpaceType.mesh .
+	 * Sets default fix cost to 0 and default cost-per-meter to 1. These apply if no cost types
+	 * are added by the actor or other behaviors. The blocking cost is set to 10000.
+	 * 
+	 * Subclass should add type specific costs if required.
+	 */
+	protected func void initNavigator( StubElement stub )
+	end
+	
+	
+	
+	/** \brief Component behavio instance. */
+	public func ECBehaviorComponent.Instance getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Collider behavior instance. */
+	public func ECBehaviorCollider.Instance getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Collider AI behavior instance. */
+	public func ECBehaviorColliderAI.Instance getColliderAI()
+		return this.pColliderAI
+	end
+	
+	/** \brief Parameter table instance. */
+	public func ECBehaviorParameterTable.Instance getParameterTable()
+		return this.pParameterTable
+	end
+	
+	/** \brief Project to ground behavior instance. */
+	public func ECBehaviorProjectToGround.Instance getProjectToGround()
+		return this.pProjectToGround
+	end
+	
+	/** \brief Locomotion behavior instance. */
+	public func ECBehaviorLocomotion.Instance getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Actor animated behavior instance. */
+	public func ECBehaviorActorAnimated.Instance getActorAnimated()
+		return this.pActorAnimated
+	end
+	
+	/** \brief Conversation actor instance. */
+	public func ECBehaviorConversationActor.Instance getConversationActor()
+		return this.pConversationActor
+	end
+	
+	/** \brief Navigator instance. */
+	public func ECBehaviorNavigator.Instance getNavigator()
+		return this.pNavigator
+	end
+	
+	/** \brief Foot steps instance. */
+	public func ECBehaviorFootSteps.Instance getFootSteps()
+		return this.pFootSteps
+	end
+	
+	/** \brief Ride on instance. */
+	public func ECBehaviorRideOn.Instance getRideOn()
+		return this.pRideOn
+	end
+	
+	/** \brief Actor mover instance. */
+	public func ECBehaviorActorMover.Instance getActorMover()
+		return this.pActorMover
+	end
+	
+	/** \brief Align actor instance. */
+	public func ECBehaviorAlignActor.Instance getAlignActor()
+		return this.pAlignActor
+	end
+	
+	/** \brief Avoided by actor instance. */
+	public func ECBehaviorAvoidedByActor.Instance getAvoidedByActor()
+		return this.pAvoidedByActor
+	end
+	
+	/** \brief Avoid collision instance. */
+	public func ECBehaviorAvoidCollision.Instance getAvoidCollision()
+		return this.pAvoidCollision
+	end
+	
+	/** \brief Player input looking around behavior instance. */
+	public func ECBehaviorPlayerInputLook.Instance getPlayerInputLook()
+		return this.pPlayerInputLook
+	end
+	
+	/** \brief Player input turning behavior instance. */
+	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
+		return this.pPlayerInputTurn
+	end
+	
+	/** \brief Player input crouching behavior instance. */
+	public func ECBehaviorPlayerInputCrouch.Instance getPlayerInputCrouch()
+		return this.pPlayerInputCrouch
+	end
+	
+	/** \brief Player input moving behavior instance. */
+	public func ECBehaviorPlayerInputMove.Instance getPlayerInputMove()
+		return this.pPlayerInputMove
+	end
+	
+	/** \brief Player controllable instance. */
+	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+		return this.pPlayerControllable
+	end
+	
+	/** \brief AI-Action instance. */
+	public func ECBehaviorActorAIAction.Instance getAIAction()
+		return this.pAIAction
+	end
+	
+	
+	
+	/**
+	 * \brief Adjust actor after teleporting.
+	 * 
+	 * Calls spawnAdjustActor().
+	 */
+	public func void teleportAdjustActor()
+		this.spawnAdjustActor()
+	end
+	
+	/**
+	 * \brief Adjust actor after spawning.
+	 * 
+	 * Updates the actor turning to match the orientation. Also resets some parameters to
+	 * make the actor appear without erratic motions. Called during addToGameWorld.
+	 */
+	protected func void spawnAdjustActor()
+		// ensure actor is oriented upright. just in case a spawn point is miss-aligned
+		var float turnAngle = this.getOrientation().getEulerAngles().getY()
+		this.setOrientation( Quaternion.newFromEulerY( turnAngle ) )
+		
+		// the behaviors below do spawn adjusting already on their own if added to a game
+		// world. we include them here for situations where actors want to trigger an
+		// adjustment outside addToGameWorld().
+		this.pColliderAI.getCollider().setLinearVelocity( Vector.new() )
+		this.pLocomotion.setOrientation( turnAngle )
+		this.pConversationActor.clearAllPlayback()
+		this.pPlayerInputLook.reset()
+		this.pPlayerInputTurn.reset()
+		this.pPlayerInputCrouch.reset()
+		this.pPlayerInputMove.reset()
+	end
+	
+	/** \brief Add to game world. */
+	public func void addToGameWorld()
+		this.spawnAdjustActor()
+		super.addToGameWorld()
+	end
+	
+	
+	
+	/** \brief Read element from file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		super.readFromFile( env, reader )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+		this.setVisible( flags.getAt( 0 ) )
+	end
+	
+	/** Writes the element to a file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeToFile( env, writer )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 1 )
+		flags.setAt( 0, this.getVisible() )
+		flags.writeToFile( writer )
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitBaseActor( this )
+	end
+end

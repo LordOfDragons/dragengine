@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Shape</name>
+	
+	<version>130</version>
+	
+	<texture name='texDepth' target='0'/>
+	
+	<parameter name='pMatrixMVP'/> <!-- 0 -->
+	<parameter name='pColor'/> <!-- 1 -->
+	<parameter name='pSCToDTC'/> <!-- 2 -->
+	<parameter name='pMatrixMVP2'/> <!-- 3 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inSelector' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/shape.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/generic/color.glsl</sourceCode>
+</shader>

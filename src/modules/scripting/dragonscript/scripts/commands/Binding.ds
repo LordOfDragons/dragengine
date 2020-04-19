@@ -1,0 +1,161 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief Binding of command to input event on device.
+ * 
+ * Bindings are identified by device and either axis or button identifier.
+ * For quicker access the device and button index are used.
+ */
+class Binding
+	/** \brief Input device identifier*/
+	private var String pDeviceID
+	
+	/** \brief Axis or button identifier. */
+	private var String pSourceID
+	
+	/** \brief Bound command. */
+	private var Command pCommand
+	
+	/** \brief Inverse axis. */
+	private var bool pInverseAxis
+	
+	/** \brief Device index or -1 if not set. */
+	private var int pDeviceIndex
+	
+	/** \brief Source index or -1 if not set. */
+	private var int pSourceIndex
+	
+	/** \brief Axis pressed simulation state. */
+	private var bool pSimulateAxisPressed
+	
+	
+	
+	/** \brief Create binding. */
+	public func new( String deviceID, String sourceID, Command command, bool inverseAxis )
+		if deviceID == null or sourceID == null or command == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pDeviceID = deviceID
+		this.pSourceID = sourceID
+		this.pCommand = command
+		this.pInverseAxis = inverseAxis
+		this.pDeviceIndex = -1
+		this.pSourceIndex = -1
+		this.pSimulateAxisPressed = false
+	end
+	
+	/** \brief Create copy of binding. */
+	public func new( Binding binding )
+		this.pDeviceID = binding.pDeviceID
+		this.pSourceID = binding.pSourceID
+		this.pCommand = binding.pCommand
+		this.pInverseAxis = binding.pInverseAxis
+		this.pDeviceIndex = binding.pDeviceIndex
+		this.pSourceIndex = binding.pSourceIndex
+		this.pSimulateAxisPressed = false
+	end
+	
+	/** \brief Create copy of binding with different command. */
+	public func new( Binding binding, Command command ) this( binding )
+		if command == null
+			throw EInvalidParam.new()
+		end
+		this.pCommand = command
+	end
+	
+	
+	
+	/** \brief Input device identifier*/
+	public func String getDeviceID()
+		return this.pDeviceID
+	end
+	
+	/** \brief Axis or button identifier. */
+	public func String getSourceID()
+		return this.pSourceID
+	end
+	
+	/** \brief Bound command. */
+	public func Command getCommand()
+		return this.pCommand
+	end
+	
+	/** \brief Inverse axis. */
+	public func bool getInverseAxis()
+		return this.pInverseAxis
+	end
+	
+	
+	
+	/** \brief Device index or -1 if not set. */
+	public func int getDeviceIndex()
+		return this.pDeviceIndex
+	end
+	
+	/** \brief Set device index or -1 if not set. */
+	public func void setDeviceIndex( int index )
+		this.pDeviceIndex = index
+	end
+	
+	/** \brief Source index or -1 if not set. */
+	public func int getSourceIndex()
+		return this.pSourceIndex
+	end
+	
+	/** \brief Set source index or -1 if not set. */
+	public func void setSourceIndex( int index )
+		this.pSourceIndex = index
+	end
+	
+	
+	
+	
+	/** \brief Axis pressed simulation state. */
+	public func bool getSimulateAxisPressed()
+		return this.pSimulateAxisPressed
+	end
+	
+	/** \brief Set axis pressed simulation state. */
+	public func void setSimulateAxisPressed( bool pressed )
+		this.pSimulateAxisPressed = pressed
+	end
+	
+	
+	
+	/** \brief Bindings are equal. */
+	public func bool equals( Object other )
+		if other castable Binding
+			var Binding binding = other cast Binding
+			return this.pDeviceID.equals( binding.pDeviceID ) \
+				and this.pSourceID.equals( binding.pSourceID ) \
+				and this.pInverseAxis == binding.pInverseAxis
+			
+		else
+			return false
+		end
+	end
+end

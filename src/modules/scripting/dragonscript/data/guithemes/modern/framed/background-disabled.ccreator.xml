@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator extend='background.ccreator.xml'>
+	<colorMatrix parameter='colorMatrix'>
+		<contrast r='0.5' g='0.5' b='0.5'/>
+		<brightness r='0.15' g='0.15' b='0.15'/>
+	</colorMatrix>
+</canvasCreator>

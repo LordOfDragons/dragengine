@@ -1,0 +1,387 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Conversation face pose playback.
+ */
+class ConversationFacePosePlayback
+	/** \brief Face pose controller. */
+	class FacePoseController
+		/** \brief Controller. */
+		private var int pController
+		
+		/** \brief Influence. */
+		private var float pInfluence
+		
+		/** \brief Create face pose controller. */
+		public func new( int controller, float influence )
+			this.pController = controller
+			this.pInfluence = influence
+		end
+		
+		/** \brief Controller. */
+		public func int getController()
+			return this.pController
+		end
+		
+		/** \brief Influence. */
+		public func float getInfluence()
+			return this.pInfluence
+		end
+		
+		/** \brief Read from file. */
+		static public func FacePoseController readFromFile( FileReader reader )
+			var int controller = reader.readUShort() - 1
+			var float influence = reader.readFloat()
+			return FacePoseController.new( controller, influence )
+		end
+		
+		/** \brief Write to file. */
+		public func void writeToFile( FileWriter writer )
+			writer.writeUShort( this.pController + 1 )
+			writer.writeFloat( this.pInfluence )
+		end
+	end
+	
+	/** \brief Face pose. */
+	class FacePose
+		/** \brief Array of FacePoseController. */
+		private var Array pControllers
+		
+		/** \brief Strip. */
+		private var ConversationStrip pStrip
+		
+		/** \brief Create face pose. */
+		public func new( Array controllers, ConversationStrip strip )
+			this.pControllers = controllers
+			this.pStrip = strip
+		end
+		
+		/** \brief Array of FacePoseController. */
+		public func Array getControllers()
+			return this.pControllers
+		end
+		
+		/** \brief Strip. */
+		public func ConversationStrip getStrip()
+			return this.pStrip
+		end
+		
+		/** \brief Read from file. */
+		static public func FacePose readFromFile( FileReader reader )
+			var Array controllers = readControllersFromFile( reader )
+			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
+			return FacePose.new( controllers, strip )
+		end
+		
+		/** \brief Read controllers from file. */
+		static public func Array readControllersFromFile( FileReader reader )
+			var Array controllers = Array.new()
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				controllers.add( FacePoseController.readFromFile( reader ) )
+			end
+			return controllers
+		end
+		
+		/** \brief Write to file. */
+		public func void writeToFile( FileWriter writer )
+			writeControllersToFile( writer, this.pControllers )
+			this.pStrip.writeToFile( writer )
+		end
+		
+		/** \brief Write controllers to file. */
+		static public func void writeControllersToFile( FileWriter writer, Array controllers )
+			writer.writeUShort( controllers.getCount() )
+			controllers.forEach( block FacePoseController each
+				each.writeToFile( writer )
+			end )
+		end
+	end
+	
+	
+	
+	private var Animator pAnimator
+	private var AnimatorInstance pAnimatorInstance
+	private var Array pPoses
+	private var int pPosition
+	private var float pElapsed
+	private var Array pLastPose
+	private var Array pCurPose
+	private var bool pRunning
+	private var bool pRequiresApply
+	
+	private var float pBlinkIntervalMin
+	private var float pBlinkIntervalMax
+	private var float pBlinkNext
+	private var float pBlinkElapsed
+	
+	
+	
+	/** \brief Create face pose playback. */
+	public func new()
+		this.pAnimatorInstance = AnimatorInstance.new()
+		this.pPoses = Array.new()
+		this.pPosition = 0
+		this.pElapsed = 0.0
+		this.pRunning = false
+		this.pRequiresApply = false
+		
+		this.pBlinkIntervalMin = 2.0
+		this.pBlinkIntervalMax = 6.0
+		this.pBlinkNext = 2.0 + 4.0 * DEMath.random()
+		this.pBlinkElapsed = 0.0
+	end
+	
+	
+	
+	/** \brief Animator. */
+	public func Animator getAnimator()
+		return this.pAnimator
+	end
+	
+	/** \brief Set animator. */
+	public func void setAnimator( Animator animator )
+		this.pAnimatorInstance.setAnimator( animator )
+		this.pAnimator = animator
+	end
+	
+	/** \brief Animator instance. */
+	public func AnimatorInstance getAnimatorInstance()
+		return this.pAnimatorInstance
+	end
+	
+	/** \brief Elapsed time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	
+	
+	/** \brief Remove all face poses. */
+	public func void removeAllPoses()
+		this.pPoses.removeAll()
+		this.pPosition = 0
+		this.pElapsed = 0.0
+		this.pRunning = false
+	end
+	
+	/**
+	 * \brief Add face pose.
+	 * \param controllers Array of FacePoseController.
+	 * \param strip Strip to play.
+	 */
+	public func void addPose( Array controllers, ConversationStrip strip )
+		this.pPoses.add( FacePose.new( controllers, strip ) )
+		this.pPosition = 0
+		this.pElapsed = 0.0
+		this.pRunning = true
+	end
+	
+	
+	
+	/**
+	 * \brief Update playback.
+	 * 
+	 * This updates the playback and updates animator instances if required. This does not
+	 * apply the animation yet to allow proper use of state capturing.
+	 */
+ 	public func void update( float elapsed )
+		var float blendFactor1 = 0.0
+		var float blendFactor2 = 1.0
+		
+		if this.pRunning and this.pPoses.getCount() > 0
+			var int poseCount = this.pPoses.getCount()
+			
+			this.pElapsed += elapsed
+			
+			while this.pPosition < poseCount
+				var FacePose pbpose = this.pPoses.getAt( this.pPosition ) cast FacePose
+				var ConversationStrip strip = pbpose.getStrip()
+				var Array pcontrollers = pbpose.getControllers()
+				var float duration = strip.getDuration()
+				var float pause = strip.getPause()
+				var float length = pause + duration
+				
+				if this.pElapsed < length
+					if pcontrollers != this.pCurPose
+						this.pLastPose = this.pCurPose
+						this.pCurPose = pcontrollers
+					end
+					
+					blendFactor2 = DEMath.smoothStep( this.pElapsed, pause, length )
+					blendFactor1 = 1.0 - blendFactor2
+					break
+					
+				else
+					this.pLastPose = this.pCurPose
+					this.pCurPose = pcontrollers
+					
+					this.pElapsed -= length
+					this.pPosition++
+				end
+			end
+			
+			if this.pPosition >= poseCount
+				this.pRunning = false
+			end
+		end
+		
+		if this.pAnimator == null
+			return
+		end
+		
+		// set the controller values. for this first all controllers are set to zero. then
+		// the controller values of the last face pose (if existing) multiplied by the
+		// first blend factor are set. then the controller values of the current face pose
+		// (if existing) multiplied by the second blend factor are added. this way a proper
+		// blending can be achieved no matter which combination of face poses (as well as
+		// the lack thereof) is in effect
+		var int controllerCount = this.pAnimatorInstance.getControllerCount()
+		var int i, controller
+		
+		for i = 0 to controllerCount
+			this.pAnimatorInstance.getControllerAt( i ).setValue( 0.0 )
+		end
+		
+		if this.pLastPose != null
+			this.pLastPose.forEach( block FacePoseController each
+				controller = each.getController()
+				if controller >= 0 and controller < controllerCount
+					this.pAnimatorInstance.getControllerAt( controller ).setValue( each.getInfluence() * blendFactor1 )
+				end
+			end )
+		end
+		
+		if this.pCurPose != null
+			this.pCurPose.forEach( block FacePoseController each
+				controller = each.getController()
+				if controller >= 0 and controller < controllerCount
+					this.pAnimatorInstance.getControllerAt( controller ).increment( each.getInfluence() * blendFactor2 )
+				end
+			end )
+		end
+		
+		// blinking
+		this.pBlinkNext -= elapsed
+		this.pBlinkElapsed += elapsed
+		
+		if this.pBlinkNext <= 0.0
+			this.pBlinkNext = DEMath.random( this.pBlinkIntervalMin, this.pBlinkIntervalMax )
+			this.pBlinkElapsed = 0.0
+		end
+		
+		if controllerCount > 0
+			this.pAnimatorInstance.getControllerAt( controllerCount - 1 ).setValue( this.pBlinkElapsed )
+		end
+		
+		this.pRequiresApply = true
+	end
+	
+	/**
+	 * \brief Apply animation.
+	 * 
+	 * Called after update() to apply animation. Can do nothing if no change has been done.
+	 */
+	public func void applyAnimation()
+		if not this.pRequiresApply
+			return
+		end
+		
+		this.pRequiresApply = false
+		this.pAnimatorInstance.apply()
+	end
+	
+	
+	
+	/**
+	 * \brief Read from file.
+	 * 
+	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
+	 */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+		this.pRunning = flags.getAt( 0 )
+		
+		var int i, count = reader.readUShort()
+		this.pPoses.removeAll()
+		for i = 0 to count
+			this.pPoses.add( FacePose.readFromFile( reader ) )
+		end
+		
+		this.pPosition = reader.readUShort()
+		this.pElapsed = reader.readFloat()
+		
+		if flags.getAt( 1 )
+			this.pLastPose = FacePose.readControllersFromFile( reader )
+		end
+		if flags.getAt( 2 )
+			this.pCurPose = FacePose.readControllersFromFile( reader )
+		end
+		
+		this.pBlinkIntervalMin = reader.readFloat()
+		this.pBlinkIntervalMax = reader.readFloat()
+		this.pBlinkNext = reader.readFloat()
+		this.pBlinkElapsed = reader.readFloat()
+	end
+	
+	/**
+	 * \brief Writes to file.
+	 * 
+	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
+	 */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		var PersistencyFlags flags = PersistencyFlags.new( 3 )
+		flags.setAt( 0, this.pRunning )
+		flags.setAt( 1, this.pLastPose != null )
+		flags.setAt( 2, this.pCurPose != null )
+		flags.writeToFile( writer )
+		
+		writer.writeUShort( this.pPoses.getCount() )
+		this.pPoses.forEach( block FacePose each
+			each.writeToFile( writer )
+		end )
+		
+		writer.writeUShort( this.pPosition )
+		writer.writeFloat( this.pElapsed )
+		
+		if this.pLastPose != null
+			FacePose.writeControllersToFile( writer, this.pLastPose )
+		end
+		if this.pCurPose != null
+			FacePose.writeControllersToFile( writer, this.pCurPose )
+		end
+		
+		writer.writeFloat( this.pBlinkIntervalMin )
+		writer.writeFloat( this.pBlinkIntervalMax )
+		writer.writeFloat( this.pBlinkNext )
+		writer.writeFloat( this.pBlinkElapsed )
+	end
+end

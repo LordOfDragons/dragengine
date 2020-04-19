@@ -1,0 +1,4 @@
+AUDOPENAL {
+  global: OpenALCreateModule;
+  local: *;
+};

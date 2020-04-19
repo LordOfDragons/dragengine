@@ -1,0 +1,100 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Value of scrollbar like widgets.
+ * 
+ * Provides value range, page size and current value. The range model is responsible
+ * for checking all constraints are met at all time. These are the constraints:
+ * 
+ * - minimum_value <= maximum_value
+ * - page_size >= 1
+ * - value >= minimum_value
+ * - value <= maximum_value
+ * 
+ * If a parameter is changed breaking one or more of these constraints the range model
+ * implementor has to adjusted the parameters to fix the constraints.
+ * 
+ * The increment is used by scroll bars to change the value is the users clicks the
+ * scroll buttons.
+ */
+interface RangeModel
+	/** \brief Minimal value. */
+	func int getMinimum()
+	
+	/** \brief Maximum value. */
+	func int getMaximum()
+	
+	/** \brief Size of a page. */
+	func int getPageSize()
+	
+	/** \brief Current value. */
+	func int getValue()
+	
+	/** \brief Increment for changing the value by small increments. */
+	func int getIncrement()
+	
+	/**
+	 * \brief Set minimum value.
+	 * \details If the constraints would be broken the maximum value is adjusted then
+	 *          the current value until the condititions hold again.
+	 */
+	func void setMinimum( int minimum )
+	
+	/**
+	 * \brief Set maximum value.
+	 * \details If the constraints would be broken the maximum value is adjusted then
+	 *          the current value until the conditions hold again.
+	 */
+	func void setMaximum( int maximum )
+	
+	/**
+	 * \brief Set page size.
+	 * \brief If the constraints would be broken the current value is adjusted.
+	 * \throws EInvalidParam \em pageSize is less than 1.
+	 */
+	func void setPageSize( int pageSize )
+	
+	/** \brief Set current value clamped to the range. */
+	func void setValue( int value )
+	
+	/** \brief Set increment for changing the value by small increments. */
+	func void setIncrement( int increment )
+	
+	/**
+	 * \brief Set properties.
+	 * \details If the constraints would be broken the maximum value is adjusted
+	 *          then the current value until the condititions hold again.
+	 * \throws EInvalidParam \em pageSize is less than 1.
+	 */
+	func void setAll( int minimum, int maximum, int pageSize, int value, int increment )
+	
+	/** \brief Add listener. */
+	func void addListener( RangeModelListener listener )
+	
+	/** \brief Remove listener. */
+	func void removeListener( RangeModelListener listener )
+end

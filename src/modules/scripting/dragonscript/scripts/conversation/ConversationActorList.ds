@@ -1,0 +1,84 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief List of conversation actors keyd by identifier.
+ */
+class ConversationActorList
+	private var Dictionary pActors
+	
+	
+	
+	/** \brief Create conversation actor list. */
+	public func new()
+		this.pActors = Dictionary.new()
+	end
+	
+	/** \brief Dispose of list. */
+	public func void dispose()
+		this.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of actors. */
+	public func int getCount()
+		return this.pActors.getCount()
+	end
+	
+	/** \brief Actor is present. */
+	public func bool has( StringID id )
+		return this.pActors.has( id )
+	end
+	
+	/** \brief Actor with identifier or \em null if absent. */
+	public func ConversationActor getAt( StringID id )
+		return this.pActors.getAt( id ) cast ConversationActor
+	end
+	
+	/** \brief Add actor. */
+	public func void add( ConversationActor actor )
+		var StringID id = actor.getID()
+		if this.pActors.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pActors.setAt( id, actor )
+	end
+	
+	/** \brief Remove actor. */
+	public func void remove( StringID id )
+		this.pActors.remove( id )
+	end
+	
+	/** \brief Remove all actors. */
+	public func void removeAll()
+		this.pActors.removeAll()
+	end
+	
+	/** \brief Visit actors with block with parameter ConversationActor. */
+	public func void forEach( Block ablock )
+		this.pActors.forEachValue( ablock )
+	end
+end

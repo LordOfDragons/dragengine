@@ -1,0 +1,132 @@
+from SConsCommon import *
+
+import tarfile
+import zipfile
+import os
+import re
+
+Import('parent_env parent_targets parent_report')
+
+envArchive = parent_env.Clone()
+
+# archive all targets
+reWindowsDrive = re.compile('^([A-Z]:[/\\\\])|([A-Z][A-Z0-9]*//)', re.I)
+
+def normalizePath(path):
+	path = os.path.normpath(path)
+	
+	path = os.path.splitdrive(path)[1] # return (drive, tail)
+	
+	# for cross compiling splitdrive wont work since python is compiled for
+	# the host system and os.path methods work with host system parameters.
+	# use a simple regular expression check to see if we need to cut the
+	# start of the string
+	match = reWindowsDrive.match(path)
+	if match:
+		path = path[match.end():]
+	
+	return path
+
+def archiveTarBz2(env, target, source):
+	with tarfile.open(target[0].abspath, 'w:bz2', dereference=True) as arcfile:
+		for path, node in env['ArchiveFiles'].items():
+			info = arcfile.gettarinfo(node.abspath, normalizePath(path))
+			#info.mode = ...
+			info.uid = 0
+			info.gid = 0
+			info.uname = 'root'
+			info.gname = 'root'
+			with open(node.abspath, 'rb') as nf:
+				arcfile.addfile(info, nf)
+
+def archiveZip(env, target, source):
+	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
+		for path, node in env['ArchiveFiles'].items():
+			arcfile.write(node.abspath, normalizePath(path))
+
+# create builder collecting all archive targets. we need this only so scons knows
+# the dependencies. the actual copy uses the full definition which we place in
+# the environment
+
+# collect files to archive
+filesEngine = {}
+filesEngineDev = {}
+filesIGDE = {}
+filesIGDEDev = {}
+filesSpecial = {}
+
+for target in parent_targets.values():
+	if 'archive-engine' in target:
+		filesEngine.update(target['archive-engine'])
+	if 'archive-engine-develop' in target:
+		filesEngineDev.update(target['archive-engine-develop'])
+	if 'archive-launcher' in target:
+		filesEngine.update(target['archive-launcher'])
+	if 'archive-igde' in target:
+		filesIGDE.update(target['archive-igde'])
+	if 'archive-igde-develop' in target:
+		filesIGDEDev.update(target['archive-igde-develop'])
+	if 'archive-special' in target:
+		filesSpecial.update(target['archive-special'])
+
+# create builders
+archive = []
+archiveEngine = None
+archiveIgde = None
+archiveSpecial = None
+
+if envArchive['archive_format'] == 'tarbz2':
+	archiveSuffix = '.tar.bz2'
+	archiveMethod = archiveTarBz2
+elif envArchive['archive_format'] == 'zip':
+	archiveSuffix = '.zip'
+	archiveMethod = archiveZip
+
+if envArchive['archive_name_engine']:
+	filename = '{}{}'.format(envArchive['archive_name_engine'], archiveSuffix)
+	archiveEngine = envArchive.Command(filename, filesEngine.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesEngine)
+	archive.append(archiveEngine)
+
+if envArchive['archive_name_engine_dev']:
+	filename = '{}{}'.format(envArchive['archive_name_engine_dev'], archiveSuffix)
+	archiveEngineDev = envArchive.Command(filename, filesEngineDev.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesEngineDev)
+	archive.append(archiveEngineDev)
+
+if envArchive['archive_name_igde']:
+	filename = '{}{}'.format(envArchive['archive_name_igde'], archiveSuffix)
+	archiveIgde = envArchive.Command(filename, filesIGDE.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesIGDE)
+	archive.append(archiveIgde)
+
+if envArchive['archive_name_igde_dev']:
+	filename = '{}{}'.format(envArchive['archive_name_igde_dev'], archiveSuffix)
+	archiveIgdeDev = envArchive.Command(filename, filesIGDEDev.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesIGDEDev)
+	archive.append(archiveIgdeDev)
+
+if envArchive['archive_name_special']:
+	filename = '{}{}'.format(envArchive['archive_name_special'], archiveSuffix)
+	archiveSpecial = envArchive.Command(filename, filesSpecial.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesSpecial)
+	archive.append(archiveSpecial)
+
+for target in parent_targets.values():
+	if 'archive' in target:
+		envArchive.Depends(archive, target['build'])
+
+envArchive.Alias('archive', archive)
+
+parent_targets['archive'] = {
+	'name': 'Archive Drag[en]gine Game Engine',
+	'archiveEngine': archiveEngine,
+	'archiveEngineDev': archiveEngineDev,
+	'archiveIgde': archiveIgde,
+	'archiveIgdeDev': archiveIgdeDev,
+	'archiveSpecial': archiveSpecial}

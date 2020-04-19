@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Depth-Only V3</name>
+	
+	<version>130</version>
+	
+	<texture name='texDiffuse' target='0'/>
+	<texture name='texDepth' target='1'/>
+	
+	<parameter name='pMatrixMVP'/> <!-- 0 -->
+	<parameter name='pMatrixMV'/> <!-- 1 -->
+	<parameter name='pMatrixDiffuse'/> <!-- 2 -->
+	<parameter name='pMaterialGamma'/> <!-- 3 -->
+	<parameter name='pClipPlane'/> <!-- 4 -->
+	<parameter name='pViewport'/> <!-- 5 --> <!-- deprecated -->
+	<parameter name='pPFMatrix'/> <!-- 6 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='3'/>
+	<attribute name='inHTHeight' target='4'/>
+	
+	<output name='outDepth' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/geometry/depth.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/geometry/depth.glsl</sourceCode>
+	
+</shader>

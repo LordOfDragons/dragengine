@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>PNG-3D</name>
+	<description>Handles images saved in the PNG-3D format (lossless compression). PNG-3D files
+	are actually a tarball with png images one for each z coordinate in the 3D-image. Files
+	inside the tarball are named zX.png where X is the z coordinate without leading 0s.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Image</type>
+	<pattern>.png3d</pattern>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>PNG3DCreateModule</entrypoint>
+	</library>
+</module>

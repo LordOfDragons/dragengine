@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Stores named parameters in a table.
+ * 
+ * Allows to store parameter with primitive or persistable type for game elements or global
+ * game state. Parameter tables are sometimes called "Black boards". Various game scripts
+ * can set values in a table while other game scripts can read the values from the table
+ * without the individual systems knowing each other. For performance reasons the entries
+ * in the table are queried and can be stored locally to avoid looking them up all the time.
+ * In addition to primitive values parameters support objects implementing the Persistable
+ * interface. This allows parameter tables to be stored in save states easily. Parameter
+ * values are cleared by setting them to \em null. This avoids the need to remove parameters
+ * from the table.
+ * 
+ * The parameter table is a pure storage facility. No notifications about changes to
+ * parameter values is done in any way. If you need tracking state changes use TSTriggerTable
+ * or the EventTracker.
+ */
+class ParameterTable
+	/** \brief Parameters. */
+	private var Dictionary pParameters
+	
+	
+	
+	/** \brief Create parameter table. */
+	public func new()
+		this.pParameters = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Clear parameter table. */
+	public func void clear()
+		this.pParameters.removeAll()
+	end
+	
+	
+	
+	/** \brief Parameter is present. */
+	public func bool has( String name )
+		return this.pParameters.has( name )
+	end
+	
+	/** \brief Get parameter adding it if absent. */
+	public func ParameterTableEntry getAt( String name )
+		var ParameterTableEntry parameter = this.pParameters.getAt( name, null ) cast ParameterTableEntry
+		if parameter == null
+			parameter = ParameterTableEntry.new( name )
+			this.pParameters.setAt( name, parameter )
+		end
+		return parameter
+	end
+	
+	/** \brief Get parameter or \em null if absent. */
+	public func ParameterTableEntry getAtOrNull( String name )
+		return this.pParameters.getAt( name, null ) cast ParameterTableEntry
+	end
+	
+	/** \brief Remove parameter. */
+	public func void remove( String name )
+		this.pParameters.remove( name )
+	end
+	
+	/** \brief Remove all parameters. */
+	public func void removeAll()
+		this.pParameters.removeAll()
+	end
+	
+	/** \brief Visit parameters with block with ParameterTableEntry as parameter. */
+	public func void forEach( Block ablock )
+		this.pParameters.forEachValue( ablock )
+	end
+	
+	
+	
+	/** \brief Read parameter table from file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		var int i, count = reader.readInt()
+		var ParameterTableEntry entry
+		
+		this.pParameters.removeAll()
+		for i = 0 to count
+			entry = ParameterTableEntry.readFromFile( env, reader )
+			this.pParameters.setAt( entry.getName(), entry )
+		end
+	end
+	
+	/** \brief Write parameter table to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeInt( this.pParameters.getCount() )
+		this.pParameters.forEachValue( block ParameterTableEntry each
+			each.writeToFile( env, writer )
+		end )
+	end
+end

@@ -1,0 +1,410 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding player controlling support to actor.
+ * 
+ * Actors with this behavior can become the player controlled actor. Requires an instance of
+ * ECBehaviorPlayerControllable.Tracker to be assigned. The instance keeps track of the active
+ * player actor and is typically stored globally in the game. BaseGameApp provides such an
+ * instance for easy use.
+ * 
+ * This behavior can be used only once in the behavior element.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ * 
+ * If ECBehaviorConversationActor is present adds these conversation conditions and commands:
+ * - ECBehaviorPlayerControllable.ConvoCondition
+ * - ECBehaviorPlayerControllable.ConvoCommand
+ * 
+ * See the above mentioned classes for the supported syntax.
+ */
+class ECBehaviorPlayerControllable extends DefaultECBehavior
+	/** \brief Keeps track of the active player actor. */
+	class Tracker
+		/** \brief Listener for tracker events. */
+		interface Listener
+			/** \brief Active actor changed. */
+			func void activeActorChanged( Tracker tracker )
+		end
+		
+		/** \brief Default implementation of tracker listener. */
+		class DefaultListener implements Listener
+			/** \brief Create default listener. */
+			public func new()
+			end
+			
+			/** \brief Active actor changed. */
+			public func void activeActorChanged( Tracker tracker )
+			end
+		end
+		
+		
+		
+		private var Instance pActor
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create tracker. */
+		public func new()
+			this.pListeners = Array.new()
+		end
+		
+		
+		
+		/** \brief Active actor or null if not assigned. */
+		public func Instance getActor()
+			return this.pActor
+		end
+		
+		/** \brief Set active actor or null if not assigned. */
+		public func void setActor( Instance actor )
+			if this.pActor == actor
+				return
+			end
+			
+			if this.pActor != null
+				this.pActor.notifyPlayerReleasesControl()
+			end
+			
+			this.pActor = actor
+			
+			if actor != null
+				this.pActor.notifyPlayerTakesControl()
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.activeActorChanged( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Became active player actor. */
+		func void playerTakesControl( Instance instance )
+		
+		/** \brief Ceased being active player actor. */
+		func void playerReleasesControl( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Became active player actor. */
+		public func void playerTakesControl( Instance instance )
+		end
+		
+		/** \brief Ceased being active player actor. */
+		public func void playerReleasesControl( Instance instance )
+		end
+	end
+	
+	/**
+	 * \brief Conversation condition.
+	 * 
+	 * Syntax:
+	 * playerControllable isPlayerControlled
+	 *   Actor is the active player actor.
+	 */
+	class ConvoCondition implements ECBehaviorConversationActor.ConversationCondition
+		private var Instance pInstance
+		
+		public func new( Instance instance )
+			this.pInstance = instance
+		end
+		
+		public func bool evaluateCondition( ECBehaviorConversationActor.Instance instance, Array arguments )
+			var String action = arguments.getAt( 1 ) cast String
+			
+			if action.equals( "isPlayerControlled" )
+				return this.pInstance.isPlayerControlled()
+				
+			else
+				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+			end
+		end
+	end
+	
+	/**
+	 * \brief Conversation command.
+	 * 
+	 * Syntax:
+	 * playerControllable takeControl
+	 *   Make actor become the active player actor.
+	 */
+	class ConvoCommand implements ECBehaviorConversationActor.ConversationCommand
+		private var Instance pInstance
+		
+		public func new( Instance instance )
+			this.pInstance = instance
+		end
+		
+		public func void runCommand( ECBehaviorConversationActor.Instance instance, Array arguments )
+			var String action = arguments.getAt( 1 ) cast String
+			
+			if action.equals( "takeControl" )
+				this.pInstance.takeControl()
+				
+			else
+				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorPlayerControllable pECBehavior
+		private var ECBehaviorConversationActor.Instance pConversationActor
+		private var Tracker pTracker
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorPlayerControllable ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pTracker = ecbehavior.getTracker()
+			this.pListeners = Array.new()
+			
+			if ecbehavior.getConversationActor() != null
+				this.pConversationActor = ecbehavior.getConversationActor().instance( element )
+			end
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			if this.pTracker != null
+				if this.pTracker.getActor() == this
+					this.pTracker.setActor( null )
+				end
+				this.pTracker = null
+			end
+			
+			this.pListeners = null
+			this.pConversationActor = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			if this.pConversationActor != null
+				this.pConversationActor.addCondition( "playerControllable", ConvoCondition.new( this ) )
+				this.pConversationActor.addCommand( "playerControllable", ConvoCommand.new( this ) )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorPlayerControllable getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Tracker. */
+		public func Tracker getTracker()
+			return this.pTracker
+		end
+		
+		
+		
+		/** \brief Actor is the active player actor. */
+		public func bool isPlayerControlled()
+			return this.pTracker.getActor() == this
+		end
+		
+		/** \brief Actor is not the active player actor. */
+		public func bool isNotPlayerControlled()
+			return this.pTracker.getActor() != this
+		end
+		
+		/** \brief Take control of actor. */
+		public func void takeControl()
+			this.pTracker.setActor( this )
+		end
+		
+		/** \brief Active player actor. */
+		public func Instance getPlayerControlled()
+			return this.pTracker.getActor()
+		end
+		
+		/** \brief Called by Tracker to notify behavior listeners. */
+		public func void notifyPlayerTakesControl()
+			this.pListeners.forEach( block Listener each
+				each.playerTakesControl( this )
+			end )
+		end
+		
+		/** \brief Called by Tracker to notify behavior listeners. */
+		public func void notifyPlayerReleasesControl()
+			this.pListeners.forEach( block Listener each
+				each.playerReleasesControl( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	
+	
+	private var Tracker pTracker
+	private var ECBehaviorConversationActor pConversationActor
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) \
+	this( eclass, BaseGameApp.getApp().getPlayerControlledActor() )
+	end
+	
+	public func new( BehaviorElementClass eclass, Tracker tracker ) super( eclass )
+		if tracker == null
+			throw ENullPointer.new( "tracker" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pTracker = tracker
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pConversationActor = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Tracker. */
+	public func Tracker getTracker()
+		return this.pTracker
+	end
+	
+	/** \brief Set tracker. */
+	public func void setTracker( Tracker tracker )
+		if tracker == null
+			throw ENullPointer.new( "tracker" )
+		end
+		this.pTracker = tracker
+	end
+	
+	/** \brief Conversation actor behavior or null. */
+	public func ECBehaviorConversationActor getConversationActor()
+		return this.pConversationActor
+	end
+	
+	/**
+	 * \brief Set conversation actor or null.
+	 * 
+	 * If set adds conversation condition and command.
+	 */
+	public func void setConversationActor( ECBehaviorConversationActor conversationActor )
+		this.pConversationActor = conversationActor
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorPlayerControllable.
+	 */
+	static public func ECBehaviorPlayerControllable getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorPlayerControllable
+		end ) cast ECBehaviorPlayerControllable
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorPlayerControllable.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

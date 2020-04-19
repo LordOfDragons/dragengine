@@ -1,0 +1,181 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Wrapper class for engine camera.
+ * 
+ * Allows altering the wrapped camera using scripted logic.
+ */
+class CameraWrapper
+	/** \brief Normal Camera FOV */
+	public fixed var float fovNormal = 39.60
+	
+	/** \brief Wide Camera FOV */
+	public fixed var float fovWide = 65.47
+	
+	/** \brief Ultra Wide Camera FOV */
+	public fixed var float fovUltraWide = 83.97
+	
+	/** \brief Short Tele Camera FOV */
+	public fixed var float fovShortTele = 22.62
+	
+	/** \brief Medium Tele Camera FOV */
+	public fixed var float fovMediumTele = 10.29
+	
+	/** \brief Long Tele Camera FOV */
+	public fixed var float fovLongTele = 6.87
+	
+	/** \brief Typical First Person FOV */
+	public fixed var float fovFirstPerson = 90.00
+	
+	
+	
+	private var Camera pCamera
+	
+	
+	
+	/** \brief Create camera wrapper. */
+	public func new()
+		this.pCamera = Camera.new()
+		this.setFov( fovFirstPerson )
+		this.setFovRatio( 1.0 )
+		this.setImageDistance( 0.01 )
+		this.setViewDistance( 200.0 )
+	end
+	
+	/** \brief Create copy of camera wrapper . */
+	public func new( CameraWrapper wrapper )
+		this.pCamera = Camera.new()
+		this.setPosition( wrapper.getPosition() )
+		this.setOrientation( wrapper.getOrientation() )
+		this.setFov( wrapper.getFov() )
+		this.setFovRatio( wrapper.getFovRatio() )
+		this.setImageDistance( wrapper.getImageDistance() )
+		this.setViewDistance( wrapper.getViewDistance() )
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pCamera.getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector pos )
+		this.pCamera.setPosition( pos )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return this.pCamera.getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+		this.pCamera.setOrientation( orientation )
+	end
+	
+	/** \brief Set orientation from rotation in euler angles in degrees. */
+	public func void setRotation( Vector rotation )
+		this.pCamera.setOrientation( Quaternion.newFromEuler( rotation ) )
+	end
+	
+	/** \brief Set position and orientation from matrix. */
+	public func void setFromMatrix( DMatrix matrix )
+		this.pCamera.setPosition( matrix.getPosition() )
+		this.pCamera.setOrientation( matrix.toQuaternion() )
+	end
+	
+	/** \brief Field of view in degrees. */
+	public func float getFov()
+		return this.pCamera.getFov()
+	end
+	
+	/** \brief Set field of view in degrees. */
+	public func void setFov( float fov )
+		this.pCamera.setFov( fov )
+	end
+	
+	/** \brief Field of view. */
+	public func float getFovRatio()
+		return this.pCamera.getFovRatio()
+	end
+		
+	/** \brief Set field of view ratio. */
+	public func void setFovRatio( float ratio )
+		this.pCamera.setFovRatio( ratio )
+	end
+	
+	/** \brief Image distance in meters. */
+	public func float getImageDistance()
+		return this.pCamera.getImageDistance()
+	end
+		
+	/** \brief Set image distance in meters. */
+	public func void setImageDistance( float distance )
+		this.pCamera.setImageDistance( distance )
+	end
+	
+	/** \brief View distance in meters. */
+	public func float getViewDistance()
+		return this.pCamera.getViewDistance()
+	end
+		
+	/** \brief Set view distance in meters. */
+	public func void setViewDistance( float distance )
+		this.pCamera.setViewDistance( distance )
+	end
+	
+	
+	
+	/** \brief Update camera for subclassing. */
+	public func void update( float elapsed )
+	end
+	
+	/**
+	 * \brief Camera matrix.
+	 * \see DMatrix.newCamera()
+	 */
+	public func DMatrix getMatrix()
+		var DMatrix matrix = DMatrix.newFromQuaternion( this.getOrientation() )
+		return DMatrix.newCamera( this.getPosition(), matrix.getViewVector(), matrix.getUpVector() )
+	end
+	
+	
+	
+	/**
+	 * \brief Calculate field of view in degrees from focal length.
+	 */
+	public static func float fovFromFocal( float filmSize, float focalLength )
+		return DEMath.atan( filmSize / ( focalLength * 2.0 ) ) * 2.0
+	end
+	
+	
+	/** \brief Wrapped camera. */
+	public func Camera getCamera()
+		return this.pCamera
+	end
+end

@@ -1,0 +1,167 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Gui.MousePointers
+pin Dragengine.Utils
+
+
+/**
+ * \brief Menu fader for interactive main menu.
+ * 
+ * Fades menu over black.
+ */
+class IMMMenuFader
+	private var InteractiveMainMenu pMainMenu
+	private var float pCurTransparency
+	private var float pTargetTransparency
+	private var float pFadeTime
+	private var float pElapsed
+	
+	
+	
+	/** \brief Create widget fader for interactive main menu. */
+	public func new( InteractiveMainMenu mainMenu )
+		if mainMenu == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMainMenu = mainMenu
+		this.pCurTransparency = 1.0
+		this.pTargetTransparency = 1.0
+		this.pFadeTime = 0.0
+		this.pElapsed = 0.0
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pMainMenu = null
+	end
+	
+	
+	
+	/** \brief Interactive main menu. */
+	public func InteractiveMainMenu getMainMenu()
+		return this.pMainMenu
+	end
+	
+	/** \brief Current transparency. */
+	public func float getCurTransparency()
+		return this.pCurTransparency
+	end
+	
+	/**
+	 * \brief Set current transparency.
+	 * 
+	 * Stops fading if running.
+	 */
+	public func void setCurTransparency( float transparency )
+		this.pCurTransparency = transparency
+		this.pTargetTransparency = transparency
+		this.pFadeTime = 0.0
+		this.pElapsed = 0.0
+		
+		this.updateMenuFade()
+	end
+	
+	/** \brief Camera transparency to fade to or null. */
+	public func float getTargetTransparency()
+		return this.pTargetTransparency
+	end
+	
+	/** \brief Fade time. */
+	public func float getFadeTime()
+		return this.pFadeTime
+	end
+	
+	/** \brief Elapsed fade time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	
+	
+	/** \brief Widget is fading. */
+	public func bool isFading()
+		return this.pFadeTime > 0.0
+	end
+	
+	/**
+	 * \brief Fade to transparency.
+	 * 
+	 * Starts fading.
+	 */
+	public func void fadeTo( float transparency, float fadeTime )
+		fadeTime = DEMath.max( fadeTime, 0.0 )
+		if fadeTime < 0.01
+			this.setCurTransparency( transparency )
+			return
+		end
+		
+		this.pTargetTransparency = transparency
+		this.pFadeTime = fadeTime
+		this.pElapsed = 0.0
+	end
+	
+	/** \brief Update fading.
+	 */
+	public func void update( float elapsed )
+		if this.pFadeTime == 0.0
+			return
+		end
+		
+		// fade
+		this.pElapsed += elapsed
+		if this.pElapsed < this.pFadeTime
+			this.updateMenuFade()
+			
+		else
+			this.setCurTransparency( this.pTargetTransparency )
+		end
+	end
+	
+	
+	
+	/** \brief Update menu fade. */
+	protected func void updateMenuFade()
+		var float transparency = DEMath.smoothStep( this.pElapsed, \
+			0.0, this.pFadeTime, this.pCurTransparency, this.pTargetTransparency )
+		
+		this.pMainMenu.getWorldRenderer().setTransparency( transparency )
+		this.pMainMenu.getMicrophone().setVolume( transparency )
+		this.setMousePointerFade( transparency )
+	end
+	
+	/** \brief Set mouse pointer fade if possible. */
+	protected func void setMousePointerFade( float transparency )
+		var Desktop desktop = this.pMainMenu.getDesktop()
+		if desktop == null
+			return  // in case this update is triggered during construction time
+		end
+		
+		var MousePointer mousePointer = this.pMainMenu.getDesktop().getMousePointerInstance()
+		if mousePointer != null
+			mousePointer.getCanvas().setTransparency( transparency )
+		end
+	end
+end

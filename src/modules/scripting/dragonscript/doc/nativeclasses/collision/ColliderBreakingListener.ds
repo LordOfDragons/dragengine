@@ -1,0 +1,25 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Collider breaking constraint listener interface.
+ * 
+ * This is a native class.
+ */
+interface ColliderBreakingListener
+	/** \name Notifications. */
+	/*@{*/
+	/** \brief Collider constraint has broken. */
+	func void colliderConstraintBroke( Collider owner, int constraint )
+	
+	/** \brief Collider rig constraint has broken. */
+	func void rigConstraintBroke( Collider owner, int bone, int constraint )
+	/*@}*/
+end

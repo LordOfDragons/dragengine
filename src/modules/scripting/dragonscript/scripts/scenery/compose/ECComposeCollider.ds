@@ -1,0 +1,207 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable component collider for element class.
+ * 
+ * Provides collider support to element class without subclassing from a specific class.
+ * Element is set as owner of the created component.
+ */
+class ECComposeCollider
+	private var ECPEnumeration pPhysicsType
+	private var ECPVector pLocalGravity
+	private var ECPFloat pWeight
+	private var ECPBoolean pEnabled
+	private var ECPShapeList pShape
+	private var CollisionFilter pCollisionFilter
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "collider." )
+	end
+	
+	public func new( ElementClass ownerClass, String prefix )
+		this.pPhysicsType = ECPEnumeration.new( prefix + "physicsType", \
+			CollisionResponse.all(), CollisionResponse.none )
+		ownerClass.addProperty( this.pPhysicsType )
+		
+		this.pLocalGravity = ECPVector.new( prefix + "localGravity", null )
+		ownerClass.addProperty( this.pLocalGravity )
+		
+		this.pWeight = ECPFloat.new( prefix + "weight", 1, 0 )
+		ownerClass.addProperty( this.pWeight )
+		
+		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
+		ownerClass.addProperty( this.pEnabled )
+		
+		this.pShape = ECPShapeList.new( prefix + "shape", ownerClass.getCodecPropertyString() )
+		ownerClass.addProperty( this.pShape )
+		
+		// collision filter
+		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		
+		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		
+		this.pCollisionFilter = CollisionFilter.new( lmCategory, lmFilter )
+	end
+	
+	
+	
+	/** \brief Physics type. */
+	public func ECPEnumeration getPhysicsType()
+		return this.pPhysicsType
+	end
+	
+	/** \brief Local gravity or \em null to use the world gravity. */
+	public func ECPVector getLocalGravity()
+		return this.pLocalGravity
+	end
+	
+	/** \brief Weight in kg. */
+	public func ECPFloat getWeight()
+		return this.pWeight
+	end
+	
+	/** \brief Enable collider. */
+	public func ECPBoolean getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Shape if no component is used. */
+	public func ECPShapeList getShape()
+		return this.pShape
+	end
+	
+	
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+		this.pCollisionFilter = collisionFilter
+	end
+	
+	/** \brief Convience function clearing bit in collision category. */
+	public func void collisionCategoryClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function setting bit in collision category. */
+	public func void collisionCategorySetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function replacing collision category. */
+	public func void collisionCategoryReplace( LayerMask layerMask )
+		this.pCollisionFilter = CollisionFilter.new( layerMask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function clearing bit in collision filter. */
+	public func void collisionFilterClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+	
+	/** \brief Convience function setting bit in collision filter. */
+	public func void collisionFilterSetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+	
+	
+	
+	/**
+	 * \brief Create collider for the element from stub.
+	 * 
+	 * \em element is set as owner of collider if a collider is created.
+	 */
+	public func Collider createCollider( Element element, StubElement stub, Component component )
+		// component collider requires component with rig
+		if component == null or component.getRig() == null
+			return null
+		end
+		
+		// create collider component
+		var ColliderComponent collider = ColliderComponent.new()
+		this.initCollider( collider, element, stub )
+		collider.setComponent( component )
+		return collider
+	end
+	
+	/**
+	 * \brief Create collider for the element from stub.
+	 * 
+	 * \em element is set as owner of collider if a collider is created.
+	 */
+	public func Collider createCollider( Element element, StubElement stub )
+		// create collider volume
+		var ColliderVolume collider = ColliderVolume.new()
+		this.initCollider( collider, element, stub )
+		collider.setShape( this.pShape.getShapeList() )
+		return collider
+	end
+	
+	/** \brief Init collider from stub. */
+	protected func void initCollider( Collider collider, Element element, StubElement stub )
+		collider.setResponseType( this.pPhysicsType.getEnumeration() cast CollisionResponse )
+		collider.setCollisionFilter( this.pCollisionFilter )
+		collider.setEnabled( this.pEnabled.getValue() )
+		collider.setMass( this.pWeight.getValue() )
+		
+		collider.setGeometry( element.getPosition(), element.getOrientation() )
+		//collider.setScaling( stub.getScaling() ) // not supported yet
+		
+		var Vector localGravity = this.pLocalGravity.getVector()
+		if localGravity == null
+			collider.setUseLocalGravity( false )
+			
+		else
+			collider.setGravity( localGravity )
+			collider.setUseLocalGravity( true )
+		end
+		
+		collider.setOwner( element )
+	end
+end

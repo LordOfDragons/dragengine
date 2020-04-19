@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>Targa</name>
+	<description>Handles images in uncompressed Targe format.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Image</type>
+	<pattern>.tga</pattern>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>TGACreateModule</entrypoint>
+	</library>
+</module>

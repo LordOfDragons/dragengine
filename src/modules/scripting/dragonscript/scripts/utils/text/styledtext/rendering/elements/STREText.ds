@@ -1,0 +1,146 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Rendering.Elements
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Styled text render text element.
+ */
+class STREText extends STRElement
+	private var Font pFont
+	private var Color pTextColor
+	private var Color pBackgroundColor
+	private var String pText
+	
+	
+	
+	/** \brief Create styled text render text element. */
+	public func new()
+		this.pTextColor = Color.black
+		this.pText = ""
+	end
+	
+	
+	
+	/** \brief Font. */
+	public func Font getFont()
+		return this.pFont
+	end
+	
+	/** \brief Set font. */
+	public func void setFont( Font font )
+		if font == null
+			throw EInvalidParam.new()
+		end
+		this.pFont = font
+	end
+	
+	/** \brief Text color. */
+	public func Color getTextColor()
+		return this.pTextColor
+	end
+	
+	/** \brief Set text color. */
+	public func void setTextColor( Color color )
+		if color == null
+			throw EInvalidParam.new()
+		end
+		this.pTextColor = color
+	end
+	
+	/** \brief Background color. */
+	public func Color getBackgroundColor()
+		return this.pBackgroundColor
+	end
+	
+	/** \brief Set background color. */
+	public func void setBackgroundColor( Color color )
+		this.pBackgroundColor = color
+	end
+	
+	/** \brief Text. */
+	public func String getText()
+		return this.pText
+	end
+	
+	/** \brief Set text. */
+	public func void setText( String text )
+		if text == null
+			throw EInvalidParam.new()
+		end
+		this.pText = text
+	end
+	
+	
+	
+	/** \brief Calculate size of element. */
+	public func Point calculateSize()
+		if this.pText.empty()
+			return Point.new()
+			
+		else
+			return this.pFont.getTextSize( this.pText )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add canvas for each element.
+	 * \details Canvas has to be of type Canvas.VIEW. Caller is responsible to remove all canvas if required.
+	 */
+	public func void addToCanvas( CanvasView canvas, Point position, StyledTextDocumentUpdater updater )
+		if this.pText.empty()
+			return
+		end
+		
+		var Point textSize = this.pFont.getTextSize( this.pText )
+		var Point textPosition = position + this.getPosition()
+		
+		// filled rectangle for background
+		if this.pBackgroundColor != null and this.pBackgroundColor.getAlpha() > 0
+			var CanvasPaint bgCanvas = CanvasPaint.new()
+			bgCanvas.setShapeType( CanvasPaintShape.rectangle )
+			bgCanvas.setFillColor( this.pBackgroundColor )
+			bgCanvas.setThickness( 0 )
+			bgCanvas.setPosition( textPosition )
+			bgCanvas.setSize( textSize )
+			bgCanvas.setOrder( canvas.getCanvasCount() cast float )
+			canvas.addCanvas( bgCanvas )
+		end
+		
+		// text canvas
+		var CanvasText textCanvas = CanvasText.new()
+		textCanvas.setFont( this.pFont )
+		textCanvas.setColor( this.pTextColor )
+		textCanvas.setText( this.pText )
+		textCanvas.setPosition( textPosition )
+		textCanvas.setSize( textSize )
+		
+		textCanvas.setOrder( canvas.getCanvasCount() cast float )
+		canvas.addCanvas( textCanvas )
+	end
+end

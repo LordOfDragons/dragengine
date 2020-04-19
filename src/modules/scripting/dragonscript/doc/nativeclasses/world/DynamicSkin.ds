@@ -1,0 +1,125 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Dynamic skin.
+ * 
+ * This is a native class.
+ */
+class DynamicSkin
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create dynamic skin. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of renderables. */
+	public func int getRenderableCount()
+	end
+	
+	/** \brief Named renderable is present. */
+	public func bool hasRenderable( String name )
+	end
+	
+	/** \brief Index of named renderable or -1 if absent. */
+	public func int indexOfRenderable( String name )
+	end
+	
+	/**
+	 * \brief Add named renderable.
+	 * \throws EInvalidParam Named renderable is present.
+	 */
+	public func void addRenderable( String name, DynamicSkinRenderableType type )
+	end
+	
+	/**
+	 * \brief Remove named renderable.
+	 * \throws EInvalidParam Named renderable is absent.
+	 */
+	public func void removeRenderable( String name )
+	end
+	
+	/** \brief Remove all renderables. */
+	public func void removeAllRenderables()
+	end
+	
+	
+	
+	/**
+	 * \brief Type of renderable at index.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 */
+	public func DynamicSkinRenderableType getTypeAt( int renderable )
+	end
+	
+	
+	
+	/**
+	 * \brief Set renderable value.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.value.
+	 */
+	public func void setValueAt( int renderable, float value )
+	end
+	
+	/**
+	 * \brief Set renderable color.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.color.
+	 */
+	public func void setColorAt( int renderable, Color color )
+	end
+	
+	/**
+	 * \brief Set renderable image or \em null if not set.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.image.
+	 */
+	public func void setImageAt( int renderable, Image image )
+	end
+	
+	/**
+	 * \brief Renderable canvas or \em null if not set.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
+	 */
+	public func CanvasView getCanvasAt( int renderable )
+	end
+	
+	/**
+	 * \brief Set renderable canvas or \em null if not set.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
+	 */
+	public func void setCanvasAt( int renderable, CanvasView canvas )
+	end
+	
+	/**
+	 * \brief Set renderable camera or \em null if not set.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.camera.
+	 */
+	public func void setCameraAt( int renderable, Camera camera )
+	end
+	
+	/**
+	 * \brief Set renderable video player or \em null if not set.
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.videoFrame.
+	 */
+	public func void setVideoPlayerAt( int renderable, VideoPlayer videoPlayer )
+	end
+	/*@}*/
+end

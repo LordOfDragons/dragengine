@@ -1,0 +1,138 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+
+/**
+ * \brief Counter for keeping track of preloading progress.
+ * 
+ * If a parent counter is set the parent counter is decremented too each time this
+ * counter is decremented. Allows to monitor preload progress using a single parent
+ * preload counter while being still able to monitor individual progress.
+ */
+class PreloadCounter
+	/** \brief Value. */
+	private var int pValue
+	
+	/** \brief Parent counter or null. */
+	private var PreloadCounter pParent
+	
+	
+	
+	/** \brief Create preload counter. */
+	public func new()
+		this.pValue = 0
+	end
+	
+	
+	
+	/** \brief Parent counter or null. */
+	public func PreloadCounter getParent()
+		return this.pParent
+	end
+	
+	/** \brief Set parent counter or null. */
+	public func void setParent( PreloadCounter counter )
+		this.pParent = counter
+	end
+	
+	
+	
+	/** \brief Counter value. */
+	public func int getValue()
+		return this.pValue
+	end
+	
+	/** \brief Counter reached zero. */
+	public func bool isZero()
+		return this.pValue == 0
+	end
+	
+	/** \brief Counter has not yet reach zero. */
+	public func bool isNotZero()
+		return this.pValue > 0
+	end
+	
+	/** \brief Increment counter by one. */
+	public func void increase()
+		this.pValue++
+		
+		if this.pParent != null
+			this.pParent.increase()
+		end
+	end
+	
+	/** \brief Increment counter by amount. */
+	public func void increaseBy( int count )
+		if count < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pValue += count
+		
+		if this.pParent != null
+			this.pParent.increaseBy( count )
+		end
+	end
+	
+	/** \brief Decrement counter by one. */
+	public func void decrease()
+		if this.pValue == 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pValue--
+		
+		if this.pParent != null
+			this.pParent.decrease()
+		end
+	end
+	
+	/** \brief Decrement counter by amount. */
+	public func void decreaseBy( int count )
+		if count < 0
+			throw EInvalidParam.new()
+		end
+		if this.pValue < count
+			throw EInvalidParam.new()
+		end
+		
+		this.pValue -= count
+		
+		if this.pParent != null
+			this.pParent.decreaseBy( count )
+		end
+	end
+	
+	/** \brief Reset counter to 0. */
+	public func void reset()
+		if this.pValue == 0
+			return
+		end
+		
+		if this.pParent != null
+			this.pParent.decreaseBy( this.pValue )
+		end
+		this.pValue = 0
+	end
+end

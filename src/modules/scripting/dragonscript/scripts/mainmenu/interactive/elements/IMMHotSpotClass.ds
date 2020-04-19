@@ -1,0 +1,80 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Non-interactive prop for InteractiveMainMenu.
+ * 
+ * Shows a simple element with optional animator. If animator is used it can have up to one
+ * controller. If present the controller has to be non-clamped and is incremented by the
+ * elapsed time to provide a continous idle animation.
+ */
+class IMMHotSpotClass extends IMMPropClass
+	private var IMMBehaviorHotSpot pHotSpot
+	private var IMMBehaviorColliderInteract pColliderInteract
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu ) this( mainMenu, "DE_IMM_HotSpot" )
+	end
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu, String name ) super( mainMenu, name )
+		this.pHotSpot = IMMBehaviorHotSpot.new( this, this.getTwoStateAnimated(), \
+			mainMenu.getLoaders(), mainMenu.getTriggerTable() )
+		this.pHotSpot.setTextDisplay( mainMenu.getTextDisplay() )
+		
+		this.pColliderInteract = IMMBehaviorColliderInteract.new( this, this.getCollider() )
+	end
+	
+	
+	
+	/** \brief Hot spot behavior. */
+	public func IMMBehaviorHotSpot getHotSpot()
+		return this.pHotSpot
+	end
+	
+	/** \brief Interact collider behavior. */
+	public func IMMBehaviorColliderInteract getColliderInteract()
+		return this.pColliderInteract
+	end
+	
+	
+	
+	/** \brief Create IMMHotSpotClass with different name. */
+	public func ElementClass duplicateNamed( String name )
+		return IMMHotSpotClass.new( this.getMainMenu(), name )
+	end
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return IMMHotSpot.new( this )
+	end
+end

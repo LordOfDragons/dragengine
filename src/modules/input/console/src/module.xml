@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>ConsoleInput</name>
+	<description>Processes input from a console. Supports only
+		keyboard input.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Input</type>
+	<fallback/>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>ConsoleInputCreateModule</entrypoint>
+	</library>
+</module>

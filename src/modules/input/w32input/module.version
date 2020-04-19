@@ -1,0 +1,4 @@
+INPW32 {
+  global: W32InputCreateModule;
+  local: *;
+};

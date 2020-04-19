@@ -1,0 +1,155 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Canvas creator creating a canvas with a paint only simple rectangle fill and line color.
+ */
+class RectangleCanvasCreator extends DefaultCanvasCreator
+	/** \brief Fill color. */
+	private var Color pColorFill
+	
+	/** \brief Line color or \em null to use fill color. */
+	private var Color pColorLine
+	
+	/** \brief Line thickness. */
+	private var float pThickness
+	
+	
+	
+	/** \brief Create canvas creator. */
+	public func new()
+		this.pColorFill = Color.white
+		this.pThickness = 1.0
+	end
+	
+	/** \brief Create canvas creator. */
+	public func new( Color colorFill )
+		this.setColorFill( colorFill )
+	end
+	
+	/** \brief Create canvas creator. */
+	public func new( Color colorFill, Color colorLine )
+		this.setColorFill( colorFill )
+		this.setColorLine( colorLine )
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new( RectangleCanvasCreator creator ) super( creator )
+		this.pColorFill = creator.pColorFill
+		this.pColorLine = creator.pColorLine
+		this.pThickness = creator.pThickness
+	end
+	
+	
+	
+	/** \brief Fill color. */
+	public func Color getColorFill()
+		return this.pColorFill
+	end
+	
+	/** \brief Set fill color. */
+	public func void setColorFill( Color color )
+		if color == null
+			throw EInvalidParam.new()
+		end
+		this.pColorFill = color
+	end
+	
+	/** \brief Line color or \em null to use fill color. */
+	public func Color getColorLine()
+		return this.pColorLine
+	end
+	
+	/** \brief Set line color or \em null to use fill color. */
+	public func void setColorLine( Color color )
+		this.pColorLine = color
+	end
+	
+	/** \brief Line thickness. */
+	public func float getThickness()
+		return this.pThickness
+	end
+	
+	/** \brief Set line thickness. */
+	public func void setThickness( float thickness )
+		this.pThickness = DEMath.max( thickness, 0.0 )
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | colorFill | Color | setColorFill |
+	 * | colorLine | Color | setColorLine |
+	 * | thickness | float | setThickness |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "colorFill" )
+			this.setColorFill( value cast Color )
+			
+		elif name.equals( "colorLine" )
+			this.setColorLine( value cast Color )
+			
+		elif name.equals( "thickness" )
+			this.setThickness( value cast float )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return RectangleCanvasCreator.new( this )
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas( Point size )
+		var CanvasPaint canvas = CanvasPaint.new()
+		canvas.setShapeType( CanvasPaintShape.rectangle )
+		
+		canvas.setFillColor( this.pColorFill )
+		
+		if this.pColorLine == null
+			canvas.setThickness( 0.0 )
+			
+		else
+			canvas.setThickness( this.pThickness )
+			canvas.setLineColor( this.pColorLine )
+		end
+		
+		canvas.setSize( size )
+		
+		return canvas
+	end
+end

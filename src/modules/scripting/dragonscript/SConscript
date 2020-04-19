@@ -1,0 +1,174 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+buildModule = parent_env[ 'build_script_ds' ] != TernaryVariableNo
+
+parent_report[ 'build DragonScript Script Module' ] = 'yes' if buildModule else 'no'
+if not buildModule:
+	Return()
+
+envModule = parent_env.Clone()
+
+libs = []
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+appendLibrary( envModule, parent_targets[ 'lib_dragonscript' ], libs )
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/scripting/dragonscript/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/scripting/dragonscript/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+pathShared = '{}/modules/scripting/dragonscript/{}'.format( envModule.subst( envModule[ 'path_de_share' ] ), versionString )
+
+pathIGDEShared = envModule.subst(envModule['path_igde_share'])
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+if parent_targets[ 'lib_dragonscript' ][ 'runtimedata' ]:
+	envModule.Append( CXXFLAGS = [ '-DUSE_INTERNAL_DSCRIPT' ] )
+
+# setup the builders
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+scripts = []
+globFiles( envModule, 'scripts', '*.ds', scripts )
+
+data = []
+globFiles( envModule, 'data', '*', data )
+
+igdeGameDefs = []
+globFiles(envModule, 'igde/gamedefs', '*.degd', igdeGameDefs)
+
+igdeTemplates = []
+globFiles(envModule, 'igde/templates', '*', igdeTemplates)
+
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+library = envModule.SharedLibrary( target='scrdscript', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'scr_dragonscript_build', library )
+
+
+
+install = []
+archive = {}
+archiveIGDE = {}
+
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+for l in reversed( parent_targets[ 'lib_dragonscript' ][ 'runtimelibs' ] ):
+	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
+	install.append( envModule.Install( pathModule, l ) )
+	archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+Depends( updateManifest, parent_targets[ 'lib_dragonscript' ][ 'runtimelibs' ] )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+for s in scripts:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+
+for s in data:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+
+replacements = []
+if envModule['OSWindows']:
+	# NOTE there is no other solution. to support cross-building path in the sconscripts
+	#      have to be with unix slashes not native path separators. this means we have
+	#      to manually do this thing here otherwise it won't work
+	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data').replace('/', '\\')))
+else:
+	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data')))
+
+for s in igdeGameDefs:
+	node = envModule.File(s)
+	modifiedFile = envModule.Command(node, node.srcnode(),
+		Action(ActionReplaceTokenInPlace), Replacements=replacements)
+	
+	filename = os.path.join(pathIGDEShared, 'gamedefs', s.split('/')[-1])
+	
+	install.append(envModule.InstallAs(filename, modifiedFile))
+	archiveIGDE[filename] = modifiedFile[0]
+
+for s in igdeTemplates:
+	node = envModule.File(s)
+	filename = os.path.join(pathIGDEShared, 'templates', *(s.split('/')[2:]))
+	
+	install.append(envModule.InstallAs(filename, node))
+	archiveIGDE[filename] = node.srcnode()
+
+if parent_targets[ 'lib_dragonscript' ][ 'runtimedatadir' ]:
+	basedir = parent_targets[ 'lib_dragonscript' ][ 'runtimedatadir' ]
+	for d in parent_targets[ 'lib_dragonscript' ][ 'runtimedata' ]:
+		filename = os.path.join( pathShared, 'dsinstall', basedir.rel_path( d ) )
+		install.append( envModule.InstallAs( filename, d ) )
+		archive[ filename ] = d
+
+if envModule['OSPosix']:
+	pathDataDir = envModule.subst('$datadir')
+	filename = os.path.join(pathDataDir, 'katepart5', 'syntax', 'dragonscript.xml')
+	install.append(envModule.InstallAs(filename, 'kate_syntax/dragonscript.xml'))
+	archiveIGDE[filename] = envModule.File('kate_syntax/dragonscript.xml').srcnode()
+	
+	filename = os.path.join(pathDataDir, 'mime', 'packages', 'dragonscript-dragonscript.xml')
+	install.append(envModule.InstallAs(filename, 'dragonscript-mimetype.xml'))
+	archiveIGDE[filename] = envModule.File('dragonscript-mimetype.xml').srcnode()
+
+targetInstall = envModule.Alias( 'scr_dragonscript', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# doxygen
+buildDoxygenModule = envModule.Alias( 'scr_dragonscript_doc_module', envModule.Command(
+	'doc/module/html/index.html', 'doxyfile_module', 'cd {} && doxygen doxyfile_module'.format( srcdir ) ) )
+
+buildDoxygenScript = envModule.Alias( 'scr_dragonscript_doc_script', envModule.Command(
+	'doc/script/html/index.html', 'doxyfile_script', 'cd {} && doxygen doxyfile_script'.format( srcdir ) ) )
+
+buildDoxygen = envModule.Alias( 'scr_dragonscript_doc', [ buildDoxygenModule, buildDoxygenScript ] )
+
+# cloc
+buildClocBare = BuildCLOC( envModule,
+	[ '{}/src'.format( srcdir ), '{}/scripts'.format( srcdir ) ],
+	'{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+Depends( buildClocBare, scripts )
+buildCloc = envModule.Alias( 'scr_dragonscript_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'scr_dragonscript' ] = {
+	'name' : 'DragonScript Script Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'archive-igde' : archiveIGDE,
+	'doxygen' : buildDoxygen,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

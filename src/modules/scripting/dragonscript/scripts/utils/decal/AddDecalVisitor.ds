@@ -1,0 +1,72 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+
+/**
+ * \brief Visitor for use by DecalBuilder to create decals for visited elements.
+ */
+class AddDecalVisitor extends ElementVisitor
+	/** \brief Decal builder. */
+	private var DecalBuilder pBuilder
+	
+	
+	
+	/** \brief Create visitor. */
+	public func new( DecalBuilder builder )
+		this.pBuilder = builder
+	end
+	
+	
+	
+	/** \brief Decal builder. */
+	public func DecalBuilder getBuilder()
+		return this.pBuilder
+	end
+	
+	
+	
+	/**
+	 * \brief Visit behavior element.
+	 * 
+	 * Uses all ECBehaviorComponent instances to create decal for.
+	 */
+	public func void visitBehaviorElement( BehaviorElement element )
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable ECBehaviorComponent.Instance
+				this.createDecalFor( each cast ECBehaviorComponent.Instance )
+			end
+		end )
+	end
+	
+	/** \brief Create decal for component. */
+	public func void createDecalFor( ECBehaviorComponent.Instance behavior )
+		if behavior.getComponent() != null
+			this.pBuilder.createComponentDecal( behavior.getElement(), behavior.getComponent() )
+		end
+	end
+end

@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Lumimeter.
+ * 
+ * Measure light intensities in a scene to react to them in game scripts.
+ * 
+ * This is a native class.
+ */
+class Lumimeter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create lumimeter. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Direction. */
+	public func Vector getDirection()
+	end
+	
+	/** \brief Set direction. */
+	public func void setDirection( Vector direction )
+	end
+	
+	/** \brief Cone inner angle. */
+	public func float getConeInnerAngle()
+	end
+	
+	/** \brief Set cone inner angle. */
+	public func void setConeInnerAngle( float angle )
+	end
+	
+	/** \brief Cone outer angle. */
+	public func float getConeOuterAngle()
+	end
+	
+	/** \brief Set cone outer angle. */
+	public func void setConeOuterAngle( float angle )
+	end
+	
+	/** \brief Cone exponent. */
+	public func float getConeExponent()
+	end
+	
+	/** \brief Set cone exponent. */
+	public func void setConeExponent( float exponent )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Measuring */
+	/*@{*/
+	/** \brief Incident light intensity. */
+	public func float measureLuminance()
+	end
+	
+	/** \brief Incident light color. */
+	public func Color measureColor()
+	end
+	/*@}*/
+end

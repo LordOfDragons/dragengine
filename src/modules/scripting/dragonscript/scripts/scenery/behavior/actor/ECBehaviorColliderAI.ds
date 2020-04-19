@@ -1,0 +1,489 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding collider support suitable for actor AI.
+ * 
+ * ECBehaviorColliderAI adds a collider which is useable for actor AI usage. This collider
+ * is not linked to ECBehaviorComponent but instead creates a ColliderVolume. The shape of
+ * the collider can be set manually or obtained from Rig resources. Using shapes from rig
+ * resources is usually the simpler way while creating shapes allows for greater flexibility.
+ * Otherwise the classes behave similar.
+ * 
+ * ECBehaviorColliderAI requires ECBehaviorCollider. Do not use this behavior if other
+ * behaviors try to move the ECBehaviorCollider. Doing so can produce strange results.
+ * Apply velocities and changes to the AI collider.
+ * 
+ * In contrary to ECBehaviorCollider this behavior does synchronize position with the
+ * element position but not vice versa. Actors typically have complex requirements on how
+ * their AI collider can move including projecting down to the ground after physics processing
+ * has finished. Behaviors suitable for managing collider AI typically update the AI collider
+ * velocities during think() and update element position and orientation from AI collider
+ * during postThink().
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorColliderAI extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+		
+		/**
+		 * \brief Collision between colliders is possible.
+		 * 
+		 * Only called if callback is enabled in collider AI. Stops after the first listener
+		 * returning false. All listeneres added after this listener will not be called.
+		 * 
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param hitCollider Hit collider.
+		 */
+		func bool canHitCollider( Instance instance, Collider collider, Collider hitCollider )
+		
+		/**
+		 * \brief Collider changed.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 */
+		func void colliderChanged( Instance instance, Collider collider )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		public func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+		end
+		
+		/**
+		 * \brief Collision between colliders is possible.
+		 * 
+		 * Only called if callback is enabled in collider AI. Default implementation returns true.
+		 * 
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param hitCollider Hit collider.
+		 */
+		public func bool canHitCollider( Instance instance, Collider collider, Collider hitCollider )
+			return true
+		end
+		
+		/**
+		 * \brief Collider changed.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 */
+		public func void colliderChanged( Instance instance, Collider collider )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		private var ECBehaviorColliderAI pECBehavior
+		private var ECBehaviorCollider.Instance pBaseCollider
+		private var ColliderVolume pCollider
+		private var Vector pGravity
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorColliderAI ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			
+			this.pBaseCollider = ecbehavior.getBaseCollider().instance( element )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			if this.pCollider != null
+				this.pCollider.setColliderListener( null )
+				this.pCollider.setOwner( null )
+				this.pCollider.removeAllCollisionTests()
+				this.pCollider.removeAllIgnoreColliders()
+				this.pCollider = null
+			end
+			
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			this.pCollider = this.createCollider( stub )
+			this.pCollider.setColliderListener( this )
+			this.pCollider.setOwner( this.getElement() )
+			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+			
+			var Collider baseCollider = this.pBaseCollider.getCollider()
+			if baseCollider != null
+				this.pCollider.addIgnoreCollider( baseCollider )
+				baseCollider.addIgnoreCollider( this.pCollider )
+			end
+		end
+		
+		/**
+		 * \brief Create collider.
+		 * \param stub Stub to use.
+		 * \param component Component to use or \em null if absent.
+		 */
+		protected func ColliderVolume createCollider( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			var ColliderVolume collider = ColliderVolume.new()
+			collider.setResponseType( CollisionResponse.kinematic )
+			collider.setUseLocalGravity( true )
+			collider.setGravity( Vector.new() )
+			collider.setCollisionFilter( this.pECBehavior.getCollisionFilter().getCollisionFilter() )
+			collider.setGeometry( element.getPosition(), element.getOrientation() )
+			//collider.setScaling( stub.getScaling() ) // not supported yet
+			
+			return collider
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorColliderAI getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Base collider behavior instance. */
+		public func ECBehaviorCollider.Instance getBaseCollider()
+			return this.pBaseCollider
+		end
+		
+		/** \brief Collider AI. */
+		public func ColliderVolume getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Default gravity to apply. */
+		public func Vector getGravity()
+			return this.pGravity
+		end
+		
+		/**
+		 * \brief Set default gravity to apply.
+		 * 
+		 * Default value is \em null which means using element game world gravity.
+		 */
+		public func void setGravity( Vector gravity )
+			this.pGravity = gravity
+		end
+		
+		
+		
+		/** \brief Set shape of collider. */
+		public func void setShape( ShapeList shape )
+			this.pCollider.setShape( shape )
+		end
+		
+		/**
+		 * \brief Set collider shape for humanoid actors.
+		 * 
+		 * Assigns a capsule oriented along the actor Y axis. The shape is located half the
+		 * height above the actor position. This is a reasonable shape for a humanoid actor.
+		 * 
+		 * \param radius Radius of circle centered at actor position as seen from straight above.
+		 *               A good radius for an average humanoid actor is 0.3m .
+		 * \param height Height of the actor from the top most position down to the ground.
+		 *               A good value is 1.8m .
+		 */
+		public func void setShapeHumanoid( float radius, float height )
+			var float capsuleHeight = height * 0.5 - radius
+			var float capsuleCenter = radius + capsuleHeight
+			
+			var ShapeList shape = ShapeList.new()
+			shape.addCapsule( capsuleHeight, radius, Vector.new( 0, capsuleCenter, 0 ) )
+			this.setShape( shape )
+		end
+		
+		
+		
+		/** \brief Set element position and orientation from collider. */
+		public func void setGeometryFromCollider()
+			this.getElement().setGeometry( this.pCollider.getPosition(), this.pCollider.getOrientation() )
+		end
+		
+		/** \brief Clear all velocities. */
+		public func void stopMoving()
+			this.pCollider.setLinearVelocity( Vector.new() )
+			this.pCollider.setAngularVelocity( Vector.new() )
+		end
+		
+		/** \brief Clear angular velocities. */
+		public func void stopTurning()
+			this.pCollider.setAngularVelocity( Vector.new() )
+		end
+		
+		/**
+		 * \brief Apply default gravity.
+		 * 
+		 * If default gravity is null uses element game world gravity.
+		 */
+		public func void applyGravity( float elapsed )
+			if this.pGravity != null
+				this.applyGravity( this.pGravity, elapsed )
+				
+			else
+				this.applyGravity( this.getElement().getGameWorld().getGravity(), elapsed )
+			end
+		end
+		
+		/**
+		 * \brief Apply gravity.
+		 * 
+		 * Gravity has to be negative to pull actor towards ground.
+		 */
+		public func void applyGravity( Vector gravity, float elapsed )
+			this.pCollider.setLinearVelocity( this.pCollider.getLinearVelocity() + gravity * elapsed )
+		end
+		
+		/** \brief Add linear velocity. */
+		public func void addLinearVelocity( Vector velocity )
+			this.pCollider.setLinearVelocity( this.pCollider.getLinearVelocity() + velocity )
+		end
+		
+		/** \brief Set orientation and linear velocity from locomotion. */
+		public func void setFromLocomotion( Locomotion locomotion )
+			this.pCollider.setOrientation( locomotion.getOrientationQuaternion() )
+			this.pCollider.setLinearVelocity( locomotion.getLinearVelocity() )
+		end
+		
+		/** \brief Set orientation and linear velocity from locomotion. */
+		public func void setFromLocomotion( ECBehaviorLocomotion.Instance behavior )
+			this.setFromLocomotion( behavior.getLocomotion() )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief State changed (visble, touchable). */
+		public func void stateChanged()
+			this.pCollider.setEnabled( this.getElement().getTouchable() )
+		end
+		
+		/** \brief Position or orientation changed. */
+		public func void geometryChanged()
+			var BehaviorElement element = this.getElement()
+			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.pCollider.setLinearVelocity( Vector.new() )
+			this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
+		end
+		
+		
+		
+		/** \brief Colliders can hit each other. */
+		public func bool canHitCollider( Collider owner, Collider collider )
+			return this.pListeners.find( block Listener each
+				each.canHitCollider( this, owner, collider )
+			end ) != null
+		end
+		
+		/** \brief Collision detected. */
+		public func void collisionResponse( Collider owner, CollisionInfo info )
+			if this.pListeners.getCount() > 0
+				this.pListeners.forEach( block Listener each
+					each.collisionResponse( this, owner, info )
+				end )
+				
+			else
+				owner.setLinearVelocity( Vector.new() )
+				owner.setAngularVelocity( Vector.new() )
+			end
+		end
+		
+		/** \brief Collider position or orientation changed. */
+		public func void colliderChanged( Collider owner )
+			this.pListeners.forEach( block Listener each
+				each.colliderChanged( this, owner )
+			end )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.geometryChanged()
+			
+			this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
+			this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			this.pCollider.getLinearVelocity().writeToFile( writer )
+			this.pCollider.getAngularVelocity().writeToFile( writer )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pBaseCollider
+	private var ECComposeCollisionFilter pCollisionFilter
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider baseCollider ) \
+	this( eclass, baseCollider, "colliderAI." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider baseCollider, \
+	String prefix ) super( eclass )
+		if baseCollider == null
+			throw ENullPointer.new( "baseCollider" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pBaseCollider = baseCollider
+		
+		var ECComposeCollider ccollider = this.pBaseCollider.getCollider()
+		ccollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
+		ccollider.getLocalGravity().setVector( Vector.new() )
+		ccollider.collisionFilterClearBit( BaseGameApp.CollisionFilterBit.actorAI )
+		ccollider.collisionFilterClearBit( BaseGameApp.CollisionFilterBit.trigger )
+		
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.actorAI )
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.trigger )
+		
+		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pBaseCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Base collider behavior. */
+	public func ECBehaviorCollider getBaseCollider()
+		return this.pBaseCollider
+	end
+	
+	/** \brief Collision filter for AI collider. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorColliderAI.
+	 */
+	static public func ECBehaviorColliderAI getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorColliderAI
+		end ) cast ECBehaviorColliderAI
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorColliderAI.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

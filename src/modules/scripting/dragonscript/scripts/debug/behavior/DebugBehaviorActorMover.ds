@@ -1,0 +1,197 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Debug ECBehaviorActorMover.
+ * 
+ * To use create an instance of DebugBehaviorActorMover with the behavior to attach to.
+ * Attaches a listener to the behavior and visualizes the behavior state. Different
+ * information can be visualized individually. The debug instance stays active as long
+ * as the behavior exists.
+ */
+class DebugBehaviorActorMover
+	/** \brief Watch behavior listener. */
+	class WatchBehavior extends ECBehaviorActorMover.DefaultListener
+		private var DebugBehaviorActorMover pDebug
+		
+		public func new( DebugBehaviorActorMover debug )
+			this.pDebug = debug
+		end
+		
+		public func void startMoving( ECBehaviorActorMover.Instance instance )
+			this.pDebug.onStartMoving()
+		end
+		
+		public func void stopMoving( ECBehaviorActorMover.Instance instance )
+			this.pDebug.onStopMoving()
+		end
+		
+		public func void arrivedAtGoal( ECBehaviorActorMover.Instance instance, DVector goalPosition )
+			this.pDebug.onArrivedAtGoal( goalPosition )
+		end
+		
+		public func void modifyMoveTowards( ECBehaviorActorMover.Instance instance, DVector position, float elapsed )
+			this.pDebug.onModifyMoveTowards( position, elapsed )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorActorMover.Instance pBehavior
+	private var DebugDrawer pDebugDrawer
+	private var GameWorld pGameWorld
+	private var float pBoxHalfExtends
+	private var float pSphereRadius
+	private var WeakReference pWatchBehavior
+	
+	
+	
+	/** \brief Create debug instance for behavior. */
+	public func new( ECBehaviorActorMover.Instance behavior )
+		this.pBoxHalfExtends = 0.015
+		this.pSphereRadius = 0.03
+		
+		this.pBehavior = behavior
+		var WatchBehavior watchBehavior = WatchBehavior.new( this )
+		behavior.addListener( watchBehavior )
+		this.pWatchBehavior = WeakReference.new( watchBehavior )
+		
+		this.pDebugDrawer = DebugDrawer.new()
+		this.pDebugDrawer.setVisible( true )
+		this.pDebugDrawer.setXRay( true )
+		this.pDebugDrawer.setShapeCount( 1 )
+		this.pDebugDrawer.shapeSetEdgeColor( 0, Color.new( 1, 0, 1, 1 ) )
+		this.pDebugDrawer.shapeSetFillColor( 0, Color.new( 1, 0, 1, 0.2 ) )
+	end
+	
+	
+	
+	/** \brief Remove from behavior. */
+	public func void removeFromBehavior()
+		var WatchBehavior watchBehavior = this.pWatchBehavior.get() cast WatchBehavior
+		if watchBehavior != null
+			this.pWatchBehavior.set( null )
+			this.pBehavior.removeListener( watchBehavior )
+		end
+	end
+	
+	
+	
+	/** \brief Box half-extends. */
+	public func float getBoxHalfExtends()
+		return this.pBoxHalfExtends
+	end
+	
+	/** \brief Set box half-extends. */
+	public func void setBoxHalfExtends( float halfExtends )
+		this.pBoxHalfExtends = DEMath.max( halfExtends, 0.001 )
+	end
+	
+	/** \brief Sphere radius. */
+	public func float getSphereRadius()
+		return this.pSphereRadius
+	end
+	
+	/** \brief Set sphere radius. */
+	public func void setSphereRadius( float radius )
+		this.pSphereRadius = DEMath.max( radius, 0.001 )
+	end
+	
+	/** \brief Debug drawer. */
+	protected func DebugDrawer getDebugDrawer()
+		return this.pDebugDrawer
+	end
+	
+	/** \brief Set XRay mode. */
+	public func void setXRay( bool xray )
+		this.pDebugDrawer.setXRay( xray )
+	end
+	
+	
+	
+	/** \brief Update move towards debug drawer shape. */
+	protected func void updateShapeMoveTowards( DVector position )
+		var DVector actorPosition = this.pBehavior.getElement().getPosition()
+		var Vector direction = ( position - actorPosition ).toVector()
+		var float distance = direction.getLength()
+		var ShapeList shapes = ShapeList.new()
+		
+		if distance > 0.01
+			var Vector view = direction / distance
+			var Quaternion orientation
+			
+			if DEMath.fabs( view.getY() ) < 0.99
+				orientation = Matrix.newVU( view, Vector.new( 0, 1, 0 ) ).toQuaternion()
+				
+			else
+				orientation = Matrix.newVU( view, Vector.new( 0, 0, 1 ) ).toQuaternion()
+			end
+			
+			shapes.addBox( direction * 0.5, \
+				Vector.new( this.pBoxHalfExtends, this.pBoxHalfExtends, distance * 0.5 ), \
+				orientation )
+		end
+		
+		shapes.addSphere( direction, this.pSphereRadius )
+		
+		this.pDebugDrawer.shapeSetShapes( 0, shapes )
+		this.pDebugDrawer.setPosition( actorPosition )
+	end
+	
+	
+	
+	/** \brief Actor starts moving. */
+	public func void onStartMoving()
+		if this.pGameWorld == null
+			this.pGameWorld = this.pBehavior.getElement().getGameWorld()
+			if this.pGameWorld != null
+				this.pGameWorld.getWorld().addDebugDrawer( this.pDebugDrawer )
+			end
+		end
+	end
+	
+	/** \brief Actor stops moving. */
+	public func void onStopMoving()
+		this.pDebugDrawer.shapeSetShapes( 0, ShapeList.new() )
+		
+		if this.pGameWorld != null
+			this.pGameWorld.getWorld().removeDebugDrawer( this.pDebugDrawer )
+			this.pGameWorld = null
+		end
+	end
+	
+	/** \brief Actor arrived at target. */
+	public func void onArrivedAtGoal( DVector goalPosition )
+	end
+	
+	/** \brief Modify move towards. */
+	public func void onModifyMoveTowards( DVector position, float elapsed )
+		this.updateShapeMoveTowards( position )
+	end
+end

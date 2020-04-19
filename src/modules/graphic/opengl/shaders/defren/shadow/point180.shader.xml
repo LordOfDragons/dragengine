@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Shadow Point 180</name>
+	
+	<texture name="texColor" target="0"/>
+	
+	<parameter name="pMaterialGamma"/>
+	<parameter name="pOptions"/>
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+varying vec2 vTexCoord;
+varying vec3 vPosition;
+
+const float epsilon = 0.00001;
+
+void main( void ){
+#ifdef HEIGHTTERRAIN
+	vec4 position = vec4( gl_Vertex.x, gl_MultiTexCoord1.s, gl_Vertex.y, 1.0 );
+#else // HEIGHTTERRAIN
+	vec4 position = vec4( gl_Vertex.xyz, 1.0 );
+#endif // HEIGHTTERRAIN
+	
+	vPosition = ( gl_ModelViewMatrix * position ).xyz;
+	
+#if defined( TRANSPARENT ) || defined( DISCARD_HOLES )
+	vTexCoord = mat3x2( gl_TextureMatrix[ 0 ] ) * vec3( gl_MultiTexCoord0.st, 1.0 );
+#endif
+	
+	float plen = length( vPosition );
+	position.xyz = vPosition / vec3( max( epsilon, plen ) );
+	gl_Position = vec4( vec3( position.xy / vec2( position.z + 1.0 ), 0.0 ), 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+uniform vec4 pMaterialGamma;
+uniform vec4 pOptions; // scale, offset, cut-off, n/a
+
+uniform sampler2D texColor;
+
+varying vec2 vTexCoord;
+varying vec3 vPosition;
+
+#ifdef DEPTH_AS_COLOR
+const vec3 packShift = vec3( 1.0, 256.0, 65536.0 );
+const vec3 packMask = vec3( 1.0 / 256.0, 1.0 / 256.0, 0.0 );
+#endif // DEPTH_AS_COLOR
+
+void main( void ){
+#ifdef DISCARD_HOLES
+	if( texture2D( texColor, vTexCoord ).a < 0.5 ) discard;
+#elif defined( TRANSPARENT )
+#ifdef DEPTH_AS_COLOR
+	gl_FragData[ 1 ] = pow( texture2D( texColor, vTexCoord ), pMaterialGamma );
+#else // DEPTH_AS_COLOR
+	gl_FragData[ 0 ] = pow( texture2D( texColor, vTexCoord ), pMaterialGamma );
+#endif // DEPTH_AS_COLOR
+#endif // TRANSPARENT
+	
+	if( vPosition.z < 0.0 ) discard;
+	
+	gl_FragDepth = length( vPosition ) * pOptions.x + pOptions.y;
+	
+#ifdef DEPTH_AS_COLOR
+	vec3 depth = fract( packShift * gl_FragDepth );
+	gl_FragData[ 0 ].rgb = depth - ( depth.yzz * packMask );
+#endif // DEPTH_AS_COLOR
+}
+	]]></program>
+	
+</shader>

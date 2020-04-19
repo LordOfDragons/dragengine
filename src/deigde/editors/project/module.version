@@ -1,0 +1,4 @@
+PROJECT {
+  global: ProjectCreateModule;
+  local: *;
+};

@@ -1,0 +1,4 @@
+ARCDELGA {
+  global: DELGACreateModule;
+  local: *;
+};

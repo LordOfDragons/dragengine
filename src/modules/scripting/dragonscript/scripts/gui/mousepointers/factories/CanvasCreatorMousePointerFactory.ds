@@ -1,0 +1,96 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers.Factories
+
+pin Dragengine.Gui.CanvasCreators
+
+
+/**
+ * \brief Mouse pointer factory using canvas creator.
+ */
+public class CanvasCreatorMousePointerFactory extends DefaultMousePointerFactory
+	/** \brief Canvas creator factory. */
+	private var CanvasCreator pCanvasCreator
+	
+	
+	
+	/** \brief Create mouse pointer factory. */
+	public func new()
+	end
+	
+	/** \brief Create copy of mouse pointer factory. */
+	public func new( CanvasCreatorMousePointerFactory factory ) super( factory )
+		this.pCanvasCreator = factory.pCanvasCreator
+	end
+	
+	
+	
+	/** \brief Canvas creator or \em null if not set. */
+	public func CanvasCreator getCanvasCreator()
+		return this.pCanvasCreator
+	end
+	
+	/** \brief Set canvas creator or \em null if not set. */
+	public func void setCanvasCreator( CanvasCreator canvasCreator )
+		this.pCanvasCreator = canvasCreator
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * | Name | Type | Method |
+	 * | size | Point | setSize |
+	 * | offset | Point | setOffset |
+	 * | canvasCreator | CanvasCreator | setCanvasCreator |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "canvasCreator" )
+			this.setCanvasCreator( value cast CanvasCreator )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
+	
+	
+	
+	/** \brief Create copy of mouse pointer factory. */
+	public func MousePointerFactory copyFactory()
+		return CanvasCreatorMousePointerFactory.new( this )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func MousePointer createMousePointer()
+		var CanvasCreatorMousePointer mousePointer = CanvasCreatorMousePointer.new()
+		this.initCanvasCreatorMousePointer( mousePointer )
+		return mousePointer
+	end
+	
+	/** \brief Initialize canvas creator part of mouse pointer. */
+	protected func void initCanvasCreatorMousePointer( CanvasCreatorMousePointer mousePointer )
+		this.initDefaultMousePointer( mousePointer )
+		mousePointer.setCanvasCreator( this.pCanvasCreator )
+	end
+end

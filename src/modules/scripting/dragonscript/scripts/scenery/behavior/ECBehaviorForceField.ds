@@ -1,0 +1,572 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding force field support.
+ * 
+ * Behavior adds a ForceField resource to the the behavior element. This behavior can be added
+ * multiple times to an element. Each instance creates one force field attached to the element
+ * collider which can be individually modified. To distinguish the force fields each instance
+ * has an identifier which can be used to retrieve a specific instance. The prefix of the
+ * force field class properties is "forceField." . If the identifier is not empty the force field
+ * element class properties have the prefix "{id}.forceField.". This can be overwritten if required.
+ * Hence to use more than one force field use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorForceField.new(this)
+ *       ECBehaviorForceField.new(this, "subForceField")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the parameters to use for both force fields using for example the properties
+ * "color" for the first force field and "subForceField.color" for the second forceField.
+ * 
+ * It is recommended to always specify an identifier even if only one force field is used.
+ * This avoids potentially name conflicts especially if other behaviors are added attaching
+ * other resources too.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element before this
+ * behavior is added the force field is attached. The force field is attached to the named bone if
+ * defined otherwise it is attached statically.
+ * 
+ * Element class properties have the prefix "forceField{(id)}.".
+ * 
+ * 
+ * 
+ * \par Listening and Customized ForceField Handling
+ * 
+ * The owner element class and other behaviors can register a listener to be notified if the
+ * force field is (de)enabled. This can be used to provide customized force field handling
+ * support for example flickering or dimmable force fields.
+ * 
+ * If another behaviors wants to control the force field parameters in response to these events
+ * it should call setCustomForceFieldHandling(true). In this case the behavior implementing the
+ * force field parameter handling has to use requiresThink() to think while the effect lasts.
+ * 
+ * 
+ * 
+ * \par Owner Element Visibility
+ * 
+ * The enabled state of the force field is linked with the visibility state of the owner
+ * element. If the owner element becomes invisible the force field resource is always disabled.
+ * If the owner element becomes visible the force field resource is enabled if the behavior is
+ * enabled too.
+ * 
+ * If custom force field handling is used the behavior resposible for the custom force field handling is
+ * required to listen to stateChanged() calls and act accordingly. The force field resource will be
+ * always enabled no matter if the custom force field handling is enabled or not. Only if the
+ * behavior is (de)enabled or the element becomes visible the force field parameters are not
+ * modified if custom force field handling is enabled.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorForceField extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Force field has been enabled. */
+		func void forceFieldEnabled( Instance instance )
+		
+		/** \brief Force field has been disabled. */
+		func void forceFieldDisabled( Instance instance )
+		
+		/** \brief Force field parameters have been changed. */
+		func void forceFieldParametersChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief ForceField has been enabled. */
+		public func void forceFieldEnabled( Instance instance )
+		end
+		
+		/** \brief ForceField has been disabled. */
+		public func void forceFieldDisabled( Instance instance )
+		end
+		
+		/** \brief ForceField parameters have been changed. */
+		public func void forceFieldParametersChanged( Instance instance )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Trigger listener to enable forceField. */
+		public class ActivateListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setEnabled( true )
+			end
+			
+			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setEnabled( false )
+			end
+		end
+		
+		private var ECBehaviorForceField pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var bool pEnabled
+		private var ForceField pForceField
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var Array pListeners
+		private var bool pCustomForceFieldHandling
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorForceField ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pEnabled = true
+			this.pCustomForceFieldHandling = false
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pTrigger = null
+			this.pCollider = null
+			this.pListeners = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			this.pForceField = this.createForceField( stub )
+			if this.pForceField == null
+				return
+			end
+			
+			if this.pECBehavior.getTriggerTable() != null
+				this.pTrigger = this.getTriggerBehavior()
+				this.pTrigger.addListener( ActivateListener.new( this ) )
+			end
+			
+			if this.pTrigger != null and this.pTrigger.getTriggerExpression() != null
+				// required because of createForceField()
+				this.pForceField.setEnabled( false )
+				this.pEnabled = false
+				
+			else
+				this.setEnabled( this.pForceField.getEnabled() )
+			end
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachForceField( stub, this.pCollider )
+			end
+		end
+		
+		/**
+		 * \brief Create forceField.
+		 * 
+		 * Default implementation calls ECComposeForceField.createForceField().
+		 */
+		protected func ForceField createForceField( StubElement stub )
+			return this.pECBehavior.getForceField().createForceField( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Get enable trigger behavior.
+		 * 
+		 * Default implementation uses owner class trigger behavior. If getSyncTrigger()
+		 * of parent ECBehaviorForceField is not null uses referenced behavior trigger behavior.
+		 */
+		protected func ECBehaviorTriggered.Instance getTriggerBehavior()
+			var ECBehaviorForceField behavior = this.pECBehavior.getSyncTrigger()
+			var BehaviorElement element = this.getElement()
+			
+			if behavior != null
+				return behavior.instance( element ).getTrigger()
+				
+			else
+				return this.pECBehavior.getTrigger().instance( element )
+			end
+		end
+		
+		/**
+		 * \brief Attach force field to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachForceField( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pForceField, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorForceField getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior or null if not attached. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Trigger enable or \em null. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Force field. */
+		public func ForceField getForceField()
+			return this.pForceField
+		end
+		
+		
+		
+		/** \brief Force field is enabled. */
+		public func bool getEnabled()
+			return this.pEnabled
+		end
+		
+		/** \brief Set if force field is enabled. */
+		public func void setEnabled( bool enabled )
+			if enabled == this.pEnabled
+				return
+			end
+			
+			this.pEnabled = enabled
+			
+			if not this.pCustomForceFieldHandling
+				this.pForceField.setEnabled( enabled and this.getElement().getVisible() )
+			end
+			
+			if enabled
+				this.pListeners.forEach( block Listener each
+					each.forceFieldEnabled( this )
+				end )
+				
+			else
+				this.pListeners.forEach( block Listener each
+					each.forceFieldDisabled( this )
+				end )
+			end
+		end
+		
+		/** \brief Toggle force field enabled state. */
+		public func void toggle()
+			this.setEnabled( not this.pEnabled )
+		end
+		
+		
+		
+		/** \brief Force field parameters are handled by another behavior. */
+		public func bool getCustomForceFieldHandling()
+			return this.pCustomForceFieldHandling
+		end
+		
+		/** \brief Set if force field parameters are handled by another behavior. */
+		public func void setCustomForceFieldHandling( bool customForceFieldHandling )
+			this.pCustomForceFieldHandling = customForceFieldHandling
+		end
+		
+		/**
+		 * \brief Notify listeners force field parameters changed.
+		 * 
+		 * Call this method after changing force field parameters other than (de)activating forceField.
+		 */
+		public func void notifyParametersChanged()
+			this.pListeners.forEach( block Listener each
+				each.forceFieldParametersChanged( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief State changed (visible, touchable). */
+		public func void stateChanged()
+			if this.getElement().getVisible()
+				if not this.pCustomForceFieldHandling
+					this.pForceField.setEnabled( this.pEnabled )
+				end
+				
+			else
+				this.pForceField.setEnabled( false )
+			end
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addForceField( this.pForceField )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeForceField( this.pForceField )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setEnabled( env.readBool( reader ) )
+		end
+		
+		/** Writes the element to a file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			env.writeBool( writer, this.pEnabled )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeForceField pForceField
+	private var ECComposeAttachResource pAttach
+	private var ECBehaviorTriggered pTrigger
+	private var ECBehaviorForceField pSyncTrigger
+	private var TSTriggerTable pTriggerTable
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, null cast TSTriggerTable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, null cast TSTriggerTable, id )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable ) this( eclass, collider, triggerTable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id ) this( eclass, collider, triggerTable, \
+	id, id.empty() if "force field" else "forceField(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id, String subID ) \
+	this( eclass, collider, triggerTable, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
+		this.pCollider = collider
+		this.pTriggerTable = triggerTable
+		
+		this.pForceField = ECComposeForceField.new( eclass, prefix )
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		this.pTrigger = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		this.pSyncTrigger = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null to not attach. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Composeable force field for element class. */
+	public func ECComposeForceField getForceField()
+		return this.pForceField
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	/** \brief Trigger enable. */
+	public func ECBehaviorTriggered getTrigger()
+		return this.pTrigger
+	end
+	
+	/** \brief ECBehaviorForceField to synchronize triggers with or \em null to disable. */
+	public func ECBehaviorForceField getSyncTrigger()
+		return this.pSyncTrigger
+	end
+	
+	/** \brief ECBehaviorForceField to synchronize triggers with or \em null to disable. */
+	public func void setSyncTrigger( ECBehaviorForceField behavior )
+		this.pSyncTrigger = behavior
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorForceField getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorForceField
+		end ) cast ECBehaviorForceField
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorForceField with specific identifier.
+	 */
+	static public func ECBehaviorForceField getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorForceField each
+			return each castable ECBehaviorForceField and \
+				( each cast ECBehaviorForceField ).getID().equals( id )
+		end ) cast ECBehaviorForceField
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorForceField behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorForceField
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorForceField.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorForceField.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorForceField.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

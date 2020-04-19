@@ -1,0 +1,85 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Two state animated element
+ * 
+ * Two state animated element extends SimpleElementClass with support to play back animations
+ * for elements in two different states with transition between them. The used animator is
+ * required to have 4 controllers set up in a specific way to function with this element class.
+ * 
+ * - "deactivated": Controller used while the behavior is in deactivated state.
+ *                  This is typically an unclamped controller. If missing behavior does
+ *                  not think consuming no processing time.
+ * - "activated": Controller used while the behavior is in activated state.
+ *                This is typically an unclamped controller. If missing behavior does
+ *                not think consuming no processing time.
+ * - "activating": Controller used while behavior is transitioning from deactivated state
+ *                 to activated state. The transition ends when the controller reaches
+ *                 the upper limit. For this reason the controller has to be a clamped
+ *                 controller otherwise the transition never ends. If missing behavior
+ *                 transitions immediately to activated state.
+ * - "deactivating": Controller used while behavior is transitioning from activated state
+ *                   to deactivated state. The transition ends when the controller reaches
+ *                   the upper limit. For this reason the controller has to be a clamped
+ *                   controller otherwise the transition never ends. If missing behavior
+ *                   transitions immediately to deactivated state.
+ * 
+ * \par Activate Trigger
+ * 
+ * When changing to true the element is switched to the activated state. When changing to
+ * false the element is switched to the deactivated state. If the switch happens during
+ * transition time the transition is finished before switching.
+ */
+class TwoStateAnimatedElement extends SimpleElement
+	private var ECBehaviorTwoStateAnimated.Instance pAnimated
+	
+	
+	
+	/** \brief Create element. */
+	public func new( TwoStateAnimatedElementClass eclass ) super( eclass )
+		this.pAnimated = eclass.getAnimated().instance( this )
+	end
+	
+	
+	
+	/** \brief Two state animated behavior instance. */
+	public func ECBehaviorTwoStateAnimated.Instance getAnimated()
+		return this.pAnimated
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitTwoStateAnimatedElement( this )
+	end
+end

@@ -1,0 +1,12 @@
+The GNU Smalltalk Documentation is unfortunately very vague about how objects lifetime
+is handeled by certain functions. As a result you have to check the source code to
+figure out what each function actuall does. To avoid this the gathered information is
+stored here.
+
+GNU Smalltalk knows two concepts the incubator and the registry. The registry is the
+long term object keeper and has to be handled manually. The incubator is a short term
+object keeper and used by handle objects while function calls from C to Smalltalk are
+done. Most functions work on the incubator.
+
+With other words whenever an OOP comes around you can assume it is in the incubator.
+The registry is driven manually.

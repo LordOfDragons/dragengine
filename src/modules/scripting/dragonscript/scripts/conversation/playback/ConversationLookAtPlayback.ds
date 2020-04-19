@@ -1,0 +1,376 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Play back conversation look-ats.
+ */
+class ConversationLookAtPlayback
+	/** \brief Look-at. */
+	class LookAt
+		private var ConversationPlaybackLookAt pLookAt
+		private var ConversationStrip pStrip
+		
+		/** \brief Create look-at. */
+		public func new( ConversationPlaybackLookAt lookAt, ConversationStrip strip )
+			this.pLookAt = lookAt
+			this.pStrip = strip
+		end
+		
+		/** \brief Look-at. */
+		public func ConversationPlaybackLookAt getLookAt()
+			return this.pLookAt
+		end
+		
+		/** \brief Strip. */
+		public func ConversationStrip getStrip()
+			return this.pStrip
+		end
+		
+		/** \brief Read from file. */
+		static public func LookAt readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+			
+			var ConversationPlaybackLookAt lookat
+			if flags.getAt( 0 )
+				lookat = ConversationPlaybackLookAt.readFromFile( env, reader )
+			end
+			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
+			
+			return LookAt.new( lookat, strip )
+		end
+		
+		/** \brief Write to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 1 )
+			flags.setAt( 0, this.pLookAt != null )
+			flags.writeToFile( writer )
+			
+			if this.pLookAt != null
+				this.pLookAt.writeToFile( env, writer )
+			end
+			this.pStrip.writeToFile( writer )
+		end
+	end
+	
+	
+	
+	private var Array pLookAts
+	private var int pPosition
+	private var float pElapsed
+	private var bool pRunning
+	
+	private var ConversationPlaybackLookAt pLastLookAt
+	private var DVector pLastLookAtPosition
+	private var ConversationPlaybackLookAt pCurLookAt
+	private var DVector pCurLookAtPosition
+	
+	
+	
+	/** \brief Create look-at playback. */
+	public func new()
+		this.pLookAts = Array.new()
+		this.pPosition = 0
+		this.pElapsed = 0
+		this.pRunning = false
+	end
+	
+	
+	
+	/** \brief A strip is running. */
+	public func bool getRunning()
+		return this.pRunning
+	end
+	
+	/** \brief Elapsed time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	
+	
+	/** \brief Last look-at to blend from or \em null if not set. */
+	public func ConversationPlaybackLookAt getLastLookAt()
+		return this.pLastLookAt
+	end
+	
+	/** \brief Set last look-at to blend from or \em null if not set. */
+	public func void setLastLookAt( ConversationPlaybackLookAt lookAt )
+		this.pLastLookAt = lookAt
+	end
+	
+	/** \brief Last look-at position to blend from or \em null if not set. */
+	public func DVector getLastLookAtPosition()
+		return this.pLastLookAtPosition
+	end
+	
+	/** \brief Set last look-at position to blend from or \em null if not set. */
+	public func void setLastLookAtPosition( DVector position )
+		this.pLastLookAtPosition = position
+	end
+	
+	/** \brief Current look-at to blend with or \em null if not set. */
+	public func ConversationPlaybackLookAt getCurrentLookAt()
+		return this.pCurLookAt
+	end
+	
+	/** \brief Set current look-at to blend with or \em null if not set. */
+	public func void setCurrentLookAt( ConversationPlaybackLookAt lookAt )
+		this.pCurLookAt = lookAt
+	end
+	
+	/** \brief Current look-at position to blend with or \em null if not set. */
+	public func DVector getCurrentLookAtPosition()
+		return this.pCurLookAtPosition
+	end
+	
+	/** \brief Set current look-at position to blend with or \em null if not set. */
+	public func void setCurrentLookAtPosition( DVector position )
+		this.pCurLookAtPosition = position
+	end
+	
+	
+	
+	/** \brief Look-ats to play back. */
+	public func Array getLookAts()
+		return this.pLookAts
+	end
+	
+	/** \brief Remove all look-ats. */
+	public func void removeAllLookAts()
+		this.pLookAts.removeAll()
+		this.pPosition = 0
+		this.pElapsed = 0
+		this.pRunning = false
+		
+		this.pLastLookAt = this.pCurLookAt
+		this.pLastLookAtPosition = this.pCurLookAtPosition
+	end
+	
+	/** \brief Add strip. */
+	public func void addLookAt( ConversationPlaybackLookAt lookAt, ConversationStrip strip )
+		this.pLookAts.add( LookAt.new( lookAt, strip ) )
+		this.pRunning = true
+	end
+	
+	/** \brief Add fade out look-at. */
+	public func void addFadeOutLookAt( float transitionTime )
+		this.addLookAt( null, ConversationStrip.new( StringID.new(), 0, transitionTime ) )
+	end
+	
+	
+	
+	/** \brief Clear current look-at state allowing the actor to take over control. */
+	public func void clearLookAtState()
+		this.removeAllLookAts()
+		
+		this.pLastLookAt = null
+		this.pLastLookAtPosition = null
+		
+		this.pCurLookAt = null
+		this.pCurLookAtPosition = null
+	end
+	
+	
+	
+	/** \brief Calculate the inverse matrix. */
+	public func DMatrix getInverseMatrix( ConversationActor actor )
+		return actor.getInverseMatrix()
+	end
+	
+	/**
+	 * \brief Update playback.
+	 * 
+	 * This updates the playback and updates animator instances if required. This does not
+	 * apply the animation yet to allow proper use of state capturing.
+	 */
+	public func void update( ConversationActor actor, float elapsed )
+		var int lookAtCount = this.pLookAts.getCount()
+		var float blendFactor = 0
+		
+		if this.pRunning and lookAtCount > 0
+			this.pElapsed += elapsed
+			
+			while this.pPosition < lookAtCount
+				var LookAt lookat = this.pLookAts.getAt( this.pPosition ) cast LookAt
+				var ConversationStrip strip = lookat.getStrip()
+				var float duration = strip.getDuration()
+				var float pause = strip.getPause()
+				var float length = pause + duration
+				
+				this.pCurLookAt = lookat.getLookAt()
+				
+				if this.pElapsed < length
+					blendFactor = DEMath.smoothStep( this.pElapsed, pause, length )
+					break
+					
+				else
+					this.pElapsed -= length
+					this.pPosition++
+					
+					this.pLastLookAt = this.pCurLookAt
+					this.pLastLookAtPosition = this.pCurLookAtPosition
+				end
+			end
+			
+			if this.pPosition >= lookAtCount
+				this.pRunning = false
+			end
+		end
+		
+		if this.pCurLookAt == null and this.pLastLookAt == null
+			this.pLastLookAtPosition = null
+			this.pCurLookAtPosition = null
+			
+		else
+			var DMatrix matrix = this.getInverseMatrix( actor )
+			
+			if this.pLastLookAt == null
+				this.pLastLookAtPosition = null
+				
+			else
+				this.pLastLookAtPosition = matrix * this.pLastLookAt.getLookAtPosition( actor.getPlayback() )
+			end
+			
+			if this.pCurLookAt == null
+				this.pCurLookAtPosition = null
+				
+			else
+				this.pCurLookAtPosition = matrix * this.pCurLookAt.getLookAtPosition( actor.getPlayback() )
+			end
+		end
+		
+		this.updateActorLookAt( actor, blendFactor )
+	end
+	
+	/**
+	 * \brief Apply animation.
+	 * 
+	 * Called after update() to apply animation. Can do nothing if no change has been done.
+	 */
+	public func void applyAnimation()
+	end
+	
+	/**
+	 * \brief Update actor look-at.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void updateActorLookAt( ConversationActor actor, float blendFactor )
+	end
+	
+	
+	
+	/**
+	 * \brief Restore linked objects after loading.
+	 * 
+	 * While loading playback object is not available yet. Linked objects can not be
+	 * restored during readFromFile(). Once all loading is done and the playback is
+	 * present objects this call is used to restore the object links.
+	 */
+	public func void playbackRestoreObjectLinks( ConversationPlayback playback )
+		if this.pLastLookAt != null
+			this.pLastLookAt.playbackRestoreObjectLinks( playback )
+		end
+		if this.pCurLookAt != null
+			this.pCurLookAt.playbackRestoreObjectLinks( playback )
+		end
+	end
+	
+	/** \brief Read element from a file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
+		
+		this.pRunning = flags.getAt( 0 )
+		
+		var int i, count = reader.readUShort()
+		for i = 0 to count
+			this.pLookAts.add( LookAt.readFromFile( env, reader ) )
+		end
+		
+		this.pPosition = reader.readUShort()
+		this.pElapsed = reader.readFloat()
+		
+		if flags.getAt( 1 )
+			this.pLastLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+		end
+		if flags.getAt( 2 )
+			this.pLastLookAtPosition = DVector.readFromFile( reader )
+		end
+		if flags.getAt( 3 )
+			this.pCurLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+		end
+		if flags.getAt( 4 )
+			this.pCurLookAtPosition = DVector.readFromFile( reader )
+		end
+		
+		/*
+		BaseGameApp.getApp().getConsole().addMessage( "CLAP: strips=" + this.pLookAts.getCount() + " pos=" + this.pPosition \
+			+ " elapsed=" + this.pElapsed + " lla=" + this.pLastLookAt + " llap=" \
+			+ this.pLastLookAtPosition + " cla=" + this.pCurLookAt + " clap=" + this.pCurLookAtPosition )
+		this.pLookAts.forEach( block LookAt each
+			BaseGameApp.getApp().getConsole().addMessage( "- lookat=" + each.getLookAt() + " strip=(" + each.getStrip().getID() \
+				 + ", " + each.getStrip().getPause() + ", " + each.getStrip().getDuration() + ")" )
+		end )
+		//this.pLookAts.removeAll()
+		*/
+	end
+	
+	/** \brief Writes to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		var PersistencyFlags flags = PersistencyFlags.new( 5 )
+		flags.setAt( 0, this.pRunning )
+		flags.setAt( 1, this.pLastLookAt != null )
+		flags.setAt( 2, this.pLastLookAtPosition != null )
+		flags.setAt( 3, this.pCurLookAt != null )
+		flags.setAt( 4, this.pCurLookAtPosition != null )
+		flags.writeToFile( writer )
+		
+		writer.writeUShort( this.pLookAts.getCount() )
+		this.pLookAts.forEach( block LookAt each
+			each.writeToFile( env, writer )
+		end )
+		
+		writer.writeUShort( this.pPosition )
+		writer.writeFloat( this.pElapsed )
+		
+		if this.pLastLookAt != null
+			this.pLastLookAt.writeToFile( env, writer )
+		end
+		if this.pLastLookAtPosition != null
+			this.pLastLookAtPosition.writeToFile( writer )
+		end
+		if this.pCurLookAt != null
+			this.pCurLookAt.writeToFile( env, writer )
+		end
+		if this.pCurLookAtPosition != null
+			this.pCurLookAtPosition.writeToFile( writer )
+		end
+	end
+end

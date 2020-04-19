@@ -1,0 +1,172 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+namespace Dragengine.CameraDirectors
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Place camera relative an element with orbit support.
+ * 
+ * Camera is placed using a rotation point, oribtal rotation and a matrix local to this
+ * rotation point.
+ */
+class ElementCameraDirector extends CameraDirector
+	/** \brief Element. */
+	private var Element pElement
+	
+	/** \brief Rotation point. */
+	private var DVector pPivot
+	
+	/** \brief Local matrix */
+	private var DMatrix pLocalMatrix
+	
+	/** \brief Vertical rotation. */
+	private var float pAzimuth
+	
+	/** \brief Horizontal rotation. */
+	private var float pElevation
+	
+	/** \brief Distance. */
+	private var float pDistance
+	
+	
+	
+	/** \brief Create camera director. */
+	public func new( Element element )
+		this.pElement = element
+		this.pPivot = DVector.new()
+		this.pLocalMatrix = DMatrix.new()
+		this.pAzimuth = 0.0
+		this.pElevation = 0.0
+		this.pDistance = 0.0
+	end
+	
+	/** \brief Create camera director. */
+	public func new( Element element, Camera camera, Microphone microphone ) this( element )
+		this.setCamera( camera )
+		this.setMicrophone( microphone )
+	end
+	
+	
+	
+	/** \brief Element. */
+	public func Element getElement()
+		return this.pElement
+	end
+	
+	/** \brief Set element. */
+	public func void setElement( Element element )
+		this.pElement = element
+	end
+	
+	/** \brief Rotation point. */
+	public func DVector getPivot()
+		return this.pPivot
+	end
+	
+	/** \brief Set rotation point. */
+	public func void setPivot( DVector pivot )
+		if pivot == null
+			throw EInvalidParam.new()
+		end
+		this.pPivot = pivot
+	end
+	
+	/** \brief Local matrix. */
+	public func DMatrix getLocalMatrix()
+		return this.pLocalMatrix
+	end
+	
+	/** \brief Set local matrix. */
+	public func void setLocalMatrix( DMatrix localMatrix )
+		if localMatrix == null
+			throw EInvalidParam.new()
+		end
+		this.pLocalMatrix = localMatrix
+	end
+	
+	/** \brief Set local matrix from position and rotation. */
+	public func void setLocalMatrix( Vector position, Vector rotation )
+		this.pLocalMatrix = Matrix.newRT( rotation, position ).toDMatrix()
+	end
+	
+	/** \brief Vertical rotation. */
+	public func float getAzimuth()
+		return this.pAzimuth
+	end
+	
+	/** \brief Set vertical rotation. */
+	public func void setAzimuth( float azimuth )
+		this.pAzimuth = azimuth
+	end
+	
+	/** \brief Horizontal rotation. */
+	public func float getElevation()
+		return this.pElevation
+	end
+	
+	/** \brief Set horizontal rotation. */
+	public func void setElevation( float elevation )
+		this.pElevation = elevation
+	end
+	
+	/** \brief Distance. */
+	public func float getDistance()
+		return this.pDistance
+	end
+	
+	/** \brief Set distance. */
+	public func void setDistance( float distance )
+		this.pDistance = DEMath.max( distance, 0.0 )
+	end
+	
+	
+	
+	/** \brief Update camera. */
+	public func void updateCamera( float elapsed )
+		var DMatrix matrix = this.getCameraMatrix()
+		var Camera camera = this.getCamera()
+		camera.setPosition( matrix.getPosition() )
+		camera.setOrientation( matrix.toQuaternion() )
+	end
+	
+	/** \brief Camera matrix. */
+	public func DMatrix getCameraMatrix()
+		var DMatrix matrix = this.pLocalMatrix \
+			* DMatrix.newTranslation( 0.0, 0.0, -this.pDistance ) \
+			* DMatrix.newRotation( -this.pElevation, this.pAzimuth, 0.0 )
+		
+		if this.pElement == null
+			matrix = matrix * DMatrix.newTranslation( this.pPivot )
+			
+		else
+			matrix = matrix * DMatrix.newTranslation( this.pElement.getPosition() + this.pPivot )
+		end
+		
+		return matrix
+	end
+end
+

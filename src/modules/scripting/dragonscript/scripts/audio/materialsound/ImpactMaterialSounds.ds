@@ -1,0 +1,70 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.MaterialSounds
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of impact material sounds.
+ */
+class ImpactMaterialSounds
+	private var Dictionary pMaterials
+	
+	
+	
+	/** \brief Create list. */
+	public func new()
+		this.pMaterials = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Count of materials. */
+	public func int getCount()
+		return this.pMaterials.getCount()
+	end
+	
+	/** \brief Material with identifier or \em null if absent. */
+	public func ImpactMaterialSound getWithID( String id )
+		return this.pMaterials.getAt( id, null ) cast ImpactMaterialSound
+	end
+	
+	/** \brief Material with identifier is present. */
+	public func bool hasWithID( String id )
+		return this.pMaterials.has( id )
+	end
+	
+	/** \brief Add material. */
+	public func void add( ImpactMaterialSound material )
+		if material == null or this.pMaterials.has( material.getID() )
+			throw EInvalidParam.new()
+		end
+		this.pMaterials.setAt( material.getID(), material )
+	end
+	
+	/** \brief Remove all materials. */
+	public func void removeAll()
+		this.pMaterials.removeAll()
+	end
+end

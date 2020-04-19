@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE skin SYSTEM 'DragengineSkin.dtd'>
+<skin>
+	<texture name='material'>
+		<image property='color'>sun_color.png</image>
+		<image property='transparency'>sun_transparency.png</image>
+	</texture>
+</skin>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<value property='color'>0</value>
+		<value property='reflectivity'>1</value>
+		<value property='roughness'>0</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+</skin>

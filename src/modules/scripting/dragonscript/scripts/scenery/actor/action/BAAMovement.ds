@@ -1,0 +1,117 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Interface for movement support with base actor actions.
+ * 
+ * Interface is supported by child classes of CommandsBAAMovement. BAAFirstPerson and
+ * BAAVehicle provide implementations for this interface for actions based on
+ * first person or vehicle behavior.
+ */
+interface BAAMovement
+	/** \brief Start moving forward. */
+	func void moveForwardStart()
+	
+	/** \brief Stop moving forward. */
+	func void moveForwardStop()
+	
+	/** \brief Start moving backward. */
+	func void moveBackwardStart()
+	
+	/** \brief Stop moving backward. */
+	func void moveBackwardStop()
+	
+	/** \brief Start moving left. */
+	func void moveLeftStart()
+	
+	/** \brief Stop moving left. */
+	func void moveLeftStop()
+	
+	/** \brief Start moving right. */
+	func void moveRightStart()
+	
+	/** \brief Stop moving right. */
+	func void moveRightStop()
+	
+	
+	
+	/** \brief Start looking left. */
+	func void lookLeftStart()
+	
+	/** \brief Stop looking left. */
+	func void lookLeftStop()
+	
+	/** \brief Start looking right. */
+	func void lookRightStart()
+	
+	/** \brief Stop looking right. */
+	func void lookRightStop()
+	
+	/** \brief Start looking up. */
+	func void lookUpStart()
+	
+	/** \brief Stop looking up. */
+	func void lookUpStop()
+	
+	/** \brief Start looking down. */
+	func void lookDownStart()
+	
+	/** \brief Stop looking down. */
+	func void lookDownStop()
+	
+	
+	
+	/** \brief Analog moving forward/backward. */
+	func void analogMoveFB( float amount, bool sticky )
+	
+	/** \brief Analog moving left/right. */
+	func void analogMoveLR( float amount, bool sticky )
+	
+	/** \brief Analog looking left/right. */
+	func void analogLookLR( float amount, bool sticky )
+	
+	/** \brief Analog looking up/down. */
+	func void analogLookUD( float amount, bool sticky )
+	
+	
+	
+	/** \brief Start crouching. */
+	func void crouchStart()
+	
+	/** \brief Stop crouching. */
+	func void crouchStop()
+	
+	/** \brief Toggle crouching. */
+	func void crouchToggle()
+	
+	/** \brief Start running. */
+	func void runStart()
+	
+	/** \brief Stop running. */
+	func void runStop()
+	
+	/** \brief Toggle running. */
+	func void runToggle()
+end

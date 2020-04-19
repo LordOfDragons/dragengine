@@ -1,0 +1,392 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Window running a GameWorld.
+ * 
+ * Simple way to run a game world. All you need to do is subclassing WindowGameWorld.Loader
+ * load and assign a game world to the widget. If a game world is present it is updated every
+ * frame update. Optionally the updating of the game world and camera director can be
+ * individually disabled. This can be used for example to pause the game world processing or
+ * to show a main menu without consuming processing time.
+ * 
+ * The panel contains a WorldRenderer widget showing the content of a GameWorld object if
+ * present. The game world is loaded using a subclass of GameWorldLoader. For convenience the
+ * class WindowGameWorld.Loader provides support of updating the WindowGameWorld once finished.
+ * The most simple solution is to subclass WindowGameWorld.Loader instead of GameWorldLoader.
+ * 
+ * A CameraDirector can be set to operate the camera and microphone resource. This is the
+ * preferred way since it allows to easily change the directory taking control of these
+ * resources without having to worry about all this. Typically you use ElementCameraDirector
+ * to handle camera and microphone relative to a player actor and ConversationCameraDirector
+ * to play back conversations.
+ * 
+ * Window can be styled using designer named "WindowGameWorld". The default style makes the
+ * window borderless with no mouse pointer suitable for full screen use.
+ */
+class WindowGameWorld extends Window
+	/**
+	 * \brief Game loader for use with WindowGameWorld.
+	 * 
+	 * Create subclass to implement your game loading while this class handles the window.
+	 * If the loading succeeds the loaded game world is set as world in the window.
+	 * If loading fails null is set as game world in the window.
+	 */
+	public class Loader extends GameWorldLoader
+		private var WindowGameWorld pWindow
+		
+		
+		
+		/** \brief Create game world loader. */
+		public func new( WindowGameWorld window )
+			if window == null
+				throw EInvalidParam.new()
+			end
+			this.pWindow = window
+		end
+		
+		/** \brief Create game world loader. */
+		public func new( WindowGameWorld window, Console console, \
+		Loaders loaders, ElementClassList elementClassList ) \
+		super( console, loaders, elementClassList )
+			if window == null
+				throw EInvalidParam.new()
+			end
+			this.pWindow = window
+		end
+		
+		/** \brief Dispose of game world loader to break reference loops. */
+		public func void dispose()
+			super.dispose()
+			this.pWindow = null
+		end
+		
+		
+		
+		/** \brief Window to update. */
+		public func WindowGameWorld getWindow()
+			return this.pWindow
+		end
+		
+		
+		
+		/**
+		 * \brief Loading world finished.
+		 * 
+		 * Game loader has been cleaned up before calling this method. For this reason the
+		 * result of loading is provided as parameters. It is safe to dispose() of the
+		 * game loader upon entering this method.
+		 */
+		public func void onLoadWorldFinished()
+			this.pWindow.setGameWorld( this.getStubWorld().getGameWorld() )
+		end
+		
+		/**
+		 * \brief Loading world failed.
+		 * 
+		 * Game loader has been cleaned up before calling this method. It is safe to dispose()
+		 * of the game loader upon entering this method.
+		 */
+		public func void onLoadWorldFailed()
+			this.pWindow.setGameWorld( null )
+		end
+	end
+	
+	
+	
+	private var Console pConsole
+	private var GameWorld pGameWorld
+	private var Camera pCamera
+	private var Microphone pMicrophone
+	private var CameraDirector pCameraDirector
+	private var WorldRenderer pWorldRenderer
+	private var bool pUpdateGameWorld
+	private var bool pUpdateCameraDirector
+	private var bool pActivateMicrophone
+	
+	
+	
+	/** \brief Create screen sized window using BaseGameApp console. */
+	public func new() this( BaseGameApp.getApp().getConsole() )
+	end
+	
+	/** \brief Create screen sized window. */
+	public func new( Console console ) super( 0, 0, \
+	GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() )
+		if console == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pUpdateGameWorld = true
+		this.pUpdateCameraDirector = true
+		this.pActivateMicrophone = true
+		
+		this.pConsole = console
+		
+		this.pCamera = Camera.new()
+		this.pCamera.setFov( 80 )
+		this.pCamera.setLowestIntensity( 10 )
+		this.pCamera.setHighestIntensity( 20 )
+		
+		this.pMicrophone = Microphone.new()
+		this.pMicrophone.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+		
+		this.pWorldRenderer = WorldRenderer.new()
+		
+		this.setDesignerSelector( "WindowGameWorld" )
+		this.createContent()
+		
+		this.setCanReorder( false )  // prevents window move above overlaying windows
+		this.setWindowState( Window.WindowState.maximized )
+		
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Dispose of Widget. */
+	public func void dispose()
+		this.setGameWorld( null )
+		
+		super.dispose()
+		
+		this.setCameraDirector( null )
+		
+		this.pWorldRenderer = null
+		this.pMicrophone = null
+		this.pCamera = null
+		this.pConsole = null
+	end
+	
+	
+	
+	/** \brief Console object. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Game world. */
+	public func GameWorld getGameWorld()
+		return this.pGameWorld
+	end
+	
+	/**
+	 * \brief Set game world or \em null to remove.
+	 * 
+	 * The old game world is disposed of if present. If disposing causes exceptions the
+	 * error is logged and the game world discarded.
+	 * 
+	 * This is the same as calling setGameWorld(gameWorld, true).
+	 * 
+	 * Calls onGameWorldChanged() hoock method if the game world changed.
+	 */
+	public func void setGameWorld( GameWorld gameWorld )
+		this.setGameWorld( gameWorld, true )
+	end
+	
+	/**
+	 * \brief Set game world or \em null to remove.
+	 * 
+	 * If \em dispose is true the old game world is disposed of if present. If disposing
+	 * causes exceptions the error is logged and the game world discarded.
+	 * 
+	 * If \em dispose is false the caller is responsible to dispose of the game world at
+	 * the appropriate time. This can be used for games using multiple game worlds they
+	 * switch between disposing them at game exit time.
+	 * 
+	 * Calls onGameWorldChanged() hoock method if the game world changed.
+	 */
+	public func void setGameWorld( GameWorld gameWorld, bool dispose )
+		if gameWorld == this.pGameWorld
+			return
+		end
+		
+		this.pWorldRenderer.setCamera( null )
+		
+		if this.pGameWorld != null
+			if AudioSystem.getActiveMicrophone() == this.pMicrophone
+				AudioSystem.setActiveMicrophone( null )
+			end
+			this.pGameWorld.getWorld().removeMicrophone( this.pMicrophone )
+			
+			this.pGameWorld.getWorld().removeCamera( this.pCamera )
+			
+			if dispose
+				try
+					this.pGameWorld.dispose()
+					
+				catch Exception e
+					this.pConsole.addError( "Exception while disposing GameWorld", e )
+				end
+			end
+		end
+		
+		this.pGameWorld = gameWorld
+		
+		if gameWorld != null
+			gameWorld.getWorld().addCamera( this.pCamera )
+			this.pWorldRenderer.setCamera( this.pCamera )
+			
+			gameWorld.getWorld().addMicrophone( this.pMicrophone )
+		end
+		
+		if this.pActivateMicrophone
+			if gameWorld != null
+				AudioSystem.setActiveMicrophone( this.pMicrophone )
+				
+			else
+				AudioSystem.setActiveMicrophone( null )
+			end
+		end
+		
+		this.onGameWorldChanged()
+	end
+	
+	/** \brief World renderer. */
+	public func WorldRenderer getWorldRenderer()
+		return this.pWorldRenderer
+	end
+	
+	/** \brief Game camera. */
+	public func Camera getCamera()
+		return this.pCamera
+	end
+	
+	/** \brief Microphone to hear sound. */
+	public func Microphone getMicrophone()
+		return this.pMicrophone
+	end
+	
+	/** \brief Camera directory or \em null. */
+	public func CameraDirector getCameraDirector()
+		return this.pCameraDirector
+	end
+	
+	/**
+	 * \brief Set camera directory or \em null.
+	 * 
+	 * Deactivates the old camera director if present and unsets camera and microphone.
+	 * Activates the new camera if present and sets camera and microphone.
+	 * 
+	 * Updates the camera director once.
+	 */
+	public func void setCameraDirector( CameraDirector director )
+		if director == this.pCameraDirector
+			return
+		end
+		
+		if this.pCameraDirector != null
+			this.pCameraDirector.deactivate()
+			this.pCameraDirector.setCamera( null )
+			this.pCameraDirector.setMicrophone( null )
+		end
+		
+		this.pCameraDirector = director
+		
+		if director != null
+			director.setCamera( this.pCamera )
+			director.setMicrophone( this.pMicrophone )
+			director.activate()
+			director.update( 0.0 )
+		end
+	end
+	
+	/** \brief Update game world on frame updates. */
+	public func bool getUpdateGameWorld()
+		return this.pUpdateGameWorld
+	end
+	
+	/** \brief Set update game world on frame updates. */
+	public func void setUpdateGameWorld( bool update )
+		this.pUpdateGameWorld = update
+	end
+	
+	/** \brief Update camera director on frame updates. */
+	public func bool getUpdateCameraDirector()
+		return this.pUpdateCameraDirector
+	end
+	
+	/** \brief Set update camera director on frame updates. */
+	public func void setUpdateCameraDirector( bool update )
+		this.pUpdateCameraDirector = update
+	end
+	
+	/** \brief Activate microphone if game world is set. */
+	public func bool getActivateMicrophone()
+		return this.pActivateMicrophone
+	end
+	
+	/** \brief Set if microphone is activated if game world is set. */
+	public func void setActivateMicrophone( bool activateMicrophone )
+		this.pActivateMicrophone = activateMicrophone
+	end
+	
+	
+	
+	/**
+	 * \brief Update game world every frame update if present.
+	 * 
+	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().
+	 */
+	public func void onFrameUpdate( float elapsed )
+		if this.pGameWorld == null
+			return
+		end
+		
+		if this.pUpdateGameWorld
+			this.pGameWorld.update( elapsed )
+		end
+		
+		if this.pCameraDirector != null and this.pUpdateCameraDirector
+			this.pCameraDirector.update( elapsed )
+		end
+	end
+	
+	/**
+	 * \brief Game world changed.
+	 */
+	public func void onGameWorldChanged()
+	end
+	
+	
+	
+	/**
+	 * \brief Create window content.
+	 * 
+	 * Called during constructor. Sets StackLayout as window layout and adds
+	 * getWorldRenderer() as only widget.
+	 */
+	protected func void createContent()
+		this.setLayout( StackLayout.new() )
+		this.addWidget( this.pWorldRenderer )
+	end
+end

@@ -1,0 +1,279 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Decorations
+
+
+/**
+ * \brief Model window overlays another window blocking this window until closed.
+ * 
+ * Modal windows are mainly used for dialog type windows asking input from the
+ * user or showing short information to acknowledge. Modal windows block another
+ * window as long as they are visible. The blocked window is disabled and a color
+ * matrix applied to tone down the entire window giving a visual cue to the user
+ * the window is blocked.
+ * 
+ * This is the base class of modal windows implementing the required behavior.
+ * For convenience WindowDialog extends WindowModal with typical dialog building
+ * and input returning support. Extend WindowModal for all other situations.
+ * 
+ * The modal window is shown without blocking command flow. To react to the modal
+ * window closing add an WindowListener catching WindowEvent.idWindowClosing
+ * event or overwrite onClosing() if subclassing.
+ */
+class WindowModal extends Window
+	/** \brief Placement. */
+	enum Placement
+		/** \brief Show window at current position without centering. */
+		none
+		
+		/** \brief Show window centered at current window position. */
+		position
+		
+		/** \brief Show window centered over blocked window. */
+		window
+		
+		/** \brief Show window centered over desktop. */
+		desktop
+		
+		/** \brief Show window centered over mouse cursor. */
+		mouseCursor
+	end
+	
+	
+	
+	/** \brief Window this window is blocking. */
+	private var Window pBlockWindow
+	
+	
+	
+	/**
+	 * \brief Create modal window.
+	 * 
+	 * Window is initially hidden. Call one of the show() methods to make it visible.
+	 */
+	public func new()
+		this.setVisible( false )
+		this.setCanMaximize( false )
+		this.setCanMinimize( false )
+		this.setLayout( FlowLayout.new( LayoutAxis.y ) )
+	end
+	
+	/** \brief Create window with the given geometry. */
+	public func new( int x, int y, int width, int height ) super( x, y, width, height )
+		this.setCanMaximize( false )
+		this.setCanMinimize( false )
+		this.setLayout( FlowLayout.new( LayoutAxis.y ) )
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		this.pBlockWindow = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Window this window is blocking or \em null if not shown. */
+	public func Window getBlockWindow()
+		return this.pBlockWindow
+	end
+	
+	/**
+	 * \brief Calculate window position.
+	 * \param blockWindow Refertence window for position calculation.
+	 * \param placement Placement of the window.
+	 */
+	public func Point calcWindowPosition( Window blockWindow, Placement placement )
+		select placement
+		case Placement.window
+			return blockWindow.getPosition() + ( blockWindow.getSize() - this.getSize() ) / 2
+			
+		case Placement.desktop
+			return ( blockWindow.getDesktop().getSize() - this.getSize() ) / 2
+			
+		case Placement.mouseCursor
+			return blockWindow.getDesktop().getMouseLocation() - this.getSize() / 2
+			
+		case Placement.position
+			return this.getPosition() - this.getSize() / 2
+			
+		case Placement.none
+			return this.getPosition()
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Show window fit to content and block window.
+	 * \details Window is centered over blocked window.
+	 * \param blockWindow Window to block while modal window is shown.
+	 * \param placement Placement of the window.
+	 */
+	public func void show( Window blockWindow, Placement placement )
+		this.show( blockWindow, true, placement )
+	end
+	
+	/**
+	 * \brief Show window and block window.
+	 * \details Window is centered over blocked window.
+	 * \param blockWindow Window to block while modal window is shown.
+	 * \param fitSize Fit window to content size
+	 * \param placement Placement of the window.
+	 */
+	public func void show( Window blockWindow, bool fitSize, Placement placement )
+		if blockWindow == null
+			throw EInvalidParam.new()
+		end
+		
+		var Desktop desktop = blockWindow.getDesktop()
+		if desktop == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pBlockWindow = blockWindow
+		blockWindow.setBlockingWindow( this )
+		
+		desktop.addWindow( this ) // has to come first otherwise miminium size can be wrong
+		
+		if fitSize
+			this.fitToContent()
+		end
+		
+		this.setPosition( this.calcWindowPosition( blockWindow, placement ) )
+		
+		this.setVisible( true )
+		this.moveToTop()
+	end
+	
+	/**
+	 * \brief Show window at position and block window.
+	 * \details Window is centered over blocked window.
+	 * \param blockWindow Window to block while modal window is shown.
+	 * \param position Position to show window at.
+	 */
+	public func void showAt( Window blockWindow, Point position )
+		if blockWindow == null
+			throw EInvalidParam.new()
+		end
+		
+		var Desktop desktop = blockWindow.getDesktop()
+		if desktop == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pBlockWindow = blockWindow
+		blockWindow.setBlockingWindow( this )
+		
+		desktop.addWindow( this )
+		this.setPosition( position )
+		this.setVisible( true )
+		this.moveToTop()
+	end
+	
+	
+	
+	/**
+	 * \brief Close window.
+	 * \details Unblocks window.
+	 */
+	public func void close()
+		this.pBlockWindow.setBlockingWindow( null )
+		this.pBlockWindow = null
+		
+		super.close()
+	end
+	
+	
+	
+	/**
+	 * \brief Move window to the top.
+	 * \details Ensure blocked window is moved right underneath.
+	 */
+	public func void moveToTop()
+		if this.pBlockWindow != null
+			this.pBlockWindow.moveToTop()
+			
+		else
+			super.moveToTop()
+		end
+	end
+	
+	/**
+	 * \brief Move window to the bottom.
+	 * \details Ensure blocked window is moved right underneath.
+	 */
+	public func void moveToBottom()
+		if this.pBlockWindow != null
+			this.pBlockWindow.moveToBottom()
+			
+		else
+			super.moveToBottom()
+		end
+	end
+	
+	/**
+	 * \brief Move window right above the given window.
+	 * \details Ensure blocked window is moved right underneath.
+	 */
+	public func void moveAbove( Window window )
+		if this.pBlockWindow != null
+			this.pBlockWindow.moveAbove( window )
+			
+		else
+			super.moveAbove( window )
+		end
+	end
+	
+	/**
+	 * \brief Move window right below the given window.
+	 * \details Ensure blocked window is moved right underneath.
+	 */
+	public func void moveBelow( Window window )
+		if this.pBlockWindow != null
+			this.pBlockWindow.moveBelow( window )
+			
+		else
+			super.moveBelow( window )
+		end
+	end
+	
+	/**
+	 * \brief Move above block window if present.
+	 * 
+	 * If window is blocked by another window calls moveAboveBlockWindow() also on this window too.
+	 */
+	public func void moveAboveBlockWindow()
+		if this.pBlockWindow != null
+			super.moveAbove( this.pBlockWindow )
+		end
+	end
+end

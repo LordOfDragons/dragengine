@@ -1,0 +1,479 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding hearing sounds support.
+ * 
+ * Uses a SoundLevelMeter resources to hear what sounds are playing in the audible range
+ * of the element.
+ * 
+ * SoundLevelMeter resources take sound properties of the environment into account like
+ * occlusion and how sound propagates through the world geometry. This allows game entities
+ * to hear the world similar to how a player hears the world what goes for sound volumes.
+ * 
+ * The SoundLevelMeter resource can be queried for the speakers currently in audible range
+ * and the volume they exhibit. Advanced effects audible to players like frequency band
+ * specific gains or special effects are disregarded. Furthermore speakers entering and
+ * leaving trigger a notification allowing elements to track elements of interest.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element the
+ * SoundLevelMeter is attached to the collider.
+ * 
+ * The behavior retrieves the owner of Speakers inside the audible range. If these owners
+ * are elements they are stored in a list of elements heared by the owner element. This
+ * list is updated when elements enter or leave the audible range. The volume of an element
+ * can be queried if required but is not stored.
+ * 
+ * The owner behavior element as well as other ECBehavior subclasses can add a listener
+ * to be notified if elements enter and exit the audible range.
+ * 
+ * This element behavior can be present only once in a BehaviorElement. Trying to add more
+ * than one instance results in an exception thrown.
+ * 
+ * Element class properties have the prefix "hearSound.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorHearSounds extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Element become audible. */
+		func void elementAudible( Instance instance, Element element )
+		
+		/** \brief Element became inaudible. */
+		func void elementInaudible( Instance instance, Element element )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Element become audible. */
+		public func void elementAudible( Instance instance, Element element )
+		end
+		
+		/** \brief Element became inaudible. */
+		public func void elementInaudible( Instance instance, Element element )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements SoundLevelMeterListener
+		private var ECBehaviorHearSounds pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var SoundLevelMeter pSoundLevelMeter
+		private var float pAudibleDistance
+		private var float pVolumeThreshold
+		private var Array pAudibleElements
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorHearSounds ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pAudibleDistance = ecbehavior.getAudibleDistance().getValue()
+			this.pVolumeThreshold = ecbehavior.getVolumeThreshold().getValue()
+			this.pAudibleElements = Array.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			if this.pSoundLevelMeter != null
+				this.pSoundLevelMeter.setListener( null )
+				this.pSoundLevelMeter = null
+			end
+			this.pAudibleElements = null
+			this.pCollider = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			this.pSoundLevelMeter = this.createSoundLevelMeter( stub )
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachSoundLevelMeter( stub, this.pCollider )
+			end
+			
+			this.pSoundLevelMeter.setListener( this )
+		end
+		
+		/**
+		 * \brief Create sound level meter.
+		 */
+		protected func SoundLevelMeter createSoundLevelMeter( StubElement stub )
+			var SoundLevelMeter soundLevelMeter = SoundLevelMeter.new()
+			
+			soundLevelMeter.setPosition( this.getElement().getPosition() )
+			soundLevelMeter.setOrientation( this.getElement().getOrientation() )
+			
+			soundLevelMeter.setAudibleDistance( stub.getPropertyFloatFor( \
+				this.pECBehavior.getAudibleDistance().getName(), this.pAudibleDistance ) )
+			
+			soundLevelMeter.setLayerMask( this.pECBehavior.getLayerMask() )
+			
+			return soundLevelMeter
+		end
+		
+		/**
+		 * \brief Attach sound level meter to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachSoundLevelMeter( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pSoundLevelMeter, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorHearSounds getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior or null if not attached. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Sound level meter. */
+		public func SoundLevelMeter getSoundLevelMeter()
+			return this.pSoundLevelMeter
+		end
+		
+		/** \brief Audible distance in meters. */
+		public func float getAudibleDistance()
+			return this.pAudibleDistance
+		end
+		
+		/** \brief Set audible range in meters. */
+		protected func void setAudibleDistance( float range )
+			this.pAudibleDistance = DEMath.max( range, 1.0 )
+			this.pSoundLevelMeter.setAudibleDistance( this.pAudibleDistance )
+		end
+		
+		/** \brief Volume threshold required for elements to be considered audible. */
+		public func float getVolumeThreshold()
+			return this.pVolumeThreshold
+		end
+		
+		/** \brief Set volume threshold required for elements to be considered audible. */
+		protected func void setVolumeThreshold( float volume )
+			this.pVolumeThreshold = DEMath.max( volume, 0.0 )
+			// this.pSoundLevelMeter.setVolumeThreshold( this.pVolumeThreshold )
+		end
+		
+		
+		
+		/** \brief Behavior element is listening. */
+		public func bool getListening()
+			return this.pSoundLevelMeter.getEnabled()
+		end
+		
+		/** \brief Set if behavior element is listening. */
+		public func void setListening( bool listening )
+			this.pSoundLevelMeter.setEnabled( listening )
+		end
+		
+		
+		
+		/** \brief Number of audible elements. */
+		public func int getAudibleElementCount()
+			return this.pAudibleElements.getCount()
+		end
+		
+		/** \brief Audible element at index. */
+		public func Element getAudibleElementAt( int index )
+			return this.pAudibleElements.getAt( index ) cast Element
+		end
+		
+		/** \brief Element is audible. */
+		public func bool isElementAudible( Element element )
+			return this.pAudibleElements.has( element )
+		end
+		
+		/** \brief Add audible element. */
+		protected func void addAudibleElement( Element element )
+			this.pAudibleElements.add( element )
+		end
+		
+		/** \brief Remove audible element. */
+		protected func void removeAudibleElement( Element element )
+			this.pAudibleElements.remove( element )
+		end
+		
+		/** \brief Remove all audible elements. */
+		protected func void removeAllAudibleElements()
+			this.pAudibleElements.removeAll()
+		end
+		
+		/** \brief Get volume of element. */
+		public func float getAudibleElementVolume( Element element )
+			if not this.pAudibleElements.has( element )
+				return 0.0
+			end
+			
+			var int i, count = this.pSoundLevelMeter.getAudibleSpeakerCount()
+			var SoundLevelMeterSpeaker speaker
+			var Object owner
+			
+			for i = 0 to count
+				speaker = this.pSoundLevelMeter.getAudibleSpeakerAt( i )
+				if speaker.getSpeaker().getOwner() == element
+					return speaker.getVolume()
+				end
+			end
+			
+			return 0.0
+		end
+		
+		/** \brief Visit audible elements with block with parameter Element. */
+		public func void forEachAudibleElement( Block ablock )
+			this.pAudibleElements.forEach( ablock )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addSoundLevelMeter( this.pSoundLevelMeter )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			while this.pAudibleElements.getCount() > 0
+				var int index = this.pAudibleElements.getCount() - 1
+				var Element element = this.pAudibleElements.getAt( index ) cast Element
+				this.pAudibleElements.removeFrom( index )
+				
+				this.pListeners.forEach( block Listener each
+					each.elementInaudible( this, element )
+				end )
+			end
+			
+			this.getElement().getGameWorld().getWorld().removeSoundLevelMeter( this.pSoundLevelMeter )
+		end
+		
+		
+		
+		/** \brief Speaker become audible. */
+		public func void speakerAudible( SoundLevelMeterSpeaker speaker )
+			var Object owner = speaker.getSpeaker().getOwner()
+			if not owner castable Element
+				return
+			end
+			
+			var Element element = owner cast Element
+			if this.pAudibleElements.has( element )
+				return
+			end
+			
+			this.pAudibleElements.add( element )
+			
+			this.pListeners.forEach( block Listener each
+				each.elementAudible( this, element )
+			end )
+		end
+		
+		/** \brief Speaker became inaudible. */
+		public func void speakerInaudible( Speaker speaker )
+			var Object owner = speaker.getOwner()
+			if not owner castable Element
+				return
+			end
+			
+			var Element element = owner cast Element
+			if not this.pAudibleElements.has( element )
+				return
+			end
+			
+			this.pAudibleElements.remove( element )
+			
+			this.pListeners.forEach( block Listener each
+				each.elementInaudible( this, element )
+			end )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setListening( env.readBool( reader ) )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			env.writeBool( writer, this.getListening() )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeAttachResource pAttach
+	private var ECPFloat pAudibleDistance
+	private var ECPFloat pVolumeThreshold
+	private var LayerMask pLayerMask
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "hearSound." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String prefix ) super( eclass )
+		if getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pCollider = collider
+		
+		this.pAudibleDistance = ECPFloat.new( prefix + "audibleDistance", 100, 1 )
+		eclass.addProperty( this.pAudibleDistance )
+		
+		this.pVolumeThreshold = ECPFloat.new( prefix + "volumeThreshold", 0.01, 0 )
+		eclass.addProperty( this.pVolumeThreshold )
+		
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.audio )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null to not attach. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	/** \brief Audible distance. */
+	public func ECPFloat getAudibleDistance()
+		return this.pAudibleDistance
+	end
+	
+	/** \brief Volume threshold required for elements to be considered audible. */
+	public func ECPFloat getVolumeThreshold()
+		return this.pVolumeThreshold
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorHearSounds.
+	 */
+	static public func ECBehaviorHearSounds getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorHearSounds
+		end ) cast ECBehaviorHearSounds
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorHearSounds.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

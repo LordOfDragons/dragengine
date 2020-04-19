@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Events
+
+
+/**
+ * \brief Immutable keyboard event.
+ * 
+ * Stores the code of the key involved as well as the character it does represent if one exists.
+ */
+class KeyEvent extends ModifiableEvent
+	/** Key pressed event idenfitier */
+	public fixed var int idKeyPressed = 10
+	
+	/** Key released event idenfitier */
+	public fixed var int idKeyReleased = 11
+	
+	
+	
+	/** \brief Key code */
+	private var int pKeyCode
+	
+	/** \brief Key character */
+	private var int pKeyChar
+	
+	/** \brief Device index. */
+	private var int pDevice
+	
+	/** \brief Device button code. */
+	private var int pButtonCode
+	
+	
+	
+	/** \brief Event identifier is a key event identifier. */
+	public static func bool isKeyEvent( int identifier )
+		return identifier >= idKeyPressed and identifier <= idKeyReleased
+	end
+	
+	
+	
+	/** \brief Create event. */
+	public func new( Object source, int id, int keyCode, int modifiers, \
+	int device, int buttonCode ) super( source, id, modifiers )
+		this.pKeyCode = keyCode
+		this.pKeyChar = 0
+		this.pDevice = device
+		this.pButtonCode = buttonCode
+	end
+	
+	/** \brief Create event. */
+	public func new( Object source, int id, int keyCode, int modifiers, int keyChar, \
+	int device, int buttonCode ) super( source, id, modifiers )
+		this.pKeyCode = keyCode
+		this.pKeyChar = keyChar
+		this.pDevice = device
+		this.pButtonCode = buttonCode
+	end
+	
+	
+	
+	/** \brief Key code. */
+	public func int getKeyCode()
+		return this.pKeyCode
+	end
+	
+	/** \brief Printable key character if existing. */
+	public func int getKeyChar()
+		return this.pKeyChar
+	end
+	
+	/** \brief Device index. */
+	public func int getDevice()
+		return this.pDevice
+	end
+	
+	/** \brief Device button code. */
+	public func int getButtonCode()
+		return this.pButtonCode
+	end
+	
+	
+	
+	/**
+	 * \brief Key events are equal.
+	 * \details Two key events equal if they have the same identifier and key code.
+	 */
+	public func bool equalKeyEvents( KeyEvent event )
+		return this.getIdentifier() == event.getIdentifier() \
+			and this.pKeyCode == event.getKeyCode()
+	end
+end

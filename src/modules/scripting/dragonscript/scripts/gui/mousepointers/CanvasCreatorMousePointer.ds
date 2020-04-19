@@ -1,0 +1,76 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Mouse pointer using canvas creator.
+ */
+class CanvasCreatorMousePointer extends DefaultMousePointer
+	/** \brief Canvas creator. */
+	private var CanvasCreator pCanvasCreator
+	
+	
+	
+	/** \brief Create mouse pointer. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Canvas creator or \em null if not set. */
+	public func CanvasCreator getCanvasCreator()
+		return this.pCanvasCreator
+	end
+	
+	/** \brief Set canvas creator. */
+	public func void setCanvasCreator( CanvasCreator canvasCreator )
+		if canvasCreator == this.pCanvasCreator
+			return
+		end
+		
+		this.pCanvasCreator = canvasCreator
+		this.updateCanvas()
+	end
+	
+	
+	
+	/** \brief Update canvas. */
+	public func void updateCanvas()
+		var CanvasView canvasView = this.getCanvasView()
+		
+		canvasView.removeAllCanvas()
+		
+		if this.pCanvasCreator == null
+			return
+		end
+		
+		var Canvas canvas = this.pCanvasCreator.createCanvas( canvasView.getSize() )
+		if canvas != null
+			canvasView.addCanvas( canvas )
+		end
+	end
+end

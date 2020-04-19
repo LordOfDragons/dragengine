@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE skin SYSTEM 'DragengineSkin.dtd'>
+<skin>
+	<texture name='material'>
+		<image property='color'>testMap.png</image>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>1</value>
+	</texture>
+</skin>

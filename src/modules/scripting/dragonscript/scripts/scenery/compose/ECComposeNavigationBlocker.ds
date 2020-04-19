@@ -1,0 +1,122 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable navigation blocker for element class.
+ * 
+ * Provides navigation blocker support to element class without subclassing from a specific
+ * class. Creates NavigationBlocker. Use instead of ECComposeNavigation if only blocking
+ * properties are desired (and exposed).
+ */
+class ECComposeNavigationBlocker
+	private var ECPInteger pLayer
+	private var ECPShapeList pShape
+	private var ECPInteger pPriority
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, Loaders loaders ) \
+	this( ownerClass, loaders, "navigationBlocker." )
+	end
+	
+	public func new( ElementClass ownerClass, Loaders loaders, String prefix )
+		if prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pLayer = ECPInteger.new( prefix + "layer", 0 )
+		ownerClass.addProperty( this.pLayer )
+		
+		this.pShape = ECPShapeList.new( prefix + "shape", ownerClass.getSharedCodecPropertyString() )
+		ownerClass.addProperty( this.pShape )
+		
+		this.pPriority = ECPInteger.new( prefix + "priority", 0 )
+		ownerClass.addProperty( this.pPriority )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Navigation layer number. */
+	public func ECPInteger getLayer()
+		return this.pLayer
+	end
+	
+	/** \brief Blocker shape. */
+	public func ECPShapeList getShape()
+		return this.pShape
+	end
+	
+	/** \brief Blocking priority. */
+	public func ECPInteger getPriority()
+		return this.pPriority
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/** \brief Create navigation blocker or \em null if not used. */
+	public func NavigationBlocker createNavigationBlocker( Element element, StubElement stub )
+		var ShapeList shape = this.pShape.getShapeList()
+		
+		var String value = stub.getPropertyValueFor( this.pShape.getName(), null )
+		if value != null
+			shape = this.pShape.getCodec().decodeShapeList( value )
+		end
+		
+		if shape.empty()
+			return null
+		end
+		
+		var NavigationBlocker navigationBlocker = NavigationBlocker.new()
+		navigationBlocker.setSpaceType( NavigationSpaceType.mesh )
+		navigationBlocker.setShapeList( shape )
+		navigationBlocker.setLayer( stub.getPropertyIntFor( \
+			this.pLayer.getName(), this.pLayer.getValue() ) )
+		navigationBlocker.setBlockingPriority( stub.getPropertyIntFor( \
+			this.pPriority.getName(), this.pPriority.getValue() ) )
+		
+		navigationBlocker.setPosition( element.getPosition() )
+		navigationBlocker.setOrientation( element.getOrientation() )
+		
+		return navigationBlocker
+	end
+end

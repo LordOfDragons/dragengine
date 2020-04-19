@@ -1,0 +1,581 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Audio.SynthesizerDefinition
+pin Dragengine.Files
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load synthesizer from a desynth file.
+ * 
+ * Supports caching synthesizers to avoid loading the same synthesizer multiple times.
+ * The returned synthesizer can thus be shared so do not change it.
+ */
+class LoadSynthesizer extends BaseXmlLoader
+	private var Dictionary pSynthesizers
+	private var Dictionary pDefinitions
+	
+	
+	
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadSynthesizer" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+		this.pSynthesizers = Dictionary.new()
+		this.pDefinitions = Dictionary.new()
+	end
+	
+	
+	
+	/**
+	 * \brief Load synthesizer definition from file.
+	 * \details The returned definition is shared. Do not modify.
+	 */
+	public func SynthesizerDefinition loadDefFromFile( String filename )
+		var SynthesizerDefinition definition = this.pDefinitions.getAt( filename, null ) cast SynthesizerDefinition
+		if definition != null
+			return definition
+		end
+		
+		return this.loadAndParseRootTag( filename, "synthesizer", block EasyXMLElement root
+			definition = SynthesizerDefinition.new( filename )
+			this.pParseSynthesizer( root, definition )
+			this.pDefinitions.setAt( filename, definition )
+		end ) cast SynthesizerDefinition
+	end
+	
+	/** \brief Load synthesizer from file. */
+	public func Synthesizer loadFromFile( String filename )
+		var Synthesizer synthesizer = this.pSynthesizers.getAt( filename, null ) cast Synthesizer
+		if synthesizer != null
+			return synthesizer
+		end
+		
+		var SynthesizerDefinition definition = this.loadDefFromFile( filename )
+		
+		try
+			synthesizer = Synthesizer.new()
+			definition.buildSynthesizer( synthesizer )
+			this.pSynthesizers.setAt( filename, synthesizer )
+			return synthesizer
+			
+		catch Exception e
+			this.logLoadingFailed( filename )
+			throw
+		end
+	end
+	
+	
+	
+	/** \brief Parse synthesizer tag. */
+	private func void pParseSynthesizer( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "channels" )
+				synthesizer.setChannelCount( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "sampleRate" )
+				synthesizer.setSampleRate( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "bytesPerSample" )
+				synthesizer.setBytesPerSample( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "sampleCount" )
+				synthesizer.setSampleCount( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "controller" )
+				this.pParseController( element, synthesizer )
+				
+			elif tagName.equals( "link" )
+				this.pParseLink( element, synthesizer )
+				
+			else
+				var SDSource source = this.pParseSource( element, synthesizer )
+				
+				if source != null
+					synthesizer.addSource( source )
+					
+				else
+					this.logUnknownTag( element )
+					throw EInvalidParam.new()
+				end
+			end
+		end )
+	end
+	
+	/** \brief Parse controller tag. */
+	private func void pParseController( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDController controller = SDController.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "name" )
+				controller.setName( element.getFirstCData() )
+				
+			elif tagName.equals( "clamp" )
+				controller.setClamp( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "limits" )
+				controller.setMinimum( element.getAttributeFloatNamed( "min" ) )
+				controller.setMaximum( element.getAttributeFloatNamed( "max" ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		synthesizer.addController( controller )
+	end
+	
+	/** \brief Parse link tag. */
+	private func void pParseLink( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDLink link = SDLink.new()
+		var int index
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "name" )
+				link.setName( element.getFirstCData() )
+				
+			elif tagName.equals( "controller" )
+				index = element.getFirstCDataInt()
+				
+				if index >= 0 and index < synthesizer.getControllerCount()
+					link.setController( synthesizer.getControllerAt( index ) )
+				end
+				
+			elif tagName.equals( "repeat" )
+				link.setRepeat( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "curve" )
+				link.setCurve( this.readCurveBezier( element ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		synthesizer.addLink( link )
+	end
+	
+	/** \brief Parse common source tag. */
+	private func void pParseSourceCommon( EasyXMLElement element, \
+	SynthesizerDefinition synthesizer, SDSource source )
+		var String tagName = element.getTagName()
+		
+		if tagName.equals( "name" )
+			source.setName( element.getFirstCData() )
+			
+		elif tagName.equals( "enabled" )
+			source.setEnabled( element.getFirstCDataBool() )
+			
+		elif tagName.equals( "mixMode" )
+			var String value = element.getFirstCData()
+			var SynthesizerSourceMix mixMode = SynthesizerSourceMix.named( value )
+			if mixMode != null
+				source.setMixMode( mixMode )
+				
+			else
+				this.logInvalidValue( element, value )
+			end
+			
+		elif tagName.equals( "blendFactor" )
+			source.setBlendFactor( element.getFirstCDataFloat() )
+			
+		elif tagName.equals( "minVolume" )
+			source.setMinVolume( element.getFirstCDataFloat() )
+			
+		elif tagName.equals( "maxVolume" )
+			source.setMaxVolume( element.getFirstCDataFloat() )
+			
+		elif tagName.equals( "minPanning" )
+			source.setMinPanning( element.getFirstCDataFloat() )
+			
+		elif tagName.equals( "maxPanning" )
+			source.setMaxPanning( element.getFirstCDataFloat() )
+			
+		else
+			var SDEffect effect = this.pParseEffect( element, synthesizer )
+			
+			if effect != null
+				source.addEffect( effect )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end
+	end
+	
+	/** \brief Parse source tag. */
+	private func SDSource pParseSource( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var String tagName = root.getTagName()
+		
+		if tagName.equals( "sourceSound" )
+			return this.pParseSourceSound( root, synthesizer )
+			
+		elif tagName.equals( "sourceWave" )
+			return this.pParseSourceWave( root, synthesizer )
+			
+		elif tagName.equals( "sourceChain" )
+			return this.pParseSourceChain( root, synthesizer )
+			
+		elif tagName.equals( "sourceSynthesizer" )
+			return this.pParseSourceSynthesizer( root, synthesizer )
+			
+		elif tagName.equals( "sourceGroup" )
+			return this.pParseSourceGroup( root, synthesizer )
+		end
+		
+		return null
+	end
+	
+	/** \brief Parse sound source tag. */
+	private func SDSource pParseSourceSound( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDSourceSound source = SDSourceSound.new()
+		var String value
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "sound" )
+				value = element.getFirstCData()
+				
+				if not value.empty()
+					try
+						source.setSound( Sound.new( File.absolutePath( \
+							value, synthesizer.getPathDirectory() ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, value )
+					end
+				end
+				
+			elif tagName.equals( "minSpeed" )
+				source.setMinSpeed( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxSpeed" )
+				source.setMaxSpeed( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "looping" )
+				source.setLooping( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SSSoundTarget target = SSSoundTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, source, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.pParseSourceCommon( element, synthesizer, source )
+			end
+		end )
+		
+		return source
+	end
+	
+	/** \brief Parse chain source tag. */
+	private func SDSource pParseSourceChain( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDSourceChain source = SDSourceChain.new()
+		var String value
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "sound" )
+				value = element.getFirstCData()
+				
+				if value.empty()
+					source.getSounds().add( null )
+					
+				else
+					try
+						source.getSounds().add( Sound.new( File.absolutePath( \
+							value, synthesizer.getPathDirectory() ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, value )
+					end
+				end
+				
+			elif tagName.equals( "minSpeed" )
+				source.setMinSpeed( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxSpeed" )
+				source.setMaxSpeed( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SSChainTarget target = SSChainTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, source, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.pParseSourceCommon( element, synthesizer, source )
+			end
+		end )
+		
+		return source
+	end
+	
+	/** \brief Parse wave source tag. */
+	private func SDSource pParseSourceWave( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDSourceWave source = SDSourceWave.new()
+		var String value
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "type" )
+				value = element.getFirstCData()
+				var SSWaveType type = SSWaveType.named( value )
+				if value != null
+					source.setType( type )
+					
+				else
+					this.logUnknownTag( element )
+				end
+				
+			elif tagName.equals( "minFrequency" )
+				source.setMinFrequency( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxFrequency" )
+				source.setMaxFrequency( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SSWaveTarget target = SSWaveTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, source, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.pParseSourceCommon( element, synthesizer, source )
+			end
+		end )
+		
+		return source
+	end
+	
+	/** \brief Parse group source tag. */
+	private func SDSource pParseSourceGroup( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDSourceGroup source = SDSourceGroup.new()
+		var String value
+		var SDSource ssource
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "type" )
+				value = element.getFirstCData()
+				var SSGroupApplication applicationType = SSGroupApplication.named( value )
+				if value != null
+					source.setApplicationType( applicationType )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SSGroupTarget target = SSGroupTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, source, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				ssource = this.pParseSource( element, synthesizer )
+				
+				if ssource != null
+					source.addSource( ssource )
+					
+				else
+					this.pParseSourceCommon( element, synthesizer, source )
+				end
+			end
+		end )
+		
+		return source
+	end
+	
+	/** \brief Parse synthesizer source tag. */
+	private func SDSource pParseSourceSynthesizer( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDSourceSynthesizer source = SDSourceSynthesizer.new()
+		var String value
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "synthesizer" )
+				value = element.getFirstCData()
+				
+				if not value.empty()
+					try
+						source.setSynthesizer( this.loadFromFile( File.absolutePath( \
+							value, synthesizer.getPathDirectory() ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, value )
+						e.printTrace()
+					end
+				end
+				
+			elif tagName.equals( "connectionCount" )
+				source.setConnectionCount( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "connection" )
+				source.setConnectionAt( element.getAttributeIntNamed( "target" ), \
+					element.getAttributeIntNamed( "controller" ) )
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SSSynthesizerTarget target = SSSynthesizerTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, source, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.pParseSourceCommon( element, synthesizer, source )
+			end
+		end )
+		
+		return source
+	end
+	
+	/** \brief Parse target tag. */
+	private func void pParseTarget( EasyXMLElement root, SynthesizerDefinition synthesizer, \
+	SDSource source, Enumeration target )
+		var int index
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "link" )
+				index = element.getFirstCDataInt()
+				source.addTargetLink( SDSourceTargetLink.new( target, synthesizer.getLinkAt( index ) ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+	end
+	
+	/** \brief Parse common effect tag. */
+	private func void pParseEffectCommon( EasyXMLElement element, SynthesizerDefinition synthesizer, SDEffect effect )
+		var String tagName = element.getTagName()
+		
+		if tagName.equals( "enabled" )
+			effect.setEnabled( element.getFirstCDataBool() )
+			
+		elif tagName.equals( "strength" )
+			effect.setStrength( element.getFirstCDataFloat() )
+			
+		else
+			this.logUnknownTag( element )
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Parse effect tag. */
+	private func SDEffect pParseEffect( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var String tagName = root.getTagName()
+		
+		if tagName.equals( "effectStretch" )
+			return this.pParseEffectStretch( root, synthesizer )
+		end
+		
+		return null
+	end
+	
+	/** \brief Parse wave effect tag. */
+	private func SDEffect pParseEffectStretch( EasyXMLElement root, SynthesizerDefinition synthesizer )
+		var SDEffectStretch effect = SDEffectStretch.new()
+		var String value
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "minTime" )
+				effect.setMinTime( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxTime" )
+				effect.setMaxTime( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "minPitch" )
+				effect.setMinPitch( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxPitch" )
+				effect.setMaxPitch( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "target" )
+				value = element.getAttributeNamed( "name" )
+				var SEStretchTarget target = SEStretchTarget.named( value )
+				if value != null
+					this.pParseTarget( element, synthesizer, effect, target )
+					
+				else
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.pParseEffectCommon( element, synthesizer, effect )
+			end
+		end )
+		
+		return effect
+	end
+	
+	/** \brief Parse target tag. */
+	private func void pParseTarget( EasyXMLElement root, SynthesizerDefinition synthesizer, \
+	SDEffect effect, Enumeration target )
+		var int index
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "link" )
+				index = element.getFirstCDataInt()
+				effect.addTargetLink( SDSourceTargetLink.new( target, synthesizer.getLinkAt( index ) ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+	end
+end

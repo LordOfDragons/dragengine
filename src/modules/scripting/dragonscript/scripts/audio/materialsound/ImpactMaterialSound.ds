@@ -1,0 +1,128 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.MaterialSounds
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Impact material sound.
+ * 
+ * Material sounds used for objects hitting each other. Typically used for collisions between
+ * dynamic or kinematic colliders. Collider rig shapes are assigned the model texture they
+ * belong to. This can be used to figure out what skins are involved in the collision. Using
+ * SkinAnnotations the ImpactMaterialSound identifier for the skin file path can be looked up.
+ * Each ImpactMaterialSound involved in the collision plays back an impact sound. This allows
+ * to simulate a vaste amount of inter-material collisions without needing to record an explicit
+ * sound for each possible combination of materials. You only need to record a collision sound
+ * for each material.
+ */
+class ImpactMaterialSound
+	private var String pID
+	private var MaterialSound pSound
+	private var float pImpulsePower
+	
+	
+	
+	/** \brief Create material. */
+	public func new( String id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pID = id
+		this.pSound = MaterialSound.new()
+		this.pImpulsePower = 0.2
+	end
+	
+	/** \brief Create copy of material with new identifier. */
+	public func new( String id, ImpactMaterialSound material )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pID = id
+		this.pSound = MaterialSound.new( material.pSound )
+		this.pImpulsePower = material.pImpulsePower
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return this.pID
+	end
+	
+	/** \brief Impact sound. */
+	public func MaterialSound getSound()
+		return this.pSound
+	end
+	
+	/** \brief Set impact sound. */
+	public func void setSound( MaterialSound sound )
+		this.pSound = sound
+	end
+	
+	/** \brief Conversation factor from impulse to impact power. */
+	public func float getImpulsePower()
+		return this.pImpulsePower
+	end
+	
+	/** \brief Set conversation factor from impulse to power. */
+	public func void setImpulsePower( float factor )
+		this.pImpulsePower = DEMath.max( factor, 0.0 )
+	end
+	
+	
+	
+	/**
+	 * \brief Play impact sound of this material hitting another.
+	 * \param[in] world World to play sound in.
+	 * \param[in] collision Collision information originating by owner this material.
+	 * \param[in] material Hit material. If \em null default parameters are assumed.
+	 */
+	public func void playSound( GameWorld world, CollisionInfo collision, ImpactMaterialSound material )
+		this.playSound( world, collision.getPosition(), collision.getImpulse() )
+	end
+	
+	/**
+	 * \brief Play impact sound of this material hitting another.
+	 * \param[in] world World to play sound in.
+	 * \param[in] position Impact position in world space.
+	 * \param[in] impulse Impact impulse.
+	 * \param[in] material Hit material. If \em null default parameters are assumed.
+	 */
+	public func void playSound( GameWorld world, DVector position, float impulse, ImpactMaterialSound material )
+		this.playSound( world, position, impulse )
+	end
+	
+	/**
+	 * \brief Play impact sound.
+	 * \param[in] world World to play sound in.
+	 * \param[in] position Impact position in world space.
+	 * \param[in] impulse Impact impulse.
+	 */
+	public func void playSound( GameWorld world, DVector position, float impulse )
+		this.pSound.playSound( world, position, impulse * this.pImpulsePower )
+	end
+end

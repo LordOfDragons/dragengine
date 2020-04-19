@@ -1,0 +1,194 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+  
+ 
+namespace Dragengine.Gui.Decorations
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Render a thin line border with a bulky corner at the top-left side.
+ * \note This is only a demo class and not part of the final package.
+ */
+class CornerDecoration extends DefaultDecoration
+	/** \brief Create decoration. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Border size. */
+	public func BorderSize getBorderSize()
+		return BorderSize.new( 4, 4, 1, 1 )
+	end
+	
+	/** \brief Test which part of the decoration is hit if any. */
+	public func Decoration.Area areaHitBy( Point position )
+		var Window window = this.getWindow()
+		if window == null
+			return Decoration.Area.nothing
+		end
+		
+		// test if we are inside the window in which case nothing is hit
+		if window.isPointInside( position - window.getPosition() )
+			return Decoration.Area.nothing
+		end
+		
+		// determine the boundary of the window and the decoration and quickly
+		// return nothing if we are outside somewhere.
+		var BorderSize borderSize = this.getBorderSize()
+		var Point lpos = position - window.getPosition()
+		var Point lsize = window.getSize() + borderSize.getSize()
+		
+		if not ( lpos.isAtLeast( 0 ) and lpos < lsize )
+			return Decoration.Area.nothing
+		end
+		
+		// otherwise this is somewhere on the border
+		if lpos.getX() < 10
+			if lpos.getY() < 10
+				return Decoration.Area.resizeTopLeft
+				
+			elif lpos.getY() > lsize.getY() - 10
+				return Decoration.Area.resizeBottomLeft
+				
+			else
+				return Decoration.Area.resizeLeft
+			end
+			
+		elif lpos.getX() > lsize.getX() - 10
+			if lpos.getY() < 10
+				return Decoration.Area.resizeTopRight
+				
+			elif lpos.getY() > lsize.getY() - 10
+				return Decoration.Area.resizeBottomRight
+				
+			else
+				return Decoration.Area.resizeRight
+			end
+			
+		elif lpos.getY() < 10
+			return Decoration.Area.resizeTop
+			
+		else
+			return Decoration.Area.resizeBottom
+		end
+	end
+	
+	/** Update canvas. */
+	public func void updateCanvas()
+		var Window window = this.getWindow()
+		if window == null
+			return
+		end
+		
+		var CanvasView decoCanvas = this.getCanvasView()
+		decoCanvas.removeAllCanvas()
+		
+		var int width = window.getWidth() + 5 - 1
+		var int height = window.getHeight() + 5 - 1
+		var CanvasPaint canvas
+		
+		// color part 1
+		canvas = CanvasPaint.new()
+		canvas.setShapeType( CanvasPaintShape.lines )
+		canvas.setFillColor( Color.transparent )
+		canvas.setLineColor( Color.new( 1.0, 1.0, 0.0 ) )
+		canvas.setSize( decoCanvas.getSize() )
+		canvas.setOrder( 0.0 )
+		
+		canvas.addPoint( Point.new( 4, 4 ) )
+		canvas.addPoint( Point.new( 4, height ) )
+		
+		canvas.addPoint( Point.new( 4, 4 ) )
+		canvas.addPoint( Point.new( width, 4 ) )
+		
+		canvas.addPoint( Point.new( 1, 0 ) )
+		canvas.addPoint( Point.new( 15, 0 ) )
+		
+		canvas.addPoint( Point.new( 15, 0 ) )
+		canvas.addPoint( Point.new( 18, 3 ) )
+		
+		canvas.addPoint( Point.new( 0, 1 ) )
+		canvas.addPoint( Point.new( 0, 15 ) )
+		
+		canvas.addPoint( Point.new( 0, 15 ) )
+		canvas.addPoint( Point.new( 3, 18 ) )
+		
+		decoCanvas.addCanvas( canvas )
+		
+		// color part 2
+		canvas = CanvasPaint.new()
+		canvas.setShapeType( CanvasPaintShape.lines )
+		canvas.setFillColor( Color.transparent )
+		canvas.setLineColor( Color.new( 0.5, 0.5, 0.0 ) )
+		canvas.setSize( decoCanvas.getSize() )
+		canvas.setOrder( 1.0 )
+		
+		canvas.addPoint( Point.new( width, 4 ) )
+		canvas.addPoint( Point.new( width, height ) )
+		
+		canvas.addPoint( Point.new( 4, height ) )
+		canvas.addPoint( Point.new( width, height ) )
+		
+		decoCanvas.addCanvas( canvas )
+		
+		// color part 3
+		canvas = CanvasPaint.new()
+		canvas.setShapeType( CanvasPaintShape.lines )
+		canvas.setFillColor( Color.transparent )
+		canvas.setLineColor( Color.new( 0.6, 0.6, 0.0 ) )
+		canvas.setSize( decoCanvas.getSize() )
+		canvas.setOrder( 2.0 )
+		
+		canvas.addPoint( Point.new( 1, 1 ) )
+		canvas.addPoint( Point.new( 15, 1 ) )
+		
+		canvas.addPoint( Point.new( 1, 1 ) )
+		canvas.addPoint( Point.new( 1, 15 ) )
+		
+		canvas.addPoint( Point.new( 3, 3 ) )
+		canvas.addPoint( Point.new( 17, 3 ) )
+		
+		canvas.addPoint( Point.new( 3, 3 ) )
+		canvas.addPoint( Point.new( 3, 17 ) )
+		
+		decoCanvas.addCanvas( canvas )
+		
+		// color part 4
+		canvas = CanvasPaint.new()
+		canvas.setShapeType( CanvasPaintShape.lines )
+		canvas.setFillColor( Color.transparent )
+		canvas.setLineColor( Color.new( 0.3, 0.3, 0.0 ) )
+		canvas.setSize( decoCanvas.getSize() )
+		canvas.setOrder( 3.0 )
+		
+		canvas.addPoint( Point.new( 2, 2 ) )
+		canvas.addPoint( Point.new( 16, 2 ) )
+		
+		canvas.addPoint( Point.new( 2, 2 ) )
+		canvas.addPoint( Point.new( 2, 16 ) )
+		
+		decoCanvas.addCanvas( canvas )
+	end
+end

@@ -1,0 +1,62 @@
+Normal maps encode vectors with components in the range from -1 to 1. This yields a problem
+with opengl and conventional textures with 256 possible values. To encode a normal the
+following formula is used:
+
+   encoded = floor( normal * 127.5 + 127.5 )
+
+This gives the following encoded values for center and edge values:
+
+   encode( 0.5 ) = floor( 127.5 ) = 127
+   encode( 1.0 ) = floor( 255.0 ) = 255
+   encode( 0.0 ) = floor( 0.0 ) = 0
+
+The edge cases are fine but the center value is rounded down. The center values are though
+important for the neutral normal (0,0,1) which encodes to (127,127,255). The problem shows
+while decoding. The following function retrieves the normal:
+
+   decoded = color * 2.0 - 1.0
+
+This looks fine at the first glimpse but it turns out to be a problem due to the way opengl
+delivers values to the shaders. Color is calculated by the hardware like this:
+
+   color = texel / 255.0
+
+This gives the following color values for the above test cases:
+
+   color(127) = 0.4980392156862745
+   color(255) = 1.0
+   color(0) = 0.0
+
+Edge cases are fine but the center value has a problem. The result is not 0.5 as required
+by the decode function to retrieve the right result. This causes neutral normals to be not
+neutral and thus causing tilted mirror images on smooth surfaces. The problem can be only
+solved by skewing the decoding to shift the error towards the edge cases where it can not
+be seen due to the mirrored image coming from a totally different direction. Furthermore
+edge cases are very rare and usually a sign of a normal generation problem. Using the
+skewed values the decoding turns into this:
+
+   decoded = color * 1.992156862745098 - 0.9921722414455979
+           = color * 1.9921569 - 0.9921722
+
+The constants are calculated like this:
+
+   decodeFactor1 = ( 254.0 / 255.0 ) * 2.0
+                 = 508.0 / 255.0
+   decodeFactor2 = ( 127.0 / 255.0 ) * decodeFactor1
+                 = ( 127.0 / 255.0 ) * ( 508.0 / 255.0 )
+                 = 64516.0 / 65025.0
+
+This slight adjustment results now in the following values for the test cases:
+
+   decode(127) = 0.0
+   decode(255) = 0.9999846212995002
+   decode(0) = -0.9921722414455979
+
+The center value is now correctly 0.0 as required. The upper and lower edge value though
+obtained the error we had previously in the center value. At the edges though the error
+is unimportant.
+
+Normal map generators should work fine with this modification. They should anyways
+skep the encoding to place 0-values precisely on 127 to get the exact right result back.
+It is not possible to notice if the generated normal is half a pixel value off or not
+as long as the center value is stable at 127.

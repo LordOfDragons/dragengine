@@ -1,0 +1,178 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Debug element class information printer.
+ * 
+ * Prints informations about all element classes in an an ElementClassList to the Console
+ * or a FileWriter. This can be used to store a snapshot of all properties and behaviors
+ * supported by element classes. By storing this to a file this can be used as reference
+ * documentation.
+ */
+class DebugElementClassInfo
+	/** \brief Stream out interface. */
+	public interface StreamOut
+		/** \brief Write text block containing multiple lines. */
+		func void writeBlock( String text )
+	end
+	
+	/** \brief Stream out to FileWriter. */
+	public class FileWriterOut implements StreamOut
+		private var FileWriter pFileWriter
+		
+		/** \brief Create FileWriterOut. */
+		public func new( String filename ) this( FileWriter.new( filename ) )
+		end
+		
+		/** \brief Create FileWriterOut. */
+		public func new( FileWriter writer )
+			this.pFileWriter = writer
+		end
+		
+		/** \brief File writer. */
+		public func FileWriter getFileWriter()
+			return this.pFileWriter
+		end
+		
+		/**
+		 * \brief Write text block containing multiple lines.
+		 * 
+		 * Splits text block into lines writing each using writeLine(String)
+		 * followed by an empty line.
+		 */
+		public func void writeBlock( String text )
+			text.split( '\n' ).forEach( block String line
+				this.writeLine( line )
+			end )
+			this.writeLine( "" )
+		end
+		
+		/** \brief Write text line. */
+		public func void writeLine( String text )
+			this.pFileWriter.writeString( text + "\n" )
+		end
+	end
+	
+	/** \brief Stream out to Console. */
+	public class ConsoleOut implements StreamOut
+		private var Console pConsole
+		
+		/** \brief Create Console. */
+		public func new( Console console )
+			this.pConsole = console
+		end
+		
+		/** \brief Write text block containing multiple lines. */
+		public func void writeBlock( String text )
+			this.pConsole.addMessage( text )
+		end
+	end
+	
+	
+	
+	private var bool pPrintProperties
+	private var bool pPrintBehaviors
+	
+	
+	/** \brief Create debug printer. */
+	public func new()
+		this.pPrintProperties = true
+		this.pPrintBehaviors = true
+	end
+	
+	
+	
+	/** \brief Print element class properties. */
+	public func bool getPrintProperties()
+		return this.pPrintProperties
+	end
+	
+	/** \brief Set if element class properties are printed. */
+	public func void setPrintProperties( bool printProperties )
+		this.pPrintProperties = printProperties
+	end
+	
+	/** \brief Print element class behaviors. */
+	public func bool getPrintBehaviors()
+		return this.pPrintBehaviors
+	end
+	
+	/** \brief Set if element class behaviors are printed. */
+	public func void setPrintBehaviors( bool printBehaviors )
+		this.pPrintBehaviors = printBehaviors
+	end
+	
+	
+	
+	/** \brief Print element class information. */
+	public func void print( StreamOut streamOut, ElementClass eclass )
+		var Array text = Array.new()
+		
+		text.add( eclass.getClassname() )
+		text.add( "- Script Class: " + eclass.className() )
+		text.add( "- Base Path: " + eclass.getBasePath() )
+		
+		if this.pPrintBehaviors and eclass castable BehaviorElementClass
+			( eclass cast BehaviorElementClass ).forEachBehavior( block ECBehavior each
+				if each castable DefaultECBehavior
+					var DefaultECBehavior behavior = each cast DefaultECBehavior
+					text.add( "- Behavior " + each.className() + ": id(" + behavior.getID() \
+						+ ") index(" + behavior.getInstanceIndex() + ")" )
+					
+				else
+					text.add( "- Behavior " + each.className() )
+				end
+			end )
+		end
+		
+		if this.pPrintProperties
+			var Array properties = Array.new()
+			
+			eclass.forEachProperty( block ElementClassProperty each
+				properties.add ( each )
+			end )
+			
+			properties.sorted( block ElementClassProperty a, ElementClassProperty b
+				return a.getName().compare( b.getName() )
+			end ).forEach( block ElementClassProperty each
+				text.add( "- Property '" + each.getName() + "': " + each.className() )
+			end )
+		end
+		
+		streamOut.writeBlock( text.inject( "", block String result, String next
+			return result + "\n" + next
+		end ) cast String )
+	end
+	
+	/** \brief Print information for all element classes in list. */
+	public func void print( StreamOut streamOut, ElementClassList list )
+		list.forEach( block ElementClass each
+			this.print( streamOut, each )
+		end )
+	end
+end

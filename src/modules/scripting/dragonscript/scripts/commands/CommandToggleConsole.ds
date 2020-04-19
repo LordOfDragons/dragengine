@@ -1,0 +1,94 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Toggle console command.
+ * 
+ * Shows or hides a WindowConsole provided at construction time. The command is designed to
+ * be used with BaseGameApp and in-game situations using BindingInputProcessor since this
+ * command can be only triggered by a binding or the console window itself. If the window is
+ * shown BaseGameApp.setInputProcessDesktop() is called and the window raised to the top.
+ * If the window is hidden BaseGameApp.setInputProcessBindings() is called.
+ * 
+ * While creating the command registers itself with the console window as the command to run
+ * when the user tries to close the window by pressing Escape key.
+ */
+class CommandToggleConsole extends Command
+	/** \brief Console window to show and hide. */
+	private var WindowConsole pWindow
+	
+	
+	
+	/** \brief Create command. */
+	public func new( WindowConsole window )
+		if window == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pWindow = window
+		
+		this.setName( "toggleConsole" )
+		this.setDescription( "Toggle console" )
+		
+		window.setCommandCloseConsole( this )
+	end
+	
+	
+	
+	/** \brief Console window to show and hide. */
+	public func WindowConsole getWindow()
+		return this.pWindow
+	end
+	
+	/** \brief Set console window to show and hide. */
+	public func void setWindow( WindowConsole window )
+		if window == null
+			throw EInvalidParam.new()
+		end
+		this.pWindow = window
+	end
+	
+	
+	
+	/**
+	 * \brief Input key or button has been released.
+	 * 
+	 * Done during stop() not start() since showing the console activates a new input
+	 * processor which would cause KEY_RELEASE to be send to the console causing an
+	 * unwanted typing in the input field.
+	 */
+	public func void stop()
+		if this.pWindow.getVisible()
+			this.pWindow.setVisible( false )
+			BaseGameApp.getApp().setInputProcessorBindings()
+			
+		else
+			this.pWindow.setVisible( true )
+			BaseGameApp.getApp().setInputProcessorDesktop()
+		end
+	end
+end

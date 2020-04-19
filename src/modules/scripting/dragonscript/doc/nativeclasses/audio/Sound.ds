@@ -1,0 +1,71 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable sound resources.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Sound
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load sound from file.
+	 * 
+	 * If the sound file has been already loaded it is assigned to this object.
+	 * If the sound is not loaded yet the engine loads the sound. This call blocks until
+	 * the sound is fully loaded and ready to be used. Depending on the audio and synthesizer
+	 * modules set by the user this can consume some time before finishing. For asynchronous
+	 * loading use loadAsynchron(). Multiple objects can point to the same loaded sound
+	 * resource. Once no object instance uses an sound file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load sound from file asynchronously.
+	 * 
+	 * Registers a request in the game engine to load an sound. Once finished or if the
+	 * file is already loaded the listener is used to deliver the loaded sound or \em null
+	 * if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Filename. */
+	public func String getFilename()
+	end
+	
+	/** \brief Bytes per sample. */
+	public func int getBytesPerSample()
+	end
+	
+	/** \brief Number of samples. */
+	public func int getSampleCount()
+	end
+	
+	/** \brief Number of channels. */
+	public func int getChannelCount()
+	end
+	
+	/** \brief Sample rate. */
+	public func int getSampleRate()
+	end
+	
+	/** \brief Play time in seconds. */
+	public func float getPlayTime()
+	end
+	/*@}*/
+end

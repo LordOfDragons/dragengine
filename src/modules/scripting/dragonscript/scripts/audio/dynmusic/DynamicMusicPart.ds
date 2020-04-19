@@ -1,0 +1,148 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.DynamicMusic
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Dynamic music part.
+ *
+ * Music to play with transitions to next parts. If no transitions are defined
+ * or no transitions match the playback stops after this part. If music is
+ * \em null playback stops after this part. Use \em null music only for parts
+ * used as init part which are used only to find the first part to play.
+ * 
+ */
+class DynamicMusicPart
+	/** \brief Name. */
+	private var String pName
+	
+	/** \brief Music to play. */
+	private var Sound pMusic
+	
+	/** \brief Transitions. */
+	private var Array pTransitions
+	
+	/** \brief Controller value to set if this part is selected. */
+	private var float pControllerValue
+	
+	
+	
+	/** \brief Create dynamic music part with \em null music for init use. */
+	public func new()
+		this.pTransitions = Array.new()
+		this.pControllerValue = 0.0
+	end
+	
+	/** \brief Create dynamic music part. */
+	public func new( String name )
+		this.pName = name
+		this.pTransitions = Array.new()
+		this.pControllerValue = 0.0
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Music to play. */
+	public func Sound getMusic()
+		return this.pMusic
+	end
+	
+	/** \brief Set music to play. */
+	public func void setMusic( Sound music )
+		this.pMusic = music
+	end
+	
+	
+	
+	/** \brief Number of transitions. */
+	public func int getTransitionCount()
+		return this.pTransitions.getCount()
+	end
+	
+	/** \brief Get transition at index. */
+	public func DynamicMusicTransition getTransitionAt( int index )
+		return this.pTransitions.getAt( index ) cast DynamicMusicTransition
+	end
+	
+	/** \brief Transition is present. */
+	public func bool hasTransition( DynamicMusicTransition transition )
+		return this.pTransitions.has( transition )
+	end
+	
+	/** \brief Add transition. */
+	public func void addTransition( DynamicMusicTransition transition )
+		if transition == null or this.pTransitions.has( transition )
+			throw EInvalidParam.new()
+		end
+		this.pTransitions.add( transition )
+	end
+	
+	/** \brief Remove transition. */
+	public func void removeTransition( DynamicMusicTransition transition )
+		this.pTransitions.remove( transition )
+	end
+	
+	/** \brief Remove all transitions. */
+	public func void removeAllTransitions()
+		this.pTransitions.removeAll()
+	end
+	
+	
+	
+	/** \brief Controller value to set if this part is selected. */
+	public func float getControllerValue()
+		return this.pControllerValue
+	end
+	
+	/** \brief Set controller value to set if this part is selected. */
+	public func void setControllerValue( float value )
+		this.pControllerValue = value
+	end
+	
+	
+	
+	/**
+	 * \brief Name of next part to play or \em null to stop.
+	 * \details Returns the part of the first valid transition or our name.
+	 */
+	public func String nextPart()
+		var DynamicMusicTransition transition = this.pTransitions.find( block DynamicMusicTransition each
+			return each.areConditionsFulfilled()
+		end ) cast DynamicMusicTransition
+		
+		if transition == null
+			return null
+			
+		else
+			return transition.getPart()
+		end
+	end
+end

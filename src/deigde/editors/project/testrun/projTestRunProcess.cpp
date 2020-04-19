@@ -1,0 +1,437 @@
+/* 
+ * DEIGDE Project
+ *
+ * Copyright (C) 2018, Plüss Roland ( roland@rptd.ch )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is projributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdint.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#ifdef OS_W32
+#include <dragengine/app/include_windows.h>
+#else
+#include <sys/wait.h>
+#include <sys/select.h>
+#endif
+
+#include "projTestRunConstants.h"
+#include "projTestRunProcess.h"
+#include "projTestRunCommandThread.h"
+
+#if defined OS_BEOS
+#	include <dragengine/app/deOSBeOS.h>
+#	include <dragengine/app/deOSConsole.h>
+#elif defined OS_UNIX
+#	include <dragengine/app/deOSUnix.h>
+#	include <dragengine/app/deOSConsole.h>
+#elif defined OS_W32
+#	include <dragengine/app/deOSWindows.h>
+#else
+#	error OS not supported!
+#endif
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/filesystem/dePathList.h>
+#include <dragengine/filesystem/deVFSContainer.h>
+#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/logger/deLoggerFile.h>
+#include <dragengine/logger/deLoggerConsoleColor.h>
+
+
+
+// Definitions
+////////////////
+
+#define LOGSOURCE "Test-Run Process"
+
+
+
+// Class projTestRunProcess
+/////////////////////////////
+
+projTestRunProcess::sRunParameters::sRunParameters() :
+parameterCount( 0 ),
+parameters( NULL ){
+}
+
+projTestRunProcess::sRunParameters::~sRunParameters(){
+	if( parameters ){
+		delete [] parameters;
+	}
+}
+
+// Constructors and Destructors
+/////////////////////////////////
+
+#ifdef OS_W32
+projTestRunProcess::projTestRunProcess( HANDLE pipeIn, HANDLE pipeOut )
+#else
+projTestRunProcess::projTestRunProcess( int pipeIn, int pipeOut )
+#endif
+:
+pPipeIn( pipeIn ),
+pPipeOut( pipeOut ),
+
+pLauncher( *this ),
+pEngine( *this ),
+pCommandThread( NULL ){
+}
+
+projTestRunProcess::~projTestRunProcess(){
+}
+
+
+
+// Management
+///////////////
+
+void projTestRunProcess::WriteUCharToPipe( int value ){
+	if( value < 0 || value > 0xff ){
+		DETHROW( deeInvalidParam );
+	}
+	const uint8_t uchar = ( uint8_t )value;
+	WriteToPipe( &uchar, sizeof( uint8_t ) );
+}
+
+void projTestRunProcess::WriteUShortToPipe( int value ){
+	if( value < 0 || value > 0xffff ){
+		DETHROW( deeInvalidParam );
+	}
+	const uint16_t ushort = ( uint16_t )value;
+	WriteToPipe( &ushort, sizeof( uint16_t ) );
+}
+
+void projTestRunProcess::WriteFloatToPipe( float value ){
+	WriteToPipe( &value, sizeof( float ) );
+}
+
+void projTestRunProcess::WriteString16ToPipe( const char *string ){
+	const int length = strlen( string );
+	WriteUShortToPipe( length );
+	WriteToPipe( string, length );
+}
+
+void projTestRunProcess::WriteToPipe( const void *data, int length ){
+	if( length == 0 ){
+		return;
+	}
+	
+	#ifdef OS_W32
+	DWORD bytesWritten = 0;
+	
+	if( ! WriteFile( pPipeOut, data, length, &bytesWritten, NULL ) ){
+		DETHROW( deeInvalidAction );
+	}
+	if( ( int )bytesWritten < length ){
+		DETHROW( deeInvalidAction );
+	}
+	
+	#else
+	if( write( pPipeOut, data, length ) < length ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+}
+
+int projTestRunProcess::ReadUCharFromPipe(){
+	uint8_t uchar;
+	ReadFromPipe( &uchar, sizeof( uint8_t ) );
+	return uchar;
+}
+
+int projTestRunProcess::ReadUShortFromPipe(){
+	uint16_t ushort;
+	ReadFromPipe( &ushort, sizeof( uint16_t ) );
+	return ushort;
+}
+
+int projTestRunProcess::ReadFloatFromPipe(){
+	float value;
+	ReadFromPipe( &value, sizeof( float ) );
+	return value;
+}
+
+decString projTestRunProcess::ReadString16FromPipe(){
+	const int length = ReadUShortFromPipe();
+	decString string;
+	string.Set( ' ', length );
+	ReadFromPipe( ( char* )string.GetString(), length );
+	return string;
+}
+
+void projTestRunProcess::ReadFromPipe( void *data, int length ){
+	if( length == 0 ){
+		return;
+	}
+	
+	#ifdef OS_W32
+	DWORD bytesRead = 0;
+	
+	if( ! ReadFile( pPipeIn, data, length, &bytesRead, NULL ) ){
+		pLogger->LogErrorFormat( LOGSOURCE, "ReadFromPipe failed with error %ld:",
+			GetLastError() );
+		DETHROW( deeInvalidAction );
+	}
+	if( ( int )bytesRead < length ){
+		pLogger->LogErrorFormat( LOGSOURCE, "ReadFromPipe read %ld bytes but should"
+			" have read %d bytes:", bytesRead, length );
+		DETHROW( deeInvalidAction );
+	}
+	
+	#else
+	if( read( pPipeIn, data, length ) != length ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+}
+
+
+
+void projTestRunProcess::Run(){
+	try{
+		pReadRunParameters();
+		pCreateLogger();
+		
+		pLogConfiguration();
+		pLauncher.LocatePath();
+		pLauncher.CreateVFS();
+		
+		pEngine.Start();
+		pEngine.PutIntoVFS();
+		
+		pRunGame();
+		pStopEngine();
+		
+	}catch( const deException &e ){
+		if( pLogger ){
+			pLogger->LogException( LOGSOURCE, e );
+			
+		}else{
+			e.PrintError();
+		}
+		pStopEngine();
+	}
+	
+	if( pLogger ){
+		pLogger->LogInfo( LOGSOURCE, "Test-Run Finished. Exiting process" );
+	}
+}
+
+void projTestRunProcess::RequestQuit(){
+	if( pEngine.GetEngine() ){
+		pEngine.GetEngine()->Quit();
+	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void projTestRunProcess::pReadRunParameters(){
+	int i, count;
+	
+	pRunParameters.pathLogFile = ReadString16FromPipe();
+	pRunParameters.pathDataDirectory = ReadString16FromPipe();
+	pRunParameters.pathOverlay = ReadString16FromPipe();
+	pRunParameters.pathConfig = ReadString16FromPipe();
+	pRunParameters.pathCapture = ReadString16FromPipe();
+	
+	pRunParameters.scriptDirectory = ReadString16FromPipe();
+	pRunParameters.gameObject = ReadString16FromPipe();
+	pRunParameters.vfsPathConfig = ReadString16FromPipe();
+	pRunParameters.vfsPathCapture = ReadString16FromPipe();
+	
+	pRunParameters.identifier = ReadString16FromPipe();
+	pRunParameters.windowSizeX = ReadUShortFromPipe();
+	pRunParameters.windowSizeY = ReadUShortFromPipe();
+	pRunParameters.fullScreen = ( ReadUCharFromPipe() != 0 );
+	pRunParameters.windowTitle = ReadString16FromPipe();
+	
+	pRunParameters.parameterCount = ReadUShortFromPipe();
+	if( pRunParameters.parameterCount > 0 ){
+		pRunParameters.parameters = new sModuleParameter[ pRunParameters.parameterCount ];
+		for( i=0; i<pRunParameters.parameterCount; i++ ){
+			pRunParameters.parameters[ i ].module = ReadString16FromPipe();
+			pRunParameters.parameters[ i ].parameter = ReadString16FromPipe();
+			pRunParameters.parameters[ i ].value = ReadString16FromPipe();
+		}
+	}
+	
+	pRunParameters.runArguments = ReadString16FromPipe();
+	
+	count = ReadUShortFromPipe();
+	for( i=0; i<count; i++ ){
+		pRunParameters.excludePatterns.Add( ReadString16FromPipe() );
+	}
+	
+	count = ReadUShortFromPipe();
+	for( i=0; i<count; i++ ){
+		pRunParameters.requiredExtensions.Add( ReadString16FromPipe() );
+	}
+	
+	pRunParameters.moduleScript = ReadString16FromPipe();
+	pRunParameters.moduleScriptVersion = ReadString16FromPipe();
+	
+	pRunParameters.moduleGraphic = ReadString16FromPipe();
+	pRunParameters.moduleInput = ReadString16FromPipe();
+	pRunParameters.modulePhysics = ReadString16FromPipe();
+	pRunParameters.moduleAnimator = ReadString16FromPipe();
+	pRunParameters.moduleAI = ReadString16FromPipe();
+	pRunParameters.moduleCrashRecovery = ReadString16FromPipe();
+	pRunParameters.moduleAudio = ReadString16FromPipe();
+	pRunParameters.moduleSynthesizer = ReadString16FromPipe();
+	pRunParameters.moduleNetwork = ReadString16FromPipe();
+	
+// 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
+}
+
+void projTestRunProcess::pLogConfiguration(){
+	int i;
+	
+	pLogger->LogInfo( LOGSOURCE, "Run-Configuration:" );
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- Path Log-File: %s",
+		pRunParameters.pathLogFile.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Path Data Directory: %s",
+		pRunParameters.pathDataDirectory.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Path Overlay Directory: %s",
+		pRunParameters.pathOverlay.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Path Config Directory: %s",
+		pRunParameters.pathConfig.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Path Capture Directory: %s",
+		pRunParameters.pathCapture.GetString() );
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- Script Directory: %s",
+		pRunParameters.scriptDirectory.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Game Object: %s",
+		pRunParameters.gameObject.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Config: %s",
+		pRunParameters.vfsPathConfig.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Capture: %s",
+		pRunParameters.vfsPathCapture.GetString() );
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- App-ID: %s",
+		pRunParameters.identifier.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Window Size: %dx%d",
+		pRunParameters.windowSizeX, pRunParameters.windowSizeY );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Full Screen: %s",
+		pRunParameters.fullScreen ? "Yes" : "No" );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Window Title: %s",
+		pRunParameters.windowTitle.GetString() );
+	
+	pLogger->LogInfo( LOGSOURCE, "- Module Parameters:" );
+	for( i=0; i<pRunParameters.parameterCount; i++ ){
+		pLogger->LogInfoFormat( LOGSOURCE, "  - %s:%s = %s",
+			pRunParameters.parameters[ i ].module.GetString(),
+			pRunParameters.parameters[ i ].parameter.GetString(),
+			pRunParameters.parameters[ i ].value.GetString() );
+	}
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- Run Arguments: %s",
+		pRunParameters.runArguments.GetString() );
+	
+	pLogger->LogInfo( LOGSOURCE, "- Exclude Patterns:" );
+	for( i=0; i<pRunParameters.excludePatterns.GetCount(); i++ ){
+		pLogger->LogInfoFormat( LOGSOURCE, "  - %s",
+			pRunParameters.excludePatterns.GetAt( i ).GetString() );
+	}
+	
+	pLogger->LogInfo( LOGSOURCE, "- Required Extensions:" );
+	for( i=0; i<pRunParameters.requiredExtensions.GetCount(); i++ ){
+		pLogger->LogInfoFormat( LOGSOURCE, "  - %s",
+			pRunParameters.requiredExtensions.GetAt( i ).GetString() );
+	}
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Script: %s (%s)",
+		pRunParameters.moduleScript.GetString(),
+		pRunParameters.moduleScriptVersion.GetString() );
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Graphic: %s",
+		pRunParameters.moduleGraphic.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Input: %s",
+		pRunParameters.moduleInput.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Physics: %s",
+		pRunParameters.modulePhysics.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Animator: %s",
+		pRunParameters.moduleAnimator.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module AI: %s",
+		pRunParameters.moduleAI.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Crash-Recovery: %s",
+		pRunParameters.moduleCrashRecovery.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Audio: %s",
+		pRunParameters.moduleAudio.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Synthesizer: %s",
+		pRunParameters.moduleSynthesizer.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module Network: %s",
+		pRunParameters.moduleNetwork.GetString() );
+}
+
+void projTestRunProcess::pCreateLogger(){
+	if( pRunParameters.pathLogFile.IsEmpty() ){
+		pLogger.TakeOver( new deLoggerConsoleColor );
+		return;
+	}
+	
+	decPath diskPath( decPath::CreatePathNative( pRunParameters.pathLogFile ) );
+	decPath filePath;
+	filePath.AddComponent( diskPath.GetLastComponent() );
+	diskPath.RemoveLastComponent();
+	
+	deVFSContainerReference container;
+	decBaseFileWriterReference writer;
+	
+	container.TakeOver( new deVFSDiskDirectory( diskPath ) );
+	writer.TakeOver( container->OpenFileForWriting( filePath ) );
+	
+	pLogger.TakeOver( new deLoggerFile( writer ) );
+}
+
+void projTestRunProcess::pRunGame(){
+	pEngine.ActivateModules();
+	pEngine.SetDataDirectory();
+	pEngine.SetRunArguments();
+	pEngine.InitVFS();
+	pEngine.CreateMainWindow();
+	
+	pCommandThread = new projTestRunCommandThread( *this );
+	pCommandThread->Start();
+	
+	pEngine.Run();
+}
+
+void projTestRunProcess::pStopEngine(){
+	if( pCommandThread ){
+		pCommandThread->Abort();
+		delete pCommandThread;
+		pCommandThread = NULL;
+	}
+	
+	pEngine.Stop();
+}

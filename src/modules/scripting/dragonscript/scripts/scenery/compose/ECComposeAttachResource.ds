@@ -1,0 +1,143 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable attachable resource for element class.
+ * 
+ * Provides attachable resource support to element class without subclassing from a
+ * specific class. Multiple instances of ECComposeAttachResource can be used by using
+ * a property prefix. Supports attaching static or at a specific bone.
+ */
+class ECComposeAttachResource
+	private var ECPVector pPosition
+	private var ECPVector pOrientation
+	private var ECPString pBone
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "attach." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them. Properties are
+	 * prefixed using \em prefix to allow multiple instances of this class to be used. If not
+	 * empty \em prefix is typically of the form 'name.' which results for example in a
+	 * property named 'name.position'.
+	 */
+	public func new( ElementClass ownerClass, String prefix )
+		this.pPosition = ECPVector.new( prefix + "position", Vector.new() )
+		ownerClass.addProperty( this.pPosition )
+		
+		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
+		ownerClass.addProperty( this.pOrientation )
+		
+		this.pBone = ECPString.new( prefix + "bone", "" )
+		ownerClass.addProperty( this.pBone )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Attach position. */
+	public func ECPVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Attach orientation. */
+	public func ECPVector getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Name of bone to attach to \em null if not used. */
+	public func ECPString getBone()
+		return this.pBone
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/**
+	 * \brief Attach resource to collider using stub.
+	 * 
+	 * Collider or resource can be \em null in which case nothing is done. If bone is not
+	 * empty string \em collider has to be castable to ColliderRig.
+	 * 
+	 * The following object types can be attached:
+	 * - Billboard
+	 * - Camera
+	 * - Collider
+	 * - Component
+	 * - DebugDrawer
+	 * - EnvMapProbe
+	 * - ForceField
+	 * - Light
+	 * - Lumimeter
+	 * - Microphone
+	 * - NavigationSpace
+	 * - NavigationBlocker
+	 * - Navigator
+	 * - ParticleEmitterInstance
+	 * - PropField
+	 * - Speaker
+	 * - TouchSensor
+	 */
+	public func void attach( Collider collider, Object resource, StubElement stub )
+		if collider == null or resource == null
+			return
+		end
+		
+		var CodecPropertyString codec = stub.getClass().getCodecPropertyString()
+		var Vector position = this.pPosition.getVector( stub, codec )
+		var Vector orientation = this.pOrientation.getVector( stub, codec )
+		var String bone = this.pBone.getValue( stub )
+		
+		if bone.empty()
+			collider.attachStatic( resource, position, Quaternion.newFromEuler( orientation ) )
+			
+		else
+			( collider cast ColliderRig ).attachBone( resource, bone, \
+				position, Quaternion.newFromEuler( orientation ) )
+		end
+	end
+end

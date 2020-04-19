@@ -1,0 +1,1264 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding two state animation support.
+ * 
+ * Plays back animations for behavior elements in two different states with transition
+ * between them. Animators are required to have controllers name the right way to work with
+ * this behavior. Controllers not matching the require name are ignored. It is not necessary
+ * to have all controller names covered. Actually this behavior optimizes at runtime if not
+ * all controllers are used.
+ * 
+ * - "deactivated": Controller used while the behavior is in deactivated state.
+ *                  This is typically an unclamped controller. If missing behavior does
+ *                  not think consuming no processing time.
+ * - "activated": Controller used while the behavior is in activated state.
+ *                This is typically an unclamped controller. If missing behavior does
+ *                not think consuming no processing time.
+ * - "activating": Controller used while behavior is transitioning from deactivated state
+ *                 to activated state. The transition ends when the controller reaches
+ *                 the upper limit. For this reason the controller has to be a clamped
+ *                 controller otherwise the transition never ends. If missing behavior
+ *                 transitions immediately to activated state.
+ * - "deactivating": Controller used while behavior is transitioning from activated state
+ *                   to deactivated state. The transition ends when the controller reaches
+ *                   the upper limit. For this reason the controller has to be a clamped
+ *                   controller otherwise the transition never ends. If missing behavior
+ *                   transitions immediately to deactivated state.
+ * 
+ * The controller names can be changed using the setControllerName*() methods.
+ * 
+ * \par Activate Trigger
+ * 
+ * When changing to true the element is switched to the activated state. When changing to
+ * false the element is switched to the deactivated state. If the switch happens during
+ * transition time the transition is finished before switching.
+ * 
+ * \par Configuration
+ * 
+ * By default the ECBehaviorComponent with empty identifier is animated. Multiple
+ * ECBehaviorTwoStateAnimated can be added targeting different ECBehaviorComponent using
+ * their identifier. It is also possible to add multiple ECBehaviorTwoStateAnimated
+ * manipulating the same ECBehaviorComponent as long as the animators used are properly
+ * crafted. This can be used for example to add overlayed animations.
+ * 
+ * To use this behavior make sure to add first the ECBehaviorComponent to animate.
+ * The example below adds to components and animates each using an own animator.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorComponent.new(this)
+ *       ECBehaviorTwoStateAnimated.new(this)
+ *       
+ *       ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorTwoStateAnimated.new(this, "subAnimator", "subComponent")
+ *    end
+ * end
+ * \endcode
+ * 
+ * Because multiple animator behaviors can animate the same component behavior the
+ * animator behavior has an own identifier. In the example above the first string parameter
+ * is the animator behavior identifier while the second string parameter is the component
+ * behavior identifier to animate.
+ * 
+ * Element class properties have the prefix "twoStateAnimated{(id)}.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorTwoStateAnimated extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Start transition from deactivated state to activated state. */
+		func void startActivate( Instance instance )
+		
+		/** \brief Finished transition from deactivated state to activated state. */
+		func void stopActivate( Instance instance )
+		
+		/** \brief Start transition from activated state to deactivated state. */
+		func void startDeactivate( Instance instance )
+		
+		/** \brief FInished transition from activated state to deactivated state. */
+		func void stopDeactivate( Instance instance )
+		
+		/** \brief Update controllers if required. */
+		func void updateControllers( Instance instance, float elapsed )
+		
+		/** \brief Animation has been applied. */
+		func void animationApplied( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Start transition from deactivated state to activated state. */
+		public func void startActivate( Instance instance )
+		end
+		
+		/** \brief Finished transition from deactivated state to activated state. */
+		public func void stopActivate( Instance instance )
+		end
+		
+		/** \brief Start transition from activated state to deactivated state. */
+		public func void startDeactivate( Instance instance )
+		end
+		
+		/** \brief FInished transition from activated state to deactivated state. */
+		public func void stopDeactivate( Instance instance )
+		end
+		
+		/** \brief Update controllers if required. */
+		public func void updateControllers( Instance instance, float elapsed )
+		end
+		
+		/** \brief Animation has been applied. */
+		public func void animationApplied( Instance instance )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief State. */
+		public enum State
+			deactivated
+			activating
+			activated
+			deactivating
+		end
+		
+		/** \brief Trigger listener to switch state. */
+		public class SwitchStateListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.activate()
+			end
+			
+			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
+				this.pInstance.deactivate()
+			end
+		end
+		
+		
+		
+		private var ECBehaviorTwoStateAnimated pECBehavior
+		private var State pState
+		private var AnimatorInstance pAnimatorInstance
+		private var float pPlaySpeed
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var TSTriggerTable pTriggerTable
+		private var AnimatorController pControllerDeactivated
+		private var AnimatorController pControllerActivate
+		private var AnimatorController pControllerDeactivate
+		private var AnimatorController pControllerActivated
+		private var TSNamedTriggerTarget pTargetActivated
+		private var TSNamedTriggerTarget pTargetActivating
+		private var TSNamedTriggerTarget pTargetDeactivating
+		private var Array pListeners
+		
+		private var ECBehaviorComponent.Instance pComponent
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorTwoStateAnimated ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pState = State.deactivated
+			this.pPlaySpeed = this.pECBehavior.getPlaySpeed().getValue()
+			this.pTriggerTable = ecbehavior.getTriggerTable()
+			this.pTargetActivated = TSNamedTriggerTarget.new()
+			this.pTargetActivating = TSNamedTriggerTarget.new()
+			this.pTargetDeactivating = TSNamedTriggerTarget.new()
+			this.pListeners = Array.new()
+			
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTrigger = null
+			this.pTargetActivated = null
+			this.pTargetActivating = null
+			this.pTargetDeactivating = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			this.pAnimatorInstance = this.createAnimatorInstance( stub )
+			if this.pAnimatorInstance != null
+				this.pControllerDeactivated = this.pAnimatorInstance.getControllerNamed( \
+					this.pECBehavior.getControllerNameDeactivated() )
+				this.pControllerActivate = this.pAnimatorInstance.getControllerNamed( \
+					this.pECBehavior.getControllerNameActivating() )
+				this.pControllerDeactivate = this.pAnimatorInstance.getControllerNamed( \
+					this.pECBehavior.getControllerNameDeactivating() )
+				this.pControllerActivated = this.pAnimatorInstance.getControllerNamed( \
+					this.pECBehavior.getControllerNameActivated() )
+				
+				this.pAnimatorInstance.setComponent( this.getComponent().getComponent() )
+			end
+			
+			this.setPlaySpeed( stub.getPropertyFloatFor( \
+				this.pECBehavior.getPlaySpeed().getName(), this.pPlaySpeed ) )
+			
+			if this.pTriggerTable != null
+				this.pTrigger = this.pECBehavior.getTrigger().instance( element )
+			end
+			
+			this.pTargetActivated.setName( this.pECBehavior.getTargetActivated().getValue( stub ) )
+			this.pTargetActivating.setName( this.pECBehavior.getTargetActivating().getValue( stub ) )
+			this.pTargetDeactivating.setName( this.pECBehavior.getTargetDeactivating().getValue( stub ) )
+			
+			this.updateRequiresThink()
+		end
+		
+		/**
+		 * \brief Create animator instance for the element.
+		 * 
+		 * Default implementation uses ECComposeAnimator.createAnimatorInstance().
+		 */
+		protected func AnimatorInstance createAnimatorInstance( StubElement stub )
+			return this.pECBehavior.createAnimatorInstance( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Source identification for use with exceptions only.
+		 * 
+		 * Default implementation returns relevant stub parameter or class property depending on
+		 * which one is set.
+		 */
+		protected func String getAnimatorSource( StubElement stub )
+			return stub.getPropertyValueFor( this.pECBehavior.getAnimator().getName(), \
+				this.pECBehavior.getAnimator().getPath() )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorTwoStateAnimated getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		
+		
+		/** \brief Animator instance. */
+		public func AnimatorInstance getAnimatorInstance()
+			return this.pAnimatorInstance
+		end
+		
+		/** \brief Deactivated playback animator controller or null. */
+		public func AnimatorController getControllerDeactivated()
+			return this.pControllerDeactivated
+		end
+		
+		/** \brief Activate animator controller or null. */
+		public func AnimatorController getControllerActivate()
+			return this.pControllerActivate
+		end
+		
+		/** \brief Deactivate animator controller or null. */
+		public func AnimatorController getControllerDeactivate()
+			return this.pControllerDeactivate
+		end
+		
+		/** \brief Activated playback animator controller or null. */
+		public func AnimatorController getControllerActivated()
+			return this.pControllerActivated
+		end
+		
+		
+		
+		/** \brief Playback speed. */
+		public func float getPlaySpeed()
+			return this.pPlaySpeed
+		end
+		
+		/** \brief Set playback speed. */
+		public func void setPlaySpeed( float playSpeed )
+			this.pPlaySpeed = DEMath.max( playSpeed, 0.001 )
+		end
+		
+		
+		
+		/** \brief Trigger table to link trigger expression to or \em null if not set. */
+		public func TSTriggerTable getTriggerTable()
+			return this.pTriggerTable
+		end
+		
+		/** \brief Trigger table to link trigger expression to or \em null if not set. */
+		protected func void setTriggerTable( TSTriggerTable triggerTable )
+			this.pTriggerTable = triggerTable
+		end
+		
+		/** \brief Activate trigger or \em null if not used. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Trigger target to reflect activated state. */
+		public func TSNamedTriggerTarget getTargetActivated()
+			return this.pTargetActivated
+		end
+		
+		/** \brief Trigger target to reflect activating state. */
+		public func TSNamedTriggerTarget getTargetActivating()
+			return this.pTargetActivating
+		end
+		
+		/** \brief Trigger target to reflect deactivating state. */
+		public func TSNamedTriggerTarget getTargetDeactivating()
+			return this.pTargetDeactivating
+		end
+		
+		
+		
+		/** \brief State. */
+		public func State getState()
+			return this.pState
+		end
+		
+		/** \brief Is in activated state. */
+		public func bool isActivated()
+			return this.pState == State.activated
+		end
+		
+		/** \brief Is in deactivated state. */
+		public func bool isDeactivated()
+			return this.pState == State.deactivated
+		end
+		
+		/** \brief Is activating. */
+		public func bool isActivating()
+			return this.pState == State.activating
+		end
+		
+		/** \brief Is deactivating. */
+		public func bool isDeactivating()
+			return this.pState == State.deactivating
+		end
+		
+		/** \brief Percentage of activating done in the range from 0 to 1. */
+		public func float getPercentageDoneActivate()
+			if this.pControllerActivate != null
+				return this.pControllerActivate.getRelativeValue()
+				
+			else
+				return 0
+			end
+		end
+		
+		/** \brief Percentage of deactivating done in the range from 0 to 1. */
+		public func float getPercentageDoneDeactivate()
+			if this.pControllerDeactivate != null
+				return this.pControllerDeactivate.getRelativeValue()
+				
+			else
+				return 0
+			end
+		end
+		
+		/** \brief Set state. */
+		protected func void setState( State state )
+			this.pState = state
+		end
+		
+		
+		
+		/**
+		 * \brief If in deactivated state start transition to activated state.
+		 */
+		public func void activate()
+			this.activate( 0 )
+		end
+		
+		/**
+		 * \brief If in deactivated state start transition to activated state.
+		 * 
+		 * \param startTime Set playback time startTime after controller lower value.
+		 */
+		public func void activate( float startTime )
+			this.activate( startTime, false )
+		end
+		
+		/**
+		 * \brief If in deactivated state start transition to activated state.
+		 * 
+		 * \param startTime Set playback time startTime after controller lower value.
+		 */
+		public func void activate( float startTime, bool force )
+			if this.pAnimatorInstance == null
+				return
+			end
+			
+			if this.pState != State.deactivated
+				if not force or this.pState == State.activated
+					return
+				end
+				
+				if this.pState == State.deactivating
+					this.pListeners.forEach( block Listener each
+						each.stopDeactivate( this )
+					end )
+				end
+			end
+			
+			if this.pControllerActivate == null
+				this.setActivated()
+				return
+			end
+			
+			this.pState = State.activating
+			
+			this.pControllerActivate.setToLower()
+			this.pControllerActivate.increment( startTime )
+			
+			if this.pControllerDeactivate != null
+				this.pControllerDeactivate.setToLower()
+			end
+			if this.pControllerActivated != null
+				this.pControllerActivated.setToLower()
+			end
+			this.updateRequiresThink()
+			
+			this.pTargetActivating.fire()
+			
+			this.pListeners.forEach( block Listener each
+				each.startActivate( this )
+			end )
+		end
+		
+		/**
+		 * \brief If in activated state start transition to deactivated state.
+		 */
+		public func void deactivate()
+			this.deactivate( 0 )
+		end
+		
+		/**
+		 * \brief If in activated state start transition to deactivated state.
+		 * 
+		 * \param startTime Set playback time startTime after controller lower value.
+		 */
+		public func void deactivate( float startTime )
+			this.deactivate( startTime, false )
+		end
+		
+		/**
+		 * \brief If in activated state start transition to deactivated state.
+		 * 
+		 * \param startTime Set playback time startTime after controller lower value.
+		 */
+		public func void deactivate( float startTime, bool force )
+			if this.pAnimatorInstance == null
+				return
+			end
+			
+			if this.pState != State.activated
+				if not force or this.pState == State.deactivated
+					return
+				end
+				
+				if this.pState == State.activating
+					this.pListeners.forEach( block Listener each
+						each.stopActivate( this )
+					end )
+				end
+			end
+			
+			if this.pControllerDeactivate == null
+				this.setDeactivated()
+				return
+			end
+			
+			this.pState = State.deactivating
+			
+			this.pControllerDeactivate.setToLower()
+			this.pControllerDeactivate.increment( startTime )
+			
+			if this.pControllerDeactivated != null
+				this.pControllerDeactivated.setToUpper()
+			end
+			if this.pControllerActivate != null
+				this.pControllerActivate.setToUpper()
+			end
+			this.updateRequiresThink()
+			
+			this.pTargetDeactivating.fire()
+			
+			this.pListeners.forEach( block Listener each
+				each.startDeactivate( this )
+			end )
+		end
+		
+		/**
+		 * \brief Reverse activating.
+		 * 
+		 * If door is activating notifies stopActivate() then startDeactivate() and switches
+		 * to deactivating with deactivate controller set to mirror activate controller.
+		 * If the animator is properly crafted this allows to reverse the animation while
+		 * in progress for example to simulate a door stop closing because something is
+		 * blocking the door.
+		 */
+		public func void reverseActivating()
+			if this.pState != State.activating or this.pAnimatorInstance == null
+				return
+			end
+			
+			if this.pControllerDeactivate == null
+				this.setDeactivated()
+				return
+			end
+			
+			this.pState = State.deactivating
+			
+			if this.pControllerActivate != null
+				this.pControllerDeactivate.setRelativeValue( 1.0 - this.pControllerActivate.getRelativeValue() )
+				this.pControllerActivate.setToUpper()
+				
+			else
+				this.pControllerDeactivate.setToLower()
+			end
+			
+			if this.pControllerDeactivated != null
+				this.pControllerDeactivated.setToUpper()
+			end
+			this.updateRequiresThink()
+			
+			this.pTargetActivating.reset()
+			this.pTargetDeactivating.fire()
+			
+			this.pListeners.forEach( block Listener each
+				each.stopActivate( this )
+				each.startDeactivate( this )
+			end )
+		end
+		
+		/**
+		 * \brief Reverse deactivating.
+		 * 
+		 * If door is deactivating notifies stopDeactivate() and startActivate() and switches
+		 * to activating with activate controller set to mirror deactivate controller.
+		 * If the animator is properly crafted this allows to reverse the animation while
+		 * in progress for example to simulate a door stop closing because something is
+		 * blocking the door.
+		 */
+		public func void reverseDeactivating()
+			if this.pState != State.deactivating or this.pAnimatorInstance == null
+				return
+			end
+			
+			if this.pControllerActivate == null
+				this.setActivated()
+				return
+			end
+			
+			this.pState = State.activating
+			
+			if this.pControllerDeactivate != null
+				this.pControllerActivate.setRelativeValue( 1.0 - this.pControllerDeactivate.getRelativeValue() )
+				this.pControllerDeactivate.setToLower()
+				
+			else
+				this.pControllerActivate.setToLower()
+			end
+			
+			if this.pControllerActivated != null
+				this.pControllerActivated.setToLower()
+			end
+			this.updateRequiresThink()
+			
+			this.pTargetDeactivating.reset()
+			this.pTargetActivating.fire()
+			
+			this.pListeners.forEach( block Listener each
+				each.stopDeactivate( this )
+				each.startActivate( this )
+			end )
+		end
+		
+		/**
+		 * \brief Set to deactivated state immediately.
+		 * 
+		 * Applies the animator instance before returning. If you need to modify controllers
+		 * other than those controlled by this behavior change them before calling this method.
+		 */
+		public func void setDeactivated()
+			if this.pAnimatorInstance == null
+				return
+			end
+			
+			var bool doNotify = this.pState != State.deactivated
+			
+			this.pState = State.deactivated
+			
+			if this.pControllerDeactivated != null
+				this.pControllerDeactivated.setToLower()
+			end
+			if this.pControllerActivate != null
+				this.pControllerActivate.setToLower()
+			end
+			if this.pControllerDeactivate != null
+				this.pControllerDeactivate.setToLower()
+			end
+			this.updateRequiresThink()
+			this.applyAnimation()
+			
+			this.pTargetActivated.reset()
+			this.pTargetActivating.reset()
+			this.pTargetDeactivating.reset()
+			
+			if doNotify
+				this.pListeners.forEach( block Listener each
+					each.startDeactivate( this )
+					each.stopDeactivate( this )
+				end )
+			end
+		end
+		
+		/**
+		 * \brief Set to activated state immediately.
+		 * 
+		 * Applies the animator instance before returning. If you need to modify controllers
+		 * other than those controlled by this behavior change them before calling this method.
+		 */
+		public func void setActivated()
+			if this.pAnimatorInstance == null
+				return
+			end
+			
+			var bool doNotify = this.pState != State.activated
+			
+			this.pState = State.activated
+			
+			if this.pControllerActivate != null
+				this.pControllerActivate.setToUpper()
+			end
+			if this.pControllerDeactivate != null
+				this.pControllerDeactivate.setToLower()
+			end
+			if this.pControllerActivated != null
+				this.pControllerActivated.setToLower()
+			end
+			this.updateRequiresThink()
+			this.applyAnimation()
+			
+			this.pTargetActivated.fire()
+			this.pTargetActivating.reset()
+			this.pTargetDeactivating.reset()
+			
+			if doNotify
+				this.pListeners.forEach( block Listener each
+					each.startActivate( this )
+					each.stopActivate( this )
+				end )
+			end
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pAnimatorInstance != null
+				this.applyAnimation()
+			end
+			
+			if this.pTriggerTable == null
+				return
+			end
+			
+			this.pTargetActivated.acquireTarget( this.pTriggerTable )
+			this.pTargetActivating.acquireTarget( this.pTriggerTable )
+			this.pTargetDeactivating.acquireTarget( this.pTriggerTable )
+			
+			if this.pTrigger != null and this.pTrigger.getTriggerExpression() != null
+				if this.pTrigger.getState()
+					this.setActivated()
+					
+				else
+					this.setDeactivated()
+				end
+				
+				this.pTrigger.addListener( SwitchStateListener.new( this ) )
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.pTargetActivated.dropTarget()
+			this.pTargetActivating.dropTarget()
+			this.pTargetDeactivating.dropTarget()
+		end
+		
+		/** \brief Update requires think. */
+		public func void updateRequiresThink()
+			select this.pState
+			case State.deactivated
+				this.setRequiresThink( this.pControllerDeactivated != null )
+				
+			case State.activated
+				this.setRequiresThink( this.pControllerActivated != null )
+				
+			case State.activating, State.deactivating
+				this.setRequiresThink( true )
+				
+			else
+				this.setRequiresThink( false )
+			end
+		end
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			if this.pAnimatorInstance == null
+				return
+			end
+			
+			this.updateAnimator( elapsed )
+			this.applyAnimation()
+		end
+		
+		
+		
+		/** \brief Update animator. */
+		protected func void updateAnimator( float elapsed )
+			if this.pControllerDeactivated != null
+				this.pControllerDeactivated.increment( elapsed * this.pPlaySpeed )
+			end
+			if this.pControllerActivated != null
+				this.pControllerActivated.increment( elapsed * this.pPlaySpeed )
+			end
+			
+			select this.pState
+			case State.activating
+				this.pControllerActivate.increment( elapsed * this.pPlaySpeed )
+				if not this.pControllerActivate.isAtUpper()
+					break
+				end
+				
+				this.pState = State.activated
+				this.updateRequiresThink()
+				
+				this.pTargetActivated.fire()
+				this.pTargetActivating.reset()
+				
+				this.pListeners.forEach( block Listener each
+					each.stopActivate( this )
+				end )
+				
+				if this.pTrigger != null and not this.pTrigger.getState( true )
+					this.deactivate()
+				end
+				
+			case State.deactivating
+				this.pControllerDeactivate.increment( elapsed * this.pPlaySpeed )
+				if not this.pControllerDeactivate.isAtUpper()
+					break
+				end
+				
+				if this.pControllerActivate != null
+					this.pControllerActivate.setToLower()
+				end
+				if this.pControllerDeactivate != null
+					this.pControllerDeactivate.setToLower()
+				end
+				this.pState = State.deactivated
+				this.updateRequiresThink()
+				
+				this.pTargetActivated.reset()
+				this.pTargetDeactivating.reset()
+				
+				this.pListeners.forEach( block Listener each
+					each.stopDeactivate( this )
+				end )
+				
+				if this.pTrigger != null and this.pTrigger.getState( false )
+					this.activate()
+				end
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.updateControllers( this, elapsed )
+			end )
+		end
+		
+		/** \brief Apply animation. */
+		public func void applyAnimation()
+			if this.pAnimatorInstance != null
+				this.pAnimatorInstance.apply()
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.animationApplied( this )
+			end )
+		end
+		
+		
+		
+		/**
+		 * \brief Read element from file.
+		 * 
+		 * Applies the animator instance before returning. If you need to modify controllers
+		 * other than those controlled by this behavior change them before super calling method.
+		 */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pState = State.withOrder( reader.readByte() )
+			
+			var float value = reader.readFloat()
+			if this.pControllerDeactivated != null
+				this.pControllerDeactivated.setValue( value )
+			end
+			
+			value = reader.readFloat()
+			if this.pControllerActivate != null
+				this.pControllerActivate.setValue( value )
+			end
+			
+			value = reader.readFloat()
+			if this.pControllerDeactivate != null
+				this.pControllerDeactivate.setValue( value )
+			end
+			
+			value = reader.readFloat()
+			if this.pControllerActivated != null
+				this.pControllerActivated.setValue( value )
+			end
+			
+			this.updateRequiresThink()
+			
+			if this.pAnimatorInstance != null
+				this.pAnimatorInstance.apply()
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( this.pState.order() )
+			writer.writeFloat( this.pControllerDeactivated != null \
+				if this.pControllerDeactivated.getValue() else 0 )
+			writer.writeFloat( this.pControllerActivate != null \
+				if this.pControllerActivate.getValue() else 0 )
+			writer.writeFloat( this.pControllerDeactivate != null \
+				if this.pControllerDeactivate.getValue() else 0 )
+			writer.writeFloat( this.pControllerActivated != null \
+				if this.pControllerActivated.getValue() else 0 )
+		end
+		
+		
+		
+		/** \brief Behavior debug information as Dictionary. */
+		public func Dictionary debugInformation()
+			var Dictionary info = Dictionary.new()
+			info.setAt( "state", this.pState )
+			info.setAt( "animator", this.pAnimatorInstance != null and this.pAnimatorInstance.getAnimator() != null )
+			info.setAt( "playSpeed", this.pPlaySpeed )
+			info.setAt( "trigger", this.pTrigger != null if this.pTrigger.debugInformation() else null )
+			info.setAt( "triggerTable", this.pTriggerTable != null )
+			info.setAt( "controllerDeactivated", this.pControllerDeactivated != null )
+			info.setAt( "controllerActivate", this.pControllerActivate != null )
+			info.setAt( "controllerDeactivate", this.pControllerDeactivate != null )
+			info.setAt( "controllerActivated", this.pControllerActivated != null )
+			info.setAt( "targetActivated", this.pTargetActivated != null )
+			info.setAt( "targetActivating", this.pTargetActivating != null )
+			info.setAt( "targetDeactivating", this.pTargetDeactivating != null )
+			return info
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECPAnimator pAnimator
+	private var ECPAnimation pAnimation
+	private var ECPFloat pPlaySpeed
+	private var ECBehaviorTriggered pTrigger
+	private var ECPString pTargetActivated
+	private var ECPString pTargetActivating
+	private var ECPString pTargetDeactivating
+	private var TSTriggerTable pTriggerTable
+	private var String pControllerNameDeactivated
+	private var String pControllerNameActivated
+	private var String pControllerNameActivating
+	private var String pControllerNameDeactivating
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
+	this( eclass, component, BaseGameApp.getApp().getLoaders(), null, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
+	this( eclass, component, BaseGameApp.getApp().getLoaders(), null, id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable ) this( eclass, component, loaders, triggerTable, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id ) this( eclass, component, loaders, triggerTable, id, \
+		id.empty() if "twoStateAnimated" else "twoStateAnimated(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id, String subID ) \
+	this( eclass, component, loaders, triggerTable, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "component" )
+		end
+		
+		this.pComponent = component
+		this.pTriggerTable = triggerTable
+		this.pControllerNameDeactivated = "deactivated"
+		this.pControllerNameActivated = "activated"
+		this.pControllerNameActivating = "activating"
+		this.pControllerNameDeactivating = "deactivating"
+		
+		this.pAnimator = ECPAnimator.new( prefix + "animator", loaders.getAnimator() )
+		eclass.addProperty( this.pAnimator )
+		
+		this.pAnimation = ECPAnimation.new( prefix + "animation" )
+		eclass.addProperty( this.pAnimation )
+		
+		this.pPlaySpeed = ECPFloat.new( prefix + "playSpeed", 1, 0.001 )
+		eclass.addProperty( this.pPlaySpeed )
+		
+		this.pTrigger = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		
+		this.pTargetActivated = ECPString.new( prefix + "targetActivated", "" )
+		eclass.addProperty( this.pTargetActivated )
+		
+		this.pTargetActivating = ECPString.new( prefix + "targetActivating", "" )
+		eclass.addProperty( this.pTargetActivating )
+		
+		this.pTargetDeactivating = ECPString.new( prefix + "targetDeactivating", "" )
+		eclass.addProperty( this.pTargetDeactivating )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior to animate. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Animator resource. */
+	public func ECPAnimator getAnimator()
+		return this.pAnimator
+	end
+	
+	/** \brief Animation resource. */
+	public func ECPAnimation getAnimation()
+		return this.pAnimation
+	end
+	
+	/** \brief Play speed. */
+	public func ECPFloat getPlaySpeed()
+		return this.pPlaySpeed
+	end
+	
+	/** \brief Trigger activate. */
+	public func ECBehaviorTriggered getTrigger()
+		return this.pTrigger
+	end
+	
+	/** \brief Target activate. */
+	public func ECPString getTargetActivated()
+		return this.pTargetActivated
+	end
+	
+	/** \brief Target activating. */
+	public func ECPString getTargetActivating()
+		return this.pTargetActivating
+	end
+	
+	/** \brief Target deactivating. */
+	public func ECPString getTargetDeactivating()
+		return this.pTargetDeactivating
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	/** \brief Name of deactivated controller. */
+	public func String getControllerNameDeactivated()
+		return this.pControllerNameDeactivated
+	end
+	
+	/** \brief Set name of deactivated controller. */
+	public func void setControllerNameDeactivated( String name )
+		this.pControllerNameDeactivated = name
+	end
+	
+	/** \brief Name of activated controller. */
+	public func String getControllerNameActivated()
+		return this.pControllerNameActivated
+	end
+	
+	/** \brief Set name of activated controller. */
+	public func void setControllerNameActivated( String name )
+		this.pControllerNameActivated = name
+	end
+	
+	/** \brief Name of activate controller. */
+	public func String getControllerNameActivating()
+		return this.pControllerNameActivating
+	end
+	
+	/** \brief Set name of activate controller. */
+	public func void setControllerNameActivating( String name )
+		this.pControllerNameActivating = name
+	end
+	
+	/** \brief Name of deactivate controller. */
+	public func String getControllerNameDeactivating()
+		return this.pControllerNameDeactivating
+	end
+	
+	/** \brief Set name of deactivate controller. */
+	public func void setControllerNameDeactivating( String name )
+		this.pControllerNameDeactivating = name
+	end
+	
+	/** \brief Set names of controllers. */
+	public func void setControllerNames( String deactivated, String activated, \
+	String activating, String deactivating )
+		this.pControllerNameDeactivated = deactivated
+		this.pControllerNameActivated = activated
+		this.pControllerNameActivating = activating
+		this.pControllerNameDeactivating = deactivating
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorTwoStateAnimated getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorTwoStateAnimated
+		end ) cast ECBehaviorTwoStateAnimated
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorTwoStateAnimated with specific identifier.
+	 */
+	static public func ECBehaviorTwoStateAnimated getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorTwoStateAnimated each
+			return each castable ECBehaviorTwoStateAnimated and \
+				( each cast ECBehaviorTwoStateAnimated ).getID().equals( id )
+		end ) cast ECBehaviorTwoStateAnimated
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorTwoStateAnimated behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorTwoStateAnimated
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorTwoStateAnimated.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorTwoStateAnimated.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorTwoStateAnimated.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+	
+	
+	
+	/**
+	 * \brief Initialize animator instance for element from stub.
+	 * 
+	 * Assigns the animator and animation to the instance. If at least one controller is
+	 * present then the first controller is initialized as playback controller. The clamping
+	 * around and frozen state are set to the looping, respectivily playing parameter
+	 * The element is responsible to assign a Component to the animator instance.
+	 */
+	public func AnimatorInstance createAnimatorInstance( Element element, StubElement stub )
+		var Animator animator = this.pAnimator.getAnimator()
+		var Animation animation = this.pAnimation.getAnimation()
+		var String value
+		
+		// animator resource
+		value = stub.getPropertyValueFor( this.pAnimator.getName(), "" )
+		if not value.empty()
+			try
+				animator = this.pAnimator.getLoader().loadFromFile( value )
+				
+			catch Exception e
+				throw ELoadResourceFailed.new( value, element.getClass().getClassname() )
+			end
+		end
+		
+		// animation resource
+		value = stub.getPropertyValueFor( this.pAnimation.getName(), "" )
+		if not value.empty()
+			try
+				animation = Animation.new( value )
+				
+			catch Exception e
+				throw ELoadResourceFailed.new( value, element.getClass().getClassname() )
+			end
+		end
+		
+		if animator == null
+			return null
+		end
+		
+		// create animator instance
+		var AnimatorInstance instance = AnimatorInstance.new()
+		instance.setAnimator( animator )
+		instance.setAnimation( animation )
+		return instance
+	end
+end

@@ -1,0 +1,196 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable billboard for element class.
+ * 
+ * Provides billboard support to element class without subclassing from a specific class.
+ */
+class ECComposeBillboard
+	private var ECPSkin pSkin
+	private var ECPVector pAxis
+	private var ECPVector2 pOffset
+	private var ECPBoolean pLocked
+	private var ECPBoolean pSpherical
+	private var ECPBoolean pSizeFixedToScreen
+	private var ECPBoolean pRenderEnvMap
+	private var LayerMask pLayerMask
+	private var LayerMask pLayerMaskRenderEnvMap
+	
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "billboard." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, String prefix )
+		if prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pSkin = ECPSkin.new( prefix + "skin" )
+		ownerClass.addProperty( this.pSkin )
+		
+		this.pAxis = ECPVector.new( prefix + "axis", Vector.new( 0, 1, 0 ) )
+		ownerClass.addProperty( this.pAxis )
+		
+		this.pOffset = ECPVector2.new( prefix + "offset", Vector2.new() )
+		ownerClass.addProperty( this.pOffset )
+		
+		this.pLocked = ECPBoolean.new( prefix + "locked", true )
+		ownerClass.addProperty( this.pLocked )
+		
+		this.pSpherical = ECPBoolean.new( prefix + "spherical", true )
+		ownerClass.addProperty( this.pSpherical )
+		
+		this.pSizeFixedToScreen = ECPBoolean.new( prefix + "sizeFixedToScreen", false )
+		ownerClass.addProperty( this.pSizeFixedToScreen )
+		
+		this.pRenderEnvMap = ECPBoolean.new( prefix + "renderEnvMap", true )
+		ownerClass.addProperty( this.pRenderEnvMap )
+		
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+		this.pLayerMaskRenderEnvMap = LayerMask.newWith( BaseGameApp.WorldLayerBit.envmap )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Skin resource. */
+	public func ECPSkin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Billboard axis. */
+	public func ECPVector getAxis()
+		return this.pAxis
+	end
+	
+	/** \brief Billboard offset. */
+	public func ECPVector2 getOffset()
+		return this.pOffset
+	end
+	
+	/** \brief Billboard is locked. */
+	public func ECPBoolean getLocked()
+		return this.pLocked
+	end
+	
+	/** \brief Billboard is spherical. */
+	public func ECPBoolean getSpherical()
+		return this.pSpherical
+	end
+	
+	/** \brief Billboard size is fixed to the screen size. */
+	public func ECPBoolean getSizeFixedToScreen()
+		return this.pSizeFixedToScreen
+	end
+	
+	/** \brief Render prop in environment maps. */
+	public func ECPBoolean getRenderEnvMap()
+		return this.pRenderEnvMap
+	end
+	
+	/** \brief Layer mask to set (basic layer mask). */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask to set (basic layer mask). */
+	public func void setLayerMask( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMask = layerMask
+	end
+	
+	/** \brief Layer mask to set if render environment map is true. */
+	public func LayerMask getLayerMaskRenderEnvMap()
+		return this.pLayerMaskRenderEnvMap
+	end
+	
+	/** \brief Set layer mask to set if render environment map is true. */
+	public func void setLayerMaskRenderEnvMap( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMaskRenderEnvMap = layerMask
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/** \brief Initialize billboard for element from stub. */
+	public func Billboard createBillboard( Element element, StubElement stub )
+		var ElementClass eclass = element.getClass()
+		var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+		var Billboard billboard = Billboard.new()
+		
+		billboard.setSkin( this.pSkin.getSkin( stub, eclass ) )
+		billboard.setPosition( element.getPosition() )
+		billboard.setSize( Vector2.new( element.getScaling().getX(), element.getScaling().getY() ) )
+		billboard.setOffset( this.pOffset.getVector2( stub, codec ) )
+		billboard.setAxis( this.pAxis.getVector( stub, codec ) )
+		billboard.setLocked( this.pLocked.getValue( stub ) )
+		billboard.setSpherical( this.pSpherical.getValue( stub ) )
+		billboard.setSizeFixedToScreen( this.pSizeFixedToScreen.getValue( stub ) )
+		
+		return billboard
+	end
+	
+	/**
+	 * \brief Create billboard layer mask.
+	 */
+	public func LayerMask createLayerMask( StubElement stub )
+		var LayerMask layerMask =  LayerMask.new( this.pLayerMask )
+		
+		if stub.getPropertyBoolFor( this.pRenderEnvMap.getName(), this.pRenderEnvMap.getValue() )
+			layerMask |= this.pLayerMaskRenderEnvMap
+		end
+		
+		return layerMask
+	end
+end

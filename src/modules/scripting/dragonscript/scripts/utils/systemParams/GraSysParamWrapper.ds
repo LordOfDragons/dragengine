@@ -1,0 +1,65 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+/**
+ * \brief Wrapper interface to simplify access graphic system parameters.
+ */
+class GraSysParamWrapper implements SysParamWrapper
+	/** \brief Create wrapper. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Number of module parameters. */
+	public func int getParameterCount()
+		return GraphicSystem.getParameterCount()
+	end
+	
+	/** \brief Module parameter by index. */
+	public func ModuleParameter getParameterAt( int index )
+		return GraphicSystem.getParameterInfo( index )
+	end
+	
+	/** \brief Module parameter by name. */
+	public func ModuleParameter getParameterNamed( String name )
+		return GraphicSystem.getParameterInfo( name )
+	end
+	
+	/** \brief Value for named parameter. */
+	public func String getParameterValue( String name )
+		return GraphicSystem.getParameterValue( name )
+	end
+	
+	/** \brief Set value for named parameter. */
+	public func void setParameterValue( String name, String value )
+		GraphicSystem.setParameterValue( name, value )
+	end
+	
+	/** \brief Send command. */
+	public func String sendCommand( String command )
+		return GraphicSystem.sendCommand( command )
+	end
+end

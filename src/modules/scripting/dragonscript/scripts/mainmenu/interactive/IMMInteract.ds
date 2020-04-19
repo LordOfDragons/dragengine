@@ -1,0 +1,196 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Interact handler for interactive main menu.
+ * 
+ * Checks for hot-spot the mouse cursor is hovering above and triggers actions if primary
+ * mouse button is pressed.
+ */
+class IMMInteract implements ColliderListener
+	/** \brief Interactive main menu. */
+	private var InteractiveMainMenu pMainMenu
+	
+	/** \brief Collision filter. */
+	private var CollisionFilter pCollisionFilter
+	
+	/** \brief Hot-spot under cursor or null. */
+	private var IMMBehaviorHotSpot.Instance pHoverHotSpot
+	
+	
+	
+	/** \brief Create interact handler for interactive main menu. */
+	public func new( InteractiveMainMenu mainMenu )
+		if mainMenu == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMainMenu = mainMenu
+		this.pCollisionFilter = this.createCollisionFilter()
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pHoverHotSpot = null
+		this.pMainMenu = null
+	end
+	
+	
+	
+	/** \brief Interactive main menu. */
+	public func InteractiveMainMenu getMainMenu()
+		return this.pMainMenu
+	end
+	
+	/** \brief Hot-spot under cursor or null. */
+	public func IMMBehaviorHotSpot.Instance getHoverHotSpot()
+		return this.pHoverHotSpot
+	end
+	
+	
+	
+	/** \brief Update camera. */
+	public func void update( float elapsed )
+		// hovering over hot-spot is only enabled if no hot-spot is active, activating
+		// or deactivating. basically only in pure main menu mode
+		if this.pMainMenu.getActiveHotSpot() == null
+			this.hotSpotFromMouseCursor()
+			
+		else
+			this.clearHotSpot()
+		end
+	end
+	
+	/** \brief Mouse button pressed. */
+	public func void onButtonPress( MouseEvent event )
+		select event.getButton()
+		case InputEventMouseButton.left
+			if this.pHoverHotSpot != null and this.pMainMenu.getActiveHotSpot() == null
+				this.pMainMenu.activateHotSpot( this.pHoverHotSpot )
+			end
+			
+		case InputEventMouseButton.right, InputEventMouseButton.middle
+			if this.pMainMenu.getActiveHotSpot() != null
+				this.pMainMenu.deactivateHotSpot()
+			end
+		end
+	end
+	
+	/** \brief Key pressed. */
+	public func void onKeyPress( KeyEvent event )
+		select event.getKeyCode()
+		case InputEventKey.escape
+			if this.pMainMenu.getActiveHotSpot() != null
+				this.pMainMenu.deactivateHotSpot()
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Create collision filter. */
+	protected func CollisionFilter createCollisionFilter()
+		var LayerMask layerMask = LayerMask.new()
+		layerMask.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		layerMask.setBit( BaseGameApp.CollisionFilterBit.dynamic )
+		layerMask.setBit( BaseGameApp.CollisionFilterBit.actorAI ) // used by IMMBehaviorColliderInteract
+		return CollisionFilter.new( layerMask )
+	end
+	
+	/** \brief Update hotspot from mouse cursor position. */
+	protected func void hotSpotFromMouseCursor()
+		var DVector rayOrigin = this.pMainMenu.getCamera().getPosition()
+		var WorldRenderer worldRenderer = this.pMainMenu.getWorldRenderer()
+		var Vector rayDirection = worldRenderer.backProject( \
+			this.pMainMenu.getDesktop().getMouseLocation() \
+				- worldRenderer.getScreenPosition() )
+		
+		var IMMBehaviorHotSpot.Instance lastHotSpot = this.pHoverHotSpot
+		this.pHoverHotSpot = null
+		
+		this.pMainMenu.getWorld().getWorld().rayHitsClosest( rayOrigin, \
+			rayDirection * 300.0, this, this.pCollisionFilter )
+		
+		if this.pHoverHotSpot == lastHotSpot
+			return
+		end
+		
+		if lastHotSpot != null
+			lastHotSpot.onHotSpotHoverExit()
+		end
+		
+		if this.pHoverHotSpot != null
+			this.pHoverHotSpot.onHotSpotHoverEnter()
+		end
+	end
+	
+	/** \brief Clear hotspot. */
+	protected func void clearHotSpot()
+		if this.pHoverHotSpot == null
+			return
+		end
+		
+		if this.pHoverHotSpot != null
+			this.pHoverHotSpot.onHotSpotHoverExit()
+		end
+		this.pHoverHotSpot = null
+	end
+	
+	
+	
+	/** \brief Store hot-spot if hit collider is a hot-spot. */
+	public func void collisionResponse( Collider owner, CollisionInfo info )
+		if not info.isCollider()
+			return
+		end
+		
+		var Object hitOwner = info.getCollider().getOwner()
+		if hitOwner == null
+			return
+		end
+		
+		if not hitOwner castable BehaviorElement
+			return
+		end
+		
+		var IMMBehaviorHotSpot.Instance behavior = IMMBehaviorHotSpot.getInstanceIn( hitOwner cast BehaviorElement )
+		if behavior != null
+			this.pHoverHotSpot = behavior
+		end
+	end
+	
+	/** \brief All colliders can be hit. */
+	public func bool canHitCollider( Collider owner, Collider collider )
+		return true
+	end
+	
+	/** \brief Not used. */
+	public func void colliderChanged( Collider owner )
+	end
+end

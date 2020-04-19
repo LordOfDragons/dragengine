@@ -1,0 +1,102 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Conversation actions.
+ */
+abstract class ConversationAction implements Persistable
+	/** \brief Wait for actor. */
+	private var bool pWaitForActor
+	
+	/** \brief ID of actor to wait for or null to wait for all actors. */
+	private var String pWaitForActorID
+	
+	/** \brief Delay before processing the action. */
+	private var float pDelay
+	
+	
+	
+	/** \brief Create conversation action. */
+	public func new()
+		this.pWaitForActor = true
+		this.pDelay = 0
+	end
+	
+	/** \brief Read from file. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		this.pWaitForActor = env.readBool( reader )
+		this.pWaitForActorID = env.readString8OrNullIfEmpty( reader )
+		this.pDelay = reader.readFloat()
+	end
+	
+	
+	
+	/** \brief Wait for actor. */
+	public func bool getWaitForActor()
+		return this.pWaitForActor
+	end
+	
+	/** \brief Set wait for actor. */
+	public func void setWaitForActor( bool wait )
+		this.pWaitForActor = wait
+	end
+	
+	/** \brief ID of actor to wait for or null to wait for all actors. */
+	public func String getWaitForActorID()
+		return this.pWaitForActorID
+	end
+	
+	/** \brief Set ID of actor to wait for or null to wait for all actors. */
+	public func void setWaitForActorID( String id )
+		this.pWaitForActorID = id
+	end
+	
+	/** \brief Delay in seconds before processing this action. */
+	public func float getDelay()
+		return this.pDelay
+	end
+	
+	/** \brief Set delay in seconds before processing this action. */
+	public func void setDelay( float delay )
+		this.pDelay = delay
+	end
+	
+	
+	
+	/** \brief Execute the action. */
+	abstract public func void execute( ConversationPlayback playback )
+	
+	
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		env.writeBool( writer, this.pWaitForActor )
+		env.writeString8OrEmptyIfNull( writer, this.pWaitForActorID )
+		writer.writeFloat( this.pDelay )
+	end
+end

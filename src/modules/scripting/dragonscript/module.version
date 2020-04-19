@@ -1,0 +1,4 @@
+SCRDSCRIPT {
+  global: DSCreateModule;
+  local: *;
+};

@@ -1,0 +1,172 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief System console command.
+ */
+class SystemConsoleCommand extends ConsoleCommand
+	private var SysParamWrapper pWrapper
+	
+	/** \brief Create console command. */
+	public func new( String name, String readableName, SysParamWrapper wrapper )
+		this.pWrapper = wrapper
+		this.setName( name )
+		this.setDescription( "Displays " + readableName + " Parameters." )
+		this.setSyntax( name + " [action]\n" + \
+			"   list {basic|advanced|expert} => displays list of all available parameters\n" + \
+			"   help <parameter> => displays informations about named parameter\n" + \
+			"   get <parameter> => displays value of named parameter\n" + \
+			"   set <parameter> <value> => sets the value of parameter to the given number\n" + \
+			"   send <command> => send command to the active module\n" )
+	end
+	
+	
+	
+	/**
+	 * \brief Execute command.
+	 * \param console Console to send output to.
+	 * \param params List of parameters. Has to match command syntax.
+	 */
+	public func void execute( Console console, Array params )
+		if params.getCount() == 0
+			console.addMessage( this.getSyntax() )
+			return
+		end
+		
+		if params.getAt( 0 ).equals( "list" )
+			var ModuleParameterCategory category = ModuleParameterCategory.basic
+			if params.getCount() > 1
+				category = ModuleParameterCategory.named( params.getAt( 1 ).toString() )
+				if category == null
+					category = ModuleParameterCategory.basic
+				end
+			end
+			
+			var int count = this.pWrapper.getParameterCount()
+			var Array parameters = Array.new()
+			var int i
+			
+			for i = 0 to count
+				if this.pWrapper.getParameterAt( i ).getCategory() <= category
+					parameters.add( this.pWrapper.getParameterAt( i ).getName() )
+				end
+			end
+			
+			if parameters.getCount() > 0
+				console.addMessage( parameters.sorted().fold( block String a, String b
+					return a + ", " + b
+				end ).toString() )
+				
+			else
+				console.addMessage( "< no parameters >" )
+			end
+			
+		elif params.getAt( 0 ).equals( "help" )
+			if params.getCount() == 1
+				console.addMessage( "parameter name missing" )
+				return
+			end
+			
+			var String paramName = params.getAt( 1 ).toString()
+			
+			try
+				var ModuleParameter modParam = this.pWrapper.getParameterNamed( paramName )
+				var String text = modParam.getName() + " (" + modParam.getType() + "): " + modParam.getDescription()
+				
+				if modParam.getType() == ModuleParameterType.selection
+					var int i, count = modParam.getSelectionEntryCount()
+					for i = 0 to count
+						text = text + "\n\n" + modParam.getSelectionEntryValueAt( i ) \
+							+ ":\n" + modParam.getSelectionEntryDescriptionAt( i )
+					end
+				end
+				
+				console.addMessage( text )
+				
+			catch Exception e
+				console.addMessage( "parameter not found: " + paramName )
+			end
+			
+		elif params.getAt( 0 ).equals( "get" )
+			if params.getCount() == 1
+				console.addMessage( "parameter name missing" )
+				return
+			end
+			
+			var String paramName = params.getAt( 1 ).toString()
+			
+			try
+				console.addMessage( paramName + " = " + this.pWrapper.getParameterValue( paramName ) )
+				
+			catch Exception e
+				console.addMessage( "parameter not found: " + paramName )
+			end
+			
+		elif params.getAt( 0 ).equals( "set" )
+			if params.getCount() == 1
+				console.addMessage( "parameter name missing" )
+				return
+			end
+			
+			var String paramName = params.getAt( 1 ).toString()
+			
+			if params.getCount() == 2
+				console.addMessage( "parameter value missing" )
+				return
+			end
+			
+			var String value = params.getAt( 2 ).toString()
+			
+			try
+				this.pWrapper.setParameterValue( paramName, value )
+				console.addMessage( paramName + " = " + this.pWrapper.getParameterValue( paramName ) )
+				
+			catch Exception e
+				console.addMessage( "parameter not found: " + paramName )
+			end
+			
+		elif params.getAt( 0 ).equals( "send" )
+			var String command = ""
+			
+			if params.getCount() > 1
+				command = params.fold( 1, params.getCount(), block String a, Object b
+					return a + " \"" + b + "\""
+				end ).toString()
+			end
+			
+			try
+				console.addMessage( this.pWrapper.sendCommand( command ) )
+				
+			catch Exception e
+				console.addMessage( "Exception: " + e.getReason() )
+			end
+			
+		else
+			console.addMessage( "invalid command: " + params.getAt( 0 ) )
+		end
+	end
+end

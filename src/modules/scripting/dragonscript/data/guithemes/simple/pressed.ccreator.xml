@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator type='Bevel'>
+	<color parameter='colorHilight' r='0.5' g='0.5' b='0.5'/>
+	<color parameter='colorShadow' r='1' g='1' b='1'/>
+	<color parameter='colorBackground' r='0.86' g='0.86' b='0.86'/>
+</canvasCreator>

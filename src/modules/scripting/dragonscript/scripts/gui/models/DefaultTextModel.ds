@@ -1,0 +1,95 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Default implementation of text model.
+ */
+class DefaultTextModel implements TextModel
+	/** \brief Text, */
+	private var String pText
+	
+	/** \brief Listeners */
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create text model with empty string. */
+	public func new()
+		this.pText = ""
+		this.pListeners = Array.new()
+	end
+	
+	/** \brief Create text model with initial text. */
+	public func new( String text )
+		if text == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pText = text
+		this.pListeners = Array.new()
+	end
+	
+	
+	
+	/** \brief Text. */
+	public func String getText()
+		return this.pText
+	end
+	
+	/** \brief Set text. */
+	public func void setText( String text )
+		if text.equals( this.pText )
+			return
+		end
+		
+		this.pText = text
+		this.notifyTextChanged()
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( TextModelListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( TextModelListener listener )
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Notify all that the text changed. */
+	protected func void notifyTextChanged()
+		this.pListeners.forEach( block TextModelListener each
+			each.textChanged( this )
+		end )
+	end
+end

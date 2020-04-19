@@ -1,0 +1,79 @@
+from SConsCommon import *
+
+# import whatever is given by the parent builder
+Import( 'parent_env parent_targets parent_report' )
+
+# setup the environment matching the OS
+envModule = parent_env.Clone()
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/crashrecovery/simplyquit/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/crashrecovery/simplyquit/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# setup the builders
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+libs = []
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+if envModule['OSWindows']:
+	libs.append('imagehlp')
+	#envModule.Append(CPPFLAGS = ['-DNO_CATCH_CRASH'])
+	#objects.append('drmingw-0.9.2-win64/lib/libexchndl.a')
+	#objects.append('drmingw-0.9.2-win64/lib/libmgwhelp.a')
+	#envModule.Append(CPPPATH = ['drmingw-0.9.2-win64/include'])
+
+library = envModule.SharedLibrary( target='crsimplyquit', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'cr_simplyquit_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+targetInstall = envModule.Alias( 'cr_simplyquit', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+buildCloc = envModule.Alias( 'cr_simplyquit_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'cr_simplyquit' ] = {
+	'name' : 'Simply Quit Crash Recovery Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

@@ -1,0 +1,391 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * Takes a text and formats it to fit into a predefined area.
+ * Help creating canvas for rendering.
+ */
+class TextLayout
+	/** \brief Text alignment. */
+	enum Align
+		/** Align text left side. */
+		left
+		
+		/** Align text right side. */
+		right
+		
+		/** Align text center. */
+		center
+	end
+	
+	
+	
+	/** Text to layout. */
+	private var String pText
+	
+	/** Text alignement. */
+	private var Align pAlignment
+	
+	/** Font to use. */
+	private var Font pFont
+	
+	/** Text color to use. */
+	private var Color pColor
+	
+	/** Array of text lines */
+	private var Array pLines
+	
+	/** Width of layout area. */
+	private var int pWidth
+	
+	/** Height of layout area. */
+	private var int pHeight
+	
+	/** Maximal width of layout area. */
+	private var int pMaxWidth
+	
+	/** Determines if in the no text case an empty line is added. */
+	private var bool pAtLeastOneLine
+	
+	
+	
+	/** Creates a new TextLayout object. */
+	public func new( String text, Font font )
+		if text == null or font == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pText = text
+		this.pLines = Array.new()
+		this.pAlignment = Align.left
+		this.pFont = font
+		this.pColor = Color.black
+		this.pWidth = 0
+		this.pHeight = 0
+		this.pMaxWidth = 0
+		this.pAtLeastOneLine = false
+	end
+	
+	/**
+	 * Creates a new TextLayout object using the attributes stored
+	 * in another TextLayout object but using a different max width.
+	 */
+	public func new( TextLayout layout, int width )
+		if layout == null or width < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pText = layout.getText()
+		this.pLines = Array.new()
+		this.pAlignment = layout.getAlignment()
+		this.pFont = layout.getFont()
+		this.pColor = Color.black
+		this.pWidth = 0
+		this.pHeight = 0
+		this.pMaxWidth = width
+		this.pAtLeastOneLine = false
+	end
+	
+	
+	
+	/** Layout text. */
+	public func String getText()
+		return this.pText
+	end
+	
+	/** Set layout text. */
+	public func void setText( String text )
+		if text == null
+			throw EInvalidParam.new()
+		end
+		this.pText = text
+	end
+	
+	/** Align.of text. */
+	public func Align getAlignment()
+		return this.pAlignment
+	end
+	
+	/** Set alignement of text. */
+	public func void setAlignment( Align alignment )
+		this.pAlignment = alignment
+	end
+	
+	/** Font. */
+	public func Font getFont()
+		return this.pFont
+	end
+	
+	/** Set font. */
+	public func void setFont( Font font )
+		if font == null
+			throw EInvalidParam.new()
+		end
+		this.pFont = font
+	end
+	
+	/** Color. */
+	public func Color getColor()
+		return this.pColor
+	end
+	
+	/** Set color. */
+	public func void setColor( Color color )
+		if color == null
+			throw EInvalidParam.new()
+		end
+		this.pColor = color
+	end
+	
+	/** Maximal width of the layout text. */
+	public func int getMaximalWidth()
+		return this.pMaxWidth
+	end
+	
+	/** Set maximal text width. */
+	public func void setMaximalWidth( int width )
+		if width < 0
+			throw EInvalidParam.new()
+		end
+		this.pMaxWidth = width
+	end
+	
+	/** No lines are present. */
+	public func bool getAtLeastOneLine()
+		return this.pAtLeastOneLine
+	end
+	
+	/** Set if there is at least one one present. */
+	public func void setAtLeastOneLine( bool atLastOneLine )
+		this.pAtLeastOneLine = atLastOneLine
+	end
+	
+	
+	
+	/** Width of the layout text. */
+	public func int getWidth()
+		return this.pWidth
+	end
+	
+	/** Height of the layout text. */
+	public func int getHeight()
+		return this.pHeight
+	end
+	
+	/** Number of lines on the layout text. */
+	public func int getLineCount()
+		return this.pLines.getCount()
+	end
+	
+	/** Line by index. */
+	public func TextLayoutLine getLine( int index )
+		return this.pLines.getAt( index ) cast TextLayoutLine
+	end
+	
+	
+	
+	/** Lay out text. */
+	public func void layoutText()
+		var UTF8Decoder decoder = UTF8Decoder.new( this.pText, 0 )
+		var float fmaxWidth = this.pMaxWidth cast float
+		var int lineHeight = this.pFont.getSize()
+		var TextLayoutLine textLine
+		var bool keepLooping = true
+		var int wordCharacters = 0
+		var float characterAdvance
+		var float characterExtend
+		var int lineStart = 0
+		var int wordStart = 0
+		var int wordCount = 0
+		var float wordWidth = 0.0
+		var float spacesWidth = 0.0
+		var float lineWidth = 0.0
+		var int lineEnd = 0
+		var int nextPosition = 0
+		var int lastPosition
+		var int i, lineCount
+		var int x = 0, y = 0
+		var int character
+		var bool hasLines = false
+		
+		// loop through the text and create lines
+		this.pWidth = 0
+		this.pHeight = 0
+		this.pLines = Array.new()
+		
+		while keepLooping
+			lastPosition = nextPosition
+			if decoder.hasReachedEnd()
+				character = '\n'
+				keepLooping = false
+			else
+				character = decoder.decodeNextCharacter()
+			end
+			nextPosition = decoder.getPosition()
+			
+//BaseGameApp.getApp().getConsole().addMessage( "round: c=" + ( character cast byte ) + " wc=" + wordCharacters + \
+//" ls=" + lineStart + " le=" + lineEnd + " ws=" + wordStart + " wc=" + wordCount + " sw=" + spacesWidth + \
+//" lw=" + lineWidth + " ww=" + wordWidth + " np=" + nextPosition + " lp=" + lastPosition + "\n" )
+			
+			if character == '\n'
+				if wordCharacters == 0
+					textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
+						DEMath.ceil( lineWidth ) cast int, lineHeight )
+				else
+					textLine = TextLayoutLine.new( lineStart, lastPosition - lineStart, \
+						DEMath.ceil( lineWidth + spacesWidth + wordWidth ) cast int, lineHeight )
+				end
+//BaseGameApp.getApp().getConsole().addMessage( "new line: text='" + this.pText.substring( textLine.getFirstChar(),\
+//textLine.getFirstChar() + textLine.getCharCount() ) + "' width=" + textLine.getWidth() + " height=" + textLine.getHeight() + "\n" )
+				lineStart = nextPosition
+				wordStart = lineStart
+				lineEnd = lineStart
+				wordCharacters = 0
+				wordCount = 0
+				wordWidth = 0.0
+				lineWidth = 0.0
+				spacesWidth = 0.0
+				
+			elif character != -1
+				characterAdvance = this.pFont.getCharAdvance( character )
+				characterExtend = this.pFont.getCharWidth( character ) - this.pFont.getCharBearing( character ) - characterAdvance
+//BaseGameApp.getApp().getConsole().addMessage( "test: cw=" + characterAdvance + " mw=" + this.pMaxWidth + "\n" )
+				
+				if this.pMaxWidth > 0 and wordCount > 1 and lineWidth + wordWidth + characterAdvance + characterExtend > fmaxWidth
+					// word break
+					//if wordCount > 1
+						textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
+							DEMath.ceil( lineWidth ) cast int, lineHeight )
+						lineStart = wordStart
+						if wordCharacters == 0
+							wordCount = 0 // same conditions bumps value up by one later
+						else
+							wordCount = 1 // nobody bumps anymore so we have to do so
+						end
+					// character break
+					/*else
+						if wordCount == 1
+							textLine = TextLayoutLine.new( lineStart, lastPosition - lineStart, \
+								lineWidth + wordWidth, lineHeight )
+						end
+						lineStart = lastPosition
+						wordStart = lastPosition
+						wordCharacters = 0
+						wordWidth = 0
+						wordCount = 0
+					end*/
+					lineEnd = lastPosition
+					lineWidth = 0.0
+					spacesWidth = 0.0
+				end
+				
+				if this.isWhiteSpace( character )
+					if wordCount == 0 and hasLines
+						lineStart = nextPosition
+						lineEnd = nextPosition
+						spacesWidth = 0.0
+					else
+						if wordCharacters > 0
+							lineEnd = lastPosition
+							lineWidth += spacesWidth + wordWidth
+							spacesWidth = 0.0
+						end
+						spacesWidth += characterAdvance
+					end
+					wordStart = nextPosition
+					wordCharacters = 0
+					wordWidth = 0.0
+				else
+					if wordCharacters == 0
+						wordCount++
+					end
+					wordCharacters++
+					wordWidth += characterAdvance
+				end
+				
+			end
+			
+			if textLine != null
+				if textLine.getWidth() > this.pWidth
+					this.pWidth = textLine.getWidth()
+				end
+				this.pHeight += textLine.getHeight()
+				textLine.setY( y )
+				y += textLine.getHeight()
+				this.pLines.add( textLine )
+				hasLines = true
+				textLine = null
+			end
+		end
+		
+		// if the last character is a newline or there is no line but atleastoneline
+		// is set we have to add an empty line
+		if this.pAtLeastOneLine and not hasLines
+			textLine = TextLayoutLine.new( 0, 0, 0, lineHeight )
+			textLine.setY( y )
+			this.pLines.add( textLine )
+		end
+		
+		// determine location of lines depending on alignement
+		this.pLines.forEach( block TextLayoutLine each
+			if this.pAlignment == Align.left
+				x = 0
+				
+			elif this.pAlignment == Align.right
+				x = this.pWidth - each.getWidth()
+				
+			else
+				x = ( this.pWidth - each.getWidth() ) / 2
+			end
+			
+			each.setX( x )
+//BaseGameApp.getApp().getConsole().addMessage( "" + i + ": text='" + this.pText.substring( textLine.getFirstChar(),\
+//textLine.getFirstChar() + textLine.getCharCount() ) + "' width=" + textLine.getWidth() + " height=" + textLine.getHeight() + "\n" )
+		end )
+	end
+	
+	/** Character is a white space character. */
+	private func bool isWhiteSpace( int char )
+		if char == ' ' or char == '\t'
+			return true
+		end
+		return false
+	end
+	
+	
+	
+	/**
+	 * Add canvas for each line. Canvas has to be of type Canvas.VIEW.
+	 * Caller is responsible to remove all canvas if required.
+	 */
+	public func void addToCanvas( CanvasView canvas, int x, int y )
+		this.pLines.forEach( block TextLayoutLine each
+			each.addToCanvas( this, canvas, x, y )
+		end )
+	end
+end

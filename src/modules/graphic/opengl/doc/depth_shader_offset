@@ -1,0 +1,98 @@
+The Skin-Depth shader contains a depth offset for the distance version that is a bit complex.
+The original code looks like this:
+
+	float depth = length( vPosition ) * pScaleDistanceDepth + pOffsetDistanceDepth;
+	vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+	gl_FragDepth = depth;
+	
+	vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+	gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
+
+The problem here is that an additional uniform containing the scale and offset for the distance case.
+It would though nice if this could be done only using the pDepthOffset uniform as it is possible in
+the projective case. This can be achieved with a bit of math work. For simplicity the following
+definitions are used (using depthOffset.xy = pDepthOffset.xy ):
+
+	d = depth
+	p = vPosition
+	s = pScaleDistanceDepth
+	o = pOffsetDistanceDepth
+	S = depthScale // the original value pDepthOffset.x is set to
+	B = depthBias // the original value pDepthOffset.y is set to
+	D = gl_FragDepth
+	dd = depthDeriv
+	|x| = length( x )
+
+Using these values the following code can be defined:
+
+	d = |p| * s + o
+	dd = ( dFdx( d ), dFdy( d ) )
+	D = d + |dd| * S + B
+
+We would like to get rid of the *s+o part in the first equation. The first observation is that the
+derivatives dFdx and dFdy are independent of the offset o. This is the case since dFdx and dFdy by
+definition take the difference between the value d between neighboring pixels. In short relates to:
+
+	dFdx( d ) = d(u+1,v) - d(u,v)
+	dFdx( d ) = ( |p(u+1,v)| * s + o ) - ( |p(u,v)| * s + o )
+	dFdx( d ) = ( |p(u+1,v)| - |p(u,v)| ) * s
+
+Hence s and o have no influence on the derivative by itself and can be factorized out. This reuslts
+in the following:
+
+	dd = ( dFdx( |p| ), dFdy( |p| ) ) * s
+	D = ( |p| * s + o ) + |dd| * S + B
+
+The scale also passes straight through the length calculation ( the |dd| one ):
+
+	z = sqrt( ( x*s ) * ( x*s ) + ( y*s ) * (y*s) )
+	z = sqrt( x*x * s*s + y*y + s*s )
+	z = sqrt( ( x*x + y*y ) * s*s )
+	z = sqrt( x*x + y*y ) * sqrt( s*s )
+	z = |p| * s
+
+This results in the following:
+
+	dd = ( dFdx( |p| ), dFdy( |p| ) )
+	D = ( |p| * s + o ) + |dd| * s * S + B
+
+The scaling can be applied directly to the vPosition using a modified view matrix. The matrix has
+to be modified with a scale matrix of value s:
+	
+	matrixView = oldMatrixView * ScaleMatrix( s )
+
+This alters the calculation into this ( using s passing unharmed through length and dFd* ):
+
+	dd = ( dFdx( |p| ), dFdy( |p| ) )
+	D = ( |p| + o ) + |dd| * S + B
+
+Now the parameters can be grouped together:
+
+	D = |p|  + |dd| * S + ( B + o )
+
+And thus the pDepthOffset has to be chosen like this:
+
+	pDepthOffset.x = S
+	pDepthOffset.y = B + o
+
+Hence the following modifications have to be done moving from projective depth to distance depth:
+
+	- ModelView Matrix multiplied by ScaleMatrix( s )
+	- pDepthOffset.y += o
+
+Let's verify this to be really equal:
+	
+	P = ( matrixModelView * p )
+	p' = P * s
+	d = |p'|
+	d = |P*s|
+	d = |P| * s      // s passes unaltered through length calculation
+	DD = ( dFdx( d ), dFdy( d ) )
+	DD = ( dFdx( P * s ), dFdy( P * s ) )
+	DD = ( dFdx( P ) * s, dFdy( P ) * s )     // s passes unaltered through dFd*
+	DD = ( dFdx( P ), dFdy( P ) ) * s       // s passes unaltered through length calculation
+	dd = DD * s
+	D = |p'|  + |dd| * S + ( B + o )
+	D = |P * s|  + |DD * s| * S + ( B + o )
+	D = |P| * s  + |DD| * s * S + ( B + o )   // s passes unaltered through length calculation
+	D = ( |P| * s + o ) + |DD| * s * S + B    // Q.E.D.

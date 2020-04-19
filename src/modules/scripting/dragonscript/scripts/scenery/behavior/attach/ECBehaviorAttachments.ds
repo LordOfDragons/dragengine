@@ -1,0 +1,205 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior for element storing attached elements.
+ * 
+ * Provides list for ECBehaviorAttachToParent to register themselves at. This allows this
+ * behavior to manage attached elements in case of elements being added and removed from
+ * game worlds as well as finding specific attached elements. Does not support detaching
+ * elements. If the element is disposed all attached elements are disposed too. If you need
+ * dynamic attaching use ECBehaviorAttachSlot together with ECBehaviorAttachable.
+ */
+class ECBehaviorAttachments extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorAttachments pECBehavior
+		private var Array pAttachments
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorAttachments ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pAttachments = Array.new()
+		end
+		
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.disposeAllAttachments()
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorAttachments getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Count of attachments. */
+		public func int getAttachmentCount()
+			return this.pAttachments.getCount()
+		end
+		
+		/** \brief Attachment at index. */
+		public func BehaviorElement getAttachmentAt( int index )
+			return this.pAttachments.getAt( index ) cast BehaviorElement
+		end
+		
+		/** \brief Attachment is present. */
+		public func bool hasAttachment( BehaviorElement element )
+			return this.pAttachments.has( element )
+		end
+		
+		/** \brief Add attachment to list. */
+		public func void addAttachment( BehaviorElement element )
+			this.pAttachments.add( element )
+		end
+		
+		/** \brief Remove attachment from list. */
+		public func void removeAttachment( BehaviorElement element )
+			this.pAttachments.remove( element )
+		end
+		
+		/** \brief Visit element using block with parameter BehaviorElement. */
+		public func void forEachAttachment( Block ablock )
+			this.pAttachments.forEach( ablock )
+		end
+		
+		/** \brief Find element using block with parameter BehaviorElement returning bool. */
+		public func BehaviorElement findAttachment( Block ablock )
+			return this.pAttachments.find( ablock ) cast BehaviorElement
+		end
+		
+		/** \brief Visit attachments using visitor. */
+		public func void visitAttachments( ElementVisitor visitor )
+			this.pAttachments.forEach( block BehaviorElement each
+				each.visit( visitor )
+			end )
+		end
+		
+		/** \brief Dispose of all attachments. */
+		public func void disposeAllAttachments()
+			this.pAttachments.forEach( block BehaviorElement each
+				each.dispose()
+			end )
+			this.pAttachments.removeAll()
+		end
+		
+		
+		
+		/**
+		 * \brief State changed (visble, touchable).
+		 * 
+		 * Applies visible and touchable state to attachments.
+		 */
+		public func void stateChanged()
+			var BehaviorElement element = this.getElement()
+			var bool visible = element.getVisible()
+			var bool touchable = element.getTouchable()
+			
+			this.pAttachments.forEach( block BehaviorElement each
+				each.setVisible( visible )
+				each.setTouchable( touchable )
+			end )
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			var GameWorld gameWorld = this.getElement().getGameWorld()
+			this.pAttachments.forEach( block BehaviorElement each
+				gameWorld.addElement( each )
+			end )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.pAttachments.forEach( block BehaviorElement each
+				each.removeFromGameWorldIfPresent()
+			end )
+		end
+	end
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) super( eclass )
+		if getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorAttachments getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorAttachments
+		end ) cast ECBehaviorAttachments
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAttachments.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

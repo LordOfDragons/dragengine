@@ -1,0 +1,178 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Manage language translator and language packs.
+ * 
+ * Provides support to load language packs into memory and seleting one of them to
+ * translate texts with. Upon switching the active language pack users have to call
+ * the translation methods again to obtain the new text.
+ */
+class TranslationManager
+	private var Dictionary pLanguagePacks
+	private var LanguagePack pActiveLanguagePack
+	private var UnicodeString pTextNoLanguagePack
+	
+	
+	
+	/** \brief Create translation manager. */
+	public func new()
+		this.pLanguagePacks = Dictionary.new()
+		this.pTextNoLanguagePack = UnicodeString.newFromUTF8( "Missing Language Pack" )
+	end
+	
+	
+	
+	/** \brief Translation for entry name or missing text if absent. */
+	public func UnicodeString translate( String name )
+		if this.pActiveLanguagePack != null
+			return this.pActiveLanguagePack.translate( name )
+			
+		else
+			return this.pTextNoLanguagePack
+		end
+	end
+	
+	/** \brief Translation for entry name or default value if absent. */
+	public func UnicodeString translate( String name, UnicodeString defaultValue )
+		if this.pActiveLanguagePack != null
+			return this.pActiveLanguagePack.translate( name, defaultValue )
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	
+	
+	/** \brief Missing language pack translation. */
+	public func UnicodeString getTextNoLanguagePack()
+		return this.pTextNoLanguagePack
+	end
+	
+	/** \brief Set missing language pack translation. */
+	public func void setTextNoLanguagePack( UnicodeString text )
+		this.pTextNoLanguagePack = text
+	end
+	
+	
+	
+	/** \brief Number of language packs. */
+	public func int getCount()
+		return this.pLanguagePacks.getCount()
+	end
+	
+	/** \brief Named language pack or \em null if absent. */
+	public func LanguagePack getNamed( UnicodeString name )
+		return this.pLanguagePacks.getAt( name, null ) cast LanguagePack
+	end
+	
+	/** \brief Add language pack. */
+	public func void add( LanguagePack languagePack )
+		if this.getNamed( languagePack.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pLanguagePacks.setAt( languagePack.getName(), languagePack )
+	end
+	
+	/** \brief Remove all language packs. */
+	public func void removeAll()
+		this.pLanguagePacks.removeAll()
+	end
+	
+	/** \brief Get array of language pack names as array of UnicodeString. */
+	public func Array getNames()
+		return this.pLanguagePacks.getKeys()
+	end
+	
+	/** \brief Visit language packs with block with parameter LanguagePack. */
+	public func void forEach( Block ablock )
+		this.pLanguagePacks.forEachValue( ablock )
+	end
+	
+	
+	
+	/** \brief Active language pack. */
+	public func LanguagePack getActive()
+		return this.pActiveLanguagePack
+	end
+	
+	/** \brief Set active language pack. */
+	public func void setActive( LanguagePack languagePack )
+		this.pActiveLanguagePack = languagePack
+	end
+	
+	/** \brief Set active language pack by name. */
+	public func void setActiveNamed( UnicodeString name )
+		var LanguagePack languagePack = this.getNamed( name )
+		if languagePack == null
+			throw EInvalidParam.new()
+		end
+		this.setActive( languagePack )
+	end
+	
+	/** \brief Set active language pack by name if present. */
+	public func void setActiveNamedIfPresent( UnicodeString name )
+		var LanguagePack languagePack = this.getNamed( name )
+		if languagePack != null
+			this.setActive( languagePack )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Scan directory for language pack files loading and adding them.
+	 * 
+	 * After calling this method call setActiveLanguagePack to choose one of the loaded
+	 * language packs to use.
+	 * 
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void addFromDirectory( String directory, bool recursive )
+		this.addFromDirectory( directory, "*.delangpack", recursive )
+	end
+	
+	/**
+	 * \brief Scan directory for language pack files loading and adding them.
+	 * 
+	 * After calling this method call setActiveLanguagePack to choose one of the loaded
+	 * language packs to use.
+	 * 
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param pattern File pattern to match. Has to be of the form "*.extension"
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void addFromDirectory( String directory, String pattern, bool recursive )
+		FileSystem.searchFiles( directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( each, pattern )
+				this.add( LanguagePack.new( each ) )
+			end
+			return true
+		end )
+	end
+end

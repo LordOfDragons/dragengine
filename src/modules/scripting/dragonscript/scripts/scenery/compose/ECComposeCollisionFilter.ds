@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable collision filter for element class.
+ */
+class ECComposeCollisionFilter
+	/** \brief Collider collision filter. */
+	private var CollisionFilter pCollisionFilter
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new()
+		this.pCollisionFilter = CollisionFilter.new()
+	end
+	
+	public func new( CollisionFilter filter )
+		this.pCollisionFilter = filter
+	end
+	
+	
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+		this.pCollisionFilter = collisionFilter
+	end
+	
+	/** \brief Convience function clearing bit in collision category. */
+	public func void collisionCategoryClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function setting bit in collision category. */
+	public func void collisionCategorySetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function clearing bit in collision filter. */
+	public func void collisionFilterClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+	
+	/** \brief Convience function setting bit in collision filter. */
+	public func void collisionFilterSetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+end

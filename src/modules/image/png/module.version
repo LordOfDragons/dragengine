@@ -1,0 +1,4 @@
+IMGPNG {
+  global: PNGCreateModule;
+  local: *;
+};

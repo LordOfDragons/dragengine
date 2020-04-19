@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+	<mime-type type='application/dragengine-game'>
+		<comment>Drag[en]gine Game</comment>
+		<icon name='dragengine-game'/>
+		<glob pattern='*.degame'/>
+	</mime-type>
+	<mime-type type='application/dragengine-delga'>
+		<comment>Drag[en]gine DELGA</comment>
+		<icon name='dragengine-delga'/>
+		<glob pattern='*.delga'/>
+	</mime-type>
+</mime-info>

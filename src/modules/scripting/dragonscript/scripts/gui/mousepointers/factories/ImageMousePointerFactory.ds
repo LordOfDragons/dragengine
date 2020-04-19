@@ -1,0 +1,119 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers.Factories
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Mouse pointer factory using image.
+ */
+public class ImageMousePointerFactory extends DefaultMousePointerFactory
+	/** \brief Image. */
+	private var Image pImage
+	
+	/** \brief Color matrix to use. */
+	private var ColorMatrix pColorMatrix
+	
+	
+	
+	/** \brief Create mouse pointer factory. */
+	public func new()
+	end
+	
+	/** \brief Create copy of mouse pointer factory. */
+	public func new( ImageMousePointerFactory factory ) super( factory )
+		this.pImage = factory.pImage
+		this.pColorMatrix = factory.pColorMatrix
+	end
+	
+	
+	
+	/** \brief Image or \em null if not set. */
+	public func Image getImage()
+		return this.pImage
+	end
+	
+	/** \brief Set image or \em null if not set. */
+	public func void setImage( Image image )
+		this.pImage = image
+	end
+	
+	/** \brief Color matrix to use. */
+	public func ColorMatrix getColorMatrix()
+		return this.pColorMatrix
+	end
+	
+	/** \brief Set color matrix to use. */
+	public func void setColorMatrix( ColorMatrix colorMatrix )
+		this.pColorMatrix = colorMatrix
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * | Name | Type | Method |
+	 * | size | Point | setSize |
+	 * | offset | Point | setOffset |
+	 * | image | Image | setImage |
+	 * | colorMatrix | ColorMatrix | setColorMatrix |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "image" )
+			this.setImage( value cast Image )
+			
+		elif name.equals( "colorMatrix" )
+			this.setColorMatrix( value cast ColorMatrix )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
+	
+	
+	
+	/** \brief Create copy of mouse pointer factory. */
+	public func MousePointerFactory copyFactory()
+		return ImageMousePointerFactory.new( this )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func MousePointer createMousePointer()
+		var ImageMousePointer mousePointer = ImageMousePointer.new()
+		this.initImageMousePointer( mousePointer )
+		return mousePointer
+	end
+	
+	/** \brief Initialize canvas creator part of mouse pointer. */
+	protected func void initImageMousePointer( ImageMousePointer mousePointer )
+		this.initDefaultMousePointer( mousePointer )
+		mousePointer.setImage( this.pImage )
+		
+		if this.pColorMatrix != null
+			mousePointer.getCanvas().setColorTransform( this.pColorMatrix )
+		end
+	end
+end

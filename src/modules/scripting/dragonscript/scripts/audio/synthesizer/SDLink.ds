@@ -1,0 +1,140 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of an synthesizer link.
+ * 
+ * Once defined a link can be added to an synthesizer using the stored definition.
+ * 
+ */
+class SDLink
+	/** \brief Name. */
+	private var String pName
+	
+	/** \brief Curve. */
+	private var CurveBezier pCurve
+	
+	/** \brief Controller. */
+	private var SDController pController
+	
+	/** \brief Repeat count along X axis. */
+	private var int pRepeat
+	
+	/** \brief Index of the link in the synthesizer. */
+	private var int pIndex
+	
+	
+	
+	/** \brief Create link definition. */
+	public func new()
+		this.pName = ""
+		this.pCurve = CurveBezier.new()
+		this.pIndex = 0
+		this.pRepeat = 1
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Set name. */
+	public func void setName( String name )
+		this.pName = name
+	end
+	
+	/** \brief Controller or \em null if not set. */
+	public func SDController getController()
+		return this.pController
+	end
+	
+	/** \brief Set controller or \em null if not set. */
+	public func void setController( SDController controller )
+		this.pController = controller
+	end
+	
+	/** \brief Repeat count along X axis. */
+	public func int getRepeat()
+		return this.pRepeat
+	end
+	
+	/** \brief Set repeat along X axis. */
+	public func void setRepeat( int repeat )
+		this.pRepeat = repeat
+	end
+	
+	/** \brief Curve. */
+	public func CurveBezier getCurve()
+		return this.pCurve
+	end
+	
+	/** \brief Set curve. */
+	public func void setCurve( CurveBezier curve )
+		this.pCurve = curve
+	end
+	
+	
+	
+	/** \brief Index of link in synthesizer. */
+	public func int getIndex()
+		return this.pIndex
+	end
+	
+	
+	
+	/** \brief Add link to synthesizer using the stored definition. */
+	public func void addToSynthesizer( Synthesizer synthesizer )
+		if synthesizer == null
+			throw EInvalidParam.new()
+		end
+		
+		if this.pController == null
+			this.pIndex = synthesizer.addLink( -1 )
+			
+		else
+			this.pIndex = synthesizer.addLink( this.pController.getIndex() )
+		end
+		
+		synthesizer.linkSetRepeat( this.pIndex, this.pRepeat )
+		synthesizer.linkSetCurve( this.pIndex, this.pCurve )
+	end
+	
+	
+	
+	public func void debug( Console console, int index )
+		this.pIndex = index
+		
+		console.addMessage( "- Link " + index + " (name=" + this.pName + " controller=" \
+			+ ( this.pController == null if -1 else this.pController.getIndex() ) \
+			+ " repeat=" + this.pRepeat + ")" )
+	end
+	
+end

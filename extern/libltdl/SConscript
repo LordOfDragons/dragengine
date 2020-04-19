@@ -1,0 +1,124 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libtool-2.4.6'
+
+libLinkVersion = '6'
+libLinkName = 'ltdl'
+libDirPath = 'lib'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
+	staticFileName = 'lib/lib{}.a'.format( libLinkName )
+elif envLibrary['OSBeOS']:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+else:
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
+	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+
+# check if system libltdl is present
+hasSystemLtdl = False
+cpppath = []
+
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_libltdl' ] != TernaryVariableNo:
+	hasSystemLtdl = conf.CheckLibWithHeader( libLinkName, 'ltdl.h', 'c++' )
+
+conf.Finish()
+
+if not hasSystemLtdl and envLibrary[ 'with_system_libltdl' ] == TernaryVariableYes:
+	Exit( 'Requested to use system libltdl but no usable libltdl found.' )
+
+libs = [ libLinkName ]
+
+parent_report[ 'use system libltdl' ] = 'yes' if hasSystemLtdl else 'no'
+
+if hasSystemLtdl:
+	parent_targets[ 'lib_libltdl' ] = {
+		'name' : 'Internal libltdl library',
+		'cpppath' : cpppath,
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libltdl
+def libltdlBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	script = createScriptHeader( env )
+	
+	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	
+	for p in env[ 'PATCHES' ]:
+		script.append( 'patch -p1 <{} || exit 1'.format( p.srcnode().abspath ) )
+	
+	script.append( 'cd libltdl || exit 1' )
+	
+	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline.append( '--enable-silent-rules' )
+	cmdline.append( '--enable-ltdl-install' )
+	if buildStaticLinking:
+		cmdline.append( '--enable-shared=no' )
+		cmdline.append( '--enable-static=yes' )
+		cmdline.append( '--with-pic=yes' )
+	else:
+		cmdline.append( '--enable-shared=yes' )
+		cmdline.append( '--enable-static=no' )
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+	
+	script.append( 'make install || exit 1' )
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libltdl')
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles( envLibrary, 'patches', '*.patch', patches, recursive=False )
+envLibrary.Append( PATCHES = [ envLibrary.File( x ) for x in sorted( patches ) ] )
+
+if buildStaticLinking:
+	targets = [ staticFileName ]
+else:
+	targets = [ libFileName ]
+targets.extend( [ 'include/ltdl.h' ] )
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(libltdlBuild, 'Build libltdl' ) )
+envLibrary.Depends( library, envLibrary[ 'PATCHES' ] )
+
+depends = parent_env.Alias( 'lib_libltdl', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', libDirPath, srcdir ] )
+
+if buildStaticLinking:
+	libs = [ library[ 0 ] ]
+	runtimelibs = []
+else:
+	runtimelibs = [ library[ 0 ] ]
+
+parent_targets[ 'lib_libltdl' ] = {
+	'name' : 'Internal libltdl library',
+	'cpppath' : [ envLibrary.Dir( 'include' ) ],
+	'libpath' : [ envLibrary.Dir( libDirPath ) ],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

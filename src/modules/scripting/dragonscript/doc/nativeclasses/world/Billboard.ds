@@ -1,0 +1,127 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Billboard.
+ * 
+ * This is a native class.
+ */
+class Billboard
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create billboard. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func Vector getPosition()
+		return null
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( Vector position )
+	end
+	
+	/** \brief Axis. */
+	public func Vector getAxis()
+		return null
+	end
+	
+	/** \brief Set axis. */
+	public func void setAxis( Vector axis )
+	end
+	
+	/** \brief Size. */
+	public func Vector2 getSize()
+		return null
+	end
+	
+	/** \brief Set size. */
+	public func void setSize( Vector2 size )
+	end
+	
+	/** \brief Offset. */
+	public func Vector2 getOffset()
+		return null
+	end
+	
+	/** \brief Set offset. */
+	public func void setOffset( Vector2 offset )
+	end
+	
+	/** \brief Skin. */
+	public func Skin getSkin()
+		return null
+	end
+	
+	/** \brief Set skin. */
+	public func void setSkin( Skin skin )
+	end
+	
+	/** \brief Dynamic skin. */
+	public func DynamicSkin getDynamicSkin()
+		return null
+	end
+	
+	/** \brief Set dynamic skin. */
+	public func void setDynamicSkin( DynamicSkin dynamicSkin )
+	end
+	
+	/** \brief Billboard is locked. */
+	public func bool getLocked()
+		return false
+	end
+	
+	/** \brief Set billboard is locked. */
+	public func void setLocked( bool locked )
+	end
+	
+	/** \brief Billboard is spherical. */
+	public func bool getSpherical()
+		return false
+	end
+	
+	/** \brief Set if billboard is spherical. */
+	public func void setSpherical( bool spherical )
+	end
+	
+	/** \brief Billboard size is fixed to the screen size. */
+	public func bool getSizeFixedToScreen()
+		return false
+	end
+	
+	/** \brief Set if billboard size is fixed to the screen size. */
+	public func void setSizeFixedToScreen( bool sizeFixedToScreen )
+	end
+	
+	/** \brief Billboard is visible. */
+	public func bool getVisible()
+		return true
+	end
+	
+	/** \brief Set if billboard is visible. */
+	public func void setVisible( bool visible )
+	end
+	
+	/** \brief layer mask. */
+	public func LayerMask getLayerMask()
+		return null
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	/*@}*/
+end

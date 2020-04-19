@@ -1,0 +1,65 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+pin Dragengine.Scenery
+
+/**
+ * \brief Server.
+ * 
+ * This is a native class.
+ */
+class Server
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create server. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Network address. */
+	public func String getAddress()
+	end
+	
+	/**
+	 * \brief Start listening on address for incoming connections.
+	 * 
+	 * The format of the address is specific to the network module. For common TCP based
+	 * network modules URL, IPv4 and IPv6 addresses are supported with optional port appended
+	 * by a colon (for example "url:3413" or "192.168.1.100:3413". If the port is not specified
+	 * 3413 is used (comes from "Drag[en]gine Network" short DEN using alphabetic position).
+	 * All modules support the special address "*" which picks the best listening address
+	 * supported by the module (if port is supported "*:port"). For TCP based network modules
+	 * this is the best (or first) public address found. In special situations it can be
+	 * required to pick an address yourself.
+	 * 
+	 * \returns \em true if listening or \em false in case of error.
+	 */
+	public func bool listenOn( String address )
+	end
+	
+	/** \brief Stop listening. */
+	public func void stopListening()
+	end
+	
+	
+	
+	/** \brief Server listener or \em null if not set. */
+	public func ServerListener getServerListener()
+	end
+	
+	/** \brief Set server listener or \em null if not set. */
+	public func void setServerListener( ServerListener listener )
+	end
+	/*@}*/
+end

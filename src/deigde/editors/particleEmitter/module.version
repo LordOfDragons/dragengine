@@ -1,0 +1,4 @@
+PARTICLEEMITTER {
+  global: ParticleEmitterEditorCreateModule;
+  local: *;
+};

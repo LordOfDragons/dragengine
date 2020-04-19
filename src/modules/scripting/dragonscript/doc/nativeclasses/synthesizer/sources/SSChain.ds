@@ -1,0 +1,74 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer source chain.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SSChain extends SynthesizerSource
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator source. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of sound files. */
+	public func int getSoundCount()
+	end
+	
+	/** \brief Add sound. */
+	public func void addSound( Sound sound )
+	end
+	
+	/** \brief Remove all sounds. */
+	public func void removeAllSounds()
+	end
+	
+	
+	
+	/**
+	 * \brief Set minimum play speed.
+	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
+	 *          values play backwards. A value of -1 would play backwards at original speed.
+	 */
+	public func void setMinSpeed( float speed )
+	end
+	
+	/**
+	 * \brief Set maximum play speed.
+	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
+	 *          values play backwards. A value of -1 would play backwards at original speed.
+	 */
+	public func void setMaxSpeed( float speed )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( SSChainTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( SSChainTarget target )
+	end
+	/*@}*/
+end

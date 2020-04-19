@@ -1,0 +1,274 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Use random element class from a list of element classes.
+ * 
+ * Add element classes to choose from to "elementClasses" element class property.
+ * The first time the world is created this element picks randomly one element
+ * class from this list and create it in place of this element class.
+ * 
+ * This class supports only persistable element classes. If you try to use a
+ * non-persistable element class an exception will be thrown. This is requied
+ * since the random state can only be saved if the created element is persisted.
+ * If not persisted the element would simply vanish during loading.
+ * 
+ * This class supports these sub properties (all removed before creating chosen element):
+ * - elementClasses: List of element classes replacing the list stored in the element class
+ *                   itself. Of the form "className1 className2 ... classNameN"
+ * - generateChance: Chance to generate the element at all. Floating point value in the range
+ *                   from 0 to 1. A value of 1 equals 100% chance to generate the element.
+ */
+class RandomElementClass extends ElementClass
+	/** \brief Element class list to choose from. */
+	private var ECPElementClassList pElementClasses
+	
+	/** \brief Chance for element to be generated at all. */
+	private var ECPFloat pGenerateChance
+	
+	/** \brief Randomize rotation and scaling. */
+	private var ECPBoolean pRandomRotScale
+	
+	/** \brief Minimum random rotation. */
+	private var ECPVector pMinRandomRotation
+	
+	/** \brief Maximum random rotation. */
+	private var ECPVector pMaxRandomRotation
+	
+	/** \brief Minimum random scaling. */
+	private var ECPFloat pMinRandomScale
+	
+	/** \brief Maximum random scaling. */
+	private var ECPFloat pMaxRandomScale
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( ElementClassList eclassList ) this( "RandomElement", eclassList )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, ElementClassList eclassList ) super( className )
+		this.pElementClasses = ECPElementClassList.new( "elementClasses", eclassList )
+		this.addProperty( this.pElementClasses )
+		
+		this.pGenerateChance = ECPFloat.new( "generateChance", 1.0 )
+		this.pGenerateChance.setLimits( true, 0.0, true, 1.0 )
+		this.addProperty( this.pGenerateChance )
+		
+		this.pRandomRotScale = ECPBoolean.new( "randomRotScale", false )
+		this.addProperty( this.pRandomRotScale )
+		
+		this.pMinRandomRotation = ECPVector.new( "minRandomRotation", Vector.new() )
+		this.addProperty( this.pMinRandomRotation )
+		
+		this.pMaxRandomRotation = ECPVector.new( "maxRandomRotation", Vector.new() )
+		this.addProperty( this.pMaxRandomRotation )
+		
+		this.pMinRandomScale = ECPFloat.new( "minRandomScale", 1.0, 0.0 )
+		this.addProperty( this.pMinRandomScale )
+		
+		this.pMaxRandomScale = ECPFloat.new( "maxRandomScale", 1.0, 0.0 )
+		this.addProperty( this.pMaxRandomScale )
+	end
+	
+	/** \brief Dispose of element class. */
+	public func void dispose()
+		super.dispose()
+		this.pElementClasses = null
+	end
+	
+	
+	
+	/** \brief Element class list to choose from. */
+	public func ECPElementClassList getElementClasses()
+		return this.pElementClasses
+	end
+	
+	/** \brief Chance for element to be generated at all. */
+	public func ECPFloat getGenerateChance()
+		return this.pGenerateChance
+	end
+	
+	/** \brief Randomize rotation and scaling. */
+	public func ECPBoolean getRandomRotScale()
+		return this.pRandomRotScale
+	end
+	
+	/** \brief Minimum random rotation. */
+	public func ECPVector getMinRandomRotation()
+		return this.pMinRandomRotation
+	end
+	
+	/** \brief Maximum random rotation. */
+	public func ECPVector getMaxRandomRotation()
+		return this.pMaxRandomRotation
+	end
+	
+	/** \brief Minimum random scaling. */
+	public func ECPFloat getMinRandomScale()
+		return this.pMinRandomScale
+	end
+	
+	/** \brief Maximum random scaling. */
+	public func ECPFloat getMaxRandomScale()
+		return this.pMaxRandomScale
+	end
+	
+	
+	
+	/** \brief Create named element class based on this class. */
+	public func ElementClass duplicateNamed( String classname )
+		return RandomElementClass.new( classname, this.pElementClasses.getElementClassList() )
+	end
+	
+	
+	/**
+	 * \brief Create element instance.
+	 * 
+	 * This method should never be called.
+	 */
+	protected func Element createElement()
+		throw EInvalidParam.new()
+	end
+	
+	/**
+	 * \brief Create element instance from stub.
+	 * 
+	 * Picks at random a class from the list of element classes and uses it to create the element
+	 * as if this class had been originally used instead.
+	 * 
+	 * Alters the stub element class to match the element class chosen by createElement().
+	 * 
+	 * Generate chance is used (either through class property or stub property) to randomly
+	 * skip generating an element at all.
+	 */
+	public func Element createElement( StubElement stub )
+		// check probability. if failed do not create element
+		if not DEMath.probability( stub.getPropertyFloatFor( \
+		"generateChance", this.pGenerateChance.getValue() ) )
+			return null
+		end
+		
+		// randomly pick element
+		var String value = stub.getPropertyValueFor( "elementClasses", "" )
+		var ElementClass eclass
+		
+		if value.empty()
+			eclass = this.pElementClasses.getRandomElementClass()
+			
+		else
+			var Array list = this.getCodecPropertyString().decodeStringList( value )
+			if list.getCount() > 0
+				eclass = this.pElementClasses.getElementClassList().getNamed( list.random() cast String )
+			end
+		end
+		
+		// if no element class has been found create no element. an exception is thrown if
+		// the element class is not persistable
+		if eclass == null
+			return null
+		end
+		if not eclass.getPersistable()
+			throw EInvalidParam.new()
+		end
+		
+		stub.setClass( eclass )
+		
+		// modify stub before creating element
+		this.modifyStub( stub )
+		
+		// remove properties required for generation only if present. they are not required
+		// anymore and can only potentially confuse the element class
+		stub.removePropertyWithKey( "elementClasses" )
+		stub.removePropertyWithKey( "generateChance" )
+		
+		// create element. this can be null
+		var Element element = eclass.createElement()
+		if element != null
+			element.init( stub )
+		end
+		
+		return element
+	end
+	
+	/**
+	 * \brief Modify stub for creating element.
+	 * 
+	 * Called if element class is found and element is about to be created. Default
+	 * implementation applies random rotation and scaling if enabled. Subclass can
+	 * add further random modifications if desired.
+	 */
+	protected func void modifyStub( StubElement stub )
+		// randomize rotation and scaling if enabled
+		if this.pRandomRotScale.getValue()
+			var Vector minRot = this.pMinRandomRotation.getVector()
+			var String value = stub.getPropertyValueFor( "minRandomRotation", null )
+			if value != null
+				minRot = this.getCodecPropertyString().decodeVector( value )
+			end
+			
+			var Vector maxRot = this.pMaxRandomRotation.getVector()
+			value = stub.getPropertyValueFor( "maxRandomRotation", null )
+			if value != null
+				maxRot = this.getCodecPropertyString().decodeVector( value )
+			end
+			
+			var Vector rotation = stub.getRotation()
+			stub.setRotation( Vector.new( \
+				rotation.getX() + DEMath.random( minRot.getX(), maxRot.getX() ), \
+				rotation.getY() + DEMath.random( minRot.getY(), maxRot.getY() ), \
+				rotation.getZ() + DEMath.random( minRot.getZ(), maxRot.getZ() ) ) )
+			
+			stub.setScaling( stub.getScaling() * DEMath.random( \
+				stub.getPropertyFloatFor( "minRandomScale", this.pMinRandomScale.getValue() ), \
+				stub.getPropertyFloatFor( "maxRandomScale", this.pMaxRandomScale.getValue() ) ) )
+		end
+	end
+	
+	/**
+	 * \brief Load element from file reader.
+	 * 
+	 * This method should never be called or something went wrong. Throws EInvalidParam.
+	 */
+	public func Element loadElement( PersistencyEnvironment env, \
+	StubElement stub, FileReader reader )
+		throw EInvalidParam.new()
+	end
+	
+	/**
+	 * \brief Load element from file reader and add it to game world.
+	 * 
+	 * This method should never be called or something went wrong. Throws EInvalidParam.
+	 */
+	public func void loadAndAddElement( PersistencyEnvironment env, \
+	StubElement stub, FileReader reader, GameWorld gameWorld )
+		throw EInvalidParam.new()
+	end
+end

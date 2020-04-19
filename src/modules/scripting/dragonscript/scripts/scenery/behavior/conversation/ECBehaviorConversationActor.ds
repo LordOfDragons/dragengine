@@ -1,0 +1,1086 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui.Designers
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.SpeechAnimations
+pin Dragengine.Utils.StyledText.Definition
+
+
+/**
+ * \brief Behavior adding conversation actor support to actors.
+ * 
+ * Provides ConversationActor with basic properties set depending on what behaviors are present
+ * before this behavior. In addition supports for other behaviors to modify and extend the
+ * ConversationActor namely adding game and condition commands or modify sub title boxes using
+ * listener support.
+ * 
+ * To use this class add these behaviors to the actor:
+ * - ECBehaviorConversationActor
+ * 
+ * Supports these behaviors if present:
+ * - ECBehaviorComponent
+ * - ECBehaviorLocomotion
+ * - ECBehaviorParameterTable
+ * 
+ * Basic ConversationActor is set up like this:
+ * - ParameterTable: ECBehaviorParameterTable if present
+ * - SpeechAnimationPlayback: SpeechAnimationPlayback using ECBehaviorComponent if present
+ * - GesturePlayback: ConversationGesturePlayback using ECBehaviorComponent if present
+ * - FacePosePlayback: ConversationFacePosePlayback using ECBehaviorComponent if present
+ * - HeadLookAtPlayback: ConversationHeadLookAtPlayback using ECBehaviorLocomotion if present
+ * - EyesLookAtPlayback: CharacterEyesLookAtPlayback using ECBehaviorComponent if present
+ * - SubtitleTheme: Set to null to use playback sub title box gui theme.
+ * - Name: Set from element class property "convoActor.name".
+ * 
+ * - setVoiceSpeaker: Assign a speaker used for voice acting
+ * 
+ * This behavior does not update itself automatically during thinking because locomotion
+ * handling in actors needs a specific order to work correctly:
+ * - ECBehaviorConversationActor.updateLocomotion( elapsed )
+ * - update locomotion using actor action, player input and other means
+ * - ECBehaviorConversationActor.updateAnimator( elapsed, actor.getAnimatorInstance() )
+ * - apply actor animator instance to component
+ * - ECBehaviorConversationActor.applyAnimations()
+ * 
+ * ECBehaviorConversationActor.updateLocomotion() has to be called before calling
+ * Locomotion.update() since the HeadLookAtPlayback modifies the locomotion goal parameters.
+ * 
+ * ECBehaviorConversationActor.updateAnimator() has to be called before applying animations
+ * since playback instances use the base animator instance controllers as input.
+ * 
+ * It is possible to use this behavior on non-actor elements. In this case add first a behavior
+ * providing animator support and assign it to the behavior. Then this behavior will register
+ * and update in the right time. Supported are these behaviors:
+ * - ECBehaviorActorAnimated
+ * - ECBehaviorAnimated
+ * - ECBehaviorTwoStateAnimated
+ */
+class ECBehaviorConversationActor extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Actor is doing something blocking if conversation actions wait for this actor. */
+		func bool wait( Instance instance )
+		
+		/** \brief Actor entered conversation. */
+		func void enterConversation( Instance instance )
+		
+		/** \brief Actor left conversation. */
+		func void leaveConversation( Instance instance )
+		
+		/**
+		 * \brief Modify sub title text created by behavior.
+		 * 
+		 * Multiple listeners can modify sub title text by either modifying the widget
+		 * pass to the listener or creating a new one.
+		 */
+		func SubTitleBoxText modifySubTitleText( Instance instance, \
+			SubTitleBoxText widget, UnicodeString text, StringID style )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Actor is doing something blocking if conversation actions wait for this actor.
+		 * 
+		 * Default implementation returns false.
+		 */
+		public func bool wait( Instance instance )
+			return false
+		end
+		
+		/** \brief Actor entered conversation. */
+		public func void enterConversation( Instance instance )
+		end
+		
+		/** \brief Actor left conversation. */
+		public func void leaveConversation( Instance instance )
+		end
+		
+		/**
+		 * \brief Modify sub title text created by behavior.
+		 * 
+		 * Multiple listeners can modify sub title text by either modifying the widget
+		 * pass to the listener or creating a new one.
+		 * 
+		 * Default implementation returns \em widget.
+		 */
+		public func SubTitleBoxText modifySubTitleText( Instance instance, \
+		SubTitleBoxText widget, UnicodeString text, StringID style )
+			return widget
+		end
+	end
+	
+	/** \brief Conversation command. */
+	interface ConversationCommand
+		/**
+		 * \brief Conversation command.
+		 * \param arguments. Array of String tokens parsed from send command.
+		 */
+		func void runCommand( Instance instance, Array arguments )
+	end
+	
+	/** \brief Conversation condition. */
+	interface ConversationCondition
+		/**
+		 * \brief Evaluate conversation condition.
+		 * \param arguments. Array of String tokens parsed from send command.
+		 */
+		func bool evaluateCondition( Instance instance, Array arguments )
+	end
+	
+	/** \brief Behavior conversation actor. */
+	public class BehaviorConversationActor extends ConversationActor
+		private var Instance pInstance
+		
+		public func new( Instance instance, StringID id ) super( id )
+			this.pInstance = instance
+		end
+		
+		public func void dispose()
+			this.pInstance = null
+		end
+		
+		public func Instance getInstance()
+			return this.pInstance
+		end
+		
+		public func bool wait()
+			return this.pInstance.onWait()
+		end
+		
+		public func void command( String command )
+			this.pInstance.runCommand( command )
+		end
+		
+		public func bool conditionCommand( String command )
+			return this.pInstance.evaluateCondition( command )
+		end
+		
+		public func void enterConversation()
+			this.pInstance.onEnterConversation()
+		end
+		
+		public func void leaveConversation()
+			this.pInstance.onLeaveConversation()
+		end
+		
+		public func DMatrix getMatrix()
+			return this.pInstance.getElement().getElementMatrix()
+		end
+		
+		public func DMatrix getMatrix( String bone )
+			var DMatrix matrix = this.pInstance.getElement().getElementMatrix()
+			if bone != null
+				var ECBehaviorComponent.Instance component = this.pInstance.getComponent()
+				if component != null
+					matrix = component.getComponent().getBoneMatrix( bone ).toDMatrix() * matrix
+				end
+			end
+			return matrix
+		end
+		
+		public func DMatrix getInverseMatrix()
+			return this.pInstance.getElement().getInverseElementMatrix()
+		end
+		
+		public func DMatrix getInverseMatrix( String bone )
+			var DMatrix matrix = this.pInstance.getElement().getInverseElementMatrix()
+			if bone != null
+				var ECBehaviorComponent.Instance component = this.pInstance.getComponent()
+				if component != null
+					matrix = matrix * component.getComponent().getBoneInverseMatrix( bone ).toDMatrix()
+				end
+			end
+			return matrix
+		end
+		
+		public func SubTitleBoxText createSubTitleText( UnicodeString text, StringID style )
+			return this.pInstance.createSubTitleText( text, style )
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Actor animated behavior listener. */
+		private class ActorAnimatedListener extends ECBehaviorActorAnimated.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void updateControllers( ECBehaviorActorAnimated.Instance instance, float elapsed )
+				this.pInstance.updateAnimators( elapsed, instance.getAnimatorInstance() )
+			end
+			
+			public func void animationApplied( ECBehaviorActorAnimated.Instance instance )
+				this.pInstance.applyAnimations()
+			end
+		end
+		
+		/** \brief Animated behavior listener. */
+		private class AnimatedListener extends ECBehaviorAnimated.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void updateControllers( ECBehaviorAnimated.Instance instance, float elapsed )
+				this.pInstance.updateLocomotion( elapsed )
+				this.pInstance.updateAnimators( elapsed, instance.getAnimatorInstance() )
+			end
+			
+			public func void animationApplied( ECBehaviorAnimated.Instance instance )
+				this.pInstance.applyAnimations()
+			end
+		end
+		
+		/** \brief Animated behavior listener. */
+		private class TwoStateAnimatedListener extends ECBehaviorTwoStateAnimated.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void updateControllers( ECBehaviorTwoStateAnimated.Instance instance, float elapsed )
+				this.pInstance.updateLocomotion( elapsed )
+				this.pInstance.updateAnimators( elapsed, instance.getAnimatorInstance() )
+			end
+			
+			public func void animationApplied( ECBehaviorTwoStateAnimated.Instance instance )
+				this.pInstance.applyAnimations()
+			end
+		end
+		
+		
+		private var ECBehaviorConversationActor pECBehavior
+		
+		private var ECBehaviorComponent.Instance pComponent
+		private var ECBehaviorParameterTable.Instance pParameterTable
+		private var ECBehaviorActorAnimated.Instance pActorAnimated
+		private var ECBehaviorAnimated.Instance pAnimated
+		private var ECBehaviorTwoStateAnimated.Instance pTwoStateAnimated
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		
+		private var ConversationTagResolver pTagResolver
+		private var CommandLineParser pCommandParser
+		private var GuiTheme pSubtitleTheme
+		private var String pSubtitleSelectorId
+		private var Dictionary pCommands
+		private var Dictionary pConditions
+		private var bool pRegisterConversationActor
+		private var BehaviorConversationActor pConversationActor
+		
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorConversationActor ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pSubtitleTheme = ecbehavior.getSubtitleTheme()
+			this.pCommands = Dictionary.new()
+			this.pConditions = Dictionary.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			if this.pConversationActor != null and this.pConversationActor.getPlayback() != null
+				this.pConversationActor.getPlayback().removeActor( this.pConversationActor )
+			end
+			
+			this.pConversationActor = null
+			this.pParameterTable = null
+			this.pComponent = null
+			this.pActorAnimated = null
+			this.pAnimated = null
+			this.pTwoStateAnimated = null
+			this.pListeners = null
+			this.pConditions = null
+			this.pCommands = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			if this.pECBehavior.getActorAnimated() != null
+				this.pActorAnimated = this.pECBehavior.getActorAnimated().instance( element )
+				this.pComponent = this.pActorAnimated.getComponent()
+			end
+			if this.pECBehavior.getAnimated() != null
+				this.pAnimated = this.pECBehavior.getAnimated().instance( element )
+				this.pComponent = this.pAnimated.getComponent()
+			end
+			if this.pECBehavior.getTwoStateAnimated() != null
+				this.pTwoStateAnimated = this.pECBehavior.getTwoStateAnimated().instance( element )
+				this.pComponent = this.pTwoStateAnimated.getComponent()
+			end
+			if this.pECBehavior.getLocomotion() != null
+				this.pLocomotion = this.pECBehavior.getLocomotion().instance( element )
+			end
+			if this.pECBehavior.getParameterTable() != null
+				this.pParameterTable = this.pECBehavior.getParameterTable().instance( element )
+			end
+			
+			this.pCommandParser = CommandLineParser.new()
+			this.pTagResolver = ConversationTagResolver.new()
+			this.pSubtitleSelectorId = this.pECBehavior.getSubtitleSelectorId().getValue( stub )
+			this.pRegisterConversationActor = this.pECBehavior.getRegisterConversationActor().getValue( stub )
+			
+			var StringID id = this.pECBehavior.getActorId().getValue( stub )
+			if id == null
+				return
+			end
+			
+			this.pConversationActor = this.createConversationActor( id, stub )
+			this.initConversationActor( stub )
+			this.initTagResolver( stub )
+			
+			if this.pActorAnimated != null
+				this.pActorAnimated.addListener( ActorAnimatedListener.new( this ) )
+			end
+			if this.pAnimated != null
+				this.pAnimated.addListener( AnimatedListener.new( this ) )
+			end
+			if this.pTwoStateAnimated != null
+				this.pTwoStateAnimated.addListener( TwoStateAnimatedListener.new( this ) )
+			end
+		end
+		
+		/** \brief Create conversation actor. */
+		protected func BehaviorConversationActor createConversationActor( StringID id, StubElement stub )
+			return BehaviorConversationActor.new( this, id )
+		end
+		
+		/** \brief Init conversation actor. */
+		protected func void initConversationActor( StubElement stub )
+			this.pConversationActor.setAliasID( this.pECBehavior.getAliasId().getValue( stub ) )
+			this.pConversationActor.setName( this.pECBehavior.getName().getValue( stub ) )
+			
+			if this.pParameterTable != null
+				this.pConversationActor.setParameterTable( this.pParameterTable.getParameterTable() )
+			end
+			
+			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
+			var DMatrix rotatorMatrix = DMatrix.newTranslation( DVector.new( \
+				this.pECBehavior.getHeadRotatorOffset().getVector( stub, codec ) ) )
+			
+			if this.pLocomotion != null
+				var Locomotion locomotion = this.pLocomotion.getLocomotion()
+				
+				// set head look at playback. since by default the BaseActor class has no component
+				// assigned the head rotator is set to be located 1.65m above ground which is where
+				// the camera is located by default
+				var ConversationHeadLookAtPlayback hlap = ConversationHeadLookAtPlayback.new()
+				hlap.setLocomotion( locomotion )
+				hlap.setRotatorMatrix( rotatorMatrix )
+				this.pConversationActor.setHeadLookAtPlayback( hlap )
+			end
+			
+			if this.pComponent != null
+				var Component component = this.pComponent.getComponent()
+				
+				// set speech animation playback
+				var SpeechAnimationPlayback sap = SpeechAnimationPlayback.new()
+				sap.getAnimatorInstance().setComponent( component )
+				this.pConversationActor.setSpeechAnimationPlayback( sap )
+				
+				// set gesture playback
+				var ConversationGesturePlayback gp = ConversationGesturePlayback.new()
+				gp.getAnimatorInstance().setComponent( component )
+				this.pConversationActor.setGesturePlayback( gp )
+				
+				// set face pose playback
+				var ConversationFacePosePlayback fpp = ConversationFacePosePlayback.new()
+				fpp.getAnimatorInstance().setComponent( component )
+				this.pConversationActor.setFacePosePlayback( fpp )
+				
+				// set eyes look at playback. the same rotator matrix is used although there a component
+				// needs to be present for eyes looking at something to actually work
+				var CharacterEyesLookAtPlayback elap = CharacterEyesLookAtPlayback.new()
+				elap.getAnimatorInstance().setComponent( component )
+				elap.setRotatorMatrix( rotatorMatrix )
+				this.pConversationActor.setEyesLookAtPlayback( elap )
+			end
+		end
+		
+		/** \brief Initialize tag resolver. */
+		protected func void initTagResolver( StubElement stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorConversationActor getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Actor animated behavior or null. */
+		public func ECBehaviorActorAnimated.Instance getActorAnimated()
+			return this.pActorAnimated
+		end
+		
+		/** \brief Animated behavior or null. */
+		public func ECBehaviorAnimated.Instance getAnimated()
+			return this.pAnimated
+		end
+		
+		/** \brief Two-State Animated behavior or null. */
+		public func ECBehaviorTwoStateAnimated.Instance getTwoStateAnimated()
+			return this.pTwoStateAnimated
+		end
+		
+		/** \brief Locomotion behavior or null. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Tag resolver. */
+		public func ConversationTagResolver getTagResolver()
+			return this.pTagResolver
+		end
+		
+		/** \brief Set tag resolver. */
+		public func void setTagResolver( ConversationTagResolver resolver )
+			if resolver == null
+				throw EInvalidParam.new()
+			end
+			this.pTagResolver = resolver
+		end
+		
+		/**
+		 * \brief Gui theme to use for sub title box creation.
+		 * 
+		 * If \em null uses the playback sub title box gui theme.
+		 */
+		public func GuiTheme getSubtitleTheme()
+			return this.pSubtitleTheme
+		end
+		
+		/**
+		 * \brief Set gui theme to use for sub title box creation.
+		 * 
+		 * If \em guiTheme is \em null uses the playback sub title box gui theme.
+		 */
+		public func void setSubtitleTheme( GuiTheme guiTheme )
+			this.pSubtitleTheme = guiTheme
+		end
+		
+		/**
+		 * \brief Sub title style selector ID.
+		 * 
+		 * If not empty string sub title related styles look like this where selectorId is this
+		 * parameter and style the optional style provided to createSubTitleText:
+		 * - SubTitleBoxText{.<selectorId>}{.<style>}
+		 * - Label.SubTitleBoxText.Text{.<selectorId>}{.<style>}
+		 * - Label.SubTitleBoxText.Name{.<selectorId>}{.<style>}
+		 */
+		public func String getSubtitleSelectorId()
+			return this.pSubtitleSelectorId
+		end
+		
+		/**
+		 * \brief Set style selector identifier to use or null if not used.
+		 * 
+		 * If not empty string sub title related styles look like this where selectorId is this
+		 * parameter and style the optional style provided to createSubTitleText:
+		 * - SubTitleBoxText{.<selectorId>}{.<style>}
+		 * - Label.SubTitleBoxText.Text{.<selectorId>}{.<style>}
+		 * - Label.SubTitleBoxText.Name{.<selectorId>}{.<style>}
+		 */
+		public func void setSubtitleSelectorId( String selectorId )
+			this.pSubtitleSelectorId = selectorId
+		end
+		
+		/** \brief Command parser. */
+		public func CommandLineParser getCommandParser()
+			return this.pCommandParser
+		end
+		
+		/** \brief Set command parser. */
+		public func void setCommandParser( CommandLineParser parser )
+			if parser == null
+				throw EInvalidParam.new()
+			end
+			this.pCommandParser = parser
+		end
+		
+		/** \brief Register conversation actor with game world. */
+		public func bool getRegisterConversationActor()
+			return this.pRegisterConversationActor
+		end
+		
+		/** \brief Conversation actor. */
+		public func ConversationActor getConversationActor()
+			return this.pConversationActor
+		end
+		
+		
+		
+		/** \brief Count of conversation commands. */
+		public func int getCommandCount()
+			return this.pCommands.getCount()
+		end
+		
+		/** \brief Supported command names as Array of String. */
+		public func Array getCommandNames()
+			return this.pCommands.getKeys()
+		end
+		
+		/** \brief Named command or null if absent. */
+		public func ConversationCommand getCommandNamed( String name )
+			return this.pCommands.getAt( name, null ) cast ConversationCommand
+		end
+		
+		/** \brief Add command replacing command with same name if present. */
+		public func void addCommand( String name, ConversationCommand command )
+			if name == null or command == null
+				throw EInvalidParam.new()
+			end
+			this.pCommands.setAt( name, command )
+		end
+		
+		
+		
+		/** \brief Count of conversation condition. */
+		public func int getConditionCount()
+			return this.pConditions.getCount()
+		end
+		
+		/** \brief Supported condition names as Array of String. */
+		public func Array getConditionNames()
+			return this.pConditions.getKeys()
+		end
+		
+		/** \brief Named condition or null if absent. */
+		public func ConversationCondition getConditionNamed( String name )
+			return this.pConditions.getAt( name, null ) cast ConversationCondition
+		end
+		
+		/** \brief Add condition replacing condition with same name if present. */
+		public func void addCondition( String name, ConversationCondition condition )
+			if name == null or condition == null
+				throw EInvalidParam.new()
+			end
+			this.pConditions.setAt( name, condition )
+		end
+		
+		
+		
+		/** \brief Clear all playback after adding to game world or spawning. */
+		public func void clearAllPlayback()
+			if this.pConversationActor != null
+				this.pConversationActor.clearAllPlayback()
+			end
+		end
+		
+		/** \brief Update playback changing locomotion. */
+		public func void updateLocomotion( float elapsed )
+			if this.pConversationActor != null
+				this.pConversationActor.updateBeforeLocomotion( elapsed )
+			end
+		end
+		
+		/** \brief Update playback changing animators. */
+		public func void updateAnimators( float elapsed, ECBehaviorActorAnimated.Instance behavior )
+			this.updateAnimators( elapsed, behavior.getAnimatorInstance() )
+		end
+		
+		public func void updateAnimators( float elapsed, AnimatorInstance sourceAnimatorInstance )
+			if this.pConversationActor != null
+				this.pConversationActor.updateAfterLocomotion( elapsed, sourceAnimatorInstance )
+			end
+		end
+		
+		/** \brief Apply animations. */
+		public func void applyAnimations()
+			if this.pConversationActor != null
+				this.pConversationActor.applyAnimations()
+			end
+		end
+		
+		
+		
+		/** \brief Ask listeners if conversation actions waiting for actor should block. */
+		public func bool onWait()
+			return this.pListeners.find( block Listener each
+				return each.wait( this )
+			end ) != null
+		end
+		
+		/** \brief Command send by the conversation script. */
+		public func void runCommand( String command )
+			this.runCommand( this.pCommandParser.parseCommand( command ) )
+		end
+		
+		public func void runCommand( Array arguments )
+			if arguments.getCount() == 0
+				throw EInvalidParam.new( "commandString is empty" )
+			end
+			
+			var String name = arguments.getAt( 0 ) cast String
+			var ConversationCommand command = this.pCommands.getAt( name, null ) cast ConversationCommand
+			if command == null
+				throw EInvalidParam.new( "Command with name '" + name + "' not found" )
+			end
+			
+			command.runCommand( this, arguments )
+		end
+		
+		/** \brief Evaluate condition send by the conversation script. */
+		public func bool evaluateCondition( String command )
+			return this.evaluateCondition( this.pCommandParser.parseCommand( command ) )
+		end
+		
+		public func bool evaluateCondition( Array arguments )
+			if arguments.getCount() == 0
+				throw EInvalidParam.new( "commandString is empty" )
+			end
+			
+			var String name = arguments.getAt( 0 ) cast String
+			var ConversationCondition condition = this.pConditions.getAt( name, null ) cast ConversationCondition
+			if condition == null
+				throw EInvalidParam.new( "Condition with name '" + name + "' not found" )
+			end
+			
+			return condition.evaluateCondition( this, arguments )
+		end
+		
+		/** \brief Actor entered a conversation. */
+		public func void onEnterConversation()
+			this.pListeners.forEach( block Listener each
+				each.enterConversation( this )
+			end )
+		end
+		
+		/**
+		 * \brief Actor left a conversation.
+		 * 
+		 * Calls leaveConversationTasks() then notifies listeners.
+		 */
+		public func void onLeaveConversation()
+			this.leaveConversationTasks()
+			this.pListeners.forEach( block Listener each
+				each.leaveConversation( this )
+			end )
+		end
+		
+		/**
+		 * \brief Leave conversation tasks required to get actor back to working condition.
+		 * 
+		 * Default implementation does these actions:
+		 * - Clear speech animation if existing
+		 * - Clear head look-at playback if existing
+		 * - Clear face poses if existing
+		 * - Clear eye look-at playback if existing
+		 */
+		public func void leaveConversationTasks()
+			var SpeechAnimationPlayback sap = this.pConversationActor.getSpeechAnimationPlayback()
+			if sap != null
+				sap.removeAllPhonemes()
+			end
+			
+			var ConversationLookAtPlayback hlap = this.pConversationActor.getHeadLookAtPlayback()
+			if hlap != null
+				hlap.clearLookAtState()
+			end
+			
+			var ConversationFacePosePlayback fpp = this.pConversationActor.getFacePosePlayback()
+			if fpp != null
+				fpp.removeAllPoses()
+			end
+			
+			var ConversationLookAtPlayback elap = this.pConversationActor.getEyesLookAtPlayback()
+			if elap != null
+				elap.clearLookAtState()
+			end
+		end
+		
+		/**
+		 * \brief Create sub title for actor matching speech style.
+		 * 
+		 * Calls createSubTitleTextWidget() then allows listeners to modify it.
+		 */
+		public func SubTitleBoxText createSubTitleText( UnicodeString text, StringID style )
+			var ObjectReference stbt = ObjectReference.new( this.createSubTitleTextWidget( text, style ) )
+			this.pListeners.forEach( block Listener each
+				stbt.set( each.modifySubTitleText( this, stbt.get() cast SubTitleBoxText, text, style ) )
+			end )
+			return stbt.get() cast SubTitleBoxText
+		end
+		
+		/**
+		 * \brief Create sub title widget for actor matching speech style.
+		 * 
+		 * Default implementation uses sub title gui theme font and white color creating
+		 * an instance of SubTitleBoxText with it.
+		 * 
+		 * Overwrite to use individual fonts and colors for actors and speak type or modifying
+		 * the text for example to replace game specific variables or formating hints.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general.
+		 */
+		public func SubTitleBoxText createSubTitleTextWidget( UnicodeString text, StringID style )
+			var String nameUtf8 = this.pConversationActor.getName().toString()
+			var StyledTextDefinition styledName, styledText
+			var String textUtf8 = text.toString()
+			var Image portraitImage
+			var Video portraitVideo
+			
+			if nameUtf8.empty()
+				nameUtf8 = null
+			end
+			
+			var String selector = ""
+			if not this.pSubtitleSelectorId.empty()
+				selector = selector + "." + this.pSubtitleSelectorId
+			end
+			if style != null
+				selector = selector + "." + style
+			end
+			var String selectorText = "Label.SubTitleBoxText.Text" + selector
+			
+			if textUtf8.find( '{' ) != -1
+				var GuiTheme guiTheme = this.pSubtitleTheme
+				if guiTheme == null
+					guiTheme = this.pConversationActor.getPlayback().getSubTitle().getGuiTheme()
+				end
+				
+				var DefaultLabelDesigner designer = guiTheme.getWidgetDesigner( selectorText ) cast DefaultLabelDesigner
+				
+				var STDStyle pageStyle = STDStyle.new( "page", designer.getLabelDesignNormal() )
+				
+				var STDStyle defaultStyle = STDStyle.new( "text", pageStyle )
+				defaultStyle.setMargins( RectArea.new() )
+				
+				styledText = this.pTagResolver.resolveTags( textUtf8, pageStyle, defaultStyle )
+				textUtf8 = null
+			end
+			
+			var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new( textUtf8, nameUtf8, \
+				styledText, styledName, portraitImage, portraitVideo, SubTitleBoxTextBorder.Placement.above )
+			
+			stbt.setDesignerSelector( "SubTitleBoxText" + selector )
+			if stbt.getLabelName() != null
+				stbt.getLabelName().setDesignerSelector( "Label.SubTitleBoxText.Name" + selector )
+			end
+			if stbt.getLabelText() != null
+				stbt.getLabelText().setDesignerSelector( selectorText )
+			end
+			
+			return stbt
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add to game world. */
+		public func void addToGameWorld()
+			if this.pConversationActor == null
+				return
+			end
+			
+			this.pConversationActor.clearAllPlayback()
+			if this.pRegisterConversationActor
+				this.getElement().getGameWorld().getConvoActorList().add( this.pConversationActor )
+			end
+		end
+		
+		/** \brief Remove from game world. */
+		public func void removeFromGameWorld()
+			if this.pConversationActor != null and this.pRegisterConversationActor
+				this.getElement().getGameWorld().getConvoActorList().remove( this.pConversationActor.getID() )
+			end
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pSubtitleSelectorId = reader.readString8()
+			if this.pConversationActor != null
+				this.pConversationActor.readFromFile( env, reader )
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeString8( this.pSubtitleSelectorId )
+			if this.pConversationActor != null
+				this.pConversationActor.writeToFile( env, writer )
+			end
+		end
+	end
+	
+	
+	
+	private var ECPStringID pActorId
+	private var ECPStringID pAliasId
+	private var ECPUnicodeString pName
+	private var ECPString pSubtitleSelectorId
+	private var ECPVector pHeadRotatorOffset
+	private var ECPBoolean pRegisterConversationActor
+	private var ECBehaviorActorAnimated pActorAnimated
+	private var ECBehaviorAnimated pAnimated
+	private var ECBehaviorTwoStateAnimated pTwoStateAnimated
+	private var ECBehaviorLocomotion pLocomotion
+	private var ECBehaviorParameterTable pParameterTable
+	private var GuiTheme pSubtitleTheme
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) this( eclass, "convoActor." )
+	end
+	
+	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			this.pSubtitleTheme = app.getWindowSubTitle().getGuiTheme()
+		end
+		
+		this.pActorId = ECPStringID.new( prefix + "id", null )
+		eclass.addProperty( this.pActorId )
+		
+		this.pAliasId = ECPStringID.new( prefix + "aliasId", null )
+		eclass.addProperty( this.pAliasId )
+		
+		this.pName = ECPUnicodeString.new( prefix + "name", UnicodeString.newFromUTF8( "" ) )
+		eclass.addProperty( this.pName )
+		
+		this.pSubtitleSelectorId = ECPString.new( prefix + "subtitleSelector", "" )
+		eclass.addProperty( this.pSubtitleSelectorId )
+		
+		this.pHeadRotatorOffset = ECPVector.new( prefix + "headRotatorOffset", Vector.new( 0, -1.65, 0 ) )
+		eclass.addProperty( this.pHeadRotatorOffset )
+		
+		this.pRegisterConversationActor = ECPBoolean.new( prefix + "registerConvoActor", false )
+		eclass.addProperty( this.pRegisterConversationActor )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pActorAnimated = null
+		this.pAnimated = null
+		this.pTwoStateAnimated = null
+		this.pLocomotion = null
+		this.pParameterTable = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Actor identifier. */
+	public func ECPStringID getActorId()
+		return this.pActorId
+	end
+	
+	/** \brief Alias identifier. */
+	public func ECPStringID getAliasId()
+		return this.pAliasId
+	end
+	
+	/** \brief Name shown in sub title box. */
+	public func ECPUnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief SUb title style selector ID. */
+	public func ECPString getSubtitleSelectorId()
+		return this.pSubtitleSelectorId
+	end
+	
+	/** \brief Head rotator offset used for Head-Look-At handling. */
+	public func ECPVector getHeadRotatorOffset()
+		return this.pHeadRotatorOffset
+	end
+	
+	/** \brief Register conversation actor with game world. */
+	public func ECPBoolean getRegisterConversationActor()
+		return this.pRegisterConversationActor
+	end
+	
+	/** \brief Attach to actor animated behavior or null. */
+	public func ECBehaviorActorAnimated getActorAnimated()
+		return this.pActorAnimated
+	end
+	
+	/** \brief Set actor animated behavior to attach to or null. */
+	public func void setActorAnimated( ECBehaviorActorAnimated actorAnimated )
+		this.pActorAnimated = actorAnimated
+	end
+	
+	/** \brief Attach to animated behavior or null. */
+	public func ECBehaviorAnimated getAnimated()
+		return this.pAnimated
+	end
+	
+	/** \brief Set animated behavior to attach to or null. */
+	public func void setAnimated( ECBehaviorAnimated animated )
+		this.pAnimated = animated
+	end
+	
+	/** \brief Attach to animated behavior or null. */
+	public func ECBehaviorTwoStateAnimated getTwoStateAnimated()
+		return this.pTwoStateAnimated
+	end
+	
+	/** \brief Set animated behavior to attach to or null. */
+	public func void setTwoStateAnimated( ECBehaviorTwoStateAnimated animated )
+		this.pTwoStateAnimated = animated
+	end
+	
+	/** \brief Locomotion behavior or null. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Set locomotion behavior or null. */
+	public func void setLocomotion( ECBehaviorLocomotion locomotion )
+		this.pLocomotion = locomotion
+	end
+	
+	/** \brief Parameter table behavior or null. */
+	public func ECBehaviorParameterTable getParameterTable()
+		return this.pParameterTable
+	end
+	
+	/** \brief Set parameter table behavior or null. */
+	public func void setParameterTable( ECBehaviorParameterTable parameterTable )
+		this.pParameterTable = parameterTable
+	end
+	
+	/** \brief Gui theme to use for sub title box creation. */
+	public func GuiTheme getSubtitleTheme()
+		return this.pSubtitleTheme
+	end
+	
+	/** \brief Set gui theme to use for sub title box creation. */
+	public func void setSubtitleTheme( GuiTheme guiTheme )
+		this.pSubtitleTheme = guiTheme
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Convenience method to get instance from conversation actor.
+	 * 
+	 * Checks if conversation actor is instance of BehaviorConversationActor.
+	 * If true returns ECBehaviorConversationActor.Instance owning the conversation
+	 * actor. If false returns null.
+	 */
+	public static func Instance instanceFromConvoActor( ConversationActor convoActor )
+		if convoActor castable BehaviorConversationActor
+			return ( convoActor cast BehaviorConversationActor ).getInstance()
+			
+		else
+			return null
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorConversationActor.
+	 */
+	static public func ECBehaviorConversationActor getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorConversationActor
+		end ) cast ECBehaviorConversationActor
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorConversationActor.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

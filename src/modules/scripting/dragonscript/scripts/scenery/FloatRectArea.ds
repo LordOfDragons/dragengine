@@ -1,0 +1,267 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Immutable floating vector2 rectangular area.
+ *
+ * Most methods only produce correct results if the rect area is properly oriented.
+ * If you are not sure the orientation is correct call orientate() to obtain a rect
+ * area guaranteed to be correctly oriented.
+ */
+fixed class FloatRectArea
+	/** \brief X1-Coordinate of rectangular area. */
+	private var float pX1
+	
+	/** \brief Y1-Coordinate of rectangular area. */
+	private var float pY1
+	
+	/** \brief X2-Coordinate of rectangular area. */
+	private var float pX2
+	
+	/** \brief Y2-Coordinate of rectangular area. */
+	private var float pY2
+	
+	
+	
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create rectangular area with all coordinates set to 0. */
+	public func new()
+		this.pX1 = 0.0
+		this.pY1 = 0.0
+		this.pX2 = 0.0
+		this.pY2 = 0.0
+	end
+	
+	/** \brief Create rectangular area with initial coordinates. */
+	public func new( float x1, float y1, float x2, float y2 )
+		this.pX1 = x1
+		this.pY1 = y1
+		this.pX2 = x2
+		this.pY2 = y2
+	end
+	
+	/** \brief Create copy of rectangular area. */
+	public func new( FloatRectArea rect )
+		this.pX1 = rect.pX1
+		this.pY1 = rect.pY1
+		this.pX2 = rect.pX2
+		this.pY2 = rect.pY2
+	end
+	
+	/** \brief Create recangular area from a vector2 and size. */
+	public func new( Vector2 position, Vector2 size )
+		this.pX1 = position.getX()
+		this.pY1 = position.getY()
+		this.pX2 = this.pX1 + size.getX()
+		this.pY2 = this.pY1 + size.getY()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief X1-Coordinate. */
+	public func float getX1()
+		return this.pX1
+	end
+	
+	/** \brief Y1-Coordinate. */
+	public func float getY1()
+		return this.pY1
+	end
+	
+	/** \brief X2-Coordinate. */
+	public func float getX2()
+		return this.pX2
+	end
+	
+	/** \brief Y2-Coordinate. */
+	public func float getY2()
+		return this.pY2
+	end
+	
+	/** \brief Orientate rectangular area placing (x1,y1) top-left and (x2,y2) bottom-right. */
+	public func FloatRectArea orientate()
+		var float x1, x2, y1, y2
+		
+		if this.pX2 > this.pX1
+			x1 = this.pX1
+			x2 = this.pX2
+		else
+			x1 = this.pX2
+			x2 = this.pX1
+		end
+		if this.pY2 > this.pY1
+			y1 = this.pY1
+			y2 = this.pY2
+		else
+			y1 = this.pY2
+			y2 = this.pY1
+		end
+		
+		return FloatRectArea.new( x1, y1, x2, y2 )
+	end
+	
+	/** \brief Top-left coordinates. */
+	public func Vector2 getTopLeft()
+		return Vector2.new( this.pX1, this.pY1 )
+	end
+	
+	/** \brief Top-right coordinates. */
+	public func Vector2 getTopRight()
+		return Vector2.new( this.pX2, this.pY1 )
+	end
+	
+	/** \brief Bottom-left coordinates. */
+	public func Vector2 getBottomLeft()
+		return Vector2.new( this.pX1, this.pY2 )
+	end
+	
+	/** \brief Bottom-right coordinates. */
+	public func Vector2 getBottomRight()
+		return Vector2.new( this.pX2, this.pY2 )
+	end
+	
+	/** \brief Width. */
+	public func float getWidth()
+		return this.pX2 - this.pX1
+	end
+	
+	/** \brief Height. */
+	public func float getHeight()
+		return this.pY2 - this.pY1
+	end
+	
+	/** \brief Size. */
+	public func Vector2 getSize()
+		return Vector2.new( this.pX2 - this.pX1, this.pY2 - this.pY1 )
+	end
+	
+	/** \brief Rectangular area moved by offset. */
+	public func FloatRectArea move( float x, float y )
+		return new( this.pX1 + x, this.pY1 + y, this.pX2 + x, this.pY2 + y )
+	end
+	
+	/** \brief Rectangular area moved by offset. */
+	public func FloatRectArea move( Vector2 distance )
+		return move( distance.getX(), distance.getY() )
+	end
+	
+	/** \brief Rectangular area grown by size at bottom right. */
+	public func FloatRectArea grow( float x, float y )
+		return new( this.pX1, this.pY1, this.pX2 + x, this.pY2 + y )
+	end
+	
+	/** \brief Rectangular area grown by size at bottom right. */
+	public func FloatRectArea grow( Vector2 size )
+		return grow( size.getX(), size.getY() )
+	end
+	
+	/** \brief Rectangular area grown by size at top left. */
+	public func FloatRectArea growInverse( float x, float y )
+		return new( this.pX1 - x, this.pY1 - y, this.pX2, this.pY2 )
+	end
+	
+	/** \brief Rectangular area grown by size at top left. */
+	public func FloatRectArea growInverse( Vector2 size )
+		return growInverse( size.getX(), size.getY() )
+	end
+	
+	/** \brief Rectangular area enlarged on all sides. */
+	public func FloatRectArea enlarge( float x, float y )
+		return new( this.pX1 - x, this.pY1 - y, this.pX2 + x, this.pY2 + y )
+	end
+	
+	/** \brief Rectangular area enlarged on all sides. */
+	public func FloatRectArea enlarge( Vector2 size )
+		return enlarge( size.getX(), size.getY() )
+	end
+	
+	/** \brief Rectangular area grown to include another rectangular area. */
+	public func FloatRectArea include( FloatRectArea rect )
+		return FloatRectArea.new( \
+			DEMath.min( this.pX1, rect.pX1 ), DEMath.min( this.pY1, rect.pY1 ), \
+			DEMath.max( this.pX2, rect.pX2 ), DEMath.max( this.pY2, rect.pY2 ) )
+	end
+	
+	/** \brief Rectangular set to the intersection area between two rectangular areas. */
+	public func FloatRectArea intersect( FloatRectArea rect )
+		return FloatRectArea.new( \
+			DEMath.max( this.pX1, rect.pX1 ), DEMath.max( this.pY1, rect.pY1 ), \
+			DEMath.min( this.pX2, rect.pX2 ), DEMath.min( this.pY2, rect.pY2 ) )
+	end
+	
+	/** \brief Vector2 clamped to rectangular area. */
+	public func Vector2 clamp( Vector2 vector2 )
+		return Vector2.new( \
+			DEMath.clamp( vector2.getX(), this.pX1, this.pX2 ), \
+			DEMath.clamp( vector2.getY(), this.pY1, this.pY2 ) )
+	end
+	
+	
+	
+	/** \brief Vector2 is inside rectangular area. */
+	public func bool isInside( float x, float y )
+		return x >= this.pX1 and x < this.pX2 and y >= this.pY1 and y < this.pY2
+	end
+	
+	/** \brief Vector2 is inside rectangular area. */
+	public func bool isInside( Vector2 point )
+		return this.isInside( point.getX(), point.getY() )
+	end
+	
+	
+	
+	/** \brief String representation. */
+	public func String toString()
+		return "(" + this.pX1 + "," + this.pY1 + ")-(" + this.pX2 + "," + this.pY2 + ")"
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read floating point rectangular area from file reader. */
+	static public func FloatRectArea readFromFile( FileReader reader )
+		var FloatRectArea area = FloatRectArea.new()
+		area.pX1 = reader.readFloat()
+		area.pY1 = reader.readFloat()
+		area.pX2 = reader.readFloat()
+		area.pY2 = reader.readFloat()
+		return area
+	end
+	
+	/** \brief Write floating point rectangular area to file writer. */
+	public func void writeToFile( FileWriter writer )
+		writer.writeFloat( this.pX1 )
+		writer.writeFloat( this.pY1 )
+		writer.writeFloat( this.pX2 )
+		writer.writeFloat( this.pY2 )
+	end
+	/*@}*/
+end

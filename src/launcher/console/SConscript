@@ -1,0 +1,96 @@
+from SConsCommon import *
+
+# import whatever is given by the parent builder
+Import('parent_env parent_targets parent_report')
+
+# do not build on android
+if parent_env['platform_android'] != 'no':
+	Return()
+
+# setup the environment matching the OS
+envLauncher = parent_env.Clone()
+
+libs = []
+
+if envLauncher['OSBeOS']:
+	libs.extend(['root', 'be'])
+
+# fetch values in expanded form for later use
+pathBin = envLauncher.subst(envLauncher['path_launcher_bin'])
+pathConfig = envLauncher.subst(envLauncher['path_launcher_config'])
+pathData = envLauncher.subst(envLauncher['path_launcher_data'])
+pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
+pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
+
+# update the compile flags
+envLauncher.Append(CXXFLAGS = [
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_SHARE_PATH', pathShare),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_GAMES_PATH', pathGames),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig)])
+
+if envLauncher['OSWindows']:
+	envLauncher.Append(CXXFLAGS = ['-DDEBUG_RELOCATE_STDOUT'])
+
+if envLauncher['OSMacOS']:
+	envLauncher.Append(FRAMEWORKS = ['Cocoa'])
+elif not envLauncher['with_debug']:
+	envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
+
+envLauncher.Append(CPPFLAGS = envLauncher['SANITIZE_FLAGS'])
+envLauncher.Append(LINKFLAGS = envLauncher['SANITIZE_FLAGS'])
+
+# setup the builders
+sources = []
+headers = []
+globFiles(envLauncher, 'src', '*.cpp', sources)
+globFiles(envLauncher, 'src', '*.h', headers)
+if envLauncher['OSMacOS']:
+	globFiles(envLauncher, 'src', '*.mm', sources)
+
+objects = [envLauncher.StaticObject(s) for s in sources]
+
+appendLibrary(envLauncher, parent_targets['dragengine'], libs)
+libs.extend(parent_targets['dragengine']['binlibs'])
+
+program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+if envLauncher['OSMacOS']:
+	program = envLauncher.BundleMacOS(target='DELauncherConsole', source=program,
+		BUNDLE_ID='ch.rptd.dragengine.delauncher-console',
+		BUNDLE_NAME='DELauncherConsole',
+		BUNDLE_VERSION='1.0')
+targetBuild = envLauncher.Alias('launcher_console_build', program)
+
+install = []
+archive = {}
+if envLauncher['OSMacOS']:
+	for p in program:
+		install.append(envLauncher.InstallAs(os.path.join(pathBin, p.get_path()), p))
+		archive[os.path.join(pathBin, p.get_path())] = p
+else:
+	install.append(envLauncher.Install(pathBin, program))
+	for p in program:
+		archive[os.path.join(pathBin, p.name)] = p
+
+if 'lib_mingw_runtime' in parent_targets:
+	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
+		archive[os.path.join(pathBin, l.name)] = l
+
+targetInstall = envLauncher.Alias('launcher_console', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envLauncher.Alias('launcher_console_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['launcher_console'] = {
+	'name' : 'Drag[en]gine Console Launcher',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-launcher' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

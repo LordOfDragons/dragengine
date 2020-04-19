@@ -1,0 +1,441 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript Test Project Main Window.
+ */
+class WindowMain extends Window
+	/** \brief Action create border window. */
+	class ActionWindowBorder extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowBorders.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create aspect ratio window. */
+	class ActionWindowAspectRatio extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowAspectRatio.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create scrollbar window. */
+	class ActionWindowScrollbar extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowScrollbars.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create lists window. */
+	class ActionWindowLists extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowLists.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create canvas window. */
+	class ActionWindowCanvas extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowCanvas.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create canvas paint window. */
+	class ActionWindowCanvasPaint extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowCanvasPaint.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.fitToContent()
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create capture canvas window. */
+	class ActionWindowCaptureCanvas extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowCaptureCanvas.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create video player window. */
+	class ActionWindowVideoPlayer extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowVideoPlayer.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create image window. */
+	class ActionWindowImage extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowImage.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create canvas creator window. */
+	class ActionWindowCanvasCreator extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowCanvasCreator.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create layout show-case window. */
+	class ActionWindowLayouts extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowLayouts.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create gui theme window. */
+	class ActionWindowGuiTheme extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowGuiTheme.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create dynamic music window. */
+	class ActionWindowDynamicMusic extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowDynamicMusic.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create announcer window. */
+	class ActionWindowAnnouncer extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowAnnouncer.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create world renderer window. */
+	class ActionWindowWorldRenderer extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var WindowWorldRenderer window = WindowWorldRenderer.getOpenWindow()
+			
+			if window != null
+				window.moveToTop()
+				window.grabFocus()
+				
+			else
+				window = WindowWorldRenderer.new()
+				this.pWindowMain.getDesktop().addWindow( window )
+				window.centerWindow()
+			end
+		end
+	end
+	
+	/** \brief Action create styled text window. */
+	class ActionWindowStyledText extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowStyledText.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create input device window. */
+	class ActionWindowInputDevice extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowInputDevice.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create edit bindins window. */
+	class ActionWindowEditBindings extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowEditBindings.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create edit module parameters window. */
+	class ActionWindowEditModuleParameters extends DefaultActionListener
+		private var WindowMain pWindowMain
+		
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		public func void onAction( ActionEvent event )
+			var Window window = WindowEditModuleParameters.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.centerWindow()
+		end
+	end
+	
+	/** \brief Action create drag and drop window. */
+	class ActionWindowDragDrop extends DefaultActionListener
+		/** \brief Main window to get desktop from. */
+		private var WindowMain pWindowMain
+		
+		/** \brief Create action. */
+		public func new( WindowMain windowMain )
+			this.pWindowMain = windowMain
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			var Window window = WindowDragDrop.new()
+			this.pWindowMain.getDesktop().addWindow( window )
+			window.fitToContent()
+			window.centerWindow()
+		end
+	end
+	
+	
+	
+	/** \brief Create game. */
+	public func new( Desktop desktop ) super( 10, 30, 200, 200 )
+		var Button button
+		
+		this.runWhileBlockingLayout( block
+			this.setTitle( "DragonScript Testing" )
+			this.setCanMove( false )
+			this.setCanClose( false )
+			this.setCanMaximize( false )
+			this.setCanMinimize( false )
+			this.setCanResize( false )
+			
+			this.addWidget( Button.new( "Borders", ActionWindowBorder.new( this ) ) )
+			this.addWidget( Button.new( "Aspect Ratio", ActionWindowAspectRatio.new( this ) ) )
+			this.addWidget( Button.new( "Scrollbars", ActionWindowScrollbar.new( this ) ) )
+			this.addWidget( Button.new( "Lists", ActionWindowLists.new( this ) ) )
+			this.addWidget( Button.new( "Canvas Paint", ActionWindowCanvasPaint.new( this ) ) )
+			this.addWidget( Button.new( "Canvas View", ActionWindowCanvas.new( this ) ) )
+			this.addWidget( Button.new( "Capture Canvas View", ActionWindowCaptureCanvas.new( this ) ) )
+			this.addWidget( Button.new( "Image", ActionWindowImage.new( this ) ) )
+			this.addWidget( Button.new( "Video Player", ActionWindowVideoPlayer.new( this ) ) )
+			this.addWidget( Button.new( "Styled Text", ActionWindowStyledText.new( this ) ) )
+			this.addWidget( Button.new( "Canvas Creator", ActionWindowCanvasCreator.new( this ) ) )
+			this.addWidget( Button.new( "Layout Show-Case", ActionWindowLayouts.new( this ) ) )
+			this.addWidget( Button.new( "Drag and Drop", ActionWindowDragDrop.new( this ) ) )
+			this.addWidget( Button.new( "Gui Theme", ActionWindowGuiTheme.new( this ) ) )
+			this.addWidget( Button.new( "Dynamic Music", ActionWindowDynamicMusic.new( this ) ) )
+			this.addWidget( Button.new( "Announcer", ActionWindowAnnouncer.new( this ) ) )
+			this.addWidget( Button.new( "World Renderer", ActionWindowWorldRenderer.new( this ) ) )
+			this.addWidget( Button.new( "Input Device", ActionWindowInputDevice.new( this ) ) )
+			this.addWidget( Button.new( "Edit Bindings", ActionWindowEditBindings.new( this ) ) )
+			this.addWidget( Button.new( "Edit Module Parameters", ActionWindowEditModuleParameters.new( this ) ) )
+			
+			this.addWidget( Button.new( "Quit", QuitGameActionListener.new() ) )
+		end )
+		
+		desktop.addWindow( this )
+		this.fitToContent()
+	end
+end

@@ -1,0 +1,66 @@
+diff -rupN smalltalk-3.2.5_org/configure smalltalk-3.2.5/configure
+--- smalltalk-3.2.5_org/configure	2013-04-08 07:52:20.000000000 +0200
++++ smalltalk-3.2.5/configure	2017-04-19 22:05:31.709531187 +0200
+@@ -5858,22 +5858,9 @@ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gst_cv_wine" >&5
+ $as_echo "$gst_cv_wine" >&6; }
+ 
+-if test "x$gst_cv_wine" = xyes; then :
+-  WINEWRAPPERDEP='winewrapper$(EXEEXT)'
+-	     WINEWRAPPER='$(abs_top_builddir)/winewrapper$(EXEEXT)'
+-	     XZIP='$(WINEWRAPPER) '$ZIP
+-	     ZIP=zip.exe,
+-             ac_config_files="$ac_config_files makesetup"
+-
+-else
+-  WINEWRAPPER=
+-	     WINEWRAPPERDEP=
+-	     XZIP=$ZIP
+-fi
+-
+-
+-
+-
++WINEWRAPPER=
++WINEWRAPPERDEP=
++XZIP=$ZIP
+ 
+ # Check whether --with-emacs was given.
+ if test "${with_emacs+set}" = set; then :
+diff -rupN smalltalk-3.2.5_org/lib-src/getaddrinfo.c smalltalk-3.2.5/lib-src/getaddrinfo.c
+--- smalltalk-3.2.5_org/lib-src/getaddrinfo.c	2013-03-23 20:56:26.000000000 +0100
++++ smalltalk-3.2.5/lib-src/getaddrinfo.c	2017-04-19 20:13:34.000000000 +0200
+@@ -17,6 +17,8 @@
+    along with this program; if not, write to the Free Software Foundation,
+    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+ 
++#ifndef DISABLE_BROKEN_GETADDRINFO
++
+ #include <config.h>
+ 
+ #include "socketx.h"
+@@ -407,3 +409,5 @@ int getnameinfo(const struct sockaddr *r
+ 
+   return 0;
+ }
++
++#endif // DISABLE_BROKEN_GETADDRINFO
+diff -rupN smalltalk-3.2.5_org/lib-src/getaddrinfo.h smalltalk-3.2.5/lib-src/getaddrinfo.h
+--- smalltalk-3.2.5_org/lib-src/getaddrinfo.h	2013-03-23 20:56:26.000000000 +0100
++++ smalltalk-3.2.5/lib-src/getaddrinfo.h	2017-04-19 20:13:29.000000000 +0200
+@@ -35,6 +35,8 @@
+ # include <netdb.h>
+ #endif
+ 
++#ifndef DISABLE_BROKEN_GETADDRINFO
++
+ #ifndef HAVE_STRUCT_ADDRINFO
+ 
+ /* Structure to contain information about address of a service provider.  */
+@@ -164,4 +166,6 @@ extern int getnameinfo(const struct sock
+ # define NI_NUMERICSERV 2
+ #endif
+ 
++#endif // DISABLE_BROKEN_GETADDRINFO
++
+ #endif /* GETADDRINFO_H */

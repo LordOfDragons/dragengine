@@ -1,0 +1,190 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Layer in a conversation playback.
+ * 
+ */
+class ConversationPlaybackLayer
+	private var ConversationActionIterator pActionIterator
+	private var ConversationAction pNextAction
+	private var ConversationCondition pLoopCondition
+	private var float pLoopEvalConditionInterval
+	private var bool pLooping
+	private var bool pTopicTopLevel
+	
+	
+	
+	/**
+	 * \brief Create a new layer.
+	 * 
+	 * Sets the next action to the first iterator action and advances the iterator.
+	 */
+	public func new( ConversationActionIterator iterator ) this( iterator, true )
+	end
+	
+	/**
+	 * \brief Create a new layer.
+	 * 
+	 * \param iterator Action iterator to use.
+	 * \param advance If \em true sets the next action to the first iterator action and
+	 *                advances the iterator. If \em false the iterator is not advanced
+	 *                and the next action is set to \em null.
+	 */
+	public func new( ConversationActionIterator iterator, bool advance )
+		if iterator == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pActionIterator = iterator
+		this.pLoopEvalConditionInterval = 0.2
+		this.pLooping = false
+		this.pTopicTopLevel = false
+		
+		if advance
+			this.pNextAction = iterator.getNext()
+		end
+	end
+	
+	
+	
+	/** \brief Loop condition or \em null if always true. */
+	public func ConversationCondition getLoopCondition()
+		return this.pLoopCondition
+	end
+	
+	/** \brief Set loop condition or \em null if always true. */
+	public func void setLoopCondition( ConversationCondition condition )
+		this.pLoopCondition = condition
+	end
+	
+	/** \brief Interval to wait before testing the condition again to improve performance. */
+	public func float getLoopEvalConditionInterval()
+		return this.pLoopEvalConditionInterval
+	end
+	
+	/** \brief Set interval to wait before testing the condition again to improve performance. */
+	public func void setLoopEvalConditionInterval( float interval )
+		this.pLoopEvalConditionInterval = DEMath.max( interval, 0.0 )
+	end
+	
+	/** \brief Actions are looping. */
+	public func bool getLooping()
+		return this.pLooping
+	end
+	
+	/** \brief Set actions are looping. */
+	public func void setLooping( bool looping )
+		this.pLooping = looping
+	end
+	
+	/** \brief Belongs to top level of a topic. */
+	public func bool getTopicTopLevel()
+		return this.pTopicTopLevel
+	end
+	
+	/** \brief Set if layer belongs to top level of a topic. */
+	public func void setTopicTopLevel( bool topicTopLevel )
+		this.pTopicTopLevel = topicTopLevel
+	end
+	
+	
+	
+	/** \brief Advance to the next action if possible. */
+	public func void advance()
+		this.pNextAction = this.pActionIterator.getNext()
+		
+		if this.pNextAction == null and this.pLooping
+			this.forwardFirst()
+		end
+	end
+	
+	/** \brief Next action or \em null if at the end of the current list. */
+	public func ConversationAction getNextAction()
+		return this.pNextAction
+	end
+	
+	/** \brief Not at end of list. */
+	public func bool hasNextAction()
+		return this.pNextAction != null
+	end
+	
+	/** \brief Forward to first action. */
+	public func void forwardFirst()
+		this.pActionIterator.first()
+		this.pNextAction = this.pActionIterator.getNext()
+	end
+	
+	/** \brief Forward to last action. */
+	public func void forwardLast()
+		this.pActionIterator.last()
+		this.pNextAction = this.pActionIterator.getNext()
+	end
+	
+	/** \brief Forward to end. */
+	public func void forwardEnd()
+		this.pActionIterator.onePastLast()
+		this.pNextAction = null
+	end
+	
+	/** \brief Cancel looping. */
+	public func void cancelLooping()
+		this.pLooping = false
+		this.pLoopCondition = null
+		this.pActionIterator.onePastLast()
+		this.pNextAction = null
+	end
+	
+	
+	
+	/** \brief Read layer from file. */
+	public static func ConversationPlaybackLayer readFromFile( PersistencyEnvironment env, FileReader reader )
+		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( ConversationActionIterator.readFromFile( env, reader ) )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+		layer.pLooping = flags.getAt( 0 )
+		layer.pTopicTopLevel = flags.getAt( 1 )
+		
+		layer.pLoopCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+		layer.pLoopEvalConditionInterval = reader.readFloat()
+		
+		return layer
+	end
+	
+	/** \brief Write layer to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		this.pActionIterator.writeToFile( env, writer )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 2 )
+		flags.setAt( 0, this.pLooping )
+		flags.setAt( 1, this.pTopicTopLevel )
+		flags.writeToFile( writer )
+		
+		env.writeObjectOrNull( writer, this.pLoopCondition )
+		writer.writeFloat( this.pLoopEvalConditionInterval )
+	end
+end

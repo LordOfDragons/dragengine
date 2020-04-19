@@ -1,0 +1,71 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.DynamicMusic
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Dynamic music switch.
+ *
+ * Used by transitions to figure out which part to play next. Switches are boolean
+ * and can be \em on or \em off.
+ * 
+ */
+class DynamicMusicSwitch
+	/** \brief Name. */
+	private var String pName
+	
+	/** \brief State. */
+	private var bool pState
+	
+	
+	
+	/** \brief Create dynamic music switch. */
+	public func new( String name )
+		if name.empty()
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+		this.pState = false
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief State. */
+	public func bool getState()
+		return this.pState
+	end
+	
+	/** \brief Set state. */
+	public func void setState( bool state )
+		this.pState = state
+	end
+end

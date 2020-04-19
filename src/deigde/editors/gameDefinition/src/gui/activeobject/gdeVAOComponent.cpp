@@ -1,0 +1,496 @@
+/* 
+ * Drag[en]gine IGDE Game Definition Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#include "gdeVAOComponent.h"
+#include "gdeViewActiveObject.h"
+#include "../gdeWindowMain.h"
+#include "../../gdEditor.h"
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/loadsave/igdeLoadAnimator.h>
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/shape/decShape.h>
+#include <dragengine/common/shape/decShapeBox.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/logger/deLogger.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorManager.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/animator/deAnimatorInstanceManager.h>
+#include <dragengine/resources/animator/deAnimatorLink.h>
+#include <dragengine/resources/animator/deAnimatorReference.h>
+#include <dragengine/resources/animator/controller/deAnimatorController.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleStateManipulator.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleStateSnapshot.h>
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationManager.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/collider/deColliderManager.h>
+#include <dragengine/resources/collider/deColliderAttachment.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/collider/deColliderBone.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/component/deComponentManager.h>
+#include <dragengine/resources/component/deComponentTexture.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelManager.h>
+#include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelLOD.h>
+#include <dragengine/resources/model/deModelVertex.h>
+#include <dragengine/resources/model/deModelReference.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMeshManager.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMeshReference.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/rig/deRigManager.h>
+#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinManager.h>
+#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
+#include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
+#include <dragengine/resources/world/deWorld.h>
+
+
+
+// Class gdeVAOComponent
+/////////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, gdeOCComponent *occomponent ) :
+pView( view ),
+pOCComponent( occomponent ),
+pPlayback( false )
+{
+	if( ! occomponent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	occomponent->AddReference();
+	
+	try{
+		pCreateComponent();
+		pCreateCollider();
+		pCreateAnimator();
+		pAttachComponent();
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
+gdeVAOComponent::~gdeVAOComponent(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void gdeVAOComponent::Update( float elapsed ){
+	if( ! pAnimator ){
+		return;
+	}
+	
+	if( pPlayback && pAnimator->GetControllerCount() > 0 ){
+		pAnimator->GetControllerAt( 0 ).IncrementCurrentValue( elapsed );
+	}
+	
+	pAnimator->Apply();
+}
+
+void gdeVAOComponent::RebuildResources(){
+	// TODO improve this by keeping old resources until the new ones are fully created.
+	//      this reduces update time making UI more fluid
+	pReleaseResources();
+	
+	pCreateComponent();
+	pCreateCollider();
+	pCreateAnimator();
+	pAttachComponent();
+}
+
+void gdeVAOComponent::UpdateTexture( gdeOCComponentTexture *texture ){
+	if( ! pComponent ){
+		return;
+	}
+	
+	const deModel &model = *pComponent->GetModel();
+	const int index = model.IndexOfTextureNamed( texture->GetName() );
+	if( index == -1 ){
+		return;
+	}
+	
+	pUpdateComponentTexture( texture, pComponent->GetTextureAt( index ), index );
+}
+
+void gdeVAOComponent::SelectedObjectChanged(){
+}
+
+void gdeVAOComponent::GetExtends( decVector &minExtend, decVector &maxExtend ) const{
+	minExtend.SetZero();
+	maxExtend.SetZero();
+	if( ! pComponent || ! pComponent->GetModel() ){
+		return;
+	}
+	
+	const deModelLOD &lod = *pComponent->GetModel()->GetLODAt( 0 );
+	const int vertexCount = lod.GetVertexCount();
+	if( vertexCount > 0 ){
+		const deModelVertex * const vertices = lod.GetVertices();
+		int i;
+		minExtend = maxExtend = vertices[ 0 ].GetPosition();
+		for( i=1; i<vertexCount; i++ ){
+			const decVector &position = vertices[ i ].GetPosition();
+			minExtend.SetSmallest( position );
+			maxExtend.SetLargest( position );
+		}
+	}
+}
+
+
+
+// Private functions
+//////////////////////
+
+void gdeVAOComponent::pCleanUp(){
+	pReleaseResources();
+	
+	if( pOCComponent ){
+		pOCComponent->FreeReference();
+	}
+}
+
+
+void gdeVAOComponent::pCreateComponent(){
+	deOcclusionMeshReference occlusionMesh;
+	deModelReference audioModel;
+	deModelReference model;
+	deSkinReference skin;
+	deRigReference rig;
+	
+	// load the new resources. if the resource is already in use it is not loaded again just the
+	// reference count increased by one. loading of individual resources is allowed to fail. in
+	// this case the exception is logged and the resource simply not loaded or replaced with a
+	// placeholder. this behavior can be changed later on
+	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
+	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
+	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
+	
+	// model
+	if( ! pOCComponent->GetModelPath().IsEmpty() ){
+		try{
+			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, pOCComponent->GetModelPath(), "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}
+	}
+	
+	// skin
+	if( ! pOCComponent->GetSkinPath().IsEmpty() ){
+		try{
+			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, pOCComponent->GetSkinPath(), "/" ) );
+			
+		}catch( const deException &e ){
+			skin = environment.GetErrorSkin();
+		}
+	}
+	
+	// rig
+	if( ! pOCComponent->GetRigPath().IsEmpty() ){
+		try{
+			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, pOCComponent->GetRigPath(), "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}
+	}
+	
+	// occlusion mesh
+	if( ! pOCComponent->GetOcclusionMeshPath().IsEmpty() ){
+		try{
+			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh(
+				vfs, pOCComponent->GetOcclusionMeshPath(), "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}
+	}
+	
+	// audio model
+	if( ! pOCComponent->GetAudioModelPath().IsEmpty() ){
+		try{
+			audioModel.TakeOver( engine.GetModelManager()->LoadModel(
+				vfs, pOCComponent->GetAudioModelPath(), "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}
+	}
+	
+	// if the model or skin are missing use the default ones unless we have no component defined
+	/*if( ! model ){
+		model = pView.GetGameDefinition()->GetDefaultModel();
+	}*/
+	
+	/*if( ! skin ){
+		skin = pView.GetGameDefinition()->GetDefaultSkin();
+	}*/
+	
+	// create component if model and skin are present
+	if( model && skin ){
+		pComponent = engine.GetComponentManager()->CreateComponent( model, skin );
+		pView.GetGameDefinition()->GetWorld()->AddComponent( pComponent );
+	}
+	if( pComponent ){
+		pComponent->SetRig( rig );
+		pComponent->SetOcclusionMesh( occlusionMesh );
+		pComponent->SetAudioModel( audioModel );
+	}
+	
+	pCreateComponentTextures();
+}
+
+void gdeVAOComponent::pCreateComponentTextures(){
+	if( ! pComponent ){
+		return;
+	}
+	
+	const deModel &model = *pComponent->GetModel();
+	const int textureCount = model.GetTextureCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		const decString &textureName = model.GetTextureAt( i )->GetName();
+		pUpdateComponentTexture( pOCComponent->GetTextures().GetNamed( textureName ),
+			pComponent->GetTextureAt( i ), i );
+	}
+}
+
+void gdeVAOComponent::pUpdateComponentTexture( const gdeOCComponentTexture *texture,
+deComponentTexture &engTexture, int engTextureIndex ){
+	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
+	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
+	
+	deSkinReference occtextureSkin;
+	deDynamicSkinReference gdctDynamicSkin;
+	deSkin *useSkin = NULL;
+	int useTexture = 0;
+	deDynamicSkin *useDynamicSkin = NULL;
+	decVector2 texCoordOffset( 0.0f, 0.0f );
+	decVector2 texCoordScale( 1.0f, 1.0f );
+	float texCoordRotation = 0.0f;
+	
+	if( texture ){
+		texCoordOffset = texture->GetOffset();
+		texCoordScale = texture->GetScale();
+		texCoordRotation = texture->GetRotation();
+	}
+	
+	if( ! useSkin && texture ){
+		try{
+			if( ! texture->GetPathSkin().IsEmpty() ){
+				occtextureSkin.TakeOver( engine.GetSkinManager()->LoadSkin( texture->GetPathSkin(), "/" ) );
+			}
+			
+		}catch( const deException &e ){
+			occtextureSkin = environment.GetErrorSkin();
+		}
+		
+		if( occtextureSkin ){
+			useSkin = occtextureSkin;
+			useTexture = 0;
+		}
+	}
+	
+	if( ! useDynamicSkin && texture ){
+		const decColor &gdctColorTint = texture->GetColorTint();
+		const bool gdctHasTint = ! gdctColorTint.IsEqualTo( decColor( 1.0f, 1.0f, 1.0f ) );
+		bool gdctRequiresDynamicSkin = false;
+		
+		if( gdctHasTint ){
+			gdctRequiresDynamicSkin = true;
+		}
+		
+		if( gdctRequiresDynamicSkin ){
+			gdctDynamicSkin.TakeOver( engine.GetDynamicSkinManager()->CreateDynamicSkin() );
+			if( gdctHasTint ){
+				deDSRenderableColor * const renderable = new deDSRenderableColor( "tint" );
+				renderable->SetColor( gdctColorTint );
+				gdctDynamicSkin->AddRenderable( renderable );
+			}
+		}
+		
+		useDynamicSkin = gdctDynamicSkin;
+	}
+	
+	if( fabsf( texCoordScale.x ) < FLOAT_SAFE_EPSILON ){
+		texCoordScale.x = 1.0f;
+	}
+	if( fabsf( texCoordScale.y ) < FLOAT_SAFE_EPSILON ){
+		texCoordScale.y = 1.0f;
+	}
+	const decTexMatrix2 texCoordTransform =
+		decTexMatrix2::CreateScale( texCoordScale.x, texCoordScale.y ) *
+		decTexMatrix2::CreateRotation( texCoordRotation * DEG2RAD ) *
+		decTexMatrix2::CreateTranslation( texCoordOffset.x, texCoordOffset.y );
+	
+	if( useSkin != engTexture.GetSkin()
+	|| useTexture != engTexture.GetTexture()
+	|| useDynamicSkin != engTexture.GetDynamicSkin()
+	|| ! texCoordTransform.IsEqualTo( engTexture.GetTransform() ) ){
+		engTexture.SetSkin( useSkin );
+		engTexture.SetTexture( useTexture );
+		engTexture.SetTransform( texCoordTransform );
+		engTexture.SetDynamicSkin( useDynamicSkin );
+		pComponent->NotifyTextureChanged( engTextureIndex );
+	}
+}
+
+void gdeVAOComponent::pCreateCollider(){
+	if( pComponent ){
+		pCollider.TakeOver( pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderComponent() );
+		pCollider->SetEnabled( true );
+		pCollider->SetResponseType( pOCComponent->GetColliderResponseType() );
+		pCollider->SetUseLocalGravity( pOCComponent->GetColliderResponseType() != deCollider::ertDynamic );
+		pCollider->SetMass( 5.0f );
+		( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( pComponent );
+		
+	}else{
+		decShapeList shapeList;
+		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
+		
+		pCollider.TakeOver( pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume() );
+		pCollider->SetEnabled( true );
+		pCollider->SetResponseType( deCollider::ertStatic );
+		pCollider->SetUseLocalGravity( true );
+		pCollider->SetMass( 5.0f );
+		( ( deColliderVolume& )( deCollider& )pCollider ).SetShapes( shapeList );
+	}
+	
+	decLayerMask collisionMask;
+	collisionMask.SetBit( 0 );
+	pCollider->SetCollisionFilter( decCollisionFilter( collisionMask ) );
+	
+	pView.GetGameDefinition()->GetWorld()->AddCollider( pCollider );
+}
+
+void gdeVAOComponent::pCreateAnimator(){
+	if( ! pComponent ){
+		return;
+	}
+	
+	deVirtualFileSystem &vfs = *pView.GetGameDefinition()->GetPreviewVFS();
+	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
+	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
+	deAnimatorReference animator;
+	
+	if( pOCComponent->GetAnimatorPath().IsEmpty() ){
+		return;
+	}
+	
+	try{
+		const decPath vfsPath( decPath::CreatePathUnix( pOCComponent->GetAnimatorPath() ) );
+		if( ! vfs.ExistsFile( vfsPath ) ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
+		reader.TakeOver( vfs.OpenFileForReading( vfsPath ) );
+		igdeLoadAnimator loader( environment, environment.GetLogger(), LOGSOURCE );
+		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+		loader.Load( pOCComponent->GetAnimatorPath(), animator, reader );
+		
+	}catch( const deException &e ){
+		environment.GetLogger()->LogException( LOGSOURCE, e );
+		return;
+	}
+	
+	pAnimator.TakeOver( engine.GetAnimatorInstanceManager()->CreateAnimatorInstance() );
+	pAnimator->SetComponent( pComponent );
+	pAnimator->SetAnimator( animator );
+	
+	pPlayback = true;
+}
+
+void gdeVAOComponent::pAttachComponent(){
+	if( ! pComponent || ! pCollider ){
+		return;
+	}
+	
+	deColliderAttachment *attachment = NULL;
+	try{
+		attachment = new deColliderAttachment( pCollider );
+		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		//attachment->SetPosition( pOCComponent->GetPosition() );
+		//attachment->SetOrientation( pOCComponent->GetOrientation() );
+		pCollider->AddAttachment( attachment );
+		attachment = NULL;
+		
+	}catch( const deException &e ){
+		if( attachment ){
+			delete attachment;
+		}
+		throw;
+	}
+}
+
+
+
+void gdeVAOComponent::pReleaseResources(){
+	deWorld &world = *pView.GetGameDefinition()->GetWorld();
+	
+	pAnimator = NULL;
+	
+	if( pCollider ){
+		pCollider->RemoveAllAttachments(); // because otherwise cyclic loop with component
+		world.RemoveCollider( pCollider );
+		pCollider = NULL;
+	}
+	
+	if( pComponent ){
+		world.RemoveComponent( pComponent );
+		pComponent = NULL;
+	}
+}

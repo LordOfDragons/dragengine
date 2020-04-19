@@ -1,0 +1,223 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Input device information.
+ * 
+ * Stores information about an input device attached to the host platform. The information
+ * stays present as long as a reference is hold to this instance. The input device itself
+ * can though be removed from the host system at any time without warning. To avoid
+ * exceptions due to missing input devices the input device can be still queried if not
+ * attached but returns a dummy state. Use the isPresent() method to check if the device
+ * is still attached to the host platform or not.
+ * 
+ * Input devices have a unique identifier valid across host platforms. Using this identifier
+ * the scripts can save control bindings in config files. Identifiers compose only of
+ * letters and the underscore.
+ * 
+ * This is a native class.
+ */
+class InputDevice
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Input devices can not be created directly only through InputSystem. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Device index.
+	 */
+	public func int getIndex()
+		return 0
+	end
+	
+	/**
+	 * \brief Device identifier.
+	 * 
+	 * Unique identifier for the device identifying it across removing and attaching
+	 * the device to the host system. The prefix is a normalized string that contains
+	 * only letters, numbers and underscores. It is suitable to be combined with
+	 * button or axis identifiers to store them in config files as key bindings.
+	 */
+	public func String getID()
+		return null
+	end
+	
+	/**
+	 * \brief Display name.
+	 * 
+	 * Dispaly name is human readable like for example 'USB Gamepad #1'. The
+	 * name is unique but not guaranteed to stay the same across restarting
+	 * the input module or game engine.
+	 */
+	public func String getName()
+		return null
+	end
+	
+	/** \brief Device type. */
+	public func InputDeviceType getType()
+		return null
+	end
+	
+	/** \brief Model to represent the device in 3D user interfaces or \em null if not set. */
+	public func Model getDisplayModel()
+		return null
+	end
+	
+	/** \brief Skin for display model or \em null if not set. */
+	public func Skin getDisplaySkin()
+		return null
+	end
+	
+	/**
+	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
+	 * 
+	 * Large image of 128 pixels squared or larger.
+	 */
+	public func Image getDisplayImage()
+		return null
+	end
+	
+	/** \brief Count of icons representing the device in bindings. */
+	public func int getDisplayIconCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Icon at index representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getDisplayIconAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding width representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconX( int maxWidth )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding height representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconY( int maxHeight )
+		return null
+	end
+	
+	/** \brief Text to display centered across display image or icon. */
+	public String getDisplayText()
+		return ""
+	end
+	
+	
+	
+	/**
+	 * \brief Input device is present on the host platform.
+	 * 
+	 * Returns true if a device matching the identifier is currently attached to the host
+	 * platform. If absent all values queried from the device are 0 to avoid exceptions
+	 * to be thrown.
+	 */
+	public func bool isPresent()
+	end
+	
+	
+	
+	/** \brief Number of axes. */
+	public func int getAxisCount()
+	end
+	
+	/**
+	 * \brief Get wrapper for axis.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
+	 *                        to getAxisCount().
+	 */
+	public func InputDeviceAxis getAxisAt( int index )
+	end
+	
+	
+	
+	/** \brief Number of buttons. */
+	public func int getButtonCount()
+	end
+	
+	/**
+	 * \brief Get wrapper for button.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
+	 *                        to getButtonCount().
+	 */
+	public func InputDeviceButton getButtonAt( int index )
+	end
+	
+	
+	
+	/** \brief Number of feedbacks. */
+	public func int getFeedbackCount()
+	end
+	
+	/**
+	 * \brief Get wrapper for feedback.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
+	 *                        to getFeedbackCount().
+	 */
+	public func InputDeviceFeedback getFeedbackAt( int index )
+	end
+	
+	
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * 
+	 * If more than one button matches the key code the input module decides which
+	 * button is the more likely choice. Once decided the input module is required
+	 * to return the same button for the same key code in subsequent queries unless
+	 * a deInputEvent::eeDeviceParamsChanged event is issued.
+	 * 
+	 * Can be used for example to locate keyboard keys to create default binding
+	 * layouts without the user pressing input keys.
+	 */
+	public func int buttonMatchingKeyCode( int keyCode )
+	end
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * 
+	 * If more than one button matches the character the input module decides which
+	 * button is the more likely choice. Once decided the input module is required
+	 * to return the same button for the same character in subsequent queries unless
+	 * a deInputEvent::eeDeviceParamsChanged event is issued.
+	 * 
+	 * Keys usually have different characters depending on the state of modifier keys.
+	 * The input module matches character case insensitive to increase the chance to
+	 * find a match. If mutliple keys match the character but under different modifier
+	 * states the input module has to first select the key matching case sensitive
+	 * then the key requiring less modifiers.
+	 * 
+	 * Can be used for example to locate keyboard keys to create default binding
+	 * layouts without the user pressing input keys.
+	 */
+	public func int buttonMatchingKeyChar( int character )
+	end
+	/*@}*/
+end

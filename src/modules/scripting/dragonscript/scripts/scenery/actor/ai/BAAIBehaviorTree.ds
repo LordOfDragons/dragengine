@@ -1,0 +1,242 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Actor AI using BehaviorTree.
+ * 
+ * Uses BehaviorTree using BTContext to do AI. For each call to think() the behavior tree
+ * is stepped. In case of an exception in the behavior tree the exception is logged and the
+ * running of the behavior tree cancelled.
+ * 
+ * To use this AI set the BTContext subclass set up with the required actions and state
+ * initialized to run the behavior tree. Do this after the AI instance is created which
+ * can be also due to Persistable interface loading from file reader.
+ */
+class BAAIBehaviorTree extends BaseActorAI
+	/**
+	 * \brief Factory for loading actor ai.
+	 */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "BAAIBehaviorTree"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return BAAIBehaviorTree.new( env, reader )
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	/**
+	 * \brief Behavior tree context with link to BAAIBehaviorTree.
+	 */
+	public class BTContextAI extends BTContext
+		/** \brief AI. */
+		private var BAAIBehaviorTree pAI
+		
+		/** \brief Create context. */
+		public func new( BAAIBehaviorTree ai, BehaviorTree behaviorTree ) super( behaviorTree )
+			this.pAI = ai
+		end
+		/** \brief Create copy of context. */
+		public func new( BTContextAI context ) super( context )
+			this.pAI = context.pAI
+		end
+		
+		/** \brief Create copy of context. */
+		public func new( BAAIBehaviorTree ai, BTContext context ) super( context )
+			this.pAI = ai
+		end
+		
+		/** \brief Create copy of context using different behavior tree. */
+		public func new( BAAIBehaviorTree ai, BTContext context, BehaviorTree behaviorTree ) super( context, behaviorTree )
+			this.pAI = ai
+		end
+		
+		/** \brief AI. */
+		public func BAAIBehaviorTree getAI()
+			return this.pAI
+		end
+		
+		/** \brief Actor. */
+		public func BehaviorElement getActor()
+			return this.pAI.getActor()
+		end
+	end
+	
+	/**
+	 * \brief Behavior tree action with link to BAAIBehaviorTree.
+	 */
+	public abstract class BTActionAI implements BTAction
+		/** \brief AI. */
+		private var BAAIBehaviorTree pAI
+		
+		/** \brief Create action. */
+		public func new( BAAIBehaviorTree ai )
+			this.pAI = ai
+		end
+		
+		/** \brief AI. */
+		public func BAAIBehaviorTree getAI()
+			return this.pAI
+		end
+		
+		/** \brief Actor. */
+		public func BehaviorElement getActor()
+			return this.pAI.getActor()
+		end
+	end
+	
+	
+	
+	/** \brief Behavior tree context or \em null if not set. */
+	private var BTContextAI pContext
+	
+	/** \brief Behavior tree is running. */
+	private var bool pRunning
+	
+	
+	
+	/** \brief Create actor ai. */
+	public func new()
+		this.pRunning = false
+	end
+	
+	/** \brief Create actor ai restoring from file reader. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+		var bool hasContext = flags.getAt( 0 )
+		this.pRunning = flags.getAt( 1 )
+		
+		if hasContext and this.pContext != null
+			this.pContext.readFromFile( env, reader )
+		end
+	end
+	
+	/** \brief Dispose of actor ai. */
+	public func void dispose()
+		this.pContext = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Behavior tree context or \em null if not set. */
+	public func BTContextAI getContext()
+		return this.pContext
+	end
+	
+	/** \brief Set behavior tree context or \em null if not set. */
+	public func void setContext( BTContextAI context )
+		this.pContext = context
+	end
+	
+	/** \brief Behavior tree is running. */
+	public func bool getRunning()
+		return this.pRunning
+	end
+	
+	/** \brief Set if behavior tree is running. */
+	public func void setRunning( bool running )
+		this.pRunning = running
+	end
+	
+	
+	 
+	/**
+	 * \brief Thinking.
+	 * 
+	 * Behavior tree is process if:
+	 * - Context is not null
+	 * - Running is true
+	 * - Actor is not controlled by player
+	 * 
+	 * If running the behavior tree throws an exception or returns \em false running is set
+	 * to false and onBehaviorTreeFailed() is called.
+	 */
+	public func void think( float elapsed )
+		if this.pContext == null or not this.pRunning or this.isControlledByPlayer()
+			return
+		end
+		
+		try
+			if not this.pContext.stepBehaviorTree()
+				this.setRunning( false )
+				this.onBehaviorTreeFailed( null )
+			end
+			
+		catch Exception e
+			this.setRunning( false )
+			this.onBehaviorTreeFailed( e )
+		end
+	end
+	
+	/**
+	 * \brief Running the behavior tree failed.
+	 * 
+	 * Default implementation logs exception using log(Exception).
+	 * 
+	 * \param exception Exception if thrown or \em null otherwise.
+	 */
+	public func void onBehaviorTreeFailed( Exception e )
+		this.log( e )
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 2 )
+		flags.setAt( 0, this.pContext != null )
+		flags.setAt( 1, this.pRunning )
+		
+		if this.pContext != null
+			this.pContext.writeToFile( env, writer )
+		end
+	end
+end

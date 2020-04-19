@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+Actions=Install
+X-KDE-Priority=TopLevel
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/dragengine-delga;
+
+[Desktop Action Install]
+Name=Install DELGA...
+Exec=delauncher-gui --install %f
+Icon=dragengine-delauncher-gui

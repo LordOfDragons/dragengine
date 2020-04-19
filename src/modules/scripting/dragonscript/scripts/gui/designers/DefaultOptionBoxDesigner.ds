@@ -1,0 +1,243 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for OptionBox.
+ */
+class DefaultOptionBoxDesigner extends DefaultButtonDesigner
+	/** \brief Design for a particular widget state. */
+	public class OptionBoxStateDesign extends StateDesign
+		/** \brief Image for option box. */
+		private var Image pImageBox
+		
+		/** \brief Image for select mark. */
+		private var Image pImageSelect
+		
+		
+		
+		
+		/** \brief Create state design. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		public func new( OptionBoxStateDesign stateDesign ) super( stateDesign )
+			this.pImageBox = stateDesign.pImageBox
+			this.pImageSelect = stateDesign.pImageSelect
+		end
+		
+		
+		
+		/** \brief Image for option box. */
+		public func Image getImageBox()
+			return this.pImageBox
+		end
+		
+		/** \brief Set image for option box. */
+		public func void setImageBox( Image image )
+			this.pImageBox = image
+		end
+		
+		/** \brief Image for select mark. */
+		public func Image getImageSelect()
+			return this.pImageSelect
+		end
+		
+		/** \brief Set image for select mark. */
+		public func void setImageSelect( Image image )
+			this.pImageSelect = image
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | imageBox | Image | setImageBox |
+		 * | imageSelect | Image | setImageSelect |
+		 */
+		public func void setParameter( String name, Object value )
+			if name.equals( "imageBox" )
+				this.setImageBox( value cast Image )
+				
+			elif name.equals( "imageSelect" )
+				this.setImageSelect( value cast Image )
+				
+			else
+				super.setParameter( name, value )
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return OptionBoxStateDesign.new( this )
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge( DefaultWidgetDesigner.StateDesign state )
+			super.merge( state )
+			
+			var OptionBoxStateDesign obstate = state cast OptionBoxStateDesign
+			
+			if this.pImageBox != null
+				obstate.pImageBox = this.pImageBox
+			end
+			if this.pImageSelect != null
+				obstate.pImageSelect = this.pImageSelect
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply( Widget widget )
+			super.apply( widget )
+			
+			var OptionBox optionBox = widget cast OptionBox
+			var DisplayImage widgetOptionBox = optionBox.getOptionBoxWidget() cast DisplayImage
+			var DisplayImage widgetSelected = optionBox.getSelectedWidget() cast DisplayImage
+			
+			widgetOptionBox.setImage( this.pImageBox )
+			
+			if optionBox.getToggled()
+				widgetSelected.setImage( this.pImageSelect )
+				
+			else
+				widgetSelected.setImage( null )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Create new option box designer. */
+	public func new()
+		this.setDesignNormal( OptionBoxStateDesign.new() )
+		this.setDesignDisabled( OptionBoxStateDesign.new() )
+		this.setDesignFocused( OptionBoxStateDesign.new() )
+		this.setDesignHover( OptionBoxStateDesign.new() )
+		this.setDesignFocusedHover( OptionBoxStateDesign.new() )
+		
+		this.setDesignPressed( OptionBoxStateDesign.new() )
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultOptionBoxDesigner designer ) super( designer )
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func OptionBoxStateDesign getOptionBoxDesignNormal()
+		return this.getDesignNormal() cast OptionBoxStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func OptionBoxStateDesign getOptionBoxDesignDisabled()
+		return this.getDesignDisabled() cast OptionBoxStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func OptionBoxStateDesign getOptionBoxDesignFocused()
+		return this.getDesignFocused() cast OptionBoxStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func OptionBoxStateDesign getOptionBoxDesignHover()
+		return this.getDesignHover() cast OptionBoxStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func OptionBoxStateDesign getOptionBoxDesignFocusedHover()
+		return this.getDesignFocusedHover() cast OptionBoxStateDesign
+	end
+	
+	/** \brief Design for pressed state. */
+	public func OptionBoxStateDesign getOptionBoxDesignPressed()
+		return this.getDesignPressed() cast OptionBoxStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.imageBox | Image | getDesign{state}.setImageBox |
+	 * | {state}.imageSelect | Image | getDesign{state}.setImageSelect |
+	 */
+	public func void setParameter( String name, Object value )
+		super.setParameter( name, value )
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultOptionBoxDesigner.new( this )
+	end
+	
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget( Widget widget )
+		// create optionbox and select mark widgets if not existing
+		var OptionBox optionBox = widget cast OptionBox
+		
+		var DisplayImage widgetOptionBox = optionBox.getOptionBoxWidget() cast DisplayImage
+		if widgetOptionBox == null
+			widgetOptionBox = DisplayImage.new( null )
+			optionBox.setOptionBoxWidget( widgetOptionBox )
+		end
+		
+		var DisplayImage widgetSelect = optionBox.getSelectedWidget() cast DisplayImage
+		if widgetSelect == null
+			widgetSelect = DisplayImage.new( null )
+			optionBox.setSelectedWidget( widgetSelect )
+		end
+		
+		// design widget
+		super.designWidget( widget )
+	end
+end

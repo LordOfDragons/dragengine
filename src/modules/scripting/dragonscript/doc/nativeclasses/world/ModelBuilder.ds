@@ -1,0 +1,181 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Model builder.
+ * 
+ * Builds model resource without requiring a model resource file. The created model can
+ * either be unnamed (if filename is empty string) or named (if filename is not empty
+ * string). Named models can not clash with filenames present in the virtual file system.
+ * For this reason use unnamed models if possible. Using named models though can be useful
+ * if you want to provide model resources to scripts not needing to know if the path they
+ * try to load is a build model instead of a resource one.
+ * 
+ * To use the model builder create a subclass and implement ModelBuilder.buildModel() .
+ * You are only allowed to call methods from ModelBuilder from inside this function call.
+ * To create the model call ModelBuilder.build() . This will call ModelBuilder.buildModel()
+ * to fill a new model resource with content. Once finished the build method returns the
+ * ready to use model resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class Model
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create model builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build model using filename.
+	 * 
+	 * The created model can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named models can not clash with filenames present
+	 * in the virtual file system. For this reason use unnamed models if possible. Using
+	 * named models though can be useful if you want to provide model resources to scripts
+	 * not needing to know if the path they try to load is a build model instead of a
+	 * resource one.
+	 * 
+	 * To create the model call build() . This will call buildModel() to fill a new model
+	 * resource with content. Once finished the build method returns the ready to use
+	 * model resource. Otherwise an exception is thrown.
+	 */
+	public func Model build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build model.
+	 * 
+	 * Called by build(String) to fill a new model resource with content. You are only
+	 * allowed to call methods from ModelBuilder from inside this function call.
+	 */
+	abstract protected func void buildModel()
+	
+	/**
+	 * \brief Add bone.
+	 */
+	protected func void addBone( String name, int parent, Vector position, Quaternion orientation )
+	end
+	
+	/**
+	 * \brief Add texture.
+	 */
+	protected func void addTexture( String name, Point size, bool doubleSided, bool decal, int decalOffset )
+	end
+	
+	/**
+	 * \brief Add texture coordinate set.
+	 */
+	protected func void addTextureCoordinatesSet( String name )
+	end
+	
+	/**
+	 * \brief Add LOD.
+	 */
+	protected func void addLOD()
+	end
+	
+	/**
+	 * \brief Set lod error.
+	 */
+	protected func void setLodError( int lod, float error )
+	end
+	
+	/**
+	 * \brief Set weight count.
+	 */
+	protected func void setWeightCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set weight.
+	 */
+	protected func void setWeightAt( int lod, int index, int bone, float weight )
+	end
+	
+	/**
+	 * \brief Set weight group count.
+	 */
+	protected func void setWeightGroupCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set weight group.
+	 */
+	protected func void setWeightGroupAt( int lod, int index, int count )
+	end
+	
+	/**
+	 * \brief Set vertex count.
+	 */
+	protected func void setVertexCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set vertex.
+	 */
+	protected func void setVertexAt( int lod, int index, Vector position, int weightSet )
+	end
+	
+	/**
+	 * \brief Set normal count.
+	 */
+	protected func void setNormalCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set tangent count.
+	 */
+	protected func void setTangentCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set face count.
+	 */
+	protected func void setFaceCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Set face.
+	 */
+	protected func void setFaceAt( int lod, int index, int texture, int vertex1, int vertex2, \
+	int vertex3, int normal1, int normal2, int normal3, int tangent1, int tangent2, \
+	int tangent3, int texCoord1, int texCoord2, int texCoord3, Vector faceNormal, Vector faceTangent )
+	end
+	
+	/**
+	 * \brief Set texture coordinates set count.
+	 */
+	protected func void setTextureCoordinateSetCount( int lod, int count )
+	end
+	
+	/**
+	 * \brief Texture coordinate set set texture coordinate count.
+	 */
+	protected func void setTextureCoordinateSetAtSetCount( int lod, int index, int count )
+	end
+	
+	/**
+	 * \brief Texture coordinate set set texture coordinate.
+	 */
+	protected func void setTextureCoordinateSetAtSetAt( int lod, int index, int index2, Vector2 tc )
+	end
+	/*@}*/
+end

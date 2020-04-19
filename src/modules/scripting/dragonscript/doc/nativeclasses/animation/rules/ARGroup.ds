@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule group.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARGroup extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set if current animation state is used instead of empty state. */
+	public func void setUseCurrentState( bool useCurrentState )
+	end
+	
+	/**
+	 * \brief Set application type.
+	 * \throws EInvalidParam \em applicationType is not a valid value.
+	 */
+	public func void setApplicationType( ARGroupApplication applicationType )
+	end
+	
+	
+	
+	/** \brief Add rule. */
+	public func void addRule( AnimatorRule rule )
+	end
+	
+	/** \brief Remove rule. */
+	public func void removeRule( AnimatorRule rule )
+	end
+	
+	/** \brief Remove all rules. */
+	public func void removeAllRules()
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARGroupTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARGroupTarget target )
+	end
+	/*@}*/
+end

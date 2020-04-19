@@ -1,0 +1,107 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief If-case for a if-else conversation action.
+ */
+class CActionIfElseCase
+	private var ConversationCondition pCondition
+	private var Array pActions
+	
+	
+	
+	/** \brief Create conversation action. */
+	public func new()
+		this.pActions = Array.new()
+	end
+	
+	
+	
+	/** \brief Condition or \em null if not set. */
+	public func ConversationCondition getCondition()
+		return this.pCondition
+	end
+	
+	/** \brief Set condition or \em null if not set. */
+	public func void setCondition( ConversationCondition condition )
+		this.pCondition = condition
+	end
+	
+	
+	
+	/** \brief Visits all actions. */
+	public func void forEachAction( Block aBlock )
+		this.pActions.forEach( aBlock )
+	end
+	
+	/** \brief Adds an action. */
+	public func void addAction( ConversationAction action )
+		if action == null
+			throw EInvalidParam.new()
+		end
+		this.pActions.add( action )
+	end
+	
+	/** \brief Actions. */
+	public func Array getActions()
+		return this.pActions
+	end
+	
+	/** \brief Actions iterator. */
+	public func ConversationActionIterator getIteratorActions()
+		return ConversationActionIterator.new( this.pActions, 0 )
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	static public func CActionIfElseCase readFromFile( PersistencyEnvironment env, FileReader reader )
+		var CActionIfElseCase ifcase = CActionIfElseCase.new()
+		
+		ifcase.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+		
+		var int i, count = reader.readUShort()
+		for i = 0 to count
+			ifcase.pActions.add( env.readObject( reader ) )
+		end
+		
+		return ifcase
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		env.writeObjectOrNull( writer, this.pCondition )
+		
+		writer.writeUShort( this.pActions.getCount() )
+		this.pActions.forEach( block ConversationAction each
+			env.writeObject( writer, each )
+		end )
+	end
+end

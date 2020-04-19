@@ -1,0 +1,130 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Simple text validator ensure maximum text length and used characters.
+ * 
+ * Accepts string only if the length does not exceeded a maximum number and all characters
+ * in the string match a specific set of characters. A few basic character sets are provided
+ * which are often required.
+ * 
+ * Once created the text validator is immutable.
+ */
+class SimpleTextValidator implements TextValidator
+	/** \brief Character classes. */
+	enum CharacterClass
+		/** \brief All characters allowed. */
+		all
+		
+		/** \brief Only digits allowed. */
+		digits
+		
+		/** \brief Only digits, dot and minus allowed. */
+		number
+		
+		/** \brief Only printable characters allowed. */
+		printable
+	end
+	
+	
+	
+	/** \brief Maximum number of characters allowed. */
+	private var int pMaxCharCount
+	
+	/** \brief Character class to accept. */
+	private var CharacterClass pCharacterClass
+	
+	
+	
+	/**
+	 * \brief Create simple text validator.
+	 * \param maxCharCount Maximum number of characters to allow.
+	 * \param characterClass Character class to allow.
+	 * \throws EInvalidParam maxCharCount is less than 1.
+	 */
+	public func new( int maxCharCount, CharacterClass characterClass )
+		if maxCharCount < 1
+			throw EInvalidParam.new( "maxCharCount less than 1" )
+		end
+		this.pMaxCharCount = maxCharCount
+		this.pCharacterClass = characterClass
+	end
+	
+	
+	
+	/** \brief Maximum number of characters allowed. */
+	public func int getMaxCharCount()
+		return this.pMaxCharCount
+	end
+	
+	/** \brief Character class to accept. */
+	public func CharacterClass getCharacterClass()
+		return this.pCharacterClass
+	end
+	
+	
+	
+	/**
+	 * \brief Text is valid.
+	 */
+	public func bool validates( String text )
+		var int length = text.getLength()
+		if length > this.pMaxCharCount
+			return false
+		end
+		
+		var int i, c
+		select this.pCharacterClass
+		case CharacterClass.all
+			
+		case CharacterClass.digits
+			for i = 0 to length
+				c = text.getAt( i )
+				if c < '0' or c > '9'
+					return false
+				end
+			end
+			
+		case CharacterClass.number
+			for i = 0 to length
+				c = text.getAt( i )
+				if not ( ( c >= '0' and c <= '9' ) or c == '-' or c == '.' )
+					return false
+				end
+			end
+			
+		case CharacterClass.printable
+			for i = 0 to length
+				c = text.getAt( i )
+				if c < 32
+					return false
+				end
+			end
+		end
+		
+		return true
+	end
+end

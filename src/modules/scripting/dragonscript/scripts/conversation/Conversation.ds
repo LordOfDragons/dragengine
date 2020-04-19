@@ -1,0 +1,215 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Utils
+
+
+
+/**
+ * Conversation script.
+ */
+class Conversation
+	/** Path of file the conversation has been loaded from. */
+	private var String pPathFile
+	/** Targets. */
+	private var Array pTargets
+	/** Camera shots. */
+	private var Array pCameraShots
+	/** Look-Ats. */
+	private var Array pLookAts
+	/** Gestures. */
+	private var Array pGestures
+	/** Face poses. */
+	private var Array pFacePoses
+	/** Topic groups. */
+	private var Array pTopicGroups
+	
+	
+	
+	/** Create a new conversation. */
+	public func new( String pathFile )
+		this.pPathFile = pathFile
+		this.pTargets = Array.new()
+		this.pLookAts = Array.new()
+		this.pCameraShots = Array.new()
+		this.pGestures = Array.new()
+		this.pFacePoses = Array.new()
+		this.pTopicGroups = Array.new()
+	end
+	
+	
+	
+	/** Retrieves the path the conversation has been loaded from. */
+	public func String getPathFile()
+		return this.pPathFile
+	end
+	
+	
+	
+	/** Retrieves the named target or null if not found. */
+	public func ConversationTarget getTargetNamed( StringID name )
+		return this.pTargets.find( block ConversationTarget each
+			return each.getName().equals( name )
+		end ) cast ConversationTarget
+	end
+	
+	/** Adds a target. */
+	public func void addTarget( ConversationTarget target )
+		if this.getTargetNamed( target.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pTargets.add( target )
+	end
+	
+	/** Visit all targets. */
+	public func void forEachTarget( Block aBlock )
+		this.pTargets.forEach( aBlock )
+	end
+	
+	
+	
+	/** Retrieves the named look-at or null if not found. */
+	public func ConversationLookAt getLookAtNamed( StringID name )
+		return this.pLookAts.find( block ConversationLookAt each
+			return each.getName().equals( name )
+		end ) cast ConversationLookAt
+	end
+	
+	/** Adds a look-at. */
+	public func void addLookAt( ConversationLookAt lookAt )
+		if this.getLookAtNamed( lookAt.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pLookAts.add( lookAt )
+	end
+	
+	/** Visit all look-ats. */
+	public func void forEachLookAt( Block aBlock )
+		this.pLookAts.forEach( aBlock )
+	end
+	
+	
+	
+	/** Retrieves the named camera shot or null if not found. */
+	public func ConversationCameraShot getCameraShotNamed( StringID name )
+		return this.pCameraShots.find( block ConversationCameraShot each
+			return each.getName().equals( name )
+		end ) cast ConversationCameraShot
+	end
+	
+	/** Adds a camera shot. */
+	public func void addCameraShot( ConversationCameraShot cameraShot )
+		if this.getCameraShotNamed( cameraShot.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pCameraShots.add( cameraShot )
+	end
+	
+	/** Visit all camera shots. */
+	public func void forEachCameraShot( Block aBlock )
+		this.pCameraShots.forEach( aBlock )
+	end
+	
+	
+	
+	/** Retrieves the named gesture or null if not found. */
+	public func ConversationGesture getGestureNamed( StringID name )
+		return this.pGestures.find( block ConversationGesture each
+			return each.getName().equals( name )
+		end ) cast ConversationGesture
+	end
+	
+	/** Adds a gesture. */
+	public func void addGesture( ConversationGesture gesture )
+		if this.getGestureNamed( gesture.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pGestures.add( gesture )
+	end
+	
+	/** Visit all gestures. */
+	public func void forEachGesture( Block aBlock )
+		this.pGestures.forEach( aBlock )
+	end
+	
+	
+	
+	/** Retrieves the named face pose or null if not found. */
+	public func ConversationFacePose getFacePoseNamed( StringID name )
+		return this.pFacePoses.find( block ConversationFacePose each
+			return each.getName().equals( name )
+		end ) cast ConversationFacePose
+	end
+	
+	/** Adds a face pose. */
+	public func void addFacePose( ConversationFacePose facePose )
+		if this.getFacePoseNamed( facePose.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pFacePoses.add( facePose )
+	end
+	
+	/** Visit all face poses. */
+	public func void forEachFacePose( Block aBlock )
+		this.pFacePoses.forEach( aBlock )
+	end
+	
+	
+	
+	/** Retrieves the topic group with the given ID or null if not found. */
+	public func ConversationTopicGroup getTopicGroupWithID( StringID id )
+		return this.pTopicGroups.find( block ConversationTopicGroup each
+			return each.getID().equals( id )
+		end ) cast ConversationTopicGroup
+	end
+	
+	/** Adds a topic group. */
+	public func void addTopicGroup( ConversationTopicGroup group )
+		if this.getTopicGroupWithID( group.getID() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pTopicGroups.add( group )
+	end
+	
+	/** Visit all topic groups. */
+	public func void forEachTopicGroup( Block aBlock )
+		this.pTopicGroups.forEach( aBlock )
+	end
+	
+	/**
+	 * Finds a topic. Looks first in this conversation. If not found looks in the
+	 * base conversation if assigned. If the topic can not be found null is returned.
+	 */
+	public func ConversationTopic findTopic( StringID groupID, StringID topicID )
+		var ConversationTopicGroup group
+		var ConversationTopic topic
+		
+		group = this.getTopicGroupWithID( groupID )
+		if group != null
+			topic = group.getTopicWithID( topicID )
+		end
+		
+		return topic
+	end
+end

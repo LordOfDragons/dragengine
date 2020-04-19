@@ -1,0 +1,114 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders.Factories
+
+
+/**
+ * \brief Factory for CombinedBorder.
+ */
+public class CombinedBorderFactory implements BorderFactory
+	/** \brief Inner border or \em null. */
+	private var BorderFactory pInnerBorderFactory
+	
+	/** \brief Outer border or \em null. */
+	private var BorderFactory pOuterBorderFactory
+	
+	
+	
+	/** \brief Create border factory. */
+	public func new()
+	end
+	
+	/** \brief Create copy of border factory. */
+	public func new( CombinedBorderFactory factory )
+		if this.pInnerBorderFactory != null
+			this.pInnerBorderFactory = factory.pInnerBorderFactory.copyFactory()
+		end
+		if this.pOuterBorderFactory != null
+			this.pOuterBorderFactory = factory.pOuterBorderFactory.copyFactory()
+		end
+	end
+	
+	
+	
+	/** \brief Inner border or \em null. */
+	public func BorderFactory getInnerBorderFactory()
+		return this.pInnerBorderFactory
+	end
+	
+	/** \brief Set inner border or \em null. */
+	public func void setInnerBorderFactory( BorderFactory factory )
+		this.pInnerBorderFactory = factory
+	end
+	
+	/** \brief Outer border or \em null. */
+	public func BorderFactory getOuterBorderFactory()
+		return this.pOuterBorderFactory
+	end
+	
+	/** \brief Set outer border or \em null. */
+	public func void setOuterBorderFactory( BorderFactory factory )
+		this.pOuterBorderFactory = factory
+	end
+	
+	
+	
+	/** \brief Create border. */
+	public func Border createBorder()
+		var Border innerBorder, outerBorder
+		
+		if this.pInnerBorderFactory != null
+			innerBorder = this.pInnerBorderFactory.createBorder()
+		end
+		if this.pOuterBorderFactory != null
+			outerBorder = this.pOuterBorderFactory.createBorder()
+		end
+		
+		return CombinedBorder.new( innerBorder, outerBorder )
+	end
+	
+	/** \brief Create factory copy. */
+	public func BorderFactory copyFactory()
+		return CombinedBorderFactory.new( this )
+	end
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | inner | BorderFactory | setInnerBorderFactory |
+	 * | outer | BorderFactory | setOuterBorderFactory |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "inner" )
+			this.setInnerBorderFactory( value cast BorderFactory )
+			
+		elif name.equals( "outer" )
+			this.setOuterBorderFactory( value cast BorderFactory )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+end

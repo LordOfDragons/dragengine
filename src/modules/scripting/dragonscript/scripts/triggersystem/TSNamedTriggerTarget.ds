@@ -1,0 +1,195 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TriggerSystem
+
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Helper class operating an named trigger target.
+ * 
+ * Simplifies the process of handling optional trigger targets. The class stores the name of
+ * the trigger target and the trigger target itself. The trigger target is fetched from the
+ * trigger table if the name is not null. This class hides the book keeping for this common
+ * situation.
+ */
+class TSNamedTriggerTarget
+	private var StringID pName
+	private var TSTriggerTarget pTarget
+	
+	
+	
+	/** \brief Create named trigger target. */
+	public func new()
+	end
+	
+	/** \brief Create named trigger target with initial name. */
+	public func new( StringID name )
+		this.pName = name
+	end
+	
+	public func new( String name )
+		this.setName( name )
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/**
+	 * \brief Set name or null if not used.
+	 * 
+	 * Drops the trigger target if present.
+	 */
+	public func void setName( StringID name )
+		this.pName = name
+		this.pTarget = null
+	end
+	
+	/**
+	 * \brief Set name or empty string or null if not used.
+	 * 
+	 * Drops the trigger target if present.
+	 */
+	public func void setName( String name )
+		if name != null and not name.empty()
+			this.pName = StringID.new( name )
+			
+		else
+			this.pName = null
+		end
+		
+		this.pTarget = null
+	end
+	
+	/** \brief Trigger target or null if not acquired yet. */
+	public func TSTriggerTarget getTarget()
+		return this.pTarget
+	end
+	
+	/**
+	 * \brief Acquire trigger target if name is not empty.
+	 * 
+	 * Call this during Element.addToGameWorld().
+	 */
+	public func void acquireTarget( TSTriggerTable triggerTable )
+		if this.pName != null
+			this.pTarget = triggerTable.getOrAddNamed( this.pName )
+		end
+	end
+	
+	/**
+	 * \brief Drop trigger target if present.
+	 * 
+	 * Call this during Element.removeFromGameWorld() or when the trigger table is no more valid.
+	 */
+	public func void dropTarget()
+		this.pTarget = null
+	end
+	
+	
+	
+	/** \brief Trigger target fired state or false if absent. */
+	public func bool getFired()
+		if this.pTarget != null
+			return this.pTarget.getFired()
+			
+		else
+			return false
+		end
+	end
+	
+	/** \brief Set trigger target fire state if present. */
+	public func void setFired( bool fired )
+		if this.pTarget != null
+			this.pTarget.setFired( fired )
+		end
+	end
+	
+	/** \brief Target target ever fired state or false if absent. */
+	public func bool getHasFired()
+		if this.pTarget != null
+			return this.pTarget.getHasFired()
+			
+		else
+			return false
+		end
+	end
+	
+	/** \brief Set if trigger target ever fired state if present. */
+	public func void setHasFired( bool hasFired )
+		if this.pTarget != null
+			this.pTarget.setHasFired( hasFired )
+		end
+	end
+	
+	
+	
+	/** \brief Fire trigger target if present. */
+	public func void fire()
+		if this.pTarget != null
+			this.pTarget.fire()
+		end
+	end
+	
+	/** \brief Reset trigger target if present. */
+	public func void reset()
+		if this.pTarget != null
+			this.pTarget.reset()
+		end
+	end
+	
+	/** \brief Fully reset trigger target if present. */
+	public func void fullReset()
+		if this.pTarget != null
+			this.pTarget.fullReset()
+		end
+	end
+	
+	/** \brief Fire then reset trigger target if present. */
+	public func void pulse()
+		if this.pTarget != null
+			this.pTarget.fire()
+			this.pTarget.reset()
+		end
+	end
+	
+	
+	
+	/** \brief Add listener to trigger target if present. */
+	public func void addListener( TSTriggerListener listener )
+		if this.pTarget != null
+			this.pTarget.addListener( listener )
+		end
+	end
+	
+	/** \brief Remove listener from trigger target if present. */
+	public func void removeListener( TSTriggerListener listener )
+		if this.pTarget != null
+			this.pTarget.removeListener( listener )
+		end
+	end
+end

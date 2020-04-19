@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>DEAnimator</name>
+	<description>Animates components using animator rules.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Animator</type>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>DEAnimatorCreateModule</entrypoint>
+	</library>
+</module>

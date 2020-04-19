@@ -1,0 +1,314 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding billboard support.
+ * 
+ * Billboards place a flat image in the game world optionally rotated towards the camera
+ * position. This behavior can be added multiple times to an element. Each instance creates
+ * one billboard attached to the element collider which can be individually modified.
+ * To distinguish the billboards each instance has an identifier which can be used to
+ * retrieve a specific instance. The identifier is also used as prefix for element class
+ * properties and stub properties if not empty. Hence to use more than one billboard use
+ * code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorBillboard.new(this, null)
+ *       ECBehaviorBillboard.new(this, null, "subBillboard")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the skin to use for both billboards using the properties "skin" for
+ * the first billboard and "subBillboard.skin" for the second billboard.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element before this
+ * behavior is added the billboard is statically attached.
+ * 
+ * Element class properties have the prefix "billboard{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorBillboard extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorBillboard pECBehavior
+		private var Billboard pBillboard
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorBillboard ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pBillboard = this.createBillboard( stub )
+			if this.pBillboard == null
+				return
+			end
+			
+			if this.pECBehavior.getCollider() != null
+				var ECBehaviorCollider.Instance collider = \
+					this.pECBehavior.getCollider().instance( this.getElement() )
+				if collider.getCollider() != null
+					this.attachBillboard( stub, collider )
+				end
+			end
+		end
+		
+		/**
+		 * \brief Create billboard for the element.
+		 * 
+		 * The default implementation creates a billboard using the billboard parameters
+		 * stored in the element class. If not all required resources can be found an exception
+		 * is thrown. Overwrite to modify billboard creation process using parameters stored
+		 * in the sub if required.
+		 */
+		protected func Billboard createBillboard( StubElement stub )
+			var Billboard billboard = this.pECBehavior.getBillboard().createBillboard( this.getElement(), stub )
+			if billboard == null
+				return null
+			end
+			
+			billboard.setLayerMask( this.createLayerMask( stub ) )
+			
+			return billboard
+		end
+		
+		/**
+		 * \brief Create billboard layer mask.
+		 * 
+		 * Default implementation calls ECComposeBillboard.createLayerMask.
+		 */
+		protected func LayerMask createLayerMask( StubElement stub )
+			return this.pECBehavior.getBillboard().createLayerMask( stub )
+		end
+		
+		/**
+		 * \brief Attach billboard to collider.
+		 * 
+		 * Called if \em ECBehaviorCollider is present in the behavior element. The default
+		 * implementation attaches the billboard statically to the collider. For this to
+		 * work the billboard has to be in the right position relative to the collider.
+		 */
+		protected func void attachBillboard( StubElement stub, ECBehaviorCollider.Instance collider )
+			collider.getCollider().attachStatic( this.pBillboard )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorBillboard getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Billboard. */
+		public func Billboard getBillboard()
+			return this.pBillboard
+		end
+		
+		
+		
+		/** \brief State changed (visble, touchable). */
+		public func void stateChanged()
+			if this.pBillboard != null
+				this.pBillboard.setVisible( this.getElement().getVisible() )
+			end
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pBillboard != null
+				this.getElement().getGameWorld().getWorld().addBillboard( this.pBillboard )
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			if this.pBillboard != null
+				this.getElement().getGameWorld().getWorld().removeBillboard( this.pBillboard )
+			end
+		end
+	end
+	
+	
+	
+	private var ECComposeBillboard pBillboard
+	private var ECBehaviorCollider pCollider
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, id, id.empty() if "billboard." else "billboard(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String id, String prefix ) super( eclass, id )
+		this.pCollider = collider
+		
+		this.pBillboard = ECComposeBillboard.new( eclass, prefix )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Billboard for element class. */
+	public func ECComposeBillboard getBillboard()
+		return this.pBillboard
+	end
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorBillboard getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorBillboard
+		end ) cast ECBehaviorBillboard
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBillboard with specific identifier.
+	 */
+	static public func ECBehaviorBillboard getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorBillboard each
+			return each castable ECBehaviorBillboard and \
+				( each cast ECBehaviorBillboard ).getID().equals( id )
+		end ) cast ECBehaviorBillboard
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorBillboard behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorBillboard
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBillboard.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBillboard.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorBillboard.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

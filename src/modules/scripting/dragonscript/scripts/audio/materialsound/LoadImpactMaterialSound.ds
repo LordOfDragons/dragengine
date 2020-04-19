@@ -1,0 +1,214 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.MaterialSounds
+
+pin Dragengine.Gui
+pin Dragengine.Files
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load impact material sounds from xml file.
+ */
+class LoadImpactMaterialSound extends BaseXmlLoader
+	private var LoadSynthesizer pSynthesizerLoader
+	
+	
+	
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadImpactMaterialSounds" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/** \brief Synthesizer loader. */
+	public func LoadSynthesizer getSynthesizerLoader()
+		return this.pSynthesizerLoader
+	end
+	
+	/** \brief Set synthesizer loader. */
+	public func void setSynthesizerLoader( LoadSynthesizer loader )
+		this.pSynthesizerLoader = loader
+	end
+	
+	
+	
+	/** \brief Load impact material sounds from xml file. */
+	public func void loadFromFile( String filename, ImpactMaterialSounds materials )
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "impactMaterialSound" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		this.parseImpactMaterialSound( root, materials, File.new( filename ).getParent().getPath() )
+	end
+	
+	/**
+	 * \brief Scan for skin annotation files loading them.
+	 * 
+	 * Skin annotation files have the extension ".deimsnd".
+	 * 
+	 * \param materials Impact material sounds to load files into.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void loadFromFiles( ImpactMaterialSounds materials, String directory, bool recursive )
+		this.loadFromFiles( materials, directory, "*.deimsnd", recursive )
+	end
+	
+	/**
+	 * \brief Scan for skin annotation files loading them.
+	 * 
+	 * Skin annotation files have the extension ".deimsnd".
+	 * 
+	 * \param materials Impact material sounds to load files into.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param pattern File pattern to match. Has to be of the form "*.extension"
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void loadFromFiles( ImpactMaterialSounds materials, String directory, \
+	String pattern, bool recursive )
+		FileSystem.searchFiles( directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( File.new( each ).getName(), pattern )
+				this.loadFromFile( each, materials )
+			end
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Parse impact material sound tag. */
+	public func void parseImpactMaterialSound( EasyXMLElement root, \
+	ImpactMaterialSounds materials, String baseDirectory )
+		var ImpactMaterialSound material = ImpactMaterialSound.new( root.getAttributeNamed( "id" ) )
+		
+		if materials.hasWithID( material.getID() )
+			this.logDuplicateObject( root, "ImpactMaterialSound", material.getID() )
+			throw EInvalidParam.new()
+		end
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "sound" )
+				material.setSound( this.parseMaterialSound( element, baseDirectory ) )
+				
+			elif tagName.equals( "impulsePower" )
+				material.setImpulsePower( element.getFirstCDataFloat() )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		materials.add( material )
+	end
+	
+	/** \brief Parse material sound tag. */
+	public func MaterialSound parseMaterialSound( EasyXMLElement root, String baseDirectory )
+		var MaterialSound materialSound = MaterialSound.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "minPower" )
+				materialSound.setMinPower( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxPower" )
+				materialSound.setMaxPower( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "power" )
+				var float power = element.getFirstCDataFloat()
+				materialSound.setMinPower( power )
+				materialSound.setMaxPower( power )
+				
+			elif tagName.equals( "minVolume" )
+				materialSound.setMinVolume( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxVolume" )
+				materialSound.setMaxVolume( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "volume" )
+				var float volume = element.getFirstCDataFloat()
+				materialSound.setMinVolume( volume )
+				materialSound.setMaxVolume( volume )
+				
+			elif tagName.equals( "minRange" )
+				materialSound.setMinRange( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maxRange" )
+				materialSound.setMaxRange( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "range" )
+				var float range = element.getFirstCDataFloat()
+				materialSound.setMinRange( range )
+				materialSound.setMaxRange( range )
+				
+			elif tagName.equals( "sound" )
+				var String value = element.getFirstCData()
+				
+				try
+					materialSound.addSound( Sound.new( File.absolutePath( value, baseDirectory ).getPath() ) )
+					
+				catch Exception e
+					this.logLoadFileFailed( element, value )
+				end
+				
+			elif tagName.equals( "synthesizer" )
+				var String value = element.getFirstCData()
+				if value.empty()
+					return null
+				end
+				
+				try
+					materialSound.setSynthesizer( this.pSynthesizerLoader.loadFromFile( \
+						File.absolutePath( value, baseDirectory ).getPath() ) )
+					
+				catch Exception e
+					this.logLoadFileFailed( element, value )
+				end
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return materialSound
+	end
+end

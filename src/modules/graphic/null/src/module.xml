@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>NullGraphic</name>
+	<description>Renders nothing at all. Null modules are useful
+		for testing purpose or servers without a graphic system.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Graphic</type>
+	<fallback/>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>NullGraphicCreateModule</entrypoint>
+	</library>
+	<data>
+		<directory>/</directory>
+	</data>
+</module>

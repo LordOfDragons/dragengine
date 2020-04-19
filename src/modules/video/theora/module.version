@@ -1,0 +1,4 @@
+VIDTHEORA {
+  global: TheoraCreateModule;
+  local: *;
+};

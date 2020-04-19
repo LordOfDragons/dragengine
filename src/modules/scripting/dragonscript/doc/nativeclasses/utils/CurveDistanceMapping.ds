@@ -1,0 +1,88 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+
+
+/**
+ * \brief Curve distance mapping.
+ * 
+ * Samples a curve by distance for evaluating curves on a distance
+ * basis instead of local coordinates.
+ * 
+ */
+class CurveDistanceMapping
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create curve distance mapping. */
+	public func new()
+	end
+	
+	/** \brief Create curve distance mapping. */
+	public func new( CurveDistanceMapping copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Resolution in meters used for sampling. */
+	public func float getResolution()
+	end
+	
+	/** \brief Length of sampled curve in meters. */
+	public func float getLength()
+	end
+	
+	/** \brief Get evaluation parameter for distance. */
+	public func float map( float distance )
+	end
+	
+	/** \brief Clear mapping. */
+	public func void clear()
+	end
+	
+	/**
+	 * \brief Initialize mapping using a 3d bezier curve.
+	 * \details Previous mapping parameters are overwritten. The method chooses resolution
+	 *          and segment sample count by examining the curve before sampling it.
+	 */
+	public func void init( CurveBezier3D curve )
+	end
+	
+	/**
+	 * \brief Initialize mapping using a 3d bezier curve.
+	 * \details Previous mapping parameters are overwritten.
+	 * 
+	 * \param curve Curve to sample from.
+	 * 
+	 * \param resolution Sample resolution in meters clamped to 1mm or larger. Smaller values
+	 *                   increase memory consumption for the mapping table a lot for long
+	 *                   curves. A good value is 0.1 resolution for curves less than 1m and
+	 *                   larger for longer curves. Curves which are equally spaced already
+	 *                   can use large resolution values while strongly not equally spaced
+	 *                   curves require smaller resolution values to give good results.
+	 * 
+	 * \param segmentSamples Number of samples to take along curve segments. Higher sample
+	 *                       counts increase accuracy of the mapping especially the estimated
+	 *                       curve length. Higher sample counts increase processing time but
+	 *                       do not increase memory consumption. Curves which are equally
+	 *                       spaced can use small sample counts while strongly not equally
+	 *                       spaced curves require higher sample counter to give good results.
+	 *                       For curves which are mostly equally spaced or close to it a samples
+	 *                       count of 10 is a good choice. For not so equally spaced curves
+	 *                       higher values of 20 or more may be required.
+	 * 
+	 * \throws EInvalidParam \em segmentSamples is less than 0.
+	 */
+	public func void init( CurveBezier3D curve, float resolution, int segmentSamples )
+	end
+	/*@}*/
+end

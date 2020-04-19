@@ -1,0 +1,103 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Forward input event to widget.
+ */
+class WidgetInputProcessor extends DefaultInputProcessor
+	/** \brief Widget to send input event to. */
+	private var Widget pWidget
+	
+	
+	
+	/** \brief Create input processor. */
+	public func new( Widget widget )
+		if widget == null
+			throw EInvalidParam.new()
+		end
+		this.pWidget = widget
+	end
+	
+	
+	
+	/** \brief Process input event. */
+	public func void inputEvent( InputEvent event )
+		select event.getType()
+		case InputEventType.keyPress
+			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
+				KeyEvent.idKeyPressed, event.getKeyCode(), event.getState(), \
+				event.getKeyChar(), event.getDevice(), event.getCode() ) )
+			
+		case InputEventType.keyRelease
+			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
+				KeyEvent.idKeyReleased, event.getKeyCode(), event.getState(), \
+				event.getKeyChar(), event.getDevice() ) )
+			
+		case InputEventType.mousePress
+			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
+				MouseEvent.idMousePressed, event.getCode(), event.getState(), \
+				event.getDevice() ) )
+			
+		case InputEventType.mouseRelease
+			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
+				MouseEvent.idMouseReleased, event.getCode(), event.getState(), \
+				event.getDevice() ) )
+			
+		case InputEventType.mouseMove
+			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
+				MouseEvent.idMouseMoved, event.getCode(), event.getState(), \
+				Point.new( event.getX(), event.getY() ), event.getDevice() ) )
+			
+		case InputEventType.mouseWheel
+			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
+				MouseEvent.idMouseWheeled, event.getCode(), event.getState(), \
+				Point.new( event.getX(), event.getY() ), event.getDevice() ) )
+			
+		case InputEventType.axisMove
+			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
+				GamepadEvent.idGamepadAxisMoved, event.getDevice(), \
+				event.getCode(), event.getState(), event.getValue() ) )
+			
+		case InputEventType.buttonPress
+			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
+				GamepadEvent.idGamepadButtonPressed, event.getDevice(), \
+				event.getCode(), event.getState() ) )
+			
+		case InputEventType.buttonRelease
+			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
+				GamepadEvent.idGamepadButtonReleased, event.getDevice(), \
+				event.getCode(), event.getState() ) )
+			
+		//case InputEventType.deviceAttached
+		//case InputEventType.deviceDetached
+		//case InputEventType.deviceParamsChanged
+			//not used
+		end
+	end
+end

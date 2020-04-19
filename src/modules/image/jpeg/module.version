@@ -1,0 +1,4 @@
+IMGJPEG {
+  global: JPEGCreateModule;
+  local: *;
+};

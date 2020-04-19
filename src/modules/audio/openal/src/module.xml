@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>OpenAL</name>
+	<description>Ouputs audio using the OpenAL library.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Audio</type>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>OpenALCreateModule</entrypoint>
+	</library>
+	<data>
+		<directory>/</directory>
+	</data>
+</module>

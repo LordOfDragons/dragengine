@@ -1,0 +1,83 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Collect owners of hit colliders into an array without duplicates.
+ * 
+ * Collected owners can be any object type. Null owners are not collected.
+ */
+class CollectElementsListener implements ColliderListener
+	/** \brief Array to add hit owners to. */
+	private var Array pCollected
+	
+	
+	
+	/** \brief Create listener. */
+	public func new()
+	end
+	
+	/** \brief Create listener. */
+	public func new( Array collected )
+		this.pCollected = collected
+	end
+	
+	
+	
+	/** \brief Array to add collected owners to. */
+	public func Array getCollected()
+		return this.pCollected
+	end
+	
+	/** \brief Set array to add collected owners to. */
+	public func void setCollected( Array collected )
+		this.pCollected = collected
+	end
+	
+	
+	
+	/** \brief Collision response. */
+	public func void collisionResponse( Collider owner, CollisionInfo info )
+		var Collider hitCollider = info.getCollider()
+		if hitCollider == null
+			return
+		end
+		
+		var Object hitOwner = hitCollider.getOwner()
+		if not this.pCollected.has( hitOwner )
+			this.pCollected.add( hitOwner )
+		end
+	end
+	
+	/** \brief Collider can collide with another collider. */
+	public func bool canHitCollider( Collider owner, Collider collider )
+		return true
+	end
+	
+	/** \brief Collider changed not used. */
+	public func void colliderChanged( Collider owner )
+	end
+end

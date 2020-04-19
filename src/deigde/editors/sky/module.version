@@ -1,0 +1,4 @@
+SKY {
+  global: SkyEditorCreateModule;
+  local: *;
+};

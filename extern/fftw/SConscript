@@ -1,0 +1,170 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'fftw-3.3.8'
+
+libLinkVersion = '8'
+libLinkName = 'fftw3'
+libDirPath = 'lib'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('{}/${{SHLIBPREFIX}}{}${{SHLIBSUFFTWX}}.{}'.format(libDirPath, libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('{}/${{LIBPREFIX}}{}${{LIBSUFFTWX}}'.format(libDirPath, libLinkName))
+
+# check if system fftw is present
+hasSystemFFTW = False
+cpppath = []
+
+conf = envLibrary.Configure()
+if envLibrary['with_system_fftw'] != TernaryVariableNo:
+	hasSystemFFTW = conf.CheckLibWithHeader(libLinkName, 'fftw3.h', 'c++')
+
+conf.Finish()
+
+if not hasSystemFFTW and envLibrary['with_system_fftw'] == TernaryVariableYes:
+	Exit('Requested to use system fftw but no usable fftw found.')
+
+libs = [libLinkName]
+
+parent_report['use system fftw'] = 'yes' if hasSystemFFTW else 'no'
+
+if hasSystemFFTW:
+	parent_targets['lib_fftw'] = {
+		'name' : 'Internal fftw library',
+		'cpppath' : cpppath,
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build fftw
+def fftwBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	
+	# this is required to force output into the lib-dir we want. otherwise on some platforms the library
+	# is written to 'lib' directory, on others to 'lib64'. this makes it impossible to write an SConscript
+	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
+	cmdline.append('--libdir="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('--enable-silent-rules')
+	cmdline.append('--disable-doc')
+	cmdline.append('--disable-fortran')
+	#cmdline.append('--disable-alloca')  # if broken on mingw64
+	
+	"""
+	--enable-sse            enable SSE optimizations
+	--enable-sse2           enable SSE/SSE2 optimizations
+	--enable-avx            enable AVX optimizations
+	--enable-avx2           enable AVX2 optimizations
+	--enable-avx512         enable AVX512 optimizations
+	--enable-avx-128-fma    enable AVX128/FMA optimizations
+	--enable-kcvi           enable Knights Corner vector instructions
+							optimizations
+	--enable-altivec        enable Altivec optimizations
+	--enable-vsx            enable IBM VSX optimizations
+	--enable-neon           enable ARM NEON optimizations
+	--enable-armv8-pmccntr-el0
+							enable the cycle counter on ARMv8 via the
+							PMCCNTR_EL0 register (see README-perfcounters for
+							details and mandatory instructions)
+	--enable-armv8-cntvct-el0
+							enable the cycle counter on ARMv8 via the CNTVCT_EL0
+							register (see README-perfcounters for details and
+							mandatory instructions)
+	--enable-armv7a-cntvct  enable the cycle counter on Armv7a via the CNTVCT
+							register (see README-perfcounters for details and
+							mandatory instructions)
+	--enable-armv7a-pmccntr enable the cycle counter on Armv7a via the PMCCNTR
+							register (see README-perfcounters for details and
+							mandatory instructions)
+	--enable-generic-simd128
+							enable generic (gcc) 128-bit SIMD optimizations
+	--enable-generic-simd256
+							enable generic (gcc) 256-bit SIMD optimizations
+	--enable-mips-zbus-timer
+							use MIPS ZBus cycle-counter
+	--enable-fma            enable if the machine architecture "naturally"
+							prefers fused multiply-add instructions
+	"""
+	
+	"""
+	--enable-mpi            compile FFTW MPI library
+	--enable-openmp         use OpenMP directives for parallelism
+	--enable-threads        compile FFTW SMP threads library
+	"""
+	
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make install || exit 1')
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building fftw')
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.append('include/fftw3.h')
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(fftwBuild, 'Build fftw'))
+envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_fftw', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'share', libDirPath, srcdir])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_fftw'] = {
+	'name' : 'Internal fftw library',
+	'cpppath' : [envLibrary.Dir('include')],
+	'libpath' : [envLibrary.Dir(libDirPath)],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

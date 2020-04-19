@@ -1,0 +1,175 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Immutable 2-component integer point.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Point
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create point with all components set to 0. */
+	public func new()
+	end
+	
+	/** \brief Create point with components. */
+	public func new( int x, int y )
+	end
+	
+	/** \brief Create copy of a point. */
+	public func new( Point point )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief X component. */
+	public func int getX()
+	end
+	
+	/** \brief Y component. */
+	public func int getY()
+	end
+	
+	/** \brief Point with smallest components of this point and another point. */
+	public func Point smallest( Point p )
+	end
+	
+	/** \brief Point with smallest components of this point and another point. */
+	public func Point smallest( int x, int y )
+	end
+	
+	/** \brief Point with largest components of this point and another point. */
+	public func Point largest( Point point )
+	end
+	
+	/** \brief Point with largest components of this point and another point. */
+	public func Point largest( int x, int y )
+	end
+	
+	/** \brief Point with absolute value of each component. */
+	public func Point absolute()
+	end
+	
+	
+	
+	/** \brief Points are equal. */
+	public func bool isEqualTo( Point point )
+	end
+	
+	/** \brief Both components are larger than or equal to a value. */
+	public func bool isAtLeast( int value )
+	end
+	
+	/** \brief Both components are smaller than or equal to a value. */
+	public func bool isAtMost( int value )
+	end
+	
+	/** \brief Point is equal to zero point. */
+	public func bool isZero()
+	end
+	
+	/** \brief Multiply with point component wise. */
+	public func Point compMultiply( Point point )
+	end
+	
+	/**
+	 * \brief Divide by point component wise.
+	 * \throws EDivisionByZero A component of point is 0.
+	 */
+	public func Point compDivide( Point point )
+	end
+	
+	
+	
+	/** \brief Read point from a file reader. */
+	static public func Point readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write point to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	
+	
+	
+	/**
+	 * \brief Point is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Point and components are equal.
+	*/
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	
+	/**
+	 * \brief String representation of point.
+	 * \details Implements Object.toString()
+	 */
+	public func String toString()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Point with each component negated. */
+	public func Point -()
+	end
+	
+	/** \brief Sum of two points. */
+	public func Point +( Point point )
+	end
+	
+	/** \brief Difference between two points. */
+	public func Point -( Point point )
+	end
+	
+	/** \brief Point with each component scaled by a value. */
+	public func Point *( int scalar )
+	end
+	
+	/**
+	 * \brief Point with each component divided by a value.
+	 * \throws EDivisionByZero \em scalar is \em 0.
+	 */
+	public func Point /( int scalar )
+	end
+	
+	/** \brief Dot product of two points. */
+	public func int *( Point point )
+	end
+	
+	/** \brief Check if each component of this point is smaller than another point. */
+	public func bool <( Point point )
+	end
+	
+	/** \brief Check if each component of this point is smaller than or equal to another point. */
+	public func bool <=( Point point )
+	end
+	
+	/** \brief Check if each component of this point is larger than another point. */
+	public func bool >( Point point )
+	end
+	
+	/** \brief Check if each component of this point is larger than or equal to another point. */
+	public func bool >=( Point point )
+	end
+	/*@}*/
+end

@@ -1,0 +1,105 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Bezier-3D curve element class property for use with XML loading.
+ * 
+ * Curve is stored as CurveBezier3D instance. Curves are defined in XML element classes using
+ * a list of points. Each point is a list of vectors. If one vector is specified a sharp point
+ * is created with the handles and point set to the same vector. If three vectors are specified
+ * a point is created with the first vector as point, the second vector as first handle and the
+ * third vector as second handle. An example curve definition looks like this:
+ * 
+ * \code{xml}
+ * <list name='propertyName'>
+ *   <!-- first curve point as a sharp point -->
+ *   <list>
+ *     <vector x='0' y='0' z='0'/> <!-- point, handle1 and handle2 -->
+ *   </list>
+ *   
+ *   <!-- second curve point as a regular point with handles -->
+ *   <list>
+ *     <vector x='2' y='3' z='1'/> <!-- point -->
+ *     <vector x='1.5' y='3' z='0.5'/> <!-- handle1 -->
+ *     <vector x='2.5' y='3' z='-0.5'/> <!-- handl2 -->
+ *   </list>
+ * </list>
+ * \endcode
+ * 
+ * Curve points do not support being defined in StubWithProperties.
+ */
+class ECPCurveBezier3D extends ElementClassProperty
+	/** \brief Curve. */
+	private var CurveBezier3D pCurve
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pCurve = CurveBezier3D.new()
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, CurveBezier3D curve ) super( name )
+		this.pCurve = curve
+	end
+	
+	
+	
+	/** \brief Curve. */
+	public func CurveBezier3D getCurve()
+		return this.pCurve
+	end
+	
+	/** \brief Set curve. */
+	public func void setCurve( CurveBezier3D curve )
+		this.pCurve = curve
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		if value == null
+			this.pCurve = null
+			return
+		end
+		
+		this.pCurve = CurveBezier3D.new()
+		( value cast Array ).forEach( block Array each
+			if each.getCount() == 1
+				this.pCurve.addPoint( each.getAt( 0 ) cast Vector )
+				
+			elif each.getCount() == 3
+				this.pCurve.addPoint( each.getAt( 0 ) cast Vector, \
+					each.getAt( 1 ) cast Vector, each.getAt( 2 ) cast Vector )
+			end
+		end )
+	end
+end

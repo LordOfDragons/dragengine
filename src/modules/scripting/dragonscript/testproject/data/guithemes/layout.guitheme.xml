@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<guiTheme>
+	<!--
+	This file contains canvas creator definitions for the WindowLayouts example.
+	It is used using an import tag in the ui.guitheme.xml . For this reason the guiTheme
+	tag is required to have no attributes defined at all. Otherwise the result can be
+	quite unexpected.
+	-->
+	
+	<designer name='Panel.Layouts' type='Widget'>
+		<borderSize parameter='normal.padding' all='10'/>
+	</designer>
+	
+	<!--
+	The main purpose of these designers is to make ti simpler to see the panels.
+	For this reason Rectangle canvas creators are used. They fill a widget background
+	with an optional border
+	-->
+	<designer name='WindowLayouts.Panel1' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0' b='0' a='0.2'/>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='50' y='25'/>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel2' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' left='10' top='5' right='10' bottom='5'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel3' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0' b='0.5' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel4' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0.5' b='0' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel5' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0.5' b='0.5' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel6' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='1' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel7' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0' b='1' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel8' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0.5' b='1' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel9' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0.5' b='0' a='0.2'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel10' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0' b='0' a='0.2'/>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='50' y='25'/>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='WindowLayouts.Panel11' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='1' a='0.2'/>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='50' y='25'/>
+	</designer>
+</guiTheme>

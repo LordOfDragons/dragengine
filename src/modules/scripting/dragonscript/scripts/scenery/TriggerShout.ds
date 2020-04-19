@@ -1,0 +1,58 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Trigger shouting message to console if fired.
+ * 
+ * Trigger class does not provide read/write file support. If subclass needs changing
+ * message or other parameters dynamically it has to overwrite readFromFile() and 
+ * riteToFile() to restore the proper state.
+ */
+class TriggerShout extends BehaviorElement
+	private var ECBehaviorShowMessage.Instance pShowMessage
+	
+	
+	
+	/** \brief Create trigger. */
+	public func new( TriggerShoutClass eclass ) super( eclass )
+	end
+	
+	
+	
+	/** \brief Show message behavior instance. */
+	public func ECBehaviorShowMessage.Instance getShowMessage()
+		if this.pShowMessage == null
+			this.pShowMessage = ( this.getClass() cast TriggerShoutClass ).getShowMessage().instance( this )
+		end
+		return this.pShowMessage
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitTriggerShout( this )
+	end
+end

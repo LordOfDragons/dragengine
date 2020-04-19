@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer source wave generator.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SSWave extends SynthesizerSource
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator source. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set wave type. */
+	public func void setType( SSWaveType type )
+	end
+	
+	/** \brief Set minimum frequency in Hz. */
+	public func void setMinFrequency( float frequency )
+	end
+	
+	/** \brief Set maximum frequency in Hz. */
+	public func void setMaxFrequency( float frequency )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( int target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( int target )
+	end
+	/*@}*/
+end

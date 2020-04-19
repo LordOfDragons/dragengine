@@ -1,0 +1,619 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to actors to know what element they are looking at.
+ * 
+ * Behavior uses one collider collision test located attached ECBehaviorColliderAI facing
+ * forward. If no ECBehaviorColliderAI is present ECBehaviorCollider is used instead.
+ * 
+ * If ECBehaviorComponent is present and a test bone is set the collision test will be
+ * attached to the component bone. This is simple and good solution for FPS type games.
+ * 
+ * If no component and bone is used and ECBehaviorLocomotion is present then the test
+ * parameters will be updated to match the locomotion looking direction.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorColliderAI or ECBehaviorCollider
+ * 
+ * To this behavior add it and set the class properties. Add listener to be notified if the
+ * looked at element changes or query the current state.
+ */
+class ECBehaviorLookAt extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Enabled changed. */
+		func void enabledChanged( Instance instance )
+		
+		/** \brief Looking at element changed. */
+		func void lookAtChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Enabled changed. */
+		public func void enabledChanged( Instance instance )
+		end
+		
+		/** \brief Looking at element changed. */
+		public func void lookAtChanged( Instance instance )
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorLookAt pECBehavior
+		private var ECBehaviorColliderAI.Instance pColliderAI
+		private var ECBehaviorCollider.Instance pCollider
+		private var ECBehaviorComponent.Instance pComponent
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		
+		private var ColliderCollisionTest pTest
+		private var Vector pOrigin
+		private var bool pHasOrigin
+		private var bool pUseLocomotion
+		
+		private var float pRange
+		
+		private var DVector pLookAtOrigin
+		private var DVector pLookAtDirection
+		private var Element pLookAtElement
+		private var int pLookAtBone
+		private var String pLookAtBoneName
+		private var float pLookAtDistance
+		private var DVector pLookAtHitPoint
+		
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorLookAt ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			this.pUseLocomotion = false
+			
+			if ecbehavior.getColliderAI() != null
+				this.pColliderAI = ecbehavior.getColliderAI().instance( element )
+				
+			else
+				this.pCollider = ecbehavior.getCollider().instance( element )
+			end
+			
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTest = null
+			this.pLocomotion = null
+			this.pColliderAI = null
+			this.pCollider = null
+			this.pComponent = null
+			this.pLookAtElement = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			var Collider collider
+			
+			if this.pColliderAI != null
+				collider = this.pColliderAI.getCollider()
+				
+			else
+				collider = this.pCollider.getCollider()
+			end
+			
+			if collider == null
+				throw EInvalidParam.new()
+			end
+			
+			if this.pECBehavior.getComponent() != null
+				this.pComponent = this.pECBehavior.getComponent().instance( element )
+			end
+			if this.pECBehavior.getLocomotion() != null
+				this.pLocomotion = this.pECBehavior.getLocomotion().instance( element )
+			end
+			
+			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+			
+			this.pRange = DEMath.max( this.pECBehavior.getRange().getValue( stub ), 0.0 )
+			this.pOrigin = this.pECBehavior.getOrigin().getVector( stub, codec )
+			this.pHasOrigin = not this.pOrigin.isZero()
+			
+			// create colliision test and add it to element collider
+			var CollisionFilter collisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
+			var Vector testDirection = Vector.new( 0, 0, this.pRange )
+			var String testBone = this.pECBehavior.getTestBone().getValue( stub )
+			
+			if testBone != null and not testBone.empty()
+				this.pTest = ColliderCollisionTest.new( collisionFilter, \
+					this.pComponent.getComponent(), testBone, this.pOrigin, testDirection )
+				
+			else
+				this.pTest = ColliderCollisionTest.new( collisionFilter, this.pOrigin, testDirection )
+				if this.pLocomotion != null
+					this.pTest.setLocalDirection( false )
+					this.pUseLocomotion = true
+				end
+			end
+			
+			collider.addCollisionTest( this.pTest )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorLookAt getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief ColliderAI behavior instance. */
+		public func ECBehaviorColliderAI.Instance getColliderAI()
+			return this.pColliderAI
+		end
+		
+		/** \brief Collider behavior instance. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Component behavior instance or null if not used. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Locomotion behavior instance or null if not used. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Enable look-at. */
+		public func bool getEnabled()
+			return this.pTest.getEnabled()
+		end
+		
+		/** \brief Set if look-at is enabled. */
+		public func void setEnabled( bool enabled )
+			if enabled == this.pTest.getEnabled()
+				return
+			end
+			
+			this.pTest.setEnabled( enabled )
+			
+			if not enabled
+				this.setLookAtElement( null, -1, null, 0 )
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.enabledChanged( this )
+			end )
+		end
+		
+		
+		
+		/**
+		 * \brief Set test collider using shape.
+		 * 
+		 * By default no test collider is set in which case ra-ytesting is used. Using shapes
+		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
+		 */
+		public func void setTestCollider( ShapeList shape )
+			var ColliderVolume collider = ColliderVolume.new()
+			collider.setShape( shape )
+			this.pTest.setCollider( collider )
+		end
+		
+		/**
+		 * \brief Set shape of test collider to sphere.
+		 * 
+		 * By default no shape is set in which case ra-ytesting is used. Using shapes like a
+		 * sphere is useful to enlarge the hit area for example with 3rd person views.
+		 */
+		public func void setSphereTestCollider( float radius )
+			var ShapeList shape = ShapeList.new()
+			shape.addSphere( Vector.new(), DEMath.max( radius, 0.0 ) )
+			this.setTestCollider( shape )
+		end
+		
+		/** \brief Clear test collider reverting to ray-tracing. */
+		public func void clearTestCollider()
+			this.pTest.setCollider( null )
+		end
+		
+		/** \brief Set test collision filter. */
+		public func void setCollisionFilter( CollisionFilter filter )
+			this.pTest.setCollisionFilter( filter )
+		end
+		
+		
+		
+		/** \brief Test range. */
+		public func float getRange()
+			return this.pRange
+		end
+		
+		/** \brief Set test range. */
+		public func void setRange( float range )
+			range = DEMath.max( range, 0.0 )
+			if DEMath.fabs( range - this.pRange ) < 0.001
+				return
+			end
+			
+			this.pRange = range
+			this.updateTestParameters()
+		end
+		
+		/** \brief Test origin. */
+		public func Vector getOrigin()
+			return this.pOrigin
+		end
+		
+		/** \brief Use locomotion. */
+		public func bool getUseLocomotion()
+			return this.pUseLocomotion
+		end
+		
+		
+		
+		/** \brief Look-at element or null. */
+		public func Element getLookAtElement()
+			return this.pLookAtElement
+		end
+		
+		/** \brief Is looking at an element. */
+		public func bool hasLookAtElement()
+			return this.pLookAtElement != null
+		end
+		
+		/** \brief Is not looking at an element. */
+		public func bool hasNotLookAtElement()
+			return this.pLookAtElement == null
+		end
+		
+		/** \brief Look-at bone or -1. */
+		public func int getLookAtBone()
+			return this.pLookAtBone
+		end
+		
+		/** \brief Look-at bone name or null. */
+		public func String getLookAtBoneName()
+			return this.pLookAtBoneName
+		end
+		
+		/** \brief Distance in meters to look-at hit point. */
+		public func float getLookAtDistance()
+			return this.pLookAtDistance
+		end
+		
+		/** \brief Look-at hit point or \em null. */
+		public func DVector getLookAtHitPoint()
+			if this.pLookAtHitPoint == null
+				this.pLookAtHitPoint = this.pLookAtOrigin \
+					+ this.pLookAtDirection.normalize() * this.pLookAtDistance
+			end
+			return this.pLookAtHitPoint
+		end
+		
+		/** \brief Test origin used for last look-at test. */
+		public func DVector getLookAtOrigin()
+			return this.pLookAtOrigin
+		end
+		
+		/** \brief Test direction used for last look-at test. */
+		public func DVector getLookAtDirection()
+			return this.pLookAtDirection
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Post thinking after physics processing is finished. */
+		public func void postThink( float elapsed )
+			this.update( elapsed )
+		end
+		
+		/** \brief Update. */
+		protected func void update( float elapsed )
+			if not this.pTest.getEnabled()
+				return
+			end
+			
+			this.evaluateTest()
+			this.updateTestParameters()
+		end
+		
+		/** \brief Evaluate last test. */
+		protected func void evaluateTest()
+			this.pLookAtOrigin = this.pTest.getTestOrigin()
+			this.pLookAtDirection = this.pTest.getTestDirection()
+			
+			var Collider collider
+			if this.pTest.getHasCollision()
+				collider = this.pTest.hitCollider( 0 )
+			end
+			
+			if collider == null
+				this.setLookAtElement( null, -1, null, 0 )
+				return
+			end
+			
+			var int bone = this.pTest.hitBone( 0 )
+			var String boneName = null
+			
+			if bone != -1 and collider castable ColliderRig
+				var Rig rig = ( collider cast ColliderRig ).getRig()
+				if rig != null
+					boneName = rig.boneGetName( bone )
+				end
+			end
+			
+			this.setLookAtElement( collider.getOwner() cast Element, bone, boneName, \
+				this.pTest.hitDistance( 0 ) )
+		end
+		
+		/** \brief Collision test. */
+		protected func ColliderCollisionTest getTest()
+			return this.pTest
+		end
+		
+		/** \brief Update test parameters. */
+		protected func void updateTestParameters()
+			if this.pUseLocomotion
+				this.pTest.setDirection( this.pLocomotion.getViewDirection() * this.pRange )
+				
+				if this.pHasOrigin
+					this.pTest.setOrigin( this.getElement().getElementMatrix() \
+						.transformNormal( DVector.new( this.pOrigin ) ).toVector() )
+				end
+				
+			else
+				this.pTest.setDirection( Vector.new( 0, 0, this.pRange ) )
+			end
+		end
+		
+		/** \brief Set look-at element. */
+		public func void setLookAtElement( Element element, int bone, String boneName, float distance )
+			if this.pLookAtElement == element and this.pLookAtBone == bone
+				this.pLookAtHitPoint = null
+				this.pLookAtDistance = distance
+				return
+			end
+			
+			this.pLookAtElement = element
+			this.pLookAtBone = bone
+			this.pLookAtBoneName = boneName
+			this.pLookAtHitPoint = null
+			this.pLookAtDistance = distance
+			
+			this.pListeners.forEach( block Listener each
+				each.lookAtChanged( this )
+			end )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorColliderAI pColliderAI
+	private var ECBehaviorCollider pCollider
+	private var ECBehaviorComponent pComponent
+	private var ECBehaviorLocomotion pLocomotion
+	
+	private var ECPFloat pRange
+	private var ECPVector pOrigin
+	private var ECPString pTestBone
+	private var ECComposeCollisionFilter pCollisionFilter
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em component, \em locomotion.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion ) \
+	this( eclass, colliderAI, component, locomotion, "lookAt." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion ) \
+	this( eclass, collider, component, locomotion, "lookAt." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix ) \
+	this( eclass, colliderAI, null, component, locomotion, prefix )
+		if colliderAI == null
+			throw ENullPointer.new( "colliderAI" )
+		end
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix ) \
+	this( eclass, null, collider, component, locomotion, prefix )
+		if collider == null
+			throw ENullPointer.new( "collider" )
+		end
+	end
+	
+	private func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorCollider collider, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pColliderAI = colliderAI
+		this.pCollider = collider
+		this.pComponent = component
+		this.pLocomotion = locomotion
+		
+		this.pRange = ECPFloat.new( prefix + "range", 2, 0 )
+		eclass.addProperty( this.pRange )
+		
+		this.pOrigin = ECPVector.new( prefix + "origin", Vector.new( 0, 1.6, 0 ) )
+		eclass.addProperty( this.pOrigin )
+		
+		this.pTestBone = ECPString.new( prefix + "bone", null )
+		eclass.addProperty( this.pTestBone )
+		
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		
+		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pColliderAI = null
+		this.pCollider = null
+		this.pComponent = null
+		this.pLocomotion = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider AI behavior or null. */
+	public func ECBehaviorColliderAI getColliderAI()
+		return this.pColliderAI
+	end
+	
+	/** \brief Collider behavior or null. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Component behavior or null. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Locomotion behavior or null. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	
+	
+	/** \brief Test range. */
+	public func ECPFloat getRange()
+		return this.pRange
+	end
+	
+	/** \brief Test origin. */
+	public func ECPVector getOrigin()
+		return this.pOrigin
+	end
+	
+	/** \brief Test bone. */
+	public func ECPString getTestBone()
+		return this.pTestBone
+	end
+	
+	/** \brief Collision filter for AI collider. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorLookAt.
+	 */
+	static public func ECBehaviorLookAt getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorLookAt
+		end ) cast ECBehaviorLookAt
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLookAt.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

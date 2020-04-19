@@ -1,0 +1,312 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support to use dynamic skin on attaching.
+ * 
+ * For use together with ECBehaviorAttachToParent or ECBehaviorAttachable. Upon attaching
+ * the element to a parent element the dynamic skin of parent element ECBehaviorDynamicSkin
+ * is assigned to this element ECBehaviorComponent. If an ECBehaviorAttachSlot is involved
+ * supports also detaching when the dynamic skin is removed.
+ * 
+ * This behavior helps with situations where a child element has to use the same dynamic
+ * skin as the parent it is attached to. A typical example would be a base object using
+ * dynamic skin to show a user selected paint color or showing flashing emissive textures
+ * where child elements should match up with. The dynamic skin is controlled by the
+ * parent element and can be used for all child elements.
+ * 
+ * To not use this behavior together with child elements using their own ECBehaviorDynamicSkin
+ * otherwise this dynamic skin will be overwritten.
+ * 
+ * By default the behavior is configured to be used by attaching to parent element using
+ * ECBehaviorAttachToParent. If ECBehaviorAttachable is also present a listener is added
+ * to also react to being added and removed from ECBehaviorAttachSlot. By default the
+ * ECBehaviorComponent with empty ID is assigned the ECBehaviorDynamicSkin with empty ID.
+ * This can be configured.
+ * 
+ * Element class properties have the prefix "attachDynamicSkin.".
+ * 
+ * This element behavior can be present multiple times with different identifiers.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Attachable listener. */
+		class AttachableListener extends ECBehaviorAttachable.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void attachableAttached( ECBehaviorAttachable.Instance instance, \
+			ECBehaviorAttachSlot.Instance attachSlot )
+				this.pInstance.assignDynamicSkin( attachSlot.getElement() )
+			end
+			
+			public func void attachableDetached( ECBehaviorAttachable.Instance instance, \
+			ECBehaviorAttachSlot.Instance attachSlot )
+				this.pInstance.removeDynamicSkin()
+			end
+		end
+		
+		private var ECBehaviorAttachDynamicSkin pECBehavior
+		private var ECBehaviorComponent.Instance pComponent
+		private var ECBehaviorAttachable.Instance pAttachable
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorAttachDynamicSkin ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pComponent = null
+			this.pAttachable = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getAttachable() != null
+				this.pAttachable = this.pECBehavior.getAttachable().instance( this.getElement() )
+				this.pAttachable.addListener( AttachableListener.new( this ) )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorAttachDynamicSkin getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Attachable behavior or null if not used. */
+		public func ECBehaviorAttachable.Instance getAttachable()
+			return this.pAttachable
+		end
+		
+		
+		
+		/**
+		 * \brief Assign dynamic skin of parent if found.
+		 * 
+		 * If dynamic skin is not found calls removeDynamicSkin().
+		 */
+		public func void assignDynamicSkin( BehaviorElement parent )
+			var ECBehaviorDynamicSkin.Instance dynamicSkin = ECBehaviorDynamicSkin.getInstanceIn( parent )
+			if dynamicSkin != null and dynamicSkin.getDynamicSkin() != null
+				this.pComponent.getComponent().setDynamicSkin( dynamicSkin.getDynamicSkin() )
+				
+			else
+				this.removeDynamicSkin()
+			end
+		end
+		
+		/** \brief Removes dynamic skin if set. */
+		public func void removeDynamicSkin()
+			this.pComponent.getComponent().setDynamicSkin( null )
+		end
+		
+		
+		/** \brief Attach element to object set by the mapper in the IGDE World Editor. */
+		public func void attachToParent( Element parent )
+			if parent castable BehaviorElement
+				this.assignDynamicSkin( parent cast BehaviorElement )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECBehaviorAttachable pAttachable
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em attachable
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorAttachable attachable ) this( eclass, component, attachable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorAttachable attachable, String id ) \
+	this( eclass, component, attachable, id, "attachDynamicSkin." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorAttachable attachable, String id, String prefix ) super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "component" )
+		end
+		
+		this.pComponent = component
+		this.pAttachable = attachable
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		this.pAttachable = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Attachable behavior or null if not used. */
+	public func ECBehaviorAttachable getAttachable()
+		return this.pAttachable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorAttachDynamicSkin getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorAttachDynamicSkin
+		end ) cast ECBehaviorAttachDynamicSkin
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorAttachDynamicSkin with specific identifier.
+	 */
+	static public func ECBehaviorAttachDynamicSkin getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorAttachDynamicSkin each
+			return each castable ECBehaviorAttachDynamicSkin and \
+				( each cast ECBehaviorAttachDynamicSkin ).getID().equals( id )
+		end ) cast ECBehaviorAttachDynamicSkin
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorAttachDynamicSkin behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorAttachDynamicSkin
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAttachDynamicSkin.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAttachDynamicSkin.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorAttachDynamicSkin.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

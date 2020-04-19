@@ -1,0 +1,151 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Target in a conversation script.
+ */
+class ConversationTarget
+	/** \brief Unique name of target. */
+	private var StringID pName
+	
+	/** \brief Actor ID or \em null if not set. */
+	private var StringID pActorID
+	
+	/** \brief Coordinate system ID or \em null if not set. */
+	private var StringID pCoordSystemID
+	
+	/** \brief Bone name or \em null to use no bone. */
+	private var String pBone
+	
+	/** \brief Position relative to target. */
+	private var Vector pPosition
+	
+	/** \brief Orientation relative to target. */
+	private var Quaternion pOrientation
+	
+	
+	
+	/** \brief Create conversation target. */
+	public func new( StringID name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+	end
+	
+	
+	
+	/** \brief Unique name of target. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** \brief Actor ID or \em null if not set. */
+	public func StringID getActorID()
+		return this.pActorID
+	end
+	
+	/** \brief Set actor ID or \em null if not set. */
+	public func void setActorID( StringID id )
+		this.pActorID = id
+	end
+	
+	/** \brief Coordinate system ID or \em null if not set. */
+	public func StringID getCoordSystemID()
+		return this.pCoordSystemID
+	end
+	
+	/** \brief Set coordinate system ID or \em null if not set. */
+	public func void setCoordSystemID( StringID id )
+		this.pCoordSystemID = id
+	end
+	
+	/** \brief Bone name or \em null to not use a bone. */
+	public func String getBone()
+		return this.pBone
+	end
+	
+	/** \brief Set bone name or \em null to not use a bone. */
+	public func void setBone( String bone )
+		this.pBone = bone
+	end
+	
+	/** \brief Position relative to target. */
+	public func Vector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position relative to target. */
+	public func void setPosition( Vector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+	end
+	
+	/** \brief Orientation relative to target. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set orientation relative to target. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		this.pOrientation = orientation
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	public static func ConversationTarget readFromFile( PersistencyEnvironment env, FileReader reader )
+		var ConversationTarget target = ConversationTarget.new( StringID.new( reader.readString8() ) )
+		
+		target.pActorID = env.readStringIDOrNullIfEmpty( reader )
+		target.pCoordSystemID = env.readStringIDOrNullIfEmpty( reader )
+		target.pBone = env.readString8OrNullIfEmpty( reader )
+		target.pPosition = Vector.readFromFile( reader )
+		target.pOrientation = Quaternion.readFromFile( reader )
+		
+		return target
+	end
+	
+	/** \brief Write to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeString8( this.pName.toString() )
+		
+		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
+		env.writeStringIDOrEmptyIfNull( writer, this.pCoordSystemID )
+		env.writeString8OrEmptyIfNull( writer, this.pBone )
+		this.pPosition.writeToFile( writer )
+		this.pOrientation.writeToFile( writer )
+	end
+end

@@ -1,0 +1,137 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Immutable unique ID.
+ * 
+ * This is a native class.
+ */
+class UniqueID
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create unique id with value 0. */
+	public func new()
+	end
+	
+	/** \brief Create unique id with value. */
+	public func new( int value )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Bit count. */
+	public func int getBitCount()
+	end
+	
+	/**
+	 * \brief Byte at position in LSB.
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getBitCount().
+	 */
+	public func int getByteAt( int position )
+	end
+	
+	
+	
+	/** \brief Hex string representation. */
+	public func String toHexString()
+	end
+	
+	/** \brief Unique id from hex string. */
+	static public func UniqueID newFromHexString( String string )
+	end
+	
+	
+	
+	/** \brief String representation of unique id. */
+	public func String toString()
+	end
+	
+	/**
+	 * \brief Unique ID is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type UniqueID and both IDs are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Compare object with another object.
+	 * \details Used to sort objects. Overwrite to implement sorting.
+	 * \retval 0 Object is equal to \em obj.
+	 * \retval <0 Object comes before \em obj.
+	 * \retval >0 Object comes after \em obj.
+	 */
+	public func int compare( Object obj )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read unique id from a file reader. */
+	static public func UniqueID readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write unique id to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief UniqueID incremented by value. */
+	public func UniqueID +( int value )
+	end
+	
+	/** \brief UniqueID incremented by another UniqueID. */
+	public func UniqueID +( UniqueID id )
+	end
+	
+	/** \brief UniqueID decremented by value. */
+	public func UniqueID +( int value )
+	end
+	
+	/** \brief UniqueID decremented by another UniqueID. */
+	public func UniqueID +( UniqueID id )
+	end
+	
+	/** \brief ID is less than another ID. */
+	public func bool <( UniqueID id )
+	end
+	
+	/** \brief ID is less than or equal to another ID. */
+	public func bool <=( UniqueID id )
+	end
+	
+	/** \brief ID is greater than another ID. */
+	public func bool >( UniqueID id )
+	end
+	
+	/** \brief ID is greater than or equal to another ID. */
+	public func bool >=( UniqueID id )
+	end
+	/*@}*/
+end

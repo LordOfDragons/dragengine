@@ -1,0 +1,116 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Simple element class.
+ * 
+ * Simple behavior element composing of these behaviors:
+ * - ECBehaviorComponent
+ * - ECBehaviorCollider
+ * - ECBehaviorNavigationSpace
+ * - ECBehaviorAttachToParent
+ * 
+ * This class is a quick way to add basic elements to a game world. You can create new
+ * element classes by subclassing and adding additional behaviors. It is usually though
+ * better to create a new BehaviorElementClass subclass instead adding the desired
+ * behaviors. This also allows to use subclassed behaviors for specific needs.
+ */
+class SimpleElementClass extends BehaviorElementClass
+	private var ECBehaviorComponent pComponent
+	private var ECBehaviorCollider pCollider
+	private var ECBehaviorNavigationSpace pNavigationSpace
+	private var ECBehaviorAttachToParent pAttachToParent
+	
+	
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new() this( "SimpleElement", BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( Loaders loaders ) this( "SimpleElement", loaders )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, Loaders loaders ) super( className )
+		this.pComponent = ECBehaviorComponent.new( this, null )
+		this.pCollider = ECBehaviorCollider.new( this, this.pComponent )
+		this.pNavigationSpace = ECBehaviorNavigationSpace.new( this, this.pCollider, loaders )
+		this.pAttachToParent = ECBehaviorAttachToParent.new( this, this.pCollider, null )
+	end
+	
+	
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Navigation space behavior. */
+	public func ECBehaviorNavigationSpace getNavigationSpace()
+		return this.pNavigationSpace
+	end
+	
+	/** \brief Attach to parent behavior. */
+	public func ECBehaviorAttachToParent getAttachToParent()
+		return this.pAttachToParent
+	end
+	
+	
+	
+	/** \brief Create copy of element class. */
+	public func ElementClass duplicateNamed( String classname )
+		return SimpleElementClass.new( classname )
+	end
+	
+	
+	
+	/**
+	 * \brief Create element instance.
+	 * 
+	 * If this element class does not support creating elements, for example because
+	 * the result is not an element, \em null has to be returned. The default
+	 * implementation returns \em null. Subclasses not intending to create elements
+	 * or requiring special creation handling should subclass createAndAddElement()
+	 * and loadAndAddElement() bypassing this method.
+	 */
+	protected func Element createElement()
+		return SimpleElement.new( this )
+	end
+end

@@ -1,0 +1,88 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule foreign state.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARForeignState extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set scale position. */
+	public func void setScalePosition( float scalePosition )
+	end
+	
+	/** \brief Set scale orientation. */
+	public func void setScaleOrientation( float scaleOrientation )
+	end
+	
+	/** \brief Set scale size. */
+	public func void setScaleSize( float scaleSize )
+	end
+	
+	/** \brief Set foreign bone. */
+	public func void setForeignBone( String boneName )
+	end
+	
+	/**
+	 * \brief Set source coordinate frame.
+	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
+	 */
+	public func void setSourceCoordinateFrame( ARForeignState coordinateFrame )
+	end
+	
+	/**
+	 * \brief Set destination coordinate frame.
+	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
+	 */
+	public func void setDestinationCoordinateFrame( ARForeignState coordinateFrame )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARForeignStateTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARForeignStateTarget target )
+	end
+	/*@}*/
+end

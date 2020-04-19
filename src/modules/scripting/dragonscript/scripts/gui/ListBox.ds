@@ -1,0 +1,1142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Scrollable list of elements of same size.
+ * 
+ * Elements are created using a ListElementRenderer to properly display ListModel
+ * content. List can be displayed in three different ways. Type.vertical displays the
+ * elements as a single column list from top to bottom. Type.verticalWrap displays
+ * the elements in as many columns fitting into the list width and as many rows
+ * required for the entire list. Type.horizontalWrap displays the elements in as many
+ * rows fitting into the list height and as many columns required for the entire
+ * list. Type.vertical is best suited for common lists the user can select values from
+ * fitting into a single column scrolling up and down. Type.verticalWrap and
+ * Type.horizontalWrap are best suited to display larger lists or lists with more
+ * square like elements lik file listings with file type icons.
+ * 
+ * Supports designing using designer selector "ListBox".
+ */
+class ListBox extends Container implements RangeModelListener, ListModelListener
+	/** \brief Type. */
+	enum Type
+		/**
+		* \brief Displays the elements as a single column list from top to bottom.
+		* \details best suited for common lists the user can select values from
+		*          fitting into a single column scrolling up and down.
+		*/
+		vertical
+		
+		/**
+		* \brief displays the elements in as many columns fitting into the list
+		*        width and as many rows required for the entire list.
+		* \details best suited to display larger lists or lists with more square
+		*          like elements lik file listings with file type icons.
+		*/
+		verticalWrap
+		
+		/**
+		* \brief displays the elements in as many rows fitting into the list height
+		*        and as many columns required for the entire list.
+		* \details best suited to display larger lists or lists with more square
+		*          like elements lik file listings with file type icons.
+		*/
+		horizontalWrap
+	end
+	
+	
+	
+	/** \brief Horizontal range model */
+	private var DefaultRangeModel pHorzRangeModel
+	
+	/** \brief Vertical range model */
+	private var DefaultRangeModel pVertRangeModel
+	
+	/** \brief List Model */
+	private var ListModel pListModel
+	
+	/** \brief List element renderer */
+	private var ListElementRenderer pRenderer
+	
+	/** \brief Element height or 0 if not cached yet. */
+	private var int pElementHeight
+	
+	/** \brief Element width or 0 if not cached yet. */
+	private var int pElementWidth
+	
+	/** \brief List type. */
+	private var Type pType
+	
+	/** \brief Panel with visible list elements. */
+	private var Panel pPanelVisibleElements
+	
+	/** \brief Size requirement of all content items */
+	private var Point pContentSize
+	
+	/** \brief Model changed */
+	private var bool pModelDirty
+	
+	/** \brief Index of the selected element if any */
+	private var int pSelectedElement
+	
+	/** \brief Number of visible elements. */
+	private var int pVisibleRows
+	
+	/** \brief Number of visible columns. */
+	private var int pVisibleColumns
+	
+	/** \brief Number of lines to display. */
+	private var int pNumDispLines
+	
+	/** \brief Selection Listeners */
+	private var Array pSelectionListeners
+	
+	
+	
+	/** \brief Create list box. */
+	public func new()
+		this.pType = Type.vertical
+		this.pVisibleRows = 1
+		this.pVisibleColumns = 1
+		this.pNumDispLines = 5
+		this.pContentSize = Point.new( 1, 1 )
+		this.pSelectedElement = -1
+		this.pSelectionListeners = Array.new()
+		this.setCanFocus( true )
+		this.pModelDirty = true
+		this.pHorzRangeModel = DefaultRangeModel.new( 0, 0, 1, 0, 1 )
+		this.pHorzRangeModel.addListener( this )
+		this.pVertRangeModel = DefaultRangeModel.new( 0, 0, 1, 0, 1 )
+		this.pVertRangeModel.addListener( this )
+		this.pListModel = DefaultListModel.new()
+		this.pListModel.addListener( this )
+		this.pRenderer = DefaultListElementRenderer.new()
+		this.pElementHeight = 0
+		this.pElementWidth = 0
+		
+		this.setLayout( FixedLayout.new() )
+		this.setDesignerSelector( "ListBox" )
+		
+		this.pPanelVisibleElements = Panel.new()
+		//this.pPanelVisibleElements.setLayout( FlowLayout.new( LayoutAxis.y ) )
+		this.pPanelVisibleElements.setLayout( GridLayout.new( 1, 0 ) )
+		this.addWidget( this.pPanelVisibleElements )
+		
+		this.setBorder( BevelBorder.new( false ) )
+	end
+	
+	/** \brief Create list box using model. */
+	public func new( ListModel model ) this()
+		this.setModel( model )
+	end
+	
+	/** \brief Create list box using model and element renderer. */
+	public func new( ListModel model, ListElementRenderer renderer ) this()
+		this.setElementRenderer( renderer )
+		this.setModel( model )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pSelectionListeners.removeAll()
+		
+		this.pListModel.removeListener( this )
+		this.pListModel = null
+		
+		this.pPanelVisibleElements = null
+		
+		this.pVertRangeModel.removeListener( this )
+		this.pVertRangeModel = null
+		
+		this.pHorzRangeModel.removeListener( this )
+		this.pHorzRangeModel = null
+		
+		this.pRenderer = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Vertical range model for viewports to synchronize the vertical scrollbar.
+	 * \details If this widget has no reasonable vertical range model it should return \em null.
+	 */
+	public func RangeModel getVerticalRangeModel()
+		return this.pVertRangeModel
+	end
+	
+	/**
+	 * \brief Horizontal range model for viewports to synchronize the horizontal scrollbar.
+	 * \details If this widget has no reasonable horizontal range model it should return \em null.
+	 */
+	public func RangeModel getHorizontalRangeModel()
+		return this.pHorzRangeModel
+	end
+	
+	
+	
+	/** \brief List model. */
+	public func ListModel getModel()
+		return this.pListModel
+	end
+	
+	/** \brief Set list model. */
+	public func void setModel( ListModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		if model == this.pListModel
+			return
+		end
+		
+		this.pListModel.removeListener( this )
+		this.pListModel = model
+		this.pListModel.addListener( this )
+		this.pModelDirty = true
+		this.pSelectedElement = this.pListModel.getSelected()
+		
+		this.updateRenderWidgets()
+	end
+	
+	/** \brief List element renderer. */
+	public func ListElementRenderer getElementRenderer()
+		return this.pRenderer
+	end
+	
+	/** \brief Set list element renderer. */
+	public func void setElementRenderer( ListElementRenderer renderer )
+		if renderer == null
+			throw EInvalidParam.new()
+		end
+		
+		if renderer == this.pRenderer
+			return
+		end
+		
+		this.runWhileBlockingLayout( block
+			// runWhileBlockingLayout is important here otherwise the doLayout after removing
+			// the widgets can trigger an onResize triggering updateRenderWidgets. if this
+			// happens pPanelVisibleElements is not empty as we need it for a proper change
+			// of list element renderer
+			this.pPanelVisibleElements.removeAllWidgets()
+		end )
+		
+		this.pRenderer = renderer
+		this.pElementHeight = 0
+		this.pElementWidth = 0
+		
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+	end
+	
+	/** \brief List type. */
+	public func Type getType()
+		return this.pType
+	end
+	
+	/** \brief Set list type. */
+	public func void setType( Type type )
+		if type == this.pType
+			return
+		end
+		
+		this.pType = type
+		
+		this.runWhileBlockingLayout( block
+			// runWhileBlockingLayout is important here otherwise the doLayout after removing
+			// the widgets can trigger an onResize triggering updateRenderWidgets. if this
+			// happens pPanelVisibleElements is not empty as we need it for a proper change
+			// of list element renderer
+			this.pPanelVisibleElements.removeAllWidgets()
+		end )
+		
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+	end
+	
+	/** \brief Number of lines to display. */
+	public func int getNumberDisplayLines()
+		return this.pNumDispLines
+	end
+	
+	/** \brief Set number of lines to display. */
+	public func void setNumberDisplayLines( int lines )
+		if lines < 0
+			throw EInvalidParam.new()
+		end
+		
+		if lines == this.pNumDispLines
+			return
+		end
+		
+		this.pNumDispLines = lines
+		this.updateRenderWidgets()
+	end
+	
+	
+	
+	/** \brief Index of the first visible element. */
+	public func int getFirstElement()
+		select this.pType
+		case Type.vertical
+			return this.pVertRangeModel.getValue() / this.getElementHeight()
+			
+		case Type.verticalWrap
+			return this.pVisibleColumns * ( this.pVertRangeModel.getValue() / this.getElementHeight() )
+			
+		case Type.horizontalWrap
+			return this.pVisibleRows * ( this.pHorzRangeModel.getValue() / this.getElementWidth() )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Index of selected item or -1 if none is selected. */
+	public func int getSelectedElement()
+		return this.pListModel.getSelected()
+	end
+	
+	/** \brief Set index of selected item or -1 if none is selected. */
+	public func void setSelectedElement( int index )
+		this.pListModel.setSelected( index )
+	end
+	
+	
+	
+	/** \brief Index of element at position or -1 if not found. */
+	public func int getElementAt( int x, int y )
+		return getElementAt( Point.new( x, y ) )
+	end
+	
+	/** \brief Index of the element at position or -1 if not found. */
+	public func int getElementAt( Point position )
+		if not this.isPointInside( position )
+			return -1
+		end
+		
+		var int elementIndex
+		
+		select this.pType
+		case Type.vertical
+			var int elementHeight = this.getElementHeight()
+			elementIndex = ( this.pVertRangeModel.getValue() + position.getY() ) / elementHeight
+			
+		case Type.verticalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			var int row = ( this.pVertRangeModel.getValue() + position.getY() ) / elementHeight
+			var int column = position.getX() / elementWidth
+			elementIndex = this.pVisibleColumns * row + column
+			
+		case Type.horizontalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			var int column = ( this.pHorzRangeModel.getValue() + position.getX() ) / elementWidth
+			var int row = position.getY() / elementHeight
+			elementIndex = this.pVisibleRows * column + row
+			
+		else
+			throw EInvalidParam.new()
+		end
+		
+		if elementIndex < 0 or elementIndex >= this.pListModel.getCount()
+			elementIndex = -1
+		end
+		
+		return elementIndex
+	end
+	
+	/** \brief Make element fully visible by adjusting scroll position if required. */
+	public func void makeElementVisible( int index )
+		if index < -1 or index >= this.pListModel.getCount()
+			throw EInvalidParam.new()
+		end
+		
+		select this.pType
+		case Type.vertical
+			var int elementHeight = this.getElementHeight()
+			var int elementY = elementHeight * index - this.pVertRangeModel.getValue()
+			var int height = this.getContainerHeight()
+			
+			if elementY < 0
+				this.pVertRangeModel.setValue( elementHeight * index )
+				
+			elif elementY > height - elementHeight
+				this.pVertRangeModel.setValue( elementHeight * index - height + elementHeight )
+			end
+			
+		case Type.verticalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			var int row = index / this.pVisibleColumns
+			var int column = index % this.pVisibleColumns
+			var int elementX = elementWidth * column - this.pHorzRangeModel.getValue()
+			var int elementY = elementHeight * row - this.pVertRangeModel.getValue()
+			var int width = this.getContainerWidth()
+			var int height = this.getContainerHeight()
+			
+			if elementX < 0
+				this.pHorzRangeModel.setValue( elementWidth * column )
+				
+			elif elementX > width - elementWidth
+				this.pHorzRangeModel.setValue( elementWidth * column - width + elementWidth )
+			end
+			
+			if elementY < 0
+				this.pVertRangeModel.setValue( elementHeight * row )
+				
+			elif elementY > height - elementHeight
+				this.pVertRangeModel.setValue( elementHeight * row - height + elementHeight )
+			end
+			
+		case Type.horizontalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			var int row = index % this.pVisibleRows
+			var int column = index / this.pVisibleRows
+			var int elementX = elementWidth * column - this.pHorzRangeModel.getValue()
+			var int elementY = elementHeight * row - this.pVertRangeModel.getValue()
+			var int width = this.getContainerWidth()
+			var int height = this.getContainerHeight()
+			
+			if elementX < 0
+				this.pHorzRangeModel.setValue( elementWidth * column )
+				
+			elif elementX > width - elementWidth
+				this.pHorzRangeModel.setValue( elementWidth * column - width + elementWidth )
+			end
+			
+			if elementY < 0
+				this.pVertRangeModel.setValue( elementHeight * row )
+				
+			elif elementY > height - elementHeight
+				this.pVertRangeModel.setValue( elementHeight * row - height + elementHeight )
+			end
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Make selected element fully visible by adjusting scroll position if required. */
+	public func void makeSelectedElementVisible()
+		if this.pSelectedElement != -1
+			this.makeElementVisible( this.pSelectedElement )
+		end
+	end
+	
+	
+	
+	/** \brief Minimal size of widget. */
+	public func Point getMinimumSize()
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		select this.pType
+		case Type.vertical
+			return this.getPadding().getSize() + Point.new( \
+				DEMath.max( this.getElementWidth(), 50 ), \
+				this.getElementHeight() * this.pNumDispLines )
+			
+		case Type.verticalWrap, Type.horizontalWrap
+			return this.getPadding().getSize() + Point.new( this.getElementWidth(), \
+				this.getElementHeight() * this.pNumDispLines )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/**
+	 * \brief Minimum size of widget using reference widget width and variable height.
+	 * \details Default implementation uses getMinimumSize().
+	 */
+	public func Point getMinimumSizeForWidth( int width )
+		return this.getMinimumSize()
+		/*
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		return Point.new( width, this.getPadding().getHeight() \
+			+ this.getElementHeight() * this.pNumDispLines )
+		*/
+	end
+	
+	/**
+	 * \brief Minimum size of widget using reference widget height and variable width.
+	 * \details Default implementation uses getMinimumSize().
+	 */
+	public func Point getMinimumSizeForHeight( int height )
+		return this.getMinimumSize()
+		/*
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		select this.pType
+		case Type.vertical
+			return Point.new( this.getPadding().getWidth() + 50, height )
+			
+		case Type.verticalWrap, Type.horizontalWrap
+			return Point.new( this.getPadding().getWidth() + this.getElementWidth(), height )
+			
+		else
+			throw EInvalidParam.new()
+		end
+		*/
+	end
+	
+	
+	
+	/** \brief First widget that can grab the focus or \em null if absent. */
+	public func Widget findFocusableWidget()
+		if this.getEnabled() and this.getVisible() and this.getCanFocus()
+			return this
+		end
+		
+		return null
+	end
+	
+	/** \brief Last widget that can grab the focus or \em null if absent. */
+	public func Widget findLastFocusableWidget()
+		if this.getEnabled() and this.getVisible() and this.getCanFocus()
+			return this
+		end
+		
+		return null
+	end
+	
+	/** \brief Find next widget in the focus cycle that can grab the focus. */
+	public func Widget nextFocusWidgetAfter( Widget widget )
+		if this.getParent() == null
+			return null
+		end
+		
+		return this.getParent().nextFocusWidgetAfter( widget )
+	end
+	
+	/** \brief Find previous widget in the focus cycle that can grab the focus. */
+	public func Widget prevFocusWidgetAfter( Widget widget )
+		if this.getParent() == null
+			return null
+		end
+		
+		return this.getParent().prevFocusWidgetAfter( widget )
+	end
+	
+	/** \brief Container allows child widgets to grab the focus. */
+	public func bool allowsChildGrabFocus()
+		return false
+	end
+	
+	/** \brief Focus widget is inside container somewhere. */
+	public func bool hasFocusWidget()
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief Gui theme changed.
+	 * \details Called if setGuiTheme is used or parent changed.
+	 * \warning You have to super-call this method since it is used a bit differently than the other callback methods.
+	 */
+	public func void onGuiThemeChanged()
+		// usually contains text which is based on gui theme font
+		this.pElementHeight = 0
+		this.pElementWidth = 0
+		
+		this.runWhileBlockingLayout( block
+			super.onGuiThemeChanged()
+		end )
+		
+		this.updateRenderWidgets()
+	end
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+		
+		super.onResize( event ) // order here is different because we alter widget and not canvas
+	end
+	
+	
+	
+	/** \brief Key pressed. */
+	public func void onKeyPress( KeyEvent event )
+		var int count = this.pListModel.getCount()
+		this.checkModel()
+		
+		select event.getKeyCode()
+		// move cursor up
+		case InputEventKey.arrowUp
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement > 0
+				if this.pType == Type.verticalWrap
+					this.setSelectedElement( DEMath.max( this.pSelectedElement - this.pVisibleColumns, 0 ) )
+					
+				else
+					this.setSelectedElement( this.pSelectedElement - 1 )
+				end
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move cursor left
+		case InputEventKey.arrowLeft
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement > 0
+				if this.pType == Type.horizontalWrap
+					this.setSelectedElement( DEMath.max( this.pSelectedElement - this.pVisibleRows, 0 ) )
+					
+				else
+					this.setSelectedElement( this.pSelectedElement - 1 )
+				end
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move cursor down
+		case InputEventKey.arrowDown
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement < count - 1
+				if this.pType == Type.verticalWrap
+					this.setSelectedElement( DEMath.min( this.pSelectedElement + this.pVisibleColumns, count - 1 ) )
+					
+				else
+					this.setSelectedElement( this.pSelectedElement + 1 )
+				end
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move cursor right
+		case InputEventKey.arrowRight
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement < count - 1
+				if this.pType == Type.horizontalWrap
+					this.setSelectedElement( DEMath.min( this.pSelectedElement + this.pVisibleRows, count - 1 ) )
+					
+				else
+					this.setSelectedElement( this.pSelectedElement + 1 )
+				end
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move page up
+		case InputEventKey.pageUp
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement > 0
+				select this.pType
+				case Type.vertical
+					this.setSelectedElement( DEMath.max( this.pSelectedElement - ( this.pVisibleRows - 2 ), 0 ) )
+					
+				case Type.verticalWrap
+					this.setSelectedElement( DEMath.max( this.pSelectedElement - this.pVisibleColumns * ( this.pVisibleRows - 2 ), 0 ) )
+					
+				case Type.horizontalWrap
+					this.setSelectedElement( DEMath.max( this.pSelectedElement - this.pVisibleRows * ( this.pVisibleColumns - 1 ), 0 ) )
+					
+				else
+					throw EInvalidParam.new()
+				end
+				
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move page down
+		case InputEventKey.pageDown
+			if this.pSelectedElement == -1 and count > 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+				
+			elif this.pSelectedElement < count - 1
+				select this.pType
+				case Type.vertical
+					this.setSelectedElement( DEMath.min( this.pSelectedElement + ( this.pVisibleRows - 2 ), count - 1 ) )
+					
+				case Type.verticalWrap
+					this.setSelectedElement( DEMath.min( this.pSelectedElement + this.pVisibleColumns * ( this.pVisibleRows - 2 ), count - 1 ) )
+					
+				case Type.horizontalWrap
+					this.setSelectedElement( DEMath.min( this.pSelectedElement + this.pVisibleRows * ( this.pVisibleColumns - 1 ), count - 1 ) )
+					
+				else
+					throw EInvalidParam.new()
+				end
+				
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move to the beginning of the list
+		case InputEventKey.home
+			if count > 0 and this.pSelectedElement != 0
+				this.setSelectedElement( 0 )
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// move to the end of the list
+		case InputEventKey.last
+			if count > 0 and this.pSelectedElement != count - 1
+				this.setSelectedElement( count - 1 )
+				this.makeSelectedElementVisible()
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		// otherwise send to super
+		else
+			super.onKeyPress( event )
+		end
+	end
+	
+	
+	
+	/** \brief Mouse button pressed. */
+	public func void onButtonPress( MouseEvent event )
+		select event.getButton()
+		case InputEventMouseButton.left
+			var Widget source = event.getSource() cast Widget
+			var int elementIndex = this.getElementAt( source.getRelativePosition( this ) + event.getPosition() )
+			
+			if elementIndex != -1
+				this.setSelectedElement( elementIndex )
+				this.makeSelectedElementVisible()
+			end
+			
+			this.grabFocus()
+			this.sendEventToListeners( event, false )
+			
+		else
+			super.onButtonPress( event )
+		end
+	end
+	
+	/** \brief Mouse button released. */
+	public func void onButtonRelease( MouseEvent event )
+		select event.getButton()
+		case InputEventMouseButton.left
+			this.sendEventToListeners( event, false )
+			
+		else
+			super.onButtonRelease( event )
+		end
+	end
+	
+	/** \brief Mouse moved. */
+	public func void onMouseMove( MouseEvent event )
+		/*
+		var int scrollOffsetY = this.pVertRangeModel.getValue() * this.pFontHeight
+		var int realX, realY
+		if this.pOldCursorPos != -1
+			realX = event.getX() - this.getPadding().getLeft()
+			realY = event.getY() + scrollOffsetY - this.getPadding().getTop()
+			this.pCursorPos = this.pBestCharNear( this.pBestLineNear( realY ), realX )
+			if this.pCursorPos == this.pOldCursorPos
+				this.pSelection = null
+			elif this.pCursorPos < this.pOldCursorPos
+				this.pSelection = Point.new( this.pCursorPos, this.pOldCursorPos )
+			else
+				this.pSelection = Point.new( this.pOldCursorPos, this.pCursorPos )
+			end
+			this.pSelXOffsets = null
+			this.pCaret = null
+			this.pRefXPosDirty = true
+		end
+		*/
+		super.onMouseMove( event )
+	end
+	
+	/** \brief Mouse wheel has moved. */
+	public func void onMouseWheel( MouseEvent event )
+		var int y = event.getPosition().getY()
+		if y == 0
+			super.onMouseWheel( event )
+			return
+		end
+		
+		select this.pType
+		case Type.vertical, Type.verticalWrap
+			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+				this.pVertRangeModel.setValue( this.pVertRangeModel.getValue() \
+					- this.pVertRangeModel.getPageSize() * y )
+				
+			else
+				this.pVertRangeModel.setValue( this.pVertRangeModel.getValue() \
+					- this.pVertRangeModel.getIncrement() * y )
+			end
+			
+		case Type.horizontalWrap
+			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+				this.pHorzRangeModel.setValue( this.pHorzRangeModel.getValue() \
+					- this.pHorzRangeModel.getPageSize() * y )
+				
+			else
+				this.pHorzRangeModel.setValue( this.pHorzRangeModel.getValue() \
+					- this.pHorzRangeModel.getIncrement() * y )
+			end
+		end
+		
+		this.sendEventToListeners( event, false )
+	end
+	
+	/**
+	 * \brief State changed.
+	 * 
+	 * Extends base class behavior sending onParentStateChanged() to children.
+	 */
+	public func void onStateChanged( StateChangeEvent event )
+		this.runWhileBlockingLayout( block
+			this.notifyBorderParametersChanged()
+			this.notifyChildrenParentStateChanged()
+			super.onStateChanged( event )
+		end )
+		this.doLayout()
+	end
+	
+	
+	
+	/** \brief Range properties changed. */
+	public func void rangeChanged( RangeModel rangeModel )
+	end
+	
+	/** \brief Value changed. */
+	public func void valueChanged( RangeModel rangeModel )
+		this.updateRenderWidgets()
+	end
+	
+	
+	
+	/**
+	 * \brief Elements added.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first added element.
+	 * \param toIndex Index of last added element.
+	 */
+	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+	end
+	
+	/**
+	 * \brief Elements removed.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first removed element.
+	 * \param toIndex Index of last removed element.
+	 */
+	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+	end
+	
+	/**
+	 * \brief Content of the model changed.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first changed element.
+	 * \param toIndex Index of last changed element.
+	 */
+	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+		this.pModelDirty = true
+		this.updateRenderWidgets()
+	end
+	
+	/**
+	 * \brief Selection in the model changed.
+	 */
+	public func void selectionChanged( ListModel listModel )
+		if this.getGuiTheme() == null
+			this.pSelectedElement = this.pListModel.getSelected()
+			
+		else
+			var int firstElement = this.getFirstElement()
+			var int visibleElementCount = this.pVisibleColumns * this.pVisibleRows
+			
+			if this.pSelectedElement >= firstElement \
+			and this.pSelectedElement < firstElement + visibleElementCount \
+			and this.pSelectedElement < this.pListModel.getCount()
+				this.pRenderer.updateRenderer( this, \
+					this.pPanelVisibleElements.getWidget( this.pSelectedElement - firstElement ), \
+					this.pListModel.getAt( this.pSelectedElement ), false, false )
+			end
+			
+			this.pSelectedElement = this.pListModel.getSelected()
+			
+			if this.pSelectedElement >= firstElement \
+			and this.pSelectedElement < firstElement + visibleElementCount
+				this.pRenderer.updateRenderer( this, \
+					this.pPanelVisibleElements.getWidget( this.pSelectedElement - firstElement ), \
+					this.pListModel.getAt( this.pSelectedElement ), true, false )
+			end
+		end
+		
+		this.makeSelectedElementVisible()
+	end
+	
+	
+	
+	/** \brief Check if model is dirty and update parameters if required. */
+	protected func void checkModel()
+		if not this.pModelDirty
+			return
+		end
+		
+		this.updateRangeModels()
+		
+		this.pModelDirty = false
+	end
+	
+	/** \brief Update range model. */
+	protected func void updateRangeModels()
+		var int elementCount = this.pListModel.getCount()
+		
+		select this.pType
+		case Type.vertical
+			var int elementHeight = this.getElementHeight()
+			var int visibleHeight = this.getContainerHeight()
+			var int maxHeight = DEMath.max( elementHeight * elementCount - visibleHeight, 0 )
+			this.pVertRangeModel.setAll( 0, maxHeight, visibleHeight, this.pVertRangeModel.getValue(), elementHeight )
+			this.pHorzRangeModel.setAll( 0, 0, 1, 0, 1 )
+			
+		case Type.verticalWrap
+			var int elementHeight = this.getElementHeight()
+			var int visibleHeight = this.getContainerHeight()
+			var int rowCount = ( ( elementCount - 1 ) / this.pVisibleColumns ) + 1
+			var int maxHeight = DEMath.max( elementHeight * rowCount - visibleHeight, 0 )
+			this.pVertRangeModel.setAll( 0, maxHeight, visibleHeight, this.pVertRangeModel.getValue(), elementHeight )
+			this.pHorzRangeModel.setAll( 0, 0, 1, 0, 1 )
+			
+		case Type.horizontalWrap
+			var int elementWidth = this.getElementWidth()
+			var int visibleWidth = this.getContainerWidth()
+			var int columnCount = ( ( elementCount - 1 ) / this.pVisibleRows ) + 1
+			var int maxWidth = DEMath.max( elementWidth * columnCount - visibleWidth, 0 )
+			this.pHorzRangeModel.setAll( 0, maxWidth, visibleWidth, this.pHorzRangeModel.getValue(), elementWidth )
+			this.pVertRangeModel.setAll( 0, 0, 1, 0, 1 )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/** \brief Element width. */
+	public func int getElementWidth()
+		if this.pElementWidth == 0
+			this.updateElementSize()
+		end
+		return this.pElementWidth
+	end
+	
+	/** \brief Element height. */
+	public func int getElementHeight()
+		if this.pElementHeight == 0
+			this.updateElementSize()
+		end
+		return this.pElementHeight
+	end
+	
+	/** \brief Update element size. */
+	protected func void updateElementSize()
+		this.pElementWidth = 1
+		this.pElementHeight = 1
+		
+		if this.getGuiTheme() != null
+			var Point size = Point.new( 1, 1 ).largest( this.pRenderer.getDefaultSize( this ) )
+			this.pElementWidth = size.getX()
+			this.pElementHeight = size.getY()
+		end
+	end
+	
+	/** \brief Recalculate number of visible elements. */
+	protected func void recalcVisibleElements()
+		var int height = this.getContainerHeight()
+		var int width = this.getContainerWidth()
+		if width == 0 or height == 0
+			this.pVisibleRows = 1
+			this.pVisibleColumns = 1
+			return
+		end
+		
+		select this.pType
+		case Type.vertical
+			var int elementHeight = this.getElementHeight()
+			
+			this.pVisibleColumns = 1
+			this.pVisibleRows = DEMath.clamp( \
+				( height + elementHeight * 2 - 2 ) / elementHeight, \
+				1, this.pListModel.getCount() - this.getFirstElement() )
+			
+		case Type.verticalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			
+			this.pVisibleColumns = DEMath.max( width / elementWidth, 1 )
+			this.pVisibleRows = DEMath.clamp( \
+				( height + elementHeight * 2 - 2 ) / elementHeight, \
+				1, ( ( this.pListModel.getCount() - this.getFirstElement() - 1 ) / this.pVisibleColumns ) + 1 )
+			
+		case Type.horizontalWrap
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			
+			this.pVisibleRows = DEMath.max( height / elementHeight, 1 )
+			this.pVisibleColumns = DEMath.clamp( \
+				( width + elementWidth * 2 - 2 ) / elementWidth, \
+				1, ( ( this.pListModel.getCount() - this.getFirstElement() - 1 ) / this.pVisibleRows ) + 1 )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Update render widgets if required. */
+	protected func void updateRenderWidgets()
+		if this.getGuiTheme() == null
+			return
+		end
+		
+		this.runWhileBlockingLayout( block
+			// calculate visible lines
+			this.recalcVisibleElements()
+			
+			// update model if dirty. comes after recalcVisibleElements since these values are used
+			if this.pListModel.getCount() > 0
+				this.checkModel()
+			end
+			
+			// update visible elements panel position to account for pixel offset
+			var int elementWidth = this.getElementWidth()
+			var int elementHeight = this.getElementHeight()
+			var BorderSize padding = this.getPadding()
+			
+			// update panel visible elements
+			this.pPanelVisibleElements.runWhileBlockingLayout( block
+				var GridLayout layout = this.pPanelVisibleElements.getLayout() cast GridLayout
+				var int elementCount = this.pListModel.getCount()
+				var int firstElement = this.getFirstElement()
+				var int i, elementIndex
+				var Widget widget
+				
+				// set position
+				this.pPanelVisibleElements.setPosition( Point.new( \
+					padding.getLeft() - ( this.pHorzRangeModel.getValue() % elementWidth ), \
+					padding.getTop() - ( this.pVertRangeModel.getValue() % elementHeight ) ) )
+				
+				// synchronize the widget count with the visible element count and resize panel.
+				// the resizing has to be done after removing surplus elements since otherwise
+				// the GridLayout throws an exception if the row count does not match the
+				// number of widgets to lay out
+				var int widgetCount = this.pPanelVisibleElements.getWidgetCount()
+				var int visibleElementCount = \
+					DEMath.min( this.pVisibleColumns * this.pVisibleRows, \
+						DEMath.max( elementCount - firstElement, 0 ) )
+				
+				while widgetCount > visibleElementCount
+					widgetCount--
+					widget = this.pPanelVisibleElements.getWidget( widgetCount )
+					this.pPanelVisibleElements.removeWidget( widget )
+					widget.dispose()
+				end
+				
+				select this.pType
+				case Type.vertical
+					this.pPanelVisibleElements.setSize( Point.new( \
+						this.getContainerWidth(), this.pVisibleRows * elementHeight ) )
+					layout.setAxis( LayoutAxis.y )
+					
+				case Type.verticalWrap
+					this.pPanelVisibleElements.setSize( Point.new( \
+						this.pVisibleColumns * elementWidth, this.pVisibleRows * elementHeight ) )
+					layout.setAxis( LayoutAxis.y )
+					
+				case Type.horizontalWrap
+					this.pPanelVisibleElements.setSize( Point.new( \
+						this.pVisibleColumns * elementWidth, this.pVisibleRows * elementHeight ) )
+					layout.setAxis( LayoutAxis.x )
+					
+				else
+					throw EInvalidParam.new()
+				end
+				
+				layout.setColumnCount( this.pVisibleColumns )
+				layout.setRowCount( this.pVisibleRows )
+				
+				while this.pPanelVisibleElements.getWidgetCount() < visibleElementCount
+					this.pPanelVisibleElements.addWidget( this.pRenderer.createRenderer( this ) )
+				end
+				
+				// update visibility and content of the renderers
+				for i = 0 to visibleElementCount
+					elementIndex = firstElement + i
+					if elementIndex < elementCount
+						this.pRenderer.updateRenderer( this, this.pPanelVisibleElements.getWidget( i ), \
+							this.pListModel.getAt( elementIndex ), elementIndex == this.pSelectedElement, false )
+					end
+				end
+			end )
+			
+			this.pPanelVisibleElements.doLayout()
+		end )
+		
+		this.doLayout()
+	end
+end

@@ -1,0 +1,12 @@
+Tangent space calculation requires dealing with mirrored geometry. In this case the tangents which run along
+the U direction of the texture is opposite to each other for geometry that is mirrored compared to geometry
+that is not mirrored in the texture space. A correction is required to fix this problem as otherwise the
+interpolation produces ugly artifacts. This is detected by comparing the calculated tangent with the real
+tangent obtained using cross products. This checks if the tangent has the correct handedness. Since the
+shaders take only the normal and tangent as input this handedness has to be stored too in the input VBO.
+This is done by storing the handedness in the w coordinate of the input tangent. This requires blowing up
+the input tangent to vec4 instead of vec3 as is required. This is acceptable since normals and tangents
+are stored as signed shorts in the VBO for space consumption reasons and vec3 requires a padding of a
+single signed short. This padding can be also used directly as w coordinate of the tangent to store the
+handedness. In the shader the tangent is simply multiplied with the handedness (which is 1 or -1) to
+obtain the correct result.

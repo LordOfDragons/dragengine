@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen AmbientOcclusion Local</name>
+	
+	<version>150</version>
+	
+	<parameter name='pQuadParams'/> <!-- 0 -->
+	<parameter name='pPosTransform'/> <!-- 1 -->
+	<parameter name='pTCTransform'/> <!-- 1 -->
+	<parameter name='pTCClamp'/> <!-- 2 -->
+	<parameter name='pRadiusFactor'/> <!-- 3 -->
+	<parameter name='pParamSSAO'/> <!-- 4 -->
+	<parameter name='pParamTap'/> <!-- 5 -->
+	<parameter name='pMipMapParams'/> <!-- 6 -->
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outAO' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/light/ao_local.glsl</sourceCode>
+</shader>

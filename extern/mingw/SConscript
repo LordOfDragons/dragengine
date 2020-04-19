@@ -1,0 +1,31 @@
+import os
+import sys
+import SCons
+import subprocess
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# windows mingw runtime libraries
+if envLibrary[ 'OSWindows' ]:
+	spenv = dict(os.environ)
+	spenv['LC_ALL'] = 'C'
+	result = subprocess.check_output(
+		'x86_64-w64-mingw32-gcc -print-search-dirs',
+		stderr=subprocess.STDOUT, env=spenv,
+		shell=True).decode('utf-8').split('\n')
+	path = [r[8:].strip() for r in result if r[0:8] == 'install:'][0]
+	
+	files = []
+	for f in ['libgcc_s_seh-1.dll', 'libstdc++-6.dll']:  #, 'libwinpthread-1.dll'
+		files.extend(envLibrary.Install('.', os.path.join(path, f)))
+	
+	envLibrary.Alias('lib_mingw_runtime', files)
+	
+	parent_targets['lib_mingw_runtime'] = {
+		'name': 'MinGW Windows Runtime Libraries',
+		'runtimelibs': files}

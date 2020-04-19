@@ -1,0 +1,112 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Canvas.
+ * 
+ * This is a native class. It can not be instanced directly.
+ */
+class Canvas
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create canvas. */
+	protected func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position in parent canvas view units. */
+	public func Point getPosition()
+	end
+	
+	/** \brief Set position in parent canvas view units. */
+	public func void setPosition( Point position )
+	end
+	
+	/** \brief Size in parent canvas view units. */
+	public func Point getSize()
+	end
+	
+	/** \brief Set size in parent canvas view units. */
+	public func void setSize( Point size )
+	end
+	
+	/** \brief Transformation matrix affecting the canvas and all its content. */
+	public func TexMatrix2 getTransform()
+	end
+	
+	/** \brief Set transformation matrix affecting the canvas and all its content. */
+	public func void setTransform( TexMatrix2 transform )
+	end
+	
+	/** \brief Color transformation matrix affecting the canvas and all its content. */
+	public func ColorMatrix getColorTransform()
+	end
+	
+	/** \brief Set color transformation matrix affecting the canvas and all its content. */
+	public func void setColorTransform( ColorMatrix transform )
+	end
+	
+	/** \brief Canvas is visible. */
+	public func bool getVisible()
+	end
+	
+	/** \brief Set if canvas is visible. */
+	public func void setVisible( bool visible )
+	end
+	
+	/** \brief Render order. Larger renders ontop of smaller. */
+	public func float getOrder()
+	end
+	
+	/** \brief Set render order. Larger renders ontop of smaller. */
+	public func void setOrder( float order )
+	end
+	
+	/** \brief Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
+	public func float getTransparency()
+	end
+	
+	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
+	public func void setTransparency( float transparency )
+	end
+	
+	/** \brief Blend mode used to blend canvas over previous content. */
+	public func CanvasBlendMode getBlendMode()
+	end
+	
+	/** \brief Set blend mode used to blend canvas over previous content. */
+	public func void setBlendMode( CanvasBlendMode blendMode )
+	end
+	
+	
+	
+	/**
+	 * \brief Canvas is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type canvas and components are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

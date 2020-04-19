@@ -1,0 +1,112 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition.Nodes
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Span of text in a text node which can have an individual style.
+ * 
+ * Without a style set the style of the parent text node is used. Optionally an image can
+ * be specified which is place to the left of the text.
+ */
+class STDNTextSpan
+	private var String pText
+	private var String pStyle
+	private var Image pImage
+	
+	
+	
+	/** \brief Create styled text definition text node span. */
+	public func new()
+		this.pText = ""
+	end
+	
+	/** \brief Create styled text definition text node span. */
+	public func new( String text )
+		this.setText( text )
+	end
+	
+	/** \brief Create styled text definition text node span. */
+	public func new( String text, String style )
+		this.setText( text )
+		this.setStyle( style )
+	end
+	
+	/** \brief Create styled text definition text node span. */
+	public func new( String text, Image image )
+		this.setText( text )
+		this.pImage = image
+	end
+	
+	/** \brief Create styled text definition text node span. */
+	public func new( String text, String style, Image image )
+		this.setText( text )
+		this.setStyle( style )
+		this.pImage = image
+	end
+	
+	/** \brief Create copy of styled text definition text node span. */
+	public func new( STDNTextSpan span )
+		this.pText = span.pText
+		this.pStyle = span.pStyle
+		this.pImage = span.pImage
+	end
+	
+	
+	
+	/** \brief Text. */
+	public func String getText()
+		return this.pText
+	end
+	
+	/** \brief Set text. */
+	public func void setText( String text )
+		if text == null
+			throw EInvalidParam.new()
+		end
+		this.pText = text
+	end
+	
+	/** \brief Style or \em null to use the parent text node style. */
+	public func String getStyle()
+		return this.pStyle
+	end
+	
+	/** \brief Set style or \em null to use the parent text node style. */
+	public func void setStyle( String style )
+		this.pStyle = style
+	end
+	
+	/** \brief Image used as background or null. */
+	public func Image getImage()
+		return this.pImage
+	end
+	
+	/** \brief Set image used as background or null. */
+	public func void setImage( Image image )
+		this.pImage = image
+	end
+end

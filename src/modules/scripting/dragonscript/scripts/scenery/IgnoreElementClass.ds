@@ -1,0 +1,73 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Gui
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Ignore element class.
+ * 
+ * Can be used for element classes used only during development which should be ignored while
+ * loading a production game world. If used this element class does nothing at all.
+ */
+class IgnoreElementClass extends ElementClass
+	/** \brief Create element class. */
+	public func new( String classname ) super( classname )
+		this.setPersistable( false )
+	end
+	
+	
+	
+	/** \brief No XML subclassing supported. */
+	public func ElementClass duplicateNamed( String classname )
+		return null
+	end
+	
+	/** \brief Element class is ignored. */
+	protected func Element createElement()
+		return null
+	end
+	
+	/** \brief Element class is ignored. */
+	public func Element createElement( StubElement stub )
+		return null
+	end
+	
+	/** \brief Element class is ignored. */
+	public func void createAndAddElement( StubElement stub, GameWorld gameWorld )
+	end
+	
+	/** \brief Element class can not be persisted. */
+	public func Element loadElement( PersistencyEnvironment env, \
+	StubElement stub, FileReader reader )
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Element class can not be persisted. */
+	public func void loadAndAddElement( PersistencyEnvironment env, \
+	StubElement stub, FileReader reader, GameWorld gameWorld )
+	end
+end

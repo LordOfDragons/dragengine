@@ -1,0 +1,80 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky instance.
+ * 
+ * This is a native class.
+ */
+class SkyInstance
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create sky instance. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Sky or \em null if not set. */
+	public func Sky getSky()
+		return null
+	end
+	
+	/** \brief Set sky or \em null if not set. */
+	public func void setSky( Sky sky )
+	end
+	
+	/** \brief Render order with higher order covering lower order. */
+	public func int getOrder()
+		return 0
+	end
+	
+	/** \brief Set render order with higher order covering lower order. */
+	public func void setOrder( int order )
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return null
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Number of controllers. */
+	public func int getControllerCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the sky is not changed and the
+	 *          controller structure in the sky is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func SkyController getControllerAt( int index )
+		return null
+	end
+	/*@}*/
+end

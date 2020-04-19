@@ -1,0 +1,75 @@
+/* 
+ * Drag[en]gine IGDE Animator Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#ifndef _AEWPAPANELRULESTATESNAPSHOT_H_
+#define _AEWPAPANELRULESTATESNAPSHOT_H_
+
+#include "aeWPAPanelRule.h"
+
+
+/**
+ * \brief State Snapshot Rule Panel.
+ */
+class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
+private:
+	igdeCheckBoxReference pChkUseLastState;
+	igdeButtonReference pBtnSnapshot;
+	igdeTextFieldReference pEditID;
+	igdeComboBoxFilterReference pCBMoveName;
+	igdeTextFieldReference pEditMoveTime;
+	igdeButtonReference pBtnGetFrame;
+	igdeCheckBoxReference pChkEnablePosition;
+	igdeCheckBoxReference pChkEnableRotation;
+	igdeCheckBoxReference pChkEnableSize;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create panel. */
+	aeWPAPanelRuleStateSnapshot( aeWPRule &wpRule );
+	
+protected:
+	/** \brief Clean up panel. */
+	virtual ~aeWPAPanelRuleStateSnapshot();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Update animation move list. */
+	virtual void UpdateAnimMoveList();
+	
+	/** \brief Update rule. */
+	virtual void UpdateRule();
+	
+	/** \brief Move combo box text. */
+	const decString &GetCBMoveNameText() const;
+	
+	/** \brief Move time text field value. */
+	float GetTextMoveTime() const;
+	/*@}*/
+};
+
+#endif

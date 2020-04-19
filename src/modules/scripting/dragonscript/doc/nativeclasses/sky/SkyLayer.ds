@@ -1,0 +1,186 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky layer.
+ * 
+ * Wraps a sky layer by layer index. Valid only as long as the wrapped sky does not
+ * change layer layout. The user is responsible to call Sky.contentChanged() after
+ * changing one or more layers. Sky layers should not be changed if possible after
+ * being used in sky instances.
+ * 
+ * The TARGET_ROTATION_* rotation is applied ontop of the layer orientation. This
+ * allows to define planetary movement with the layer orientation representing the
+ * planet orbit coordinate frame and TARGET_ROTATION_X for example rotating the
+ * planet along the x axis easily.
+ */
+class SkyLayer
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Sky layer can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner sky. */
+	public func Sky getSky()
+	end
+	
+	/** \brief Layer index. */
+	public func int getLayerIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Layers */
+	/*@{*/
+	/** \brief Relative offset of layer center. */
+	public func Vector getOffset()
+	end
+	
+	/** \brief Set relative offset of layer center. */
+	public func void setOffset( Vector offset )
+	end
+	
+	/** \brief Orientation. */
+	public func Vector getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Vector orientation )
+	end
+	
+	/** \brief Tint color. */
+	public func Color getColor()
+	end
+	
+	/** \brief Set tint color. */
+	public func void setColor( Color color )
+	end
+	
+	/** \brief Intensity. */
+	public func float getIntensity
+	end
+	
+	/** \brief Set intensity. */
+	public func void setIntensity( float intensity )
+	end
+	
+	/** \brief Transparency. */
+	public func float getTransparency()
+	end
+	
+	/** \brief Set transparency. */
+	public func void setTransparency( float transparency )
+	end
+	
+	/** \brief Skin or \em null to use background color only. */
+	public func Skin getSkin()
+	end
+	
+	/** \brief Set skin or \em null to use background color only. */
+	public func void setSkin( Skin skin )
+	end
+	
+	
+	
+	/** \brief Light orientation. */
+	public func Quaternion getLightOrientation()
+	end
+	
+	/** \brief Set light orientation. */
+	public func void setLightOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Light color. */
+	public func Color getLightColor()
+	end
+	
+	/** \brief Set light color. */
+	public func void setLightColor( Color color )
+	end
+	
+	/** \brief Direct light intensity. */
+	public func float getLightIntensity()
+	end
+	
+	/** \brief Set direct light intensity. */
+	public func void setLightIntensity( float intensity )
+	end
+	
+	/** \brief Diffuse ambient light intensity. */
+	public func float getAmbientIntensity()
+	end
+	
+	/** \brief Set diffuse ambient light intensity. */
+	public func void setAmbientIntensity( float intensity )
+	end
+	
+	
+	
+	/** \brief Number of bodies. */
+	public func int getBodyCount()
+	end
+	
+	/**
+	 * \brief Set number of bodies.
+	 * 
+	 * Sets all bodies to default vaules.
+	 */
+	public func void setBodyCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for body.
+	 * 
+	 * \warning The wrapper is only valid as long as the layer structure in the parent
+	 *          sky is not changed and the body layout is not changed.
+	 * 
+	 * \throws EOutOfBoundary \em body is less than 0 or larger than or equal
+	 *                        to getBodyCount().
+	 */
+	public func SkyBody getBodyAt( int index )
+	end
+	
+	
+	
+	/**
+	 * \brief Get wrapper for parameter.
+	 * 
+	 * \warning The wrapper is only valid as long as the layer structure in the parent
+	 *          sky is not changed.
+	 */
+	public func SkyTarget getTarget( SkyLayerTargetType target )
+	end
+	
+	
+	
+	/** \brief Layer intensity is multiplied by total sky light intensity. */
+	public func bool getMuliplyBySkyLight()
+	end
+	
+	/** \brief Set if layer intensity is multiplied by total sky light intensity. */
+	public func void setMultiplyBySkyLight( bool multiply )
+	end
+	
+	/** \brief Layer color is multiplied by total sky light color. */
+	public func bool getMuliplyBySkyColor()
+	end
+	
+	/** \brief Set if layer color is multiplied by total sky light color. */
+	public func void setMultiplyBySkyColor( bool multiply )
+	end
+	/*@}*/
+end

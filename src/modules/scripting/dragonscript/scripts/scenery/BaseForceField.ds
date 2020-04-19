@@ -1,0 +1,52 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Basic force field class using force field behavior.
+ */
+class BaseForceField extends BehaviorElement
+	private var ECBehaviorForceField.Instance pForceField
+	
+	
+	
+	/** \brief Create element. */
+	public func new( BaseForceFieldClass eclass ) super( eclass )
+		this.pForceField = eclass.getForceField().instance( this )
+	end
+	
+	
+	
+	/** \brief ForceField behavior. */
+	public  func ECBehaviorForceField.Instance getForceField()
+		return this.pForceField
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitBaseForceField( this )
+	end
+end

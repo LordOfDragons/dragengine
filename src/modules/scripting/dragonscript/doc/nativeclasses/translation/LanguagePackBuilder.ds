@@ -1,0 +1,104 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief LanguagePack builder.
+ * 
+ * Builds language pack resource without requiring a language pack resource file.
+ * The created language pack can either be unnamed (if filename is empty string)
+ * or named (if filename is not empty string). Named language packs can not clash
+ * with filenames present in the virtual file system. For this reason use unnamed
+ * language packs if possible. Using named language packs though can be useful
+ * if you want to provide language pack resources to scripts not needing to know
+ * if the path they try to load is a build language pack instead of a resource one.
+ * 
+ * To use the language pack builder create a subclass and implement
+ * LanguagePackBuilder.buildLanguagePack() . You are only allowed to call methods
+ * from LanguagePackBuilder from inside this function call. To create the language
+ * pack call LanguagePackBuilder.build() . This will call
+ * LanguagePackBuilder.buildLanguagePack() to fill a new language pack resource
+ * with content. Once finished the build method returns the ready to use language
+ * pack resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class LanguagePack
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create language pack builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build language pack using filename.
+	 * 
+	 * The created language pack can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named language packs can not clash with filenames
+	 * present in the virtual file system. For this reason use unnamed language packs if
+	 * possible. Using named language packs though can be useful if you want to provide
+	 * language pack resources to scripts not needing to know if the path they try to load
+	 * is a build language pack instead of a resource one.
+	 * 
+	 * To create the language pack call build() . This will call buildLanguagePack() to fill
+	 * a new language pack resource with content. Once finished the build method returns the
+	 * ready to use language pack resource. Otherwise an exception is thrown.
+	 */
+	public func LanguagePack build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build language pack.
+	 * 
+	 * Called by build(String) to fill a new language pack resource with content. You are only
+	 * allowed to call methods from LanguagePackBuilder from inside this function call.
+	 */
+	abstract protected func void buildLanguagePack()
+	
+	/**
+	 * \brief Set name in native language.
+	 */
+	protected func void setName( UnicodeString name )
+	end
+	
+	/**
+	 * \brief Set description in native language.
+	 */
+	protected func void setDescription( UnicodeString description )
+	end
+	
+	/**
+	 * \brief Set missing translation text in native language.
+	 */
+	protected func void setMissingText( UnicodeString missingText )
+	end
+	
+	/**
+	 * \brief Set count of entries.
+	 */
+	protected func void setEntryCount( int count )
+	end
+	
+	/**
+	 * \brief Set entry.
+	 */
+	protected func void setEntryAt( int index, String name, UnicodeString text )
+	end
+	/*@}*/
+end

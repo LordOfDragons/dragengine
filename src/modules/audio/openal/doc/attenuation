@@ -1,0 +1,149 @@
+gain = ref/(ref+roll*(max(x,ref)-ref))
+gain*(ref+roll*(max(x,ref)-ref)) = ref
+ref+roll*(max(x,ref)-ref) = ref/gain
+roll*(max(x,ref)-ref) = ref/gain-ref
+max(x,ref)-ref = (ref/gain-ref)/roll
+max(x,ref) = (ref/gain-ref)/roll+ref
+x = (ref/gain-ref)/roll+ref
+
+x = ref/roll+ref
+x = ref*(1 + 1/roll)
+
+x = roll*0.1*(1 + 1/roll)
+x = roll*0.1 + 0.1
+x = 0.1*(1 + roll)
+
+============================================
+== version keep roll fixed and adjust ref ==
+============================================
+
+gain = ref/(ref+roll*(max(x,ref)-ref))
+0.5 = r*0.1/(r*0.1+roll*(r*h-r*0.1))
+0.5*(r*0.1+roll*(r*h-r*0.1)) = r*0.1
+r*0.1+roll*(r*h-r*0.1) = r*0.1/0.5
+r*0.1+roll*(r*h-r*0.1) = r*0.2
+roll*(r*h-r*0.1) = r*0.2-r*0.1
+roll = r*0.1/(r*h-r*0.1)
+roll = r*0.1/(r*(h-0.1))
+roll = 0.1/(h-0.1)
+
+=> ref = range * 0.1 ; roll = 1.0
+
+============================================
+== version keep ref fixed and adjust roll ==
+============================================
+
+gain = 0.01/(0.01+roll*(max(x,0.01)-0.01))
+0.5 = 0.01/(0.01+roll*(max(x,0.01)-0.01))
+0.5*(0.01+roll*(max(x,0.01)-0.01)) = 0.01
+0.01+roll*(max(x,0.01)-0.01) = 0.02
+roll*(max(x,0.01)-0.01) = 0.01
+roll = 0.01/(r*h-0.01)
+roll = 0.01/(r*h-0.01)
+
+=> roll = 0.1 / ( r*h - 0.1 ) ; ref = 0.1
+
+for our case with h = 0.2
+=> roll = 0.1 / ( r*0.2 - 0.1 ) ; ref = 0.1
+
+
+
+=============================================
+
+A(d) = A0 * exp( -coeff * d )
+
+coeff = nepers/meter = decibels/meter * 0.1151
+
+-6dB per double distance
+
+The attenuation of plane sound waves in neper/unit length is α = (l/2d)ln(I0/Id), where the initial
+intensity I0, has decreased to Id after traversing distance d. When expressed in decibels per unit
+length, convenient for practical application, the value is 8.686α
+
+The table gives values of attenuation in dB km−1 for a temperature of 20°C and a pressure of 101.325 kPa.
+
+30kHZ ~> 1000 db/km = 1 db/m = 0.1151 Np/m
+
+=============================================
+
+Solution without custom gain something like inverse distance clamped model using:
+
+ref = range * 0.001 (0.1 on 100m or 0.01 on 10m)
+roll = ref / ( range * halfIntDistance - ref )
+
+with custom gain to clamp to max range:
+
+gain = gainSource / max( 1.0 - distance / range, 0.0 )
+
+
+
+
+gnuplot:
+roll(ref,range,halfIntDist)=ref/(range*halfIntDist-ref)
+g(x,ref,roll)=exp(-roll*(x-ref))
+f(x,ref,roll)=ref/(ref+roll*(x-ref))
+ff(x,range,halfIntDist)=f(x,range*0.001,roll(range*0.001,range,halfIntDist))
+fff(x,range,halfIntDist)=ff(x,range,halfIntDist)*(1-x/range)
+plot [x=0:100][y=0:1] f(x,0.1,0.0075),g(x,0.0,0.05),ff(x,100,0.15),fff(x,100,0.15)
+
+
+
+==============================================
+
+For example, in the case of spherical spreading from a point source, which is due to a noise source
+radiating sound equally in all directions, the sound level is reduced by 6 dB for each doubling of
+distance from the source (see INVERSE-SQUARE LAW). A busy highway approximates to a line source,
+that is, equal sound power output per unit length of highway. A line source will produce cylindrical
+spreading, resulting in a sound level reduction of 3 dB per doubling of distance.
+
+From the diagrams it can be seen that for the middle of the speech frequency range (2 kHz), the
+absorption is typically .25 dB/100 m for 30% relative humidity and 20°C (68°F).
+
+Under 'normal' circumstances, atmospheric absorption can be neglected except where long distances
+or very high frequencies are involved.
+
+
+110 to 225 dB - Deafening
+90 to 100 dB - Very Loud
+70 to 80 dB - Loud
+45 to 60 dB - Moderate
+30 to 40 dB - Faint
+0 to 20 dB - Very Faint
+
+Turbo Jet Plane Engine				170 dB
+Axial fan, 100.000 m3/h				130 dB
+Machine Gun							130 dB
+Heavy Thunder						120 dB
+Small aircraft engine				120 dB
+High pressure gas leak				100 dB
+Car at Highway Speed				100 dB
+Normal Fan							100 dB
+Vacuum Pump							100 dB
+Banging Steel Plate					100 dB
+Loud street noise					100 dB
+Heavy city traffic					90 dB
+Alarm clock							80 dB
+Dishwasher							80 dB
+Noisy Office						70 dB
+Inside Automobile					70 dB
+Clothes Dryer						70 dB
+Vacuum Cleaner						70 dB
+Busy restaurant or canteen			60 dB
+Ventilation Fan						60 dB
+Average Office						60 dB
+Office Air Diffuser					50 dB
+Quiet Office						50 dB
+Average Home						50 dB
+Quit Street							50 dB
+Voice, low							40 dB
+Small Electric Clock				40 dB
+Refrigerator						40 dB
+Ambient Wilderness					40 dB
+Room in a quiet dwelling midnight	30 dB
+Quiet Conversation					30 dB
+Rustling leaves						20 dB
+Whisper								20 dB
+Watch Ticking						20 dB
+Rural Ambient						20 dB
+Human Breath						10 dB
+

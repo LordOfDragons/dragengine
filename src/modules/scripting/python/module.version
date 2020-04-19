@@ -1,0 +1,4 @@
+SCRPYTHON {
+  global: SPCreateModule;
+  local: *;
+};

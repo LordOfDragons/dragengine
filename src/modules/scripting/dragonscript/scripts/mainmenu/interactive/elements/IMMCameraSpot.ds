@@ -1,0 +1,79 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Camera spot for InteractiveMainMenu.
+ * 
+ * Defines the camera position and orientation to focus on a hot-spot. Camera spots
+ * are identified using a unique name. Each hot-spot can defines the camera spot to
+ * use when the hot spot is active.
+ */
+class IMMCameraSpot extends Element
+	private var String pName
+	
+	
+	
+	/** \brief Create element. */
+	public func new( IMMCameraSpotClass eclass ) super( eclass )
+	end
+	
+	
+	
+	/** \brief Initialize element from stub. */
+	public func void init( StubElement stub )
+		super.init( stub )
+		
+		var IMMCameraSpotClass eclass = this.getClass() cast IMMCameraSpotClass
+		
+		this.pName = eclass.getName().getValue( stub )
+		if this.pName.empty()
+			this.pName = null
+		end
+	end
+	
+	
+	
+	/** \brief Unique name of spot. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Set unique name of spot. */
+	protected func void setName( String name )
+		this.pName = name
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		( visitor cast IMMElementVisitor ).visitCameraSpot( this )
+	end
+end

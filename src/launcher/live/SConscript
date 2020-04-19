@@ -1,0 +1,101 @@
+from SConsCommon import *
+import os
+
+Import('parent_env parent_targets parent_report')
+
+if not parent_env['OSPosix'] and not parent_env['OSWindows']:
+	Return()
+
+envLauncher = parent_env.Clone()
+
+libs = []
+
+if envLauncher['OSBeOS']:
+	libs.extend(['root', 'be'])
+
+# update the compile flags
+if not envLauncher['with_debug']:
+	envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
+
+envLauncher.Append(CPPFLAGS = envLauncher['SANITIZE_FLAGS'])
+envLauncher.Append(LINKFLAGS = envLauncher['SANITIZE_FLAGS'])
+
+# setup the builders
+sources = []
+globFiles(envLauncher, 'src', '*.cpp', sources)
+
+objects = [envLauncher.StaticObject(s) for s in sources]
+
+if envLauncher['OSWindows']:
+	dragengineDelayLoadLib = envLauncher.Command('dragengine.dll.a',
+		parent_targets['dragengine']['library'][2],
+			'${DLLTOOL} --def "${SOURCE}" --output-delaylib "${TARGET}"')
+	# TODO delayed loading of dll. would allow messing with the SetDllSearchPath:
+	# - http://mingw-users.1079350.n2.nabble.com/Delayloading-windows-libraries-Finally-the-real-deal-td7472183.html
+	# 
+	# Maybe not requried actually?
+	# - https://devblogs.microsoft.com/oldnewthing/20170126-00/?p=95265
+	# - https://stackoverflow.com/questions/22138105/windows-hooking-and-dll-loading
+	# - https://docs.microsoft.com/en-us/cpp/build/reference/understanding-the-helper-function?redirectedfrom=MSDN&view=vs-2019
+
+appendLibrary(envLauncher, parent_targets['dragengine'], libs)
+libs.extend(parent_targets['dragengine']['binlibs'])
+
+if envLauncher['OSPosix']:
+	def buildPatchRunTime(env, source, target):
+		spath = source[0].abspath
+		dpath = target[0].abspath
+		
+		script = []
+		script.append('patchelf --remove-needed libdragengine.so "{}" || exit 1'.format(spath))
+		script.append('patchelf --add-needed ./linux64/lib/libdragengine.so "{}" || exit 1'.format(spath))
+		script.append('cp "{}" "{}" || exit 1'.format(spath, dpath))
+		
+		if os.system('\n'.join(script)):
+			raise Exception('Failed to run patchelf')
+	
+	envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/linux64/lib\''])
+	program = envLauncher.Program(target='launchLinux64', source=objects, LIBS=libs)
+	
+elif envLauncher['OSWindows']:
+	envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/windows64\''])
+	program = envLauncher.Program(target='LaunchWindows64', source=objects, LIBS=libs)
+
+targetBuild = envLauncher.Alias('launcher_live', program)
+
+archive = {}
+for p in program:
+	archive[p.name] = p
+
+if 'lib_mingw_runtime' in parent_targets:
+	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
+		archive[l.name] = l
+
+# add the targets to the targets list
+parent_targets['launcher_live'] = {
+	'name': 'Drag[en]gine Live Launcher',
+	'build': targetBuild,
+	'install': targetBuild,
+	'archive-special': archive}
+
+# https://www.greenend.org.uk/rjk/tech/putenv.html
+# (namely putenv usually does not copy the value. it is important to keep the string allocated
+#  until the end of the program in case putenv does not create a copy. with more other words
+#  use unique on-stack decString in main() for each env parameter, build it, use it on putenv()
+#  and then never touch it again until finished. using a const decString might be a good idea.)
+#
+# merged version of usb, gui and console launcher. designed to be used as live-runner for
+# a single game with an engine installation located in the same directory as the live-runner.
+# allows to run a single game anywhere without installation for whatever reason. the live-runner
+# is like the console launcher directly linked against the game engine and runs in the same
+# process. like the gui launcher though it runs using native main() method to avoid a console
+# popping up. the launcher sets first the environment variables to the engine installation
+# located in the directory "dragengine" located next to the launcher. then all *.delga files
+# found in the same directory as the runner are searched. if more than one *.delga file exists
+# ask first which one to use. from there on works like console launcher with the delga file.
+# launcher does only support *.delga files no other form of installation. this kind of setup
+# would actually work with newfangled tools like AppImage. by default tries to run full-screen
+# unless the application request window mode. later on adding command line options to for example
+# edit profiles can be added. also later on add support to install the engine and/or game to
+# get a full fledged installation.
+

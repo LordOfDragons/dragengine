@@ -1,0 +1,151 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief OcclusionMesh builder.
+ * 
+ * Builds occlusion mesh resource without requiring a occlusion mesh resource file.
+ * The created occlusion mesh can either be unnamed (if filename is empty string) or named
+ * (if filename is not empty string). Named occlusion meshs can not clash with filenames
+ * present in the virtual file system. For this reason use unnamed occlusion meshs if
+ * possible. Using named occlusion meshs though can be useful if you want to provide
+ * occlusion mesh resources to scripts not needing to know if the path they try to load is
+ * a build occlusion mesh instead of a resource one.
+ * 
+ * To use the occlusion mesh builder create a subclass and implement
+ * OcclusionMeshBuilder.buildOcclusionMesh() . You are only allowed to call methods from
+ * OcclusionMeshBuilder from inside this function call. To create the occlusion mesh call
+ * OcclusionMeshBuilder.build() . This will call OcclusionMeshBuilder.buildOcclusionMesh()
+ * to fill a new occlusion mesh resource with content. Once finished the build method
+ * returns the ready to use occlusion mesh resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class OcclusionMesh
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create occlusion mesh builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build occlusion mesh using filename.
+	 * 
+	 * The created occlusion mesh can either be unnamed (if filename is empty string) or
+	 * named (if filename is not empty string). Named occlusion meshs can not clash with
+	 * filenames present in the virtual file system. For this reason use unnamed occlusion
+	 * meshs if possible. Using named occlusion meshs though can be useful if you want to
+	 * provide occlusion mesh resources to scripts not needing to know if the path they
+	 * try to load is a build occlusion mesh instead of a resource one.
+	 * 
+	 * To create the occlusion mesh call build() . This will call buildOcclusionMesh() to
+	 * fill a new occlusion mesh resource with content. Once finished the build method
+	 * returns the ready to use occlusion mesh resource. Otherwise an exception is thrown.
+	 */
+	public func OcclusionMesh build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build occlusion mesh.
+	 * 
+	 * Called by build(String) to fill a new occlusion mesh resource with content. You are only
+	 * allowed to call methods from OcclusionMeshBuilder from inside this function call.
+	 */
+	abstract protected func void buildOcclusionMesh()
+	
+	/**
+	 * \brief Set bone count.
+	 */
+	protected func void setBoneCount( int count )
+	end
+	
+	/**
+	 * \brief Set bone.
+	 */
+	protected func void setBoneAt( int index, String name, int parent, Vector position, Quaternion orientation )
+	end
+	
+	/**
+	 * \brief Set weight count.
+	 */
+	protected func void setWeightCount( int count )
+	end
+	
+	/**
+	 * \brief Set weight.
+	 */
+	protected func void setWeightAt( int index, int bone, float weight )
+	end
+	
+	/**
+	 * \brief Set weight group count.
+	 */
+	protected func void setWeightGroupCount( int count )
+	end
+	
+	/**
+	 * \brief Set weight group.
+	 */
+	protected func void setWeightGroupAt( int index, int count )
+	end
+	
+	/**
+	 * \brief Set vertex count.
+	 */
+	protected func void setVertexCount( int count )
+	end
+	
+	/**
+	 * \brief Set vertex.
+	 */
+	protected func void setVertexAt( int index, Vector position, int weightSet )
+	end
+	
+	/**
+	 * \brief Set corner count.
+	 */
+	protected func void setCornerCount( int count )
+	end
+	
+	/**
+	 * \brief Set corner at.
+	 */
+	protected func void setCornerAt( int count, int vertex )
+	end
+	
+	/**
+	 * \brief Set face count.
+	 */
+	protected func void setFaceCount( int count )
+	end
+	
+	/**
+	 * \brief Set face.
+	 */
+	protected func void setFaceAt( int index, int cornerCount )
+	end
+	
+	/**
+	 * \brief Set double sided face count.
+	 */
+	protected func void setDoubleSidedFaceCount( int doubleSidedFaceCount )
+	end
+	/*@}*/
+end

@@ -1,0 +1,108 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse event.
+ */
+class MouseEvent extends ModifiableEvent
+	/** \brief Mouse button press event identifier. */
+	public fixed var int idMousePressed = 20
+	
+	/** \brief Mouse button released event identifier. */
+	public fixed var int idMouseReleased = 21
+	
+	/** \brief Mouse move event identifier. */
+	public fixed var int idMouseMoved = 22
+	
+	/** \brief Mouse wheel move event identifier. */
+	public fixed var int idMouseWheeled = 23
+	
+	/** \brief Mouse entered event identifier. */
+	public fixed var int idMouseEnter = 24
+	
+	/** \brief Mouse left event identifier. */
+	public fixed var int idMouseLeave = 25
+	
+	
+	
+	/** \brief Input device index. */
+	private var int pDevice
+	
+	/** \brief Mouse button */
+	private var int pButton
+	
+	/** \brief Mouse position relative to event source. */
+	private var Point pPosition
+	
+	
+	
+	/** \brief Event identifier is a mouse event identifier. */
+	public static func bool isMouseEvent( int identifier )
+		return identifier >= idMousePressed and identifier <= idMouseLeave
+	end
+	
+	
+	
+	/** \brief Create mouse event. */
+	public func new( Object source, int id, int button, int modifiers, int device ) \
+	super( source, id, modifiers )
+		this.pButton = button
+		this.pPosition = Point.new()
+		this.pDevice = device
+	end
+	
+	/** \brief Create mouse event. */
+	public func new( Object source, int id, int button, int modifiers, Point position, int device ) \
+	super( source, id, modifiers )
+		this.pButton = button
+		this.pPosition = position
+		this.pDevice = device
+	end
+	
+	
+	
+	/** \brief Mouse button. */
+	public func int getButton()
+		return this.pButton
+	end
+	
+	/** \brief Mouse position. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Device index. */
+	public func int getDevice()
+		return this.pDevice
+	end
+	
+	
+	
+	/** \brief Create copy of a mouse event with different position. */
+	public func MouseEvent relocate( Point position )
+		return new( this.getSource(), this.getIdentifier(), this.pButton, \
+			this.getModifiers(), position, this.pDevice )
+	end
+end

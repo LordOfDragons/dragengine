@@ -1,0 +1,57 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior for BehaviorElement.
+ * 
+ * Composable elements are jack of all trade elements that can be build using ECCompose*
+ * classes implementing the Composable interface to provide various abilities
+ * (or traits). Composable elements are suited for prototyping or rapid development
+ * since they require little written code. Building element classes the conventional
+ * way though is usually preferred.
+ * 
+ * Classes implementing this interface have to add element class properties to the target
+ * element class during construction time.
+ */
+public interface ECBehavior
+	/** \brief Dispose of behavior. */
+	func void dispose()
+	
+	/** \brief Instance index. */
+	func int getInstanceIndex()
+	
+	/**
+	 * \brief Assign instance index.
+	 * \warning For use by BehaviorElementClass only! Do not call yourself!
+	 */
+	func void assignInstanceIndex( int instanceIndex )
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance( BehaviorElement element )
+end

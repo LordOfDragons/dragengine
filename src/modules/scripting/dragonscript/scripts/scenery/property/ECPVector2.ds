@@ -1,0 +1,92 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Vector2 element class property for use with XML loading.
+ * 
+ * Vector2 is stored as Vector2 instance.
+ */
+class ECPVector2 extends ElementClassProperty
+	/** \brief Vector2. */
+	private var Vector2 pVector2
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pVector2 = Vector2.new()
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, Vector2 vector ) super( name )
+		this.pVector2 = vector
+	end
+	
+	
+	
+	/** \brief Vector2. */
+	public func Vector2 getVector2()
+		return this.pVector2
+	end
+	
+	/** \brief Set vector. */
+	public func void setVector2( Vector2 vector )
+		this.pVector2 = vector
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.setVector2( value cast Vector2 )
+	end
+	
+	
+	
+	/**
+	 * \brief Color modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored color is returned.
+	 * If the named stub property is present it is decoded using codec.
+	 * 
+	 * The following property value formats are understood where "x" and "y" are floating
+	 * point values:
+	 * - "x y": Vector2.new(x, x)
+	 */
+	public func Vector2 getVector2( StubWithProperties stub, CodecPropertyString codec )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pVector2
+			
+		else
+			return codec.decodeVector2( value )
+		end
+	end
+end

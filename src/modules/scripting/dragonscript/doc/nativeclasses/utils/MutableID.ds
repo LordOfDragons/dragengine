@@ -1,0 +1,200 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Mutable unique ID.
+ * 
+ * This is a native class.
+ */
+class MutableID
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create mutuable unique id with initial value 0. */
+	public func new()
+	end
+	
+	/** \brief Create mutuable unique id with initial value. */
+	public func new( int value )
+	end
+	
+	/** \brief Create mutuable unique id from unique id. */
+	public func new( UniqueID id )
+	end
+	
+	/** \brief Create copy of mutuable unique id. */
+	public func new( MutableID id )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Bit count. */
+	public func int getBitCount()
+	end
+	
+	/**
+	 * \brief Set bit count.
+	 * \details The id is reset to 0 no matter if the bit count changed or not.
+	 */
+	public func void setBitCount( int bitCount )
+	end
+	
+	/**
+	 * \brief Byte at position in LSB.
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getBitCount().
+	 */
+	public func int getByteAt( int position )
+	end
+	
+	/**
+	 * \brief Set byte at position in LSB.
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getBitCount().
+	 */
+	public func void setByteAt( int position, int value )
+	end
+	
+	/**
+	 * \brief Increment id by 1.
+	 * \details Increases the bit count by 8 if the new value does not fit anymore.
+	 */
+	public func void increment()
+	end
+	
+	/**
+	 * \brief Increment id by amount.
+	 * \details Increases the bit count by multiples of 8 if the new value does not fit anymore.
+	 */
+	public func void incrementBy( int amount )
+	end
+	
+	/**
+	 * \brief Increment id by UniqueID.
+	 * \details Increases the bit count by multiples of 8 if the new value does not fit anymore.
+	 */
+	public func void incrementBy( UniqueID amount )
+	end
+	
+	/**
+	 * \brief Increment id by MutableID.
+	 * \details Increases the bit count by multiples of 8 if the new value does not fit anymore.
+	 */
+	public func void incrementBy( MutableID amount )
+	end
+	
+	/** \brief Decrement id by 1. */
+	public func void decrement()
+	end
+	
+	/** \brief Decrement id by amount. */
+	public func void decrementBy( int amount )
+	end
+	
+	/** \brief Decrement id by UniqueID. */
+	public func void decrementBy( UniqueID amount )
+	end
+	
+	/** \brief Decrement id by MutableID. */
+	public func void decrementBy( MutableID amount )
+	end
+	
+	/** \brief Reset id to 0 with a bit count of 8. */
+	public func void reset()
+	end
+	
+	/** \brief Copy value of a unique ID. */
+	public func void setFrom( UniqueID id )
+	end
+	
+	/** \brief Copy value of another mutable ID. */
+	public func void setFromMutable( MutableID id )
+	end
+	
+	/** \brief Create unique id from id. */
+	public func UniqueID toUniqueID()
+	end
+	
+	/**
+	 * \brief Create unique id from id then increment.
+	 * \details Convenience call equal to calling toUniqueID() then increment().
+	 */
+	public func UniqueID nextID()
+	end
+	
+	
+	
+	/** \brief Hex string representation. */
+	public func String toHexString()
+	end
+	
+	/** \brief Set from hex string. */
+	public func void setFromHexString( String string )
+	end
+	
+	
+	
+	/** \brief String representation of mutable id. */
+	public func String toString()
+	end
+	
+	/**
+	 * \brief Mutable ID is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type MutableID and both IDs are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read from file reader. */
+	public func void readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write to file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief ID is less than another ID. */
+	public func bool <( MutableID id )
+	end
+	
+	/** \brief ID is less than or equal to another ID. */
+	public func bool <=( MutableID id )
+	end
+	
+	/** \brief ID is greater than another ID. */
+	public func bool >( MutableID id )
+	end
+	
+	/** \brief ID is greater than or equal to another ID. */
+	public func bool >=( MutableID id )
+	end
+	/*@}*/
+end

@@ -1,0 +1,74 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree condition using block.
+ * 
+ * Provides support to add tiny conditions often just calling a BTContext method without
+ * needing to implement a full class. The used block has to take one parameter of type
+ * BTContext context and Dictionary and parameters and has to return an boolean value.
+ * Do not change the content of the dictionary as it is shared.
+ * 
+ * \code{.ds}
+ * new BTBlockAction( block BTContext context, Dictionary parameters
+ *    // do something
+ * end )
+ * \endcode
+ */
+class BTBlockCondition implements BTCondition
+	/** \brief Block to use. */
+	private var Block pBlock
+	
+	
+	
+	/** \brief Create condition. */
+	public func new( Block ablock )
+		if ablock == null
+			throw EInvalidParam.new()
+		end
+		this.pBlock = ablock
+	end
+	
+	
+	/** \brief Block to use. */
+	public func Block getBlock()
+		return this.pBlock
+	end
+	
+	
+	
+	/**
+	 * \brief Evaluate condition.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func bool evaluateCondition( BTContext context, Dictionary parameters )
+		return this.pBlock.run( context, parameters ) cast bool
+	end
+end

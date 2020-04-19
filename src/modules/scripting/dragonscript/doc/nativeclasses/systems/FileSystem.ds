@@ -1,0 +1,90 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief File system.
+ * 
+ * This is a native class. This is a pure static class. The class can not be instantiated
+ */
+fixed class FileSystem
+	/** \name Management */
+	/*@{*/
+	/** \brief Filepath separator character for this operating system. */
+	public static func byte getSeparator()
+	end
+	
+	/** \brief Path list separator character for this operating system. */
+	public static func byte getPathSeparator()
+	end
+	
+	/** \brief Current path prefix for this operating system. */
+	public static func String getCurrentPrefix()
+	end
+	
+	/** \brief Path string set by the game. */
+	public static func String getGamePath()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Virtual file system access */
+	/*@{*/
+	/**
+	 * \brief File exist.
+	 * \details If the filename is relative it is checked against the game path.
+	 */
+	public static func bool existsFile( String path )
+	end
+	
+	/** \brief File can be read. */
+	public static func bool canReadFile( String path )
+	end
+	
+	/** \brief File can be written. */
+	public static func bool canWriteFile( String path )
+	end
+	
+	/** \brief File can be deleted. */
+	public static func bool canDeleteFile( String path )
+	end
+	
+	/** \brief Delete file. */
+	public static func void deleteFile( String path )
+	end
+	
+	/** \brief Type of file. */
+	public static func FileType getTypeOfFile( String path )
+	end
+	
+	/**
+	 * \brief Search for files.
+	 * 
+	 * Each file entry is visited using the provided block. The block receives as arguments
+	 * the file name (String) and file type (FileType). The block has to return boolean
+	 * indicating if the search has to continue(true) or stop(false).
+	 * 
+	 * Example code:
+	 * \code{.ds}
+	 * FileSystem.searchFiles("/content/models", true, block String path, FileType type
+	 *     ...
+	 *     return true // continue(true) or stop(false)
+	 * end)
+	 * \endcode
+	 */
+	public static func void searchFiles( String directory, bool recursive, Block ablock )
+	end
+	
+	/** \brief Path matches a file pattern. */
+	public static func bool pathMatchesPattern( String string, String pattern )
+	end
+	/*@}*/
+end

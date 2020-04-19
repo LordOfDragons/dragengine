@@ -1,0 +1,465 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Lay out widgets in a regular grid.
+ * 
+ * Either (but not both) column or row count can be 0 in which case the required column or
+ * row count is calculated depending on the visible number of widgets.
+ * 
+ * If row and column constraint are not 0 the axis defines if widgets are arranges first
+ * in rows (LayoutAxis.y) or columns (LayoutAxis.x). If row count is 0 axis is ignore and LayoutAxis.y
+ * arrangement is used. If column count is 0 axis is ignored and LayoutAxis.x arrangement is used.
+ * 
+ * Instances of this layout can be shared by multiple widgets.
+ */
+class GridLayout implements Layout
+	/** \brief Number of columns or 0 to choose automatically. */
+	private var int pColumCount
+	
+	/** \brief Number of rows or 0 to choose automatically. */
+	private var int pRowCount
+	
+	/** \brief Gap between widgets. */
+	private var int pGap
+	
+	/** \brief Arrange direction if both row and column count is not 0. */
+	private var LayoutAxis pAxis
+	
+	/** \brief Actual axis to use for layout. */
+	private var LayoutAxis pUsedAxis
+	
+	
+	
+	/** \brief Create GridLayout with no gap between widgets. */
+	public func new( int columnCount, int rowCount ) this( columnCount, rowCount, 0, LayoutAxis.y )
+	end
+	
+	/** \brief Create GridLayout. */
+	public func new( int columnCount, int rowCount, int gap ) this( columnCount, rowCount, gap, LayoutAxis.y )
+	end
+	
+	/** \brief Create GridLayout. */
+	public func new( int columnCount, int rowCount, int gap, LayoutAxis axis )
+		this.setColumnCount( columnCount )
+		this.setRowCount( rowCount )
+		this.setGap( gap )
+		this.setAxis( axis )
+	end
+	
+	
+	
+	/** \brief Number of columns or 0 to choose automatically. */
+	public func int getColumnCount()
+		return this.pColumCount
+	end
+	
+	/** \brief Set number of columns or 0 to choose automatically. */
+	public func void setColumnCount( int count )
+		if count < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pColumCount = count
+		this.updateUsedAxis()
+	end
+	
+	/** \brief Number of rows or 0 to choose automatically. */
+	public func int getRowCount()
+		return this.pRowCount
+	end
+	
+	/** \brief Set number of rows or 0 to choose automatically. */
+	public func void setRowCount( int count )
+		if count < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pRowCount = count
+		this.updateUsedAxis()
+	end
+	
+	/** \brief Size of gap between widgets. */
+	public func int getGap()
+		return this.pGap
+	end
+	
+	/** \brief Set size of gap between widgets. */
+	public func void setGap( int gap )
+		this.pGap = gap
+	end
+	
+	/** \brief Arrange direction if both row and column count is not 0. */
+	public func LayoutAxis getAxis()
+		return this.pAxis
+	end
+	
+	/** \brief Set arrange direction if both row and column count is not 0. */
+	public func void setAxis( LayoutAxis axis )
+		this.pAxis = axis
+		this.updateUsedAxis()
+	end
+	
+	
+	
+	/** \brief Add widget to Layout. */
+	public func void addWidget( Widget widget, Object settings )
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+	end
+	
+	
+	
+	/** \brief Lay out widgets. */
+	public func void doLayout( Container container )
+		if this.pColumCount == 0 and this.pRowCount == 0
+			throw EInvalidParam.new()
+		end
+		
+		// determine cell size and the number of columns and rows to use
+		var int columnCount = this.pColumCount
+		var int rowCount = this.pRowCount
+		
+		if columnCount == 0
+			columnCount = this.getRequiredColumnCount( container )
+			
+		elif rowCount == 0
+			rowCount = this.getRequiredRowCount( container )
+		end
+		
+		if columnCount == 0 or rowCount == 0
+			return
+		end
+		
+		// lay out widgets using appropriate method
+		select this.pUsedAxis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			this.layoutXAxis( container, columnCount, rowCount )
+			
+		case LayoutAxis.y, LayoutAxis.inverseY
+			this.layoutYAxis( container, columnCount, rowCount )
+		end
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize( Container container )
+		return this.getMinimumSizeFor( container, \
+			container.getContainerWidth(), container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		return this.getMinimumSizeFor( container, \
+			DEMath.max( 0, width - container.getPadding().getWidth() ), container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		return this.getMinimumSizeFor( container, \
+			container.getContainerWidth(), DEMath.max( 0, height - container.getPadding().getHeight() ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Determine the actual axis to use for layout.
+	 * \details Actual axis depends on row and column count before axis.
+	 */
+	protected func void updateUsedAxis()
+		if this.pColumCount == 0
+			this.pUsedAxis = LayoutAxis.x
+			
+		elif this.pRowCount == 0
+			this.pUsedAxis = LayoutAxis.y
+			
+		else
+			this.pUsedAxis = this.pAxis
+		end
+	end
+	
+	
+	
+	/** \brief Lay out widgets rows first. */
+	protected func void layoutYAxis( Container container, int columnCount, int rowCount )
+		// lay out widgets
+		var int containerWidth = container.getContainerWidth() + this.pGap
+		var int containerHeight = container.getContainerHeight() + this.pGap
+		var int left = container.getPadding().getLeft()
+		var int top = container.getPadding().getTop()
+		
+		var int count = container.getWidgetCount()
+		var int columnLeft = left
+		var int columnRight = left
+		var int rowTop = top
+		var int rowBottom = top + containerHeight / rowCount
+		var int rowHeight = rowBottom - rowTop - this.pGap
+		var int column = 0
+		var int row = 0
+		var Point childSize
+		var Widget child
+		var int i
+		
+		var BorderSize borderSize
+		var int borderHeight
+		var int borderWidth
+		var int borderLeft
+		var int borderTop
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			if row == rowCount
+				throw EInvalidParam.new()
+			end
+			
+			childSize = child.getMinimumSize()
+			
+			if child.getBorder() == null
+				borderLeft = 0
+				borderTop = 0
+				borderWidth = 0
+				borderHeight = 0
+				
+			else
+				borderSize = child.getBorder().getBorderSize()
+				borderLeft = borderSize.getLeft()
+				borderTop = borderSize.getTop()
+				borderWidth = borderSize.getWidth()
+				borderHeight = borderSize.getHeight()
+			end
+			
+			if column == columnCount
+				column = 1
+				row++
+				columnLeft = left
+				rowTop = rowBottom
+				rowBottom = top + containerHeight * ( row + 1 ) / rowCount
+				rowHeight = rowBottom - rowTop - this.pGap
+				
+			else
+				column++
+				columnLeft = columnRight
+			end
+			
+			columnRight = left + containerWidth * column / columnCount
+			
+			child.setPosition( Point.new( columnLeft + borderLeft, rowTop + borderTop ) )
+			child.setSize( Point.new( columnRight - columnLeft - this.pGap - borderWidth, rowHeight - borderHeight ) )
+		end
+	end
+	
+	/** \brief Lay out widgets columns first. */
+	protected func void layoutXAxis( Container container, int columnCount, int rowCount )
+		// lay out widgets
+		var int containerWidth = container.getContainerWidth() + this.pGap
+		var int containerHeight = container.getContainerHeight() + this.pGap
+		var int left = container.getPadding().getLeft()
+		var int top = container.getPadding().getTop()
+		
+		var int count = container.getWidgetCount()
+		var int rowTop = top
+		var int rowBottom = top
+		var int columnLeft = left
+		var int columnRight = left + containerWidth / columnCount
+		var int columnWidth = columnRight - columnLeft - this.pGap
+		var int column = 0
+		var int row = 0
+		var Point childSize
+		var Widget child
+		var int i
+		
+		var BorderSize borderSize
+		var int borderHeight
+		var int borderWidth
+		var int borderLeft
+		var int borderTop
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			if column == columnCount
+				throw EInvalidParam.new()
+			end
+			
+			childSize = child.getMinimumSize()
+			
+			if child.getBorder() == null
+				borderLeft = 0
+				borderTop = 0
+				borderWidth = 0
+				borderHeight = 0
+				
+			else
+				borderSize = child.getBorder().getBorderSize()
+				borderLeft = borderSize.getLeft()
+				borderTop = borderSize.getTop()
+				borderWidth = borderSize.getWidth()
+				borderHeight = borderSize.getHeight()
+			end
+			
+			if row == rowCount
+				row = 1
+				column++
+				rowTop = top
+				columnLeft = columnRight
+				columnRight = left + containerWidth * ( column + 1 ) / columnCount
+				columnWidth = columnRight - columnLeft - this.pGap
+				
+			else
+				row++
+				rowTop = rowBottom
+			end
+			
+			rowBottom = top + containerHeight * row / rowCount
+			
+			child.setPosition( Point.new( columnLeft + borderLeft, rowTop + borderTop ) )
+			child.setSize( Point.new( columnWidth - borderWidth, rowBottom - rowTop - this.pGap - borderHeight ) )
+		end
+	end
+	
+	
+	
+	/** \brief Minimal cell size. */
+	protected func Point getMinimumCellSize( Container container, int width, int height )
+		var int count = container.getWidgetCount()
+		var Point minSize = Point.new()
+		var Point childSize
+		var Widget child
+		var int i
+		
+		select this.pUsedAxis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			for i = 0 to count
+				child = container.getWidget( i )
+				if child.getVisible()
+					minSize = minSize.largest( child.getMinimumSizeWithBorderForHeight( height ) )
+				end
+			end
+			
+		case LayoutAxis.y, LayoutAxis.inverseY
+			for i = 0 to count
+				child = container.getWidget( i )
+				if child.getVisible()
+					minSize = minSize.largest( child.getMinimumSizeWithBorderForWidth( width ) )
+				end
+			end
+		end
+		
+		return Point.new( 1, 1 ).largest( minSize )
+	end
+	
+	/** \brief Required row count. */
+	protected func int getRequiredRowCount( Container container )
+		var int count = container.getWidgetCount()
+		var int rowWidgetCount = 0
+		var int rowCount = 1
+		var Widget child
+		var int i
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			if rowWidgetCount == this.pColumCount
+				rowCount++
+				rowWidgetCount = 0
+			end
+			
+			rowWidgetCount++
+		end
+		
+		if rowWidgetCount == 0
+			return 0
+		end
+		
+		return rowCount
+	end
+	
+	/** \brief Required colunm count. */
+	protected func int getRequiredColumnCount( Container container )
+		var int count = container.getWidgetCount()
+		var int columnWidgetCount = 0
+		var int columnCount = 1
+		var Widget child
+		var int i
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			if columnWidgetCount == this.pRowCount
+				columnCount++
+				columnWidgetCount = 0
+			end
+			
+			columnWidgetCount++
+		end
+		
+		if columnWidgetCount == 0
+			return 0
+		end
+		
+		return columnCount
+	end
+	
+	/** \brief Minimal size child widgets need. */
+	protected func Point getMinimumSizeFor( Container container, int width, int height )
+		if this.pColumCount == 0 and this.pRowCount == 0
+			throw EInvalidParam.new()
+		end
+		
+		var Point cellSize = this.getMinimumCellSize( container, width, height )
+		var int columnCount = this.pColumCount
+		var int rowCount = this.pRowCount
+		
+		if columnCount == 0
+			columnCount = this.getRequiredColumnCount( container )
+			
+		elif rowCount == 0
+			rowCount = this.getRequiredRowCount( container )
+		end
+		
+		return Point.new( 1, 1 ).largest( \
+			cellSize.getX() * columnCount + this.pGap * DEMath.max( 0, columnCount - 1 ), \
+			cellSize.getY() * rowCount + this.pGap * DEMath.max( 0, rowCount - 1 ) ) \
+				+ container.getPadding().getSize()
+	end
+end

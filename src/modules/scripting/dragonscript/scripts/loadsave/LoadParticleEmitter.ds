@@ -1,0 +1,322 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Utils
+pin Dragengine.Scenery
+pin Dragengine.XML
+
+
+
+/**
+ * Loads a particle emitter from a departem file. Supports caching particle emitters
+ * to avoid loading the same particle emitter multiple times. The returned particle
+ * emitter can thus be shared so do not change it.
+ */
+class LoadParticleEmitter extends BaseXmlLoader
+	private var Dictionary pEmitters
+	
+	
+	
+	/** Creates a new loader. */
+	public func new( Console console ) this( console, "LoadParticleEmitter" )
+	end
+	
+	/** Creates a new loader. */
+	public func new( Console console, String name ) super( console, name )
+		this.pEmitters = Dictionary.new()
+	end
+	
+	
+	
+	/** Load particle emitter from file. */
+	public func ParticleEmitter loadFromFile( String filename )
+		var ParticleEmitter emitter = this.pEmitters.getAt( filename, null ) cast ParticleEmitter
+		if emitter != null
+			return emitter
+		end
+		
+		return this.loadAndParseRootTag( filename, "particleEmitter", block EasyXMLElement root
+			emitter = ParticleEmitter.new()
+			this.readEmitter( root, emitter, File.new( filename ).getParent().getPath() )
+			this.pEmitters.setAt( filename, emitter )
+			return emitter
+		end ) cast ParticleEmitter
+	end
+	
+	
+	
+	/** Read emitter tag. */
+	private func void readEmitter( EasyXMLElement root, ParticleEmitter emitter, String basePath )
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var int controllerCount
+		var String tagName
+		var int typeCount
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			
+			if element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals( "controller" )
+					controllerCount++
+					
+				elif tagName.equals( "type" )
+					typeCount++
+				end
+			end
+		end
+		
+		emitter.setControllerCount( controllerCount )
+		emitter.setTypeCount( typeCount )
+		
+		controllerCount = 0
+		typeCount = 0
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "controller" )
+				this.readController( element, emitter.getControllerAt( controllerCount++ ) )
+				
+			elif tagName.equals( "burstLifetime" )
+				emitter.setBurstLifetime( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "emitBurst" )
+				emitter.setEmitBurst( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "type" )
+				this.readType( element, emitter, typeCount, basePath )
+				typeCount++
+			end
+		end )
+	end
+	
+	/** Read controller tag. */
+	private func void readController( EasyXMLElement root, ParticleEmitterController controller )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "name" )
+				controller.setName( element.getFirstCData() )
+				
+			elif tagName.equals( "clamp" )
+				controller.setClamp( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "frozen" )
+				controller.setFrozen( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "lower" ) // deprecated
+				controller.setRange( element.getFirstCDataFloat(), controller.getUpper() )
+				
+			elif tagName.equals( "upper" ) // deprecated
+				controller.setRange( controller.getLower(), element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "limits" )
+				controller.setRange( element.getAttributeFloatNamed( "lower" ), \
+					element.getAttributeFloatNamed( "upper" ) )
+			end
+		end )
+	end
+	
+	/** Read type tag. */
+	private func void readType( EasyXMLElement root, ParticleEmitter emitter, int type, String basePath )
+		var ParticleEmitter trailEmitter, collisionEmitter
+		var String identifier
+		var String path
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "name" )
+				// only for editing
+				
+			elif tagName.equals( "skin" )
+				path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						emitter.setTypeSkin( type, Skin.new( \
+							File.absolutePath( path, basePath ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "model" )
+				path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						emitter.setTypeModel( type, Model.new( \
+							File.absolutePath( path, basePath ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "modelSkin" )
+				path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						emitter.setTypeModelSkin( type, Skin.new( \
+							File.absolutePath( path, basePath ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "castFrom" )
+				identifier = element.getFirstCData()
+				var ParticleEmitterCastFrom castFrom = ParticleEmitterCastFrom.named( identifier )
+				if identifier != null
+					emitter.setTypeCastFrom( type, castFrom )
+					
+				else
+					this.logInvalidValue( element, identifier )
+				end
+				
+			elif tagName.equals( "simulationType" )
+				identifier = element.getFirstCData()
+				var ParticleEmitterSimulation simulation = ParticleEmitterSimulation.named( identifier )
+				if identifier != null
+					emitter.setTypeSimulationType( type, simulation )
+					
+				else
+					this.logInvalidValue( element, identifier )
+				end
+				
+			elif tagName.equals( "intervalAsDistance" )
+				emitter.setTypeIntervalAsDistance( type, element.getFirstCDataBool() )
+				
+			elif tagName.equals( "trailEmitter" )
+				path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						trailEmitter = this.loadFromFile( File.absolutePath( path, basePath ).getPath() )
+						emitter.setTypeTrailEmitter( type, trailEmitter )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "trailController" )
+				identifier = element.getAttributeNamed( "id" )
+				var ParticleEmitterEmitController trailController = ParticleEmitterEmitController.named( identifier )
+				if trailController != null
+					if trailEmitter != null
+						emitter.setTypeTrailController( type, trailController, \
+							trailEmitter.indexOfControllerNamed( element.getFirstCData() ) )
+					end
+					
+				else
+					this.logInvalidValue( element, identifier )
+				end
+				
+			elif tagName.equals( "physicsSize" )
+				emitter.setTypePhysicsSize( type, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "collisionResponse" )
+				identifier = element.getFirstCData()
+				var ParticleCollisionResponse response = ParticleCollisionResponse.named( identifier )
+				if identifier != null
+					emitter.setTypeCollisionResponse( type, response )
+					
+				else
+					this.logInvalidValue( element, identifier )
+				end
+				
+			elif tagName.equals( "collisionEmitter" )
+				path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						collisionEmitter = this.loadFromFile( File.absolutePath( path, basePath ).getPath() )
+						emitter.setTypeCollisionEmitter( type, collisionEmitter )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "emitMinImpulse" )
+				emitter.setTypeEmitMinImpulse( type, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "emitController" )
+				identifier = element.getAttributeNamed( "id" )
+				var ParticleEmitterEmitController emitController = ParticleEmitterEmitController.named( identifier )
+				if emitController != null
+					if collisionEmitter != null
+						emitter.setTypeEmitController( type, emitController, \
+							collisionEmitter.indexOfControllerNamed( element.getFirstCData() ) )
+					end
+					
+				else
+					this.logInvalidValue( element, identifier )
+				end
+				
+			elif tagName.equals( "parameter" )
+				this.readParameter( element, emitter, type )
+			end
+		end )
+	end
+	
+	/** Read parameter tag. */
+	private func void readParameter( EasyXMLElement root, ParticleEmitter emitter, int type )
+		var String identifier = root.getAttributeNamed( "id" )
+		var ParticleEmitterParameter parameter = ParticleEmitterParameter.named( identifier )
+		if parameter == null
+			this.logInvalidValue( root, identifier )
+			return
+		end
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "value" )
+				emitter.setTypeParameterValue( type, parameter, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "spread" )
+				emitter.setTypeParameterSpread( type, parameter, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "controllerValue" )
+				emitter.setTypeParameterControllerValue( type, parameter, element.getFirstCDataInt() )
+				
+			elif tagName.equals( "controllerSpread" )
+				emitter.setTypeParameterControllerSpread( type, parameter, element.getFirstCDataInt() )
+				
+			elif tagName.equals( "curveValue" )
+				emitter.setTypeParameterCurveValue( type, parameter, this.readCurveBezier( element ) )
+				
+			elif tagName.equals( "curveSpread" )
+				emitter.setTypeParameterCurveSpread( type, parameter, this.readCurveBezier( element ) )
+				
+			elif tagName.equals( "curveProgress" )
+				emitter.setTypeParameterCurveProgress( type, parameter, this.readCurveBezier( element ) )
+				
+			elif tagName.equals( "curveBeam" )
+				emitter.setTypeParameterCurveBeam( type, parameter, this.readCurveBezier( element ) )
+			end
+		end )
+	end
+end

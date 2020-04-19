@@ -1,0 +1,172 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+
+/**
+ * \brief Convert ranged value to color from a color ramp.
+ * 
+ * The color ramp is defined as colors inserted at value locations. Using an input value
+ * the matching segment in the ramp is chosen and the color blended.
+ */
+class ColorRamp
+	/** \brief Immutable ramp color. */
+	protected class RampColor
+		public var Color pColor
+		public var float pLocation
+		
+		public func new( Color color, float location )
+			this.pColor = color
+			this.pLocation = location
+		end
+		
+		public func Color getColor()
+			return this.pColor
+		end
+		
+		public func float getLocation()
+			return this.pLocation
+		end
+	end
+	
+	
+	
+	private var Array pColors
+	
+	
+	
+	/** \brief Create empty color ramp. */
+	public func new()
+		this.pColors = Array.new()
+	end
+	
+	/** \brief Create copy of color ramp. */
+	public func new( ColorRamp ramp )
+		this.pColors = Array.new( ramp.pColors )
+	end
+	
+	/** \brief Create ramp with two colors. */
+	public func new( Color color1, float location1, Color color2, float location2 ) this()
+		this.add( color1, location1 )
+		this.add( color2, location2 )
+	end
+	
+	/** \brief Create ramp with three colors at location 0, 0.5 and 1. */
+	public func new( Color color1, float location1, Color color2, float location2, \
+	Color color3, float location3 ) this()
+		this.add( color1, location1 )
+		this.add( color2, location2 )
+		this.add( color3, location3 )
+	end
+	
+	
+	
+	/** \brief Number of colors. */
+	public func int getCount()
+		return this.pColors.getCount()
+	end
+	
+	/** \brief Color at index. */
+	public func Color getColorAt( int index )
+		return ( this.pColors.getAt( index ) cast RampColor ).getColor()
+	end
+	
+	/** \brief Location of color at index. */
+	public func float getLocationAt( int index )
+		return ( this.pColors.getAt( index ) cast RampColor ).getLocation()
+	end
+	
+	/**
+	 * \brief Index of color right before location or -1 if before first color or empty ramp.
+	 * 
+	 * If index is not -1 nor getCount()-1 then the color at index has location less than or
+	 * equal to location and color at index+1 has location greater than or equal to location.
+	 */
+	public func int indexBefore( float location )
+		var int i, count = this.pColors.getCount()
+		
+		for i = 0 to count
+			if location < ( this.pColors.getAt( i ) cast RampColor ).getLocation()
+				return i - 1
+			end
+		end
+		
+		return count - 1
+	end
+	
+	/** \brief Add color at location. */
+	public func void add( Color color, float location )
+		this.pColors.insert( this.indexBefore( location ) + 1, RampColor.new( color, location ) )
+	end
+	
+	/** \brief Remove color from index. */
+	public func void removeFrom( int index )
+		this.pColors.removeFrom( index )
+	end
+	
+	/** \brief Remove all colors. */
+	public func void removeAll()
+		this.pColors.removeAll()
+	end
+	
+	/**
+	 * \brief Visit colors with block.
+	 * 
+	 * Black is called with arguments (Color color, float location).
+	 */
+	public func void forEach( Block ablock )
+		this.pColors.forEach( block RampColor each
+			ablock.run( each.getColor(), each.getLocation() )
+		end )
+	end
+	
+	/**
+	 * \brief Blended ramp color at location.
+	 * \throws EInvalidParam Ramp has no colors.
+	 */
+	public func Color blend( float location )
+		var int count = this.pColors.getCount()
+		if count == 0
+			throw EInvalidParam.new()
+		end
+		
+		var int index = this.indexBefore( location )
+		
+		if index == -1
+			return ( this.pColors.getAt( 0 ) cast RampColor ).getColor()
+		end
+		
+		var RampColor color1 = this.pColors.getAt( index ) cast RampColor
+		if index == count - 1
+			return color1.getColor()
+		end
+		
+		var RampColor color2 = this.pColors.getAt( index + 1 ) cast RampColor
+		var float blend = DEMath.linearStep( location, color1.getLocation(), color2.getLocation() )
+		return color1.getColor() * ( 1.0 - blend ) + color2.getColor() * blend
+	end
+end

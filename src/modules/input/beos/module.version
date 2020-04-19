@@ -1,0 +1,4 @@
+INPBEOS {
+  global: BeOSInpCreateModule;
+  local: *;
+};

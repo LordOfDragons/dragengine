@@ -1,0 +1,188 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a group animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleGroup extends ADRule
+	/** Application type. */
+	private var ARGroupApplication pApplicationType
+	
+	/** \brief Use current animation state instead of empty state. */
+	private var bool pUseCurrentState
+	
+	/** Rules. */
+	private var Array pRules
+	/** Enables position manipulation. */
+	private var bool pEnablePosition
+	/** Enables orientation manipulation. */
+	private var bool pEnableOrientation
+	/** Enables size manipulation. */
+	private var bool pEnableSize
+	
+	
+	
+	/** Create a new animation rule definition. */
+	public func new()
+		this.pApplicationType = ARGroupApplication.all
+		this.pUseCurrentState = false
+		this.pRules = Array.new()
+		this.pEnablePosition = true
+		this.pEnableOrientation = true
+		this.pEnableSize = true
+	end
+	
+	
+	
+	/** Retrieve the application type. */
+	public func ARGroupApplication getApplicationType()
+		return this.pApplicationType
+	end
+	
+	/** Set the application type. */
+	public func void setApplicationType( ARGroupApplication applicationType )
+		this.pApplicationType = applicationType
+	end
+	
+	/** \brief Use current animation state instead of empty state. */
+	public func bool getUseCurrentState()
+		return this.pUseCurrentState
+	end
+	
+	/** \brief Set if current animation state is used instead of empty state. */
+	public func void setUseCurrentState( bool useCurrentState )
+		this.pUseCurrentState = useCurrentState
+	end
+	
+	/** Determines if the position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** Sets if the position manipulation is enabled. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** Determines if the orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** Sets if the orientation manipulation is enabled. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** Determines if the size manipulation is enabled. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** Sets if the size manipulation is enabled. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	
+	
+	/** Retrieve the number of rules. */
+	public func int getRuleCount()
+		return this.pRules.getCount()
+	end
+	
+	/** Get rule by index. */
+	public func ADRule getRuleAt( int index )
+		return this.pRules.getAt( index ) cast ADRule
+	end
+	
+	/** Add a rule. */
+	public func void addRule( ADRule rule )
+		if rule == null or this.pRules.has( rule )
+			throw EInvalidParam.new()
+		end
+		this.pRules.add( rule )
+	end
+	
+	/** Remove a rule. */
+	public func void removeRule( ADRule rule )
+		if rule == null
+			throw EInvalidParam.new()
+		end
+		this.pRules.remove( rule )
+	end
+	
+	/** Remove all rules. */
+	public func void removeAllRules()
+		this.pRules.removeAll()
+	end
+	
+	/** Visit rules using a block. */
+	public func void forEachRule( Block ablock )
+		this.pRules.forEach( ablock )
+	end
+	
+	
+	
+	/** Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARGroup rule = ARGroup.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARGroupTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		
+		rule.setApplicationType( this.pApplicationType )
+		rule.setUseCurrentState( this.pUseCurrentState )
+		this.pRules.forEach( block ADRule each
+			rule.addRule( each.buildRule( animator ) )
+		end )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Group" ) + \
+			" applicationType=" + this.pApplicationType + \
+			" useCurrentState=" + this.pUseCurrentState + \
+			" rules=" + this.pRules.getCount() + " )" )
+		this.pRules.forEach( block ADRule each
+			each.debug( console )
+		end )
+	end
+end

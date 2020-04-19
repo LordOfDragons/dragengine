@@ -1,0 +1,127 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief Command carrying out a specific task.
+ * 
+ * Can be bound to player input events or used in widgets.
+ */
+class Command
+	/** \brief Unique name. */
+	private var String pName
+	
+	/** \brief Description. */
+	private var String pDescription
+	
+	
+	
+	/** \brief Create command. */
+	public func new()
+		this.pName = "unnamed"
+		this.pDescription = ""
+	end
+	
+	/** \brief Create command. */
+	public func new( String name, String description )
+		this.setName( name )
+		this.setDescription( description )
+	end
+	
+	
+	
+	/** \brief Unique name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/**
+	 * \brief Set unique name of the command.
+	 * 
+	 * Allowed are only upper and lower case letters, numbers and underscores.
+	 */
+	public func void setName( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+	end
+	
+	/** \brief Description. */
+	public func String getDescription()
+		return this.pDescription
+	end
+	
+	/** \brief Set description. */
+	public func void setDescription( String description )
+		if description == null
+			throw EInvalidParam.new()
+		end
+		this.pDescription = description
+	end
+	
+	
+	
+	/** \brief Input device key or button has been pressed. */
+	public func void start()
+	end
+	
+	/** \brief Input device key or button has been released. */
+	public func void stop()
+	end
+	
+	/**
+	 * \brief Convenience method calling start() and stop() in succession.
+	 * 
+	 * Used for example to run the command for different reasons than input handling.
+	 */
+	public func void pulse()
+		this.start()
+		this.stop()
+	end
+	
+	/**
+	 * \brief Relative input device axis position changed.
+	 * 
+	 * Value is the change in the relative axis. It is reset to 0 right after sending the
+	 * event. No event is sent for the reset. A typical device is mouse movement resulting
+	 * in this method to be called.
+	 * 
+	 * \param value Relative axis position change in axis units. Caller is responsible to
+	 *              adjust the range to make different input devices match in magnitude.
+	 */
+	public func void analogRelative( float value )
+	end
+	
+	/**
+	 * \brief Absolute input device axis position changed.
+	 * 
+	 * Axis keeps position until next event. Gamepad events typically send this method
+	 * when the stick is pushed to a new position.
+	 * 
+	 * \param value New axis position in the range -1 to 1.
+	 */
+	public func void analogAbsolute( float value )
+	end
+end

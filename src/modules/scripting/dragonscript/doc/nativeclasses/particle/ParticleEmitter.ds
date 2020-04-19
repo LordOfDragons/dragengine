@@ -1,0 +1,354 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Particle emitter.
+ * 
+ * This is a native class.
+ */
+class ParticleEmitter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create particle emitter. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Nnumber of controllers. */
+	public func int getControllerCount()
+	end
+	
+	/**
+	 * \brief Set number of controllers.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void setControllerCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the particle emitter
+	 *          is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func ParticleEmitterController getControllerAt( int index )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the particle emitter
+	 *          is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func ParticleEmitterController getControllerNamed( String name )
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Burst */
+	/*@{*/
+	/** \brief Burst lifetime. */
+	public func float getBurstLifetime()
+	end
+	
+	/** \brief Set the burst liftime. */
+	public func void setBurstLifetime( float lifetime )
+	end
+	
+	/** \brief Particles are emitted in bursts instead of continuous. */
+	public func bool getEmitBurst()
+	end
+	
+	/** \brief Set if particles are emitted in bursts instead of continuous. */
+	public func void setEmitBurst( bool emitBurst )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Types */
+	/*@{*/
+	/** \brief Number of types. */
+	public func int getTypeCount()
+	end
+	
+	/** \brief Set number of types. */
+	public func void setTypeCount( int count )
+	end
+	
+	/**
+	 * \brief Type skin or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func Skin getTypeSkin( int type )
+	end
+	
+	/**
+	 * \brief Set type skin or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeSkin( int type, Skin skin )
+	end
+	
+	/**
+	 * \brief Type model or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func Model getTypeModel( int type )
+	end
+	
+	/**
+	 * \brief Set type model or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeModel( int type, Model model )
+	end
+	
+	/**
+	 * \brief Skin for the model used for casting or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func Skin getTypeModelSkin( int type )
+	end
+	
+	/**
+	 * \brief Set skin for the model used for casting or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeModelSkin( int type, Skin skin )
+	end
+	
+	/**
+	 * \brief Determines from what part of the model to cast particles from.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func ParticleEmitterCastFrom getTypeCastFrom( int type )
+	end
+	
+	/**
+	 * \brief Sets from what part of the model to cast particles from.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeCastFrom( int type, ParticleEmitterCastFrom castFrom )
+	end
+	
+	/**
+	 * \brief Simulation type.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func ParticleEmitterSimulation getTypeSimulationType( int type )
+	end
+	
+	/**
+	 * \brief Set simulation type.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeSimulationType( int type, ParticleEmitterSimulation simulationType )
+	end
+	
+	/**
+	 * \brief Interval is used as distance instead of time.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func bool getTypeIntervalAsDistance( int type )
+	end
+	
+	/**
+	 * \brief Set if interval is used as distance instead of time.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeIntervalAsDistance( int type, bool intervalAsDistance )
+	end
+	
+	/**
+	 * \brief Particle emitter to create instances from for trails behind particles or \em null to use no trail.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func ParticleEmitter getTypeTrailEmitter( int type )
+	end
+	
+	/**
+	 * \brief Set particle emitter to create instances from for trails behind particles or \em null to use no trail.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeTrailEmitter( int type, ParticleEmitter emitter )
+	end
+	
+	/**
+	 * \brief Trail controller index or -1 if not set.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func int getTypeTrailController( int type, ParticleEmitterEmitController controller )
+	end
+	
+	/**
+	 * \brief Set trail controller index or -1 if not set.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeTrailController( int type, ParticleEmitterEmitController controller, int targetController )
+	end
+	
+	/**
+	 * \brief Physics size of the particle.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func float getTypePhysicsSize( int type )
+	end
+	
+	/**
+	 * \brief Set physics size of the particle.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypePhysicsSize( int type, float size )
+	end
+	
+	/**
+	 * \brief Collision response.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func ParticleCollisionResponse getCollisionResponse( int type )
+	end
+	
+	/**
+	 * \brief Set collision response.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setCollisionResponse( int type, ParticleCollisionResponse response )
+	end
+	
+	/**
+	 * \brief Particle emitter to create instances from for colliding particles or \em null to spawn no instances.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func ParticleEmitter getTypeCollisionEmitter( int type )
+	end
+	
+	/**
+	 * \brief Set particle emitter to create instances from for colliding particles or \em null to spawn no instances.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeCollisionEmitter( int type, ParticleEmitter emitter )
+	end
+	
+	/**
+	 * \brief minimum impulse required for colliding particles to emit instances.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func float getTypeEmitMinImpulse( int type )
+	end
+	
+	/**
+	 * \brief Set minimum impulse required for colliding particles to emit instances.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeEmitMinImpulse( int type, float impulse )
+	end
+	
+	/**
+	 * \brief Emit controller index or -1 if not set.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func int getTypeEmitController( int type, ParticleEmitterEmitController controller )
+	end
+	
+	/**
+	 * \brief Set emit controller index or -1 if not set.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 */
+	public func void setTypeEmitController( int type, ParticleEmitterEmitController controller, int targetController )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Type parameters */
+	/*@{*/
+	/**
+	 * \brief Set parameter value.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterValue( int type, ParticleEmitterParameter parameter, float value )
+	end
+	
+	/**
+	 * \brief Set parameter spread.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterSpread( int type, ParticleEmitterParameter parameter, float spread )
+	end
+	
+	/**
+	 * \brief Set parameter value curve controller.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterControllerValue( int type, ParticleEmitterParameter parameter, int controller )
+	end
+	
+	/**
+	 * \brief Set parameter value curve or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterCurveValue( int type, ParticleEmitterParameter parameter, CurveBezier curve )
+	end
+	
+	/**
+	 * \brief Set parameter spread curve controller.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterControllerSpread( int type, ParticleEmitterParameter parameter, int controller )
+	end
+	
+	/**
+	 * \brief Set parameter spread curve or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterCurveSpread( int type, ParticleEmitterParameter parameter, CurveBezier curve )
+	end
+	
+	/**
+	 * \brief Set parameter progress curve or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterCurveProgress( int type, ParticleEmitterParameter parameter, CurveBezier curve )
+	end
+	
+	/**
+	 * \brief Set parameter beam curve or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
+	 * \throws EInvalidParam \em parameter is not a valid value.
+	 */
+	public func void setTypeParameterCurveBeam( int type, ParticleEmitterParameter parameter, CurveBezier curve )
+	end
+	/*@}*/
+end

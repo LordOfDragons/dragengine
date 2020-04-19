@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Occlusion Test</name>
+	
+	<version>130</version>
+	
+	<texture name='texOccMap' target='0'/>
+	<texture name='texOccMap2' target='0'/>
+	
+	<parameter name='pPosTransform'/>
+	<parameter name='pInvWidth'/>
+	<parameter name='pMatrix'/>
+	<parameter name='pScaleSize'/>
+	<parameter name='pBaseLevel'/>
+	<parameter name='pClipNear'/>
+	<parameter name='pMatrix2'/>
+	<parameter name='pScaleSize2'/>
+	<parameter name='pBaseLevel2'/>
+	<parameter name='pClipNear2'/>
+	
+	<attribute name='inMinExtend' target='0'/>
+	<attribute name='inMaxExtend' target='1'/>
+	
+	<output name='outResult' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/occlusion/test.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/occlusion/test.glsl</sourceCode>
+</shader>

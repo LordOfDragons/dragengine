@@ -1,0 +1,449 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding dimming support to ECBehaviorLight.
+ * 
+ * This behavior modifies the light parameters of ECBehaviorLight instances present in
+ * the element to make lights gently raise and lower intensity when (de)activated.
+ * 
+ * To use this behavior add first an ECBehaviorLight. Addint ECBehaviorLightDimmer will
+ * then register itself as listener to the ECBehaviorLight and also set it to use custom
+ * light handling.
+ * 
+ * Multiple ECBehaviorLightDimmer instances can be added to affect individual ECBehaviorLight
+ * instances like this example below.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorLight light1 = ECBehaviorLight.new(this)
+ *       ECBehaviorLightDimmer.new(this, light1)
+ *       
+ *       var ECBehaviorLight light2 = ECBehaviorLight.new(this, "subLight")
+ *       ECBehaviorLightDimmer.new(this, light2)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "lightDimmer{(id)}.".
+ * 
+ * 
+ * 
+ * \par Full Bright Intensity
+ * 
+ * This behaviors needs to know the full bright intensity of the light. During init() call
+ * the intensity of the light resource in the controlled ECBehaviorLight is stored as the
+ * full bright intensity. This value can be later on changed if required.
+ * 
+ * If the full bright intensity of the light can change over you have to update the full
+ * bright intensity in this behavior for the dimming to work correctly.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorLightDimmer extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Activate listener. */
+		public class ActivateListener extends ECBehaviorLight.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void lightActivated( ECBehaviorLight.Instance instance )
+				this.pInstance.activate()
+			end
+			
+			public func void lightDeactivated( ECBehaviorLight.Instance instance )
+				this.pInstance.deactivate()
+			end
+		end
+		
+		/** \brief States. */
+		public enum State
+			off
+			raise
+			on
+			lower
+		end
+		
+		
+		
+		private var ECBehaviorLightDimmer pECBehavior
+		private var ECBehaviorLight.Instance pLight
+		private var State pState
+		private var float pFullBrightIntensity
+		private var float pTimeRaise
+		private var float pTimeLower
+		private var float pElapsedTime
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorLightDimmer ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pState = State.off
+			this.pElapsedTime = 0
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pLight = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pLight = this.pECBehavior.getLight().instance( this.getElement() )
+			this.pLight.setCustomLightHandling( true )
+			this.pFullBrightIntensity = this.pLight.getLight().getIntensity()
+			
+			this.pTimeRaise = this.pECBehavior.getTimeRaise().getValue( stub )
+			this.pTimeLower = this.pECBehavior.getTimeLower().getValue( stub )
+			
+			this.pLight.addListener( ActivateListener.new( this ) )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorLightDimmer getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Light behavior or \em null. */
+		public func ECBehaviorLight.Instance getLight()
+			return this.pLight
+		end
+		
+		
+		
+		/** \brief Full bright intensity. */
+		public func float getFullBrightIntensity()
+			return this.pFullBrightIntensity
+		end
+		
+		/** \brief Set full bright intensity. */
+		public func void setFullBrightIntensity( float intensity )
+			this.pFullBrightIntensity = DEMath.max( intensity, 0.0 )
+		end
+		
+		/** \brief Time in seconds to raise intensity. */
+		public func float getTimeRaise()
+			return this.pTimeRaise
+		end
+		
+		/** \brief Set time in seconds to raise intensity. */
+		protected func void setTimeRaise( float time )
+			this.pTimeRaise = DEMath.max( time, 0.0 )
+		end
+		
+		/** \brief Time in seconds to lower intensity. */
+		public func float getTimeLower()
+			return this.pTimeLower
+		end
+		
+		/** \brief Set time in seconds to lower intensity. */
+		protected func void setTimeLower( float time )
+			this.pTimeLower = DEMath.max( time, 0.0 )
+		end
+		
+		/** \brief Elapsed dimmer time. */
+		public func float getElapsedTime()
+			return this.pElapsedTime
+		end
+		
+		/** \brief Set elapsed dimmer time. */
+		protected func void setElapsedTime( float elapsed )
+			this.pElapsedTime = elapsed
+		end
+		
+		
+		
+		/** \brief Activate light raising intensity from 0 to full bright. */
+		public func void activate()
+			select this.pState
+			case State.off
+				this.pState = State.raise
+				this.pElapsedTime = 0
+				this.setRequiresThink( true )
+				
+			case State.lower
+				this.pElapsedTime = DEMath.linearStep( this.pElapsedTime, \
+					0.0, this.pTimeLower, this.pTimeRaise, 0.0 )
+				this.pState = State.raise
+				this.setRequiresThink( true )
+			end
+		end
+		
+		/** \brief Deactivate light lowering intensity from full bright to 0. */
+		public func void deactivate()
+			select this.pState
+			case State.on
+				this.pState = State.lower
+				this.pElapsedTime = 0
+				this.setRequiresThink( true )
+				
+			case State.raise
+				this.pElapsedTime = DEMath.linearStep( this.pElapsedTime, \
+					0.0, this.pTimeRaise, this.pTimeLower, 0.0 )
+				this.pState = State.lower
+				this.setRequiresThink( true )
+			end
+		end
+		
+		
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			var float intensity = 0
+			
+			select this.pState
+			case State.raise
+				this.pElapsedTime += elapsed
+				
+				intensity = DEMath.smoothStep( this.pElapsedTime, \
+					0.0, this.pTimeRaise, 0.0, this.pFullBrightIntensity )
+				
+				if this.pElapsedTime >= this.pTimeRaise
+					this.pState = State.on
+					this.setRequiresThink( false )
+				end
+				
+			case State.lower
+				this.pElapsedTime += elapsed
+				
+				intensity = DEMath.smoothStep( this.pElapsedTime, \
+					0.0, this.pTimeLower, this.pFullBrightIntensity, 0.0 )
+				
+				if this.pElapsedTime >= this.pTimeLower
+					this.pState = State.off
+					this.setRequiresThink( false )
+				end
+				
+			case State.on
+				intensity = this.pFullBrightIntensity
+			end
+			
+			var Light light = this.pLight.getLight()
+			light.setIntensity( intensity )
+			light.setActivated( intensity > 0.0001 )
+			this.pLight.notifyParametersChanged()
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pFullBrightIntensity = reader.readFloat()
+			this.pElapsedTime = reader.readFloat()
+			this.pState = State.withOrder( reader.readByte() )
+			
+			this.setRequiresThink( this.pState == State.raise or this.pState == State.lower )
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeFloat( this.pFullBrightIntensity )
+			writer.writeFloat( this.pElapsedTime )
+			writer.writeByte( this.pState.order() )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLight pLight
+	private var ECPFloat pTimeRaise
+	private var ECPFloat pTimeLower
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLight light ) this( eclass, light, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLight light, String id ) \
+	this( eclass, light, id, id.empty() if "lightDimmer." else "lightDimmer(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorLight light, String id, \
+	String prefix ) super( eclass, id )
+		if light == null
+			throw ENullPointer.new( "light" )
+		end
+		
+		this.pLight = light
+		
+		this.pTimeRaise = ECPFloat.new( prefix + "timeRaise", 1.0, 0.0 )
+		eclass.addProperty( this.pTimeRaise )
+		
+		this.pTimeLower = ECPFloat.new( prefix + "timeLower", 1.0, 0.0 )
+		eclass.addProperty( this.pTimeLower )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLight = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Light behavior to modify. */
+	public func ECBehaviorLight getLight()
+		return this.pLight
+	end
+	
+	/** \brief Set light behavior to modify. */
+	public func void setLight( ECBehaviorLight light )
+		if light == null
+			throw ENullPointer.new( "light" )
+		end
+		this.pLight = light
+	end
+	
+	/** \brief Time in seconds to raise intensity. */
+	public func ECPFloat getTimeRaise()
+		return this.pTimeRaise
+	end
+	
+	/** \brief Time in seconds to lower intensity. */
+	public func ECPFloat getTimeLower()
+		return this.pTimeLower
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorLightDimmer getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorLightDimmer
+		end ) cast ECBehaviorLightDimmer
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorLightDimmer with specific identifier.
+	 */
+	static public func ECBehaviorLightDimmer getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorLightDimmer each
+			return each castable ECBehaviorLightDimmer and \
+				( each cast ECBehaviorLightDimmer ).getID().equals( id )
+		end ) cast ECBehaviorLightDimmer
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorLightDimmer behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorLightDimmer
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLightDimmer.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLightDimmer.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorLightDimmer.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

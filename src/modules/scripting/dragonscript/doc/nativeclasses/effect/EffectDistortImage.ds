@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Effect distort image.
+ * 
+ * This is a native class.
+ */
+class EffectDistortImage extends Effect
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create effect distort image. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set distort image or \em null if not set. */
+	public func void setDistortImage( Image image )
+	end
+	
+	/** \brief Set distort strength. */
+	public func void setDistortStrength( float u, float v )
+	end
+	
+	
+	
+	/**
+	 * \brief Effect is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type EffectDistortImage and effect are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

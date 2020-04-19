@@ -1,0 +1,95 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animation builder.
+ * 
+ * Builds animation resource without requiring a animation resource file. The created animation can
+ * either be unnamed (if filename is empty string) or named (if filename is not empty
+ * string). Named animations can not clash with filenames present in the virtual file system.
+ * For this reason use unnamed animations if possible. Using named animations though can be useful
+ * if you want to provide animation resources to scripts not needing to know if the path they
+ * try to load is a build animation instead of a resource one.
+ * 
+ * To use the animation builder create a subclass and implement AnimationBuilder.buildAnimation() .
+ * You are only allowed to call methods from AnimationBuilder from inside this function call.
+ * To create the animation call AnimationBuilder.build() . This will call AnimationBuilder.buildAnimation()
+ * to fill a new animation resource with content. Once finished the build method returns the
+ * ready to use animation resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class Animation
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create animation builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build animation using filename.
+	 * 
+	 * The created animation can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named animations can not clash with filenames present
+	 * in the virtual file system. For this reason use unnamed animations if possible. Using
+	 * named animations though can be useful if you want to provide animation resources to scripts
+	 * not needing to know if the path they try to load is a build animation instead of a
+	 * resource one.
+	 * 
+	 * To create the animation call build() . This will call buildAnimation() to fill a new animation
+	 * resource with content. Once finished the build method returns the ready to use
+	 * animation resource. Otherwise an exception is thrown.
+	 */
+	public func Animation build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build animation.
+	 * 
+	 * Called by build(String) to fill a new animation resource with content. You are only
+	 * allowed to call methods from AnimationBuilder from inside this function call.
+	 */
+	abstract protected func void buildAnimation()
+	
+	/**
+	 * \brief Add bone.
+	 */
+	protected func void addBone( String name )
+	end
+	
+	/**
+	 * \brief Add move.
+	 */
+	protected func void addMove( String name, float playTime )
+	end
+	
+	/**
+	 * \brief Set move keyframe list count.
+	 */
+	protected func void setKeyframeListCount( int move, int count )
+	end
+	
+	/**
+	 * \brief Add move keyframe list keyframe.
+	 */
+	protected func void addKeyframe( int move, int keyFrameList, float time, Vector position, Vector rotation, Vector scale )
+	end
+	/*@}*/
+end

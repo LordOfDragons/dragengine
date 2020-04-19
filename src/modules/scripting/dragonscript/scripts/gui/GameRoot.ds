@@ -1,0 +1,107 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * The GameRoot widget is a reduced Desktop widget. It does work
+ * with any widgets not only windows and does not provide a processEvent
+ * function like Desktop does. The GameRoot forwards processEvent messages
+ * to the activated widget. This way a Game can easily provide a menu
+ * using a transparent Desktop widget with a SceneRenderer below. The
+ * Desktop and SceneRenderer can process the events send in the best suited
+ * way (a Desktop would maintain an absolute mouse whereas a SceneRenderer
+ * can use the relative mouse events directly).
+ */
+class GameRoot extends Panel
+	/** The current widget to receive input */
+	private var Widget pActiveWidget
+	
+	
+	
+	/**
+	 * Create GameRoot. GameRoot is located at (0,0) covering the entire screen.
+	 */
+	public func new() super( 0, 0, GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() )
+		this.setLayout( FixedLayout.new() )
+		
+		this.setEnabled( true )
+	end
+	
+	/**
+	 * Disposes of the widget. This cleans all references and prepars the widget
+	 * for beeing freed. If the widget is already disposed nothing happens.
+	 */
+	public func void dispose()
+		this.pActiveWidget = null
+		super.dispose()
+	end
+	
+	
+	
+	/** Active widget if any. */
+	public func Widget getActiveWidget()
+		return this.pActiveWidget
+	end
+	
+	/** Set active widget if any. */
+	public func void setActiveWidget( Widget widget )
+		if not this.hasWidget( widget )
+			throw EInvalidParam.new()
+		end
+		this.pActiveWidget = widget
+	end
+	
+	
+	
+	/**
+	 * Removes a widget from this container. If the active widget is the
+	 * removed one is unregistered as the active widget
+	 */
+	public func void removeWidget( Widget widget )
+		if this.pActiveWidget == widget
+			this.pActiveWidget = null
+		end
+		super.removeWidget( widget )
+	end
+	
+	
+	
+	/**
+	 * Process an event. This allows the widget to be used as the root
+	 * widget in a game. Using this function you can implement your own
+	 * desktop management routines or use no windows at all. An event
+	 * is send to the root widget using this function. No other widget
+	 * has to get an event sent through this function. Use the sendEvent
+	 * function to further dispatch events through all widgets.<br>
+	 * The default implementation is to send the event to yourself.
+	 * Overwrite this behaviour to implement Desktop Widgets.
+	 */
+	public func void processEvent( Event event )
+		if this.pActiveWidget != null
+			this.pActiveWidget.processEvent( event )
+		end
+	end
+end

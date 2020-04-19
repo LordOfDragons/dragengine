@@ -1,0 +1,100 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Environment map prove.
+ * 
+ * This is a native class.
+ */
+class EnvMapProbe
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create environment map probe. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Pposition. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Scaling. */
+	public func Vector getScaling()
+	end
+	
+	/** \brief Set scaling. */
+	public func void setScaling( Vector scaling )
+	end
+	
+	/** \brief Layer mask for visibility masking. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set layer mask for visibility masking. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	
+	/** \brief Influence shape list. */
+	public func ShapeList getShapeListInfluence()
+	end
+	
+	/** \brief Set influence shape list. */
+	public func void setShapeListInfluence( ShapeList shapeList )
+	end
+	
+	/** \brief Shape list with the reflection shape or an empty shape list if the environment map is global. */
+	public func ShapeList getShapeReflection()
+	end
+	
+	/** \brief Set reflection shape from a list with one shape or an empty list if the environment map is global. */
+	public func void setShapeReflection( ShapeList shape )
+	end
+	
+	/** \brief Reflection mask shape list. */
+	public func ShapeList getShapeListReflectionMask()
+	end
+	
+	/** \brief Set reflection mask shape list. */
+	public func void setShapeListReflectionMask( ShapeList shapeList )
+	end
+	
+	/** \brief Influence border size. */
+	public func float getInfluenceBorderSize()
+	end
+	
+	/** \brief Set influence border size. */
+	public func void setInfluenceBorderSize( float borderSize )
+	end
+	
+	/** \brief Influence priority. */
+	public func int getInfluencePriority()
+	end
+	
+	/** \brief  Set influence priority. */
+	public func void setInfluencePriority( int priority )
+	end
+	/*@}*/
+end

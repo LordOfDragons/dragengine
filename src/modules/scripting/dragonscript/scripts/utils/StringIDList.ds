@@ -1,0 +1,230 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Ordered list of unique StringID.
+ */
+class StringIDList
+	private var Array pIDs
+	
+	
+	
+	/** \brief Create list. */
+	public func new()
+		this.pIDs = Array.new()
+	end
+	
+	/** \brief Create copy of list. */
+	public func new( StringIDList list )
+		this.pIDs = Array.new( list.pIDs )
+	end
+	
+	
+	
+	/** \brief Number of IDs. */
+	public func int getCount()
+		return this.pIDs.getCount()
+	end
+	
+	/** \brief ID at index. */
+	public func StringID getAt( int index )
+		return this.pIDs.getAt( index ) cast StringID
+	end
+	
+	/** \brief ID is present. */
+	public func bool has( StringID id )
+		return this.pIDs.has( id )
+	end
+	
+	/**
+	 * \brief One or more IDs are present.
+	 * 
+	 * If list is empty returns false.
+	 */
+	public func bool hasAny( StringIDList list )
+		return list.pIDs.find( block StringID each
+			return this.pIDs.has( each )
+		end ) != null
+	end
+	
+	/**
+	 * \brief All IDs are present.
+	 * 
+	 * If list is empty returns true.
+	 */
+	public func bool hasAll( StringIDList list )
+		return list.pIDs.find( block StringID each
+			return not this.pIDs.has( each )
+		end ) == null
+	end
+	
+	/**
+	 * \brief One or more IDs are absent.
+	 * 
+	 * If list is empty returns false.
+	 */
+	public func bool hasNot( StringIDList list )
+		return list.pIDs.find( block StringID each
+			return not this.pIDs.has( each )
+		end ) != null
+	end
+	
+	/**
+	 * \brief All IDs are absent.
+	 * 
+	 * If list is empty returns true.
+	 */
+	public func bool hasNone( StringIDList list )
+		return list.pIDs.find( block StringID each
+			return this.pIDs.has( each )
+		end ) == null
+	end
+	
+	/**
+	 * \brief Add ID to list.
+	 * \throws EInvalidParam ID is null.
+	 * \throws EInvalidParam ID is present.
+	 */
+	public func void add( StringID id )
+		if id == null or this.pIDs.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pIDs.add( id )
+	end
+	
+	/**
+	 * \brief Add ID to list if absent.
+	 * \throws EInvalidParam ID is null.
+	 */
+	public func void addIfAbsent( StringID id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		if not this.pIDs.has( id )
+			this.pIDs.add( id )
+		end
+	end
+	
+	/**
+	 * \brief Add all IDs to list.
+	 * \throws EInvalidParam One or more IDs are present.
+	 */
+	public func void addAll( StringIDList list )
+		if this.hasAny( list )
+			throw EInvalidParam.new()
+		end
+		list.pIDs.forEach( block StringID each
+			this.pIDs.add( each )
+		end )
+	end
+	
+	/**
+	 * \brief Add all absent IDs to list .
+	 */
+	public func void addAllIfAbsent( StringIDList list )
+		list.pIDs.forEach( block StringID each
+			if not this.pIDs.has( each )
+				this.pIDs.add( each )
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Remove ID.
+	 * \throws EInvalidParam ID is absent.
+	 */
+	public func void remove( StringID id )
+		this.pIDs.remove( id )
+	end
+	
+	/** \brief Remove ID if present. */
+	public func void removeIfPresent( StringID id )
+		if this.pIDs.has( id )
+			this.pIDs.remove( id )
+		end
+	end
+	
+	/** \brief Remove all IDs. */
+	public func void removeAll()
+		this.pIDs.removeAll()
+	end
+	
+	/**
+	 * \brief Remove all IDs from list.
+	 * \throws EInvalidParam One or more IDs are absent.
+	 */
+	public func void removeAll( StringIDList list )
+		if this.hasNot( list )
+			throw EInvalidParam.new()
+		end
+		list.pIDs.forEach( block StringID each
+			this.pIDs.remove( each )
+		end )
+	end
+	
+	/** \brief Remove present IDs from list. */
+	public func void removeAllIfPresent( StringIDList list )
+		list.pIDs.forEach( block StringID each
+			if this.pIDs.has( each )
+				this.pIDs.remove( each )
+			end
+		end )
+	end
+	
+	/** \brief Visit IDs with block with parameter StringID. */
+	public func void forEach( Block ablock )
+		this.pIDs.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find ID with block.
+	 * 
+	 * Block has parameter StringID and returns \em true if ID is found. Returns null if
+	 * no ID matches the block.
+	 */
+	public func StringID find( Block ablock )
+		return this.pIDs.find( ablock ) cast StringID
+	end
+	
+	/**
+	 * \brief Collect IDs matching block.
+	 * 
+	 * Block has parameter StringID and returns \em true if ID matches.
+	 */
+	public func StringIDList collect( Block ablock )
+		var StringIDList list
+		list.pIDs = this.pIDs.collect( ablock )
+		return list
+	end
+	
+	
+	
+	
+	/** \brief Lists are equal. */
+	public func bool equals( Object object )
+		return object castable StringIDList and this.pIDs.equals( ( object cast StringIDList ).pIDs )
+	end
+end

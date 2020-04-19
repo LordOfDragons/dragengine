@@ -1,0 +1,77 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.Announcer
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Announcer part.
+ *
+ */
+class AnnouncerPart
+	/** \brief Identifier. */
+	private var String pID
+	
+	/** \brief Sound to play. */
+	private var Sound pSound
+	
+	/** \brief Controller value to set if this part is selected. */
+	private var float pControllerValue
+	
+	
+	
+	/** \brief Create announcer part. */
+	public func new( String id )
+		this.pID = id
+		this.pControllerValue = 0.0
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return this.pID
+	end
+	
+	/** \brief Sound to play. */
+	public func Sound getSound()
+		return this.pSound
+	end
+	
+	/** \brief Set sound to play. */
+	public func void setSound( Sound sound )
+		this.pSound = sound
+	end
+	
+	/** \brief Controller value to set if this part is selected. */
+	public func float getControllerValue()
+		return this.pControllerValue
+	end
+	
+	/** \brief Set controller value to set if this part is selected. */
+	public func void setControllerValue( float value )
+		this.pControllerValue = value
+	end
+end

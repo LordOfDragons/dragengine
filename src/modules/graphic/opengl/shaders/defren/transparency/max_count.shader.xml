@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Transparency Max Count</name>
+	
+	<version>130</version>
+	
+	<texture name='texValues' target='0'/>
+	
+	<parameter name='pPosTransform'/> <!--- 0 -->
+	<parameter name='pTCTransform'/> <!-- 1 -->
+	<parameter name='pClampTC'/> <!-- 2 -->
+	<parameter name='pOffsets1'/> <!-- 3 -->
+	<parameter name='pOffsets2'/> <!-- 4 -->
+	<parameter name='pOffsets3'/> <!-- 5 -->
+	<parameter name='pOffsets4'/> <!-- 6 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outValue' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/transparency/max_count.glsl</sourceCode>
+</shader>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>color.jpg</image>
+		<image property='emissivity'>emissivity.jpg</image>
+		<value property='emissivity.intensity'>5</value>
+		<image property='height'>height.png</image>
+		<value property='height.scale'>0.1</value>
+		<image property='normal'>normal.jpg</image>
+		<image property='reflectivity'>reflectivity.jpg</image>
+		<image property='roughness'>roughness.jpg</image>
+		<value property='roughness.remap.lower'>0.05</value>
+		<value property='roughness.remap.upper'>0.5</value>
+		<color property='emissivity.tint' r='0.992157' g='0.988235' b='0.74902' a='1'/>
+		<image property='ambient.occlusion'>ao.jpg</image>
+	</texture>
+</skin>

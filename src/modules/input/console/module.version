@@ -1,0 +1,4 @@
+INPCONSOLE {
+  global: ConsoleInputCreateModule;
+  local: *;
+};

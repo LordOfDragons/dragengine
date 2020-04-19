@@ -1,0 +1,171 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Arrange widgets to fill entire container while showing only one of them.
+ * 
+ * Provides functions to switch between the child widgets easily.
+ * 
+ * Instances of this layout can not be shared by multiple widgets.
+ */
+class TabLayout implements Layout
+	/** \brief Index of visible child widget. */
+	private var int pTabIndex
+	
+	
+	
+	/** \brief Create layout. */
+	public func new()
+		this.pTabIndex = 0
+	end
+	
+	
+	
+	/** \brief Index of the current tab. */
+	public func int getTabIndex()
+		return this.pTabIndex
+	end
+	
+	/**
+	 * \brief Select first tab.
+	 * \throws EOutOfBounds \em container has no child widgets.
+	 */
+	public func void selectFirstTab( Container container )
+		this.selectTab( container, 0 )
+	end
+	
+	/**
+	 * \brief Select last tab.
+	 * \throws EOutOfBounds \em container has no child widgets.
+	 */
+	public func void selectLastTab( Container container )
+		this.selectTab( container, container.getWidgetCount() - 1 )
+	end
+	
+	/**
+	 * \brief Select tab by index.
+	 * \throws EOutOfBounds \em container has no child widgets.
+	 * \throws EOutOfBounds \em index is less than 0
+	 * \throws EOutOfBounds \em index is larger than or equal to Container.getWidgetCount().
+	 */
+	public func void selectTab( Container container, int index )
+		if index < 0 or index >= container.getWidgetCount()
+			throw EOutOfBounds.new()
+		end
+		
+		if index == this.pTabIndex
+			return
+		end
+		
+		this.pTabIndex = index
+		container.doLayout()
+	end
+	
+	/**
+	 * \brief Select next tab wrapping around on the end.
+	 * \throws EOutOfBounds \em container has no child widgets.
+	 */
+	public func void selectNextTab( Container container )
+		var int count = container.getWidgetCount()
+		if count == 0
+			throw EOutOfBounds.new()
+		end
+		
+		this.selectTab( container, ( this.pTabIndex + 1 ) % count )
+	end
+	
+	/**
+	 * \brief Select previous tab wrapping around on the beginning.
+	 * \throws EOutOfBounds \em container has no child widgets.
+	 */
+	public func void selectPreviousTab( Container container )
+		var int count = container.getWidgetCount()
+		if count == 0
+			throw EOutOfBounds.new()
+		end
+		
+		this.selectTab( container, ( this.pTabIndex - 1 + count ) % count )
+	end
+	
+	
+	
+	/**
+	 * \brief Add widget to layout using settings.
+	 */
+	public func void addWidget( Widget widget, Object settings )
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+		var Widget child = container.getWidget( this.pTabIndex )
+		
+		var Point size = container.getContainerSize()
+		var Point position = Point.new( container.getPadding().getLeft(), container.getPadding().getTop() )
+		
+		if child.getBorder() != null
+			var BorderSize borderSize = child.getBorder().getBorderSize()
+			position = position + Point.new( borderSize.getLeft(), borderSize.getTop() )
+			size = size - borderSize.getSize()
+		end
+		
+		child.setPosition( position )
+		child.setSize( size )
+		
+		container.forEachWidget( block Widget each
+			each.setVisible( each == child )
+		end )
+	end
+	
+	
+	
+	/** \brief Minimal size needed for laying out child widgets. */
+	public func Point getMinimumSize( Container container )
+		return this.getMinimumSizeForWidth( container, container.getContainerWidth() )
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		var int refWidth = DEMath.max( 0, width - container.getPadding().getWidth() )
+		return container.injectWidget( container.getPadding().getSize(), block Point size, Widget widget
+			return size.largest( widget.getMinimumSizeWithBorderForWidth( refWidth ) )
+		end ) cast Point
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		var int refHeight = DEMath.max( 0, height - container.getPadding().getHeight() )
+		return container.injectWidget( container.getPadding().getSize(), block Point size, Widget widget
+			return size.largest( widget.getMinimumSizeWithBorderForHeight( refHeight ) )
+		end ) cast Point
+	end
+end

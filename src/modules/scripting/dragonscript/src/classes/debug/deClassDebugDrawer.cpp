@@ -1,0 +1,469 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include "deClassDebugDrawer.h"
+#include "../graphics/deClassColor.h"
+#include "../math/deClassVector.h"
+#include "../math/deClassDVector.h"
+#include "../math/deClassQuaternion.h"
+#include "../utils/deClassShapeList.h"
+#include "../../deScriptingDragonScript.h"
+#include "../../deClassPathes.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerManager.h>
+#include <dragengine/resources/debug/deDebugDrawerShape.h>
+#include <dragengine/common/shape/decShapeBox.h>
+#include <dragengine/common/shape/decShapeCapsule.h>
+#include <dragengine/common/shape/decShapeCylinder.h>
+#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShapeSphere.h>
+#include <libdscript/exceptions.h>
+
+
+
+struct sDDNatDat{
+	deDebugDrawer *ddrawer;
+};
+
+
+
+// Constructors, Destructors
+//////////////////////////////
+
+// public func new()
+deClassDebugDrawer::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsDD,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassDebugDrawer::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sDDNatDat *nd = ( sDDNatDat* )p_GetNativeData( myself );
+	deClassDebugDrawer &clsDD = *( ( deClassDebugDrawer* )GetOwnerClass() );
+	deDebugDrawerManager &ddmgr = *clsDD.GetDS()->GetGameEngine()->GetDebugDrawerManager();
+	
+	// clear ( important )
+	nd->ddrawer = NULL;
+	
+	// create debug drawer
+	nd->ddrawer = ddmgr.CreateDebugDrawer();
+	if( ! nd->ddrawer ) DSTHROW( dueOutOfMemory );
+}
+
+// public func destructor()
+deClassDebugDrawer::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsDD,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassDebugDrawer::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( myself->GetRealObject()->GetRefCount() != 1 ){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	sDDNatDat *nd = ( sDDNatDat* )p_GetNativeData( myself );
+	
+	if( nd->ddrawer ){
+		nd->ddrawer->FreeReference();
+		nd->ddrawer = NULL;
+	}
+}
+
+
+
+// Management
+///////////////
+
+// public func DVector getPosition()
+deClassDebugDrawer::nfGetPosition::nfGetPosition( const sInitData &init ) : dsFunction( init.clsDD,
+"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+}
+void deClassDebugDrawer::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassDVector()->PushDVector( rt, ddrawer.GetPosition() );
+}
+
+// public func void setPosition( DVector position )
+deClassDebugDrawer::nfSetPosition::nfSetPosition( const sInitData &init ) : dsFunction( init.clsDD,
+"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsDVec ); // position
+}
+void deClassDebugDrawer::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ddrawer.SetPosition( ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+// public func Quaternion getOrientation()
+deClassDebugDrawer::nfGetOrientation::nfGetOrientation( const sInitData &init ) : dsFunction( init.clsDD,
+"getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+}
+void deClassDebugDrawer::nfGetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, ddrawer.GetOrientation() );
+}
+
+// public func void setOrientation( Quaternion orientation )
+deClassDebugDrawer::nfSetOrientation::nfSetOrientation( const sInitData &init ) : dsFunction( init.clsDD,
+"setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsQuat ); // orientation
+}
+void deClassDebugDrawer::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ddrawer.SetOrientation( ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+// public func Vector getScale()
+deClassDebugDrawer::nfGetScale::nfGetScale( const sInitData &init ) : dsFunction( init.clsDD,
+"getScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassDebugDrawer::nfGetScale::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassVector()->PushVector( rt, ddrawer.GetScale() );
+}
+
+// public func void setScale( Vector scale )
+deClassDebugDrawer::nfSetScale::nfSetScale( const sInitData &init ) : dsFunction( init.clsDD,
+"setScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // scale
+}
+void deClassDebugDrawer::nfSetScale::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	ddrawer.SetScale( ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+
+
+// public func bool getVisible()
+deClassDebugDrawer::nfGetVisible::nfGetVisible( const sInitData &init ) : dsFunction( init.clsDD,
+"getVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassDebugDrawer::nfGetVisible::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	rt->PushBool( ddrawer.GetVisible() );
+}
+
+// public func void setVisible( bool visible )
+deClassDebugDrawer::nfSetVisible::nfSetVisible( const sInitData &init ) : dsFunction( init.clsDD,
+"setVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // visible
+}
+void deClassDebugDrawer::nfSetVisible::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	ddrawer.SetVisible( rt->GetValue( 0 )->GetBool() );
+}
+
+// public func bool getXRay()
+deClassDebugDrawer::nfGetXRay::nfGetXRay( const sInitData &init ) : dsFunction( init.clsDD,
+"getXRay", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassDebugDrawer::nfGetXRay::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	rt->PushBool( ddrawer.GetXRay() );
+}
+
+// public func void setXRay( bool xray )
+deClassDebugDrawer::nfSetXRay::nfSetXRay( const sInitData &init ) : dsFunction( init.clsDD,
+"setXRay", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // xray
+}
+void deClassDebugDrawer::nfSetXRay::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	ddrawer.SetXRay( rt->GetValue( 0 )->GetBool() );
+}
+
+
+
+// public func int getShapeCount()
+deClassDebugDrawer::nfGetShapeCount::nfGetShapeCount( const sInitData &init ) : dsFunction( init.clsDD,
+"getShapeCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassDebugDrawer::nfGetShapeCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	rt->PushInt( ddrawer.GetShapeCount() );
+}
+
+// public func void setShapeCount( int count )
+deClassDebugDrawer::nfSetShapeCount::nfSetShapeCount( const sInitData &init ) : dsFunction( init.clsDD,
+"setShapeCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // count
+}
+void deClassDebugDrawer::nfSetShapeCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	deDebugDrawerShape *ddshape = NULL;
+	int count = rt->GetValue( 0 )->GetInt();
+	
+	if( count < 0 ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	ddrawer.RemoveAllShapes();
+	
+	try{
+		for( ; count>0; count-- ){
+			ddshape = new deDebugDrawerShape;
+			ddrawer.AddShape( ddshape );
+			ddshape = NULL;
+		}
+		
+	}catch( ... ){
+		if( ddshape ){
+			delete ddshape;
+		}
+		throw;
+	}
+}
+
+
+
+// public func void shapeSetPosition( int shape, Vector position )
+deClassDebugDrawer::nfShapeSetPosition::nfShapeSetPosition( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsVec ); // position
+}
+void deClassDebugDrawer::nfShapeSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decVector &position = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.SetPosition( position );
+	ddrawer.NotifyShapeGeometryChanged();
+}
+
+// public func void shapeSetOrientation( int shape, Quaternion orientation )
+deClassDebugDrawer::nfShapeSetOrientation::nfShapeSetOrientation( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsQuat ); // orientation
+}
+void deClassDebugDrawer::nfShapeSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.SetOrientation( orientation );
+	ddrawer.NotifyShapeGeometryChanged();
+}
+
+// public func void shapeSetScale( int shape, Vector scale )
+deClassDebugDrawer::nfShapeSetScale::nfShapeSetScale( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsVec ); // scale
+}
+void deClassDebugDrawer::nfShapeSetScale::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decVector &scale = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.SetScale( scale );
+	ddrawer.NotifyShapeGeometryChanged();
+}
+
+
+
+// public func void shapeSetShapes( int shape, ShapeList shapeList )
+deClassDebugDrawer::nfShapeSetShapes::nfShapeSetShapes( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsShapeList ); // shapeList
+}
+void deClassDebugDrawer::nfShapeSetShapes::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.GetShapeList() = shapeList;
+	ddrawer.NotifyShapeContentChanged();
+}
+
+// public func void shapeRemoveAllShapes( int shape )
+deClassDebugDrawer::nfShapeRemoveAllShapes::nfShapeRemoveAllShapes( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeRemoveAllShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+}
+void deClassDebugDrawer::nfShapeRemoveAllShapes::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	
+	ddshape.GetShapeList().RemoveAll();
+	ddrawer.NotifyShapeContentChanged();
+}
+
+
+
+// public func void shapeSetEdgeColor( int shape, Color color )
+deClassDebugDrawer::nfShapeSetEdgeColor::nfShapeSetEdgeColor( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetEdgeColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsClr ); // color
+}
+void deClassDebugDrawer::nfShapeSetEdgeColor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decColor &color = ds.GetClassColor()->GetColor( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.SetEdgeColor( color );
+	ddrawer.NotifyShapeColorChanged();
+}
+
+// public func void shapeSetFillColor( int shape, Color color )
+deClassDebugDrawer::nfShapeSetFillColor::nfShapeSetFillColor( const sInitData &init ) : dsFunction( init.clsDD,
+"shapeSetFillColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsClr ); // color
+}
+void deClassDebugDrawer::nfShapeSetFillColor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const decColor &color = ds.GetClassColor()->GetColor( rt->GetValue( 1 )->GetRealObject() );
+	
+	ddshape.SetFillColor( color );
+	ddrawer.NotifyShapeColorChanged();
+}
+
+
+
+// Class deClassDebugDrawer
+/////////////////////////////
+
+// Constructor
+////////////////
+
+deClassDebugDrawer::deClassDebugDrawer( deScriptingDragonScript *ds ) :
+dsClass( "DebugDrawer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
+	if( ! ds ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	pDS = ds;
+	
+	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetBase( "Object" );
+	
+	p_SetNativeDataSize( sizeof( sDDNatDat ) );
+}
+
+deClassDebugDrawer::~deClassDebugDrawer(){
+}
+
+
+
+// Management
+///////////////
+
+void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
+	sInitData init;
+	
+	// store classes
+	init.clsDD = this;
+	init.clsVoid = engine->GetClassVoid();
+	init.clsInt = engine->GetClassInt();
+	init.clsFlt = engine->GetClassFloat();
+	init.clsStr = engine->GetClassString();
+	init.clsBool = engine->GetClassBool();
+	init.clsObj = engine->GetClassObject();
+	init.clsClr = pDS->GetClassColor();
+	init.clsVec = pDS->GetClassVector();
+	init.clsDVec = pDS->GetClassDVector();
+	init.clsQuat = pDS->GetClassQuaternion();
+	init.clsShapeList = pDS->GetClassShapeList();
+	
+	// add functions
+	AddFunction( new nfNew( init ) );
+	AddFunction( new nfDestructor( init ) );
+	
+	AddFunction( new nfGetPosition( init ) );
+	AddFunction( new nfSetPosition( init ) );
+	AddFunction( new nfGetOrientation( init ) );
+	AddFunction( new nfSetOrientation( init ) );
+	AddFunction( new nfGetScale( init ) );
+	AddFunction( new nfSetScale( init ) );
+	
+	AddFunction( new nfGetVisible( init ) );
+	AddFunction( new nfSetVisible( init ) );
+	AddFunction( new nfGetXRay( init ) );
+	AddFunction( new nfSetXRay( init ) );
+	
+	AddFunction( new nfGetShapeCount( init ) );
+	AddFunction( new nfSetShapeCount( init ) );
+	
+	AddFunction( new nfShapeSetPosition( init ) );
+	AddFunction( new nfShapeSetOrientation( init ) );
+	AddFunction( new nfShapeSetScale( init ) );
+	
+	AddFunction( new nfShapeSetShapes( init ) );
+	AddFunction( new nfShapeRemoveAllShapes( init ) );
+	
+	AddFunction( new nfShapeSetEdgeColor( init ) );
+	AddFunction( new nfShapeSetFillColor( init ) );
+	
+	// calculate member offsets
+	CalcMemberOffsets();
+}
+
+deDebugDrawer* deClassDebugDrawer::GetDebugDrawer( dsRealObject *myself ) const{
+	if( ! myself ){
+		return NULL;
+	}
+	
+	return ( ( sDDNatDat* )p_GetNativeData( myself->GetBuffer() ) )->ddrawer;
+}
+
+void deClassDebugDrawer::PushDebugDrawer( dsRunTime *rt, deDebugDrawer *debugDrawer ){
+	if( ! rt ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	if( ! debugDrawer ){
+		rt->PushObject( NULL, this );
+		return;
+	}
+	
+	rt->CreateObjectNakedOnStack( this );
+	( ( sDDNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->ddrawer = debugDrawer;
+	debugDrawer->AddReference();
+}

@@ -1,0 +1,70 @@
+revision 1314: skin property curves existed
+
+***************************************************************************************************
+
+#include <pthread.h>
+
+	// threading
+	pthread_t p_Thread;
+	pthread_mutex_t p_Mutex;
+	int p_KillMe;
+
+	// thread management (from deBaseGraphicModule)
+	bool StartThread();
+	bool StopThread();
+	void KillThread();
+
+	// thread entry point, don't call from outside!
+	void p_ThreadEntryPoint();
+
+
+// definitions
+typedef void*(*PTSTARTFUNC)(void*);
+
+// thread function
+int threadOpenGl(deGraphicOpenGl *Object){
+	Object->p_ThreadEntryPoint();
+	return 0;
+}
+
+	// threading
+	p_Thread = 0;
+	p_Mutex = PTHREAD_MUTEX_INITIALIZER;
+	p_KillMe = 0;
+
+	// stop thread
+	if(!StopThread()) KillThread();
+
+// thread management
+bool deGraphicOpenGl::StartThread(){
+	printf("[OPENGL] StartThread()\n");
+	// create thread
+	p_KillMe = 0;
+	if(pthread_create(&p_Thread, NULL, (PTSTARTFUNC)&threadOpenGl, this)){
+		printf("[OPENGL] StartThread(): Could not create thread!\n");
+		return false;
+	}
+	// finished
+	return true;
+}
+bool deGraphicOpenGl::StopThread(){
+	printf("[OPENGL] StopThread()\n");
+	// stop thread
+	p_KillMe = 1;
+	while(p_KillMe);
+	p_Thread = 0;
+	// finished
+	return true;
+}
+void deGraphicOpenGl::KillThread(){
+	printf("[OPENGL] KillThread()\n");
+}
+
+// thread entry point, don't call from outside!
+void deGraphicOpenGl::p_ThreadEntryPoint(){
+	while(!p_KillMe){
+		printf("[OPENGL] Thread(): Run...\n");
+		sleep(1);
+	}
+	p_KillMe = 0;
+}

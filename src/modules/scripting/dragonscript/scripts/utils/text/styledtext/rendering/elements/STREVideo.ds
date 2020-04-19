@@ -1,0 +1,108 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Rendering.Elements
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Styled text render video element.
+ */
+class STREVideo extends STRElement
+	/** \brief Updater. */
+	public class VideoUpdater implements StyledTextDocumentUpdater.Updater
+		private var VideoPlayer pVideoPlayer
+		
+		public func new( VideoPlayer videoPlayer )
+			this.pVideoPlayer = videoPlayer
+		end
+		
+		public func void update( float elapsed )
+			this.pVideoPlayer.update( elapsed )
+		end
+	end
+	
+	
+	private var Video pVideo
+	
+	
+	
+	/** \brief Create styled text render video element. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Video. */
+	public func Video getVideo()
+		return this.pVideo
+	end
+	
+	/** \brief Set video. */
+	public func void setVideo( Video video )
+		this.pVideo = video
+	end
+	
+	
+	
+	/** \brief Calculate size of element. */
+	public func Point calculateSize()
+		if this.pVideo == null
+			return Point.new()
+			
+		else
+			return this.pVideo.getSize()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add canvas for each element.
+	 * 
+	 * Canvas has to be of type Canvas.VIEW. Caller is responsible to remove all canvas if required.
+	 */
+	public func void addToCanvas( CanvasView canvas, Point position, StyledTextDocumentUpdater updater )
+		if this.pVideo == null
+			return
+		end
+		
+		var VideoPlayer videoPlayer = VideoPlayer.new()
+		videoPlayer.setVideo( this.pVideo )
+		videoPlayer.setLooping( true )
+		videoPlayer.play()
+		
+		var CanvasVideoPlayer videoCanvas = CanvasVideoPlayer.new()
+		videoCanvas.setVideoPlayer( videoPlayer )
+		videoCanvas.setPosition( position + this.getPosition() )
+		videoCanvas.setSize( this.pVideo.getSize() )
+		
+		videoCanvas.setOrder( canvas.getCanvasCount() cast float )
+		canvas.addCanvas( videoCanvas )
+		
+		if updater != null
+			updater.addUpdater( VideoUpdater.new( videoPlayer ) )
+		end
+	end
+end

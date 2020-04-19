@@ -1,0 +1,4 @@
+GRANULL {
+  global: NullGraphicCreateModule;
+  local: *;
+};

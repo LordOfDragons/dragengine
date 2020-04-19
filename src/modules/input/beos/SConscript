@@ -1,0 +1,78 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envModule = parent_env.Clone()
+
+libs = ['root', 'game', 'device']
+
+buildModule = parent_env['OSBeOS'] and envModule['build_input_beos'] != TernaryVariableNo
+if not buildModule and envModule['build_input_beos'] == TernaryVariableYes:
+	Exit( 'Requested to build BeOS Input Module but BeOS could not be found.' )
+
+parent_report['build BeOS Input Module'] = 'yes' if buildModule else 'no'
+if not buildModule:
+	Return()
+
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# setup the builders
+sources = []
+headers = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+
+library = envModule.SharedLibrary(target='inpxsystem', source=objects, LIBS=libs)
+targetBuild = envModule.Alias('inp_beos_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'}]
+
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+envModule.Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('inp_beos', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envModule.Alias('inp_beos_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['inp_beos'] = {
+	'name' : 'BeOS Input Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

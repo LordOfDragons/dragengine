@@ -1,0 +1,113 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Load height terrain navigation space from a .htnavspace file.
+ */
+class LoadHeightTerrainNavSpace
+	public var Console pConsole
+	public var String pName
+	
+	
+	
+	/** \brief Creates loader. */
+	public func new( Console console ) this( console, "LoadHeightTerrainNavSpace" )
+	end
+	
+	/** \brief Creates loader. */
+	public func new( Console console, String name )
+		this.pConsole = console
+		this.pName = name
+	end
+	
+	
+	
+	/** \brief Load height terrain navigation space from file. */
+	public func void loadFromFile( String filename, HeightTerrain heightTerrain, int sector, int navspace )
+		var String signatureCheck = "Drag[en]gine Height Terrain Navigation Space"
+		var FileReader fileReader
+		var String signature //44
+		var int version
+		var int flags
+		var int cornerCount = 0
+		var int edgeCount = 0
+		var int faceCount = 0
+		var int v1, v2, v3, v4
+		var int i
+		
+		fileReader = FileReader.new( filename )
+		
+		signature = fileReader.readString( 44 )
+		if not signature.equals( signatureCheck )
+			throw EInvalidParam.new() // dueInvalidFileFormat
+		end
+		
+		version = fileReader.readUShort()
+		flags = fileReader.readUShort()
+		
+		if version == 1
+			// read counts
+			cornerCount = fileReader.readUShort()
+			edgeCount = fileReader.readUShort()
+			faceCount = fileReader.readUShort()
+			
+			heightTerrain.navspaceSetType( sector, navspace, NavigationSpaceType.withOrder( fileReader.readUShort() ) )
+			
+			heightTerrain.navspaceSetCornerCount( sector, navspace, cornerCount )
+			heightTerrain.navspaceSetFaceCount( sector, navspace, faceCount )
+			
+			// read corners
+			for i = 0 to cornerCount
+				heightTerrain.navspaceSetCornerAt( sector, navspace, i, fileReader.readUInt() )
+			end
+			
+			// read edges
+			for  i = 0 to edgeCount
+				v1 = fileReader.readUInt() // point 1
+				v2 = fileReader.readUInt() // point 2
+				v3 = fileReader.readUShort() // type number 1
+				v4 = fileReader.readUShort() // type number 2
+				heightTerrain.navspaceSetEdgeAt( sector, navspace, i, v1, v2, v3, v4 )
+			end
+			
+			// read faces
+			for  i = 0 to faceCount
+				v1 = fileReader.readUShort() // corner count
+				v2 = fileReader.readUShort() // type number
+				heightTerrain.navspaceSetFaceAt( sector, navspace, i, v1, v2 )
+			end
+			
+		else
+			heightTerrain.navspaceSetCornerCount( sector, navspace, 0 )
+			heightTerrain.navspaceSetFaceCount( sector, navspace, 0 )
+		end
+		
+		heightTerrain.navspaceLayoutChanged( sector, navspace )
+	end
+end

@@ -1,0 +1,227 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Panel to edit module parameters.
+ * 
+ * Default implementation is a SwitchPanel with one panel for each engine system containing
+ * module parameters. For each module parameter a suitable edit widget is used.
+ */
+class EditModuleParametersPanel extends Panel
+	/** \brief Reset changes action listener. */
+	public class ActionResetChanges implements ActionListener
+		private var EditModuleParametersPanel pPanel
+		
+		/** \brief Create listener. */
+		public func new( EditModuleParametersPanel panel )
+			this.pPanel = panel
+		end
+		
+		/** \brief Run action. */
+		public func void onAction( ActionEvent event )
+			this.pPanel.resetChanges()
+		end
+	end
+	
+	/** \brief Apply changes action listener. */
+	public class ActionApplyChanges implements ActionListener
+		private var EditModuleParametersPanel pPanel
+		
+		/** \brief Create listener. */
+		public func new( EditModuleParametersPanel panel )
+			this.pPanel = panel
+		end
+		
+		/** \brief Run action. */
+		public func void onAction( ActionEvent event )
+			this.pPanel.applyChanges()
+		end
+	end
+	
+	/** \brief Toggle advanced listener. */
+	public class ToggleAdvancedListener extends DefaultToggleModelListener
+		private var EditModuleParametersPanel pPanel
+		
+		/** \brief Create listener. */
+		public func new( EditModuleParametersPanel panel )
+			this.pPanel = panel
+		end
+		
+		/** \brief Toggled state changed. */
+		public func void toggledChanged( ToggleModel model )
+			this.pPanel.setAdvanced( model.getToggled() )
+		end
+	end
+	
+	
+	
+	private var Panel pPanelButtons
+	private var ToggleButtonGroup pButtonGroup
+	private var SwitchPanel pPanelSystems
+	private var bool pAdvanced
+	
+	
+	
+	/** \brief Create edit module parameters panel. */
+	public func new()
+		this.pAdvanced = false
+		this.createContent()
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pPanelButtons = null
+		this.pButtonGroup = null
+		this.pPanelSystems = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Buttons panel with instance of ToggleButton. */
+	public func Panel getPanelButtons()
+		return this.pPanelButtons
+	end
+	
+	/** \brief Toggle button group. */
+	public func ToggleButtonGroup getButtonGroup()
+		return this.pButtonGroup
+	end
+	
+	/** \brief SwitchPanel with EMPSystem instance. */
+	public func SwitchPanel getPanelSystems()
+		return this.pPanelSystems
+	end
+	
+	/** \brief Show advanced parameters. */
+	public func bool getAdvanced()
+		return this.pAdvanced
+	end
+	
+	/** \brief Show advanced parameters. */
+	public func void setAdvanced( bool advanced )
+		if advanced == this.pAdvanced
+			return
+		end
+		
+		this.pAdvanced = advanced
+		
+		this.pPanelSystems.runWhileBlockingLayout( block
+			this.pPanelSystems.forEachWidget( block EMPSystem each
+				each.rebuildParametersList( this.pAdvanced )
+			end )
+		end )
+		this.pPanelSystems.doLayout()
+	end
+	
+	
+	
+	/** \brief Reset parameter changes. */
+	public func void resetChanges()
+		this.pPanelSystems.runWhileBlockingLayout( block
+			this.pPanelSystems.forEachWidget( block EMPSystem each
+				each.resetChanges()
+			end )
+		end )
+	end
+	
+	/** \brief Apply parameter changes. */
+	public func void applyChanges()
+		this.pPanelSystems.forEachWidget( block EMPSystem each
+			each.applyChanges()
+		end )
+	end
+	
+	
+	
+	/** \brief Create content with a SwitchPanel of EMPSystem instances. */
+	protected func void createContent()
+		this.runWhileBlockingLayout( block
+			this.setLayout( BorderLayout.new( 2 ) )
+			this.setDesignerSelector( "Panel.EditModuleParametersPanel" )
+			
+			var Panel panelButtons = Panel.new()
+			panelButtons.setLayout( FlowLayout.new( LayoutAxis.x, 2 ) )
+			this.addWidget( panelButtons, BorderLayout.Area.top )
+			
+			this.pPanelSystems = SwitchPanel.new()
+			this.addWidget( this.pPanelSystems, BorderLayout.Area.content )
+			
+			this.pButtonGroup = ToggleButtonGroup.new()
+			this.pButtonGroup.addListener( SwitchPanel.SwitchToggleGroup.new( this.pPanelSystems ) )
+			
+			// add systems
+			this.addButtonSystem( panelButtons, "AI" )
+			this.pPanelSystems.addWidget( EMPSystem.new( AISysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Animator" )
+			this.pPanelSystems.addWidget( EMPSystem.new( AmrSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Audio" )
+			this.pPanelSystems.addWidget( EMPSystem.new( AudSysParamWrapper.new() ) )
+			
+			//this.addButtonSystem( panelButtons, "Crash Recovery" )
+			//this.pPanelSystems.addWidget( EMPSystem.new( CRSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Graphic" )
+			this.pPanelSystems.addWidget( EMPSystem.new( GraSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Input" )
+			this.pPanelSystems.addWidget( EMPSystem.new( InpSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Network" )
+			this.pPanelSystems.addWidget( EMPSystem.new( NetSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Physics" )
+			this.pPanelSystems.addWidget( EMPSystem.new( PhySysParamWrapper.new() ) )
+			
+			//this.addButtonSystem( panelButtons, "Script" )
+			//this.pPanelSystems.addWidget( EMPSystem.new( ScrSysParamWrapper.new() ) )
+			
+			this.addButtonSystem( panelButtons, "Synthesizer" )
+			this.pPanelSystems.addWidget( EMPSystem.new( SynthSysParamWrapper.new() ) )
+			
+			// rebuild parameters of systems
+			this.pPanelSystems.forEachWidget( block EMPSystem each
+				each.rebuildParametersList( this.pAdvanced )
+			end )
+		end )
+	end
+	
+	/** \brief Add button to switch to system panel. */
+	protected func void addButtonSystem( Panel panelButtons, String label )
+		var ToggleButton button = ToggleButton.new( label )
+		button.setStickyToggled( true )
+		button.setDesignerSelector( "Button.EditModuleParametersPanel.System" )
+		this.pButtonGroup.add( button )
+		panelButtons.addWidget( button )
+	end
+end

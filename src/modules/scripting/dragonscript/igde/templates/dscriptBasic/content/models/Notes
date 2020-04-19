@@ -1,0 +1,6 @@
+Place here your models (*.deeclass).
+They will be automatically found by the IGDE Editor and game scripts.
+To make the game find *.deeclass inside this directory you have to
+scan the directory actively (see GameApp.createAndAddElementClasses())
+
+This file can be safely deleted.

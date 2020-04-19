@@ -1,0 +1,633 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding animation support.
+ * 
+ * Playings back an animation using an animator for an ECBehaviorComponent. By default the
+ * ECBehaviorComponent with empty identifier is animated. Multiple ECBehaviorAnimated
+ * can be added targeting different ECBehaviorComponent using their identifier. It is
+ * also possible to add multiple ECBehaviorAnimated manipulating the same ECBehaviorComponent
+ * as long as the animators used are properly crafted. This can be used for example to add
+ * overlayed animations like gestures onto an actor.
+ * 
+ * To use this behavior make sure to add first the ECBehaviorComponent to animate.
+ * The example below adds to components and animates each using an own animator.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorComponent component1 = ECBehaviorComponent.new(this)
+ *       ECBehaviorAnimated.new(this, component1)
+ *       
+ *       var ECBehaviorComponent component2 = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorAnimated.new(this, component2)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Because multiple animator behaviors can animate the same component behavior the
+ * animator behavior has an own identifier. In the example above the first string parameter
+ * is the animator behavior identifier while the second string parameter is the component
+ * behavior identifier to animate.
+ * 
+ * Element class properties have the prefix "animated{(id)}.".
+ * 
+ * \par Listening
+ * 
+ * Behavior elements and other behaviors can add listeners to the ECBehaviorAnimated.
+ * Listeners are notified if the animation starts playing and when it stops playing. This
+ * can be used to synchronize actions to these events. ECBehaviorAnimated can also use
+ * trigger targets so listeners are not always required.
+ * 
+ * Another use for listeners is update animator controllers not handled by ECBehaviorAnimated
+ * itself. ECBehaviorAnimated calls AnimatorInstance.apply() before it exits thinking.
+ * If other behaviors modify the animator controller later on they need to call
+ * AnimatorInstance.apply() again. If multiple behaviors affect the same animated component
+ * this can put strain on the game engine modules and reduce performance. For this reason
+ * listeners are also asked to update animator controllers. This allows multiple behaviors
+ * to update individual controllers with AnimatorInstance.apply() to be called only once.
+ * 
+ * It is important to note that using listeners behaviors are asked to update animator
+ * controllers before their think() method is called. For such behaviors it is best to
+ * do their thinking inside the listener call avoiding think() to be used at all.
+ * 
+ * A typical usage pattern for such behaviors is to locate the animator controller to update
+ * during construction time and to manipulated the controllers inside updateControllers().
+ * This example shows this concept:
+ * 
+ * \code{.ds}
+ * class MyListener extends ECBehaviorInstance.DefaultListener
+ *    protected var AnimatorController pController
+ *    
+ *    public func new(ECBehaviorAnimated behavior)
+ *       this.pController = behavior.getAnimatorInstance().getControllerNamed("special controller")
+ *    end
+ *    
+ *    public func void updateControllers(Instance instance, float elapsed)
+ *       this.pController.increment(elapsed)
+ *    end
+ * end
+ * \endcode
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorAnimated extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Start playing back. */
+		func void startPlaying( Instance instance )
+		
+		/** \brief Stop playing. */
+		func void stopPlaying( Instance instance )
+		
+		/** \brief Update controllers if required. */
+		func void updateControllers( Instance instance, float elapsed )
+		
+		/** \brief Animation has been applied. */
+		func void animationApplied( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Start playing back. */
+		public func void startPlaying( Instance instance )
+		end
+		
+		/** \brief Stop playing. */
+		public func void stopPlaying( Instance instance )
+		end
+		
+		/** \brief Update controllers if required. */
+		public func void updateControllers( Instance instance, float elapsed )
+		end
+		
+		/** \brief Animation has been applied. */
+		public func void animationApplied( Instance instance )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Trigger listener to start playing back. */
+		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setPlaying( true )
+			end
+			
+			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setPlaying( false )
+			end
+		end
+		
+		
+		
+		private var ECBehaviorAnimated pECBehavior
+		private var AnimatorInstance pAnimatorInstance
+		private var ECComposeAnimator.Playback pPlayback
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var TSTriggerTable pTriggerTable
+		private var TSNamedTriggerTarget pTargetPlaying
+		private var Array pListeners
+		
+		private var ECBehaviorComponent.Instance pComponent
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorAnimated ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			this.pTriggerTable = ecbehavior.getTriggerTable()
+			this.pTargetPlaying = TSNamedTriggerTarget.new()
+			
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pPlayback = null
+			this.pTrigger = null
+			this.pTargetPlaying = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			this.pAnimatorInstance = this.createAnimatorInstance( stub )
+			
+			if this.pAnimatorInstance != null
+				this.pAnimatorInstance.setComponent( this.pComponent.getComponent() )
+			end
+			
+			this.pPlayback = this.createPlayback( stub )
+			
+			if this.pECBehavior.getControllerName() != null
+				this.pPlayback.setControllerNamed( this.pECBehavior.getControllerName() )
+			end
+			
+			if this.pTriggerTable != null
+				this.pTrigger = this.pECBehavior.getTrigger().instance( element )
+				this.pTrigger.addListener( PlayingListener.new( this ) )
+				
+				this.pTargetPlaying.setName( this.pECBehavior.getTargetPlaying().getValue( stub ) )
+			end
+			
+			this.setRequiresThink( this.pPlayback.getPlaying() )
+		end
+		
+		/**
+		 * \brief Create animator instance for the element.
+		 * 
+		 * Default implementation uses ECComposeAnimator.createAnimatorInstance().
+		 */
+		protected func AnimatorInstance createAnimatorInstance( StubElement stub )
+			return this.pECBehavior.getAnimator().createAnimatorInstance( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Create playback instance helper.
+		 * 
+		 * Default implementation uses ECComposeAnimator.createPlayback().
+		 */
+		protected func ECComposeAnimator.Playback createPlayback( StubElement stub )
+			return this.pECBehavior.getAnimator().createPlayback( this.pAnimatorInstance, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorAnimated getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Trigger playing or \em null. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Animator instance. */
+		public func AnimatorInstance getAnimatorInstance()
+			return this.pAnimatorInstance
+		end
+		
+		/** \brief Playback. */
+		public func ECComposeAnimator.Playback getPlayback()
+			return this.pPlayback
+		end
+		
+		/** \brief Playing back. */
+		public func bool getPlaying()
+			return this.pPlayback.getPlaying()
+		end
+		
+		/** \brief Set if playing back. */
+		public func void setPlaying( bool playing )
+			if playing == this.pPlayback.getPlaying()
+				return
+			end
+			
+			if playing and not this.pPlayback.getLooping()
+				this.pPlayback.rewind()
+			end
+			this.pPlayback.setPlaying( playing )
+			this.setRequiresThink( this.pPlayback.getPlaying() )
+			
+			if this.pPlayback.getPlaying()
+				this.pTargetPlaying.fire()
+				this.pListeners.forEach( block Listener each
+					each.startPlaying( this )
+				end )
+				
+				if this.pPlayback.getController() == null and not this.pPlayback.getLooping()
+					// animator is missing or incorrectly set up while playback is not looping.
+					// without this check the behavior would never stop playing. instead stop
+					// which prevents scripts from breaking if waiting for animation to stop
+					this.pPlayback.setPlaying( false )
+				end
+				
+			else
+				this.pTargetPlaying.reset()
+				this.pListeners.forEach( block Listener each
+					each.stopPlaying( this )
+				end )
+			end
+		end
+		
+		/** \brief Playback time. */
+		public func float getTime()
+			return this.pPlayback.getTime()
+		end
+		
+		/** \brief Set playback time. */
+		public func void setTime( float time )
+			this.pPlayback.setTime( time )
+		end
+		
+		
+		
+		/** \brief Trigger table to link trigger expression to or \em null if not set. */
+		public func TSTriggerTable getTriggerTable()
+			return this.pTriggerTable
+		end
+		
+		/** \brief Trigger table to link trigger expression to or \em null if not set. */
+		protected func void setTriggerTable( TSTriggerTable triggerTable )
+			this.pTriggerTable = triggerTable
+		end
+		
+		/** \brief Trigger target to reflect playing state. */
+		public func TSNamedTriggerTarget getTargetPlaying()
+			return this.pTargetPlaying
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pTriggerTable == null
+				return
+			end
+			
+			if this.pTrigger == null or this.pTrigger.getTriggerExpression() == null
+				this.setPlaying( this.pPlayback.getPlaying() )
+			end
+			
+			this.pTargetPlaying.acquireTarget( this.pTriggerTable )
+			if this.pPlayback.getPlaying()
+				this.pTargetPlaying.fire()
+				this.pListeners.forEach( block Listener each
+					each.startPlaying( this )
+				end )
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.pTargetPlaying.dropTarget()
+		end
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			if not this.pPlayback.getPlaying()
+				return
+			end
+			
+			if this.pPlayback.getController() != null
+				var AnimatorController controller = this.pPlayback.getController()
+				if controller != null
+					controller.increment( elapsed * this.pPlayback.getPlaySpeed() )
+				end
+				
+				this.pListeners.forEach( block Listener each
+					each.updateControllers( this, elapsed )
+				end )
+				
+				this.pPlayback.apply()
+				
+				this.pListeners.forEach( block Listener each
+					each.animationApplied( this )
+				end )
+				
+				if not controller.getClamp() or not controller.isAtUpper()
+					return
+				end
+			end
+			
+			// finished
+			this.pPlayback.setPlaying( false )
+			this.setRequiresThink( false )
+			this.pTargetPlaying.reset()
+			this.pListeners.forEach( block Listener each
+				each.stopPlaying( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pPlayback.readFromFile( env, reader )
+			this.setRequiresThink( this.pPlayback.getPlaying() )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			this.pPlayback.writeToFile( env, writer )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECComposeAnimator pAnimator
+	private var String pControllerName
+	private var ECBehaviorTriggered pTrigger
+	private var ECPString pTargetPlaying
+	private var TSTriggerTable pTriggerTable
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
+	this( eclass, component, BaseGameApp.getApp().getLoaders(), null, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
+	this( eclass, component, BaseGameApp.getApp().getLoaders(), null, id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id, String subID ) \
+	this( eclass, component, BaseGameApp.getApp().getLoaders(), null, id, subID )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable ) this( eclass, component, loaders, triggerTable, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id ) this( eclass, component, loaders, triggerTable, id, \
+	id.empty() if "animated" else "animated(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id, String subID ) \
+	this( eclass, component, loaders, triggerTable, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, Loaders loaders, \
+	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "component" )
+		end
+		
+		this.pComponent = component
+		this.pTriggerTable = triggerTable
+		
+		this.pAnimator = ECComposeAnimator.new( eclass, loaders, prefix )
+		
+		this.pTrigger = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		
+		this.pTargetPlaying = ECPString.new( prefix + "targetPlaying", "" )
+		eclass.addProperty( this.pTargetPlaying )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior to animate. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Composeable animator for element class. */
+	public func ECComposeAnimator getAnimator()
+		return this.pAnimator
+	end
+	
+	/** \brief Controller name or null to use first controller. */
+	public func String getControllerName()
+		return this.pControllerName
+	end
+	
+	/** \brief Set controller name or null to use first controller. */
+	public func void setControllerName( String name )
+		this.pControllerName = name
+	end
+	
+	/** \brief Trigger playing. */
+	public func ECBehaviorTriggered getTrigger()
+		return this.pTrigger
+	end
+	
+	/** \brief Target playing. */
+	public func ECPString getTargetPlaying()
+		return this.pTargetPlaying
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorAnimated getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorAnimated
+		end ) cast ECBehaviorAnimated
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorAnimated with specific identifier.
+	 */
+	static public func ECBehaviorAnimated getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorAnimated each
+			return each castable ECBehaviorAnimated and \
+				( each cast ECBehaviorAnimated ).getID().equals( id )
+		end ) cast ECBehaviorAnimated
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorAnimated behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorAnimated
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAnimated.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAnimated.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorAnimated.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

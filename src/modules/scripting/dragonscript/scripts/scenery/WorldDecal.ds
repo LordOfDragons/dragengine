@@ -1,0 +1,184 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * @brief World Decal.
+ *
+ * Manages a world decal. World decals are a helper class to help
+ * manage decals placed in the world instead of being attached
+ * to a component. Such decals can spread across
+ * multiple world elements. Each element requires an own copy of
+ * the decal to yield the proper result. This class stores the
+ * decal definition and creates the correct number of engine
+ * decals.
+ */
+class WorldDecal
+	
+	/** Engine decal instances. */
+	public class Instance
+		/** Engine decal. */
+		private var Decal pDecal
+		/** Component the decal belongs to. */
+		private var Component pParentComponent
+		
+		/** Creates a new decal instance. */
+		public func new( Decal decal, Component parentComponent )
+			this.pDecal = decal
+			this.pParentComponent = parentComponent
+		end
+		
+		/** Retrieves the decal. */
+		public func Decal getDecal()
+			return this.pDecal
+		end
+		
+		/** Retrieves the parent component. */
+		public func Component getParentComponent()
+			return this.pParentComponent
+		end
+	end
+	
+	
+	
+	/** List of decal instances. */
+	private var Array pDecals
+	
+	/** Skin. */
+	private var Skin pSkin
+	/** Texture name. */
+	private var DVector pPosition
+	/** Rotation. */
+	private var Quaternion pOrientation
+	/** Size. */
+	private var Vector pSize
+	/** Visible. */
+	private var bool pVisible
+	
+	/** Game world if part of one */
+	private var GameWorld pGameWorld
+	/** Unique id used for saving or networking. */
+	private var UniqueID pID
+	
+	
+	
+	/** Creates a new world decal. */
+	public func new()
+		this.pDecals = Array.new()
+		this.pPosition = DVector.new()
+		this.pOrientation = Quaternion.new()
+		this.pSize = Vector.new()
+		this.pVisible = true
+	end
+	
+	
+	
+	/** Sets the skin. */
+	public func void setSkin( Skin skin )
+		this.pSkin = skin
+	end
+	
+	/** Sets the position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = position
+	end
+	
+	/** Sets the orientation. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pOrientation = orientation
+	end
+	
+	/** Sets the size. */
+	public func void setSize( Vector size )
+		if size == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pSize = size
+	end
+	
+	/** Sets the visiblity. */
+	public func void setVisible( bool visible )
+		this.pVisible = visible
+	end
+	
+	
+	
+	/** Retrieves the game world or null if not attached. */
+	public func GameWorld getGameWorld()
+		return this.pGameWorld
+	end
+	
+	/** Sets the game world or null if not attached. */
+	public func void setGameWorld( GameWorld gameWorld )
+		if this.pGameWorld != gameWorld
+			this.pGameWorld = gameWorld
+		end
+	end
+	
+	/** Retrieves the unique id or null if not set. */
+	public func UniqueID getID()
+		return this.pID
+	end
+	
+	/** Sets the unique id or null to unset it. */
+	public func void setID( UniqueID id )
+		this.pID = id
+	end
+	
+	
+	
+	/** Drops the decal instances. */
+	public func void dropDecals()
+		var int d, decalCount = this.pDecals.getCount()
+		var Component parentComponent
+		var Instance instance
+		
+		for d = 0 to decalCount
+			instance = this.pDecals.getAt( d ) cast Instance
+			
+			parentComponent = instance.getParentComponent()
+			if parentComponent != null
+				parentComponent.removeDecal( instance.getDecal() )
+			end
+		end
+		
+		this.pDecals.removeAll()
+	end
+	
+	/** Creates the decal instances. */
+	public func void createDecals( CollisionFilter collisionFilter )
+	end
+end

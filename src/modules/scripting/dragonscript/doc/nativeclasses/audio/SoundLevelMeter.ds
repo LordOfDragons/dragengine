@@ -1,0 +1,127 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sound level meter Resource.
+ *
+ * Sound level meters are sensors to measure the sound level present in a specific spot in
+ * the game world. The meter also stores a list of all speakers contributing to the sound
+ * level. Sound level meters allow adding sound sensing capabilities to game entities.
+ * 
+ * To use a sound level meter place the resource in the game world and set the desired
+ * audible range and directivity. The audio module updates the metering results as soon as
+ * possible. This can happen the next frame or a couple of frames later depending on how
+ * the audio module operates internally.
+ * 
+ * Sound level meters are only affected by speakers and components matching the layer mask
+ * set in the meter. Furthermore meters can be enabled and disabled to stop measuring while
+ * not in use without needing to remove and add the meter from the game all the time.
+ * 
+ * This is a native class.
+ */
+class SoundLevelMeter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create sound level meter. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Type. */
+	public func SoundLevelMeterType getType()
+		return null
+	end
+	
+	/** \brief Set type. */
+	public func void setType( SoundLevelMeterType type )
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return null
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return null
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Cone angle in radians measured from cone center to outer hull. */
+	public func float getConeAngle()
+		return 0
+	end
+	
+	/** \brief Set cone angle in radians measured from cone center to outer hull. */
+	public func void setConeAngle( float angle )
+	end
+	
+	/** \brief Audible distance in meters.*/
+	public func float getAudibleDistance()
+		return 0
+	end
+	
+	/** \brief Set audible distance in meters. */
+	public func void setAudibleDistance( float audibleDistance )
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return null
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	
+	/** \brief Measuring is enabled. */
+	public func bool getEnabled()
+		return true
+	end
+	
+	/** \brief Set if measuring is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	
+	
+	
+	/** \brief Number of audible speakers. */
+	public func int getAudibleSpeakerCount()
+		return 0
+	end
+	
+	/** \brief Audible speaker at index. */
+	public func SoundLevelMeterSpeaker getAudibleSpeakerAt( int index )
+		return null
+	end
+	
+	
+	
+	/** \brief Sound level meter listener or \em null if not set. */
+	public func SoundLevelMeterListener getListener()
+		return null
+	end
+	
+	/** \brief Set sound level meter listener or \em null if not set. */
+	public func void setListener( SoundLevelMeterListener listener )
+	end
+	/*@}*/
+end

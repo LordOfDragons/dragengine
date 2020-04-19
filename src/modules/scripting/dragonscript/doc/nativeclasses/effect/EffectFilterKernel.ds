@@ -1,0 +1,72 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Effect filter kernel.
+ * 
+ * This is a native class.
+ */
+class EffectFilterKernel extends Effect
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create effect filter kernel. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Set filter kernel size.
+	 * \throws EInvalidParam \em rows is less than 1.
+	 * \throws EInvalidParam \em cols is less than 1.
+	 */
+	public func void setKernelSize( int rows, int cols )
+	end
+	
+	/**
+	 * \brief Set filter kernel value.
+	 * \throws EOutOfBoundary \em row is less than 0 or larger than or equal to kernel row count.
+	 * \throws EOutOfBoundary \em col is less than 0 or larger than or equal to kernel colon count.
+	 */
+	public func void setKernelValue( int row, int col, float value )
+	end
+	
+	/** \brief Scale of kernel. */
+	public func float getScale()
+	end
+	
+	/** \brief Set scale of kernel. */
+	public func void setScale( float scale )
+	end
+	
+	
+	
+	/**
+	 * \brief Effect is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type EffectFilterKernel and effect are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

@@ -1,0 +1,69 @@
+/* 
+ * Drag[en]gine Game Engine
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#ifndef _DEBASEGRAPHICLUMIMETER_H_
+#define _DEBASEGRAPHICLUMIMETER_H_
+
+#include "../../../common/math/decMath.h"
+
+
+/**
+ * \brief Graphic Module Lumimeter Peer.
+ *
+ */
+class deBaseGraphicLumimeter{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create a new peer. */
+	deBaseGraphicLumimeter();
+	
+	/** \brief Clean up peer. */
+	virtual ~deBaseGraphicLumimeter();
+	/*@}*/
+	
+	
+	
+	/** \name Notifications */
+	/*@{*/
+	/** \brief Position changed. */
+	virtual void PositionChanged();
+	
+	/** \brief Direction changed. */
+	virtual void DirectionChanged();
+	
+	/** \brief Cone parameter changed. */
+	virtual void ConeParameterChanged();
+	/*@}*/
+	
+	
+	
+	/** \name Measuring */
+	/*@{*/
+	/** \brief Measures the luminance. */
+	virtual float MeasureLuminance();
+	
+	/** \brief Measures the color. */
+	virtual decColor MeasureColor();
+	/*@}*/
+};
+
+#endif

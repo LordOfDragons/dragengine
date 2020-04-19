@@ -1,0 +1,120 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Input processor for simple conversations.
+ * 
+ * Can skip actor speaking or entire conversation if required.
+ */
+class ConversationInputProcessor extends DefaultInputProcessor
+	private var ConversationPlayback pPlayback
+	private var BindingManager pBindingManager
+	private var Array pAllowedCommands
+	
+	
+	
+	/** \brief Create conversation input processor. */
+	public func new( ConversationPlayback playback )
+		if playback == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPlayback = playback
+		this.pAllowedCommands = Array.new()
+	end
+	
+	
+	
+	/** \brief Conversation playback. */
+	public func ConversationPlayback getPlayback()
+		return this.pPlayback
+	end
+	
+	/** \brief Binding manager or \em null to not allow bindings. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Set binding manager or \em null to not allow bindings. */
+	public func void setBindingManager( BindingManager manager )
+		this.pBindingManager = manager
+	end
+	
+	/** \brief Command names allowed during conversation. */
+	public func Array getAllowedCommands()
+		return this.pAllowedCommands
+	end
+	
+	/** \brief Set command names allowed during conversation. */
+	public func void setAllowedCommands( Array list )
+		this.pAllowedCommands = list
+	end
+	
+	
+	
+	/** \brief Process input event. */
+	public func void inputEvent( InputEvent event )
+		select event.getType()
+		case InputEventType.keyPress
+			if event.getKeyCode() == InputEventKey.space
+				this.fastForwardSpeaking()
+				
+			elif this.pBindingManager != null
+				var Binding binding = this.pBindingManager.findButtonBinding( \
+					event.getDevice(), event.getCode() )
+				
+				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+					binding.getCommand().start()
+				end
+			end
+			
+		case InputEventType.keyRelease
+			if this.pBindingManager != null
+				var Binding binding = this.pBindingManager.findButtonBinding( \
+					event.getDevice(), event.getCode() )
+				
+				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+					binding.getCommand().stop()
+					return
+				end
+			end
+			
+		case InputEventType.mousePress
+			//if event.getCode() == InputEventMouseButton.left
+				this.fastForwardSpeaking()
+			//end
+		end
+	end
+	
+	/** \brief Fast forward speaking. */
+	protected func void fastForwardSpeaking()
+		this.pPlayback.fastForwardSpeaking()
+	end
+end

@@ -1,0 +1,256 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding navigator support for actors.
+ * 
+ * Adds Navigator resource to actor. Actors use Navigator to find path around the game world
+ * using navigation spaces. Usually actors have one navigator but it is possible to have
+ * multiple navigators. Using different navigators path can be found and processed on different
+ * navigation space levels.
+ * 
+ * By defautl the navigator has no cost types assigned. Actors set up the cost type in their
+ * actions.
+ * 
+ * This behavior does not require persistency.
+ */
+class ECBehaviorNavigator extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorNavigator pECBehavior
+		private var Navigator pNavigator
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorNavigator ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pNavigator = null
+			super.dispose()
+		end
+		
+		
+		
+		/**
+		 * \brief Initialize element from stub.
+		 * 
+		 * Sets the layer and space type from the element class property defaulting to
+		 * layer 0 and NavigationSpaceType.mesh space type. Sets the default fix cost to 0 and
+		 * the default cost-per-meter to 1. These apply if no cost types are added by the
+		 * actor or other behaviors. The blocking cost is set to 10000.
+		 */
+		public func void init( StubElement stub )
+			this.pNavigator = this.createNavigator( stub )
+			this.pNavigator.setLayer( this.pECBehavior.getLayer().getValue( stub ) )
+			this.pNavigator.setSpaceType( this.pECBehavior.getSpaceType() \
+				.getEnumeration( stub ) cast NavigationSpaceType )
+			this.pNavigator.setDefaultFixCost( 0 )
+			this.pNavigator.setDefaultCostPerMeter( 1 )
+			this.pNavigator.setBlockingCost( 10000 )
+		end
+		
+		/**
+		 * \brief Create navigator.
+		 * 
+		 * Creates instance of Navigator.
+		 */
+		protected func Navigator createNavigator( StubElement stub )
+			return Navigator.new()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorNavigator getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Navigator. */
+		public func Navigator getNavigator()
+			return this.pNavigator
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addNavigator( this.pNavigator )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeNavigator( this.pNavigator )
+		end
+	end
+	
+	
+	
+	private var ECPInteger pLayer
+	private var ECPEnumeration pSpaceType
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, id, id.empty() if "navigator." else "navigator(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
+		this.pLayer = ECPInteger.new( prefix + "layer", 0 )
+		eclass.addProperty( this.pLayer )
+		
+		this.pSpaceType = ECPEnumeration.new( prefix + "spaceType", \
+			NavigationSpaceType.all(), NavigationSpaceType.mesh )
+		eclass.addProperty( this.pSpaceType )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Navigation space layer to use. */
+	public func ECPInteger getLayer()
+		return this.pLayer
+	end
+	
+	/** \brief Navigation space type to use (NavigationSpace.{GRID|MESH|VOLUME}). */
+	public func ECPEnumeration getSpaceType()
+		return this.pSpaceType
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorNavigator getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorNavigator
+		end ) cast ECBehaviorNavigator
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorNavigator with specific identifier.
+	 */
+	static public func ECBehaviorNavigator getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorNavigator each
+			return each castable ECBehaviorNavigator and \
+				( each cast ECBehaviorNavigator ).getID().equals( id )
+		end ) cast ECBehaviorNavigator
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorNavigator behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorNavigator
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNavigator.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNavigator.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorNavigator.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

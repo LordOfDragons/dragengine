@@ -1,0 +1,274 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Stub for decal.
+ * 
+ * Used during asynchronous loading to hold the settings of a decal until all
+ * resources have been loaded.
+ */
+class StubWorldDecal extends StubWithProperties implements ResourceListener
+	/** \brief Skin path. */
+	private var String pPathSkin
+	
+	/** \brief Skin. */
+	private var Skin pSkin
+	
+	/** \brief Texture name. */
+	private var String pTextureName
+	
+	/** \brief Position. */
+	private var DVector pPosition
+	
+	/** \brief Rotation. */
+	private var Vector pRotation
+	
+	/** \brief Size. */
+	private var Vector pSize
+	
+	/** \brief Visible. */
+	private var bool pVisible
+	
+	/** \brief Transform. */
+	private var TexMatrix2 pTransform
+	
+	/** \brief Color tint. */
+	private var Color pColorTint
+	
+	/** \brief Preload counter. */
+	private var PreloadCounter pCounter
+	
+	
+	
+	/** \brief Create stub decal. */
+	public func new()
+		this.pPathSkin = ""
+		this.pTextureName = ""
+		this.pPosition = DVector.new()
+		this.pRotation = Vector.new()
+		this.pSize = Vector.new()
+		this.pVisible = true
+	end
+	
+	/** \brief Create copy of element stub. */
+	public func new( StubWorldDecal stub ) super( stub )
+		this.pPathSkin = stub.pPathSkin
+		this.pSkin = stub.pSkin
+		this.pTextureName = stub.pTextureName
+		this.pPosition = stub.pPosition
+		this.pRotation = stub.pRotation
+		this.pSize = stub.pSize
+		this.pVisible = stub.pVisible
+		this.pTransform = stub.pTransform
+		this.pColorTint = stub.pColorTint
+	end
+	
+	
+	
+	/** \brief Set counter. */
+	public func void setCounter( PreloadCounter counter )
+		this.pCounter = counter
+	end
+	
+	/** \brief Skin path. */
+	public func String getPathSkin()
+		return this.pPathSkin
+	end
+	
+	/** \brief Set skin path. */
+	public func void setPathSkin( String pathSkin )
+		if pathSkin == null
+			throw EInvalidParam.new()
+		end
+		this.pPathSkin = pathSkin
+	end
+	
+	/** \brief Skin. */
+	public func Skin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Texture name. */
+	public func String getTextureName()
+		return this.pTextureName
+	end
+	
+	/** \brief Set texture name. */
+	public func void setTextureName( String textureName )
+		if textureName == null
+			throw EInvalidParam.new()
+		end
+		this.pTextureName = textureName
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+	end
+	
+	/** \brief Rotation. */
+	public func Vector getRotation()
+		return this.pRotation
+	end
+	
+	/** \brief Set rotation. */
+	public func void setRotation( Vector rotation )
+		if rotation == null
+			throw EInvalidParam.new()
+		end
+		this.pRotation = rotation
+	end
+	
+	/** \brief Size. */
+	public func Vector getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set size. */
+	public func void setSize( Vector size )
+		if size == null
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	/** \brief Visiblity. */
+	public func bool getVisible()
+		return this.pVisible
+	end
+	
+	/** \brief Set visibility. */
+	public func void setVisible( bool visible )
+		this.pVisible = visible
+	end
+	
+	/** \brief Texture coordinates transformation or \em null to not replace the transformation. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** \brief Set texture coordinates transformation or \em null to not replace the transformation. */
+	public func void setTransform( TexMatrix2 transform )
+		this.pTransform = transform
+	end
+	
+	/** \brief Color tint or \em null to not replace the color tint. */
+	public func Color getColorTint()
+		return this.pColorTint
+	end
+	
+	/** \brief Set color tint or \em null to not replace the color tint. */
+	public func void setColorTint( Color color )
+		this.pColorTint = color
+	end
+	
+	
+	
+	/** \brief Add preload resources. */
+	public func void preloadResources()
+		if this.pPathSkin == null or this.pPathSkin.empty()
+			return
+		end
+		
+		Skin.loadAsynchron( this.pPathSkin, this )
+		this.pCounter.increase()
+	end
+	
+	/**
+	 * \brief Verify resource failed loading and print the problems to the console.
+	 * \returns \em true if all resources loaded successfully or false otherwise.
+	 */
+	public func bool verifyPreloading( Console console )
+		if this.pPathSkin == null or this.pPathSkin.empty()
+			return true
+		end
+		
+		var bool success = true
+		
+		if this.pSkin == null
+			console.addMessage( "Failed to load '" + this.pPathSkin \
+				+ "' for world decal located at " + this.pPosition )
+			success = false
+		end
+		
+		return success
+	end
+	
+	/** \brief Load resources. */
+	public func void loadResources()
+		if this.pSkin == null and this.pPathSkin != null and not this.pPathSkin.empty()
+			this.pSkin = Skin.new( this.pPathSkin )
+		end
+	end
+	
+	/** \brief Create world decal from the stub informations. */
+	public func void createWorldDecal( GameWorld gameWorld, DecalBuilder builder )
+		builder.setPositionAndOrientation( this.pPosition, \
+			DMatrix.newRotation( DVector.new( this.pRotation ) ).toQuaternion() )
+		builder.setSize( this.pSize )
+		builder.setSkin( this.pSkin )
+		builder.setTransform( this.pTransform != null if this.pTransform else TexMatrix2.new() )
+		//builder.setDynamicSkin( ... )
+		builder.setVisible( this.pVisible )
+		
+		var Array propertyKeys = this.getPropertyKeys()
+		var int propertyCount = propertyKeys.getCount()
+		var String propertyKey
+		var int i
+		
+		builder.removeAllProperties()
+		for i = 0 to propertyCount
+			propertyKey = propertyKeys.getAt( i ) cast String
+			builder.setPropertyValueFor( propertyKey, this.getPropertyValueFor( propertyKey, "" ) )
+		end
+		
+		builder.createDecals( gameWorld.getWorld() )
+	end
+	
+	
+	
+	/** \brief Resource has finished loading. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+		this.pSkin = resource cast Skin
+		this.pCounter.decrease()
+	end
+	
+	/** \brief Resource has failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+		this.pCounter.decrease()
+	end
+end

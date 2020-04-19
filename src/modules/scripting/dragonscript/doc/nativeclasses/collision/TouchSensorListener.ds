@@ -1,0 +1,25 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Touch sensor listener.
+ * 
+ * This is a native class.
+ */
+interface TouchSensorListener
+	/** \name Management */
+	/*@{*/
+	/** \brief Collider entered shape. */
+	func void colliderEntered( Collider collider )
+	
+	/** \brief Collider left shape. */
+	func void colliderLeft( Collider collider )
+	/*@}*/
+end

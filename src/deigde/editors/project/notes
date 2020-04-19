@@ -1,0 +1,34 @@
+project editor.
+
+allows to edit project settings and browsing project files to edit them.
+
+serves also as default editor if the IGDE is opened.
+
+screen is split into main panel and side panel on the left.
+
+side panel contains these tabs:
+- Project: shows project settings replacing the IGDE project dialog.
+- Files: shows search and filter options for the files view in the main panel.
+         contains these widgets:
+         "Search:": text field where user can enter part of files to show in the main panel.
+                    search is updated on text changing while entered
+         "Type:": combo box with list of resource types to show. contains these values:
+                  - All supported resource files
+                  - All files
+                  - One entry for each editor supported resource type like "World", "Rig".
+                  editors can register which file types they can open.
+                  this list collects all of thems
+
+the main panel contains split view of the files. on the left side is a split view.
+
+the upper panel contains a flat list of all directories matching the search filter.
+if clicking on an entry shows in the large panel on the right side the unfiltered
+content of the directory. files not matching the filter are grayed out to show they
+are not matching the filter but can still be selected. the lower panel contains a
+flat list of all files in the project directory matching the search filter. the
+lists will be build using a search thread updating the lists gradually. it should
+be visually visible if the search thread is still looking for files. can be done
+by showing a searching icon somewhere. clicking a file in the file listnig down-left
+or right opens the file in the matching editor or externally. (maybe also show system
+known file types to allow opening other files outside the editor?) (maybe allow the
+user to define per-project file types?)

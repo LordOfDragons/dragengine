@@ -1,0 +1,151 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to elements to be ridden by actors.
+ * 
+ * Actors will attach using relative mode if ECBehaviorProjectToGround hits this element.
+ * 
+ * Default property prefix is "ridable."
+ */
+class ECBehaviorRidable extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		protected var ECBehaviorRidable pECBehavior
+		protected var ECBehaviorCollider.Instance pCollider
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorRidable ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pCollider = ecbehavior.getCollider().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pCollider = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRidable getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		
+		
+		/** \brief Linear velocity of ridable which is collider linear velocity. */
+		public func Vector getLinearVelocity()
+			return this.pCollider.getCollider().getLinearVelocity()
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	
+	
+	
+	/** \brief Create behavior. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) super( eclass )
+		if collider == null
+			throw ENullPointer.new( "collider" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pCollider = collider
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorRidable.
+	 */
+	static public func ECBehaviorRidable getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorRidable
+		end ) cast ECBehaviorRidable
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRidable.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

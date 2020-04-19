@@ -1,0 +1,57 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief AnimatorRule rule.
+ * 
+ * This is a native class. It can not be instanced directly.
+ */
+class AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	protected func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set if rule is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	
+	/**
+	 * \brief Set blend mode.
+	 * \throws EInvalidParam \em blendMode is not a valid value.
+	 */
+	public func void setBlendMode( AnimatorRuleBlendMode blendMode )
+	end
+	
+	/** \brief Set blend factor clamped to the range from 0 to 1. */
+	public func void setBlendFactor( float blendFactor )
+	end
+	
+	
+	
+	/** \brief Add bone. */
+	public func void addBone( String bone )
+	end
+	
+	/** \brief Remove all bones. */
+	public func void removeAllBones()
+	end
+	
+	/** \brief Copy all bones from another rule. */
+	public func void copyBonesFrom( AnimatorRule rule )
+	end
+	/*@}*/
+end

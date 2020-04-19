@@ -1,0 +1,358 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support to be attached to an ECBehaviorAttachSlot.
+ * 
+ * While ECBehaviorAttachToParent behavior allows to attach objects by using the IGDE World
+ * Editor the ECBehaviorAttachable behavior allows to attach objects at runtime into attachment
+ * slots provided by ECBehaviorAttachSlot.
+ * 
+ * This behavior knows how to attach to ECBehaviorAttachSlot containing an ECBehaviorCollider.
+ * 
+ * Element class properties have the prefix "attachable.".
+ * 
+ * This behavior requires ECBehaviorCollider to be present.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorAttachable extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Attachable has been attached to slot. */
+		func void attachableAttached( Instance instance, ECBehaviorAttachSlot.Instance attachSlot )
+		
+		/** \brief Attachable has been removed from slot. */
+		func void attachableDetached( Instance instance, ECBehaviorAttachSlot.Instance attachSlot )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Attachable has been attached to slot. */
+		public func void attachableAttached( Instance instance, ECBehaviorAttachSlot.Instance attachSlot )
+		end
+		
+		/** \brief Attachable has been removed from slot. */
+		public func void attachableDetached( Instance instance, ECBehaviorAttachSlot.Instance attachSlot )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorAttachable pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var ECBehaviorAttachSlot.Instance pAttachSlot
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorAttachable ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			
+			this.pCollider = ecbehavior.getCollider().instance( element )
+		end
+		
+		/** \brief Dispose of attach slot. */
+		public func void dispose()
+			this.detach()
+			this.pListeners = null
+			this.pCollider = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorAttachable getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Owner element collider. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Attach slot this element is attached to or \em null. */
+		public func ECBehaviorAttachSlot.Instance getAttachSlot()
+			return this.pAttachSlot
+		end
+		
+		/**
+		 * \brief Set attach slot.
+		 * \warning For use by ECBehaviorAttachSlot only.
+		 */
+		public func void setAttachSlot( ECBehaviorAttachSlot.Instance attachSlot )
+			if attachSlot == this.pAttachSlot
+				return
+			end
+			
+			if this.pAttachSlot != null
+				this.pListeners.forEach( block Listener each
+					each.attachableDetached( this, this.pAttachSlot )
+				end )
+			end
+			
+			this.pAttachSlot = attachSlot
+			
+			if attachSlot != null
+				this.pListeners.forEach( block Listener each
+					each.attachableAttached( this, attachSlot )
+				end )
+			end
+		end
+		
+		/** \brief Element is attached to an attachment slot. */
+		public func bool isAttached()
+			return this.pAttachSlot != null
+		end
+		
+		/**
+		 * \brief Attach to attachment slot.
+		 * \throws EInvalidParam \em slot is \em null.
+		 * \throws EInvalidParam Already attached to an attachment slot.
+		 * \throws EInvalidParam Owner Element.getParent() is not null.
+		 * \throws EInvalidParam \em slot is not empty.
+		 */
+		public func void attach( ECBehaviorAttachSlot.Instance slot )
+			slot.attach( this )
+		end
+		
+		public func void attach( ECBehaviorAttachSlot.Instance slot, Vector position )
+			slot.attach( this, position )
+		end
+		
+		public func void attach( ECBehaviorAttachSlot.Instance slot, Vector position, Quaternion orientation )
+			slot.attach( this, position, orientation )
+		end
+		
+		/** \brief Detaches from slot if attached. */
+		public func void detach()
+			if this.pAttachSlot != null
+				this.pAttachSlot.detach()
+			end
+		end
+		
+		/** \brief Detaches from slot if attached and safely disposes of the element. */
+		public func void detachAndDispose()
+			this.detach()
+			this.getElement().safeDispose()
+		end
+		
+		/**
+		 * \brief Safely reattaches to a different attachment slot.
+		 * 
+		 * Convenience method for calling detach() then attach() but checking problems before
+		 * calling detach(). This ensures the attachable stays attached to the old slot in
+		 * case something is wrong.
+		 * 
+		 * \note If the current attach slot is the same as the new attach slot nothing is done.
+		 */
+		public func void reattach( ECBehaviorAttachSlot.Instance slot )
+			this.reattach( slot, Vector.new(), Quaternion.new() )
+		end
+		
+		public func void reattach( ECBehaviorAttachSlot.Instance slot, Vector position )
+			this.reattach( slot, position, Quaternion.new() )
+		end
+		
+		public func void reattach( ECBehaviorAttachSlot.Instance slot, Vector position, Quaternion orientation )
+			if slot == this.pAttachSlot
+				return
+			end
+			
+			if slot.isNotEmpty()
+				throw EInvalidParam.new()
+			end
+			
+			this.detach()
+			this.attach( slot, position, orientation )
+		end
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "attachable." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String prefix ) super( eclass )
+		if collider == null
+			throw ENullPointer.new()
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pCollider = collider
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorAttachable getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorAttachable
+		end ) cast ECBehaviorAttachable
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorAttachable with specific identifier.
+	 */
+	static public func ECBehaviorAttachable getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorAttachable each
+			return each castable ECBehaviorAttachable and \
+				( each cast ECBehaviorAttachable ).getID().equals( id )
+		end ) cast ECBehaviorAttachable
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorAttachable behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorAttachable
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAttachable.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAttachable.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorAttachable.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

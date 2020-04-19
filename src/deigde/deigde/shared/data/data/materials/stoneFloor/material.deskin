@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>color.jpg</image>
+		<value property='reflectivity'>0.23</value>
+		<image property='roughness'>roughness.jpg</image>
+		<image property='ambient.occlusion'>ao.jpg</image>
+		<image property='height'>height.png</image>
+		<value property='height.scale'>0.005</value>
+		<image property='normal'>normal.jpg</image>
+		<value property='roughness.remap.lower'>0.2</value>
+		<value property='roughness.remap.upper'>0.8</value>
+	</texture>
+</skin>

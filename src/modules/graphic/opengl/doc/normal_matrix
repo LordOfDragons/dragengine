@@ -1,0 +1,37 @@
+Normal matrices are calculated like this:
+	matrixNormal = matrixMV.to3x3().inverted().transposed()
+
+Using separation between the model and view matrix to avoid updating shader parameter blocks all the time
+the calculation is slightly different. It looks now like this:
+	matrixNormal = ( matrixModel * matrixView ).to3x3().inverted().transposed()
+
+This though would require the inverse and transpose to be calculated in the vertex shader which is slow.
+Using a bit of matrix math though this can be rewritten in a different way reducing the problem. The
+following matrix rules are required:
+	C = inverse( A * B ) = inverse( B ) * inverse( A )
+	C = transpose( A * B ) = transpose( B ) * transpose( A )
+
+Using M for modelMatrix, V for modelView and N for modelNormal this gives the following starting situation
+( M, V and N are all 3x3 matrices as we are only interested in the rotation part ):
+	N = transpose( inverse( M * V ) )
+
+This can be rewritten like this:
+	N = transpose( inverse( V ) * inverse( M ) )
+
+In OpenGL we can use a trick to avoid the need for transposing a matrix:
+	a = transposed( M ) * b = b * M
+
+This works since multiplying the vector from the left side is the same as multiplying the vector from the
+right side with the transposed matrix. This way we can rewrite the equation like this:
+	N' = inverse( V ) * inverse( M )
+
+N' is now transposed( N ). Using this equation the matrices can be separated again into these:
+	matrixViewNormal = inverse( matrixView )
+	matrixModelNormal = inverse( matrixModel )
+
+matrixViewNormal and matrixModelNormal can be thus stored in the appropriate shader parameter block and
+applied to the position in the shader like this:
+	normal = ( inNormal * matrixViewNormal ) * matrixModelNormal
+
+No transpose or inverse is required in the vertex shader. Furthermore only an inverse is required for the
+shader parameter block which is calculated in the components anyways.

@@ -1,0 +1,315 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "deClassAnimation.h"
+#include "deClassAnimationBuilder.h"
+#include "../math/deClassVector.h"
+#include "../../deScriptingDragonScript.h"
+#include "../../deClassPathes.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationBone.h>
+#include <dragengine/resources/animation/deAnimationBuilder.h>
+#include <dragengine/resources/animation/deAnimationKeyframe.h>
+#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationManager.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
+#include <dragengine/resources/animation/deAnimationReference.h>
+
+
+class deClassAnimationBuilder_Builder : public deAnimationBuilder{
+	dsRunTime *pRT;
+	dsValue *pMyself;
+	deAnimation *pAnimation;
+	
+public:
+	deClassAnimationBuilder_Builder( dsRunTime *rt, dsValue *myself ) :
+	pRT( rt ), pMyself( myself ), pAnimation( NULL ){
+	}
+	
+	virtual void BuildAnimation( deAnimation *animation ){
+		pAnimation = animation;
+		
+		try{
+			pRT->RunFunction( pMyself, "buildAnimation", 0 );
+			
+		}catch( const duException &e ){
+			pAnimation = NULL;
+			pRT->PrintExceptionTrace();
+			e.PrintError();
+			DETHROW( deeInvalidParam );
+			
+		}catch( ... ){
+			pAnimation = NULL;
+			throw;
+		}
+		
+		pAnimation = NULL;
+	}
+	
+	inline deAnimation *GetAnimation() const{ return pAnimation; }
+};
+
+
+struct sAnimBldNatDat{
+	deClassAnimationBuilder_Builder *builder;
+};
+
+
+
+// Native Functions
+/////////////////////
+
+// public constructor new()
+deClassAnimationBuilder::nfNew::nfNew( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimationBuilder::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
+	( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder = NULL;
+}
+
+// public destructor Destructor()
+deClassAnimationBuilder::nfDestructor::nfDestructor( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimationBuilder::nfDestructor::RunFunction( dsRunTime*, dsValue* ){
+}
+
+
+
+// public func Animation build( String filename )
+deClassAnimationBuilder::nfBuild::nfBuild( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "build", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimation ){
+	p_AddParameter( init.clsString ); // filename
+}
+void deClassAnimationBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sAnimBldNatDat &nd = *( ( sAnimBldNatDat* )p_GetNativeData( myself ) );
+	if( nd.builder ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassAnimationBuilder* )GetOwnerClass() )->GetDS();
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	deClassAnimationBuilder_Builder builder( rt, myself );
+	deAnimationReference animation;
+	
+	nd.builder = &builder;
+	
+	try{
+		animation.TakeOver( ds.GetGameEngine()->GetAnimationManager()->CreateAnimation( filename, builder ) );
+		
+	}catch( ... ){
+		nd.builder = NULL;
+		throw;
+	}
+	
+	nd.builder = NULL;
+	ds.GetClassAnimation()->PushAnimation( rt, animation );
+}
+
+
+
+// abstract protected func void buildAnimation()
+deClassAnimationBuilder::nfBuildAnimation::nfBuildAnimation( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "buildAnimation", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE | DSTM_ABSTRACT, init.clsVoid ){
+}
+void deClassAnimationBuilder::nfBuildAnimation::RunFunction( dsRunTime*, dsValue* ){
+}
+
+
+
+// protected func void addBone( String name )
+deClassAnimationBuilder::nfAddBone::nfAddBone( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addBone", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+}
+void deClassAnimationBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	
+	deAnimationBone * const bone = new deAnimationBone;
+	try{
+		bone->SetName( name );
+		builder->GetAnimation()->AddBone( bone );
+		
+	}catch( ... ){
+		delete bone;
+		throw;
+	}
+}
+
+// protected func void addMove( String name, float playTime )
+deClassAnimationBuilder::nfAddMove::nfAddMove( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+	p_AddParameter( init.clsFloat ); // playTime
+}
+void deClassAnimationBuilder::nfAddMove::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const float playTime = rt->GetValue( 1 )->GetFloat();
+	
+	deAnimationMove * const move = new deAnimationMove;
+	try{
+		move->SetName( name );
+		move->SetPlaytime( playTime );
+		builder->GetAnimation()->AddMove( move );
+		
+	}catch( ... ){
+		delete move;
+		throw;
+	}
+}
+
+// protected func void setKeyframeListCount( int move, int count )
+deClassAnimationBuilder::nfSetKeyframeListCount::nfSetKeyframeListCount( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "setKeyframeListCount", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // count
+}
+void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	const int count = rt->GetValue( 1 )->GetInt();
+	
+	deAnimationKeyframeList *kflist = NULL;
+	try{
+		while( move.GetKeyframeListCount() < count ){
+			kflist = new deAnimationKeyframeList;
+			move.AddKeyframeList( kflist );
+			kflist = NULL;
+		}
+		
+	}catch( ... ){
+		delete kflist;
+		throw;
+	}
+}
+
+// protected func void addKeyframe( int move, int keyFrameList, float time, Vector position, Vector rotation, Vector scale )
+deClassAnimationBuilder::nfAddKeyframe::nfAddKeyframe( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addKeyframe", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // keyFrameList
+	p_AddParameter( init.clsVector ); // position
+	p_AddParameter( init.clsVector ); // rotation
+	p_AddParameter( init.clsVector ); // scale
+}
+void deClassAnimationBuilder::nfAddKeyframe::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassAnimationBuilder* )GetOwnerClass() )->GetDS();
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	deAnimationKeyframeList &kflist = *move.GetKeyframeList( rt->GetValue( 1 )->GetInt() );
+	
+	deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
+	try{
+		keyframe->SetTime( rt->GetValue( 2 )->GetFloat() );
+		keyframe->SetPosition( ds.GetClassVector()->GetVector( rt->GetValue( 3 )->GetRealObject() ) );
+		keyframe->SetRotation( ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() ) );
+		keyframe->SetScale( ds.GetClassVector()->GetVector( rt->GetValue( 5 )->GetRealObject() ) );
+		kflist.AddKeyframe( keyframe );
+		
+	}catch( ... ){
+		delete keyframe;
+		throw;
+	}
+}
+
+
+
+// Class deClassAnimationBuilder
+//////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+deClassAnimationBuilder::deClassAnimationBuilder( deScriptingDragonScript &ds ) :
+dsClass( "AnimationBuilder", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ),
+pDS( ds )
+{
+	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetBase( "Object" );
+	
+	p_SetNativeDataSize( sizeof( sAnimBldNatDat ) );
+}
+
+deClassAnimationBuilder::~deClassAnimationBuilder(){
+}
+
+
+
+// Management
+///////////////
+
+void deClassAnimationBuilder::CreateClassMembers( dsEngine *engine ){
+	sInitData init;
+	
+	init.clsAnimationBuilder = this;
+	init.clsVoid = engine->GetClassVoid();
+	init.clsBoolean = engine->GetClassBool();
+	init.clsString = engine->GetClassString();
+	init.clsInteger = engine->GetClassInt();
+	init.clsFloat = engine->GetClassFloat();
+	init.clsObject = engine->GetClassObject();
+	init.clsAnimation = pDS.GetClassAnimation();
+	init.clsVector = pDS.GetClassVector();
+	
+	AddFunction( new nfNew( init ) );
+	AddFunction( new nfDestructor( init ) );
+	
+	AddFunction( new nfBuild( init ) );
+	AddFunction( new nfBuildAnimation( init ) );
+	AddFunction( new nfAddBone( init ) );
+	AddFunction( new nfAddMove( init ) );
+	AddFunction( new nfSetKeyframeListCount( init ) );
+	AddFunction( new nfAddKeyframe( init ) );
+}

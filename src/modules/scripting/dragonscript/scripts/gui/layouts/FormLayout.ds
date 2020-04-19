@@ -1,0 +1,488 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Lays out widgets in a 2-column grid with the right column consuming extra space.
+ * 
+ * Simplifies laying out controls for configuration windows and other widgets where pairs
+ * of widgets are located under each other. The label widgets on the left side and the
+ * control widgets on the right side are aligned with their left and right edges. The label
+ * widget column consumes the minimal width required to show all labels. The right column
+ * stretches to fill the parent container.
+ * 
+ * Widgets can be assigned a constraint while adding to the layout. The default constraint
+ * stretches the widget to fill the entire cell it is located in. The constraint can be
+ * changed to not stretch the component to fill the cell in either direction. In addition
+ * the height of the row the widget belongs to can be set to consume extra space for
+ * example if the control widget is a text area. The row stretches in height if at least
+ * one of the widgets inside specifies the stretch constraint.
+ * 
+ * Instances of this layout can not be shared by multiple widgets.
+ */
+class FormLayout implements Layout
+	/** \brief Widget layout settings. */
+	public class LayoutSettings
+		/** \brief Stretch widget along X direction to fill cell. */
+		private var bool pStretchWidget
+		
+		/** \brief Add extra space to row. */
+		private var bool pStretchRow
+		
+		
+		
+		/**
+		 * \brief Create layout setting with default parameters.
+		 * \details Widget stretches along X direction and no extra space is added to row.
+		 */
+		public func new()
+			this.pStretchWidget = true
+			this.pStretchRow = false
+		end
+		
+		/**
+		 * \brief Create layout setting with widget stretching along X direction set.
+		 * \details No extra space is added to row.
+		 */
+		public func new( bool stretchWidget )
+			this.pStretchWidget = stretchWidget
+			this.pStretchRow = false
+		end
+		
+		/** \brief Create layout setting. */
+		public func new( bool stretchWidget, bool stretchRow )
+			this.pStretchWidget = stretchWidget
+			this.pStretchRow = stretchRow
+		end
+		
+		/** \brief Create copy of layout setting. */
+		public func new( LayoutSettings settings )
+			this.pStretchWidget = settings.pStretchWidget
+			this.pStretchRow = settings.pStretchRow
+		end
+		
+		
+		
+		/** \brief Stretch widget along X direction to fill cell. */
+		public func bool getStretchWidget()
+			return this.pStretchWidget
+		end
+		
+		/** \brief Set stretch widget along X direction to fill cell. */
+		public func void setStretchWidget( bool stretchWidget )
+			this.pStretchWidget = stretchWidget
+		end
+		
+		/** \brief Add extra space to row. */
+		public func bool getStretchRow()
+			return this.pStretchRow
+		end
+		
+		/** \brief Set add extra space to row. */
+		public func void setStretchRow( bool stretchRow )
+			this.pStretchRow = stretchRow
+		end
+	end
+	
+	
+	
+	/** \brief Stretch right column. */
+	private var bool pStretchRightColumn
+	
+	/** \brief Size of gap between columns. */
+	private var int pGapColumns
+	
+	/** \brief Size of gap between rows. */
+	private var int pGapRows
+	
+	/** \brief Widget layout settings. */
+	private var Dictionary pWidgetSettings
+	
+	
+	
+	/** \brief Create form layout stretching the right column with no gap between child widgets. */
+	public func new() this( true, 0, 0 )
+	end
+	
+	/** \brief Create form layout. */
+	public func new( bool stretchRightColumn, int gapColumn, int gapRow )
+		this.pStretchRightColumn = stretchRightColumn
+		this.pGapColumns = gapColumn
+		this.pGapRows = gapRow
+		this.pWidgetSettings = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Stretch right column. */
+	public func bool getStretchRightColumn()
+		return this.pStretchRightColumn
+	end
+	
+	/** \brief Set stretch right column. */
+	public func void setStretchRightColumn( bool stretchRightColumn )
+		this.pStretchRightColumn = stretchRightColumn
+	end
+	
+	/** \brief Gap between coumns. */
+	public func int getGapColumns()
+		return this.pGapColumns
+	end
+	
+	/** \brief Set gap between columns. */
+	public func void setGapColumns( int gap )
+		this.pGapColumns = gap
+	end
+	
+	/** \brief Gap between rows. */
+	public func int getGapRows()
+		return this.pGapRows
+	end
+	
+	/** \brief Set gap between rows. */
+	public func void setGapRows( int gap )
+		this.pGapRows = gap
+	end
+	
+	
+	
+	/** \brief Add Widget to Layout using settings of type LayoutSettings or \em null to use default. */
+	public func void addWidget( Widget widget, Object settings )
+		if settings != null
+			this.pWidgetSettings.setAt( widget, settings )
+		end
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+		this.pWidgetSettings.removeIfExisting( widget )
+	end
+	
+	
+	
+	/** \brief Layout widgets. */
+	public func void doLayout( Container container )
+		var int count = container.getWidgetCount()
+		
+		// determine first the minimum size needed. this is the real minimum size not a
+		// potentially artifial minimal size from container.getMinimumSize()
+		var int newSizeX = container.getContainerWidth()
+		var int newSizeY = container.getContainerHeight()
+		var Point minSize = this.getMinimumSizeFor( container, newSizeX )
+		
+		// the size of the non-stretching column
+		var int columnNonStretchWidth = this.getNoStretchColumnWidth( container, newSizeX )
+		
+		// now determine how much additional space we have got
+		// at our disposal to size child widgets beyond minimum
+		var int cy = container.getPadding().getTop()
+		var int i, effSize, sizeGain
+		var Widget child
+		
+		var Point leftChildSize
+		var BorderSize leftBorderSize
+		var int leftBorderHeight
+		var int leftBorderWidth
+		var int leftBorderLeft
+		var int leftBorderTop
+		
+		var Point rightChildSize
+		var BorderSize rightBorderSize
+		var int rightBorderHeight
+		var int rightBorderWidth
+		var int rightBorderLeft
+		var int rightBorderTop
+		
+		var int rowHeight
+		
+		var Widget leftWidget
+		var Widget rightWidget
+		var LayoutSettings leftSettings
+		var LayoutSettings rightSettings
+		
+		// delculate offsets
+		var int cxNonStretch
+		var int cxStretch
+		var int columnStretchWidth
+		var int refSizeLeft
+		var int refSizeRight
+		
+		if this.pStretchRightColumn
+			cxNonStretch = container.getPadding().getLeft()
+			cxStretch = cxNonStretch + this.pGapColumns + columnNonStretchWidth
+			columnStretchWidth = newSizeX - cxStretch
+			refSizeLeft = columnNonStretchWidth
+			refSizeRight = columnStretchWidth
+			
+		else
+			cxStretch = container.getPadding().getLeft()
+			cxNonStretch = newSizeX - columnNonStretchWidth
+			columnStretchWidth = cxNonStretch - this.pGapColumns - cxStretch
+			refSizeLeft = columnStretchWidth
+			refSizeRight = columnNonStretchWidth
+		end
+		
+		// available space
+		var int availSpaceX = DEMath.max( container.getWidth() - minSize.getX(), 0 )
+		var int availSpaceY = DEMath.max( container.getHeight() - minSize.getY(), 0 )
+		var int countStretchRow = this.getNumRowsStretch( container )
+		var int sizeGainY
+		
+		if countStretchRow == 0
+			sizeGainY = 0
+			
+		else
+			sizeGainY = availSpaceY / countStretchRow
+		end
+		
+		// layout widgets
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			// store row left widget parameters
+			if leftWidget == null
+				leftWidget = child
+				leftSettings = this.pWidgetSettings.getAt( leftWidget, null ) cast LayoutSettings
+				leftChildSize = leftWidget.getMinimumSizeForWidth( refSizeLeft )
+				
+				if leftWidget.getBorder() == null
+					leftBorderLeft = 0
+					leftBorderTop = 0
+					leftBorderWidth = 0
+					leftBorderHeight = 0
+					
+				else
+					leftBorderSize = leftWidget.getBorder().getBorderSize()
+					leftBorderLeft = leftBorderSize.getLeft()
+					leftBorderTop = leftBorderSize.getTop()
+					leftBorderWidth = leftBorderSize.getWidth()
+					leftBorderHeight = leftBorderSize.getHeight()
+				end
+				
+				continue
+			end
+			
+			// sotre row right widget parameters
+			rightWidget = child
+			rightSettings = this.pWidgetSettings.getAt( rightWidget, null ) cast LayoutSettings
+			rightChildSize = rightWidget.getMinimumSizeForWidth( refSizeRight )
+			
+			if rightWidget.getBorder() == null
+				rightBorderLeft = 0
+				rightBorderTop = 0
+				rightBorderWidth = 0
+				rightBorderHeight = 0
+				
+			else
+				rightBorderSize = rightWidget.getBorder().getBorderSize()
+				rightBorderLeft = rightBorderSize.getLeft()
+				rightBorderTop = rightBorderSize.getTop()
+				rightBorderWidth = rightBorderSize.getWidth()
+				rightBorderHeight = rightBorderSize.getHeight()
+			end
+			
+			// determine height of row required respecting row stretch if present
+			rowHeight = DEMath.max( leftChildSize.getY() + leftBorderHeight, rightChildSize.getY() + rightBorderHeight )
+			
+			if ( leftSettings != null and leftSettings.getStretchRow() ) \
+			or ( rightSettings != null and rightSettings.getStretchRow() )
+				if countStretchRow > 1
+					rowHeight += sizeGainY
+					availSpaceY -= sizeGainY
+					
+				else
+					rowHeight += availSpaceY
+					availSpaceY = 0
+				end
+				countStretchRow--
+			end
+			
+			// determine position and width of left and right widgets respecting layout settings
+			if this.pStretchRightColumn
+				leftWidget.setPosition( Point.new( cxNonStretch + leftBorderLeft, cy + leftBorderTop ) )
+				leftWidget.setSize( Point.new( columnNonStretchWidth - leftBorderWidth, rowHeight - leftBorderHeight ) )
+				
+				rightWidget.setPosition( Point.new( cxStretch + rightBorderLeft, cy + rightBorderTop ) )
+				
+				if rightSettings == null or rightSettings.getStretchWidget()
+					rightWidget.setSize( Point.new( columnStretchWidth - rightBorderWidth, rowHeight - rightBorderHeight ) )
+					
+				else
+					rightWidget.setSize( Point.new( DEMath.min( rightChildSize.getX(), \
+						columnStretchWidth - rightBorderWidth ), rowHeight - rightBorderHeight ) )
+				end
+				
+			else
+				rightWidget.setPosition( Point.new( cxNonStretch + rightBorderLeft, cy + rightBorderTop ) )
+				rightWidget.setSize( Point.new( columnNonStretchWidth - rightBorderWidth, rowHeight - rightBorderHeight ) )
+				
+				leftWidget.setPosition( Point.new( cxStretch + leftBorderLeft, cy + leftBorderTop ) )
+				
+				if leftSettings == null or leftSettings.getStretchWidget()
+					leftWidget.setSize( Point.new( columnStretchWidth - leftBorderWidth, rowHeight - leftBorderHeight ) )
+					
+				else
+					leftWidget.setSize( Point.new( DEMath.min( leftChildSize.getX(), \
+						columnStretchWidth - leftBorderWidth ), rowHeight - leftBorderHeight ) )
+				end
+			end
+			
+			cy += rowHeight + this.pGapRows
+			
+			leftWidget = null
+		end
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize( Container container )
+		return this.getMinimumSizeFor( container, container.getContainerWidth() )
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		return this.getMinimumSizeFor( container, DEMath.max( width - container.getPadding().getWidth(), 0 ) )
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		return this.getMinimumSizeFor( container, container.getContainerWidth() )
+	end
+	
+	
+	
+	/** \brief Minimum size required for child widgets. */
+	protected func Point getMinimumSizeFor( Container container, int width )
+		var int count = container.getWidgetCount()
+		var Point minSize = Point.new( 1, 1 )
+		var bool side = this.pStretchRightColumn
+		var bool nextRow = false
+		var Point childSize
+		var Widget child
+		var int cxNonStretch = 0
+		var int cxStretch = 0
+		var int cyRow = 0
+		var int cy = 0
+		var int i
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			childSize = child.getMinimumSizeWithBorderForWidth( width )
+			
+			if side
+				cxNonStretch = DEMath.max( cxNonStretch, childSize.getX() )
+				
+			else
+				cxStretch = DEMath.max( cxStretch, childSize.getX() )
+			end
+			side = not side
+			
+			if nextRow
+				if cy > 0
+					cy += this.pGapRows
+				end
+				cy += DEMath.max( cyRow, childSize.getY() )
+				
+			else
+				cyRow = childSize.getY()
+			end
+			nextRow = not nextRow
+		end
+		
+		if nextRow
+			if cy > 0
+				cy += this.pGapRows
+			end
+			cy += DEMath.max( cyRow, childSize.getY() )
+		end
+		
+		return Point.new( cxNonStretch + this.pGapColumns + cxStretch, cy ).largest( minSize ) + container.getPadding().getSize()
+	end
+	
+	/** \brief Minimum size required for the non-stretching column widgets. */
+	protected func int getNoStretchColumnWidth( Container container, int width )
+		var int count = container.getWidgetCount()
+		var bool side = this.pStretchRightColumn
+		var int minWidth = 1
+		var Widget child
+		var int i
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			if side
+				minWidth = DEMath.max( minWidth, child.getMinimumSizeWithBorderForWidth( width ).getX() )
+			end
+			side = not side
+		end
+		
+		return minWidth
+	end
+	
+	/** \brief Number of rows requiring stretching. */
+	protected func int getNumRowsStretch( Container container )
+		var int count = container.getWidgetCount()
+		var LayoutSettings settings
+		var bool stretchRow = false
+		var bool nextRow = false
+		var int countStretch = 0
+		var Widget child
+		var int i
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			settings = this.pWidgetSettings.getAt( child, null ) cast LayoutSettings
+			if settings != null and settings.getStretchRow()
+				stretchRow = true
+			end
+			
+			if nextRow
+				if stretchRow
+					countStretch++
+				end
+				stretchRow = false
+			end
+			nextRow = not nextRow
+		end
+		
+		return countStretch
+	end
+end

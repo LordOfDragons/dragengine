@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Light LightPass Point</name>
+	
+	<texture name="texDepth" target="0"/>
+	<texture name="texDiffuse" target="1"/>
+	<texture name="texNormal" target="2"/>
+	<texture name="texSpecular" target="3"/>
+	<texture name="texShadow1" target="4"/>
+	<texture name="texShadow2" target="5"/>
+	
+	<parameter name="pLight1Pos"/> <!-- 0 -->
+	<parameter name="pLight1Color"/> <!-- 1 -->
+	<parameter name="pLight2Pos"/> <!-- 2 -->
+	<parameter name="pLight2Color"/> <!-- 3 -->
+	<parameter name="pLight3Pos"/> <!-- 4 -->
+	<parameter name="pLight3Color"/> <!-- 5 -->
+	<parameter name="pLight4Pos"/> <!-- 6 -->
+	<parameter name="pLight4Color"/> <!-- 7 -->
+	<parameter name="pLight5Pos"/> <!-- 8 -->
+	<parameter name="pLight5Color"/> <!-- 9 -->
+	<parameter name="pLight6Pos"/> <!-- 10 -->
+	<parameter name="pLight6Color"/> <!-- 11 -->
+	<parameter name="pLight7Pos"/> <!-- 12 -->
+	<parameter name="pLight7Color"/> <!-- 13 -->
+	<parameter name="pLight8Pos"/> <!-- 14 -->
+	<parameter name="pLight8Color"/> <!-- 15 -->
+	<parameter name="pLightAttC1"/> <!-- 16 -->
+	<parameter name="pLightAttC2"/> <!-- 17 -->
+	<parameter name="pLightAttC3"/> <!-- 18 -->
+	<parameter name="pLightAttC4"/> <!-- 19 -->
+	<parameter name="pLightAttD1"/> <!-- 20 -->
+	<parameter name="pLightAttD2"/> <!-- 21 -->
+	<parameter name="pLightAttD3"/> <!-- 22 -->
+	<parameter name="pLightAttD4"/> <!-- 23 -->
+	<parameter name="pPosTransform"/> <!-- 24 -->
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+void main( void ){
+	vTexCoord = gl_MultiTexCoord0.st;
+	vScreenCoord = gl_Vertex.xy;
+	
+	gl_Position = vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<!-- notes:
+	( attenuation - pLight1Damp.x ) * pLight1Damp.y
+	change dampening coefficients to look like this:
+	attenuation * damp1 + damp2
+	with
+	damp1 = pLight1Damp.y
+	damp2 = -pLight1Damp.x * pLight1Damp.y
+	-->
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+uniform vec3 pLight1Pos; // light position in object space
+uniform vec3 pLight1Color; // light color
+#ifdef HAS_LIGHT_2
+uniform vec3 pLight2Pos; // light position in object space
+uniform vec3 pLight2Color; // light color
+#endif
+#ifdef HAS_LIGHT_3
+uniform vec3 pLight3Pos; // light position in object space
+uniform vec3 pLight3Color; // light color
+#endif
+#ifdef HAS_LIGHT_4
+uniform vec3 pLight4Pos; // light position in object space
+uniform vec3 pLight4Color; // light color
+#endif
+#ifdef HAS_LIGHT_5
+uniform vec3 pLight5Pos; // light position in object space
+uniform vec3 pLight5Color; // light color
+#endif
+#ifdef HAS_LIGHT_6
+uniform vec3 pLight6Pos; // light position in object space
+uniform vec3 pLight6Color; // light color
+#endif
+#ifdef HAS_LIGHT_7
+uniform vec3 pLight7Pos; // light position in object space
+uniform vec3 pLight7Color; // light color
+#endif
+#ifdef HAS_LIGHT_8
+uniform vec3 pLight8Pos; // light position in object space
+uniform vec3 pLight8Color; // light color
+#endif
+uniform vec4 pLightAttC1; // light attenuation coefficient 1: l1, l2, l3, l4
+uniform vec4 pLightAttC2; // light attenuation coefficient 2: l1, l2, l3, l4
+#ifdef HAS_LIGHT_5
+uniform vec4 pLightAttC3; // light attenuation coefficient 1: l5, l6, l7, l8
+uniform vec4 pLightAttC4; // light attenuation coefficient 2: l5, l6, l7, l8
+#endif
+uniform vec4 pLightAttD1; // light damping coefficient 1: l1, l2, l3, l4
+uniform vec4 pLightAttD2; // light damping coefficient 2: l1, l2, l3, l4
+#ifdef HAS_LIGHT_5
+uniform vec4 pLightAttD3; // light damping coefficient 1: l5, l6, l7, l8
+uniform vec4 pLightAttD4; // light damping coefficient 2: l5, l6, l7, l8
+#endif
+uniform vec4 pPosTransform; // position transform
+
+uniform sampler2D texDepth;
+uniform sampler2D texDiffuse;
+uniform sampler2D texNormal;
+uniform sampler2D texSpecular;
+uniform sampler2D texShadow1;
+#ifdef HAS_LIGHT_5
+uniform sampler2D texShadow2;
+#endif
+
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+const float epsilon = 0.00001;
+const vec4 c1 = vec4( 1.0 );
+const vec4 c0 = vec4( 0.0 );
+
+// A light which illuminates objects at 80 lum/sr should be drawn
+// at 3183 lumens/meter^2/steradian, which equates to a multiplier
+// of 39.78 per lumen.
+//const float specularMultiplier = 39.78f;
+const float specularMultiplier = 2.0; //9.945f; // 19.98
+
+// texDiffuse: color.r, color.g, color.b, alpha
+// texNormal: normal.x, normal.y, normal.z, n/a
+// texSpecular: specular.int, specular.exp, n/a, n/a
+
+#ifdef GEOM_ENCODED_DEPTH
+const vec3 unpackGeomDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+#endif
+
+void main( void ){
+	vec4 diffuse = texture2D( texDiffuse, vTexCoord );
+#ifdef SHADER_STENCIL_TEST
+	if( diffuse.a < epsilon ) discard;
+#endif
+	
+	// calculate position
+#ifdef GEOM_ENCODED_DEPTH
+	vec3 position = vec3( dot( texture2D( texDepth, vTexCoord ).rgb, unpackGeomDepth ) );
+#else
+	vec3 position = vec3( texture2D( texDepth, vTexCoord ).r );
+#endif
+	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+	
+	// fetch values used across all lights
+	vec3 norpos = normalize( position );
+	vec3 normal = texture2D( texNormal, vTexCoord ).rgb;
+	float useNormal = step( dot( normal, normal ), epsilon ); // 0 if use normal, 1 otherwise
+	vec2 specularity = texture2D( texSpecular, vTexCoord ).rg;
+	specularity.g = specularity.g * 255.0 + 0.001;
+	vec4 shadow = texture2D( texShadow1, vTexCoord );
+	
+	
+	
+	// calculate the light contribution
+	vec4 speccoeff, diffcoeff, ldist;
+	vec3 ldir;
+	
+	ldir = pLight1Pos - position;
+	ldist.r = length( ldir );
+	if( ldist.r != 0.0 ) ldir /= ldist.r;
+	diffcoeff.r = dot( normal, ldir );
+	speccoeff.r = dot( reflect( ldir, normal ), norpos );
+	
+#ifdef HAS_LIGHT_2
+	ldir = pLight2Pos - position;
+	ldist.g = length( ldir );
+	if( ldist.g != 0.0 ) ldir /= ldist.g;
+	diffcoeff.g = dot( normal, ldir );
+	speccoeff.g = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+#ifdef HAS_LIGHT_3
+	ldir = pLight3Pos - position;
+	ldist.b = length( ldir );
+	if( ldist.b != 0.0 ) ldir /= ldist.b;
+	diffcoeff.b = dot( normal, ldir );
+	speccoeff.b = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+#ifdef HAS_LIGHT_4
+	ldir = pLight4Pos - position;
+	ldist.a = length( ldir );
+	if( ldist.a != 0.0 ) ldir /= ldist.a;
+	diffcoeff.a = dot( normal, ldir );
+	speccoeff.a = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+	diffcoeff = max( diffcoeff, vec4( useNormal ) ); // normal-less lighting or normal based lighting
+	diffcoeff *= max( pLightAttD1 / ( c1 + pow( pLightAttC1 * ldist, pLightAttC2 ) ) + pLightAttD2, c0 ); // att + damp
+	diffcoeff *= shadow;
+	speccoeff = pow( max( speccoeff, vec4( useNormal ) ), vec4( specularity.g ) ) * vec4( specularity.r );
+	
+	vec3 finalColor = pLight1Color * ( diffuse.rgb + vec3( speccoeff.r ) ) * vec3( diffcoeff.r );
+#ifdef HAS_LIGHT_2
+	finalColor += pLight2Color * ( diffuse.rgb + vec3( speccoeff.g ) ) * vec3( diffcoeff.g );
+#endif
+#ifdef HAS_LIGHT_3
+	finalColor += pLight3Color * ( diffuse.rgb + vec3( speccoeff.b ) ) * vec3( diffcoeff.b );
+#endif
+#ifdef HAS_LIGHT_4
+	finalColor += pLight4Color * ( diffuse.rgb + vec3( speccoeff.a ) ) * vec3( diffcoeff.a );
+#endif
+	
+	
+	
+#ifdef HAS_LIGHT_5
+	shadow = texture2D( texShadow2, vTexCoord );
+	
+	ldir = pLight5Pos - position;
+	ldist.r = length( ldir );
+	if( ldist.r != 0.0 ) ldir /= ldist.r;
+	diffcoeff.r = dot( normal, ldir );
+	speccoeff.r = dot( reflect( ldir, normal ), norpos );
+	
+#ifdef HAS_LIGHT_6
+	ldir = pLight6Pos - position;
+	ldist.g = length( ldir );
+	if( ldist.g != 0.0 ) ldir /= ldist.g;
+	diffcoeff.g = dot( normal, ldir );
+	speccoeff.g = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+#ifdef HAS_LIGHT_7
+	ldir = pLight7Pos - position;
+	ldist.b = length( ldir );
+	if( ldist.b != 0.0 ) ldir /= ldist.b;
+	diffcoeff.b = dot( normal, ldir );
+	speccoeff.b = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+#ifdef HAS_LIGHT_8
+	ldir = pLight8Pos - position;
+	ldist.a = length( ldir );
+	if( ldist.a != 0.0 ) ldir /= ldist.a;
+	diffcoeff.a = dot( normal, ldir );
+	speccoeff.a = dot( reflect( ldir, normal ), norpos );
+#endif
+	
+	diffcoeff = max( diffcoeff, vec4( useNormal ) ); // normal-less lighting or normal based lighting
+	diffcoeff *= max( pLightAttD3 / ( c1 + pow( pLightAttC3 * ldist, pLightAttC4 ) ) + pLightAttD4, c0 ); // att + damp
+	diffcoeff *= shadow;
+	speccoeff = pow( max( speccoeff, vec4( useNormal ) ), vec4( specularity.g ) ) * vec4( specularity.r );
+	
+	finalColor += pLight5Color * ( diffuse.rgb + vec3( speccoeff.r ) ) * vec3( diffcoeff.r );
+#ifdef HAS_LIGHT_6
+	finalColor += pLight6Color * ( diffuse.rgb + vec3( speccoeff.g ) ) * vec3( diffcoeff.g );
+#endif
+#ifdef HAS_LIGHT_7
+	finalColor += pLight7Color * ( diffuse.rgb + vec3( speccoeff.b ) ) * vec3( diffcoeff.b );
+#endif
+#ifdef HAS_LIGHT_8
+	finalColor += pLight8Color * ( diffuse.rgb + vec3( speccoeff.a ) ) * vec3( diffcoeff.a );
+#endif
+	
+#endif // HAS_LIGHT_5
+	
+	gl_FragColor = vec4( finalColor, diffuse.a );
+}
+	]]></program>
+	
+</shader>

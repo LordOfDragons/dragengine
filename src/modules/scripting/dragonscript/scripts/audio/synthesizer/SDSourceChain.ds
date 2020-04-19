@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of synthesizer source.
+ * 
+ * Once defined a source can be added to an synthesizer using the stored definition.
+ * 
+ */
+class SDSourceChain extends SDSource
+	/** \brief Sounds. */
+	private var Array pSounds
+	
+	/** \brief Minimum speed. */
+	private var float pMinSpeed
+	
+	/** \brief Maximum speed. */
+	private var float pMaxSpeed
+	
+	
+	
+	/** \brief Create synthesizer source definition. */
+	public func new()
+		this.pSounds = Array.new()
+		this.pMinSpeed = 1.0
+		this.pMaxSpeed = 1.0
+	end
+	
+	
+	
+	/** \brief Sounds as array of Sound. */
+	public func Array getSounds()
+		return this.pSounds
+	end
+	
+	/** \brief Minimum speed. */
+	public func float getMinSpeed()
+		return this.pMinSpeed
+	end
+	
+	/** \brief Set minimum speed. */
+	public func void setMinSpeed( float speed )
+		this.pMinSpeed = speed
+	end
+	
+	/** \brief Maximum speed. */
+	public func float getMaxSpeed()
+		return this.pMaxSpeed
+	end
+	
+	/** \brief Set maximum speed. */
+	public func void setMaxSpeed( float speed )
+		this.pMaxSpeed = speed
+	end
+	
+	
+	
+	/**
+	 * \brief Build engine synthesizer source using the stored definition.
+	 */
+	public func SynthesizerSource buildSource( Synthesizer synthesizer )
+		var SSChain source = SSChain.new()
+		
+		this.buildSourceCommon( synthesizer, source )
+		
+		this.forEachTarget( block SDSourceTargetLink each
+			source.targetAddLink( each.getTarget() cast SSChainTarget, each.getLink().getIndex() )
+		end )
+		
+		this.pSounds.forEach( block Sound each
+			source.addSound( each )
+		end )
+		source.setMinSpeed( this.pMinSpeed )
+		source.setMaxSpeed( this.pMaxSpeed )
+		
+		return source
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( console, "Sounds" ) + " sounds=" \
+			+ this.pSounds.getCount() + " speed=" + this.pMinSpeed + "-" + this.pMaxSpeed + ")" )
+	end
+end

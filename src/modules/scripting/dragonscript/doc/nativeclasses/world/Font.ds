@@ -1,0 +1,104 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable font resources.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Font
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load font from file.
+	 * 
+	 * If the font file has been already loaded it is assigned to this object. If the font
+	 * is not loaded yet the engine loads the font. This call blocks until the font is fully
+	 * loaded and ready to be used. For asynchronous loading use loadAsynchron(). Multiple
+	 * objects can point to the same loaded font resource. Once no object instance uses an
+	 * font file anymore it is released from memory.
+	 */
+	public func new( String filename, int fontSize )
+	end
+	
+	/**
+	 * \brief Use font with different size.
+	 */
+	public func new( Font font, int fontSize )
+	end
+	
+	/**
+	 * \brief Load font from file asynchronously.
+	 * 
+	 * Registers a request in the game engine to load an font. Once finished or if the file
+	 * is already loaded the listener is used to deliver the loaded font or \em null if the
+	 * loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the font has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/** \brief Size of text in pixels using this font. */
+	public func Point getTextSize( String text )
+	end
+	
+	/** \brief Width of character in pixels using this font. */
+	public func float getCharWidth( int char )
+	end
+	
+	/** \brief Advance of character in pixels using this font. */
+	public func float getCharAdvance( int char )
+	end
+	
+	/** \brief Bearing of character in pixels using this font. */
+	public func float getCharBearing( int char )
+	end
+	
+	/**
+	 * \brief Font size in pixels.
+	 * 
+	 * This is also the line height of the font.
+	 */
+	public func int getSize()
+	end
+	
+	/** \brief Largest width in pixels of all characters supported by this font. */
+	public func float getMaxWidth()
+	end
+	
+	
+	
+	/**
+	 * \brief Font is equal to another object.
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
+	 * \returns \em true if \em other is of type Font and both point to the same engine font resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * 
+	 * Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

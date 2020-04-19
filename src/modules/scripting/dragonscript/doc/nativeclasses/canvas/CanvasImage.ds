@@ -1,0 +1,72 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Canvas image.
+ * 
+ * This is a native class.
+ */
+class CanvasImage extends Canvas
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create canvas image. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Image or \em null if not set. */
+	public func Image getImage()
+	end
+	
+	/** \brief Set image or \em null to unset. */
+	public func void setImage( Image image )
+	end
+	
+	/** \brief Repeat count along X axis. */
+	public func int getRepeatX()
+	end
+	
+	/** \brief Set repeat count along X axis. */
+	public func void setRepeatX( int count )
+	end
+	
+	/** \brief Repeat count along Y axis. */
+	public func int getRepeatY()
+	end
+	
+	/** \brief Set repeat count along Y axis. */
+	public func void setRepeatY( int count )
+	end
+	
+	
+	
+	/**
+	 * \brief Canvas is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type canvas and canvas are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

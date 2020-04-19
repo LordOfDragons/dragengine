@@ -1,0 +1,174 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Audio.Announcer
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Announcer element class property for use with XML loading.
+ * 
+ * Announcer is set from XML using a path. Loads the announcer during preloading.
+ * The value of the property is then the loaded resource. If loading fails null
+ * announcer is stored.
+ */
+class ECPAnnouncer extends ElementClassProperty implements PreloadListener
+	private var LoadAnnouncer pLoader
+	private var String pPath
+	private var Announcer pAnnouncer
+	private var bool pHasPreloaded
+	private var bool pFailed
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, LoadAnnouncer loader ) this( name, loader, null )
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, LoadAnnouncer loader, String path ) super( name )
+		this.pLoader = loader
+		this.pPath = path
+	end
+	
+	
+	
+	/** \brief Announcer loader. */
+	public func LoadAnnouncer getLoader()
+		return this.pLoader
+	end
+	
+	/** \brief Path to announcer. */
+	public func String getPath()
+		return this.pPath
+	end
+	
+	/** \brief Set path to announcer. */
+	public func void setPath( String path )
+		this.pPath = path
+	end
+	
+	/** \brief Announcer or \em null if not present. */
+	public func Announcer getAnnouncer()
+		return this.pAnnouncer
+	end
+	
+	/** \brief Set announcer or \em null if not present. */
+	public func void setAnnouncer( Announcer announcer )
+		this.pAnnouncer = announcer
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pPath = value cast String
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		
+		if this.pPath == null or this.pPath.empty()
+			return
+		end
+		
+		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		
+		try
+			var PreloadAnnouncer preloader = this.pLoader.loadFromFileAsync( path, counter )
+			preloader.addListener( this )
+			preloader.checkFinished()
+			
+		catch Exception e
+		end
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pFailed
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Failed loading announcer " \
+				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+			return true
+		end
+		return false
+	end
+	
+	
+	
+	/** \brief One or more resources finished preloading but not all yet. */
+	public func void resourcesFinished( Preloader preloader )
+	end
+	
+	/** \brief Preloading of all resources finished.  */
+	public func void preloadingFinished( Preloader preloader, bool success )
+		if success
+			this.pAnnouncer = ( preloader cast PreloadAnnouncer ).getAnnouncer()
+			
+		else
+			this.pFailed = true
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Announcer modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored announcer is returned.
+	 * If the named stub property is present it is loaded as announcer resource.
+	 */
+	public func Announcer getAnnouncer( StubWithProperties stub, ElementClass eclass )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pAnnouncer
+		end
+		
+		try
+			return this.pLoader.loadFromFile( value )
+			
+		catch Exception e
+			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+		end
+	end
+end

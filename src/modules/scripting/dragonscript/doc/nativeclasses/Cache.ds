@@ -1,0 +1,135 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Game usable cache directory.
+ * 
+ * Stores files in game specific cache virtual file directory using a unique string
+ * identifier of variable length. The identifer can be any kind of string typically
+ * a file path or concatenations of file path and other information. While opening
+ * or saving a file a file reader/writer is returned with the file pointer set to
+ * the starting position of the cache content.
+ * 
+ * Cache content is persistent across game launches but not across different machines.
+ * The user decides how much disk space is allowed to be used by game caches. If new
+ * files are written while space becomes low the oldest files will be deleted to make
+ * space to store the new file. This means the game should not try to store huge amount
+ * of cache data or caches are constantly rebuild.
+ * 
+ * The user of the cache is responsible to write into the cache content any data
+ * required to detect outdated cache content. If content is outdated use delete()
+ * call to delete the cache file.
+ * 
+ * Multiple caches can be used to group types of cached files as long as they all have
+ * different cache directories.
+ * 
+ * The typical usage looks like this.
+ * \code{.ds}
+ * class MyObject
+ *     // Global cache for MyObject
+ *     private static var Cache globalCache = Cache.new("myCachedData")
+ *     
+ *     // Cache ID of object
+ *     private var String cacheID
+ *     
+ *     public func new(String id)
+ *         cacheID = id
+ *         
+ *         // Try loading the data from the cache. If the cached file is not present
+ *         // Cache.read() returns null
+ *         try
+ *             var FileReader reader = globalCache.read(id)
+ *             if reader != null and readFromCache(reader)
+ *                 // Object ready to be used
+ *                 return
+ *             end
+ *             
+ *         catch Exception e
+ *             // We end up here if the cached file is present but damaged. In this
+ *             // case delete the cached file and build it anew
+ *             globalCache.delete(id)
+ *         end
+ *         
+ *         // Build the object if required. This is the case if either no cache file
+ *         // is present or the cache file is damaged and has been deleted
+ *         build()
+ *         
+ *         // Write the object to the cache to be quickly loaded next time
+ *         writeToCache()
+ *     end
+ *     
+ *     private func void build()
+ *         // Build your object
+ *     end
+ *     
+ *     public func bool readFromCache(FileReader reader)
+ *         // Read data from cache. Also verify if the data is still valid or outdated.
+ *         if dataIsOutdated
+ *             globalCache.delete(cacheID)
+ *             return false
+ *         end
+ *         
+ *         // Finish setting up the data
+ *         return true
+ *     end
+ *     
+ *     public func void writeToCache()
+ *         // This is useful if the object changes after loading. Writes it to the
+ *         // cache. If the file is present already it is overwritten.
+ *         var FileWriter writer = globalCache.write(cacheID)
+ *         
+ *         // Write data to file using writer
+ *     end
+ * end
+ * \endcode
+ * 
+ * This is a native class.
+ */
+class Cache
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create cache storing files into directory.
+	 * 
+	 * Directory is located under the game cache directory. Each cache has to use a
+	 * unique directory.
+	 * 
+	 * \throws EInvalidParam Cache directory already in use.
+	 */
+	public func new( String directory )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Open cache file by identifier for reading if existing.
+	 * \returns null if file is absent.
+	 */
+	public func FileReader read( String id )
+		return null
+	end
+	
+	/** \brief Open cache file by identifier for writing. */
+	public func FileWriter write( String id )
+	end
+	
+	/** \brief Delete cache file by identifier if present. */
+	public func void delete( String id )
+	end
+	
+	/** \brief Delete all cache files. */
+	public func void deleteAll()
+	end
+	/*@}*/
+end

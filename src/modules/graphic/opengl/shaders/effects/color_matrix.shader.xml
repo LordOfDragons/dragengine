@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>Effect Color Matrix</name>
+	
+	<version>130</version>
+	
+	<texture name="texColor" target="0"/>
+	
+	<parameter name="pQuadParams"/>
+	<parameter name="pColorMatrix"/>
+	<parameter name="pColorOffset"/>
+	
+	<attribute name="inPosition" target="0"/>
+	
+	<output name="outColor" target="0"/>
+	
+	<sourceCode unit="vertex">v130/vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit="fragment">v130/fragment/effect/colormatrix.glsl</sourceCode>
+</shader>

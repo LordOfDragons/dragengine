@@ -1,0 +1,219 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Button with state dependent background image and optional text and image.
+ */
+class BgButton extends Button
+	/** \brief Pressed background image. */
+	private var Image pImageBgPressed
+	
+	/** \brief Unpressed background image. */
+	private var Image pImageBgUnpressed
+	
+	/** \brief Background display image. */
+	private var DisplayImage pBackground
+	
+	/** \brief Text panel. */
+	private var Panel pPanelText
+	
+	/** \brief Label. */
+	private var Label pLabel
+	
+	/** \brief Image. */
+	private var DisplayImage pImage
+	
+	
+	
+	/** \brief Create button. */
+	public func new( Image bgUnpressed, Image bgPressed ) this( bgUnpressed, bgPressed, "", null )
+	end
+	
+	/** \brief Create button. */
+	public func new( Image bgUnpressed, Image bgPressed, String text, Image image )
+		this.pImageBgPressed = bgPressed
+		this.pImageBgUnpressed = bgUnpressed
+		
+		this.setLayout( StackLayout.new() )
+		
+		this.pBackground = DisplayImage.new( bgUnpressed, RepeatMode.stretch )
+		this.addWidget( this.pBackground )
+		
+		this.pPanelText = Panel.new()
+		this.pPanelText.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		
+		this.pImage = DisplayImage.new( image )
+		this.pPanelText.addWidget( this.pImage )
+		this.pImage.setVisible( image != null )
+		
+		this.pLabel = Label.new( text )
+		this.pPanelText.addWidget( this.pLabel )
+		this.pLabel.setVisible( not text.empty() )
+		
+		this.addWidget( this.pPanelText )
+		
+		this.setBorder( null )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pImage = null
+		this.pLabel = null
+		this.pPanelText = null
+		this.pBackground = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Text of the button. */
+	public func String getText()
+		return this.pLabel.getText()
+	end
+	
+	/** \brief Set text of the button. */
+	public func void setText( String text )
+		this.pLabel.setText( text )
+		this.pLabel.setVisible( not text.empty() )
+	end
+	
+	/** \brief Image of the button. */
+	public func Image getImage()
+		return this.pImage.getImage()
+	end
+	
+	/** \brief Set image of the button. */
+	public func void setImage( Image image )
+		this.pImage.setImage( image )
+		this.pImage.setVisible( image != null )
+	end
+	
+	/** \brief Text padding. */
+	public func BorderSize getTextPadding()
+		return BorderSize.new( this.pPanelText.getPadding().getLeft(), this.pPanelText.getPadding().getTop(), \
+			this.pPanelText.getPadding().getRight(), this.pPanelText.getPadding().getBottom() )
+	end
+	
+	/** \brief Set text padding. */
+	public func void setTextPadding( BorderSize padding )
+		this.pPanelText.setPadding( padding )
+	end
+	
+	/** \brief Set text padding. */
+	public func void setTextPadding( int padding )
+		this.pPanelText.setPadding( BorderSize.new( padding ) )
+	end
+	
+	/** \brief Pressed background image. */
+	public func Image getImageBgPressed()
+		return this.pImageBgPressed
+	end
+	
+	/** \brief Set pressed background image. */
+	public func void setImageBgPressed( Image image )
+		if image == this.pImageBgPressed
+			return
+		end
+		
+		this.pImageBgPressed = image
+		this.updateBackgroundImage()
+	end
+	
+	/** \brief Unpressed background image. */
+	public func Image getImageBgUnpressed()
+		return this.pImageBgUnpressed
+	end
+	
+	/** \brief Set unpressed background image. */
+	public func void setImageBgUnpressed( Image image )
+		if image == this.pImageBgUnpressed
+			return
+		end
+		
+		this.pImageBgUnpressed = image
+		this.updateBackgroundImage()
+	end
+	
+	
+	
+	/** \brief Lock size to unpressed or presed image size, whichever exists. */
+	public func void lockSize()
+		var Point size
+		
+		if this.pImageBgUnpressed != null
+			size = this.pImageBgUnpressed.getSize()
+			
+		elif this.pImageBgPressed != null
+			size = this.pImageBgPressed.getSize()
+		end
+		
+		this.setMinimumSize( size )
+	end
+	
+	/** \brief Unlock size. */
+	public func void unlockSize()
+		this.setMinimumSize( null )
+	end
+	
+	
+	
+	/** Set font of the button text. */
+	public func void setFont( Font font )
+		super.setFont( font )
+		this.pLabel.setFont( font )
+	end
+	
+	/** Set foreground color of button text. */
+	public func void setTextColor( Color color )
+		super.setTextColor( color )
+		this.pLabel.setTextColor( color )
+	end
+	
+	
+	
+	/** \brief State changed. */
+	public func void onStateChanged( StateChangeEvent event )
+		super.onStateChanged( event )
+		this.updateBackgroundImage()
+	end
+	
+	/** Update background image. */
+	public func void updateBackgroundImage()
+		if this.pBackground == null
+			return // constructor call protection
+		end
+		
+		if this.getPressed()
+			this.pBackground.setImage( this.pImageBgPressed )
+			
+		else
+			this.pBackground.setImage( this.pImageBgUnpressed )
+		end
+	end
+end

@@ -1,0 +1,141 @@
+// pin namespaces to located script classes
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Game Application Class.
+ * 
+ * BaseGameApp provides basic starting behavior.
+ */
+class GameApp extends BaseGameApp
+	/**
+	 * Create Game Application.
+	 * 
+	 * Set here properties used by BaseGameApp during initGame(). All other initialization
+	 * work should be placed inside initGame() or one of the hook methods called by
+	 * BaseGameApp.initGame().
+	 */
+	public func new()
+		// Path to the GUI Theme file to use. If not set uses BaseGameApp.defaultPathGuiTheme
+		// 
+		//pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
+		
+		
+		// To use translation support create one or more language packs and uncomment the
+		// properties below with the appropriate values.
+		// 
+		//pathLanguagePacks = "/content/langpacks"
+		//defaultLanguagePackName = UnicodeString.newFromUTF8( "English" )
+	end
+	
+	/**
+	 * Initialize game.
+	 * 
+	 * Create required objects here and start loading. Lengthy loading work should not be
+	 * waited for in this method. Methods like startLoadGameWorld() will notify you when
+	 * the lengthy loading work is done.
+	 * 
+	 * See BaseGameApp.initGame() documentation for the supported hook methods.
+	 */
+	public func void initGame()
+		// super-call has to come first
+		super.initGame()
+		
+		// Start game by showing the Drag[en]gine Game Engine logo and optionally other logos
+		// you would like to show. WindowLogo.show*() does all the work of showing a logo or
+		// video with optional sound. Once the window is finished (the user can skip it)
+		// the provided action listener is called. This can be creating a class implementing
+		// ActionListener interface or by using BlockActionListener. This is a convenience
+		// class allowing to use a block as an action and is suitable for quick code insertion
+		// like this. Using a class implementing ActionListener is though favorable since it
+		// makes it easier to chain actions in an understandable way.
+		// 
+		// Showing the Drag[en]gine Game Engine logo is not required at all to use this game
+		// engine but we highly appreciate it if you do so.
+		
+		WindowLogo.showDragengineLogo( this.getDesktop(), BlockActionListener.new( \
+			block ActionEvent event
+				launchApplication()
+			end ) )
+	end
+	
+	/**
+	 * \brief Launch example application.
+	 * 
+	 * Called after logo windows are finished.
+	 */
+	public func void launchApplication()
+		// Show the new-project window. Hides the render window so the mouse cursor does
+		// not vanish. To continue working on your project add a main menu window or add
+		// a world using the world editor which can load below. Once done remove this
+		// code block and uncomment the one below with the appropriate changes
+		getWindowGameWorld().setVisible( false )
+		
+		var Window window = Window.new()
+		window.setLayout( BorderLayout.new( 10 ) )
+		window.addWidget( Label.new( "Congratulations!\n\n" \
+			+ "Your new game project is up and running.\n\n" \
+			+ "Add now a world to load" ), BorderLayout.Area.content )
+		window.addWidget( Button.new( "Quit Game", QuitGameActionListener.new() ), BorderLayout.Area.bottom )
+		getDesktop().addWidget( window )
+		window.fitToContent()
+		window.centerWindow()
+		
+		/*
+		// BaseGameApp adds a WindowConsole which can be toggled by pressing F1 key. Adding
+		// a ShoutConsole shows the last messages without needing to show the console.
+		getWindowGameWorld().addWidget( ShoutConsole.new( getConsole() ) )
+		
+		// Logging can be done by adding messages to the console
+		getConsole().addMessage( "Loading world..." )
+		
+		// startLoadGameWorld is a simple way to start loading a game world into the
+		// WindowGameWorld created by BaseGameApp. StartGame is a script class created
+		// alongside this application class. It will be notified when the world loading
+		// finishes and contains the required code to finish starting the game.
+		// 
+		// To use this create a world file and change the filename
+		startLoadGameWorld( StartGame.new( getWindowGameWorld(), "/content/world/game.deworld" ) )
+		*/
+	end
+	
+	/**
+	 * Create element classes and add them to element class list.
+	 */
+	protected func void createAndAddElementClasses()
+		// Always super-call
+		super.createAndAddElementClasses()
+		
+		// Add scripted element classes. These can be used by XML element classes below
+		var ElementClassList eclist = getElementClassList()
+		//eclist.add(MyElementClassClass.new())
+		
+		// Add XML element classes by recursively scanning directory for *.deeclass files.
+		// These require scripted element classes as parent classes. Using *.deeclass
+		// files you can easily add content with needing to write scripted classes.
+		getLoaders().getElementClass().addXmlElementClasses(eclist, "/content/models", true)
+		
+		// You will see also the directories /content/materials and /content/skies.
+		// These two directories are only automatically scanned by the IGDE Editor.
+		// For games you do not have to specify them anywhere are they are loaded
+		// by the individual element classes
+	end
+	
+	/**
+	 * Cleaning up.
+	 * 
+	 * Will be called before the game engine shuts down the game. This method will be also
+	 * called if the initGame() threw an exception before finishing. Make sure to check if
+	 * objects have been initialized before cleaning them up.
+	 */
+	public func void cleanUp()
+		// your cleaning up code has to come before the super-call
+		
+		// super-call has to come last
+		super.cleanUp()
+	end
+end

@@ -1,0 +1,80 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Borders.Factories
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of border factories for use with automatic gui theme creation.
+ *
+ * The factories in this list server as blue prints for factories to be used by
+ * automatic gui themes and must not be changed. For this reason call
+ * BorderFactory.copyFactory() on received factories to create a new factory
+ * of the matching type and with appropriate configuration for modifying and using.
+ */
+class BorderFactories
+	/** \brief Canvas creator factories. */
+	private var Dictionary pFactories
+	
+	
+	
+	/** \brief Create border factories. */
+	public func new()
+		this.pFactories = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Add factory. */
+	public func void add( String name, BorderFactory factory )
+		this.pFactories.setAt( name, factory )
+	end
+	
+	/** \brief Named factory or \em null if not found. */
+	public func BorderFactory getNamed( String name )
+		return this.pFactories.getAt( name, null ) cast BorderFactory
+	end
+	
+	/** \brief Remove factory if present. */
+	public func void remove( String name )
+		this.pFactories.removeIfExisting( name )
+	end
+	
+	/** \brief Remove all factories. */
+	public func void removeAll()
+		this.pFactories.removeAll()
+	end
+	
+	
+	
+	/** \brief Add default factories. */
+	public func void addDefaultFactories()
+		this.add( "Empty", EmptyBorderFactory.new() )
+		this.add( "Bevel", BevelBorderFactory.new() )
+		this.add( "Etched", EtchedBorderFactory.new() )
+		this.add( "Line", LineBorderFactory.new() )
+		this.add( "CanvasCreator", CanvasCreatorBorderFactory.new() )
+		this.add( "Combined", CombinedBorderFactory.new() )
+	end
+end

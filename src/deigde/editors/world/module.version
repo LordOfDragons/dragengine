@@ -1,0 +1,4 @@
+WORLD {
+  global: WorldEditorCreateModule;
+  local: *;
+};

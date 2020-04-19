@@ -1,0 +1,4 @@
+CRSIMPLYQUIT {
+  global: SQCreateModule;
+  local: *;
+};

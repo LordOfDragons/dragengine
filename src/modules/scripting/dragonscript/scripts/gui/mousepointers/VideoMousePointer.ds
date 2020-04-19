@@ -1,0 +1,128 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Mouse pointer using image.
+ */
+class VideoMousePointer extends DefaultMousePointer
+	/** \brief Playback timer. */
+	class PlaybackTimer extends Timer
+		/** \brief Video player to update. */
+		private var VideoPlayer pVideoPlayer
+		
+		/** \brief Create playback timer. */
+		public func new( VideoPlayer videoPlayer ) super( 0.0, true )
+			this.pVideoPlayer = videoPlayer
+		end
+		
+		/** \brief Timer elapsed. */
+		public func void fire()
+			this.pVideoPlayer.update( Engine.getElapsedTime() )
+		end
+	end
+	
+	/** \brief Playback timer. */
+	private var PlaybackTimer pTimer
+	
+	
+	
+	/** \brief Video player. */
+	private var VideoPlayer pVideoPlayer
+	
+	
+	
+	/** \brief Create mouse pointer. */
+	public func new()
+		this.pVideoPlayer = VideoPlayer.new()
+		this.pVideoPlayer.setLooping( true )
+	end
+	
+	/** \brief Destructor. */
+	public func destructor()
+		if this.pTimer != null
+			this.pTimer.giveUp()
+		end
+	end
+	
+	
+	
+	/** \brief Video player or \em null if not set. */
+	public func VideoPlayer getVideoPlayer()
+		return this.pVideoPlayer
+	end
+	
+	/** \brief Video or \em null if not set. */
+	public func Video getVideo()
+		return this.pVideoPlayer.getVideo()
+	end
+	
+	/** \brief Set video. */
+	public func void setVideo( Video video )
+		if video == this.pVideoPlayer.getVideo()
+			return
+		end
+		
+		if this.pTimer != null
+			this.pTimer.giveUp()
+			this.pTimer = null
+		end
+		this.pVideoPlayer.stop()
+		
+		this.pVideoPlayer.setVideo( video )
+		
+		if video != null
+			this.setSize( video.getSize() )
+			this.pVideoPlayer.play()
+			this.pTimer = PlaybackTimer.new( this.pVideoPlayer )
+			
+		else
+			this.setSize( Point.new() )
+		end
+		
+		this.updateCanvas()
+	end
+	
+	
+	
+	/** \brief Update canvas. */
+	public func void updateCanvas()
+		var CanvasView canvasView = this.getCanvasView()
+		
+		canvasView.removeAllCanvas()
+		
+		if this.pVideoPlayer.getVideo() == null
+			return
+		end
+		
+		var CanvasVideoPlayer canvasVideo = CanvasVideoPlayer.new()
+		canvasVideo.setVideoPlayer( this.pVideoPlayer )
+		canvasVideo.setSize( this.pVideoPlayer.getVideo().getSize() )
+		canvasView.addCanvas( canvasVideo )
+	end
+end

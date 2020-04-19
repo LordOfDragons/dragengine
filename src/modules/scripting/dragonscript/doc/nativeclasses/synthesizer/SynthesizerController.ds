@@ -1,0 +1,117 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer or synthesizer instance controller.
+ * 
+ * Wraps a synthesizer or synthesizer instance controller by controller index. Valid only as long
+ * as the wrapped synthesizer or synthesizer instance does not change controller layout.
+ * 
+ * If wrapping a synthesizer instance controller any changes to a controller triggers an
+ * update in the game engine.
+ * 
+ * If wrapping a synthesizer controller the user is responsible to call Synthesizer.contentChanged()
+ * after changing one or more controllers. Synthesizer controllers should not be changed if
+ * possible after being used in synthesizer instances.
+ * 
+ * This is a native class.
+ */
+class SynthesizerController
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Synthesizer controller can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner synthesizer or \em null if not owned by synthesizer. */
+	public func Synthesizer getSynthesizer()
+	end
+	
+	/** \brief Onwer synthesizer instance or \em null if not owned by synthesizer instance. */
+	public func SynthesizerInstance getSynthesizerInstance()
+	end
+	
+	/** \brief Controller index. */
+	public func int getControllerIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Name. */
+	public func String getName()
+	end
+	
+	/** \brief Set name. */
+	public func void setName( String name )
+	end
+	
+	/** \brief Lower limit. */
+	public func float getLower()
+	end
+	
+	/** \brief Upper limit. */
+	public func float getUpper()
+	end
+	
+	/** \brief Set value range. */
+	public func void setRange( float lower, float upper )
+	end
+	
+	/** \brief Curve. */
+	public func CurveBezier getCurve()
+	end
+	
+	/** \brief Set curve. */
+	public func void setCurve( CurveBezier curve )
+	end
+	
+	/**
+	 * \brief Set curve of controller to a constant value.
+	 * 
+	 * Helper method to set curve to constant interpolation with point (0,value).
+	 */
+	public func void setCurveConstant( float value )
+	end
+	
+	/**
+	 * \brief Set curve of controller to linear curve along play time.
+	 * 
+	 * Helper method to set curve to linear curve from (0,minval) to (playtime,maxval).
+	 */
+	public func void setCurveTime()
+	end
+	
+	/** \brief Controller value is clamped instead of wrapped around if outside range. */
+	public func bool getClamp()
+	end
+	
+	/** \brief Set if controller value is clamped instead of wrapped around if outside range. */
+	public func void setClamp( bool clamp )
+	end
+	
+	
+	
+	/** \brief Set controller curve from another controller. */
+	public func void setCurveFrom( SynthesizerInstance instance )
+	end
+	
+	/** \brief Set entire controller configuration from another controller. */
+	public func void setAllFrom( SynthesizerInstance instance )
+	end
+	/*@}*/
+end

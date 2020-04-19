@@ -1,0 +1,67 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Drag[en]gine game engine.
+ * 
+ * This is a native class. This is a pure static class. The class can not be instantiated
+ */
+fixed class Engine
+	/** \name Management */
+	/*@{*/
+	/** \brief Elapsed time since last update. */
+	public static func float getElapsedTime()
+	end
+	
+	/**
+	 * \brief Resets elapsed time timer.
+	 * 
+	 * Calling this before entering the game for the first time avoids a single time
+	 * large update value which can result in strange effects.
+	 */
+	public static func void resetTimers()
+	end
+	
+	/** \brief Game object. */
+	public static func Game getGame()
+	end
+	
+	/** \brief Averaged FPS rate. */
+	public static func int getFPSRate()
+	end
+	
+	/**
+	 * \brief Quit game.
+	 * \details Cleans up the game object and shuts down the game engine.
+	 */
+	public static func void quit()
+	end
+	
+	/**
+	 * \brief Game is run in edit mode.
+	 * \details This can be used by editor applications to allow in-editor game previews if supported.
+	 */
+	public static func bool getEditMode()
+	end
+	
+	/** \brief Number of loading resources. */
+	public static func int loadingResourceCount()
+	end
+	
+	/** \brief Log message using engine logger. */
+	public static func void log( String message )
+	end
+	
+	/** \brief Script module states as Dictionary. */
+	public static func Dictionary getScriptModuleStats()
+	end
+	/*@}*/
+end

@@ -1,0 +1,181 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Debug performance counter.
+ * 
+ * Uses a RuntimeMeter to collect timing samples. Displays the number of samples collected
+ * as well as the average time of all timing samples.
+ */
+class DebugPerformanceCounter implements DebugInformation
+	private var RuntimeMeter pRuntimeMeter
+	private var String pLabel
+	private var String pDetails
+	private var bool pAccumulate
+	
+	private var int pHistoryIndex
+	private var int pHistorySize
+	private var Array pHistoryTime
+	private var Array pHistoryCount
+	private var Array pHistoryAverage
+	private var int pDigitsTime
+	private var int pDigitsCount
+	private var int pDigitsAverage
+	
+	
+	
+	/** \brief Create performance counter. */
+	public func new( String label )
+		this.pLabel = label
+		this.pDetails = "---"
+		this.pAccumulate = false
+		
+		this.pHistoryIndex = 0
+		this.pHistorySize = 20
+		this.pHistoryTime = Array.new( this.pHistorySize, 0 )
+		this.pHistoryCount = Array.new( this.pHistorySize, 0 )
+		this.pHistoryAverage = Array.new( this.pHistorySize, 0 )
+		this.pDigitsTime = 1
+		this.pDigitsCount = 1
+		this.pDigitsAverage = 1
+		
+		this.pRuntimeMeter = RuntimeMeter.new()
+		this.pRuntimeMeter.reset( 0, 1 )
+	end
+	
+	
+	
+	/** \brief Label to display. */
+	public func String getLabel()
+		return this.pLabel
+	end
+	
+	/** \brief Set label to display. */
+	public func void setLabel( String label )
+		this.pLabel = label
+	end
+	
+	/** \brief Counter accumulates not clearing results. */
+	public func bool getAccumulate()
+		return this.pAccumulate
+	end
+	
+	/** \brief Set if counter accumulates not clearing results. */
+	public func void setAccumulate( bool accumulate )
+		this.pAccumulate = accumulate
+	end
+	
+	
+	
+	/** \brief Runtime meter. */
+	protected func RuntimeMeter getRuntimeMeter()
+		return this.pRuntimeMeter
+	end
+	
+	
+	
+	/** \brief Details to display. */
+	public func String getDetails()
+		if this.pDetails != null
+			return this.pDetails
+		end
+		
+		var int time, count, average, len
+		var String number
+		
+		// total time
+		time = this.pRuntimeMeter.counterTime( 0 )
+		if not this.pAccumulate
+			this.pHistoryTime.setAt( this.pHistoryIndex, time )
+			
+			time = this.pHistoryTime.inject( 0, block int a, int b
+				return a + b
+			end ) cast int / this.pHistorySize
+		end
+		
+		number = time.toString()
+		len = number.getLength()
+		this.pDigitsTime = DEMath.max( this.pDigitsTime, len )
+		this.pDetails = "time " + String.new( ' ', this.pDigitsTime - len ) + number + "ys ("
+		
+		// count
+		count = this.pRuntimeMeter.counterUpdates( 0 )
+		if not this.pAccumulate
+			this.pHistoryCount.setAt( this.pHistoryIndex, count )
+			
+			count = this.pHistoryCount.inject( 0, block int a, int b
+				return a + b
+			end ) cast int / this.pHistorySize
+		end
+		
+		number = count.toString()
+		len = number.getLength()
+		this.pDigitsCount = DEMath.max( this.pDigitsCount, len )
+		this.pDetails = this.pDetails + String.new( ' ', this.pDigitsCount - len ) + number + "x, "
+		
+		// average time
+		average = this.pRuntimeMeter.counterAverageTime( 0 )
+		if not this.pAccumulate
+			this.pHistoryAverage.setAt( this.pHistoryIndex, average )
+			
+			average = this.pHistoryAverage.inject( 0, block int a, int b
+				return a + b
+			end ) cast int / this.pHistorySize
+		end
+		
+		number = average.toString()
+		len = number.getLength()
+		this.pDigitsAverage = DEMath.max( this.pDigitsAverage, len )
+		this.pDetails = this.pDetails + String.new( ' ', this.pDigitsAverage - len ) + number + "ys)"
+		
+		// finish
+		if not this.pAccumulate
+			this.pHistoryIndex = ( this.pHistoryIndex + 1 ) % this.pHistorySize
+		end
+		
+		return this.pDetails
+	end
+	
+	/** \brief Reset called every frame update. */
+	public func void reset()
+		if not this.pAccumulate
+			this.pRuntimeMeter.counterReset( 0 )
+		end
+	end
+	
+	/** \brief Start timing measuring. */
+	public func void start()
+		this.pRuntimeMeter.reset( 0 )
+	end
+	
+	/** \brief Stop timing collecting result. */
+	public func void stop()
+		this.pRuntimeMeter.counterAdd( 0, 0 )
+		this.pDetails = null
+	end
+end

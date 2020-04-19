@@ -1,0 +1,281 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable 5x4-component row major color matrix.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class ColorMatrix
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create identity color matrix. */
+	public func new()
+	end
+	
+	/** \brief Create copy of color matrix. */
+	public func new( ColorMatrix matrix )
+	end
+	
+	/**
+	 * \brief Create color matrix with initial colons.
+	 * \details \em red sets the first colon, \em green the second, \em blue the third,
+	 *          \em alpha the fourthed and \em white the fifth colon.
+	 */
+	public func new( Color red, Color green, Color blue, Color alpha, Color white )
+	end
+	
+	/** \brief Create translation color matrix. */
+	public static func ColorMatrix newTranslation( Color color )
+	end
+	
+	/** \brief Create translation color matrix. */
+	public static func ColorMatrix newTranslation( float red, float green, float blue, float alpha )
+	end
+	
+	/** \brief Create scaling color matrix. */
+	public static func ColorMatrix newScaling( Color color )
+	end
+	
+	/** \brief Create scaling color matrix. */
+	public static func ColorMatrix newScaling( float red, float green, float blue, float alpha )
+	end
+	
+	/** \brief Create scaling then translaction color matrix. */
+	public static func ColorMatrix newST( Color scaling, Color translation )
+	end
+	
+	/** \brief Create brightness color matrix with same brightness value for each color component. */
+	public static func ColorMatrix newBrightness( float brightness )
+	end
+	
+	/** \brief Create brightness color matrix. */
+	public static func ColorMatrix newBrightness( float red, float green, float blue )
+	end
+	
+	/** \brief Create brightness color matrix. */
+	public static func ColorMatrix newBrightness( Color brightness )
+	end
+	
+	/** \brief Create contrast color matrix with same constrast value for each color component. */
+	public static func ColorMatrix newContrast( float contrast )
+	end
+	
+	/** \brief Create contrast color matrix. */
+	public static func ColorMatrix newContrast( float red, float green, float blue )
+	end
+	
+	/** \brief Create contrast color matrix. */
+	public static func ColorMatrix newContrast( Color contrast )
+	end
+	
+	/** \brief Create saturation color matrix with same saturation value for each color component. */
+	public static func ColorMatrix newSaturation( float saturation )
+	end
+	
+	/** \brief Create saturation color matrix. */
+	public static func ColorMatrix newSaturation( float red, float green, float blue )
+	end
+	
+	/** \brief Create saturation color matrix. */
+	public static func ColorMatrix newSaturation( Color saturation )
+	end
+	
+	/** \brief Create color inversion color matrix. */
+	public static func ColorMatrix newColorInversion()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Cell value.
+	 * \throws EInvalidParam \em row is less than 0 or larger than 3.
+	 * \throws EInvalidParam \em col is less than 0 or larger than 4.
+	 */
+	public func float getAt( int row, int col )
+	end
+	
+	/** \brief Cell value. */
+	public func float get11()
+	end
+	
+	/** \brief Cell value. */
+	public func float get12()
+	end
+	
+	/** \brief Cell value. */
+	public func float get13()
+	end
+	
+	/** \brief Cell value. */
+	public func float get14()
+	end
+	
+	/** \brief Cell value. */
+	public func float get15()
+	end
+	
+	/** \brief Cell value. */
+	public func float get21()
+	end
+	
+	/** \brief Cell value. */
+	public func float get22()
+	end
+	
+	/** \brief Cell value. */
+	public func float get23()
+	end
+	
+	/** \brief Cell value. */
+	public func float get24()
+	end
+	
+	/** \brief Cell value. */
+	public func float get25()
+	end
+	
+	/** \brief Cell value. */
+	public func float get31()
+	end
+	
+	/** \brief Cell value. */
+	public func float get32()
+	end
+	
+	/** \brief Cell value. */
+	public func float get33()
+	end
+	
+	/** \brief Cell value. */
+	public func float get34()
+	end
+	
+	/** \brief Cell value. */
+	public func float get35()
+	end
+	
+	/** \brief Cell value. */
+	public func float get41()
+	end
+	
+	/** \brief Cell value. */
+	public func float get42()
+	end
+	
+	/** \brief Cell value. */
+	public func float get43()
+	end
+	
+	/** \brief Cell value. */
+	public func float get44()
+	end
+	
+	/** \brief Cell value. */
+	public func float get45()
+	end
+	
+	/** \brief Color build from first colon. */
+	public func Color getRedBase()
+	end
+	
+	/** \brief Color build from second colon. */
+	public func Color getGreenBase()
+	end
+	
+	/** \brief Color build from third colon. */
+	public func Color getBlueBase()
+	end
+	
+	/** \brief Color build from fourthed colon. */
+	public func Color getAlphaBase()
+	end
+	
+	/** \brief Color build from fifth colon. */
+	public func Color getWhiteBase()
+	end
+	
+	
+	
+	/**
+	 * \brief ColorMatrix is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type ColorMatrix and components are equal.
+	*/
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	
+	/**
+	 * \brief String representation of color matrix.
+	 * \details Implements Object.toString()
+	 */
+	public func String toString()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read color matrix from a file reader. */
+	static public func ColorMatrix readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write color matrix to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Sum of two color matrixs. */
+	public func ColorMatrix +( ColorMatrix matrix )
+	end
+	
+	/** \brief Difference between two color matrixs. */
+	public func ColorMatrix -( ColorMatrix matrix )
+	end
+	
+	/** \brief ColorMatrix with each component scaled by a value. */
+	public func ColorMatrix *( float scalar )
+	end
+	
+	/**
+	 * \brief ColorMatrix with each component divided by a value.
+	 * \throws EDivisionByZero \em scalar is \em 0.
+	 */
+	public func ColorMatrix /( float scalar )
+	end
+	
+	/**
+	 * \brief Matrix multiplication of two color matrixs.
+	 * \details Both matrices are threaded as 5x5 matrices with (0,0,0,0,1) as last row during
+	 *          multiplication. The returned matrix is the upper 5x4 of the multiplication result.
+	 */
+	public func ColorMatrix *( ColorMatrix matrix )
+	end
+	
+	/** \brief Transform color by color matrix. */
+	public func ColorMatrix *( Color color )
+	end
+	/*@}*/
+end

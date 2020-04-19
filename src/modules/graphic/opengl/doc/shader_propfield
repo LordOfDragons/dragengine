@@ -1,0 +1,86 @@
+/***************************************************************\
+|   Prop Field position calculation in the vertex skin shader   |
+\***************************************************************/
+
+for doing prop fields one additional texture matrix could be misused
+to carry a set of informations without being difficult to use.
+GLSL uses matrices in column major order and access to the matrix is
+given using matrix[colon][row] or a vector by matrix[colon]. this way
+the following layout can be used to get values with few access.
+
+	[ sr.a11 ][ sr.a21 ][ sr.a31 ] [ pos.x ]
+	[ sr.a12 ][ sr.a22 ][ sr.a32 ] [ pos.y ]
+	[ sr.a13 ][ sr.a32 ][ sr.a33 ] [ pos.z ]
+	[ bend.x ][ bend.y ][ n/a    ] [ 1.0   ]
+
+sr = 3x3 matrix Mscale * Mrotation
+pos = vec3 position ( 4th colon of Mtranslation )
+bend = vec2 bending state ( around X and Z axis )
+
+the calculations can be done the following way to use as few operations
+as possible.
+
+	vec3 position = mat3x3( gl_TextureMatrix[ 3 ] ) * gl_Vertex.xyz;
+	float bendX = gl_TextureMatrix[ 3 ][ 0 ][ 3 ];
+	float bendZ = gl_TextureMatrix[ 3 ][ 1 ][ 3 ];
+	position = ... apply rotation given by the bend state
+	gl_Position = gl_ModelViewProjectionMatrix * vec4( position + vec3( gl_TextureMatrix[ 3 ][ 3 ] ), 1.0 );
+
+only problem left now is the normal matrix
+
+another solution is to calculate the full matrix first and then transforming
+the position using it. this way the normal matrix can be calculated from
+the final matrix.
+
+	mat3 Msr = mat3( gl_TextureMatrix[ 3 ] );
+	mat3 Mb = ... calculate bending matrix as before
+	mat4 Msrbp = mat4( Msr * Mb );
+	Msrbp[ 3 ] = gl_TextureMatrix[ 3 ];
+	mat4 Msrbpc = Msrbp * gl_ModelViewMatrix;
+	( note: Msrbpc contains only the model view not the projection view )
+
+then
+
+	mat3 Mnormal = transpose( inverse( mat3( Msrbpc ) ) );
+
+problem: there is no inverse matrix function in glsl. suggestion from gamedev is
+to break up the matrix and do the inverse on parts ( like inv(R*T)=inv(R)*inv(T).
+has to be calculated on paper once since here it's heavy: M=Mr*Ms*Mb*Mc.
+good thing though is that the scaling is uniform and has therefore no influence
+on the final vector. hence inv(Rs)=transpose(Rs) is enough even if the scaling
+is not inversed. Mrs=s*Mr, inv(Mrs)=inv(s*Mr)=(s^-1)*inv(Mr)=(s^-1)*transpose(Mr)
+but inv(s*Mr)=transpose(s*Mr)=s*transpose(Mr). now no matter how many matrices
+have been concatenated any matrix we use here boils down to one representable as
+a rotation and a translation. hence inv(M)=inv(Mr*Mt)=inv(Mt)*inv(Mr). this would
+boild down to the following glsl code:
+
+	mat4 Minv = mat4( transpose( mat3( M ) ) );
+	Minv[ 3 ] = -M[ 3 ];
+
+since the last colon ( the translation part ) is replaced after the rotation part
+is created this version should work too:
+
+	mat4 Minv = transpose( M );
+	Minv[ 3 ] = -M[ 3 ];
+
+which one is better I don't know. the former looks better though from the comprehension
+part than the later one. M would be then Mr*Ms*Mb*Mc.
+
+either way a normalization on the normal, tangent and bitangent obtained through Minv
+should be done to counter the effect of potential scaling
+
+
+
+This results in the following code (for the time being):
+
+	float bfac = clamp( pPFMatrix[ 3 ][ 3 ] * length( inPosition ), 0.0, 1.0 );
+	float s = pPFMatrix[ 0 ][ 3 ];
+	float bx = pPFMatrix[ 1 ][ 3 ] * bfac;
+	float bz = pPFMatrix[ 2 ][ 3 ] * bfac;
+	
+	vec4 bs = sin( vec4( bx, bz, -bx, -bz ) );
+	vec2 bc = cos( vec2( bx, bz ) );
+	mat3 mb = mat3( bc.y, bs.y, 0.0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
+	
+	// out = Mmvp * vec4( Mb * ( Mr * ( in * vec3( s ) ) ) + T, 1 )
+	gl_Position = pMatrixMVP * vec4( mb * ( mat3( pPFMatrix ) * ( inPosition * vec3( s ) ) ) + vec3( pPFMatrix[ 3 ] ), 1.0 );

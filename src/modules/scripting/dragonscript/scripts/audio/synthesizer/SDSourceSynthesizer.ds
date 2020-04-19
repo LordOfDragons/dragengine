@@ -1,0 +1,119 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of synthesizer synthesizer source.
+ * 
+ * Once defined a source can be added to an synthesizer using the stored definition.
+ * 
+ */
+class SDSourceSynthesizer extends SDSource
+	/** \brief Synthesizer. */
+	private var Synthesizer pSynthesizer
+	
+	/** \brief Connections. */
+	private var Array pConnections
+	
+	
+	
+	/** \brief Create synthesizer source definition. */
+	public func new()
+		this.pConnections = Array.new()
+	end
+	
+	
+	
+	/** \brief Synthesizer. */
+	public func Synthesizer getSynthesizer()
+		return this.pSynthesizer
+	end
+	
+	/** \brief Set synthesizer definition. */
+	public func void setSynthesizer( Synthesizer synthesizer )
+		this.pSynthesizer = synthesizer
+	end
+	
+	/** \brief Number of connections. */
+	public func int getConnectionCount()
+		return this.pConnections.getCount()
+	end
+	
+	/** \brief Set number of connections. */
+	public func void setConnectionCount( int count )
+		var int c
+		
+		this.pConnections.removeAll()
+		
+		for c = 0 to count
+			this.pConnections.add( 0 )
+		end
+	end
+	
+	/** \brief Connection at index. */
+	public func int getConnectionAt( int index )
+		return this.pConnections.getAt( index ) cast int
+	end
+	
+	/** \brief Set connection at index. */
+	public func void setConnectionAt( int target, int controller )
+		this.pConnections.setAt( target, controller )
+	end
+	
+	
+	
+	/**
+	 * \brief Build engine synthesizer source using the stored definition.
+	 */
+	public func SynthesizerSource buildSource( Synthesizer synthesizer )
+		var SSSynthesizer source = SSSynthesizer.new()
+		
+		this.buildSourceCommon( synthesizer, source )
+		
+		this.forEachTarget( block SDSourceTargetLink each
+			source.targetAddLink( each.getTarget() cast SSSynthesizerTarget, each.getLink().getIndex() )
+		end )
+		
+		if this.pSynthesizer != null
+			source.setSynthesizer( this.pSynthesizer )
+		end
+		
+		var int c, connectionCount = this.pConnections.getCount()
+		for c = 0 to connectionCount
+			source.setConnectionAt( c, this.pConnections.getAt( c ) cast int )
+		end
+		
+		return source
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( console, "Synthesizer" ) + " )" )
+	end
+end

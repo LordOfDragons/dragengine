@@ -1,0 +1,281 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of synthesizer source.
+ * 
+ * Once defined a source can be added to an synthesizer using the stored definition.
+ * This is the base source class with the properties shared amongst all source types.
+ * 
+ */
+abstract class SDSource
+	/** \brief Name of source. */
+	private var String pName
+	
+	/** \brief List of target links. */
+	private var Array pTargetLinks
+	
+	/** \brief Source is enabled. */
+	private var bool pEnabled
+	
+	/** \brief Mix mode. */
+	private var SynthesizerSourceMix pMixMode
+	
+	/** \brief Blend factor. */
+	private var float pBlendFactor
+	
+	/** \brief Minimum volume. */
+	private var float pMinVolume
+	
+	/** \brief Maximum volume. */
+	private var float pMaxVolume
+	
+	/** \brief Minimum panning. */
+	private var float pMinPanning
+	
+	/** \brief Maximum panning. */
+	private var float pMaxPanning
+	
+	/** \brief Effects. */
+	private var Array pEffects
+	
+	
+	
+	/** \brief Create synthesizer source definition. */
+	public func new()
+		this.pName = ""
+		this.pTargetLinks = Array.new()
+		this.pEnabled = true
+		this.pMixMode = SynthesizerSourceMix.add
+		this.pBlendFactor = 1.0
+		this.pMinVolume = 1.0
+		this.pMaxVolume = 1.0
+		this.pMinPanning = 0.0
+		this.pMaxPanning = 0.0
+		this.pEffects = Array.new()
+	end
+	
+	
+	
+	/** \brief Name of source. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Set name of source. */
+	public func void setName( String name )
+		this.pName = name
+	end
+	
+	/** \brief Number of target links. */
+	public func int getTargetLinkCount()
+		return this.pTargetLinks.getCount()
+	end
+	
+	/** \brief Target link at index. */
+	public func SDSourceTargetLink getTargetLinkAt( int index )
+		return this.pTargetLinks.getAt( index ) cast SDSourceTargetLink
+	end
+	
+	/** \brief Add target link. */
+	public func void addTargetLink( SDSourceTargetLink targetLink )
+		if targetLink == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTargetLinks.add( targetLink )
+	end
+	
+	/** \brief Visit targets with a block. */
+	public func void forEachTarget( Block ablock )
+		this.pTargetLinks.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Source is enabled. */
+	public func bool getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Set if source is enabled. */
+	public func void setEnabled( bool enabled )
+		this.pEnabled = enabled
+	end
+	
+	/** \brief Mix mode. */
+	public func SynthesizerSourceMix getMixMode()
+		return this.pMixMode
+	end
+	
+	/** \brief Set mix mode. */
+	public func void setMixMode( SynthesizerSourceMix mode )
+		this.pMixMode = mode
+	end
+	
+	/** \brief Blend factor. */
+	public func float getBlendFactor()
+		return this.pBlendFactor
+	end
+	
+	/** \brief Set blend factor. */
+	public func void setBlendFactor( float factor )
+		this.pBlendFactor = factor
+	end
+	
+	/** \brief Minimum volume. */
+	public func float getMinVolume()
+		return this.pMinVolume
+	end
+	
+	/** \brief Set minimum volume. */
+	public func void setMinVolume( float volume )
+		this.pMinVolume = volume
+	end
+	
+	/** \brief Maximum volume. */
+	public func float getMaxVolume()
+		return this.pMaxVolume
+	end
+	
+	/** \brief Set maximum volume. */
+	public func void setMaxVolume( float volume )
+		this.pMaxVolume = volume
+	end
+	
+	/** \brief Minimum panning. */
+	public func float getMinPanning()
+		return this.pMinPanning
+	end
+	
+	/** \brief Set minimum panning. */
+	public func void setMinPanning( float panning )
+		this.pMinPanning = panning
+	end
+	
+	/** \brief Maximum panning. */
+	public func float getMaxPanning()
+		return this.pMaxPanning
+	end
+	
+	/** \brief Set maximum panning. */
+	public func void setMaxPanning( float panning )
+		this.pMaxPanning = panning
+	end
+	
+	
+	
+	/** \brief Number of effects. */
+	public func int getEffectCount()
+		return this.pEffects.getCount()
+	end
+	
+	/** \brief Effect at index. */
+	public func SDEffect getEffectAt( int index )
+		return this.pEffects.getAt( index ) cast SDEffect
+	end
+	
+	/** \brief Add effect. */
+	public func void addEffect( SDEffect effect )
+		if effect == null or this.pEffects.has( effect )
+			throw EInvalidParam.new()
+		end
+		this.pEffects.add( effect )
+	end
+	
+	/** \brief Remove effect. */
+	public func void removeEffect( SDEffect effect )
+		if effect == null
+			throw EInvalidParam.new()
+		end
+		this.pEffects.remove( effect )
+	end
+	
+	/** \brief Remove all effects. */
+	public func void removeAllEffects()
+		this.pEffects.removeAll()
+	end
+	
+	/** \brief Visit effects using a block. */
+	public func void forEachEffect( Block ablock )
+		this.pEffects.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Build engine synthesizer source using the stored definition. */
+	abstract public func SynthesizerSource buildSource( Synthesizer synthesizer )
+	
+	/** \brief Setup common parameters for the given engine synthesizer source. */
+	protected func void buildSourceCommon( Synthesizer synthesizer, SynthesizerSource source )
+		if source == null
+			throw EInvalidParam.new()
+		end
+		
+		source.setEnabled( this.pEnabled )
+		source.setMixMode( this.pMixMode )
+		source.setBlendFactor( this.pBlendFactor )
+		source.setMinVolume( this.pMinVolume )
+		source.setMaxVolume( this.pMaxVolume )
+		source.setMinPanning( this.pMinPanning )
+		source.setMaxPanning( this.pMaxPanning )
+		
+		this.pEffects.forEach( block SDEffect each
+			source.addEffect( each.buildEffect( synthesizer ) )
+		end )
+	end
+	
+	
+	
+	public func void debug( Console console )
+	end
+	
+	protected func String debugCommon( Console console, String type )
+		var SDSourceTargetLink targetLink
+		var int i, count
+		
+		var String text = "- Source " + type + " ( name=" + this.pName \
+			+ " enabled=" + this.pEnabled + " mode=" + this.pMixMode \
+			+ " factor=" + this.pBlendFactor \
+			+ " effects=" + this.pEffects.getCount()
+		
+		count = this.pTargetLinks.getCount()
+		for i = 0 to count
+			targetLink = this.pTargetLinks.getAt( i ) cast SDSourceTargetLink
+			
+			text = text + " link=" + targetLink.getTarget() + ":" + targetLink.getLink().getIndex()
+		end
+		
+		this.pEffects.forEach( block SDEffect each
+			each.debug( console )
+		end )
+		
+		return text
+	end
+end

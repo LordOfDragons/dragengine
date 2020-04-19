@@ -1,0 +1,123 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * Default border implementation drawing nothing at all.
+ */
+class DefaultBorder implements Border
+	/** Canvas view for the border. */
+	private var CanvasView pCanvas
+	
+	/** Widget the border is assigned to or null if there is none. */
+	private var Widget pWidget
+	
+	
+	
+	/** Creates a new border. */
+	public func new()
+		this.pCanvas = CanvasView.new()
+	end
+	
+	
+	
+	/** Widget the border is assigned to or null if there is none. */
+	public func Widget getWidget()
+		return this.pWidget
+	end
+	
+	/** Set widget the border is assigned to or null if there is none. */
+	public func void setWidget( Widget widget )
+		if widget == this.pWidget
+			return
+		end
+		
+		this.pWidget = widget
+		
+		this.onWidgetChanged()
+	end
+	
+	/** Border size. */
+	public func BorderSize getBorderSize()
+		return BorderSize.new()
+	end
+	
+	/** Canvas to render this border. */
+	public func Canvas getCanvas()
+		return this.pCanvas
+	end
+	
+	/** Canvas to render this border. */
+	public func CanvasView getCanvasView()
+		return this.pCanvas
+	end
+	
+	/** Resize canvas to fit widget if widget is set. */
+	public func void resizeCanvas( Point widgetSize )
+		this.pCanvas.setSize( widgetSize + this.getBorderSize().getSize() )
+		this.updateCanvas()
+	end
+	
+	/** Update canvas. Overwrite to create canvas content. */
+	public func void updateCanvas()
+	end
+	
+	/**
+	 * Layout widget parent container. Call if parameters of the border changed in a
+	 * way the border size is affected.
+	 */
+	public func void layoutContainer()
+		var Widget widget = this.getWidget()
+		if widget == null
+			return
+		end
+		
+		var Container parent = widget.getParent()
+		if parent == null
+			return
+		end
+		
+		parent.doLayout()
+	end
+	
+	
+	
+	/** Gui theme of the widget changed. */
+	public func void onGuiThemeChanged()
+		this.updateCanvas()
+	end
+	
+	/** Widget changed. */
+	public func void onWidgetChanged()
+		this.updateCanvas()
+	end
+	
+	/** Widget parameters changed. */
+	public func void onWidgetParametersChanged()
+		this.updateCanvas()
+	end
+end

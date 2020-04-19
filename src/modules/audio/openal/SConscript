@@ -1,0 +1,101 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envModule = parent_env.Clone()
+
+buildModule = envModule[ 'build_audio_openal' ] != TernaryVariableNo
+parent_report[ 'build OpenAL Audio Module' ] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+libs = []
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+appendLibrary( envModule, parent_targets[ 'lib_openal' ], libs )
+
+if envModule[ 'platform_android' ] != 'no':
+	libs.extend( envModule[ 'ANDROID_LIBS' ] )
+
+if envModule['OSMacOS']:
+	envModule.Append(LINKFLAGS = ['-framework', 'AudioUnit'])
+	envModule.Append(LINKFLAGS = ['-framework', 'CoreAudio'])
+	envModule.Append(LINKFLAGS = ['-framework', 'AudioToolbox'])
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/audio/openal/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/audio/openal/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+
+# openal requires some special symbols to be set to compile properly
+if envModule['OSWindows']:
+	envModule.Append( CXXFLAGS = '-D_OPENAL32LIB_' )
+	envModule.Append( CXXFLAGS = '-D_WIN32' )
+
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
+
+# determine the source files
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+# setup the builders
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+library = envModule.SharedLibrary( target='audopenal', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'aud_openal_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+for l in reversed( parent_targets[ 'lib_openal' ][ 'runtimelibs' ] ):
+	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
+	install.append( envModule.Install( pathModule, l ) )
+	archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+Depends( updateManifest, parent_targets[ 'lib_openal' ][ 'runtimelibs' ] )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+targetInstall = envModule.Alias( 'aud_openal', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ],
+	'{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+buildCloc = envModule.Alias( 'aud_openal_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'aud_openal' ] = {
+	'name' : 'OpenAL Audio Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

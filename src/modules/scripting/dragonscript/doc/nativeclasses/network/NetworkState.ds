@@ -1,0 +1,220 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+/**
+ * \brief Network state.
+ * 
+ * This is a native class.
+ */
+class NetworkState
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create network state. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Network state is read only. */
+	public func bool getReadOnly()
+		return false
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Values */
+	/*@{*/
+	/** \brief Nnumber of values. */
+	public func int getValueCount()
+	end
+	
+	/** \brief Add value with type and format. */
+	public func void addValue( NetworkStateValueType type, NetworkStateValueFormat format )
+	end
+	
+	/**
+	 * \brief format of value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func NetworkStateValueFormat getValueFormatAt( int index )
+	end
+	
+	
+	
+	/**
+	 * \brief Value of integer value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func int getValueIntAt( int index )
+	end
+	
+	/**
+	 * \brief Value of float value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func float getValueFloatAt( int index )
+	end
+	
+	/**
+	 * \brief Value of string value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func String getValueStringAt( int index )
+	end
+	
+	/**
+	 * \brief Value of point-2 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func Point getValuePoint2At( int index )
+	end
+	
+	/**
+	 * \brief Value of point-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func Point3 getValuePoint3At( int index )
+	end
+	
+	/**
+	 * \brief Value of vector-2 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func Vector2 getValueVector2At( int index )
+	end
+	
+	/**
+	 * \brief Value of vector-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func Vector getValueVectorAt( int index )
+	end
+	
+	/**
+	 * \brief Value of dvector-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func DVector getValueDVectorAt( int index )
+	end
+	
+	/**
+	 * \brief Value of quaternion value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func Quaternion getValueQuaternionAt( int index )
+	end
+	
+	
+	
+	/**
+	 * \brief Set value of integer value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueIntAt( int index, int value )
+	end
+	
+	/**
+	 * \brief Set value of float value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueFloatAt( int index, float value )
+	end
+	
+	/**
+	 * \brief Set value of string value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueStringAt( int index, String value )
+	end
+	
+	/**
+	 * \brief Set value of point-2 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValuePoint2At( int index, Point value )
+	end
+	
+	/**
+	 * \brief Set value of point-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValuePoint3At( int index, Point3 value )
+	end
+	
+	/**
+	 * \brief Set value of vector-2 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueVector2At( int index, Vector2 value )
+	end
+	
+	/**
+	 * \brief Set value of vector-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueVector3At( int index, Vector value )
+	end
+	
+	/**
+	 * \brief Set value of dvector-3 value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueDVector3At( int index, DVector value )
+	end
+	
+	/**
+	 * \brief Set value of quaternion value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueQuaternionAt( int index, Quaternion value )
+	end
+	
+	
+	
+	/**
+	 * \brief Precision of floating point based value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 * \throws EInvalidParam Value at \em index is not VALUE_FLOAT, VALUE_QUATERNION,
+	 *                       VALUE_VECTOR2 or VALUE_VECTOR3
+	 */
+	public func float getValuePrecisionAt( int index )
+	end
+	
+	/**
+	 * \brief Set precision of floating point based value at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 * \throws EInvalidParam Value at \em index is not VALUE_FLOAT, VALUE_QUATERNION,
+	 *                       VALUE_VECTOR2 or VALUE_VECTOR3
+	 */
+	public func void setValuePrecisionAt( int index, float precision )
+	end
+	
+	
+	
+	
+	/**
+	 * \brief State listener or \em null if not set.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func NetworkStateListener getStateListener()
+	end
+	
+	/** \brief Set state listener or \em null if not set. */
+	public func void setStateListener( NetworkStateListener listener )
+	end
+	/*@}*/
+end

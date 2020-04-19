@@ -1,0 +1,77 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery.Visitors
+
+
+/**
+ * \brief Collects visited elements into array.
+ * 
+ * Elements visited multiple times are only added once to the list.
+ */
+class CollectElementsVisitor extends ElementVisitor
+	/** \brief List of elements */
+	private var Array pList
+	
+	
+	
+	/** \brief Creates visitor. */
+	public func new()
+		this.pList = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of elements. */
+	public func int getCount()
+		return this.pList.getCount()
+	end
+	
+	/** \brief Element at index. */
+	public func Element getAt( int index )
+		return this.pList.getAt( index ) cast Element
+	end
+	
+	/** \brief Clear elements. */
+	public func void clear()
+		this.pList.removeAll()
+	end
+	
+	/** \brief Visit collected elements with a block. */
+	public func void forEach( Block ablock )
+		this.pList.forEach( ablock )
+	end
+	
+	/** \brief Find collected element with a block. */
+	public func Element find( Block ablock )
+		return this.pList.find( ablock ) cast Element
+	end
+	
+	
+	
+	/** \brief Visit an element. */
+	public func void visitElement( Element element )
+		if not this.pList.has( element )
+			this.pList.add( element )
+		end
+	end
+end

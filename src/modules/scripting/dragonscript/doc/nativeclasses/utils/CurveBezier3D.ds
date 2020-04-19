@@ -1,0 +1,133 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+
+
+/**
+ * \brief 3D Bezier curve.
+ * 
+ * This is a native class.
+ * 
+ */
+class CurveBezier3D
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create bezier curve. */
+	public func new()
+	end
+	
+	/** \brief Create copy of bezier curve. */
+	public func new( CurveBezier3D copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of points. */
+	public func int getPointCount()
+	end
+	
+	/**
+	 * \brief Point at position.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func Vector getPointAt( int position )
+	end
+	
+	/**
+	 * \brief First handle at position.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func Vector getHandle1At( int position )
+	end
+	
+	/**
+	 * \brief Second handle at position.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func Vector getHandle2At( int position )
+	end
+	
+	/**
+	 * \brief Set point at position.
+	 * \details Set both handles to \em point.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func void setPointAt( int position, Vector point )
+	end
+	
+	/**
+	 * \brief Set point and handles at position.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func void setPointAt( int position, Vector point, Vector handle1, Vector handle2 )
+	end
+	
+	/**
+	 * \brief Add point.
+	 * \details Set both handles to \em point.
+	 */
+	public func void addPoint( Vector point )
+	end
+	
+	/** \brief Add point with handles. */
+	public func void addPoint( Vector point, Vector handle1, Vector handle2 )
+	end
+	
+	/**
+	 * \brief Insert point.
+	 * \details Set both handles to \em point.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount().
+	 */
+	public func void insertPoint( int position, Vector point )
+	end
+	
+	/**
+	 * \brief Insert point with handles.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount().
+	 */
+	public func void insertPoint( int position, Vector point, Vector handle1, Vector handle2 )
+	end
+	
+	/**
+	 * \brief Remove point from the given position.
+	 * \throws EInvalidParam \em position is less than 0.
+	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
+	 */
+	public func void removePointFrom( int position )
+	end
+	
+	/** \brief Remove all points. */
+	public func void removeAllPoints()
+	end
+	
+	
+	
+	/** \brief Evaluate curve at segment position. */
+	public func Vector evaluateAt( int segment, float blend )
+	end
+	
+	/**
+	 * \brief Evaluate curve using curve value.
+	 * \details Curve value composes of segment as integral part and blend factor as fractional part.
+	 */
+	public func Vector evaluateAt( float curveValue )
+	end
+	/*@}*/
+end

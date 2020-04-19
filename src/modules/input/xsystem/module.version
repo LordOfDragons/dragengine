@@ -1,0 +1,4 @@
+INPXSYSTEM {
+  global: XSysInpCreateModule;
+  local: *;
+};

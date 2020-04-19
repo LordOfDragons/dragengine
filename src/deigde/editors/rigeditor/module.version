@@ -1,0 +1,4 @@
+RIG {
+  global: RigEditorCreateModule;
+  local: *;
+};

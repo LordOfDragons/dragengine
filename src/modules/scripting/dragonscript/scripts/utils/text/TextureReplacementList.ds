@@ -1,0 +1,134 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief List of texture replacements.
+ * 
+ * \see TextureReplacement for details.
+ */
+class TextureReplacementList
+	/** \brief Texture replacements. */
+	private var Array pTextures
+	
+	
+	
+	/** \brief Create texture replacement list. */
+	public func new()
+		this.pTextures = Array.new()
+	end
+	
+	/** \brief Create copy of texture replacement list. */
+	public func new( TextureReplacementList copy )
+		this.pTextures = copy.pTextures.map( block TextureReplacement each
+			return TextureReplacement.new( each )
+		end )
+	end
+	
+	/** \brief Create texture replacement list from stub. */
+	public func new( StubElement stub ) this()
+		this.addFromStub( stub )
+	end
+	
+	
+	
+	/** \brief Number of texture replacements. */
+	public func int getCount()
+		return this.pTextures.getCount()
+	end
+	
+	/** \brief Texture replacement by index. */
+	public func TextureReplacement getAt( int index )
+		return this.pTextures.getAt( index ) cast TextureReplacement
+	end
+	
+	/** \brief Texture replacement by name or \em null if not found. */
+	public func TextureReplacement getNamed( String name )
+		return this.pTextures.find( block TextureReplacement each
+			return each.getName().equals( name )
+		end ) cast TextureReplacement
+	end
+	
+	/** \brief Named texture replacement is present. */
+	public func bool hasNamed( String name )
+		return this.pTextures.find( block TextureReplacement each
+			return each.getName().equals( name )
+		end ) != null
+	end
+	
+	/** \brief Add texture replacement. */
+	public func void add( TextureReplacement texture )
+		if texture == null or this.hasNamed( texture.getName() )
+			throw EInvalidParam.new()
+		end
+		
+		this.pTextures.add( texture )
+	end
+	
+	/** \brief Remove texture replacement. */
+	public func void remove( TextureReplacement texture )
+		this.pTextures.remove( texture )
+	end
+	
+	/** \brief Remove all texture replacements. */
+	public func void removeAll()
+		this.pTextures.removeAll()
+	end
+	
+	/** \brief Visit texture replacements using a block. */
+	public func void forEach( Block aBlock )
+		this.pTextures.forEach( aBlock )
+	end
+	
+	/**
+	 * \brief Process value visiting texture replacements using a block.
+	 * 
+	 * Works like Array.inject(). Block receives as first argument Object injected value
+	 * and as second argument TextureReplacement texture replacement.
+	 */
+	public func Object inject( Object injectValue, Block aBlock )
+		return this.pTextures.inject( injectValue, aBlock )
+	end
+	
+	
+	
+	/** \brief Add texture replacements from stub. */
+	public func void addFromStub( StubElement stub )
+		stub.forEachTexture( block StubElementTexture each
+			this.add( TextureReplacement.new( each ) )
+		end )
+	end
+	
+	/** \brief Apply all texture replacements to component if possible. */
+	public func void applyToComponent( Component component )
+		this.pTextures.forEach( block TextureReplacement each
+			each.applyToComponent( component )
+		end )
+	end
+end

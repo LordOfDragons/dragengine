@@ -1,0 +1,351 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Networking
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Stub for an element.
+ * 
+ * Used during asynchronous loading to hold the settings of an element until all resources
+ * have been loaded. The network connection parameters are present only during creation
+ * time and are not persisted.
+ */
+class StubElement extends StubWithProperties
+	private var ElementClass pClass
+	private var DVector pPosition
+	private var Vector pRotation
+	private var Vector pScaling
+	private var Array pTextures
+	private var UniqueID pID
+	private var UniqueID pAttachTo
+	private var PreloadCounter pCounter
+	private var Connection pConnection
+	private var NetworkState pNetworkState
+	private var bool pEnableNetworking
+	
+	
+	
+	/** \brief Create element stub. */
+	public func new( ElementClass eclass ) this( eclass, UniqueID.new() )
+	end
+	
+	/** \brief Create element stub. */
+	public func new( ElementClass eclass, UniqueID id )
+		if eclass == null or id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pClass = eclass
+		this.pPosition = DVector.new()
+		this.pRotation = Vector.new()
+		this.pScaling = Vector.new( 1, 1, 1 )
+		this.pTextures = Array.new()
+		this.pID = id
+		this.pEnableNetworking = false
+	end
+	
+	/** \brief Create element stub. */
+	public func new( ElementClass eclass, UniqueID id, StubWithProperties properties ) this( eclass, id )
+		this.setFrom( properties )
+	end
+	
+	/** \brief Create copy of element stub. */
+	public func new( StubElement stub ) super( stub )
+		this.pClass = stub.pClass
+		this.pPosition = stub.pPosition
+		this.pRotation = stub.pRotation
+		this.pScaling = stub.pScaling
+		this.pTextures = stub.pTextures.map( block StubElementTexture each
+			return StubElementTexture.new( each )
+		end )
+		this.pID = stub.pID
+		this.pAttachTo = stub.pAttachTo
+		this.pEnableNetworking = stub.pEnableNetworking
+	end
+	
+	
+	
+	/** \brief Set counter. */
+	public func void setCounter( PreloadCounter counter )
+		this.pCounter = counter
+		
+		this.pTextures.forEach( block StubElementTexture each
+			each.setCounter( counter )
+		end )
+	end
+	
+	/** \brief Element class. */
+	public func ElementClass getClass()
+		return this.pClass
+	end
+	
+	/** \brief Set element class. */
+	public func void setClass( ElementClass elementClass )
+		if elementClass == null
+			throw EInvalidParam.new()
+		end
+		this.pClass = elementClass
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+	end
+	
+	/** \brief Rotation. */
+	public func Vector getRotation()
+		return this.pRotation
+	end
+	
+	/** \brief Set rotation. */
+	public func void setRotation( Vector rotation )
+		if rotation == null
+			throw EInvalidParam.new()
+		end
+		this.pRotation = rotation
+	end
+	
+	/** \brief Scaling if sizable. */
+	public func Vector getScaling()
+		return this.pScaling
+	end
+	
+	/** \brief Set scaling if sizable. */
+	public func void setScaling( Vector scaling )
+		if scaling == null
+			throw EInvalidParam.new()
+		end
+		this.pScaling = scaling
+	end
+	
+	/** \brief Unique identifier of object. */
+	public func UniqueID getID()
+		return this.pID
+	end
+	
+	/** \brief Set unique identifier of object. */
+	public func void setID( UniqueID id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		this.pID = id
+	end
+	
+	/** \brief Identifier of object to attach to once added to a game world. */
+	public func UniqueID getAttachTo()
+		return this.pAttachTo
+	end
+	
+	/** \brief Set dentifier of object to attach to once added to a game world. */
+	public func void setAttachTo( UniqueID id )
+		this.pAttachTo = id
+	end
+	
+	
+	
+	/** \brief Connection to server or or \em null. */
+	public func Connection getConnection()
+		return this.pConnection
+	end
+	
+	/** \brief Set connection to server or \em null. */
+	public func void setConnection( Connection connection )
+		this.pConnection = connection
+	end
+	
+	/** \brief Network state provided by server or \em null. */
+	public func NetworkState getNetworkState()
+		return this.pNetworkState
+	end
+	
+	/** \brief Set network state provided by server or \em null. */
+	public func void setNetworkState( NetworkState networkState )
+		this.pNetworkState = networkState
+	end
+	
+	/** \brief Enable networking for this stub. */
+	public func bool getEnableNetworking()
+		return this.pEnableNetworking
+	end
+	
+	/** \brief Set if networking is enabled for this stub. */
+	public func void setEnableNetworking( bool enable )
+		this.pEnableNetworking = enable
+	end
+	
+	
+	
+	/** \brief Number of textures. */
+	public func int getTextureCount()
+		return this.pTextures.getCount()
+	end
+	
+	/** \brief Texture at index. */
+	public func StubElementTexture getTextureAt( int index )
+		return this.pTextures.getAt( index ) cast StubElementTexture
+	end
+	
+	/** \brief Named texture or null if not found. */
+	public func StubElementTexture getTextureNamed( String name )
+		return this.pTextures.find( block StubElementTexture each
+			return each.getTextureName().equals( name )
+		end ) cast StubElementTexture
+	end
+	
+	/** \brief Add texture. */
+	public func void addTexture( StubElementTexture texture )
+		if texture == null
+			throw EInvalidParam.new()
+		end
+		texture.setCounter( this.pCounter )
+		this.pTextures.add( texture )
+	end
+	
+	/** \brief Visit textures with a block. */
+	public func void forEachTexture( Block ablock )
+		this.pTextures.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Preload resources. */
+	public func void preloadResources()
+		this.pTextures.forEach( block StubElementTexture each
+			each.preloadResources()
+		end )
+	end
+	
+	/**
+	 * \brief Verify if a resource failed preloading and print the problems to the console.
+	 * \returns \em true if all resources loaded successfully.
+	 */
+	public func bool verifyPreloading( Console console )
+		return this.pTextures.inject( true, block bool success, StubElementTexture each
+			return each.verifyPreloading( this, console ) & success
+		end ) cast bool
+	end
+	
+	/** \brief Load resources. */
+	public func void loadResources()
+		this.pTextures.forEach( block StubElementTexture each
+			each.loadResources()
+		end )
+	end
+	
+	
+	
+	/** \brief Create element. */
+	public func Element createElement()
+		return this.pClass.createElement( this )
+	end
+	
+	/** \brief Create element and add it to game world. */
+	public func void createAndAddElement( GameWorld gameWorld )
+		this.pClass.createAndAddElement( this, gameWorld )
+	end
+	
+	/** \brief Load element using file reader. */
+	public func Element loadElement( PersistencyEnvironment env, FileReader reader )
+		return this.pClass.loadElement( env, this, reader )
+	end
+	
+	/** \brief Load element using file reader and add it to game world. */
+	public func void loadAndAddElement( PersistencyEnvironment env, FileReader reader, GameWorld gameWorld )
+		this.pClass.loadAndAddElement( env, this, reader, gameWorld )
+	end
+	
+	
+	
+	/**
+	 * \brief Read stub from file.
+	 * 
+	 * \returns stub element or \em null if classname is empty. This is used to find the
+	 *          end of stub list since the total number of elements is often not known.
+	 */
+	public static func StubElement readFromFile( FileReader reader, ElementClassList ElementClassList )
+		var String classname = reader.readString8()
+		if classname.empty()
+			return null
+		end
+		
+		//BaseGameApp.getApp().getConsole().addMessage( "reading element '" + classname + "'" )
+		
+		var UniqueID id = UniqueID.readFromFile( reader )
+		var StubElement stub = StubElement.new( ElementClassList.getNamed( classname ), id )
+		stub.pPosition = DVector.readFromFile( reader )
+		stub.pRotation = Vector.readFromFile( reader )
+		stub.pScaling = Vector.readFromFile( reader )
+		
+		stub.readPropertiesFromFile( reader )
+		
+		var int textureCount = reader.readUShort()
+		var int i
+		for i = 0 to textureCount
+			stub.pTextures.add( StubElementTexture.readFromFile( reader ) )
+		end
+		
+		if reader.readByte() == 1
+			stub.pAttachTo = UniqueID.readFromFile( reader )
+		end
+		
+		return stub
+	end
+	
+	/** \brief Write stub to file. */
+	public func void writeToFile( FileWriter writer )
+		writer.writeString8( this.pClass.getClassname() )
+		this.pID.writeToFile( writer )
+		this.pPosition.writeToFile( writer )
+		this.pRotation.writeToFile( writer )
+		this.pScaling.writeToFile( writer )
+		
+		this.writePropertiesToFile( writer )
+		
+		writer.writeUShort( this.pTextures.getCount() )
+		this.pTextures.forEach( block StubElementTexture each
+			each.writeToFile( writer )
+		end )
+		
+		if this.pAttachTo != null
+			writer.writeByte( 1 )
+			this.pAttachTo.writeToFile( writer )
+			
+		else
+			writer.writeByte( 0 )
+		end
+	end
+end

@@ -1,0 +1,365 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element.
+ * 
+ * Behavior elements are jack of all trade elements. They allow building complex element
+ * behaviors by using behavior building blocks. Theye behavior building blocks are
+ * provided by ECBehavior classes attached to the element class.
+ * 
+ * Behavior elements are suited for prototyping or rapid development since they require
+ * little written code. Building element classes the conventional way though is usually
+ * preferred.
+ * 
+ * To create an element based on BehaviorElement create a new subclass of BehaviorElementClass
+ * and add all the desired ECBehavior instance. There is no need to subclas BehaviorElement.
+ * When creating a new instance the BehaviorElement is filled with ECBehavior created
+ * ECBehaviorInstance instances. These provide the actual behavior to the element.
+ */
+class BehaviorElement extends Element
+	private var Array pInstances
+	private var Array pThinkingInstances
+	private var bool pRequiresEnterFrame
+	private var bool pRequiresThink
+	
+	
+	
+	/** \brief Create element. */
+	public func new( BehaviorElementClass eclass ) super( eclass )
+		this.pInstances = Array.new()
+		this.pRequiresEnterFrame = false
+		this.pRequiresThink = false
+		
+		eclass.forEachBehavior( block ECBehavior each
+			this.pInstances.add( each.createInstance( this ) )
+		end )
+	end
+	
+	/** \brief Dispose of element. */
+	public func void dispose()
+		if this.pInstances != null
+			this.pInstances.forEachReverse( block ECBehaviorInstance each
+				each.dispose()
+			end )
+			this.pInstances = null
+		end
+		
+		this.pThinkingInstances = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Initialize element from stub. */
+	public func void init( StubElement stub )
+		super.init( stub )
+		
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.init( stub )
+		end )
+	end
+	
+	
+	
+	/** \brief Number of behavior instances. */
+	public func int getInstanceCount()
+		return this.pInstances.getCount()
+	end
+	
+	/** \brief Behavior instance at index. */
+	public func ECBehaviorInstance getInstanceAt( int index )
+		return this.pInstances.getAt( index ) cast ECBehaviorInstance
+	end
+	
+	/**
+	 * \brief Visit behavior instances with block.
+	 * 
+	 * Block is required to have one parameter ECBehaviorInstance.
+	 */
+	public func void forEachInstance( Block ablock )
+		this.pInstances.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Visit behavior instances with block in reverse order.
+	 * 
+	 * Block is required to have one parameter ECBehaviorInstance.
+	 */
+	public func void forEachInstanceReverse( Block ablock )
+		this.pInstances.forEachReverse( ablock )
+	end
+	
+	/**
+	 * \brief Find behavior instance with block.
+	 * 
+	 * Block is required to have one parameter ECBehaviorInstance and returning true if the
+	 * right instance is found otherwise false.
+	 */
+	public func ECBehaviorInstance findInstance( Block ablock )
+		return this.pInstances.find( ablock ) cast ECBehaviorInstance
+	end
+	
+	
+	
+	/** \brief Sub-class requires enterFrame() to be called. */
+	public func bool getRequiresEnterFrame()
+		return this.pRequiresEnterFrame
+	end
+	
+	/** \brief Set if sub-class requires enterFrame() to be called. */
+	protected func void setRequiresEnterFrame( bool requiresEnterFrame )
+		this.pRequiresEnterFrame = requiresEnterFrame
+	end
+	
+	/** \brief Sub-class requires think() to be called. */
+	public func bool getRequiresThink()
+		return this.pRequiresThink
+	end
+	
+	/** \brief Set if sub-class requires think() to be called. */
+	protected func void setRequiresThink( bool requiresThink )
+		this.pRequiresThink = requiresThink
+	end
+	
+	
+	
+	/**
+	 * \brief Requires thinking changed.
+	 * 
+	 * Called by ECBehaviorInstance if their requirement for thinking changed. This means
+	 * the requiresThink() implementation returns a different value than the last time
+	 * it has been checked.
+	 * 
+	 * This call will cause the behavior element to check again all behavior instances for
+	 * their thinking requirement and will addThinker()/removeThinker() accordingly.
+	 * 
+	 * Using this method helps to reduce the script processing load by not making the
+	 * element think() method called if no behavior requires it.
+	 */
+	public func void requiresThinkChanged()
+		this.updateThinking()
+	end
+	
+	
+	
+	/** \brief Position changed. */
+	public func void onSetPosition()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.geometryChanged()
+		end )
+	end
+	
+	/** \brief Orientation changed. */
+	public func void onSetOrientation()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.geometryChanged()
+		end )
+	end
+	
+	/** \brief Scaling changed. */
+	public func void onSetScaling()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.geometryChanged()
+		end )
+	end
+	
+	/** \brief Position and orientation changed. */
+	public func void onSetGeometry()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.geometryChanged()
+		end )
+	end
+	
+	/** \brief Visible state changed. */
+	public func void onSetVisible()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.stateChanged()
+		end )
+	end
+	
+	/** \brief Touchable state changed. */
+	public func void onSetTouchable()
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.stateChanged()
+		end )
+	end
+	
+	
+	
+	/** \brief Add element to game world. */
+	public func void addToGameWorld()
+		super.addToGameWorld()
+		
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.addToGameWorld()
+		end )
+		
+		if this.pRequiresEnterFrame \
+		or this.getStub().getAttachTo() != null \
+		or this.pInstances.find( block ECBehaviorInstance each
+			return each.requiresEnterFrame()
+		end ) != null
+			this.getGameWorld().addEnterFrameOnce( this )
+		end
+		
+		this.updateThinking()
+	end
+	
+	/** \brief Remove element from game world if set. */
+	public func void removeFromGameWorld()
+		this.pInstances.forEachReverse( block ECBehaviorInstance each
+			each.removeFromGameWorld()
+		end )
+		
+		var GameWorld gameWorld = this.getGameWorld()
+		gameWorld.removeThinker( this )
+		gameWorld.removeEnterFrameOnce( this )
+		
+		super.removeFromGameWorld()
+	end
+	
+	/** \brief Frame update started. */
+	public func void enterFrame()
+		super.enterFrame()
+		
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.enterFrame()
+		end )
+		
+		var StubElement stub = this.getStub()
+		var UniqueID attachTo = stub.getAttachTo()
+		if attachTo != null
+			stub.setAttachTo( null )
+			
+			var Element element = this.getGameWorld().getElementWithID( attachTo )
+			if element == null
+				throw EElementNotFound.new( attachTo, "Attach " \
+					+ stub.getID() + " at " + this.getPosition() + " to" )
+			end
+			
+			this.attachToParent( element )
+		end
+	end
+	
+	/**
+	 * \brief Attach element to object set by the mapper in the IGDE World Editor.
+	 * 
+	 * Attach-To parameter in the StubElement assigned to this element is set to null before
+	 * this method is called. Calls ECBehaviorInstance.attachToParent() on each behavior
+	 * to do the actual attaching.
+	 */
+	public func void attachToParent( Element parent )
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.attachToParent( parent )
+		end )
+	end
+	
+	/** \brief Think about what the element is going to do in this frame. */
+	public func void think( float elapsed )
+		if this.pThinkingInstances == null
+			return
+		end
+		
+		this.pThinkingInstances.forEach( block ECBehaviorInstance each
+			each.think( elapsed )
+		end )
+	end
+	
+	/** \brief Post thinking after physics processing is finished. */
+	public func void postThink( float elapsed )
+		if this.pThinkingInstances == null
+			return
+		end
+		
+		this.pThinkingInstances.forEach( block ECBehaviorInstance each
+			each.postThink( elapsed )
+		end )
+	end
+	
+	
+	
+	/** \brief Update thinking. */
+	protected func void updateThinking()
+		var GameWorld gameWorld = this.getGameWorld()
+		if gameWorld == null
+			this.pThinkingInstances = null
+			return
+		end
+		
+		this.pThinkingInstances = this.pInstances.collect( block ECBehaviorInstance each
+			return each.requiresThink()
+		end )
+		
+		if this.pRequiresThink or this.pThinkingInstances.getCount() > 0
+			gameWorld.addThinker( this )
+			
+		else
+			this.pThinkingInstances = null
+			gameWorld.removeThinker( this )
+		end
+	end
+	
+	/** \brief Stop thinking even though it would be required by behaviors. */
+	protected func void stopThinking()
+		this.pThinkingInstances = null
+		
+		var GameWorld gameWorld = this.getGameWorld()
+		if gameWorld != null
+			gameWorld.removeThinker( this )
+		end
+	end
+	
+	
+	
+	/** \brief Read element from file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		super.readFromFile( env, reader )
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.readFromFile( env, reader )
+		end )
+	end
+	
+	/** \brief Write element to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeToFile( env, writer )
+		this.pInstances.forEach( block ECBehaviorInstance each
+			each.writeToFile( env, writer )
+		end )
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitBehaviorElement( this )
+	end
+end

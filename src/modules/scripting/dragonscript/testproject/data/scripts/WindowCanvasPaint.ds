@@ -1,0 +1,225 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project canvas paint window.
+ */
+class WindowCanvasPaint extends Window
+	/** \brief Create game. */
+	public func new() super( 0, 0, 600, 400 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Canvas Paint" )
+		this.createContent( this )
+	end
+	
+	
+	
+	/** \brief Add content. */
+	private func void createContent( Container content )
+		var Point size = Point.new( 120, 80 )
+		var CanvasPaint paint
+		
+		// points for CanvasPaintShape.points example
+		var Array pointsPoints = Array.new()
+		pointsPoints.add( Point.new( 0, 0 ) )
+		pointsPoints.add( Point.new( 119, 0 ) )
+		pointsPoints.add( Point.new( 119, 79 ) )
+		pointsPoints.add( Point.new( 0, 79 ) )
+		pointsPoints.add( Point.new( 10, 10 ) )
+		pointsPoints.add( Point.new( 50, 10 ) )
+		pointsPoints.add( Point.new( 40, 20 ) )
+		pointsPoints.add( Point.new( 40, 40 ) )
+		
+		// points for CanvasPaintShape.lines example
+		var Array pointsLines = Array.new()
+		pointsLines.add( Point.new( 0, 0 ) )
+		pointsLines.add( Point.new( 119, 0 ) )
+		pointsLines.add( Point.new( 119, 0 ) )
+		pointsLines.add( Point.new( 119, 79 ) )
+		pointsLines.add( Point.new( 119, 79 ) )
+		pointsLines.add( Point.new( 0, 79 ) )
+		pointsLines.add( Point.new( 0, 79 ) )
+		pointsLines.add( Point.new( 0, 0 ) )
+		pointsLines.add( Point.new( 10, 10 ) )
+		pointsLines.add( Point.new( 50, 10 ) )
+		pointsLines.add( Point.new( 40, 20 ) )
+		pointsLines.add( Point.new( 40, 40 ) )
+		pointsLines.add( Point.new( 60, 20 ) )
+		pointsLines.add( Point.new( 80, 40 ) )
+		
+		// points for CanvasPaintShape.polygon example
+		var Array pointsPolygon = Array.new()
+		pointsPolygon.add( Point.new( 10, 10 ) )
+		pointsPolygon.add( Point.new( 50, 10 ) )
+		pointsPolygon.add( Point.new( 60, 20 ) )
+		pointsPolygon.add( Point.new( 40, 40 ) )
+		pointsPolygon.add( Point.new( 10, 10 ) )
+		
+		// align the examples in rows of 4 widgets on each row
+		content.setLayout( FlowLayout.new( LayoutAxis.y, 5 ) )
+		
+		content.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x, 10 ), block Panel panel
+			// rectangle
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.rectangle )
+			paint.setRoundCornerX( 0.5 )
+			paint.setRoundCornerY( 0.5 )
+			
+			// thick rectangle
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.rectangle )
+			paint.setRoundCornerX( 0.5 )
+			paint.setRoundCornerY( 0.5 )
+			
+			// points
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.points )
+			pointsPoints.forEach( block Point each
+				paint.addPoint( each )
+			end )
+			
+			// thick points
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.points )
+			pointsPoints.forEach( block Point each
+				paint.addPoint( each )
+			end )
+		end ) )
+		
+		content.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x, 10 ), block Panel panel
+			// lines
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.lines )
+			pointsLines.forEach( block Point each
+				paint.addPoint( each )
+			end )
+			
+			// thick lines
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.lines )
+			pointsLines.forEach( block Point each
+				paint.addPoint( each )
+			end )
+			
+			// polygon
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.polygon )
+			pointsPolygon.forEach( block Point each
+				paint.addPoint( each )
+			end )
+			
+			// thick polygon
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.polygon )
+			pointsPolygon.forEach( block Point each
+				paint.addPoint( each )
+			end )
+		end ) )
+		
+		content.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x, 10 ), block Panel panel
+			// ellipse
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.ellipse )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 300 )
+			
+			// thick ellipse
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.ellipse )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 300 )
+			
+			// ellipse
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.ellipse )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 60 )
+			
+			// thick ellipse
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.ellipse )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 60 )
+		end ) )
+			
+		content.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x, 10 ), block Panel panel
+			// pie
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.pie )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 300 )
+			
+			// thick pie
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.pie )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 300 )
+			
+			// pie
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setShapeType( CanvasPaintShape.pie )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 60 )
+			
+			// thick pie
+			paint = this.createAndAddCanvasPaint( panel, size )
+			paint.setThickness( 3 )
+			paint.setShapeType( CanvasPaintShape.pie )
+			paint.setStartAngle( 30 )
+			paint.setEndAngle( 60 )
+		end ) )
+	end
+	
+	/** \brief Add widget with new canvas paint. */
+	protected func CanvasPaint createAndAddCanvasPaint( Container container, Point size )
+		var Widget widget = Widget.new()
+		widget.setMinimumSize( size )
+		widget.setProtectMinimumSize( true )
+		widget.setDesignerSelector( "BorderCanvasPaint" )
+		
+		var CanvasPaint paint = CanvasPaint.new()
+		paint.setSize( size )
+		paint.setLineColor( Color.new( 1.0, 0.0, 0.0 ) )
+		paint.setFillColor( Color.new( 0.5, 0.5, 0.5 ) )
+		paint.setThickness( 1 )
+		widget.getCanvasContent().addCanvas( paint )
+		
+		container.addWidget( widget )
+		
+		return paint
+	end
+end

@@ -1,0 +1,268 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Window showing progress of loading game.
+ * 
+ * Window composes of a centrized box containing a text above a progress bar. The window
+ * background can be styled using setBgStyle(). This assigns the window the designer selector
+ * "WindowLoading.{style-name}". Typically this extends the basic Window designer with a
+ * background image.
+ * 
+ * The box can be styled using "Panel.WindowLoading". The text can be styled using
+ * "Label.WindowLoading". The progress bar can be styled using
+ * "ProgressBar.WindowLoading".
+ * 
+ * The assigned PreloadManager is used to update the progress bar if not null. Call
+ * storeMaxPreloadCounterValue() to use the current number of resources to preload as the
+ * maximum value to achive. The window updates itself every frame update to reflect the
+ * progress. Other than this the loading window has no additional logic. You have to call
+ * dispose() on the window once the loading finished and you want to continue.
+ * 
+ * If no preload manager is used the updating of the progress is the responsibility of the
+ * user. This allows to use the loading window for tracking loading which is governed by
+ * steps instead of resource loading.
+ * 
+ * The loading text can be adjusted using getModelText().
+ * 
+ * If you want to extend the content you can overwrite createPanelProgress() to create your
+ * own progress panel. The TextModel and RangeModel are present at this time for your to
+ * use in your layout.
+ */
+class WindowLoading extends Window
+	private var TextModel pModelText
+	private var TextModel pModelTextFinished
+	private var RangeModel pModelProgress
+	private var RangeModel pModelFinished
+	private var PreloadManager pPreloadManager
+	private var ActionListener pWaitForPlayerListener
+	
+	
+	
+	/** \brief Create window. */
+	public func new()
+		this.pModelText = DefaultTextModel.new( "Loading..." )
+		this.pModelTextFinished = DefaultTextModel.new( "Press any key to Start" )
+		this.pModelProgress = DefaultRangeModel.new( 0, 100, 1, 0, 1 )
+		this.pModelFinished = DefaultRangeModel.new( 0, 2, 1, 0, 1 )
+		
+		this.createWindowContent()
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Dispose of Widget. */
+	public func void dispose()
+		super.dispose()
+		
+		this.pWaitForPlayerListener = null
+		this.pPreloadManager = null
+		this.pModelFinished = null
+		this.pModelProgress = null
+		this.pModelTextFinished = null
+		this.pModelText = null
+	end
+	
+	
+	
+	/** \brief Set window style, for example "Bg1". */
+	public func void setBgStyle( String style )
+		if style != null
+			this.setDesignerSelector( "WindowLoading." + style )
+			
+		else
+			this.setDesignerSelector( "WindowLoading" )
+		end
+	end
+	
+	/** \brief Text model. */
+	public func TextModel getModelText()
+		return this.pModelText
+	end
+	
+	/** \brief Finished text model. */
+	public func TextModel getModelTextFinished()
+		return this.pModelTextFinished
+	end
+	
+	/** \brief Progress range model. */
+	public func RangeModel getModelProgress()
+		return this.pModelProgress
+	end
+	
+	/** \brief Range model switching between progress bar (0) and finished text (1). */
+	public func RangeModel getModelFinished()
+		return this.pModelFinished
+	end
+	
+	/** \brief Preload manager */
+	public func PreloadManager getPreloadManager()
+		return this.pPreloadManager
+	end
+	
+	/**
+	 * \brief Set preload manager.
+	 * 
+	 * If preload manager is not null the progress model is updated with the number of
+	 * resources to preload as the maximum value and the current value set to 0.
+	 */
+	public func void setPreloadManager( PreloadManager preloadManager )
+		this.pPreloadManager = preloadManager
+		
+		if preloadManager == null
+			return
+		end
+		
+		this.pModelProgress.setMaximum( preloadManager.getCounter().getValue() )
+		this.pModelProgress.setValue( 0 )
+	end
+	
+	/**
+	 * \brief Switch to finished text and wait for player to use any input device to continue.
+	 */
+	public func void waitForPlayer( ActionListener listener )
+		this.pModelFinished.setValue( 1 )
+		this.grabFocus()
+		this.pWaitForPlayerListener = listener
+	end
+	
+	
+	
+	/**
+	 * \brief Do frame update.
+	 * 
+	 * Called every frame update if startFrameUpdater() is called.
+	 * 
+	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
+	 */
+	public func void onFrameUpdate( float elapsed )
+		this.updateProgress()
+	end
+	
+	/**
+	 * \brief Mouse button has been released.
+	 */
+	public func void onButtonRelease( MouseEvent event )
+		super.onButtonRelease( event )
+		this.triggerWaitForPlayer()
+	end
+	
+	/**
+	 * \brief Key on the keyboard has been released.
+	 */
+	public func void onKeyRelease( KeyEvent event )
+		super.onKeyRelease( event )
+		this.triggerWaitForPlayer()
+	end
+	
+	/**
+	 * \brief Gamepad button has been released.
+	 */
+	public func void onGamepadButtonReleased( GamepadEvent event )
+		super.onGamepadButtonReleased( event )
+		this.triggerWaitForPlayer()
+	end
+	
+	/** \brief Trigger wait for player listener if present. */
+	protected func void triggerWaitForPlayer()
+		if this.pWaitForPlayerListener == null
+			return
+		end
+		
+		var ActionListener listener = this.pWaitForPlayerListener
+		this.pWaitForPlayerListener = null
+		listener.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Create window content.
+	 * 
+	 * Called during constructor time.
+	 */
+	protected func void createWindowContent()
+		this.runWhileBlockingLayout( block
+			this.setDesignerSelector( "WindowLoading" )
+			this.setLayout( StackLayout.new() )
+			this.setWindowState( Window.WindowState.maximized )
+			this.setCanReorder( false )
+			this.setCanMove( false )
+			this.setCanResize( false )
+			this.setCanClose( false )
+			this.setCanMaximize( false )
+			this.setCanMinimize( false )
+			
+			this.setCanFocus( true ) // on purpose
+			
+			this.addWidget( this.createPanelProgress() )
+			
+			this.pModelFinished.setValue( 0 )
+		end )
+	end
+	
+	/**
+	 * \brief Create progress panel.
+	 * 
+	 * Window is using stack layout. Panel is going to cover the entire window.
+	 * Called from createWindowContent() during constructor time.
+	 */
+	protected func Panel createPanelProgress()
+		return Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel panel
+			panel.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y, 5 ), block Panel panel2
+				panel2.setDesignerSelector( "Panel.WindowLoading" )
+				
+				panel2.addWidget( Label.new( this.pModelText, "Label.WindowLoading" ) )
+				
+				panel2.addWidget( SwitchPanel.new( this.pModelFinished, block SwitchPanel switchPanel
+					var ProgressBar progressBar = ProgressBar.new( Orientation.horizontal, this.pModelProgress )
+					progressBar.setDesignerSelector( "ProgressBar.WindowLoading" )
+					switchPanel.addWidget( progressBar )
+					
+					switchPanel.addWidget( Label.new( this.pModelTextFinished, "Label.WindowLoading.Finished" ) )
+				end ) )
+			end ) )
+		end )
+	end
+	
+	/**
+	 * \brief Update current progress from preload manager.
+	 * 
+	 * If preload manager is present sets the progress value to the number of already
+	 * loaded resources.
+	 */
+	protected func void updateProgress()
+		if this.pPreloadManager != null
+			this.pModelProgress.setValue( this.pModelProgress.getMaximum() \
+				- this.pPreloadManager.getCounter().getValue() )
+		end
+	end
+end

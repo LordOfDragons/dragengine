@@ -1,0 +1,4 @@
+INPANDROID {
+  global: AndroidInpCreateModule;
+  local: *;
+};

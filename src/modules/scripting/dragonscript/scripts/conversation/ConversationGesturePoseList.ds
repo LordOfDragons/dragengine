@@ -1,0 +1,110 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of conversation gesture poses keyd by identifier.
+ */
+class ConversationGesturePoseList
+	private var Dictionary pPoses
+	
+	
+	
+	/** \brief Create conversation gesture pose list. */
+	public func new()
+		this.pPoses = Dictionary.new()
+	end
+	
+	/** \brief Dispose of list. */
+	public func void dispose()
+		this.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of gesture poses. */
+	public func int getCount()
+		return this.pPoses.getCount()
+	end
+	
+	/** \brief Gesture pose is present. */
+	public func bool has( StringID id )
+		return this.pPoses.has( id )
+	end
+	
+	/** \brief Gesture pose with identifier or \em null if absent. */
+	public func ConversationPlaybackGesturePose getAt( StringID id )
+		return this.pPoses.getAt( id, null ) cast ConversationPlaybackGesturePose
+	end
+	
+	/** \brief Add gesture pose. */
+	public func void add( StringID id, ConversationPlaybackGesturePose gesturePose )
+		if this.pPoses.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pPoses.setAt( id, gesturePose )
+	end
+	
+	/** \brief Add gesture pose. */
+	public func void add( StringID id, String pathAnimator, Animator animator )
+		if this.pPoses.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pPoses.setAt( id, ConversationPlaybackGesturePose.new( pathAnimator, animator ) )
+	end
+	
+	/** \brief Add gesture pose. */
+	public func void add( StringID id, ECPAnimator ecanimator )
+		this.add( id, ecanimator.getPath(), ecanimator.getAnimator() )
+	end
+	
+	/** \brief Remove gesture pose. */
+	public func void remove( StringID id )
+		this.pPoses.remove( id )
+	end
+	
+	/** \brief Remove all gesture poses. */
+	public func void removeAll()
+		this.pPoses.removeAll()
+	end
+	
+	/**
+	 * \brief List of all gesture pose identifiers as Array of String.
+	 */
+	public func Array getIdentifiers()
+		return this.pPoses.getKeys()
+	end
+	
+	/**
+	 * \brief Visit gesture poses with block.
+	 * 
+	 * Block has as first parameter the StringID identifier of the gesture pose and as
+	 * second parameter the ConversationPlaybackGesturePose gesture pose.
+	 */
+	public func void forEach( Block ablock )
+		this.pPoses.forEach( ablock )
+	end
+end

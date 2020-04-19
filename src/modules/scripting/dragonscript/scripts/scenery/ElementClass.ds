@@ -1,0 +1,422 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+/**
+ * \brief Element class.
+ * 
+ * Describes class of elements. Instances of this element classes can be created from stubs
+ * and loaded from file readers. Supports class properties suitable for using XML subclassing.
+ * 
+ * Element classes can be set to not be persistable to file writers (for example save states).
+ * By default all element classes are persistable. Persistable element classes are not loaded
+ * if the world file is loaded only for the purpose to restore elements from file readers.
+ * Not persistable element classes are not written to file writers. Instead they are created
+ * if a world is loaded for the purpose to restore elements from file readers. Not persistable
+ * element classes are typically static geometry not changing or special elements not producing
+ * an element in the world but doing other things. See StaticGeometryClass in the example
+ * project for an example on how to use this feature.
+ */
+class ElementClass implements ResourceListener
+	private var String pClassname
+	private var Dictionary pProperties
+	private var bool pPersistable
+	private var String pBasePath
+	
+	private static var CodecPropertyString pSharedCodecPropertyString = CodecPropertyString.new()
+	private static var TSTriggerExpressionParser pSharedTriggerExpressionParser = TSTriggerExpressionParser.new()
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( String className )
+		if className == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pClassname = className
+		this.pProperties = Dictionary.new()
+		this.pPersistable = true
+		this.pBasePath = "/"
+	end
+	
+	/** \brief Dispose of element class. */
+	public func void dispose()
+		if this.pProperties != null
+			this.pProperties.forEachValue( block ElementClassProperty each
+				each.dispose()
+			end )
+			this.pProperties = null
+		end
+	end
+	
+	
+	
+	/** \brief Class name. */
+	public func String getClassname()
+		return this.pClassname
+	end
+	
+	/** \brief Base path for relative loading of resource properties. */
+	public func String getBasePath()
+		return this.pBasePath
+	end
+	
+	/** \brief Set base path for relative loading of resource properties. */
+	public func void setBasePath( String path )
+		if path == null
+			throw EInvalidParam.new()
+		end
+		this.pBasePath = path
+	end
+	
+	
+	
+	/** \brief Shared property codec helper. */
+	public static func CodecPropertyString getSharedCodecPropertyString()
+		return pSharedCodecPropertyString
+	end
+	
+	/** \brief Set shared property codec helper. */
+	public static func void setSharedCodecPropertyString( CodecPropertyString codec )
+		if codec == null
+			throw EInvalidParam.new()
+		end
+		pSharedCodecPropertyString = codec
+	end
+	
+	/**
+	 * \brief Property codec helper.
+	 * 
+	 * Default implementation uses shared coded property string. Subclass to use
+	 * a specific codec for this class only.
+	 */
+	public func CodecPropertyString getCodecPropertyString()
+		return pSharedCodecPropertyString
+	end
+	
+	/** \brief Shared trigger expression parser. */
+	public static func TSTriggerExpressionParser getSharedTriggerExpressionParser()
+		return pSharedTriggerExpressionParser
+	end
+	
+	/** \brief Set shared trigger expression parser. */
+	public static func void setSharedTriggerExpressionParser( TSTriggerExpressionParser parser )
+		if parser == null
+			throw EInvalidParam.new()
+		end
+		pSharedTriggerExpressionParser = parser
+	end
+	
+	/**
+	 * \brief Trigger expression parser.
+	 * 
+	 * Default implementation uses shared trigger expression parser. Subclass to use
+	 * a specific parser for this class only.
+	 */
+	public func TSTriggerExpressionParser getTriggerExpressionParser()
+		return pSharedTriggerExpressionParser
+	end
+	
+	
+	
+	/** \brief Number of properties. */
+	public func int getPropertyCount()
+		return this.pProperties.getCount()
+	end
+	
+	/** \brief List of property names as array of strings. */
+	public func Array getPropertyNames()
+		return this.pProperties.getKeys()
+	end
+	
+	/** \brief Named property or \em null if absent. */
+	public func ElementClassProperty getPropertyNamed( String name )
+		return this.pProperties.getAt( name, null ) cast ElementClassProperty
+	end
+	
+	/** \brief Named property is present. */
+	public func bool hasPropertyNamed( String name )
+		return this.pProperties.has( name )
+	end
+	
+	/** \brief Add property. */
+	public func void addProperty( ElementClassProperty property )
+		if this.pProperties.has( property.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pProperties.setAt( property.getName(), property )
+	end
+	
+	/** \brief Remove property. */
+	public func void removeProperty( ElementClassProperty property )
+		this.pProperties.remove( property.getName() )
+	end
+	
+	/** \brief Remove all properties. */
+	public func void removeAllProperties()
+		this.pProperties.removeAll()
+	end
+	
+	/** \brief Visit properties with block with parameter ElementClass. */
+	public func void forEachProperty( Block ablock )
+		this.pProperties.forEachValue( ablock )
+	end
+	
+	/**
+	 * \brief Process value visiting properties.
+	 * 
+	 * Works like Array.inject() . Block receives Object processed value as first argument
+	 * and ElementClassProperty as second argument. Block return value becomes processed
+	 * value for the next visited property. First property received initialValue to process.
+	 */
+	public func Object injectProperty( Object injectValue, Block ablock )
+		return this.pProperties.injectValue( injectValue, ablock )
+	end
+	
+	/**
+	 * \brief Set value of named property.
+	 * 
+	 * Used by LoadElementClass to set the property value. This is not necessarily
+	 * the same as the value retrieved from the property for use by Element instances.
+	 * For example with resources this sets the path to the resource to load while
+	 * the Element instances get the loaded resource itself.
+	 * 
+	 * \param name Name of property to set value for.
+	 * \param value Value to set.
+	 * \param basePath Base path for relative resource loading.
+	 * \throws EInvalidParam Property is absent.
+	 * \throws Exception Value is not understood by property.
+	 */
+	public func void setPropertyValue( String name, Object value )
+		( this.pProperties.getAt( name ) cast ElementClassProperty ).setValue( value )
+	end
+	
+	
+	
+	/** \brief Element class is persistable to file writers. */
+	public func bool getPersistable()
+		return this.pPersistable
+	end
+	
+	/** \brief Set element class is persistable to file writers. */
+	public func void setPersistable( bool persistable )
+		this.pPersistable = persistable
+	end
+	
+	
+	
+	/**
+	 * \brief Create duplicate of class with new name.
+	 * 
+	 * This is used for creating element classes using XML element class loading.
+	 * If this class does not support XML subclassing return \em null.
+	 * 
+	 * The default implementation returns \em null.
+	 */
+	public func ElementClass duplicateNamed( String classname )
+		return null
+	end
+	
+	
+	
+	/** \brief Preload resources. */
+	public func void preloadResources( PreloadCounter counter )
+		this.pProperties.forEachValue( block ElementClassProperty each
+			each.preloadResources( this, counter )
+		end )
+	end
+	
+	/**
+	 * Adds element classes this class depends on. Dependent classes usually
+	 * are elements created alongside elements of this class or elements which
+	 * can be produced during the lifetime of an element of this class.
+	 */
+	public func void addDependencies( PreloadManager preloadManager )
+	end
+	
+	
+	
+	/**
+	 * \brief Create element instance.
+	 * 
+	 * If this element class does not support creating elements, for example because
+	 * the result is not an element, \em null has to be returned. The default
+	 * implementation returns \em null. Subclasses not intending to create elements
+	 * or requiring special creation handling should subclass createAndAddElement()
+	 * and loadAndAddElement() bypassing this method.
+	 */
+	protected func Element createElement()
+		return null
+	end
+	
+	/**
+	 * \brief Create element instance from stub.
+	 * 
+	 * Calls createElement() to create the element.  If the returned element is \em null
+	 * no further processing is done. If an element is returned init() is called on the
+	 * element using \em stub.
+	 * 
+	 * This method is used by createAndAddElement() and loadAndAddElement(). It can be
+	 * used to create fully initialized elements without adding them to the game world.
+	 */
+	public func Element createElement( StubElement stub )
+		var Element element = this.createElement()
+		if element == null
+			return null
+		end
+		
+		try
+			element.init( stub )
+			
+		catch Exception e
+			element.dispose()
+			throw
+		end
+		
+		return element
+	end
+	
+	/**
+	 * \brief Create element from given stub and add it to game world.
+	 * 
+	 * Calls createElement(stub) to obtain a new element instance. If the returned element
+	 * is \em null no further processing is done. If an element is returned it is added
+	 * to \em gameWorld.
+	 * 
+	 * Most subclasses overwrite createElement() to create an instance of the subclass.
+	 * Subclasses not representing actual elements or require special handling should
+	 * overwrite this method and loadAndAddElement() to provide the specific handling.
+	 */
+	public func void createAndAddElement( StubElement stub, GameWorld gameWorld )
+		var Element element = this.createElement( stub )
+		if element == null
+			return
+		end
+		
+		try
+			gameWorld.addElement( element )
+			
+		catch Exception e
+			element.removeFromGameWorldIfPresent()
+			element.dispose()
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Load element from file reader.
+	 * 
+	 * Calls createElement(stub) to obtain a new element instance. If the returned
+	 * element is \em null no further processing is done. If an element is returned
+	 * readFromFile(reader) is called on the element. Then the element is added to
+	 * \em gameWorld.
+	 * 
+	 * This method is used by loadAndAddElement(). It can be used to create fully
+	 * loaded elements without adding them to the game world.
+	 */
+	public func Element loadElement( PersistencyEnvironment env, StubElement stub, \
+	FileReader reader )
+		var Element element = this.createElement( stub )
+		if element == null
+			return null
+		end
+		
+		try
+			element.readFromFile( env, reader )
+			
+		catch Exception e
+			element.removeFromGameWorldIfPresent()
+			element.dispose()
+			throw
+		end
+		
+		return element
+	end
+	
+	/**
+	 * \brief Load element from file reader and add it to game world.
+	 * 
+	 * Calls loadElement(stub) to obtain a new element instance. If the returned element
+	 * is \em null no further processing is done. If an element is returned it is added
+	 * to the \em gameWorld.
+	 * 
+	 * Most subclasses overwrite createElement() to create an instance of the subclass.
+	 * Subclasses not representing actual elements or require special handling should
+	 * overwrite this method and createAndAddElement() to provide the specific handling.
+	 */
+	public func void loadAndAddElement( PersistencyEnvironment env, StubElement stub, \
+	FileReader reader, GameWorld gameWorld )
+		var Element element = this.loadElement( env, stub, reader )
+		if element == null
+			return
+		end
+		
+		try
+			gameWorld.addElement( element )
+			
+		catch Exception e
+			element.removeFromGameWorldIfPresent()
+			element.dispose()
+			throw
+		end
+	end
+	
+	
+	
+	/** \brief Hash code. */
+	public func int hashCode()
+		return this.pClassname.hashCode()
+	end
+	
+	/**
+	 * \brief Element class is equal to another object.
+	 * 
+	 * Two element classes are equal if they have the same class name.
+	 */
+	public func bool equals( Object obj )
+		if obj castable ElementClass
+			return this.pClassname.equals( ( obj cast ElementClass ).getClassname() )
+			
+		else
+			return false
+		end
+	end
+	
+	
+	
+	/** \brief Resource finished loading successfully. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+	end
+	
+	/** \brief Resource failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+	end
+end

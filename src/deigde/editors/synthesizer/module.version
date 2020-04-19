@@ -1,0 +1,4 @@
+SYNTHESIZER {
+  global: SynthesizerEditorCreateModule;
+  local: *;
+};

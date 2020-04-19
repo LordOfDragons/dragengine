@@ -1,0 +1,152 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Input device axis.
+ * 
+ * Wraps a input device axis by axis index.
+ * 
+ * Axes can be any input control a user can alter between a minimum and maximum range.
+ * Axes are always a single value. Input elements moving along more than 1 degree of
+ * freedom one individual axis is used for each degree of freedom. A mouse has 2 axes
+ * one for X movement and one for Y movement. The same applies to an analog stick on
+ * a joystick or gamepad. A 3D mouse or joystick with twist support use 3 axes. Complex
+ * input controls like racing wheels can have more than 3 axes.
+ * 
+ * Dead zone and jitter is handled by the input module. The scripting module does not
+ * have to worry about this. The input module adjusts the values to hide these parameters.
+ * For example for a gamepad the input value is mapped from the range
+ * (realMinimum -> deadZone) to (-1, 0) and (deadZone -> realMaximum) to (0, 1). The
+ * entire dead zone shows up as 0 value to the scripting module no matter how the user
+ * configurated the dead zone.
+ * 
+ * The minimum, center and maximum values are fixed to -1, 0 and 1. The input module maps
+ * the axis range to this value range to simplify the use for script modules. The input
+ * handling used by scripts has to matcht the way axes work. A stick matches the -1 to 1
+ * range with 0 value if the stick is not touched. A throttle control on the other hand
+ * can have the center position at the minimum position. In this case the game script
+ * has to map -1 to 0 to get the correct result. The user is responsible to assign the
+ * matching input axes to the appropriate game bindings. The game can use the device
+ * type to locate potential problems due to misconfiguration. Relative axes work different
+ * in that they have no limited range. The returned value is always the last change in
+ * position reported which can be larger than 1.
+ * 
+ * This is a native class.
+ */
+class InputDeviceAxis
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Input device axis can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner input device. */
+	public func InputDevice getInputDevice()
+	end
+	
+	/** \brief Axis index. */
+	public func int getAxisIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Axiss */
+	/*@{*/
+	/**
+	 * \brief Axis identifier.
+	 * 
+	 * Unique identifier for the axis identifying it inside the parent device. The prefix
+	 * is a normalized string that contains only letters, numbers and underscores. It is
+	 * suitable to be combined with the device identifier to store them in config files as
+	 * key bindings.
+	 */
+	public func String getID()
+	end
+	
+	/**
+	 * \brief Display name.
+	 * 
+	 * Dispaly name is human readable like for example 'Axis #1'. The name is unique but
+	 * not guaranteed to stay the same across restarting the input module or game engine.
+	 */
+	public func String getName()
+	end
+	
+	/** \brief Axis type. */
+	public func InputDeviceAxisType getType()
+	end
+	
+	/**
+	 * \brief Image to represent the axis in 2D user interfaces or NULL if not set.
+	 * 
+	 * Large image of 128 pixels squared or larger.
+	 */
+	public func Image getDisplayImage()
+		return null
+	end
+	
+	/** \brief Count of icons representing the axis in bindings. */
+	public func int getDisplayIconCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Icon at index representing the axis in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getDisplayIconAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding width representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconX( int maxWidth )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding height representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconY( int maxHeight )
+		return null
+	end
+	
+	/** \brief Text to display centered across display image or icon. */
+	public String getDisplayText()
+		return ""
+	end
+	
+	
+	
+	/**
+	 * \brief Get current value.
+	 * 
+	 * This obtains the current value from the input module. If the device has been detached
+	 * from the host platform in the mean time 0 is returned. In contrary to
+	 * InputSystem.getAxisValue() no exception is thrown. This allows to keep a reference to
+	 * this instance without worrying about the device being detached from the system.
+	 * If reattached the device properly works again.
+	 */
+	public func float getValue()
+	end
+	/*@}*/
+end

@@ -1,0 +1,145 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display sub titles using a SubTitleBox.
+ * 
+ * Implements ConversationPlaybackSubTitle so the window can be directly used as sub title
+ * interface by a conversation playback if required. The sub title box is set to remove all
+ * texts before adding a new one. If you like to use keep previous texts visible until they
+ * time out call \code{.ds} getSubTitleBox().setRemoveAllBeforeAdd(false) \endcode .
+ */
+class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
+	/** \brief Sub title box. */
+	private var SubTitleBox pSubTitleBox
+	
+	
+	
+	/**
+	 * \brief Create sub title window.
+	 * 
+	 * Sets the window width to be a bit less than the screen width. Upon changin size the
+	 * window is moved to be located at a given distance from the bottom.
+	 */
+	public func new() super( 0, 0, GraphicSystem.getWindowWidth() - 100, 10 )
+		this.runWhileBlockingLayout( block
+			this.setTitle( "" )
+			this.setCanMove( false )
+			this.setCanResize( false )
+			this.setCanActivate( false )
+			this.setCanClose( false )
+			this.setCanMaximize( false )
+			this.setCanMinimize( false )
+			this.setDesignerSelector( "WindowSubTitle" )
+			
+			this.pSubTitleBox = this.createSubTitleBox()
+			this.pSubTitleBox.setRemoveAllBeforeAdd( true )
+			this.addWidget( this.pSubTitleBox )
+		end )
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		this.pSubTitleBox = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Sub title box. */
+	public func SubTitleBox getSubTitleBox()
+		return this.pSubTitleBox
+	end
+	
+	
+	
+	/** \brief Add sub title text widget. */
+	public func void addSubTitleText( Widget text )
+		this.pSubTitleBox.addSubTitleText( text )
+		this.moveToTop()
+	end
+	
+	/** \brief Remove all texts. */
+	public func void removeAllSubTitleText()
+		this.pSubTitleBox.removeAllSubTitleText()
+	end
+	
+	
+	
+	/**
+	 * \brief Size changed.
+	 * 
+	 * Adjusts window position.
+	 */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.adjustWindowGeometry()
+	end
+	
+	/** \brief Desktop size changed. */
+	public func void onDesktopResized()
+		this.adjustWindowGeometry()
+	end
+	
+	/**
+	 * \brief Lay out widgets using the set layout.
+	 * 
+	 * Extends the super class behavior to call adjustWindowGeometry() after super call.
+	 */
+	public func void doLayout()
+		if this.getBlockLayout()
+			return
+		end
+		
+		super.doLayout()
+		this.adjustWindowGeometry()
+	end
+	
+	/**
+	 * \brief Adjust window position and height.
+	 * 
+	 * Default implementation moves window to be center bottom and sets height to content.
+	 */
+	protected func void adjustWindowGeometry()
+		var int contentHeight = this.getLayout().getMinimumSize( this ).getY()
+		var Point desktopSize = this.getParent().getSize()
+		var int windowWidth = this.getWidth()
+		
+		this.setHeight( contentHeight )
+		this.setPosition( Point.new( ( desktopSize.getX() - windowWidth ) / 2, \
+			desktopSize.getY() - contentHeight - 50 ) )
+	end
+	
+	/** \brief Create sub title box. */
+	public func SubTitleBox createSubTitleBox()
+		return SubTitleBox.new()
+	end
+end

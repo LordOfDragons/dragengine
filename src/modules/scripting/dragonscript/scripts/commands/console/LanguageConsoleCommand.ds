@@ -1,0 +1,118 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Console command shows available languages and changing active language.
+ */
+class LanguageConsoleCommand extends ConsoleCommand
+	/** \brief Translation manager. */
+	private var TranslationManager pTranslationManager
+	
+	
+	
+	/** \brief Create console command. */
+	public func new( TranslationManager translationManager )
+		if translationManager == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTranslationManager = translationManager
+		
+		this.setName( "language" )
+		this.setDescription( "Shows languages and set active language." )
+		this.setSyntax( "language { list | active { <name> }\n" + \
+			"   list => display list of all available languages\n" + \
+			"   active => display name of the active language\n" + \
+			"   active <name> => set active language" )
+	end
+	
+	
+	
+	/** \brief Translation manager. */
+	public func TranslationManager getTranslationManager()
+		return this.pTranslationManager
+	end
+	
+	/** \brief Set translation manager. */
+	public func void setTranslationManager( TranslationManager translationManager )
+		if translationManager == null
+			throw EInvalidParam.new()
+		end
+		this.pTranslationManager = translationManager
+	end
+	
+	
+	
+	/**
+	 * \brief Execute command.
+	 * \param console Console to send output to.
+	 * \param params List of parameters. Has to match command syntax.
+	 */
+	public func void execute( Console console, Array params )
+		if params.getCount() == 0
+			console.addMessage( this.getSyntax() )
+			return
+		end
+		
+		var LanguagePack languagePack
+		
+		if params.getAt( 0 ).equals( "list" )
+			var Array names = this.pTranslationManager.getNames()
+			
+			if names.getCount() > 0
+				console.addMessage( names.sorted().fold( block String a, String b
+					return a + ", " + b
+				end ).toString() )
+				
+			else
+				console.addMessage( "< no languages >" )
+			end
+			
+		elif params.getAt( 0 ).equals( "active" )
+			if params.getCount() == 1
+				languagePack = this.pTranslationManager.getActive()
+				console.addMessage( languagePack.getName().toString() \
+					+ ": " + languagePack.getDescription() )
+				
+			else
+				languagePack = this.pTranslationManager.getNamed( \
+					UnicodeString.newFromUTF8( params.getAt( 1 ).toString() ) )
+				
+				if languagePack == null
+					console.addMessage( "Language not found: " + params.getAt( 1 ) )
+					
+				else
+					this.pTranslationManager.setActive( languagePack )
+					console.addMessage( "Activated language: " + params.getAt( 1 ) )
+				end
+			end
+			
+		else
+			console.addMessage( "invalid command: " + params.getAt( 0 ) )
+		end
+	end
+end

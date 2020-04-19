@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<gameDefinition>
+	<identifier>IGDE</identifier>
+	<description>Drag[en]gine Integrated Game Development Environment.</description>
+	<basePath>/</basePath>
+	<categories>
+		<classes>
+			<category>
+				<name>IGDE</name>
+				<description>Models used in the IGDE for editing purpose. Not used in games.</description>
+				<autoCategorize>/igde/models/*</autoCategorize>
+				<category>
+					<name>Placeholder</name>
+					<description>Placeholders for objects not having a visible representation.</description>
+				</category>
+			</category>
+		</classes>
+		<skins>
+			<category>
+				<name>IGDE</name>
+				<description>Materials used in the IGDE for editing purpose. Not used in games.</description>
+				<autoCategorize>/igde/materials/*</autoCategorize>
+			</category>
+		</skins>
+		<skies>
+			<category>
+				<name>IGDE</name>
+				<description>Skies used in the IGDE for editing purpose. Not used in games.</description>
+				<autoCategorize>/igde/skies/*</autoCategorize>
+			</category>
+		</skies>
+		<particleEmitters>
+			<category>
+				<name>IGDE</name>
+				<description>Particle emitters used in the IGDE for editing purpose. Not used in games.</description>
+			</category>
+		</particleEmitters>
+	</categories>
+	
+	<findPathClasses>/igde/models</findPathClasses>
+	<findPathSkins>/igde/materials</findPathSkins>
+	<findPathSkies>/igde/skies</findPathSkies>
+	<defaultClass>IGDEElement</defaultClass>
+	<defaultSkin>/igde/materials/stoneFloor/material.deskin</defaultSkin>
+	<defaultSky>/igde/skies/static.desky</defaultSky>
+	
+	<class name='IGDEElement'>
+		<description>Basic element used only in the IGDE.</description>
+		<scaleMode>fixed</scaleMode>
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<link target='model' property='model'/>
+			<link target='skin' property='skin'/>
+			<link target='rig' property='rig'/>
+			<link target='occlusionMesh' property='occlusionMesh'/>
+			<link target='audioModel' property='audioModel'/>
+			<link target='renderEnvMap' property='renderEnvMap'/>
+			<link target='affectsAudio' property='affectsAudio'/>
+		</component>
+		<property name='model'>
+			<description>Model file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>model</pathPatternType>
+		</property>
+		<property name='skin'>
+			<description>Skin file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>skin</pathPatternType>
+		</property>
+		<property name='rig'>
+			<description>Rig file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>rig</pathPatternType>
+		</property>
+		<property name='occlusionMesh'>
+			<description>Occlusion mesh file to use.</description>
+			<type>path</type>
+			<pathPatternType>occlusionMesh</pathPatternType>
+		</property>
+		<property name='audioModel'>
+			<description>Audio model to use. Replaces the model resource for audio modules only.</description>
+			<type>path</type>
+			<pathPatternType>model</pathPatternType>
+		</property>
+		<property name='renderEnvMap'>
+			<description>Element is rendered into environment maps. By default all elements are rendered into environment maps. For dynamic objects and objects close to environment map probes it is useful to not include them into environment maps.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='affectsAudio'>
+			<description>Element affects audio. By default all elements affect audio if their skin textures have audio properties set. For certain objects it might be useful to exclude them from affecting audio for example to improve performance or to avoid audio environments to change in an undesired way. In general though skin textures audio properties should determine if elements affect audio.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		
+		<category>IGDE</category>
+	</class>
+	
+	<class name='IGDETestTerrain'>
+		<description>Test terrain for use in the IGDE editors only.</description>
+		<scaleMode>fixed</scaleMode>
+		<component>
+			<model>/igde/models/testTerrain/testTerrain.demodel</model>
+			<rig>/igde/models/testTerrain/testTerrain.derig</rig>
+			<texture name='floor'>
+				<skin>/igde/materials/stoneFloor/material.deskin</skin>
+			</texture>
+			<texture name='wall'>
+				<skin>/igde/materials/metalWall/material.deskin</skin>
+			</texture>
+			<texture name='wall base'>
+				<skin>/igde/materials/metalWall/material.deskin</skin>
+			</texture>
+			<texture name='wall inset'>
+				<skin>/igde/materials/metalWall2/material.deskin</skin>
+			</texture>
+		</component>
+		<environmentMapProbe>
+			<position x='0' y='2' z='0'/>
+			<reflectionShape>box:extends,50,2,50</reflectionShape>
+		</environmentMapProbe>
+		<category>IGDE</category>
+	</class>
+	
+	<class name='IGDEEnvironmentRigEditor'>
+		<description>Test environment for the rig editor.</description>
+		<size x='52' y='5' z='52'/>
+		<base x='15' y='2.5' z='-5'/>
+		<scaleMode>fixed</scaleMode>
+		<component>
+			<model>/igde/models/environments/rigeditor.demodel</model>
+			<rig>/igde/models/environments/rigeditor.derig</rig>
+			<texture name='wall'>
+				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
+			</texture>
+			<texture name='beton'>
+				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
+			</texture>
+			<texture name='grass'>
+				<skin>/igde/models/environments/materials/grass/material.deskin</skin>
+			</texture>
+		</component>
+		<environmentMapProbe>
+			<position x='0' y='2' z='0'/>
+			<reflectionShape>box:position,15,23,-5:extends,25,25,25</reflectionShape>
+		</environmentMapProbe>
+		<category>IGDE</category>
+	</class>
+	
+	<class name='IGDEEnvironmentRigEditor2'>
+		<description>Test environment for the rig editor.</description>
+		<size x='52' y='5' z='52'/>
+		<base x='15' y='2.5' z='-5'/>
+		<ghost>0</ghost>
+		<scaleMode>uniform</scaleMode>
+		<component>
+			<model>/igde/models/environments/rigeditor2.demodel</model>
+			<rig>/igde/models/environments/rigeditor.derig</rig>
+			<texture name='wall'>
+				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
+			</texture>
+			<texture name='beton'>
+				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
+			</texture>
+			<texture name='grass'>
+				<skin>/igde/models/environments/materials/grass/material.deskin</skin>
+			</texture>
+		</component>
+		<environmentMapProbe>
+			<position x='0' y='2' z='0'/>
+			<reflectionShape>box:position,15,23,-5:extends,25,25,25</reflectionShape>
+		</environmentMapProbe>
+		<light>
+			<type>point</type>
+			<position x='-5' y='10.7' z='-8'/>
+			<orientation x='0' y='0' z='0'/>
+			<color r='1' g='1' b='1'/>
+			<intensity>10</intensity>
+			<halfIntensityDistance>0.2</halfIntensityDistance>
+			<range>20</range>
+			<activated>1</activated>
+			<hintMovement>static</hintMovement>
+			<hintParameter>flicker</hintParameter>
+			<castShadows>true</castShadows>
+			<hintLightImportance>100</hintLightImportance>
+			<hintShadowImportance>100</hintShadowImportance>
+		</light>
+		<light>
+			<type>point</type>
+			<position x='5' y='10.7' z='8'/>
+			<orientation x='0' y='0' z='0'/>
+			<color r='1' g='1' b='1'/>
+			<intensity>10</intensity>
+			<halfIntensityDistance>0.2</halfIntensityDistance>
+			<range>20</range>
+			<activated>1</activated>
+			<hintMovement>static</hintMovement>
+			<hintParameter>flicker</hintParameter>
+			<castShadows>true</castShadows>
+			<hintLightImportance>100</hintLightImportance>
+			<hintShadowImportance>100</hintShadowImportance>
+		</light>
+		<category>IGDE</category>
+	</class>
+	
+	<!-- Object classes: /IGDE/Placeholder/* -->
+	<class name='IGDEPlaceholderBoxGeneric'>
+		<description>Generic placeholder box. Uses a box model and a question mark skin. The skin can be
+			modified using the 'skin object property. For use with igdeWObject class to easily show a
+			placeholder box with any custom skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/unknown.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>0</renderEnvMap>
+			
+			<link target='skin' property='skin'/>
+		</component>
+		
+		<property name='skin'>
+			<description>Skin to use instead of the class defined one.</description>
+			<type>string</type>
+			<default>/igde/models/box/materials/unknown.deskin</default>
+		</property>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+	
+	<class name='IGDEPlaceholderBoxCamera'>
+		<description>Placeholder box with a camera skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/camera.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+	
+	<class name='IGDEPlaceholderBoxLight'>
+		<description>Placeholder box with a light bulb skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/light.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+	
+	<class name='IGDEPlaceholderBoxProblem'>
+		<description>Placeholder box with a exclamation mark skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/problem.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+	
+	<class name='IGDEPlaceholderBoxProblemNavSpace'>
+		<description>Placeholder box with a exclamation mark before navigation mesh skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/problemNavspace.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+	
+	<class name='IGDEPlaceholderBoxUnknown'>
+		<description>Placeholder box with a question mark skin.</description>
+		<size x='0.25' y='0.25' z='0.25'/>
+		<ghost>1</ghost>
+		<scaleMode>fixed</scaleMode>
+		
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<skin>/igde/models/box/materials/unknown.deskin</skin>
+			<static>true</static>
+			<noScaling>true</noScaling>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		
+		<category>IGDE/Placeholder</category>
+	</class>
+</gameDefinition>

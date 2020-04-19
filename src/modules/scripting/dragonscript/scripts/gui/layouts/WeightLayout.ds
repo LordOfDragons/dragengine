@@ -1,0 +1,428 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Arrange widgets along X or Y axis with weighted size.
+ * 
+ * Distribute size across widgets based on fixed size and weight factors. The minimum,
+ * preferred and maximum size requirements of widgets are disregarded to allow widget sizes
+ * to align with fixed external factors. This can be used to enforce relative distribution
+ * across different containers no matter what size requirements widgets have.
+ * 
+ * Use instances of immutable LayoutSettings as layout options when adding widgets. The
+ * layout settings can be replaced after adding the widgets. This can be used for example
+ * for column based lists to apply changed column sizes to all widgets in affected layouts.
+ * 
+ * LayoutSettings uses a fixed size and a weight factor. The fixed size replaces the minimum
+ * size indicated by the widget measured in pixels. The weight factors are sumemd up across
+ * all widgets to obtain the weight sum. The size of each widget is the weight factor divided
+ * by the weight sum. The fixed sizes are subtracted from the available space before doing
+ * weight calculation.
+ * 
+ * Instances of this layout can not be shared across multiple widgets.
+ */
+class WeightLayout implements Layout
+	/** \brief Immutable widget layout settings. */
+	public class LayoutSettings
+		/** \brief Weight factor. */
+		private var int pWeight
+		
+		/** \brief Fixed size in pixels. */
+		private var int pFixedSize
+		
+		
+		
+		/**
+		 * \brief Create layout setting.
+		 * 
+		 * \param weight Weight factor.
+		 * 
+		 * \throws EInvalidParam \em weight is less than 0.
+		 */
+		public func new( int weight ) this( weight, 0 )
+		end
+		
+		/**
+		 * \brief Create layout setting.
+		 * 
+		 * \param weight Weight factor.
+		 * \param fixedSize Fixed size in pixels.
+		 * 
+		 * \throws EInvalidParam weight is less than 0.
+		 * \throws EInvalidParam fixedSize is less than 0.
+		 */
+		public func new( int weight, int fixedSize )
+			if weight < 0 or fixedSize < 0
+				throw EInvalidParam.new()
+			end
+			
+			this.pWeight = weight
+			this.pFixedSize = fixedSize
+		end
+		
+		
+		
+		/** \brief Weight factor. */
+		public func int getWeight()
+			return this.pWeight
+		end
+		
+		/** \brief Fixed size in pixels. */
+		public func int getFixedSize()
+			return this.pFixedSize
+		end
+	end
+	
+	
+	
+	/** \brief Axis to arrange widgets along. */
+	private var LayoutAxis pAxis
+	
+	/** \brief Size of gap between widgets. */
+	private var int pGap
+	
+	/**
+	 * \brief Widget layout settings.
+	 * 
+	 * Dictionary with Widget as keys and LayoutSettings as values.
+	 */
+	private var Dictionary pWidgetSettings
+	
+	/** \brief Weight sum or -1 if not calculated yet. */
+	private var int pWeightSum
+	
+	
+	
+	/**
+	 * \brief Create layout with 0 gap.
+	 */
+	public func new( LayoutAxis axis ) this( axis, 0 )
+	end
+	
+	/**
+	 * \brief Create layout.
+	 * \param gap Size of gap between child widgets. Can be negative to overlap widgets.
+	 */
+	public func new( LayoutAxis axis, int gap )
+		this.pWeightSum = -1
+		this.pWidgetSettings = Dictionary.new()
+		
+		this.setAxis( axis )
+		this.setGap( gap )
+	end
+	
+	
+	
+	/** \brief Gap between child widgets. */
+	public func int getGap()
+		return this.pGap
+	end
+	
+	/**
+	 * \brief Set gap between child widgets.
+	 * 
+	 * Can be negative to overlap widgets.
+	 */
+	public func void setGap( int gap )
+		this.pGap = gap
+	end
+	
+	/** \brief Axis to arrange widgets along. */
+	public func LayoutAxis getAxis()
+		return this.pAxis
+	end
+	
+	/**
+	 * \brief Set axis to arrange along.
+	 */
+	public func void setAxis( LayoutAxis axis )
+		this.pAxis = axis
+	end
+	
+	
+	
+	/**
+	 * \brief Add widget to layout using settings.
+	 * 
+	 * \param widget Widget to add to layout.
+	 * \param settings Instance of LayoutSettings. If null a weight of 1 is used.
+	 */
+	public func void addWidget( Widget widget, Object settings )
+		if settings == null
+			throw EInvalidParam.new()
+		end
+		this.pWidgetSettings.setAt( widget, settings )
+		this.pWeightSum = -1
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+		this.pWidgetSettings.removeIfExisting( widget )
+		this.pWeightSum = -1
+	end
+	
+	/** \brief Layout settings for widget. */
+	public func LayoutSettings getWidgetSettings( Widget widget )
+		return this.pWidgetSettings.getAt( widget ) cast LayoutSettings
+	end
+	
+	/**
+	 * \brief Set layout settings for widget.
+	 * 
+	 * Layouts the parent of widget after changing the settings.
+	 * 
+	 * \param widget Widget to set settings for.
+	 * \param settings Instance of LayoutSettings.
+	 */
+	public func void setWidgetSettings( Widget widget, LayoutSettings settings )
+		if settings == null
+			throw EInvalidParam.new()
+		end
+		this.pWidgetSettings.setAt( widget, settings )
+		widget.layoutParent()
+		this.pWeightSum = -1
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+		var int count = container.getWidgetCount()
+		
+		// determine first the minimum size needed. this is the real minimum size not a
+		// potentially artifial minimal size from container.getMinimumSize()
+		var int width = container.getContainerWidth()
+		var int height = container.getContainerHeight()
+		var Point minSize = this.getMinimumSizeFor( container, width, height )
+		
+		// now determine how much additional space we have got at our disposal to size
+		// child widgets beyond minimum
+		var bool negate = ( this.pAxis == LayoutAxis.inverseX or this.pAxis == LayoutAxis.inverseY )
+		var int cx = container.getPadding().getLeft()
+		var int cy = container.getPadding().getTop()
+		var LayoutSettings layoutSettings
+		var Widget child
+		var int i
+		
+		var BorderSize borderSize
+		var int borderHeight
+		var int borderWidth
+		var int borderLeft
+		var int borderTop
+		
+		var int weightSum = this.getWeightSum()
+		var int weightedSize
+		
+		select this.pAxis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			var int availSpace = DEMath.max( container.getWidth() - minSize.getX(), 0 )
+			if negate
+				cx += width
+			end
+			
+			for i = 0 to count
+				child = container.getWidget( i )
+				if not child.getVisible()
+					continue
+				end
+				
+				layoutSettings = this.pWidgetSettings.getAt( child ) cast LayoutSettings
+				
+				weightedSize = layoutSettings.getWeight() * availSpace / weightSum
+				availSpace -= weightedSize
+				weightSum = DEMath.max( weightSum - layoutSettings.getWeight(), 1 )
+				
+				weightedSize += layoutSettings.getFixedSize()
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderWidth = 0
+					borderHeight = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				child.setSize( Point.new( weightedSize - borderWidth, height - borderHeight ) )
+				
+				if negate
+					cx -= weightedSize + borderWidth + this.pGap
+					child.setPosition( Point.new( cx + borderLeft + this.pGap, cy + borderTop ) )
+					
+				else
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
+					cx += weightedSize + borderWidth + this.pGap
+				end
+			end
+			
+		else
+			var int availSpace = DEMath.max( container.getHeight() - minSize.getY(), 0 )
+			if negate
+				cy += height
+			end
+			
+			for i = 0 to count
+				child = container.getWidget( i )
+				if not child.getVisible()
+					continue
+				end
+				
+				layoutSettings = this.pWidgetSettings.getAt( child ) cast LayoutSettings
+				
+				weightedSize = layoutSettings.getWeight() * availSpace / weightSum
+				availSpace -= weightedSize
+				weightSum = DEMath.max( weightSum - layoutSettings.getWeight(), 1 )
+				
+				weightedSize += layoutSettings.getFixedSize()
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderHeight = 0
+					borderWidth = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				child.setSize( Point.new( width - borderWidth, weightedSize - borderHeight ) )
+				
+				if negate
+					cy -= weightedSize + borderHeight + this.pGap
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop + this.pGap ) )
+					
+				else
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
+					cy += weightedSize + borderHeight + this.pGap
+				end
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize( Container container )
+		return this.getMinimumSizeFor( container, \
+			container.getContainerWidth(), container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		return this.getMinimumSizeFor( container, \
+			DEMath.max( 0, width - container.getPadding().getWidth() ), \
+				container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		return this.getMinimumSizeFor( container, container.getContainerWidth(), \
+			DEMath.max( 0, height - container.getPadding().getHeight() ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Minimum size of layout using reference and variable size.
+	 * 
+	 * If LayoutAxis.x or LayoutAxis.inverseX is used height is the reference size.
+	 * If LayoutAxis.y or LayoutAxis.inverseY is used widthis the reference size.
+	 */
+	protected func Point getMinimumSizeFor( Container container, int width, int height )
+		var int count = container.getWidgetCount()
+		var int i, cx = 0, cy = 0
+		var Point childSize
+		var Widget child
+		
+		select this.pAxis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			if count > 0
+				for i = 0 to count
+					child = container.getWidget( i )
+					if not child.getVisible()
+						continue
+					end
+					
+					childSize = child.getMinimumSizeWithBorderForHeight( height )
+					cx += ( this.pWidgetSettings.getAt( child ) cast LayoutSettings ) \
+						.getFixedSize() + this.pGap
+					cy = DEMath.max( cy, childSize.getY() )
+				end
+				cx -= this.pGap // because we added one gap too much
+			end
+			
+		else
+			if count > 0
+				for i = 0 to count
+					child = container.getWidget( i )
+					if not child.getVisible()
+						continue
+					end
+					
+					childSize = child.getMinimumSizeWithBorderForWidth( width )
+					cy += ( this.pWidgetSettings.getAt( child ) cast LayoutSettings ) \
+						.getFixedSize() + this.pGap
+					cx = DEMath.max( cx, childSize.getX() )
+				end
+				cy -= this.pGap // because we added one gap too much
+			end
+		end
+		
+		return Point.new().largest( cx, cy ) + container.getPadding().getSize()
+	end
+	
+	
+	
+	/**
+	 * \brief Weight sum.
+	 * 
+	 * Recalculates weight sum if required.
+	 */
+	protected func int getWeightSum()
+		if this.pWeightSum >= 0
+			return this.pWeightSum
+		end
+		
+		this.pWeightSum = 0
+		this.pWidgetSettings.forEachValue( block LayoutSettings each
+			this.pWeightSum += each.getWeight()
+		end )
+		
+		if this.pWeightSum == 0
+			this.pWeightSum = 1
+		end
+		
+		return this.pWeightSum
+	end
+end

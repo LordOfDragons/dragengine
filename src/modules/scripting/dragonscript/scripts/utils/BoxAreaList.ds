@@ -1,0 +1,157 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief List of box areas.
+ */
+class BoxAreaList
+	/** \brief List of box areas. */
+	private var Array pList
+	
+	/** \brief Bounding box or \em null if not calculated. */
+	private var BoxArea pBoundingBox
+	
+	
+	
+	/** \brief Create box area list. */
+	public func new()
+		this.pList = Array.new()
+	end
+	
+	/** \brief Create copy of box area list. */
+	public func new( BoxAreaList copy )
+		this.pList = copy.pList
+		this.pBoundingBox = copy.pBoundingBox
+	end
+	
+	
+	
+	/** \brief Number of box areas. */
+	public func int getCount()
+		return this.pList.getCount()
+	end
+	
+	/** \brief Box area at index. */
+	public func BoxArea getAt( int index )
+		return this.pList.getAt( index ) cast BoxArea
+	end
+	
+	/** \brief Add box area. */
+	public func void add( BoxArea boxArea )
+		if boxArea == null
+			throw EInvalidParam.new()
+		end
+		this.pList.add( boxArea )
+		this.pBoundingBox = null
+	end
+	
+	/** \brief Remove box area. */
+	public func void remove( BoxArea boxArea )
+		this.pList.remove( boxArea )
+		this.pBoundingBox = null
+	end
+	
+	/** \brief Remove all box areas. */
+	public func void removeAll()
+		this.pList.removeAll()
+		this.pBoundingBox = null
+	end
+	
+	/** \brief Visit box areas with block with parameter BoxArea. */
+	public func void forEach( Block ablock )
+		this.pList.forEach( ablock )
+	end
+	
+	/** \brief Collect box areas with block with parameter BoxArea returning \em true to include box area. */
+	public func void collect( Block ablock )
+		this.pList.collect( ablock )
+	end
+	
+	/** \brief One or more box areas contains point. */
+	public func bool containsPoint( DVector point )
+		return this.pList.find( block BoxArea each
+			return each.containsPoint( point )
+		end ) != null
+	end
+	
+	/** \brief Calculate bounding box. */
+	public func BoxArea getBoundingBox()
+		if this.pBoundingBox != null
+			return this.pBoundingBox
+		end
+		
+		var int i, count = this.pList.getCount()
+		var DVector min = DVector.new()
+		var DVector max = DVector.new()
+		var DVector point, hemin, hemax
+		var DMatrix matrix
+		var BoxArea area
+		
+		for i = 0 to count
+			area = this.pList.getAt( i ) cast BoxArea
+			matrix = DMatrix.newWorld( area.getPosition(), area.getOrientation() )
+			hemax = DVector.new( area.getHalfExtends() )
+			hemin = -hemax
+			
+			point = matrix * hemax.combine( hemin, false, false, false )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, true, false, false )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, false, true, false )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, true, true, false )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, false, false, true )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, true, false, true )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, false, true, true )
+			min = min.smallest( point )
+			max = max.largest( point )
+			
+			point = matrix * hemax.combine( hemin, true, true, true )
+			min = min.smallest( point )
+			max = max.largest( point )
+		end
+		
+		this.pBoundingBox = BoxArea.new( ( min + max ) * 0.5, ( max - min ).toVector() * 0.5 )
+		return this.pBoundingBox
+	end
+end

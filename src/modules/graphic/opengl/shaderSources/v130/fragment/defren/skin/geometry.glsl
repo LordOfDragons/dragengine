@@ -1,0 +1,707 @@
+// request high precision if the graphic card supports this
+#ifdef HIGH_PRECISION
+precision highp float;
+precision highp int;
+#endif
+
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_RENDERCOLOR || defined TEXTURE_SOLIDITY || defined DEPTH_TEST
+	#define REQUIRES_TEX_COORD 1
+#endif
+
+#ifdef DECAL
+	#define SOLIDITY_MULTIPLIER
+#endif
+
+
+
+// Uniform Parameters
+///////////////////////
+
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
+#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
+#include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
+
+#ifdef NODE_FRAGMENT_UNIFORMS
+NODE_FRAGMENT_UNIFORMS
+#endif
+
+
+
+// Samplers
+/////////////
+
+#ifdef WITH_VARIATIONS
+	// functions are defined right before main due to Shared-SPB support
+	#define SAMPLER_2D sampler2DArray
+	#define TEXTURE(s,tc) texture(s, tcTexVar(tc, textureSize(s, 0).z))
+#else
+	#define SAMPLER_2D sampler2D
+	#define TEXTURE(s,tc) texture(s, tc)
+#endif
+
+uniform lowp SAMPLER_2D texColor;
+#ifdef TEXTURE_TRANSPARENCY
+	uniform lowp SAMPLER_2D texTransparency;
+#endif
+#ifdef TEXTURE_COLOR_TINT_MASK
+	uniform lowp SAMPLER_2D texColorTintMask;
+#endif
+#ifdef TEXTURE_SOLIDITY
+	uniform lowp SAMPLER_2D texSolidity;
+#endif
+#ifdef TEXTURE_NORMAL
+	uniform lowp SAMPLER_2D texNormal;
+#endif
+#ifdef TEXTURE_HEIGHT
+	uniform lowp SAMPLER_2D texHeight;
+#endif
+#ifdef TEXTURE_REFLECTIVITY
+	uniform lowp SAMPLER_2D texReflectivity;
+#endif
+#ifdef TEXTURE_ROUGHNESS
+	uniform lowp SAMPLER_2D texRoughness;
+#endif
+#ifdef TEXTURE_EMISSIVITY
+	uniform mediump SAMPLER_2D texEmissivity;
+#endif
+#ifdef TEXTURE_RENDERCOLOR
+	uniform mediump sampler2D texRenderColor;
+#endif
+#ifdef TEXTURE_REFRACTION_DISTORT
+	uniform lowp SAMPLER_2D texRefractionDistort;
+#endif
+#ifdef TEXTURE_AO
+	uniform lowp SAMPLER_2D texAO;
+#endif
+#ifdef TEXTURE_ENVMAP
+	#ifdef TEXTURE_ENVMAP_EQUI
+		uniform mediump sampler2D texEnvMap;
+		#ifdef TEXTURE_ENVMAP_FADE
+			uniform mediump sampler2D texEnvMapFade;
+		#endif
+	#else
+		uniform mediump samplerCube texEnvMap;
+		#ifdef TEXTURE_ENVMAP_FADE
+			uniform mediump samplerCube texEnvMapFade;
+		#endif
+	#endif
+#endif
+#ifdef TEXTURE_ENVROOM
+	uniform lowp samplerCube texEnvRoom;
+#endif
+#ifdef TEXTURE_ENVROOM_MASK
+	uniform lowp SAMPLER_2D texEnvRoomMask;
+#endif
+#ifdef TEXTURE_ENVROOM_EMISSIVITY
+	uniform mediump samplerCube texEnvRoomEmissivity;
+#endif
+#ifdef TEXTURE_ABSORPTION
+	uniform lowp SAMPLER_2D texAbsorption;
+#endif
+#ifdef DEPTH_TEST
+	uniform HIGHP sampler2D texDepthTest;
+#endif
+
+#ifdef NODE_FRAGMENT_SAMPLERS
+NODE_FRAGMENT_SAMPLERS
+#endif
+
+
+
+// Inputs
+///////////
+
+in vec2 vTCColor;
+#ifdef TEXTURE_COLOR_TINT_MASK
+in vec2 vTCColorTintMask;
+#endif
+#ifdef TEXTURE_NORMAL
+in vec2 vTCNormal;
+#endif
+#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+in vec2 vTCReflectivity;
+#endif
+#ifdef TEXTURE_EMISSIVITY
+in vec2 vTCEmissivity;
+#endif
+#ifdef TEXTURE_REFRACTION_DISTORT
+in vec2 vTCRefractionDistort;
+#endif
+#ifdef TEXTURE_AO
+in vec2 vTCAO;
+#endif
+
+in vec3 vNormal;
+#ifdef TEXTURE_NORMAL
+	in vec3 vTangent;
+	in vec3 vBitangent;
+#endif
+#ifdef TEXTURE_ENVMAP
+	in vec3 vReflectDir;
+#endif
+#ifdef PARTICLE
+	in vec4 vParticleColor; // from curve property
+	#ifdef TEXTURE_EMISSIVITY
+		in float vParticleEmissivity; // from curve property
+	#endif
+#endif
+#ifdef HEIGHT_MAP
+	in float vHTMask;
+#endif
+#ifdef FADEOUT_RANGE
+	in float vFadeZ;
+#endif
+
+#ifdef SHARED_SPB
+	flat in int vSPBIndex;
+	#define spbIndex vSPBIndex
+	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
+#endif
+
+#ifdef NODE_FRAGMENT_INPUTS
+NODE_FRAGMENT_INPUTS
+#endif
+
+
+
+// Outputs
+////////////
+
+#ifdef OUTPUT_MATERIAL_PROPERTIES
+	#ifdef OUTPUT_LIMITBUFFERS
+		out vec4 outDiffuse; // diffuse.r, diffuse.g, diffuse.b, transparency
+		out vec4 outNormal; // normal.x, normal.y, normal.z, blend
+		out vec4 outReflectivity; // reflectivity.r, reflectivity.g, reflectivity.b, blend
+	#else
+		out vec4 outDiffuse; // diffuse.r, diffuse.g, diffuse.b, transparency
+		out vec4 outNormal; // normal.x, normal.y, normal.z, blend
+		out vec4 outReflectivity; // reflectivity.r, reflectivity.g, reflectivity.b, blend
+		out vec4 outRoughness; // roughness, n/a, n/a, blend
+		out vec4 outAOSolidity; // ao, ssao, solidity, blend
+		out vec4 outSubSurface; // subsurface.rgb, blend
+	#endif
+#endif
+out vec4 outColor; // color.r, color.g, color.b, n/a
+#ifdef NODE_FRAGMENT_OUTPUTS
+NODE_FRAGMENT_OUTPUTS
+#endif
+
+
+
+// Includes requiring inputs to be defined
+////////////////////////////////////////////
+
+#ifndef HAS_TESSELLATION_SHADER
+	#include "v130/shared/defren/skin/relief_mapping.glsl"
+#endif
+
+#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
+	#include "v130/shared/defren/skin/environment_room.glsl"
+#endif
+
+
+
+// Constants
+//////////////
+
+#ifdef DECODE_IN_DEPTH
+	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+#endif
+
+#ifdef TEXTURE_ENVMAP_EQUI
+	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
+#endif
+
+const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
+
+
+
+// functions required to be define last because they are based on stuff defined above
+#ifdef WITH_VARIATIONS
+	// NOTE: according to opengl website the layer is clamped like this:
+	//         layer = clamp( floor( texCoord.p​ + 0.5 ), 0, d​ - 1 ).
+	//       thus the texCoord.p has to be reduced by 0.5 to map the entire range, example:
+	//         layerCount = 3
+	//         texCoord.p = 0.0 .. 3.0
+	//         texCoord.p - 0.5 = -0.5 .. 2.5
+	//         clamped => -0.5 .. 0.5 => 0; 0.5 .. 1.5 => 1; 1.5 .. 2.5 => 2
+	//       this way all value have the same dominance
+	
+	vec3 tcTexVar( in vec2 tc, in int layerCount ){
+		vec3 p = fract( floor( tc.sts * pVariationEnableScale.xyx + pVariationSeed.xyx ) * vec3( 0.1031 ) );
+		p += dot( p, p.yzx + vec3( 19.19 ) );
+		return vec3( tc, fract( ( p.x + p.y ) * p.z ) * float( layerCount ) - 0.5 );
+	}
+	
+	#if 0
+	vec3 tcTexVar( in vec2 tc, in int layerCount ){
+		return vec3( tc, fract( sin( dot( floor( tc ) / vec2( 1024 ) * pVariationEnableScale + pVariationSeed, vec2( 12.9898, 78.233 ) ) )
+			* 43758.5453123 ) * float( layerCount ) - 0.5 );
+	}
+	#endif
+#endif
+
+
+
+// Main Function
+//////////////////
+
+void main( void ){
+	// for limited systems add dummy variables. the compiler is going to remove them. a better
+	// solution has to be found for this later.
+	#ifdef OUTPUT_LIMITBUFFERS
+	vec4 outRoughness;
+	vec4 outAOSolidity;
+	vec4 outSubSurface;
+	#endif
+	
+	// for height map quickly dicard fragments if the mask is 0
+	#ifdef HEIGHT_MAP
+		if( vHTMask < 0.001 ){
+			discard;
+		}
+	#endif
+	
+	// discard fragments beyond render range
+	/*
+	#ifdef FADEOUT_RANGE
+		if( vFadeZ > pFadeRange.y ){
+			discard;
+		}
+	#endif
+	*/
+	
+	// calculate the screen space texture coordinates
+	#ifdef REQUIRES_TEX_COORD
+		ivec2 tc = ivec2( gl_FragCoord.xy );
+	#endif
+	
+	// test against depth texture
+	#ifdef DEPTH_TEST
+		#ifdef DECODE_IN_DEPTH
+		float depthTestValue = dot( texelFetch( texDepthTest, tc, 0 ).rgb, unpackDepth );
+		#else
+		float depthTestValue = texelFetch( texDepthTest, tc, 0 ).r;
+		#endif
+		
+		#ifdef INVERSE_DEPTH
+			#ifdef DEPTH_TEST_LARGER
+			if( gl_FragCoord.z < depthTestValue ) discard;
+			#else
+			if( gl_FragCoord.z > depthTestValue ) discard;
+			#endif
+		#else
+			#ifdef DEPTH_TEST_LARGER
+			if( gl_FragCoord.z > depthTestValue ) discard;
+			#else
+			if( gl_FragCoord.z < depthTestValue ) discard;
+			#endif
+		#endif
+	#endif
+	
+	
+	
+	// determine the correct normal. for back facing fragments the normal has to be flipped. care
+	// has to be taken if the rendering is mirrored. in this case the front facing is exactly the
+	// opposite of what we are really looking for. The xor operator does exactly this
+	vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); // mix( if-false, if-true, condition )
+	/*vec3 realNormal = vNormal;
+	
+	if( ! gl_FrontFacing ){
+		realNormal = -realNormal;
+	}*/
+	
+	// relief mapping. definition of macros has to be delied until here since undefine
+	// symbols can lead to tricky situations resulting in compilers failing
+	#ifdef HAS_TESSELLATION_SHADER
+		#define tcColor vTCColor
+		#ifdef TEXTURE_COLOR_TINT_MASK
+			#define tcColorTintMask vTCColorTintMask
+		#endif
+		#ifdef TEXTURE_NORMAL
+			#define tcNormal vTCNormal
+		#endif
+		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+			#define tcReflectivity vTCReflectivity
+		#endif
+		#ifdef TEXTURE_EMISSIVITY
+			#define tcEmissivity vTCEmissivity
+		#endif
+		#ifdef TEXTURE_REFRACTION_DISTORT
+			#define tcRefractionDistort vTCRefractionDistort
+		#endif
+		#ifdef TEXTURE_AO
+			#define tcAO vTCAO
+		#endif
+		#ifdef TEXTURE_ABSORPTION
+			#define tcAbsorption tcColor
+		#endif
+	
+	#else
+		vec2 tcReliefMapped = vTCColor;
+		reliefMapping( tcReliefMapped, realNormal );
+		
+		#define tcColor tcReliefMapped
+		#ifdef TEXTURE_COLOR_TINT_MASK
+			#define tcColorTintMask tcReliefMapped
+		#endif
+		#ifdef TEXTURE_NORMAL
+			#define tcNormal tcReliefMapped
+		#endif
+		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+			#define tcReflectivity tcReliefMapped
+		#endif
+		#ifdef TEXTURE_EMISSIVITY
+			#define tcEmissivity tcReliefMapped
+		#endif
+		#ifdef TEXTURE_REFRACTION_DISTORT
+			#define tcRefractionDistort tcReliefMapped
+		#endif
+		#ifdef TEXTURE_AO
+			#define tcAO tcReliefMapped
+		#endif
+		#ifdef TEXTURE_ABSORPTION
+			#define tcAbsorption tcReliefMapped
+		#endif
+	#endif
+	
+	
+	
+	// get texture properties from textures
+	#ifdef TEXTURE_TRANSPARENCY
+	vec4 color = vec4( TEXTURE( texColor, tcColor ).rgb, TEXTURE( texTransparency, tcColor ).r );
+	#else
+	vec4 color = TEXTURE( texColor, tcColor );
+	#endif
+	color.a *= pTransparencyMultiplier; // add an #ifdef to avoid this calculation?
+	#ifdef TEXTURE_SOLIDITY
+		float solidity = TEXTURE( texSolidity, tcColor ).r;
+		solidity *= pSolidityMultiplier; // add an #ifdef to avoid this calculation?
+	#else
+		float solidity = 1.0;
+	#endif
+	#ifdef TEXTURE_NORMAL
+		vec4 normal = TEXTURE( texNormal, tcNormal );
+		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );
+	#else
+		vec4 normal = vec4( realNormal, 0.0 ); // (0,0,1) => realNormal
+	#endif
+	#ifdef TEXTURE_AO
+		float ao = TEXTURE( texAO, tcAO ).r;
+	#else
+		float ao = 1.0;
+	#endif
+	#ifdef TEXTURE_REFLECTIVITY
+		vec3 reflectivity = TEXTURE( texReflectivity, tcReflectivity ).rgb * vec3( pReflectivityMultiplier );
+	#else
+		vec3 reflectivity = vec3( 0.0 );
+	#endif
+	#ifdef TEXTURE_ROUGHNESS
+		float roughness = TEXTURE( texRoughness, tcReflectivity ).r;
+	#else
+		float roughness = 1.0;
+	#endif
+	#ifdef TEXTURE_REFRACTION_DISTORT
+		vec2 distort = TEXTURE( texRefractionDistort, tcRefractionDistort ).rg * vec2( 2.0 ) + vec2( -1.0 );
+		//vec2 distort = TEXTURE( texRefractionDistort, tcRefractionDistort ).ra * vec2( 2.0 ) + vec2( -1.0 );
+		distort *= pScreenSpace.xy * vec2( pRefractionDistortStrength );
+	#endif
+	
+	// Node based calculations
+	#ifdef NODE_FRAGMENT_MAIN
+	NODE_FRAGMENT_MAIN
+	#endif
+	
+	// for height map adjust alpha value
+	#ifdef HEIGHT_MAP
+		color.a *= vHTMask;
+	#endif
+	
+	
+	
+	// environment room replaces the diffuse component
+	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
+		vec3 envRoomDir = calcEnvRoomDir( tcColor, realNormal );
+		#ifdef TEXTURE_ENVROOM
+			vec3 envRoomColor = textureLod( texEnvRoom, envRoomDir, 0.0 ).rgb;
+		#else
+			vec3 envRoomColor = vec3( 0.0 );
+		#endif
+		
+		#ifdef TEXTURE_ENVROOM_MASK
+			float envRoomMask = TEXTURE( texEnvRoomMask, tcColor ).r;
+			color.rgb = mix( color.rgb, envRoomColor, vec3( envRoomMask ) );
+		#else
+			color.rgb = envRoomColor;
+		#endif
+	#endif
+	/*
+	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
+		#ifdef OUTPUT_MATERIAL_PROPERTIES
+			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
+			#ifdef MATERIAL_NORMAL_INTBASIC
+				outNormal = vec4( 0.0, 0.0, 0.0, 0.0 );
+			#endif
+			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
+			outRoughness = vec4( 0.0, 1.0, 1.0, 0.0 );
+		#endif
+		return;
+	#endif
+	*/
+	
+	
+	
+	// color, ambient occlusion and masked solidity
+	#ifndef TEXTURE_EMISSIVITY
+		#ifdef MASKED_SOLIDITY
+			if( solidity < 0.35 ) discard;
+			solidity = 1.0;
+		#else
+			// in the case of direct rendering values of 0 indicate pixels to not render. this is a hack right
+			// now since there is no better way yet to handle this situation
+	 		#ifndef OUTPUT_MATERIAL_PROPERTIES
+				if( solidity < 0.001 ) discard;
+			#endif
+		#endif
+	#endif
+	
+	color.rgb = pow( color.rgb, vec3( pColorGamma ) );
+	#ifdef PARTICLE
+		color *= vParticleColor;
+	#else
+		#ifdef TEXTURE_COLOR_TINT_MASK
+			color.rgb = mix( color.rgb, color.rgb * pColorTint, TEXTURE( texColorTintMask, tcColorTintMask ).r );
+		#else
+			color.rgb *= pColorTint;
+		#endif
+	#endif
+	
+	color.a *= solidity;
+	
+	#ifdef OUTPUT_MATERIAL_PROPERTIES
+		outDiffuse = color;
+		#ifdef SOLIDITY_MULTIPLIER
+			outDiffuse.a *= pColorSolidityMultiplier;
+		#endif
+	#endif
+	
+	#ifdef AMBIENT_LIGHT_PROBE
+		//outColor = color * vec4( textureLod( texEnvMap, -vReflectDir, 12.0 ).rgb, 1.0 );
+		outColor = color * vec4( pParticleLightHack, 1.0 );
+	#else
+		outColor = color * pAmbient;
+	#endif
+	#ifdef TEXTURE_RENDERCOLOR
+		outColor.rgb *= vec3( color.a );
+	#endif
+	
+	ao = pow( ao, pColorGamma ); // this is a hack and has to be replaced with a proper ambient.occlusion.gamma texture property
+	
+	
+	
+	// normal and normal variance
+	#if defined( TEXTURE_NORMAL ) || defined( NODE_FRAGMENT_MAIN )
+		normal.xyz = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );
+	#endif
+	
+	#ifdef TP_NORMAL_STRENGTH
+		// mix() is not an option since the texture property can be negative or larger than 1 for special effects
+		normal.xyz = ( normal.xyz - realNormal ) * vec3( pNormalStrength ) + realNormal;
+		normal.w *= abs( pNormalStrength );
+	#endif
+	
+	// various hacks that should go away later on
+	if( dot( normal.xyz, normal.xyz ) < 1e-6 ){
+		normal = vec4( 0.0, 0.0, 1.0, 0.0 );
+	}
+	
+	// normalize is required for the later passes to work correctly
+	normal.xyz = normalize( normal.xyz );
+	#ifdef OUTPUT_MATERIAL_PROPERTIES
+		#ifdef MATERIAL_NORMAL_INTBASIC
+			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
+		#elif defined( MATERIAL_NORMAL_SPHEREMAP )
+			float f = sqrt( 8.0001 - 7.9999 * normal.z );
+			outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
+		#else
+			outNormal = vec4( normal.xyz, color.a );
+		#endif
+		#ifdef SOLIDITY_MULTIPLIER
+			outNormal.a *= pNormalSolidityMultiplier;
+		#endif
+	#endif
+	
+	
+	
+	// reflection and refraction
+	#if defined OUTPUT_MATERIAL_PROPERTIES || defined TEXTURE_ENVMAP
+		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );
+		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );
+		#ifdef TP_ROUGHNESS_REMAP
+			roughness = clamp( roughness * pRoughnessRemap.x + pRoughnessRemap.y, 0.0, 1.0 );
+		#endif
+		#ifdef USE_NORMAL_ROUGHNESS_CORRECTION
+			roughness = min( roughness + normal.w * pNorRoughCorrStrength, 1.0 ); // apply normal variance as roughness increase
+		#endif
+	#endif
+	
+	#ifdef TEXTURE_ENVMAP
+		vec3 fragmentDirection = normalize( vReflectDir );
+		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );
+		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );
+		
+		//float fresnelReduction = smoothstep( 0.5, 1.0, 1.0 - roughness );
+		//float fresnelReduction = 1.0 / ( 1.0 + roughness * 3.0 ); // CoD version... no less than 25% reflectivity at fully grazing angle
+		//float fresnelReduction = 1.0 - roughness;
+		
+		// pow(5) fits betters but pow(4) is cheaper:
+		//float fresnelReduction = pow( 1.0 - roughness, 5.0 );
+	//	vec3 fresnelReduction = vec3( pow( 1.0 - roughness, 5.0 ) * 0.9524 + 0.0476 );
+		vec3 fresnelReduction = mix( reflectivity.rgb, vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );
+	//	vec3 fresnelReduction = mix( mix( vec3( 0.056 ), vec3( 1.0 ), reflectivity.rgb ), vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );
+		
+		// reduce reflectivity depending on AO and roughness angles
+		//float aoAngle = 1.0 - acos( 1.0 - ao ) * 0.636620; // * 2/pi
+		//fresnelReduction *=  1.0 - smoothstep( aoAngle - roughness, aoAngle + roughness, reflectDot );
+		// WARNING! the mix function is very fragile and passing under 0 or over 1 by even just a small
+		//          amount results in NaN values and other nasty stuff. clamping costs some cycles
+		//          but it prevents the mix function from smuggling NaN values into the image
+		fresnelReduction *= vec3( clamp(
+			( acos( 1.0 - ao ) + roughness * 1.5707963 - acos( reflectDot ) + 0.01 )
+				/ max( roughness * 3.14159265, 0.01 ),
+			0.0, 1.0 ) );
+		vec3 fresnelFactor = vec3( clamp( pow( 1.0 - reflectDot, 5.0 ), 0.0, 1.0 ) );
+		vec3 envMapReflectivity = mix( reflectivity.rgb, vec3( 1.0 ), vec3( fresnelFactor ) )
+			* fresnelReduction * vec3( solidity );
+// 		fresnelFactor *= fresnelReduction;
+// 		
+// 		vec4 fresnelFactorWithAlpha = vec4( fresnelFactor, dot( fresnelFactor, vec3( 1.0 / 3.0 ) ) ) * vec4( solidity );
+// 		color = mix( color, colorTransparent, fresnelFactorWithAlpha );
+// 		#ifdef TEXTURE_RENDERCOLOR
+// 			outColor = mix( outColor, colorTransparent, fresnelFactorWithAlpha );
+// 		#endif
+		
+		#ifdef PARTICLE
+			envMapReflectivity *= vParticleColor.a;
+		#endif
+	#endif
+	
+	#ifdef TEXTURE_RENDERCOLOR
+		#ifdef TEXTURE_REFRACTION_DISTORT
+			vec4 renderColor = textureLod( texRenderColor, clamp(
+				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), 0.0 );
+		#else
+			vec4 renderColor = texelFetch( texRenderColor, tc, 0 );
+		#endif
+		
+		outColor.rgb = mix( renderColor.rgb, outColor.rgb, color.a );
+		outColor.a = min( outColor.a + renderColor.a, 1.0 );
+			// vec3(color.a) is a fake solution for true transmission(distanceThroughMaterial).rgb
+		//outColor = mix( outColor, vec4( 0.0, 0.0, 0.0, 1.0 ), vec4( fresnelFactor * fresnelReduction ) );
+	#endif
+	
+	#ifndef OUTPUT_MATERIAL_PROPERTIES
+		// for direct rendering apply normals as pre-baked lighting
+		outColor.rgb *= vec3( 0.25 - clamp( normal.z, -1.0, 0.0 ) * 0.75 );
+		
+		// for direct rendering the transparency and soliditiy has to be premultiplied to
+		// allow emissivity to properly apply. this is due to use of blend mode (1,1-alpha):
+		//   f = d*(1-a) + (s*a + e)*1
+		outColor.rgb *= vec3( outColor.a * solidity );
+			// this does not work correctly with particles having solid appearance in
+			// volumetric-mode
+	#endif
+	
+	#ifdef TEXTURE_ENVMAP
+		#ifndef SKIN_REFLECTIONS
+		if( pSkinDoesReflections ){
+		#endif
+			float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
+			
+			#ifdef TEXTURE_ENVMAP_EQUI
+				envMapDir = normalize( envMapDir );
+				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2(
+					atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
+			#else
+				#define tcEnvMap envMapDir
+			#endif
+			
+			vec3 reflectedColor = textureLod( texEnvMap, tcEnvMap, envMapLodLevel ).rgb;
+			#if defined TEXTURE_ENVMAP_FADE && ! defined PARTICLE
+				reflectedColor = mix( textureLod( texEnvMapFade, tcEnvMap, envMapLodLevel ).rgb,
+					reflectedColor, vec3( pEnvMapFade ) );
+			#endif
+			
+			// this should simulate to some degree a prefiltered environment map (cosine filter, phong lobe).
+			//reflectedColor *= vec3( ( cos( roughness * 3.1416 ) * 0.5 + 0.5 ) * 0.38 + 0.62 );
+			// this version is based on a normalized situation and should be somewhat better
+		//	reflectedColor *= vec3( 0.2 + 0.8 / ( 1.0 + 50.0 * roughness * roughness ) );
+			
+			outColor.rgb += reflectedColor * envMapReflectivity;
+		#ifndef SKIN_REFLECTIONS
+		}
+		#endif
+	#endif
+	
+	#ifdef OUTPUT_MATERIAL_PROPERTIES
+		outReflectivity = vec4( reflectivity.rgb, color.a );
+		#ifdef SOLIDITY_MULTIPLIER
+			outReflectivity.a *= pReflectivitySolidityMultiplier;
+		#endif
+		outRoughness = vec4( roughness, 1.0, 1.0, color.a );
+		#ifdef SOLIDITY_MULTIPLIER
+			outRoughness.a *= pRoughnessSolidityMultiplier;
+		#endif
+		
+		outAOSolidity = vec4( ao, 1.0, solidity, color.a );
+	#endif
+	
+	
+	
+	// absorption and sub-surf scattering
+	#ifdef OUTPUT_MATERIAL_PROPERTIES
+		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );
+		#ifdef TEXTURE_ABSORPTION
+			outSubSurface.rgb *= pow( TEXTURE( texAbsorption, tcAbsorption ).rgb, vec3( pColorGamma ) ); // hack, needs pAbsorptionGamma
+		#endif
+	#endif
+	
+	
+	
+	// emissivity
+	#ifdef TEXTURE_EMISSIVITY
+		#ifdef PARTICLE
+			#define SCALE_EMISSIVITY vParticleColor.xyz * vParticleEmissivity
+		#else
+			#define SCALE_EMISSIVITY pEmissivityIntensity
+		#endif
+		outColor.rgb += pow( TEXTURE( texEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) ) * SCALE_EMISSIVITY;
+	#endif
+	
+	// environment room emissivity
+	#ifdef TEXTURE_ENVROOM_EMISSIVITY
+		#ifdef TEXTURE_ENVROOM_MASK
+			outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
+				* pEnvRoomEmissivityIntensity * vec3( envRoomMask );
+		#else
+			outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
+				* pEnvRoomEmissivityIntensity;
+		#endif
+	#endif
+	
+	/* #ifdef HEIGHT_MAP
+		outColor.rgb = vec3( vHTMask );
+	#endif */
+	
+	
+	
+	// fade fragment near render range
+	/* produces artifacts with lighting since alpha-blend does not work in this case
+	#ifdef FADEOUT_RANGE
+		outColor.a *= 1.0 - clamp( vFadeZ, pFadeRange.x, pFadeRange.y ) * pFadeRange.z;
+	#endif
+	*/
+}

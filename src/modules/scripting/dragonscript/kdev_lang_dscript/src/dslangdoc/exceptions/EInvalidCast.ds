@@ -1,0 +1,23 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Invalid cast exception.
+ * 
+ * Runtime exceptions can be scripted exceptions or native class exceptions.
+ * 
+ * This is a native class.
+ */
+class EInvalidCast extends Exception
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty exception. */
+	public func new()
+	end
+	/*@}*/
+end

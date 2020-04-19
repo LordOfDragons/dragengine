@@ -1,0 +1,82 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envEditor = parent_env.Clone()
+
+buildEditor = 'deigde_shared' in parent_targets
+parent_report[ 'build IGDE Speech Animation Editor' ] = 'yes' if buildEditor else 'no'
+if not buildEditor:
+	Return()
+
+# fetch values in expanded form for later use
+pathConfig = '%s/modules/speechanimation' % envEditor.subst( envEditor[ 'path_igde_config' ] )
+pathModule = '%s/modules/speechanimation' % envEditor.subst( envEditor[ 'path_igde_data' ] )
+pathShared = '{}/modules/speechanimation'.format( envEditor.subst( envEditor[ 'path_igde_share' ] ) )
+
+envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# setup the builders
+sources = []
+headers = []
+data = []
+
+globFiles( envEditor, 'src', '*.cpp', sources )
+globFiles( envEditor, 'src', '*.h', headers )
+globFiles( envEditor, 'data', '*', data )
+
+objects = [ envEditor.SharedObject( s ) for s in sources ]
+
+libs = []
+appendLibrary( envEditor, parent_targets[ 'deigde_shared' ], libs )
+if envEditor[ 'OSBeOS' ]:
+	libs.append( [ 'root', 'be' ] )
+
+library = envEditor.SharedLibrary( target='speechanimation', source=objects, LIBS=libs )
+targetBuild = envEditor.Alias( 'editor_speechanimation_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envEditor[ 'SHLIBSUFFIX' ] ):
+		install.append( envEditor.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+manifest = envEditor.File( 'src/module.xml' )
+updateManifest = envEditor.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+
+install.append( envEditor.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+for s in data:
+	filename = os.path.join( pathShared, *(s.split(os.sep)[1:]) )
+	install.append( envEditor.InstallAs( filename, s ) )
+	archive[ filename ] = envEditor.File( s ).srcnode()
+
+targetInstall = envEditor.Alias( 'editor_speechanimation', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC( envEditor, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+buildCloc = envEditor.Alias( 'editor_speechanimation_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'editor_speechanimation' ] = {
+	'name' : 'IGDE Speech Animation Editor',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-igde' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

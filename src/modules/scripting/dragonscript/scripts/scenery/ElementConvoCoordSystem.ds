@@ -1,0 +1,84 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+
+
+
+/**
+ * \brief Coordinate system for use in conversation relative to an element.
+ * 
+ * Returns a coordinate system matrix for conversation targets. In contrary to conversation
+ * actors coordinate system objects can be added to multiple conversation playback objects
+ * at the same time. Conversation coordinate systems can be static or dynamic. This class
+ * places the coordinate system relative to the coordinate system of an element.
+ * 
+ * \note The element is not persisted since it is set only during construction time.
+ */
+class ElementConvoCoordSystem extends ConversationCoordSystem
+	private var Element pElement
+	
+	
+	
+	/** \brief Create conversation coordinate system. */
+	public func new( StringID id, Element element ) super( id )
+		if element == null
+			throw EInvalidParam.new()
+		end
+		this.pElement = element
+	end
+	
+	/** \brief Create conversation coordinate system. */
+	public func new( StringID id, DMatrix localMatrix, Element element ) super( id, localMatrix )
+		if element == null
+			throw EInvalidParam.new()
+		end
+		this.pElement = element
+	end
+	
+	/** \brief Create copy of conversation coordinate system. */
+	public func new( ElementConvoCoordSystem coordSystem ) super( coordSystem )
+		this.pElement = coordSystem.pElement
+	end
+	
+	/** \brief Dispose of the coordinate system breaking cyclic references. */
+	public func void dispose()
+		super.dispose()
+		this.pElement = null
+	end
+	
+	
+	
+	/** \brief Element to use. */
+	public func Element getElement()
+		return this.pElement
+	end
+	
+	
+	
+	/** \brief Coordinate system matrix. */
+	public func DMatrix getMatrix()
+		return super.getMatrix() * this.pElement.getElementMatrix()
+	end
+end

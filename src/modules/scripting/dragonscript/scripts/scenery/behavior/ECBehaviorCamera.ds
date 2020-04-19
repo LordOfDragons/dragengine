@@ -1,0 +1,398 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding camera support.
+ * 
+ * Behavior adds a Camera resource to the the behavior element. This behavior can be added
+ * multiple times to an element. Each instance creates one camera attached to the element
+ * collider which can be individually modified. To distinguish the cameras each instance
+ * has an identifier which can be used to retrieve a specific instance. Hence to use more
+ * than one camera use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorCamera.new(this)
+ *       ECBehaviorCamera.new(this, "subCamera")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the parameters to use for both cameras using for example the properties
+ * "camera.fov" for the first camera and "camera(subCamera).fov" for the second camera.
+ * 
+ * It is recommended to always specify an identifier even if only one camera is used.
+ * This avoids potentially name conflicts especially if other behaviors are added attaching
+ * other resources too.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element before this
+ * behavior is added the camera is attached. The camera is attached to the named bone if
+ * defined otherwise it is attached statically.
+ * 
+ * Element class properties have the prefix "camera{(id)}.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * 
+ * 
+ * \par Effects
+ * 
+ * Cameras can be equipped with effects modifying the rendering. Effects can be added to
+ * ECBehaviorCamera by adding after the camera behavior one or more camera effect behaviors.
+ */
+class ECBehaviorCamera extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorCamera pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var Camera pCamera
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorCamera ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pCamera = null
+			this.pCollider = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			this.pCamera = this.createCamera( stub )
+			if this.pCamera == null
+				return
+			end
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachCamera( stub, this.pCollider )
+			end
+		end
+		
+		/** \brief Create camera. */
+		protected func Camera createCamera( StubElement stub )
+			var Camera camera = Camera.new()
+			camera.setFov( this.pECBehavior.getFov().getValue( stub ) )
+			camera.setFovRatio( this.pECBehavior.getFovRatio().getValue( stub ) )
+			camera.setImageDistance( this.pECBehavior.getImageDistance().getValue( stub ) )
+			camera.setViewDistance( this.pECBehavior.getViewDistance().getValue( stub ) )
+			camera.setExposure( this.pECBehavior.getExposure().getValue( stub ) )
+			camera.setLowestIntensity( this.pECBehavior.getLowestIntensity().getValue( stub ) )
+			camera.setHighestIntensity( this.pECBehavior.getHighestIntensity().getValue( stub ) )
+			camera.setAdaptionTime( this.pECBehavior.getAdaptionTime().getValue( stub ) )
+			camera.setLayerMask( this.pECBehavior.getLayerMask() )
+			return camera
+		end
+		
+		/**
+		 * \brief Attach camera to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachCamera( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pCamera, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorCamera getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior or null if not attached. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Camera. */
+		public func Camera getCamera()
+			return this.pCamera
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addCamera( this.pCamera )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeCamera( this.pCamera )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeAttachResource pAttach
+	private var ECPFloat pFov
+	private var ECPFloat pFovRatio
+	private var ECPFloat pImageDistance
+	private var ECPFloat pViewDistance
+	private var ECPFloat pExposure
+	private var ECPFloat pLowestIntensity
+	private var ECPFloat pHighestIntensity
+	private var ECPFloat pAdaptionTime
+	private var LayerMask pLayerMask
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, id, id.empty() if "camera." else "camera(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id, \
+	String prefix ) super( eclass, id )
+		this.pCollider = collider
+		this.pLayerMask = LayerMask.new()
+		
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		this.pFov = ECPFloat.new( prefix + ".fov", 39.60, 0, 180 )
+		eclass.addProperty( this.pFov )
+		
+		this.pFovRatio = ECPFloat.new( prefix + ".fovRatio", 1, 0.01 )
+		eclass.addProperty( this.pFovRatio )
+		
+		this.pImageDistance = ECPFloat.new( prefix + ".imageDistance", 0.01, 0.001 )
+		eclass.addProperty( this.pImageDistance )
+		
+		this.pViewDistance = ECPFloat.new( prefix + ".viewDistance", 200, 0.01 )
+		eclass.addProperty( this.pViewDistance )
+		
+		this.pExposure = ECPFloat.new( prefix + ".exposure", 1, 0 )
+		eclass.addProperty( this.pExposure )
+		
+		this.pLowestIntensity = ECPFloat.new( prefix + ".lowestIntensity", 10, 0 )
+		eclass.addProperty( this.pLowestIntensity )
+		
+		this.pHighestIntensity = ECPFloat.new( prefix + ".higtestIntensity", 20, 0 )
+		eclass.addProperty( this.pHighestIntensity )
+		
+		this.pAdaptionTime = ECPFloat.new( prefix + ".adaptionTime", 0.1, 0 )
+		eclass.addProperty( this.pAdaptionTime )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null to not attach. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	/** \brief Vertical field  of view in degrees for the entire view. */
+	public func ECPFloat getFov()
+		return this.pFov
+	end
+	
+	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
+	public func ECPFloat getFovRatio()
+		return this.pFovRatio
+	end
+	
+	/** \brief Distance to the image plane. */
+	public func ECPFloat getImageDistance()
+		return this.pImageDistance
+	end
+	
+	/** \brief Viewing distance up to which world geometry is rendered. */
+	public func ECPFloat getViewDistance()
+		return this.pViewDistance
+	end
+	
+	/** \brief Exposure. */
+	public func ECPFloat getExposure()
+		return this.pExposure
+	end
+	
+	/** \brief \brief Lowest intensity the eye can adapt to. */
+	public func ECPFloat getLowestIntensity()
+		return this.pLowestIntensity
+	end
+	
+	/** \brief \brief Highest intensity the eye can adapt to. */
+	public func ECPFloat getHighestIntensity()
+		return this.pHighestIntensity
+	end
+	
+	/** \brief Adaption time of the eye in seconds. */
+	public func ECPFloat getAdaptionTime()
+		return this.pAdaptionTime
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorCamera
+		end ) cast ECBehaviorCamera
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCamera with specific identifier.
+	 */
+	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorCamera each
+			return each castable ECBehaviorCamera and \
+				( each cast ECBehaviorCamera ).getID().equals( id )
+		end ) cast ECBehaviorCamera
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorCamera behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorCamera
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorCamera.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorCamera.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorCamera.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

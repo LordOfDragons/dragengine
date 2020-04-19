@@ -1,0 +1,497 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding collider support.
+ * 
+ * Colliders provide physical presence to elements allowing them to collide with other
+ * colliders, attaching them to other colliders and moving the element through the game
+ * world.
+ * 
+ * This element behavior is often required by other element behaviors to be present to
+ * function correctly.
+ * 
+ * Since this collider repositions the element upon changing position and orientation
+ * this element behavior can be present only once in a BehaviorElement. Trying to add
+ * more than one instance results in an exception thrown.
+ * 
+ * If you need additional colliders for example to sense objects using collision detection
+ * then you need to use other ECBehavior providing the desired behavior. These allow to be
+ * added multiple times.
+ * 
+ * If the \em ECBehaviorComponent behavior is present in the behavior element before this
+ * behavior is added a ColliderComponent is created. The component is used for collision
+ * detection and updated automatically by the collider. This is required if you intend to
+ * use per-bone collisions matching animation state or physical simulations like rag-dolls.
+ * 
+ * If the \em ECBehaviorComponent behavior is added after this behavior then a ColliderVolume
+ * is created. The rig assigned to the component is only used for animation purpose.
+ * The \em ECBehaviorComponent will then statically attach to the collider.
+ * 
+ * Hence these two use cases are possible depending on the order the behaviors are added:
+ * 
+ * \par Use Case 1: Shape Collision
+ * 
+ * Component is only visual. For collision only static collision shape is used.
+ * The component is attached statically to the collider and does not collide.
+ * If collider is dynamic physics simulation will be done using collision shape only.
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorCollider collider = ECBehaviorCollider.new(this, null)
+ *       // assign collision shape or collision rig to the collider
+ *       ECBehaviorComponent.new(this, collider)
+ *    end
+ * end
+ * \endcode
+ * 
+ * \par Use Case 2: Component Collision
+ * 
+ * Component is used for collision detection. If collider is dynamic component bones will
+ * be updated by the collider automatically.
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this, null)
+ *       ECBehaviorCollider.new(this, component)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "collider.".
+ * 
+ * \par Collision listening
+ * 
+ * The default collision behavior clears the linear and angular velocities. To add meaningful
+ * collision behavior add listeners. If one or more listener are present the default collision
+ * behavior is disabled and the listeners are responsible. At least one listener has to do
+ * collision handling in a way that the current collision is not happening again. This can be
+ * done by modifying the velocities of the affected colliders, changing collision filters or
+ * removing elements from the game world altogether. The ECBehaviorCollider assigns the owner
+ * BehaviorElement as owner of the collider. Hence you can retrieve the BehaviorElement
+ * represented by a collider like this:
+ * 
+ * \code{.ds}
+ * // check if a collider has been hit (other possibilities exist like height-terrain)
+ * if info.getCollider() != null
+ *    // check if the owner of the collider is of type BehaviorElement
+ *    if info.getOwner() castable BehaviorElement
+ *        var BehaviorElement element = info.getOwner() cast BehaviorElement
+ *        // work with the element, for example check what behaviors it has attached
+ *    end
+ * end
+ * \endcode
+ * 
+ * Another way is to subclass ElementVisitor. This is a more object-oriented approach and
+ * keeps the code cleaner especially if the behavior is able to work with different types
+ * of elements. This way would look roughly like this:
+ * 
+ * \code{.ds}
+ * // check if a collider has been hit (other possibilities exist like height-terrain)
+ * if info.getCollider() != null
+ *    // check if the owner of the collider is of type Element
+ *    if info.getOwner() castable Element
+ *        // visit the element to apply the desired actions
+ *        (info.getOwner() cast Element).visit(MyElementCollisionVisitor.new())
+ *    end
+ * end
+ * \endcode
+ * 
+ * This behavior does require the element class to be persistable (setPersistable) only if
+ * the physics type is set to anything else but CollisionResponse.none .
+ * 
+ * TODO: possible behaviors using this system:
+ * - sliding collision response: slides kinematic colliders along walls like actors do
+ * - power ups: typical example of a an element touched by the actor that vanishes when
+ *              touched adding all kinds of abilities. this would be an example of behaviors
+ *              on different elements interacting. requires two behaviors. one behavior is
+ *              the power up itself which identifies the element as a power up that can be
+ *              consumed. the second is the touch power up behavior placed on the interacting
+ *              element. it uses getInstanceIn() to check if the hit element has the power up
+ *              behvaior and if so removes it from the game world and applies the effects.
+ */
+class ECBehaviorCollider extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		public func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		private var ECBehaviorCollider pECBehavior
+		private var Collider pCollider
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorCollider ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			if this.pCollider != null
+				this.pCollider.setColliderListener( null )
+				this.pCollider.setOwner( null )
+				this.pCollider.removeAllCollisionTests()
+				this.pCollider.removeAllIgnoreColliders()
+				//this.pCollider = null // not doing this prevents depending behaviors fail while disposing
+			end
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			var ECBehaviorComponent.Instance component
+			if this.pECBehavior.getComponent() != null
+				component = this.pECBehavior.getComponent().instance( element )
+			end
+			
+			this.pCollider = this.createCollider( stub, component )
+			this.pCollider.setColliderListener( this )
+			this.pCollider.setOwner( this.getElement() )
+			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+			
+			// if response type is dynamic update bone position. this is required for dynamic
+			// rigs with bones. upon initializing the bones they are set to zero but bones
+			// in colliders are in world space. without init dynamic bones end up everywhere
+			// but not where we want them
+			if this.pCollider.getResponseType() == CollisionResponse.dynamic \
+			and this.pCollider castable ColliderComponent
+				( this.pCollider cast ColliderComponent ).copyStatesFromComponent()
+			end
+		end
+		
+		/**
+		 * \brief Create collider.
+		 * \param stub Stub to use.
+		 * \param component Component to use or \em null if absent.
+		 */
+		protected func Collider createCollider( StubElement stub, ECBehaviorComponent.Instance component )
+			var BehaviorElement element = this.getElement()
+			var Collider collider
+			
+			if component != null
+				collider = this.pECBehavior.getCollider().createCollider( \
+					this.getElement(), stub, component.getComponent() )
+			end
+			
+			if collider == null
+				collider = this.pECBehavior.getCollider().createCollider( this.getElement(), stub )
+			end
+			
+			return collider
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorCollider getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider. */
+		public func Collider getCollider()
+			return this.pCollider
+		end
+		
+		
+		
+		/** \brief Rig shape property or null if not possible.*/
+		public func String getRigShapeProperty( int bone, int shape )
+			if shape == -1 or this.pCollider == null or not this.pCollider castable ColliderRig
+				return null
+			end
+			
+			var Rig rig = ( this.pCollider cast ColliderRig ).getRig()
+			if rig == null
+				return null
+			end
+			
+			if bone != -1
+				return rig.boneShapeGetProperty( bone, shape )
+				
+			else
+				return rig.shapeGetProperty( shape )
+			end
+		end
+		
+		/** \brief Rig shape property from collision or null if not possible. */
+		public func String getRigShapeProperty( CollisionInfo info, bool owner )
+			if owner
+				return this.getRigShapeProperty( info.getOwnerBone(), info.getOwnerShape() )
+				
+			elif info.hasBone() and info.hasShape()
+				return this.getRigShapeProperty( info.getBone(), info.getShape() )
+				
+			else
+				return  null
+			end
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief State changed (visble, touchable). */
+		public func void stateChanged()
+			this.pCollider.setEnabled( this.getElement().getTouchable() )
+		end
+		
+		/** \brief Position or orientation changed. */
+		public func void geometryChanged()
+			var BehaviorElement element = this.getElement()
+			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
+		end
+		
+		
+		
+		/** \brief Colliders can hit each other. */
+		public func bool canHitCollider( Collider owner, Collider collider )
+			return true
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * 
+		 * If listeners are present calls collisionResponse() on all listeners expecting them
+		 * to handle collision properly. Otherwise for static and kinematic collision response
+		 * clears linear and angular velocity. For dynamic collision response nothing is done.
+		 */
+		public func void collisionResponse( Collider owner, CollisionInfo info )
+			if this.pListeners.getCount() > 0
+				this.pListeners.forEach( block Listener each
+					each.collisionResponse( this, owner, info )
+				end )
+				
+			elif this.pCollider.getResponseType() != CollisionResponse.dynamic
+				owner.setLinearVelocity( Vector.new() )
+				owner.setAngularVelocity( Vector.new() )
+			end
+		end
+		
+		/** \brief Collider position and/or orientation changed. */
+		public func void colliderChanged( Collider owner )
+			this.getElement().setGeometry( owner.getPosition(), owner.getOrientation() )
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var DVector position = DVector.readFromFile( reader )
+			var Quaternion orientation = Quaternion.readFromFile( reader )
+			var Vector scaling = Vector.readFromFile( reader )
+			
+			this.getElement().setGeometry( position, orientation, scaling )
+			
+			this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
+			this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var BehaviorElement element = this.getElement()
+			element.getPosition().writeToFile( writer )
+			element.getOrientation().writeToFile( writer )
+			element.getScaling().writeToFile( writer )
+			this.pCollider.getLinearVelocity().writeToFile( writer )
+			this.pCollider.getAngularVelocity().writeToFile( writer )
+		end
+	end
+	
+	
+	
+	private var ECComposeCollider pCollider
+	private var ECBehaviorComponent pComponent
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em component.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
+	this( eclass, component, "collider." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pComponent = component
+		
+		this.pCollider = ECComposeCollider.new( eclass, prefix )
+		
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		
+		this.pCollider.setCollisionFilter( CollisionFilter.new( cfCategory, cfFilter ) )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Set up collider as ghost collider.
+	 * 
+	 * Ghost colliders have empty collision filter and a small sphere shape. They collide with
+	 * nothing and are useful to attach elements composing only of resources like ECBehaviorLight. 
+	 */
+	public func void setGhost()
+		this.pCollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
+		this.pCollider.getLocalGravity().setVector( Vector.new() )
+		this.pCollider.getWeight().setValue( 1 )
+		this.pCollider.setCollisionFilter( CollisionFilter.new() )
+		// TODO setShape small spher once ECComposeCollider can do this
+	end
+	
+	
+	
+	/** \brief Composeable collider for element class. */
+	public func ECComposeCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorCollider getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorCollider
+		end ) cast ECBehaviorCollider
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorCollider.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

@@ -1,0 +1,79 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief ID duration in a conversation script.
+ */
+class ConversationStrip
+	private var StringID pID
+	private var float pPause
+	private var float pDuration
+	
+	
+	
+	/** Create a new conversation ID duration. */
+	public func new( StringID id, float pause, float duration )
+		this.pID = id
+		this.pPause = DEMath.max( pause, 0.0 )
+		this.pDuration = DEMath.max( duration, 0.0 )
+	end
+	
+	
+	
+	/** Retrieves the id to apply during the strip. */
+	public func StringID getID()
+		return this.pID
+	end
+	
+	/** Retrieves the pause in seconds before the strip starts. */
+	public func float getPause()
+		return this.pPause
+	end
+	
+	/** Retrieves the duration in seconds of the strip. */
+	public func float getDuration()
+		return this.pDuration
+	end
+	
+	
+	
+	/** Reads the strip from a file. */
+	static public func ConversationStrip readFromFile( FileReader reader )
+		var StringID id = StringID.new( reader.readString8() )
+		var float pause = reader.readFloat()
+		var float duration = reader.readFloat()
+		return ConversationStrip.new( id, pause, duration )
+	end
+	
+	/** Save game state. */
+	public func void writeToFile( FileWriter writer )
+		writer.writeString8( this.pID.toString() )
+		writer.writeFloat( this.pPause )
+		writer.writeFloat( this.pDuration )
+	end
+end

@@ -1,0 +1,149 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.DynamicMusic
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Dynamic music transition.
+ *
+ * Transition to another part or \em null to stop playback after the current part 
+ * stops. Contains a list of switches to check. Transition is fulfilled if all
+ * switches have the desired state or no switches are present.
+ * 
+ */
+class DynamicMusicTransition
+	/** \brief Name of part to play if fulfilled or \em null to stop. */
+	private var String pPart
+	
+	/** \brief Switches required to be in the \em on state. */
+	private var Array pSwitchesOn
+	
+	/** \brief Switches required to be in the \em off state. */
+	private var Array pSwitchesOff
+	
+	
+	
+	/** \brief Create dynamic music transition with \em null part to stop playback. */
+	public func new()
+		this.pSwitchesOn = Array.new()
+		this.pSwitchesOff = Array.new()
+	end
+	
+	/** \brief Create dynamic music transition. */
+	public func new( String part )
+		this.pSwitchesOn = Array.new()
+		this.pSwitchesOff = Array.new()
+		this.pPart = part
+	end
+	
+	
+	
+	/** \brief Name of part to play if fulfilled or \em null to stop. */
+	public func String getPart()
+		return this.pPart
+	end
+	
+	
+	
+	/** \brief Number of on switchs. */
+	public func int getSwitchOnCount()
+		return this.pSwitchesOn.getCount()
+	end
+	
+	/** \brief Get on switch at index. */
+	public func DynamicMusicSwitch getSwitchOnAt( int index )
+		return this.pSwitchesOn.getAt( index ) cast DynamicMusicSwitch
+	end
+	
+	/** \brief On switch is present. */
+	public func bool hasSwitchOn( DynamicMusicSwitch switch )
+		return this.pSwitchesOn.has( switch )
+	end
+	
+	/** \brief Add on switch. */
+	public func void addSwitchOn( DynamicMusicSwitch switch )
+		if switch == null or this.pSwitchesOn.has( switch )
+			throw EInvalidParam.new()
+		end
+		this.pSwitchesOn.add( switch )
+	end
+	
+	/** \brief Remove on switch. */
+	public func void removeSwitchOn( DynamicMusicSwitch switch )
+		this.pSwitchesOn.remove( switch )
+	end
+	
+	/** \brief Remove all on switchs. */
+	public func void removeAllSwitchOns()
+		this.pSwitchesOn.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of off switchs. */
+	public func int getSwitchOffCount()
+		return this.pSwitchesOff.getCount()
+	end
+	
+	/** \brief Get off switch at index. */
+	public func DynamicMusicSwitch getSwitchOffAt( int index )
+		return this.pSwitchesOff.getAt( index ) cast DynamicMusicSwitch
+	end
+	
+	/** \brief Off switch is present. */
+	public func bool hasSwitchOff( DynamicMusicSwitch switch )
+		return this.pSwitchesOff.has( switch )
+	end
+	
+	/** \brief Add off switch. */
+	public func void addSwitchOff( DynamicMusicSwitch switch )
+		if switch == null or this.pSwitchesOff.has( switch )
+			throw EInvalidParam.new()
+		end
+		this.pSwitchesOff.add( switch )
+	end
+	
+	/** \brief Remove off switch. */
+	public func void removeSwitchOff( DynamicMusicSwitch switch )
+		this.pSwitchesOff.remove( switch )
+	end
+	
+	/** \brief Remove all off switchs. */
+	public func void removeAllSwitchOffs()
+		this.pSwitchesOff.removeAll()
+	end
+	
+	
+	
+	/** \brief Conditions are fulfilled. */
+	public func bool areConditionsFulfilled()
+		return this.pSwitchesOn.find( block DynamicMusicSwitch each
+			return not each.getState()
+		end ) == null and this.pSwitchesOff.find( block DynamicMusicSwitch each
+			return each.getState()
+		end ) == null
+	end
+end

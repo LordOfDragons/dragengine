@@ -1,0 +1,273 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Toggle button group.
+ * 
+ * Ensures at most one ToggleButton in the group is toggled at each time.
+ */
+class ToggleButtonGroup implements ListModel, StateChangeListener
+	private var Array pButtons
+	private var Array pListeners
+	private var int pSelected
+	
+	
+	
+	/** \brief Create toggle model group. */
+	public func new()
+		this.pButtons = Array.new()
+		this.pListeners = Array.new()
+		this.pSelected = -1
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( ListModelListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( ListModelListener listener )
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Count of models. */
+	public func int getCount()
+		return this.pButtons.getCount()
+	end
+	
+	/** \brief Element at index. */
+	public func Object getAt( int index )
+		return this.getAt( index )
+	end
+	
+	/** \brief Button at index. */
+	public func ToggleButton getButtonAt( int index )
+		return this.getAt( index ) cast ToggleButton
+	end
+	
+	/** \brief Index of element or -1 if absent. */
+	public func int indexOf( Object element )
+		return this.pButtons.indexOf( element )
+	end
+	
+	/** \brief Element is present. */
+	public func bool has( Object element )
+		return this.pButtons.has( element )
+	end
+	
+	/** \brief Add button. */
+	public func void add( ToggleButton button )
+		button.setToggled( false )
+		this.pButtons.add( button )
+		button.addStateChangeListener( this )
+		
+		var int index = this.pButtons.getCount() - 1
+		this.notifyButtonsAdded( index, index )
+	end
+	
+	/**
+	 * \brief Insert button at index.
+	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
+	 */
+	public func void insert( int index, ToggleButton button )
+		button.setToggled( false )
+		this.pButtons.insert( index, button )
+		button.addStateChangeListener( this )
+		
+		this.notifyButtonsAdded( index, index )
+	end
+	
+	/** \brief Remove button. */
+	public func void remove( ToggleButton button )
+		this.pButtons.remove( button )
+		button.removeStateChangeListener( this )
+		
+		var int index = this.pButtons.indexOf( button )
+		this.notifyButtonsRemoved( index, index )
+	end
+	
+	/** \brief Remove all buttons. */
+	public func void removeAll()
+		var int count = this.pButtons.getCount()
+		if count == 0
+			return
+		end
+		
+		this.pButtons.forEach( block ToggleButton each
+			each.removeStateChangeListener( this )
+		end )
+		this.pButtons.removeAll()
+		this.notifyButtonsRemoved( 0, count - 1 )
+	end
+	
+	/**
+	 * \brief Visit models with block.
+	 * 
+	 * Block received ToggleMoel as argument.
+	 */
+	public func void forEach( Block ablock )
+		this.pButtons.forEach( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Index of the selected element or -1 if there is no selected element.
+	 */
+	public func int getSelected()
+		return this.pSelected
+	end
+	
+	/**
+	 * \brief Set index of selected element or -1 if none is no selected element.
+	 */
+	public func void setSelected( int index )
+		if index < -1 or index >= this.pButtons.getCount()
+			throw EInvalidParam.new()
+		end
+		
+		if index == this.pSelected
+			return
+		end
+		
+		this.pSelected = index
+		this.updateToggleButtons()
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.selectionChanged( this )
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Notify all that the content of the model in the given range changed.
+	 * \param fromIndex Index of first element that changed
+	 * \param toIndex Index of last element that changed
+	 */
+	public func void notifyContentChanged( int fromIndex, int toIndex )
+		var bool notifySelectedChanged
+		var int count = this.pButtons.getCount()
+		
+		if count > 0
+			if this.pSelected >= count
+				this.pSelected = count - 1
+				notifySelectedChanged = true
+			end
+			
+		elif this.pSelected != -1
+			this.pSelected = -1
+			notifySelectedChanged = true
+		end
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.contentChanged( this, fromIndex, toIndex )
+		end )
+		
+		if notifySelectedChanged
+			this.updateToggleButtons()
+			this.pListeners.forEach( block ListModelListener each
+				each.selectionChanged( this )
+			end )
+		end
+	end
+	
+	/**
+	 * \brief Notify all models have been added.
+	 * \param fromIndex Index of first added element.
+	 * \param toIndex Index of last added element.
+	 */
+	public func void notifyButtonsAdded( int fromIndex, int toIndex )
+		this.pListeners.forEach( block ListModelListener each
+			each.elementsAdded( this, fromIndex, toIndex )
+		end )
+		
+		if this.pSelected == -1
+			this.setSelected( 0 )
+		end
+	end
+	
+	/**
+	 * \brief Notify all models have been removed.
+	 * \param fromIndex Index of first removed element.
+	 * \param toIndex Index of last removed element.
+	 */
+	public func void notifyButtonsRemoved( int fromIndex, int toIndex )
+		var bool notifySelectedChanged
+		
+		if this.pSelected > toIndex
+			this.pSelected -= toIndex - fromIndex + 1
+			notifySelectedChanged = true
+			
+		elif this.pSelected >= fromIndex
+			this.pSelected = DEMath.min( fromIndex, this.pButtons.getCount() - 1 )
+			notifySelectedChanged = true
+		end
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.elementsRemoved( this, fromIndex, toIndex )
+		end )
+		
+		if notifySelectedChanged
+			this.pListeners.forEach( block ListModelListener each
+				each.selectionChanged( this )
+			end )
+		end
+	end
+	
+	
+	
+	/** \brief Widget changed state. */
+	public func void onStateChanged( StateChangeEvent event )
+		var ToggleButton button = event.getSource() cast ToggleButton
+		var int index = this.pButtons.indexOf( button )
+		
+		if button.getToggled()
+			this.setSelected( index )
+			
+		elif index == this.pSelected
+			button.setToggled( true )
+		end
+	end
+	
+	
+	
+	/** \brief Update toggle buttons. */
+	protected func void updateToggleButtons()
+		var int i, count = this.pButtons.getCount()
+		for i = 0 to count
+			( this.pButtons.getAt( i ) cast ToggleButton ).setToggled( i == this.pSelected )
+		end
+	end
+end

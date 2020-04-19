@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Base class for behavior tree rules using child rules.
+ */
+abstract class BTRuleList extends BTRule
+	/** \brief Array of BTRule. */
+	private var Array pRules
+	
+	
+	
+	/** \brief Create behavior tree rule. */
+	public func new( String id ) super( id )
+		this.pRules = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of rules. */
+	public func int getRuleCount()
+		return this.pRules.getCount()
+	end
+	
+	/** \brief Get rule at index. */
+	public func BTRule getRuleAt( int index )
+		return this.pRules.getAt( index ) cast BTRule
+	end
+	
+	/** \brief Index of rule or -1 if absent. */
+	public func int indexOfRule( BTRule rule )
+		return this.pRules.indexOf( rule )
+	end
+	
+	/** \brief Add rule. */
+	public func void addRule( BTRule rule )
+		if rule == null or rule.getParent() != null
+			throw EInvalidParam.new()
+		end
+		
+		this.pRules.add( rule )
+		rule.setParent( this )
+	end
+	
+	/** \brief Remove rule. */
+	public func void removeRule( BTRule rule )
+		this.pRules.remove( rule )
+	end
+	
+	/** \brief Remove all rules. */
+	public func void removeAllRules()
+		this.pRules.removeAll()
+	end
+	
+	/** \brief Visit rules with block with parameter BTRule. */
+	public func void forEach( Block ablock )
+		this.pRules.forEach( ablock )
+	end
+	
+	/** \brief Find rule with block with parameter BTRule. */
+	public func BTRule find( Block ablock )
+		return this.pRules.find( ablock ) cast BTRule
+	end
+end

@@ -1,0 +1,175 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Panel displaying debug information entries.
+ * 
+ * Basically a FormLayout aligned list of debug information entries. Each entry shows a
+ * label and a detail text. The window is transparent to be overlayed on screen. The window
+ * is set invisible if no debug information are present. Every frame update the debug
+ * information are captured and stored in Label objects in the window. Then the debug
+ * information are reset for the next frame to collect data. The developer does not have
+ * to do anything else than adding debug information objects to the window.
+ */
+class PanelDebugInformation extends Panel
+	private var Array pDebugInformation
+	private var Array pSortedList
+	
+	
+	
+	/** \brief Create window. */
+	public func new() super( 10, 10, 100, 50 )
+		this.pDebugInformation = Array.new()
+		
+		this.setLayout( FormLayout.new( true, 10, 1 ) )
+		this.setDesignerSelector( "PanelDebugInformation" )
+		this.setVisible( false )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pDebugInformation = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Number of debug information. */
+	public func int getDebugInfoCount()
+		return this.pDebugInformation.getCount()
+	end
+	
+	/** \brief Debug information is present. */
+	public func bool hasDebugInfo( DebugInformation debugInfo )
+		return this.pDebugInformation.has( debugInfo )
+	end
+	
+	/** \brief Debug information at position. */
+	public func DebugInformation getDebugInfoAt( int index )
+		return this.pDebugInformation.getAt( index ) cast DebugInformation
+	end
+	
+	/** \brief Add debug information. */
+	public func void addDebugInfo( DebugInformation debugInfo )
+		this.pDebugInformation.add( debugInfo )
+		this.pSortedList = null
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Remove debug information. */
+	public func void removeDebugInfo( DebugInformation debugInfo )
+		this.pDebugInformation.remove( debugInfo )
+		this.pSortedList = null
+	end
+	
+	/** \brief Remove all debug information. */
+	public func void removeAllDebugInfo()
+		this.pDebugInformation.removeAll()
+		this.pSortedList = null
+	end
+	
+	/** \brief Visit debug information with block with parameter DebugInformation. */
+	public func void forEach( Block ablock )
+		this.pDebugInformation.forEach( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Do frame update.
+	 * 
+	 * Captures the debug information into Labels in the window then resets all debug
+	 * information. Shows the window if debug information are present. Does nothing
+	 * if there are no debug information present.
+	 */
+	public func void onFrameUpdate( float elapsed )
+		this.captureDebugInfo()
+		
+		this.setVisible( this.pDebugInformation.getCount() > 0 )
+		
+		if not this.getVisible()
+			this.stopFrameUpdater()
+		end
+	end
+	
+	
+	
+	/** \brief Capture debug information. */
+	protected func void captureDebugInfo()
+		if this.pSortedList == null
+			this.pSortedList = Array.new( this.pDebugInformation )
+		end
+		
+		var int count = this.pSortedList.getCount()
+		if count == 0
+			this.removeAllWidgets()
+			return
+		end
+		
+		/*this.pSortedList.sort( block DebugInformation a, DebugInformation b
+			return a.getLabel().compare( b.getLabel() )
+		end )*/
+		
+		this.runWhileBlockingLayout( block
+			var int widgetIndex = this.getWidgetCount()
+			var int requiredCount = count * 2
+			var Label label
+			while widgetIndex > requiredCount
+				widgetIndex--
+				this.removeWidget( this.getWidget( widgetIndex ) )
+			end
+			
+			widgetIndex = this.getWidgetCount() / 2
+			while widgetIndex < count
+				label = Label.new( "" )
+				label.setDesignerSelector( "Label.PanelDebugInformation.Label" )
+				this.addWidget( label )
+				
+				label = Label.new( "" )
+				label.setDesignerSelector( "Label.PanelDebugInformation.Details" )
+				this.addWidget( label )
+				
+				widgetIndex++
+			end
+			
+			var DebugInformation debugInfo
+			var int i
+			
+			widgetIndex = 0
+			for i = 0 to count
+				debugInfo = this.pSortedList.getAt( i ) cast DebugInformation
+				( this.getWidget( widgetIndex++ ) cast Label ).setText( debugInfo.getLabel() )
+				( this.getWidget( widgetIndex++ ) cast Label ).setText( debugInfo.getDetails() )
+				debugInfo.reset()
+			end
+		end )
+		
+		this.doLayout()
+	end
+end
+

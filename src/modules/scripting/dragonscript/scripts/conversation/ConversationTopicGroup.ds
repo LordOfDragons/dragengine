@@ -1,0 +1,83 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * A topic group in a conversation script.
+ */
+class ConversationTopicGroup
+	/** Unique ID. */
+	private var StringID pID
+	/** List of files. */
+	private var Array pTopics
+	
+	
+	
+	/** Create a new conversation file. */
+	public func new( StringID id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pID = id
+		this.pTopics = Array.new()
+	end
+	
+	
+	
+	/** Retrieves the ID. */
+	public func StringID getID()
+		return this.pID
+	end
+	
+	/** \brief Topic with ID is present. */
+	public func bool hasTopicWithID( StringID id )
+		return this.pTopics.find( block ConversationTopic each
+			return each.getID().equals( id )
+		end ) != null
+	end
+	
+	/** Retrieves the topic with ID or null if not found. */
+	public func ConversationTopic getTopicWithID( StringID id )
+		return this.pTopics.find( block ConversationTopic each
+			return each.getID().equals( id )
+		end ) cast ConversationTopic
+	end
+	
+	/** Adds a topic. */
+	public func void addTopic( ConversationTopic topic )
+		if this.getTopicWithID( topic.getID() ) != null
+			throw EInvalidParam.new()
+		end
+		this.pTopics.add( topic )
+	end
+	
+	/** Visits all topics. */
+	public func void forEachTopic( Block aBlock )
+		this.pTopics.forEach( aBlock )
+	end
+end

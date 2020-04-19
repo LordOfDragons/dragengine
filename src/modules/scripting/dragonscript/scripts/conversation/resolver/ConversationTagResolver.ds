@@ -1,0 +1,153 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+
+/**
+ * \brief Resolve tags in actor speak action text.
+ * 
+ * Tags in actor speak allow to alter the text box content dynamically while
+ * creating the sub title text widget. Supports tags of the form {action[:params]}
+ * with optional parameters after action. The special tag {{ prints a single
+ * { character. Output is a StyledTextDefinition.
+ */
+class ConversationTagResolver
+	/** \brief Supported rules. */
+	private var Dictionary pRules
+	
+	
+	
+	/** \brief Create conversation tag resolver. */
+	public func new()
+		this.pRules = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Number of rules. */
+	public func int getRuleCount()
+		return this.pRules.getCount()
+	end
+	
+	/** \brief Rule matching name or \em null if absent. */
+	public func ConversationTagResolverRule getRuleNamed( String name )
+		return this.pRules.getAt( name, null ) cast ConversationTagResolverRule
+	end
+	
+	/** \brief has rule matching name. */
+	public func bool hasRuleNamed( String name )
+		return this.pRules.has( name )
+	end
+	
+	/** \brief Add rule. */
+	public func void addRule( String name, ConversationTagResolverRule rule )
+		if name == null or rule == null or this.pRules.has( name )
+			throw EInvalidParam.new()
+		end
+		this.pRules.setAt( name, rule )
+	end
+	
+	/** \brief Remove all rules. */
+	public func void removeAllRules()
+		this.pRules.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tags in text producing styled text.
+	 * \param text UTF-8 text to resolve tags in.
+	 * \param pageStyle Type style.
+	 * \param defaultStyle Default text style.
+	 */
+	public func StyledTextDefinition resolveTags( String text, STDStyle pageStyle, STDStyle defaultStyle )
+		var StyledTextDefinition styledText = StyledTextDefinition.new()
+		
+		styledText.addStyle( pageStyle )
+		styledText.setPageStyle( pageStyle )
+		
+		styledText.addStyle( defaultStyle )
+		styledText.setDefaultStyle( defaultStyle )
+		
+		var STDNText nodeText = STDNText.new()
+		var ConversationTagResolverRule rule
+		var int tagBegin = text.find( '{' )
+		var int len = text.getLength()
+		var String actionName
+		var int position = 0
+		var String tagData
+		var String tagAction
+		var String tagParams
+		var int actionEnd
+		var int tagEnd
+		
+		while tagBegin != -1
+			if position < tagBegin
+				nodeText.addSpan( STDNTextSpan.new( text.substring( position, tagBegin ) ) )
+			end
+			
+			if text.getAt( tagBegin + 1 ) == '{'
+				nodeText.addSpan( STDNTextSpan.new( "{" ) )
+				tagEnd = tagBegin + 1
+				
+			else
+				tagEnd = text.find( '}', tagBegin + 1 )
+				tagData = text.substring( tagBegin + 1, tagEnd )
+				actionEnd = tagData.find( ':' )
+				
+				if actionEnd == -1
+					tagAction = tagData
+					tagParams = ""
+					
+				else
+					tagAction = tagData.substring( 0, actionEnd )
+					tagParams = tagData.substring( actionEnd + 1 )
+				end
+				
+				rule = this.pRules.getAt( tagAction, null ) cast ConversationTagResolverRule
+				
+				if rule == null
+					nodeText.addSpan( STDNTextSpan.new( tagData ) )
+					
+				else
+					rule.resolveTag( styledText, nodeText, tagParams )
+				end
+			end
+			
+			position = tagEnd + 1
+			tagBegin = text.find( '{', position )
+		end
+		
+		if position < len
+			nodeText.addSpan( STDNTextSpan.new( text.substring( position ) ) )
+		end
+		
+		styledText.addNode( nodeText )
+		return styledText
+	end
+end

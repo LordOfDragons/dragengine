@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of widget designers for use with gui theme creation.
+ *
+ * The designers in this list server as blue prints for designers to be used by automatic
+ * gui themes and must not be changed. For this reason call copyDesigner() on received
+ * designers to create a new designer with appropriate configuration for modifying and
+ * using. If not modified designers can be directly assigned to widgets. Widget users have
+ * to keep in mind the used widget designers are shared.
+ */
+class WidgetDesigners
+	/** \brief s. */
+	private var Dictionary pDesigners
+	
+	
+	
+	/** \brief Create widget designer factories. */
+	public func new()
+		this.pDesigners = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Add designer. */
+	public func void add( String name, WidgetDesigner designer )
+		this.pDesigners.setAt( name, designer )
+	end
+	
+	/** \brief Named designer or \em null if not found. */
+	public func WidgetDesigner getNamed( String name )
+		return this.pDesigners.getAt( name, null ) cast WidgetDesigner
+	end
+	
+	/** \brief Remove designer if present. */
+	public func void removeNamed( String name )
+		this.pDesigners.removeIfExisting( name )
+	end
+	
+	/** \brief Remove all factories. */
+	public func void removeAll()
+		this.pDesigners.removeAll()
+	end
+	
+	
+	
+	/** \brief Add default factories. */
+	public func void addDefaultDesigners()
+		this.add( "Button", DefaultButtonDesigner.new() )
+		this.add( "ButtonWidget", DefaultButtonWidgetDesigner.new() )
+		this.add( "CheckBox", DefaultCheckBoxDesigner.new() )
+		this.add( "ComboBox", DefaultComboBoxDesigner.new() )
+		this.add( "Desktop", DefaultWidgetDesigner.new() )
+		this.add( "Label", DefaultLabelDesigner.new() )
+		this.add( "ListBox", DefaultWidgetDesigner.new() )
+		this.add( "OptionBox", DefaultOptionBoxDesigner.new() )
+		this.add( "PlayerChoiceEntry", DefaultLabelDesigner.new() )
+		this.add( "ProgressBar", DefaultProgressBarDesigner.new() )
+		this.add( "ScrollBar", DefaultScrollBarDesigner.new() )
+		this.add( "SpinButton", DefaultSpinButtonDesigner.new() )
+		this.add( "TextArea", DefaultWidgetDesigner.new() )
+		this.add( "TextField", DefaultWidgetDesigner.new() )
+		this.add( "Widget", DefaultWidgetDesigner.new() )
+		this.add( "Window", DefaultWindowDesigner.new() )
+	end
+end

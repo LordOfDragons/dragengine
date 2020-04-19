@@ -1,0 +1,411 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Composable move on rail support for element class.
+ * 
+ * Provides support for elements to move along a Rail without subclassing from a specific class.
+ * Sets the Rail to move along as well as movement parameters like velocity, acceleration and
+ * deceleration. A trigger is used to start moving along the rail from front to back. The mover
+ * class provides the movement logic to be used by element instances.
+ * 
+ * The velocity defines how fast the element will be moving. When starting to move the accelration
+ * is used to speed up the element until it hits velocity. When approaching the opposite end of
+ * the rail path the deceleration is used to slow down.
+ * 
+ * The element is placed at the beginning either at the start of the rail path or at the end.
+ * When triggered the element starts moving towards the opposite end. The element will continue
+ * moving when the trigger changes to false. This allows to create elements moving between two
+ * locations when trigger is pulsed or just once when it stays triggered
+ */
+class ECComposeMoveOnRail
+	/** \brief Mover support for elements. */
+	public class Mover
+		private var Collider pCollider
+		private var StringID pRailID
+		private var bool pStartAtFirstCorner
+		private var Rail pRail
+		private var float pVelocity
+		private var float pAcceleration
+		private var float pDeceleration
+		private var float pCurrentVelocity
+		private var int pCurrentCorner
+		private var int pTargetCorner
+		private var float pBreakDistance
+		private var float pRemainingDistance
+		
+		
+		
+		/** \brief Create mover. */
+		public func new( Collider collider )
+			if collider == null
+				throw EInvalidParam.new()
+			end
+			this.pCollider = collider
+			this.pStartAtFirstCorner = true
+			this.pVelocity = 1.0
+			this.pAcceleration = 1.0
+			this.pDeceleration = 1.0
+			this.pCurrentVelocity = 0.0
+			this.pBreakDistance = 0.0
+			this.pCurrentCorner = -1
+			this.pTargetCorner = -1
+			this.pRemainingDistance = 0.0
+		end
+	
+		
+		
+		/** \brief Collider to update or \em null. */
+		public func Collider getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Rail ID. */
+		public func StringID getRailID()
+			return this.pRailID
+		end
+		
+		/** \brief Set rail ID. */
+		public func void setRailID( StringID id )
+			this.pRailID = id
+		end
+		
+		/** \brief Order of initial corner to place collider at. */
+		public func bool getStartAtFirstCorner()
+			return this.pStartAtFirstCorner
+		end
+		
+		/** \brief Set order of initial corner to place collider at. */
+		public func void setStartAtFirstCorner( bool startAtFirstCorner )
+			this.pStartAtFirstCorner = startAtFirstCorner
+		end
+		
+		/** \brief Rail. */
+		public func Rail getRail()
+			return this.pRail
+		end
+		
+		/**
+		 * \brief Set rail.
+		 * 
+		 * Stops collider from moving.
+		 */
+		public func void setRail( Rail rail )
+			this.pRail = rail
+			this.pTargetCorner = -1
+			this.pCurrentCorner = -1
+		end
+		
+		/**
+		 * \brief Find and attach rail and set collider to initial position.
+		 * 
+		 * If rail can not be located or the rail has no corners an exception is thrown.
+		 */
+		public func void attachRail( RailList rails )
+			this.setRail( rails.getWithID( this.pRailID ) )
+			if this.pRail == null
+				throw EInvalidParam.new()
+				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' not found" )
+			end
+			
+			var int cornerCount = this.pRail.getCornerCount()
+			if cornerCount == 0
+				throw EInvalidParam.new()
+				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' has no corners" )
+			end
+			
+			this.pCurrentCorner = this.pStartAtFirstCorner if 0 else cornerCount - 1
+			var RailCorner corner = this.pRail.getCornerAt( this.pCurrentCorner )
+			
+			this.pCollider.setGeometry( corner.getPosition(), corner.getOrientation() )
+		end
+		
+		/** \brief Velocity in m/s. */
+		public func float getVelocity()
+			return pVelocity
+		end
+		
+		/** \brief Set velocity in m/s. */
+		public func void setVelocity( float velocity )
+			this.pVelocity = DEMath.max( velocity, 0.001 )
+		end
+		
+		/** \brief Acceleration time in m/s^2. */
+		public func float getAcceleration()
+			return this.pAcceleration
+		end
+		
+		/** \brief Set acceleration in m/s^2. */
+		public func void setAcceleration( float acceleration )
+			this.pAcceleration = DEMath.max( acceleration, 0.01 )
+		end
+		
+		/** \brief Set deceleration in m/s^2. */
+		public func void setDeceleration( float deceleration )
+			this.pDeceleration = DEMath.max( deceleration, 0.01 )
+		end
+		
+		/** \brief Current velocity. */
+		public func float getCurrentVelocity()
+			return this.pCurrentVelocity
+		end
+		
+		/** \brief Set current velocity. */
+		protected func void setCurrentVelocity( float velocity )
+			this.pCurrentVelocity = DEMath.max( velocity, 0.0 )
+			
+			var float breakTime = this.pCurrentVelocity / this.pDeceleration
+			this.pBreakDistance = 0.5 * this.pDeceleration * breakTime * breakTime
+		end
+		
+		/** \brief Current corner index. */
+		public func int getCurrentCorner()
+			return this.pCurrentCorner
+		end
+		
+		/** \brief Target corner index or \em -1. */
+		public func int getTargetCorner()
+			return this.pTargetCorner
+		end
+		
+		/** \brief Is moving. */
+		public func bool isMoving()
+			return this.pTargetCorner != -1
+		end
+		
+		/**
+		 * \brief Start moving.
+		 * 
+		 * If at first corner moves towards the last corner otherwise towards the first corner.
+		 */
+		public func void startMoving()
+			if this.pTargetCorner != -1 or this.pCurrentCorner == -1
+				return
+			end
+			
+			var int i, count = this.pRail.getCornerCount()
+			this.pRemainingDistance = 0.0
+			for i = 0 to count - 1
+				this.pRemainingDistance += ( this.pRail.getCornerAt( i + 1 ).getPosition() \
+					- this.pRail.getCornerAt( i ).getPosition() ).getLength()
+			end
+			
+			this.pTargetCorner = this.pCurrentCorner == 0 if count - 1 else 0
+		end
+		
+		
+		
+		/** \brief Update element moving along rail. */
+		public func void update( float elapsed )
+			if this.pTargetCorner == -1
+				return
+			end
+			
+			if this.pCurrentCorner == this.pTargetCorner
+				this.pTargetCorner = -1
+				return
+			end
+			
+			if this.pRemainingDistance > this.pBreakDistance
+				this.setCurrentVelocity( DEMath.min( this.pVelocity, \
+					this.pCurrentVelocity + this.pAcceleration * elapsed ) )
+				
+			else
+				this.setCurrentVelocity( DEMath.max( this.pVelocity * 0.01, \
+					this.pCurrentVelocity - this.pDeceleration * elapsed ) )
+			end
+			
+			var int stepCorner = this.pTargetCorner > this.pCurrentCorner if 1 else -1
+			var DVector target, diff, position = this.pCollider.getPosition()
+			var float distance = this.pCurrentVelocity * elapsed
+			var int nextCorner
+			var float nextDistance
+			
+			while this.pCurrentCorner != this.pTargetCorner
+				nextCorner = this.pCurrentCorner + stepCorner
+				target = this.pRail.getCornerAt( nextCorner ).getPosition()
+				
+				diff = target - position
+				nextDistance = diff.getLength()
+				if distance < nextDistance
+					position = position + diff * ( distance / nextDistance )
+					this.pRemainingDistance = DEMath.max( this.pRemainingDistance - distance, 0.0 )
+					break
+				end
+				
+				position = target
+				distance -= nextDistance
+				this.pCurrentCorner = nextCorner
+				this.pRemainingDistance = DEMath.max( this.pRemainingDistance - nextDistance, 0.0 )
+			end
+			
+			this.pCollider.setPosition( position )
+		end
+		
+		/**
+		 * \brief Read element from file.
+		 * 
+		 * Restores these values (for others owner is responsible):
+		 * - current velocity
+		 * - current corner
+		 * - target corner
+		 * - remaining distance
+		 */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setCurrentVelocity( reader.readFloat() )
+			this.pCurrentCorner = reader.readShort()
+			this.pTargetCorner = reader.readShort()
+			this.pRemainingDistance = reader.readFloat()
+		end
+		
+		/**
+		 * \brief Write element to file.
+		 * 
+		 * Persists these values (for others owner is responsible):
+		 * - current velocity
+		 * - current corner
+		 * - target corner
+		 * - remaining distance
+		 */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeFloat( this.pCurrentVelocity )
+			writer.writeShort( this.pCurrentCorner )
+			writer.writeShort( this.pTargetCorner )
+			writer.writeFloat( this.pRemainingDistance )
+		end
+	end
+	
+	
+	
+	private var String pPrefix
+	private var ECPFloat pVelocity
+	private var ECPFloat pAcceleration
+	private var ECPFloat pDeceleration
+	private var ECPBoolean pStartAtFirstCorner
+	private var ECPStringID pRail
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "moveOnRail." )
+	end
+	
+	public func new( ElementClass ownerClass, String prefix )
+		this.pPrefix = prefix
+		
+		this.pVelocity = ECPFloat.new( prefix + "velocity", 1, 0.001 )
+		ownerClass.addProperty( this.pVelocity )
+		
+		this.pAcceleration = ECPFloat.new( prefix + "acceleration", 1, 0.01 )
+		ownerClass.addProperty( this.pAcceleration )
+		
+		this.pDeceleration = ECPFloat.new( prefix + "deceleration", 1, 0.01 )
+		ownerClass.addProperty( this.pDeceleration )
+		
+		this.pStartAtFirstCorner = ECPBoolean.new( prefix + "startAtFirstCorner", true )
+		ownerClass.addProperty( this.pStartAtFirstCorner )
+		
+		this.pRail = ECPStringID.new( prefix + "rail" )
+		ownerClass.addProperty( this.pRail )
+	end
+	
+	
+	
+	/** \brief Prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	/** \brief Velocity in m/s. */
+	public func ECPFloat getVelocity()
+		return this.pVelocity
+	end
+	
+	/** \brief Acceleration in m/s^2. */
+	public func ECPFloat getAcceleration()
+		return this.pAcceleration
+	end
+	
+	/** \brief Deceleration in m/s^2. */
+	public func ECPFloat getDeceleration()
+		return this.pDeceleration
+	end
+	
+	/** \brief Element starts out at head of rail otherwise the tail of the rail. */
+	public func ECPBoolean getStartAtFirstCorner()
+		return this.pStartAtFirstCorner
+	end
+	
+	/** \brief Rail to move on. */
+	public func ECPStringID getRail()
+		return this.pRail
+	end
+	
+	
+	
+	/** \brief Create mover. */
+	public func Mover createMover( Collider collider, StubElement stub )
+		var Mover mover = Mover.new( collider )
+		this.initMover( mover, stub )
+		return mover
+	end
+	
+	/** \brief Create mover. */
+	protected func void initMover( Mover mover, StubElement stub )
+		mover.setRailID( this.pRail.getValue( stub ) )
+		mover.setVelocity( this.pVelocity.getValue( stub ) )
+		mover.setAcceleration( this.pAcceleration.getValue( stub ) )
+		mover.setDeceleration( this.pDeceleration.getValue( stub ) )
+		mover.setStartAtFirstCorner( this.pStartAtFirstCorner.getValue( stub ) )
+	end
+	
+	/** \brief Create move trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerMove( Element element, StubElement stub )
+		return this.createTriggerMove( element, stub, "" )
+	end
+	
+	/** \brief Create move trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerMove( Element element, StubElement stub, String defaultValue )
+		var String value = stub.getPropertyValueFor( this.pPrefix + "trigger", defaultValue )
+		
+		if value.empty()
+			return null
+			
+		else
+			return element.getClass().getTriggerExpressionParser().stringToExpression( value )
+		end
+	end
+end
+

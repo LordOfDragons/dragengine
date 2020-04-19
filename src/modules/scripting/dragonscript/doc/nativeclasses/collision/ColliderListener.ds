@@ -1,0 +1,46 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Collider listener interface.
+ * 
+ * This is a native class.
+ */
+interface ColliderListener
+	/** \name Notifications. */
+	/*@{*/
+	/**
+	 * \brief Calculate response for a collision.
+	 * \details If you set CollisionResponse.kinematic on a collider you have to update the
+	 *          info object with the response to the collision. In all other cases
+	 *          you still get the collision notification but you must not modify
+	 *          the collider. Doing so can result in strange problems.
+	 */
+	func void collisionResponse( Collider owner, CollisionInfo info )
+	
+	/**
+	 * \brief Collider can collide with another collider.
+	 * \details This test is typically done early in collision testing. Make sure
+	 *          to return consistent results. If a collider A can hit a collider B
+	 *          if asked then collider B should return the same answer if asked.
+	 *          Also keep the returned result consistent during a frame update.
+	 * \return \em true if a collision is possible or \em false otherwise.
+	 */
+	func bool canHitCollider( Collider owner, Collider collider )
+	
+	/**
+	 * \brief Collider properties have changed and attached resources have been updated.
+	 * \details This is usually called after the collision detection has finished and
+	 *          the collider has been moved. It is though possible for a physics module
+	 *          to call this multiple times during one frame update.
+	 */
+	func void colliderChanged( Collider owner )
+	/*@}*/
+end

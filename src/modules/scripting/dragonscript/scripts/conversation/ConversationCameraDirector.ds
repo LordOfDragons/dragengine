@@ -1,0 +1,540 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.CameraDirectors
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Animate camera using camera definition.
+ * 
+ * The conversation playback is responsible to set camera definition to use
+ * as well as updating the camera director.
+ */
+class ConversationCameraDirector extends CameraDirector
+	private var ConversationCameraShot pCameraShot
+	private var float pElapsed
+	private var float pDuration
+	private var bool pLooping
+	private var DMatrix pCoordSys
+	private var ConversationTarget pCameraTarget
+	private var ConversationTarget pLookAtTarget
+	private var ConversationActor pCameraActor
+	private var ConversationActor pLookAtActor
+	private var ConversationCoordSystem pCameraCoordSystem
+	private var ConversationCoordSystem pLookAtCoordSystem
+	private var DMatrix pLockedCameraMatrix
+	private var DMatrix pLockedLookAtMatrix
+	
+	
+	
+	/** \brief Creates conversation camera director. */
+	public func new( Camera camera, Microphone microphone ) super( camera, microphone )
+		this.pElapsed = 0
+		this.pDuration = 10
+		this.pLooping = false
+		this.pCoordSys = DMatrix.new()
+	end
+	
+	
+	
+	/** \brief Camera shot to use or null if not set. */
+	public func ConversationCameraShot getCameraShot()
+		return this.pCameraShot
+	end
+	
+	/** \brief Set camera shot to use or null if not set. */
+	public func void setCameraShot( ConversationCameraShot cameraShot )
+		this.pCameraShot = cameraShot
+		this.pElapsed = 0
+		this.pDuration = 10
+		this.pLockedCameraMatrix = null
+		this.pLockedLookAtMatrix = null
+	end
+	
+	/** \brief Elapsed time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	/** \brief Set elapsed time. */
+	public func void setElapsed( float elapsed )
+		this.pElapsed = DEMath.max( elapsed, 0.0 )
+	end
+	
+	/** \brief Duration of the camera shot. */
+	public func float getDuration()
+		return this.pDuration
+	end
+	
+	/** \brief Set duration of the camera shot. */
+	public func void setDuration( float duration )
+		this.pDuration = DEMath.max( duration, 0.0 )
+	end
+	
+	/** \brief Camera shot is looping. */
+	public func bool getLooping()
+		return this.pLooping
+	end
+	
+	/** \brief Set if camera shot is looping. */
+	public func void setLooping( bool looping )
+		this.pLooping = looping
+	end
+	
+	/** \brief Camera target or null if not set. */
+	public func ConversationTarget getCameraTarget()
+		return this.pCameraTarget
+	end
+	
+	/** \brief Set camera target or null if not set. */
+	public func void setCameraTarget( ConversationTarget target )
+		this.pCameraTarget = target
+	end
+	
+	/** \brief Look-at target or null if not set. */
+	public func ConversationTarget getLookAtTarget()
+		return this.pLookAtTarget
+	end
+	
+	/** \brief Set look-at target or null if not set. */
+	public func void setLookAtTarget( ConversationTarget target )
+		this.pLookAtTarget = target
+	end
+	
+	/** \brief Actor to attach the camera to or null if not set. */
+	public func ConversationActor getCameraActor()
+		return this.pCameraActor
+	end
+	
+	/** \brief Set actor to attach the camera to or null if not set. */
+	public func void setCameraActor( ConversationActor actor )
+		this.pCameraActor = actor
+	end
+	
+	/** \brief Actor to look at or null if not set. */
+	public func ConversationActor getLookAtActor()
+		return this.pLookAtActor
+	end
+	
+	/** \brief Set actor to look at or null if not set. */
+	public func void setLookAtActor( ConversationActor actor )
+		this.pLookAtActor = actor
+	end
+	
+	/** \brief Coordinate system to attach the camera to or null if not set. */
+	public func ConversationCoordSystem getCameraCoordSystem()
+		return this.pCameraCoordSystem
+	end
+	
+	/** \brief Set coordinate system to attach the camera to or null if not set. */
+	public func void setCameraCoordSystem( ConversationCoordSystem coordSystem )
+		this.pCameraCoordSystem = coordSystem
+	end
+	
+	/** \brief Coordinate system to look at or null if not set. */
+	public func ConversationCoordSystem getLookAtCoordSystem()
+		return this.pLookAtCoordSystem
+	end
+	
+	/** \brief Set coordinate system to look at or null if not set. */
+	public func void setLookAtCoordSystem( ConversationCoordSystem coordSystem )
+		this.pLookAtCoordSystem = coordSystem
+	end
+	
+	/** \brief Coordinate system matrix. */
+	public func DMatrix getCoordSys()
+		return this.pCoordSys
+	end
+	
+	/** \brief Set coordinate system matrix. */
+	public func void setCoordSys( DMatrix matrix )
+		if matrix == null
+			throw EInvalidParam.new()
+		end
+		this.pCoordSys = matrix
+	end
+	
+	/** \brief Locked camera target matrix or null if not yet set. */
+	public func DMatrix getLockedCameraMatrix()
+		return this.pLockedCameraMatrix
+	end
+	
+	/** \brief Set locked camera target matrix or null if not yet set. */
+	public func void setLockedCameraMatrix( DMatrix matrix )
+		this.pLockedCameraMatrix = matrix
+	end
+	
+	/** \brief Locked look-at target matrix or null if not yet set. */
+	public func DMatrix getLockedLookAtMatrix()
+		return this.pLockedLookAtMatrix
+	end
+	
+	/** \brief Set locked look-at target matrix or null if not yet set. */
+	public func void setLockedLookAtMatrix( DMatrix matrix )
+		this.pLockedLookAtMatrix = matrix
+	end
+	
+	
+	
+	/**
+	 * \brief Advance the camera time.
+	 * 
+	 * This call is different from update(float) as this one is used by the
+	 * conversation playback to set the proper camera time. The
+	 * update(float) call is called by the game state thus the timing would
+	 * be disturbed.
+	 */
+	public func void advanceCameraTime( float elapsed )
+		this.pElapsed += elapsed
+		
+		if this.pLooping
+			if this.pDuration < 0.00001
+				this.pElapsed = 0.0
+				
+			else
+				this.pElapsed = Math.fmod( this.pElapsed, this.pDuration )
+			end
+			
+		else
+			if this.pElapsed > this.pDuration
+				this.pElapsed = this.pDuration
+			end
+		end
+	end
+	
+	/** \brief Update camera using the constant method. */
+	public func void updateConstant()
+		var DVector offsetCamera = DVector.new( this.pCameraShot.getOffsetCameraFrom() )
+		var DVector offsetLookAt = DVector.new( this.pCameraShot.getOffsetLookAtFrom() )
+		var DVector cameraOrbit = DVector.new( this.pCameraShot.getCameraOrbitFrom() )
+		var DVector position = DVector.new( this.pCameraShot.getPositionFrom() )
+		var DVector rotation = DVector.new( this.pCameraShot.getRotationFrom() )
+		var float cameraDistance = this.pCameraShot.getCameraDistanceFrom()
+		var float fov = this.pCameraShot.getFovFrom()
+		
+		this.updateUsing( offsetCamera, offsetLookAt, cameraOrbit, position, rotation, cameraDistance, fov )
+	end
+	
+	/** \brief Update camera using the linear method. */
+	public func void updateLinear()
+		var DVector offsetCamera
+		var DVector offsetLookAt
+		var DVector cameraOrbit
+		var DVector position
+		var DVector rotation
+		var float cameraDistance
+		var float fov
+		
+		if this.pElapsed <= 0.0 or this.pDuration < 0.00001
+			offsetCamera = DVector.new( this.pCameraShot.getOffsetCameraFrom() )
+			offsetLookAt = DVector.new( this.pCameraShot.getOffsetLookAtFrom() )
+			cameraOrbit = DVector.new( this.pCameraShot.getCameraOrbitFrom() )
+			cameraDistance = this.pCameraShot.getCameraDistanceFrom()
+			position = DVector.new( this.pCameraShot.getPositionFrom() )
+			rotation = DVector.new( this.pCameraShot.getRotationFrom() )
+			fov = this.pCameraShot.getFovFrom()
+			
+		elif this.pElapsed >= this.pDuration
+			offsetCamera = DVector.new( this.pCameraShot.getOffsetCameraTo() )
+			offsetLookAt = DVector.new( this.pCameraShot.getOffsetLookAtTo() )
+			cameraOrbit = DVector.new( this.pCameraShot.getCameraOrbitTo() )
+			cameraDistance = this.pCameraShot.getCameraDistanceTo()
+			position = DVector.new( this.pCameraShot.getPositionTo() )
+			rotation = DVector.new( this.pCameraShot.getRotationTo() )
+			fov = this.pCameraShot.getFovTo()
+			
+		else
+			var float factorTo = this.pElapsed / this.pDuration
+			var float factorFrom = 1.0 - factorTo
+			
+			offsetCamera = DVector.new( this.pCameraShot.getOffsetCameraFrom() * factorFrom \
+				+ this.pCameraShot.getOffsetCameraTo() * factorTo )
+			offsetLookAt = DVector.new( this.pCameraShot.getOffsetLookAtFrom() * factorFrom \
+				+ this.pCameraShot.getOffsetLookAtTo() * factorTo )
+			cameraOrbit = DVector.new( this.pCameraShot.getCameraOrbitFrom() * factorFrom \
+				+ this.pCameraShot.getCameraOrbitTo() * factorTo )
+			cameraDistance = this.pCameraShot.getCameraDistanceFrom() * factorFrom \
+				+ this.pCameraShot.getCameraDistanceTo() * factorTo
+			position = DVector.new( this.pCameraShot.getPositionFrom() * factorFrom \
+				+ this.pCameraShot.getPositionTo() * factorTo )
+			rotation = DVector.new( this.pCameraShot.getRotationFrom() * factorFrom \
+				+ this.pCameraShot.getRotationTo() * factorTo )
+			fov = this.pCameraShot.getFovFrom() * factorFrom \
+				+ this.pCameraShot.getFovTo() * factorTo
+		end
+		
+		this.updateUsing( offsetCamera, offsetLookAt, cameraOrbit, position, rotation, cameraDistance, fov )
+	end
+	
+	/** \brief Update camera using calculated parameters. */
+	public func void updateUsing( DVector offsetCamera, DVector offsetLookAt, DVector cameraOrbit, \
+	DVector position, DVector rotation, float cameraDistance, float fov )
+		// calculate camera and look-at target matrices
+		var DMatrix matrixTargetCamera = DMatrix.new()
+		var DMatrix matrixTargetLookAt = DMatrix.new()
+		
+		if this.pLockedCameraMatrix == null
+			if this.pCameraTarget == null
+				matrixTargetCamera = this.pCoordSys
+				
+			else
+				matrixTargetCamera = DMatrix.newWorld( \
+					DVector.new( this.pCameraTarget.getPosition() ), \
+					this.pCameraTarget.getOrientation() )
+				
+				if this.pCameraCoordSystem != null
+					matrixTargetCamera = matrixTargetCamera * this.pCameraCoordSystem.getMatrix()
+					
+				elif this.pCameraActor != null
+					matrixTargetCamera = matrixTargetCamera \
+						* this.pCameraActor.getMatrix( this.pCameraTarget.getBone() )
+				end
+			end
+			
+			if this.pCameraShot.getLockCameraTarget()
+				this.pLockedCameraMatrix = matrixTargetCamera
+			end
+			
+		else
+			matrixTargetCamera = this.pLockedCameraMatrix
+		end
+		
+		if this.pLockedLookAtMatrix == null
+			if this.pLookAtTarget == null
+				matrixTargetLookAt = this.pCoordSys
+				
+			else
+				matrixTargetLookAt = DMatrix.newTranslation( DVector.new( this.pLookAtTarget.getPosition() ) )
+				matrixTargetLookAt = matrixTargetLookAt * DMatrix.newFromQuaternion( this.pLookAtTarget.getOrientation() )
+				
+				if this.pLookAtCoordSystem != null
+					matrixTargetLookAt = matrixTargetLookAt * this.pLookAtCoordSystem.getMatrix()
+					
+				elif this.pLookAtActor != null
+					matrixTargetLookAt = matrixTargetLookAt * this.pLookAtActor.getMatrix( this.pLookAtTarget.getBone() )
+				end
+			end
+			
+			if this.pCameraShot.getLockLookAtTarget()
+				this.pLockedLookAtMatrix = matrixTargetLookAt
+			end
+			
+		else
+			matrixTargetLookAt = this.pLockedLookAtMatrix
+		end
+		
+		// align target matrices if required
+		if this.pCameraShot.getAlignTargets() and this.pCameraTarget != null and this.pLookAtTarget != null
+			var DVector line = matrixTargetLookAt.getPosition() - matrixTargetCamera.getPosition()
+			var float len = line.getLength()
+			
+			if len > 0.00001
+				var bool lockUpAxis = this.pCameraShot.getLockUpAxis()
+				var DVector pos, up
+				
+				line = line / len
+				
+				pos = matrixTargetCamera.getPosition()
+				up = matrixTargetCamera.getUpVector()
+				if lockUpAxis
+					matrixTargetCamera = DMatrix.newWorld( pos, ( up % line ) % up, up )
+					
+				else
+					matrixTargetCamera = DMatrix.newWorld( pos, line, up )
+				end
+				
+				pos = matrixTargetLookAt.getPosition()
+				up = matrixTargetLookAt.getUpVector()
+				if lockUpAxis
+					matrixTargetLookAt = DMatrix.newWorld( pos, ( up % -line ) % up, up )
+					
+				else
+					matrixTargetLookAt = DMatrix.newWorld( pos, -line, up )
+				end
+			end
+		end
+		
+		// determine the final camera and look-at position
+		var DVector lookAtPosition = matrixTargetLookAt * offsetLookAt
+		var DVector cameraPosition
+		
+		if this.pCameraShot.getRelativeToLookAt()
+			cameraPosition = ( DMatrix.newTranslation( 0, 0, -cameraDistance ) \
+				* DMatrix.newRT( cameraOrbit, offsetLookAt ) * matrixTargetLookAt ).getPosition()
+			
+		else
+			cameraPosition = ( DMatrix.newTranslation( 0, 0, -cameraDistance ) \
+				* DMatrix.newRT( cameraOrbit, offsetCamera ) * matrixTargetCamera ).getPosition()
+		end
+		
+		// align the up axis to the conversation coordinate system up axis
+		var DMatrix matrixCamera = DMatrix.newRT( rotation, position )
+		var DVector view = lookAtPosition - cameraPosition
+		
+		if view.getLength() > 0.00001
+			var DVector up = this.pCoordSys.getUpVector()
+			matrixCamera = matrixCamera * DMatrix.newWorld( cameraPosition, view, up )
+			
+		else
+			matrixCamera = matrixCamera * DMatrix.newTranslation( cameraPosition )
+		end
+		
+		// apply calculated values to camera
+		this.updateUsingCalculated( matrixCamera.getPosition(), matrixCamera.toQuaternion(), fov, lookAtPosition )
+	end
+	
+	/**
+	 * \brief Set camera position and orientation from calculated values.
+	 * 
+	 * Allows subclasses to modify the calculated values before updating the camera
+	 * position and orientation.
+	 * 
+	 * The default implementation sets the values the to the camera without further processing.
+	 * 
+	 * \param position Camera position after calculation.
+	 * \param orientation Camera orientation after calculation.
+	 * \param fov Camera field of view after calculation.
+	 * \param lookAt Camera look-at position after calculation.
+	 */
+	public func void updateUsingCalculated( DVector position, Quaternion orientation, float fov, DVector lookAt )
+		var Camera camera = this.getCamera()
+		camera.setPosition( position )
+		camera.setOrientation( orientation )
+		camera.setFov( fov )
+	end
+	
+	
+	
+	/** \brief Init camera parameters. */
+	public func void initCameraParameters()
+		var Camera camera = this.getCamera()
+		
+		camera.setFov( /*RenderCameraManager.fovNormal * 2*/ fovFirstPerson )
+		camera.setFovRatio( 1.0 )
+		camera.setViewDistance( 200.0 )
+	end
+	
+	/** \brief Update camera. */
+	public func void updateCamera( float elapsed )
+		if this.pCameraShot == null
+			super.updateCamera( elapsed )
+			
+		else
+			//this.updateConstant()
+			this.updateLinear()
+		end
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	public func void readFromFile( ConversationPlayback playback, PersistencyEnvironment env, FileReader reader )
+		var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+		this.pLooping = flags.getAt( 1 )
+		
+		if flags.getAt( 0 )
+			this.pCameraShot = ConversationCameraShot.readFromFile( reader )
+		end
+		
+		this.pElapsed = reader.readFloat()
+		this.pDuration = reader.readFloat()
+		this.pCoordSys = DMatrix.readFromFile( reader )
+		
+		if flags.getAt( 2 )
+			this.pCameraTarget = ConversationTarget.readFromFile( env, reader )
+		end
+		if flags.getAt( 3 )
+			this.pLookAtTarget = ConversationTarget.readFromFile( env, reader )
+		end
+		
+		var StringID id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pCameraActor = playback.getActorMatching( id )
+		end
+		
+		id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pLookAtActor = playback.getActorMatching( id )
+		end
+		
+		id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pCameraCoordSystem = playback.getCoordSystemByID( id )
+		end
+		
+		id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pLookAtCoordSystem = playback.getCoordSystemByID( id )
+		end
+		
+		if flags.getAt( 4 )
+			this.pLockedCameraMatrix = DMatrix.readFromFile( reader )
+		end
+		if flags.getAt( 5 )
+			this.pLockedLookAtMatrix = DMatrix.readFromFile( reader )
+		end
+	end
+	
+	/** \brief Write to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		var PersistencyFlags flags = PersistencyFlags.new( 6 )
+		flags.setAt( 0, this.pCameraShot != null )
+		flags.setAt( 1, this.pLooping )
+		flags.setAt( 2, this.pCameraTarget != null )
+		flags.setAt( 3, this.pLookAtTarget != null )
+		flags.setAt( 4, this.pLockedCameraMatrix != null )
+		flags.setAt( 5, this.pLockedLookAtMatrix != null )
+		flags.writeToFile( writer )
+		
+		if this.pCameraShot != null
+			this.pCameraShot.writeToFile( writer )
+		end
+		
+		writer.writeFloat( this.pElapsed )
+		writer.writeFloat( this.pDuration )
+		this.pCoordSys.writeToFile( writer )
+		
+		if this.pCameraTarget != null
+			this.pCameraTarget.writeToFile( env, writer )
+		end
+		if this.pLookAtTarget != null
+			this.pLookAtTarget.writeToFile( env, writer )
+		end
+		
+		writer.writeString8( this.pCameraActor != null if this.pCameraActor.getID().toString() else "" )
+		writer.writeString8( this.pLookAtActor != null if this.pLookAtActor.getID().toString() else "" )
+		writer.writeString8( this.pCameraCoordSystem != null if this.pCameraCoordSystem.getID().toString() else "" )
+		writer.writeString8( this.pLookAtCoordSystem != null if this.pLookAtCoordSystem.getID().toString() else "" )
+		
+		if this.pLockedCameraMatrix != null
+			this.pLockedCameraMatrix.writeToFile( writer )
+		end
+		if this.pLockedLookAtMatrix != null
+			this.pLockedLookAtMatrix.writeToFile( writer )
+		end
+	end
+end

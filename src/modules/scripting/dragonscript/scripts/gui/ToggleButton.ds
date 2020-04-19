@@ -1,0 +1,282 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Toggle button Widget.
+ * 
+ * Similar to a Button but with slightly different behavior. The button switches
+ * between the pressed and unpressed state upon clicking. The button action is
+ * fired each time the button changes state. Everything else works similar to a
+ * Button. For this reason ButtonDesigner is used to design toggle buttons.
+ * 
+ * In addition to the pressed button state the toggle button stores the toggled
+ * state. To check if the toggle button is activated by the user check the
+ * toggled state. The pressed state changes dynamically while the user interacts
+ * with the toggle button. The toggle state though reflects the actual decision
+ * the user has made so far.
+ */
+class ToggleButton extends Button implements ToggleModelListener
+	private var ToggleModel pToggleModel
+	private var ToggleButtonGroup pButtonGroup
+	private var bool pHasGrab
+	private var bool pStickyToggled
+	
+	
+	
+	/** \brief Create toggle button. */
+	public func new() this( DefaultToggleModel.new() )
+	end
+	
+	/** \brief Create text toggle button. */
+	public func new( String text ) this( DefaultToggleModel.new(), text )
+	end
+	
+	/** \brief Create text and image toggle button. */
+	public func new( String text, Image image ) this( DefaultToggleModel.new(), text, image )
+	end
+	
+	/** \brief Create toggle button. */
+	public func new( ToggleModel model )
+		this.initToggleModel( model )
+	end
+	
+	/** \brief Create text toggle button. */
+	public func new( ToggleModel model, String text ) super( text )
+		this.initToggleModel( model )
+	end
+	
+	/** \brief Create text and image toggle button. */
+	public func new( ToggleModel model, String text, Image image ) super( text, image )
+		this.initToggleModel( model )
+	end
+	
+	/** \brief Create text toggle button. */
+	public func new( String text, ActionListener action ) this( text )
+		this.addActionListener( action )
+	end
+	
+	/** \brief Create text and image toggle button. */
+	public func new( String text, Image image, ActionListener action ) this( text, image )
+		this.addActionListener( action )
+	end
+	
+	/** \brief Create text toggle button. */
+	public func new( ToggleModel model, String text, ActionListener action ) this( model, text )
+		this.addActionListener( action )
+	end
+	
+	/** \brief Create text and image toggle button. */
+	public func new( ToggleModel model, String text, Image image, ActionListener action ) this( model, text, image )
+		this.addActionListener( action )
+	end
+	
+	/** \brief Dispose of widget cleaning references. */
+	public func void dispose()
+		this.setButtonGroup( null )
+		this.pToggleModel.removeListener( this )
+		this.pToggleModel = null
+		super.dispose()
+	end
+	
+	/** \brief Init toggle model. */
+	private func void initToggleModel( ToggleModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		this.pToggleModel = model
+		this.pToggleModel.addListener( this )
+	end
+	
+	
+	
+	/** \brief Toggle model. */
+	public func ToggleModel getToggleModel()
+		return this.pToggleModel
+	end
+	
+	/** \brief Set list model. */
+	public func void setToggleModel( ToggleModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		if model == this.pToggleModel
+			return
+		end
+		
+		this.pToggleModel.removeListener( this )
+		this.pToggleModel = model
+		this.pToggleModel.addListener( this )
+		
+		this.setToggled( this.pToggleModel.getToggled() )
+	end
+	
+	/** \brief Button is toggled. */
+	public func bool getToggled()
+		return this.pToggleModel.getToggled()
+	end
+	
+	/** \brief Set if button is toggled. */
+	public func void setToggled( bool toggled )
+		this.pToggleModel.setToggled( toggled )
+	end
+	
+	/** \brief Button stays toggled. */
+	public func bool getStickyToggled()
+		return this.pStickyToggled
+	end
+	
+	/** \brief Set if button stays toggled. */
+	public func void setStickyToggled( bool stickyToggled )
+		this.pStickyToggled = stickyToggled
+	end
+	
+	/** \brief Button group or null. */
+	public func ToggleButtonGroup getButtonGroup()
+		return this.pButtonGroup
+	end
+	
+	/** \brief Set button group or null. */
+	public func void setButtonGroup( ToggleButtonGroup buttonGroup )
+		if buttonGroup == this.pButtonGroup
+			return
+		end
+		
+		if this.pButtonGroup != null
+			this.pButtonGroup.remove( this )
+		end
+		
+		this.pButtonGroup = buttonGroup
+		
+		if buttonGroup != null
+			buttonGroup.add( this )
+		end
+	end
+	
+	
+	
+	/** \brief Key on the keyboard has been pressed. */
+	public func void onKeyPress( KeyEvent event )
+		if event.getKeyCode() == InputEventKey.enter
+			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
+				this.setPressed( not this.getPressed() )
+				this.setToggled( not this.pToggleModel.getToggled() )
+				this.fireAction( 0 )
+			end
+			
+		elif event.getKeyCode() == InputEventKey.space
+			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
+				this.setPressed( true )
+			end
+		end
+		
+		this.sendEventToListeners( event, false )
+	end
+	
+	/** \brief Key on the keyboard has been released. */
+	public func void onKeyRelease( KeyEvent event )
+		if event.getKeyCode() == InputEventKey.space
+			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
+				this.setToggled( not this.pToggleModel.getToggled() )
+				this.setPressed( this.pToggleModel.getToggled() )
+				this.fireAction( 0 )
+			end
+		end
+		
+		this.sendEventToListeners( event, false )
+	end
+	
+	/** Mouse button has been pressed. */
+	public func void onButtonPress( MouseEvent event )
+		if event.getButton() == InputEventMouseButton.left
+			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
+				if this.getCanFocus()
+					this.grabFocus()
+				end
+				
+				this.captureMouse()
+				this.pHasGrab = true
+				this.setPressed( true )
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		else
+			super.onButtonPress( event )
+		end
+	end
+	
+	/** \brief Mouse button has been released. */
+	public func void onButtonRelease( MouseEvent event )
+		if event.getButton() == InputEventMouseButton.left
+			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
+				this.pHasGrab = false
+				this.releaseMouse()
+				
+				if this.isPointInside( event.getPosition() )
+					this.setToggled( not this.pToggleModel.getToggled() )
+					this.setPressed( this.pToggleModel.getToggled() )
+					this.fireAction( event.getModifiers() )
+					
+				else
+					this.setPressed( this.pToggleModel.getToggled() )
+				end
+			end
+			
+			this.sendEventToListeners( event, false )
+			
+		else
+			super.onButtonRelease( event )
+		end
+	end
+	
+	/** \brief Mouse has moved. */
+	public func void onMouseMove( MouseEvent event )
+		if this.pHasGrab
+			this.setPressed( this.isPointInside( event.getPosition() ) )
+			this.sendEventToListeners( event, false )
+			
+		else
+			super.onMouseMove( event )
+		end
+	end
+	
+	
+	
+	/** \brief Toggled state changed. */
+	public func void toggledChanged( ToggleModel model )
+		this.runWhileBlockingLayout( block
+			this.setPressed( model.getToggled() )
+			this.notifyBorderParametersChanged()
+			this.notifyChildrenParentStateChanged()
+			this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
+		end )
+		this.doLayout()
+	end
+end

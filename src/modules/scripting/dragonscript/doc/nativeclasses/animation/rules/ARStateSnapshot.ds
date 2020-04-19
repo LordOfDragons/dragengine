@@ -1,0 +1,66 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule state snapshot.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARStateSnapshot extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set use last state. */
+	public func void setUseLastState( bool useLastState )
+	end
+	
+	/** \brief Set identifier to snapshot state using animator instance. */
+	public func void setID( int identifier )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARStateSnapshotTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARStateSnapshotTarget target )
+	end
+	/*@}*/
+end

@@ -1,0 +1,68 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Network system.
+ * 
+ * This is a native class. This is a pure static class. The class can not be instantiated
+ */
+fixed class NetworkSystem
+	/** \name Management */
+	/*@{*/
+	/** \brief Active microphone. */
+	public static func Microphone getActiveMicrophone()
+	end
+	
+	/** \brief Set active microphone. */
+	public static func setActiveMicrophone( Microphone microphone )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** \brief Number of parameters available. */
+	public static func int getParameterCount()
+	end
+	
+	/**
+	 * \brief Parameter information.
+	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
+	 */
+	public static func ModuleParameter getParameterInfo( int index )
+	end
+	
+	/** \brief Named parameter information or \em null if not found. */
+	public static func ModuleParameter getParameterInfo( String name )
+	end
+	
+	/**
+	 * \brief Parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func String getParameterValue( String name )
+	end
+	
+	/**
+	 * \brief Set named parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func void setParameterValue( String name, String value )
+	end
+	
+	/** \brief Send command. */
+	public static func String sendCommand( String command )
+	end
+	/*@}*/
+end

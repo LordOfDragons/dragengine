@@ -1,0 +1,166 @@
+/* 
+ * Drag[en]gine IGDE Game Definition Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "gdeConfiguration.h"
+#include "gdeConfigurationXML.h"
+#include "../gdEditor.h"
+#include "../gui/gdeWindowMain.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gameproject/igdeGameProject.h>
+
+#include <dragengine/logger/deLogger.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/filesystem/deVFSContainer.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+
+
+
+// Definitions
+////////////////
+
+#define FILE_EDITOR_CONFIG_SYSTEM	"/config/system/editors/gameDefinition/settings.xml"
+#define FILE_EDITOR_CONFIG_USER		"/config/user/editors/gameDefinition/settings.xml"
+
+
+
+// Class gdeConfiguration
+//////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+#define COLOR_ALPHA				0.1f
+#define COLOR_ALPHA_ACTIVE		0.2f
+
+gdeConfiguration::gdeConfiguration( gdeWindowMain &windowMain ) :
+pWindowMain( windowMain ),
+
+pColorBoundingBox( 0.75f, 0.25f, 0.25f, COLOR_ALPHA ),
+
+pColorCamera( 0.0f, 0.0f, 1.0f, COLOR_ALPHA ),
+pColorCameraActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
+
+pColorEnvMapProbe( 0.5f, 0.5f, 0.5f, COLOR_ALPHA ),
+pColorEnvMapProbeReflection( 0.65f, 0.35f, 0.35f, COLOR_ALPHA ),
+pColorEnvMapProbeInfluence( 0.35f, 0.65f, 0.35f, COLOR_ALPHA ),
+pColorEnvMapProbeMask( 0.35f, 0.35f, 0.65f, COLOR_ALPHA ),
+pColorEnvMapProbeActive( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE ),
+pColorEnvMapProbeActiveReflection( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE ),
+pColorEnvMapProbeActiveInfluence( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE ),
+pColorEnvMapProbeActiveMask( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE ),
+
+pColorLight( 1.0f, 1.0f, 0.0f, COLOR_ALPHA ),
+pColorLightActive( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE ),
+
+pColorNavigationSpace( 0.0f, 0.25f, 1.0f, COLOR_ALPHA ),
+pColorNavigationSpaceActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
+
+pColorNavigationBlocker( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
+pColorNavigationBlockerActive( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE ),
+
+pColorParticleEmitter( 0.5f, 0.0f, 0.25f, COLOR_ALPHA ),
+pColorParticleEmitterActive( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE ),
+
+pColorForceField( 0.5f, 0.25f, 0.25f, COLOR_ALPHA ),
+pColorForceFieldActive( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE ),
+
+pColorSnapPoint( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
+pColorSnapPointActive( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE ),
+
+pColorSpeaker( 0.5f, 0.0f, 0.0f, COLOR_ALPHA ),
+pColorSpeakerActive( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE ),
+
+pPreventSaving( false )
+{
+}
+
+gdeConfiguration::~gdeConfiguration(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void gdeConfiguration::SetPreventSaving( bool preventSaving ){
+	pPreventSaving = preventSaving;
+}
+
+void gdeConfiguration::LoadConfiguration(){
+	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+	
+	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
+	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		return;
+	}
+	
+	decBaseFileReaderReference reader;
+	pPreventSaving = true;
+	try{
+		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
+		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		pPreventSaving = false;
+		
+	}catch( const deException &e ){
+		pPreventSaving = false;
+		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}
+}
+
+void gdeConfiguration::SaveConfiguration(){
+	if( pPreventSaving ){
+		return;
+	}
+	
+	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+	
+	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
+	if( ! vfs.CanWriteFile( pathFile ) ){
+		return;
+	}
+	
+	decBaseFileWriterReference writer;
+	try{
+		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
+		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		
+	}catch( const deException &e ){
+		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void gdeConfiguration::pCleanUp(){
+}

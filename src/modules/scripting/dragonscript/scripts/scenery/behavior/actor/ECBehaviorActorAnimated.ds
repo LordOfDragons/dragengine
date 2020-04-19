@@ -1,0 +1,512 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding animation support to actors.
+ * 
+ * Adds AnimatorInstance and a map of animators to switch using string identifiers.
+ * 
+ * To simplify using actor animation a map of controller bindings can be defined to be
+ * applied to ECBehaviorLocomotion each time the animator changes. This requires controller
+ * names to be consistent and unique across animators but makes life a lot easier. If no
+ * map is defined the behavior does not change the locomotion controller mapping.
+ * While changing animator controllers with matching names are not reset.
+ * 
+ * To use this class add these behaviors to the actor:
+ * - ECBehaviorComponent
+ * - ECBehaviorLocomotion
+ * - ECBehaviorActorAnimated
+ * 
+ * Multiple behaviors can be added to animated different parts of the actor independent.
+ * 
+ * Element class property prefix is "actorAnimated{(id)}".
+ */
+class ECBehaviorActorAnimated extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Update controllers if required. */
+		func void updateControllers( Instance instance, float elapsed )
+		
+		/** \brief Animation has been applied. */
+		func void animationApplied( Instance instance )
+		
+		/** \brief Animator changed . */
+		func void animatorChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Update controllers if required. */
+		public func void updateControllers( Instance instance, float elapsed )
+		end
+		
+		/** \brief Animation has been applied. */
+		public func void animationApplied( Instance instance )
+		end
+		
+		/** \brief Animator changed . */
+		public func void animatorChanged( Instance instance )
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorActorAnimated pECBehavior
+		
+		private var ECBehaviorComponent.Instance pComponent
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		
+		private var AnimatorInstance pAnimatorInstance
+		private var Dictionary pAnimators
+		private var Dictionary pControllerMappings
+		private var String pActiveAnimatorID
+		
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorActorAnimated ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pListeners = Array.new()
+			this.pActiveAnimatorID = ""
+			
+			if ecbehavior.getControllerMapping().getCount() > 0
+				this.pControllerMappings = Dictionary.new( ecbehavior.getControllerMapping() )
+			end
+			
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pLocomotion = null
+			this.pComponent = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			if this.pECBehavior.getLocomotion() != null
+				this.pLocomotion = this.pECBehavior.getLocomotion().instance( element )
+			end
+			
+			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
+			this.pAnimators = this.pECBehavior.getAnimators().getAnimators( stub, codec )
+			
+			this.pAnimatorInstance = AnimatorInstance.new()
+			this.pAnimatorInstance.setComponent( this.pComponent.getComponent() )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorActorAnimated getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Locomotion behavior or null. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Animator instance. */
+		public func AnimatorInstance getAnimatorInstance()
+			return this.pAnimatorInstance
+		end
+		
+		/** \brief Active animator ID or empty string not set. */
+		public func String getActiveAnimatorID()
+			return this.pActiveAnimatorID
+		end
+		
+		/** \brief Set active animator ID or empty string to clear. */
+		public func void setActiveAnimatorID( String id )
+			if id.equals( this.pActiveAnimatorID )
+				return
+			end
+			
+			this.pActiveAnimatorID = id
+			this.setAnimator( this.getAnimatorWithId( id ) )
+		end
+		
+		/** \brief Animator. */
+		public func Animator getAnimator()
+			return this.pAnimatorInstance.getAnimator()
+		end
+		
+		/** \brief Activate animator. */
+		public func void setAnimator( Animator animator )
+			this.pAnimatorInstance.setAnimator( animator, true )
+			
+			if this.pControllerMappings != null and this.pLocomotion != null
+				this.initControllerMappings()
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.animatorChanged( this )
+			end )
+		end
+		
+		/** \brief Apply animations. */
+		public func void applyAnimations()
+			this.pAnimatorInstance.apply()
+			
+			this.pListeners.forEach( block Listener each
+				each.animationApplied( this )
+			end )
+		end
+		
+		/** \brief Animator with identifier or \em null if absent. */
+		public func Animator getAnimatorWithId( String id )
+			return this.pAnimators.getAt( id, null ) cast Animator
+		end
+		
+		/** \brief Get named controller or \em null if absent. */
+		public func AnimatorController getControllerNamed( String name )
+			return this.pAnimatorInstance.getControllerNamed( name )
+		end
+		
+		/** \brief Capture state with number. */
+		public func void captureState( int number )
+			this.pAnimatorInstance.captureState( number )
+		end
+		
+		
+		
+		/** \brief Init controller mappings. */
+		protected func void initControllerMappings()
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			locomotion.removeAllControllerMappings()
+			
+			if this.pAnimatorInstance.getAnimator() == null
+				return
+			end
+			
+			var AnimatorController controller
+			this.pControllerMappings.forEach( block String name, LocomotionAttribute attribute
+				controller = this.pAnimatorInstance.getControllerNamed( name )
+				if controller != null
+					locomotion.addControllerMapping( controller, attribute )
+				end
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		/** \brief Notify listeners controllers have changed. */
+		public func void notifyControllersChanged( float elapsed )
+			this.pListeners.forEach( block Listener each
+				each.updateControllers( this, elapsed )
+			end )
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setActiveAnimatorID( reader.readString8() )
+			
+			var int i, count = reader.readByte()
+			for i = 0 to count
+				this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeString8( this.pActiveAnimatorID )
+			
+			var int i, count = this.pAnimatorInstance.getControllerCount()
+			writer.writeByte( count )
+			for i = 0 to count
+				writer.writeFloat( this.pAnimatorInstance.getControllerAt( i ).getValue() )
+			end
+		end
+	end
+	
+	
+	
+	private var ECPAnimatorMap pAnimators
+	private var ECBehaviorComponent pComponent
+	private var ECBehaviorLocomotion pLocomotion
+	private var Dictionary pControllerMappings
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em locomotion.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion ) \
+	this( eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, String id ) \
+	this( eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), id )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, String id, String subID ) \
+	this( eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), id, subID )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, Loaders loaders ) \
+	this( eclass, component, locomotion, loaders, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, Loaders loaders, String id ) \
+	this( eclass, component, locomotion, loaders, id, \
+		id.empty() if "actorAnimated" else "actorAnimated(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, Loaders loaders, String id, String subID ) \
+	this( eclass, component, locomotion, loaders, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorLocomotion locomotion, Loaders loaders, String id, String subID, String prefix ) \
+	super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "component" )
+		end
+		
+		this.pComponent = component
+		this.pLocomotion = locomotion
+		this.pControllerMappings = Dictionary.new()
+		
+		this.pAnimators = ECPAnimatorMap.new( prefix + "animators", loaders.getAnimator() )
+		eclass.addProperty( this.pAnimators )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		this.pLocomotion = null
+	end
+	
+	
+	
+	/** \brief Animators. */
+	public func ECPAnimatorMap getAnimators()
+		return this.pAnimators
+	end
+	
+	/** \brief Component behavior to animate. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Locomotion behavior or null. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Controller mapping as Dictionary mapping String name to Locomotion.ATTR_* . */
+	public func Dictionary getControllerMapping()
+		return this.pControllerMappings
+	end
+	
+	/**
+	 * \brief Set default controller mappings.
+	 * 
+	 * Sets dictionary to these values:
+	 * "idle": Locomotion.ATTR_ELAPSED_TIME
+	 * "look.vertical": Locomotion.ATTR_LOOK_VERTICAL
+	 * "look.horizontal": Locomotion.ATTR_LOOK_HORIZONTAL
+	 * "turn.inPlace": Locomotion.ATTR_TIME_TURNIP
+	 * "stance": Locomotion.ATTR_STANCE
+	 * "move.walk": Locomotion.ATTR_DISPLACEMENT
+	 * "move.run": Locomotion.ATTR_DISPLACEMENT
+	 * "move.velocity": Locomotion.ATTR_RELATIVE_MOVING_SPEED
+	 * "tilt.vertical": Locomotion.ATTR_TILT_VERTICAL
+	 * "tilt.horizontal": Locomotion.ATTR_TILT_HORIZONTAL
+	 * "tilt.offset": Locomotion.ATTR_TILT_OFFSET
+	 * "interaction": Locomotion.ATTR_ELAPSED_TIME
+	 */
+	public func void setDefaultControllerMappings()
+		this.pControllerMappings.removeAll()
+		this.pControllerMappings.setAt( "idle", LocomotionAttribute.elapsedTime )
+		this.pControllerMappings.setAt( "look.vertical", LocomotionAttribute.lookVertical )
+		this.pControllerMappings.setAt( "look.horizontal", LocomotionAttribute.lookHorizontal )
+		this.pControllerMappings.setAt( "turn.inPlace", LocomotionAttribute.timeTurnIP )
+		this.pControllerMappings.setAt( "turn.velocity", LocomotionAttribute.turningSpeed )
+		this.pControllerMappings.setAt( "stance", LocomotionAttribute.stance )
+		this.pControllerMappings.setAt( "move.walk", LocomotionAttribute.displacement )
+		this.pControllerMappings.setAt( "move.run", LocomotionAttribute.displacement )
+		this.pControllerMappings.setAt( "move.velocity", LocomotionAttribute.relativeMovingSpeed )
+		this.pControllerMappings.setAt( "tilt.vertical", LocomotionAttribute.tiltVertical )
+		this.pControllerMappings.setAt( "tilt.horizontal", LocomotionAttribute.tiltHorizontal )
+		this.pControllerMappings.setAt( "tilt.offset", LocomotionAttribute.tiltOffset )
+		this.pControllerMappings.setAt( "interaction", LocomotionAttribute.elapsedTime )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorActorAnimated getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorActorAnimated
+		end ) cast ECBehaviorActorAnimated
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorActorAnimated with specific identifier.
+	 */
+	static public func ECBehaviorActorAnimated getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorActorAnimated each
+			return each castable ECBehaviorActorAnimated and \
+				( each cast ECBehaviorActorAnimated ).getID().equals( id )
+		end ) cast ECBehaviorActorAnimated
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorActorAnimated behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorActorAnimated
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorAnimated.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorAnimated.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorActorAnimated.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

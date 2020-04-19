@@ -1,0 +1,92 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Simple element moving on rail.
+ * 
+ * Extends SimpleElement with support to move on a rail betweent he first and last corner.
+ * If a moving trigger is present the element moves each time the trigger is pulsed.
+ * Otherwise the element is constantly moving forth and back between the first and last
+ * corner. This class registers the element for thinking.
+ */
+class SimpleElementOnRail extends SimpleElement
+	private var ECBehaviorMoveOnRail.Instance pMoveOnRail
+	
+	
+	
+	/** \brief Create element. */
+	public func new( SimpleElementOnRailClass eclass ) super( eclass )
+	end
+	
+	/** \brief Disposes of element. */
+	public func void dispose()
+		this.pMoveOnRail = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Initialize element from stub. */
+	public func void init( StubElement stub )
+		super.init( stub )
+		
+		var Collider collider = this.getCollider().getCollider()
+		collider.setCollisionFilter( this.modifyCollisionFilter( collider.getCollisionFilter(), stub ) )
+	end
+	
+	/** \brief Modify collision filter. */
+	protected func CollisionFilter modifyCollisionFilter( CollisionFilter collisionFilter, StubElement stub )
+		var SimpleElementOnRailClass eclass = this.getClass() cast SimpleElementOnRailClass
+		
+		if eclass.getCanTrigger().getValue( stub )
+			var LayerMask filter = collisionFilter.getFilter()
+			filter.setBit( BaseGameApp.CollisionFilterBit.trigger )
+			collisionFilter = CollisionFilter.new( collisionFilter.getCategory(), filter )
+		end
+		
+		return collisionFilter
+	end
+	
+	
+	
+	/** \brief Move on rail behavior instance. */
+	public func ECBehaviorMoveOnRail.Instance getMoveOnRail()
+		if this.pMoveOnRail == null
+			this.pMoveOnRail = ( this.getClass() cast SimpleElementOnRailClass ).getMoveOnRail().instance( this )
+		end
+		return this.pMoveOnRail
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitSimpleElementOnRail( this )
+	end
+end

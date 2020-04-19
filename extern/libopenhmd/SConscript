@@ -1,0 +1,147 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return() # requires libhidapi
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'OpenHMD-master'
+libLinkName = 'openhmd'
+dependencies = []
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	dependencies.append(parent_targets['lib_libhidapi'])
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# check if system libopenhmd is present
+hasSystemOpenHMD = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libopenhmd'] != TernaryVariableNo:
+	hasSystemOpenHMD = conf.CheckLibWithHeader(libLinkName, 'openhmd/openhmd.h', 'c++', 'ohmd_ctx_create();')
+conf.Finish()
+
+if not hasSystemOpenHMD and envLibrary['with_system_libopenhmd'] == TernaryVariableYes:
+	Exit('Requested to use system libopenhmd but no usable libopenhmd found.')
+
+libs = [libLinkName]
+
+parent_report['use system libopenhmd'] = 'yes' if hasSystemOpenHMD else 'no'
+
+if hasSystemOpenHMD:
+	parent_targets['lib_libopenhmd'] = {
+		'name' : 'Internal libopenhmd library',
+		'cpppath' : [],
+		'libpath' : [],
+		'pkgconfig' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+libs = [libLinkName]
+for x in dependencies:
+	libs.extend(x['libs'])
+
+# build animated libopenhmd
+def libopenhmdBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env, deps=dependencies)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if not buildStaticLinking:
+		for p in env['PATCHES']:
+			script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('./autogen.sh || exit 1')
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--enable-silent-rules')
+	cmdline.append('--disable-openglexample')
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make install || exit 1')
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libopenhmd')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend(['include/openhmd/openhmd.h'])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(libopenhmdBuild, 'Build libopenhmd'))
+
+for x in dependencies:
+	if x['depends']:
+		envLibrary.Depends(library, x['depends'])
+
+if not buildStaticLinking:
+	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_libopenhmd', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+for x in dependencies:
+	cpppath.extend(x['cpppath'])
+
+libpath = [envLibrary.Dir('lib')]
+for x in dependencies:
+	libpath.extend(x['libpath'])
+
+pkgconfig = [envLibrary.Dir('lib/pkgconfig')]
+for x in dependencies:
+	pkgconfig.extend(x['pkgconfig'])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_libopenhmd'] = {
+	'name' : 'Internal libopenhmd library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'pkgconfig' : pkgconfig,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

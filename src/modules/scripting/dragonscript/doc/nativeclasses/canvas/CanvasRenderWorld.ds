@@ -1,0 +1,72 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Canvas render world.
+ * 
+ * This is a native class.
+ */
+class CanvasRenderWorld extends Canvas
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create canvas render world. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Camera or \em null if not set. */
+	public func Camera getCamera()
+	end
+	
+	/** \brief Set camera or \em null to unset. */
+	public func void setCamera( Camera camera )
+	end
+	
+	
+	
+	/**
+	 * \brief Project point from 3d world.
+	 * \throws EInvalidParam Camera is \em null.
+	 */
+	public func Point project( DVector position )
+	end
+	
+	/**
+	 * \brief Back project position into 3d world.
+	 * \throws EInvalidParam Camera is \em null.
+	 */
+	public func Vector backProject( Point position )
+	end
+	
+	
+	
+	/**
+	 * \brief Canvas is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type canvas and components are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

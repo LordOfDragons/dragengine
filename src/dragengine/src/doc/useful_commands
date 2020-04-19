@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------------------------------
+
+Update SConsCommon.py across the entire project from the base SConsCommon.py . Run from where
+the base SConsCommon.py is located.
+
+for f in `find -name SConsCommon.py | grep -vF ./SConsCommon.py`; do cp SConsCommon.py $f; done
+
+
+
+---------------------------------------------------------------------------------------------------
+
+Ignore stuff in SVN
+
+svn propedit svn:ignore .
+
+One entry per line. Has to be done per directory so a global one doesn't work.
+
+Typical entries:
+
+build
+unused
+Makefile
+.directory
+*.kdev4
+*.kdevelop*
+*.kdevses
+cloc*.csv
+*.7z

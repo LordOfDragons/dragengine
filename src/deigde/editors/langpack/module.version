@@ -1,0 +1,4 @@
+LANGPACK {
+  global: LangPackEditorCreateModule;
+  local: *;
+};

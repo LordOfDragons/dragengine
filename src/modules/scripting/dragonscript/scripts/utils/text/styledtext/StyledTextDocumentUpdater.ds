@@ -1,0 +1,97 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition
+pin Dragengine.Utils.StyledText.Rendering
+pin Dragengine.Utils.StyledText.Converter
+
+
+
+/**
+ * \brief Styled text document updater.
+ *
+ * Provides support for dynamic content in styled text documents. Updates certain canvas
+ * resources if called. To use dynamic content updating create an instance of this class
+ * and use it in a call to StyledTextDocument.addToCanvas(). Call update() on regular basis
+ * like for example using FrameUpdater or Element.think() .
+ */
+class StyledTextDocumentUpdater
+	/** \brief Updater. */
+	public interface Updater
+		/** \brief Update element. */
+		func void update( float elapsed )
+	end
+	
+	
+	private var Array pUpdaters
+	
+	
+	
+	/** \brief Create styled text document. */
+	public func new()
+		this.pUpdaters = Array.new()
+	end
+	
+	/** \brief Dispose of styled text document updater. */
+	public func void dispose()
+		this.pUpdaters = null
+	end
+	
+	
+	
+	/** \brief Add updater. */
+	public func void addUpdater( Updater updater )
+		if updater == null
+			throw EInvalidParam.new()
+		end
+		if not this.pUpdaters.has( updater )
+			this.pUpdaters.add( updater )
+		end
+	end
+	
+	/** \brief Remove updater. */
+	public func void removeUpdater( Updater updater )
+		if this.pUpdaters == null
+			return
+		end
+		if this.pUpdaters.has( updater )
+			this.pUpdaters.remove( updater )
+		end
+	end
+	
+	/** \brief Remove all updaters. */
+	public func void removeAllUpdater()
+		this.pUpdaters = Array.new()
+	end
+	
+	
+	
+	/** \brief Update elements. */
+	public func void update( float elapsed )
+		this.pUpdaters.forEach( block Updater each
+			each.update( elapsed )
+		end )
+	end
+end

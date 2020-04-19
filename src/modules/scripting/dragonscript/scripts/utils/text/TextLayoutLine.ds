@@ -1,0 +1,137 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * Line of text in a TextLayout object. All needed informations are stored in
+ * the text line object. Can add a text canvas representing the line to a
+ * view canvas.
+ */
+class TextLayoutLine
+	/** index of first character of line */
+	private var int pFirstChar
+	
+	/** number of characters in the line */
+	private var int pCharCount
+	
+	/** x-position of text line */
+	private var int pX
+	
+	/** y-position of text line */
+	private var int pY
+	
+	/** width of text line */
+	private var int pWidth
+	
+	/** height of text line */
+	private var int pHeight
+	
+	
+	
+	/** Creates a new text line with the given parameters. */
+	 public func new( int first, int count, int width, int height )
+		if first < 0 or count < 0 or width < 0 or height < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pFirstChar = first
+		this.pCharCount = count
+		this.pWidth = width
+		this.pHeight = height
+		this.pX = 0
+		this.pY = 0
+	end
+	
+	
+	
+	/** Index of first character in the line. */
+	public func int getFirstChar()
+		return this.pFirstChar
+	end
+	
+	/** Number of characters in the line. */
+	public func int getCharCount()
+		return this.pCharCount
+	end
+	
+	/** Width of the line. */
+	public func int getWidth()
+		return this.pWidth
+	end
+	
+	/** Height of the line. */
+	public func int getHeight()
+		return this.pHeight
+	end
+	
+	
+	
+	/** X position of the line. */
+	public func int getX()
+		return this.pX
+	end
+	
+	/** Set x position of text line. */
+	public func void setX( int x )
+		this.pX = x
+	end
+	
+	/** Y position of the line. */
+	public func int getY()
+		return this.pY
+	end
+	
+	/** Set y position of text line. */
+	public func void setY( int y )
+		this.pY = y
+	end
+	
+	
+	
+	/**
+	 * Add text canvas for layout line to view type canvas.
+	 * The order of the created canvas is set to the count of canvas.
+	 */
+	public func void addToCanvas( TextLayout layout, CanvasView canvas, int x, int y )
+		if this.pCharCount == 0
+			return
+		end
+		
+		var String text = layout.getText().substring( this.pFirstChar, this.pFirstChar + this.pCharCount )
+		var Font font = layout.getFont()
+		
+		var CanvasText lineCanvas = CanvasText.new()
+		lineCanvas.setFont( font )
+		lineCanvas.setColor( layout.getColor() )
+		lineCanvas.setText( text )
+		lineCanvas.setPosition( Point.new( x + this.pX, y + this.pY ) )
+		lineCanvas.setSize( font.getTextSize( text ) )
+		
+		lineCanvas.setOrder( canvas.getCanvasCount() cast float )
+		canvas.addCanvas( lineCanvas )
+	end
+end

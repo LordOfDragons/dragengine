@@ -1,0 +1,4 @@
+VIDAPNG {
+  global: APNGCreateModule;
+  local: *;
+};

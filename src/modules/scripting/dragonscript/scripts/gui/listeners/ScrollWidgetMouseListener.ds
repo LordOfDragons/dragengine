@@ -1,0 +1,142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse listener scrolling widget using mouse dragging.
+ */
+class ScrollWidgetMouseListener extends DefaultMouseListener
+	private var Container pWidget
+	private var Point pAnchorPosition
+	private var int pAnchorVertical
+	private var int pAnchorHorizontal
+	
+	
+	
+	/** \brief Create mouse listener. */
+	public func new( Container widget )
+		if widget == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pWidget = widget
+		this.pAnchorPosition = null
+		this.pAnchorVertical = 0
+		this.pAnchorHorizontal = 0
+	end
+	
+	
+	
+	/** \brief Widget to scroll. */
+	public func Container getWidget()
+		return this.pWidget
+	end
+	
+	/** \brief Anchor mouse position or \em null if not scrolling. */
+	public func Point getAnchorPosition()
+		return this.pAnchorPosition
+	end
+	
+	/** \brief Set anchor mouse position or \em null if not scrolling. */
+	public func void setAnchorPosition( Point position )
+		this.pAnchorPosition = position
+	end
+	
+	/** \brief Anchor vertical model value for anchor position. */
+	public func int getAnchorVertical()
+		return this.pAnchorVertical
+	end
+	
+	/** \brief Set anchor vertical model value for anchor position. */
+	public func void setAnchorVertical( int value )
+		this.pAnchorVertical = value
+	end
+	
+	/** \brief Anchor horizontal model value for anchor position. */
+	public func int getAnchorHorizontal()
+		return this.pAnchorHorizontal
+	end
+	
+	/** \brief Set anchor horizontal model value for anchor position. */
+	public func void setAnchorHorizontal( int value )
+		this.pAnchorHorizontal = value
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button has been pressed.
+	 * \details Starts scrolling by moving the mouse.
+	 */
+	public func void onButtonPress( MouseEvent event )
+		if event.getButton() == InputEventMouseButton.left
+			var Widget eventWidget = event.getSource() cast Widget
+			this.pAnchorPosition = event.getPosition() + eventWidget.getRelativePosition( this.pWidget )
+			
+			var RangeModel model = this.pWidget.getVerticalRangeModel()
+			if model != null
+				this.pAnchorVertical = model.getValue()
+			end
+			
+			model = this.pWidget.getHorizontalRangeModel()
+			if model != null
+				this.pAnchorHorizontal = model.getValue()
+			end
+			
+			eventWidget.captureMouse()
+		end
+	end
+	
+	/** \brief Mouse button has been released. */
+	public func void onButtonRelease( MouseEvent event )
+		if event.getButton() == InputEventMouseButton.left
+			if this.pAnchorPosition != null
+				( event.getSource() cast Widget ).releaseMouse()
+				this.pAnchorPosition = null
+			end
+		end
+	end
+	
+	/** \brief Mouse has moved. */
+	public func void onMouseMove( MouseEvent event )
+		if this.pAnchorPosition == null
+			return
+		end
+		
+		var Point difference = event.getPosition() + ( event.getSource() cast Widget ) \
+			.getRelativePosition( this.pWidget ) - this.pAnchorPosition
+		
+		var RangeModel model = this.pWidget.getHorizontalRangeModel()
+		if model != null
+			model.setValue( this.pAnchorHorizontal - difference.getX() )
+		end
+		
+		model = this.pWidget.getVerticalRangeModel()
+		if model != null
+			model.setValue( this.pAnchorVertical - difference.getY() )
+		end
+	end
+end

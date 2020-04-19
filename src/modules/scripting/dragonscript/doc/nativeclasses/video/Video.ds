@@ -1,0 +1,90 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Immutable video resources.
+ * 
+ * Video resources provide static precanned video data to be used with Animators
+ * to produce dynamic videos.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Video
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load video from file.
+	 * \details If the video file has been already loaded it is assigned to this object.
+	 *          If the video is not loaded yet the engine loads the video. This call
+	 *          blocks until the video is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded video resource. Once no object instance uses an video
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load video from file asynchronously.
+	 * \details Registers a request in the game engine to load an video. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          video or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the video has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/** \brief Wwidth in pixels. */
+	public func int getWidth()
+	end
+	
+	/** \brief Height in pixels. */
+	public func int getHeight()
+	end
+	
+	/** \brief Number of frames. */
+	public func int getFrameCount()
+	end
+	
+	/** \brief Frame rate. */
+	public func int getFrameRate()
+	end
+	
+	/** \brief Play time in seconds. */
+	public func float getPlayTime()
+	end
+	
+	
+	
+	/**
+	 * \brief Video is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Video and both point to the same engine
+	 *          video resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

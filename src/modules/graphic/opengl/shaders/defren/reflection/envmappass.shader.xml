@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Reflection EnvMap Pass</name>
+	
+	<version>150</version>
+	
+	<!-- <uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='OcclusionMeshParameters' target='2'/> -->
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texNormal' target='1'/>
+	<texture name='texReflectivity' target='2'/>
+	<texture name='texRoughness' target='3'/>
+	<texture name='texAOSolidity' target='4'/>
+	<texture name='texIndices' target='5'/>
+	<texture name='texDistance1' target='6'/>
+	<texture name='texDistance2' target='7'/>
+	<texture name='texEnvMap' target='8'/>
+	
+	<parameter name='pQuadTCTransform'/> <!-- 0 -->
+	<parameter name='pPosTransform'/> <!-- 1 -->
+	<parameter name='pScaleDistance'/> <!-- 2 -->
+	<parameter name='pBlendFactors'/> <!-- 3 -->
+	<parameter name='pMatrixEnvMap'/> <!-- 4 -->
+	<parameter name='pEnvMapLodLevel'/> <!-- 5 -->
+	<parameter name='pMatrixMVP'/> <!-- 6 -->
+	<parameter name='pMatrixMV'/> <!-- 7 -->
+	<parameter name='pEnvMapPosition'/> <!-- 8 -->
+	<parameter name='pEnvMapIndex'/> <!-- 9 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/reflection/reflection.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/reflection/envmappass.glsl</sourceCode>
+</shader>

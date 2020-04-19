@@ -1,0 +1,96 @@
+// pin namespaces to located script classes
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Start game loader class.
+ * 
+ * Loads game world showing a WindowLoading. Once finished finishes setting up game and
+ * hands control over to the game.
+ * 
+ * Uses WindowGameWorld.Loader as super class to directly update the WindowGameWorld
+ * created by BaseGameApp.
+ */
+class StartGame extends WindowGameWorld.Loader
+	/**
+	 * \brief Create start game loader.
+	 * 
+	 * \param window Game world window from BaseGameApp.
+	 * \param pathWorld Path to world file to load
+	 */
+	public func new( WindowGameWorld window, String pathWorld ) super( window )
+		setPathWorld( pathWorld )
+	end
+	
+	/**
+	 * \brief Loading world finished successfully.
+	 */
+	public func void onLoadWorldFinished()
+		var GameApp app = BaseGameApp.getApp() cast GameApp
+		var GameWorld gameWorld = getStubWorld().getGameWorld()
+		
+		// Spawn player actor. BaseActor is a basic actor implementation. BAAFirstPerson is
+		// a basic implementation of first person actor movement. You can create subclasses
+		// of BAAFirstPerson to build upon this basic behavior or directly from
+		// BaseActorAction for full control.
+		// 
+		// To create the actor you need first to get the BaseActorClass. BaseGameApp adds
+		// one named "Actor". Then you need a StubElement using this element class. You can
+		// set properties and add texture replacements to alter the created actor. Calling
+		// createElement() creates the actor. The cast is required since spawn points require
+		// a BaseActor object instance.
+		var ElementClass eclass = app.getElementClassList().getNamed( "Actor" )
+		var UniqueID id = app.getIDGenerator().nextID()
+		var BaseActor player = StubElement.new( eclass, id ).createElement() cast BaseActor
+		player.getAIAction().setAction( BAAFirstPerson.new() )
+		
+		// To spawn the actor find a suitable spawn point in the game world. For this code
+		// here to work you have to add a spawn point in your world named "player". Once
+		// you have obtained the spawn point calling spawn() takes care of the rest.
+		gameWorld.getSpawnPoints().getNamed( "player" ).spawn( gameWorld, player )
+		
+		// To take control of the actor
+		player.getPlayerControllable().takeControl()
+		
+		// Set a camera directory placing the camera and microphone relative to the actor.
+		getWindow().setCameraDirector( PlayerControlledActorCameraDirector.new() )
+		
+		// Do more start game tasks here.
+		
+		// super-call to assign the game world to the game world window. The player can now
+		// see and hear the game world
+		super.onLoadWorldFinished()
+		
+		// Switch on processing binding input. Bindings run commands bound by the player
+		// to his keyboard, mouse and game pads. To give control back to the desktop call
+		// app.setInputProcessorDesktop() .
+		app.setInputProcessorBindings()
+		
+		// Ready to start your game. This call cleans up the game loader so you can now
+		// run the game. This has to come last
+		app.finishLoadGameWorld()
+	end
+	
+	/**
+	 * \brief Loading world failed.
+	 * 
+	 * This method is called if any exceptions are thrown during loading the game world
+	 * or if problems with element classes have been found.
+	 */
+	public func void onLoadWorldFailed()
+		// super-call this first
+		super.onLoadWorldFailed()
+		
+		// This cleans up the game loader and allows you to continue for example by showing
+		// the main menu again with an error message
+		BaseGameApp.getApp().cancelLoadGameWorld()
+		
+		// Do something else here than quiting the game
+		Engine.quit()
+	end
+end

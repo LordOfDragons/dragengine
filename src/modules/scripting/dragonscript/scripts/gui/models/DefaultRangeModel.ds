@@ -1,0 +1,262 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Value of scrollbar like widgets.
+ * 
+ * Provides value range, page size and current value. The range model is responsible
+ * for checking all constraints are met at all time. These are the constraints:
+ * 
+ * - minimum_value <= maximum_value
+ * - page_size >= 1
+ * - value >= minimum_value
+ * - value <= maximum_value
+ * 
+ * If a parameter is changed breaking one or more of these constraints the range model
+ * implementor has to adjusted the parameters to fix the constraints.
+ * 
+ * The increment is used by scroll bars to change the value is the users clicks the
+ * scroll buttons.
+ */
+class DefaultRangeModel implements RangeModel
+	/** \brief Minimum value */
+	private var int pMinimum
+	
+	/** \brief Maximum value */
+	private var int pMaximum
+	
+	/** \brief Page Size */
+	private var int pPageSize
+	
+	/** \brief Current Value */
+	private var int pValue
+	
+	/** \brief Increment for changing the value by small increments. */
+	private var int pIncrement
+	
+	/** \brief Listeners */
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create range model from 0 to 100 with 10 page an 1 increment. */
+	public func new() this( 0, 100, 10, 0, 1 )
+	end
+	
+	/** \brief Create range model with values adjusted to satisfy invariants. */
+	public func new( int minimum, int maximum, int pageSize, int value, int increment )
+		this.pMinimum = minimum
+		this.pMaximum = DEMath.max( maximum, minimum )
+		this.pPageSize = DEMath.max( pageSize, 1 )
+		this.pValue = DEMath.clamp( value, minimum, maximum )
+		this.pIncrement = DEMath.max( increment, 1 )
+		this.pListeners = Array.new()
+	end
+	
+	
+	
+	/** \brief Minimum value. */
+	public func int getMinimum()
+		return this.pMinimum
+	end
+	
+	/**
+	 * \brief Set minimum value.
+	 * \details If minimum is larger than maximum the maximum is set to the minimum.
+	 *          Value is clamped to the range from minimum to maximum.
+	 */
+	public func void setMinimum( int minimum )
+		if minimum == this.pMinimum
+			return
+		end
+		
+		this.pMinimum = minimum
+		this.pMaximum = DEMath.max( this.pMaximum, minimum )
+		
+		var int oldValue = this.pValue
+		this.pValue = DEMath.clamp( this.pValue, minimum, this.pMaximum )
+		
+		this.notifyAllRange()
+		
+		if this.pValue != oldValue
+			this.notifyAllValue()
+		end
+	end
+	
+	/** \brief Maximum value. */
+	public func int getMaximum()
+		return this.pMaximum
+	end
+	
+	/**
+	 * \brief Set maximum value.
+	 * \details If maximum is less than minimum the minimum is set to the maximum.
+	 *          Value is clamped to the range from minimum to maximum.
+	 */
+	public func void setMaximum( int maximum )
+		if maximum == this.pMaximum
+			return
+		end
+		
+		this.pMaximum = maximum
+		this.pMinimum = DEMath.min( this.pMinimum, maximum )
+		
+		var int oldValue = this.pValue
+		this.pValue = DEMath.clamp( this.pValue, this.pMinimum, maximum )
+		
+		this.notifyAllRange()
+		
+		if this.pValue != oldValue
+			this.notifyAllValue()
+		end
+	end
+	
+	/** \brief Page size. */
+	public func int getPageSize()
+		return this.pPageSize
+	end
+	
+	/**
+	 * \brief Set page size.
+	 * \details \em pagesize is clamped to 1 or larger.
+	 */
+	public func void setPageSize( int pageSize )
+		pageSize = DEMath.max( pageSize, 1 )
+		if pageSize == this.pPageSize
+			return
+		end
+		
+		this.pPageSize = pageSize
+		this.notifyAllRange()
+	end
+	
+	/** \brief Current value. */
+	public func int getValue()
+		return this.pValue
+	end
+	
+	/**
+	 * \brief Set current value.
+	 * \details Value is clamped to the range from minimum to maximum.
+	 */
+	public func void setValue( int value )
+		value = DEMath.clamp( value, this.pMinimum, this.pMaximum )
+		if value == this.pValue
+			return
+		end
+		
+		this.pValue = value
+		this.notifyAllValue()
+	end
+	
+	/** \brief Increment for changing the value by small increments. */
+	public func int getIncrement()
+		return this.pIncrement
+	end
+	
+	/** \brief Set increment for changing the value by small increments. */
+	public func void setIncrement( int increment )
+		increment = DEMath.max( increment, 1 )
+		if increment == this.pIncrement
+			return
+		end
+		
+		this.pIncrement = increment
+		this.notifyAllRange()
+	end
+	
+	/**
+	 * \brief Set all properties.
+	 * \details \em maximum is clampted to minimum or larger. \em pageSize is clamped
+	 *          to 1 or larger. \em value is clamped to the range from \em minimum
+	 *          to \em maximum.
+	 */
+	public func void setAll( int minimum, int maximum, int pageSize, int value, int increment )
+		maximum = DEMath.max( maximum, minimum )
+		pageSize = DEMath.max( pageSize, 1 )
+		value = DEMath.clamp( value, minimum, maximum )
+		increment = DEMath.max( increment, 1 )
+		
+		var bool valueUnchanged = value == this.pValue
+		var bool rangeUnchanged = minimum == this.pMinimum and maximum == this.pMaximum \
+			and pageSize == this.pPageSize and increment == this.pIncrement
+		
+		if rangeUnchanged and valueUnchanged
+			return
+		end
+		
+		this.pMinimum = minimum
+		this.pMaximum = maximum
+		this.pPageSize = pageSize
+		this.pValue = value
+		this.pIncrement = increment
+		
+		if not rangeUnchanged
+			this.notifyAllRange()
+		end
+		if not valueUnchanged
+			this.notifyAllValue()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener.
+	 * \throws ENullPointer \em listener is \em null.
+	 * \throws EInvalidParam \em listener is present.
+	 */
+	public func void addListener( RangeModelListener listener )
+		if listener == null
+			throw ENullPointer.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/**
+	 * \brief Remove listener.
+	 * \throws EInvalidParam \em listener is absent.
+	 */
+	public func void removeListener( RangeModelListener listener )
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Notify all range properties changed. */
+	private func void notifyAllRange()
+		this.pListeners.forEach( block RangeModelListener each
+			each.rangeChanged( this )
+		end )
+	end
+	
+	/** \brief Notify all value changed. */
+	private func void notifyAllValue()
+		this.pListeners.forEach( block RangeModelListener each
+			each.valueChanged( this )
+		end )
+	end
+end

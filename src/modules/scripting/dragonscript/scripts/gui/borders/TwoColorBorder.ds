@@ -1,0 +1,112 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders
+
+
+/**
+ * Base class for borders drawn using a hilight and a shadow color which
+ * can be raised or lowered.
+ */
+class TwoColorBorder extends DefaultBorder
+	/** Raised or lowered edge. */
+	private var bool pRaised
+	
+	/** Highlight color or null to use the widget gui theme highlight color. */
+	private var Color pColorHilight
+	
+	/** Shadow color or null to use the widget gui theme shadow color. */
+	private var Color pColorShadow
+	
+	
+	
+	/** Creates a new raised etched border. */
+	public func new()
+		this.pRaised = true
+	end
+	
+	/** Creates a new raised etched border with the given colors. */
+	public func new( Color colorHilight, Color colorShadow )
+		this.pRaised = true
+		this.pColorHilight = colorHilight
+		this.pColorShadow = colorShadow
+	end
+	
+	/** Creates a new etched border. */
+	public func new( bool raised )
+		this.pRaised = raised
+	end
+	
+	/** Creates a new etched border with the given colors. */
+	public func new( bool raised, Color colorHilight, Color colorShadow )
+		this.pRaised = raised
+		this.pColorHilight = colorHilight
+		this.pColorShadow = colorShadow
+	end
+	
+	
+	
+	/** Determines if the border is raised or lowered. */
+	public func bool getRaised()
+		return this.pRaised
+	end
+	
+	/** Sets if the border is raised or lowered. */
+	public func void setRaised( bool raised )
+		if raised == this.pRaised
+			return
+		end
+		
+		this.pRaised = raised
+		this.updateCanvas()
+	end
+	
+	/** Retrieves the hilight color. If null the widget gui theme hilight color is returned. */
+	public func Color getColorHilight()
+		return this.pColorHilight
+	end
+	
+	/** Sets the hilight color or null to use the widget gui theme hilight color. */
+	public func void setColorHilight( Color color )
+		if color == this.pColorHilight
+			return
+		end
+		
+		this.pColorHilight = color
+		this.updateCanvas()
+	end
+	
+	/** Retrieves the shadow color. If null the widget gui theme shadow color is returned. */
+	public func Color getColorShadow()
+		return this.pColorShadow
+	end
+	
+	/** Sets the shadow color or null to use the widget gui theme shadow color. */
+	public func void setColorShadow( Color color )
+		if color == this.pColorShadow
+			return
+		end
+		
+		this.pColorShadow = color
+		this.updateCanvas()
+	end
+end

@@ -1,0 +1,186 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Display canvas in the widget.
+ */
+class DisplayCanvas extends Widget
+	/** \brief Canvas canvas. */
+	private var CanvasCanvasView pCanvasCanvas
+	
+	/** \brief Repeat mode. */
+	private var RepeatMode pRepeatMode
+	
+	
+	
+	/** \brief Create display canvas widget. */
+	public func new() this( null, RepeatMode.once )
+	end
+	
+	/**
+	 * \brief Create display canvas widget.
+	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
+	 */
+	public func new( CanvasView canvasView ) this( canvasView, RepeatMode.once )
+	end
+	
+	/**
+	 * \brief Create display canvas widget.
+	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
+	 */
+	public func new( CanvasView canvasView, RepeatMode repeatMode )
+		this.pRepeatMode = RepeatMode.once
+		
+		this.pCanvasCanvas = CanvasCanvasView.new()
+		this.getCanvasContent().addCanvas( this.pCanvasCanvas )
+		
+		this.setCanvas( canvasView )
+		this.setRepeatMode( repeatMode )
+	end
+	
+	
+	
+	/** Canvas to display or null if not set. */
+	public func CanvasView getCanvas()
+		return this.pCanvasCanvas.getCanvasView()
+	end
+	
+	/**
+	 * \brief Set canvas view to display.
+	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
+	 */
+	public func void setCanvas( CanvasView canvasView )
+		if canvasView == this.pCanvasCanvas.getCanvasView()
+			return
+		end
+		
+		this.pCanvasCanvas.setCanvasView( canvasView )
+		
+		this.layoutParent()
+		this.updateCanvasCanvas()
+	end
+	
+	/** \brief Repeat mode. */
+	public func RepeatMode getRepeatMode()
+		return this.pRepeatMode
+	end
+	
+	/**
+	 * \brief Set repeat mode.
+	 * \param repeatMode Has to be one of REPEAT_* .
+	 */
+	public func void setRepeatMode( RepeatMode repeatMode )
+		if repeatMode == this.pRepeatMode
+			return
+		end
+		
+		this.pRepeatMode = repeatMode
+		
+		this.updateCanvasCanvas()
+	end
+	
+	
+	
+	/** \brief Minimal size of widget. */
+	public func Point getMinimumSize()
+		var Canvas canvas = this.pCanvasCanvas.getCanvasView()
+		if canvas == null or this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		select this.pRepeatMode
+		case RepeatMode.once
+			return canvas.getSize()
+			
+		case RepeatMode.tileX
+			return Point.new( this.getWidth(), canvas.getSize().getY() )
+			
+		case RepeatMode.tileY
+			return Point.new( canvas.getSize().getX(), this.getHeight() )
+			
+		case RepeatMode.stretch, RepeatMode.tile
+			return super.getMinimumSize()
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/** \brief Update canvas canvas. */
+	public func void updateCanvasCanvas()
+		var Canvas canvas = this.pCanvasCanvas.getCanvasView()
+		if canvas == null
+			return
+		end
+		
+		var Point canvasSize = canvas.getSize()
+		var Point contentSize = this.getCanvasContent().getSize()
+		var int repeatX, repeatY
+		
+		select this.pRepeatMode
+		case RepeatMode.once
+			this.pCanvasCanvas.setRepeatX( 1 )
+			this.pCanvasCanvas.setRepeatY( 1 )
+			this.pCanvasCanvas.setSize( canvas.getSize() )
+			
+		case RepeatMode.stretch
+			this.pCanvasCanvas.setRepeatX( 1 )
+			this.pCanvasCanvas.setRepeatY( 1 )
+			this.pCanvasCanvas.setSize( contentSize )
+			
+		case RepeatMode.tileX
+			repeatX = DEMath.max( contentSize.getX() - 1, 0 ) / canvasSize.getX() + 1
+			this.pCanvasCanvas.setRepeatX( repeatX )
+			this.pCanvasCanvas.setRepeatY( 1 )
+			this.pCanvasCanvas.setSize( Point.new( repeatX, 1 ).compMultiply( canvasSize ) )
+			
+		case RepeatMode.tileY
+			repeatY = DEMath.max( contentSize.getY() - 1, 0 ) / canvasSize.getY() + 1
+			this.pCanvasCanvas.setRepeatX( 1 )
+			this.pCanvasCanvas.setRepeatY( repeatY )
+			this.pCanvasCanvas.setSize( Point.new( 1, repeatY ).compMultiply( canvasSize ) )
+			
+		case RepeatMode.tile
+			repeatX = DEMath.max( contentSize.getX() - 1, 0 ) / canvasSize.getX() + 1
+			repeatY = DEMath.max( contentSize.getY() - 1, 0 ) / canvasSize.getY() + 1
+			this.pCanvasCanvas.setRepeatX( repeatX )
+			this.pCanvasCanvas.setRepeatY( repeatY )
+			this.pCanvasCanvas.setSize( Point.new( repeatX, repeatY ).compMultiply( canvasSize ) )
+		end
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.updateCanvasCanvas()
+	end
+end

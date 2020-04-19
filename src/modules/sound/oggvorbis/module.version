@@ -1,0 +1,4 @@
+SNDOGGVORBIS {
+  global: OGGCreateModule;
+  local: *;
+};

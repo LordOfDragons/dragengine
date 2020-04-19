@@ -1,0 +1,200 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.LoadSave
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Stub for element texture.
+ * 
+ * Used during asynchronous loading to hold the settings of a element texture
+ * until all resources have been loaded.
+ * 
+ */
+class StubElementTexture extends StubWithProperties implements ResourceListener
+	private var String pTextureName
+	private var String pPathSkin
+	private var Skin pSkin
+	private var TexMatrix2 pTransform
+	private var Color pColorTint
+	private var PreloadCounter pCounter
+	
+	
+	
+	/** \brief Create stub element texture. */
+	public func new( String textureName )
+		if textureName == null
+			throw EInvalidParam.new()
+		end
+		this.pTextureName = textureName
+	end
+	
+	/** \brief Create copy of stub element texture. */
+	public func new( StubElementTexture stub ) super( stub )
+		this.pTextureName = stub.pTextureName
+		this.pPathSkin = stub.pPathSkin
+		this.pSkin = stub.pSkin
+		this.pTransform = stub.pTransform
+		this.pColorTint = stub.pColorTint
+	end
+	
+	
+	
+	/** \brief Set counter. */
+	public func void setCounter( PreloadCounter counter )
+		this.pCounter = counter
+	end
+	
+	/** \brief Texture name. */
+	public func String getTextureName()
+		return this.pTextureName
+	end
+	
+	/** \brief Skin. */
+	public func Skin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Skin path or \em null to not replace the skin. */
+	public func String getPathSkin()
+		return this.pPathSkin
+	end
+	
+	/** \brief Set skin path or \em null to not replace the skin. */
+	public func void setPathSkin( String pathSkin )
+		this.pPathSkin = pathSkin
+	end
+	
+	/** \brief Texture coordinates transformation or null to not replace the transformation. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** \brief Set texture coordinates transformation or null to not replace the transformation. */
+	public func void setTransform( TexMatrix2 transform )
+		this.pTransform = transform
+	end
+	
+	/** \brief Color tint or \em null to not replace the color tint. */
+	public func Color getColorTint()
+		return this.pColorTint
+	end
+	
+	/** \brief Set color tint or \em null to not replace the color tint. */
+	public func void setColorTint( Color color )
+		this.pColorTint = color
+	end
+	
+	
+	
+	/** \brief Add preload resources. */
+	public func void preloadResources()
+		if this.pPathSkin != null and not this.pPathSkin.empty()
+			Skin.loadAsynchron( this.pPathSkin, this )
+			this.pCounter.increase()
+		end
+	end
+	
+	/**
+	 * \brief Verify if a resource failed loading and print the problems to the console.
+	 * \returns \em true if all resources loaded successfully.
+	 */
+	public func bool verifyPreloading( StubElement element, Console console )
+		if this.pPathSkin != null and not this.pPathSkin.empty() and this.pSkin == null
+			console.addMessage( "Failed to load '" + this.pPathSkin \
+				+ "' for object with class '" + element.getClass().getClassname() \
+				+ "' with ID " + element.getID() + " located at " + element.getPosition() )
+			return false
+		end
+		return true
+	end
+	
+	/** \brief Load resources. */
+	public func void loadResources()
+		if this.pSkin == null and this.pPathSkin != null and not this.pPathSkin.empty()
+			this.pSkin = Skin.new( this.pPathSkin )
+		end
+	end
+	
+	
+	
+	/** \brief Resource has finished loading. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+		this.pSkin = resource cast Skin
+		this.pCounter.decrease()
+	end
+	
+	/** \brief Resource has failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+		this.pCounter.decrease()
+	end
+	
+	
+	
+	/** \brief Read stub from file. */
+	public static func StubElementTexture readFromFile( FileReader reader )
+		var StubElementTexture stub = StubElementTexture.new( reader.readString8() )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+		if flags.getAt( 0 )
+			stub.pPathSkin = reader.readString16()
+		end
+		if flags.getAt( 1 )
+			stub.pTransform = TexMatrix2.readFromFile( reader )
+		end
+		if flags.getAt( 2 )
+			stub.pColorTint = Color.readFromFile( reader )
+		end
+		
+		stub.readPropertiesFromFile( reader )
+		
+		return stub
+	end
+	
+	/** \brief Write stub to file. */
+	public func void writeToFile( FileWriter writer )
+		writer.writeString8( this.pTextureName )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 3 )
+		flags.setAt( 0, this.pPathSkin != null )
+		flags.setAt( 1, this.pTransform != null )
+		flags.setAt( 2, this.pColorTint != null )
+		flags.writeToFile( writer )
+		
+		if this.pPathSkin != null
+			writer.writeString16( this.pPathSkin )
+		end
+		if this.pTransform != null
+			this.pTransform.writeToFile( writer )
+		end
+		if this.pColorTint != null
+			this.pColorTint.writeToFile( writer )
+		end
+		
+		this.writePropertiesToFile( writer )
+	end
+end

@@ -1,0 +1,186 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable skin resources.
+ * 
+ * Skin resources provide the material properties for meshes to render components with.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Skin
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load skin from file.
+	 * 
+	 * If the skin file has been already loaded it is assigned to this object.
+	 * If the skin is not loaded yet the engine loads the skin. This call
+	 * blocks until the skin is fully loaded and ready to be used. For
+	 * asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 * same loaded skin resource. Once no object instance uses an skin
+	 * file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load skin from file asynchronously.
+	 * 
+	 * Registers a request in the game engine to load an skin. Once finished
+	 * or if the file is already loaded the listener is used to deliver the loaded
+	 * skin or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the skin has been loaded from. */
+	public func String getFilename()
+		return null
+	end
+	
+	/** \brief Number of textures. */
+	public func int getTextureCount()
+		return 0
+	end
+	
+	/** \brief Index of named texture or -1 if absent. */
+	public func int indexOfTextureNamed( String name )
+		return 0
+	end
+	
+	/**
+	 * \brief Name of texture at index.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func String textureGetName( int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Number of properties in texture at index.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func String textureGetPropertyCount( int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Index of named property or -1 if absent.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 */
+	public func int textureIndexOfPropertyNamed( int texture, String name )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Name of texture property.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 */
+	public func String propertyGetName( int texture, int property )
+		return null
+	end
+	
+	/**
+	 * \brief Renderable of texture property or empty string if not set.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 */
+	public func String propertyGetRenderable( int texture, int property )
+		return null
+	end
+	
+	/**
+	 * \brief Type of texture property.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 */
+	public func SkinPropertyType propertyGetType( int texture, int property )
+		return 0
+	end
+	
+	/**
+	 * \brief Value of texture property of type SkinPropertyType.value.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 * \throws EInvalidParam Property is not of type SkinPropertyType.value.
+	 */
+	public func float propertyGetValue( int texture, int property )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Color of texture property of type SkinPropertyType.color.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 * \throws EInvalidParam Property is not of type SkinPropertyType.color.
+	 */
+	public func Color propertyGetColor( int texture, int property )
+		return null
+	end
+	
+	/**
+	 * \brief Image of texture property of type SkinPropertyType.image.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 * \throws EInvalidParam Property is not of type SkinPropertyType.image.
+	 */
+	public func Image propertyGetImage( int texture, int property )
+		return null
+	end
+	
+	/**
+	 * \brief Video of texture property of type SkinPropertyType.video.
+	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
+	 * \throws EInvalidParam \em property is less than 0 or greater than or equal to
+	 *                        textureGetPropertyCount().
+	 * \throws EInvalidParam Property is not of type SkinPropertyType.video.
+	 */
+	public func Video propertyGetVideo( int texture, int property )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Skin is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Skin and both point to the same engine
+	 *          skin resource.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

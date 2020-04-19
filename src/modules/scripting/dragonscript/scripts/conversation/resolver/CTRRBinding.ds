@@ -1,0 +1,228 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.LoadSave
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+
+/**
+ * \brief Rule for resolving a binding tag in actor speak action text.
+ * 
+ * Resolves tags of the form {binding:command-name}. Looks up the matching command
+ * and outputs all bindings assinged to the command. Useful to output in conversation
+ * instructions to the player what input to press to trigger an action. The bindings
+ * are optionally output in a different font and/or color. Usually using a different
+ * color is recommended but using a different font can help to better recognize such
+ * output in a conversation.
+ */
+class CTRRBinding implements ConversationTagResolverRule
+	/** \brief Supported commands. */
+	private var CommandManager pCommands
+	
+	/** \brief Used bindings. */
+	private var BindingManager pBindings
+	
+	/** \brief Style or \em null if not used. */
+	private var STDStyle pStyle
+	
+	
+	
+	/** \brief Create resolve tag rule. */
+	public func new( CommandManager commands, BindingManager bindings, STDStyle style )
+		if commands == null or bindings == null
+			throw EInvalidParam.new()
+		end
+		this.pCommands = commands
+		this.pBindings = bindings
+		this.pStyle = style
+	end
+	
+	
+	
+	/** \brief Supported commands. */
+	public func CommandManager getCommands()
+		return this.pCommands
+	end
+	
+	/** \brief Set supported commands. */
+	public func void setCommands( CommandManager commands )
+		if commands == null
+			throw EInvalidParam.new()
+		end
+		this.pCommands = commands
+	end
+	
+	/** \brief Used bindings. */
+	public func BindingManager getBindings()
+		return this.pBindings
+	end
+	
+	/** \brief Set used bindings. */
+	public func void setBindingManager( BindingManager bindings )
+		if bindings == null
+			throw EInvalidParam.new()
+		end
+		this.pBindings = bindings
+	end
+	
+	/** \brief Style or \em null if not used. */
+	public func STDStyle getStyle()
+		return this.pStyle
+	end
+	
+	/** \brief Set style or \em null if not used. */
+	public func void setStyle( STDStyle style )
+		this.pStyle = style
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tag outputing result to styled text.
+	 * \param styledText Styled text to add resolved text to.
+	 * \param textNode Text node to add text to.
+	 * \param parameters Parameters inside tag.
+	 */
+	public func void resolveTag( StyledTextDefinition styledText, STDNText textNode, \
+	String parameters )
+		var Command command = this.pCommands.getNamed( parameters )
+		if command == null
+			this.addText( styledText, textNode, "Unbound " + command, null )
+			return
+		end
+		
+		var int maxHeight = this.pStyle.getFont().getSize()
+		maxHeight = ( 1.2 * maxHeight ) cast int
+		
+		var Array values = Array.new()
+		var Array images = Array.new()
+		var int i
+		
+		// buttons
+		this.pBindings.forEachButtonBinding( block Binding each
+			if each.getCommand() == command and each.getDeviceIndex() != -1 \
+			and each.getSourceIndex() != -1
+				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
+				var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
+				var Image icon = button.getLargestDisplayIconY( maxHeight )
+				
+				images.add( icon )
+				
+				if icon != null
+					values.add( button.getDisplayText() )
+					
+				else
+					values.add( this.devicePrefix( device ) + button.getName() )
+				end
+			end
+		end )
+		
+		// axis
+		this.pBindings.forEachAxisBinding( block Binding each
+			if each.getCommand() == command and each.getDeviceIndex() != -1 \
+			and each.getSourceIndex() != -1
+				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
+				var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
+				var Image icon = axis.getLargestDisplayIconY( maxHeight )
+				
+				images.add( icon )
+				
+				if icon != null
+					values.add( axis.getDisplayText() )
+					
+				else
+					values.add( this.devicePrefix( device ) + axis.getName() )
+				end
+			end
+		end )
+		
+		// build string
+		this.addText( styledText, textNode, "(", null )
+		
+		var int count = values.getCount()
+		for i = 0 to count
+			if i > 0
+				this.addText( styledText, textNode, ", ", null )
+			end
+			this.addText( styledText, textNode, values.getAt( i ) cast String, images.getAt( i ) cast Image )
+		end
+		
+		this.addText( styledText, textNode, ")", null )
+	end
+	
+	/** \brief Get device prefix. */
+	protected func String devicePrefix( InputDevice device )
+		// we want to keep the text short. the player knows what input device he is using.
+		// besides device names come from the driver and some device names are horribly
+		// long and cryptic. for this reason only device type is used where applicable.
+		// later on this can be improved by using a device image before the text. this
+		// avoids the need to handle device names and makes it easier to see. device type
+		// images are though not present yet. something for the todo list.
+		select device.getType()
+		case InputDeviceType.mouse
+			return "Mouse: "
+			
+		case InputDeviceType.keyboard
+			return "Key: "
+			
+		case InputDeviceType.gamepad
+			return "Pad: "
+			
+		case InputDeviceType.joystick
+			return "Stick: "
+			
+		case InputDeviceType.touchpad, InputDeviceType.touchscreen
+			return "Touch: "
+			
+		case InputDeviceType.racingWheel
+			return "Wheel: "
+			
+		else
+			return "?: "
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add span to text.
+	 * \details. Adds style if required and not existing already.
+	 */
+	public func void addText( StyledTextDefinition styledText, STDNText textNode, String text, Image image )
+		if this.pStyle == null
+			textNode.addSpan( STDNTextSpan.new( text, image ) )
+			
+		else
+			var String styleName = this.pStyle.getName()
+			if not styledText.hasStyleNamed( styleName )
+				styledText.addStyle( this.pStyle )
+			end
+			textNode.addSpan( STDNTextSpan.new( text, styleName, image ) )
+		end
+	end
+end

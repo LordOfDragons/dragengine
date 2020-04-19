@@ -1,0 +1,160 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Camera.
+ * 
+ * This is a native class.
+ */
+class Camera
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create camera. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Field of view in degrees. */
+	public func float getFov()
+	end
+	
+	/** \brief Set field of view in degrees. */
+	public func void setFov( float fov )
+	end
+	
+	/** \brief Field of view aspect ratio. */
+	public func float getFovRatio()
+	end
+	
+	/** \brief Set field of view aspect ratio. */
+	public func void setFovRatio( float fovRatio )
+	end
+	
+	/** \brief Distance to image plane in meters. */
+	public func float getImageDistance()
+	end
+	
+	/** \brief Set distance to image plane in meters. */
+	public func void setImageDistance( float distance )
+	end
+	
+	/** \brief View distance in meters. */
+	public func float getViewDistance()
+	end
+	
+	/** \brief Set view distance in meters. */
+	public func void setViewDistance( float distance )
+	end
+	
+	/** \brief Exposure. */
+	public func float getExposure()
+	end
+	
+	/** \brief Set expsoure. */
+	public func void setExposure( float exposure )
+	end
+	
+	/** \brief Lowest adaption intensity. */
+	public func float getLowestIntensity()
+	end
+	
+	/** \brief Set lowest adaption intensity. */
+	public func void setLowestIntensity( float lowestIntensity )
+	end
+	
+	/** \brief Highest adaption intensity. */
+	public func float getHighestIntensity()
+	end
+	
+	/** \brief Set highest adaption intensity. */
+	public func void setHighestIntensity( float highestIntensity )
+	end
+	
+	/** \brief Adaption time in seconds. */
+	public func float getAdaptionTime()
+	end
+	
+	/** \brief Set adaption time in seconds. */
+	public func void setAdaptionTime( float adaptionTime )
+	end
+	
+	/** \brief Layer mask for visibility masking. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set layer mask for visibility masking. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	
+	/** \brief Project point from 3d world. */
+	public func Point project( Point viewportSize, DVector position )
+	end
+	
+	/** \brief Back project position into 3d world. */
+	public func Vector backProject( Point viewportSize, Point position )
+	end
+	
+	/** \brief Back project position into 3d world. */
+	public func Vector backProject( int width, int height, int x, int y )
+	end
+	
+	/** \brief Parent world or \em null if not added to a world. */
+	public func World getParentWorld()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Effects */
+	/*@{*/
+	/** \brief Number of effects. */
+	public func int getEffectCount()
+	end
+	
+	/**
+	 * \brief Effect at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getEffectCount().
+	 */
+	public func Effect getEffectAt( int index )
+	end
+	
+	/** \brief Add effect. */
+	public func void addEffect( Effect effect )
+	end
+	
+	/** \brief Remove effect. */
+	public func void removeEffect( Effect effect )
+	end
+	
+	/** \brief Remove all effects. */
+	public func void removeAllEffects()
+	end
+	/*@}*/
+end

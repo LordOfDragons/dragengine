@@ -1,0 +1,58 @@
+move:
+
+bone:
+	different types of bone to optimize space usage.
+	typical types:
+		full complex:
+			position and orientation both change nearly
+			every frame. no frame time is saved but all
+			frames in increasing order. position and
+			rotation stored. total cost 12*N where N is
+			the number of frames.
+		
+		partial complex:
+			like above but only the position never changes.
+			initial position saved before the frame data.
+			total cost 6+6*N.
+		
+		full simple:
+			position and orientation both change scarcely
+			over the animation requiring only a few actual
+			keyframes. time, position and rotation stored.
+			total cost 14*N.
+		
+		partial simple:
+			as above but only with rotation. position again
+			in front. total cost 6+8*N.
+		
+		constant:
+			no change of position or rotation over time.
+			both stored once. total cost 12.
+		
+keyframe:
+	time:
+		number of keyframe is enough since frame rate is
+		known. unsigned short is enough.
+		
+	position:
+		-30.000 -> 30.000 ( signed short : 2 )
+		=> 6 bytes pro position
+		usually not required at all
+		
+	rotation:
+		-180.00 -> 180.00 ( signed short : 2 )
+		=> 6 bytes pro rotation
+		most of the time some components are 0
+	
+	best case:
+		no position => 6 bytes for rotation
+	worst case
+		12 bytes for all
+
+
+
+examples:
+	10 seconds at 50 frames per second => 500 frames.
+	
+	full complex: 6'000
+	partial complex: 3'006

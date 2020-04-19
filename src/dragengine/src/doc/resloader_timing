@@ -1,0 +1,5 @@
+Enable pOutputDebugMessages in deResourceLoader.cpp
+
+Output can be filtered from log files like this:
+
+grep -F " Exit (" logfile.log | sed -e "s/II \[Resource Loader\] Task(ResLoad-//" | sed -e "s/)\[/;/" | sed -e "s/\] /;/" | sed -e "s/ Exit (/;/" | sed -e "s/s)//"

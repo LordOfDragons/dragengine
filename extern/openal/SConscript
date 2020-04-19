@@ -1,0 +1,241 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+if envLibrary['platform_android'] != 'no' and False:
+	srcdir = 'android-libopenalsoft-1.0.0'
+else:
+	srcdir = 'openal-soft-1.19.1'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/OpenAL32.dll'
+	libLinkName = 'OpenAL32'
+	buildStaticLinking = False # not possible under windows
+elif envLibrary['OSBeOS']:
+	libFileName = envLibrary.subst('lib/${SHLIBPREFIX}openal${SHLIBSUFFIX}.1')
+	libLinkName = 'openal'
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openal${LIBSUFFIX}')
+else:
+	libFileName = envLibrary.subst('lib/${SHLIBPREFIX}openal${SHLIBSUFFIX}.1')
+	libLinkName = 'openal'
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openal${LIBSUFFIX}')
+
+# check if system openal is present
+hasSystemOpenAL = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_openal'] != TernaryVariableNo:
+	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
+conf.Finish()
+
+if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
+	Exit('Requested to use system OpenAL but no usable OpenAL found.')
+
+libs = [libLinkName]
+#libs.extend(parent_targets['lib_sndio']['libs'])
+
+parent_report['use system openal'] = 'yes' if hasSystemOpenAL else 'no'
+
+if hasSystemOpenAL:
+	parent_targets['lib_openal'] = {
+		'name' : 'Internal OpenAL library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build openal
+def openalBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	if env['platform_android'] != 'no':
+		# https://github.com/kcat/openal-soft/issues/274#issuecomment-471091942
+		# OpenAL reacts badly to set up cross compilers manually because it is
+		# using host system compiler for certain things
+		script = []
+	else:
+		#script = createScriptHeader(env, deps=[parent_targets['lib_sndio']])
+		script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('cd build')
+	cmdline = ['cmake']
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	cmdline.append('-DALSOFT_CONFIG=OFF')
+	cmdline.append('-DALSOFT_HRTF_DEFS=OFF')
+	cmdline.append('-DALSOFT_NO_CONFIG_UTIL=ON')
+	cmdline.append('-DALSOFT_EXAMPLES=OFF')
+	cmdline.append('-DALSOFT_STATIC_LIBGCC=OFF')
+	cmdline.append('-DALSOFT_TESTS=OFF')
+	cmdline.append('-DALSOFT_UTILS=OFF')
+	cmdline.append('-DALSOFT_INSTALL=ON')
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=RelWithDebInfo')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	if env['OSWindows']:
+		cmdline.append('-DALSOFT_REQUIRE_DSOUND=ON')
+		cmdline.append('-DALSOFT_REQUIRE_WINMM=ON')
+		cmdline.append('-DALSOFT_REQUIRE_WASAPI=ON')
+	else:
+		# for MacOS: ALSOFT_REQUIRE_COREAUDIO
+		if 'alsa' in env['with_openal_backends']:
+			cmdline.append('-DALSOFT_REQUIRE_ALSA=ON')
+		if 'pulseaudio' in env['with_openal_backends']:
+			cmdline.append('-DALSOFT_REQUIRE_PULSEAUDIO=ON')
+		if 'portaudio' in env['with_openal_backends']:
+			cmdline.append('-DALSOFT_REQUIRE_PORTAUDIO=ON')
+		if 'oss' in env['with_openal_backends']:
+			cmdline.append('-DALSOFT_REQUIRE_OSS=ON')
+		
+		# sndio is broken, can not compile and causes troubles
+		cmdline.append('-DALSOFT_BACKEND_SNDIO=OFF')
+	
+	if buildStaticLinking:
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
+		cmdline.append('-DLIBTYPE=STATIC')
+	
+	cmdline.append('..')
+	
+	if env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		#cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
+		#cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=arm')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		#cmdline.append('-DCMAKE_VERBOSE_MAKEFILE=ON')
+		
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make install || exit 1')
+	
+	# fix annoying wrong-library problems in 64-bit systems
+	script.append('if [ -f ../../lib64/libopenal.a ]')
+	script.append('then')
+	script.append('  cp -fL ../../lib64/libopenal.a ../../lib/libopenal.a')
+	script.append('fi')
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building openal')
+
+def openalPrecompiled(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	sourceTar = tarfile.open(source[0].abspath, 'r')
+	sourceTar.extractall(buildDir.abspath)
+	sourceTar.close()
+
+def openalBuildAndroidUnpack(target, source, env):
+	buildDir = env['EXTRACT_PATH']
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	return 1 if os.system('\n'.join(script)) else None
+
+def openalBuildAndroidUnpackEmitter(target, source, env):
+	ignoreList = ['res/', 'src/', '.git/']
+	def accept(path):
+		for x in ignoreList:
+			if x in path:
+				return False
+		return True
+	sourceTar = tarfile.open(source[0].abspath, 'r')
+	tarContents = sourceTar.getmembers()
+	newTargets = [x.name for x in tarContents if x.isfile() and accept(x.name)]
+	sourceTar.close()
+	return (newTargets, source)
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+
+targets.extend([
+	'include/AL/efx-presets.h',
+	'include/AL/alc.h',
+	'include/AL/efx.h',
+	'include/AL/alext.h',
+	'include/AL/al.h',
+	'include/AL/efx-creative.h'])
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+envLibrary.Append(PATCHES = [])
+
+if envLibrary['OSWindows']:
+	# windows is a problem child... as always. compiling openal for this platform is
+	# not recommended and results in nothing but problems. precompiled binaries from
+	# http://kcat.strangesoft.net/openal.html are included and used instead
+	library = envLibrary.Command(targets, '{}-bin-w64.tar.bz2'.format(srcdir),
+		envLibrary.Action(openalPrecompiled, 'Build OpenAL'))
+	
+elif envLibrary['OSBeOS']:
+	# BeOS requires some additional patches
+	globFiles(envLibrary, 'patches_beos', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+		envLibrary.Action(openalBuild, 'Build OpenAL'))
+
+else:
+	# on unix systems openal can be compiled. it should be included in distros already
+	# but to make sure it can be compiled.
+	# 
+	# android is also compiled using the same source but has some peculiarities handled
+	# directly in the openalBuild function
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+		envLibrary.Action(openalBuild, 'Build OpenAL'))
+
+#if parent_targets['lib_sndio']['depends']:
+#	envLibrary.Depends(library, parent_targets['lib_sndio']['depends'])
+
+envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_openal', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+#cpppath.extend(parent_targets['lib_sndio']['cpppath'])
+
+libpath = [envLibrary.Dir('lib')]
+#libpath.extend(parent_targets['lib_sndio']['libpath'])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_openal'] = {
+	'name' : 'Internal OpenAL library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

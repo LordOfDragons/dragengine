@@ -1,0 +1,132 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Navigator path.
+ * 
+ * This is a native class.
+ */
+class NavigatorPath
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create navigator path. */
+	public func new()
+	end
+	
+	/** \brief Create copy of navigator path. */
+	public func new( NavigatorPath path )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of points. */
+	public func int getCount()
+	end
+	
+	/**
+	 * \brief Path point at index.
+	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to getPointCount().
+	 */
+	public func DVector getAt( int index )
+	end
+	
+	/**
+	 * \brief Set path point at index.
+	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to getPointCount().
+	 */
+	public func void setAt( int index, DVector point )
+	end
+	
+	/** \brief Add path point to end of path. */
+	public func void add( DVector point )
+	end
+	
+	/** \brief Add path points to end of path. */
+	public func void addPath( NavigatorPath path )
+	end
+	
+	/**
+	 * \brief Remove path point at index.
+	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
+	 */
+	public func void removeFrom( int index )
+	end
+	
+	/** \brief Remove all path points. */
+	public func void removeAll()
+	end
+	
+	/** \brief Transform all points by matrix. */
+	public func void transform( DMatrix matrix )
+	end
+	
+	/** \brief New path with points transformed by matrix. */
+	public func NavigatorPath transformed( DMatrix matrix )
+	end
+	
+	/** \brief Length in meters from start of path to the end. */
+	public func float getLength()
+	end
+	
+	/**
+	 * \brief Length in meters from start of path to point at index.
+	 * \throws deeOutOfBoundary \em endIndex is less than 0 or greater than or equal to getPointCount().
+	 */
+	public func float getLengthTo( int endIndex )
+	end
+	
+	/**
+	 * \brief Length in meters from point at index to end of path.
+	 * \throws deeOutOfBoundary \em startIndex is less than 0 or greater than or equal to getPointCount().
+	 */
+	public func float getLengthFrom( int startIndex )
+	end
+	
+	/**
+	 * \brief Length in meters between two points by index.
+	 * \throws deeOutOfBoundary \em startIndex is less than 0 or greater than or equal to getPointCount().
+	 * \throws deeOutOfBoundary \em endIndex is less than \em startIndex or greater than or equal to getPointCount().
+	 */
+	public func float getLengthBetween( int startIndex, int endIndex )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read path from file reader. */
+	static public func NavigatorPath readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write path to file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Debugging */
+	/*@{*/
+	/**
+	 * \brief Update DebugDrawer with path.
+	 * 
+	 * Shows a sphere at the first path point and a thin box at the last.
+	 * Segments in between are thin elongated boxes. The caller is responsible
+	 * to set up debug drawer and shape properties. The scaling adjusts the
+	 * relative size of the generated shape content.
+	 */
+	public func void updateDebugDrawer( DebugDrawer debugDrawer, int shape, float scale )
+	end
+	/*@}*/
+end

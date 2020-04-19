@@ -1,0 +1,61 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Unicode string.
+ * 
+ * This is a native class.
+ */
+class UTF8Decoder
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create utf8 decoder. */
+	public func new( String string, int position )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Sstring. */
+	public func String getString()
+	end
+	
+	/** \brief Length of string. */
+	public func int getLength()
+	end
+	
+	/** \brief Decoding position in bytes from the beginning. */
+	public func int getPosition()
+	end
+	
+	/** \brief End of the decoder reached. */
+	public func bool hasReachedEnd()
+	end
+	
+	/** \brief Set string. */
+	public func void setString( String decoder )
+	end
+	
+	/** \brief Set position in bytes from the beginning. */
+	public func void setPosition( int position )
+	end
+	
+	/**
+	 * \brief Decode next unicode character from the string.
+	 * \details If the string end has been reached or the encoded character is invalid -1 is returned.
+	 *          Otherwise the unicode value is of the character is returned.
+	 */
+	public func int decodeNextCharacter()
+	end
+	/*@}*/
+end

@@ -1,0 +1,207 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Construct dynamic skin item.
+ * 
+ * Defines a set of images to modify texture property with inside a ConstructedDynamicSkin.
+ * The order value is used to apply item canvas in the correct order.
+ */
+class ConstructedDynamicSkinItem
+	/** \brief Position to use for generated canvas elements. */
+	private var Point pPosition
+	
+	/** \brief Size to use for generated canvas elements. */
+	private var Point pSize
+	
+	/** \brief Transformation to use for generated canvas elements. */
+	private var TexMatrix2 pTransform
+	
+	/** \brief Color transform to use for generated canvas elements. */
+	private var ColorMatrix pColorTransform
+	
+	/** \brief Transparency to use for generated canvas elements. */
+	private var float pTransparency
+	
+	/** \brief Order to use for generated canvas elements. */
+	private var float pOrder
+	
+	/** \brief Mask image to use or \em null. */
+	private var Image pImageMask
+	
+	/** \brief Array of ConstructedDynamicSkinProperty. */
+	private var Array pProperties
+	
+	
+	
+	/** \brief Create constructed dynamic skin item. */
+	public func new()
+		this.pProperties = Array.new()
+		this.pPosition = Point.new()
+		this.pSize = Point.new( 64, 64 )
+		this.pTransparency = 1.0
+		this.pOrder = 0.0
+	end
+	
+	
+	
+	/** \brief Position to use for generated canvas elements. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position to use for generated canvas elements. */
+	public func void setPosition( Point position )
+		this.pPosition = position
+	end
+	
+	/** \brief Size to use for generated canvas elements. */
+	public func Point getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set size to use for generated canvas elements. */
+	public func void setSize( Point size )
+		this.pSize = size
+	end
+	
+	/** \brief Transformation to use for generated canvas elements. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** \brief Set transformation to use for generated canvas elements. */
+	public func void setTransform( TexMatrix2 transform )
+		this.pTransform = transform
+	end
+	
+	/** \brief Color transform to use for generated canvas elements. */
+	public func ColorMatrix getColorTransform()
+		return this.pColorTransform
+	end
+	
+	/** \brief Set color transform to use for generated canvas elements. */
+	public func void setColorTransform( ColorMatrix transform )
+		this.pColorTransform = transform
+	end
+	
+	/** \brief Transparency to use for generated canvas elements. */
+	public func float getTransparency()
+		return this.pTransparency
+	end
+	
+	/** \brief Set transparency to use for generated canvas elements. */
+	public func void setTransparency( float transparency )
+		this.pTransparency = transparency
+	end
+	
+	/** \brief Order to use for generated canvas elements. */
+	public func float getOrder()
+		return this.pOrder
+	end
+	
+	/** \brief Set order to use for generated canvas elements. */
+	public func void setOrder( float order )
+		this.pOrder = order
+	end
+	
+	/** \brief Mask image to use or \em null. */
+	public func Image getImageMask()
+		return this.pImageMask
+	end
+	
+	/** \brief Set mask image to use or \em null. */
+	public func void setImageMask( Image image )
+		this.pImageMask = image
+	end
+	
+	
+	
+	/** \brief Number of properties. */
+	public func int getPropertyCount()
+		return this.pProperties.getCount()
+	end
+	
+	/** \brief Property at index. */
+	public func ConstructedDynamicSkinProperty getPropertyAt( int index )
+		return this.pProperties.getAt( index ) cast ConstructedDynamicSkinProperty
+	end
+	
+	/** \brief Named property or \em null if absent. */
+	public func ConstructedDynamicSkinProperty getPropertyNamed( String name )
+		return this.pProperties.find( block ConstructedDynamicSkinProperty each
+			return each.getName().equals( name )
+		end ) cast ConstructedDynamicSkinProperty
+	end
+	
+	/** \brief Visit properties with block with parameter ConstructedDynamicSkinProperty. */
+	public func void forEachProperty( Block ablock )
+		this.pProperties.forEach( ablock )
+	end
+	
+	/** \brief Add property. */
+	public func void addProperty( ConstructedDynamicSkinProperty property )
+		if property == null
+			throw EInvalidParam.new()
+		end
+		this.pProperties.add( property )
+	end
+	
+	/** \brief Remove properties. */
+	public func void removeAllProperties()
+		this.pProperties.removeAll()
+	end
+	
+	/**
+	 * \brief Set properties from skin texture properties.
+	 * 
+	 * Removes all properties then adds a one property for each property defined in skin texture.
+	 * Supported are properties of type value, color and image. Not supported properties are
+	 * ignored.
+	 */
+	public func void setProperties( Skin skin, int texture )
+		var int i, count = skin.textureGetPropertyCount( texture )
+		
+		for i = 0 to count
+			select skin.propertyGetType( texture, i )
+			case SkinPropertyType.value
+				var float value = skin.propertyGetValue( texture, i )
+				this.pProperties.add( ConstructedDynamicSkinProperty.new( \
+					skin.propertyGetName( texture, i ), Color.new( value, value, value ) ) )
+				
+			case SkinPropertyType.color
+				this.pProperties.add( ConstructedDynamicSkinProperty.new( \
+					skin.propertyGetName( texture, i ), skin.propertyGetColor( texture, i ) ) )
+				
+			case SkinPropertyType.image
+				this.pProperties.add( ConstructedDynamicSkinProperty.new( \
+					skin.propertyGetName( texture, i ), skin.propertyGetImage( texture, i ) ) )
+			end
+		end
+	end
+end

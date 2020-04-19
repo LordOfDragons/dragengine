@@ -1,0 +1,4 @@
+build using docker:
+
+# amake/innosetup
+docker run --rm -i -v "$PWD:/work" --user $(id -u):$(id -g) compile-windows-installer

@@ -1,0 +1,75 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule limit.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARLimit extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set enable position minimum. */
+	public func void setEnablePosMin( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/** \brief Set enable position maximum. */
+	public func void setEnablePosMax( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/** \brief Set enable rotation minimum. */
+	public func void setEnableRotMin( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/** \brief Set enable rotation maximum. */
+	public func void setEnableRotMax( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/** \brief Set enable scale minimum. */
+	public func void setEnableScaleMin( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/** \brief Set enable scale maximum. */
+	public func void setEnableScaleMax( bool enabledX, bool enabledY, bool enabledY )
+	end
+	
+	/**
+	 * \brief Set coordinate frame.
+	 * \throws EInvalidParam \em coordinateFrame is an invalid value.
+	 */
+	public func void setCoordinateFrame( ARLimitCFrame coordinateFrame )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARLimitTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARLimitTarget target )
+	end
+	/*@}*/
+end

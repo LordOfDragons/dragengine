@@ -1,0 +1,321 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief List box enabling user to edit bindings.
+ * 
+ * List box shows all commands the user can bind with all bindings they are currently
+ * bound to. The user can edit commands to add new bindings by pressing input controls
+ * or deleting all bindings for a command.
+ * 
+ * Model is instance of EditBindingsListModel.
+ * 
+ * To change the appearance of overwrite the appropriate methods.
+ */
+class EditBindingsListBox extends ListBox
+	/** \brief Capture binding result listener. */
+	public class CaptureFinished implements WindowDialog.ResultListener
+		/** \brief List box. */
+		private var EditBindingsListBox pListBox
+		
+		/** \brief Create listener. */
+		public func new( EditBindingsListBox listBox )
+			this.pListBox = listBox
+		end
+		
+		/** \brief Dialog closed with result. */
+		public func void onResult( Object result )
+			if result != null
+				this.pListBox.selectedAddCapturedBinding( \
+					result cast WindowCaptureBinding.CaptureResult, false )
+			end
+		end
+	end
+	
+	/** \brief Reassign result listener. */
+	public class ReassignResult implements WindowDialog.ResultListener
+		/** \brief List box. */
+		private var EditBindingsListBox pListBox
+		
+		/** \brief Captured binding. */
+		private var WindowCaptureBinding.CaptureResult pCaptured
+		
+		/** \brief Create listener. */
+		public func new( EditBindingsListBox listBox, WindowCaptureBinding.CaptureResult captured )
+			this.pListBox = listBox
+			this.pCaptured = captured
+		end
+		
+		/** \brief Dialog closed with result. */
+		public func void onResult( Object result )
+			if result cast bool
+				this.pListBox.selectedAddCapturedBinding( this.pCaptured, true )
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Create edit bindings list box.
+	 * 
+	 * \param model Model to use.
+	 */
+	public func new( EditBindingsListModel model ) this( model, EditBindingsListRenderer.new() )
+	end
+	
+	/**
+	 * \brief Create edit bindings list box.
+	 * 
+	 * \param model Model to use.
+	 * \param renderer Renderer to use.
+	 */
+	public func new( EditBindingsListModel model, EditBindingsListRenderer renderer ) \
+	super( model, renderer )
+		this.setDesignerSelector( this.getDesignerSelector() + ".EditBindings" )
+	end
+	
+	
+	
+	/** \brief Capture and add binding for selected entry if any is selected. */
+	public func void selectedCaptureBinding()
+		var int selection = this.getSelectedElement()
+		if selection == -1
+			return
+		end
+		
+		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		
+		select entry.getInputSource()
+		case EditBindingsListModelEntry.InputSource.axis
+			WindowCaptureBinding.captureInput( model.getBindingManager(), \
+				EditBindingsListModelEntry.InputSource.axis, this.getWindow(), "Add Binding", \
+				"Push Axis to Set", CaptureFinished.new( this ) )
+			
+		case EditBindingsListModelEntry.InputSource.button
+			WindowCaptureBinding.captureInput( model.getBindingManager(), \
+				EditBindingsListModelEntry.InputSource.button, this.getWindow(), "Add Binding", \
+				"Push Button or Axis to Set", CaptureFinished.new( this ) )
+		end
+	end
+	
+	/** \brief Remove all key bindings of selected entry if any is selected. */
+	public func void selectedRemoveBindings()
+		var int selection = this.getSelectedElement()
+		if selection == -1
+			return
+		end
+		
+		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		
+		entry.forEachAxisBinding( block Binding each
+			model.getBindingManager().removeAxisBinding( each )
+		end )
+		
+		entry.forEachButtonBinding( block Binding each
+			model.getBindingManager().removeButtonBinding( each )
+		end )
+		
+		model.notifyContentChanged( selection, selection )
+	end
+	
+	/** \brief Add capture result as binding to selected entry. */
+	public func void selectedAddCapturedBinding( \
+	WindowCaptureBinding.CaptureResult captured, bool reassign )
+		var int selection = this.getSelectedElement()
+		if selection == -1
+			return
+		end
+// 		
+		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		var BindingManager bindingManager = model.getBindingManager()
+		var int deviceIndex = captured.getDeviceIndex()
+		var int sourceIndex = captured.getSourceIndex()
+		var Command command = entry.getCommand()
+		var Command updateCommand
+		var Binding binding
+		
+		// check if binding exist already
+		select captured.getInputSource()
+		case EditBindingsListModelEntry.InputSource.axis
+			if entry.getInputSource() == EditBindingsListModelEntry.InputSource.button
+				binding = bindingManager.findAxisBinding( \
+					deviceIndex, sourceIndex, captured.getInverseAxis() )
+				
+			else
+				binding = bindingManager.findAxisBinding( deviceIndex, sourceIndex )
+			end
+			
+			if binding == null
+				break
+			end
+			
+			// if binding exists with the same command nothing is added. changing axis
+			// direction counts as binding change
+			if binding.getCommand() == command
+				if entry.getInputSource() == EditBindingsListModelEntry.InputSource.axis \
+				and binding.getInverseAxis() != captured.getInverseAxis()
+					// same command just axis flipped. replace without asking user
+					reassign = true
+					
+				else
+					return
+				end
+			end
+			
+			// binding is assigned to another command. the result of this dialog enters
+			// this function again but with reassign set to true. in this case this
+			// block will be skipped
+			updateCommand = binding.getCommand()
+			if not reassign
+				this.askUserReassignBinding( captured, updateCommand )
+				return
+			end
+			
+			// remove binding
+			bindingManager.removeAxisBinding( binding )
+			
+		case EditBindingsListModelEntry.InputSource.button
+			binding = bindingManager.findButtonBinding( deviceIndex, sourceIndex )
+			
+			if binding == null
+				break
+			end
+			
+			// if binding exists with the same command nothing is added
+			if binding.getCommand() == command
+				return
+			end
+			
+			// binding is assigned to another command. the result of this dialog enters
+			// this function again but with reassign set to true. in this case this
+			// block will be skipped
+			updateCommand = binding.getCommand()
+			if not reassign
+				this.askUserReassignBinding( captured, updateCommand )
+				return
+			end
+			
+			// remove binding
+			bindingManager.removeButtonBinding( binding )
+		end
+		
+		// update list entry for command
+		if updateCommand != null
+			var EditBindingsListModelEntry updateEntry
+			var int i, count = model.getCount()
+			
+			for i = 0 to count
+				updateEntry = model.getAt( i ) cast EditBindingsListModelEntry
+				if updateEntry.getCommand() == updateCommand
+					model.notifyContentChanged( i, i )
+					break
+				end
+			end
+		end
+		
+		// add binding
+		var InputDevice device = bindingManager.getDeviceAt( deviceIndex )
+		select captured.getInputSource()
+		case EditBindingsListModelEntry.InputSource.axis
+			var InputDeviceAxis axis = device.getAxisAt( sourceIndex )
+			
+			bindingManager.addAxisBinding( Binding.new( device.getID(), \
+				axis.getID(), command, captured.getInverseAxis() ) )
+			
+		case EditBindingsListModelEntry.InputSource.button
+			var InputDeviceButton button = device.getButtonAt( sourceIndex )
+			
+			bindingManager.addButtonBinding( Binding.new( device.getID(), \
+				button.getID(), command, false ) )
+		end
+		
+		model.notifyContentChanged( selection, selection )
+	end
+	
+	/**
+	 * \brief Ask user to reassign binding.
+	 * 
+	 * \param captured Captured binding causing the problem.
+	 * \param command Command already assigned to the binding.
+	 */
+	protected func void askUserReassignBinding( \
+	WindowCaptureBinding.CaptureResult captured, Command command )
+		WindowDialog.question( this.getWindow(), "Replace Binding", \
+			"Binding already assigned to '" + command.getName() + "'.\n" \
+				+ "Do you want to re-assign?", \
+			null, Array.newWith( \
+				WindowDialog.ButtonConfiguration.new( "Yes", true ), \
+				WindowDialog.ButtonConfiguration.new( "No", false) ), \
+			ReassignResult.new( this, captured ) )
+	end
+	
+	
+	
+	/** \brief Key pressed event. */
+	public func void onKeyPress( KeyEvent event )
+		select event.getKeyCode()
+		case InputEventKey.backspace, InputEventKey.delete
+			this.selectedRemoveBindings()
+			
+		case InputEventKey.enter
+			this.selectedCaptureBinding()
+			
+		else
+			super.onKeyPress( event )
+		end
+	end
+	
+	/** \brief Mouse button pressed. */
+	public func void onButtonPress( MouseEvent event )
+		super.onButtonPress( event )
+		
+		if event.getButton() == InputEventMouseButton.right
+			this.selectedRemoveBindings()
+		end
+	end
+	
+	/** \brief Gamepad button has been pressed. */
+	public func void onGamepadButtonPressed( GamepadEvent event )
+		if event.getCode() == 0
+			this.selectedCaptureBinding()
+			
+		elif event.getCode() == 1
+			this.selectedRemoveBindings()
+			
+		else
+			super.onGamepadButtonPressed( event )
+		end
+	end
+end

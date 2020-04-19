@@ -1,0 +1,146 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Decorations.Factories
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for Window.
+ */
+class DefaultWindowDesigner extends DefaultWidgetDesigner implements WindowDesigner
+	/** \brief Decoration factory or null. */
+	private var DecorationFactory pDecorationFactory
+	
+	/** \brief Darkening color while modal window is in use. */
+	private var Color pModalDarkenColor
+	
+	
+	
+	/** \brief Create new button designer. */
+	public func new()
+		this.pModalDarkenColor = Color.new( 0.65, 0.65, 0.65 )
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultWindowDesigner designer ) super( designer )
+		this.pDecorationFactory = designer.pDecorationFactory
+		this.pModalDarkenColor = designer.pModalDarkenColor
+	end
+	
+	
+	
+	/** \brief Decoration factory or null. */
+	public func DecorationFactory getDecorationFactory()
+		return this.pDecorationFactory
+	end
+	
+	/** \brief Set decoration factory or null. */
+	public func void setDecorationFactory( DecorationFactory decorationFactory )
+		this.pDecorationFactory = decorationFactory
+	end
+	
+	/** \brief Darkening color while modal window is in use. */
+	public func Color getModalDarkenColor()
+		return this.pModalDarkenColor
+	end
+	
+	/** \brief Set darkening color while modal window is in use. */
+	public func void setModalDarkenColor( Color color )
+		this.pModalDarkenColor = color
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | normal.canvas | CanvasCreator | getDesignNormal.setCanvasCreator |
+	 * | normal.border | BorderFactory | getDesignNormal.setBorderFactory |
+	 * | normal.font | Font | getDesignNormal.setFont |
+	 * | normal.textColor | Color | getDesignNormal.setTextColor |
+	 * | normal.padding | BorderSize | getDesignNormal.setPadding |
+	 * | disabled.canvas | CanvasCreator | getDesignDisabled.setCanvasCreator |
+	 * | disabled.border | BorderFactory | getDesignDisabled.setBorderFactory |
+	 * | disabled.font | Font | getDesignDisabled.setFont |
+	 * | disabled.textColor | Color | getDesignDisabled.setTextColor |
+	 * | disabled.padding | BorderSize | getDesignDisabled.setPadding |
+	 * | focused.canvas | CanvasCreator | getDesignFocused.setCanvasCreator |
+	 * | focused.border | BorderFactory | getDesignFocused.setBorderFactory |
+	 * | focused.font | Font | getDesignFocused.setFont |
+	 * | focused.textColor | Color | getDesignFocused.setTextColor |
+	 * | focused.padding | BorderSize | getDesignFocused.setPadding |
+	 * | hover.canvas | CanvasCreator | getDesignHover.setCanvasCreator |
+	 * | hover.border | BorderFactory | getDesignHover.setBorderFactory |
+	 * | hover.font | Font | getDesignHover.setFont |
+	 * | hover.textColor | Color | getDesignHover.setTextColor |
+	 * | hover.padding | BorderSize | getDesignHover.setPadding |
+	 * | decoration | DecorationFactory | setDecorationFactory |
+	 * | modalDarken | Color | setModalDarkenColor |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "decoration" )
+			this.setDecorationFactory( value cast DecorationFactory )
+			
+		elif name.equals( "modalDarken" )
+			this.setModalDarkenColor( value cast Color )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultWindowDesigner.new( this )
+	end
+	
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget( Widget widget )
+		super.designWidget( widget )
+		
+		var Window window = widget cast Window
+		
+		if not window.getProtectModalDarkenColor()
+			window.setModalDarkenColor( this.pModalDarkenColor )
+		end
+	end
+	
+	
+	
+	/** \brief Create decoration for window. */
+	public func Decoration createDecoration()
+		if this.pDecorationFactory != null
+			return this.pDecorationFactory.createDecoration()
+			
+		else
+			return null
+		end
+	end
+end

@@ -1,0 +1,215 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Collider collision test.
+ * 
+ * Collision test to perform by the physics module after parent collider has been moved.
+ * This allows to perform repeated collision tests in high performance way. Multiple
+ * collision tests can be assigned to a collider at any time even during collision
+ * response. The physics module performs these tests whenever collider simulation is
+ * finished. Typical usage for tests are testing ground after actor moved to plant it
+ * firmly on the ground.
+ * 
+ * After physics simulation is finished the result can be obtained from the collision
+ * test object. The collision test contains a list of all found collisions. If a test
+ * direction has been set (not zero vector) the list is sorted by distance with the
+ * closest collision at index 0. Otherwise the list is unsorted.
+ * 
+ * Physics modules redo collision tests if they figure out something changed and a new
+ * test would potentially provide different results. It is thus not guaranteed these
+ * tests are done every frame so do not modify the results only the test parameters.
+ * 
+ * By default local direction is used hence collision testing is relative to the position
+ * and orientation of the owner collider. To use world coordinate system call
+ * setLocalDirection(false). This allows direction to be always the same.
+ * 
+ * This is a native class.
+ * 
+ * \warning
+ * 
+ * The game engine does not track the parent collider inside the collider collision test
+ * itself. The ColliderCollisionTest script class does track the parent collider. Do not
+ * add a ColliderCollisionTest to more than one collider at the same time. Doing so will
+ * falsify method calls relaying on the parent collider to be properly set.
+ */
+class ColliderCollisionTest
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create collider collision test. */
+	public func new()
+	end
+	
+	/** \brief Create copy of collider collision test. */
+	public func new( ColliderCollisionTest collisionTest )
+	end
+	
+	/** \brief Create collider collision test. */
+	public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
+	end
+	
+	/** \brief Create a collider collision test. */
+	public func new( CollisionFilter collisionFilter, Component component, String bone, \
+	Vector origin, Vector direction )
+	end
+	
+	/** \brief Create collider collision test. */
+	public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, \
+	Vector origin, Vector direction )
+	end
+	
+	/** \brief Create a collider collision test. */
+	public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, \
+	Component component, String bone, Vector origin, Vector direction )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Test Configuration */
+	/*@{*/
+	/** \brief Touch sensor to use for testing collisions or \em null if not set. */
+	public func TouchSensor getTouchSensor()
+	end
+	
+	/** \brief Set touch sensor to use for testing collisions or \em null if not set. */
+	public func void setTouchSensor( TouchSensor touchSensor )
+	end
+	
+	
+	
+	/** \brief Collider or \em null to test using a ray. */
+	public func Collider getCollider()
+	end
+	
+	/** \brief Set collider or \em null to test using a ray. */
+	public func void setCollider( Collider collider )
+	end
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+	
+	
+	
+	/** \brief Component to use to retrieve bone position from or \em NULL if not used. */
+	public func Component getComponent()
+	end
+	
+	/** \brief Set component to use to retrieve bone position from or \em NULL if not used. */
+	public func void setComponent( Component component )
+	end
+	
+	/** \brief Bone to apply origin to for testing or empty string to use parent collider position. */
+	public func String getBone()
+	end
+	
+	/** \brief Set bone to apply origin to for testing or empty string to use parent collider position. */
+	public func void setBone( String name )
+	end
+	
+	/** \brief Cast origin. */
+	public func Vector getOrigin()
+	end
+	
+	/** \brief Set cast origin. */
+	public func void setOrigin( Vector origin )
+	end
+	
+	/** \brief Cast direction. */
+	public func Vector getDirection()
+	end
+	
+	/** \brief Set cast direction. */
+	public func void setDirection( Vector direction )
+	end
+	
+	/** \brief Local direction. */
+	public func bool getLocalDirection()
+	end
+	
+	/** \brief Set if direction is local. */
+	public func void setLocalDirection( bool localDirection )
+	end
+	
+	/** \brief Collision tets is enabled. */
+	public func bool getEnabled()
+	end
+	
+	/** \brief Set if collision test is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Test Result */
+	/*@{*/
+	/** \brief Test origin used by physics module during the last update. */
+	public func DVector getTestOrigin()
+	end
+	
+	/** \brief Test direction used by physics module during the last update. */
+	public func DVector getTestDirection()
+	end
+	
+	
+	
+	/** \brief Collision has been found. */
+	public func bool getHasCollision()
+	end
+	
+	/** \brief Number of found collisions. */
+	public func int getCollisionCount()
+	end
+	
+	/** \brief Collision at index. */
+	public func CollisionInfo getCollisionAt( int index )
+	end
+	
+	/** \brief Remove all collisions reverting test to no collision found state. */
+	public func void reset()
+	end
+	
+	
+	
+	/** \brief Direction length multiplied by hit distance. */
+	public func float hitDistance( int index )
+	end
+	
+	/** \brief Hit point in collider space. */
+	public func Vector hitPointCollider( int index )
+	end
+	
+	/** \brief Hit point in world space. */
+	public func DVector hitPointWorld( int index )
+	end
+	
+	/** \brief Hit normal in collider space. */
+	public func Vector hitNormalCollider( int index )
+	end
+	
+	/** \brief Hit normal in world space. */
+	public func Vector hitNormalWorld( int index )
+	end
+	
+	/** \brief Hit collider or \em null if hit object is not a collider. */
+	public func Collider hitCollider( int index )
+	end
+	
+	/** \brief Hit bone or -1 if hit object is not a collider. */
+	public func int hitBone( int index )
+	end
+	/*@}*/
+end

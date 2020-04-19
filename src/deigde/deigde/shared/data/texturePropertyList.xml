@@ -1,0 +1,1361 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<texturePropertyList>
+	<property name='color'>
+		<description>
+			Defines the color of a material. The color is used for various lighting steps.
+			Typically this property is specified using a 24-bit image.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.gamma'>
+		<description>
+			Defines the gamma correction for the color property.
+			Typically used for images which have a particular gamma value.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>2.2</red>
+			<green>2.2</green>
+			<blue>2.2</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.tint'>
+		<description>
+			Defines a color used to tint the color property. This defines an 3-component color
+			that is multiplied component wise with the color property. Typically used to create
+			tinted versions of a texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1.0</red>
+			<green>1.0</green>
+			<blue>1.0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.tint.mask'>
+		<description>
+			Defines a mask for the color.tint property. This defines an 1-component image
+			that blends between color.tint and color property. Typically used to create tinted
+			versions of a texture where only individual parts of the texture are tinted without
+			creating multiple skins. A value of 1 applies the color.tint which is the default.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>1.0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.solidity.multiplier'>
+		<description>Defines the color weight factor for solidity. This texture property is
+			used with decal textures to weight the decal color against the color of the
+			underlaying geometry. This allows to create decals where not all texture properties
+			affect the underlaying geometry the same way in respect to the decal solidity.
+			A value of 0 makes the decal to not affect the underlaying geometry color at all.
+			A value of 1 makes the decal fully overwrite the underlaying geometry color.
+			Values in between blend linearly the decal color  with the underlaying geometry
+			color. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.omnidir'>
+		<description>
+			Defines the omni-directional color of a material using a cube map. This
+			property is used only by sky layers, sky bodies, lights and environment map probes.
+			The property has to contain image data with depth of 6. Each layer represents one
+			face in the cube map: X+, X-, Y+, Y-, Z+ and Z- (in this order). Typically this
+			property is specified using a 24-bit image of depth 6.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='color.omnidir.equirect'>
+		<description>
+			Defines the omni-directional color of a material using an equirectangular map.
+			This property is used only by sky layers, sky bodies, lights and environment map probes.
+			The image data defined by the property has to be formatted in the equirectangular format.
+			Typically this property is specified using a 24-bit image.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='ambient.occlusion'>
+		<description>
+			Defines the ambient occlusion. This simulates the effect of indirect lighting where
+			locations on a model are darker inside cavities. Values range from 0 to 1 where 0 is
+			fully occluded and 1 is fully in light. In general fully in light equals to full light
+			contribution and fully occluded to zero light contribution. In general this property
+			affects indirect lighting but can also affect direct lighting at the description of
+			the graphic module.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='ambient.occlusion.solidity.multiplier'>
+		<description>
+			Defines the ambient occlusion weight factor for solidity. This texture property is
+			used with decal textures to weight the decal ambient occlusion against the ambient
+			occlusion of the underlaying geometry. This allows to create decals where not all
+			texture properties affect the underlaying geometry the same way in respect to the
+			decal solidity. A value of 0 makes the decal to not affect the underlaying geometry
+			ambient occlusion at all. A value of 1 makes the decal fully overwrite the
+			underlaying geometry ambient occlusion. Values in between blend linearly the decal
+			ambient occlusion  with the underlaying geometry ambient occlusion.
+			The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='normal'>
+		<description>
+			Defines the normal of the surface. This is a special texture property in that the
+			color is not a real color but a normal encoded as a color. Normal maps are used to
+			fake detail on flat surfaces by specifying the structure of normals along a surface.
+			<br/><br/>
+			The normal is encoded as a 24-bit color relative to the tangent space of the surface.
+			The tangent space is formed taking the original triangle normal and the tangent which
+			points along the U direction of triangle.
+			<br/><br/>
+			The red component indicates the X component of the normal (along the U direction of
+			the texture). Negative values are in the range from 0 to 0.5 and positive values in
+			the range from 0.5 to 1.
+			<br/><br/>
+			The green component indicates the Y component of the normal (along the V direction
+			of the texture). Negative values are in the range from 0 to 0.5 and positive values
+			in the range from 0.5 to 1.
+			<br/><br/>
+			The blue component indicates the Z component of the normal (along the triangle normal).
+			Negative values are in the range from 0 to 0.5 and positive values in the range from
+			0.5 to 1.
+			<br/><br/>
+			The normal is normalized before storing. Normals should not point further away than
+			90 degree measured from the triangle normal. If you go beyond this limit render
+			artifacts can occur. Due to this layout normal maps have a tendency to be blueish in
+			color since the Z component is always positive.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0.5</red>
+			<green>0.5</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='normal.strength'>
+		<description>
+			Defines the strength of the normal map. This property blends the normal obtained from
+			the normal map with the real geometry normal. This allows to use the full image
+			resolution for normal map details where subtle normal map effects are desired without
+			producing artifacts. Furthermore this can also be used to create dynamic normal map
+			effects without the need for a dynamic normal map property. A value of 0 uses the
+			real geometry normal. A value of 1 uses the normal obtained from the "normal" texture
+			property. Values in between blend linearly between the two normals. The default value
+			is 1 to apply the full normal map value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='normal.solidity.multiplier'>
+		<description>
+			Defines the normal weight factor for solidity. This texture property is used with
+			decal textures to weight the decal normal against the normal of the underlaying
+			geometry. This allows to create decals where not all texture properties affect the
+			underlaying geometry the same way in respect to the decal solidity. A value of 0 makes
+			the decal to not affect the underlaying geometry normal at all. A value of 1 makes the
+			decal fully overwrite the underlaying geometry normal. Values in between blend
+			linearly the decal normal with the underlaying geometry normal.
+			The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='height'>
+		<description>
+			Defines the height of the surface. This is also a special texture property similar
+			to the normal map one but this time the height of a surface relative to the mesh
+			surface is stored. This height can be used for different purpose depending on the
+			graphic module used. One usage is to derive a normal map from the height difference.
+			Another usage is to dynamically increase the detail level of a mesh. The new vertices
+			are then offset using this height. Terrain meshes can also use this height information
+			to provide LODing (level of detail reduction over distance). A value of 0.5 indicates
+			no surface height alteration. Values below 0.5 indicate a dent in a surface while
+			values above 0.5 indicate a bump in a surface. The strength and offset of the height
+			alteration can be set using the "height.scale" and "height.offset" property.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>0.5</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='height.scale'>
+		<description>
+			Used in conjunction with the height surface property and defines the scaling of the
+			height values. With a scaling of 1 the height values are considered to be in the range
+			of -0.5m to 0.5m. The height texture property values are multiplied by the scale factor
+			and offseted by the offset factor resulting in the final height values. For generating
+			normal maps this is not required. As an example if the hills and valleys are at most
+			1cm then a scaling of 0.02 (1 divided by 50) has to be used (0.5m times 0.02 yields
+			0.01m or 1cm). This property has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='height.offset'>
+		<description>
+			Used in conjunction with the height surface property and defines the relative offset
+			of the height values. Positive values move the height values away from the surface
+			while negative values move them into the surface. This can be used for height maps
+			only denting into or only bumping out of the surface to maximize the texture
+			resolution. The effective offset added to the height is the height.offset multiplied
+			by the height.scale. The height.offset can thus be considered the percentage shift
+			of the height texture property values. The typical range is from -0.5 (height of 1
+			is surface level and 0 the total bottom) to 0.5 (height of 0 is surface level and 1
+			the total uphill). For generating normal maps this is not required. This property
+			has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='transparency'>
+		<description>
+			Defines the transparency material. Transparent materials allow to see through with
+			varying strength. Transparent material is still solid unless the solidity texture
+			property is used. Hence a material can be fully transparent with a value of 0 but at
+			grazing angles the material still behaves like a mirror due to fresnel and physically
+			based rendering. For truely stopping light to interact with the material use the
+			solidity texture property instead. Use this texture property for all kinds of glass
+			type materials where light partially traverses the material and gets filtered on its
+			way through. Typically this property is specified using a 8-bit gray scale image.
+			A value of 1 indicates a fully opaque material whereas 0 equals to a fully transparent
+			material. All values in between equal to a partial transparency with the given strength.
+			The type of transparency can be specified using the "transparency.type" property.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='transparency.multiplier'>
+		<description>
+			Defines the multiplier for the transparency texture property. This allows to create
+			fading effects with complex transparency. The end result is the transparency value
+			multiplied with this value. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='solidity'>
+		<description>
+			Defines the solidity material. Transparent materials allow to see through with
+			varying strength. In contrary to the transparency texture property the solidity
+			defines the probability of light rays actually interacting with the material.
+			With transparency material can be fully transparent but still act like a full
+			mirror at grazing angles. Solidity on the other hand makes materials truely
+			transparent to all light interaction. This can be used for ghost effects or
+			fading out objects which is not possible with transparency. Typically this property
+			is specified using a 8-bit gray scale image. A value of 1 indicates a fully solid
+			material whereas 0 equals to a fully non-solid material. All values in between equal
+			to a partial solidity with the given strength. The type of solidity can be specified
+			using the "solidity.type" property.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='solidity.masked'>
+		<description>
+			Defines if the solidity is masked. Some materials do not require the full level of
+			solidity support as they contain only holes. Fences are a typical example of such a
+			type of material. Often this kind of solidity can be rendered faster than common
+			solidity. Using this property the material can be marked as either having full grades
+			of solidity or just having holes. With holes solidity values above 0.5 mark solid areas
+			while solidity values below 0.5 mark holes which is the default. A value of 0 (or
+			below 0.5) marks the material as using all levels of solidity. A value of 1 (or above
+			0.5) marks the material as having holes only.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='solidity.multiplier'>
+		<description>
+			Defines the multiplier for the solidity texture property. This allows to create
+			fading effects with complex solidity. The end result is the solidity value
+			multiplied with this value. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='refraction.distort'>
+		<description>
+			Defines the distortion applied to rendered content behind transparent material.
+			The distortion works by manipulating the coordinates of the point to be used as the
+			background pixel color using a 2-channel image. The red channel indicates the amount
+			of displacement in the x direction (with -1 being 0 red and 1 being full red) and
+			the green channel indicates the displacement in the y direction (same as with red).
+			The displacement strength is defined using "refraction.distort.strength". Usually a
+			3-component image is used where the blue channel has no use. This way normal maps
+			can be directly used for distortion.
+		</description>
+		<type>image</type>
+		<components>2</components>
+		<default>
+			<red>0.5</red>
+			<green>0.5</green>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='refraction.distort.strength'>
+		<description>
+			Defines the strength of the refraction distortion. Scales the displacement by the
+			given single value. Negative values are possible inventing the displacements.
+			The displacement is measured relative to the size of the render window. Hence a
+			value of 0.1 would cause displacements to have a magnitude of up to 10% of the
+			render window size. The default is 0.01 which results in a usual screen resolution
+			a displacement of roughly 10 pixels (1% of render window size).
+			This is a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.01</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='reflectivity'>
+		<description>
+			Defines the reflectivity of a material. A value of 1 fully reflects the environment
+			without any diffuse contribution. A value of 0 reflects nothing showing the entire
+			diffuse contribution. Values in between represent the amount of reflection of the
+			environment. The reflectivity can be defined for each color component individually
+			(typical for matrials like gold) or for all at the same time (typical for materials
+			like plastic).
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='reflectivity.multiplier'>
+		<description>
+			Defines the multiplier for the reflectivity. The reflectivity value is first
+			multiplied by this value before being send down the lighting pipeline as described
+			in "reflectivity". This property is useful for fine adjusting reflectivity without
+			altering the source image as well as better using the limited resolution of image
+			files especially with low reflectivity values.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='reflectivity.solidity.multiplier'>
+		<description>
+			Defines the reflectivity weight factor for solidity. This texture property is used
+			with decal textures to weight the decal reflectivity against the reflectivity of the
+			underlaying geometry. This allows to create decals where not all texture properties
+			affect the underlaying geometry the same way in respect to the decal solidity.
+			A value of 0 makes the decal to not affect the underlaying geometry reflectivity
+			at all. A value of 1 makes the decal fully overwrite the underlaying geometry
+			reflectivity. Values in between blend linearly the decal reflectivity with the
+			underlaying geometry reflectivity. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='roughness'>
+		<description>
+			Defines the roughness of the surface. This value is typically used for defining the
+			sharpness of reflections. A value of 0 defines a mirror like smooth surface. A value
+			of 1 defines a very rough surface. Values in between create a blend between a smooth
+			and a rough surface. Rough surfaces have blurry reflections while smooth surfaces
+			have mirror like sharp reflections. The roughness value is comparable to the roughness
+			value in the Beckman Shading formula and allows to control the roughness of the
+			surface in a more intuitive way. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='roughness.remap.lower'>
+		<description>
+			Defines the lower remapping value for the roughness of the surface. The remapping
+			allows to use the same roughness input for various skins as well as simplify creating
+			art asset by individually remapping the the input values to the new range defined by
+			roughness.remap.lower and roughness.remap.upper. A roughness value of 0 is mapped to
+			roughness.remap.lower, a value of 1 is mapped to roughness.remap.upper and all values
+			in between are mapped linearly. Thus the roughness value can be seen as the blend
+			factor between roughness.remap.lower and roughness.remap.upper. The value of this
+			property has to be of value type. The default value is 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='roughness.remap.upper'>
+		<description>
+			Defines the upper remapping value for the roughness of the surface. The remapping
+			allows to use the same roughness input for various skins as well as simplify creating
+			art asset by individually remapping the the input values to the new range defined
+			by roughness.remap.lower and roughness.remap.upper. A roughness value of 0 is mapped
+			to roughness.remap.lower, a value of 1 is mapped to roughness.remap.upper and all
+			values in between are mapped linearly. Thus the roughness value can be seen as the
+			blend factor between roughness.remap.lower and roughness.remap.upper. The value of
+			this property has to be of value type. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='roughness.gamma'>
+		<description>
+			Defines the gamma correction for the roughness property. Typically used for images
+			which have a particular gamma value. By default roughness images are considered to
+			be real values hence no gamma correction is applied. In some cases though like tools
+			creating gamma corrected images setting the usage of a custom gamma correction is
+			required. In this case the gamma required to convert the image data to real values
+			has to be specified. Gamma correction is applied to the roughness property values
+			before remapping is done. The default value is 1.0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='roughness.solidity.multiplier'>
+		<description>
+			Defines the roughness weight factor for solidity. This texture property is used with
+			decal textures to weight the decal roughness against the roughness of the underlaying
+			geometry. This allows to create decals where not all texture properties affect the
+			underlaying geometry the same way in respect to the decal solidity. A value of 0 makes
+			the decal to not affect the underlaying geometry roughness at all. A value of 1 makes
+			the decal fully overwrite the underlaying geometry roughness. Values in between blend
+			linearly the decal roughness  with the underlaying geometry roughness.
+			The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentmap'>
+		<description>
+			Defines the environment map to use for reflection. By default the Graphic Module
+			produces and environment map for reflections itself dynamically if it is able to do
+			so. Using this property the environment map to use for reflections can be forced.
+			This can be used for various purpose. For example by defining static environment maps
+			the Graphic Module can be helped to avoid dealing with dynamic environment maps.
+			Or it can be used to achieve special effects for example by using a renderable.
+			This allows to show foreign environment content like an object reflecting a different
+			world.
+			<br/><br/>
+			This property is typically of image or renderable type. The image has to be of one
+			of the supported image types. To use a cube map the image has to have a depth of 6
+			with each layer specifying a face of the cube map in the following order:<br/>
+			- layer 0: positive x axis<br/>
+			- layer 1: negative x axis<br/>
+			- layer 2: positive y axis<br/>
+			- layer 3: negative y axis<br/>
+			- layer 4: positive z axis<br/>
+			- layer 5: negative z axis<br/>
+			<br/>
+			Each layer has to be oriented along the other two positive axes. Hence the positive
+			x axis layer has to be oriented with the image x and y axis along the cube map y and
+			z axis.
+			<br/><br/>
+			This property has no default value. If it is not specified the Graphic Module creates
+			an environment map itself according to whatever rules it sees fit.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='reflected'>
+		<description>
+			Defines if geometry with this skin is reflected by other geometry. Typically
+			reflections are done using static or dynamic environment maps and optionally other
+			real time reflection algorithms. By default all geometry is reflected by other
+			geometry and rendered in dynamically rendered environment maps. Editing objects as
+			used in the IGDE editors should not be reflected by other geometry and never show
+			up in environment maps. This property allows these objects to be not reflected by
+			other geometry. This can be also useful in a game situation to make an object not
+			to be reflected by other objects. This is typically the case for objects not really
+			existing like ghosts or imagined objects. This property is of value type. A value
+			of 0.5 or higher makes the geometry to be reflected by other geometry. A value
+			below 0.5 prevents the geometry from being reflected by other geometry.
+			This default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='mirror'>
+		<description>
+			Defines that this material is a fully reflective ( perfect ) flat mirror. All pixels
+			covered by mesh faces with this texture reflect the world totally. Transparency
+			effects like refraction distortion can be applied to mirrors. Use this property
+			only on flat or nearly flat geometry. For curved geometry use the "reflection.*"
+			properties. Mirror reflections tend to be faster than "reflection.*" reflections
+			and should be used if the geometry is flat. A value of 0 equals to no mirror
+			reflection. A value of 1 equals to full mirror reflections.
+			This is a single value wit default 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='emissivity'>
+		<description>
+			Defines the component wise light emission of a surface. A value of 0 equals to no
+			light being emitted from the surface whereas 1 equals to full bright light being
+			emitted. In the lighting model used by this game engine there exists no maximum
+			strength of light since the light intensity is only limited towards the bottom.
+			For this reason the additional property "emissivity.intensity" indicates the maximum
+			intensity for all color components. The real intensity equals to the emissivity
+			value multiplied by the "emissivity.intensity" value. Usually this property is an
+			24-bit color image. The default is black.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='emissivity.tint'>
+		<description>
+			Defines a color used to tint the emissivity property. This defines an 3-component
+			color that is multiplied component wise with the emissivity property. Typically
+			used to create tinted versions of a texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1.0</red>
+			<green>1.0</green>
+			<blue>1.0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='emissivity.intensity'>
+		<description>
+			Defines the intensity of light emission. This value has the same value range as the
+			intensity parameter of light sources. For a common 100W light bulb this value would
+			be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom'>
+		<description>
+			Defines an environment room to use to produce the illusion of a 3 dimensional room
+			behind a flat wall. This is typically used to create a more realistic illusion of a
+			room behind a window in contrary to flat window textures.
+			<br/><br/>
+			Environment rooms are environment map type cube or equirectangular texture containing
+			a prerendered illusion of a room. The environment room is oriented like this:<br/>
+			- x axis: along the texture u direction<br/>
+			- y axis: along the negative texture v direction<br/>
+			- z axis: along the negative normal direction.<br/>
+			<br/>
+			The room extends along the x and y axis map to the texture coordinate range from
+			0 to 1 in the respective room axis. The size of the room is defined with the
+			"environmentroom.size" texture property. The position of the room is half the
+			"environmentroom.size" value. The texture coordinates on the flat surface maps to
+			the invisible negative z axis face of the room.
+			<br/><br/>
+			The environment room is used if this texture property is defined. Otherwise normal
+			rendering is used
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.size'>
+		<description>
+			Defines the size ratio of an environment room to use to produce the illusion of a 3
+			dimensional room behind a flat wall. See the environmentroom texture property for
+			details. The size is a 2 component value larger than 0 representing the ratio between
+			the height and width and the depth and width of the room. The first component contains
+			the ratio between height and width. The second component contains the ratio between
+			the depth and width. The default value is (1,1) defining a cubic room. The actual
+			perceived size in metric units depends on the actual texture coordinates used.
+			The ratio between the height and width of the texture coordinates has to be identical
+			to the first value component.
+		</description>
+		<type>value</type>
+		<components>2</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.offset'>
+		<description>
+			Defines the offset of an environment room cube map relative to the room center.
+			This offset is required if the cube map origin is not located exactly at the center
+			of the room. This is typically the case for in-engine rendered cube maps used as
+			environment room cube maps. Placing the cube map origin near the entry side of the
+			room reduces perspective problems. The offset is a 3 component value: x, y, z.
+			The default value is (0,0,0).
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.mask'>
+		<description>
+			Defines the mask of an environment room. The mask defines the blending between the
+			environment room and the regular materila parameters. The mask is a 1 component with
+			0 showing the regular material parameters and 1 showing only the environment room.
+			The default value is 1.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.emissivity'>
+		<description>
+			Defines the emissivity of an environment room to use to produce the illusion of a 3
+			dimensional room behind a flat wall.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.emissivity.tint'>
+		<description>
+			Defines a color used to tint the environment room emissivity property. This defines
+			an 3-component color that is multiplied component wise with the environment room
+			emissivity property. Typically used to create tinted versions of a texture without
+			creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1.0</red>
+			<green>1.0</green>
+			<blue>1.0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='environmentroom.emissivity.intensity'>
+		<description>
+			Defines the intensity of an environment room emissivity texture.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='thickness'>
+		<description>
+			Defines thickness in meters of material.<br/>
+			<br/>
+			This property is used if the thickness of the material can not be determined from
+			the Model faces itself. This is typically the case for window glass where it is
+			common to use double sided model textures. Modules can not calculate the thickness
+			in this situation because they lack a matching backwards facing model face.<br/>
+			<br/>
+			This property is used by the Graphic Module for transparency and absorption
+			calculations.<br/>
+			<br/>
+			This property is used by the Audio Module for transmission loss calculations.<br/>
+			<br/>
+			This is a single value type property. The default value is 0 indicating no explicit
+			thickness defined. Modules will calculate the thickness themselves in this case.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='absorption'>
+		<description>
+			Defines the absorption strength per component. Affected by absorption.range.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='absorption.range'>
+		<description>
+			Defines the absorption range. Each component in absorption is multiplied by this value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='shadow.none'>
+		<description>
+			Defines if this material does not can shadows. All values above 0.5 prevents this
+			material from casting shadows (solid nor transparent). All values below 0.5 cause
+			this texture to cast shadows. This is a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='shadow.importance'>
+		<description>
+			Defines a threshold to stop this texture from casting shadows. This is a performance
+			optimization property and is linked to user settings. If the user chooses a high
+			detail level this shadow is shown otherwise not. To prevent shadows from being cast
+			at all use "shadow.none" instead. A value of 0 equals to the lowest detail level where
+			only the most vital textures cast shadows. A value of 1 equals to the highest detail
+			level where any textures cast shows. All values in between represent the detail
+			percentage (hence 0.2 for example requires the user to set the detail level at or
+			above 20% to see this shadow). This is a single value with default 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='hint.nocompression'>
+		<description>
+			Defines if hardware textures can be compressed or not. Graphic modules can decide to
+			compress textures to conserve memory. Compression though tends to have a more or less
+			negative impact on the visual quality depending on the kind of texture. Usually
+			diffuse textures are compressed while normal textures are not. If you have a special
+			texture which has to keep the full quality you can use this property to tell the
+			Graphic Module to not compress this texture. As this is a hint the Graphic Module is
+			not required to respect it. A value of 0 indicates that this texture can be compressed.
+			A value of 1 indicates that this texture should not be compressed if possible.
+			This is a single value with default 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='texcoord.clamp'>
+		<description>
+			Defines if texture coordinates are clamped instead of repeated. A value of 0 indicates
+			that texture coordinates are repeated. A value of 1 indicates that texture coordinates
+			are clamped to the range of 0 to 1. This is a single value with default 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='texcoord.offset'>
+		<description>
+			Defines offset of texture coordinates relative to model texture coordinates.
+			This is a color value with 2 components (u, v) with default 0. If multiple
+			transformations are used applies first "texcoord.zoom" then "texcoord.rotate"
+			then "texcoord.offset".
+		</description>
+		<type>value</type>
+		<components>2</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='texcoord.scale'>
+		<description>
+			Defines scaling of texture coordinates relative to model texture coordinates.
+			This is a color value with 2 components (u, v) with default 1. Zooming has as
+			center the center of the texture. If multiple transformations are applies first
+			"texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+		</description>
+		<type>value</type>
+		<components>2</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='texcoord.rotate'>
+		<description>
+			Defines rotation of texture coordinates relative to model texture coordinates.
+			This is a single value with default 0. Rotates texture coordinates counter
+			clock wise around the center of the texture. If multiple transformations are
+			used applies first "texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='variation.u'>
+		<description>
+			Defines if texture variations are used along the texture U direction. If texture
+			variations are enabled various texture properties can be defines using a depth of
+			larger than 1. The integral part of texture coordinates in the U direction is used
+			to randomly pick a layer from these properties. A value of 0 indicates that texture
+			variations are not used along the U direction. A value of 1 indicates that texture
+			variations are used along the U direction. This is a single value with default 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='variation.v'>
+		<description>
+			Defines if texture variations are used along the texture V direction. If texture
+			variations are enabled various texture properties can be defines using a depth of
+			larger than 1. The integral part of texture coordinates in the V direction is used
+			to randomly pick a layer from these properties. A value of 0 indicates that texture
+			variations are not used along the V direction. A value of 1 indicates that texture
+			variations are used along the V direction. This is a single value with default 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='variation.weight'>
+		<description>
+			Defines the probability weighting of layers for texture variations.
+			The probability of a layer to be picked is calculated using the following formula:
+			<br/><br/>
+			(1 + weight.atPixel(layer,0)) / sum(weights).
+			<br/><br/>
+			This is a 1 dimensional image with default 0 for all pixels.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='particle.sheets'>
+		<description>
+			Defines the number of sheets to use for particles of type "beam" or "ribbon".
+			This property is only used by Graphic modules supporting advanced particle render
+			controls. Otherwise this property is ignored and the graphic module uses an
+			appropriate way to render particle beams and ribbons. A value of 0 allows the
+			graphic module to choose an appropriate value itself. This is the same as if the
+			graphic module does not support this property at all.
+			This is a single value with default value 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='bounciness'>
+		<description>
+			Defines the bounciness of a surface. This is used by the physics module to determine
+			with what fraction of the incoming force an object is repelled from a surface.
+			A value of 0 equals to no bounciness in which case an object hitting this surface
+			is not repelled at all whereas 1 equals to full bounciness in which case an object
+			bounces off this surface with the force it arrived. This has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.2</value>
+		</default>
+		<affects>
+			<module>physics</module>
+		</affects>
+	</property>
+	
+	<property name='sound.none'>
+		<description>
+			Defines if the material is interacting with sound at all. This texture property can
+			be make objects become ghost-like to sound as well as helping Audio Modules optimize
+			processing time. The value is of single value type and has to be 0 for regular sound
+			processing or 1 to not affect sound processing. The default value is 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.absorption'>
+		<description>
+			Defines the sound absorption of a surface. This property is used by the audio
+			module to determine the fraction of sound energy absorbed by the surface.
+			The value is of single value type and has to be in the range from 0 to 1.
+			A value of 0 absorbs no sound while a value of 1 absorbs all sound.
+			The default value is 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.12</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.absorption.lower'>
+		<description>
+			Defines the scaling factor to apply to "sound.absorption" for low frequencies.
+			The scale factor changes linearly from lower to upper value depending on frequency.
+			The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.35</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.absorption.upper'>
+		<description>
+			Defines the scaling factor to apply to "sound.absorption" for tones of high
+			frequencies. The scale factor changes linearly from lower to upper value
+			depending on frequency. The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1.75</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.transmission'>
+		<description>
+			Defines the required thickness in meters of material before sound drops to inaudible
+			levels. This property is used by the audio module to determine the transmission loss
+			for sound passing through material after applying absorption. The reflected sound
+			energy is the remaining amount of sound energy after absorption and transmission.
+			Hence if you want a fully reflective wall set transmission to 0.<br/>
+			<br/>
+			The thickness of a material is defined as the distance between the model face where
+			the sound enters the surface and the first model face it exits. Faces are classified
+			using the orientation of their face normal compared to the sound travel direction:<br/>
+			<br/>
+			- Entering faces: face normal points in the opposite direction<br/>
+			- Exiting faces: face normal points in the same direction<br/>
+			<br/>
+			Another way to look at it would be saying "entering faces" point towards the sound
+			wave while "exiting faces" point away from the sound wave.<br/>
+			<br/>
+			The "exiting faces" are not required to be located in the same Component resource.
+			Actually in most of the situations this is not the case.<br/>
+			<br/>
+			If no "exiting face" exists the thickness is considered to be infinite and sound
+			waves are inaudible.<br/>
+			<br/>
+			The property value is of single value type and has to be 0 or larger. With a value of
+			0 sound passing through the material is always inaudible. For larger values the sound
+			volume drops linear with distance travelled in the material.<br/>
+			<br/>
+			The "sound.transmission.lower" and "sound.transmission.upper" properties are
+			multipliers for this property for different frequency ranges.<br/>
+			<br/>
+			The default value is 0.4 which equals a 40cm thick brickwork wall plastered on both sides.<br/>
+			<br/>
+			Typical values:<br/>
+			- Brickwork plastered both sides: 0.4<br/>
+			- Brickwork plastered one side: 0.92<br/>
+			- Wood studs (38/89mm) 20mm Gypsum both sides: 0.78<br/>
+			- 6mm double glass with air-gap: 0.7<br/>
+			- 75mm timber studs plastered both sides: 1.2<br/>
+			<br/>
+			Reasonable range values can be calculated from engineering charts for sound
+			transmission using this approximation: range = thickness * pow(2, -reductionDB/6) * 1024.<br/>
+			Units are: range(m), thickness(m), reductionDB(dB). 1024 is 1/pow(2,-60[dB]/6).<br/>
+			<br/>
+			Note: Double Sided Geometry<br/>
+			To simulate a material like air-gap double window glass done using double sided model
+			textures use "sound.transmission" with a value of 0.7 and a "thickness" of 0.1.
+			This values are from the above table. This creates a material with constant sound
+			transmission effect transmitting 1/7 of sound volume to the other side.<br/>
+			<br/>
+			Note: No Transmission Loss<br/>
+			To simulate a material with no transmission loss use "sound.none" if there is no
+			absorption or a large value like 1000 if there is absorption.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.4</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.transmission.lower'>
+		<description>
+			Defines the scaling factor to apply to "sound.transmission" for low frequencies.
+			The scale factor changes linearly from lower to upper value depending on frequency.
+			Walls typically filter out higher frequencies allowing lower frequencies to pass easily.
+			<br/><br/>
+			The default value is 2.8 which equals to a reduction of noise reduction capability
+			of the material by 9dB.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>2.8</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+	
+	<property name='sound.transmission.upper'>
+		<description>
+			Defines the scaling factor to apply to "sound.transmission" for high frequencies.
+			The scale factor changes linearly from lower to upper value depending on frequency.
+			Walls typically filter out higher frequencies allowing lower frequencies to pass easily.
+			<br/><br/>
+			The default value is 0.28 which equals to an increase of noise reduction capability
+			of the material by 11dB (empirical engineering value). Higher values increase the
+			high-pass filter effect. A value of 1 removes the low-pass filter effect.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.28</value>
+		</default>
+		<affects>
+			<module>audio</module>
+		</affects>
+	</property>
+</texturePropertyList>

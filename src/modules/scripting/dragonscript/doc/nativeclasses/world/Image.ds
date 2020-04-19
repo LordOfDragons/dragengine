@@ -1,0 +1,102 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Immutable image resources.
+ * 
+ * Images can be loaded from file or produced by the game engine or modules. Once
+ * created the image content is immutable.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Image
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load image from file.
+	 * \details If the image file has been already loaded it is assigned to this object.
+	 *          If the image is not loaded yet the engine loads the image. This call
+	 *          blocks until the image is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded image resource. Once no object instance uses an image
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load image from file asynchronously.
+	 * \details Registers a request in the game engine to load an image. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          image or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the image has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/** \brief Width in pixels. */
+	public func int getWidth()
+	end
+	
+	/** \brief Height in pixels. */
+	public func int getHeight()
+	end
+	
+	/** \brief Width and height in pixels. */
+	public func Point getSize()
+	end
+	
+	/** \brief Depth in layers. */
+	public func int getDepth()
+	end
+	
+	/** \brief Component count in the range from 1 to 4. */
+	public func int getComponentCount()
+	end
+	
+	/** \brief Bit count which is 8, 16 or 32. */
+	public func int getBitCount()
+	end
+	
+	/** \brief Save image to file. */
+	public func void saveToFile(String filename)
+	end
+	
+	/** \brief Drop alpha component. */
+	public func Image dropAlpha()
+	end
+	
+	
+	
+	/**
+	 * \brief Image is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Image and both point to the same engine
+	 *          image resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

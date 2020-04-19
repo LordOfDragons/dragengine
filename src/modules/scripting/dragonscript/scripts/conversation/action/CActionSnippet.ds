@@ -1,0 +1,133 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Conversation action processing a different topic if existing.
+ */
+class CActionSnippet extends ConversationAction
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "CActionSnippet"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return CActionSnippet.new( env, reader )
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	
+	
+	private var StringID pGroupID
+	private var StringID pTopicID
+	
+	
+	
+	/** \brief Create conversation action. */
+	public func new()
+	end
+	
+	/** \brief Read from file. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		this.pGroupID = env.readStringIDOrNullIfEmpty( reader )
+		this.pTopicID = env.readStringIDOrNullIfEmpty( reader )
+	end
+	
+	
+	
+	/** \brief Group ID. */
+	public func StringID getGroupID()
+		return this.pGroupID
+	end
+	
+	/** \brief Set group ID. */
+	public func void setGroupID( StringID id )
+		this.pGroupID = id
+	end
+	
+	/** \brief Topic ID. */
+	public func StringID getTopicID()
+		return this.pTopicID
+	end
+	
+	/** \brief Set topic ID. */
+	public func void setTopicID( StringID id )
+		this.pTopicID = id
+	end
+	
+	
+	
+	/** \brief Execute action. */
+	public func void execute( ConversationPlayback playback )
+		var Conversation conversation = playback.getConversation()
+		var ConversationTopic topic
+		
+		var ConversationTopicGroup group = conversation.getTopicGroupWithID( this.pGroupID )
+		if group != null
+			topic = group.getTopicWithID( this.pTopicID )
+		end
+		
+		if topic != null
+			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( topic.getIteratorActions() )
+			layer.setTopicTopLevel( true )
+			playback.pushLayer( layer )
+			
+		else
+			playback.advanceToNextAction()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		env.writeStringIDOrEmptyIfNull( writer, this.pGroupID )
+		env.writeStringIDOrEmptyIfNull( writer, this.pTopicID )
+	end
+end

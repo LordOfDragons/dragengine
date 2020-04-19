@@ -1,0 +1,39 @@
+Various versions exist to calculate the area (and orientation) of a triangle using 3 vertices.
+This lists contains three versions and the statistics.
+
+version 1:
+   0.5 * ( ax*(by-cy) + bx*(cy-ay) + cx*(ay-by) )
+   stats:
+      5 add/sub, 4 mul
+
+version 2:
+   0.5 * ( ax*by - ax*cy + bx*cy - bx*ay + cx*ay - cx*by )
+   stats:
+      5 add/sub, 7 mul
+
+version 3:
+   0.5 * ( ( bx - ax )*( cy - ay ) - ( cx - ax )*( by - ay ) ) 
+   verify:
+      0.5 * ( bx*cy - bx*ay - ax*cy + ax*ay - ( cx*by - cx*ay - ax*by + ax*ay ) )
+      0.5 * ( bx*cy - bx*ay - ax*cy + ax*ay - cx*by + cx*ay + ax*by - ax*ay )
+      0.5 * ( bx*cy - bx*ay - ax*cy - cx*by + cx*ay + ax*by )
+   stats:
+      5 add/sub, 3 mul
+
+Version 3 has the least additions, subtractions and multiplications. A positive area indicates
+the vertices are oriented counter clockwise. A negative area indicates the vertices are
+oriented clockwise.
+
+version shader with X=(ax,bx,cx) Y=(ay,by,cy):
+   0.5 * ( ax*by + bx*cy + cx*ay - ax*cy - bx*ay - cx*by )
+   0.5 * ( ax*by + bx*cy + cx*ay - ( ax*cy + bx*ay + cx*by ) )
+   ( dot( X.xyz, Y.yza ) - dot( X.xyz, Y.zxy ) ) * 0.5
+
+
+
+Convex Hull in 2D (gift wrap method):
+
+- Find least point A (with minimum y coordinate) as a starting point. 
+- We can find B where all points lie to the left of AB by scanning through all the points.
+- Similarly, we can find C where all points lie to the left of BC. We can repeat this to
+  find the next point and so on until we are back at A.

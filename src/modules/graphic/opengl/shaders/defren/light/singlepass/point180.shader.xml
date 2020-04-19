@@ -1,0 +1,507 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Light SinglePass Point 180</name>
+	
+	<texture name="texDepth" target="0"/>
+	<texture name="texDiffuse" target="1"/>
+	<texture name="texNormal" target="2"/>
+	<texture name="texSpecular" target="3"/>
+	<texture name="texShadow1Obj" target="4"/>
+	<texture name="texShadow1Ter" target="5"/>
+	<texture name="texShadow2Obj" target="6"/>
+	<texture name="texShadow2Ter" target="7"/>
+	<texture name="texShadow3Obj" target="8"/>
+	<texture name="texShadow3Ter" target="9"/>
+	<texture name="texShadow4Obj" target="10"/>
+	<texture name="texShadow4Ter" target="11"/>
+	
+	<parameter name="pLight1Pos"/> <!-- 0 -->
+	<parameter name="pLight1Color"/> <!-- 1 -->
+	<parameter name="pLight2Pos"/> <!-- 2 -->
+	<parameter name="pLight2Color"/> <!-- 3 -->
+	<parameter name="pLight3Pos"/> <!-- 4 -->
+	<parameter name="pLight3Color"/> <!-- 5 -->
+	<parameter name="pLight4Pos"/> <!-- 6 -->
+	<parameter name="pLight4Color"/> <!-- 7 -->
+	<parameter name="pShadowBase"/> <!-- 8 -->
+	<parameter name="pShadowScale"/> <!-- 9 -->
+	<parameter name="pShadowOptions1Obj"/> <!-- 10 -->
+	<parameter name="pShadowOptions2Obj"/> <!-- 11 -->
+	<parameter name="pShadowOptions3Obj"/> <!-- 12 -->
+	<parameter name="pShadowOptions4Obj"/> <!-- 13 -->
+	<parameter name="pShadowOptionsTer"/> <!-- 14 -->
+	<parameter name="pShadowCutOff"/> <!-- 15 -->
+	<parameter name="pLightAttC1"/> <!-- 16 -->
+	<parameter name="pLightAttC2"/> <!-- 17 -->
+	<parameter name="pLightAttD1"/> <!-- 18 -->
+	<parameter name="pLightAttD2"/> <!-- 19 -->
+	<parameter name="pPosTransform"/> <!-- 20 -->
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+void main( void ){
+	vTexCoord = gl_MultiTexCoord0.st;
+	vScreenCoord = gl_Vertex.xy;
+	
+	gl_Position = vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+/////////////////////////////////////////////////////////////////////////////
+//                            UNIFORMS                                     //
+/////////////////////////////////////////////////////////////////////////////
+
+uniform vec3 pLight1Pos; // light position in object space
+uniform vec3 pLight1Color; // light color
+#ifdef HAS_LIGHT_2
+uniform vec3 pLight2Pos; // light position in object space
+uniform vec3 pLight2Color; // light color
+#endif
+#ifdef HAS_LIGHT_3
+uniform vec3 pLight3Pos; // light position in object space
+uniform vec3 pLight3Color; // light color
+#endif
+#ifdef HAS_LIGHT_4
+uniform vec3 pLight4Pos; // light position in object space
+uniform vec3 pLight4Color; // light color
+#endif
+uniform vec4 pLightAttC1; // light attenuation coefficient 1: l1, l2, l3, l4
+uniform vec4 pLightAttC2; // light attenuation coefficient 2: l1, l2, l3, l4
+uniform vec4 pLightAttD1; // light damping coefficient 1: l1, l2, l3, l4
+uniform vec4 pLightAttD2; // light damping coefficient 2: l1, l2, l3, l4
+
+uniform vec4 pShadowBase; // shadow base value
+uniform vec4 pShadowScale; // shadow scale value
+uniform vec4 pShadowOptions1Obj; // scale, offset, soffu, soffv
+#ifdef HAS_LIGHT_2
+uniform vec4 pShadowOptions2Obj; // scale, offset, soffu, soffv
+#endif
+#ifdef HAS_LIGHT_3
+uniform vec4 pShadowOptions3Obj; // scale, offset, soffu, soffv
+#endif
+#ifdef HAS_LIGHT_4
+uniform vec4 pShadowOptions4Obj; // scale, offset, soffu, soffv
+#endif
+uniform vec4 pShadowOptionsTer; // pcfsize 1..4
+uniform vec4 pShadowCutOff; // curt-off l1..l4
+
+uniform vec4 pPosTransform; // position transform
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//                            TEXTURES                                     //
+/////////////////////////////////////////////////////////////////////////////
+
+uniform sampler2D texDepth;
+uniform sampler2D texDiffuse;
+uniform sampler2D texNormal;
+uniform sampler2D texSpecular;
+#ifdef USE_HW_COMPARE
+	uniform sampler2DShadow texShadow1Obj;
+	uniform sampler2DShadow texShadow1Ter;
+	#ifdef HAS_LIGHT_2
+	uniform sampler2DShadow texShadow2Obj;
+	uniform sampler2DShadow texShadow2Ter;
+	#endif
+	#ifdef HAS_LIGHT_3
+	uniform sampler2DShadow texShadow3Obj;
+	uniform sampler2DShadow texShadow3Ter;
+	#endif
+	#ifdef HAS_LIGHT_4
+	uniform sampler2DShadow texShadow4Obj;
+	uniform sampler2DShadow texShadow4Ter;
+	#endif
+#else // USE_HW_COMPARE
+	uniform sampler2D texShadow1Obj;
+	uniform sampler2D texShadow1Ter;
+	#ifdef HAS_LIGHT_2
+	uniform sampler2D texShadow2Obj;
+	uniform sampler2D texShadow2Ter;
+	#endif
+	#ifdef HAS_LIGHT_3
+	uniform sampler2D texShadow3Obj;
+	uniform sampler2D texShadow3Ter;
+	#endif
+	#ifdef HAS_LIGHT_4
+	uniform sampler2D texShadow4Obj;
+	uniform sampler2D texShadow4Ter;
+	#endif
+#endif // USE_HW_COMPARE
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//                            VARYINGS                                     //
+/////////////////////////////////////////////////////////////////////////////
+
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//                            CONSTANTS                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+const float epsilon = 0.00001;
+const vec4 c1 = vec4( 1.0 );
+const vec4 c0 = vec4( 0.0 );
+
+// A light which illuminates objects at 80 lum/sr should be drawn
+// at 3183 lumens/meter^2/steradian, which equates to a multiplier
+// of 39.78 per lumen.
+//const float specularMultiplier = 39.78f;
+const float specularMultiplier = 2.0; //9.945f; // 19.98
+
+// texDiffuse: color.r, color.g, color.b, alpha
+// texNormal: normal.x, normal.y, normal.z, n/a
+// texSpecular: specular.int, specular.exp, n/a, n/a
+
+#define epsilon 0.00001
+
+const vec2 sct1 = vec2( 0.5, 0.5 );
+const vec2 sct2 = vec2( 0.5, 0.5 );
+const vec4 scot1 = vec4( 1.0, 1.0, 0.0, 0.0 );
+const vec4 scot2 = vec4( 1.0, 1.0, -1.0, -1.0 );
+
+#ifdef USE_HW_COMPARE
+#ifndef PCF_9TAP
+const vec4 scot3 = vec4( 0.5, 0.5, -0.5, -0.5 );
+const vec4 pcfHackWeight = vec4( 0.25 );
+#endif
+#endif // USE_HW_COMPARE
+
+#ifdef PCF_9TAP
+const float pcfWeight = 0.2;
+const vec4 pcfWeight2 = vec4( 0.2 );
+#endif
+
+#ifdef GEOM_ENCODED_DEPTH
+const vec3 unpackGeomDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+#endif
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//                         SHADOW FUNCTIONS                                //
+/////////////////////////////////////////////////////////////////////////////
+
+#ifdef USE_HW_COMPARE
+void evalShadowMap( inout float shadow, in sampler2DShadow shamap, in vec4 options, in vec3 shapos, in float cutoff ){
+	if( shapos.z < cutoff ) return;
+	
+	float shadist = length( shapos );
+	shapos /= vec3( max( epsilon, shadist ) );
+	shapos.st = ( shapos.xy / vec2( shapos.z + 1.0 ) ) * sct2 + sct1;
+	
+	vec3 stc = vec3( shapos.st, shadist * options.x + options.y );
+	
+#ifdef PCF_9TAP
+	vec4 shaoff1 = options.zwzw * scot1; // offU, offV, 0, 0
+	vec4 shaoff2 = options.zwzw * scot2; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	shadow = shadow2D( shamap, stc ).r * pcfWeight;
+	
+	stc.st = shapos.st + shaoff1.xw;
+	collect.x = shadow2D( shamap, stc ).r; // (u,0)
+	stc.st = shapos.st - shaoff1.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (-u,0)
+	stc.st = shapos.st + shaoff1.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (0,v)
+	stc.st = shapos.st - shaoff1.zy;
+	collect.w = shadow2D( shamap, stc ).r; // (0,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+	stc.st = shapos.st + shaoff2.xy;
+	collect.x = shadow2D( shamap, stc ).r; // (u,v)
+	stc.st = shapos.st + shaoff2.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (u,-v)
+	stc.st = shapos.st + shaoff2.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (-u,v)
+	stc.st = shapos.st + shaoff2.zw;
+	collect.w = shadow2D( shamap, stc ).r; // (-u,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+#else // PCF_9TAP
+	//shadow = shadow2D( shamap, stc ).r; // <= bugged on ATI ( no shadows, wtf?! )
+	
+	vec4 shaoff2 = options.zwzw * scot3; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	stc.st = shapos.st + shaoff2.xy;
+	collect.x = shadow2D( shamap, stc ).r; // (u,v)
+	stc.st = shapos.st + shaoff2.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (u,-v)
+	stc.st = shapos.st + shaoff2.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (-u,v)
+	stc.st = shapos.st + shaoff2.zw;
+	collect.w = shadow2D( shamap, stc ).r; // (-u,-v)
+	shadow = dot( collect, pcfHackWeight );
+	
+#endif // PCF_9TAP
+}
+
+#else // USE_HW_COMPARE
+void evalShadowMap( inout float shadow, in sampler2D shamap, in vec4 options, in vec3 shapos, in float cutoff ){
+	if( shapos.z < cutoff ) return;
+	
+	float shadist = length( shapos );
+	shapos /= vec3( max( epsilon, shadist ) );
+	shapos.st = ( shapos.xy / vec2( shapos.z + 1.0 ) ) * sct2 + sct1;
+	
+	shadist = shadist * options.x + options.y;
+	
+#ifdef PCF_9TAP
+	vec4 shaoff1 = options.zwzw * scot1; // offU, offV, 0, 0
+	vec4 shaoff2 = options.zwzw * scot2; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	shadow = step( shadist, texture2D( shamap, shapos.st ).r ) * pcfWeight;
+	
+	collect.x = step( shadist, texture2D( shamap, shapos.st + shaoff1.xw ).r ); // (u,0)
+	collect.y = step( shadist, texture2D( shamap, shapos.st - shaoff1.xw ).r ); // (-u,0)
+	collect.z = step( shadist, texture2D( shamap, shapos.st + shaoff1.zy ).r ); // (0,v)
+	collect.w = step( shadist, texture2D( shamap, shapos.st - shaoff1.zy ).r ); // (0,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+	collect.x = step( shadist, texture2D( shamap, shapos.st + shaoff2.xy ).r ); // (u,v)
+	collect.y = step( shadist, texture2D( shamap, shapos.st + shaoff2.xw ).r ); // (u,-v)
+	collect.z = step( shadist, texture2D( shamap, shapos.st + shaoff2.zy ).r ); // (-u,v)
+	collect.w = step( shadist, texture2D( shamap, shapos.st + shaoff2.zw ).r ); // (-u,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+#else // PCF_9TAP
+	shadow = step( shadist, texture2D( shamap, shapos.st ).r );
+#endif // PCF_9TAP
+}
+#endif // USE_HW_COMPARE
+
+void evalShadowMapStatic( inout float shadow, in sampler2DShadow shamap, in vec4 options, in vec3 shapos, in float cutoff ){
+	if( shapos.z < cutoff ) return;
+	
+	float shadist = length( shapos );
+	vec2 shascale = options.zw * vec2( min( 5.0, shadist / 2.5 ) );
+	shapos /= vec3( max( epsilon, shadist ) );
+	shapos.st = ( shapos.xy / vec2( shapos.z + 1.0 ) ) * sct2 + sct1;
+	
+	int x, y;
+	vec3 stc;
+	
+	shadow = 0.0;
+	stc.p = shadist * options.x + options.y;
+	
+	for( y=-2; y<2; y++ ){
+		stc.t = shascale.y * float( y ) + shapos.t;
+		
+		for( x=-2; x<2; x++ ){
+			stc.s = shascale.x * float( x ) + shapos.s;
+			shadow += shadow2D( shamap, stc ).r;
+		}
+	}
+	
+	shadow /= 25.0;
+}
+
+
+/*
+void evalShadowCube( inout float shadow, in samplerCube shacube, in vec2 options, in float pcfsize, in vec3 shapos ){
+	float shadist = length( shapos ) * options.x + options.y;
+	
+//#ifdef PCF_9TAP
+	vec3 o1;// = vec3( 0.0 );
+	vec3 o2;// = vec3( 0.0 );
+	vec3 absshapos;
+	vec4 collect;
+	
+	absshapos = abs( shapos );
+	//vec3 r = step( absshapos.xyz, absshapos.yzx ) * step( absshapos.xyz, absshapos.zxy );
+	//vec2 scale = vec2( dot( absshapos, r ) * pShadowOptions.z );
+	//o1.xz = ( c2 * r.xx + c1 ) * scale;
+	//o2.zy = ( c2 * r.yy + c1 ) * scale;
+	if( absshapos.x > absshapos.y && absshapos.x > absshapos.z ){ // x is largest
+		o1 = vec3( 0.0, 0.0, pcfsize );
+		o2 = vec3( 0.0, pcfsize, 0.0 );
+		
+	}else if( absshapos.y > absshapos.x && absshapos.y > absshapos.z ){ // y is largest
+		o1 = vec3( pcfsize, 0.0, 0.0 );
+		o2 = vec3( 0.0, 0.0, pcfsize );
+		
+	}else{ // z is largest
+		o1 = vec3( pcfsize, 0.0, 0.0 );
+		o2 = vec3( 0.0, pcfsize, 0.0 );
+	}
+	
+	shadow = step( shadist, textureCube( shacube, shapos ).r ) * pcfWeight;
+	
+	collect.x = step( shadist, textureCube( shacube, shapos + o1 ).r );
+	collect.y = step( shadist, textureCube( shacube, shapos - o1 ).r );
+	collect.z = step( shadist, textureCube( shacube, shapos + o2 ).r );
+	collect.w = step( shadist, textureCube( shacube, shapos - o2 ).r );
+	shadow += dot( collect, pcfWeight2 );
+	
+	collect.x = step( shadist, textureCube( shacube, shapos + o1 + o2 ).r );
+	collect.y = step( shadist, textureCube( shacube, shapos + o1 - o2 ).r );
+	collect.z = step( shadist, textureCube( shacube, shapos - o1 + o2 ).r );
+	collect.w = step( shadist, textureCube( shacube, shapos - o1 - o2 ).r );
+	shadow += dot( collect, pcfWeight2 );
+	
+//#else // PCF_9TAP
+//	shadow = step( shadist, textureCube( shacube, shapos ).r );
+//#endif // PCF_9TAP
+}
+*/
+
+
+#define ESM evalShadowMap
+//#define ESM evalShadowMapStatic
+
+/////////////////////////////////////////////////////////////////////////////
+//                           MAIN FUNCTION                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+void main( void ){
+	vec4 diffuse = texture2D( texDiffuse, vTexCoord );
+#ifdef SHADER_STENCIL_TEST
+	if( diffuse.a < epsilon ) discard;
+#endif
+	
+	// calculate position
+#ifdef GEOM_ENCODED_DEPTH
+	vec3 position = vec3( dot( texture2D( texDepth, vTexCoord ).rgb, unpackGeomDepth ) );
+#else
+	vec3 position = vec3( texture2D( texDepth, vTexCoord ).r );
+#endif
+	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+	
+//	bvec4 lightStencil = bvec4( true, true, true, true );
+	
+	
+	// determine the shadow strength for all lights
+	vec3 shapos;
+	vec4 shadow = vec4( 0.0 );
+	vec4 shadowObj = vec4( 1.0 );
+	
+//	if( lightStencil.x ){
+		shapos = ( gl_TextureMatrix[ 0 ] * vec4( position, 1.0 ) ).xyz;
+		ESM( shadowObj.r, texShadow1Obj, pShadowOptions1Obj, shapos, pShadowCutOff.r );
+		ESM( shadow.r, texShadow1Ter, pShadowOptions1Obj, shapos, pShadowCutOff.r );
+//	}
+#ifdef HAS_LIGHT_2
+//	if( lightStencil.y ){
+		shapos = ( gl_TextureMatrix[ 1 ] * vec4( position, 1.0 ) ).xyz;
+		ESM( shadowObj.g, texShadow2Obj, pShadowOptions2Obj, shapos, pShadowCutOff.g );
+		ESM( shadow.g, texShadow2Ter, pShadowOptions2Obj, shapos, pShadowCutOff.g );
+//	}
+#endif
+#ifdef HAS_LIGHT_3
+//	if( lightStencil.z ){
+		shapos = ( gl_TextureMatrix[ 2 ] * vec4( position, 1.0 ) ).xyz;
+		ESM( shadowObj.b, texShadow3Obj, pShadowOptions3Obj, shapos, pShadowCutOff.b );
+		ESM( shadow.b, texShadow3Ter, pShadowOptions3Obj, shapos, pShadowCutOff.b );
+//	}
+#endif
+#ifdef HAS_LIGHT_4
+//	if( lightStencil.w ){
+		shapos = ( gl_TextureMatrix[ 3 ] * vec4( position, 1.0 ) ).xyz;
+		ESM( shadowObj.a, texShadow4Obj, pShadowOptions4Obj, shapos, pShadowCutOff.a );
+		ESM( shadow.a, texShadow4Ter, pShadowOptions4Obj, shapos, pShadowCutOff.a );
+//	}
+#endif
+	
+	shadow = ( shadowObj * pShadowScale + pShadowBase ) * shadow;
+	
+	
+	
+	// fetch values used for lighting calculations common to all lights
+	vec3 norpos = normalize( position );
+	vec3 normal = texture2D( texNormal, vTexCoord ).rgb;
+	float useNormal = step( dot( normal, normal ), epsilon ); // 0 if use normal, 1 otherwise
+	vec2 specularity = texture2D( texSpecular, vTexCoord ).rg;
+	specularity.g = specularity.g * 255.0 + 0.001;
+	
+	
+	
+	// calculate the light contribution
+	vec4 speccoeff, diffcoeff, ldist;
+	vec3 ldir;
+	
+//	if( lightStencil.x ){
+		ldir = pLight1Pos - position;
+		ldist.r = length( ldir );
+		if( ldist.r != 0.0 ) ldir /= ldist.r;
+		diffcoeff.r = dot( normal, ldir );
+		speccoeff.r = dot( reflect( ldir, normal ), norpos );
+//	}
+	
+#ifdef HAS_LIGHT_2
+//	if( lightStencil.y ){
+		ldir = pLight2Pos - position;
+		ldist.g = length( ldir );
+		if( ldist.g != 0.0 ) ldir /= ldist.g;
+		diffcoeff.g = dot( normal, ldir );
+		speccoeff.g = dot( reflect( ldir, normal ), norpos );
+//	}
+#endif
+	
+#ifdef HAS_LIGHT_3
+//	if( lightStencil.z ){
+		ldir = pLight3Pos - position;
+		ldist.b = length( ldir );
+		if( ldist.b != 0.0 ) ldir /= ldist.b;
+		diffcoeff.b = dot( normal, ldir );
+		speccoeff.b = dot( reflect( ldir, normal ), norpos );
+//	}
+#endif
+	
+#ifdef HAS_LIGHT_4
+//	if( lightStencil.w ){
+		ldir = pLight4Pos - position;
+		ldist.a = length( ldir );
+		if( ldist.a != 0.0 ) ldir /= ldist.a;
+		diffcoeff.a = dot( normal, ldir );
+		speccoeff.a = dot( reflect( ldir, normal ), norpos );
+//	}
+#endif
+	
+	diffcoeff = max( diffcoeff, vec4( useNormal ) ); // normal-less lighting or normal based lighting
+	diffcoeff *= max( pLightAttD1 / ( c1 + pow( pLightAttC1 * ldist, pLightAttC2 ) ) + pLightAttD2, c0 ); // att + damp
+	diffcoeff *= shadow;
+	speccoeff = pow( max( speccoeff, vec4( useNormal ) ), vec4( specularity.g ) ) * vec4( specularity.r );
+	
+	vec3 finalColor = pLight1Color * ( diffuse.rgb + vec3( speccoeff.r ) ) * vec3( diffcoeff.r );
+	//vec3 finalColor = vec3( 0.0 );
+	
+//	if( lightStencil.x ){
+//		finalColor = pLight1Color * ( diffuse.rgb + vec3( speccoeff.r ) ) * vec3( diffcoeff.r );
+//	}
+#ifdef HAS_LIGHT_2
+//	if( lightStencil.y ){
+		finalColor += pLight2Color * ( diffuse.rgb + vec3( speccoeff.g ) ) * vec3( diffcoeff.g );
+//	}
+#endif
+#ifdef HAS_LIGHT_3
+//	if( lightStencil.z ){
+		finalColor += pLight3Color * ( diffuse.rgb + vec3( speccoeff.b ) ) * vec3( diffcoeff.b );
+//	}
+#endif
+#ifdef HAS_LIGHT_4
+//	if( lightStencil.w ){
+		finalColor += pLight4Color * ( diffuse.rgb + vec3( speccoeff.a ) ) * vec3( diffcoeff.a );
+//	}
+#endif
+	
+	
+	
+	// done... phew... that's now the light of up to four lights now :O
+	gl_FragColor = vec4( finalColor, diffuse.a );
+}
+	]]></program>
+	
+</shader>

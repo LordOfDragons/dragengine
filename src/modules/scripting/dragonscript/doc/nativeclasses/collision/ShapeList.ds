@@ -1,0 +1,216 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Shape list.
+ * 
+ * List of analytical shapes. Supported shapes:
+ * - Sphere
+ * - Box
+ * - Cylinder
+ * - Capsule
+ * - Tapered box
+ * - Tapered cylined
+ * - Tapered capsule
+ * 
+ * The shape list acts as union of all shapes.
+ * 
+ * This is a native class.
+ */
+class ShapeList
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create shape list. */
+	public func new()
+	end
+	
+	/** \brief Create copy of shape list. */
+	public func new( ShapeList copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of shapes. */
+	public func int getCount()
+	end
+	
+	/** \brief Has no shapes. */
+	public func bool empty()
+	end
+	
+	/** \brief Has shapes. */
+	public func bool notEmpty()
+	end
+	
+	/** \brief Remove all shapes. */
+	public func void removeAllShapes()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Sphere */
+	/*@{*/
+	/** \brief Add sphere shape. */
+	public func void addSphere( Vector position, float radius )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Box */
+	/*@{*/
+	/** \brief Add box shape. */
+	public func void addBox( Vector center, Vector halfExtents )
+	end
+	
+	/** \brief Add box shape. */
+	public func void addBox( Vector center, Vector halfExtents, Quaternion orientation )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Cylinder */
+	/*@{*/
+	/** \brief Add cylinder shape. */
+	public func void addCylinder( float halfHeight, float radius )
+	end
+	
+	/** \brief Add cylinder shape. */
+	public func void addCylinder( float halfHeight, float radius, Vector position )
+	end
+	
+	/** \brief Add cylinder shape. */
+	public func void addCylinder( float halfHeight, float radius, Vector position, Quaternion orientation )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector position )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
+	Vector position, Quaternion orientation )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	end
+	
+	/** \brief Add tapered cylinder shape. */
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Capsule */
+	/*@{*/
+	/** \brief Add a capsule shape. */
+	public func void addCapsule( float halfHeight, float radius )
+	end
+	
+	/** \brief Add a capsule shape. */
+	public func void addCapsule( float halfHeight, float radius, Vector position )
+	end
+	
+	/** \brief Add a capsule shape. */
+	public func void addCapsule( float halfHeight, float radius, Vector position, Quaternion orientation )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector position )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
+	Vector position, Quaternion orientation )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	end
+	
+	/** \brief Add a tapered capsule shape. */
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
+	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Hull */
+	/*@{*/
+	/**
+	 * \brief Add a hull shape.
+	 * \param points Array of Vector.
+	 */
+	public func void addHull( Array points )
+	end
+	
+	/**
+	 * \brief Add a hull shape.
+	 * \param points Array of Vector.
+	 */
+	public func void addHull( Array points, Vector position )
+	end
+	
+	/**
+	 * \brief Add a hull shape.
+	 * \param points Array of Vector.
+	 */
+	public func void addHull( Array points, Vector position, Quaternion orientation )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read vector from a file reader. */
+	static public func ShapeList readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write vector to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/*@}*/
+end

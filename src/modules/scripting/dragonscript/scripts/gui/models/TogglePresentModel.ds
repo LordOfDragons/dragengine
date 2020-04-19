@@ -1,0 +1,122 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+
+
+/**
+ * \brief ToggleModel synchronized against a ListModel containing an object.
+ * 
+ * Synchronizes toggle state of a ToggleModel with the presence of an object in a ListModel.
+ * Typically the object to check presence for is an Enumeration. This allows to use a ListModel
+ * to store boolean game states that can be activated or deactivated. Each game state is
+ * represented by a constant from an enumeration list. Changeing game states modifies the
+ * enumerations present in the list. This class tracks a specific enumeration constants and
+ * uses it to toggle a ToggleModel. This way ToggleModel supporting widgets can easily track
+ * a ListModel to build UIs in a simple and understandable way.
+ * 
+ * An example use looks like this:
+ * 
+ * \code{.ds}
+ * // Enumeration representing game states. Multiple enums are possible.
+ * enum GameStates
+ *    state1
+ *    state2
+ *    state3
+ * end
+ * 
+ * // List model storing activate states
+ * modelStates = DefaultListModel.new()
+ * 
+ * // set up UI
+ * ui.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+ *    DisplayImage image
+ *    
+ *    p.addWidget(image = DisplayImage.new(Image.new("/content/ui/state1.png")))
+ *    WModifierVisibility.new(TogglePresentModel.new(modelStates, GameStates.state1), image)
+ *    
+ *    p.addWidget(image = DisplayImage.new(Image.new("/content/ui/state2.png")))
+ *    WModifierVisibility.new(TogglePresentModel.new(modelStates, GameStates.state2), image)
+ *    
+ *    p.addWidget(image = DisplayImage.new(Image.new("/content/ui/state3.png")))
+ *    WModifierVisibility.new(TogglePresentModel.new(modelStates, GameStates.state3), image)
+ * end))
+ * 
+ * // Now the game states can be toggle causing the UI to adjust automatically
+ * modelStates.add(GameStates.state1) // => image 1 becomes visible
+ * modelStates.add(GameStates.state3) // => image 3 becomes visible
+ * ...
+ * modelStates.remove(GameStates.state3) // => image 3 becomes invisible
+ * \endcode
+ */
+class TogglePresentModel extends DefaultToggleModel implements ListModelListener
+	/** \brief Object to track presence of. */
+	private var Object pTrackPresence
+	
+	
+	/** \brief Create toggle model synchronized against presence of object in list model. */
+	public func new( ListModel listModel, Object trackPresence )
+		if listModel == null
+			throw ENullPointer.new( "listModel" )
+		end
+		if trackPresence == null
+			throw ENullPointer.new( "trackPresence" )
+		end
+		
+		this.pTrackPresence = trackPresence
+		listModel.addListener( this )
+		
+		this.updateToggleModel( listModel )
+	end
+	
+	
+	
+	/** \brief Update toggle model. */
+	protected func void updateToggleModel( ListModel listModel )
+		this.setToggled( listModel.has( this.pTrackPresence ) )
+	end
+	
+	
+	
+	/** \brief Elements have been added. */
+	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
+		this.updateToggleModel( listModel )
+	end
+	
+	/** \brief Elements have been removed. */
+	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
+		this.updateToggleModel( listModel )
+	end
+	
+	/** \brief Content of the model changed. */
+	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+		this.updateToggleModel( listModel )
+	end
+	
+	/** \brief Selection in the model changed. */
+	public func void selectionChanged( ListModel listModel )
+	end
+end

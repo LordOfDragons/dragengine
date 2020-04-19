@@ -1,0 +1,143 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky.
+ * 
+ * This is a native class.
+ */
+class Sky
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create sky. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Background color. */
+	public func Color getBgColor()
+	end
+	
+	/** \brief Set background color. */
+	public func void setBgColor( Color color )
+	end
+	
+	
+	
+	/** \brief Number of controllers. */
+	public func int getControllerCount()
+	end
+	
+	/**
+	 * \brief Set number of controllers.
+	 * 
+	 * Sets all controllers to default vaules.
+	 */
+	public func void setControllerCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the
+	 *          parent sky is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func SkyController getControllerAt( int index )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the animator
+	 *          is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func SkyController getControllerNamed( String name )
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+	end
+	
+	
+	
+	/** \brief Number of links. */
+	public func int getLinkCount()
+	end
+	
+	/**
+	 * \brief Set number of links.
+	 * 
+	 * Sets all links to default vaules.
+	 */
+	public func void setLinkCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for link.
+	 * 
+	 * \warning The wrapper is only valid as long as the link structure in the
+	 *          parent sky is not changed.
+	 * 
+	 * \throws EOutOfBoundary \em link is less than 0 or larger than or equal
+	 *                        to getLinkCount().
+	 */
+	public func SkyLink getLinkAt( int index )
+	end
+	
+	
+	
+	/** \brief Number of layers. */
+	public func int getLayerCount()
+	end
+	
+	/**
+	 * \brief Set number of layers.
+	 * 
+	 * Sets all layers to default vaules.
+	 */
+	public func void setLayerCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for layer.
+	 * 
+	 * \warning The wrapper is only valid as long as the layer structure in the
+	 *          parent sky is not changed.
+	 * 
+	 * \throws EOutOfBoundary \em layer is less than 0 or larger than or equal
+	 *                        to getLayerCount().
+	 */
+	public func SkyLayer getLayerAt( int index )
+	end
+	
+	
+	
+	/**
+	 * \brief Notify peer parameters changed.
+	 * 
+	 * Use after changing one or more parameters. If possible avoid changing
+	 * parameters while sky instances use this sky.
+	 */
+	public func void contentChanged()
+	end
+	/*@}*/
+end

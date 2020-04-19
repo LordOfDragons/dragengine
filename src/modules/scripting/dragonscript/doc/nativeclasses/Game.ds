@@ -1,0 +1,82 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Base game class.
+ * 
+ * This is the basic game object for your game application. You have to create a single subclass.
+ * of this class handling your game. The DragonScript script module examines all scripts for
+ * the presence of this one subclass and creates a single instance from it. The single instance
+ * is also available from Engine.getGame().
+ * 
+ * This is a native class. You have to subclass this class exactly once.
+ */
+class Game
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create game. */
+	protected func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Called by game engine to init game.
+	 * \details This function has to load all data needed to start working. Do not enter
+	 *          a loop inside this method. The game engine handles the game loop.
+	 */
+	public func void initGame()
+	end
+	
+	/**
+	 * \brief Called by the game engine to clean up before the game exits.
+	 * \details Make sure to free all data acquired during the run of the game. This is
+	 *          the last method called in the script before the engine terminates.
+	 */
+	public func void cleanUp()
+	end
+	
+	
+	
+	/** \brief Process input event. */
+	public func void inputEvent( InputEvent event )
+	end
+	
+	
+	
+	/**
+	 * \brief Called by the game engine at the beginning of each frame update.
+	 * \details Use this method to advance your game by Engine.getElapsedTime() seconds.
+	 */
+	public func void onFrameUpdate()
+	end
+	
+	/** \brief Size of the render window changed. */
+	public func void onResizeRenderWindow()
+	end
+	
+	
+	
+	/** \brief Number of command line arguments given to the game. */
+	public func int getArgumentCount()
+	end
+	
+	/**
+	 * \brief Command line argument given to the game.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getArgumentCount().
+	 */
+	public func String getArgumentAt( int index )
+	end
+	/*@}*/
+end

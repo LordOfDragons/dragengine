@@ -1,0 +1,292 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding a camera renderable.
+ * 
+ * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
+ * behavior. Create ECBehaviorRenderableCamera behavior and set the dynamic skin and
+ * camera. Now you can add other behaviors targeting the ECBehaviorRenderableCamera to
+ * alter the renderable if desired.
+ * 
+ * Using a camera renderable or a canvas renderable with a render world canvas behaves
+ * differently. A render world canvas sets a fixed render size and allows to embed the
+ * camera view into other canvas to create elaborate results. A camera renderable does
+ * not force a specific render size. The graphic module is free to choose a resolution
+ * or to render the camera renderable directly. Render world canvas always renders into
+ * an image that can be reused. Camera renderables are usually more efficient and have
+ * better resolution since these requirements are not needed. On the other hand camera
+ * renderables prevent them to be embedded into canvas views. You need to use camera
+ * effects to add overlays or other manipulations. Nevertheless using camera renderable
+ * is faster and higher resolution and should be used unless complex canvas processing
+ * effects are required.
+ * 
+ * By default the ECBehaviorCamera with empty identifier is used if present.
+ * Use setCameraID() to change the identifier.
+ * 
+ * Multiple ECBehaviorRenderableCamera instances can be added to affect individual
+ * dynamic skin textures. The example below uses one component with one dynamic skin to two
+ * individual renderables named "camera1" and "camera2" each showing a different camera view.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorComponent.new(this)
+ *       var DynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this)
+ *       var ECBehaviorCamera camera1 = ECBehaviorCamera.new(this, "camera1")
+ *       var ECBehaviorCamera camera2 = ECBehaviorCamera.new(this, "camera2")
+ *       
+ *       var ECBehaviorRenderableCamera behavior = ECBehaviorRenderableCamera.new(this, dynamicSkin, camera1)
+ *       behavior.getRenderable().setValue("camera1")
+ *       
+ *       behavior = ECBehaviorRenderableCamera.new(this, dynamicSkin, camera2, "renderableCamera2")
+ *       behavior.getRenderable().setValue("camera2")
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "renderableCamera{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorRenderableCamera extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorRenderableCamera pECBehavior
+		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
+		private var ECBehaviorCamera.Instance pCamera
+		private var int pRenderable
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorRenderableCamera ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pRenderable = -1
+			
+			this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
+			this.pCamera = ecbehavior.getCamera().instance( element )
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var String renderableName = this.pECBehavior.getRenderable().getValue( stub )
+			if renderableName.empty()
+				return
+			end
+			
+			var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
+			this.pRenderable = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable( renderableName, DynamicSkinRenderableType.camera )
+			dynamicSkin.setCameraAt( this.pRenderable, this.pCamera.getCamera() )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRenderableCamera getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Dynamic skin behavior. */
+		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
+			return this.pDynamicSkin
+		end
+		
+		/** \brief Camera behavior. */
+		public func ECBehaviorCamera.Instance getCamera()
+			return this.pCamera
+		end
+	end
+	
+	
+	
+	private var ECBehaviorDynamicSkin pDynamicSkin
+	private var ECBehaviorCamera pCamera
+	private var ECPString pRenderable
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorCamera camera ) this( eclass, dynamicSkin, camera, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorCamera camera, String id ) this( eclass, dynamicSkin, camera, id, \
+	id.empty() if "renderableCamera." else "renderableCamera(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorCamera camera, String id, String prefix ) super( eclass, id )
+		if camera == null
+			throw ENullPointer.new( "camera" )
+		end
+		if dynamicSkin == null
+			throw ENullPointer.new( "dynamicSkin" )
+		end
+		
+		this.pCamera = camera
+		this.pDynamicSkin = dynamicSkin
+		
+		this.pRenderable = ECPString.new( prefix + "renderable", "" )
+		eclass.addProperty( this.pRenderable )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pDynamicSkin = null
+		this.pCamera = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Dynamic skin behavior. */
+	public func ECBehaviorDynamicSkin getDynamicSkin()
+		return this.pDynamicSkin
+	end
+	
+	/** \brief Camera behavior. */
+	public func ECBehaviorCamera getCamera()
+		return this.pCamera
+	end
+	
+	/** \brief Name of renderable to create or empty string if not used. */
+	public func ECPString getRenderable()
+		return this.pRenderable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorRenderableCamera getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorRenderableCamera
+		end ) cast ECBehaviorRenderableCamera
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorRenderableCamera with specific identifier.
+	 */
+	static public func ECBehaviorRenderableCamera getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorRenderableCamera each
+			return each castable ECBehaviorRenderableCamera and \
+				( each cast ECBehaviorRenderableCamera ).getID().equals( id )
+		end ) cast ECBehaviorRenderableCamera
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableCamera behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorRenderableCamera
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableCamera.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

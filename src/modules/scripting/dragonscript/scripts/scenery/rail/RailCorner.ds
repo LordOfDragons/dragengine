@@ -1,0 +1,109 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Corner in a Rail.
+ * 
+ * Corners have a position, orientation and an order number. The order number is used to
+ * sort the corners along the parent rail path. The rail is non-forking running from the
+ * corner with the lowest order to the corner with the highest order. Adding corners
+ * inserts them sorted by their order.
+ * 
+ * While the Rail class is usually not subclasses the RailCorner class is created by rail
+ * corner element classes and can be subclassed to add additional properties to corners.
+ */
+class RailCorner
+	private var int pOrder
+	private var DVector pPosition
+	private var Quaternion pOrientation
+	private var DMatrix pMatrix
+	
+	
+	
+	/** \brief Create rail corner. */
+	public func new( int order )
+		this.pOrder = order
+		this.pPosition = DVector.new()
+		this.pOrientation = Quaternion.new()
+	end
+	
+	/** \brief Create copy of rail corner. */
+	public func new( RailCorner corner )
+		this.pOrder = corner.pOrder
+		this.pPosition = corner.pPosition
+		this.pOrientation = corner.pOrientation
+		this.pMatrix = corner.pMatrix
+	end
+	
+	
+	
+	/**
+	 * \brief Order.
+	 * 
+	 * The order number is used to sort the corners along the parent rail path. The rail is
+	 * non-forking running from the corner with the lowest order to the corner with the
+	 * highest order. Adding corners inserts them sorted by their order.
+	 */
+	public func int getOrder()
+		return this.pOrder
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+		this.pMatrix = null
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		this.pOrientation = orientation
+		this.pMatrix = null
+	end
+	
+	/** \brief Matrix. */
+	public func DMatrix getMatrix()
+		if this.pMatrix == null
+			this.pMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
+		end
+		return this.pMatrix
+	end
+end
+

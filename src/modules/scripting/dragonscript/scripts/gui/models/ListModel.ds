@@ -1,0 +1,68 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Model for content of list oriented widgets.
+ */
+interface ListModel
+	/** \brief Add modifier. */
+	func void addListener( ListModelListener listener )
+	
+	/** \brief Remove listener. */
+	func void removeListener( ListModelListener listener )
+	
+	/** \brief Number of elements. */
+	func int getCount()
+	
+	/**
+	 * \brief Element at index.
+	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
+	 */
+	func Object getAt( int index )
+	
+	/** \brief Index of element or -1 if absent. */
+	func int indexOf( Object element )
+	
+	/** \brief Element is present. */
+	func bool has( Object element )
+	
+	/**
+	 * \brief Notify all that the content of the model in the given range changed.
+	 * \param fromIndex Index of first element that changed
+	 * \param toIndex Index of last element that changed
+	 */
+	func void notifyContentChanged( int fromIndex, int toIndex )
+	
+	/**
+	 * \brief Index of the selected element or -1 if there is no selected element.
+	 */
+	func int getSelected()
+	
+	/**
+	 * \brief Set index of selected element or -1 if none is no selected element.
+	 */
+	func void setSelected( int index )
+end

@@ -1,0 +1,465 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.Announcer
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Announcer.
+ *
+ * Play back word sound files to produce an announcement similar to train or building
+ * announcement systems using a synthesizer loaded from an XML file.
+ * 
+ * Announcers operate a synthesizer instance and a speaker attached to it. In real
+ * world scenarios though announcements typically apply to multiple speakers at the
+ * same time. In a game situation though it is usually enough to play back only from
+ * the speaker neartest to the location the player is located in. If more speakers
+ * have to play back the same announcement you can assign the synthesizer instance
+ * to speakers you have created yourself and start playing them whenever you start
+ * playing an announcement on the announcer handled speaker. If you need special
+ * abilities like some speakers having audible odities using a custom made synthesizer
+ * to alter the announcement you have to create one announcer for each such speaker.
+ * This might be anyways the most simple solution.
+ * 
+ * If a custom modifier synthesizer is used it is added as a synthesizer source after
+ * the source producing the announcement. Additionally a modified synthesizer blend
+ * controller is added as well as copies of controllers matching the modifier
+ * synthesizer controllers properly linked.
+ * 
+ */
+class Announcer
+	private var Dictionary pParts
+	private var Synthesizer pModifierSynthesizer
+	private var Array pAnnounceParts
+	private var int pSampleRate
+	private var SynthesizerInstance pSynthesizer
+	private var SynthesizerController pControllerPart
+	private var SynthesizerController pControllerState
+	private var Speaker pSpeaker
+	
+	
+	
+	/** \brief Create announcer. */
+	public func new()
+		this.pParts = Dictionary.new()
+		this.pAnnounceParts = Array.new()
+		this.pSampleRate = 44100
+		this.pSynthesizer = SynthesizerInstance.new()
+		this.pSpeaker = Speaker.new()
+	end
+	
+	
+	
+	/** \brief Number of parts. */
+	public func int getPartCount()
+		return this.pParts.getCount()
+	end
+	
+	/** \brief Get named part or \em null if absent. */
+	public func AnnouncerPart getPart( String partID )
+		return this.pParts.getAt( partID, null ) cast AnnouncerPart
+	end
+	
+	/** \brief Part with ID is present. */
+	public func bool hasPart( String partID )
+		return this.pParts.has( partID )
+	end
+	
+	/** \brief Add part. */
+	public func void addPart( AnnouncerPart part )
+		if this.pParts.has( part.getID() )
+			throw EInvalidParam.new()
+		end
+		this.pParts.setAt( part.getID(), part )
+	end
+	
+	/** \brief Remove part. */
+	public func void removePart( String partID )
+		this.pParts.remove( partID )
+	end
+	
+	/** \brief Remove all parts. */
+	public func void removeAllParts()
+		this.pParts.removeAll()
+	end
+	
+	/** \brief Visit parts with block with parameter AnnouncerPart. */
+	public func void forEachPart( Block ablock )
+		this.pParts.forEachValue( ablock )
+	end
+	
+	
+	
+	/** \brief Custom synthesizer modifying the announcement or \em null if not used. */
+	public func Synthesizer getModifierSynthesizer()
+		return this.pModifierSynthesizer
+	end
+	
+	/** \brief Set custom synthesizer modifying the announcement or \em null if not used. */
+	public func void setModifierSynthesizer( Synthesizer synthesizer )
+		this.pModifierSynthesizer = synthesizer
+	end
+	
+	
+	
+	/** \brief Number of parts in the announcement. */
+	public func int getAnnouncePartCount()
+		return this.pAnnounceParts.getCount()
+	end
+	
+	/** \brief Get announcement part at index. */
+	public func String getAnnouncePartAt( int index )
+		return this.pAnnounceParts.getAt( index ) cast String
+	end
+	
+	/** \brief Add announcement part. */
+	public func void addAnnouncePart( String partID )
+		this.pAnnounceParts.add( partID )
+	end
+	
+	/** \brief Clear announcement parts. */
+	public func void removeAllAnnounceParts()
+		this.pAnnounceParts.removeAll()
+	end
+	
+	/**
+	 * \brief Set announce parts from text.
+	 * 
+	 * Scans text for parts adding them. Always picks the part with the most
+	 * words/characters matching. Matching is done by converting text to
+	 * lowercase first. Special parts are handled using pauses.
+	 */
+	public func void setAnnounceFromText( String text )
+		// split text into phrases, sub-phrases and words
+		var Array phrases = text.toLower().split( '.' ).map( block String phrase
+			return phrase.split( ',' ).map( block String subPhrase
+				return subPhrase.split( ' ' )
+			end )
+		end )
+		
+		// process phrases, sub-phrases and words
+		
+		this.pAnnounceParts.removeAll()
+		
+		var int phraseCount = phrases.getCount()
+		var int subPhraseCount
+		var Array subPhrases
+		var Array words
+		var int i, j
+		var int wordCount
+		var int position
+		var int testPosition
+		var int bestPosition
+		var AnnouncerPart part
+		var AnnouncerPart bestPart
+		var String partID
+		
+		for i = 0 to phraseCount
+			subPhrases = phrases.getAt( i ) cast Array
+			subPhraseCount = subPhrases.getCount()
+			
+			for j = 0 to subPhraseCount
+				words = subPhrases.getAt( j ) cast Array
+				wordCount = words.getCount()
+				position = 0
+				
+				while position < wordCount
+					bestPart = null
+					bestPosition = position
+					testPosition = position
+					
+					while testPosition < wordCount
+						testPosition++
+						
+						partID = words.fold( position, testPosition, block String a, String b
+							return a + " " + b
+						end ) cast String
+						
+						part = this.pParts.getAt( partID, null ) cast AnnouncerPart
+						if part == null
+							break
+						end
+						
+						bestPart = part
+						bestPosition = testPosition
+					end
+					
+					if bestPart == null
+						BaseGameApp.getApp().getConsole().addMessage( "Announcer no part found matching '" \
+							+ words.getAt( position ) + "'" )
+						position++
+						
+					else
+						this.pAnnounceParts.add( bestPart.getID() )
+						position = bestPosition
+					end
+				end
+				
+				if j < subPhraseCount - 1
+					this.pAnnounceParts.add( "," )
+				end
+			end
+			
+			if i < phraseCount - 1
+				this.pAnnounceParts.add( "." )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Synthesizer used for playing back announcer */
+	public func SynthesizerInstance getSynthesizer()
+		return this.pSynthesizer
+	end
+	
+	/** \brief Part selector controller. */
+	public func SynthesizerController getControllerPart()
+		return this.pControllerPart
+	end
+	
+	/** \brief Play state controller. */
+	public func SynthesizerController getControllerState()
+		return this.pControllerState
+	end
+	
+	/** \brief Speaker used to play back announcer */
+	public func Speaker getSpeaker()
+		return this.pSpeaker
+	end
+	
+	
+	
+	/** \brief Stop and reset. */
+	public func void stop()
+		this.pSpeaker.stop()
+	end
+	
+	/** \brief Start playing if announcement parts are present. */
+	public func void play()
+		if this.pAnnounceParts.getCount() == 0
+			return
+		end
+		
+		this.updateSynthesizer()
+		if this.pSynthesizer.getSampleCount() == 0
+			return
+		end
+		
+		this.pSpeaker.setLooping( false )
+		this.pSpeaker.play()
+	end
+	
+	/** \brief Announcement is playing back. */
+	public func bool getPlaying()
+		return this.pSpeaker.getPlaying()
+	end
+	
+	/**
+	 * \brief Update speaker for playing back announcer
+	 * \details Call this method after modifying the parts.
+	 */
+	public func void updateSpeaker()
+		this.pSpeaker.setSynthesizer( null )
+		this.pControllerPart = null
+		this.pControllerState = null
+		
+		this.pSynthesizer.setSynthesizer( this.createSynthesizer() )
+		if this.pSynthesizer.getControllerCount() >= 2
+			this.pControllerPart = this.pSynthesizer.getControllerAt( 0 )
+			this.pControllerState = this.pSynthesizer.getControllerAt( 1 )
+		end
+		
+		this.pSpeaker.setSynthesizer( this.pSynthesizer )
+		
+		this.stop()
+		this.updateSampleRate()
+	end
+	
+	/**
+	 * \brief Update synthesizer instance play time and curves.
+	 * \details Sets the play time of the synthesizer instance to the play length
+	 *          of the entire announcement. Sets the select and play curve to
+	 *          play back the desired announcement.
+	 */
+	public func void updateSynthesizer()
+		// set select curve and play curve. the switch point is always half the
+		// play length through a part. this is the most simple solution
+		var float samplesToTime = 1.0 / this.pSampleRate cast float
+		var int partCount = this.pAnnounceParts.getCount()
+		var CurveBezier curveSelect = CurveBezier.new()
+		var CurveBezier curvePlay = CurveBezier.new()
+		var int announceSampleCount = 0
+		var float lastPosition = 0.0
+		var AnnouncerPart part
+		var Sound partSound
+		var String partID
+		var int i
+		
+		curveSelect.setInterpolationMode( CurveBezierInterpolation.constant )
+		
+		curvePlay.setInterpolationMode( CurveBezierInterpolation.constant )
+		curvePlay.addPoint( 0.0, 3.0 )
+		
+		for i = 0 to partCount
+			partID = this.pAnnounceParts.getAt( i ) cast String
+			
+			part = this.pParts.getAt( this.pAnnounceParts.getAt( i ) cast String, null ) cast AnnouncerPart
+			if part != null
+				partSound = part.getSound()
+				if partSound == null
+					continue
+				end
+				
+				curveSelect.addPoint( lastPosition, part.getControllerValue() )
+				
+				lastPosition = ( samplesToTime * announceSampleCount cast float ) + 0.01
+				announceSampleCount += partSound.getSampleCount()
+				
+			elif partID.equals( "," )
+				curvePlay.addPoint( lastPosition, 2.0 )
+				lastPosition = ( samplesToTime * announceSampleCount cast float ) + 0.01
+				announceSampleCount += this.pSampleRate / 3 // 0.33s pause
+				curvePlay.addPoint( samplesToTime * announceSampleCount cast float, 3.0 )
+				
+			elif partID.equals( "." )
+				curvePlay.addPoint( lastPosition, 2.0 )
+				lastPosition = ( samplesToTime * announceSampleCount cast float ) + 0.01
+				announceSampleCount += this.pSampleRate / 2 // 0.5s pause
+				curvePlay.addPoint( samplesToTime * announceSampleCount cast float, 3.0 )
+			end
+		end
+		
+		this.pSynthesizer.setSampleCount( announceSampleCount )
+		this.pSpeaker.setPlayPosition( 0, announceSampleCount )
+		
+		this.pControllerPart.setCurve( curveSelect )
+		this.pControllerState.setCurve( curvePlay )
+	end
+	
+	/** \brief Update next remaining sample rate from synthesizer if present. */
+	public func void updateSampleRate()
+		var Synthesizer synthesizer = this.pSynthesizer.getSynthesizer()
+		
+		if synthesizer == null
+			this.pSampleRate = 44100
+			
+		else
+			this.pSampleRate = synthesizer.getSampleRate()
+		end
+	end
+	
+	/** \brief Create synthesizer from announcer definition. */
+	public func Synthesizer createSynthesizer()
+		if this.pParts.getCount() == 0
+			return null
+		end
+		
+		var Synthesizer synthesizer = Synthesizer.new()
+		
+		// add controllers. 0 is part selector, 1 is play state. if a modifier synthesizer
+		// is present add also a modifier blend controller and one controller for each
+		// modifier synthesizer controller
+		if this.pModifierSynthesizer == null
+			synthesizer.setControllerCount( 2 )
+			
+		else
+			synthesizer.setControllerCount( 3 + this.pModifierSynthesizer.getControllerCount() )
+		end
+		
+		synthesizer.getControllerAt( 0 ).setRange( 0, this.pParts.getCount() - 1 )
+		synthesizer.getControllerAt( 1 ).setRange( 0, 3 )
+		
+		if this.pModifierSynthesizer != null
+			var int controllerCount = this.pModifierSynthesizer.getControllerCount()
+			var SynthesizerController controller, modifierController
+			var int i
+			
+			synthesizer.getControllerAt( 2 ).setRange( 0, 1 ) // modifier blend
+			
+			for i = 0 to controllerCount
+				modifierController = this.pModifierSynthesizer.getControllerAt( i )
+				controller = synthesizer.getControllerAt( 3 + i )
+				
+				controller.setRange( modifierController.getLower(), modifierController.getUpper() )
+				controller.setClamp( modifierController.getClamp() )
+			end
+		end
+		
+		// add part selector and play state curves. both use default linear curves.
+		var CurveBezier curve = CurveBezier.new()
+		curve.setInterpolationMode( CurveBezierInterpolation.linear )
+		curve.addPoint( Vector2.new( 0.0, 0.0 ), Vector2.new( -0.1, -0.1 ), Vector2.new( 0.1, 0.1 ) )
+		curve.addPoint( Vector2.new( 1.0, 1.0 ), Vector2.new( 0.9, 0.9 ), Vector2.new( 1.1, 1.1 ) )
+		
+		var int linkPart = synthesizer.addLink( 0 )
+		synthesizer.linkSetCurve( linkPart, curve )
+		
+		var int linkPlay = synthesizer.addLink( 1 )
+		synthesizer.linkSetCurve( linkPlay, curve )
+		
+		// add chain source responsible for playing back parts
+		var SSChain source = SSChain.new()
+		source.targetAddLink( SSChainTarget.selection, linkPart )
+		source.targetAddLink( SSChainTarget.play, linkPlay )
+		
+		var Array parts = this.pParts.getValues()
+		var int count = parts.getCount()
+		var AnnouncerPart part
+		var int i
+		for i = 0 to count
+			part = parts.getAt( i ) cast AnnouncerPart
+			source.addSound( part.getSound() )
+			part.setControllerValue( i )
+		end
+		
+		synthesizer.addSource( source )
+		
+		// add modifier synthesizer if present
+		if this.pModifierSynthesizer != null
+			var SSSynthesizer synthSource = SSSynthesizer.new()
+			var int controllerCount = this.pModifierSynthesizer.getControllerCount()
+			var int i
+			
+			synthSource.setSynthesizer( this.pModifierSynthesizer )
+			for i = 0 to controllerCount
+				synthSource.setConnectionAt( i, 3 + i )
+			end
+			
+			var int linkBlend = synthesizer.addLink( 3 )
+			synthesizer.linkSetCurve( linkBlend, curve )
+			synthSource.targetAddLink( SSSynthesizerTarget.blendFactor, linkBlend )
+		end
+		
+		// set remaining synthesizer parameters based on first part since all have to be equal
+		var Sound sound = ( parts.getAt( 0 ) cast AnnouncerPart ).getSound()
+		synthesizer.setChannelCount( sound.getChannelCount() )
+		synthesizer.setSampleRate( sound.getSampleRate() )
+		synthesizer.setBytesPerSample( sound.getBytesPerSample() )
+		synthesizer.setSampleCount( sound.getSampleRate() * 4 ) // will be changed by playback anyways
+		
+		return synthesizer
+	end
+end

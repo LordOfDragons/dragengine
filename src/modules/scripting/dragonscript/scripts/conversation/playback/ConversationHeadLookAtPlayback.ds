@@ -1,0 +1,207 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Conversation Look-At Playback manipulating locomotion parameters.
+ * 
+ * Updates the look left-right and up-down parameters of an locomotion. This is typically
+ * used to make actors turn their head to look at specific positions during conversation.
+ * 
+ * To calculate the appropriate parameters this class it is recommanded to use a rotator
+ * bone. This is a particular bone in the actor rig which is placed at a location the head
+ * rotates about roughly. If such a bone is not used the actor itself is used.
+ * 
+ * Look-at targets are required to be placed on the same height as the reference point used
+ * in this class to calculate the angles.
+ * 
+ * Optionally a rotator matrix can be set. This helps to fine tune the rotation calculation
+ * in case the target is not located at the same height as the reference point used.
+ * This is for example the case if the target is placed at eye level while the rotator bone
+ * is located at the head base.
+ */
+class ConversationHeadLookAtPlayback extends ConversationLookAtPlayback
+	private var Locomotion pLocomotion
+	private var float pCapturedHorizontal
+	private var float pCapturedVertical
+	private var bool pCaptureState
+	private var String pBoneRotator
+	private var DMatrix pRotatorMatrix
+	
+	
+	
+	/** \brief Create playback. */
+	public func new()
+		this.pCaptureState = true
+		this.pRotatorMatrix = DMatrix.new()
+	end
+	
+	
+	
+	/** \brief Locomotion to update. */
+	public func Locomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Set locomotion to update. */
+	public func void setLocomotion( Locomotion locomotion )
+		this.pLocomotion = locomotion
+	end
+	
+	/** \brief Name of rotator bone or \em null if not used. */
+	public func String getBoneRotator()
+		return this.pBoneRotator
+	end
+	
+	/** \brief Set name of rotator bone or \em null if not used. */
+	public func void setBoneRotator( String boneName )
+		this.pBoneRotator = boneName
+	end
+	
+	/** \brief Rotator matrix. */
+	public func DMatrix getRotatorMatrix()
+		return this.pRotatorMatrix
+	end
+	
+	/** \brief Set rotator matrix. */
+	public func void setRotatorMatrix( DMatrix matrix )
+		this.pRotatorMatrix = matrix
+	end
+	
+	
+	
+	/** \brief Clear current look-at state allowing the actor to take over control. */
+	public func void clearLookAtState()
+		super.clearLookAtState()
+		this.pCaptureState = true
+	end
+	
+	
+	
+	/** \brief Calculate the inverse matrix. */
+	public func DMatrix getInverseMatrix( ConversationActor actor )
+		if this.pBoneRotator != null
+			return actor.getInverseMatrix( this.pBoneRotator ) * this.pRotatorMatrix
+			
+		else
+			return actor.getInverseMatrix() * this.pRotatorMatrix
+		end
+	end
+	
+	/** \brief Update actor look-at. */
+	public func void updateActorLookAt( ConversationActor actor, float blendFactor )
+		if this.pLocomotion == null
+			return
+		end
+		
+		var DVector lastPosition = this.getLastLookAtPosition()
+		var DVector curPosition = this.getCurrentLookAtPosition()
+		if lastPosition == null and curPosition == null
+			return
+		end
+		
+		var float blendFactor2 = 1.0 - blendFactor
+		var float headHorizontal = 0
+		var float headVertical = 0
+		var float value
+		
+		// determine the head left-right and up-down angles. for this the angles are calculated
+		// for the last and current look-at and then weighted
+		if lastPosition == null
+			if this.pCaptureState
+				this.pCapturedHorizontal = this.pLocomotion.getOrientation() \
+					+ this.pLocomotion.getLookHorizontal()
+				this.pCapturedVertical = this.pLocomotion.getLookVertical()
+				this.pCaptureState = false
+			end
+			
+			value = DEMath.normalize( this.pCapturedHorizontal \
+				- this.pLocomotion.getOrientation(), -180.0, 180.0 )
+			
+			headHorizontal = value * blendFactor2
+			headVertical = this.pCapturedVertical * blendFactor2
+			
+		else
+			value = -DEMath.atan2( lastPosition.getX(), lastPosition.getZ() )
+			if not this.pLocomotion.getCanTurn()
+				value = DEMath.clamp( value, this.pLocomotion.getLimitLookLeft(), \
+					this.pLocomotion.getLimitLookRight() )
+			end
+			headHorizontal = value * blendFactor2
+			
+			headVertical = DEMath.atan2( lastPosition.getY(), \
+				Vector2.new( lastPosition.getX(), lastPosition.getZ() ).getLength() ) * blendFactor2
+		end
+		
+		if curPosition == null
+			headHorizontal += this.pLocomotion.getLookHorizontalGoal() * blendFactor
+			headVertical += this.pLocomotion.getLookVerticalGoal() * blendFactor
+			
+		else
+			value = -DEMath.atan2( curPosition.getX(), curPosition.getZ() )
+			if not this.pLocomotion.getCanTurn()
+				value = DEMath.clamp( value, this.pLocomotion.getLimitLookLeft(), \
+					this.pLocomotion.getLimitLookRight() )
+			end
+			headHorizontal += value * blendFactor
+			
+			headVertical += DEMath.atan2( curPosition.getY(), \
+				Vector2.new( curPosition.getX(), curPosition.getZ() ).getLength() ) * blendFactor
+		end
+		
+		// apply the head rotation
+		this.pLocomotion.setLookHorizontalGoal( headHorizontal )
+		this.pLocomotion.setLookHorizontal( headHorizontal )
+		this.pLocomotion.setLookVerticalGoal( headVertical )
+		this.pLocomotion.setLookVertical( headVertical )
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		super.readFromFile( env, reader )
+		
+		this.pCapturedHorizontal = reader.readFloat()
+		this.pCapturedVertical = reader.readFloat()
+		this.pCaptureState = env.readBool( reader )
+		this.pRotatorMatrix = DMatrix.readFromFile( reader )
+	end
+	
+	/** \brief Write element to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeToFile( env, writer )
+		
+		writer.writeFloat( this.pCapturedHorizontal )
+		writer.writeFloat( this.pCapturedVertical )
+		env.writeBool( writer, this.pCaptureState )
+		this.pRotatorMatrix.writeToFile( writer )
+	end
+end

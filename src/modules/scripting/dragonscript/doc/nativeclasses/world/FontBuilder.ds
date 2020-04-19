@@ -1,0 +1,101 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Font builder.
+ * 
+ * Builds font resource without requiring a font resource file. The created font can
+ * either be unnamed (if filename is empty string) or named (if filename is not empty
+ * string). Named fonts can not clash with filenames present in the virtual file system.
+ * For this reason use unnamed fonts if possible. Using named fonts though can be useful
+ * if you want to provide font resources to scripts not needing to know if the path they
+ * try to load is a build font instead of a resource one.
+ * 
+ * To use the font builder create a subclass and implement FontBuilder.buildFont() .
+ * You are only allowed to call methods from FontBuilder from inside this function call.
+ * To create the font call FontBuilder.build() . This will call FontBuilder.buildFont()
+ * to fill a new font resource with content. Once finished the build method returns the
+ * ready to use font resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class Font
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create font builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build font using filename.
+	 * 
+	 * The created font can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named fonts can not clash with filenames present
+	 * in the virtual file system. For this reason use unnamed fonts if possible. Using
+	 * named fonts though can be useful if you want to provide font resources to scripts
+	 * not needing to know if the path they try to load is a build font instead of a
+	 * resource one.
+	 * 
+	 * To create the font call build() . This will call buildFont() to fill a new font
+	 * resource with content. Once finished the build method returns the ready to use
+	 * font resource. Otherwise an exception is thrown.
+	 */
+	public func Font build( String filename, int fontSize )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build font.
+	 * 
+	 * Called by build(String) to fill a new font resource with content. You are only
+	 * allowed to call methods from FontBuilder from inside this function call.
+	 */
+	abstract protected func void buildFont()
+	
+	/**
+	 * \brief Set line height.
+	 */
+	protected func void setLineHeight( int height )
+	end
+	
+	/**
+	 * \brief Set if font is colored.
+	 */
+	protected func void setIsColorFont( bool isColorFont )
+	end
+	
+	/**
+	 * \brief Set undefined glyph parameters.
+	 */
+	protected func void setUndefinedGlyph( int x, int y, int z, int width, int bearing, int advance )
+	end
+	
+	/**
+	 * \brief Set count of glyphs.
+	 */
+	protected func void setGlyphCount( int count )
+	end
+	
+	/**
+	 * \brief Set glyph parameters.
+	 */
+	protected func void setGlyphAt( int index, int unicode, int x, int y, int z, int width, int bearing, int advance )
+	end
+	/*@}*/
+end

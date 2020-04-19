@@ -1,0 +1,22 @@
+Async loading is done by managing a list of worker threads picking loading tasks from a list
+of pending tasks. The reading and loading using the matching resource module is done asynchronously
+in the thread. Once done the thread places the task as finished or failed in the list of finished
+tasks. From time to time the scripting module grabs the next finished task usually until there is
+no more finished task available. When a task is fetched from the finished list the module peers
+are created first. This is done synchronously. Modules are required to provide fast creation of
+the peers to not stall the loading. If required more complex tasks have to be handleded asynchronously
+by the module in question. Once done the result is returned to the scripting module.
+
+A special case arises with skin resources. First the skin resource accesses the texture property map
+which can only be done fast synchronously as otherwise multiple skins loaded at the same time constantly
+compete for a lock on the map. Furthermore all users of the map would have to participate in locking
+too which requires a lot of book keeping code. Instead skin loading is done synchronously since the
+definition part of skins loads reasonably fast. Maybe later on this can be changed.
+
+The second problem is that skin resources typically load image resources. This is done by first loading
+the skin with only the path stored for each image resource required to be loaded. This is done to avoid
+skin resource modules to have to know about the internal working of the asynchronous loading details.
+The resource loaded adds internal loading tasks for the required image resources and delays the
+processing of the parent skin resource. Once loaded the image resource is applied to the matching skin.
+This is done again synchronously to avoid problems. Once all image resources have been loaded no matter
+if successful or not the delayed task is processed.

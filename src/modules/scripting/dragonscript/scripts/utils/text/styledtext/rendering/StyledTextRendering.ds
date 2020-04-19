@@ -1,0 +1,130 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Rendering
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Rendering.Elements
+
+
+
+/**
+ * \brief Render styled text information.
+ */
+class StyledTextRendering
+	private var Array pElements
+	private var Color pBackgroundColor
+	private var Point pSize
+	
+	
+	
+	/** \brief Create styled text rendering object. */
+	public func new()
+		this.pElements = Array.new()
+		this.pSize = Point.new( 350, 500 )
+	end
+	
+	
+	
+	/** \brief Size in pixels. */
+	public func Point getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set size in pixels. */
+	public func void setSize( Point size )
+		this.pSize = size
+	end
+	
+	
+	
+	/** \brief Number of elements. */
+	public func int getElementCount()
+		return this.pElements.getCount()
+	end
+	
+	/** \brief Element at index. */
+	public func STRElement getElementAt( int index )
+		return this.pElements.getAt( index ) cast STRElement
+	end
+	
+	/** \brief Add element. */
+	public func void addElement( STRElement element )
+		this.pElements.add( element )
+	end
+	
+	/** \brief Remove all elements. */
+	public func void removeAllElements()
+		this.pElements.removeAll()
+	end
+	
+	/** \brief Visit elements with block with STRElement as parameter. */
+	public func void forEachElement( Block ablock )
+		this.pElements.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Background color. */
+	public func Color getBackgroundColor()
+		return this.pBackgroundColor
+	end
+	
+	/** \brief Set background color. */
+	public func void setBackgroundColor( Color color )
+		this.pBackgroundColor = color
+	end
+	
+	
+	
+	/**
+	 * \brief Add canvas for each element.
+	 * 
+	 * Canvas has to be of type Canvas.VIEW. Caller is responsible to remove all canvas if required.
+	 */
+	public func void addToCanvas( CanvasView canvas, Point position )
+		this.addToCanvas( canvas, position, null )
+	end
+	
+	public func void addToCanvas( CanvasView canvas, Point position, StyledTextDocumentUpdater updater )
+		if updater != null
+			updater.removeAllUpdater()
+		end
+		
+		// filled rectangle for background if present
+		if this.pBackgroundColor != null and this.pBackgroundColor.getAlpha() > 0
+			var CanvasPaint bgCanvas = CanvasPaint.new()
+			bgCanvas.setShapeType( CanvasPaintShape.rectangle )
+			bgCanvas.setFillColor( this.pBackgroundColor )
+			bgCanvas.setThickness( 0 )
+			bgCanvas.setPosition( position )
+			bgCanvas.setSize( this.pSize )
+			bgCanvas.setOrder( canvas.getCanvasCount() cast float )
+			canvas.addCanvas( bgCanvas )
+		end
+		
+		// add elements
+		this.pElements.forEach( block STRElement each
+			each.addToCanvas( canvas, position, updater )
+		end )
+	end
+end

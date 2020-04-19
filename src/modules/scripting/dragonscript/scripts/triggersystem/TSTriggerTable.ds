@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TriggerSystem
+
+
+/**
+ * \brief Table of trigger targets.
+ * 
+ * Triggers add named targets to the table. Each target is a boolean value. Triggers can set
+ * or reset the target. Whenever the state of the target changes all listeners are notified.
+ * Elements using a trigger expression add themselves to all the targets they use in the
+ * trigger expression.
+ */
+class TSTriggerTable
+	/** \brief Trigger targets. */
+	private var Dictionary pTargets
+	
+	
+	
+	/** \brief Create trigger table. */
+	public func new()
+		this.pTargets = Dictionary.new()
+	end
+	
+	/** \brief Dispose of trigger table. */
+	public func void dispose()
+		this.removeAll()
+	end
+	
+	
+	
+	/** \brief Named target is present. */
+	public func bool hasNamed( StringID name )
+		return this.pTargets.has( name )
+	end
+	
+	/** \brief Named target or \em null if absent. */
+	public func TSTriggerTarget getNamed( StringID name )
+		return this.pTargets.getAt( name, null ) cast TSTriggerTarget
+	end
+	
+	/** \brief Named target adding it if absent. */
+	public func TSTriggerTarget getOrAddNamed( StringID name )
+		var TSTriggerTarget target = this.pTargets.getAt( name, null ) cast TSTriggerTarget
+		if target == null
+			target = TSTriggerTarget.new( name )
+			this.pTargets.setAt( name, target )
+		end
+		return target
+	end
+	
+	/**
+	 * \brief Add target.
+	 * \throws EInvalidParam Named target is present.
+	 */
+	public func void add( TSTriggerTarget target )
+		if this.hasNamed( target.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pTargets.setAt( target.getName(), target )
+	end
+	
+	/** \brief Remove target. */
+	public func void removeTarget( TSTriggerTarget target )
+		this.pTargets.remove( target.getName() )
+	end
+	
+	/** \brief Dispose of all trigger targets. */
+	public func void removeAll()
+		this.pTargets.forEachValue( block TSTriggerTarget each
+			each.dispose()
+		end )
+		this.pTargets.removeAll()
+	end
+	
+	/** \brief Visit targets with block with TSTriggerTarget as parameter. */
+	public func void forEachTarget( Block ablock )
+		this.pTargets.forEachValue( ablock )
+	end
+	
+	
+	
+	/** \brief Read trigger table from file. */
+	public func void readFromFile( FileReader reader )
+		var int count = reader.readInt()
+		var int i
+		
+		this.removeAll()
+		for i = 0 to count
+			this.add( TSTriggerTarget.readFromFile( reader ) )
+		end
+	end
+	
+	/** \brief Write trigger table to file. */
+	public func void writeToFile( FileWriter writer )
+		writer.writeInt( this.pTargets.getCount() )
+		this.pTargets.forEachValue( block TSTriggerTarget each
+			each.writeToFile( writer )
+		end )
+	end
+end

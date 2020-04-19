@@ -1,0 +1,169 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Set of quick use slots holding elements to quickly use if activated.
+ */
+class QuickUseManager
+	private var Array pSlots
+	
+	
+	
+	/** \brief Create quick use manager. */
+	public func new( int slotCount )
+		this.pSlots = Array.new()
+		this.setSlotCount( slotCount )
+	end
+	
+	
+	
+	/** \brief Count of slots. */
+	public func int getSlotCount()
+		return this.pSlots.getCount()
+	end
+	
+	/** \brief Set count of slots. */
+	public func void setSlotCount( int count )
+		if count < 0
+			throw EInvalidParam.new()
+		end
+		this.pSlots.resize( count )
+	end
+	
+	/** \brief Item from indexed slot. */
+	public func Element getItem( int index )
+		return this.pSlots.getAt( index ) cast Element
+	end
+	
+	/** \brief Remove item if present in any slots. */
+	public func void removeItemIfPresent( Element item )
+		var int index = this.pSlots.indexOf( item )
+		if index != -1
+			this.pSlots.setAt( index, null )
+		end
+	end
+	
+	/** \brief Index of slot item is located in or -1 if absent. */
+	public func int indexOfSlotWith( Element item )
+		return this.pSlots.indexOf( item )
+	end
+	
+	/** \brief Index of next free slot or -1 if all are full. */
+	public func int indexOfNextFreeSlot()
+		var int i, count = this.pSlots.getCount()
+		
+		for i = 0 to count
+			if this.pSlots.getAt( i ) == null
+				return i
+			end
+		end
+		
+		return -1
+	end
+	
+	/**
+	 * \brief Set item in slot.
+	 * 
+	 * Can be \em null to clear the slot. If item is not \em null and it is already in another
+	 * slot it is moved.
+	 */
+	public func void setItem( int index, Element item )
+		if item != null
+			var int oldIndex = this.pSlots.indexOf( item )
+			if oldIndex != -1
+				this.pSlots.setAt( oldIndex, null )
+			end
+		end
+		
+		this.pSlots.setAt( index, item )
+	end
+	
+	/**
+	 * \brief Visit slots with block.
+	 * 
+	 * Block is called for each slot with arguments "int slot" and "Element element".
+	 * Element can be null if slot is empty.
+	 */
+	public func void forEachSlot( Block ablock )
+		var int i, count = this.pSlots.getCount()
+		for i = 0 to count
+			ablock.run( i, this.pSlots.getAt( i ) )
+		end
+	end
+	
+	/**
+	 * \brief Visit non-empty slots with block.
+	 * 
+	 * Block is called for each slot with arguments "int slot" and "Element element".
+	 */
+	public func void forEachNonEmptySlot( Block ablock )
+		var int i, count = this.pSlots.getCount()
+		var Object element
+		
+		for i = 0 to count
+			element = this.pSlots.getAt( i )
+			if element != null
+				ablock.run( i, element )
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Read slots from file.
+	 * 
+	 * The number of slots is not saved. If you need variable slot count you have
+	 * to restore the correct slot number before calling readFromFile() yourself.
+	 */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader, ElementResolver elementResolver )
+		var int i, count = this.pSlots.getCount()
+		for i = 0 to count
+			if env.readBool( reader )
+				elementResolver.add( UniqueID.readFromFile( reader ), block Element element
+					this.pSlots.setAt( i, element )
+				end )
+			end
+		end
+	end
+	
+	/**
+	 * \brief Write slots to file.
+	 * 
+	 * The number of slots is not saved. If you need variable slot count you have
+	 * to restore the correct slot number before calling readFromFile() yourself.
+	 */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		this.pSlots.forEach( block Element each
+			env.writeBool( writer, each != null )
+			if each != null
+				each.getID().writeToFile( writer )
+			end
+		end )
+	end
+end

@@ -1,0 +1,69 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Default implementation of ListModelListener.
+ */
+class DefaultListModelListener implements ListModelListener
+	/** \brief Create default list model listener. */
+	public func new()
+	end
+	
+	
+	
+	/**
+	 * \brief Elements have been added.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first added element.
+	 * \param toIndex Index of last added element.
+	 */
+	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
+	end
+	
+	/**
+	 * \brief Elements have been removed.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first removed element.
+	 * \param toIndex Index of last removed element.
+	 */
+	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
+	end
+	
+	/**
+	 * \brief Content of the model changed.
+	 * \param listModel ListModel sending the notification
+	 * \param fromIndex Index of first element that changed
+	 * \param toIndex Index of last element that changed
+	 */
+	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+	end
+	
+	/**
+	 * \brief Selection in the model changed.
+	 */
+	public func void selectionChanged( ListModel listModel )
+	end
+end

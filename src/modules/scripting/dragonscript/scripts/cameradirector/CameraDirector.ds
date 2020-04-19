@@ -1,0 +1,248 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+namespace Dragengine.CameraDirectors
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Directs camera and microphone required to render the game scene.
+ * 
+ * The default implementation sets the camera at the origin of the world and the microphone
+ * at the same place and orientation as the camera. Subclasses are responsible to set the
+ * camera in useful places.
+ */
+class CameraDirector
+	/** \brief Normal camera FOV */
+	public fixed var float fovNormal = 39.6
+	
+	/** \brief Wide camera FOV */
+	public fixed var float fovWide = 65.47
+	
+	/** \brief Ultra wide camera FOV */
+	public fixed var float fovUltraWide = 83.97
+	
+	/** \brief Short tele camera FOV */
+	public fixed var float fovShortTele = 22.62
+	
+	/** \brief Medium tele camera FOV */
+	public fixed var float fovMediumTele = 10.29
+	
+	/** \brief Long tele camera FOV */
+	public fixed var float fovLongTele = 6.87
+	
+	/** \brief Typical first person FOV */
+	public fixed var float fovFirstPerson = 90
+	
+	/** \brief Shorter first person FOV */
+	public fixed var float fovShortFirstPerson = 75
+	
+	
+	
+	private var Camera pCamera
+	private var Microphone pMicrophone
+	
+	private var float pFov
+	private var float pExposure
+	private var float pLowestIntensity
+	private var float pHighestIntensity
+	private var float pAdaptionTime
+	private var float pViewDistance
+	private var LayerMask pLayerMask
+	
+	
+	
+	/** \brief Create camera director. */
+	public func new()
+		this.pFov = fovFirstPerson
+		this.pExposure = 1.0
+		this.pLowestIntensity = 10.0
+		this.pHighestIntensity = 20.0
+		this.pAdaptionTime = 0.1
+		this.pViewDistance = 200.0
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+	end
+	
+	/** \brief Create camera director. */
+	public func new( Camera camera, Microphone microphone ) this()
+		this.setCamera( camera )
+		this.setMicrophone( microphone )
+	end
+	
+	
+	
+	/** \brief Camera to modify. */
+	public func Camera getCamera()
+		return this.pCamera
+	end
+	
+	/** \brief Set camera to modify. */
+	public func void setCamera( Camera camera )
+		this.pCamera = camera
+	end
+	
+	/** \brief Microphone to modify. */
+	public func Microphone getMicrophone()
+		return this.pMicrophone
+	end
+	
+	/** \brief Set microphone to modify. */
+	public func void setMicrophone( Microphone microphone )
+		this.pMicrophone = microphone
+	end
+	
+	
+	
+	/** \brief Field of view. */
+	public func float getFov()
+		return this.pFov
+	end
+	
+	/** \brief Set field of view. */
+	public func void setFov( float fov )
+		this.pFov = fov
+	end
+	
+	/** \brief Exposure. */
+	public func float getExposure()
+		return this.pExposure
+	end
+	
+	/** \brief Set exposure. */
+	public func void setExposure( float exposure )
+		this.pExposure = exposure
+	end
+	
+	/** \brief Lowest intensity. */
+	public func float getLowestIntensity()
+		return this.pLowestIntensity
+	end
+	
+	/** \brief Set lowest intensity. */
+	public func void setLowestIntensity( float lowestIntensity )
+		this.pLowestIntensity = lowestIntensity
+	end
+	
+	/** \brief Highest intensity. */
+	public func float getHighestIntensity()
+		return this.pHighestIntensity
+	end
+	
+	/** \brief Set highest intensity. */
+	public func void setHighestIntensity( float highestIntensity )
+		this.pHighestIntensity = highestIntensity
+	end
+	
+	/** \brief Adaption time. */
+	public func float getAdaptionTime()
+		return this.pAdaptionTime
+	end
+	
+	/** \brief Set adaption time. */
+	public func void setAdaptionTime( float adaptionTime )
+		this.pAdaptionTime = adaptionTime
+	end
+	
+	/** \brief Camera view distance. */
+	public func float getViewDistance()
+		return this.pViewDistance
+	end
+	
+	/** \brief Set camera view distance. */
+	public func void setViewDistance( float distance )
+		this.pViewDistance = distance
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Init camera parameters. */
+	public func void initCameraParameters()
+		this.pCamera.setFov( this.pFov )
+		this.pCamera.setFovRatio( 1.0 )
+		this.pCamera.setViewDistance( this.pViewDistance )
+		
+		this.pCamera.setExposure( this.pExposure )
+		this.pCamera.setLowestIntensity( this.pLowestIntensity )
+		this.pCamera.setHighestIntensity( this.pHighestIntensity )
+		this.pCamera.setAdaptionTime( this.pAdaptionTime )
+		
+		this.pCamera.setLayerMask( this.pLayerMask )
+	end
+	
+	/**
+	 * \brief Director has been activated.
+	 * 
+	 * Useful for init camera parameters that do not change over time. Default implementation
+	 * calls initCameraParameters if camera is not null.
+	 */
+	public func void activate()
+		if this.pCamera != null
+			this.initCameraParameters()
+		end
+	end
+	
+	/** \brief Director has been deactivated. */
+	public func void deactivate()
+	end
+	
+	/**
+	 * \brief Update director.
+	 * 
+	 * Default implementation calls updateCamera if camera is not null and updateMicrophone
+	 * if microphone is not null.
+	 */
+	public func void update( float elapsed )
+		if this.pCamera != null
+			this.updateCamera( elapsed )
+		end
+		if this.pMicrophone != null
+			this.updateMicrophone( elapsed )
+		end
+	end
+	
+	/** \brief Update camera. */
+	public func void updateCamera( float elapsed )
+		this.pCamera.setPosition( DVector.new() )
+		this.pCamera.setOrientation( Quaternion.new() )
+	end
+	
+	/** \brief Update microphone. */
+	public func void updateMicrophone( float elapsed )
+		this.pMicrophone.setPosition( this.pCamera.getPosition() )
+		this.pMicrophone.setOrientation( this.pCamera.getOrientation() )
+	end
+end

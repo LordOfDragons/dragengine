@@ -1,0 +1,154 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project scrollbars window.
+ */
+class WindowScrollbars extends Window
+	/** \brief Popup test action. */
+	class ActionPopupTest extends DefaultActionListener
+		class ActionPopdown extends DefaultActionListener
+			private var WindowPopup pPopup
+			public func new( WindowPopup popup )
+				this.pPopup = popup
+			end
+			public func void onAction( ActionEvent event )
+				this.pPopup.popdown()
+			end
+		end
+		
+		private var WindowScrollbars pWindow
+		public func new( WindowScrollbars window )
+			this.pWindow = window
+		end
+		public func void onAction( ActionEvent event )
+			var Desktop desktop = this.pWindow.getDesktop()
+			var Widget widget = event.getSource() cast Widget
+			var WindowPopup window = WindowPopup.new()
+			
+			var Button button = Button.new( "First Label" )
+			button.addActionListener( ActionPopdown.new( window ) )
+			window.addWidget( button )
+			
+			button = Button.new( "Second Label" )
+			button.addActionListener( ActionPopdown.new( window ) )
+			window.addWidget( button )
+			
+			button = Button.new( "Third Label >" )
+			button.addActionListener( ActionPopdown.new( window ) )
+			window.addWidget( button )
+			
+			button = Button.new( "Last Label" )
+			button.addActionListener( ActionPopdown.new( window ) )
+			window.addWidget( button )
+			
+			desktop.addWindow( window )
+			window.popup( widget.getDesktopPosition() + Point.new( 0, widget.getHeight() ) )
+		end
+	end
+	
+	
+	
+	/** \brief Create game. */
+	public func new() super( 0, 0, 500, 400 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setLayout( BorderLayout.new() )
+		this.setTitle( "Scrollbars" )
+		this.createContent( this )
+	end
+	
+	
+	
+	/** \brief Add content. */
+	private func void createContent( Container content )
+		content.setLayout( BorderLayout.new( 5 ) )
+		
+		// test models
+		var RangeModel modelScroll = DefaultRangeModel.new( 0, 20, 5, 6, 1 )
+		var RangeModel modelProgress = DefaultRangeModel.new( 0, 100, 20, 0, 1 )
+		var TextModel textModel = DefaultTextModel.new( "Shared text" )
+		
+		// right border
+		var ScrollBar scrollbar = ScrollBar.new( Orientation.vertical )
+		scrollbar.setModel( modelScroll )
+		content.addWidget( scrollbar, BorderLayout.Area.right )
+		
+		// left border
+		scrollbar = ScrollBar.new( Orientation.vertical )
+		scrollbar.setModel( modelScroll )
+		content.addWidget( scrollbar, BorderLayout.Area.left )
+		
+		// bottom border
+		scrollbar = ScrollBar.new( Orientation.horizontal )
+		scrollbar.getModel().setAll( 0, 255, 32, 64, 1 )
+		content.addWidget( scrollbar, BorderLayout.Area.bottom )
+		
+		// content
+		var Panel subPanel = Panel.new()
+		subPanel.setLayout( FlowLayout.new( LayoutAxis.y, 5 ) )
+		content.addWidget( subPanel, BorderLayout.Area.content )
+		
+		scrollbar = ScrollBar.new( Orientation.horizontal )
+		scrollbar.setModel( modelProgress )
+		scrollbar.setDesignerSelector( "ScrollBar.RedBorder" )
+		subPanel.addWidget( scrollbar )
+		
+		var ProgressBar progressBar = ProgressBar.new( Orientation.horizontal )
+		progressBar.setModel( modelProgress )
+		progressBar.setDesignerSelector( "ProgressBar.GreenBorder" )
+		subPanel.addWidget( progressBar )
+		
+		var Panel frame = Panel.new()
+		frame.setLayout( FlowLayout.new( LayoutAxis.x, 5 ) )
+		subPanel.addWidget( frame )
+		
+		var TextField integerText = TextField.new( "5" )
+		integerText.setDisplayCharCount( 3 )
+		integerText.setDesignerSelector( "TextField.BlueBorder" )
+		integerText.setValidator( SimpleTextValidator.new( 3, SimpleTextValidator.CharacterClass.digits ) )
+		frame.addWidget( integerText )
+		
+		frame.addWidget( SpinButton.new( modelProgress ) )
+		
+		subPanel.addWidget( TextField.new( textModel ) )
+		subPanel.addWidget( TextField.new( textModel ) )
+		
+		var Button button = Button.new( "Popup Test" )
+		button.setDesignerSelector( "Button.VideoMouse" )
+		button.addActionListener( ActionPopupTest.new( this ) )
+		subPanel.addWidget( button )
+		
+		var TextArea textArea = TextArea.new( textModel )
+		textArea.setMaximalWidth( 50 )
+		textArea.setRowCount( 6 )
+		textArea.setDesignerSelector( "TextArea.Yellowish" )
+		subPanel.addWidget( ScrollPanel.new( textArea ) )
+	end
+end

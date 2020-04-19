@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE module SYSTEM "DragengineConfig.dtd">
+<config>
+	<!--
+	Here global configurations for the Drag[en]gine would be
+	provided. Those settings take effect for all games unless
+	overwritten by game specific settings.
+	-->
+</config>

@@ -1,0 +1,67 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable occlusion mesh resources.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class OcclusionMesh
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load occlusion mesh from file.
+	 * \details If the occlusion mesh file has been already loaded it is assigned to this object.
+	 *          If the occlusion mesh is not loaded yet the engine loads the occlusion mesh. This call
+	 *          blocks until the occlusion mesh is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded occlusion mesh resource. Once no object instance uses an occlusion mesh
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load occlusion mesh from file asynchronously.
+	 * \details Registers a request in the game engine to load an occlusion mesh. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          occlusion mesh or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the occlusion mesh has been loaded from. */
+	public func String getFilename()
+	end
+	
+	
+	
+	/**
+	 * \brief OcclusionMesh is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type OcclusionMesh and both point to the same engine
+	 *          occlusion mesh resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

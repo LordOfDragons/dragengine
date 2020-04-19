@@ -1,0 +1,286 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Encapsulate widget and decorates it with a pair of scrollbars.
+ * 
+ * User sees different areas of the widget which is too big to be displayed at once.
+ * The scrollbars can be set to vanish if not used.
+ */
+class ScrollPanel extends Panel
+	/** \brief Scroll bar policy. */
+	enum Policy
+		/** \brief Scroll bar is visible only if needed. */
+		needed
+		
+		/** \brief Scroll bar is always visible. */
+		visible
+		
+		/** \brief Scroll bar is never visible. */
+		hidden
+	end
+	
+	
+	
+	/** \brief Horizontal scrollbar. */
+	private var ScrollBar pHorzScroll
+	
+	/** \brief Vertical scrollbar. */
+	private var ScrollBar pVertScroll
+	
+	/** \brief Horizontal scrollbar policy. */
+	private var Policy pHorzScrollPolicy
+	
+	/** \brief Vertical scrollbar policy. */
+	private var Policy pVertScrollPolicy
+	
+	/** \brief Content widget. */
+	private var Widget pContent
+	
+	
+	
+	/** \brief Create scroll panel. */
+	public func new() this( Policy.needed, Policy.needed )
+	end
+	
+	/** \brief Create scroll panel with scrollbar policies. */
+	public func new( Policy horizontalPolicy, Policy verticalPolicy )
+		this.runWhileBlockingLayout( block
+			this.setLayout( ScrollPanelLayout.new() )
+			
+			// horizontal scrollbar
+			this.pHorzScrollPolicy = horizontalPolicy
+			this.pHorzScroll = ScrollBar.new( Orientation.horizontal )
+			this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+			this.pHorzScroll.setVisible( false )
+			this.addWidget( this.pHorzScroll, ScrollPanelLayout.Area.horizontal )
+			
+			// vertical scrollbar
+			this.pVertScrollPolicy = verticalPolicy
+			this.pVertScroll = ScrollBar.new( Orientation.vertical )
+			this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+			this.pVertScroll.setVisible( false )
+			this.addWidget( this.pVertScroll, ScrollPanelLayout.Area.vertical )
+			
+			this.updateScrollBarHiding()
+		end )
+	end
+	
+	/** \brief Create scroll panel with content widget. */
+	public func new( Widget content ) this( Policy.needed, Policy.needed )
+		this.setContent( content )
+	end
+	
+	/** \brief Create scroll panel with content widget and scroll policies. */
+	public func new( Widget content, Policy horizontalPolicy, Policy verticalPolicy ) \
+	this( horizontalPolicy, verticalPolicy )
+		this.setContent( content )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pContent = null
+		this.pVertScroll = null
+		this.pHorzScroll = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Horizontal scrollbar policy. */
+	public func Policy getHorizontalScrollPolicy()
+		return this.pHorzScrollPolicy
+	end
+	
+	/** \brief Set horizontal scrollbar policy. */
+	public func void setHorizontalScrollPolicy( Policy policy )
+		if policy == this.pHorzScrollPolicy
+			return
+		end
+		
+		this.pHorzScrollPolicy = policy
+		this.updateScrollBarHiding()
+	end
+	
+	/** \brief Vertical scrollbar policy. */
+	public func Policy getVerticalScrollPolicy()
+		return this.pVertScrollPolicy
+	end
+	
+	/** \brief Set vertical scrollbar policy. */
+	public func void setVerticalScrollPolicy( Policy policy )
+		if policy == this.pVertScrollPolicy
+			return
+		end
+		
+		this.pVertScrollPolicy = policy
+		this.updateScrollBarHiding()
+	end
+	
+	
+	
+	/** \brief Content widget or \em null if not existing. */
+	public func Widget getContent()
+		return this.pContent
+	end
+	
+	/** \brief Set content widget or \em null to remove it. */
+	public func void setContent( Widget content )
+		if content == this.pContent
+			return
+		end
+		
+		if this.pContent != null
+			this.removeWidget( this.pContent )
+			this.pContent.dispose()
+			this.pContent = null
+		end
+		
+		if content == null
+			this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+			this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+			
+		else
+			this.pContent = content
+			this.addWidget( this.pContent, ScrollPanelLayout.Area.content )
+			
+			var RangeModel rmHorz = content.getHorizontalRangeModel()
+			if rmHorz == null
+				this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+				
+			else
+				this.pHorzScroll.setModel( rmHorz )
+			end
+			
+			var RangeModel rmVert = content.getVerticalRangeModel()
+			if rmVert == null
+				this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+				
+			else
+				this.pVertScroll.setModel( rmVert )
+			end
+		end
+		
+		this.updateScrollBarHiding()
+	end
+	
+	
+	
+	/** \brief Horizontal scrollbar. */
+	public func ScrollBar getHorizontalScrollBar()
+		return this.pHorzScroll
+	end
+	
+	/** \brief Vertical scrollbar. */
+	public func ScrollBar getVerticalScrollBar()
+		return this.pVertScroll
+	end
+	
+	
+	
+	/** \brief Lay out widgets using the set layout. */
+	public func void doLayout()
+		if this.getBlockLayout()
+			return
+		end
+		
+		if this.pHorzScroll == null or this.pVertScroll == null
+			return
+		end
+		
+		// track if the scrollbars change visibility. this happens for example if the scrollbars are
+		// auto-hidden due to range becoming 0. in this case the layout is made with the scrollbar
+		// present but it vanishes leaving behind an empty space. if at least one scrollbar changes
+		// visibility we have to layout again to fix the problem.
+		var bool sbHorzVisible = this.pHorzScroll.getVisible()
+		var bool sbVertVisible = this.pVertScroll.getVisible()
+		
+		super.doLayout()
+		
+		if sbHorzVisible != this.pHorzScroll.getVisible() or \
+		sbVertVisible != this.pVertScroll.getVisible()
+			super.doLayout()
+		end
+	end
+	
+	
+	
+	/** \brief Mouse wheel has moved. */
+	public func void onMouseWheel( MouseEvent event )
+		var int y = event.getPosition().getY()
+		if y == 0
+			super.onMouseWheel( event )
+			return
+		end
+		
+		var RangeModel model = this.pVertScroll.getModel()
+		
+		if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+			model.setValue( model.getValue() - model.getPageSize() * y )
+			
+		else
+			model.setValue( model.getValue() - model.getIncrement() * y )
+		end
+		
+		this.sendEventToListeners( event, false )
+	end
+	
+	
+	
+	/** \brief Update scroll bar hiding depending on their policies. */
+	protected func void updateScrollBarHiding()
+		// horizontal scroll bar hiding
+		select this.pHorzScrollPolicy
+		case Policy.needed
+			this.pHorzScroll.setHideIfEmpty( true )
+			
+		case Policy.visible
+			this.pHorzScroll.setHideIfEmpty( false )
+			this.pHorzScroll.setVisible( true )
+			
+		case Policy.hidden
+			this.pHorzScroll.setHideIfEmpty( false )
+			this.pHorzScroll.setVisible( false )
+		end
+		
+		// vertical scroll bar hiding
+		select this.pVertScrollPolicy
+		case Policy.needed
+			this.pVertScroll.setHideIfEmpty( true )
+			
+		case Policy.visible
+			this.pVertScroll.setHideIfEmpty( false )
+			this.pVertScroll.setVisible( true )
+			
+		case Policy.hidden
+			this.pVertScroll.setHideIfEmpty( false )
+			this.pVertScroll.setVisible( false )
+		end
+	end
+end

@@ -1,0 +1,4 @@
+IMGTGA {
+  global: TGACreateModule;
+  local: *;
+};

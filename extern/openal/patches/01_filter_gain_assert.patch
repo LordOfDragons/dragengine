@@ -1,0 +1,11 @@
+--- openal-soft-1.19.1/Alc/filters/filter.c	2018-10-12 00:05:31.000000000 +0200
++++ patched/Alc/filters/filter.c	2019-09-05 23:04:25.061750525 +0200
+@@ -22,7 +22,7 @@ void BiquadFilter_setParams(BiquadFilter
+     ALfloat b[3] = { 1.0f, 0.0f, 0.0f };
+ 
+     // Limit gain to -100dB
+-    assert(gain > 0.00001f);
++    gain = gain > 0.00001f ? gain : 0.00001f;
+ 
+     w0 = F_TAU * f0norm;
+     sin_w0 = sinf(w0);

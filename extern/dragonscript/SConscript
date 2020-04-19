@@ -1,0 +1,118 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# parameters
+srcdir = 'libdscript-1.0'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'lib/dscript.dll'
+	libLinkName = 'dscript'
+elif envLibrary['OSBeOS']:
+	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}.1' )
+	libLinkName = 'dscript'
+elif envLibrary['OSMacOS']:
+	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}' )
+	libLinkName = 'dscript'
+else:
+	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}.1.0.0' )
+	libLinkName = 'dscript'
+
+# check if system libpng is present
+envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )
+envLibrary.Append( LIBPATH = [ envLibrary[ 'with_dragonscript_lib' ] ] )
+
+hasSystemDS = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_dragonscript' ] != TernaryVariableNo:
+	hasSystemDS = conf.CheckLibWithHeader( libLinkName, 'libdscript/libdscript.h', 'c++' )
+conf.Finish()
+
+if not hasSystemDS and envLibrary[ 'with_system_dragonscript' ] == TernaryVariableYes:
+	Exit( 'Requested to use system DragonScript but no usable DragonScript found.' )
+
+libs = [ libLinkName ]
+
+parent_report[ 'use system dragonscript' ] = 'yes' if hasSystemDS else 'no'
+
+if hasSystemDS:
+	parent_targets[ 'lib_dragonscript' ] = {
+		'name' : 'Internal DragonScript library',
+		'cpppath' : [ envLibrary[ 'with_dragonscript_inc' ] ],
+		'libpath' : [ envLibrary[ 'with_dragonscript_lib' ] ],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'runtimedata' : [],
+		'runtimedatadir' : None,
+		'depends' : [] }
+	Return()
+
+# build dragonscript
+def dragonscriptBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	with open(buildDir.Dir(srcdir).File('custom.py').abspath, 'w') as f:
+		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
+		f.write('with_sanitize = "{}"\n'.format('yes' if envLibrary['with_sanitize'] else 'no'))
+		f.write('with_verbose = "no"\n')
+		f.write('with_warnerrors = "yes"\n')
+		f.write('prefix = "{}"\n'.format(buildDir.abspath))
+		f.write('build_dsi = "no"\n')
+		if env['platform_android'] != 'no':
+			f.write('target_platform = "android"\n')
+			f.write('crosscompile = "android"\n')
+			if env['platform_android'] == 'armv7':
+				f.write('android_arch = "armv7a"\n')
+			else:
+				f.write('android_arch = "x86"\n')
+			f.write('android_apilevel = "{}"\n'.format(env['apilevel']))
+			f.write('android_ndkroot = "{}"\n'.format(env.subst('$ndkroot')))
+		elif env['OSWindows']:
+			f.write('target_platform = "windows"\n')
+			f.write('crosscompile = "mingw"\n')
+		elif env['OSBeOS']:
+			f.write('target_platform = "beos"\n')
+			#f.write('crosscompile = "mingw"\n')
+			f.write('includedir = "${prefix}/include"\n')
+	
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	script.append('scons install || exit 1')
+	if env['OSMacOS']:
+		script.append('install_name_tool -id "@rpath/libdscript.dylib" "{}" || exit 1'.format(target[0].abspath))
+	return 1 if os.system('\n'.join(script)) else None
+
+targets = [ libFileName ]
+with open( envLibrary.File( 'header_file_list' ).srcnode().abspath, 'r' ) as f:
+	targets.extend( [ x[:-1] for x in f.readlines() ] )
+
+runtimedata = []
+with open( envLibrary.File( 'data_file_list' ).srcnode().abspath, 'r' ) as f:
+	runtimedata.extend( [ envLibrary.File( envLibrary.subst( x[:-1] ) ) for x in f.readlines() ] )
+targets.extend( runtimedata )
+
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
+
+depends = parent_env.Alias( 'lib_dragonscript', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+parent_targets[ 'lib_dragonscript' ] = {
+	'name' : 'Internal libpng library',
+	'cpppath' : [ envLibrary.Dir( 'include' ) ],
+	'libpath' : [ envLibrary.Dir( 'lib' ) ],
+	'libs' : libs,
+	'runtimelibs' : [ library[ 0 ] ],
+	'runtimedata' : runtimedata,
+	'runtimedatadir' : envLibrary.Dir('lib/dragonscript'),
+	'depends' : depends }

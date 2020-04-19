@@ -1,0 +1,143 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable environment map probe for element class.
+ * 
+ * Provides environment map probe support to element class without subclassing from a specific class.
+ */
+class ECComposeEnvMapProbe
+	private var ECPShapeList pInfluenceArea
+	private var ECPFloat pInfluenceBorderSize
+	private var ECPInteger pInfluencePriority
+	private var ECPShapeList pReflectionShape
+	private var ECPShapeList pReflectionMask
+	
+	private var LayerMask pLayerMask
+	
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "envMapProbe." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, String prefix )
+		var CodecPropertyString codec = ownerClass.getSharedCodecPropertyString()
+		
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.envmap )
+		
+		this.pInfluenceArea = ECPShapeList.new( prefix + "influenceArea", codec )
+		ownerClass.addProperty( this.pInfluenceArea )
+		
+		this.pInfluenceBorderSize = ECPFloat.new( prefix + "influenceBorderSize", 0.1, 0 )
+		ownerClass.addProperty( this.pInfluenceBorderSize )
+		
+		this.pInfluencePriority = ECPInteger.new( prefix + "influencePriority", 0 )
+		ownerClass.addProperty( this.pInfluencePriority )
+		
+		this.pReflectionShape = ECPShapeList.new( prefix + "reflectionShape", codec )
+		ownerClass.addProperty( this.pReflectionShape )
+		
+		this.pReflectionMask = ECPShapeList.new( prefix + "reflectionMask", codec )
+		ownerClass.addProperty( this.pReflectionMask )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Influence shape. */
+	public func ECPShapeList getInfluenceArea()
+		return this.pInfluenceArea
+	end
+	
+	/** \brief Influence border size. */
+	public func ECPFloat getInfluenceBorderSize()
+		return this.pInfluenceBorderSize
+	end
+	
+	/** \brief Influence priority. */
+	public func ECPInteger getInfluencePriority()
+		return this.pInfluencePriority
+	end
+	
+	/** \brief Reflection shape. */
+	public func ECPShapeList getReflectionShape()
+		return this.pReflectionShape
+	end
+	
+	/** \brief Reflection mask. */
+	public func ECPShapeList getReflectionMask()
+		return this.pReflectionMask
+	end
+	
+	
+	
+	/** \brief Layer mask affecting environment probes. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask affecting environment probes. */
+	public func void setLayerMask( LayerMask layerMask )
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Initialize light for element from stub. */
+	public func EnvMapProbe createEnvMapProbe( Element element, StubElement stub )
+		var EnvMapProbe envMapProbe = EnvMapProbe.new()
+		
+		envMapProbe.setPosition( element.getPosition() )
+		envMapProbe.setOrientation( element.getOrientation() )
+		envMapProbe.setShapeListInfluence( this.pInfluenceArea.getShapeList( stub ) )
+		envMapProbe.setInfluenceBorderSize( this.pInfluenceBorderSize.getValue(stub ) )
+		envMapProbe.setInfluencePriority( this.pInfluencePriority.getValue( stub ) )
+		envMapProbe.setShapeReflection( this.pReflectionShape.getShapeList( stub ) )
+		envMapProbe.setShapeListReflectionMask( this.pReflectionMask.getShapeList( stub ) )
+		
+		envMapProbe.setLayerMask( this.pLayerMask )
+		
+		return envMapProbe
+	end
+end

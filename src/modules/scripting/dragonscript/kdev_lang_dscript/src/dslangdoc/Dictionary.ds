@@ -1,0 +1,164 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Linear list of objects.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Dictionary
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty dictionary. */
+	public func new()
+	end
+	
+	/** \brief Create copy of another dictionary. */
+	public func new( Dictionary dictionary )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of keys. */
+	public func int getCount()
+		return 0
+	end
+	
+	/** \brief Key is present. */
+	public func bool has( Object key )
+		return false
+	end
+	
+	/**
+	 * \brief Value of key.
+	 * \throws EInvalidParam Key is absent.
+	 */
+	public func Object getAt( Object key )
+		return null
+	end
+	
+	/** \brief Value of key or default value if absent. */
+	public func Object getAt( Object key, Object valueIfMissing )
+		return null
+	end
+	
+	/**
+	 * \brief Set value at key.
+	 * \details If key is missing it is added otherwise the new value set.
+	 */
+	public func void setAt( Object key, Object value )
+	end
+	
+	/**
+	 * \brief Remove key.
+	 * \throws EInvalidParam Key is absent.
+	 */
+	public func void remove( Object key )
+	end
+	
+	/** \brief Remove key if present. */
+	public func void removeIfExisting( Object key )
+	end
+	
+	/** \brief Remove all keys. */
+	public func void removeAll()
+	end
+	
+	
+	
+	/** \brief Array with all keys. */
+	public func Array getKeys()
+		return null
+	end
+	
+	/** \brief Array with all values. */
+	public func Array getValues()
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Apply block to each key value pair.
+	 * \details Block is called with key as first argument and value as second.
+	 */
+	public func void forEach( Block ablock )
+	end
+	
+	/** \brief Apply block to each key. */
+	public func void forEachKey( Block ablock )
+	end
+	
+	/** \brief Apply block to each value. */
+	public func void forEachValue( Block ablock )
+	end
+	
+	/**
+	 * \brief Find value for which the block returns true.
+	 * 
+	 * Block is called with key as first argument and value as second. Returns \em null
+	 * if no value matches.
+	 */
+	public func Object find( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Find key for which the block returns true.
+	 * 
+	 * Block is called with key as first argument and value as second. Returns \em null
+	 * if no value matches.
+	 */
+	public func Object findKey( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Apply block to each key value pair assembling the result of the block into a new dictionary.
+	 * \details Block is called with key as first argument and value as second. New key vaule par added
+	 *          to the result dictionary composes of the key send to the block and the block return value.
+	 */
+	public func Dictionary map( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements into a new dictionary for which the block returns true.
+	 * \details Block is called with key as first argument and value as second. New key vaule par added
+	 *          to the result dictionary composes of the key send to the block and the block return value.
+	 */
+	public func Dictionary collect( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Number of elements for which the block returns true.
+	 * \details Block is called with key as first argument and value as second.
+	 */
+	public func int count( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Remove elements for which a block returns true.
+	 * \details Block is called with key as first argument and value as second.
+	 */
+	public func void removeIf( Block ablock )
+	end
+	
+	
+	
+	/** \brief String representation of dictionary. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+end

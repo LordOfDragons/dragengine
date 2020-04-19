@@ -1,0 +1,390 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Create decals based on a decal definition for each visited element using a visitor.
+ */
+class DecalBuilder implements ColliderListener
+	/** \brief Created decal. */
+	public class CreatedDecal
+		private var Element pElement
+		private var Component pComponent
+		private var Decal pDecal
+		
+		/** \brief Create created decal. */
+		public func new( Element element, Component component, Decal decal )
+			if element == null or component == null or decal == null
+				throw EInvalidParam.new()
+			end
+			
+			this.pElement = element
+			this.pComponent = component
+			this.pDecal = decal
+		end
+		
+		/** \brief Element owning decal. */
+		public func Element getElement()
+			return this.pElement
+		end
+		
+		/** \brief Component owning decal. */
+		public func Component getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Created decal. */
+		public func Decal getDecal()
+			return this.pDecal
+		end
+	end
+	
+	
+	
+	/** \brief Position from to project. */
+	private var DVector pPosition
+	
+	/** \brief Orientation of projection. */
+	private var Quaternion pOrientation
+	
+	/** \brief Projection matrix constructed from position and orientation. */
+	private var DMatrix pMatrix
+	
+	/** \brief Size of projection. */
+	private var Vector pSize
+	
+	/** \brief Skin to use for create decals. */
+	private var Skin pSkin
+	
+	/** \brief Decal is visible after being created. */
+	private var bool pVisible
+	
+	/** \brief Transform to set for created decals. */
+	private var TexMatrix2 pTransform
+	
+	/** \brief Decal parameters. */
+	private var Dictionary pProperties
+	
+	/** \brief Collision filter limiting the elements to attach decals to. */
+	private var CollisionFilter pCollisionFilter
+	
+	/** \brief Visitor to use to create the decals. */
+	private var ElementVisitor pVisitor
+	
+	/** \brief Array to CreatedDecal or \em null if not used. */
+	private var Array pCreatedDecals
+	
+	
+	
+	/** \brief Create decal builder. */
+	public func new()
+		this.pPosition = DVector.new()
+		this.pOrientation = Quaternion.new()
+		this.pMatrix = DMatrix.new()
+		this.pSize = Vector.new()
+		this.pTransform = TexMatrix2.new()
+		this.pCollisionFilter = CollisionFilter.new( LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry ) )
+		this.pProperties = Dictionary.new()
+		this.pVisible = true
+		this.pVisitor = AddDecalVisitor.new( this )
+	end
+	
+	/** \brief Dispose of decal builder to break reference loops. */
+	public func void dispose()
+		this.pVisitor = null
+	end
+	
+	
+	
+	/** \brief Position from to project. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Orientation of projection. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Projection matrix constructed from position and orientation. */
+	public func DMatrix getMatrix()
+		return this.pMatrix
+	end
+	
+	/** \brief Set projection position and orientation. */
+	public func void setPositionAndOrientation( DVector position, Quaternion orientation )
+		if position == null or orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = position
+		this.pOrientation = orientation
+		this.pMatrix = DMatrix.newFromQuaternion( this.pOrientation ) * DMatrix.newTranslation( this.pPosition )
+	end
+	
+	/** \brief Size of projection. */
+	public func Vector getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set size of projection. */
+	public func void setSize( Vector size )
+		if size == null
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	/** \brief Skin to use for create decals. */
+	public func Skin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Set skin to use for create decals. */
+	public func void setSkin( Skin skin )
+		this.pSkin = skin
+	end
+	
+	/** \brief Decal is visible after being created. */
+	public func bool getVisible()
+		return this.pVisible
+	end
+	
+	/** \brief Set if decal is visible after being created. */
+	public func void setVisible( bool visible )
+		this.pVisible = visible
+	end
+	
+	/** Retrieves the texture coordinates transformation. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** \brief Transform to set for created decals. */
+	public func void setTransform( TexMatrix2 transform )
+		this.pTransform = transform
+	end
+	
+	/** \brief Collision filter limiting the elements to attach decals to. */
+	public func CollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Set collision filter limiting the elements to attach decals to. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+		if collisionFilter == null
+			throw EInvalidParam.new()
+		end
+		this.pCollisionFilter = collisionFilter
+	end
+	
+	/** \brief Visitor to use to create the decals. */
+	public func ElementVisitor getVisitor()
+		return this.pVisitor
+	end
+	
+	/** \brief Set visitor to use to create the decals. */
+	public func void setVisitor( ElementVisitor visitor )
+		this.pVisitor = visitor
+	end
+	
+	
+	
+	/** \brief Create decals from stored decal definition for matching elements in the world. */
+	public func void createDecals( World world )
+		this.createDecals( world, null )
+	end
+	
+	/**
+	 * \brief Create decals from stored decal definition for matching elements in the world.
+	 * 
+	 * All created decals are stored in \em collectDecals.
+	 */
+	public func void createDecals( World world, Array collectDecals )
+		var ColliderVolume collider = ColliderVolume.new()
+		var Vector halfSize = this.pSize * 0.5
+		
+		collider.setResponseType( CollisionResponse.none )
+		collider.setUseLocalGravity( true )
+		collider.setGravity( Vector.new() )
+		collider.setGeometry( this.pPosition, this.pOrientation )
+		collider.setCollisionFilter( this.pCollisionFilter )
+		
+		var ShapeList shape = ShapeList.new()
+		shape.addBox( Vector.new( 0.0, 0.0, -halfSize.getZ() ), halfSize )
+		collider.setShape( shape )
+		
+		this.pCreatedDecals = collectDecals
+		world.colliderHits( collider, this )
+		this.pCreatedDecals = null
+	end
+	
+	
+	
+	/**
+	 * \brief Create decal for component.
+	 * 
+	 * A new decal is created with properties stored in the decal builder and attached
+	 * to the component. Caller can then apply additional modifications to the decal.
+	 * 
+	 * If the builder is collecting created decals a new CreatedDecal instance is stored.
+	 */
+	public func Decal createComponentDecal( Element element, Component component )
+		var DMatrix matrix = this.pMatrix * component.getInverseMatrix()
+		
+		var Decal decal = Decal.new()
+		decal.setPosition( matrix.getPosition().toVector() )
+		decal.setOrientation( matrix.toQuaternion() )
+		decal.setSize( this.pSize )
+		decal.setSkin( this.pSkin )
+		decal.setTransform( this.pTransform )
+		//decal.setDynamicSkin( this.pDynamicSkin )
+		
+		component.addDecal( decal )
+		if this.pCreatedDecals != null
+			this.pCreatedDecals.add( CreatedDecal.new( element, component, decal ) )
+		end
+		
+		return decal
+	end
+	
+	
+	
+	/** \brief Number of properties. */
+	public func int getPropertyCount()
+		return this.pProperties.getCount()
+	end
+	
+	/** \brief Property keys (String array). */
+	public func Array getPropertyKeys()
+		return this.pProperties.getKeys()
+	end
+	
+	/** \brief Property key is present. */
+	public func bool hasPropertyWithKey( String key )
+		return this.pProperties.has( key )
+	end
+	
+	/** \brief Value of property or default value if absent. */
+	public func String getPropertyValueFor( String key, String default )
+		return this.pProperties.getAt( key, default ) cast String
+	end
+	
+	/** \brief Set property. */
+	public func void setPropertyValueFor( String key, String value )
+		if key == null or value == null
+			throw EInvalidParam.new()
+		end
+		this.pProperties.setAt( key, value )
+	end
+	
+	/** \brief Remove all properties. */
+	public func void removeAllProperties()
+		this.pProperties.removeAll()
+	end
+	
+	
+	
+	/** \brief Boolean property value or default value if absent. */
+	public func bool getPropertyBoolFor( String key, bool default )
+		if key == null
+			throw EInvalidParam.new()
+		end
+		
+		var String value = this.pProperties.getAt( key, null ) cast String
+		
+		if value == null
+			return default
+			
+		else
+			return ( ( value.toFloat() + 0.5 ) cast int ) != 0
+		end
+	end
+	
+	/** \brief Integer property value or default value if absent. */
+	public func int getPropertyIntFor( String key, int default )
+		if key == null
+			throw EInvalidParam.new()
+		end
+		
+		var String value = this.pProperties.getAt( key, null ) cast String
+		
+		if value == null
+			return default
+			
+		else
+			return value.toInt()
+		end
+	end
+	
+	/** \brief Floating point property value or default value if absent. */
+	public func float getPropertyFloatFor( String key, float default )
+		if key == null
+			throw EInvalidParam.new()
+		end
+		
+		var String value = this.pProperties.getAt( key, null ) cast String
+		
+		if value == null
+			return default
+			
+		else
+			return value.toFloat()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Collision detected.
+	 * 
+	 * Uses visitor on hit colliders. For height terrain calls hitHeightTerrain method.
+	 */
+	public func void collisionResponse( Collider owner, CollisionInfo info )
+		if info.isCollider()
+			if this.pVisitor == null
+				return
+			end
+			
+			var Element element = info.getCollider().getOwner() cast Element
+			if element != null
+				element.visit( this.pVisitor )
+			end
+		end
+		
+		// TODO height terrain
+	end
+	
+	/** \brief Colliders can hit each other. */
+	public func bool canHitCollider( Collider owner, Collider collider )
+		return true
+	end
+	
+	/** \brief Collider changed which does not happen for this use of the listener. */
+	public func void colliderChanged( Collider owner )
+	end
+end

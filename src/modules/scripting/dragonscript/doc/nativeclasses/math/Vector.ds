@@ -1,0 +1,205 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable 3-component double precision vector.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Vector
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create vector with all components set to 0. */
+	public func new()
+	end
+	
+	/** \brief Create vector using the specified components. */
+	public func new( float x, float y, float z )
+	end
+	
+	/** \brief Create DVetor from Vector. */
+	public func new( Vector v )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief X-Component. */
+	public func float getX()
+	end
+	
+	/** \brief Y-Component. */
+	public func float getY()
+	end
+	
+	/** \brief Z-Component. */
+	public func float getZ()
+	end
+	
+	/** \brief Component (0=X, 1=Y, 2=Z ). */
+	public func float get( int component )
+	end
+	
+	/** \brief Length. */
+	public func float getLength()
+	end
+	
+	/** \brief Squared length. */
+	public func float getLengthSquared()
+	end
+	
+	/**
+	 * \brief Vector divided by length().
+	 * \throws EDivisionByZero Length is \em 0.
+	 */
+	public func Vector normalize()
+	end
+	
+	/** \brief Component wise multiplication. */
+	public func Vector compMultiply( Vector v )
+	end
+	
+	/** \brief Component wise division. */
+	public func Vector compDivide( Vector v )
+	end
+	
+	/** \brief Vector with components set to true copied while all others are set to 0. */
+	public func Vector compSelect( bool x, bool y, bool z )
+	end
+	
+	/**
+	 * \brief Combine selected components of this vector with another.
+	 * \details For each component use this vector if value is \em true otherwise use \em vector component.
+	 */
+	public func Vector combine( Vector vector, bool x, bool y, bool z )
+	end
+	
+	/** \brief Vector with all components set to the smallest value of two vectors. */
+	public func Vector smallest( Vector v )
+	end
+	
+	/** \brief Vector with all components set to the largest value of two vectors. */
+	public func Vector largest( Vector v )
+	end
+	
+	/** \brief Vector with all components clamped to a range of two vectors. */
+	public func Vector clamped( Vector min, Vector max )
+	end
+	
+	
+	
+	/** \brief Two vectors are equal. */
+	public func bool isEqualTo( Vector v, float delta )
+	end
+	
+	/** \brief All coordinates are at least of a minimal value. */
+	public func bool isAtLeast( float value )
+	end
+	
+	/** \brief All coordinates are at most of a maximal value. */
+	public func bool isAtMost( float value )
+	end
+	
+	/** \brief Vector is equal to zero vector. */
+	public func bool isZero()
+	end
+	
+	
+	
+	/**
+	 * \brief Vector is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Vector and components are equal.
+	*/
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	
+	/**
+	 * \brief String representation of vector.
+	 * \details Implements Object.toString()
+	 */
+	public func String toString()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read vector from a file reader. */
+	static public func Vector readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write vector to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Negated vector. */
+	public func Vector -()
+	end
+	
+	/** \brief Sum of two vectors. */
+	public func Vector +( Vector v )
+	end
+	
+	/** \brief Difference of two vectors. */
+	public func Vector -( Vector v )
+	end
+	
+	/** \brief Vector scaled by scalar. */
+	public func Vector *( float scalar )
+	end
+	
+	/**
+	 * \brief Vector with each component divided by a value.
+	 * \throws EDivisionByZero \em scalar is \em 0.
+	 */
+	public func Vector /( float scalar )
+	end
+	
+	/** \brief Dot-Product between two vectors. */
+	public func float *( Vector v )
+	end
+	
+	/** \brief Cross-Product between two vectors. */
+	public func Vector %( Vector v )
+	end
+	
+	/** \brief Vector is less than another vector in all components. */
+	public func bool <( Vector v )
+	end
+	
+	/** \brief Vector is less than or equal to another vector in all components. */
+	public func bool <=( Vector v )
+	end
+	
+	/** \brief Vector is greater than another vector in all components. */
+	public func bool >( Vector v )
+	end
+	
+	/** \brief Vector is greater than or equal to another vector in all components. */
+	public func bool >=( Vector v )
+	end
+	/*@}*/
+end

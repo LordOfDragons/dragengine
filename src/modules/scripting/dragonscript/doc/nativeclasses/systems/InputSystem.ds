@@ -1,0 +1,145 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Input system.
+ * 
+ * This is a native class. This is a pure static class. The class can not be instantiated
+ */
+fixed class InputSystem
+	/** \name Management */
+	/*@{*/
+	/** \brief Input devices are captured by the active input module if supported. */
+	public static func bool getCaptureInputDevices()
+	end
+	
+	/** \brief Set if input devices are captured by the active input module if supported. */
+	public static func void setCaptureInputDevices( bool captureInputDevices )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Input devices */
+	/*@{*/
+	/** \brief Number of input devices. */
+	public static func int getDeviceCount()
+	end
+	
+	/** \brief Information for input device at index. */
+	public static func InputDevice getDeviceAt( int index )
+	end
+	
+	/** \brief Index of device with identifier or -1 if absent. */
+	public static func int indexOfDeviceWithID( String id )
+	end
+	
+	/** \brief Index of button with identifier on device at index or -1 if absent. */
+	public static func int indexOfButtonWithID( int device, String id )
+	end
+	
+	/** \brief Index of axis with identifier on device at index or -1 if absent. */
+	public static func int indexOfAxisWithID( int device, String id )
+	end
+	
+	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
+	public static func int indexOfFeedbackWithID( int device, String id )
+	end
+	
+	/** \brief Button at index on device at index is pressed down. */
+	public static func bool getButtonPressed( int device, int button )
+	end
+	
+	/** \brief Value of axis at index on device at index. */
+	public static func int getAxisValue( int device, int axis )
+	end
+	
+	/** \brief Value of feedback at index on device at index. */
+	public static func int getFeedbackValue( int device, int feedback )
+	end
+	
+	/** \brief Set value of feedback at index on device at index. */
+	public static func void setFeedbackValue( int device, int feedback, int value )
+	end
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * 
+	 * If more than one button matches the key code the input module decides which
+	 * button is the more likely choice. Once decided the input module is required
+	 * to return the same button for the same key code in subsequent queries unless
+	 * a deInputEvent::eeDeviceParamsChanged event is issued.
+	 * 
+	 * Can be used for example to locate keyboard keys to create default binding
+	 * layouts without the user pressing input keys.
+	 */
+	public func int buttonMatchingKeyCode( int device, int keyCode )
+	end
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * 
+	 * If more than one button matches the character the input module decides which
+	 * button is the more likely choice. Once decided the input module is required
+	 * to return the same button for the same character in subsequent queries unless
+	 * a deInputEvent::eeDeviceParamsChanged event is issued.
+	 * 
+	 * Keys usually have different characters depending on the state of modifier keys.
+	 * The input module matches character case insensitive to increase the chance to
+	 * find a match. If mutliple keys match the character but under different modifier
+	 * states the input module has to first select the key matching case sensitive
+	 * then the key requiring less modifiers.
+	 * 
+	 * Can be used for example to locate keyboard keys to create default binding
+	 * layouts without the user pressing input keys.
+	 */
+	public func int buttonMatchingKeyChar( int device, int character )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** \brief Number of parameters available. */
+	public static func int getParameterCount()
+	end
+	
+	/**
+	 * \brief Parameter information.
+	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
+	 */
+	public static func ModuleParameter getParameterInfo( int index )
+	end
+	
+	/** \brief Named parameter information or \em null if not found. */
+	public static func ModuleParameter getParameterInfo( String name )
+	end
+	
+	/**
+	 * \brief Parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func String getParameterValue( String name )
+	end
+	
+	/**
+	 * \brief Set named parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func void setParameterValue( String name, String value )
+	end
+	
+	/** \brief Send command. */
+	public static func String sendCommand( String command )
+	end
+	/*@}*/
+end

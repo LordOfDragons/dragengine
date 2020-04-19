@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rig>
+	<!--
+	Using this rig collision is done using the triangles defined in the LOD-0 model.
+	This is the quickest to use collider but also the potentially most slow one.
+	-->
+	<modelCollision>true</modelCollision>
+	<centralMassPoint x='0' y='0' z='0'/>
+</rig>

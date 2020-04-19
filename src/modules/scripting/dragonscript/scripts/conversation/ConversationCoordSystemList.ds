@@ -1,0 +1,84 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief List of conversation coordinate systems keyd by identifier.
+ */
+class ConversationCoordSystemList
+	private var Dictionary pCoordSystems
+	
+	
+	
+	/** \brief Create conversation coordinate system list. */
+	public func new()
+		this.pCoordSystems = Dictionary.new()
+	end
+	
+	/** \brief Dispose of list. */
+	public func void dispose()
+		this.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of coordinate systems. */
+	public func int getCount()
+		return this.pCoordSystems.getCount()
+	end
+	
+	/** \brief Coordinate system is present. */
+	public func bool has( StringID id )
+		return this.pCoordSystems.has( id )
+	end
+	
+	/** \brief Coordinate system with identifier or \em null if absent. */
+	public func ConversationCoordSystem getAt( StringID id )
+		return this.pCoordSystems.getAt( id ) cast ConversationCoordSystem
+	end
+	
+	/** \brief Add coordinate system. */
+	public func void add( ConversationCoordSystem coordSystem )
+		var StringID id = coordSystem.getID()
+		if this.pCoordSystems.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pCoordSystems.setAt( id, coordSystem )
+	end
+	
+	/** \brief Remove coordinate system. */
+	public func void remove( StringID id )
+		this.pCoordSystems.remove( id )
+	end
+	
+	/** \brief Remove all coordinate systems. */
+	public func void removeAll()
+		this.pCoordSystems.removeAll()
+	end
+	
+	/** \brief Visit coordinate systems with block with parameter ConversationCoordSystem. */
+	public func void forEach( Block ablock )
+		this.pCoordSystems.forEachValue( ablock )
+	end
+end

@@ -1,0 +1,102 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+/**
+ * \brief Connection.
+ * 
+ * This is a native class.
+ */
+class Connection
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create connection. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Llocal address. */
+	public func String getLocalAddress()
+	end
+	
+	/** \brief Remote address. */
+	public func String getRemoteAddress()
+	end
+	
+	/** \brief Connection is established. */
+	public func bool getConnected()
+	end
+	
+	/**
+	 * \brief Connect to host at address.
+	 * 
+	 * Connection success or failure is reported through the scripting peer.
+	 * For the supported address format see Server.listenOn() .
+	 * 
+	 * \returns true if the connection request has been send or false in case of error.
+	 */
+	public func bool connectTo( String address )
+	end
+	
+	/** \brief Disconnect if connected. */
+	public func void disconnect()
+	end
+	
+	/**
+	 * \brief Send message if connected.
+	 * 
+	 * The message can be queued and send at a later time to optimize
+	 * throughput. The message will be not delayed longer than the given
+	 * amount of milliseconds. The message is send unreliable and it is
+	 * acceptable for the message to get lost due to transmission failure.
+	 */
+	public func void sendMessage( NetworkMessage message, int maxDelay )
+	end
+	
+	/**
+	 * \brief Send reliable message if connected.
+	 * 
+	 * The message is append to already waiting reliable messages and send as
+	 * soon as possible. Reliable messages always arrive in the same order
+	 * they have been queued.
+	 */
+	public func void sendReliableMessage( NetworkMessage message )
+	end
+	
+	/**
+	 * \brief Link network state to remote network state.
+	 * 
+	 * Request is queued and carried out as soon as possible. The local state is considered
+	 * the server state and the remote state the client state. The server state can always
+	 * change values. The client state can only change values if allowed by the server state.
+	 * Typically only the server sends out link request to clients. All these states are
+	 * read only except those states belonging to the client which he has to be able to modify.
+	 * 
+	 * \param message Contains informations for the remote system to know what state to link to.
+	 * \param state State to link with remote system.
+	 * \param readOnly If true remote state is not allowed to change.
+	 */
+	public func void linkState( NetworkMessage message, NetworkState state, bool readOnly )
+	end
+	
+	
+	
+	/** \brief Connection listener or \em null if not set. */
+	public func ConnectionListener getConnectionListener()
+	end
+	
+	/** \brief Set connection listener \em or null if not set. */
+	public func void setConnectionListener( ConnectionListener listener )
+	end
+	/*@}*/
+end

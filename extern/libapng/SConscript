@@ -1,0 +1,145 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libpng-1.6.29'
+
+libLinkVersion = '16'
+libLinkName = 'png16'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
+	staticFileName = 'lib/lib{}.a'.format( libLinkName )
+else:
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
+	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+
+# check if system libapng is present
+hasSystemAPNG = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_libapng' ] != TernaryVariableNo:
+	hasSystemAPNG = conf.CheckLibWithHeader( libLinkName, 'png.h', 'c++', 'png_read_frame_head(0,0);' )
+conf.Finish()
+
+if not hasSystemAPNG and envLibrary[ 'with_system_libapng' ] == TernaryVariableYes:
+	Exit( 'Requested to use system libapng but no usable libapng found.' )
+
+libs = [ libLinkName ]
+libs.extend( parent_targets[ 'lib_zlib' ][ 'libs' ] )
+
+parent_report[ 'use system libapng' ] = 'yes' if hasSystemAPNG else 'no'
+
+if hasSystemAPNG:
+	parent_targets[ 'lib_libapng' ] = {
+		'name' : 'Internal libapng library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# we need to rename the library to be safe of problems
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/libapng16-16.dll'
+	libLinkName = 'apng16'
+else:
+	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}apng${SHLIBSUFFIX}' )
+	libLinkName = 'apng'
+
+libs = [ libLinkName ]
+libs.extend( parent_targets[ 'lib_zlib' ][ 'libs' ] )
+
+# build animated libpng
+def libapngBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	script = createScriptHeader( env, deps=[ parent_targets[ 'lib_zlib' ] ] )
+	
+	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	
+	if not buildStaticLinking:
+		for p in env[ 'PATCHES' ]:
+			script.append( 'patch -p1 <{} || exit 1'.format( p.srcnode().abspath ) )
+	
+	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline.append( '--enable-silent-rules' )
+	if buildStaticLinking:
+		cmdline.append( '--enable-shared=no' )
+		cmdline.append( '--enable-static=yes' )
+		cmdline.append( '--with-pic=yes' )
+	else:
+		cmdline.append( '--enable-shared=yes' )
+		cmdline.append( '--enable-static=no' )
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+	
+	script.append( 'make install-libLTLIBRARIES'
+		+ ' install-pkgincludeHEADERS'
+		+ ' install-nodist_pkgincludeHEADERS'
+		+ ' install-header-links'
+		+ ' install-library-links || exit 1' )
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libapng')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles( envLibrary, 'patches', '*.patch', patches, recursive=False )
+	envLibrary.Append( PATCHES = [ envLibrary.File( x ) for x in sorted( patches ) ] )
+
+if buildStaticLinking:
+	targets = [ staticFileName ]
+else:
+	targets = [ libFileName ]
+targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ] )
+
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(libapngBuild, 'Build libapng' ) )
+
+if not buildStaticLinking:
+	envLibrary.Depends( library, envLibrary[ 'PATCHES' ] )
+if parent_targets[ 'lib_zlib' ][ 'depends' ]:
+	envLibrary.Depends( library, parent_targets[ 'lib_zlib' ][ 'depends' ] )
+
+depends = parent_env.Alias( 'lib_libapng', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+cpppath = [ envLibrary.Dir( 'include' ) ]
+cpppath.extend( parent_targets[ 'lib_zlib' ][ 'cpppath' ] )
+
+libpath = [ envLibrary.Dir( 'lib' ) ]
+libpath.extend( parent_targets[ 'lib_zlib' ][ 'libpath' ] )
+
+if buildStaticLinking:
+	libs = [ library[ 0 ] ]
+	libs.extend( parent_targets[ 'lib_zlib' ][ 'libs' ] )
+	runtimelibs = []
+else:
+	runtimelibs = [ library[ 0 ] ]
+runtimelibs.extend( parent_targets[ 'lib_zlib' ][ 'runtimelibs' ] )
+
+parent_targets[ 'lib_libapng' ] = {
+	'name' : 'Internal animated libpng library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

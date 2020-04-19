@@ -1,0 +1,68 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Cached vegetation.
+ * 
+ * Manages prop fields using vegetation cache files created by the IGDE World Editor.
+ * This is a native class.
+ */
+class CachedVegetation
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create cached vegetation object.
+	 * \details Creates prop fields.
+	 * \throws EInvalidParam \em sectorDimension is less than 1.
+	 * \throws EInvalidParam \em propfieldCellCount is less than 1,
+	 */
+	public func new( float sectorDimension, int propfieldCellCount )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set collision filter for all prop fields. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+	
+	
+	
+	/** \brief Sector with coordinates exists. */
+	public func void hasSector( Point coordinates )
+	end
+	
+	/** \brief Add sector using cache file. */
+	public func void addSector( Point coordinates, String cacheFile )
+	end
+	
+	/**
+	 * \brief Remove sector.
+	 * \throws EInvalidParam No sector exists with \em coordinates.
+	 */
+	public func void removeSector( Point coordinates )
+	end
+	
+	/** \brief Remove all sectors. */
+	public func void removeAllSectors()
+	end
+	
+	
+	
+	/** \brief Set world or \em null to clear. */
+	public func void setWorld( World world )
+	end
+	/*@}*/
+end

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<version>130</version>
+	
+	<name>DefRen Light Point V2 Occlusion</name>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texShadowLow' target='4'/>
+	<texture name='texShadowSolid' target='5'/>
+	<texture name='texShadowTransp' target='6'/>
+	<texture name='texNoise2D' target='7'/>
+	
+	<parameter name='pPosToTC'/> <!-- 0 -->
+	<parameter name='pLightPos'/> <!-- 1 -->
+	<parameter name='pLightAtten'/> <!-- 2 -->
+	<parameter name='pPosTransform'/> <!-- 4 -->
+	<parameter name='pShadowMatrix'/> <!-- 5 -->
+	<parameter name='pShaStaParams'/> <!-- 6 -->
+	<parameter name='pShaDynParams'/> <!-- 7 -->
+	<parameter name='pShaOpts2'/> <!-- 8 -->
+	<parameter name='pMatrixMVP'/> <!-- 9 -->
+	<parameter name='pMatrixMV'/> <!-- 10 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outOcclusion' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/light/lightvolume_occred.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/light/point_occred_pass1.glsl</sourceCode>
+</shader>

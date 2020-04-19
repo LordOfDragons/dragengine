@@ -1,0 +1,52 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief SkinPropertyNode combine mode.
+ */
+enum SkinPropertyNodeCombineMode
+	/**
+	 * \brief Blend canvas with content below using combine strength.
+	 * 
+	 * Result will be <em>d.rgba = (d.rgb * (1 - strength)) + s.rgb * strength</em> where
+	 * d=destination, s=source and strength=combine-strength.
+	 * 
+	 * For "normal" texture property d.rgb will be normalized like a normal vector.
+	 */
+	blend
+	
+	/**
+	 * \brief Overlay canvas to content below using combine strength.
+	 * 
+	 * Result will be <em>d.rgb += s.rgb * strength</em> where d=destination, s=source
+	 * and strength=combine-strength.
+	 * 
+	 * For "normal" texture property the result will be the source normal added to the
+	 * destination normal and the result normalized. This allows to super-impose fine
+	 * grained normals over coarse grained normals. The calculation is carried out in
+	 * texture space.
+	 */
+	overlay
+end

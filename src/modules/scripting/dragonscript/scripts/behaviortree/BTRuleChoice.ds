@@ -1,0 +1,130 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree choice rule.
+ * 
+ * Runs all actions in sequence. Returns BTResult.failure if all actions returned
+ * BTResult.failure . If an action returns BTResult.success processing of the rule stops
+ * and BTResult.success is returned. If no actions are present BTResult.failure is returned.
+ * 
+ * If looping is set to true the choice restarts at the beginning if the first action returns
+ * BTResult.success . This allows to keep looping a choice until the first time all actions
+ * return BTResult.failure .
+ */
+class BTRuleChoice extends BTRuleList
+	/** \brief Looping. */
+	public var bool pLooping
+	
+	
+	
+	/** \brief Create behavior tree rule. */
+	public func new( String id ) super( id )
+		this.pLooping = false
+	end
+	
+	
+	
+	/** \brief Looping. */
+	public func bool getLooping()
+		return this.pLooping
+	end
+	
+	/** \brief Set looping. */
+	public func void setLooping( bool looping )
+		this.pLooping = looping
+	end
+	
+	
+	
+	/**
+	 * \brief Run action.
+	 * 
+	 * \returns Value from BTAction.eReturnValues .
+	 */
+	public func BTResult run( BTContext context )
+		var BTRule rule = context.getCurrentRule()
+		
+		if rule == this
+			// first time the rule is run
+			if this.getRuleCount() == 0 or not this.evaluateConditions( context )
+				return BTResult.failure  // context does another step
+			end
+			
+			context.setCurrentRule( this.getRuleAt( 0 ) )
+			return BTResult.success  // context does another step
+			
+		else
+			// child rule has run. check last result
+			var int index = this.indexOfRule( rule )
+			
+			select context.getLastResult()
+			case BTResult.running
+				return BTResult.running  // context stops stepping
+				
+			case BTResult.failure
+				if index < this.getRuleCount()
+					// more actions to run
+					if this.evaluateConditions( context )
+						context.setCurrentRule( this.getRuleAt( index + 1 ) )
+						
+					else
+						// condition failed. pass up to parent
+						context.setCurrentRule( this )
+					end
+					
+				else
+					// finished all actions with failure. pass up to parent
+					context.setCurrentRule( this )
+				end
+				return BTResult.failure  // context does another step
+				
+			case BTResult.success
+				// choice finished. pass up to parent unless looping
+				if this.pLooping
+					if this.evaluateConditions( context )
+						context.setCurrentRule( this.getRuleAt( 0 ) )
+						
+					else
+						// condition failed. pass up to parent
+						context.setCurrentRule( this )
+						return BTResult.failure
+					end
+					
+				else
+					context.setCurrentRule( this )
+				end
+				return BTResult.success  // context does another step
+				
+			else
+				throw EInvalidParam.new()
+			end
+		end
+	end
+end

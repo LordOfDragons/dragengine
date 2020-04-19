@@ -1,0 +1,166 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLauncher = parent_env.Clone()
+
+buildLauncher = envLauncher['build_guilauncher'] != TernaryVariableNo
+
+parent_report['build GUI Launcher'] = 'yes' if buildLauncher else 'no'
+if not buildLauncher:
+	Return()
+
+# fetch values in expanded form for later use
+pathBin = envLauncher.subst(envLauncher['path_launcher_bin'])
+pathBinLib = envLauncher.subst(envLauncher['path_launcher_bin_lib'])
+pathConfig = envLauncher.subst(envLauncher['path_launcher_config'])
+pathData = envLauncher.subst(envLauncher['path_launcher_data'])
+pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
+pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
+
+libs = []
+
+appendLibrary(envLauncher, parent_targets['dragengine'], libs)
+appendLibrary(envLauncher, parent_targets['lib_fox'], libs)
+libs.extend(parent_targets['dragengine']['binlibs'])
+
+if envLauncher['OSPosix']:
+	envLauncher.Append(CXXFLAGS = '-DHAS_LIB_DL')
+	
+elif envLauncher['OSBeOS']:
+	libs.extend(['root', 'be'])
+
+elif envLauncher['OSWindows']:
+	libs.extend(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'shell32'])
+	envLauncher.Append(LINKFLAGS = '-Wl,-subsystem,windows')
+	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
+
+envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
+
+# write the configuration file required by a few source files
+configFilePath = '{}/src/glconfig.h'.format(Dir('.').srcnode().abspath)
+configFileDefines = {}
+configFileDefines['OS_UNIX'] = envLauncher['OSPosix']
+configFileDefines['OS_W32'] = envLauncher['OSWindows']
+
+if WriteConfigFile(configFilePath, configFileDefines, envLauncher):
+	Exit('Writing configuration file failed')
+
+# create environment for the progam
+envLauncher.Append(CXXFLAGS = ['-I{}'.format(envLauncher.Dir('shared/src').srcnode().abspath)])
+
+envLauncher.Append(CXXFLAGS = [
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_SHARE_PATH', pathShare),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_GAMES_PATH', pathGames),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig)])
+
+if envLauncher['OSWindows']:
+	envLauncher.Append(CXXFLAGS = ['-DDEBUG_RELOCATE_STDOUT'])
+
+envLauncher.Append(CXXFLAGS = ['-I{}'.format(envLauncher.Dir('src').srcnode().abspath)])
+
+envLauncher.Append(CPPFLAGS = envLauncher['SANITIZE_FLAGS'])
+envLauncher.Append(LINKFLAGS = envLauncher['SANITIZE_FLAGS'])
+
+# determine the source files
+sources = []
+headers = []
+globFiles(envLauncher, 'src', '*.cpp', sources)
+globFiles(envLauncher, 'src', '*.h', headers)
+
+# setup the builders
+objects = [envLauncher.StaticObject(s) for s in sources]
+
+programs = []
+if envLauncher['OSWindows']:
+	envEngine = envLauncher.Clone()
+	envEngine.Append(CXXFLAGS = ['-DOS_W32_HELPER'])
+	
+	libsEngine = []
+	appendLibrary(envEngine, parent_targets['dragengine'], libsEngine)
+	libsEngine.extend(parent_targets['dragengine']['binlibs'])
+	libsEngine.extend(['kernel32', 'user32'])
+	
+	objectsEngine = [
+		envEngine.StaticObject('src/engine/deglEngineProcess-helper',
+			'src/engine/deglEngineProcess.cpp'),
+		envEngine.StaticObject('src/engine/deglEngineProcessRunGame-helper',
+			'src/engine/deglEngineProcessRunGame.cpp')]
+	
+	programEngine = envEngine.Program(target='delauncher-gui-engine', source=objectsEngine, LIBS=libsEngine)
+	programs.append(programEngine)
+	
+	objects.append(envLauncher.RES('src/guilaunch-res.rc'))
+
+program = envLauncher.Program(target='delauncher-gui', source=objects, LIBS=libs)
+programs.append(program)
+targetBuild = parent_env.Alias('launcher_gui_build', programs)
+
+install = []
+archive = {}
+
+install.append(envLauncher.Install(pathBin, program))
+for p in program:
+	archive[os.path.join(pathBin, p.name)] = p
+
+if envLauncher['OSWindows']:
+	install.append(envEngine.Install(pathBin, programEngine))
+	for p in programEngine:
+		archive[os.path.join(pathBin, p.name)] = p
+
+if 'lib_mingw_runtime' in parent_targets:
+	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
+		archive[os.path.join(pathBin, l.name)] = l
+	
+for l in reversed(parent_targets['lib_fox']['runtimelibs']):
+	key = '{}/{}'.format(pathBinLib, l)
+	if not key in parent_targets['lib_fox']['globalInstallTracker']:
+		parent_targets['lib_fox']['globalInstallTracker'].append(key)
+		envLauncher.Depends(install, envLauncher.Install(pathBinLib, l))
+		archive[os.path.join(pathBinLib, l.name)] = l
+
+
+if envLauncher['OSPosix']:
+	pathDataDir = envLauncher.subst('${datadir}')
+	
+	for s in ['128', '64', '32']:
+		target = os.path.join(pathDataDir, 'icons', 'hicolor',
+			'{}x{}'.format(s, s), 'apps', 'dragengine-delauncher-gui.png')
+		source = 'data/delauncher-gui{}.png'.format(s)
+		install.append(envLauncher.InstallAs(target, source))
+		archive[target] = envLauncher.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'pixmaps', 'dragengine-delauncher-gui.png')
+	source = 'data/delauncher-gui128.png'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'applications', 'dragengine-delauncher-gui.desktop')
+	source = 'data/delauncher-gui.desktop'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'kservices5', 'dragengine-delauncher-gui-install.desktop')
+	source = 'data/delauncher-gui-install.desktop'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
+
+targetInstall = parent_env.Alias('launcher_gui', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envLauncher.Alias('launcher_gui_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['launcher_gui'] = {
+	'name' : 'Drag[en]gine GUI Launcher',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-launcher' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

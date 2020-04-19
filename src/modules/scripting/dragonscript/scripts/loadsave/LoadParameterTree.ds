@@ -1,0 +1,373 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Gui
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load ParameterTree from XML file.
+ * 
+ * Example file:
+ * 
+ * \code{.xml}
+ * &lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;
+ * &lt;parameterTree&gt;
+ *   &lt;string path='ui/mainMenu/bgImage'&gt;/content/mainMenuBG.png&lt;/string&gt;
+ *   &lt;list path='ui/mainMenu/borderColors'&gt;
+ *     &lt;color r='1' g='0' b='0'/&gt;
+ *     &lt;color r='0' g='1' b='1'/&gt;
+ *   &lt;/list&gt;
+ * &lt;/parameterTree&gt;
+ * \endcode
+ * 
+ * Supported are these tags:
+ * - &lt;string&gt;&lt;/string&gt;: UTF8 encoded string value
+ * - &lt;float&gt;&lt;/float&gt;: Floating point value
+ * - &lt;int&gt;&lt;/int&gt;: Integer value
+ * - &lt;bool&gt;&lt;/bool&gt;: Boolean value ("true", "false")
+ * - &lt;point x='' y=''/&gt;: 2-Component point (integer)
+ * - &lt;point3 x='' y='' z=''/&gt;: 3-Component point (integer)
+ * - &lt;vector2 x='' y=''/&gt;: 2-Component vector (float)
+ * - &lt;vector x='' y='' z=''/&gt;: 3-Component vector (float)
+ * - &lt;borderSize left='' top='' right='' bottom=''/&gt;: BorderSize (int)
+ * - &lt;rectArea x1='' y1='' x2='' y2=''/&gt;: RectArea (int)
+ * - &lt;floatRectArea x1='' y1='' x2='' y2=''/&gt;: FloatRectArea (float)
+ * - &lt;list&gt;&lt;/list&gt;: List of values (anything except &lt;list&gt;)
+ * - &lt;null/&gt;: null value
+ */
+class LoadParameterTree extends BaseXmlLoader
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadParameterTree" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/**
+	 * \brief Load element class from file.
+	 * 
+	 * Loaded content is added to \em parameterTree. It is not cleared first.
+	 */
+	public func void loadFromFile( String filename, ParameterTree parameterTree )
+		if parameterTree == null
+			throw EInvalidParam.new()
+		end
+		
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() + " in " + filename )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "parameterTree" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		try
+			this.readParameterTree( root, parameterTree )
+			
+		catch Exception e
+			this.logParsingFailed( "Failed parsing " + filename )
+			throw
+		end
+	end
+	
+	/** \brief Save parameter tree to file. */
+	public func void saveToFile( String filename, ParameterTree parameterTree )
+		if parameterTree == null
+			throw EInvalidParam.new()
+		end
+		
+		this.logSavingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new()
+		var EasyXMLElement root = document.getRootElement()
+		
+		root.setTagName( "parameterTree" )
+		this.writeParameterTree( root, parameterTree )
+		
+		document.writeToFile( FileWriter.new( filename ), false )
+	end
+	
+	
+	
+	/** \brief Parse parameter tree tag. */
+	protected func void readParameterTree( EasyXMLElement root, ParameterTree tree )
+		var Object value
+		var String path
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			path = element.getAttributeNamed( "path" )
+			
+			if tagName.equals( "string" )
+				value = element.getFirstCData()
+				
+			elif tagName.equals( "float" )
+				value = element.getFirstCDataFloat()
+				
+			elif tagName.equals( "integer" )
+				value = element.getFirstCDataInt()
+				
+			elif tagName.equals( "boolean" )
+				value = element.getFirstCDataBool()
+				
+			elif tagName.equals( "vector" )
+				value = this.readVector( element )
+				
+			elif tagName.equals( "vector2" )
+				value = this.readVector2( element )
+				
+			elif tagName.equals( "point" )
+				value = this.readPoint( element )
+				
+			elif tagName.equals( "point3" )
+				value = this.readPoint3( element )
+				
+			elif tagName.equals( "borderSize" )
+				value = this.readBorderSize( element )
+				
+			elif tagName.equals( "rectArea" )
+				value = this.readRectArea( element )
+				
+			elif tagName.equals( "floatRectArea" )
+				value = this.readFloatRectArea( element )
+				
+			elif tagName.equals( "color" )
+				value = this.readColor( element )
+				
+			elif tagName.equals( "null" )
+				value = null
+				
+			elif tagName.equals( "list" )
+				value = this.readList( element )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+			
+			tree.setAt( path, value )
+		end )
+	end
+	
+	/** \brief Parse list tag. */
+	protected func Array readList( EasyXMLElement root )
+		var Array list = Array.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "string" )
+				list.add( element.getFirstCData() )
+				
+			elif tagName.equals( "float" )
+				list.add( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "integer" )
+				list.add( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "boolean" )
+				list.add( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "vector" )
+				list.add( this.readVector( element ) )
+				
+			elif tagName.equals( "vector2" )
+				list.add( this.readVector2( element ) )
+				
+			elif tagName.equals( "point" )
+				list.add( this.readPoint( element ) )
+				
+			elif tagName.equals( "point3" )
+				list.add( this.readPoint3( element ) )
+				
+			elif tagName.equals( "borderSize" )
+				list.add( this.readBorderSize( element ) )
+				
+			elif tagName.equals( "rectArea" )
+				list.add( this.readRectArea( element ) )
+				
+			elif tagName.equals( "floatRectArea" )
+				list.add( this.readFloatRectArea( element ) )
+				
+			elif tagName.equals( "color" )
+				list.add( this.readColor( element ) )
+				
+			elif tagName.equals( "null" )
+				list.add( null )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+		
+		return list
+	end
+	
+	
+	
+	/** \brief Write parameter tree tag. */
+	protected func void writeParameterTree( EasyXMLElement root, ParameterTree tree )
+		tree.forEach( block String path, Object value
+			this.writeParameter( root, path, value )
+		end )
+	end
+	
+	/** \brief Write parameter tag. */
+	protected func void writeParameter( EasyXMLElement root, String path, Object value )
+		var EasyXMLElement tag
+		
+		if value typeof Array
+			tag = root.addTag( "list" )
+			tag.setAttribute( "path", path )
+			( value cast Array ).forEach( block Object each
+				this.writeParameter( tag, null, each )
+			end )
+			
+		elif value typeof String
+			tag = root.addDataTag( "string", value cast String )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			
+		elif value typeof float
+			tag = root.addDataTag( "float", value cast float )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			
+		elif value typeof int
+			tag = root.addDataTag( "integer", value cast int )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			
+		elif value typeof bool
+			tag = root.addDataTag( "boolean", value cast bool )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			
+		elif value typeof Vector
+			var Vector vector = value cast Vector
+			tag = root.addTag( "vector" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x", vector.getX() )
+			tag.setAttribute( "y", vector.getY() )
+			tag.setAttribute( "z", vector.getZ() )
+			
+		elif value typeof Vector2
+			var Vector2 vector = value cast Vector2
+			tag = root.addTag( "vector2" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x", vector.getX() )
+			tag.setAttribute( "y", vector.getY() )
+			
+		elif value typeof Point
+			var Point point = value cast Point
+			tag = root.addTag( "point" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x", point.getX() )
+			tag.setAttribute( "y", point.getY() )
+			
+		elif value typeof Point3
+			var Point3 point = value cast Point3
+			tag = root.addTag( "point3" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x", point.getX() )
+			tag.setAttribute( "y", point.getY() )
+			tag.setAttribute( "z", point.getZ() )
+			
+		elif value typeof BorderSize
+			var BorderSize size = value cast BorderSize
+			tag = root.addTag( "borderSize" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "left", size.getLeft() )
+			tag.setAttribute( "top", size.getTop() )
+			tag.setAttribute( "right", size.getRight() )
+			tag.setAttribute( "bottom", size.getBottom() )
+			
+		elif value typeof RectArea
+			var RectArea area = value cast RectArea
+			tag = root.addTag( "rectArea" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x1", area.getX1() )
+			tag.setAttribute( "y1", area.getY1() )
+			tag.setAttribute( "x2", area.getX2() )
+			tag.setAttribute( "y2", area.getY2() )
+			
+		elif value typeof FloatRectArea
+			var FloatRectArea area = value cast FloatRectArea
+			tag = root.addTag( "floatRectArea" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "x1", area.getX1() )
+			tag.setAttribute( "y1", area.getY1() )
+			tag.setAttribute( "x2", area.getX2() )
+			tag.setAttribute( "y2", area.getY2() )
+			
+		elif value typeof Color
+			var Color color = value cast Color
+			tag = root.addTag( "color" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			tag.setAttribute( "r", color.getRed() )
+			tag.setAttribute( "g", color.getGreen() )
+			tag.setAttribute( "b", color.getBlue() )
+			tag.setAttribute( "a", color.getAlpha() )
+			
+		elif value == null
+			tag = root.addTag( "null" )
+			if path != null
+				tag.setAttribute( "path", path )
+			end
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+end

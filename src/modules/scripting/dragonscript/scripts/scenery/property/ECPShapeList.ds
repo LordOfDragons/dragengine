@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Shape list element class property for use with XML loading.
+ * 
+ * Shape list is stored as ShapeList instance. From XML the shape list is read
+ * using an encoded string decoded using CodecPropertyString.
+ */
+class ECPShapeList extends ElementClassProperty
+	/** \brief Coded used to decode shape string. */
+	private var CodecPropertyString pCodec
+	
+	/** \brief ShapeList. */
+	private var ShapeList pShapeList
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, CodecPropertyString codec ) super( name )
+		this.pCodec = codec
+		this.pShapeList = ShapeList.new()
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, CodecPropertyString codec, ShapeList shapeList ) super( name )
+		this.pCodec = codec
+		this.pShapeList = shapeList
+	end
+	
+	
+	
+	/** \brief Coded used to decode shape string. */
+	public func CodecPropertyString getCodec()
+		return this.pCodec
+	end
+	
+	/** \brief Shape list. */
+	public func ShapeList getShapeList()
+		return this.pShapeList
+	end
+	
+	/** \brief Set shape. */
+	public func void setShapeList( ShapeList shape )
+		this.pShapeList = shape
+	end
+	
+	/** \brief Shape list string. */
+	public func String getShapeListString()
+		return this.pCodec.encodeShapeList( this.pShapeList )
+	end
+	
+	/** \brief Set shape list from shape string. */
+	public func void setShapeListFromString( String string )
+		this.pShapeList = this.pCodec.decodeShapeList( string )
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.setShapeListFromString( value cast String )
+	end
+	
+	
+	
+	/**
+	 * \brief Shape list modified by stub property if present.
+	 * 
+	 * If named stub property is not present the stored shape list is returned. If the named
+	 * stub property is present it is decoded using the stored decoder and the result returned.
+	 * 
+	 * Uses the stored property name as stub property name.
+	 */
+	public func ShapeList getShapeList( StubWithProperties stub )
+		return this.getShapeList( stub, this.getName() )
+	end
+	
+	/**
+	 * \brief Shape list modified by stub property if present.
+	 * 
+	 * If named stub property is not present the stored shape list is returned. If the named
+	 * stub property is present it is decoded using the stored decoder and the result returned.
+	 */
+	public func ShapeList getShapeList( StubWithProperties stub, String name )
+		var String value = stub.getPropertyValueFor( name, null )
+		if value != null
+			return this.pCodec.decodeShapeList( value )
+			
+		else
+			return this.pShapeList
+		end
+	end
+end

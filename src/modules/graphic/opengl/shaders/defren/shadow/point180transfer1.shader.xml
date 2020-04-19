@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Shadow Point 180 Transfer 1</name>
+	
+	<version>120</version>
+	
+	<texture name="texShadow" target="0"/>
+	<texture name="texColor" target="1"/>
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+varying vec2 vTexCoord;
+
+void main( void ){
+	vTexCoord = gl_Vertex.xy; //gl_MultiTexCoord0.st;
+	gl_Position = vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+uniform sampler2D texShadow;
+#ifdef WITH_COLOR
+uniform sampler2D texColor;
+#endif
+
+varying vec2 vTexCoord;
+
+const vec3 ca = vec3( 1.0, 1.0, 1.0 );
+const vec3 cb = vec3( 2.0, 2.0, 0.0 );
+const vec3 cc = vec3( 1.0, 1.0, -1.0 );
+const vec3 off = vec3( 0.0, 0.5, 1.0 );
+const vec2 sca = vec2( 0.25, -0.25 );
+
+void main( void ){
+	vec3 wc2 = vec3( vTexCoord * vTexCoord, 1.0 );
+	float a = dot( wc2, ca );
+	
+	if( a > 2.0 ){
+		gl_FragDepth = 1.0;
+		return;
+	}
+	
+	float b = dot( wc2, cb );
+	float c = dot( wc2, cc );
+	vec3 position;
+	
+	position.z = ( sqrt( b*b - 4.0*a*c ) - b ) / ( 2.0*a );
+	position.xy = vTexCoord * vec2( position.z + 1.0 );
+	vec2 tc, abspos = abs( position.xy );
+	
+	if( position.z > abspos.x && position.z > abspos.y ){
+		position.xy /= position.z;
+		tc = position.xy * sca.xx + off.yy;
+		
+	}else{
+		
+		if( abspos.x > abspos.y ){
+			position.yz /= abspos.x;
+			
+			if( position.x > 0.0 ){
+				tc = position.zy * sca.yx + off.zy;
+				
+			}else{
+				tc = position.zy * sca.xx + off.xy;
+			}
+			
+		}else{
+			position.xz /= abspos.y;
+			
+			if( position.y > 0.0 ){
+				tc = position.xz * sca.xy + off.yz;
+				
+			}else{
+				tc = position.xz * sca.xx + off.yx;
+			}
+		}
+	}
+	
+	gl_FragDepth = texture2D( texShadow, tc ).r;
+	#ifdef WITH_COLOR
+	gl_FragColor = texture2D( texColor, tc );
+	#endif
+	
+	/*
+	plen = length( vPosition );
+	position = vPosition / plen;
+	
+	spos.x = position.x / ( position.z + 1.0 );
+	spos.y = position.y / ( position.z + 1.0 );
+	
+	==========
+	
+	gl_FragCoord.x = position.x / ( position.z + 1.0 );
+	gl_FragCoord.y = position.y / ( position.z + 1.0 );
+	1.0 = position.x * position.x + position.y * position.y + position.z * position.z;
+	
+	gl_FragCoord.x * ( position.z + 1.0 ) = position.x;
+	gl_FragCoord.y * ( position.z + 1.0 ) = position.y;
+	1.0 = position.x * position.x + position.y * position.y + position.z * position.z;
+	
+	wx * ( z + 1 ) = x
+	wy * ( z + 1 ) = y
+	1 = x * x + y * y + z * z
+	
+	1 = (wx*(z+1))*(wx*(z+1)) + (wy*(z+1))*(wy*(z+1)) + z*z
+	1 = wx*wx*(z+1)*(z+1) + wy*wy*(z+1)*(z+1) + z*z
+	1 = wx*wx*(z*z+2*z+1) + wy*wy*(z*z+2*z+1) + z*z
+	0 = ( wx*wx + wy*wy + 1 )*z*z + ( wx*wx*2 + wy*wy*2 )*z + ( wx*wx + wy*wy - 1 )
+	
+	a = wx*wx + wy*wy + 1 = X + Y + 1
+	b = wx*wx*2 + wy*wy*2 = 2X + 2Y
+	c = wx*wx + wy*wy - 1 = X + Y - 1
+	
+	z = ( -b + sqrt( b*b - 4*a*c ) ) / ( 2*a )
+	*/
+}
+	]]></program>
+	
+</shader>

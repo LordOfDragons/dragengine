@@ -1,0 +1,217 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable rig resources.
+ * 
+ * Rig resources provide deforming models, physicsl simulation and collision detection
+ * as well as properties for animation.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Rig
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load rig from file.
+	 * \details If the rig file has been already loaded it is assigned to this object.
+	 *          If the rig is not loaded yet the engine loads the rig. This call
+	 *          blocks until the rig is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded rig resource. Once no object instance uses an rig
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load rig from file asynchronously.
+	 * \details Registers a request in the game engine to load an rig. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          rig or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/** \brief Normalized filename the rig has been loaded from. */
+	public func String getFilename()
+	end
+	
+	
+	
+	/**
+	 * \brief Rig is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Rig and both point to the same engine
+	 *          rig resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bone */
+	/*@{*/
+	/** \brief Number of bones. */
+	public func int getBoneCount()
+	end
+	
+	/** \brief Index of named bone or -1 if absent. */
+	public func int indexOfBoneNamed( String name )
+	end
+	
+	/**
+	 * \brief Name of bone at index.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func String boneGetName( int bone )
+	end
+	
+	/**
+	 * \brief Bone position.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector getBonePosition( int bone )
+	end
+	
+	/**
+	 * \brief Bone orientation.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Quaternion getBoneOrientation( int bone )
+	end
+	
+	/**
+	 * \brief Bone central mass point.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector getBoneCentralMassPoint( int bone )
+	end
+	
+	/**
+	 * \brief Bone mass in kg.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func float boneGetMass( int bone )
+	end
+	
+	/**
+	 * \brief Bone is enabled for dynamic simulation if collider rig or collider component is dynamic.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func bool getBoneDynamic( int bone )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bone Inverse Kinematics */
+	/*@{*/
+	/**
+	 * \brief Bone inverse kinematics lower limits used by animator rules.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector getBoneIKLimitsLower( int bone )
+	end
+	
+	/**
+	 * \brief Bone inverse kinematics upper limits used by animator rules.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector getBoneIKLimitsUpper( int bone )
+	end
+	
+	/**
+	 * \brief Bone inverse kinematics resisteance used by animator rules.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector getBoneIKResistance( int bone )
+	end
+	
+	/**
+	 * \brief Bone inverse kinematics per axis locked state used by animator rules.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func bool getBoneIKLocked( int bone, int axis )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bone Constraints */
+	/*@{*/
+	/**
+	 * \brief Bone constraint count.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func int getBoneConstraintCount( int bone )
+	end
+	
+	/**
+	 * \brief Create collider constraint from bone constraint at index.
+	 * \details The created collider constraint can be added to a ColliderRig or ColliderComponent.
+	 *          This is useful if a rig only serves as source for collider bone constraints
+	 *          dynamically managed at runtime or replacing bone constraints with modified versions
+	 *          for example in response to collisions.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to getBoneConstraintCount().
+	 */
+	public func ColliderConstraint getBoneConstraintAt( int bone, int constraint )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bone Shapes */
+	/*@{*/
+	/**
+	 * \brief Bone shapes.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func ShapeList boneGetShapes( int bone )
+	end
+	
+	/**
+	 * \brief Bone shape property string.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to boneGetShapes().getCount().
+	 */
+	public func String boneShapeGetProperty( int bone, int shape )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Shapes */
+	/*@{*/
+	/** \brief Shapes. */
+	public func ShapeList getShapes()
+	end
+	
+	/**
+	 * \brief Shape property string.
+	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to getShapes().getCount().
+	 */
+	public func String shapeGetProperty( int shape )
+	end
+	/*@}*/
+end

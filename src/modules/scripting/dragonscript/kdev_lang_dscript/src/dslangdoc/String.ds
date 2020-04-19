@@ -1,0 +1,376 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Immutable character string.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class String
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create string. */
+	public func new()
+	end
+	
+	/**
+	 * \brief Create string composed of \em count repetition of \em character.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func new( byte character, int count )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief String has 0 length. */
+	public func bool empty()
+		return false
+	end
+	
+	/** \brief Number of characters. */
+	public func int getLength()
+		return 0
+	end
+	
+	/**
+	 * \brief Character at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or largen than or equal to getLength().
+	 */
+	public func byte getAt( int index )
+		return 0
+	end
+	
+	/**
+	 * \brief Substring from start to end of string.
+	 * \details If \em start is negative start is counted from the end of the string. The final
+	 *          starting point is clamped to be inside the string.
+	 */
+	public func String substring( int start )
+		return null
+	end
+	
+	/**
+	 * \brief Substring from start to end of string.
+	 * \details If \em start or \em last are negative they are counted from the end of the string.
+	 *          The final start and end point is clamped to be inside the string. If the start
+	 *          point is larger than the end point an empty string is returned.
+	 */
+	public func String substring( int start, int last )
+		return null
+	end
+	
+	/** \brief Index of first appearance of character or -1 if not found. */
+	public func int find( byte character )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of character or -1 if not found.
+	 * \details If \em start is negative start is counted from the end of the string. The final
+	 *          starting point is clamped to be inside the string.
+	 */
+	public func int find( byte character, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of character or -1 if not found.
+	 * \details If \em start or \em last are negative they are counted from the end of the string.
+	 *          The final start and end point is clamped to be inside the string. If the start
+	 *          point is larger than the end point -1 is returned.
+	 */
+	public func int find( byte character, int start, int last )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually.
+	 */
+	public func int findAny( String characters )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually. If \em start is negative start
+	 *          is counted from the end of the string. The final starting point is clamped to be
+	 *          inside the string.
+	 */
+	public func int findAny( String characters, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually. If \em start or \em last are
+	 *          negative they are counted from the end of the string. The final start and end
+	 *          point is clamped to be inside the string. If the start point is larger than the
+	 *          end point -1 is returned.
+	 */
+	public func int findAny( String characters, int start, int last )
+		return 0
+	end
+	
+	/** \brief Index of first appearance of substring or -1 if not found. */
+	public func int findString( String string )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of first appearance of substring or -1 if not found.
+	 * \details If \em start is negative start is counted from the end of the string. The final
+	 *          starting point is clamped to be inside the string.
+	 */
+	public func int findString( String string, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of substring or -1 if not found.
+	 * \details If \em start or \em last are negative they are counted from the end of the string.
+	 *          The final start and end point is clamped to be inside the string. If the start
+	 *          point is larger than the end point -1 is returned.
+	 */
+	public func int find( String string, int start, int last )
+		return 0
+	end
+	
+	/** \brief Index of last appearance of character or -1 if not found. */
+	public func int findReverse( byte character )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of character or -1 if not found.
+	 * \details If \em start is negative start is counted from the end of the string. The final
+	 *          starting point is clamped to be inside the string.
+	 */
+	public func int findReverse( byte character, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of character or -1 if not found.
+	 * \details If \em start or \em last are negative they are counted from the end of the string.
+	 *          The final start and end point is clamped to be inside the string. If the start
+	 *          point is larger than the end point -1 is returned.
+	 */
+	public func int findReverse( byte character, int start, int last )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually.
+	 */
+	public func int findAnyReverse( String characters )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually. If \em start is negative start
+	 *          is counted from the end of the string. The final starting point is clamped to be
+	 *          inside the string.
+	 */
+	public func int findAnyReverse( String characters, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of character from a list of characters or -1 if not found.
+	 * \details Each character in characters is tested individually. If \em start or \em last are
+	 *          negative they are counted from the end of the string. The final start and end
+	 *          point is clamped to be inside the string. If the start point is larger than the
+	 *          end point -1 is returned.
+	 */
+	public func int findAnyReverse( String characters, int start, int last )
+		return 0
+	end
+	
+	/** \brief Index of last appearance of substring or -1 if not found. */
+	public func int findStringReverse( String string )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of substring or -1 if not found.
+	 * \details If \em start is negative start is counted from the end of the string. The final
+	 *          starting point is clamped to be inside the string.
+	 */
+	public func int findStringReverse( String string, int start )
+		return 0
+	end
+	
+	/**
+	 * \brief Index of last appearance of substring or -1 if not found.
+	 * \details If \em start or \em last are negative they are counted from the end of the string.
+	 *          The final start and end point is clamped to be inside the string. If the start
+	 *          point is larger than the end point -1 is returned.
+	 */
+	public func int findStringReverse( String string, int start, int last )
+		return 0
+	end
+	
+	/** \brief Reversed string. */
+	public func String reverse()
+		return null
+	end
+	
+	/**
+	 * \brief String split by character.
+	 * \details Consecutive runs of \em character produce no empty string entries.
+	 */
+	public func Array split( byte character )
+		return null
+	end
+	
+	/**
+	 * \brief String split by any character from a list of characters.
+	 * \details Consecutive runs of any character from \em characters produce no empty string entries.
+	 */
+	public func Array split( String characters )
+		return null
+	end
+	
+	/** \brief String with replaced characters. */
+	public func String replace( byte replace, byte with )
+		return null
+	end
+	
+	/** \brief String with all characters from \em replace replaced by \em with. */
+	public func String replace( String replace, byte with )
+		return null
+	end
+	
+	/** \brief String with replaced substrings. */
+	public func String replaceString( String replace, String with )
+		return null
+	end
+	
+	/** \brief String without white spaces at the beginning. */
+	public func String trimLeft()
+		return null
+	end
+	
+	/** \brief String without white spaces at the end. */
+	public func String trimRight()
+		return null
+	end
+	
+	/** \brief String without white spaces at the beginning and end. */
+	public func String trimBoth()
+		return null
+	end
+	
+	/** \brief String with all characters converted to lower case. */
+	public func String toLower()
+		return null
+	end
+	
+	/** \brief String with all characters converted to upper case. */
+	public func String toUpper()
+		return null
+	end
+	
+	/** \brief Parse string as integer value if possible. */
+	public func int toInt()
+		return 0
+	end
+	
+	/** \brief Parse string as floating point value if possible. */
+	public func float toFloat()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Compare string to another object.
+	 * \details Compares against Object.toString().
+	 * \retval 0 String equals Object.toString().
+	 * \retval <0 First different character is less than in Object.toString().
+	 * \retval >0 First different character is larger than in Object.toString().
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/**
+	 * \brief Compare strings ignoring different case.
+	 * \retval 0 Strings are equal.
+	 * \retval <0 First different character is less than in \em other.
+	 * \retval >0 First different character is larger than in \em other.
+	 */
+	public func int compareNoCase( String other )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief String is equal to another object.
+	 * \returns \em true if \em other is of type String and both are equal.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief Ourself. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Concatenation of this string and another string. */
+	public func String +( String str )
+		return null
+	end
+	
+	/** \brief Concatenation of this string and a character. */
+	public func String +( byte value )
+		return null
+	end
+	
+	/**
+	 * \brief Concatenation of this string and a boolen value.
+	 * \details Appends 'true' or 'false' depending on \em value.
+	 */
+	public func String +( bool value )
+		return null
+	end
+	
+	/** \brief Concatenation of this string and an integer value. */
+	public func String +( int value )
+		return null
+	end
+	
+	/** \brief Concatenation of this string and a floating point  value. */
+	public func String +( float value )
+		return null
+	end
+	
+	/**
+	 * \brief Concatenation of this string an object string representation.
+	 * \details Appends Object.toString().
+	 */
+	public func String +( Object obj )
+		return null
+	end
+end

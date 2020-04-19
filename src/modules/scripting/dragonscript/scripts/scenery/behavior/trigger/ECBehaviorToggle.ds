@@ -1,0 +1,379 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior toggling trigger target.
+ * 
+ * Toggles trigger target between fired and reset state whenever evaluation state of trigger
+ * expression changes to true.
+ * 
+ * Element class properties have the prefix "toggle{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorToggle extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Trigger target toggled. */
+		func void toggled( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Trigger target toggled. */
+		public func void toggled( Instance instance )
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Trigger listener. */
+		public class ToggleListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.toggle()
+			end
+		end
+		
+		
+		
+		private var ECBehaviorToggle pECBehavior
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var TSNamedTriggerTarget pTarget
+		private var bool pStartActivated
+		private var bool pApplyStartActivated
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorToggle ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			this.pApplyStartActivated = true
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTarget = null
+			this.pTrigger = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getTriggerTable() == null
+				return
+			end
+			
+			this.pTrigger = this.pECBehavior.getTriggered().instance( this.getElement() )
+			this.pTrigger.addListener( ToggleListener.new( this ) )
+			
+			this.pStartActivated = this.pECBehavior.getStartActivated().getValue( stub )
+			
+			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorToggle getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Trigger or \em null. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Trigger target or \em null. */
+		public func TSNamedTriggerTarget getTarget()
+			return this.pTarget
+		end
+		
+		/** \brief Initial state of trigger target when behavior is added to trigger table. */
+		public func bool getStartActivated()
+			return this.pStartActivated
+		end
+		
+		
+		
+		/** \brief Toggle trigger expression. */
+		public func void toggle()
+			if this.pTarget != null
+				if this.pTarget.getFired()
+					this.pTarget.reset()
+					
+				else
+					this.pTarget.fire()
+				end
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.toggled( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pTarget == null
+				return
+			end
+			
+			this.pTarget.acquireTarget( this.pECBehavior.getTriggerTable() )
+			
+			if this.pApplyStartActivated
+				this.pApplyStartActivated = false
+				if this.pStartActivated
+					this.pTarget.fire()
+				end
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			if this.pTarget != null
+				this.pTarget.dropTarget()
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pApplyStartActivated = false
+		end
+	end
+	
+	
+	
+	private var ECBehaviorTriggered pTriggered
+	private var ECPString pTarget
+	private var ECPBoolean pStartActivated
+	private var TSTriggerTable pTriggerTable
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) \
+	this( eclass, BaseGameApp.getApp().getTriggerTable(), "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, BaseGameApp.getApp().getTriggerTable(), id )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable ) \
+	this( eclass, triggerTable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id ) \
+	this( eclass, triggerTable, id, id.empty() if "toggle" else "toggle(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID ) \
+	this( eclass, triggerTable, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, \
+	String id, String subID, String prefix ) super( eclass, id )
+		this.pTriggerTable = triggerTable
+		
+		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		
+		this.pTarget = ECPString.new( prefix + "target", null )
+		eclass.addProperty( this.pTarget )
+		
+		this.pStartActivated = ECPBoolean.new( prefix + "startActivated", false )
+		eclass.addProperty( this.pStartActivated )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Trigger to toggle. */
+	public func ECBehaviorTriggered getTriggered()
+		return this.pTriggered
+	end
+	
+	/** \brief Trigger target to operate. */
+	public func ECPString getTarget()
+		return this.pTarget
+	end
+	
+	/** \brief Initial state of trigger target when behavior is added to trigger table. */
+	public func ECPBoolean getStartActivated()
+		return this.pStartActivated
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorToggle
+		end ) cast ECBehaviorToggle
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorToggle with specific identifier.
+	 */
+	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorToggle each
+			return each castable ECBehaviorToggle and \
+				( each cast ECBehaviorToggle ).getID().equals( id )
+		end ) cast ECBehaviorToggle
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorToggle behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorToggle
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorToggle.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorToggle.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorToggle.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

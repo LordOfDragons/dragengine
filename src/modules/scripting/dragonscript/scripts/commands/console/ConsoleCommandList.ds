@@ -1,0 +1,98 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief List of console commands.
+ */
+class ConsoleCommandList
+	/** \brief Commands. */
+	private var Array pCommands
+	
+	
+	
+	/** \brief Create command list. */
+	public func new()
+		this.pCommands = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of commands. */
+	public func int getCount()
+		return this.pCommands.getCount()
+	end
+	
+	/**
+	 * \brief Command at index.
+	 * \throws EOutOfBOundary \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func ConsoleCommand getAt( int index )
+		return this.pCommands.getAt(index) cast ConsoleCommand
+	end
+	
+	/** \brief Named command or \em null if not found. */
+	public func ConsoleCommand getNamed( String name )
+		return this.pCommands.find( block ConsoleCommand each
+			return each.getName().equals( name )
+		end ) cast ConsoleCommand
+	end
+	
+	/** \brief Named command is present. */
+	public func bool has( String name )
+		return this.pCommands.find( block ConsoleCommand each
+			return each.getName().equals( name )
+		end ) != null
+	end
+	
+	/**
+	 * \brief Add console command.
+	 * \throws EInvalidParam Command name is not valid.
+	 * \throws EInvalidParam Command with name is present.
+	 */
+	public func void add( ConsoleCommand command )
+		if not CommandManager.isValidName( command.getName() ) or this.has( command.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pCommands.add( command )
+	end
+	
+	/**
+	 * \brief Remove console command.
+	 * \throws EInvalidParam Command with name is absent.
+	 */
+	public func void remove( ConsoleCommand command )
+		this.pCommands.remove( command )
+	end
+	
+	/** \brief Remove all commands. */
+	public func void removeAll()
+		this.pCommands.removeAll()
+	end
+	
+	/** \brief Visit commands with a block. */
+	public func void forEach( Block ablock )
+		this.pCommands.forEach( ablock )
+	end
+end

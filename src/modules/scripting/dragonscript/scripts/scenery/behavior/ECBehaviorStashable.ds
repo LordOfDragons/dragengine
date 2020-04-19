@@ -1,0 +1,316 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support for elements to be placed in ECBehaviorInventory.
+ * 
+ * Element class properties have the prefix "stashable.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorStashable extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Stashable has been added to inventory. */
+		func void addedToInventory( Instance instance, ECBehaviorInventory.Instance inventory )
+		
+		/** \brief Stashable has been remove from inventory. */
+		func void removedFromInventory( Instance instance, ECBehaviorInventory.Instance inventory )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Stashable has been added to inventory. */
+		public func void addedToInventory( Instance instance, ECBehaviorInventory.Instance inventory )
+		end
+		
+		/** \brief Stashable has been remove from inventory. */
+		public func void removedFromInventory( Instance instance, ECBehaviorInventory.Instance inventory )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorStashable pECBehavior
+		private var ECBehaviorInventory.Instance pInventory
+		private var Image pImage
+		private var Video pVideo
+		private var UnicodeString pName
+		private var UnicodeString pDescription
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorStashable ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of inventory. */
+		public func void dispose()
+			this.removeFromInventory()
+			this.pListeners = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var ElementClass eclass = this.getElement().getClass()
+			this.pImage = this.pECBehavior.getImage().getImage( stub, eclass )
+			this.pVideo = this.pECBehavior.getVideo().getVideo( stub, eclass )
+			this.pName = this.pECBehavior.getName().getValue( stub )
+			this.pDescription = this.pECBehavior.getDescription().getValue( stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorStashable getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Image to display. */
+		public func Image getImage()
+			return this.pImage
+		end
+		
+		/** \brief Video to display. */
+		public func Video getVideo()
+			return this.pVideo
+		end
+		
+		/** \brief Name to display. */
+		public func UnicodeString getName()
+			return this.pName
+		end
+		
+		/** \brief Description to display. */
+		public func UnicodeString getDescription()
+			return this.pDescription
+		end
+		
+		
+		
+		/** \brief Inventory this element is part of or \em null. */
+		public func ECBehaviorInventory.Instance getInventory()
+			return this.pInventory
+		end
+		
+		/**
+		 * \brief Set inventory.
+		 * \warning For use by ECBehaviorInventory only.
+		 */
+		public func void setInventory( ECBehaviorInventory.Instance inventory )
+			if inventory == this.pInventory
+				return
+			end
+			
+			if this.pInventory != null
+				this.pListeners.forEach( block Listener each
+					each.removedFromInventory( this, this.pInventory )
+				end )
+			end
+			
+			this.pInventory = inventory
+			
+			if inventory != null
+				this.pListeners.forEach( block Listener each
+					each.addedToInventory( this, inventory )
+				end )
+			end
+		end
+		
+		/** \brief Element is part of an inventory. */
+		public func bool isStashed()
+			return this.pInventory != null
+		end
+		
+		/**
+		 * \brief Add to inventory.
+		 * \throws EInvalidParam \em inventory is \em null.
+		 * \throws EInvalidParam Already part of an inventory.
+		 */
+		public func void addToInventory( ECBehaviorInventory.Instance inventory )
+			inventory.add( this )
+		end
+		
+		/** \brief Remove from inventory if part of one. */
+		public func void removeFromInventory()
+			if this.pInventory != null
+				this.pInventory.remove( this )
+			end
+		end
+		
+		/** \brief Remove from inventory if part of one and safely disposes of the element. */
+		public func void removeFromInventoryAndDispose()
+			this.removeFromInventory()
+			this.getElement().safeDispose()
+		end
+		
+		/**
+		 * \brief Safely moves to a different inventory.
+		 * 
+		 * Convenience method for calling removeFromInventory() then addToInventory() or
+		 * doing nothing if the inventory is the same.
+		 */
+		public func void moveToInventory( ECBehaviorInventory.Instance inventory )
+			if inventory == this.pInventory
+				return
+			end
+			if inventory == null
+				throw EInvalidParam.new( "inventory is null" )
+			end
+			
+			this.removeFromInventory()
+			this.addToInventory( inventory )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new( "listener is null" )
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	
+	
+	private var ECPImage pImage
+	private var ECPVideo pVideo
+	private var ECPUnicodeString pName
+	private var ECPUnicodeString pDescription
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) this( eclass, "stashable." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pImage = ECPImage.new( prefix + "image" )
+		eclass.addProperty( this.pImage )
+		
+		this.pVideo = ECPVideo.new( prefix + "video" )
+		eclass.addProperty( this.pVideo )
+		
+		this.pName = ECPUnicodeString.new( prefix + "name", UnicodeString.new() )
+		eclass.addProperty( this.pName )
+		
+		this.pDescription = ECPUnicodeString.new( prefix + "description", UnicodeString.new() )
+		eclass.addProperty( this.pDescription )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Image to display. */
+	public func ECPImage getImage()
+		return this.pImage
+	end
+	
+	/** \brief Video to display. */
+	public func ECPVideo getVideo()
+		return this.pVideo
+	end
+	
+	/** \brief Name to display. */
+	public func ECPUnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief Description to display. */
+	public func ECPUnicodeString getDescription()
+		return this.pDescription
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorStashable getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorStashable
+		end ) cast ECBehaviorStashable
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorStashable.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

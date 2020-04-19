@@ -1,0 +1,4 @@
+SPEECHANIMATION {
+  global: SAnimEditorCreateModule;
+  local: *;
+};

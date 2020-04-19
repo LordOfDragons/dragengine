@@ -1,0 +1,165 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Conversation condition testing trigger.
+ */
+class CConditionTrigger extends ConversationCondition
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "CConditionTrigger"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return CConditionTrigger.new( env, reader )
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	
+	
+	/** \brief Test mode. */
+	public enum TestMode
+		/** \brief True if the trigger is in the fired state. */
+		fired
+		
+		/** \brief True if the trigger is in the reset state. */
+		notFired
+		
+		/** \brief True if the trigger has ever been fired. */
+		everFired
+		
+		/** \brief True if the trigger has never been fired. */
+		neverFired
+	end
+	
+	
+	
+	private var TestMode pTestMode
+	private var StringID pTrigger
+	
+	// NOTE we can not store the trigger target here to avoid fetching it all the time.
+	//      this is because conversation are shared resources held by the conversation loader.
+	//      each conversation playback can have different trigger table. by storing the target
+	//      we can reference a wrong trigger target
+	//private var TSTriggerTarget pTriggerTarget
+	
+	
+	
+	/** \brief Create conversation condition. */
+	public func new()
+		this.pTestMode = TestMode.fired
+	end
+	
+	/** \brief Read from file. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		this.pTestMode = TestMode.withOrder( reader.readByte() )
+		this.pTrigger = env.readStringIDOrNullIfEmpty( reader )
+	end
+	
+	
+	
+	/** \brief Test mode. */
+	public func TestMode getTestMode()
+		return this.pTestMode
+	end
+	
+	/** \brief Set test mode. */
+	public func void setTestMode( TestMode testMode )
+		this.pTestMode = testMode
+	end
+	
+	/** \brief Name of the trigger. */
+	public func StringID getTrigger()
+		return this.pTrigger
+	end
+	
+	/** \brief Set name of the trigger. */
+	public func void setTrigger( StringID trigger )
+		this.pTrigger = trigger
+	end
+	
+	
+	
+	/** \brief Condition is true. */
+	public func bool evaluate( ConversationPlayback playback )
+		var TSTriggerTarget target
+		if this.pTrigger != null
+			// if run the first time get trigger target adding it if not existing yet
+// 			if this.pTriggerTarget == null
+				target = playback.getTriggerTable().getOrAddNamed( this.pTrigger )
+// 			end
+		end
+		
+		select this.pTestMode
+		case TestMode.fired
+			return target != null and target.getFired()
+			
+		case TestMode.notFired
+			return target == null or not target.getFired()
+			
+		case TestMode.everFired
+			return target != null and target.getHasFired()
+			
+		case TestMode.neverFired
+			return target == null or not target.getHasFired()
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( this.pTestMode.order() )
+		env.writeStringIDOrEmptyIfNull( writer, this.pTrigger )
+	end
+end

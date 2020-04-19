@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Graphic system console command.
+ */
+class GraSysConsoleCommand extends SystemConsoleCommand
+	/** \brief Create console command. */
+	public func new() super( "graphicSystem", "Graphic System", GraSysParamWrapper.new() )
+		this.setSyntax( this.getSyntax() + \
+			"   setWindowGeometry <width> <height> <fullScreen> => sets the window geometry\n" + \
+			"   setWindowTitle <title> => sets the window title\n" )
+	end
+	
+	
+	
+	/**
+	 * \brief Execute command.
+	 * 
+	 * Default implementation prints syntax to console.
+	 * 
+	 * \param console Console to send output to.
+	 * \param params List of parameters. Has to match command syntax.
+	 */
+	public func void execute( Console console, Array params )
+		if params.getCount() == 0
+			console.addMessage( this.getSyntax() )
+			return
+		end
+		
+		if params.getAt( 0 ).equals( "setWindowGeometry" )
+			if params.getCount() < 4 
+				console.addMessage( "invalid paramaters" )
+				return
+			end
+			
+			var int width = params.getAt( 1 ).toString().toInt()
+			var int height = params.getAt( 2 ).toString().toInt()
+			var bool fullScreen = not params.getAt( 3 ).equals( "0" )
+			
+			try
+				GraphicSystem.setWindowGeometry( width, height, fullScreen )
+				
+			catch Exception e
+				console.addMessage( "setting window geometry failed" )
+			end
+			
+		elif params.getAt( 0 ).equals( "setWindowTitle" )
+			if params.getCount() < 2
+				console.addMessage( "invalid paramaters" )
+				return
+			end
+			
+			var String paramName = params.getAt( 1 ).toString()
+			
+			try
+				GraphicSystem.setWindowTitle( paramName )
+				
+			catch Exception e
+				console.addMessage( "setting window title failed" )
+			end
+			
+		else
+			super.execute( console, params )
+		end
+	end
+end

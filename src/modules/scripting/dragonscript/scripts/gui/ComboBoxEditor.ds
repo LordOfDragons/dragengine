@@ -1,0 +1,64 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Editor for a combo box.
+ */
+interface ComboBoxEditor
+	/** \brief Get widget to use for editing. */
+	func Widget getWidget()
+	
+	/**
+	 * \brief Get editor value.
+	 * \details The returned object can be the one previously set by
+	 *          setEditorValue() if unchanged or a new object if changed.
+	 */
+	func Object getEditorValue()
+	
+	/**
+	 * \brief Set editor value to object or \em null to clear.
+	 * \details \em object is garanteed to not be modified by the editor.
+	 */
+	func void setEditorValue( Object object )
+	
+	/**
+	 * \brief Add action listener.
+	 * \details Action listener is called whenever the edited object changes.
+	 */
+	func void addActionListener( ActionListener listener )
+	
+	/** \brief Remove action listener. */
+	func void removeActionListener( ActionListener listener )
+	
+	/**
+	 * \brief Start editing.
+	 * \details Typically this selects the entire text or otherwise prepare
+	 *          editor for directly manipulating the set value. There is no
+	 *          stop editing call since the widget is hidden in this case.
+	 */
+	func void startEditing()
+end

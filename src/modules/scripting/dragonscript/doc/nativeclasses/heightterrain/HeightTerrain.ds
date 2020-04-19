@@ -1,0 +1,457 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Height terrain.
+ * 
+ * This is a native class.
+ */
+class HeightTerrain
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create height terrain.
+	 * \param sectorSize Size in meters of sectors along the X and Z axis.
+	 * \param sectorResolution Resolution of sectors (width and height of height images).
+	 */
+	public func new( float sectorSize, int sectorResolution )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Image dimension. */
+	public func int getImageDimension()
+		return 0
+	end
+	
+	/** \brief Sector dimension. */
+	public func float getSectorSize()
+		return 0
+	end
+	
+	
+	
+	/** \brief Base height in meters. */
+	public func float getBaseHeight()
+		return 0.0
+	end
+	
+	/** \brief Set base height in meters. */
+	public func void setBaseHeight( float height )
+	end
+	
+	/** \brief Height scaling in meters. */
+	public func float getHeightScaling()
+		return 0.0
+	end
+	
+	/** \brief Set height scaling in meters. */
+	public func void setHeightScaling( float height )
+	end
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+		return null
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Sectors */
+	/*@{*/
+	/** \brief Count of sectors. */
+	public func int getSectorCount()
+		return 0
+	end
+	
+	/** \brief Sector with coordinates exists. */
+	public func bool hasSector( Point coordinates )
+		return false
+	end
+	
+	/** \brief Index of sector with coordinates or -1 if absent. */
+	public func int indexOfSector( Point coordinates )
+		return 0
+	end
+	
+	/**
+	 * \brief Add sector.
+	 * \throws EInvalidParam Sector with \em coordinates present.
+	 */
+	public func void addSector( Point coordinates )
+	end
+	
+	/** \brief Remove sector. */
+	public func void removeSector( int sector )
+	end
+	
+	/** \brief Remove all sectors. */
+	public func void removeAllSectors()
+	end
+	
+	/** \brief Height image or \em null if not set. */
+	public func Image getHeightImage( int sector )
+		return null
+	end
+	
+	/** \brief Set height image or \em null if not set. */
+	public func void setHeightImage( int sector, Image image )
+	end
+	
+	/** \brief Set visibility from image or null to clear. */
+	public func void setVisibilityFromImage( int sector, Image image )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Textures */
+	/*@{*/
+	/** \brief Number of textures. */
+	public func int getTextureCount( int sector )
+		return 0
+	end
+	
+	/** \brief Add texture. */
+	public func void addTexture( int sector )
+	end
+	
+	/**
+	 * \brief Skin of texture.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func Skin textureGetSkin( int sector, int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Set skin of texture.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void textureSetSkin( int sector, int texture, Skin skin )
+	end
+	
+	/**
+	 * \brief Texture uv offset.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func Vector2 textureGetUVOffset( int sector, int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Set texture uv offset.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void textureSetUVOffset( int sector, int texture, Vector2 offset )
+	end
+	
+	/**
+	 * \brief texture uv scaling.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func Vector2 textureGetUVScaling( int sector, int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Set texture uv scaling.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void textureSetUVScaling( int sector, int texture, Vector2 scaling )
+	end
+	
+	/**
+	 * \brief texture uv rotation.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func float textureGetUVRotation( int sector, int texture )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set texture uv rotation.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void textureSetUVRotation( int sector, int texture, float rotation )
+	end
+	
+	/**
+	 * \brief texture mask or null if not set.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func Image textureGetMask( int sector, int texture )
+		return null
+	end
+	
+	/**
+	 * \brief Set texture mask or null if not set.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void textureSetMask( int sector, int texture, Image mask )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Decals */
+	/*@{*/
+	/** \brief Number of decals. */
+	public func int getDecalCount( int sector )
+	end
+	
+	/** \brief Add decal. */
+	public func void addDecal( int sector, Decal decal )
+	end
+	
+	/** \brief Remove decal. */
+	public func void removeDecal( int sector, Decal decal )
+	end
+	
+	/** \brief Remove all decals. */
+	public func void removeAllDecals( int sector )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Navigation spaces */
+	/*@{*/
+	/** \brief Number of navigation spaces. */
+	public func int getNavSpaceCount( int sector )
+	end
+	
+	/** \brief Add navigation returning index. */
+	public func void addNavSpace( int sector )
+	end
+	
+	/**
+	 * \brief Remove navigation space at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void removeNavSpaceAt( int sector, int navspace )
+	end
+	
+	/** \brief Remove all navigation spaces. */
+	public func void removeAllNavSpaces( int sector )
+	end
+	
+	
+	
+	/**
+	 * \brief Type of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func NavigationSpaceType navspaceGetType( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set type of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void navspaceSetType( int sector, int navspace, NavigationSpaceType type )
+	end
+	
+	/**
+	 * \brief Layer of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func int navspaceGetLayer( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set layer of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void navspaceSetLayer( int sector, int navspace, int layer )
+	end
+	
+	/**
+	 * \brief Snap distance of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func float navspaceGetSnapDistance( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set snap distance of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void navspaceSetSnapDistance( int sector, int navspace, float distance )
+	end
+	
+	/**
+	 * \brief Snap angle of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func float navspaceGetSnapAngle( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set snap angle of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void navspaceSetSnapAngle( int sector, int navspace, float angle )
+	end
+	
+	
+	
+	/**
+	 * \brief Number of corners of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func int navspaceGetCornerCount( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set number of corners of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void navspaceSetCornerCount( int sector, int navspace, int count )
+	end
+	
+	/**
+	 * \brief Corner of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em corner is less than 0 or greater than navspaceGetCornerCount().
+	 */
+	public func int navspaceGetCornerAt( int sector, int navspace, int corner )
+	end
+	
+	/**
+	 * \brief Set corner of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em corner is less than 0 or greater than navspaceGetCornerCount().
+	 * \throws EInvalidParam \em navpoint is less than 0 or greater than (getImageDimension()-1) squared.
+	 */
+	public func void navspaceSetCornerAt( int sector, int navspace, int corner, int navpoint )
+	end
+	
+	
+	
+	/**
+	 * \brief Number of edges of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func int navspaceGetEdgeCount( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set number of edges of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void navspaceSetEdgeCount( int sector, int navspace, int count )
+	end
+	
+	/**
+	 * \brief First navpoint of edge of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em edge is less than 0 or greater than navspaceGetEdgeCount().
+	 */
+	public func int navspaceEdgeGetPoint1( int sector, int navspace, int edge )
+	end
+	
+	/**
+	 * \brief Second navpoint of edge of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em edge is less than 0 or greater than navspaceGetEdgeCount().
+	 */
+	public func int navspaceEdgeGetPoint2( int sector, int navspace, int edge )
+	end
+	
+	/**
+	 * \brief Type to use for edge to travel from first to second navpoint of edge of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em edge is less than 0 or greater than navspaceGetEdgeCount().
+	 */
+	public func int navspaceEdgeGetType1( int sector, int navspace, int edge )
+	end
+	
+	/**
+	 * \brief Type to use for edge to travel from second to first navpoint of edge of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em edge is less than 0 or greater than navspaceGetEdgeCount().
+	 */
+	public func int navspaceEdgeGetType2( int sector, int navspace, int edge )
+	end
+	
+	/**
+	 * \brief Set edge of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em edge is less than 0 or greater than navspaceGetEdgeCount().
+	 */
+	public func void navspaceSetEdgeAt( int sector, int navspace, int edge, int point1, int point2, int type1, int type2 )
+	end
+	
+	
+	
+	/**
+	 * \brief Number of faces of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func int navspaceGetFaceCount( int sector, int navspace )
+	end
+	
+	/**
+	 * \brief Set number of faces of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void navspaceSetFaceCount( int sector, int navspace, int count )
+	end
+	
+	/**
+	 * \brief Number of corners of face of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em face is less than 0 or greater than navspaceGetFaceCount().
+	 */
+	public func int navspaceFaceGetCornerCount( int sector, int navspace, int face )
+	end
+	
+	/**
+	 * \brief Type of face of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em face is less than 0 or greater than navspaceGetFaceCount().
+	 */
+	public func int navspaceFaceGetType( int sector, int navspace, int face )
+	end
+	
+	/**
+	 * \brief Set number of corners and type of face of navigation space at index.
+	 * \details Call navspaceLayoutChanged() once you finished changing the content.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 * \throws EOutOfBoundary \em face is less than 0 or greater than navspaceGetFaceCount().
+	 * \throws EOutOfBoundary \em cornerCount is less than 0.
+	 */
+	public func void navspaceSetFaceAt( int sector, int navspace, int face, int cornerCount, int type )
+	end
+	
+	/**
+	 * \brief Layout of navigation space at index.
+	 * \throws EOutOfBoundary \em navspace is less than 0 or greater than getNavSpaceCount().
+	 */
+	public func void navspaceLayoutChanged( int sector, int navspace )
+	end
+	/*@}*/
+end

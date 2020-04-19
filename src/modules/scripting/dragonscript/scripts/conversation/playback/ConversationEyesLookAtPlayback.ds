@@ -1,0 +1,318 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Conversation Eyes Look-At Playback.
+ * 
+ * Updates an animator to make eyes of actors track a target. Supports three named controllers:
+ * Left-Right controller, Up-Down controller and Disabled controller. The default names are
+ * "eyesLookAt.horizontal", "eyesLookAt.vertical" and "eyesLookAt.disabled" which can be changed.
+ * The disabled controller enables the eye animation if the controller value is at lower value
+ * or disables if at upper value. If the assigned animator does not have matching named
+ * controllers the respective values are not updated.
+ * 
+ * To calculate the appropriate parameters this class it is recommanded to use a rotator
+ * bone. This is a particular bone in the actor rig which is placed at a location the eyes
+ * rotate about roughly. If such a bone is not used the actor itself is used.
+ * 
+ * Look-at targets are required to be placed on the same height as the reference point used
+ * in this class to calculate the angles.
+ * 
+ * Optionally a rotator matrix can be set. This helps to fine tune the rotation calculation
+ * in case the target is not located at the same height as the reference point used.
+ * 
+ * Optionally a disable bone can be used. This allows to allow previous animations to disable
+ * the eye looking effect temporarily. The value of this bone Z position in bone local
+ * coordinates is assigned to the disable controller. If not used eyes are always updated.
+ */
+class CharacterEyesLookAtPlayback extends ConversationLookAtPlayback
+	private var Animator pAnimator
+	private var AnimatorInstance pAnimatorInstance
+	private var String pBoneRotator
+	private var DMatrix pRotatorMatrix
+	private var String pBoneDisable
+	private var int pIndexBoneDisable
+	private var bool pRequiresApply
+	private var String pNameControllerHorizontal
+	private var String pNameControllerVertical
+	private var String pNameControllerDisable
+	private var AnimatorController pControllerHorizontal
+	private var AnimatorController pControllerVertical
+	private var AnimatorController pControllerDisable
+	
+	
+	
+	/** \brief Create playback. */
+	public func new()
+		this.pAnimatorInstance = AnimatorInstance.new()
+		this.pRotatorMatrix = DMatrix.new()
+		this.pIndexBoneDisable = -1
+		this.pRequiresApply = false
+		this.pNameControllerHorizontal = "eyesLookAt.horizontal"
+		this.pNameControllerVertical = "eyesLookAt.vertical"
+		this.pNameControllerDisable = "eyesLookAt.disable"
+	end
+	
+	
+	
+	/** \brief Animator or \em null if not set. */
+	public func Animator getAnimator()
+		return this.pAnimator
+	end
+	
+	/** \brief Set animator or \em null if not set. */
+	public func void setAnimator( Animator animator )
+		if animator == this.pAnimator
+			return
+		end
+		
+		this.pAnimatorInstance.setAnimator( animator )
+		this.pAnimator = animator
+		
+		this.pControllerHorizontal = this.pAnimatorInstance.getControllerNamed( this.pNameControllerHorizontal )
+		this.pControllerVertical = this.pAnimatorInstance.getControllerNamed( this.pNameControllerVertical )
+		this.pControllerDisable = this.pAnimatorInstance.getControllerNamed( this.pNameControllerDisable )
+		
+		this.updateIndexBoneDisable()
+	end
+	
+	/** \brief Animator instance. */
+	public func AnimatorInstance getAnimatorInstance()
+		return this.pAnimatorInstance
+	end
+	
+	
+	
+	/** \brief Left-right controller name. */
+	public func String getNameControllerHorizontal()
+		return this.pNameControllerHorizontal
+	end
+	
+	/** \brief Set left-right controller name. */
+	public func void setNameControllerHorizontal( String name )
+		if name.equals( this.pNameControllerHorizontal )
+			return
+		end
+		
+		this.pNameControllerHorizontal = name
+		this.pControllerHorizontal = this.pAnimatorInstance.getControllerNamed( name )
+	end
+	
+	/** \brief Up-down controller name. */
+	public func String getNameControllerVertical()
+		return this.pNameControllerVertical
+	end
+	
+	/** \brief Set up-down controller name. */
+	public func void setNameControllerVertical( String name )
+		if name.equals( this.pNameControllerVertical )
+			return
+		end
+		
+		this.pNameControllerVertical = name
+		this.pControllerVertical = this.pAnimatorInstance.getControllerNamed( name )
+	end
+	
+	/** \brief Disabled controller name. */
+	public func String getNameControllerDisabled()
+		return this.pNameControllerDisable
+	end
+	
+	/** \brief Set disabled controller name. */
+	public func void setNameControllerDisabled( String name )
+		if name.equals( this.pNameControllerDisable )
+			return
+		end
+		
+		this.pNameControllerDisable = name
+		this.pControllerDisable = this.pAnimatorInstance.getControllerNamed( name )
+	end
+	
+	/** \brief Look eyes left and right animator controller or \em null if not used. */
+	public func AnimatorController getControllerHorizontal()
+		return this.pControllerHorizontal
+	end
+	
+	/** \brief Look eyes up and down animator controller or \em null if not used. */
+	public func AnimatorController getControllerVertical()
+		return this.pControllerVertical
+	end
+	
+	/** \brief Disable eye looking animator controller or \em null if not used. */
+	public func AnimatorController getControllerDisable()
+		return this.pControllerDisable
+	end
+	
+	
+	
+	/** \brief Name of rotator bone or \em null if not used. */
+	public func String getBoneRotator()
+		return this.pBoneRotator
+	end
+	
+	/** \brief Set name of rotator bone or \em null if not used. */
+	public func void setBoneRotator( String boneName )
+		this.pBoneRotator = boneName
+	end
+	
+	/** \brief Rotator matrix. */
+	public func DMatrix getRotatorMatrix()
+		return this.pRotatorMatrix
+	end
+	
+	/** \brief Set rotator matrix. */
+	public func void setRotatorMatrix( DMatrix matrix )
+		this.pRotatorMatrix = matrix
+	end
+	
+	
+	
+	/** \brief Name of disable bone or \em null if not used. */
+	public func String getBoneDisable()
+		return this.pBoneDisable
+	end
+	
+	/** \brief Set name of disable bone or \em null if not used. */
+	public func void setBoneDisable( String boneName )
+		if boneName.equals( this.pBoneDisable )
+			return
+		end
+		
+		this.pBoneDisable = boneName
+		this.updateIndexBoneDisable()
+	end
+	
+	/** \brief Index of disable bone or -1 if not used. */
+	public func int getIndexBoneDisable()
+		return this.pIndexBoneDisable
+	end
+	
+	/** \brief Update index of disable bone if present. */
+	public func void updateIndexBoneDisable()
+		this.pIndexBoneDisable = -1
+		
+		var Component component = this.pAnimatorInstance.getComponent()
+		if component != null
+			this.pIndexBoneDisable = component.indexOfBoneNamed( this.pBoneDisable )
+		end
+	end
+	
+	
+	
+	/** \brief Calculate the inverse matrix. */
+	public func DMatrix getInverseMatrix( ConversationActor actor )
+		if this.pBoneRotator != null
+			return actor.getInverseMatrix( this.pBoneRotator ) * this.pRotatorMatrix
+			
+		else
+			return actor.getInverseMatrix() * this.pRotatorMatrix
+		end
+	end
+	
+	/** \brief Update actor look-at. */
+	public func void updateActorLookAt( ConversationActor actor, float blendFactor )
+		if this.pControllerHorizontal == null and this.pControllerVertical == null
+			return
+		end
+		
+		var DVector lastPosition = this.getLastLookAtPosition()
+		var DVector curPosition = this.getCurrentLookAtPosition()
+		var float eyesHorizontal = 0.0
+		var float eyesVertical = 0.0
+		
+		// determine the eyes left-right and up-down angles. for this the angles are calculated
+		// for the last and current look-at and then weighted. the same matrix is used as for
+		// the head look-at playback
+		if lastPosition != null
+			var float blendFactor2 = 1.0 - blendFactor
+			
+			if this.pControllerHorizontal != null
+				eyesHorizontal = DEMath.clamp( \
+					-DEMath.atan2( lastPosition.getX(), lastPosition.getZ() ), \
+					this.pControllerHorizontal.getLower(), this.pControllerHorizontal.getUpper() ) \
+						* blendFactor2
+			end
+			
+			eyesVertical = DEMath.atan2( lastPosition.getY(), \
+				Vector2.new( lastPosition.getX(), lastPosition.getZ() ).getLength() ) \
+					* blendFactor2
+		end
+		
+		if curPosition != null
+			if this.pControllerHorizontal != null
+				eyesHorizontal += DEMath.clamp( \
+					-DEMath.atan2( curPosition.getX(), curPosition.getZ() ), \
+					this.pControllerHorizontal.getLower(), this.pControllerHorizontal.getUpper() ) \
+						* blendFactor
+			end
+			
+			eyesVertical += DEMath.atan2( curPosition.getY(), \
+				Vector2.new( curPosition.getX(), curPosition.getZ() ).getLength() ) \
+					* blendFactor
+		end
+		
+		// disable look-at bone if present
+		if this.pControllerDisable != null
+			if this.pIndexBoneDisable != -1
+				this.pControllerDisable.setValue( this.pAnimatorInstance.getComponent() \
+					.boneGetPosition( this.pIndexBoneDisable ).getZ() )
+				
+			else
+				this.pControllerDisable.setValue( this.pControllerDisable.getLower() )
+			end
+		end
+		
+		// set the controllers and apply the animator
+		if this.pControllerHorizontal != null
+			this.pControllerHorizontal.setValue( eyesHorizontal )
+		end
+		
+		if this.pControllerVertical != null
+			this.pControllerVertical.setValue( eyesVertical )
+		end
+		
+		this.pRequiresApply = true
+	end
+	
+	/**
+	 * \brief Apply animation.
+	 * 
+	 * Called after update() to apply animation. Can do nothing if no change has been done.
+	 */
+	public func void applyAnimation()
+		if not this.pRequiresApply
+			return
+		end
+		
+		this.pRequiresApply = false
+		this.pAnimatorInstance.apply()
+	end
+end

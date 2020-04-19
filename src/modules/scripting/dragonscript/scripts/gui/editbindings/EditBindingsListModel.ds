@@ -1,0 +1,138 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief List model for ListBoxEditBindings.
+ * 
+ * Contains instances of EditBindingsListModelEntry.
+ */
+class EditBindingsListModel extends DefaultListModel
+	/** \brief Binding manager. */
+	private var BindingManager pBindingManager
+	
+	
+	
+	/**
+	 * \brief Create empty list model.
+	 * 
+	 * Add commands to edit to the list. Binding manager is used to find the bound bindings
+	 * for each command in the list.
+	 * 
+	 * \param bindingManager Binding manager to use.
+	 */
+	public func new( BindingManager bindingManager )
+		if bindingManager == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pBindingManager = bindingManager
+	end
+	
+	
+	
+	/** \brief Binding manager. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Entry at index. */
+	public func EditBindingsListModelEntry getEntryAt( int index )
+		return this.getAt( index ) cast EditBindingsListModelEntry
+	end
+	
+	/** \brief Entry with command or \em null if not found. */
+	public func EditBindingsListModelEntry getEntryWith( Command command )
+		var EditBindingsListModelEntry entry
+		var int i, count = this.getCount()
+		
+		for i = 0 to count
+			entry = this.getAt( i ) cast EditBindingsListModelEntry
+			if entry.getCommand() == command
+				return entry
+			end
+		end
+		
+		return null
+	end
+	
+	/** \brief Entry with command or \em null if not found. */
+	public func EditBindingsListModelEntry getEntryWith( String commandName )
+		var EditBindingsListModelEntry entry
+		var int i, count = this.getCount()
+		
+		for i = 0 to count
+			entry = this.getAt( i ) cast EditBindingsListModelEntry
+			if entry.getCommand().getName().equals( commandName )
+				return entry
+			end
+		end
+		
+		return null
+	end
+	
+	/** \brief Visit entries with block with parameter EditBindingsListModelEntry. */
+	public func void forEachEntry( Block ablock )
+		var int i, count = this.getCount()
+		for i = 0 to count
+			ablock.run( this.getAt( i ) cast EditBindingsListModelEntry )
+		end
+	end
+	
+	
+	
+	/** \brief Notify all that the content of the model in the given range changed. */
+	public func void notifyContentChanged( int fromIndex, int toIndex )
+		this.updateBindings( fromIndex, toIndex )
+		super.notifyContentChanged( fromIndex, toIndex )
+	end
+	
+	/** \brief Notify all elements have been added. */
+	public func void notifyElementsAdded( int fromIndex, int toIndex )
+		this.updateBindings( fromIndex, toIndex )
+		super.notifyElementsAdded( fromIndex, toIndex )
+	end
+	
+	/** \brief Notify all elements have been removed. */
+	public func void notifyElementsRemoved( int fromIndex, int toIndex )
+		this.updateBindings( fromIndex, toIndex )
+		super.notifyElementsRemoved( fromIndex, toIndex )
+	end
+	
+	
+	
+	/** \brief Update bindings in range. */
+	protected func void updateBindings( int fromIndex, int toIndex )
+		var int i, lastIndex = toIndex + 1
+		for i = fromIndex to lastIndex
+			( this.getAt( i ) cast EditBindingsListModelEntry ).updateBindings( this )
+		end
+	end
+end

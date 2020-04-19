@@ -1,0 +1,224 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Create screenshots of the render window.
+ * 
+ * This class takes care of creating screenshots using CaptureCanvas handling the
+ * entire process from triggering a capture to storing the file on disk easily.
+ * Call the update method during your game update loop for this class to work.
+ */
+class ScreenshotCreator
+	/** \brief Directory to store screenshots into including path delimiter. */
+	private var String pPath
+	
+	/** 
+	 * \brief File name prefix.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	private var String pPrefix
+	
+	/**
+	 * \brief File name suffix including file pattern.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	private var String pSuffix
+	
+	/** \brief Console to log finished screenshots to or \em null to not use. */
+	private var Console pConsole
+	
+	/** \brief Capture canvas for render window. */
+	private var CaptureCanvas pCaptureCanvas
+	
+	/** \brief Capture pending. */
+	private var bool pCapturePending
+	
+	private var int pHACKNumber
+	
+	
+	/**
+	 * \brief Create screenshot creator.
+	 * \details Default values are:
+	 *          - pPath: '/capture/'
+	 *          - prefix: 'screenshot-'
+	 *          - suffix: '.png'.
+	 */
+	public func new()
+		this.pPath = "/capture/"
+		this.pPrefix = "screenshot-"
+		this.pSuffix = ".png"
+		this.pCapturePending = false
+		this.pHACKNumber = 1
+		
+		this.pCaptureCanvas = CaptureCanvas.new()
+		this.pCaptureCanvas.setCanvasView( GraphicSystem.getPrimaryCanvas() )
+	end
+	
+	/**
+	 * \brief Dispose of held resources.
+	 * \details Call this before exiting your game for proper cleaning up.
+	 */
+	public func void dispose()
+		this.pCaptureCanvas = null
+		this.pConsole = null
+	end
+	
+	
+	
+	/** \brief Directory to store screenshots into including path delimiter. */
+	public func String getPath()
+		return this.pPath
+	end
+	
+	/**
+	 * \brief Set directory to store screenshots into
+	 * \details A trailing path separator will be added if missing.
+	 */
+	public func void setPath( String path )
+		if path == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPath = path
+		if this.pPath.empty() or this.pPath.getAt( this.pPath.getLength() - 1 ) != '/'
+			this.pPath = this.pPath + "/"
+		end
+	end
+	
+	/** 
+	 * \brief File name prefix.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	/** 
+	 * \brief Set file name prefix.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	public func void setPrefix( String prefix )
+		if prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPrefix = prefix
+	end
+	
+	/**
+	 * \brief File name suffix including file pattern.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	public func String getSuffix()
+		return this.pSuffix
+	end
+	
+	/**
+	 * \brief Set file name suffix including file pattern.
+	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
+	 */
+	public func void setSuffix( String suffix )
+		if suffix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pSuffix = suffix
+	end
+	
+	/** \brief Console to log finished screenshots to or \em null to not use. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console to log finished screenshots to or \em null to not use. */
+	public func void setConsole( Console console )
+		this.pConsole = console
+	end
+	
+	
+	
+	/**
+	 * \brief Update screenshot maker.
+	 * \details Call this during your game loop. Best is to call it towards the end.
+	 */
+	public func void update()
+		if not this.pCapturePending
+			return
+		end
+		
+		if this.pCaptureCanvas.getCapture()
+			return
+		end
+		
+		this.pCapturePending = false
+		
+		var String filename = this.pPath + this.pPrefix + this.pHACKNumber + this.pSuffix
+		this.pHACKNumber++
+		
+		var Image image = this.pCaptureCanvas.getImage()
+		this.pCaptureCanvas.dropImage()
+		
+		image.saveToFile( filename )
+		
+		this.screenshotFinished( filename )
+	end
+	
+	/**
+	 * \brief Take a screenshot.
+	 * \details The screenshot will be taken during the GraphicSystem.renderWindows().
+	 *          Once finished it will be saved. If a console is set the finished
+	 *          screenshot is logged to the console. Only one screenshot request can
+	 *          be active at the same time. If a request is still pending the request
+	 *          is ignored.
+	 */
+	public func void takeScreenshot()
+		if this.pCapturePending
+			return
+		end
+		
+		this.pCaptureCanvas.setImage( GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight(), 3, 8 )
+		this.pCaptureCanvas.setCapture( true )
+		
+		this.pCapturePending = true
+	end
+	
+	
+	
+	/**
+	 * \brief Screenshot finished.
+	 * \details Default implementation logs to the console if not \em null.
+	 */
+	public func void screenshotFinished( String filename )
+		if this.pConsole == null
+			BaseGameApp.getApp().getConsole().addMessage( "Screenshot saved to " + filename )
+			
+		else
+			this.pConsole.addMessage( "Screenshot saved to " + filename )
+		end
+	end
+end

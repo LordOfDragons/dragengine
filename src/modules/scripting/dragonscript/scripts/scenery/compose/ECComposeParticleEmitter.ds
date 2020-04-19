@@ -1,0 +1,189 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Composable particle emitter for element class.
+ * 
+ * Provides particle emitter support to element class without subclassing from a specific class.
+ * Sets the particle emitter to use by particle emitter instance.
+ */
+class ECComposeParticleEmitter
+	private var ECPParticleEmitter pParticleEmitter
+	private var ECPFloat pTimeScale
+	private var ECPBoolean pCasting
+	private var LayerMask pLayerMask
+	private var ECComposeCollisionFilter pCollisionFilter
+	
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, Loaders loaders ) \
+	this( ownerClass, loaders, "particleEmitter." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, Loaders loaders, String prefix )
+		if prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pParticleEmitter = ECPParticleEmitter.new( prefix + "path", loaders.getParticleEmitter() )
+		ownerClass.addProperty( this.pParticleEmitter )
+		
+		this.pTimeScale = ECPFloat.new( prefix + "timeScale", 1 )
+		ownerClass.addProperty( this.pTimeScale )
+		
+		this.pCasting = ECPBoolean.new( prefix + "casting", true )
+		ownerClass.addProperty( this.pCasting )
+		
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+		
+		this.pCollisionFilter = ECComposeCollisionFilter.new()
+		
+		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.particle )
+		
+		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.forceField )
+		
+		this.pCollisionFilter.setCollisionFilter( CollisionFilter.new( lmCategory, lmFilter ) )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Particle emitter resource. */
+	public func ECPParticleEmitter getParticleEmitter()
+		return this.pParticleEmitter
+	end
+	
+	/** \brief Time scale for controllers advanced by time. */
+	public func ECPFloat getTimeScale()
+		return this.pTimeScale
+	end
+	
+	/** \brief Emitter is casting particles. */
+	public func ECPBoolean getCasting()
+		return this.pCasting
+	end
+	
+	/** \brief Layer mask to set (basic layer mask). */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask to set (basic layer mask). */
+	public func void setLayerMask( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMask = layerMask
+	end
+	
+	/** \brief Collision filter. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/**
+	 * \brief Create particle emitter instance for element from stub.
+	 * 
+	 * Creates particle emitter instance and assigns particle emitter. The particle emitter
+	 * is not setEnableCasting() by default otherwise a burst of particles can be emitted
+	 * although the trigger created later on evaluates to false.
+	 */
+	public func ParticleEmitterInstance createParticleEmitterInstance( Element element, StubElement stub )
+		var ParticleEmitter emitter = this.pParticleEmitter.getParticleEmitter()
+		var String value
+		
+		// particle emitter resource
+		value = stub.getPropertyValueFor( this.pParticleEmitter.getName(), "" )
+		if not value.empty()
+			try
+				emitter = this.pParticleEmitter.getLoader().loadFromFile( value )
+				
+			catch Exception e
+				throw ELoadResourceFailed.new( value, element.getClass().getClassname() )
+			end
+		end
+		
+		if emitter == null
+			return null
+		end
+		
+		// create particle emitter instance
+		var ParticleEmitterInstance instance = ParticleEmitterInstance.new()
+		instance.setEmitter( emitter )
+		instance.setPosition( stub.getPosition() )
+		instance.setOrientation( Quaternion.newFromEuler( stub.getRotation() ) )
+		instance.setLayerMask( this.pLayerMask )
+		instance.setCollisionFilter( this.pCollisionFilter.getCollisionFilter() )
+		return instance
+	end
+	
+	/** \brief Create casting trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerCasting( Element element, StubElement stub )
+		return this.createTriggerCasting( element, stub, "" )
+	end
+	
+	/** \brief Create casting trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerCasting( Element element, StubElement stub, String defaultValue )
+		var String value = stub.getPropertyValueFor( this.pPrefix + "trigger", defaultValue )
+		
+		if value.empty()
+			return null
+			
+		else
+			return element.getClass().getTriggerExpressionParser().stringToExpression( value )
+		end
+	end
+end

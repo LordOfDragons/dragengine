@@ -1,0 +1,259 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Gui
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load SkinAnnotations from XML file.
+ * 
+ * Example file:
+ * 
+ * \code{.xml}
+ * &lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;
+ * &lt;skinAnnotations&gt;
+ *   &lt;string path='materials/asphalt' key='footstep'&gt;asphalt&lt;/string&gt;
+ *   &lt;string path='materials/asphalt/wet.deskin' key='footstep'&gt;asphalt-wet&lt;/string&gt;
+ *   &lt;float path='models/player/player.deskin/body' key='armor'&gt;0.8&lt;/float&gt;
+ * &lt;/skinAnnotations&gt;
+ * \endcode
+ * 
+ * Supported are these tags:
+ * - &lt;string&gt;&lt;/string&gt;: UTF8 encoded string value
+ * - &lt;float&gt;&lt;/float&gt;: Floating point value
+ * - &lt;integer&gt;&lt;/int&gt;: Integer value
+ * - &lt;bool&gt;&lt;/bool&gt;: Boolean value ("true", "false")
+ * - &lt;point x='' y=''/&gt;: 2-Component point (integer)
+ * - &lt;point3 x='' y='' z=''/&gt;: 3-Component point (integer)
+ * - &lt;vector2 x='' y=''/&gt;: 2-Component vector (float)
+ * - &lt;vector x='' y='' z=''/&gt;: 3-Component vector (float)
+ * - &lt;borderSize left='' top='' right='' bottom=''/&gt;: BorderSize (int)
+ * - &lt;rectArea x1='' y1='' x2='' y2=''/&gt;: RectArea (int)
+ * - &lt;floatRectArea x1='' y1='' x2='' y2=''/&gt;: FloatRectArea (float)
+ * - &lt;list&gt;&lt;/list&gt;: List of values (anything except &lt;list&gt;)
+ * - &lt;null/&gt;: null value
+ */
+class LoadSkinAnnotations extends BaseXmlLoader
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadSkinAnnotations" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/**
+	 * \brief Load element class from file.
+	 * 
+	 * Loaded content is added to \em skinAnnotations. It is not cleared first.
+	 */
+	public func void loadFromFile( String filename, SkinAnnotations skinAnnotations )
+		if skinAnnotations == null
+			throw EInvalidParam.new()
+		end
+		
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() + " in " + filename )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "skinAnnotations" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		try
+			this.readSkinAnnotations( root, skinAnnotations, File.new( filename ).getParent().getPath() )
+			
+		catch Exception e
+			this.logParsingFailed( "Failed parsing " + filename )
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Scan for skin annotation files loading them.
+	 * 
+	 * Skin annotation files have the extension ".deskinann".
+	 * 
+	 * \param skinAnnotations Skin annotations to load files into.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void loadFromFiles( SkinAnnotations skinAnnotations, String directory, bool recursive )
+		this.loadFromFiles( skinAnnotations, directory, "*.deskinann", recursive )
+	end
+	
+	/**
+	 * \brief Scan for skin annotation files loading them.
+	 * 
+	 * Skin annotation files have the extension ".deskinann".
+	 * 
+	 * \param skinAnnotations Skin annotations to load files into.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param pattern File pattern to match. Has to be of the form "*.extension"
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void loadFromFiles( SkinAnnotations skinAnnotations, String directory, \
+	String pattern, bool recursive )
+		FileSystem.searchFiles( directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( each, pattern )
+				this.loadFromFile( each, skinAnnotations )
+			end
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Parse skin annotations tag. */
+	protected func void readSkinAnnotations( EasyXMLElement root, \
+	SkinAnnotations skinAnnotations, String baseDirectory )
+		var Object value
+		var String path
+		var String key
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if element.hasAttributeNamed( "path" )
+				path = File.absolutePath( element.getAttributeNamed( "path" ), baseDirectory ).getPath()
+				
+			else
+				path = baseDirectory
+			end
+			
+			key = element.getAttributeNamed( "key" )
+			
+			if tagName.equals( "string" )
+				value = element.getFirstCData()
+				
+			elif tagName.equals( "float" )
+				value = element.getFirstCDataFloat()
+				
+			elif tagName.equals( "integer" )
+				value = element.getFirstCDataInt()
+				
+			elif tagName.equals( "boolean" )
+				value = element.getFirstCDataBool()
+				
+			elif tagName.equals( "vector" )
+				value = this.readVector( element )
+				
+			elif tagName.equals( "vector2" )
+				value = this.readVector2( element )
+				
+			elif tagName.equals( "point" )
+				value = this.readPoint( element )
+				
+			elif tagName.equals( "point3" )
+				value = this.readPoint3( element )
+				
+			elif tagName.equals( "borderSize" )
+				value = this.readBorderSize( element )
+				
+			elif tagName.equals( "rectArea" )
+				value = this.readRectArea( element )
+				
+			elif tagName.equals( "floatRectArea" )
+				value = this.readFloatRectArea( element )
+				
+			elif tagName.equals( "color" )
+				value = this.readColor( element )
+				
+			elif tagName.equals( "null" )
+				value = null
+				
+			elif tagName.equals( "list" )
+				value = this.readList( element )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+			
+			skinAnnotations.set( path, key, value )
+		end )
+	end
+	
+	/** \brief Parse list tag. */
+	protected func Array readList( EasyXMLElement root )
+		var Array list = Array.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "string" )
+				list.add( element.getFirstCData() )
+				
+			elif tagName.equals( "float" )
+				list.add( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "integer" )
+				list.add( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "boolean" )
+				list.add( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "vector" )
+				list.add( this.readVector( element ) )
+				
+			elif tagName.equals( "vector2" )
+				list.add( this.readVector2( element ) )
+				
+			elif tagName.equals( "point" )
+				list.add( this.readPoint( element ) )
+				
+			elif tagName.equals( "point3" )
+				list.add( this.readPoint3( element ) )
+				
+			elif tagName.equals( "borderSize" )
+				list.add( this.readBorderSize( element ) )
+				
+			elif tagName.equals( "rectArea" )
+				list.add( this.readRectArea( element ) )
+				
+			elif tagName.equals( "floatRectArea" )
+				list.add( this.readFloatRectArea( element ) )
+				
+			elif tagName.equals( "color" )
+				list.add( this.readColor( element ) )
+				
+			elif tagName.equals( "null" )
+				list.add( null )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+		
+		return list
+	end
+end

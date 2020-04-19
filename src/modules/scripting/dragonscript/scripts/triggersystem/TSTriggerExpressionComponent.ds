@@ -1,0 +1,233 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TriggerSystem
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Component in trigger expression.
+ * 
+ * A component composes of a set of parameters defining how the result is evaluated as well as
+ * either a trigger name or two child expressions. If the trigger name is set the matching
+ * trigger is evaluated. Otherwise the child expressions are evaluated and combined using a
+ * logical operator.
+ * 
+ */
+class TSTriggerExpressionComponent
+	private var bool pNegate
+	private var bool pCurState
+	private var bool pChildrenOr
+	private var StringID pTargetName
+	private var TSTriggerTarget pTarget
+	private var TSTriggerListener pTargetListener
+	private var Array pChildren
+	
+	
+	
+	/** \brief Create trigger expression component. */
+	public func new()
+		this.pNegate = false
+		this.pCurState = false
+		this.pChildrenOr = false
+		this.pChildren = Array.new()
+	end
+	
+	/** \brief Dispose of trigger expression. */
+	public func void dispose()
+		this.pTarget = null
+		this.pTargetListener = null
+		if this.pChildren != null
+			this.pChildren.forEach( block TSTriggerExpressionComponent each
+				each.dispose()
+			end )
+		end
+	end
+	
+	
+	
+	/** \brief Negate result. */
+	public func bool getNegate()
+		return this.pNegate
+	end
+	
+	/** \brief Set if result is negated. */
+	public func void setNegate( bool negate )
+		this.pNegate = negate
+	end
+	
+	/** \brief Use current state instead of trigger having fired at least once. */
+	public func bool getCurState()
+		return this.pCurState
+	end
+	
+	/** \brief Set if current state is used instead of trigger having fired at least once. */
+	public func void setCurState( bool curState )
+		this.pCurState = curState
+	end
+	
+	/** \brief Use OR instead of AND for testing child expressions. */
+	public func bool getChildrenOr()
+		return this.pChildrenOr
+	end
+	
+	/** \brief Set if OR instead of AND is used for testing child expressions. */
+	public func void setChildrenOr( bool childrenOr )
+		this.pChildrenOr = childrenOr
+	end
+	
+	/** \brief Trigger name or \em null if not set. */
+	public func StringID getTargetName()
+		return this.pTargetName
+	end
+	
+	/** \brief Set trigger target name or \em null if not set. */
+	public func void setTargetName( StringID name )
+		this.pTargetName = name
+	end
+	
+	/** \brief Trigger target or \em null if not set. */
+	public func TSTriggerTarget getTarget()
+		return this.pTarget
+	end
+	
+	/** \brief Set trigger target or \em null if not set. */
+	public func void setTarget( TSTriggerTarget target )
+		this.pTarget = target
+	end
+	
+	
+	
+	/** \brief Number of children. */
+	public func int getChildCount()
+		return this.pChildren.getCount()
+	end
+	
+	/** \brief Child at index. */
+	public func TSTriggerExpressionComponent getChildAt( int index )
+		return this.pChildren.getAt( index ) cast TSTriggerExpressionComponent
+	end
+	
+	/** \brief Add child. */
+	public func void addChild( TSTriggerExpressionComponent child )
+		if child == null or this.pChildren.has( child )
+			throw EInvalidParam.new()
+		end
+		this.pChildren.add( child )
+	end
+	
+	/** \brief Remove all children disposing of them. */
+	public func void removeAllChildren()
+		this.pChildren.forEach( block TSTriggerExpressionComponent each
+			each.dispose()
+		end )
+		this.pChildren.removeAll()
+	end
+	
+	/**
+	 * \brief Visit children with block.
+	 * 
+	 * Block receives argument TSTriggerExpressionComponent.
+	 */
+	public func void forEachChild( Block ablock )
+		this.pChildren.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find child using block.
+	 * 
+	 * Block receives argument TSTriggerExpressionComponent and has to return bool.
+	 */
+	public func TSTriggerExpressionComponent findChild( Block ablock )
+		return this.pChildren.find( ablock ) cast TSTriggerExpressionComponent
+	end
+	
+	
+	
+	/**
+	 * \brief Link trigger targets using trigger table.
+	 * \details If trigger table is \em null all trigger targets are unlinked.
+	 */
+	public func void linkTriggerTargets( TSTriggerTable triggerTable, TSTriggerListener listener )
+		if this.pTargetListener != null
+			this.pTarget.removeListenerIfPresent( this.pTargetListener )
+		end
+		
+		this.pTarget = null
+		this.pTargetListener = null
+		
+		if this.pTargetName != null and triggerTable != null
+			this.pTarget = triggerTable.getOrAddNamed( this.pTargetName )
+			
+			if listener != null
+				this.pTarget.addListenerIfAbsent( listener )
+				this.pTargetListener = listener
+			end
+		end
+		
+		this.pChildren.forEach( block TSTriggerExpressionComponent each
+			each.linkTriggerTargets( triggerTable, listener )
+		end )
+	end
+	
+	/** \brief Evaluate expression component. */
+	public func bool evaluate()
+		var bool result = false
+		
+		if this.pTarget != null
+			if this.pCurState
+				result = this.pTarget.getFired()
+				
+			else
+				result = this.pTarget.getHasFired()
+			end
+			
+		elif this.pChildren.getCount() > 0
+			if this.pChildrenOr
+				result = this.pChildren.find( block TSTriggerExpressionComponent each
+					return each.evaluate()
+				end ) != null
+				
+			else
+				result = this.pChildren.find( block TSTriggerExpressionComponent each
+					return not each.evaluate()
+				end ) == null
+			end
+			
+		else
+			return false // empty list always evaluates to false
+		end
+		
+		return result ^ this.pNegate
+	end
+	
+	
+	
+	/** \brief Expression component contains target. */
+	public func bool containsTarget( TSTriggerTarget target )
+		return this.pTarget == target \
+			or this.pChildren.find( block TSTriggerExpressionComponent each
+				return each.containsTarget( target )
+			end ) != null
+	end
+end

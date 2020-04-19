@@ -1,0 +1,90 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Navigation information.
+ * 
+ * This is a native class.
+ */
+class NavigationInfo
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create navigation information. */
+	public func new()
+	end
+	
+	/** \brief Create copy of navigation information. */
+	public func new( NavigationInfo copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Cost type at position if position is not \em null. */
+	public func int getCostType()
+	end
+	
+	/** \brief Set cost type at position. */
+	public func void setCostType( int costType )
+	end
+	
+	
+	
+	/**
+	 * \brief Index along navigation path.
+	 * \details -1 indicates navigation start position towards first path point.
+	 */
+	public func int getPathIndex()
+	end
+	
+	/**
+	 * \brief Set index along navigation path.
+	 * \details -1 indicates navigation start position towards first path point.
+	 * \throws EInvalidParam \em index is less than -1.
+	 */
+	public func void setPathIndex( int index )
+	end
+	
+	/** \brief Factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
+	public func float getPathFactor()
+	end
+	
+	/** \brief Set factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
+	public func void setPathFactor( float factor )
+	end
+	
+	
+	
+	/**
+	 * \brief Navigation information is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type NavigationInfo and both point to the same navigation info object.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

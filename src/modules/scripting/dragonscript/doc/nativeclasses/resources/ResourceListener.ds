@@ -1,0 +1,35 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Resource listener interface.
+ * 
+ * This is a native class.
+ */
+interface ResourceListener
+	/** \name Notification */
+	/*@{*/
+	/**
+	 * \brief Resource finished loading successfully.
+	 * \param filename Filename used to load the resource.
+	 * \param resourceType Value from ResourceManager resource type constants.
+	 * \param resource Loaded resource.
+	 */
+	func void finishedLoading( String filename, ResourceLoaderType resourceType, Object resource )
+	
+	/**
+	 * \brief Resource failed loading.
+	 * \param filename Filename used to load the resource.
+	 * \param resourceType Value from ResourceManager resource type constants.
+	 */
+	func void failedLoading( String filename, ResourceLoaderType resourceType )
+	/*@}*/
+end

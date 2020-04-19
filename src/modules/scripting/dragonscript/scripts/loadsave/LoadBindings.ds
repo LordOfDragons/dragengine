@@ -1,0 +1,277 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Gui.Events
+pin Dragengine.Commands
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load bindings from xml file.
+ * 
+ * Supports saving bindings.
+ */
+class LoadBindings extends BaseXmlLoader
+	/** \brief Create binding loader. */
+	public func new( Console console ) this( console, "LoadBindings" )
+	end
+	
+	/** \brief Create bindings loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/**
+	 * \brief Load binding from file.
+	 * 
+	 * Adds bindings to \em bindingManager. Existing bindings are replaced. Allows to load
+	 * multiple binding files replacing previous definitions if required. Clear the binding
+	 * manager before loading the first file.
+	 * 
+	 * Bindings with not found commands are ignored but logged to the console. This avoids
+	 * failing reading bindings if the game is modified for example by modifications or patches.
+	 * 
+	 * In general reading bindings files only throws exceptions if the file is XML incorrect.
+	 * Invalid tags, attributes or values are only logged but no exceptions thrown.
+	 */
+	public func void loadFromFile( String filename, BindingManager bindingManager, \
+	CommandManager commandManager )
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "bindings" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		this.readBindings( root, bindingManager, commandManager )
+	end
+	
+	/**
+	 * \brief Save bindings to file.
+	 * 
+	 * Saves all bindings in \em bindingManager.
+	 */
+	public func void saveToFile( String filename, BindingManager bindingManager )
+		if bindingManager == null
+			throw EInvalidParam.new()
+		end
+		
+		this.logSavingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new()
+		var EasyXMLElement root = document.getRootElement()
+		
+		root.setTagName( "bindings" )
+		
+		this.writeBindings( root, bindingManager )
+		
+		document.writeToFile( FileWriter.new( filename ), false )
+	end
+	
+	
+	
+	/**
+	 * \brief Read bindings tag.
+	 * 
+	 * Can be used by other classes to read a bindings tag from any XML outside bindings XML.
+	 */
+	public func void readBindings( EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "button" )
+				this.pReadButton( element, bindingManager, commandManager )
+				
+			elif tagName.equals( "axis" )
+				this.pReadAxis( element, bindingManager, commandManager )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+	end
+	
+	/** \brief Read button binding. */
+	private func void pReadButton( EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager )
+		var int i, count = root.getElementCount()
+		var String deviceID, id
+		var Command command
+		
+		for i = 0 to count
+			var EasyXMLElement element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			var String tagName = element.getTagName()
+			
+			if tagName.equals( "device" )
+				deviceID = element.getFirstCData()
+				
+			elif tagName.equals( "id" )
+				id = element.getFirstCData()
+				
+			elif tagName.equals( "command" )
+				command = commandManager.getNamed( element.getFirstCData() )
+				if command == null
+					this.printOnConsole( element, "Unknown command '" \
+						+ element.getFirstCData() + "'" )
+					return
+				end
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end
+		
+		if deviceID == null
+			this.logMissingTag( "device" )
+			return
+		end
+		if id == null
+			this.logMissingTag( "id" )
+			return
+		end
+		if command == null
+			this.logMissingTag( "command" )
+			return
+		end
+		
+		var Binding binding = bindingManager.findButtonBinding( deviceID, id )
+		if binding != null
+			bindingManager.removeButtonBinding( binding )
+		end
+		bindingManager.addButtonBinding( Binding.new( deviceID, id, command, false ) )
+	end
+	
+	/** \brief Read axis binding. */
+	private func void pReadAxis( EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager )
+		var int i, count = root.getElementCount()
+		var bool inverseAxis = false
+		var String deviceID, id
+		var Command command
+		
+		for i = 0 to count
+			var EasyXMLElement element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			var String tagName = element.getTagName()
+			
+			if tagName.equals( "device" )
+				deviceID = element.getFirstCData()
+				
+			elif tagName.equals( "id" )
+				id = element.getFirstCData()
+				
+			elif tagName.equals( "command" )
+				command = commandManager.getNamed( element.getFirstCData() )
+				if command == null
+					this.printOnConsole( element, "Unknown command '" \
+						+ element.getFirstCData() + "'" )
+					return
+				end
+				
+			elif tagName.equals( "inverseAxis" )
+				inverseAxis = element.getFirstCDataBool()
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end
+		
+		if deviceID == null
+			this.logMissingTag( "device" )
+			return
+		end
+		if id == null
+			this.logMissingTag( "id" )
+			return
+		end
+		if command == null
+			this.logMissingTag( "command" )
+			return
+		end
+		
+		var Binding binding = bindingManager.findAxisBinding( deviceID, id, inverseAxis )
+		if binding != null
+			bindingManager.removeAxisBinding( binding )
+		end
+		bindingManager.addAxisBinding( Binding.new( deviceID, id, command, inverseAxis ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Write bindings tag.
+	 * 
+	 * Can be used by other classes to write a bindings tag to any XML outside bindings XML.
+	 */
+	public func void writeBindings( EasyXMLElement root, BindingManager bindingManager )
+		var EasyXMLElement element
+		
+		bindingManager.forEachAxisBinding( block Binding each
+			if each.getCommand() != null
+				this.writeAxisBinding( root, each )
+			end
+		end )
+		
+		bindingManager.forEachButtonBinding( block Binding each
+			if each.getCommand() != null
+				this.writeButtonBinding( root, each )
+			end
+		end )
+	end
+	
+	/** \brief Write axis binding tag. */
+	protected func void writeAxisBinding( EasyXMLElement root, Binding binding )
+		var EasyXMLElement tag = root.addTag( "axis" )
+		tag.addDataTag( "device", binding.getDeviceID() )
+		tag.addDataTag( "id", binding.getSourceID() )
+		tag.addDataTag( "command", binding.getCommand().getName() )
+		if binding.getInverseAxis()
+			tag.addDataTag( "inverseAxis", true )
+		end
+	end
+	
+	/** \brief Write button binding tag. */
+	protected func void writeButtonBinding( EasyXMLElement root, Binding binding )
+		var EasyXMLElement tag = root.addTag( "button" )
+		tag.addDataTag( "device", binding.getDeviceID() )
+		tag.addDataTag( "id", binding.getSourceID() )
+		tag.addDataTag( "command", binding.getCommand().getName() )
+	end
+end

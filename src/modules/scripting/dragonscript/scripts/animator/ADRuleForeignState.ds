@@ -1,0 +1,203 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a foreign state animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleForeignState extends ADRule
+	/** Position scale factor. */
+	private var float pScalePos
+	/** Orientation scale factor. */
+	private var float pScaleOrient
+	/** Size scale factor. */
+	private var float pScaleSize
+	/** Enables position manipulation. */
+	private var bool pEnablePosition
+	/** Enables orientation manipulation. */
+	private var bool pEnableOrientation
+	/** Enables size manipulation. */
+	private var bool pEnableSize
+	/** Name of the foreign bone. */
+	private var String pForeignBone
+	/** Source coordinate frame. */
+	private var ARForeignStateCFrame pSrcCoordFrame
+	/** Destination coordinate frame. */
+	private var ARForeignStateCFrame pDestCoordFrame
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pScalePos = 1.0
+		this.pScaleOrient = 1.0
+		this.pScaleSize = 1.0
+		this.pEnablePosition = false
+		this.pEnableOrientation = true
+		this.pEnableSize = false
+		this.pForeignBone = "bone"
+		this.pSrcCoordFrame = ARForeignStateCFrame.local
+		this.pDestCoordFrame = ARForeignStateCFrame.local
+	end
+	
+	
+	
+	/** Retrieves the position scale factor. */
+	public func float getScalePosition()
+		return this.pScalePos
+	end
+	
+	/** Sets the position scale factor. */
+	public func void setScalePosition( float scaleFactor )
+		this.pScalePos = scaleFactor
+	end
+	
+	/** Retrieves the orientation scale factor. */
+	public func float getScaleOrientation()
+		return this.pScaleOrient
+	end
+	
+	/** Sets the orientation scale factor. */
+	public func void setScaleOrientation( float scaleFactor )
+		this.pScaleOrient = scaleFactor
+	end
+	
+	/** Retrieves the size scale factor. */
+	public func float getScaleSize()
+		return this.pScaleSize
+	end
+	
+	/** Sets the size scale factor. */
+	public func void setScaleSize( float scaleFactor )
+		this.pScaleSize = scaleFactor
+	end
+	
+	/** Determines if the position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** Sets if the position manipulation is enabled. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** Determines if the orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** Sets if the orientation manipulation is enabled. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** Determines if the size manipulation is enabled. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** Sets if the size manipulation is enabled. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	/** Retrieves the foreign bone name. */
+	public func String getForeignBone()
+		return this.pForeignBone
+	end
+	
+	/** Sets the foreign bone name. */
+	public func void setForeignBone( String bone )
+		if bone == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pForeignBone = bone
+	end
+	
+	/** Retrieves the source coordinate frame. */
+	public func ARForeignStateCFrame getSourceCoordinateFrame()
+		return this.pSrcCoordFrame
+	end
+	
+	/** Sets if the source coordinate frame. */
+	public func void setSourceCoordinateFrame( ARForeignStateCFrame coordFrame )
+		this.pSrcCoordFrame = coordFrame
+	end
+	
+	/** Retrieves the destination coordinate frame. */
+	public func ARForeignStateCFrame getDestinationCoordinateFrame()
+		return this.pDestCoordFrame
+	end
+	
+	/** Sets if the destination coordinate frame. */
+	public func void setDestinationCoordinateFrame( ARForeignStateCFrame coordFrame )
+		this.pDestCoordFrame = coordFrame
+	end
+	
+	
+	
+	/**
+	 * Build engine animator rule using the stored definition.
+	 */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARForeignState rule = ARForeignState.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARForeignStateTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setScalePosition( this.pScalePos )
+		rule.setScaleOrientation( this.pScaleOrient )
+		rule.setScaleSize( this.pScaleSize )
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		rule.setForeignBone( this.pForeignBone )
+		rule.setSourceCoordinateFrame( this.pSrcCoordFrame )
+		rule.setDestinationCoordinateFrame( this.pDestCoordFrame )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Foreign State" ) + \
+			" spos=" + this.pScalePos + \
+			" sorient=" + this.pScaleOrient + \
+			" ssize=" + this.pScaleSize + \
+			" epos=" + this.pEnablePosition + \
+			" eorient=" + this.pEnableOrientation + \
+			" esize=" + this.pEnableSize + " )" )
+	end
+end

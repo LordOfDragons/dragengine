@@ -1,0 +1,143 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a track to animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleTrackTo extends ADRule
+	/** Name of the track bone or empty string to use none. */
+	private var String pTrackBone
+	/** Track axis. */
+	private var ARTrackToAxis pTrackAxis
+	/** Up axis. */
+	private var ARTrackToAxis pUpAxis
+	/** Up target. */
+	private var ARTrackToUp pUpTarget
+	/** Locked axis. */
+	private var ARTrackToLocked pLockedAxis
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pTrackBone = ""
+		this.pTrackAxis = ARTrackToAxis.posZ
+		this.pUpAxis = ARTrackToAxis.posY
+		this.pUpTarget = ARTrackToUp.componentY
+		this.pLockedAxis = ARTrackToLocked.none
+	end
+	
+	
+	
+	/** Retrieves the name of the track bone or empty string to use none. */
+	public func String getTrackBone()
+		return this.pTrackBone
+	end
+	
+	/** Sets the name of the track bone or empty string to use none. */
+	public func void setTrackBone( String boneName )
+		if boneName == null
+			throw EInvalidParam.new()
+		end
+		this.pTrackBone = boneName
+	end
+	
+	/** Retrieves the track axis. */
+	public func ARTrackToAxis getTrackAxis()
+		return this.pTrackAxis
+	end
+	
+	/** Sets the track axis. */
+	public func void setTrackAxis( ARTrackToAxis axis )
+		this.pTrackAxis = axis
+	end
+	
+	/** Retrieves the up axis. */
+	public func ARTrackToAxis getUpAxis()
+		return this.pUpAxis
+	end
+	
+	/** Sets the up axis. */
+	public func void setUpAxis( ARTrackToAxis axis )
+		this.pUpAxis = axis
+	end
+	
+	/** Retrieves the up target. */
+	public func ARTrackToUp getUpTarget()
+		return this.pUpTarget
+	end
+	
+	/** Sets the up target. */
+	public func void setUpTarget( ARTrackToUp target )
+		this.pUpTarget = target
+	end
+	
+	/** Retrieves the locked axis. */
+	public func ARTrackToLocked getLockedAxis()
+		return this.pLockedAxis
+	end
+	
+	/** Sets the locked axis. */
+	public func void setLockedAxis( ARTrackToLocked axis )
+		this.pLockedAxis = axis
+	end
+	
+	
+	
+	/** Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARTrackTo rule = ARTrackTo.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARTrackToTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setTrackBone( this.pTrackBone )
+		rule.setTrackAxis( this.pTrackAxis )
+		rule.setUpAxis( this.pUpAxis )
+		rule.setUpTarget( this.pUpTarget )
+		rule.setLockedAxis( this.pLockedAxis )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Track To" ) + \
+			" trackBone=" + this.pTrackBone + \
+			" trackAxis=" + this.pTrackAxis + \
+			" upAxis=" + this.pUpAxis + \
+			" upTarget=" + this.pUpTarget + \
+			" lockedAxis=" + this.pLockedAxis + " )" )
+	end
+end

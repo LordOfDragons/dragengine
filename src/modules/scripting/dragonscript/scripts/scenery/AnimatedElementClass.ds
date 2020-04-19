@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+/**
+ * \brief Animated element class.
+ * 
+ * Simple element supporting playing back animation.
+ */
+class AnimatedElementClass extends SimpleElementClass
+	private var ECBehaviorAnimated pAnimated
+	
+	
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new() this( "AnimatedElement" )
+	end
+	
+	/** \brief Create element class. */
+	public func new( Loaders loaders, TSTriggerTable triggerTable ) \
+	this( "AnimatedElement", loaders, triggerTable )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) this( className, \
+	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getTriggerTable() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, Loaders loaders, TSTriggerTable triggerTable ) \
+	super( className, loaders )
+		this.pAnimated = ECBehaviorAnimated.new( this, this.getComponent(), loaders, triggerTable )
+	end
+	
+	
+	
+	/** \brief Animated behavior. */
+	public func ECBehaviorAnimated getAnimated()
+		return this.pAnimated
+	end
+	
+	
+	
+	/** \brief Create copy of element class. */
+	public func ElementClass duplicateNamed( String classname )
+		return AnimatedElementClass.new( classname )
+	end
+	
+	
+	
+	/**
+	 * \brief Create element instance.
+	 * 
+	 * If this element class does not support creating elements, for example because
+	 * the result is not an element, \em null has to be returned. The default
+	 * implementation returns \em null. Subclasses not intending to create elements
+	 * or requiring special creation handling should subclass createAndAddElement()
+	 * and loadAndAddElement() bypassing this method.
+	 */
+	protected func Element createElement()
+		return AnimatedElement.new( this )
+	end
+end

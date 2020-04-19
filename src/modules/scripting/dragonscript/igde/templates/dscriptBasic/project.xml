@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+	<profile>
+		<name>Development</name>
+		<description>Development profile created by Template. In contrary to the release profile files under /develop are included for development game testing. A typical solution to running a development build is to use a subclass of GameApp (for example GameAppDevelop) modifying the base GameApp behavior to expose development and debugging features. If you do this you have to change the game object parameter in this profile. Furthermore you should exclude this subclass from the release build. Typically the file would be located in a /scripts/debug directory together with other debugging related scripts. This way you can exclude the entire directory from release builds.</description>
+		<scriptDirectory>/scripts</scriptDirectory>
+		<gameObject>GameApp</gameObject>
+		<pathConfig>/config</pathConfig>
+		<pathCapture>/capture</pathCapture>
+		<identifier>%{GAME_ID}</identifier>
+		<aliasIdentifier>%{GAME_ALIAS_ID}</aliasIdentifier>
+		<title>%{GAME_TITLE} - Development</title>
+		<gameDescription>Development</gameDescription>
+		<delgaPath>distribute/development.delga</delgaPath>
+	</profile>
+	<profile>
+		<name>Release</name>
+		<description>Release profile created by Template. Excludes development files under /develop to produce a distribution ready DELGA file.</description>
+		<scriptDirectory>/scripts</scriptDirectory>
+		<gameObject>GameApp</gameObject>
+		<pathConfig>/config</pathConfig>
+		<pathCapture>/capture</pathCapture>
+		<identifier>%{GAME_ID}</identifier>
+		<aliasIdentifier>%{GAME_ALIAS_ID}</aliasIdentifier>
+		<title>%{GAME_TITLE}</title>
+		<gameDescription>%{GAME_DESCRIPTION}</gameDescription>
+		<excludePattern>/develop</excludePattern>
+		<delgaPath>distribute/%{DELGA_FILE_TITLE}.delga</delgaPath>
+	</profile>
+</project>

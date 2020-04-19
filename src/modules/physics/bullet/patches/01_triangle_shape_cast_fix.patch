@@ -1,0 +1,103 @@
+--- genpatch/BulletCollision/CollisionDispatch/btCollisionWorld.cpp	2014-11-29 13:13:35.695026848 +0100
++++ Bullet/BulletCollision/CollisionDispatch/btCollisionWorld.cpp	2014-11-29 20:10:30.556128257 +0100
+@@ -449,13 +449,16 @@ void	btCollisionWorld::rayTestSingleInte
+ 
+ 				BridgeTriangleRaycastCallback	rcb(rayFromLocal,rayToLocal,&resultCallback,collisionObjectWrap->getCollisionObject(),concaveShape, colObjWorldTransform);
+ 				rcb.m_hitFraction = resultCallback.m_closestHitFraction;
+-
++				
++				concaveShape->processRaycastAllTriangles( &rcb, rayFromLocal, rayToLocal );
++				/*
+ 				btVector3 rayAabbMinLocal = rayFromLocal;
+ 				rayAabbMinLocal.setMin(rayToLocal);
+ 				btVector3 rayAabbMaxLocal = rayFromLocal;
+ 				rayAabbMaxLocal.setMax(rayToLocal);
+-
++				
+ 				concaveShape->processAllTriangles(&rcb,rayAabbMinLocal,rayAabbMaxLocal);
++				*/
+ 			}
+ 		} else {
+ 			//			BT_PROFILE("rayTestCompound");
+@@ -784,7 +787,9 @@ void	btCollisionWorld::objectQuerySingle
+ 					tccb.m_allowedPenetration = allowedPenetration;
+ 					btVector3 boxMinLocal, boxMaxLocal;
+ 					castShape->getAabb(rotationXform, boxMinLocal, boxMaxLocal);
+-
++					
++					concaveShape->processConvexcastAllTriangles( &tccb, convexFromLocal, convexToLocal, boxMinLocal, boxMaxLocal );
++					/*
+ 					btVector3 rayAabbMinLocal = convexFromLocal;
+ 					rayAabbMinLocal.setMin(convexToLocal);
+ 					btVector3 rayAabbMaxLocal = convexFromLocal;
+@@ -792,6 +797,7 @@ void	btCollisionWorld::objectQuerySingle
+ 					rayAabbMinLocal += boxMinLocal;
+ 					rayAabbMaxLocal += boxMaxLocal;
+ 					concaveShape->processAllTriangles(&tccb,rayAabbMinLocal,rayAabbMaxLocal);
++					*/
+ 				}
+ 			}
+ 		} else {
+--- genpatch/BulletCollision/CollisionShapes/btConcaveShape.cpp	2014-11-29 19:51:58.799925836 +0100
++++ Bullet/BulletCollision/CollisionShapes/btConcaveShape.cpp	2014-11-29 20:06:47.812283589 +0100
+@@ -25,3 +25,27 @@ btConcaveShape::~btConcaveShape()
+ {
+ 
+ }
++
++void btConcaveShape::processRaycastAllTriangles( btTriangleRaycastCallback *callback,
++const btVector3 &raySource, const btVector3 &rayTarget ){
++	btVector3 rayAabbMinLocal = raySource;
++	rayAabbMinLocal.setMin( rayTarget );
++	
++	btVector3 rayAabbMaxLocal = raySource;
++	rayAabbMaxLocal.setMax( rayTarget );
++	
++	processAllTriangles( callback, rayAabbMinLocal, rayAabbMaxLocal );
++}
++
++void btConcaveShape::processConvexcastAllTriangles( btTriangleConvexcastCallback *callback,
++const btVector3 &boxSource, const btVector3 &boxTarget, const btVector3 &boxMin, const btVector3 &boxMax ){
++	btVector3 rayAabbMinLocal = boxSource;
++	rayAabbMinLocal.setMin( boxTarget );
++	rayAabbMinLocal += boxMin;
++	
++	btVector3 rayAabbMaxLocal = boxSource;
++	rayAabbMaxLocal.setMax( boxTarget );
++	rayAabbMaxLocal += boxMax;
++	
++	processAllTriangles( callback, rayAabbMinLocal, rayAabbMaxLocal );
++}
+--- genpatch/BulletCollision/CollisionShapes/btConcaveShape.h	2014-11-29 19:51:58.840925806 +0100
++++ Bullet/BulletCollision/CollisionShapes/btConcaveShape.h	2014-11-29 19:56:01.011750194 +0100
+@@ -19,6 +19,7 @@ subject to the following restrictions:
+ #include "btCollisionShape.h"
+ #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h" // for the types
+ #include "btTriangleCallback.h"
++#include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
+ 
+ /// PHY_ScalarType enumerates possible scalar types.
+ /// See the btStridingMeshInterface or btHeightfieldTerrainShape for its use
+@@ -46,6 +47,22 @@ public:
+ 	virtual ~btConcaveShape();
+ 
+ 	virtual void	processAllTriangles(btTriangleCallback* callback,const btVector3& aabbMin,const btVector3& aabbMax) const = 0;
++	
++	/**
++	 * \brief Process all triangles for ray casting.
++	 * \details This is a fix for bad code design in bullet. The default implementation
++	 *          forwards to processAllTriangles and can be overloaded.
++	 */
++	virtual void processRaycastAllTriangles( btTriangleRaycastCallback *callback,
++	const btVector3 &raySource, const btVector3 &rayTarget );
++	/**
++	 * \brief Process all triangles for convex shape casting.
++	 * \details This is a fix for bad code design in bullet. The default implementation
++	 *          forwards to processAllTriangles and can be overloaded.
++	 */
++	virtual void processConvexcastAllTriangles( btTriangleConvexcastCallback *callback,
++	const btVector3 &boxSource, const btVector3 &boxTarget,
++	const btVector3 &boxMin, const btVector3 &boxMax );
+ 
+ 	virtual btScalar getMargin() const {
+ 		return m_collisionMargin;

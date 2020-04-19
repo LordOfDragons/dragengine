@@ -1,0 +1,715 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Converter
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+pin Dragengine.Utils.StyledText.Rendering.Elements
+
+
+
+/**
+ * \brief Create styled text rendering pages from styled text definition.
+ */
+class StyledTextConverter extends DefaultSTDNodeVisitor
+	private var String pWhiteSpaces
+	private var String pPunctuations
+	
+	private var StyledTextDefinition pDefinition
+	private var STDStyle pPageStyle
+	private var STDStyle pDefaultStyle
+	private var int pPageWidth
+	private var int pPageHeight
+	private var Array pPages
+	
+	private var StyledTextRendering pPageInProgress
+	private var int pCurPIPPosY
+	private var int pMaxPIPPosY
+	private var Array pBlockers
+	
+	
+	
+	/** \brief Create styled text converter. */
+	public func new( StyledTextDefinition definition )
+		if definition == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pWhiteSpaces = " \t"
+		this.pPunctuations = ".:,;-"
+		
+		this.pDefinition = definition
+		this.pPageStyle = definition.getPageStyle()
+		this.pDefaultStyle = definition.getDefaultStyle()
+		this.pPageWidth = 400
+		this.pPageHeight = 400
+		this.pPages = Array.new()
+		this.pBlockers = Array.new()
+	end
+	
+	
+	
+	/** \brief Styled text definition. */
+	public func StyledTextDefinition getDefinition()
+		return this.pDefinition
+	end
+	
+	/** \brief Page width. */
+	public func int getPageWidth()
+		return this.pPageWidth
+	end
+	
+	/** \brief Ppage height. */
+	public func int getPageHeight()
+		return this.pPageHeight
+	end
+	
+	/** \brief Set page size. */
+	public func void setPageSize( int width, int height )
+		if width < 1 or height < 1
+			throw EInvalidParam.new()
+		end
+		
+		this.pPageWidth = width
+		this.pPageHeight = height
+	end
+	
+	/** \brief Number of pages. */
+	public func int getPageCount()
+		return this.pPages.getCount()
+	end
+	
+	/** \brief Page at index. */
+	public func StyledTextRendering getPageAt( int number )
+		return this.pPages.getAt( number ) cast StyledTextRendering
+	end
+	
+	/** \brief Visit pages with block with StyledTextRendering as parameter. */
+	public func void forEachPage( Block ablock )
+		this.pPages.forEach( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Generates pages from the a styled text definition.
+	 * \details For each generated page the provided block is invoked.
+	 */
+	public func void generatePages()
+		this.beginNewPage()
+		this.pPages.removeAll()
+		
+		this.pDefinition.visitNodes( this )
+		
+		if this.pPageInProgress != null
+			this.pPages.add( this.pPageInProgress )
+			this.pPageInProgress = null
+		end
+		
+		/*
+		var StyledTextRendering page
+		var STRElement element
+		var Font font = Font.new( "/epsylon/fonts/epsylon_7.font.xml", 22 )
+		
+		this.pPages.removeAll()
+		this.pBlockers.removeAll()
+		
+		page = StyledTextRendering.new()
+		
+		element = STREText.new()
+		( element cast STREText ).setText( "This is the first line." )
+		( element cast STREText ).setFont( font )
+		( element cast STREText ).setTextColor( Color.black )
+		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
+		( element cast STREText ).setX( 5 )
+		( element cast STREText ).setY( 5 )
+		page.addElement( element )
+		
+		element = STREText.new()
+		( element cast STREText ).setText( "This is another line a bit longer." )
+		( element cast STREText ).setFont( font )
+		( element cast STREText ).setTextColor( Color.blue )
+		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
+		( element cast STREText ).setX( 5 )
+		( element cast STREText ).setY( 27 )
+		page.addElement( element )
+		
+		element = STREText.new()
+		( element cast STREText ).setText( "Oh god, a red line!" )
+		( element cast STREText ).setFont( font )
+		( element cast STREText ).setTextColor( Color.red )
+		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
+		( element cast STREText ).setX( 20 )
+		( element cast STREText ).setY( 49 )
+		page.addElement( element )
+		
+		element = STREText.new()
+		( element cast STREText ).setText( "A normal line again." )
+		( element cast STREText ).setFont( font )
+		( element cast STREText ).setTextColor( Color.black )
+		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
+		( element cast STREText ).setX( 5 )
+		( element cast STREText ).setY( 71 )
+		page.addElement( element )
+		
+		this.pPages.add( page )
+		*/
+	end
+	
+	
+	
+	/** \brief Begin new page. */
+	protected func void beginNewPage()
+		var RectArea pageMargins = this.pPageStyle.getMargins()
+		
+		if this.pPageInProgress != null
+			this.pPages.add( this.pPageInProgress )
+		end
+		
+		this.pPageInProgress = StyledTextRendering.new()
+		this.pPageInProgress.setBackgroundColor( this.pPageStyle.getBackgroundColor() )
+		this.pPageInProgress.setSize( Point.new( this.pPageWidth, this.pPageHeight ) )
+		this.pCurPIPPosY = pageMargins.getY1()
+		this.pMaxPIPPosY = this.pPageHeight - pageMargins.getY2()
+		
+		this.pBlockers.removeAll()
+	end
+	
+	/** \brief Free area in regard to blockers. */
+	protected func RectArea getFreeArea( RectArea area )
+		// for the time being we do not consider blockers so the free
+		// area is the same as the one we got
+		return area
+	end
+	
+	/** \brief Character is a white space character. */
+	protected func bool isWhiteSpace( int char )
+		return this.pWhiteSpaces.find( char cast byte ) != -1
+	end
+	
+	/** \brief Character is a punctuation character. */
+	protected func bool isPunctuation( int char )
+		return this.pPunctuations.find( char cast byte ) != -1
+	end
+	
+	
+	
+	/** \brief Visit text node. */
+	public func void visitText( STDNText node )
+		var RectArea pageMargins = this.pPageStyle.getMargins()
+		var int s, spanCount = node.getSpanCount()
+		var int leftMargin, rightMargin
+		var float fmaxLineWidth
+		var int maxLineWidth
+		
+		var Array textLine = Array.new()
+		var float textLineWidth = 0
+		var STREText textSpan
+		var int textLineHeight
+		var int blockHeight = 0
+		var bool firstLine = true
+		var bool newPageCheck = true
+		var bool setupNewLine = true
+		var float testWidth
+		
+		var float characterAdvance
+		var float characterExtend
+		var int lastPosition
+		var int character
+		var bool endOfLine = false
+		
+		// TODO support null style getting style from first parent having it set
+		var STDStyle nodeStyle = this.pDefaultStyle
+		if node.getStyle() != null
+			nodeStyle = this.pDefinition.getStyleNamed( node.getStyle() )
+		end
+		
+		var RectArea nodeMargins = nodeStyle.getMargins()
+		var STDStyle.Align alignment = nodeStyle.getAlignment()
+		var int lineSpacing = nodeStyle.getLineSpacing()
+		
+		if spanCount == 0
+			return
+		end
+		
+		if this.pPageInProgress == null
+			this.beginNewPage()
+		end
+		
+		this.pCurPIPPosY += nodeMargins.getY1()
+		
+		var float spacesWidth = 0
+		var int wordCharacters = 0
+		var int wordCount = 0
+		
+		for s = 0 to spanCount
+			var STDNTextSpan span = node.getSpanAt( s )
+			
+			var String spanText = span.getText()
+			var Image spanImage = span.getImage()
+			var UTF8Decoder decoder = UTF8Decoder.new( spanText, 0 )
+			
+			var STDStyle spanStyle = nodeStyle
+			if span.getStyle() != null
+				spanStyle = this.pDefinition.getStyleNamed( span.getStyle() )
+			end
+			
+			var Font font = spanStyle.getFont()
+			var Color textColor = spanStyle.getTextColor()
+			var Color backgroundColor = spanStyle.getBackgroundColor()
+			
+			var int lineHeight = font.getSize()
+			
+			var float spanSpacesWidth = spacesWidth
+			spacesWidth = 0
+			//BaseGameApp.getApp().getConsole().addMessage( "span='" + spanText + "' ssw=" + spanSpacesWidth + "\n" )
+			
+			var int nextPosition = 0
+			var int spanStart = 0
+			var int spanEnd = 0
+			var float spanWidth = 0
+			var int wordStart = 0
+			var float wordWidth = 0
+			
+			var bool keepLooping = true
+			
+			while keepLooping
+				if spanImage == null
+					lastPosition = nextPosition
+					if decoder.hasReachedEnd()
+						character = 0
+						keepLooping = false
+						
+					else
+						character = decoder.decodeNextCharacter()
+					end
+					nextPosition = decoder.getPosition()
+				end
+				
+				// check if a new page is required
+				if newPageCheck and this.pCurPIPPosY + lineHeight > this.pMaxPIPPosY
+					this.beginNewPage()
+					newPageCheck = false
+				end
+				
+				// setup new line if required
+				if setupNewLine
+					leftMargin = pageMargins.getX1() + nodeMargins.getX1()
+					rightMargin = pageMargins.getX2() + nodeMargins.getX2()
+					
+					if firstLine
+						leftMargin += nodeStyle.getFirstLineIndent()
+					end
+					
+					maxLineWidth = this.pPageWidth - rightMargin - leftMargin
+					fmaxLineWidth = maxLineWidth cast float
+					if maxLineWidth < 1
+						blockHeight += lineHeight
+						this.pCurPIPPosY += lineHeight
+						
+						if not firstLine
+							blockHeight += lineSpacing
+							this.pCurPIPPosY += lineSpacing
+						end
+						
+						newPageCheck = true
+					end
+					
+					firstLine = false
+					setupNewLine = false
+				end
+				
+// BaseGameApp.getApp().getConsole().addMessage( "round: c=" + ( character cast byte ) + " wc=" + wordCharacters + \
+// " ls=" + spanStart + " le=" + spanEnd + " ws=" + wordStart + " wc=" + wordCount + " sw=" + spacesWidth + \
+// " lw=" + spanWidth + " ww=" + wordWidth + " np=" + nextPosition + " lp=" + lastPosition + \
+// " tlw=" + textLineWidth + " TT=" + font.getTextSize( spanText.substring( spanStart, lastPosition ) ).getX() + "\n" )
+				
+				if spanImage != null
+					testWidth = textLineWidth + spanSpacesWidth + spanWidth + spanImage.getWidth()
+					
+					if testWidth > fmaxLineWidth
+						textLineWidth += spanSpacesWidth
+						spanSpacesWidth = 0
+						
+						textLineWidth += spanWidth
+						textLineHeight = Math.max( textLineHeight, lineHeight )
+						
+						spanStart = wordStart
+					end
+					
+					spanEnd = lastPosition
+					spanWidth = 0
+					spacesWidth = 0
+					
+					var STREImage streImage = STREImage.new()
+					streImage.setImage( spanImage )
+					streImage.setPosition( Point.new( textLineWidth cast int, \
+						( lineHeight - spanImage.getHeight() ) / 2 ) )
+					textLine.add( streImage )
+					
+					textLineWidth += spanImage.getWidth()
+					spanImage = null
+					
+				elif character == '\n' or character == 0
+					textSpan = STREText.new()
+					textSpan.setFont( font )
+					textSpan.setTextColor( textColor )
+					textSpan.setBackgroundColor( backgroundColor )
+					
+					textLineWidth += spanSpacesWidth
+					spanSpacesWidth = 0
+					textSpan.setPosition( Point.new( textLineWidth cast int, 0 ) )
+					
+					//BaseGameApp.getApp().getConsole().addMessage( "spanText '" + spanText + "' spanStart=" + spanStart + " spanEnd=" + spanEnd + "\n" )
+					if wordCharacters == 0
+						textSpan.setText( spanText.substring( spanStart, spanEnd ) )
+						textLineWidth += spanWidth
+						
+					else
+						textSpan.setText( spanText.substring( spanStart, lastPosition ) )
+						textLineWidth += spanWidth + spacesWidth + wordWidth
+						spacesWidth = 0.0
+					end
+					
+					textLine.add( textSpan )
+					textSpan = null
+					
+					textLineHeight = Math.max( textLineHeight, lineHeight )
+					
+					endOfLine = ( character == '\n' )
+					
+					//BaseGameApp.getApp().getConsole().addMessage( "new text line: text='" + textSpan.getText() + "'\n" )
+	//BaseGameApp.getApp().getConsole().addMessage( "new line: text='" + this.pText.substring( textSpan.getFirstChar(),\
+	//textSpan.getFirstChar() + textSpan.getCharCount() ) + "' width=" + textSpan.getWidth() + " height=" + textSpan.getHeight() + "\n" )
+					spanStart = nextPosition
+					wordStart = spanStart
+					spanEnd = spanStart
+					wordCharacters = 0
+					wordWidth = 0.0
+					spanWidth = 0.0
+					
+				elif character != -1
+					characterAdvance = font.getCharAdvance( character )
+					characterExtend = 0.0
+//BaseGameApp.getApp().getConsole().addMessage( "test: cw=" + characterAdvance + " mw=" + maxLineWidth + "\n" )
+					
+					if this.isWhiteSpace( character )
+						// before the first word on line, ignore spaces
+						if wordCount == 0
+							spanStart = nextPosition
+							spanEnd = nextPosition
+							spacesWidth = 0.0
+							
+						// after first word on line, sum up spaces in front of the next word
+						else
+							// if there is a word before the whitespace add the summed up white space and
+							// the word width to the span width. the spaces width is reset to 0
+							if wordCharacters > 0
+								spanEnd = lastPosition
+								spanWidth += spacesWidth + wordWidth
+								spacesWidth = 0.0
+							end
+							
+							// add whitespace width to the sum of found whitespaces
+							spacesWidth += characterAdvance
+						end
+						
+						wordStart = nextPosition
+						wordCharacters = 0
+						wordWidth = 0.0
+						
+					else
+						// if we are at the start of a new word increase the word count by one
+						if wordCharacters == 0
+							wordCount++
+						end
+						
+						// increase character count of word by one and add character with to word with
+						wordCharacters++
+						wordWidth += characterAdvance
+						characterExtend = font.getCharWidth( character ) - font.getCharBearing( character ) - characterAdvance
+					end
+					
+					testWidth = textLineWidth + spanSpacesWidth + spanWidth + wordWidth + characterExtend
+					if wordCharacters > 0
+						testWidth += spacesWidth
+					end
+					
+					if testWidth > fmaxLineWidth
+						// word break
+						//if wordCount > 1
+							textSpan = STREText.new()
+							textSpan.setText( spanText.substring( spanStart, spanEnd ) )
+							
+							textLineWidth += spanSpacesWidth
+							spanSpacesWidth = 0.0
+							textSpan.setPosition( Point.new( textLineWidth cast int, 0 ) )
+							
+							textLineWidth += spanWidth
+							textLineHeight = Math.max( textLineHeight, lineHeight )
+							
+							spanStart = wordStart
+							
+						// character break
+						/*else
+							if wordCount == 1
+								textSpan = STREText.new()
+								textSpan.setText( spanText.substring( spanStart, lastPosition ) )
+								
+								textLineWidth += spanSpacesWidth
+								spanSpacesWidth = 0.0
+								textSpan.setPosition( Point.new( textLineWidth cast int, 0 ) )
+								
+								textLineWidth += spanWidth + wordWidth
+								textLineHeight = Math.max( textLineHeight, lineHeight )
+							end
+							
+							spanStart = lastPosition
+							wordStart = lastPosition
+							wordCharacters = 0
+							wordWidth = 0.0
+						end*/
+						
+						if textSpan != null
+							textSpan.setFont( font )
+							textSpan.setTextColor( textColor )
+							textSpan.setBackgroundColor( backgroundColor )
+							textLine.add( textSpan )
+							textSpan = null
+							endOfLine = true
+						end
+						
+						spanEnd = lastPosition
+						spanWidth = 0.0
+						spacesWidth = 0.0
+					end
+				end
+				
+				if endOfLine
+					blockHeight += textLineHeight
+					
+					// determine the vertical position
+					var int verticalOffset = 0
+					
+					// determine the horizontal position
+					var int horizontalOffset
+					
+					select alignment
+					case STDStyle.Align.left
+						horizontalOffset = leftMargin
+						
+					case STDStyle.Align.right
+						horizontalOffset = leftMargin + maxLineWidth - ( DEMath.ceil( textLineWidth ) cast int )
+						
+					case STDStyle.Align.center
+						horizontalOffset = leftMargin + ( maxLineWidth - ( DEMath.ceil( textLineWidth ) cast int ) ) / 2
+						
+					case STDStyle.Align.filled
+						horizontalOffset = leftMargin // TODO
+						
+					else
+						horizontalOffset = leftMargin
+					end
+					
+					// add text line to the page in progress
+					textLine.forEach( block STRElement each
+						each.setPosition( Point.new( each.getPosition().getX() + horizontalOffset, this.pCurPIPPosY + verticalOffset ) )
+						// BaseGameApp.getApp().getConsole().addMessage( "Add Text Element: text='" + each.getText() + "' + x=" + each.getX() + " y=" + each.getY() + "\n" )
+						this.pPageInProgress.addElement( each )
+					end )
+					
+					this.pCurPIPPosY += textLineHeight + lineSpacing
+					
+					if wordCharacters == 0
+						wordCount = 0
+						
+					else
+						wordCount = 1
+					end
+					
+					spacesWidth = 0.0
+					textLineHeight = 0
+					textLineWidth = 0.0
+					textLine.removeAll()
+					endOfLine = false
+					
+					// test for a new page the next time
+					newPageCheck = true
+					setupNewLine = true
+				end
+			end
+		end
+		
+		// add line if one has been in progress
+		if textLine.getCount() > 0
+			blockHeight += textLineHeight
+			
+			// determine the vertical position
+			var int verticalOffset = 0
+			
+			// determine the horizontal position
+			var int horizontalOffset
+			
+			select alignment
+			case STDStyle.Align.left
+				horizontalOffset = leftMargin
+				
+			case STDStyle.Align.right
+				horizontalOffset = leftMargin + maxLineWidth - ( DEMath.ceil( textLineWidth ) cast int )
+				
+			case STDStyle.Align.center
+				horizontalOffset = leftMargin + ( maxLineWidth - ( DEMath.ceil( textLineWidth ) cast int ) ) / 2
+				
+			case STDStyle.Align.filled
+				horizontalOffset = leftMargin // TODO
+				
+			else
+				horizontalOffset = leftMargin
+			end
+			
+			// add text line to the page in progress
+			textLine.forEach( block STRElement each
+				each.setPosition( Point.new( each.getPosition().getX() + horizontalOffset, this.pCurPIPPosY + verticalOffset ) )
+				 //BaseGameApp.getApp().getConsole().addMessage( "Add Text Element: text='" + each.getText() + "' + x=" + each.getPosition().getX() + " y=" + each.getPosition().getY() + "\n" )
+				this.pPageInProgress.addElement( each )
+			end )
+			
+			this.pCurPIPPosY += textLineHeight + lineSpacing
+		end
+		
+		// add the bottom margin
+		this.pCurPIPPosY += nodeMargins.getY2()
+	end
+	
+	/** \brief Visit image node. */
+	public func void visitImage( STDNImage node )
+		var Image image = node.getImage()
+		if image == null
+			return
+		end
+		
+		var STDStyle nodeStyle = this.pDefaultStyle
+		if node.getStyle() != null
+			nodeStyle = this.pDefinition.getStyleNamed( node.getStyle() )
+		end
+		
+		var RectArea nodeMargins = nodeStyle.getMargins()
+		var STDStyle.Align alignment = nodeStyle.getAlignment()
+		
+		if this.pPageInProgress == null
+			this.beginNewPage()
+		end
+		
+		this.pCurPIPPosY += nodeMargins.getY1()
+		
+		var STREImage streImage = STREImage.new()
+		streImage.setImage( image )
+		//streImage.setBackgroundColor( nodeStyle.getBackgroundColor() )
+		
+		// determine the vertical position
+		var RectArea pageMargins = this.pPageStyle.getMargins()
+		var int leftMargin = pageMargins.getX1() + nodeMargins.getX1()
+		var int rightMargin = pageMargins.getX2() + nodeMargins.getX2()
+		var int maxLineWidth = this.pPageWidth - rightMargin - leftMargin
+		
+		var int verticalOffset = 0
+		var int horizontalOffset
+		
+		select alignment
+		case STDStyle.Align.left
+			horizontalOffset = leftMargin
+			
+		case STDStyle.Align.right
+			horizontalOffset = leftMargin + maxLineWidth - image.getWidth()
+			
+		case STDStyle.Align.center
+			horizontalOffset = leftMargin + ( maxLineWidth - image.getWidth() ) / 2
+			
+		else
+			horizontalOffset = leftMargin
+		end
+		
+		this.pCurPIPPosY += nodeMargins.getY1()
+		
+		streImage.setPosition( Point.new( horizontalOffset, this.pCurPIPPosY + verticalOffset ) )
+		this.pPageInProgress.addElement( streImage )
+		
+		this.pCurPIPPosY += image.getHeight() + nodeMargins.getY2()
+	end
+	
+	/** \brief Visit video node. */
+	public func void visitVideo( STDNVideo node )
+		var Video video = node.getVideo()
+		if video == null
+			return
+		end
+		
+		var STDStyle nodeStyle = this.pDefaultStyle
+		if node.getStyle() != null
+			nodeStyle = this.pDefinition.getStyleNamed( node.getStyle() )
+		end
+		
+		var RectArea nodeMargins = nodeStyle.getMargins()
+		var STDStyle.Align alignment = nodeStyle.getAlignment()
+		
+		if this.pPageInProgress == null
+			this.beginNewPage()
+		end
+		
+		this.pCurPIPPosY += nodeMargins.getY1()
+		
+		var STREVideo streVideo = STREVideo.new()
+		streVideo.setVideo( video )
+		//streVideo.setBackgroundColor( nodeStyle.getBackgroundColor() )
+		
+		// determine the vertical position
+		var RectArea pageMargins = this.pPageStyle.getMargins()
+		var int leftMargin = pageMargins.getX1() + nodeMargins.getX1()
+		var int rightMargin = pageMargins.getX2() + nodeMargins.getX2()
+		var int maxLineWidth = this.pPageWidth - rightMargin - leftMargin
+		
+		var int verticalOffset = 0
+		var int horizontalOffset
+		
+		select alignment
+		case STDStyle.Align.left
+			horizontalOffset = leftMargin
+			
+		case STDStyle.Align.right
+			horizontalOffset = leftMargin + maxLineWidth - video.getWidth()
+			
+		case STDStyle.Align.center
+			horizontalOffset = leftMargin + ( maxLineWidth - video.getWidth() ) / 2
+			
+		else
+			horizontalOffset = leftMargin
+		end
+		
+		this.pCurPIPPosY += nodeMargins.getY1()
+		
+		streVideo.setPosition( Point.new( horizontalOffset, this.pCurPIPPosY + verticalOffset ) )
+		this.pPageInProgress.addElement( streVideo )
+		
+		this.pCurPIPPosY += video.getHeight() + nodeMargins.getY2()
+	end
+end

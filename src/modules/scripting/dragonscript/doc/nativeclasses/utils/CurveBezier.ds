@@ -1,0 +1,136 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Bezier curve.
+ * 
+ * Control points composes of a position and two handles. The handles are only used if
+ * CurveBezierInterpolation.bezier interpolation is used. With CurveBezierInterpolation.constant
+ * the same value is used from the starting coordinates up to but excluding the coordinates
+ * of the next point.
+ * 
+ * Bezier curves are two dimensional.
+ * 
+ * This is a native class.
+ */
+class CurveBezier
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create bezier curve with CurveBezierInterpolation.bezier interpolation. */
+	public func new()
+	end
+	
+	/**
+	 * \brief Create bezier curve set to linear mapping from (0,0) to (1,1).
+	 */
+	public static func CurveBezier newDefaultLinear()
+		return null
+	end
+	
+	/**
+	 * \brief Create bezier curve set to default bezier curve from (0,0) to (1,1).
+	 */
+	public static func CurveBezier newDefaultBezier()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of points. */
+	public func int getPointCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Point at position.
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
+	 */
+	public func Vector2 getPointAt( int position )
+		return null
+	end
+	
+	/**
+	 * \brief Index of point with matching x coordinates or point right before coordinate.
+	 * \details This method can be used to find the interval a point is located in by returning the
+	 *          most prior point. Returns -1 if there are no points satisfying this criteria.
+	 */
+	public func int findPointPriorTo( float coordinate )
+		return 0
+	end
+	
+	/** \brief Add point returning index where it has been added. */
+	public func int addPoint( Vector2 point, Vector2 handle1, Vector2 handle2 )
+		return 0
+	end
+	
+	/** \brief Add point returning index where it has been added. */
+	public func int addPoint( float pointX, float pointY, float handle1X, float handle1Y, float handle2X, float handle2Y )
+		return 0
+	end
+	
+	/** \brief Add point returning index where it has been added. */
+	public func int addPoint( Vector2 point )
+		return 0
+	end
+	
+	/** \brief Add point returning index where it has been added. */
+	public func int addPoint( float pointX, float pointY )
+		return 0
+	end
+	
+	/**
+	 * \brief Remove point from position.
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
+	 */
+	public func void removePointFrom( int position )
+	end
+	
+	/** \brief Remove all points. */
+	public func void removeAllPoints()
+	end
+	
+	/** \brief Interpolation mode. */
+	public func CurveBezierInterpolation getInterpolationMode()
+		return null
+	end
+	
+	/**
+	 * \brief Set interpolation mode.
+	 * \throws EInvalidParam \em mode is not a valid value.
+	 */
+	public func void setInterpolationMode( CurveBezierInterpolation mode )
+	end
+	
+	/**
+	 * \brief Set curve to linear mapping from (0,0) to (1,1).
+	 */
+	public func void setDefaultLinear()
+	end
+	
+	/**
+	 * \brief Set curve to default bezier curve from (0,0) to (1,1).
+	 */
+	public func void setDefaultBezier()
+	end
+	
+	
+	
+	/** \brief Evaluates curve at position. */
+	public func float evaluateAt( float x )
+		return 0
+	end
+	/*@}*/
+end

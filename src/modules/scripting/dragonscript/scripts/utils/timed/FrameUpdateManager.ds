@@ -1,0 +1,92 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Manage frame update listeners.
+ * 
+ * Provides default frame update manager for simple frame update handling. Individual
+ * instances of frame update managers can be created if needed.
+ */
+class FrameUpdateManager
+	/** \brief Default frame update manager. */
+	private static var FrameUpdateManager pDefaultManager = null
+	
+	/** \brief Registered frame update listeners */
+	private var SafeArray pListeners
+	
+	
+	
+	/** \brief Create frame update manager. */
+	public func new()
+		this.pListeners = SafeArray.new()
+	end
+	
+	
+	
+	/** \brief Register frame update listener. */
+	public func void addListener( FrameUpdateListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Unregister frame update listener. */
+	public func void removeListener( FrameUpdateListener listener )
+		this.pListeners.removeIfPresent( listener )
+	end
+	
+	
+	
+	/** \brief Notify all frame update listeners. */
+	public func void notifyAll()
+		this.notifyAll( Engine.getElapsedTime() )
+	end
+	
+	/** \brief Notify all frame update listeners. */
+	public func void notifyAll( float elapsed )
+		this.pListeners.forEach( block FrameUpdateListener each
+			each.frameUpdate( elapsed )
+		end )
+	end
+	
+	
+	
+	/** \brief Default frame update manager. */
+	public static func FrameUpdateManager getDefault()
+		if pDefaultManager == null
+			pDefaultManager = FrameUpdateManager.new()
+		end
+		return pDefaultManager
+	end
+	
+	/** \brief Notify all frame update listeners of default frame update manager. */
+	public static func void notifyAllDefault()
+		getDefault().notifyAll()
+	end
+end

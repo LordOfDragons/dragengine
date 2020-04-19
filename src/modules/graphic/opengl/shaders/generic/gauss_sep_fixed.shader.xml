@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>Gauss Separable Fixed</name>
+	
+	<version>150</version>
+	
+	<texture name='texData' target='0'/>
+	<texture name='texDepth' target='1'/>
+	
+	<parameter name='pQuadParams'/> <!-- 0 -->
+	<parameter name='pOffsets1'/> <!-- 1 -->
+	<parameter name='pOffsets2'/> <!-- 2 -->
+	<parameter name='pOffsets3'/> <!-- 3 -->
+	<parameter name='pOffsets4'/> <!-- 4 -->
+	<parameter name='pOffsets5'/> <!-- 5 -->
+	<parameter name='pOffsets6'/> <!-- 6 -->
+	<parameter name='pOffsets7'/> <!-- 7 -->
+	<parameter name='pWeights1'/> <!-- 8 -->
+	<parameter name='pWeights2'/> <!-- 9 -->
+	<parameter name='pClamp'/> <!-- 10 -->
+	<parameter name='pDepthTransform'/> <!-- 11 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outData' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/generic/gauss_sep_fixed.glsl</sourceCode>
+</shader>

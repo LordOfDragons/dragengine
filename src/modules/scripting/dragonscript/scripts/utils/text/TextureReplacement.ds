@@ -1,0 +1,188 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Texture replacement for use with element classes.
+ * 
+ * Supports replacing Skin and DynamicSkin of a matching component texture.
+ * 
+ * If a Skin instance is present the texture defined by the component Skin
+ * instance or a manually set Skin is replaced with the new Skin instance.
+ * The first texture defined in the replacing Skin instance is used. It is
+ * possible to use skins with more than one texture but then only the first
+ * texture is used. Using a skin with no texture is possible to render parts
+ * of a component invisible.
+ * 
+ * If a color tint is present a DynamicSkin is created and replaces the
+ * component or manually set dynamic skin. It is possible to use color tint
+ * without using a new Skin instance. In this case the currently used skin
+ * of the component texture is modified.
+ * 
+ * If a transform is present it replaces the component or manually set
+ * transformation if present. It is possible to use transform without using
+ * a new Skin instance. In this case the currently used skin of the
+ * component texture is modified.
+ * 
+ * Texture replacements have to be applied to a component using
+ * applyToComponent() method after setting up the component with all skin
+ * and dynamic skin instances. If no component texture matches the name
+ * the texture replacement has no effect.
+ * 
+ * To use a texture replacement in an element class use the
+ * ECPTextureReplacementList element class property.
+ */
+class TextureReplacement
+	/** \brief Name of the texture to replace. */
+	private var String pName
+	
+	/** \brief Path to skin to replace the texture with. */
+	private var String pPath
+	
+	/** \brief Skin resource if found. */
+	private var Skin pSkin
+	
+	/** \brief Texture coordinates transformation. */
+	private var TexMatrix2 pTransform
+	
+	/** \brief Color tint. */
+	private var Color pColorTint
+	
+	
+	
+	/** \brief Create texture replace object. */
+	public func new( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+	end
+	
+	/** \brief Create copy of texture replace object. */
+	public func new( TextureReplacement copy )
+		this.pName = copy.pName
+		this.pPath = copy.pPath
+		this.pSkin = copy.pSkin
+		this.pTransform = copy.pTransform
+		this.pColorTint = copy.pColorTint
+	end
+	
+	/** \brief Create texture replacement from stub. */
+	public func new( StubElementTexture stub )
+		this.pName = stub.getTextureName()
+		this.pPath = stub.getPathSkin()
+		this.pSkin = stub.getSkin()
+		this.pTransform = stub.getTransform()
+		this.pColorTint = stub.getColorTint()
+	end
+	
+	
+	
+	/** \brief Name of the texture in the component. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Path to skin or \em null to not replace the skin. */
+	public func String getPath()
+		return this.pPath
+	end
+	
+	/** \brief Set path to skin or \em null to not replace the skin. */
+	public func void setPath( String path )
+		this.pPath = path
+	end
+	
+	/** \brief Skin resource or \em null to not replace the skin. */
+	public func Skin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Set skin resource or \em null to not replace the skin. */
+	public func void setSkin( Skin skin )
+		this.pSkin = skin
+	end
+	
+	/** \brief Texture coordinate transformation or \em null to not replace the transformation. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** \brief Set texture coordinate transformation or \em null to not replace the transformation. */
+	public func void setTransform( TexMatrix2 matrix )
+		this.pTransform = matrix
+	end
+	
+	/** \brief Color tint or \em null to not replace the color tint. */
+	public func Color getColorTint()
+		return this.pColorTint
+	end
+	
+	/** \brief Set color tint or \em null to not replace the color tint. */
+	public func void setColorTint( Color color )
+		this.pColorTint = color
+	end
+	
+	
+	
+	/** \brief Apply texture replacement to matching component texture if present. */
+	public func void applyToComponent( Component component )
+		var int index = component.indexOfTextureNamed( this.pName )
+		if index == -1
+			return
+		end
+		
+		if this.pSkin != null
+			component.setTextureSkinAt( index, this.pSkin, 0 )
+		end
+		
+		if this.pTransform != null
+			component.setTextureTransformAt( index, this.pTransform )
+		end
+		
+		component.setTextureDynamicSkinAt( index, this.createDynamicSkin() )
+	end
+	
+	
+	
+	/**
+	 * \brief Create dynamic skin from texture replace definition.
+	 * \details If no dynamic skin is required null is returned.
+	 */
+	public func DynamicSkin createDynamicSkin()
+		if this.pColorTint == null
+			return null
+		end
+		
+		var DynamicSkin dynamicSkin = DynamicSkin.new()
+		dynamicSkin.addRenderable( "tint", DynamicSkinRenderableType.color )
+		dynamicSkin.setColorAt( 0, this.pColorTint )
+		
+		return dynamicSkin
+	end
+end

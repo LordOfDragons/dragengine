@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>images/trigger.png</image>
+		<image property='emissivity'>images/trigger.png</image>
+		<value property='emissivity.intensity'>0.1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+	<texture name='arrow'>
+		<image property='color'>images/arrow.png</image>
+		<image property='emissivity'>images/arrow.png</image>
+		<value property='emissivity.intensity'>0.1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+</skin>

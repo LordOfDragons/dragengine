@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>Sky Sky-Sphere</name>
+	
+	<version>130</version>
+	
+	<texture name='texSky' target='0'/>
+	
+	<parameter name='pMatrixCamera'/>
+	<parameter name='pMatrixLayer'/>
+	<parameter name='pLayerPosition'/>
+	<parameter name='pLayerColor'/>
+	<parameter name='pParams'/>
+	<parameter name='pMaterialGamma'/>
+	<parameter name='pSkyBgColor'/>
+	<parameter name='pPositionZ'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/sky/layer.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/sky/sphere.glsl</sourceCode>
+</shader>

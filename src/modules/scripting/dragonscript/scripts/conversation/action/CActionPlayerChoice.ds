@@ -1,0 +1,211 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Conversation action presenting the player with a list of options to select one from.
+ */
+class CActionPlayerChoice extends ConversationAction
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "CActionPlayerChoice"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return CActionPlayerChoice.new( env, reader )
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	
+	
+	private var String pVariable
+	private var Array pOptions
+	private var Array pActions
+	
+	
+	
+	/** \brief Create conversation action. */
+	public func new()
+		this.pOptions = Array.new()
+		this.pActions = Array.new()
+	end
+	
+	/** \brief Read from file. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		this.pVariable = env.readString8OrNullIfEmpty( reader )
+		
+		var int i, count = reader.readUShort()
+		this.pOptions = Array.new()
+		for i = 0 to count
+			this.pOptions.add( CActionPlayerChoiceOption.readFromFile( env, reader ) )
+		end
+		
+		count = reader.readUShort()
+		this.pActions = Array.new()
+		for i = 0 to count
+			this.pActions.add( env.readObject( reader ) )
+		end
+	end
+	
+	
+	
+	/** \brief Name of variable to set with the selected option or null if not used. */
+	public func String getVariable()
+		return this.pVariable
+	end
+	
+	/** \brief Set name of variable to set with the selected option or null if not used. */
+	public func void setVariable( String variable )
+		this.pVariable = variable
+	end
+	
+	
+	
+	/** \brief Number of options. */
+	public func int getOptionCount()
+		return this.pOptions.getCount()
+	end
+	
+	/** \brief Option at index. */
+	public func CActionPlayerChoiceOption getOptionAt( int index )
+		return this.pOptions.getAt( index ) cast CActionPlayerChoiceOption
+	end
+	
+	/** \brief Visits all options. */
+	public func void forEachOption( Block aBlock )
+		this.pOptions.forEach( aBlock )
+	end
+	
+	/** \brief Adds an option. */
+	public func void addOption( CActionPlayerChoiceOption option )
+		if option == null
+			throw EInvalidParam.new()
+		end
+		this.pOptions.add( option )
+	end
+	
+	
+	
+	/** \brief Visits all actions. */
+	public func void forEachAction( Block aBlock )
+		this.pActions.forEach( aBlock )
+	end
+	
+	/** \brief Adds an action. */
+	public func void addAction( ConversationAction action )
+		if action == null
+			throw EInvalidParam.new()
+		end
+		this.pActions.add( action )
+	end
+	
+	/** \brief Actions. */
+	public func Array getActions()
+		return this.pActions
+	end
+	
+	/** \brief Iterator for actions. */
+	public func ConversationActionIterator getIteratorActions()
+		return ConversationActionIterator.new( this.pActions, 0 )
+	end
+	
+	
+	
+	/** \brief Execute action. */
+	public func void execute( ConversationPlayback playback )
+		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( this.getIteratorActions() )
+		layer.setLooping( true )
+		playback.pushLayer( layer )
+		
+		// start player choosing
+		var ConversationPlaybackPlayerChoice playerChoice = playback.getPlayerChoice()
+		
+		playerChoice.removeAllChoices()
+		
+		var int optionCount = this.pOptions.getCount()
+		var bool hasOptions = false
+		var int i
+		
+		for i = 0 to optionCount
+			var CActionPlayerChoiceOption option = this.pOptions.getAt( i ) cast CActionPlayerChoiceOption
+			if option.getCondition() != null and not option.getCondition().evaluate( playback )
+				continue
+			end
+			
+			playerChoice.addChoice( option.getText().toString(), ConversationPlayerChoice.new( \
+				playback, layer, option.getIteratorActions(), this.pVariable, i ) )
+			hasOptions = true
+		end
+		
+		if hasOptions
+			playerChoice.startChoosing()
+			
+		else
+			playback.advanceToNextAction()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		env.writeString8OrEmptyIfNull( writer, this.pVariable )
+		
+		writer.writeUShort( this.pOptions.getCount() )
+		this.pOptions.forEach( block CActionPlayerChoiceOption each
+			each.writeToFile( env, writer )
+		end )
+		
+		writer.writeUShort( this.pActions.getCount() )
+		this.pActions.forEach( block ConversationAction each
+			env.writeObject( writer, each )
+		end )
+	end
+end

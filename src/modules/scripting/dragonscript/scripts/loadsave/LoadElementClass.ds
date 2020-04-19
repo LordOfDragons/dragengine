@@ -1,0 +1,420 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Gui
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load element class from XML file.
+ */
+class LoadElementClass extends BaseXmlLoader
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadElementClass" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/** \brief Load element class from file. */
+	public func ElementClass loadFromFile( ElementClassList ecmgr, String filename )
+		this.logLoadingFromFile( filename )
+		
+		return this.loadAndParseRootTag( filename, "elementClass", block EasyXMLElement root
+			return this.readClass( ecmgr, root, File.new( filename ).getParent().getPath() )
+		end ) cast ElementClass
+	end
+	
+	/**
+	 * \brief Scan for XML element class files adding them to element class list.
+	 * 
+	 * XML element class files have the extension ".deeclass". These files can be exported
+	 * from the IGDE Game Definition Editor or edited manually.
+	 * 
+	 * \param list List to add loaded element classes to.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void addXmlElementClasses( ElementClassList list, String directory, bool recursive )
+		this.addXmlElementClasses( list, directory, "*.deeclass", recursive )
+	end
+	
+	/**
+	 * \brief Scan for XML element class files adding them to element class list.
+	 * 
+	 * XML element class files have the extension ".deeclass". These files can be exported
+	 * from the IGDE Game Definition Editor or edited manually.
+	 * 
+	 * \param list List to add loaded element classes to.
+	 * \param directory Absolute path to directory to scan for files.
+	 * \param pattern File pattern to match. Has to be of the form "*.extension"
+	 * \param recursive If true scans also in all child directories.
+	 */
+	public func void addXmlElementClasses( ElementClassList list, \
+	String directory, String pattern, bool recursive )
+		FileSystem.searchFiles( directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( File.new( each ).getName(), pattern )
+				list.add( this.loadFromFile( list, each ) )
+			end
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Parse element class tag. */
+	public func ElementClass readClass( ElementClassList ecmgr, EasyXMLElement root, String basePath )
+		if not root.hasAttributeNamed( "name" )
+			this.logMissingAttribute( root, "name" )
+			throw EInvalidParam.new()
+		end
+		var String className = root.getAttributeNamed( "name" )
+		
+		if not root.hasAttributeNamed( "class" )
+			this.logMissingAttribute( root, "class" )
+			throw EInvalidParam.new()
+		end
+		var String baseClassName = root.getAttributeNamed( "class" )
+		
+		if ecmgr.hasNamed( className )
+			this.printOnConsole( root, "A class with the name '" + className + "' exists already." )
+			throw EInvalidParam.new()
+		end
+		
+		// apply base class
+		var ElementClass eclass = ecmgr.getNamed( baseClassName )
+		if eclass == null
+			this.printOnConsole( root, "Invalid class '" + baseClassName + "'." )
+			throw EInvalidParam.new()
+		end
+		
+		eclass = eclass.duplicateNamed( className )
+		if eclass == null
+			this.printOnConsole( root, "Class '" + baseClassName + "' is not usable for XML extending." )
+			throw EInvalidParam.new()
+		end
+		
+		// store the base path to support relative loading of resources
+		eclass.setBasePath( basePath )
+		
+		// load element class properties
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "property" )
+				this.pReadClassPropertyOld( element, baseClassName, eclass )
+				
+			else
+				this.readClassProperty( element, baseClassName, eclass )
+				//this.logUnknownTag( element )
+			end
+		end )
+		
+		return eclass
+	end
+	
+	/** \brief Parse element class property tag. */
+	public func void readClassProperty( EasyXMLElement tag, String baseClassName, ElementClass eclass )
+		if not tag.hasAttributeNamed( "name" )
+			this.logMissingAttribute( tag, "name" )
+			throw EInvalidParam.new()
+		end
+		var String propName = tag.getAttributeNamed( "name" )
+		
+		if not eclass.hasPropertyNamed( propName )
+			this.printOnConsole( tag, "The class " + eclass.getClassname() + "(" + baseClassName \
+				+ ") does not have a property '" + propName + "'." )
+			return
+		end
+		
+		var String tagName = tag.getTagName()
+		var Object propValue
+		
+		if tagName.equals( "string" )
+			propValue = tag.getFirstCData()
+			
+		elif tagName.equals( "float" )
+			propValue = tag.getFirstCDataFloat()
+			
+		elif tagName.equals( "integer" )
+			propValue = tag.getFirstCDataInt()
+			
+		elif tagName.equals( "boolean" )
+			propValue = tag.getFirstCDataBool()
+			
+		elif tagName.equals( "vector" )
+			propValue = this.readVector( tag )
+			
+		elif tagName.equals( "vector2" )
+			propValue = this.readVector2( tag )
+			
+		elif tagName.equals( "point" )
+			propValue = this.readPoint( tag )
+			
+		elif tagName.equals( "borderSize" )
+			propValue = this.readBorderSize( tag )
+			
+		elif tagName.equals( "rectArea" )
+			propValue = this.readRectArea( tag )
+			
+		elif tagName.equals( "floatRectArea" )
+			propValue = this.readFloatRectArea( tag )
+			
+		elif tagName.equals( "color" )
+			propValue = this.readColor( tag )
+			
+		elif tagName.equals( "null" )
+			propValue = null
+			
+		elif tagName.equals( "list" )
+			propValue = this.pReadList( tag )
+			
+		elif tagName.equals( "map" )
+			propValue = this.pReadMap( tag )
+			
+		else
+			this.logUnknownTag( tag )
+		end
+		
+		try
+			eclass.setPropertyValue( propName, propValue )
+			
+		catch Exception e
+			var int t, tcount = e.getTraceCount()
+			
+			this.printOnConsole( tag, "Property " + propName + " in class " + eclass.getClassname() \
+				+ "(" + baseClassName + ") does not understand value '" + propValue + "'." )
+			this.printOnConsole( tag, "Backtrace: " + e.getReason() )
+			for t = 0 to tcount
+				this.printOnConsole( tag, "- " + e.getTraceClass( t ) + "." + e.getTraceFunction( t ) + "(" + e.getTraceLine( t ) + ")" )
+			end
+			
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Parse element class property tag. */
+	private func void pReadClassPropertyOld( EasyXMLElement root, String baseClassName, ElementClass eclass )
+		if not root.hasAttributeNamed( "name" )
+			this.logMissingAttribute( root, "name" )
+			throw EInvalidParam.new()
+		end
+		var String propName = root.getAttributeNamed( "name" )
+		
+		if not eclass.hasPropertyNamed( propName )
+			this.printOnConsole( root, "The class '" + baseClassName + "' does not have a property '" + propName + "'." )
+			return
+		end
+		
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName
+		var Object propValue
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if propValue == null
+				if tagName.equals( "string" )
+					propValue = element.getFirstCData()
+					
+				elif tagName.equals( "float" )
+					propValue = element.getFirstCDataFloat()
+					
+				elif tagName.equals( "integer" )
+					propValue = element.getFirstCDataInt()
+					
+				elif tagName.equals( "boolean" )
+					propValue = element.getFirstCDataBool()
+					
+				elif tagName.equals( "vector" )
+					propValue = this.readVector( element )
+					
+				elif tagName.equals( "vector2" )
+					propValue = this.readVector2( element )
+					
+				elif tagName.equals( "point" )
+					propValue = this.readPoint( element )
+					
+				elif tagName.equals( "rectArea" )
+					propValue = this.readRectArea( element )
+					
+				elif tagName.equals( "floatRectArea" )
+					propValue = this.readFloatRectArea( element )
+					
+				elif tagName.equals( "color" )
+					propValue = this.readColor( element )
+					
+				elif tagName.equals( "list" )
+					propValue = this.pReadList( element )
+					
+				elif tagName.equals( "map" )
+					propValue = this.pReadMap( element )
+					
+				else
+					this.logUnknownTag( element )
+				end
+				
+			else
+				this.printOnConsole( element, "Only one value allowed for property " + propName + "." )
+			end
+		end
+		
+		if propValue == null
+			this.printOnConsole( root, "Missing value for property " + propName + "." )
+			throw EInvalidParam.new()
+		end
+		
+		try
+			eclass.setPropertyValue( propName, propValue )
+			
+		catch Exception e
+			var int t, tcount = e.getTraceCount()
+			
+			this.printOnConsole( root, "Property '" + propName + "' in class '" + baseClassName + "' does not understand value '" + propValue + "'." )
+			this.printOnConsole( root, "Backtrace: " + e.getReason() )
+			for t = 0 to tcount
+				this.printOnConsole( root, "- " + e.getTraceClass( t ) + "." + e.getTraceFunction( t ) + "(" + e.getTraceLine( t ) + ")" )
+			end
+			
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Parse list tag. */
+	private func Array pReadList( EasyXMLElement root )
+		var Array list = Array.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "string" )
+				list.add( element.getFirstCData() )
+				
+			elif tagName.equals( "float" )
+				list.add( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "integer" )
+				list.add( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "boolean" )
+				list.add( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "vector" )
+				list.add( this.readVector( element ) )
+				
+			elif tagName.equals( "vector2" )
+				list.add( this.readVector2( element ) )
+				
+			elif tagName.equals( "point" )
+				list.add( this.readPoint( element ) )
+				
+			elif tagName.equals( "rectArea" )
+				list.add( this.readRectArea( element ) )
+				
+			elif tagName.equals( "floatRectArea" )
+				list.add( this.readFloatRectArea( element ) )
+				
+			elif tagName.equals( "color" )
+				list.add( this.readColor( element ) )
+				
+			elif tagName.equals( "null" )
+				list.add( null )
+				
+			elif tagName.equals( "list" )
+				list.add( this.pReadList( element ) )
+				
+			elif tagName.equals( "map" )
+				list.add( this.pReadMap( element ) )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+		
+		return list
+	end
+	
+	/** \brief Parse map tag. */
+	private func Dictionary pReadMap( EasyXMLElement root )
+		var Dictionary dict = Dictionary.new()
+		var String key
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			key = element.getAttributeNamed( "key" )
+			
+			if tagName.equals( "string" )
+				dict.setAt( key, element.getFirstCData() )
+				
+			elif tagName.equals( "float" )
+				dict.setAt( key, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "integer" )
+				dict.setAt( key, element.getFirstCDataInt() )
+				
+			elif tagName.equals( "boolean" )
+				dict.setAt( key, element.getFirstCDataBool() )
+				
+			elif tagName.equals( "vector" )
+				dict.setAt( key, this.readVector( element ) )
+				
+			elif tagName.equals( "vector2" )
+				dict.setAt( key, this.readVector2( element ) )
+				
+			elif tagName.equals( "point" )
+				dict.setAt( key, this.readPoint( element ) )
+				
+			elif tagName.equals( "rectArea" )
+				dict.setAt( key, this.readRectArea( element ) )
+				
+			elif tagName.equals( "floatRectArea" )
+				dict.setAt( key, this.readFloatRectArea( element ) )
+				
+			elif tagName.equals( "color" )
+				dict.setAt( key, this.readColor( element ) )
+				
+			elif tagName.equals( "null" )
+				dict.setAt( key, null )
+				
+			elif tagName.equals( "list" )
+				dict.setAt( key, this.pReadList( element ) )
+				
+			elif tagName.equals( "map" )
+				dict.setAt( key, this.pReadMap( element ) )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+		
+		return dict
+	end
+end

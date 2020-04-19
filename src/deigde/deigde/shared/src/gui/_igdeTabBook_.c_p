@@ -1,0 +1,429 @@
+/* 
+ * Drag[en]gine Integrated Game Development Environment
+ *
+ * Copyright (C) 2018, Plüss Roland ( roland@rptd.ch )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "native/toolkit.h"
+#include "igdeTabBook.h"
+#include "resources/igdeIcon.h"
+#include "resources/igdeFont.h"
+#include "resources/igdeFontReference.h"
+#include "theme/igdeGuiTheme.h"
+#include "theme/propertyNames.h"
+#include "../environment/igdeEnvironment.h"
+
+#include <dragengine/deObjectReference.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/logger/deLogger.h>
+
+
+
+// Native Widget
+//////////////////
+
+class cNativeIgdeTabBookHeader : public FXTabItem{
+	FXDECLARE( cNativeIgdeTabBookHeader )
+	
+protected:
+	cNativeIgdeTabBookHeader();
+	
+public:
+	cNativeIgdeTabBookHeader( FXTabBook *parent, const char *text, FXIcon *icon,
+		FXObject *target, int selector, int padLeft, int padRight, int padTop, int padBottom );
+	virtual ~cNativeIgdeTabBookHeader();
+};
+
+FXDEFMAP( cNativeIgdeTabBookHeader ) cNativeIgdeTabBookHeaderMap[] = { };
+
+FXIMPLEMENT( cNativeIgdeTabBookHeader, FXTabItem, cNativeIgdeTabBookHeaderMap,
+	ARRAYNUMBER( cNativeIgdeTabBookHeaderMap ) )
+
+cNativeIgdeTabBookHeader::cNativeIgdeTabBookHeader(){ }
+
+cNativeIgdeTabBookHeader::cNativeIgdeTabBookHeader( FXTabBook *parent, const char *text,
+FXIcon *icon, FXObject *target, int selector, int padLeft, int padRight, int padTop, int padBottom ) :
+FXTabItem( parent, text, icon, TAB_TOP_NORMAL, 0, 0, 0, 0, padLeft, padRight, padTop, padBottom )
+{
+	setTarget( target );
+	setSelector( selector );
+}
+
+cNativeIgdeTabBookHeader::~cNativeIgdeTabBookHeader(){
+}
+
+
+
+class cNativeIgdeTabBook : public FXTabBook{
+	FXDECLARE( cNativeIgdeTabBook )
+	
+protected:
+	cNativeIgdeTabBook();
+	
+public:
+	enum eFoxIDs{
+		ID_SELF = FXVerticalFrame::ID_LAST,
+		ID_HEADER
+	};
+	
+private:
+	igdeTabBook *pOwner;
+	igdeFontReference pFont;
+	int pPadLeft;
+	int pPadRight;
+	int pPadTop;
+	int pPadBottom;
+	
+public:
+	cNativeIgdeTabBook( igdeTabBook &owner, FXComposite *parent, int layoutFlags, const igdeGuiTheme &guitheme );
+	virtual ~cNativeIgdeTabBook();
+	
+	void AddHeader( const igdeTabBook::cHeader &header );
+	void ChangePanel( int index );
+	
+// 	long onHeaderMouseWheel( FXObject *sender, FXSelector selector, void *data );
+	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	
+	static igdeFont *TabBookFont( const igdeTabBook &owner, const igdeGuiTheme &guitheme );
+	static int TabBookPadLeft( const igdeGuiTheme &guitheme );
+	static int TabBookPadRight( const igdeGuiTheme &guitheme );
+	static int TabBookPadTop( const igdeGuiTheme &guitheme );
+	static int TabBookPadBottom( const igdeGuiTheme &guitheme );
+};
+
+
+FXDEFMAP( cNativeIgdeTabBook ) cNativeIgdeTabBookMap[] = {
+// 	FXMAPFUNC( SEL_MOUSEWHEEL, cNativeIgdeTabBook::ID_HEADER, cNativeIgdeTabBook::onHeaderMouseWheel ),
+	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeIgdeTabBook::onChildLayoutFlags )
+};
+
+FXIMPLEMENT( cNativeIgdeTabBook, FXTabBook, cNativeIgdeTabBookMap, ARRAYNUMBER( cNativeIgdeTabBookMap ) )
+
+cNativeIgdeTabBook::cNativeIgdeTabBook(){ }
+
+cNativeIgdeTabBook::cNativeIgdeTabBook( igdeTabBook &owner, FXComposite *parent,
+	int layoutFlags, const igdeGuiTheme &guitheme ) :
+FXTabBook( parent, this, ID_SELF, layoutFlags | TABBOOK_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &owner ),
+pFont( TabBookFont( owner, guitheme ) ),
+pPadLeft( TabBookPadLeft( guitheme ) ),
+pPadRight( TabBookPadRight( guitheme ) ),
+pPadTop( TabBookPadTop( guitheme ) ),
+pPadBottom( TabBookPadBottom( guitheme ) )
+{
+}
+
+cNativeIgdeTabBook::~cNativeIgdeTabBook(){
+}
+
+void cNativeIgdeTabBook::AddHeader( const igdeTabBook::cHeader &header ){
+	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
+	
+	cNativeIgdeTabBookHeader * const widget = new cNativeIgdeTabBookHeader( this,
+		header.text, icon, this, ID_HEADER, pPadLeft, pPadRight, pPadTop, pPadBottom );
+	widget->setFont( (FXFont*)pFont->GetNativeFont() );
+	if( id() ){
+		widget->create();
+	}
+}
+
+void cNativeIgdeTabBook::ChangePanel( int index ){
+	const int count = numChildren() / 2;
+	if( index == -1 && count == 0 ){
+		pOwner->SetActivePanel( -1 );
+		return;
+	}
+	
+	if( index < 0 || index >= count ){
+		return;
+	}
+	
+	setCurrent( index * 2 );
+	
+	pOwner->SetActivePanel( index );
+}
+
+/*
+long cNativeIgdeTabBook::onHeaderMouseWheel( FXObject *sender, FXSelector selector, void *data ){
+	const FXEvent &event = *( ( FXEvent* )data );
+	const int index = pSwitcher->getCurrent();
+	
+	if( event.code > 0 ){ // wheel down
+		if( index > 0 ){
+			ChangePanel( index - 1 );
+			
+		}else{
+			ChangePanel( pSwitcher->numChildren() - 1 );
+		}
+		
+	}else if( event.code < 0 ){ // wheel up
+		if( index < pSwitcher->numChildren() - 1 ){
+			ChangePanel( index + 1 );
+			
+		}else{
+			ChangePanel( 0 );
+		}
+	}
+	
+	return 1;
+}
+*/
+
+long cNativeIgdeTabBook::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
+	return 1;
+}
+
+
+
+igdeFont *cNativeIgdeTabBook::TabBookFont( const igdeTabBook &owner, const igdeGuiTheme &guitheme ){
+	igdeFont::sConfiguration configuration( owner.GetEnvironment().GetApplicationFont() );
+	
+	if( guitheme.HasProperty( igdeGuiThemePropertyNames::tabBookFontSizeAbsolute ) ){
+		configuration.size = guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::tabBookFontSizeAbsolute, 0 );
+		
+	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::tabBookFontSize ) ){
+		configuration.size *= guitheme.GetFloatProperty(
+			igdeGuiThemePropertyNames::tabBookFontSize, 1.0f );
+		
+	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
+		configuration.size = guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+		
+	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+		configuration.size *= guitheme.GetFloatProperty(
+			igdeGuiThemePropertyNames::fontSize, 1.0f );
+	}
+	
+	return owner.GetEnvironment().GetSharedFont( configuration );
+}
+
+int cNativeIgdeTabBook::TabBookPadLeft( const igdeGuiTheme &guitheme ){
+	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::tabBookPaddingLeft, DEFAULT_PAD );
+}
+
+int cNativeIgdeTabBook::TabBookPadRight( const igdeGuiTheme &guitheme ){
+	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::tabBookPaddingRight, DEFAULT_PAD );
+}
+
+int cNativeIgdeTabBook::TabBookPadTop( const igdeGuiTheme &guitheme ){
+	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::tabBookPaddingTop, DEFAULT_PAD );
+}
+
+int cNativeIgdeTabBook::TabBookPadBottom( const igdeGuiTheme &guitheme ){
+	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::tabBookPaddingBottom, DEFAULT_PAD );
+}
+
+
+
+// Class igdeTabBook::cHeader
+///////////////////////////////
+
+igdeTabBook::cHeader::cHeader( const char *ptext, igdeIcon *picon, const char *pdescription ) :
+text( ptext ),
+description( pdescription ),
+icon( picon ){
+}
+
+igdeTabBook::cHeader::~cHeader(){
+}
+
+
+
+// Class igdeTabBook
+//////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeTabBook::igdeTabBook( igdeEnvironment &environment ) :
+igdeContainer( environment ),
+pActivePanel( -1 ){
+}
+
+igdeTabBook::~igdeTabBook(){
+	DestroyNativeWidget();
+}
+
+
+
+// Management
+///////////////
+
+void igdeTabBook::SetActivePanel( int index ){
+	if( index == pActivePanel ){
+		return;
+	}
+	
+	if( index == -1 ){
+		if( GetChildCount() > 0 ){
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else if( index < 0 || index >= GetChildCount() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pActivePanel = index;
+	
+	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
+	if( native ){
+		native->ChangePanel( index );
+	}
+}
+
+
+
+void igdeTabBook::AddChild( igdeWidget *child, const char *text ){
+	AddChild( child, text, NULL, "" );
+}
+
+void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon ){
+	AddChild( child, text, icon, "" );
+}
+
+void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon,
+const char *description ){
+	if( ! child || child->GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deObjectReference header;
+	header.TakeOver( new cHeader( text, icon, description ) );
+	pHeaders.Add( header );
+	
+	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
+	if( ! native ){
+		igdeContainer::AddChild( child );
+		return;
+	}
+	
+	try{
+		native->AddHeader( ( cHeader& )( deObject& )header );
+		
+	}catch( const deException & ){
+		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );
+		throw;
+	}
+	
+	try{
+		igdeContainer::AddChild( child );
+		
+	}catch( const deException & ){
+		delete native->childAtIndex( native->numChildren() - 1 );
+		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );
+		throw;
+	}
+}
+
+void igdeTabBook::AddChild( igdeWidget *child ){
+	DETHROW( deeInvalidParam );
+}
+
+void igdeTabBook::RemoveChild( igdeWidget *child ){
+	const int index = IndexOfChild( child );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	igdeContainer::RemoveChild( child );
+	
+	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
+	if( native ){
+		delete native->childAtIndex( index * 2 );
+	}
+	pHeaders.RemoveFrom( index );
+}
+
+void igdeTabBook::RemoveAllChildren(){
+	pHeaders.RemoveAll();
+	
+	igdeContainer::RemoveAllChildren();
+	
+	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
+	if( native ){  // remove header items
+		while( native->numChildren() > 0 ){
+			delete native->childAtIndex( native->numChildren() - 1 );
+		}
+	}
+}
+
+
+
+void igdeTabBook::CreateNativeWidget(){
+	if( GetNativeWidget() ){
+		return;
+	}
+	
+	igdeContainer * const parent = GetParent();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
+	if( ! foxParent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
+	cNativeIgdeTabBook * const native = new cNativeIgdeTabBook( *this, foxParent, layoutFlags, *GetGuiTheme() );
+	SetNativeWidget( native );
+	if( foxParent->id() ){
+		native->create();
+	}
+	
+	CreateChildWidgetNativeWidgets();
+	
+	native->ChangePanel( pActivePanel );
+}
+
+void igdeTabBook::DestroyNativeWidget(){
+	if( ! GetNativeWidget() ){
+		return;
+	}
+	
+	delete ( cNativeIgdeTabBook* )GetNativeWidget();
+	DropNativeWidget();
+}
+
+void *igdeTabBook::GetNativeContainer() const{
+	return GetNativeWidget();
+}
+
+
+
+void igdeTabBook::CreateChildWidgetNativeWidgets(){
+	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
+	if( ! native ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int count = GetChildCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		native->AddHeader( *( ( cHeader* )pHeaders.GetAt( i ) ) );
+		GetChildAt( i )->CreateNativeWidget();
+	}
+}

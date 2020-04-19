@@ -1,0 +1,89 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Box area list element class property for use with XML loading.
+ * 
+ * Box area list is stored as BoxAreaList instance. From XML the box area list is read
+ * using a list type property string. Each list entry is a map defining one box area.
+ * The following example defines a box area list with one box area. The box has a
+ * position of (2,1,0), size of (3.6,2.4,0.8) and a rotation of (0,20,0) degrees.
+ * 
+ * \code{.xml}
+ * <list name='propertyName'>
+ *    <map>
+ *       <vector key='position' x='2' y='1' z='0'/>
+ *       <vector key='extends' x='1.8' y='1.2' z='0.4'/>
+ *       <vector key='rotation' x='0' y='20' z='0'/>
+ *    </map>
+ * </list>
+ * \endcode
+ */
+class ECPBoxAreaList extends ElementClassProperty
+	/** \brief BoxAreaList. */
+	private var BoxAreaList pBoxAreaList
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pBoxAreaList = BoxAreaList.new()
+	end
+	
+	/** \brief Create property with initial value. */
+	public func new( String name, BoxAreaList boxAreaList ) super( name )
+		this.pBoxAreaList = BoxAreaList.new( boxAreaList )
+	end
+	
+	
+	
+	/** \brief Box area list. */
+	public func BoxAreaList getList()
+		return this.pBoxAreaList
+	end
+	
+	/** \brief Set box area list. */
+	public func void setList( BoxAreaList boxAreaList )
+		this.pBoxAreaList = BoxAreaList.new( boxAreaList )
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pBoxAreaList.removeAll()
+		
+		( value cast Array ).forEach( block Dictionary each
+			this.pBoxAreaList.add( BoxArea.new( \
+				DVector.new( each.getAt( "position", Vector.new() ) cast Vector ), \
+				each.getAt( "extends", Vector.new() ) cast Vector, \
+				Quaternion.newFromEuler( each.getAt( "rotation", Vector.new() ) cast Vector ) ) )
+		end )
+	end
+end

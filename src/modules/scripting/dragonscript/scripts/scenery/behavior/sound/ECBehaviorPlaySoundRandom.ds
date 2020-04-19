@@ -1,0 +1,127 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Extends ECBehaviorPlaySound to pick sound to play randomly from a list of sounds.
+ * 
+ * Useful for situations where random sounds from a list of sounds have to be played each
+ * time the behavior is triggered. If random sound list is empty behaves the same as
+ * ECBehaviorPlaySound.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
+	/** \brief Behavior instance. */
+	class Instance extends ECBehaviorPlaySound.Instance
+		private var ECBehaviorPlaySoundRandom pECBehaviorRandom
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorPlaySoundRandom ecbehavior, BehaviorElement element ) \
+		super( ecbehavior, element )
+			this.pECBehaviorRandom = ecbehavior
+		end
+		
+		
+		/** \brief Random sound or \em null if the list is empty. */
+		public func Sound randomSound()
+			return this.pECBehaviorRandom.getSounds().getRandom()
+		end
+		
+		/** \brief Create speaker modified to use random sound. */
+		protected func Speaker createSpeaker()
+			var Speaker speaker = super.createSpeaker()
+			
+			var Sound sound = this.randomSound()
+			if sound != null
+				speaker.setSound( sound )
+			end
+			
+			return speaker
+		end
+	end
+	
+	
+	
+	private var ECPSoundList pSounds
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider ) this( eclass, component, collider, null cast TSTriggerTable, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, String id ) this( eclass, component, collider, null cast TSTriggerTable, id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, String id, String prefix ) \
+	this( eclass, component, collider, null cast TSTriggerTable, id, prefix )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable ) \
+	this( eclass, component, collider, triggerTable, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id ) \
+	this( eclass, component, collider, triggerTable, id, \
+	id.empty() if "playSound." else "playSound(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String prefix ) \
+	super( eclass, component, collider, triggerTable, id, prefix )
+		this.pSounds = ECPSoundList.new( prefix + "sounds" )
+		eclass.addProperty( this.pSounds )
+	end
+	
+	
+	
+	/** \brief Speaker sounds. */
+	public func ECPSoundList getSounds()
+		return this.pSounds
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

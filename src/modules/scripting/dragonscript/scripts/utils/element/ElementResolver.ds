@@ -1,0 +1,282 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Resolve element links.
+ * 
+ * Helper class to resolve element identifiers read from file readers. While
+ * loading elements from files the elements referenced by identifiers very
+ * well can not be present yet in the game world since they show up in the
+ * file at a later time. To support such links the UniqueID of an element is
+ * saved. Once read it has to be resolved once all elements are present in
+ * the game world. The best time for this is during a call to Element.enterFrame().
+ * An instance of this class has to be placed in elements requiring resolving
+ * behavior. To resolve an encountered element add a resolve request to the
+ * instance of this class with a block to use. The following code example
+ * shows how to use this class.
+ * 
+ * \code{.ds}
+ * class MyElement extends Element
+ *    private var ElementResolver pElementResolver
+ *    private var Element pElementInHands
+ *    
+ *    public func new()
+ *       this.pElementResolver = ElementResolver.new()
+ *    end
+ *    
+ *    public func void readFromFile( FileReader reader )
+ *       ...
+ *       if hasElementInHands
+ *          this.pElementResolver.add( UniqueID.readFromFile( reader ), block Element resolved
+ *             this.pElementInHands = resolved
+ *          end )
+ *       end
+ *    end
+ *    
+ *    public func addToGameWorld()
+ *       // request enterFrame() to be called once. works fine for both creating or loading
+ *       // elemente. in case of creating new elements there are simply no request to resolve
+ *       this.getGameWorld().addEnterFrameOnce( this )
+ *    end
+ *    
+ *    public func void enterFrame()
+ *       // resolve all elements. once finished all request are removed. if a resolve request
+ *       // fails the block is called with a null element. it is the responsibility of the
+ *       // block to handle this situation.
+ *       this.pElementResolver.resolve( this.getGameWorld() )
+ *    end
+ * end
+ * \endcode
+ * 
+ * 
+ * \par BehaviorsElement Behaviors
+ * 
+ * This class is also able to resolve BehaviorElement behaviors. During saving you have to
+ * store both the BehaviorElement UniqueID as well as the behavior instance index. The
+ * DefaultECBehavior class provides this information. While resolving the block is called
+ * with BehaviorInstance as parameter. In general you will change this to parameter type
+ * to match the behavior stored.
+ * 
+ * \code{.ds}
+ * class MyElement extends Element
+ *    private var ElementResolver pElementResolver
+ *    private var MyBehavior.Instance pElementInHands
+ *    
+ *    public func new()
+ *       this.pElementResolver = ElementResolver.new()
+ *    end
+ *    
+ *    public func void readFromFile( FileReader reader )
+ *       ...
+ *       if hasElementInHands
+ *          var UniqueID id = UniqueID.readFromFile( reader )
+ *          var int index = reader.readUShort()
+ *          this.pElementResolver.addBehavior( id, index, block MyBehavior.Instance behavior
+ *             this.pElementInHands = behavior
+ *          end )
+ *       end
+ *    end
+ *    
+ *    public func addToGameWorld()
+ *       // request enterFrame() to be called once. works fine for both creating or loading
+ *       // elemente. in case of creating new elements there are simply no request to resolve
+ *       this.getGameWorld().addEnterFrameOnce( this )
+ *    end
+ *    
+ *    public func void enterFrame()
+ *       // resolve all elements. once finished all request are removed. if a resolve request
+ *       // fails the block is called with a null element. it is the responsibility of the
+ *       // block to handle this situation.
+ *       this.pElementResolver.resolve( this.getGameWorld() )
+ *    end
+ * end
+ * \endcode
+ */
+class ElementResolver
+	/** \brief Resolve failure. */
+	class ResolveException extends Exception
+		/** \brief Unique ID failed to resolve. */
+		private var UniqueID pID
+		
+		/** \brief Create exception. */
+		public func new( UniqueID id ) super( "Failed resolving " + id )
+			this.pID = id
+		end
+		
+		/** \brief Unique ID failed to resolve. */
+		public func UniqueID getID()
+			return this.pID
+		end
+	end
+	
+	/** \brief Resolve request. */
+	public class Request
+		/** \brief Unique ID to resolve. */
+		private var UniqueID pID
+		
+		/** \brief Behavior instance index to resolve or -1. */
+		private var int pBehaviorInstanceIndex
+		
+		/** \brief Block to call with resolved element. */
+		private var Block pBlock
+		
+		/** \brief Create request. */
+		public func new( UniqueID id, int behaviorInstanceIndex, Block ablock )
+			if id == null or ablock == null
+				throw EInvalidParam.new()
+			end
+			this.pID = id
+			this.pBehaviorInstanceIndex = behaviorInstanceIndex
+			this.pBlock = ablock
+		end
+		
+		/** \brief Unique ID to resolve. */
+		public func UniqueID getID()
+			return this.pID
+		end
+		
+		/** \brief Behavior instance index to resolve or -1. */
+		public func int getBehaviorInstanceIndex()
+			return this.pBehaviorInstanceIndex
+		end
+		
+		/** \brief Block to call with resolved element. */
+		public func Block getBlock()
+			return this.pBlock
+		end
+	end
+	
+	
+	
+	/** \brief Resolve requests as array of Request. */
+	private var Array pRequests
+	
+	
+	
+	/** \brief Create resolver. */
+	public func new()
+		this.pRequests = Array.new()
+	end
+	
+	
+	
+	/**
+	 * \brief Add resolve request.
+	 * 
+	 * Add request to resolve element by identifier. Once resolved \em ablock is
+	 * called with the resolved element as parameter. If resolving fails \em ablock
+	 * is called with \em null as parameter.
+	 */
+	public func void add( UniqueID id, Block ablock )
+		this.pRequests.add( Request.new( id, -1, ablock ) )
+	end
+	
+	/**
+	 * \brief Add resolve request.
+	 * 
+	 * Same as add(UniqueID, Block) but reads the UniqueID from file reader.
+	 */
+	public func void add( FileReader reader, Block ablock )
+		this.pRequests.add( Request.new( UniqueID.readFromFile( reader ), -1, ablock ) )
+	end
+	
+	/**
+	 * \brief Write parameters to file suitable for add(UniqueID, Block).
+	 */
+	public static func void writeToFile( FileWriter writer, Element element )
+		element.getID().writeToFile( writer )
+	end
+	
+	/**
+	 * \brief Add resolve request for BehaviorInstance.
+	 * 
+	 * Add request to resolve element by identifier and behavior inside element by instance index.
+	 * Once resolved \em ablock is called with the resolved behavior instance as parameter.
+	 * If resolving fails \em ablock is called with \em null as parameter.
+	 */
+	public func void addBehavior( UniqueID id, int behaviorInstanceIndex, Block ablock )
+		this.pRequests.add( Request.new( id, behaviorInstanceIndex, ablock ) )
+	end
+	
+	/**
+	 * \brief Add resolve request for BehaviorInstance.
+	 * 
+	 * Same as addBehavior(UniqueID, int, Block) but reads the parameters from file reader.
+	 * Reads first a UniqueID from file reader then a UShort as behavior index.
+	 */
+	public func void addBehavior( FileReader reader, Block ablock )
+		var UniqueID id = UniqueID.readFromFile( reader )
+		var int index = reader.readUShort()
+		this.pRequests.add( Request.new( id, index, ablock ) )
+	end
+	
+	/**
+	 * \brief Write parameters to file suitable for addBehavior(UniqueID, int, Block).
+	 */
+	public static func void writeToFileBehavior( FileWriter writer, ECBehaviorInstance behaviorInstance )
+		behaviorInstance.getElement().getID().writeToFile( writer )
+		writer.writeUShort( behaviorInstance.getInstanceIndex() )
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve elements.
+	 * 
+	 * Resolves all requests calling the request blocks with the resolved element
+	 * as parameter. Removes all requests after processing them. If an element
+	 * can not be resolve an exception is thrown.
+	 */
+	public func void resolve( GameWorld gameWorld )
+		if gameWorld == null
+			throw EInvalidParam.new()
+		end
+		
+		var Element element
+		this.pRequests.forEach( block Request each
+			element = gameWorld.getElementWithID( each.getID() )
+			if element == null
+				throw ResolveException.new( each.getID() )
+			end
+			each.getBlock().run( element )
+		end )
+		
+		this.pRequests.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of pending requests. */
+	public func int getCount()
+		return this.pRequests.getCount()
+	end
+	
+	/** \brief Pending request at index. */
+	public func Request getAt( int index )
+		return this.pRequests.getAt( index ) cast Request
+	end
+end

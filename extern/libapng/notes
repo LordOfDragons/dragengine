@@ -1,0 +1,8 @@
+/////////////////////////////////////////
+/   libpng-1.6.29-apng.patch.tar.bz2   /
+///////////////////////////////////////
+
+Patch for animated PNG support.
+Apply over a guinine libpng-1.6.29 distribution:
+
+  cd libpng-1.6.29 && patch -p1 < ../libpng-1.6.29-apng.patch

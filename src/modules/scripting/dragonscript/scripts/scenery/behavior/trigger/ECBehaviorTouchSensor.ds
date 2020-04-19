@@ -1,0 +1,537 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding touch sensor support.
+ * 
+ * Attaches a TouchSensor resource to the behavior element. By default the collision filter
+ * category is set to BaseGameApp.CollisionFilterBit.trigger and the collision filter mask is set to
+ * BaseGameApp.CollisionFilterBit.actorAI . This causes actors to trigger this touch sensor unless they
+ * have the CollisionFilterBit.trigger bit cleared. Modify the collision filter to allow other elements
+ * to trigger this touch sensor.
+ * 
+ * Upon being touched the touch sensor notifies the listeners as well as setting a trigger
+ * target in case a trigger table is present and the user set a trigger target name,
+ * 
+ * The TouchSensor resource can be queried for the colliders currently touchint it.
+ * Furthermore colliders entering and leaving trigger a notification allowing elements
+ * to track elements of interest.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element the
+ * TouchSensor is attached to the collider.
+ * 
+ * The behavior retrieves the owner of colliders inside the touch sensor. If these owners
+ * are elements they are stored in a list of elements touched by the owner element. This
+ * list is updated when elements enter or leave the touch sensor.
+ * 
+ * The owner behavior element as well as other ECBehavior subclasses can add a listener
+ * to be notified if elements enter and exit the touch sensor.
+ * 
+ * This element behavior can be present multiple times in a BehaviorElement. In this case
+ * use a unique identifier to distinguish the individual touch sensors.
+ * 
+ * Element class properties have the prefix "touchSensor{(identifier)}.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorTouchSensor extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Element entered touch sensor. */
+		func void elementEntered( Instance instance, Element element )
+		
+		/** \brief Element left touch sensor. */
+		func void elementLeft( Instance instance, Element element )
+		
+		/**
+		 * \brief Element can touch this touch sensor.
+		 * 
+		 * Element can touch is all listeners return true.
+		 */
+		func bool elementCanTouch( Instance instance, Element element )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Element entered touch sensor. */
+		public func void elementEntered( Instance instance, Element element )
+		end
+		
+		/** \brief Element left touch sensor. */
+		public func void elementLeft( Instance instance, Element element )
+		end
+		
+		/**
+		 * \brief Element can touch this touch sensor.
+		 * 
+		 * Element can touch is all listeners return true. Default implementation returns true.
+		 */
+		public func bool elementCanTouch( Instance instance, Element element )
+			return true
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
+		private var ECBehaviorTouchSensor pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var TouchSensor pTouchSensor
+		private var Array pTouchingElements
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorTouchSensor ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pTouchingElements = Array.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			if this.pTouchSensor != null
+				this.pTouchSensor.setListener( null )
+				this.pTouchSensor = null
+			end
+			this.pTouchingElements = null
+			this.pCollider = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pTouchSensor = this.createTouchSensor( stub )
+			
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachTouchSensor( stub, this.pCollider )
+			end
+			
+			this.pTouchSensor.setListener( this )
+		end
+		
+		/**
+		 * \brief Create sound level meter.
+		 */
+		protected func TouchSensor createTouchSensor( StubElement stub )
+			var TouchSensor touchSensor = TouchSensor.new()
+			
+			touchSensor.setPosition( this.getElement().getPosition() )
+			touchSensor.setOrientation( this.getElement().getOrientation() )
+			touchSensor.setCollisionFilter( this.pECBehavior.getCollisionFilter().getCollisionFilter() )
+			touchSensor.setTrackEnterLeave( true )
+			
+			if this.pECBehavior.getShapeFromSize().getValue( stub )
+				var ShapeList shape = ShapeList.new()
+				shape.addBox( Vector.new(), stub.getScaling() * 0.5 )
+				touchSensor.setShape( shape )
+				
+			else
+				touchSensor.setShape( this.pECBehavior.getShape().getShapeList( stub ) )
+			end
+			
+			return touchSensor
+		end
+		
+		/**
+		 * \brief Attach sound level meter to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachTouchSensor( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pTouchSensor, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorTouchSensor getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior instance or null if not used. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief TOuch sensor. */
+		public func TouchSensor getTouchSensor()
+			return this.pTouchSensor
+		end
+		
+		
+		
+		/** \brief Behavior element is sensing touches. */
+		public func bool getTouching()
+			return this.pTouchSensor.getEnabled()
+		end
+		
+		/** \brief Set if behavior element is sensing touches. */
+		public func void setTouching( bool touching )
+			this.pTouchSensor.setEnabled( touching )
+		end
+		
+		
+		
+		/** \brief Number of touching elements. */
+		public func int getTouchingElementCount()
+			return this.pTouchingElements.getCount()
+		end
+		
+		/** \brief Touching element at index. */
+		public func Element getTouchingElementAt( int index )
+			return this.pTouchingElements.getAt( index ) cast Element
+		end
+		
+		/** \brief Element is touching. */
+		public func bool isElementTouching( Element element )
+			return this.pTouchingElements.has( element )
+		end
+		
+		/** \brief Add touching element. */
+		protected func void addTouchingElement( Element element )
+			this.pTouchingElements.add( element )
+		end
+		
+		/** \brief Remove touching element. */
+		protected func void removeTouchingElement( Element element )
+			this.pTouchingElements.remove( element )
+		end
+		
+		/** \brief Remove all touching elements. */
+		protected func void removeAllTouchingElements()
+			this.pTouchingElements.removeAll()
+		end
+		
+		/** \brief Visit touching elements with block with parameter Element. */
+		public func void forEachTouchingElement( Block ablock )
+			this.pTouchingElements.forEach( ablock )
+		end
+		
+		/** \brief Find touching elements with block with parameter Element. */
+		public func Element findTouchingElement( Block ablock )
+			return this.pTouchingElements.find( ablock ) cast Element
+		end
+		
+		/** \brief Visit touching elements with ElementVisitor. */
+		public func void visitTouchingElements( ElementVisitor visitor )
+			this.pTouchingElements.forEach( block Element each
+				each.visit( visitor )
+			end )
+		end
+		
+		
+		
+		/** \brief Determine if element can touch this touch sensor. */
+		public func bool canTouchElement( Element element )
+			return this.pListeners.find( block Listener each
+				return not each.elementCanTouch( this, element )
+			end ) == null
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addTouchSensor( this.pTouchSensor )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			while this.pTouchingElements.getCount() > 0
+				var int index = this.pTouchingElements.getCount() - 1
+				var Element element = this.pTouchingElements.getAt( index ) cast Element
+				this.pTouchingElements.removeFrom( index )
+				
+				this.pListeners.forEach( block Listener each
+					each.elementLeft( this, element )
+				end )
+			end
+			
+			this.getElement().getGameWorld().getWorld().removeTouchSensor( this.pTouchSensor )
+		end
+		
+		
+		
+		/** \brief Collider entered sensor shape. */
+		public func void colliderEntered( Collider collider )
+			var Object owner = collider.getOwner()
+			if not owner castable Element
+				return
+			end
+			
+			var Element element = owner cast Element
+			if not this.canTouchElement( element ) or this.pTouchingElements.has( element )
+				return
+			end
+			
+			this.pTouchingElements.add( element )
+			
+			this.pListeners.forEach( block Listener each
+				each.elementEntered( this, element )
+			end )
+		end
+		
+		/** \brief Collider left sensor shape. */
+		public func void colliderLeft( Collider collider )
+			var Object owner = collider.getOwner()
+			if not owner castable Element
+				return
+			end
+			
+			var Element element = owner cast Element
+			if not this.pTouchingElements.has( element )
+				return
+			end
+			
+			this.pTouchingElements.remove( element )
+			
+			this.pListeners.forEach( block Listener each
+				each.elementLeft( this, element )
+			end )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setTouching( env.readBool( reader ) )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			env.writeBool( writer, this.getTouching() )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeCollisionFilter pCollisionFilter
+	private var ECPShapeList pShape
+	private var ECPBoolean pShapeFromSize
+	private var ECComposeAttachResource pAttach
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, id, id.empty() if "touchSensor." else "touchSensor(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String id, String prefix ) super( eclass, id )
+		this.pCollider = collider
+		
+		this.pShape = ECPShapeList.new( prefix + "shape", eclass.getCodecPropertyString() )
+		eclass.addProperty( this.pShape )
+		
+		this.pCollisionFilter = ECComposeCollisionFilter.new()
+		this.pCollisionFilter.setCollisionFilter( CollisionFilter.new( \
+			LayerMask.newWith( BaseGameApp.CollisionFilterBit.trigger ), \
+			LayerMask.newWith( BaseGameApp.CollisionFilterBit.actorAI ) ) )
+		
+		this.pShapeFromSize = ECPBoolean.new( prefix + "shapeFromSize", false )
+		eclass.addProperty( this.pShapeFromSize )
+		
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null if not used. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	/** \brief Collision filter. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Touch shape. */
+	public func ECPShapeList getShape()
+		return this.pShape
+	end
+	
+	/** \brief Use stub element scaling as touch sensor shape. */
+	public func ECPBoolean getShapeFromSize()
+		return this.pShapeFromSize
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorTouchSensor getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorTouchSensor
+		end ) cast ECBehaviorTouchSensor
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorTouchSensor with specific identifier.
+	 */
+	static public func ECBehaviorTouchSensor getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorTouchSensor each
+			return each castable ECBehaviorTouchSensor and \
+				( each cast ECBehaviorTouchSensor ).getID().equals( id )
+		end ) cast ECBehaviorTouchSensor
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorTouchSensor behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorTouchSensor
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorTouchSensor.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorTouchSensor.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorTouchSensor.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

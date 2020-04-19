@@ -1,0 +1,309 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Light ShadowPass Point 180</name>
+	
+	<texture name="texDepth" target="0"/>
+	<texture name="texDiffuse" target="1"/>
+	<texture name="texShadow1Obj" target="2"/>
+	<texture name="texShadow1Ter" target="3"/>
+	<texture name="texShadow2Obj" target="4"/>
+	<texture name="texShadow2Ter" target="5"/>
+	<texture name="texShadow3Obj" target="6"/>
+	<texture name="texShadow3Ter" target="7"/>
+	<texture name="texShadow4Obj" target="8"/>
+	<texture name="texShadow4Ter" target="9"/>
+	
+	<parameter name="pLight1Pos"/> <!-- 0 -->
+	<parameter name="pLight2Pos"/> <!-- 1 -->
+	<parameter name="pLight3Pos"/> <!-- 2 -->
+	<parameter name="pLight4Pos"/> <!-- 3 -->
+	<parameter name="pShadowBase"/> <!-- 4 -->
+	<parameter name="pShadowScale"/> <!-- 5 -->
+	<parameter name="pPosTransform"/> <!-- 6 -->
+	<parameter name="pOptions1Obj"/> <!-- 7 -->
+	<parameter name="pOptions2Obj"/> <!-- 8 -->
+	<parameter name="pOptions3Obj"/> <!-- 9 -->
+	<parameter name="pOptions4Obj"/> <!-- 10 -->
+	<parameter name="pOptionsTer"/> <!-- 11 -->
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+void main( void ){
+	vTexCoord = gl_MultiTexCoord0.st;
+	vScreenCoord = gl_Vertex.xy;
+	
+	gl_Position = vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+uniform vec3 pLight1Pos; // light position in object space
+#ifdef HAS_LIGHT_2
+uniform vec3 pLight2Pos; // light position in object space
+#endif
+#ifdef HAS_LIGHT_3
+uniform vec3 pLight3Pos; // light position in object space
+#endif
+#ifdef HAS_LIGHT_4
+uniform vec3 pLight4Pos; // light position in object space
+#endif
+uniform vec4 pShadowBase; // shadow base value
+uniform vec4 pShadowScale; // shadow scale value
+uniform vec4 pPosTransform; // position transform
+uniform vec4 pOptions1Obj; // scale, offset, soffu, soffv
+#ifdef HAS_LIGHT_2
+uniform vec4 pOptions2Obj; // scale, offset, soffu, soffv
+#endif
+#ifdef HAS_LIGHT_3
+uniform vec4 pOptions3Obj; // scale, offset, soffu, soffv
+#endif
+#ifdef HAS_LIGHT_4
+uniform vec4 pOptions4Obj; // scale, offset, soffu, soffv
+#endif
+uniform vec4 pOptionsTer; // pcfsize 1..4
+
+uniform sampler2D texDepth;
+uniform sampler2D texDiffuse;
+#ifdef USE_HW_COMPARE
+	uniform sampler2DShadow texShadow1Obj;
+	uniform samplerCube texShadow1Ter;
+	#ifdef HAS_LIGHT_2
+	uniform sampler2DShadow texShadow2Obj;
+	uniform samplerCube texShadow2Ter;
+	#endif
+	#ifdef HAS_LIGHT_3
+	uniform sampler2DShadow texShadow3Obj;
+	uniform samplerCube texShadow3Ter;
+	#endif
+	#ifdef HAS_LIGHT_4
+	uniform sampler2DShadow texShadow4Obj;
+	uniform samplerCube texShadow4Ter;
+	#endif
+#else // USE_HW_COMPARE
+	uniform sampler2D texShadow1Obj;
+	uniform samplerCube texShadow1Ter;
+	#ifdef HAS_LIGHT_2
+	uniform sampler2D texShadow2Obj;
+	uniform samplerCube texShadow2Ter;
+	#endif
+	#ifdef HAS_LIGHT_3
+	uniform sampler2D texShadow3Obj;
+	uniform samplerCube texShadow3Ter;
+	#endif
+	#ifdef HAS_LIGHT_4
+	uniform sampler2D texShadow4Obj;
+	uniform samplerCube texShadow4Ter;
+	#endif
+#endif // USE_HW_COMPARE
+
+varying vec2 vTexCoord;
+varying vec2 vScreenCoord;
+
+#define epsilon 0.00001
+
+const vec2 sct1 = vec2( 0.5, 0.5 );
+const vec2 sct2 = vec2( 0.5, 0.5 );
+const vec4 scot1 = vec4( 1.0, 1.0, 0.0, 0.0 );
+const vec4 scot2 = vec4( 1.0, 1.0, -1.0, -1.0 );
+
+#ifdef USE_HW_COMPARE
+#ifndef PCF_9TAP
+const vec4 scot3 = vec4( 0.5, 0.5, -0.5, -0.5 );
+const vec4 pcfHackWeight = vec4( 0.25 );
+#endif
+#endif // USE_HW_COMPARE
+
+#ifdef PCF_9TAP
+const float pcfWeight = 0.2;
+const vec4 pcfWeight2 = vec4( 0.2 );
+#endif
+
+#ifdef GEOM_ENCODED_DEPTH
+const vec3 unpackGeomDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+#endif
+
+
+
+#ifdef USE_HW_COMPARE
+void evalShadowMap( inout float shadow, in sampler2DShadow shamap, in vec4 options, in vec3 shapos ){
+	if( shapos.z < 0.0 ) return;
+	
+	float shadist = length( shapos );
+	shapos /= vec3( max( epsilon, shadist ) );
+	shapos.st = ( shapos.xy / vec2( shapos.z + 1.0 ) ) * sct2 + sct1;
+	
+	vec3 stc = vec3( shapos.st, shadist * options.x + options.y );
+	
+#ifdef PCF_9TAP
+	vec4 shaoff1 = options.zwzw * scot1; // offU, offV, 0, 0
+	vec4 shaoff2 = options.zwzw * scot2; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	shadow = shadow2D( shamap, stc ).r * pcfWeight;
+	
+	stc.st = shapos.st + shaoff1.xw;
+	collect.x = shadow2D( shamap, stc ).r; // (u,0)
+	stc.st = shapos.st - shaoff1.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (-u,0)
+	stc.st = shapos.st + shaoff1.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (0,v)
+	stc.st = shapos.st - shaoff1.zy;
+	collect.w = shadow2D( shamap, stc ).r; // (0,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+	stc.st = shapos.st + shaoff2.xy;
+	collect.x = shadow2D( shamap, stc ).r; // (u,v)
+	stc.st = shapos.st + shaoff2.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (u,-v)
+	stc.st = shapos.st + shaoff2.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (-u,v)
+	stc.st = shapos.st + shaoff2.zw;
+	collect.w = shadow2D( shamap, stc ).r; // (-u,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+#else // PCF_9TAP
+	//shadow = shadow2D( shamap, stc ).r; // <= bugged on ATI ( no shadows, wtf?! )
+	
+	vec4 shaoff2 = options.zwzw * scot3; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	stc.st = shapos.st + shaoff2.xy;
+	collect.x = shadow2D( shamap, stc ).r; // (u,v)
+	stc.st = shapos.st + shaoff2.xw;
+	collect.y = shadow2D( shamap, stc ).r; // (u,-v)
+	stc.st = shapos.st + shaoff2.zy;
+	collect.z = shadow2D( shamap, stc ).r; // (-u,v)
+	stc.st = shapos.st + shaoff2.zw;
+	collect.w = shadow2D( shamap, stc ).r; // (-u,-v)
+	shadow = dot( collect, pcfHackWeight );
+	
+#endif // PCF_9TAP
+}
+
+#else // USE_HW_COMPARE
+void evalShadowMap( inout float shadow, in sampler2D shamap, in vec4 options, in vec3 shapos ){
+	if( shapos.z < 0.0 ) return;
+	
+	float shadist = length( shapos );
+	shapos /= vec3( max( epsilon, shadist ) );
+	shapos.st = ( shapos.xy / vec2( shapos.z + 1.0 ) ) * sct2 + sct1;
+	
+	shadist = shadist * options.x + options.y;
+	
+#ifdef PCF_9TAP
+	vec4 shaoff1 = options.zwzw * scot1; // offU, offV, 0, 0
+	vec4 shaoff2 = options.zwzw * scot2; // offU, offV, -offU, -offV
+	vec4 collect;
+	
+	shadow = step( shadist, texture2D( shamap, shapos.st ).r ) * pcfWeight;
+	
+	collect.x = step( shadist, texture2D( shamap, shapos.st + shaoff1.xw ).r ); // (u,0)
+	collect.y = step( shadist, texture2D( shamap, shapos.st - shaoff1.xw ).r ); // (-u,0)
+	collect.z = step( shadist, texture2D( shamap, shapos.st + shaoff1.zy ).r ); // (0,v)
+	collect.w = step( shadist, texture2D( shamap, shapos.st - shaoff1.zy ).r ); // (0,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+	collect.x = step( shadist, texture2D( shamap, shapos.st + shaoff2.xy ).r ); // (u,v)
+	collect.y = step( shadist, texture2D( shamap, shapos.st + shaoff2.xw ).r ); // (u,-v)
+	collect.z = step( shadist, texture2D( shamap, shapos.st + shaoff2.zy ).r ); // (-u,v)
+	collect.w = step( shadist, texture2D( shamap, shapos.st + shaoff2.zw ).r ); // (-u,-v)
+	shadow += dot( collect, pcfWeight2 );
+	
+#else // PCF_9TAP
+	shadow = step( shadist, texture2D( shamap, shapos.st ).r );
+#endif // PCF_9TAP
+}
+#endif // USE_HW_COMPARE
+
+
+
+void evalShadowCube( inout float shadow, in samplerCube shacube, in vec2 options, in float pcfsize, in vec3 shapos ){
+	float shadist = length( shapos ) * options.x + options.y;
+	
+#ifdef PCF_9TAP
+	vec3 o1;// = vec3( 0.0 );
+	vec3 o2;// = vec3( 0.0 );
+	vec3 absshapos;
+	vec4 collect;
+	
+	absshapos = abs( shapos );
+	//vec3 r = step( absshapos.xyz, absshapos.yzx ) * step( absshapos.xyz, absshapos.zxy );
+	//vec2 scale = vec2( dot( absshapos, r ) * pShadowOptions.z );
+	//o1.xz = ( c2 * r.xx + c1 ) * scale;
+	//o2.zy = ( c2 * r.yy + c1 ) * scale;
+	if( absshapos.x > absshapos.y && absshapos.x > absshapos.z ){ // x is largest
+		o1 = vec3( 0.0, 0.0, pcfsize );
+		o2 = vec3( 0.0, pcfsize, 0.0 );
+		
+	}else if( absshapos.y > absshapos.x && absshapos.y > absshapos.z ){ // y is largest
+		o1 = vec3( pcfsize, 0.0, 0.0 );
+		o2 = vec3( 0.0, 0.0, pcfsize );
+		
+	}else{ // z is largest
+		o1 = vec3( pcfsize, 0.0, 0.0 );
+		o2 = vec3( 0.0, pcfsize, 0.0 );
+	}
+	
+	shadow = step( shadist, textureCube( shacube, shapos ).r ) * pcfWeight;
+	
+	collect.x = step( shadist, textureCube( shacube, shapos + o1 ).r );
+	collect.y = step( shadist, textureCube( shacube, shapos - o1 ).r );
+	collect.z = step( shadist, textureCube( shacube, shapos + o2 ).r );
+	collect.w = step( shadist, textureCube( shacube, shapos - o2 ).r );
+	shadow += dot( collect, pcfWeight2 );
+	
+	collect.x = step( shadist, textureCube( shacube, shapos + o1 + o2 ).r );
+	collect.y = step( shadist, textureCube( shacube, shapos + o1 - o2 ).r );
+	collect.z = step( shadist, textureCube( shacube, shapos - o1 + o2 ).r );
+	collect.w = step( shadist, textureCube( shacube, shapos - o1 - o2 ).r );
+	shadow += dot( collect, pcfWeight2 );
+	
+#else // PCF_9TAP
+	shadow = step( shadist, textureCube( shacube, shapos ).r );
+#endif // PCF_9TAP
+}
+
+void main( void ){
+	vec4 diffuse = texture2D( texDiffuse, vTexCoord );
+#ifdef SHADER_STENCIL_TEST
+	if( diffuse.a < epsilon ) discard;
+#endif
+	
+	// calculate position
+#ifdef GEOM_ENCODED_DEPTH
+	vec3 position = vec3( dot( texture2D( texDepth, vTexCoord ).rgb, unpackGeomDepth ) );
+#else
+	vec3 position = vec3( texture2D( texDepth, vTexCoord ).r );
+#endif
+	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+	
+	
+	
+	// calculate shadow contributions
+	vec4 shadowTer = vec4( 1.0 );
+	vec4 shadowObj = vec4( 1.0 );
+	
+	evalShadowMap( shadowObj.r, texShadow1Obj, pOptions1Obj, ( gl_TextureMatrix[ 0 ] * vec4( position, 1.0 ) ).xyz );
+//	evalShadowCube( shadowTer.r, texShadow1Ter, pOptions1Obj.xy, pOptionsTer.r, ( gl_TextureMatrix[ 1 ] * vec4( position, 1.0 ) ).xyz );
+#ifdef HAS_LIGHT_2
+	evalShadowMap( shadowObj.g, texShadow2Obj, pOptions2Obj, ( gl_TextureMatrix[ 2 ] * vec4( position, 1.0 ) ).xyz );
+//	evalShadowCube( shadowTer.g, texShadow2Ter, pOptions2Obj.xy, pOptionsTer.g, ( gl_TextureMatrix[ 3 ] * vec4( position, 1.0 ) ).xyz );
+#endif
+#ifdef HAS_LIGHT_3
+	evalShadowMap( shadowObj.b, texShadow3Obj, pOptions3Obj, ( gl_TextureMatrix[ 4 ] * vec4( position, 1.0 ) ).xyz );
+//	evalShadowCube( shadowTer.b, texShadow3Ter, pOptions3Obj.xy, pOptionsTer.b, ( gl_TextureMatrix[ 5 ] * vec4( position, 1.0 ) ).xyz );
+#endif
+#ifdef HAS_LIGHT_4
+	evalShadowMap( shadowObj.a, texShadow4Obj, pOptions4Obj, ( gl_TextureMatrix[ 6 ] * vec4( position, 1.0 ) ).xyz );
+//	evalShadowCube( shadowTer.a, texShadow4Ter, pOptions4Obj.xy, pOptionsTer.a, ( gl_TextureMatrix[ 7 ] * vec4( position, 1.0 ) ).xyz );
+#endif
+	
+	gl_FragData[ 0 ] = ( shadowObj * pShadowScale + pShadowBase ) * shadowTer;
+}
+	]]></program>
+	
+</shader>

@@ -1,0 +1,79 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of canvas creators for use with automatic gui theme creation.
+ *
+ * The creators in this list server as blue prints for creators to be used by
+ * automatic gui themes and must not be changed. For this reason call
+ * CanvasCreator.copyCanvasCreator() on received creators to create a new creator
+ * of the matching type and with appropriate configuration for modifying and using.
+ */
+class CanvasCreators
+	/** \brief Canvas creators. */
+	private var Dictionary pCreators
+	
+	
+	
+	/** \brief Create canvas creators. */
+	public func new()
+		this.pCreators = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Add creator. */
+	public func void add( String name, CanvasCreator creator )
+		this.pCreators.setAt( name, creator )
+	end
+	
+	/** \brief Named creator or \em null if not found. */
+	public func CanvasCreator getNamed( String name )
+		return this.pCreators.getAt( name, null ) cast CanvasCreator
+	end
+	
+	/** \brief Remove creator if present. */
+	public func void remove( String name )
+		this.pCreators.removeIfExisting( name )
+	end
+	
+	/** \brief Remove all factories. */
+	public func void removeAll()
+		this.pCreators.removeAll()
+	end
+	
+	
+	
+	/** \brief Add default canvas creators. */
+	public func void addDefaultCreators()
+		this.add( "Default", DefaultCanvasCreator.new() )
+		this.add( "Rectangle", RectangleCanvasCreator.new() )
+		this.add( "Bevel", BevelCanvasCreator.new() )
+		this.add( "Image", ImageCanvasCreator.new() )
+		this.add( "ImageBorder", ImageBorderCanvasCreator.new() )
+	end
+end

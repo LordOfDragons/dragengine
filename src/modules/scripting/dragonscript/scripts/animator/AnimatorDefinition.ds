@@ -1,0 +1,251 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Stores the definition of an animator. Once defined an animator can be
+ * updated using the stored definition easily. Avoids storing real animators
+ * as often multiple animator definitions have to be loaded at the beginning
+ * of a gaming session.
+ */
+class AnimatorDefinition
+	/** Path of file the animator has been loaded from. */
+	private var String pPathFile
+	/** Rig. */
+	private var Rig pRig
+	/** Animation. */
+	private var Animation pAnimation
+	/** List of controllers. */
+	private var Array pControllers
+	/** List of links. */
+	private var Array pLinks
+	/** List of rules. */
+	private var Array pRules
+	/** List of bones. */
+	private var Array pBones
+	
+	
+	
+	/** Creates a new animator definition. */
+	public func new( String pathFile )
+		this.pPathFile = pathFile
+		this.pControllers = Array.new()
+		this.pLinks = Array.new()
+		this.pRules = Array.new()
+		this.pBones = Array.new()
+	end
+	
+	
+	
+	/** Retrieves the path the animator has been loaded from. */
+	public func String getPathFile()
+		return this.pPathFile
+	end
+	
+	/** Retrieves the rig. */
+	public func Rig getRig()
+		return this.pRig
+	end
+	
+	/** Sets the rig. */
+	public func void setRig( Rig rig )
+		this.pRig = rig
+	end
+	
+	/** Retrieves the animation. */
+	public func Animation getAnimation()
+		return this.pAnimation
+	end
+	
+	/** Sets the animation. */
+	public func void setAnimation( Animation animation )
+		this.pAnimation = animation
+	end
+	
+	/** Retrieves the number of controllers. */
+	public func int getControllerCount()
+		return this.pControllers.getCount()
+	end
+	
+	/** Retrieves the controller at the given position. */
+	public func ADController getControllerAt( int position )
+		return this.pControllers.getAt( position ) cast ADController
+	end
+	
+	/** Adds a controller. */
+	public func void addController( ADController controller )
+		if controller == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pControllers.add( controller )
+	end
+	
+	
+	
+	/** Retrieves the number of links. */
+	public func int getLinkCount()
+		return this.pLinks.getCount()
+	end
+	
+	/** Retrieves the link at the given position. */
+	public func ADLink getLinkAt( int position )
+		return this.pLinks.getAt( position ) cast ADLink
+	end
+	
+	/** Adds a link. */
+	public func void addLink( ADLink link )
+		if link == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pLinks.add( link )
+	end
+	
+	
+	
+	/** Retrieves the number of rules. */
+	public func int getRuleCount()
+		return this.pRules.getCount()
+	end
+	
+	/** Retrieves the rule at the given position. */
+	public func ADRule getRuleAt( int position )
+		return this.pRules.getAt( position ) cast ADRule
+	end
+	
+	/** Adds a rule. */
+	public func void addRule( ADRule rule )
+		if rule == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pRules.add( rule )
+	end
+	
+	
+	
+	/** \brief Number of bones. */
+	public func int getBoneCount()
+		return this.pBones.getCount()
+	end
+	
+	/** \brief Bone at index. */
+	public func String getBoneAt( int index )
+		return this.pBones.getAt( index ) cast String
+	end
+	
+	/** \brief Add bone. */
+	public func void addBone( String bone )
+		if bone == null
+			throw EInvalidParam.new()
+		end
+		this.pBones.add( bone )
+	end
+	
+	
+	
+	/** Builds the animator using the stored definition. */
+	public func void buildAnimator( Animator animator )
+		var int i, count
+		
+		if animator == null
+			throw EInvalidParam.new()
+		end
+		
+		animator.removeAllRules()
+		animator.removeAllLinks()
+		animator.setControllerCount( this.pControllers.getCount() ) // 0 )
+		
+		count = this.pControllers.getCount()
+		for i = 0 to count
+			( this.pControllers.getAt( i ) cast ADController ).addToAnimator( animator, i )
+		end
+		
+		count = this.pLinks.getCount()
+		for i = 0 to count
+			( this.pLinks.getAt( i ) cast ADLink ).addToAnimator( animator )
+		end
+		
+		count = this.pRules.getCount()
+		for i = 0 to count
+			animator.addRule( ( this.pRules.getAt( i ) cast ADRule ).buildRule( animator ) )
+		end
+		
+		count = this.pBones.getCount()
+		for i = 0 to count
+			animator.addBone( this.pBones.getAt( i ) cast String )
+		end
+		
+		animator.setRig( this.pRig )
+		animator.setAnimation( this.pAnimation )
+	end
+	
+	
+	
+	public func void debug( Console console )
+		var int i, count
+		
+		var String text = "Animator Definition:"
+		
+		if this.pRig != null
+			text = text + " rig=" + this.pRig.getFilename()
+		else
+			text = text + " rig=null"
+		end
+		
+		if this.pAnimation != null
+			text = text + " animation=" + this.pAnimation.getFilename()
+		else
+			text = text + " animation=null"
+		end
+		
+		count = this.pBones.getCount()
+		for i = 0 to count
+			text = text + " bone=" + this.pBones.getAt( i ).toString()
+		end
+		
+		console.addMessage( text )
+		
+		count = this.pControllers.getCount()
+		for i = 0 to count
+			( this.pControllers.getAt( i ) cast ADController ).debug( console, i )
+		end
+		
+		count = this.pLinks.getCount()
+		for i = 0 to count
+			( this.pLinks.getAt( i ) cast ADLink ).debug( console, i )
+		end
+		
+		count = this.pRules.getCount()
+		for i = 0 to count
+			( this.pRules.getAt( i ) cast ADRule ).debug( console )
+		end
+	end
+end

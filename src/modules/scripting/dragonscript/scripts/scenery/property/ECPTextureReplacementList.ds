@@ -1,0 +1,175 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Texture replacement list element class property for use with XML loading.
+ * 
+ * Texture replacement list is stored as TextureReplacementList instance. From XML the
+ * texture replacement list is read using a map type property string. Each map entry
+ * is a map defining one texture replacement. The following example defines a texture
+ * replacement list with one entry replacing the 'material' texture.
+ * 
+ * \code{.xml}
+ * <map name='propertyName'>
+ *    <map key='material'>
+ *        <string key='skin'>different_material.deskin</string>
+ *        <color key='tint' r='0.5' g='0.8' b='1'/>
+ *        <map key='transform'>
+ *            <vector2 key='scale' x='2' y='2'/>
+ *            <float key='rotate'>90</float>
+ *            <vector2 key='translate' x='0.5' y='0'/>
+ *        </map>
+ *    </map>
+ * </map>
+ * \endcode
+ */
+class ECPTextureReplacementList extends ElementClassProperty implements ResourceListener
+	private var TextureReplacementList pList
+	private var PreloadCounter pCounter
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pList = TextureReplacementList.new()
+	end
+	
+	/** \brief Create property with initial value. */
+	public func new( String name, TextureReplacementList list ) super( name )
+		this.pList = TextureReplacementList.new( list )
+	end
+	
+	
+	
+	/** \brief Texture replacement list. */
+	public func TextureReplacementList getList()
+		return this.pList
+	end
+	
+	/** \brief Set texture replacement list. */
+	public func void setList( TextureReplacementList list )
+		this.pList = TextureReplacementList.new( list )
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pList.removeAll()
+		
+		( value cast Dictionary ).forEach( block String key, Dictionary value
+			var TextureReplacement texture = TextureReplacement.new( key )
+			
+			value.forEach( block String key2, Object value2
+				if key2.equals( "skin" )
+					texture.setPath( value2 cast String )
+					
+				elif key2.equals( "tint" )
+					texture.setColorTint( value2 cast Color )
+					
+				elif key2.equals( "transform" )
+					var Dictionary transformDict = value2 cast Dictionary
+					texture.setTransform( TexMatrix2.newSRT( \
+						transformDict.getAt( "scale", Vector2.new( 1.0, 1.0 ) ) cast Vector2, \
+						transformDict.getAt( "rotate", 0.0 ) cast float, \
+						transformDict.getAt( "translate", Vector2.new() ) cast Vector2 ) )
+				end
+			end )
+			
+			this.pList.add( texture )
+		end )
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		this.pCounter = counter
+		
+		var String basePath = elementClass.getBasePath()
+		
+		this.pList.forEach( block TextureReplacement each
+			if each.getPath() != null
+				// replace the path with the absolute path. otherwise we have to calculate
+				// the absolute path each time finishedLoading() is called since the resource
+				// has the absolute path not matching the relative path. it is save to do
+				// this replacement here once
+				each.setPath( File.absolutePath( each.getPath(), basePath ).getPath() )
+				
+				Skin.loadAsynchron( each.getPath(), this )
+				counter.increase()
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		return this.pList.inject( false, block bool hasProblems, TextureReplacement each
+			if each.getPath() != null and each.getSkin() == null
+				console.addMessage( "Property " + elementClass.getClassname() + "." \
+					+ this.getName() + ": Failed loading skin " + each.getPath() )
+				return true
+			end
+			return hasProblems
+		end ) cast bool
+	end
+	
+	
+	
+	/** \brief Resource has finished loading. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+		this.pList.forEach( block TextureReplacement each
+			if path.equals( each.getPath() )
+				each.setSkin( resource cast Skin )
+			end
+		end )
+		
+		this.pCounter.decrease()
+	end
+	
+	/** \brief Resource failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+		this.pCounter.decrease()
+	end
+end

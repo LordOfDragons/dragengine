@@ -1,0 +1,756 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to actors to align to a specific position and orientation.
+ * 
+ * Manipulates ECBehaviorLocomotion to move an actor a short distance to a specific position,
+ * orientation and looking direction. This is typically required for actors intending to
+ * interact with objects. In this case the animation of the actor has to match the object
+ * it is interacting with. Actor actions will use this behavior to achieve this goal.
+ * 
+ * To use this class add these behaviors to the actor:
+ * - ECBehaviorLocomotion
+ * - ECBehaviorAlignActor
+ * 
+ * For using Look-At handling these behaviors are required:
+ * - ECBehaviorConversationActor
+ * 
+ * Add a listener to be notified if the actor finished aligning or poll the behavior.
+ * 
+ * During each update step the actor is moved towards the goal position in a straight line.
+ * The orientation and looking direction is also adjusted using a blend from the starting
+ * values to the final values.
+ */
+class ECBehaviorAlignActor extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Actor starts aligning. */
+		func void startAligning( Instance instance )
+		
+		/** \brief Actor finished aligning. */
+		func void finishedAligning( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Actor starts aligning. */
+		public func void startAligning( Instance instance )
+		end
+		
+		/** \brief Actor finished aligning. */
+		public func void finishedAligning( Instance instance )
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		class LeaveConversation extends ECBehaviorConversationActor.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void leaveConversation( ECBehaviorConversationActor.Instance instance )
+				this.pInstance.onLeaveConversation()
+			end
+		end
+		
+		
+		private var ECBehaviorAlignActor pECBehavior
+		
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		private var ECBehaviorConversationActor.Instance pConversationActor
+		
+		private var DVector pTargetPosition
+		private var float pTargetOrientation
+		private var float pTargetLookVertical
+		private var ConversationPlaybackLookAt pLookAt
+		private var Element pRelativeTargetElement
+		private var DMatrix pRelativeTargetMatrix
+		private var float pInitialDistance
+		private var bool pIsAtTarget
+		private var bool pAlignFinished
+		private var bool pSucceeded
+		
+		private var float pSpeed
+		
+		private var ElementResolver pElementResolver
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorAlignActor ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pListeners = Array.new()
+			this.pElementResolver = ElementResolver.new()
+			this.pIsAtTarget = false
+			this.pAlignFinished = true
+			this.pSucceeded = true
+			
+			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
+			
+			this.setRequiresEnterFrame( true )
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pConversationActor = null
+			this.pLocomotion = null
+			this.pListeners = null
+			this.pElementResolver = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			if this.pECBehavior.getConversationActor() != null
+				this.pConversationActor = this.pECBehavior.getConversationActor().instance( element )
+			end
+			
+			this.pSpeed = this.pECBehavior.getSpeed().getValue( stub )
+			
+			if this.pConversationActor != null
+				this.pConversationActor.addListener( LeaveConversation.new( this ) )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorAlignActor getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Locomotion behavior. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		/** \brief Conversation actor behavior or null if not used. */
+		public func ECBehaviorConversationActor.Instance getConversationActor()
+			return this.pConversationActor
+		end
+		
+		
+		
+		/** \brief Target position. */
+		public func DVector getTargetPosition()
+			return this.pTargetPosition
+		end
+		
+		/** \brief Set target position. */
+		public func void setTargetPosition( DVector position )
+			this.pTargetPosition = position
+		end
+		
+		/** \brief Target orientation. */
+		public func float getTargetOrientation()
+			return this.pTargetOrientation
+		end
+		
+		/** \brief Set target orientation. */
+		public func void setTargetOrientation( float orientation )
+			this.pTargetOrientation = DEMath.normalize( orientation, -180.0, 180.0 )
+		end
+		
+		/** \brief Set target orientation. */
+		public func void setTargetOrientation( DVector targetPosition )
+			var DVector direction = targetPosition - this.getElement().getPosition()
+			this.pTargetOrientation = -DEMath.atan2( direction.getX(), direction.getZ() )
+		end
+		
+		/** \brief Relative target element. */
+		public func Element getRelativeTargetElement()
+			return this.pRelativeTargetElement
+		end
+		
+		/** \brief Set relative target position. */
+		public func void setRelativeTargetElement( Element element )
+			this.pRelativeTargetElement = element
+		end
+		
+		/** \brief Set target. */
+		public func void setTarget( Element element, DVector position, float orientation )
+			this.setRelativeTargetElement( element )
+			this.setTargetPosition( position )
+			this.setTargetOrientation( orientation )
+		end
+		
+		/** \brief Target looking up-down. */
+		public func float getTargetLookVertical()
+			return this.pTargetLookVertical
+		end
+		
+		/** \brief Set target looking up-down. */
+		public func void setTargetLookVertical( float lookVertical )
+			this.pTargetLookVertical = lookVertical
+		end
+		
+		/** \brief Set target from locomotion. */
+		public func void setTargetFromLocomotion()
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			this.pTargetOrientation = locomotion.getOrientation()
+			this.pTargetLookVertical = locomotion.getLookVerticalGoal()
+		end
+		
+		/** \brief Conversation look-at. */
+		public func ConversationPlaybackLookAt getLookAt()
+			return this.pLookAt
+		end
+		
+		/** \brief Set conversation look-at. */
+		public func void setLookAt( ConversationPlaybackLookAt lookAt )
+			this.pLookAt = lookAt
+		end
+		
+		/** \brief Clear target parameters. */
+		public func void clearTarget()
+			this.pTargetPosition = null
+			this.pTargetOrientation = 0
+			this.pTargetLookVertical = 0
+			this.pLookAt = null
+			this.pRelativeTargetElement = null
+			this.pRelativeTargetMatrix = null
+		end
+		
+		/** \brief Movement speed. */
+		public func float getSpeed()
+			return this.pSpeed
+		end
+		
+		/** \brief Set movement speed. */
+		public func void setSpeed( float speed )
+			this.pSpeed = DEMath.max( speed, 0.0 )
+		end
+		
+		
+		
+		/** \brief Actor is at target position. */
+		public func bool isAtTarget()
+			return this.pIsAtTarget
+		end
+		
+		/** \brief Actor is not at target position. */
+		public func bool isNotAtTarget()
+			return not this.pIsAtTarget
+		end
+		
+		/** \brief Actor is aligning. */
+		public func bool isAligning()
+			return not this.pAlignFinished
+		end
+		
+		/** \brief Actor is not aligning. */
+		public func bool isFinished()
+			return this.pAlignFinished
+		end
+		
+		/** \brief Last aligning succeeded. */
+		public func bool hasSucceeded()
+			return this.pSucceeded
+		end
+		
+		/** \brief Last aligning failed. */
+		public func bool hasFailed()
+			return not this.pSucceeded
+		end
+		
+		
+		
+		/**
+		 * \brief Start aligning actor.
+		 * 
+		 * Before calling set the required parameters using setTarget*(). As long as the
+		 * aligning is running no modification on ECBehaviorLocomotion should be done to not
+		 * cause troubles. Once isAligning() returns false or isFinished() returns true the
+		 * locomotion can be modified again. Calls startAligning() on listeners. Once finished
+		 * calls finishedAligning() on listeners.
+		 * 
+		 * This call does not modify the locomotion parameters. For player actors locomotion
+		 * parameters should be changed otherwise it can look strange or even discomforting.
+		 * Call initLocomotionPlayer() to set suitable locomotion parameters.
+		 * 
+		 * \note To not call if ECBehaviorActorMover is present and is moving actor
+		 * \throws EInvalidParam Actor is already aligning.
+		 */
+		public func void startAligning()
+			if not this.pAlignFinished
+				throw EInvalidParam.new( "Aligning in progress" )
+			end
+			
+			if this.pRelativeTargetElement != null
+				this.pRelativeTargetMatrix = DMatrix.newRotationY( this.pTargetOrientation ) \
+					* DMatrix.newTranslation( this.pTargetPosition )
+			end
+			
+			// calculate initial distance and orientation
+			var DVector targetPosition = this.pTargetPosition
+			if this.pRelativeTargetElement != null
+				targetPosition = this.pRelativeTargetElement.getElementMatrix() * this.pTargetPosition
+			end
+			
+			this.pInitialDistance = ( targetPosition - this.getElement().getPosition() ) \
+				.compSelect( true, false, true ).getLength()
+			
+			// update look-at if present
+			if this.pConversationActor != null
+				var ConversationActor convoActor = this.pConversationActor.getConversationActor()
+				if convoActor != null
+					var ConversationLookAtPlayback hlap = convoActor.getHeadLookAtPlayback()
+					hlap.clearLookAtState()
+					if this.pLookAt != null
+						hlap.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
+					end
+					
+				else
+					this.pLookAt = null
+				end
+				
+			else
+				this.pLookAt = null
+			end
+			
+			// set some locomotion parameters required for correct operation
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			locomotion.setCanTurnInPlace( false )
+			locomotion.cancelTurnInPlace()
+			
+			// ready to align actor
+			this.pIsAtTarget = false
+			this.pAlignFinished = false
+			this.pSucceeded = true
+			
+			this.pListeners.forEach( block Listener each
+				each.startAligning( this )
+			end )
+		end
+		
+		/**
+		 * \brief Init locomotion for player actor use.
+		 * 
+		 * Player actors typically have adjustment times for looking around set to 0 to apply
+		 * player input directly to the locomotion. For aligning these values are usually not
+		 * optimal. This method changes the following locomotion parameters:
+		 * - Adjust time left-right
+		 * - Adjust time up-down
+		 * - Adjust time orientation
+		 * - Adjust time analog movement left-right
+		 * - Adjust time linear velocity
+		 * 
+		 * You can change these values manully before calling startAligning() too.
+		 */
+		public func void initLocomotionPlayer()
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			locomotion.setAdjustTimeHorizontal( 0.5 )
+			locomotion.setAdjustTimeVertical( 0.5 )
+			locomotion.setAdjustTimeOrientation( 0.5 )
+			locomotion.setAdjustTimeAnalogMovingHorizontal( 0 )
+			locomotion.setAdjustTimeLinearVelocity( 0.5 )
+		end
+		
+		/**
+		 * \brief Update aligning.
+		 * 
+		 * Called by think(). While isAligning() returns true do not update locomotion using
+		 * ECBehaviorPlayerInput* or other behaviors. After this call returns you can check if
+		 * isAligning() still returns true. If isAligning() returns false aligning finished
+		 * and you can resume updating locomotions. You can also use listeners to be notified
+		 * if aligning finished or has been cancelled. It is recommended to clear all
+		 * ECBehaviorPlayerInput* once finished to ensure player input did not build up.
+		 */
+		public func void update( float elapsed )
+			if this.pAlignFinished
+				return
+			end
+			
+			// determine target position, orientation and look at
+			var DVector targetPosition = this.pTargetPosition
+			var float targetOrientation = this.pTargetOrientation
+			if this.pRelativeTargetElement != null
+				var DMatrix matrix = this.pRelativeTargetMatrix * this.pRelativeTargetElement.getElementMatrix()
+				targetPosition = matrix.getPosition()
+				targetOrientation = matrix.getEulerAngles().getY()
+			end
+			
+			// adjust looking up-down and left-right if not using a look-at
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			var float turnDifference = DEMath.normalize( targetOrientation - locomotion.getOrientation(), -180.0, 180.0 )
+			
+			if this.pLookAt == null
+				var float turnAngle = DEMath.clamp( turnDifference, -90.0, 90.0 ) // avoid orientation fixing due to over-steering
+				locomotion.setLookHorizontalGoal( turnAngle )
+				locomotion.setLookVerticalGoal( this.pTargetLookVertical )
+			end
+			
+			// adjust orientation. this is done using a blend from the initial orientation to the
+			// target orientation over the 
+			locomotion.setTurnHorizontal( turnDifference )
+			locomotion.setAdjustTimeOrientation( DEMath.linearStep( \
+				DEMath.fabs( locomotion.getTurnHorizontal() ), 0.0, 10.0, 0.1, 0.5 ) )
+			
+			// move to target if not there already
+			if not this.pIsAtTarget
+				this.moveTowardsTarget( elapsed, targetPosition )
+			end
+			
+			// check if aligning finished
+			this.checkFinished()
+		end
+		
+		/** \brief Cancel aligning if running. */
+		public func void cancelAligning()
+			if this.pAlignFinished
+				return
+			end
+			
+			if this.pConversationActor != null
+				this.pConversationActor.getConversationActor().getHeadLookAtPlayback().clearLookAtState()
+			end
+			
+			this.pAlignFinished = true
+			this.pSucceeded = false
+			this.clearTarget()
+			
+			this.pListeners.forEach( block Listener each
+				each.finishedAligning( this )
+			end )
+		end
+		
+		
+		
+		/**
+		 * \brief Move towards target.
+		 * 
+		 * Once close enough to the target position sets actor to target position and sets
+		 * pIsAtTarget to true. Call only if pIsAtTarget is false.
+		 */
+		protected func void moveTowardsTarget( float elapsed, DVector targetPosition )
+			// calculate distance to target
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			var DMatrix invMatrixActor = DMatrix.newWorld( this.getElement().getPosition(), \
+				Quaternion.newFromEulerY( locomotion.getOrientation() ) ).getInverse()
+			var DVector moveDirection = ( invMatrixActor * targetPosition ).compSelect( true, false, true )
+			var float moveDirLen = moveDirection.getLength()
+			
+			// move to target until close enough
+			if moveDirLen > 0.001
+				locomotion.setAnalogMovingHorizontalGoal( \
+					DEMath.atan2( -moveDirection.getX(), moveDirection.getZ() ) )
+				
+				var float speed = this.pSpeed * DEMath.linearStep( moveDirLen, 0.0, 0.25, 0.1, 1.0 )
+				
+				if speed * elapsed <= moveDirLen
+					locomotion.setAdjustTimeLinearVelocity( \
+						DEMath.linearStep( moveDirLen, 0.05, this.pInitialDistance, 0.0, 0.5 ) )
+					
+				else
+					locomotion.setAdjustTimeLinearVelocity( 0 )
+					
+					if elapsed > 0.0001
+						speed = moveDirLen / elapsed
+						
+					else
+						speed = 0
+					end
+				end
+				
+				locomotion.setAnalogMovingSpeed( speed )
+				
+			else
+				// we can not use cancelMovement() or other cancel* calls here since these would
+				// reset the input and thus cancel the values set above. in the end we just want
+				// to set all movement to 0
+				locomotion.setAnalogMovingSpeed( 0 )
+				locomotion.setLinearVelocity( Vector.new() )
+				locomotion.setMovingSpeed( 0 )
+				locomotion.setMovingOrientation( 0 )
+				locomotion.setMovingDirection( 0 )
+				this.getElement().setPosition( targetPosition )
+				this.pIsAtTarget = true
+			end
+		end
+		
+		/**
+		 * \brief Check if actor finished aligning.
+		 * 
+		 * Sets pIsAtTarget to true if all required conditions are fulfilled.
+		 */
+		protected func void checkFinished()
+			if this.pAlignFinished or not this.pIsAtTarget
+				return
+			end
+			
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			
+			if DEMath.fabs( locomotion.getTurnHorizontal() ) > 0.05 \
+			or DEMath.fabs( locomotion.getStance() - locomotion.getStanceGoal() ) > 0.05
+				return
+			end
+			
+			if this.pLookAt != null
+				if this.pConversationActor.getConversationActor().getHeadLookAtPlayback().getRunning()
+					return
+				end
+				this.pLookAt = null
+			end
+			
+			if DEMath.fabs( locomotion.getLookHorizontal() - locomotion.getLookHorizontalGoal() ) > 0.05 \
+			or DEMath.fabs( locomotion.getLookVertical() - locomotion.getLookVerticalGoal() ) > 0.05
+				return
+			end
+			
+			// align finished. apply some final touches to be on the safe side
+			this.pLocomotion.getLocomotion().applyStates()
+			this.pAlignFinished = true
+			this.pSucceeded = true
+			
+			this.pListeners.forEach( block Listener each
+				each.finishedAligning( this )
+			end )
+			
+			this.clearTarget()
+		end
+		
+		
+		
+		/** \brief Actor leaves conversation. */
+		public func void onLeaveConversation()
+			// if actor enter conversation after aligning started the look-at can be cleared
+			// upon leaving. if this is the case restore the look-at
+			if this.pAlignFinished or this.pLookAt == null
+				return
+			end
+			
+			this.pConversationActor.getConversationActor().getHeadLookAtPlayback() \
+				.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			this.update( elapsed )
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+			this.pIsAtTarget = flags.getAt( 3 )
+			this.pAlignFinished = flags.getAt( 4 )
+			this.pSucceeded = flags.getAt( 5 )
+			
+			this.pTargetPosition = DVector.readFromFile( reader )
+			this.pTargetOrientation = reader.readFloat()
+			this.pTargetLookVertical = reader.readFloat()
+			if flags.getAt( 0 )
+				this.pRelativeTargetMatrix = DMatrix.readFromFile( reader )
+			end
+			this.pInitialDistance = reader.readFloat()
+			if flags.getAt( 1 )
+				this.pElementResolver.add( UniqueID.readFromFile( reader ), block Element element
+					this.pRelativeTargetElement = element
+				end )
+			end
+			if flags.getAt( 2 )
+				this.pLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 6 )
+			flags.setAt( 0, this.pRelativeTargetMatrix != null )
+			flags.setAt( 1, this.pRelativeTargetElement != null )
+			flags.setAt( 2, this.pLookAt != null )
+			flags.setAt( 3, this.pIsAtTarget )
+			flags.setAt( 4, this.pAlignFinished )
+			flags.setAt( 6, this.pSucceeded )
+			flags.writeToFile( writer )
+			
+			this.pTargetPosition.writeToFile( writer )
+			writer.writeFloat( this.pTargetOrientation )
+			writer.writeFloat( this.pTargetLookVertical )
+			
+			if this.pRelativeTargetMatrix != null
+				this.pRelativeTargetMatrix.writeToFile( writer )
+			end
+			
+			writer.writeFloat( this.pInitialDistance )
+			
+			if this.pRelativeTargetElement != null
+				this.pRelativeTargetElement.getID().writeToFile( writer )
+			end
+			
+			if this.pLookAt != null
+				this.pLookAt.writeToFile( env, writer )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	private var ECBehaviorConversationActor pConversationActor
+	private var ECPFloat pSpeed
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em conversationActor.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorConversationActor conversationActor ) \
+	this( eclass, locomotion, conversationActor, "alignActor." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorConversationActor conversationActor, String prefix ) super( eclass )
+		if locomotion == null
+			throw ENullPointer.new( "locomotion" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pLocomotion = locomotion
+		this.pConversationActor = conversationActor
+		
+		this.pSpeed = ECPFloat.new( prefix + "speed", 1.25, 0 )
+		eclass.addProperty( this.pSpeed )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLocomotion = null
+		this.pConversationActor = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Conversation actor behavior or null. */
+	public func ECBehaviorConversationActor getConversationActor()
+		return this.pConversationActor
+	end
+	
+	/** \brief Movement speed. */
+	public func ECPFloat getSpeed()
+		return this.pSpeed
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorAlignActor.
+	 */
+	static public func ECBehaviorAlignActor getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorAlignActor
+		end ) cast ECBehaviorAlignActor
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorAlignActor.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

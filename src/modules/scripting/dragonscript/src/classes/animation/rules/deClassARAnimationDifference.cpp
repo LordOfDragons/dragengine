@@ -1,0 +1,424 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "deClassARAnimationDifference.h"
+#include "../deClassAnimator.h"
+#include "../deClassAnimatorRule.h"
+#include "../../math/deClassVector.h"
+#include "../../math/deClassVector2.h"
+#include "../../math/deClassQuaternion.h"
+#include "../../collider/deClassCollider.h"
+#include "../../../deScriptingDragonScript.h"
+#include "../../../deClassPathes.h"
+
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorLink.h>
+#include <dragengine/resources/animator/controller/deAnimatorController.h>
+#include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimationDifference.h>
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/systems/modules/animator/deBaseAnimatorAnimator.h>
+#include <dragengine/deEngine.h>
+
+#include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassEnumeration.h>
+
+
+
+// Native structure
+/////////////////////
+
+struct sARAnimDiffNatDat{
+	deAnimator *animator;
+	deAnimatorRuleAnimationDifference *rule;
+};
+
+
+
+// Native Functions
+/////////////////////
+
+// public func new()
+deClassARAnimationDifference::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassARAnimationDifference::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	// clear ( important )
+	nd.animator = NULL;
+	nd.rule = NULL;
+	
+	// super call
+	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	
+	// create animator rule
+	nd.rule = new deAnimatorRuleAnimationDifference;
+	baseClass->AssignRule( myself->GetRealObject(), nd.rule );
+}
+
+// public func destructor()
+deClassARAnimationDifference::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassARAnimationDifference::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( myself->GetRealObject()->GetRefCount() != 1 ){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	if( nd.animator ){
+		nd.animator->FreeReference();
+		nd.animator = NULL;
+	}
+	
+	if( nd.rule ){
+		nd.rule->FreeReference();
+		nd.rule = NULL;
+	}
+}
+
+
+
+
+// public func void setEnablePosition( bool enabled )
+deClassARAnimationDifference::nfSetEnablePosition::nfSetEnablePosition( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARAnimationDifference::nfSetEnablePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnablePosition( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setEnableOrientation( bool enabled )
+deClassARAnimationDifference::nfSetEnableOrientation::nfSetEnableOrientation( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARAnimationDifference::nfSetEnableOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableOrientation( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setEnableSize( bool enabled )
+deClassARAnimationDifference::nfSetEnableSize::nfSetEnableSize( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARAnimationDifference::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableSize( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void targetAddLink( ARAnimationDifferenceTarget target, int link )
+deClassARAnimationDifference::nfTargetAddLink::nfTargetAddLink( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsARAnimationDifferenceTarget ); // target
+	p_AddParameter( init.clsInt ); // link
+}
+void deClassARAnimationDifference::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	const deClassARAnimationDifference::eTargets target = ( deClassARAnimationDifference::eTargets )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	const int link = rt->GetValue( 1 )->GetInt();
+	
+	switch( target ){
+	case deClassARAnimationDifference::etBlendFactor:
+		nd.rule->GetTargetBlendFactor().AddLink( link );
+		break;
+		
+	case deClassARAnimationDifference::etLeadingMoveTime:
+		nd.rule->GetTargetLeadingMoveTime().AddLink( link );
+		break;
+		
+	case deClassARAnimationDifference::etReferenceMoveTime:
+		nd.rule->GetTargetReferenceMoveTime().AddLink( link );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void targetRemoveAllLinks( ARAnimationDifferenceTarget target )
+deClassARAnimationDifference::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsARAnimationDifferenceTarget ); // target
+}
+void deClassARAnimationDifference::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	const deClassARAnimationDifference::eTargets target = ( deClassARAnimationDifference::eTargets )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	switch( target ){
+	case deClassARAnimationDifference::etBlendFactor:
+		nd.rule->GetTargetBlendFactor().RemoveAllLinks();
+		break;
+		
+	case deClassARAnimationDifference::etLeadingMoveTime:
+		nd.rule->GetTargetLeadingMoveTime().RemoveAllLinks();
+		break;
+		
+	case deClassARAnimationDifference::etReferenceMoveTime:
+		nd.rule->GetTargetReferenceMoveTime().RemoveAllLinks();
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+
+
+// public func void setLeadingMoveName( String move )
+deClassARAnimationDifference::nfSetLeadingMoveName::nfSetLeadingMoveName( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setLeadingMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // move
+}
+void deClassARAnimationDifference::nfSetLeadingMoveName::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	const char * const moveName = rt->GetValue( 0 )->GetString();
+	
+	nd.rule->SetLeadingMoveName( moveName );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setLeadingMoveTime( float time )
+deClassARAnimationDifference::nfSetLeadingMoveTime::nfSetLeadingMoveTime( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setLeadingMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // time
+}
+void deClassARAnimationDifference::nfSetLeadingMoveTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetLeadingMoveTime( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setReferenceMoveName( String move )
+deClassARAnimationDifference::nfSetReferenceMoveName::nfSetReferenceMoveName( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setReferenceMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // move
+}
+void deClassARAnimationDifference::nfSetReferenceMoveName::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetReferenceMoveName( rt->GetValue( 0 )->GetString() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setReferenceMoveTime( float time )
+deClassARAnimationDifference::nfSetReferenceMoveTime::nfSetReferenceMoveTime( const sInitData &init ) : dsFunction( init.clsARAnimDiff,
+"setReferenceMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // time
+}
+void deClassARAnimationDifference::nfSetReferenceMoveTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetReferenceMoveTime( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+
+
+// Class deClassARAnimationDifference
+///////////////////////////////////////
+
+// Constructor
+////////////////
+
+deClassARAnimationDifference::deClassARAnimationDifference( deScriptingDragonScript &ds ) :
+dsClass( "ARAnimationDifference", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
+pDS( ds ){
+	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetBase( "AnimatorRule" );
+	
+	p_SetNativeDataSize( sizeof( sARAnimDiffNatDat ) );
+}
+
+deClassARAnimationDifference::~deClassARAnimationDifference(){
+}
+
+
+
+// Management
+///////////////
+
+void deClassARAnimationDifference::CreateClassMembers( dsEngine *engine ){
+	pClsARAnimationDifferenceTarget = engine->GetClass( "Dragengine.Scenery.ARAnimationDifferenceTarget" );
+	
+	sInitData init;
+	init.clsARAnimDiff = this;
+	init.clsVoid = engine->GetClassVoid();
+	init.clsInt = engine->GetClassInt();
+	init.clsFlt = engine->GetClassFloat();
+	init.clsStr = engine->GetClassString();
+	init.clsBool = engine->GetClassBool();
+	init.clsObj = engine->GetClassObject();
+	init.clsVec = pDS.GetClassVector();
+	init.clsVec2 = pDS.GetClassVector2();
+	init.clsQuat = pDS.GetClassQuaternion();
+	init.clsAr = pDS.GetClassAnimator();
+	init.clsCol = pDS.GetClassCollider();
+	init.clsARAnimationDifferenceTarget = pClsARAnimationDifferenceTarget;
+	
+	// add functions
+	AddFunction( new nfNew( init ) );
+	AddFunction( new nfDestructor( init ) );
+	
+	AddFunction( new nfSetEnablePosition( init ) );
+	AddFunction( new nfSetEnableOrientation( init ) );
+	AddFunction( new nfSetEnableSize( init ) );
+	
+	AddFunction( new nfTargetAddLink( init ) );
+	AddFunction( new nfTargetRemoveAllLinks( init ) );
+	
+	AddFunction( new nfSetLeadingMoveName( init ) );
+	AddFunction( new nfSetLeadingMoveTime( init ) );
+	AddFunction( new nfSetReferenceMoveName( init ) );
+	AddFunction( new nfSetReferenceMoveTime( init ) );
+	
+	// calculate member offsets
+	CalcMemberOffsets();
+}
+
+deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule( dsRealObject *myself ) const{
+	if( ! myself ){
+		return NULL;
+	}
+	
+	return ( ( sARAnimDiffNatDat* )p_GetNativeData( myself->GetBuffer() ) )->rule;
+}
+
+void deClassARAnimationDifference::AssignAnimator( dsRealObject *myself, deAnimator *animator ){
+	if( ! myself ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	pDS.GetClassAnimatorRule()->AssignAnimator( myself, animator );
+	
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	
+	if( animator == nd.animator ){
+		return;
+	}
+	
+	if( nd.animator ){
+		nd.animator->FreeReference();
+	}
+	
+	nd.animator = animator;
+	
+	if( animator ){
+		animator->AddReference();
+	}
+}
+
+void deClassARAnimationDifference::PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationDifference *rule ){
+	if( ! rt ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	if( ! rule ){
+		rt->PushObject( NULL, this );
+		return;
+	}
+	
+	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetBaseClass();
+	rt->CreateObjectNakedOnStack( this );
+	sARAnimDiffNatDat &nd = *( ( sARAnimDiffNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	nd.animator = NULL;
+	nd.rule = NULL;
+	
+	try{
+		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		
+		nd.animator = animator;
+		if( animator ){
+			animator->AddReference();
+		}
+		
+		nd.rule = rule;
+		rule->AddReference();
+		
+		baseClass->AssignRule( rt->GetValue( 0 )->GetRealObject(), rule );
+		baseClass->AssignAnimator( rt->GetValue( 0 )->GetRealObject(), animator );
+		
+	}catch( ... ){
+		rt->RemoveValues( 1 ); // remove pushed object
+		throw;
+	}
+}

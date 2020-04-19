@@ -1,0 +1,282 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Construct dynamic skins with multiple skin properties from items.
+ * 
+ * Supports adding items defining multiple optional skin properties using images or colors.
+ * The renderables in the dynamic skin are named after skin property names and the items
+ * used to update the content for each of them. All renderables are canvas type with each
+ * item adding appropriate canvas instances. All combined this yields a dynamic skin that
+ * is able to fully replace the content of a skin texture where each supported texture
+ * property has the renderable property set with the name of the texture property.
+ * 
+ * After creating a new instance the contained dynamic skin has no renderables. Add first
+ * all properties supported by your skin of choice with the default color or value to use.
+ * Whenever an item canvas are created and added for all properties in item matching
+ * renderables names defined above. No additional renderables will be created. If an item
+ * property name does not match it is ignored.
+ */
+class ConstructedDynamicSkin
+	/** \brief Array of of ConstructedDynamicSkinItem. */
+	private var Array pItems
+	
+	/** \brief Dynamic skin. */
+	private var DynamicSkin pDynamicSkin
+	
+	/** \brief Dictionary mapping property names (String) to renderable canvas (CanvasView). */
+	private var Dictionary pMapProperties
+	
+	
+	
+	/**
+	 * \brief Create constructed dynamic skin.
+	 * 
+	 * Creates a new dynamic skin.
+	 */
+	public func new() this( null )
+	end
+	
+	/**
+	 * \brief Create constructed dynamic skin.
+	 * 
+	 * If \em dynamicSkin is \em null creates a new dynamic skin. Otherwise takes control
+	 * of \em dynamicSkin removing all renderables.
+	 */
+	public func new( DynamicSkin dynamicSkin )
+		this.pItems = Array.new()
+		this.pMapProperties = Dictionary.new()
+		
+		if dynamicSkin != null
+			this.pDynamicSkin = dynamicSkin
+			dynamicSkin.removeAllRenderables()
+			
+		else
+			this.pDynamicSkin = DynamicSkin.new()
+		end
+	end
+	
+	
+	
+	/** \brief Dynamic skin. */
+	public func DynamicSkin getDynamicSkin()
+		return this.pDynamicSkin
+	end
+	
+	/** \brief Remove all renderables. */
+	public func void removeAllRenderables()
+		this.pMapProperties.removeAll()
+		this.pDynamicSkin.removeAllRenderables()
+	end
+	
+	/** \brief Add renderable with default value. */
+	public func void addRenderable( String name, Point size, float value )
+		this.addRenderable( name, size, Color.new( value, value, value ) )
+	end
+	
+	/** \brief Add renderable with default color. */
+	public func void addRenderable( String name, Point size, Color color )
+		if name.empty() or not size.isAtLeast( 1 ) or color == null
+			throw EInvalidParam.new()
+		end
+		
+		var int index = this.pDynamicSkin.getRenderableCount()
+		this.pDynamicSkin.addRenderable( name, DynamicSkinRenderableType.canvas )
+		
+		var CanvasView view = CanvasView.new()
+		view.setSize( size )
+		
+		var CanvasPaint background = CanvasPaint.new()
+		background.setShapeType( CanvasPaintShape.rectangle )
+		background.setSize( size )
+		background.setFillColor( color )
+		background.setThickness( 0.0 )
+		view.addCanvas( background )
+		
+		this.pDynamicSkin.setCanvasAt( index, view )
+		this.pMapProperties.setAt( name, view )
+	end
+	
+	/** \brief Add renderable with default image. */
+	public func void addRenderable( String name, Point size, Image image )
+		if name.empty() or not size.isAtLeast( 1 ) or image == null
+			throw EInvalidParam.new()
+		end
+		
+		var int index = this.pDynamicSkin.getRenderableCount()
+		this.pDynamicSkin.addRenderable( name, DynamicSkinRenderableType.canvas )
+		
+		var CanvasView view = CanvasView.new()
+		view.setSize( size )
+		
+		var CanvasImage background = CanvasImage.new()
+		background.setImage( image )
+		view.addCanvas( background )
+		
+		this.pDynamicSkin.setCanvasAt( index, view )
+		this.pMapProperties.setAt( name, view )
+	end
+	
+	/**
+	 * \brief Add renderable with default value.
+	 * 
+	 * Looks up property named "name" in \em texture in \em skin.
+	 */
+	public func void addRenderable( String name, Point size, Skin skin, int texture )
+		var int property = skin.textureIndexOfPropertyNamed( texture, name )
+		
+		select skin.propertyGetType( texture, property )
+		case SkinPropertyType.value
+			this.addRenderable( name, size, skin.propertyGetValue( texture, property ) )
+			
+		case SkinPropertyType.color
+			this.addRenderable( name, size, skin.propertyGetColor( texture, property ) )
+			
+		case SkinPropertyType.image
+			this.addRenderable( name, size, skin.propertyGetImage( texture, property ) )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/** \brief Number of items. */
+	public func int getItemCount()
+		return this.pItems.getCount()
+	end
+	
+	/** \brief Item at index. */
+	public func ConstructedDynamicSkinItem getItemAt( int index )
+		return this.pItems.getAt( index ) cast ConstructedDynamicSkinItem
+	end
+	
+	/** \brief Add item. */
+	public func void addItem( ConstructedDynamicSkinItem item )
+		if item == null
+			throw EInvalidParam.new()
+		end
+		this.pItems.add( item )
+		this.addCanvasForItem( item )
+	end
+	
+	/** \brief Remove item. */
+	public func void removeItem( ConstructedDynamicSkinItem item )
+		this.pItems.remove( item )
+		this.removeCanvasForItem( item )
+	end
+	
+	/** \brief Remove all items. */
+	public func void removeAllItems()
+		this.pItems.forEach( block ConstructedDynamicSkinItem item
+			this.removeCanvasForItem( item )
+		end )
+		this.pItems.removeAll()
+	end
+	
+	/** \brief Visit items with block with parameter ConstructedDynamicSkinItem. */
+	public func void forEachItem( Block ablock )
+		this.pItems.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Add canvas for item. */
+	protected func void addCanvasForItem( ConstructedDynamicSkinItem item )
+		var CanvasView view
+		
+		item.forEachProperty( block ConstructedDynamicSkinProperty each
+			view = this.pMapProperties.getAt( each.getName(), null ) cast CanvasView
+			if view != null
+				this.addCanvasForProperty( item, each, view )
+			end
+		end )
+	end
+	
+	/** \brief Add canvas for item property. */
+	protected func void addCanvasForProperty( ConstructedDynamicSkinItem item, \
+	ConstructedDynamicSkinProperty property, CanvasView view )
+		var Canvas canvas
+		
+		if property.getImage() != null
+			var CanvasImage canvasImage = CanvasImage.new()
+			canvasImage.setImage( property.getImage() )
+			canvas = canvasImage
+			
+		elif property.getColor() != null
+			var CanvasPaint canvasPaint = CanvasPaint.new()
+			canvasPaint.setShapeType( CanvasPaintShape.rectangle )
+			canvasPaint.setFillColor( property.getColor() )
+			canvasPaint.setThickness( 0.0 )
+			canvas = canvasPaint
+		end
+		
+		if canvas == null
+			return
+		end
+		
+		canvas.setPosition( item.getPosition() )
+		canvas.setSize( item.getSize() )
+		canvas.setTransparency( item.getTransparency() )
+		canvas.setOrder( item.getOrder() )
+		if item.getTransform() != null
+			canvas.setTransform( item.getTransform() )
+		end
+		if item.getColorTransform() != null
+			canvas.setColorTransform( item.getColorTransform() )
+		end
+		
+		/*
+		// TODO deCanvas does not yet support setting a mask canvas
+		if item.getImageMask() != null
+			var CanvasImage canvasImage = CanvasImage.new()
+			canvasImage.setImage( item.getImageMask() )
+			canvas.setMask( canvasImage )
+		end
+		*/
+		
+		view.addCanvas( canvas )
+		property.setCanvas( canvas )
+	end
+	
+	/** \brief Remove canvas for item. */
+	protected func void removeCanvasForItem( ConstructedDynamicSkinItem item )
+		var CanvasView view
+		
+		item.forEachProperty( block ConstructedDynamicSkinProperty each
+			if each.getCanvas() != null
+				view = this.pMapProperties.getAt( each.getName(), null ) cast CanvasView
+				if view != null
+					view.removeCanvas( each.getCanvas() )
+					each.setCanvas( null )
+				end
+			end
+		end )
+	end
+end

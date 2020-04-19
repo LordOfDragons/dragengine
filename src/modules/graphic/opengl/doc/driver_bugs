@@ -1,0 +1,17 @@
+nVidia Decal Slow Down
+======================
+
+This bug has been observed on the nVidia GeForce 9500M GS series on Linux with the official nVidia drivers.
+The exact cause of the bug is unknown and does not happen on ATI. Chances are it is a GPU relative bug and
+that it does not affect newer GPUs (tests pending).
+
+The bug shows itself as a huge performance loss when rendering decals. The framerate drops down to a slide
+show in this case. With normal geometry no problem happens. The problem is due to the roughness texture.
+This texture uses a 2-component format. Using 2-component format the slow down happens. If changed to a
+3-component format the slow down goes away. Since the only difference between normal geometry and decals
+is the use of blending the conclusion is that blending on a 2-component format causes the massive slow
+down on nVidia chips.
+
+As a fix a configuration value is used to fix this problem on an nVidia system. Later on there might be
+use for an additional field in the roughness texture which could fix the problem without having to waste
+GPU memory space for nothing.

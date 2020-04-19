@@ -1,0 +1,598 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Game world element.
+ */
+class Element 
+	/** \brief Element class. */
+	private var ElementClass pClass
+	
+	/** \brief Position. */
+	private var DVector pPosition
+	
+	/** \brief Orientation. */
+	private var Quaternion pOrientation
+	
+	/** \brief Scaling. */
+	private var Vector pScaling
+	
+	/** \brief Is scaled. */
+	private var bool pIsScaled
+	
+	/** \brief Parent or \em null if not attached. */
+	private var Element pParent
+	
+	/** \brief Game world or \em null if not added to one. */
+	private var GameWorld pGameWorld
+	
+	/** \brief Element is visible */
+	private var bool pVisible
+	
+	/** \brief Element is touchable. */
+	private var bool pTouchable
+	
+	/** \brief Unique id used for saving or networking. */
+	private var UniqueID pID
+	
+	/** \brief Element matrix or \em null if not calculated yet. */
+	private var DMatrix pMatrix
+	
+	/** \brief Inverse element matrix or \em null if not calculated yet. */
+	private var DMatrix pMatrixInverse
+	
+	/** \brief Element stub used to create the element or \em null if unknown. */
+	private var StubElement pStub
+	
+	
+	
+	/** Creates a new element object. */
+	public func new( ElementClass elementClass )
+		if elementClass == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pClass = elementClass
+		this.pPosition = DVector.new()
+		this.pOrientation = Quaternion.new()
+		this.pScaling = Vector.new( 1, 1, 1 )
+		this.pIsScaled = false
+		this.pVisible = true
+		this.pTouchable = true
+	end
+	
+	/**
+	 * \brief Dispose of element.
+	 * 
+	 * Breaks reference loops and cleans up.
+	 */
+	public func void dispose()
+		this.pGameWorld = null
+		this.pStub = null
+		this.pParent = null
+		this.pClass = null
+	end
+	
+	
+	
+	/** \brief Element has been disposed of. */
+	public func bool isDisposed()
+		return this.pClass == null
+	end
+	
+	/** \brief Element has not been disposed of. */
+	public func bool isNotDisposed()
+		return this.pClass != null
+	end
+	
+	
+	
+	/**
+	 * \brief Initialize element from stub.
+	 * 
+	 * The stub is stored in the element for saving. Do not change the stub after
+	 * using it for the init() call.
+	 */
+	public func void init( StubElement stub )
+		if stub == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pStub = stub
+		this.pID = stub.getID()
+		this.pPosition = stub.getPosition()
+		this.pOrientation = Quaternion.newFromEuler( stub.getRotation() )
+		this.pScaling = stub.getScaling()
+		this.pIsScaled = not Vector.new( 1, 1, 1 ).equals( this.pScaling )
+	end
+	
+	
+	
+	/** Retrieves the unique id or null if not set. */
+	public func UniqueID getID()
+		return this.pID
+	end
+	
+	/** Sets the unique id or null to unset it. */
+	public func void setID( UniqueID id )
+		this.pID = id
+	end
+	
+	/** Retrieves the element class. */
+	public func ElementClass getClass()
+		return this.pClass
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+		if position.equals( this.pPosition )
+			return
+		end
+		
+		this.pPosition = position
+		this.pMatrix = null
+		this.pMatrixInverse = null
+		
+		this.onSetPosition()
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation.equals( this.pOrientation )
+			return
+		end
+		
+		this.pOrientation = orientation
+		this.pMatrix = null
+		this.pMatrixInverse = null
+		
+		this.onSetOrientation()
+	end
+	
+	/** \brief Scaling. */
+	public func Vector getScaling()
+		return this.pScaling
+	end
+	
+	/** \brief Set scaling. */
+	public func void setScaling( Vector scaling )
+		if scaling.equals( this.pScaling )
+			return
+		end
+		
+		this.pScaling = scaling
+		this.pIsScaled = not Vector.new( 1, 1, 1 ).equals( scaling )
+		this.pMatrix = null
+		this.pMatrixInverse = null
+		
+		this.onSetScaling()
+	end
+	
+	/** \brief Is scaled. */
+	public func bool getIsScaled()
+		return this.pIsScaled
+	end
+	
+	/** \brief Set position and orientation. */
+	public func void setGeometry( DVector position, Quaternion orientation )
+		if position.equals( this.pPosition ) and orientation.equals( this.pOrientation )
+			return
+		end
+		
+		this.pPosition = position
+		this.pOrientation = orientation
+		this.pMatrix = null
+		this.pMatrixInverse = null
+		
+		this.onSetGeometry()
+	end
+	
+	/** \brief Set position, orientation and scaling of element. */
+	public func void setGeometry( DVector position, Quaternion orientation, Vector scaling )
+		if position.equals( this.pPosition ) and orientation.equals( this.pOrientation ) \
+		and scaling.equals( this.pScaling )
+			return
+		end
+		
+		this.pPosition = position
+		this.pOrientation = orientation
+		this.pScaling = scaling
+		this.pMatrix = null
+		this.pMatrixInverse = null
+		
+		this.onSetGeometry()
+	end
+	
+	
+	
+	/** Retrieves the parent or null if not attached. */
+	public func Element getParent()
+		return this.pParent
+	end
+	
+	/** Sets the parent or null if not attached. */
+	public func void setParent( Element parent )
+		if this.pParent != parent
+			this.pParent = parent
+			
+			this.onSetParent()
+		end
+	end
+	
+	
+	
+	/** Retrieves the game world or null if not attached. */
+	public func GameWorld getGameWorld()
+		return this.pGameWorld
+	end
+	
+	/** Sets the game world or null if not attached. */
+	public func void setGameWorld( GameWorld gameWorld )
+		if this.pGameWorld == gameWorld
+			return
+		end
+		
+		if this.pGameWorld != null
+			this.removeFromGameWorld()
+		end
+		
+		this.pGameWorld = gameWorld
+		
+		if gameWorld != null
+			this.addToGameWorld()
+		end
+		
+		this.onSetGameWorld()
+	end
+	
+	/** Determines if the element is visible. */
+	public func bool getVisible()
+		return this.pVisible
+	end
+	
+	/** Sets if the element is visible. */
+	public func void setVisible( bool visible )
+		if this.pVisible != visible
+			this.pVisible = visible
+			
+			this.onSetVisible()
+		end
+	end
+	
+	/** Determines if the element is touchable. */
+	public func bool getTouchable()
+		return this.pTouchable
+	end
+	
+	/** Sets if the element is touchable. */
+	public func void setTouchable( bool touchable )
+		if this.pTouchable != touchable
+			this.pTouchable = touchable
+			
+			this.onSetTouchable()
+		end
+	end
+	
+	
+	
+	/** \brief Element stub used to create the element. */
+	public func StubElement getStub()
+		return this.pStub
+	end
+	
+	/** \brief Set element stub used to create the element. */
+	public func void setStub( StubElement stub )
+		this.pStub = stub
+	end
+	
+	
+	
+	/** \brief Matrix to transform from element space into world space. */
+	public func DMatrix getElementMatrix()
+		if this.pMatrix == null
+			this.pMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
+			if this.pIsScaled
+				this.pMatrix = DMatrix.newScaling( DVector.new( this.pScaling ) ) * this.pMatrix
+			end
+		end
+		return this.pMatrix
+	end
+	
+	/** \brief Matrix to transform from world space into element space. */
+	public func DMatrix getInverseElementMatrix()
+		if this.pMatrixInverse == null
+			this.pMatrixInverse = this.getElementMatrix().getInverse()
+		end
+		return this.pMatrixInverse
+	end
+	
+	
+	
+	/**
+	 * Determines if a this element is parented directly or indirectly
+	 * to the given element. If the element is the same as the given
+	 * element false is returned.
+	 */
+	public func bool isChildOf( Element parent )
+		var Element testParent = this.getParent()
+		
+		while testParent != null
+			if testParent == parent
+				return true
+			end
+			
+			testParent = testParent.getParent()
+		end
+		
+		return false
+	end
+	
+	/**
+	 * Determines if a this element is parented directly or indirectly
+	 * to the given element. If the element is the same as the given
+	 * element true is returned.
+	 */
+	public func bool isMyselfOrChildOf( Element parent )
+		return ( this == parent ) or this.isChildOf( parent )
+	end
+	
+	
+	
+	/** \brief Remove element from game world if present. */
+	public func void removeFromGameWorldIfPresent()
+		if this.pGameWorld != null
+			this.pGameWorld.removeElement( this )
+		end
+	end
+	
+	/**
+	 * \brief Remove element from game world if present and dispose of element.
+	 * 
+	 * This is the prefered way to dispose of an element no matter if it is part of a game
+	 * world or not. Do not use dispose() directly otherwise clean up logic done by
+	 * removeFromGameWorld() is skipped.
+	 */
+	public func void safeDispose()
+		if this.pGameWorld != null
+			this.pGameWorld.removeElement( this )
+		end
+		this.dispose()
+	end
+	
+	
+	
+	/** Adds the element content to the game world if required. */
+	public func void addToGameWorld()
+	end
+	
+	/** Removes the element content from the game world if placed there before. */
+	public func void removeFromGameWorld()
+	end
+	
+	/**
+	 * \brief Frame update started.
+	 * 
+	 * To receive this event call GameWorld.addEnterFrameOnce() from inside addToGameWorld().
+	 * This event is called at the beginning of the next frame update before think() of any
+	 * element is called.
+	 * 
+	 * Use this method as a one-time call to carry out tasks required to be done once before
+	 * any elements start thinking. Typically this is done after adding a new element to a
+	 * game world to finish connections to other elements in the game world which can not
+	 * be established before all required elements are added too.
+	 * 
+	 * \warning Do not call GameWorld.addEnterFrameOnce() or GameWorld.removeEnterFrameOnce()
+	 *          from inside enterFrame(). Do this from addToGameWorld(), removeFromGameWorld(),
+	 *          think() or postThink().
+	 */
+	public func void enterFrame()
+	end
+	
+	/**
+	 * Thinks about what the element is going to do in this frame.
+	 * This is the place to use AI functions to determine the next
+	 * motions beeing it displacement, rotation or other shape
+	 * changes. The game world will use this information to carry
+	 * out changes to the elements. An element does not change its
+	 * state by itself rather waits for the game world to apply the
+	 * required changes. Execute here als updates to dynamic skins
+	 * that are independant, hence not requiring the game world to
+	 * be uptodate for rendering.
+	 *
+	 * @param elapsed Time elapsed since last frame update in seconds
+	 */
+	public func void think( float elapsed )
+	end
+	
+	/**
+	 * Called after the physics system has carried out collision
+	 * detection and physics simulations. The element has to update
+	 * its states like position or rotation from its registered
+	 * physics objects like Colliders or Components. Complex animated
+	 * elements also update here the skeletal animations.
+	 *
+	 * @param elapsed Time elapsed since last frame update in seconds
+	 */
+	public func void postThink( float elapsed )
+	end
+	
+	/** Visit this element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitElement( this )
+	end
+	
+	
+	
+	/**
+	 * \brief Read element from file reader.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	end
+	
+	/**
+	 * \brief Write element to file writer.
+	 * 
+	 * Default implementation does nothing.
+	 * 
+	 * \note
+	 * Updating save file format can be done by adding to the StubElement a property
+	 * with the save file version used, for example "@saveVersion" or similar. Since
+	 * the stub element is read and stored during init while loading this information
+	 * is present when readFromFile() is called.
+	 */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+	end
+	
+	/**
+	 * \brief Write element to file writer with stub.
+	 * 
+	 * Writes element class name, then the stub parameters and then the element parameters.
+	 * If no stub exists an empty one is used for writing stub parameters.
+	 */
+	public func void writeToFileWithStub( PersistencyEnvironment env, FileWriter writer )
+		this.pStub.writeToFile( writer )
+		this.writeToFile( env, writer )
+	end
+	
+	/**
+	 * \brief Write element to file writer with stub supporting null element.
+	 * 
+	 * Writes element class name, then the stub parameters and then the element parameters.
+	 * If no stub exists an empty one is used for writing stub parameters. If element is
+	 * \em null empty element class name is written. Empty element class name is used
+	 * during loading to indicate a \em null element.
+	 */
+	public static func void writeElementToFileWithStub( PersistencyEnvironment env, \
+	FileWriter writer, Element element )
+		if element != null
+			element.writeToFileWithStub( env, writer )
+			
+		else
+			writer.writeString8( "" )
+		end
+	end
+	
+	/**
+	 * \brief Load element from file reader with stub supporting null element.
+	 *
+	 * Reads element class name from reader. If element class name is empty \em null element
+	 * is returned. Otherwise stub and element is read from file reader. Uses
+	 * ElementClass.loadElement() if supported.
+	 */
+	public static func Element readElementFromFileWithStub( PersistencyEnvironment env, \
+	FileReader reader, ElementClassList ElementClassList )
+		var StubElement stub = StubElement.readFromFile( reader, ElementClassList )
+		if stub == null
+			return null
+		end
+		return stub.loadElement( env, reader )
+	end
+	
+	
+	
+	/** \brief Position changed. */
+	public func void onSetPosition()
+	end
+	
+	/** \brief Orientation changed. */
+	public func void onSetOrientation()
+	end
+	
+	/** \brief Scaling changed. */
+	public func void onSetScaling()
+	end
+	
+	/** \brief Position, orientation or scaling changed. */
+	public func void onSetGeometry()
+	end
+	
+	/** Parent changed. */
+	public func void onSetParent()
+	end
+	
+	/** Game world changed. */
+	public func void onSetGameWorld()
+	end
+	
+	/** Visible state changed. */
+	public func void onSetVisible()
+	end
+	
+	/** Touchable state changed. */
+	public func void onSetTouchable()
+	end
+	
+	
+	
+	/** Return string representation of this Element. */
+	public func String toString()
+		return "a " + this.pClass.getClassname() + "(ID " + this.pID + ")"
+	end
+	
+	
+	
+	/** \brief Log using BaseGameApp Console if present. */
+	public func void log( String message )
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			app.getConsole().addMessage( this.pClass.getClassname() \
+				+ "(ID " + this.pID + ") at " + this.pPosition + ": " + message )
+		end
+	end
+	
+	
+	
+	/** \brief Debug information as Dictionary. */
+	public func Dictionary debugInformation()
+		var Dictionary info = Dictionary.new()
+		info.setAt( "class", this.pClass != null if this.pClass.getClassname() else null )
+		info.setAt( "position", this.pPosition )
+		info.setAt( "orientation", this.pOrientation.getEulerAngles() )
+		info.setAt( "scaling", this.pScaling )
+		info.setAt( "parent", this.pParent != null if this.pParent.pID else null )
+		info.setAt( "visible", this.pVisible )
+		info.setAt( "touchable", this.pTouchable )
+		info.setAt( "id", this.pID )
+		return info
+	end
+end

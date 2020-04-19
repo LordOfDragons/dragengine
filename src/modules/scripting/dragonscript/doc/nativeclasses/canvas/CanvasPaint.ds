@@ -1,0 +1,170 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Canvas paint.
+ * 
+ * This is a native class.
+ */
+class CanvasPaint extends Canvas
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create canvas paint. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Shape type. */
+	public func CanvasPaintShape getShapeType()
+	end
+	
+	/** \brief Set shape type. */
+	public func void setShapeType( CanvasPaintShape shapeType )
+	end
+	
+	/** \brief Line color. */
+	public func Color getLineColor()
+	end
+	
+	/** \brief Set line color. */
+	public func void setLineColor( Color color )
+	end
+	
+	/** \brief Fill color. */
+	public func Color getFillColor()
+	end
+	
+	/** \brief Set fill color. */
+	public func void setFillColor( Color color )
+	end
+	
+	/** \brief Line thickness in units. */
+	public func float getThickness()
+	end
+	
+	/** \brief Line thickness in units. */
+	public func void setThickness( float thickness )
+	end
+	
+	/**
+	 * \brief Round corner in X direction as percentage.
+	 * 
+	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
+	 * value of 1 indicates fully round corners (aka ellipse).
+	 */
+	public func float getRoundCornerX()
+		return 0
+	end
+	
+	/**
+	 * \brief Set round corner in X direction as percentage.
+	 * 
+	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
+	 * value of 1 indicates fully round corners (aka ellipse).
+	 */
+	public func void setRoundCornerX( float roundCorner )
+	end
+	
+	/**
+	 * \brief Round corner in Y direction as percentage.
+	 * 
+	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
+	 * value of 1 indicates fully round corners (aka ellipse).
+	 */
+	public func float getRoundCornerY()
+		return 0
+	end
+	
+	/**
+	 * \brief Set round corner in Y direction as percentage.
+	 * 
+	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
+	 * value of 1 indicates fully round corners (aka ellipse).
+	 */
+	public func void setRoundCornerY( float roundCorner )
+	end
+	
+	/**
+	 * \brief Start angle in degrees from 0 to 360.
+	 * 
+	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
+	 */
+	public func float getStartAngle()
+		return 0
+	end
+	
+	/**
+	 * \brief Set start angle in degrees from 0 to 360.
+	 * 
+	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
+	 */
+	public func void setStartAngle( float angle )
+	end
+	
+	/**
+	 * \brief End angle in degrees from 0 to 360.
+	 * 
+	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
+	 */
+	public func float eetEndAngle()
+		return 0
+	end
+	
+	/**
+	 * \brief Set end angle in degrees from 0 to 360.
+	 * 
+	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
+	 */
+	public func void setEndAngle( float angle )
+	end
+	
+	
+	
+	/** \brief Number of points. */
+	public func int getPointCount()
+	end
+	
+	/** \brief Point at position. */
+	public func Point getPointAt( int index )
+	end
+	
+	/** \brief Add a point. */
+	public func void addPoint( Point point )
+	end
+	
+	/** \brief Remove all points. */
+	public func void removeAllPoints()
+	end
+	
+	
+	
+	/**
+	 * \brief Canvas is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type canvas and components are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

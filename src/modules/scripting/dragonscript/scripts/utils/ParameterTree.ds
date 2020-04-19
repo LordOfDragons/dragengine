@@ -1,0 +1,226 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Nested tree of parameters.
+ * 
+ * Parameters are retrieved using a path. The value of parameters can be primitive types like
+ * string or floating point as well as some basic game engine classes like point or vectors
+ * and arrays thereof. Parameter trees can be loaded from and written to XML files. This class
+ * is best used to load parameters from XML files without the need to write specific XML loaders
+ * and complex parameter storing classes. A typical use case is prototyping, storing small lists
+ * of parameters or storing information with structure not known at build time.
+ * 
+ * This class itself does not enforce a specific path separator. The LoadParameterTree class
+ * thought uses '/' as path separator. It is encouraged to use '/' as path separator.
+ */
+class ParameterTree
+	private var Dictionary pParameters
+	
+	
+	
+	/** \brief Create parameter tree. */
+	public func new()
+		this.pParameters = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Create copy of parameter tree.
+	 * 
+	 * Arrays are duplicated but no value inside since all values stored in the parameter
+	 * tree are considered immutable.
+	 */
+	public func new( ParameterTree tree )
+		this.pParameters = tree.pParameters.map( block String key, Object value
+			if value castable Array
+				return Array.new( value cast Array )
+				
+			else
+				return value
+			end
+		end )
+	end
+	
+	
+	
+	/** \brief Number of parameters. */
+	public func int getCount()
+		return this.pParameters.getCount()
+	end
+	
+	/** \brief Parameter path list as Array of String. */
+	public func Array getPathList()
+		return this.pParameters.getKeys()
+	end
+	
+	/** \brief Parameter keys under path as Array of String using '/' separator. */
+	public func Array getKeys( String path )
+		return this.getKeys( path, '/' )
+	end
+	
+	/** \brief Parameter keys under path as Array of String. */
+	public func Array getKeys( String path, byte separator )
+		var int len = path.getLength()
+		if len > 0 and path.getAt( len - 1 ) != separator
+			path = path + separator
+			len++
+		end
+		
+		var Array keys = Array.new()
+		var String key
+		var int index
+		
+		this.pParameters.getKeys().forEach( block String each
+			if each.substring( 0, len ).equals( path )
+				index = each.find( separator, len )
+				if index != -1
+					key = each.substring( len, index )
+				else
+					key = each.substring( len )
+				end
+				if not keys.has( key )
+					keys.add( key )
+				end
+			end
+		end )
+		
+		return keys
+	end
+	
+	/** \brief Parameter is present. */
+	public func bool has( String path )
+		return this.pParameters.has( path )
+	end
+	
+	/** \brief Remove value if set. */
+	public func void remove( String path )
+		this.pParameters.removeIfExisting( path )
+	end
+	
+	/** \brief Remove all values. */
+	public func void removeAll()
+		this.pParameters.removeAll()
+	end
+	
+	/** \brief Visit parameters with block with arguments path(String) and value(Object). */
+	public func void forEach( Block ablock )
+		this.pParameters.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Value of parameter or default value if absent. */
+	public func Object getAt( String path, Object default )
+		return this.pParameters.getAt( path, default )
+	end
+	
+	/** \brief String value of parameter or default value if absent. */
+	public func String getStringAt( String path, String default )
+		return this.pParameters.getAt( path, default ) cast String
+	end
+	
+	/** \brief Floating point value of parameter or default value if absent. */
+	public func float getFloatAt( String path, float default )
+		return this.pParameters.getAt( path, default ) cast float
+	end
+	
+	/** \brief Integer value of parameter or default value if absent. */
+	public func int getIntAt( String path, int default )
+		return this.pParameters.getAt( path, default ) cast int
+	end
+	
+	/** \brief Boolean value of parameter or default value if absent. */
+	public func bool getBoolAt( String path, bool default )
+		return this.pParameters.getAt( path, default ) cast bool
+	end
+	
+	/** \brief Point value of parameter or default value if absent. */
+	public func Point getPointAt( String path, Point default )
+		return this.pParameters.getAt( path, default ) cast Point
+	end
+	
+	/** \brief Point3 value of parameter or default value if absent. */
+	public func Point3 getPoint3At( String path, Point3 default )
+		return this.pParameters.getAt( path, default ) cast Point3
+	end
+	
+	/** \brief Vector2 value of parameter or default value if absent. */
+	public func Vector2 getVector2At( String path, Vector2 default )
+		return this.pParameters.getAt( path, default ) cast Vector2
+	end
+	
+	/** \brief Vector value of parameter or default value if absent. */
+	public func Vector getVectorAt( String path, Vector default )
+		return this.pParameters.getAt( path, default ) cast Vector
+	end
+	
+	/** \brief Color value of parameter or default value if absent. */
+	public func Color getColorAt( String path, Color default )
+		return this.pParameters.getAt( path, default ) cast Color
+	end
+	
+	/** \brief BorderSize value of parameter or default value if absent. */
+	public func BorderSize getBorderSizeAt( String path, BorderSize default )
+		return this.pParameters.getAt( path, default ) cast BorderSize
+	end
+	
+	/** \brief RectArea value of parameter or default value if absent. */
+	public func RectArea getRectAreaAt( String path, RectArea default )
+		return this.pParameters.getAt( path, default ) cast RectArea
+	end
+	
+	/** \brief FloatRectArea value of parameter or default value if absent. */
+	public func FloatRectArea getAt( String path, FloatRectArea default )
+		return this.pParameters.getAt( path, default ) cast FloatRectArea
+	end
+	
+	/** \brief Array value of parameter or default value if absent. */
+	public func Array getArrayAt( String path, Array default )
+		return this.pParameters.getAt( path, default ) cast Array
+	end
+	
+	/** \brief Tree value of parameter or default value if absent. */
+	public func ParameterTree getTreeAt( String path, ParameterTree default )
+		return this.pParameters.getAt( path, default ) cast ParameterTree
+	end
+	
+	/** \brief Set value of parameter. */
+	public func void setAt( String path, Object value )
+		this.pParameters.setAt( path, value )
+	end
+	
+	
+	
+	/** \brief Print parameters to console. */
+	public func void log( Console console, String name )
+		console.addMessage( "ParameterTree(" + name + ") " + this.pParameters.getCount() + " parameters" )
+		this.pParameters.forEach( block String path, Object value
+			console.addMessage( "- '" + path + "' = " + value )
+		end )
+	end
+end

@@ -1,0 +1,81 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Basic sky class using sky behavior.
+ */
+class BaseSkyClass extends BehaviorElementClass
+	private var ECBehaviorSky pSky
+	private var ECBehaviorDayTimeSky pDayTimeSky
+	
+	
+	
+	/** \brief Create element class. */
+	public func new() this( "BaseSky" )
+	end
+	
+	/** \brief Create element class. */
+	public func new( Loaders loaders ) this( "BaseSky", loaders )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, Loaders loaders ) super( className )
+		this.pSky = ECBehaviorSky.new( this, loaders )
+		this.pDayTimeSky = ECBehaviorDayTimeSky.new( this, this.pSky )
+	end
+	
+	
+	
+	/** \brief Sky behavior. */
+	public func ECBehaviorSky getSky()
+		return this.pSky
+	end
+	
+	/** \brief Day time sky behavior. */
+	public func ECBehaviorDayTimeSky getDayTimeSky()
+		return this.pDayTimeSky
+	end
+	
+	
+	
+	/** \brief Create copy of element class. */
+	public func ElementClass duplicateNamed( String classname )
+		return BaseSkyClass.new( classname )
+	end
+	
+	
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return BaseSky.new( this )
+	end
+end

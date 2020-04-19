@@ -1,0 +1,52 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer source synthesizer.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SSSynthesizer extends SynthesizerSource
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator source. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set synthesizer or \em null if not set. */
+	public func void setSynthesizer( Synthesizer synthesizer)
+	end
+	
+	/** \brief Set connection between child synthesizer target and this synthesizer instance controller. */
+	public func void setConnectionAt( int target, int controller )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( SSSynthesizerTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( SSSynthesizerTarget target )
+	end
+	/*@}*/
+end

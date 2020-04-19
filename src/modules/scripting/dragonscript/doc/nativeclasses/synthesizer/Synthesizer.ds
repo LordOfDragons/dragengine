@@ -1,0 +1,177 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer producing dynamic sounds from sources.
+ * 
+ * Contains the definition for producing sounds. Use SynthesizerInstance
+ * for to actually produce sounds using individual parameters. Multiple
+ * synthesizer instances can share the same synthesizer.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class Synthesizer
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create synthesizer. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of channels. */
+	public func int getChannelCount()
+	end
+	
+	/** \brief Set number of channels. */
+	public func void setChannelCount( int channelCount )
+	end
+	
+	/** \brief Sample rate. */
+	public func int getSampleRate()
+	end
+	
+	/** \brief Set sample rate. */
+	public func void setSampleRate( int sampleRate )
+	end
+	
+	/** \brief Bytes per sample. */
+	public func int getBytesPerSample()
+	end
+	
+	/** \brief Set bytes per sample. */
+	public func void setBytesPerSample( int bytesPerSample )
+	end
+	
+	/** \brief Number of samples to create. */
+	public func float getSampleCount()
+	end
+	
+	/** \brief Set number of samples to create. */
+	public func void setSampleCount( int sampleCount )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Nnumber of controllers. */
+	public func int getControllerCount()
+	end
+	
+	/**
+	 * \brief Set number of controllers.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void setControllerCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the synthesizer
+	 *          is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func SynthesizerController getControllerAt( int index )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the synthesizer
+	 *          is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func SynthesizerController getControllerNamed( String name )
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Links */
+	/*@{*/
+	/** \brief Number of links. */
+	public func int getLinkCount()
+	end
+	
+	/**
+	 * \brief Add link with controller and no mapping points.
+	 * \details If the controller does not exist the link uses 0 as input value during calculations.
+	 * \returns Index of added link.
+	 */
+	public func int addLink( int controller )
+	end
+	
+	/** \brief Remove all links. */
+	public func void removeAllLinks()
+	end
+	
+	/**
+	 * \brief Set controller of link.
+	 * \details If the controller does not exist the link uses 0 as input value during calculations.
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void linkSetController( int link, int controller )
+	end
+	
+	/**
+	 * \brief Set repeat count along X axis of link.
+	 * \throws EInvalidParam \em repeat is less than 1.
+	 */
+	public func void linkSetRepeat( int link, int repeat )
+	end
+	
+	/**
+	 * \brief Set curve of link.
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void linkSetCurve( int link, CurveBezier curve )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Sources */
+	/*@{*/
+	/** \brief Number of sources. */
+	public func int getSourceCount()
+	end
+	
+	/** \brief Add source. */
+	public func void addSource( SynthesizerSource source )
+	end
+	
+	/**
+	 * \brief Source at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or large than or equal to getSourceCount().
+	 */
+	public func SynthesizerSource getSourceAt( int index )
+	end
+	
+	/** \brief Remove all sources. */
+	public func void removeAllSources()
+	end
+	/*@}*/
+end

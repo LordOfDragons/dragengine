@@ -1,0 +1,190 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief List of sound resource elements class property for use with XML loading.
+ * 
+ * Similar to ECPSound but allows to stored any number of sounds. Useful for having
+ * a list of similar sounds picking randomly one to play.
+ * 
+ * By default empty path does not add a sound. If you need the size of the sound
+ * list to be identical to the list of sound path specified use set add null for
+ * invalid sounds to true. In this case for all sound path that are empty or fail
+ * to load null is added to the list.
+ */
+class ECPSoundList extends ElementClassProperty implements ResourceListener
+	private var Array pPath
+	private var Array pSounds
+	private var Array pFailedLoading
+	private var PreloadCounter pCounter
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pPath = Array.new()
+		this.pSounds = Array.new()
+	end
+	
+	
+	
+	/** \brief Remove all path. */
+	public func void removeAllPath()
+		this.pPath.removeAll()
+	end
+	
+	/** \brief Add a path. */
+	public func void addPath( String path )
+		this.pPath.add( path )
+	end
+	
+	
+	
+	/** \brief Number of sounds. */
+	public func int getCount()
+		return this.pSounds.getCount()
+	end
+	
+	/** \brief Sound at index. */
+	public func Sound getAt( int index )
+		return this.pSounds.getAt( index ) cast Sound
+	end
+	
+	/** \brief Get random sound or \em null if no sounds are present. */
+	public func Sound getRandom()
+		if this.pSounds.getCount() == 0
+			return null
+			
+		else
+			return this.pSounds.random() cast Sound
+		end
+	end
+	
+	/** \brief For each sound with block with Sound as parameter. */
+	public func void forEach( Block ablock )
+		this.pSounds.forEach( ablock )
+	end
+	
+	/** \brief Remove all sounds. */
+	public func void removeAll()
+		this.pSounds.removeAll()
+	end
+	
+	/** \brief Add sound. */
+	public func void add( Sound sound )
+		this.pSounds.add( sound )
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pPath.removeAll()
+		( value cast Array ).forEach( block String each
+			this.pPath.add( each )
+		end )
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		this.pCounter = counter
+		
+		var String basePath = elementClass.getBasePath()
+		
+		// replace the path with the absolute path. otherwise we have to calculate
+		// the absolute path each time finishedLoading() is called since the resource
+		// has the absolute path not matching the relative path. it is save to do
+		// this replacement here once
+		this.pPath = this.pPath.map( block String each
+			return each.empty() if "" else File.absolutePath( each, basePath ).getPath()
+		end )
+		
+		this.pPath.forEach( block String each
+			this.pSounds.add( null )
+			if not each.empty()
+				Sound.loadAsynchron( each, this )
+				counter.increase()
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pFailedLoading == null
+			return false
+		end
+		
+		this.pFailedLoading.forEach( block String each
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Failed loading sound " + each )
+		end )
+		return true
+	end
+	
+	
+	
+	/** \brief Resource has finished loading. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+		var int i, count = this.pPath.getCount()
+		for i = 0 to count
+			if this.pPath.getAt( i ).equals( path )
+				this.pSounds.setAt( i, resource )
+			end
+		end
+		
+		this.pCounter.decrease()
+	end
+	
+	/** \brief Resource failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+		if this.pFailedLoading == null
+			this.pFailedLoading = Array.new()
+		end
+		this.pFailedLoading.add( path )
+		
+		this.pCounter.decrease()
+	end
+end

@@ -1,0 +1,213 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Window blending over color.
+ * 
+ * Allows to create effects like white-out or black-out where the game content is blended
+ * over white or black.
+ * 
+ * To use this window place it above all other windows you would like to blend by this
+ * effect. Then set the designer selector for the window. This sets the color to blend to
+ * or any other desired content. The default selector is "Window.OverColor". Change this
+ * to a name suiting your needs. Also set blend timing parameters. The blend timing parameters
+ * consist of the time in seconds it takes to fade in to the color, the time in seconds
+ * to stay at the color and the time in seconds it takes to fade out again. By default the
+ * window is set maximized covering the entire desktop.
+ * 
+ * To trigger the effect call startFade()
+ */
+class WindowOverColor extends Window
+	private var float pTimeFadeIn
+	private var float pTimeStay
+	private var float pTimeFadeOut
+	private var float pThreshold1
+	private var float pThreshold2
+	private var bool pUseSmoothStep
+	private var float pElapsed
+	private var bool pRunning
+	
+	
+	
+	/** \brief Create window. */
+	public func new()
+		this.pTimeFadeIn = 1.0
+		this.pTimeStay = 1.0
+		this.pTimeFadeOut = 1.0
+		this.pElapsed = 0.0
+		this.pRunning = false
+		this.pUseSmoothStep = true
+		
+		this.updateThresholds()
+		
+		this.setWindowState( Window.WindowState.maximized )
+		this.setCanActivate( false )
+		this.setCanFocus( false )
+		this.setTransparency( 0.0 )
+		this.setDesignerSelector( "Window.OverColor" )
+	end
+	
+	
+	
+	/** \brief Time in seconds to fade in. */
+	public func float getTimeFadeIn()
+		return this.pTimeFadeIn
+	end
+	
+	/** \brief Set time in seconds to fade in. */
+	public func void setTimeFadeIn( float time )
+		this.pTimeFadeIn = DEMath.max( time, 0.0 )
+		this.updateThresholds()
+	end
+	
+	/** \brief Time in seconds to stay at color. */
+	public func float getTimeStay()
+		return this.pTimeStay
+	end
+	
+	/** \brief Set time in seconds to stay at color. */
+	public func void setTimeStay( float time )
+		this.pTimeStay = DEMath.max( time, 0.0 )
+		this.updateThresholds()
+	end
+	
+	/** \brief Time in seconds to fade out. */
+	public func float getTimeFadeOut()
+		return this.pTimeFadeOut
+	end
+	
+	/** \brief Set time in seconds to fade out. */
+	public func void setTimeFadeOut( float time )
+		this.pTimeFadeOut = DEMath.max( time, 0.0 )
+		this.updateThresholds()
+	end
+	
+	/** \brief Use smooth step instead of linear step. */
+	public func bool getUseSmoothStep()
+		return this.pUseSmoothStep
+	end
+	
+	/** \brief Set to use smooth step instead of linear step. */
+	public func void setUseSmoothStep( bool useSmoothStep )
+		this.pUseSmoothStep = useSmoothStep
+	end
+	
+	
+	
+	/** \brief Elapsed time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	/** \brief Set elapsed time. */
+	protected func void setElapsed( float elapsed )
+		this.pElapsed = elapsed
+	end
+	
+	/** \brief Running. */
+	public func bool getRunning()
+		return this.pRunning
+	end
+	
+	
+	
+	/** \brief Start fading if not running. */
+	public func void startFading()
+		if this.pRunning
+			return
+		end
+		
+		this.pElapsed = 0.0
+		this.pRunning = true
+		this.setTransparency( 0.0 )
+		this.setVisible( true )
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Stop fading immediatly if running. */
+	public func void stopFading()
+		if not this.pRunning
+			return
+		end
+		
+		this.stopFrameUpdater()
+		this.setTransparency( 0.0 )
+		this.pRunning = false
+		this.pElapsed = 0.0
+		this.setVisible( false )
+	end
+	
+	/**
+	 * \brief Do frame update.
+	 * 
+	 * Update fading
+	 */
+	public func void onFrameUpdate( float elapsed )
+		if not this.pRunning
+			this.stopFading()
+			return
+		end
+		
+		this.pElapsed += elapsed
+		
+		if this.pElapsed < this.pTimeFadeIn
+			if this.pUseSmoothStep
+				this.setTransparency( DEMath.smoothStep( this.pElapsed, 0.0, this.pTimeFadeIn ) )
+				
+			else
+				this.setTransparency( DEMath.linearStep( this.pElapsed, 0.0, this.pTimeFadeIn ) )
+			end
+			
+		elif this.pElapsed < this.pThreshold1
+			this.setTransparency( 1.0 )
+			
+		elif this.pElapsed < this.pThreshold2
+			if this.pUseSmoothStep
+				this.setTransparency( DEMath.smoothStep( \
+					this.pElapsed, this.pThreshold1, this.pThreshold2, 1.0, 0.0 ) )
+				
+			else
+				this.setTransparency( DEMath.linearStep( \
+					this.pElapsed, this.pThreshold1, this.pThreshold2, 1.0, 0.0 ) )
+			end
+			
+		else
+			this.stopFading()
+		end
+	end
+	
+	/** \brief Update thresholds. */
+	protected func void updateThresholds()
+		this.pThreshold1 = this.pTimeFadeIn + this.pTimeStay
+		this.pThreshold2 = this.pThreshold1 + this.pTimeFadeOut
+	end
+end

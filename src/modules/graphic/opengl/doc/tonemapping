@@ -1,0 +1,233 @@
+Calculate Scene Key
+===================
+
+To calculate the scene key the log-luminance of all pixels has to be averaged.
+
+All pixels in the scene are first transformed into log-luminance. During this step the scene is already
+reduced in size to the next smaller size of power of 4. This makes the upcoming downsample passes more
+efficient since no clamping has to be done and the taps can be spread to the maximum width for optimal
+performance. For this a full screen quad is rendered stretching across the entire scene. Using this
+method the tap distance is at most 2 pixels width but usually smaller to adjust the size. This results
+in a small falsification of the results but the error is rather small and usually not noticeable. Once
+calculate the scene can be further downsampled. The result of this step is written to the temporary
+texture since this is the only other texture than color containing float values.
+
+Important to note is that the found size is halved if the found size is less than half the size of the
+real texture. This is required to allow the use of glTextureBarrier to ping-pong render into the same
+texture. For this to work enough texture space has to exist for two following passes to not overlap.
+If the ratio between the found size and the real size is between 2 and 4 this is guaranteed to be the
+case while allowing downsampling by the factor of 4 without requiring suboptimal taps and clamping.
+The resulting texture is guaranteed to be at least 4x4, 4x2, 2x4 or 2x2 in size.
+
+The downsampling does a ping-pong rendering between the temporary and XXXXXX texture (requires float texture).
+In each turn the width and height is divided by 4 unless it is already 4. This reduces the image by the
+factor of 4 in each direction except close to the end where one side potentially remains at 4 in size.
+This is not fully optimal as the method of downsampling first the width, then the height and back again
+but only this method works if an initial pass is required to adjust the size to a useful one. With the
+separate width/height pass method the initial size would have to be an exponentiation of 8 instead of 4
+which in turn would require up to 16 taps in the initial step. While possible this is slower than wasting
+a a couple of pixels in a very small texture close to the end of the downsampling process. The downsampling
+stops once a size of 4x4 or less is achieved. Due to the potential texture barrier size halving done in
+the initial pass the resulting texture can be 4x4, 4x2, 2x4 or 2x2 in size.
+
+With the 4x4, 4x2, 2x4 or 2x2 image the scene key parameters are calculated. The shaders taps 4 times to do
+the final averaging obtaining the average log-luminance key for the entire scene. Depending on the actual
+size of the averaging texture 4, 2 or 1 different pixel is tapped duplcating some of the 4 taps. This does
+not falsify the result while allowing to use the texture barrier code above.
+
+
+
+Bloom
+=====
+
+Basics
+------
+
+After applying the tone mapping certain values in the scene can be a lot brighter than the white-point
+intensity. In the real world the lenses in cameras and our eyes tend to smear out these overbright
+spots due to imperfections in the lenses and chemical connections between receptors in our eyes. This
+effect is typically called bloom or blooming. The basic idea is to use a high-pass filter on the scene
+image with the tone mapping applied to filter out very bright pixels. Then this image is blurred to
+produce the distinctive halos around overbright pixels.
+
+To blur some coefficients are required. The following python code calculates these parameters. This is useful
+for static size blur filters. For variable ones some additional tricks are used.
+	
+	def coeffs( size ):
+		if size < 2:
+			return [ 1 ]
+		else:
+			values = [ 1, 1 ]
+			for i in range( size - 2 ):
+				newValues = [ 1 ]
+				newValues.extend( [ values[ j ] + values[ j + 1 ] for j in range( len( values ) - 1 ) ] )
+				newValues.append( 1 )
+				values = newValues
+			return values
+	
+	def norm( values ):
+		factor = 1.0 / sum( values )
+		return [ x * factor for x in values ]
+	
+	' '.join( [ '{:.6e}'.format( x ) for x in norm( coeffs( 41 ) ) ] )
+	
+A filter of 41x41 gives already a nice blur. Doing 41x41 taps though is highly inefficient and requires some
+optimizations.
+
+The first step is to split the filter down into a two-filter process doing first a 41x1 blur along the x axis
+and then a 1x41 blur along the y axis. This requires two render passes and less taps for each pass.
+
+
+
+Linear Tapping
+--------------
+
+Another optimization is to tap in between two pixels in the source image. This allows to tape two pixels with
+the appropriate blend values in one tap. This looks like this:
+
+	// w1 = gaussian weight of the pixel with the smaller weight
+	// w2 = gaussian weight of the pixel with the larger weight
+	// tc = texture coordinate at center of the center pixel
+	// n = number of the pixel with the larger gaussian weight starting at 0
+	// ps = pixel size along the blur axis in the 0..1 texture range
+	d = ( 1 + n * 2 + w1 / ( w1 + w2 ) ) * ps
+	tc1 = tc + d
+	tc2 = tc - d
+	
+This is mathematically fully correct since the following holds:
+	
+	// a = pixel with smaller gaussian weight
+	// b = pixel with larger gaussian weight
+	p = a*w2 + b*w1
+	p = a * ( w2*(w1+w2)/(w1+w2) ) + b * ( w1*(w1+w2)/(w1+w2) )    // expand with (w1+w2)/(w1+w2)
+	p = ( a * ( w2/(w1+w2) ) + b * ( w1/(w1+w2) ) ) * (w1+w2)      // factorize out (w1+w2)
+		// 1 - w1/(w1+w2) = (w1+w2)/(w1+w2) - w1/(w1+w2)
+		//                = ( w1+w2 - w1 )/(w1+w2)
+		//                = w2/(w1+w2)
+	p = ( a * ( 1 - w1/(w1+w2) ) + b * ( w1/(w1+w2) ) ) * (w1+w2)  // replace w2/(w1+w2) with 1-w1/(w1+w2)
+	p = ( a*(1-f) + b*f ) * (w1+w2)                                // replace w1/(w1+w2) with f
+	
+The blend weight "f" is the texture coordinates offset between two pixels as used for box filtering in the
+hardware. The sum of the gaussian blend weights is then the new weight to apply to the tapped pixel. The
+result is thus mathematically identical to the 2-tap version. In short the following formula is used:
+	
+	weightSingleTap = weightSmaller + weightLarger
+	textureCoordinateOffset = weightSmaller / weightSingleTap
+	
+Which leads to the initial formula mentioned.
+
+This cuts down the samples to 1+N/2 for odd N (for example N=9 requires then 1+9/2 = 1+4 = 5 taps). For N=41
+thus we need now only 1+41/2 = 1+20 = 21 taps. The following python code gives the values we need:
+	
+	def tapcoeffs( values ):
+		tapcount = len( values ) >> 2
+		temp1 = [ values[ (tapcount-1-i)*2 ] + values[ (tapcount-1-i)*2 + 1 ] for i in range( tapcount ) ]
+		temp2 = [ float( 1 + i*2 ) + values[ (tapcount-1-i)*2 ] / temp1[i] for i in range( tapcount ) ]
+		return [ ( temp2[i], temp1[i] ) for i in range( tapcount ) ]
+	
+	' '.join( [ '({:.6f} {:.6e})'.format( x[0], x[1] ) for x in tapcoeffs( values ) ] )
+
+
+
+Fading Correction
+-----------------
+
+The results show also directly a problem. The highest value in the middle is 0.103 for a normalized 15 tapping.
+Although the weights sum up to 1 the intensity in the middle falls down to 10% which does not look good. The
+solution is to combine multiple blurs of different size together. The typical solution is 5x5 + 11x11 +
+21x21 + 41x41 . This adds the sharpness and intensity of the smaller blurs with the spread of the larger ones.
+The typical solution requires down-sampling and summing up. This requires already 8 tapping passes plus 4
+down-sample passes for a grand total of 12 passes. This is not fast especially with graphic cards where
+switching FBOs or attachments is a lot slower than rendering a bunch of taps more in a single run. The problem
+can be solved though in a different way which is faster.
+
+The solution is to sum up already the weights for the tapping instead of summing up the results. A little bit
+of python code helps here:
+	
+	def resize( values, size ):
+		newValues = [ 0 ] * ( ( size - len( values ) ) >> 1 )
+		newValues.extend( values )
+		newValues.extend( [ 0 ] * ( ( size - len( values ) ) >> 1 ) )
+		return newValues
+	
+	def sumupnorm( sizes ):
+		maxSize = max( sizes )
+		values = [ 0 ] * maxSize
+		for size in sizes:
+			newValues = resize( norm( coeffs( size ) ), maxSize )
+			values = [ values[ i ] + newValues[ i ] for i in range( maxSize ) ]
+		return values
+	
+For the situation of 5x5 + 11x11 + 21x21 + 41x41 the following code can be used:
+	
+	' '.join( [ '{:.6f}'.format( x ) for x in sumupnorm( [ 5, 11, 21, 41 ] ) ] )
+
+This yields now a center value of 0.922 which is not only a lot more intensive than the 0.103 of the pure 41x41
+blur but it is also close to the full intensity of 1. Scaling by 1/centerValue fixes this also and we get a new
+set of blur coefficients that give us a full 1.0 for the center pixel:
+	
+	def fixup( values ):
+		scale = 1.0 / max( values )
+		return [ x * scale for x in values ]
+	
+	' '.join( [ '{:.6f}'.format( x ) for x in fixup( sumupnorm( [ 5, 11, 21, 41 ] ) ) ] )
+	
+Now there is something else we can do as a final optimization
+
+
+
+Tail Cutting
+------------
+
+It is clearly visible that the outer weights are very small (below 0.0001). These small values hardly effect
+the blur result and can be omitted without being noticeable especially compared to the center value pulled to 1.
+The following python code cuts two values and re-normalizes the weights:
+	
+	' '.join( [ '{:.6f}'.format( x ) for x in values[ cut:-cut ] ) ] )
+	
+For the fixup(sumupnorm()) example the outer most 9 values on both ends have values less than 0.000076 . It is
+though safe to cut these 9 weights from both ends. The result of the cut has to be of odd length as otherwise
+it gets difficult later on. Cutting 18 values reduces the number of weights down to 23 taps. That is already
+nice but 21 taps would fit better as we know already we can do 21x1 taps with 11 taps where all but the center
+pixel are double taps. Cutting 10 pixels yields thus an optimal solution for us. The results are like this:
+	
+	8.365976e-04 2.299483e-03 5.703513e-03 1.303982e-02 2.788361e-02 5.673486e-02 1.126022e-01 2.152206e-01
+	4.367155e-01 7.962378e-01 1.000000e+00 7.962378e-01 4.367155e-01 2.152206e-01 1.126022e-01 5.673486e-02
+	2.788361e-02 1.303982e-02 5.703513e-03 2.299483e-03 8.365976e-04
+	
+A nice property here is that we know the center pixel has the weight 1.0 hence we can avoid weighting this pixel
+in the shader later on. Not a ground breaking optimization but hey why do something that you can spare? Using the
+python code from before the following values have to be used:
+	
+	(1.354203 1.232953e+00) (3.343485 3.278228e-01) (5.329522 8.461847e-02) (7.304296 1.874333e-02)
+	(9.266765 3.136081e-03)
+	
+Whereas the first value is the texture coordinate offset to be multiplied by the pixelSize{U/V} and the second
+value the weight to use for the tap. This is one tail side so for the other side the offsets are negated with
+the same weights.
+
+That is all there is to it. 2 passes with 11 taps each and we have a nice bloom of 21 pixel area of effect if we
+do not count the cut off tail weights. Reducing the cutting off increases the area of effect if desired. Two
+more possibilities are cutting off only 8 or 6 pixels. With 8 pixels less this would be 25x1 which are 13 taps:
+	
+	7.580722e-05 2.695368e-04 8.365976e-04 2.299483e-03 5.703513e-03 1.303982e-02 2.788361e-02 5.673486e-02
+	1.126022e-01 2.152206e-01 4.367155e-01 7.962378e-01 1.000000e+00 7.962378e-01 4.367155e-01 2.152206e-01
+	1.126022e-01 5.673486e-02 2.788361e-02 1.303982e-02 5.703513e-03 2.299483e-03 8.365976e-04 2.695368e-04
+	7.580722e-05
+	
+	(1.354203 1.232953e+00) (3.343485 3.278228e-01) (5.329522 8.461847e-02) (7.304296 1.874333e-02)
+	(9.266765 3.136081e-03) (11.219512 3.453440e-04)
+	
+With 6 pixels this would be 29x1 which are 15 taps:
+	
+	3.783605e-06 1.837751e-05 7.580722e-05 2.695368e-04 8.365976e-04 2.299483e-03 5.703513e-03 1.303982e-02
+	2.788361e-02 5.673486e-02 1.126022e-01 2.152206e-01 4.367155e-01 7.962378e-01 1.000000e+00 7.962378e-01
+	4.367155e-01 2.152206e-01 1.126022e-01 5.673486e-02 2.788361e-02 1.303982e-02 5.703513e-03 2.299483e-03
+	8.365976e-04 2.695368e-04 7.580722e-05 1.837751e-05 3.783605e-06
+	
+	(1.354203 1.232953e+00) (3.343485 3.278228e-01) (5.329522 8.461847e-02) (7.304296 1.874333e-02)
+	(9.266765 3.136081e-03) (11.219512 3.453440e-04) (13.170732 2.216111e-05)
+	
+What version is enough depends on the amount of possible overbright. 21x1 handles only up to 10x overbright
+well. 25x1 can handle up to 100x overbright and 29x1 up to 1000x overbright. In general though a huge overbright
+should be better handled with a post processing white-out effect than using a larger filter kernel.

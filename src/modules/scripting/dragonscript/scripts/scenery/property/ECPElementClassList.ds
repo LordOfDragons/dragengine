@@ -1,0 +1,206 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief List of element class elements class property for use with XML loading.
+ * 
+ * Similar to ECPElementClass but allows to store any number of element classes.
+ * Useful for having a list of similar element classes picking one randomly.
+ */
+class ECPElementClassList extends ElementClassProperty
+	private var ElementClassList pElementClassList
+	private var Array pElementClassNames
+	private var Array pElementClasses
+	private var Array pNotFoundElementClasses
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, ElementClassList eclassList ) super( name )
+		if eclassList == null
+			throw EInvalidParam.new()
+		end
+		this.pElementClassList = eclassList
+		this.pElementClassNames = Array.new()
+		this.pElementClasses = Array.new()
+	end
+	
+	/** \brief Dispose of element class property to break reference loops. */
+	public func void dispose()
+		this.pElementClassList = null
+		this.pElementClasses = null
+	end
+	
+	
+	
+	/** \brief Element class manager to look up element class in. */
+	public func ElementClassList getElementClassList()
+		return this.pElementClassList
+	end
+	
+	
+	
+	/** \brief Remove all element class names. */
+	public func void removeAllElementClassNames()
+		this.pElementClassNames.removeAll()
+	end
+	
+	/** \brief Add element class name. */
+	public func void addElementClassName( String elementClassName )
+		this.pElementClassNames.add( elementClassName )
+	end
+	
+	
+	
+	/** \brief Number of element classes. */
+	public func int getElementClassCount()
+		return this.pElementClasses.getCount()
+	end
+	
+	/** \brief Element clas at index. */
+	public func ElementClass getElementClassAt( int index )
+		return this.pElementClasses.getAt( index ) cast ElementClass
+	end
+	
+	/** \brief Get random element class or \em null if no element class is present. */
+	public func ElementClass getRandomElementClass()
+		if this.pElementClasses.getCount() == 0
+			return null
+			
+		else
+			return this.pElementClasses.random() cast ElementClass
+		end
+	end
+	
+	/** \brief For each element class with block with ElementClass as parameter. */
+	public func void forEachElementClass( Block ablock )
+		this.pElementClasses.forEach( ablock )
+	end
+	
+	/** \brief Remove all element classes. */
+	public func void removeAllElementClass()
+		this.pElementClasses.removeAll()
+	end
+	
+	/** \brief Add element class. */
+	public func void addElementClass( ElementClass elementClass )
+		this.pElementClasses.add( elementClass )
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pElementClassNames.removeAll()
+		( value cast Array ).forEach( block String each
+			this.pElementClassNames.add( each )
+		end )
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		this.pNotFoundElementClasses = null
+		this.pElementClasses.removeAll()
+		
+		this.pElementClassNames.forEach( block String each
+			if each.empty()
+				return null
+			end
+			
+			var ElementClass elementClass = this.pElementClassList.getNamed( each )
+			
+			if elementClass == null
+				if this.pNotFoundElementClasses == null
+					this.pNotFoundElementClasses = Array.new()
+				end
+				this.pNotFoundElementClasses.add( each )
+				return null
+			end
+			
+			this.pElementClasses.add( elementClass )
+			elementClass.preloadResources( counter )
+		end )
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pNotFoundElementClasses == null
+			return false
+		end
+		
+		this.pNotFoundElementClasses.forEach( block String each
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Unknown element class " + each )
+		end )
+		return true
+	end
+	
+	
+	
+	/**
+	 * \brief Element class list modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored element class list
+	 * is returned. If the named stub property is present it is decoded using codec 
+	 * 
+	 * \returns Array of ElementClass.
+	 */
+	public func Array getElementClasses( StubWithProperties stub, CodecPropertyString codec )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return Array.new( this.pElementClasses )
+		end
+		
+		return codec.decodeStringList( value ).map( block String each
+			var ElementClass eclass = this.pElementClassList.getNamed( each )
+			if eclass == null
+				throw EInvalidParam.new()
+			end
+			return eclass
+		end )
+	end
+end

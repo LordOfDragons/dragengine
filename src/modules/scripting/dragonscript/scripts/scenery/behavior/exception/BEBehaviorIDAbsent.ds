@@ -1,0 +1,66 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+
+/**
+ * \brief Behavior with identifier not found in element behavior exception.
+ * 
+ * Thrown if an ECBehavior instance with identifier is absent from behavior element.
+ * As additional information the behavior element, the ECBehavior class name and the
+ * missing behavior identifier is provded.
+ */
+class BEBehaviorIDAbsent extends Exception
+	private var BehaviorElement pElement
+	private var String pBehavior
+	private var String pIdentifier
+	
+	
+	
+	/** \brief Create exception. */
+	public func new( BehaviorElement element, String behavior, String identifier ) \
+	super( "Behavior " + behavior + " with identifier '" + identifier \
+	+ "' not found element " + element.getClass().getClassname() )
+		this.pElement = element
+		this.pBehavior = behavior
+		this.pIdentifier = identifier
+	end
+	
+	
+	
+	/** \brief Behavior element. */
+	public func BehaviorElement getElement()
+		return this.pElement
+	end
+	
+	/** \brief Behavior class. */
+	public func String getBehavior()
+		return this.pBehavior
+	end
+	
+	/** \brief Behavior identifier. */
+	public func String getIdentifier()
+		return this.pIdentifier
+	end
+end

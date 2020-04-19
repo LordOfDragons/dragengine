@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition.Nodes
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief List of spans defining a span of text with potentially different styles.
+ */
+class STDNText extends STDNode
+	/** \brief Spans as list of STDNTextSpan. */
+	private var Array pSpans
+	
+	
+	
+	/** \brief Create styled text definition text node. */
+	public func new()
+		this.pSpans = Array.new()
+	end
+	
+	/** \brief Create copy of styled text definition text node. */
+	public func new( STDNText node ) super( node )
+		this.pSpans = node.pSpans.map( block STDNTextSpan each
+			return STDNTextSpan.new( each )
+		end )
+	end
+	
+	
+	
+	/** \brief Number of spans. */
+	public func int getSpanCount()
+		return this.pSpans.getCount()
+	end
+	
+	/** \brief Span at index. */
+	public func STDNTextSpan getSpanAt( int index )
+		return this.pSpans.getAt( index ) cast STDNTextSpan
+	end
+	
+	/** \brief Add span. */
+	public func void addSpan( STDNTextSpan span )
+		if span == null
+			throw EInvalidParam.new()
+		end
+		this.pSpans.add( span )
+	end
+	
+	/** \brief Remove all spans. */
+	public func void removeAllSpans()
+		this.pSpans.removeAll()
+	end
+	
+	/** \brief Visit spans with block with STDNTextSpan as parameter. */
+	public func void forEachSpan( Block ablock )
+		this.pSpans.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Create copy of styled text definition node. */
+	public func STDNode copy()
+		return STDNText.new( this )
+	end
+	
+	/** \brief Visit node. */
+	public func void visit( STDNodeVisitor visitor )
+		visitor.visitText( this )
+	end
+end

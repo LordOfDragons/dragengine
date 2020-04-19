@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE dynamicMusic SYSTEM 'DragengineDynamicMusic.dtd'>
+<dynamicMusic>
+	<switch>Switch 1</switch>
+	<switch>Switch 2</switch>
+	<switch>Switch 3</switch>
+	<switch>Switch 4</switch>
+	
+	<init>
+	</init>
+</dynamicMusic>

@@ -1,0 +1,395 @@
+/* 
+ * Drag[en]gine IGDE World Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "meLoadSaveSystem.h"
+#include "meLSWorld.h"
+#include "meLSXMLWorld.h"
+#include "heightterrain/meLSHeightTerrain.h"
+#include "heightterrain/meLSXMLHeightTerrain.h"
+#include "pfcache/meLSPFCache.h"
+#include "meLoadSaveNavTest.h"
+#include "../world/meWorld.h"
+#include "../world/terrain/meHeightTerrain.h"
+#include "../gui/meWindowMain.h"
+
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
+#include <deigde/gui/igdeStepableTask.h>
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/engine/igdeEngineController.h>
+
+#include <dragengine/deEngine.h>
+#include <dragengine/logger/deLogger.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/systems/modules/skin/deBaseSkinModule.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/exceptions.h>
+
+
+
+// Definitions
+////////////////
+
+#define LOGSOURCE "World Editor"
+
+
+
+// class meLoadSaveSystem
+///////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+meLoadSaveSystem::meLoadSaveSystem( meWindowMain *wndMain ){
+	if( ! wndMain ) DETHROW( deeInvalidParam );
+	
+	pWndMain = wndMain;
+	
+	pLSWorlds = NULL;
+	pLSWorldCount = 0;
+	pLSWorldSize = 0;
+	
+	pLSHTs = NULL;
+	pLSHTCount = 0;
+	pLSHTSize = 0;
+	
+	pLSPFCache = NULL;
+	
+	pLSNavTest = NULL;
+	
+	try{
+		AddLSWorld( new meLSXMLWorld( this ) );
+		AddLSHeightTerrain( new meLSXMLHeightTerrain( this ) );
+		
+		pLSPFCache = new meLSPFCache;
+		
+		pLSNavTest = new meLoadSaveNavTest( this, wndMain->GetEnvironment().GetLogger(), LOGSOURCE );
+		
+		pRebuildFilePatternLists();
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
+meLoadSaveSystem::~meLoadSaveSystem(){
+	pCleanUp();
+}
+	
+
+
+// World Management
+/////////////////////
+
+meLSWorld *meLoadSaveSystem::GetLSWorldAt( int index ) const{
+	if( index < 0 || index >= pLSWorldCount ) DETHROW( deeInvalidParam );
+	return pLSWorlds[ index ];
+}
+
+meLSWorld *meLoadSaveSystem::FindLSWorldMatching( const char *filename ) const{
+	if( ! filename ) DETHROW( deeInvalidParam );
+	// hack!
+	return pLSWorlds[ 0 ];
+}
+
+void meLoadSaveSystem::AddLSWorld( meLSWorld *lsWorld ){
+	if( ! lsWorld ) DETHROW( deeInvalidParam );
+	
+	if( pLSWorldCount == pLSWorldSize ){
+		int i, newSize = pLSWorldSize * 3 / 2 + 1;
+		meLSWorld **newArray = new meLSWorld*[ newSize ];
+		if( ! newArray ) DETHROW( deeOutOfMemory );
+		if( pLSWorlds ){
+			for( i=0; i<pLSWorldSize; i++ ) newArray[ i ] = pLSWorlds[ i ];
+			delete [] pLSWorlds;
+		}
+		pLSWorlds = newArray;
+		pLSWorldSize = newSize;
+	}
+	
+	pLSWorlds[ pLSWorldCount ] = lsWorld;
+	pLSWorldCount++;
+}
+
+meWorld *meLoadSaveSystem::LoadWorld( const char *filename,
+igdeGameDefinition *gameDefinition, igdeStepableTask **task ){
+	if( ! filename || ! gameDefinition || ! task ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	meLSWorld * const lsWorld = FindLSWorldMatching( filename );
+	if( ! lsWorld ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decBaseFileReaderReference reader;
+	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	
+	meWorld * const world = new meWorld( &pWndMain->GetEnvironment() );
+	world->SetFilePath( filename );
+	try{
+		*task = lsWorld->CreateLoadTask( world, reader );
+		return world;
+		
+	}catch( const deException & ){
+		world->FreeReference();
+		throw;
+	}
+}
+
+void meLoadSaveSystem::SaveWorld( meWorld *world, const char *filename ){
+	if( ! world || ! filename ) DETHROW( deeInvalidParam );
+	
+	meLSWorld * const lsWorld = FindLSWorldMatching( filename );
+	if( ! lsWorld ) DETHROW( deeInvalidParam ); // hack
+	
+	decBaseFileWriterReference writer;
+	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	lsWorld->SaveWorld( *this, *world, writer );
+}
+
+
+
+// Height Terrain Management
+//////////////////////////////
+
+meLSHeightTerrain *meLoadSaveSystem::GetLSHeightTerrainAt( int index ) const{
+	if( index < 0 || index >= pLSHTCount ) DETHROW( deeInvalidParam );
+	
+	return pLSHTs[ index ];
+}
+
+meLSHeightTerrain *meLoadSaveSystem::FindLSHeightTerrainMatching( const char *filename ) const{
+	if( ! filename ) DETHROW( deeInvalidParam );
+	
+	// hack!
+	return pLSHTs[ 0 ];
+}
+
+void meLoadSaveSystem::AddLSHeightTerrain( meLSHeightTerrain *loader ){
+	if( ! loader ) DETHROW( deeInvalidParam );
+	
+	if( pLSHTCount == pLSHTSize ){
+		int i, newSize = pLSHTSize * 3 / 2 + 1;
+		meLSHeightTerrain **newArray = new meLSHeightTerrain*[ newSize ];
+		if( ! newArray ) DETHROW( deeOutOfMemory );
+		if( pLSHTs ){
+			for( i=0; i<pLSHTSize; i++ ) newArray[ i ] = pLSHTs[ i ];
+			delete [] pLSHTs;
+		}
+		pLSHTs = newArray;
+		pLSHTSize = newSize;
+	}
+	
+	pLSHTs[ pLSHTCount ] = loader;
+	pLSHTCount++;
+}
+
+void meLoadSaveSystem::LoadHeightTerrain( meHeightTerrain &heightTerrain, const char *filename ){
+	meLSHeightTerrain * const loader = FindLSHeightTerrainMatching( filename );
+	if( ! loader ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decBaseFileReaderReference reader;
+	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+		decPath::CreatePathUnix( filename ) ) );
+	loader->LoadFromFile( heightTerrain, reader );
+}
+
+void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const char *filename ){
+	meLSHeightTerrain * const loader = FindLSHeightTerrainMatching( filename );
+	if( ! loader ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decBaseFileWriterReference writer;
+	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix( filename ) ) );
+	loader->SaveToFile( heightTerrain, writer );
+}
+
+
+
+// Prop Field Cache
+/////////////////////
+
+void meLoadSaveSystem::LoadPFCache( meHeightTerrainSector &sector, const char *filename ){
+	decBaseFileReaderReference reader;
+	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+		decPath::CreatePathUnix( filename ) ) );
+	pLSPFCache->LoadFromFile( sector, reader );
+}
+
+void meLoadSaveSystem::SavePFCache( meHeightTerrainSector &sector, const char *filename ){
+	decBaseFileWriterReference writer;
+	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix( filename ) ) );
+	pLSPFCache->SaveToFile( sector, writer );
+}
+
+
+
+void meLoadSaveSystem::LoadNavTest( const char *filename, meWorld &world ){
+	if( ! filename ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decBaseFileReaderReference reader;
+	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix( filename ) ) );
+	pLSNavTest->LoadNavTest( world, reader );
+}
+
+void meLoadSaveSystem::SaveNavTest( const char *filename, meWorld &world ){
+	if( ! filename ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decBaseFileWriterReference writer;
+	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix( filename ) ) );
+	pLSNavTest->SaveNavTest( world, writer );
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void meLoadSaveSystem::pCleanUp(){
+	if( pLSNavTest ){
+		delete pLSNavTest;
+	}
+	
+	if( pLSPFCache ) delete pLSPFCache;
+	
+	if( pLSHTs ){
+		while( pLSHTCount > 0 ){
+			delete pLSHTs[ pLSHTCount - 1 ];
+			pLSHTCount--;
+		}
+		delete [] pLSHTs;
+	}
+	
+	if( pLSWorlds ){
+		while( pLSWorldCount > 0 ){
+			delete pLSWorlds[ pLSWorldCount - 1 ];
+			pLSWorldCount--;
+		}
+		delete [] pLSWorlds;
+	}
+}
+
+void meLoadSaveSystem::pRebuildFilePatternLists(){
+//	char *newPattern = NULL;
+//	const char *lsPattern;
+//	int lenFDPattern = 0;
+//	const char *lsName;
+//	int lenLSPattern;
+//	int lenLSName;
+//	int newLen;
+	
+	igdeFilePattern *filePattern = NULL;
+	decString pattern;
+	int i;
+	
+	pFilePatternList.RemoveAllFilePatterns();
+	
+	try{
+		for( i=0; i<pLSWorldCount; i++ ){
+			pattern.Format( "*%s", pLSWorlds[ i ]->GetPattern() );
+			filePattern = new igdeFilePattern( pLSWorlds[ i ]->GetName(), pattern, pLSWorlds[ i ]->GetPattern() );
+			pFilePatternList.AddFilePattern( filePattern );
+			filePattern = NULL;
+		}
+		
+	}catch( const deException & ){
+		if( filePattern ){
+			delete filePattern;
+		}
+		throw;
+	}
+	
+	/*
+	newPattern = new char[ 1 ];
+	if( ! newPattern ) DETHROW( deeOutOfMemory );
+	newPattern[ 0 ] = '\0';
+	
+	if( pFDPattern ) delete [] pFDPattern;
+	pFDPattern = newPattern;
+	
+	for( i=0; i<pLSSkinCount; i++ ){
+		lsName = pLSSkins[ i ]->GetName();
+		lenLSName = strlen( lsName );
+		lsPattern = pLSSkins[ i ]->GetPattern();
+		lenLSPattern = strlen( lsPattern ) + 1;
+		
+		newLen = lenFDPattern + lenLSName + lenLSPattern + 3;
+		if( i > 0 ) newLen++;
+		
+		newPattern = new char[ newLen + 1 ];
+		if( ! newPattern ) DETHROW( deeOutOfMemory );
+		
+		if( i > 0 ){
+			sprintf( newPattern, "\n%s (*%s)", lsName, lsPattern );
+			
+		}else{
+			sprintf( newPattern, "%s (*%s)", lsName, lsPattern );
+		}
+		
+		if( pFDPattern ) delete [] pFDPattern;
+		pFDPattern = newPattern;
+		lenFDPattern = newLen;
+	}
+	*/
+	
+	
+	// build prop field cache file patterns
+	try{
+		pattern.Format( "*%s", pLSPFCache->GetPattern().GetString() );
+		filePattern = new igdeFilePattern( pLSPFCache->GetName(), pattern, pLSPFCache->GetPattern() );
+		pPropFieldCacheFilePatterns.AddFilePattern( filePattern );
+		
+		pattern.Format( "*%s", pLSNavTest->GetPattern().GetString() );
+		filePattern = new igdeFilePattern( pLSNavTest->GetName(), pattern, pLSNavTest->GetPattern() );
+		pFPNavTest.AddFilePattern( filePattern );
+		
+	}catch( const deException & ){
+		if( filePattern ){
+			delete filePattern;
+		}
+		throw;
+	}
+}

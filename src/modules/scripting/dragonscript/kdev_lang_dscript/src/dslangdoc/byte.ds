@@ -1,0 +1,211 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Primitive byte value.
+ * 
+ * Primitive values are constant and stored as value not as reference. Primitive values
+ * act like objects but are not stored as true objects in memory. Primitive values own
+ * special operators not available to script languages:
+ * | Command | Description |
+ * | ------- | ----------- |
+ * | byte \b = byte | assign byte value |
+ * | byte \b == byte | byte values are equal |
+ * | byte \b != byte | byte values are not equal |
+ * | \b not byte | true if byte value is not 0 |
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class byte
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create byte. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Compare byte to another object.
+	 * \throws EInvalidAction \em other is not of type byte.
+	 * \retval 0 Both byte values are equal.
+	 * \retval <0 This byte value is less than the other byte value.
+	 * \retval >0 This byte value is greater than the other byte value.
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/**
+	 * \brief Byte is equal to another byte.
+	 * \returns \em true if \em other is of type byte and both are equal.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of byte value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Byte value is less than another byte value. */
+	public func bool <( byte other )
+		return false
+	end
+	
+	/** \brief Byte value is less than or equal to another byte value. */
+	public func bool <=( byte other )
+		return false
+	end
+	
+	/** \brief Byte value is greater than another byte value. */
+	public func bool >( byte other )
+		return false
+	end
+	
+	/** \brief Byte value is greater than or equal to another byte value. */
+	public func bool >=( byte other )
+		return false
+	end
+	
+	
+	
+	/** \brief Byte plus another byte value. */
+	public func int +( byte other )
+		return 0
+	end
+	
+	/** \brief Byte minus another byte value. */
+	public func int -( byte other )
+		return 0
+	end
+	
+	/** \brief Byte value timer another byte value. */
+	public func int *( byte other )
+		return 0
+	end
+	
+	/**
+	 * \brief Byte value divided by another byte value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func byte /( byte other )
+		return 0
+	end
+	
+	/** \brief Byte modulo another byte value. */
+	public func byte %( byte other )
+		return 0
+	end
+	
+	/** \brief Byte left shifted by digits. */
+	public func int <<( byte digits )
+		return 0
+	end
+	
+	/** \brief Byte right shifted by digits. */
+	public func byte >>( byte digits )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte value plus another byte value. */
+	public func byte +=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte value minus another byte value. */
+	public func byte -=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte value timer another byte value. */
+	public func byte *=( byte other )
+		return 0
+	end
+	
+	/**
+	 * \brief Set byte value to byte value divided by another byte value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func byte /=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte modulo another byte value. */
+	public func byte %=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte value left shifted by digits. */
+	public func byte <<=( byte digits )
+		return 0
+	end
+	
+	/** \brief Set byte value to byte value right shifted by digits. */
+	public func byte >>=( byte digits )
+		return 0
+	end
+	
+	
+	
+	/** \brief Bitwise and between this byte and another byte. */
+	public func byte &( byte other )
+		return 0
+	end
+	
+	/** \brief Bitwise  or between this byte and another byte. */
+	public func byte |( byte other )
+		return 0
+	end
+	
+	/** \brief Bitwise xor between this byte and another byte. */
+	public func byte ^( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to bitwise and between this byte and another byte and return new value. */
+	public func byte &=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to bitwise or between this byte and another byte and return new value. */
+	public func byte |=( byte other )
+		return 0
+	end
+	
+	/** \brief Set byte value to bitwise xor between this byte and another byte and return new value. */
+	public func byte ^=( byte other )
+		return 0
+	end
+	
+	
+	
+	/** \brief Increment byte value by one. */
+	public func byte ++()
+		return 0
+	end
+	
+	/** \brief Decrement byte value by one. */
+	public func byte --()
+		return 0
+	end
+end

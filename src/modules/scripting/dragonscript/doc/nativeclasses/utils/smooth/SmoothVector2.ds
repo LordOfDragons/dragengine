@@ -1,0 +1,106 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Smooth 2-component vector value.
+ * 
+ * Smooth dynamic changing vector value across time.
+ */
+class SmoothVector2
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create smooth vector.
+	 * \details Value, goal and change speed are set to 0. Adjust time is set to 1s.
+	 *          Change speed limit is set to 1 unit per second.
+	 */
+	public func new()
+	end
+	
+	/** \brief Create copy of smooth vector. */
+	public func new( SmoothVector2 copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Current value. */
+	public func Vector2 getValue()
+	end
+	
+	/** \brief Set current value. */
+	public func void setValue( Vector2 value )
+	end
+	
+	/** \brief Goal value. */
+	public func Vector2 getGoal()
+	end
+	
+	/** \brief Set goal value. */
+	public func void setGoal( Vector2 goal )
+	end
+	
+	/** \brief Adjustment time in seconds. */
+	public func float getAdjustTime()
+	end
+	
+	/** \brief Adjustment time in seconds clamped to 0 or larger. */
+	public func void setAdjustTime( float adjustTime )
+	end
+	
+	/** \brief Adjustment range in units. */
+	public func float getAdjustRange()
+	end
+	
+	/** \brief Set adjustment range in units clamped to 0 or larger. */
+	public func void setAdjustRange( float limit )
+	end
+	
+	/** \brief Change speed of the value in units per second. */
+	public func float getChangeSpeed()
+	end
+	
+	/** \brief Set change speed of the value in units per second. */
+	public func void setChangeSpeed( float changeSpeed )
+	end
+	
+	
+	
+	/** \brief Reset value, goal and change speed to 0. */
+	public func void reset()
+	end
+	
+	/**
+	 * \brief Update value with goal using current smoothing parameters.
+	 * \details Goal is not modified.
+	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
+	 */
+	public func void update( float elapsed )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read from file reader. */
+	static public func SmoothVector2 readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write to file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+end

@@ -1,0 +1,119 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer instance producing source using a synthesizer.
+ * 
+ * Every synthesizer contains a set of sources and controllers indicating
+ * how the final sound is produced. While synthesizers define this
+ * production process the synthesizer instance produces the actual sound
+ * using per instance parameters.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SynthesizerInstance
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create synthesizer instance. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief synthesizer or \em null if not set. */
+	public func Synthesizer getSynthesizer()
+	end
+	
+	/** \brief Set synthesizer or \em null if not set. */
+	public func void setSynthesizer( Synthesizer synthesizer )
+	end
+	
+	
+	
+	/** \brief Number of samples to create. */
+	public func float getSampleCount()
+	end
+	
+	/** \brief Set number of samples to create. */
+	public func void setSampleCount( int sampleCount )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Nnumber of controllers. */
+	public func int getControllerCount()
+	end
+	
+	/**
+	 * \brief Set number of controllers.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void setControllerCount( int count )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the synthesizer
+	 *          is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func SynthesizerController getControllerAt( int index )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the synthesizer
+	 *          is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func SynthesizerController getControllerNamed( String name )
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+	end
+	
+	/**
+	 * \brief Copy the first count controller values and vectors from another synthesizer instance.
+	 * \details Bones outside the number of controllers are ignored.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void copyControllerStates( SynthesizerInstance instance, int count )
+	
+	/**
+	 * \brief Copy the first count controller values and vectors from another synthesizer instance.
+	 * \details Offset index of controller to copy from other synthesizer. Bones outside the number
+	 *          of controllers are ignored.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void copyControllerStates( SynthesizerInstance instance, int offset, int count )
+	end
+	
+	/**
+	 * \brief Copy name matching controller values and vectors from another synthesizer instance.
+	 * \details Non-matching controllers are ignored.
+	 */
+	public func void copyNamedControllerStates( SynthesizerInstance instance )
+	/*@}*/
+end

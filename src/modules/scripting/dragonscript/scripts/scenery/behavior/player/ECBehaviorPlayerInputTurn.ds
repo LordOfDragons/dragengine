@@ -1,0 +1,319 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding turning player input.
+ * 
+ * Keeps track of turning player input and applies them to actor locomotion.
+ * 
+ * This behavior is typically used for vehicle type actors.
+ */
+class ECBehaviorPlayerInputTurn extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorPlayerInputTurn pECBehavior
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		
+		private var bool pTurnLeft
+		private var bool pTurnRight
+		private var float pSpeedTurnHorizontal
+		private var float pAnalogTurnHorizontal
+		private var float pAnalogTurnHorizontalSticky
+		private var bool pCanTurn
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorPlayerInputTurn ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pSpeedTurnHorizontal = 45
+			this.pCanTurn = true
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pLocomotion = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getLocomotion() != null
+				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorPlayerInputTurn getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Locomotion behavior or null if absent. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Turn left key is pressed. */
+		public func bool getTurnLeft()
+			return this.pTurnLeft
+		end
+		
+		/** \brief Set if turn left key is pressed. */
+		public func void setTurnLeft( bool pressed )
+			this.pTurnLeft = pressed
+		end
+		
+		/** \brief Toggle turn left key pressed. */
+		public func void toggleTurnLeft()
+			this.pTurnLeft = not this.pTurnLeft
+		end
+		
+		/** \brief Turn right key is pressed. */
+		public func bool getTurnRight()
+			return this.pTurnRight
+		end
+		
+		/** \brief Set if turn right key is pressed. */
+		public func void setTurnRight( bool pressed )
+			this.pTurnRight = pressed
+		end
+		
+		/** \brief Toggle turn right key pressed. */
+		public func void toggleTurnRight()
+			this.pTurnRight = not this.pTurnRight
+		end
+		
+		/** \brief Turn left right speed in degrees per second. */
+		public func float getSpeedTurnHorizontal()
+			return this.pSpeedTurnHorizontal
+		end
+		
+		/** \brief Set turn left right speed in degrees per second. */
+		public func void setSpeedTurnHorizontal( float speed )
+			this.pSpeedTurnHorizontal = DEMath.max( speed, 0.0 )
+		end
+		
+		/** \brief Analog turn left right. */
+		public func float getAnalogTurnHorizontal()
+			return this.pAnalogTurnHorizontal
+		end
+		
+		/** \brief Set analog turn left right. */
+		public func void setAnalogTurnHorizontal( float value )
+			this.pAnalogTurnHorizontal = value
+		end
+		
+		/** \brief Sticky analog turn left right. */
+		public func float getAnalogTurnHorizontalSticky()
+			return this.pAnalogTurnHorizontalSticky
+		end
+		
+		/** \brief Set sticky analog turn left right. */
+		public func void setAnalogTurnHorizontalSticky( float value )
+			this.pAnalogTurnHorizontalSticky = value
+		end
+		
+		/** \brief player can turn. */
+		public func bool getCanTurn()
+			return this.pCanTurn
+		end
+		
+		/** \brief Set if player can turn. */
+		public func void setCanTurn( bool canTurn )
+			this.pCanTurn = canTurn
+		end
+		
+		/** \brief Toggle can turn. */
+		public func void toggleCanTurn()
+			this.pCanTurn = not this.pCanTurn
+		end
+		
+		/** \brief Calculate turn left right value and reset analog input. */
+		public func float calculateTurnHorizontal()
+			var float value = 0
+			
+			if this.pCanTurn
+				if this.pTurnLeft
+					value += 1
+				end
+				if this.pTurnRight
+					value -= 1
+				end
+				
+				value += this.pAnalogTurnHorizontalSticky + this.pAnalogTurnHorizontal
+				this.pAnalogTurnHorizontal = 0
+			end
+			
+			return value * this.pSpeedTurnHorizontal
+		end
+		
+		
+		
+		/** \brief Reset input. */
+		public func void reset()
+			this.pTurnLeft = false
+			this.pTurnRight = false
+			this.pAnalogTurnHorizontal = 0
+			this.pAnalogTurnHorizontalSticky = 0
+		end
+		
+		
+		
+		/**
+		 * \brief Update locomotion.
+		 * 
+		 * Calls calculateTurnHorizontal() to obtain the turning changes and applies using
+		 * Locomotion.setTurnHorizontal().
+		 * 
+		 * \note This method conflicts with ECBehaviorPlayerInputMove.updateLocomotion() if
+		 *       ECBehaviorPlayerInputMove is set to modify turning.
+		 */
+		public func void updateLocomotion( float elapsed )
+			if this.pLocomotion == null
+				return
+			end
+			
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			locomotion.setTurnHorizontal( locomotion.getTurnHorizontal() + this.calculateTurnHorizontal() * elapsed )
+		end
+		
+		
+		
+		/**
+		 * \brief Add element to game world.
+		 * 
+		 * Clears player input to ensure actor is not unintentially moving.
+		 */
+		public func void addToGameWorld()
+			this.reset()
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+			this.pCanTurn = flags.getAt( 0 )
+			
+			this.pSpeedTurnHorizontal = reader.readFloat()
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 1 )
+			flags.setAt( 0, this.pCanTurn )
+			flags.writeToFile( writer )
+			
+			writer.writeFloat( this.pSpeedTurnHorizontal )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
+	this( eclass, locomotion, "playerInputTurn." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pLocomotion = locomotion
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLocomotion = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior or null. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorPlayerInputTurn.
+	 */
+	static public func ECBehaviorPlayerInputTurn getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorPlayerInputTurn
+		end ) cast ECBehaviorPlayerInputTurn
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorPlayerInputTurn.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

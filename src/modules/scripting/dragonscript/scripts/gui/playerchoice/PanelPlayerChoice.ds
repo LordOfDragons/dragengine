@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display list of choices for the player to select one from.
+ * 
+ * The choice is done asynchronously so the game scripts continue running. Once an
+ * option is selected a user provided ActionListener is triggered. The choices
+ * compose of a text and an optional image. The layout is determined by the used
+ * layout object.
+ * 
+ * Implements ConversationPlaybackPlayerChoice so the panel can be directly used
+ * as player choice interface by a conversation playback if required.
+ * 
+ * The panel can be styled using selector "Panel.PlayerChoice". The centrized entries
+ * panel can be styled using "Panel.PlayerChoiceEntries"
+ */
+class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoice
+	private var Panel pPanelEntries
+	
+	
+	
+	/**
+	 * \brief Create player choice panel.
+	 * 
+	 * Panel is initially hidden.
+	 */
+	public func new()
+		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0 ) )
+		this.setDesignerSelector( "Panel.PlayerChoice" )
+		this.setVisible( false )
+		
+		this.pPanelEntries = Panel.new()
+		this.pPanelEntries.setLayout( FlowLayout.new( LayoutAxis.y, 2 ) )
+		this.pPanelEntries.setDesignerSelector( "Panel.PlayerChoiceEntries" )
+		this.addWidget( this.pPanelEntries )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pPanelEntries = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Remove all choices. */
+	public func void removeAllChoices()
+		this.pPanelEntries.removeAllWidgets()
+	end
+	
+	/** \brief Add choice. */
+	public func void addChoice( String text, ActionListener action )
+		this.addChoice( text, null, action )
+	end
+	
+	/** \brief Add choice. */
+	public func void addChoice( String text, Image image, ActionListener action )
+		if action == null
+			throw EInvalidParam.new()
+		end
+		
+		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new( text, action )
+		entry.setMaximalWidth( this.getParent().getContainerWidth() )
+		this.pPanelEntries.addWidget( entry )
+	end
+	
+	
+	
+	/**
+	 * \brief Start player choosing.
+	 * 
+	 * This shows the choices to the player. Overwrite if you want to do a begin
+	 * choosing animation. The default implementation shows the panel. If there
+	 * are no options an exception is thrown.
+	 */
+	public func void startChoosing()
+		if this.getWidgetCount() == 0
+			throw EInvalidParam.new()
+		end
+		this.setVisible( true )
+	end
+	
+	/**
+	 * \brief End player choosing.
+	 * 
+	 * This hides the choices. Overwrite to if you want to do an end choosing
+	 * animation. The default implementation hides the panel.
+	 */
+	public func void endChoosing()
+		this.setVisible( false )
+	end
+end

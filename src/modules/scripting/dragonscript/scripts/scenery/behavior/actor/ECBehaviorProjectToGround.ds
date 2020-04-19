@@ -1,0 +1,623 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding project to ground support for actor AI.
+ * 
+ * Adds TouchSensor. The touch sensor is used to improve performance and requires a shape large
+ * enough to enclose the ECBehaviorColliderAI or ECBehaviorCollider (whichever is present) along
+ * all the up and down projection range. The touch sensor is attached to collider. The touch
+ * sensor uses the collision filter from collider.
+ * 
+ * To use this behavior add it to an actor. The behavior will run during postThink() and projects
+ * the actor position down to the ground if enabled. The grounded position is stored and can then
+ * be retrieved to work with. By default the behavior is set to automatically apply the grounded
+ * position to the actor. This behavior can be desibled for custome project to ground handling.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorProjectToGround extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Enabled changed. */
+		func void enabledChanged( Instance instance )
+		
+		/** \brief Actor switched between touching ground and not touching ground. */
+		func void touchesGroundChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Enabled changed. */
+		public func void enabledChanged( Instance instance )
+		end
+		
+		/** \brief Actor switched between touching ground and not touching ground. */
+		public func void touchesGroundChanged( Instance instance )
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorProjectToGround pECBehavior
+		private var ECBehaviorColliderAI.Instance pColliderAI
+		private var ECBehaviorCollider.Instance pCollider
+		private var TouchSensor pTouchSensor
+		private var Collider pProjectCollider
+		private var ColliderCollisionTest pTest
+		private var ColliderVolume pTestCollider
+		private var DVector pNormTestDirection
+		private var bool pTouchesGround
+		private var DVector pGroundedPosition
+		private var bool pApplyToActor
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorProjectToGround ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pGroundedPosition = DVector.new()
+			this.pListeners = Array.new()
+			this.pApplyToActor = ecbehavior.getApplyToActor().getValue()
+			
+			if ecbehavior.getColliderAI() != null
+				this.pColliderAI = ecbehavior.getColliderAI().instance( element )
+				
+			else
+				this.pCollider = ecbehavior.getCollider().instance( element )
+			end
+			
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pListeners = null
+			
+			if this.pTouchSensor != null
+				this.pTouchSensor.removeAllIgnoreColliders()
+				this.pTouchSensor.setListener( null )
+				this.pTouchSensor = null
+			end
+			
+			this.pColliderAI = null
+			this.pCollider = null
+			this.pProjectCollider = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pColliderAI != null
+				this.pProjectCollider = this.pColliderAI.getCollider()
+				
+			else
+				this.pProjectCollider = this.pCollider.getCollider()
+			end
+			
+			if this.pProjectCollider == null
+				throw EInvalidParam.new()
+			end
+			
+			this.pTouchSensor = this.createTouchSensor( stub, this.pProjectCollider )
+			this.pProjectCollider.attachStatic( this.pTouchSensor, Vector.new(), Quaternion.new() )
+			this.pTouchSensor.addIgnoreCollider( this.pProjectCollider )
+			
+			this.pNormTestDirection = DVector.new( 0, -1, 0 )
+			this.pTouchesGround = true
+			
+			this.pTestCollider = ColliderVolume.new()
+			this.pTest = ColliderCollisionTest.new( this.pTouchSensor, \
+				this.pProjectCollider.getCollisionFilter(), Vector.new(), Vector.new( 0, -0.3, 0 ) )
+			this.pTest.setCollider( this.pTestCollider )
+			this.pProjectCollider.addCollisionTest( this.pTest )
+		end
+		
+		/** \brief Create touch sensor. */
+		protected func TouchSensor createTouchSensor( StubElement stub, Collider collider )
+			var TouchSensor touchSensor = TouchSensor.new()
+			touchSensor.setCollisionFilter( collider.getCollisionFilter() )
+			touchSensor.setTrackEnterLeave( false )
+			touchSensor.setPosition( collider.getPosition() )
+			touchSensor.setOrientation( collider.getOrientation() )
+			return touchSensor
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorProjectToGround getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief ColliderAI behavior instance or null. */
+		public func ECBehaviorColliderAI.Instance getColliderAI()
+			return this.pColliderAI
+		end
+		
+		/** \brief Collider behavior instance or null. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Touch sensor. */
+		public func TouchSensor getTouchSensor()
+			return this.pTouchSensor
+		end
+		
+		/** \brief Enable projecting to ground. */
+		public func bool getEnabled()
+			return this.pTest.getEnabled()
+		end
+		
+		/** \brief Set if projecting to ground is enabled. */
+		public func void setEnabled( bool enabled )
+			if enabled == this.pTest.getEnabled()
+				return
+			end
+			
+			this.pTest.setEnabled( enabled )
+			
+			// this seems strange here but is required. if enabled changes to true while
+			// pTouchesGround is false then the next check will likely fail since AI should
+			// test for projecting to ground only if it has actor is touching ground. without
+			// setting pTouchesGround to true actors would immediately start falling. on the
+			// other hand if enabled is false and pTouchesGround is not set to false too it
+			// is possible some AI still thinks the actor is touching ground. for this reason
+			// pTouchesGround is set to enabled.
+			this.setTouchesGround( enabled )
+			
+			this.pListeners.forEach( block Listener each
+				each.enabledChanged( this )
+			end )
+		end
+		
+		/** \brief Remove collider collision test from collider. */
+		public func void removeFromCollider()
+			this.pProjectCollider.removeCollisionTest( this.pTest )
+		end
+		
+		/** \brief Actor is touching ground. */
+		public func bool getTouchesGround()
+			return this.pTouchesGround
+		end
+		
+		/**
+		 * \brief Set if actor is touching ground.
+		 * 
+		 * Set by projectToGround if enabled. If element is free falling set this to \em true
+		 * when the element touches ground again. This has to be done manually since
+		 * projectToGround() has to be skipped to avoid elements being sucked to the ground
+		 * as soon as they get into projecting distance.
+		 */
+		public func void setTouchesGround( bool touchesGround )
+			if touchesGround == this.pTouchesGround
+				return
+			end
+			
+			this.pTouchesGround = touchesGround
+			
+			this.pListeners.forEach( block Listener each
+				each.touchesGroundChanged( this )
+			end )
+		end
+		
+		/** * \brief Grounded position. */
+		public func DVector getGroundedPosition()
+			return this.pGroundedPosition
+		end
+		
+		/** \brief Set grounded position. */
+		public func void setGroundedPosition( DVector position )
+			this.pGroundedPosition = position
+		end
+		
+		/** \brief Automatically apply grounded position to actor. */
+		public func bool getApplyToActor()
+			return this.pApplyToActor
+		end
+		
+		/** \brief Set if grounded position to automatically applied to actor. */
+		public func void setApplyToActor( bool applyToActor )
+			if applyToActor == this.pApplyToActor
+				return
+			end
+			this.pApplyToActor = applyToActor
+		end
+		
+		
+		
+		/**
+		 * \brief Set shape of test collider.
+		 * 
+		 * For best results a shape should be used which is slightly smaller than the shape of the
+		 * collider used to move an element through the game world. If the shape used for the test
+		 * collider is equal or larger strange behavior can be the result (for example climbing).
+		 * 
+		 * Recommended is setting a ShapeList with a sphere at origin and radius 0.3 .
+		 */
+		public func void setShape( ShapeList shape )
+			this.pTestCollider.setShape( shape )
+		end
+		
+		/** \brief Set test collision filter. */
+		public func void setCollisionFilter( CollisionFilter filter )
+			this.pTest.setCollisionFilter( filter )
+		end
+		
+		
+		
+		/** \brief Test direction. */
+		public func Vector getDirection()
+			return this.pTest.getDirection()
+		end
+		
+		/**
+		 * \brief Set test direction.
+		 * 
+		 * \param distance Distance to test along. This is the furthest distance the actor can
+		 *                 be projected down to. Typical value is -0.3 to project the actor
+		 *                 down by at most 0.3 meters.
+		 */
+		public func void setDirection( float distance )
+			this.setDirection( Vector.new( 0, distance, 0 ) )
+		end
+		
+		/**
+		 * \brief Set test direction.
+		 * 
+		 * \param distance Distance to test along. This is the furthest distance the actor can
+		 *                 be projected down to. Typical value is (0, -0.3, 0) to project the
+		 *                 actor down by at most 0.3 meters.
+		 */
+		public func void setDirection( Vector distance )
+			this.pTest.setDirection( distance )
+			this.pNormTestDirection = DVector.new( distance ).normalize()
+		end
+		
+		
+		
+		/**
+		 * \brief Set project to ground shapes for humanoid actors.
+		 * 
+		 * Assigns a box shape to the project to ground touch sensor. The shape is located at the
+		 * actor position and has a radius of slightly more than the radius used for the collider AI
+		 * (0.31m) and a height of the same value. This is a reasonable collider AI shape for a
+		 * humanoid actor.
+		 * 
+		 * Assigns a sphere shape to the project to ground instance. This is usually the
+		 * same shape as used for the collider AI but can be optimized. For example if the
+		 * shape is a capcule the project to ground shape can be opzimized to a sphere of
+		 * the matching radius. The default implementation does apply this optimization and
+		 * uses a sphere with the same radius as used for the collider AI capsule.
+		 */
+		public func void setShapesHumanoid( float radius )
+			var ShapeList shape = ShapeList.new()
+			shape.addSphere( Vector.new( 0, radius, 0 ), radius )
+			this.setShape( shape )
+			
+			shape = ShapeList.new()
+			shape.addBox( Vector.new(), Vector.new( radius + 0.01, radius, radius + 0.01 ) )
+			this.pTouchSensor.setShape( shape )
+		end
+		
+		
+		
+		/**
+		 * \brief Project to ground.
+		 * 
+		 * Call this method during postThink() calls of parent element if getTouchesGround()
+		 * is \em true. This method does not check if touches ground is \em true to allow
+		 * users of this class to project elements down to ground using whatever logic required.
+		 * 
+		 * If collider is enabled and collision test contains a ground collision the collider
+		 * position is adjusted. Touching ground parameter is updated with the test result.
+		 * The collider is not modified. Method returns either the current collider position
+		 * or the desired new collider position. This allows to use this method like this:
+		 * 
+		 * \code{.ds}
+		 * position = projectToGround.projectToGround()
+		 * \endcode
+		 * 
+		 * Position contains then either collider.getPosition() or the down projected position.
+		 * Project to ground does not adjust orientation only position.
+		 */
+		public func DVector projectToGround()
+			var DVector position = this.pProjectCollider.getPosition()
+			
+			if this.pProjectCollider.getEnabled() and this.pTest.getEnabled()
+				this.setTouchesGround( this.pTest.getHasCollision() )
+			end
+			
+			if this.pTouchesGround and this.pTest.getHasCollision()
+				position = position + this.pNormTestDirection * this.pTest.hitDistance( 0 )
+			end
+			
+			return position
+		end
+		
+		/** \brief Ground collider or \em null. */
+		public func Collider getGroundCollider()
+			if this.pTouchesGround and this.pTest.getHasCollision()
+				return this.pTest.hitCollider( 0 )
+				
+			else
+				return null
+			end
+		end
+		
+		/**
+		 * \brief Ground element or \em null.
+		 * 
+		 * If last ground collider is not \em null and collider owner is castable to Element
+		 * returns the owner element. Otherwise \em null is returned.
+		 */
+		public func Element getGroundElement()
+			var Collider collider = this.getGroundCollider()
+			if collider == null
+				return null
+			end
+			
+			var Object owner = collider.getOwner()
+			if owner castable Element
+				return owner cast Element
+				
+			else
+				return null
+			end
+		end
+		
+		/** \brief Ground collision information or \em null. */
+		public func CollisionInfo getGroundCollisionInfo()
+			if this.pTouchesGround and this.pTest.getHasCollision()
+				return this.pTest.getCollisionAt( 0 )
+				
+			else
+				return null
+			end
+		end
+		
+		
+		
+		/** \brief Project to ground collider collision test. */
+		protected func ColliderCollisionTest getTest()
+			return this.pTest
+		end
+		
+		/** \brief Collier to attach collision tests to. */
+		protected func ColliderVolume getTestCollider()
+			return this.pTestCollider
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief State changed (visble, touchable). */
+		public func void stateChanged()
+			this.pTouchSensor.setEnabled( this.getElement().getTouchable() )
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			var GameWorld gameWorld = this.getElement().getGameWorld()
+			gameWorld.getWorld().addTouchSensor( this.pTouchSensor )
+// 			this.setDirection( gameWorld.getGravity().normalize() * 0.3 )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeTouchSensor( this.pTouchSensor )
+		end
+		
+		
+		
+		/**
+		 * \brief Post thinking after physics processing is finished.
+		 * 
+		 * Projects actor down to ground if enabled storing result. Ground position will be
+		 * always valid and is either the grounded position or the current collider position.
+		 * 
+		 * If apply-to-actor is enabled calls BehaviorElement.setGeometry() with grounded
+		 * position and collider orientation.
+		 */
+		public func void postThink( float elapsed )
+			this.pGroundedPosition = this.projectToGround()
+			
+			if this.pApplyToActor
+				this.getElement().setGeometry( this.pGroundedPosition, \
+					this.pProjectCollider.getOrientation() )
+			end
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
+			this.pTouchesGround = flags.getAt( 0 )
+			this.pApplyToActor = flags.getAt( 1 )
+			this.setEnabled( flags.getAt( 2 ) )
+			this.pTest.setLocalDirection( flags.getAt( 3 ) )
+			
+			this.pTest.setOrigin( Vector.readFromFile( reader ) )
+			this.pTest.setDirection( Vector.readFromFile( reader ) )
+			this.pNormTestDirection = DVector.new( this.pTest.getDirection() ).normalize()
+			this.pGroundedPosition = DVector.readFromFile( reader )
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 4 )
+			flags.setAt( 0, this.pTouchesGround )
+			flags.setAt( 1, this.pApplyToActor )
+			flags.setAt( 2, this.pTest.getEnabled() )
+			flags.setAt( 3, this.pTest.getLocalDirection() )
+			flags.writeToFile( writer )
+			
+			this.pTest.getOrigin().writeToFile( writer )
+			this.pTest.getDirection().writeToFile( writer )
+			this.pGroundedPosition.writeToFile( writer )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorColliderAI pColliderAI
+	private var ECBehaviorCollider pCollider
+	private var ECPBoolean pApplyToActor
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI ) \
+	this( eclass, colliderAI, null, "projectToGround." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, null, collider, "projectToGround." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix ) \
+	this( eclass, colliderAI, null, prefix )
+		if colliderAI == null
+			throw ENullPointer.new( "colliderAI" )
+		end
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix ) \
+	this( eclass, null, collider, prefix )
+		if collider == null
+			throw ENullPointer.new( "collider" )
+		end
+	end
+	
+	private func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorCollider collider, String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pColliderAI = colliderAI
+		this.pCollider = collider
+		
+		this.pApplyToActor = ECPBoolean.new( prefix + "applyToActor", true )
+		eclass.addProperty( this.pApplyToActor )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		this.pColliderAI = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief ColliderAI behavior or null. */
+	public func ECBehaviorColliderAI getColliderAI()
+		return this.pColliderAI
+	end
+	
+	/** \brief Collider behavior or null. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Apply projected position automatically to actor. */
+	public func ECPBoolean getApplyToActor()
+		return this.pApplyToActor
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorProjectToGround.
+	 */
+	static public func ECBehaviorProjectToGround getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorProjectToGround
+		end ) cast ECBehaviorProjectToGround
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorProjectToGround.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

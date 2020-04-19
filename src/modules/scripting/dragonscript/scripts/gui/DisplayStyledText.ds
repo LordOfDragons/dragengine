@@ -1,0 +1,270 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils.StyledText.Definition
+pin Dragengine.Utils.StyledText.Rendering.Elements
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Display page of styled text document.
+ */
+class DisplayStyledText extends Widget
+	private var StyledTextDocument pStyledTextDocument
+	private var Point pMinPageSize
+	private var int pCurrentPage
+	private var bool pPagedMode
+	private var Point pMinSizeBare
+	private var Point pMinSizeForWidthSize
+	private var int pMinSizeForWidthWidth
+	
+	
+	
+	/** \brief Create widget. */
+	public func new()
+		this.pCurrentPage = 0
+		this.pMinPageSize = Point.new( 50, 50 )
+		this.pPagedMode = true
+		this.pMinSizeForWidthWidth = 0
+	end
+	
+	
+	
+	/** \brief Minimum page size in case widget size is smaller. */
+	public func Point getMinPageSize()
+		return this.pMinPageSize
+	end
+	
+	/** \brief Set minimum page size in case widget size is smaller. */
+	public func void setMinPageSize( Point size )
+		if not ( size > Point.new( 1, 1 ) )
+			throw EInvalidParam.new()
+		end
+		this.pMinPageSize = size
+	end
+	
+	/** \brief Paged mode. */
+	public func bool getPagedMode()
+		return this.pPagedMode
+	end
+	
+	/** \brief Set paged mode. */
+	public func void setPagedMode( bool pagedMode )
+		if pagedMode == this.pPagedMode
+			return
+		end
+		
+		this.pPagedMode = pagedMode
+		
+		if this.pStyledTextDocument != null
+			if pagedMode
+				this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+				
+			else
+				this.pStyledTextDocument.setPageSize( this.getSize().largest( \
+					Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+			end
+			
+			this.pStyledTextDocument.rebuildPages()
+			
+			this.pCurrentPage = 0
+			this.updateCanvasPage()
+			this.pMinSizeBare = null
+			this.pMinSizeForWidthSize = null
+		end
+		
+		this.layoutParent()
+	end
+	
+	/** \brief Styled text document definition or \em null if not set. */
+	public func StyledTextDefinition getStyledTextDefinition()
+		if this.pStyledTextDocument == null
+			return null
+		end
+		return this.pStyledTextDocument.getDefinition()
+	end
+	
+	/** \brief Set styled text document definition or \em null if not set. */
+	public func void setStyledTextDefinition( StyledTextDefinition definition )
+		if definition == this.getStyledTextDefinition()
+			return
+		end
+		
+		if definition == null
+			this.pStyledTextDocument = null
+			
+		else
+			this.pStyledTextDocument = StyledTextDocument.new()
+			this.pStyledTextDocument.setDefinition( definition )
+			
+			if this.pPagedMode
+				this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+				
+			else
+				this.pStyledTextDocument.setPageSize( this.getSize().largest( \
+					Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+			end
+			
+			this.pStyledTextDocument.rebuildPages()
+		end
+		
+		this.pMinSizeBare = null
+		this.pMinSizeForWidthSize = null
+		this.pCurrentPage = 0
+		this.updateCanvasPage()
+	end
+	
+	
+	
+	/** \brief Index of page to display. */
+	public func int getCurrentPage()
+		return this.pCurrentPage
+	end
+	
+	/** \brief Set index of page to display. */
+	public func void setCurrentPage( int page )
+		page = DEMath.clamp( page, 0, this.getPageCount() - 1 )
+		if page == this.pCurrentPage
+			return
+		end
+		
+		this.pCurrentPage = page
+		this.updateCanvasPage()
+	end
+	
+	/** \brief Number of pages. */
+	public func int getPageCount()
+		if this.pStyledTextDocument == null
+			return 0
+		end
+		return this.pStyledTextDocument.getPageCount()
+	end
+	
+	
+	
+	/**
+	 * \brief Minimum size of widget.
+	 */
+	public func Point getMinimumSize()
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		if this.pMinSizeBare != null
+			return this.pMinSizeBare
+		end
+		
+		this.pMinSizeBare = this.calcMinSize( this.pMinPageSize )
+		return this.pMinSizeBare
+	end
+	
+	/**
+	 * \brief Minimum size of widget using reference widget width and variable height.
+	 */
+	public func Point getMinimumSizeForWidth( int width )
+		if this.isMinimumSizeSet()
+			return super.getMinimumSizeForWidth( width )
+		end
+		
+		if this.pMinSizeForWidthSize != null and width == this.pMinSizeForWidthWidth
+			return this.pMinSizeForWidthSize
+		end
+		
+		this.pMinSizeForWidthSize = this.calcMinSize( Point.new( width, this.pMinPageSize.getY() ) )
+		this.pMinSizeForWidthWidth = width
+		
+		return this.pMinSizeForWidthSize
+	end
+	
+	/** \brief Calculate minimum size for layout. */
+	protected func Point calcMinSize( Point pageSize )
+		if this.pStyledTextDocument == null
+			return this.pMinPageSize
+		end
+		
+		if this.pPagedMode
+			return this.pMinPageSize.largest( this.pStyledTextDocument.getPageSize() )
+		end
+		
+		var StyledTextDocument document = StyledTextDocument.new()
+		document.setDefinition( this.pStyledTextDocument.getDefinition() )
+		document.setPageSize( Point.new( 0, 100000 ).largest( pageSize ) )
+		document.rebuildPages()
+		
+		var StyledTextRendering page = document.getPageAt( 0 )
+		var int count = page.getElementCount()
+		var Point extend = Point.new()
+		var STRElement element
+		var int i
+		
+		for i = 0 to count
+			element = page.getElementAt( i )
+			extend = extend.largest( element.getPosition() + element.calculateSize() )
+		end
+		
+		var STDStyle pageStyle = document.getDefinition().getPageStyle()
+		extend = extend + Point.new( pageStyle.getMargins().getX2(), pageStyle.getMargins().getY2() )
+		
+		return this.pMinPageSize.largest( extend )
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		
+		if this.pStyledTextDocument == null
+			return
+		end
+		
+		if this.pPagedMode
+			this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+			
+		else
+			this.pStyledTextDocument.setPageSize( this.getSize().largest( \
+				Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+		end
+		
+		this.pStyledTextDocument.rebuildPages()
+		
+		this.pMinSizeBare = null
+		this.pMinSizeForWidthSize = null
+		this.pCurrentPage = 0
+		this.updateCanvasPage()
+	end
+	
+	/** \brief Update canvas page. */
+	private func void updateCanvasPage()
+		if this.pStyledTextDocument == null
+			this.getCanvasContent().removeAllCanvas()
+			return
+		end
+		
+		var CanvasView canvas = this.getCanvasContent()
+		canvas.removeAllCanvas()
+		this.pStyledTextDocument.addToCanvas( canvas, this.pCurrentPage, Point.new() )
+	end
+end

@@ -1,0 +1,148 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Persistency support for complex objects.
+ * 
+ * Provides support for writing and reading complex objects using file readers
+ * and writers. Stores a list of PersistencyFactory implementors providing support
+ * to read an object type from file. Classes implementing Persistable can be read
+ * and written using this persistency environment. Use PersistencyEnvironment to
+ * carry useful information required to properly restore complex objects.
+ */
+class Persistency
+	/**
+	 * \brief Canary value if debugging is enabled.
+	 * \details python: ''.join([chr(32+int(random.random()*(126-32))) for x in range(16)]).
+	 */
+	//public static fixed var String debugCanaryValue = "X:d.:x/s]9gV@tWZ"
+	public static fixed var String debugCanaryValue = "|=> Canary Value <=|"
+	
+	/** \brief Begin canary value if debugging is enabled. */
+	public static fixed var String debugCanaryValue_BEGIN = "|=> Begin Canary Value <=|"
+	
+	/** \brief End canary value if debugging is enabled. */
+	public static fixed var String debugCanaryValue_END = "|=> End Canary Value <=|"
+	
+	
+	
+	/**
+	 * \brief Dictionary of persistency factories.
+	 * \details Key is String name of factory and value is PersistencyFactory.
+	 */
+	private var Dictionary pFactories
+	
+	/** \brief Console for logging purpose. */
+	private var Console pConsole
+	
+	/**
+	 * \brief Enable file consistency debuging.
+	 * 
+	 * Elements and stubs write to file writes a canary value before written data
+	 * verifying the integrity during reading. Intended for debug use only.
+	 */
+	private var bool pDebugEnableCanaryValue
+	
+	
+	
+	/** \brief Create persistency. */
+	public func new( Console console )
+		if console == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConsole = console
+		this.pFactories = Dictionary.new()
+		this.pDebugEnableCanaryValue = false
+	end
+	
+	
+	
+	/** \brief Console for logging puspose. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	
+	
+	/**
+	 * \brief Add persistency factory.
+	 * \throws EInvalidParam \em factory is null.
+	 * \throws EInvalidParam factory with \em name is present.
+	 */
+	public func void addFactory( String name, PersistencyFactory factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		if this.pFactories.has( name )
+			throw EInvalidParam.new()
+		end
+		this.pFactories.setAt( name, factory )
+	end
+	
+	/** \brief Named factory or \em null if absent. */
+	public func PersistencyFactory getFactoryNamed( String name )
+		return this.pFactories.getAt( name, null ) cast PersistencyFactory
+	end
+	
+	/**
+	 * \brief Remove factory.
+	 * \throws EInvalidParam factory with \em name is absent.
+	 */
+	public func void removeFactory( String name )
+		this.pFactories.remove( name )
+	end
+	
+	/** \brief Remove all factories. */
+	public func void removeAllFactories()
+		this.pFactories.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Enable file consistency debuging.
+	 * 
+	 * Elements and stubs write to file writes a canary value before and after written
+	 * data verifying the integrity during reading. Intended for debug use only.
+	 */
+	public func bool getDebugEnableCanaryValue()
+		return this.pDebugEnableCanaryValue
+	end
+	
+	/**
+	 * \brief Set if file consistency debugingis enabled.
+	 * 
+	 * Elements and stubs write to file writes a canary value before and after written
+	 * data verifying the integrity during reading. Intended for debug use only.
+	 */
+	public func void setDebugEnableCanaryValue( bool enable )
+		this.pDebugEnableCanaryValue = enable
+	end
+end

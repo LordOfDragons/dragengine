@@ -1,0 +1,194 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Command entry in EditBindingsListModel.
+ */
+class EditBindingsListModelEntry
+	/** \brief Input source. */
+	enum InputSource
+		/** \brief Axis input. */
+		axis
+		
+		/** \brief Button input. */
+		button
+	end
+	
+	
+	
+	/** \brief Command. */
+	private var Command pCommand
+	
+	/** \brief Input source. */
+	private var InputSource pInputSource
+	
+	/** \brief Bound axis bindings matching input source as array of Binding. */
+	private var Array pAxisBindings
+	
+	/** \brief Bound button bindings matching input source as array of Binding. */
+	private var Array pButtonBindings
+	
+	
+	
+	/**
+	 * \brief Create command entry for EditBindingsListModel.
+	 * 
+	 * List of bindings is empty. Use updateBindings() to update the list. The input
+	 * source defines what kind of bindings can be ued. Only matching input device
+	 * sources are allowed to be used.
+	 * 
+	 * \param command Command to show.
+	 * \param inputSource Input source required for this command.
+	 */
+	public func new( Command command, InputSource inputSource )
+		if command == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pCommand = command
+		this.pInputSource = inputSource
+		this.pAxisBindings = Array.new()
+		this.pButtonBindings = Array.new()
+	end
+	
+	
+	
+	/** \brief Command. */
+	public func Command getCommand()
+		return this.pCommand
+	end
+	
+	/** \brief Input source. */
+	public func InputSource getInputSource()
+		return this.pInputSource
+	end
+	
+	
+	
+	/** \brief Number of axis bindings. */
+	public func int getAxisBindingCount()
+		return this.pAxisBindings.getCount()
+	end
+	
+	/** \brief Axis binding at index. */
+	public func Binding getAxisBindingAt( int index )
+		return this.pAxisBindings.getAt( index ) cast Binding
+	end
+	
+	/** \brief Visit axis bindings with block with parameter Binding. */
+	public func void forEachAxisBinding( Block ablock )
+		this.pAxisBindings.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Add axis binding.
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	public func void addAxisBinding( Binding binding )
+		if binding == null
+			throw EInvalidParam.new()
+		end
+		this.pAxisBindings.add( binding )
+	end
+	
+	/**
+	 * \brief Remove all axis bindings.
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	public func void removeAllAxisBindings()
+		this.pAxisBindings.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of button bindings. */
+	public func int getButtonBindingCount()
+		return this.pButtonBindings.getCount()
+	end
+	
+	/** \brief Button binding at index. */
+	public func Binding getButtonBindingAt( int index )
+		return this.pButtonBindings.getAt( index ) cast Binding
+	end
+	
+	/** \brief Visit button bindings with block with parameter Binding. */
+	public func void forEachButtonBinding( Block ablock )
+		this.pButtonBindings.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Add button binding.
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	public func void addButtonBinding( Binding binding )
+		if binding == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonBindings.add( binding )
+	end
+	
+	/**
+	 * \brief Remove all button bindings.
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	public func void removeAllButtonBindings()
+		this.pButtonBindings.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Update bindings.
+	 * 
+	 * Call after bindings affecting command changed in the bindings manager. Call
+	 * model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	public func void updateBindings( EditBindingsListModel model )
+		this.pAxisBindings.removeAll()
+		this.pButtonBindings.removeAll()
+		
+		model.getBindingManager().forEachAxisBinding( block Binding each
+			if each.getCommand() == this.pCommand
+				this.pAxisBindings.add( each )
+			end
+		end )
+		
+		model.getBindingManager().forEachButtonBinding( block Binding each
+			if each.getCommand() == this.pCommand
+				this.pButtonBindings.add( each )
+			end
+		end )
+	end
+end

@@ -1,0 +1,75 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Trigger target if elements touch sensor.
+ */
+class TriggerTouchClass extends BehaviorElementClass
+	private var ECBehaviorTouching pTouching
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( TSTriggerTable triggerTable ) this( "TriggerTouch", triggerTable )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String name, TSTriggerTable triggerTable ) super( name )
+		this.pTouching = ECBehaviorTouching.new( this, null, triggerTable )
+		this.pTouching.getTouchSensor().getShapeFromSize().setValue( true )
+	end
+	
+	
+	
+	/** \brief Touching behavior. */
+	public func ECBehaviorTouching getTouching()
+		return this.pTouching
+	end
+	
+	
+	
+	/** \brief Create copy of element class. */
+	public func ElementClass duplicateNamed( String classname )
+		return TriggerTouchClass.new( classname, this.pTouching.getTriggerTable() )
+	end
+	
+	
+	
+	/**
+	 * \brief Create element instance.
+	 * 
+	 * If this element class does not support creating elements, for example because
+	 * the result is not an element, \em null has to be returned. The default
+	 * implementation returns \em null. Subclasses not intending to create elements
+	 * or requiring special creation handling should subclass createAndAddElement()
+	 * and loadAndAddElement() bypassing this method.
+	 */
+	protected func Element createElement()
+		return TriggerTouch.new( this )
+	end
+end

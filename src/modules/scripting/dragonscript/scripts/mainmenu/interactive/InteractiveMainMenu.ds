@@ -1,0 +1,747 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+/**
+ * \brief Interactive main menu using world.
+ * 
+ * Loads a world file using it as the menu the user can interact with. The elements placed
+ * in the world are special element classes providing the menu interaction support. This
+ * makes the world file fully conclusive not requiring anything else than the world file
+ * path to create the menu.
+ * 
+ * The main camera spot is named "main". The world is required to have one camera spot
+ * with this name for the interactive main menu to work correctly.
+ */
+class InteractiveMainMenu extends Window
+	/** \brief Deactivate hotspot on window close listener. */
+	public class WindowCloseDeactivateHotSpot extends DefaultWindowListener
+		/** \brief Main menu. */
+		private var InteractiveMainMenu pMainMenu
+		
+		/** \brief Create listener. */
+		public func new( InteractiveMainMenu mainMenu )
+			this.pMainMenu = mainMenu
+		end
+		
+		/** \brief Window is closing. */
+		public func void onWindowClosing( WindowEvent event )
+			if this.pMainMenu.getActiveHotSpot() != null
+				this.pMainMenu.deactivateHotSpot()
+			end
+		end
+	end
+	
+	
+	
+	/** \brief States. */
+	public enum State
+		/** \brief Constructed but no world loaded yet. */
+		constructed
+		
+		/** \brief Loading world. */
+		loadingWorld
+		
+		/** \brief Fade in main menu. */
+		maniMenuFadeIn
+		
+		/** \brief Idle in main menu. */
+		mainMenuIdle
+		
+		/** \brief Activating a hot-spot. */
+		hotSpotActive
+		
+		/** \brief Idling in hot-spot. */
+		hotSpotIdle
+		
+		/** \brief Deactivating hot-spot. */
+		hotSpotDeactivate
+	end
+	
+	
+	
+	private var Console pConsole
+	private var Loaders pLoaders
+	private var String pDirXmlElementClasses
+	private var IMMLoadWorld pLoadWorld
+	private var IMMAnimateCamera pAnimateCamera
+	private var IMMTextDisplay pTextDisplay
+	private var IMMMenuFader pMenuFader
+	private var IMMInteract pInteract
+	private var float pMenuFadeInTime
+	
+	private var String pPathWorld
+	private var GameWorld pWorld
+	private var Camera pCamera
+	private var Microphone pMicrophone
+	private var ElementClassList pElementClasses
+	private var WorldRenderer pWorldRenderer
+	private var Dictionary pActions
+	private var String pMainCameraSpot
+	private var IMMBehaviorHotSpot.Instance pActiveHotSpot
+	private var State pState
+	private var TSTriggerTable pTriggerTable
+	
+	
+	
+	/**
+	 * \brief Create interactive main menu.
+	 * 
+	 * The window covers the entire desktop size. Starts out as black empty window. After
+	 * creating the window you can do customizations. Once ready call loadWorld() to start
+	 * loading the world file. Once the world finished loading fades in from black.
+	 * 
+	 * \param console Console to output messages to
+	 */
+	public func new( Console console )
+		if console == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConsole = console
+		this.pLoadWorld = IMMLoadWorld.new( this )
+		this.pAnimateCamera = IMMAnimateCamera.new( this )
+		this.pElementClasses = ElementClassList.new()
+		this.pActions = Dictionary.new()
+		this.pMainCameraSpot = "main"
+		this.pState = State.constructed
+		this.pMenuFadeInTime = 3
+		this.pTriggerTable = TSTriggerTable.new()
+		
+		this.pLoaders = Loaders.new( console )
+		this.pLoaders.getWorld().setElementClassList( this.pElementClasses )
+		
+		this.setTitle( "" ) // no title
+		this.setWindowState( Window.WindowState.maximized )
+		this.setCanClose( false )
+		this.setCanMaximize( false )
+		this.setCanMinimize( false )
+		this.setCanResize( false )
+		this.setDesignerSelector( "InteractiveMainMenu" )
+		
+		this.setLayout( StackLayout.new() )
+		
+		this.pWorldRenderer = WorldRenderer.new()
+		this.addWidget( this.pWorldRenderer )
+		
+		this.pTextDisplay = IMMTextDisplay.new( this )
+		
+		this.pInteract = IMMInteract.new( this )
+		
+		this.addElementClasses()
+		
+		this.pCamera = this.createCamera()
+		this.pMicrophone = Microphone.new()
+		this.pMicrophone.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+		
+		this.pMenuFader = IMMMenuFader.new( this )
+		this.pMenuFader.setCurTransparency( 0 )
+		
+		this.resume()
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pause()
+		
+		this.pMicrophone = null
+		this.pCamera = null
+		if this.pWorld != null
+			this.pWorld.dispose()
+			this.pWorld = null
+		end
+		
+		if this.pElementClasses != null
+			this.pElementClasses.dispose()
+			this.pElementClasses = null
+		end
+		
+		if this.pTriggerTable != null
+			this.pTriggerTable.dispose()
+			this.pTriggerTable = null
+		end
+		
+		this.pInteract = null
+		this.pMenuFader = null
+		this.pWorldRenderer = null
+		this.pActions = null
+		
+		this.pActiveHotSpot = null
+		this.pAnimateCamera = null
+		this.pTextDisplay = null
+		this.pLoadWorld = null
+		this.pLoaders = null
+		this.pConsole = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Console. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return this.pLoaders
+	end
+	
+	/** \brief XML element directory. */
+	public func String getDirXmlElementClasses()
+		return this.pDirXmlElementClasses
+	end
+	
+	/** \brief Set XML element directory. */
+	public func void setDirXmlElementClasses( String pathDir )
+		this.pDirXmlElementClasses = pathDir
+	end
+	
+	/** \brief World loader. */
+	public func IMMLoadWorld getLoadWorld()
+		return this.pLoadWorld
+	end
+	
+	/** \brief Set world loader. */
+	public func void setLoadWorld( IMMLoadWorld loadWorld )
+		if loadWorld == null
+			throw EInvalidParam.new()
+		end
+		this.pLoadWorld = loadWorld
+	end
+	
+	/** \brief Animate camera. */
+	public func IMMAnimateCamera getAnimateCamera()
+		return this.pAnimateCamera
+	end
+	
+	/** \brief Set animate camera. */
+	public func void setAnimateCamera( IMMAnimateCamera animateCamera )
+		if animateCamera == null
+			throw EInvalidParam.new()
+		end
+		this.pAnimateCamera = animateCamera
+	end
+	
+	/** \brief Menu fader. */
+	public func IMMMenuFader getWorldRendererFader()
+		return this.pMenuFader
+	end
+	
+	/** \brief Set menu fader. */
+	public func void setMenuFader( IMMMenuFader fader )
+		this.pMenuFader = fader
+	end
+	
+	/** \brief Text display. */
+	public func IMMTextDisplay getTextDisplay()
+		return this.pTextDisplay
+	end
+	
+	/** \brief Set text display. */
+	public func void setTextDisplay( IMMTextDisplay textDisplay )
+		if textDisplay == null
+			throw EInvalidParam.new()
+		end
+		
+		if textDisplay == this.pTextDisplay
+			return
+		end
+		
+		this.removeWidget( this.pTextDisplay )
+		this.pTextDisplay = textDisplay
+	end
+	
+	/** \brief Interact. */
+	public func IMMInteract getInteract()
+		return this.pInteract
+	end
+	
+	/** \brief Set interact. */
+	public func void setInteract( IMMInteract interact )
+		this.pInteract = interact
+	end
+	
+	/** \brief Main menu fade in time. */
+	public func float getMenuFadeInTime()
+		return this.pMenuFadeInTime
+	end
+	
+	/** \brief Set main menu fade in time. */
+	public func void setMenuFadeInTime( float time )
+		this.pMenuFadeInTime = DEMath.max( time, 0.0 )
+	end
+	
+	
+	
+	/** \brief World filename or \em null if none loaded yet. */
+	public func String getPathWorld()
+		return this.pPathWorld
+	end
+	
+	/** \brief World or \em null. */
+	public func GameWorld getWorld()
+		return this.pWorld
+	end
+	
+	/** \brief Camera or \em null. */
+	public func Camera getCamera()
+		return this.pCamera
+	end
+	
+	/** \brief Microphone or \em null. */
+	public func Microphone getMicrophone()
+		return this.pMicrophone
+	end
+	
+	/** \brief Element classes. */
+	public func ElementClassList getElementClasses()
+		return this.pElementClasses
+	end
+	
+	/** \brief World renderer. */
+	public func WorldRenderer getWorldRenderer()
+		return this.pWorldRenderer
+	end
+	
+	/** \brief Name of main camera spot is no hot-spot is active. */
+	public func String getMainCameraSpot()
+		return this.pMainCameraSpot
+	end
+	
+	/** \brief Set name of main camera spot is no hot-spot is active. */
+	public func void setMainCameraSpot( String name )
+		this.pMainCameraSpot = name
+	end
+	
+	/** \brief State. */
+	public func State getState()
+		return this.pState
+	end
+	
+	/** \brief Set state. */
+	protected func void setState( State state )
+		this.pState = state
+	end
+	
+	/** \brief Trigger table. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Main menu is loading and is not ready to be used. */
+	public func bool isNotReady()
+		return this.pState == State.constructed or this.pState == State.loadingWorld
+	end
+	
+	/** \brief Main menu is loaded and ready to be used. */
+	public func bool isReady()
+		return this.pState != State.constructed and this.pState != State.loadingWorld
+	end
+	
+	
+	
+	/** \brief Active hot-spot or null. */
+	public func IMMBehaviorHotSpot.Instance getActiveHotSpot()
+		return this.pActiveHotSpot
+	end
+	
+	/** \brief Activate hot-spot with transition. */
+	public func void activateHotSpot( IMMBehaviorHotSpot.Instance hotSpot )
+		if this.pState == State.constructed
+			throw EInvalidParam.new( "Not allowed in constructed state" )
+		end
+		if hotSpot == null
+			throw EInvalidParam.new( "hotSpot is null" )
+		end
+		
+		if hotSpot == this.pActiveHotSpot
+			return
+		end
+		
+		if this.pActiveHotSpot != null
+			this.pActiveHotSpot.onHotSpotDeactivated()
+		end
+		
+		this.pActiveHotSpot = hotSpot
+		
+		hotSpot.onHotSpotActivated()
+		
+		var String cameraSpot = this.pMainCameraSpot
+		if hotSpot.getCameraSpot() != null
+			cameraSpot = hotSpot.getCameraSpot()
+		end
+		this.pAnimateCamera.transitionTo( this.getCameraSpotNamed( cameraSpot ), hotSpot.getTransitionTime() )
+		
+		this.pState = State.hotSpotActive
+	end
+	
+	/** \brief Deactivate hot-spot with transition. */
+	public func void deactivateHotSpot()
+		if this.pState == State.constructed
+			throw EInvalidParam.new( "Not allowed in constructed state" )
+		end
+		if this.pActiveHotSpot == null
+			throw EInvalidParam.new( "Hot spot is null" )
+		end
+		
+		var float transitionTime = this.pActiveHotSpot.getTransitionTime()
+		
+		this.pActiveHotSpot.onHotSpotDeactivated()
+		this.pActiveHotSpot = null
+		
+		this.pAnimateCamera.transitionTo( \
+			this.getCameraSpotNamed( this.pMainCameraSpot ), transitionTime )
+		
+		this.pState = State.hotSpotDeactivate
+	end
+	
+	/**
+	 * \brief Set active hot-spot now.
+	 * 
+	 * \param hotSpot Hot-Spot to activate. Can be null to reset to main.
+	 */
+	public func void setActiveHotSpot( IMMBehaviorHotSpot.Instance hotSpot )
+		if this.pState == State.constructed
+			throw EInvalidParam.new( "Not allowed in constructed state" )
+		end
+		
+		if this.pActiveHotSpot != null
+			this.pActiveHotSpot.reset()
+			this.pActiveHotSpot = null
+		end
+		
+		this.pTextDisplay.reset()
+		
+		if hotSpot != null
+			this.pActiveHotSpot = hotSpot
+			hotSpot.setActivated()
+		end
+		
+		var String cameraSpot = this.pMainCameraSpot
+		if hotSpot != null and hotSpot.getCameraSpot() != null
+			cameraSpot = hotSpot.getCameraSpot()
+		end
+		this.pAnimateCamera.setCurSpot( this.getCameraSpotNamed( cameraSpot ) )
+		
+		if hotSpot != null
+			this.pState = State.hotSpotIdle
+			var ActionListener action = this.getActionAt( hotSpot.getAction() )
+			if action != null
+				action.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+			end
+			
+		else
+			this.pState = State.mainMenuIdle
+		end
+		
+		Engine.resetTimers()
+	end
+	
+	/** \brief Get hot spot with action or \em null if absent. */
+	public func IMMBehaviorHotSpot.Instance getHotSpotWithAction( String action )
+		var IMMBehaviorHotSpot.Instance behavior
+		var BehaviorElement element = this.pWorld.findElement( block Element each
+			if each castable BehaviorElement
+				behavior = IMMBehaviorHotSpot.getInstanceIn( each cast BehaviorElement )
+				if behavior != null
+					return behavior.getAction().equals( action )
+				end
+			end
+			return false
+		end ) cast BehaviorElement
+		return element != null if IMMBehaviorHotSpot.getInstanceIn( element ) else null
+	end
+	
+	
+	
+	/** \brief Action or \em null if absent. */
+	public func ActionListener getActionAt( String name )
+		return this.pActions.getAt( name, null ) cast ActionListener
+	end
+	
+	/** \brief Set action. */
+	public func void setActionAt( String name, ActionListener listener )
+		if name == null or listener == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pActions.setAt( name, listener )
+	end
+	
+	
+	
+	/** \brief Named camera spot or \em null if absent. */
+	public func IMMCameraSpot getCameraSpotNamed( String name )
+		return this.pWorld.findElement( block Element each
+			return each castable IMMCameraSpot \
+				and ( each cast IMMCameraSpot ).getName().equals( name )
+		end ) cast IMMCameraSpot
+	end
+	
+	
+	
+	/**
+	 * \brief Resume main menu.
+	 * 
+	 * Call after returning from in-game. Starts updating the main menu at regular
+	 * interval. It is safe to call multiple times. Also sets the main menu microphone
+	 * as the active microphone.
+	 */
+	public func void resume()
+		AudioSystem.setActiveMicrophone( this.pMicrophone )
+		this.startFrameUpdater()
+	end
+	
+	/**
+	 * \brief Pause main menu.
+	 * 
+	 * Call when switching to in-game. Stops processing the main menu to not consume
+	 * processing time. It is safe to call multiple times.
+	 */
+	public func void pause()
+		this.stopFrameUpdater()
+	end
+	
+	/**
+	 * \brief Start loading world.
+	 * 
+	 * \throws EInvalidParam loadWorld has been called already.
+	 */
+	public func void loadWorld( String path )
+		if this.pState != State.constructed
+			throw EInvalidParam.new( "Not allowed in constructed state" )
+		end
+		if path == null
+			throw EInvalidParam.new( "path is null" )
+		end
+		
+		try
+			this.pLoadWorld.loadWorld( path )
+			
+			this.pState = State.loadingWorld
+			this.pPathWorld = path
+			
+		catch Exception e
+			this.loadWorldFailed( e )
+		end
+	end
+	
+	/**
+	 * \brief Reset main menu to entry point.
+	 * 
+	 * Call for example when returning to the main menu from game. Sets the camera to
+	 * the main camera spot without transition.
+	 */
+	public func void reset()
+		if this.isNotReady()
+			return
+		end
+		
+		this.pAnimateCamera.setCurSpot( this.getCameraSpotNamed( this.pMainCameraSpot ) )
+		
+		this.pActiveHotSpot = null
+		
+		this.pWorld.forEachElement( block Element each
+			if each castable IMMProp
+				( each cast IMMProp ).reset()
+			end
+		end )
+		
+		this.pTextDisplay.reset()
+		
+		this.pState = State.mainMenuIdle
+		Engine.resetTimers()
+	end
+	
+	
+	
+	/** \brief Temporary hack until class is working then remove. */
+	public func void onKeyPress( KeyEvent event )
+		super.onKeyPress( event )
+		
+		select this.pState
+		case State.mainMenuIdle, State.hotSpotIdle
+			this.pInteract.onKeyPress( event )
+		end
+	end
+	
+	/** \brief Mouse button pressed. */
+	public func void onButtonPress( MouseEvent event )
+		super.onButtonPress( event )
+		
+		select this.pState
+		case State.mainMenuIdle, State.hotSpotIdle
+			this.pInteract.onButtonPress( event )
+		end
+	end
+	
+	/**
+	 * \brief Update frame.
+	 * 
+	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().
+	 */
+	public func void onFrameUpdate( float elapsed )
+		select this.pState
+		case State.loadingWorld
+			this.pMenuFader.setCurTransparency( 0 )
+			this.updateLoadWorld( elapsed )
+			
+		case State.maniMenuFadeIn
+			this.pMenuFader.update( elapsed )
+			if not this.pMenuFader.isFading()
+				this.pState = State.mainMenuIdle
+			end
+			this.pAnimateCamera.update( elapsed )
+			this.pTextDisplay.update( elapsed )
+			this.pWorld.update( elapsed )
+			this.pInteract.update( elapsed )
+			
+		case State.mainMenuIdle, State.hotSpotIdle
+			this.pAnimateCamera.update( elapsed )
+			this.pTextDisplay.update( elapsed )
+			this.pWorld.update( elapsed )
+			this.pInteract.update( elapsed )
+			
+		case State.hotSpotActive
+			this.pAnimateCamera.update( elapsed )
+			this.pTextDisplay.update( elapsed )
+			this.pWorld.update( elapsed )
+			this.pInteract.update( elapsed )
+			
+			if not this.pAnimateCamera.inTransition()
+				this.pState = State.hotSpotIdle
+				var ActionListener action = this.getActionAt( this.pActiveHotSpot.getAction() )
+				if action != null
+					action.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+				end
+			end
+			
+		case State.hotSpotDeactivate
+			this.pAnimateCamera.update( elapsed )
+			this.pTextDisplay.update( elapsed )
+			this.pWorld.update( elapsed )
+			this.pInteract.update( elapsed )
+			
+			if not this.pAnimateCamera.inTransition()
+				this.pState = State.mainMenuIdle
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Print exception to console. */
+	public func void printExceptionToConsole( String action, Exception e )
+		this.pConsole.addError( "InteractiveMainMenu " + action, e )
+	end
+	
+	
+	
+	/** \brief Add element classes. */
+	protected func void addElementClasses()
+		this.pElementClasses.add( IMMPropClass.new( this ) )
+		this.pElementClasses.add( IMMHotSpotClass.new( this ) )
+		this.pElementClasses.add( IMMCameraSpotClass.new( this ) )
+		this.pElementClasses.add( IMMLightClass.new( this ) )
+		this.pElementClasses.add( IMMSpeakerClass.new( this ) )
+		this.pElementClasses.add( IMMParticleEmitterClass.new( this ) )
+		this.pElementClasses.add( IMMEnvironmentMapClass.new( this ) )
+		this.pElementClasses.add( TriggerEvaluateClass.new( "DE_IMM_TriggerEvaluate", this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerTimerClass.new( "DE_IMM_TriggerTimer", this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerToggleClass.new( "DE_IMM_TriggerToggle", this.pTriggerTable ) )
+		
+		if this.pDirXmlElementClasses != null
+			this.pLoaders.getElementClass().addXmlElementClasses( \
+				this.pElementClasses, this.pDirXmlElementClasses, true )
+		end
+	end
+	
+	/** \brief Loading world failed. */
+	protected func void loadWorldFailed( Exception e )
+		this.printExceptionToConsole( "Load world", e )
+		
+		this.pState = State.constructed
+		
+		// just stop otherwise user is stuck in a black menu. a subclass can decide to
+		// do something else here for example revert to an emergeny main menu. but if
+		// loading world fails like this chances are the rest of the game is not going
+		// to run any better either
+		Engine.quit()
+	end
+	
+	/** \brief Update loading world. */
+	protected func void updateLoadWorld( float elapsed )
+		try
+			this.pWorld = this.pLoadWorld.update( elapsed )
+			
+			if this.pWorld != null
+				// finished preloading
+				this.launchMainMenu()
+			end
+			
+		catch Exception e
+			this.loadWorldFailed( e )
+		end
+	end
+	
+	/** \brief Finish preloading and launch main menu. */
+	protected func void launchMainMenu()
+		this.pWorld.getWorld().addCamera( this.pCamera )
+		this.pWorld.getWorld().addMicrophone( this.pMicrophone )
+		this.pWorldRenderer.setCamera( this.pCamera )
+		
+		this.pAnimateCamera.setCurSpot( this.getCameraSpotNamed( this.pMainCameraSpot ) )
+		
+		this.pMenuFader.fadeTo( 1.0, this.pMenuFadeInTime )
+		
+		AudioSystem.setActiveMicrophone( this.pMicrophone )
+		
+		this.pState = State.maniMenuFadeIn
+		Engine.resetTimers()
+	end
+	
+	/** \brief Create camera. */
+	protected func Camera createCamera()
+		var Camera camera = Camera.new()
+		camera.setFov( 80 )
+		camera.setImageDistance( 0.1 )
+		camera.setViewDistance( 300 )
+		camera.setExposure( 1 )
+		camera.setLowestIntensity( 1 )
+		camera.setHighestIntensity( 1 )
+		camera.setAdaptionTime( 0 )
+		camera.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.default ) )
+		return camera
+	end
+end

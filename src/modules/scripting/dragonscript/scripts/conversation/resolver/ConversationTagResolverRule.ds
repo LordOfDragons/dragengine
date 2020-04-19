@@ -1,0 +1,47 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+
+/**
+ * \brief Rule for resolving a tag in actor speak action text.
+ * 
+ * Tags in actor speak allow to alter the text box content dynamically while
+ * creating the sub title text widget. Supports tags of the form {action[:params]}
+ * with optional parameters after action. The special tag {{ prints a single
+ * { character. Output is a StyledTextDefinition.
+ */
+interface ConversationTagResolverRule
+	/**
+	 * \brief Resolve tag outputing result to styled text.
+	 * \param styledText Styled text to add resolved text to.
+	 * \param textNode Text node to add text to.
+	 * \param parameters Parameters inside tag.
+	 */
+	func void resolveTag( StyledTextDefinition styledText, STDNText textNode, String parameters )
+end

@@ -1,0 +1,223 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Files
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.StyledTextDefinitions
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Designers.Factories
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition
+
+
+
+/**
+ * \brief DragonScript test project styled text window.
+ */
+class WindowStyledText extends Window
+	/** \brief Named styled text. */
+	public class NamedStyledText
+		/** \brief Name. */
+		private var String pName
+		
+		/** \brief Styled text. */
+		private var StyledTextDefinition pStyledText
+		
+		/** \brief Create named styled text. */
+		public func new( StyledTextDefinition styledText, String name )
+			this.pName = name
+			this.pStyledText = styledText
+		end
+		
+		/** \brief Name. */
+		public func String getName()
+			return this.pName
+		end
+		
+		/** \brief Styled text. */
+		public func StyledTextDefinition getStyledText()
+			return this.pStyledText
+		end
+		
+		/** \brief String representation. */
+		public func String toString()
+			return this.pName
+		end
+	end
+	
+	/** \brief Styled text selection listener. */
+	public class SelectionListenerStyledTextDefinition extends DefaultListModelListener
+		/** \brief Window. */
+		private var WindowStyledText pWindow
+		
+		/** \brief Create selection listener. */
+		public func new( WindowStyledText window )
+			this.pWindow = window
+		end
+		
+		/** \brief Selection changed. */
+		public func void selectionChanged( ListModel listModel )
+			this.pWindow.updateStyledText()
+		end
+	end
+	
+	/** \brief Page scroll listener. */
+	public class ScrollPage extends DefaultRangeModelListener
+		/** \brief Window. */
+		private var WindowStyledText pWindow
+		
+		/** \brief Create selection listener. */
+		public func new( WindowStyledText window )
+			this.pWindow = window
+		end
+		
+		/** \brief Value changed. */
+		public func void valueChanged( RangeModel rangeModel )
+			this.pWindow.updatePage()
+		end
+	end
+	
+	
+	
+	/** \brief Create window. */
+	public func new() super( 0, 0, 600, 500 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Styled Text" )
+		
+		this.pModelPage = DefaultRangeModel.new( 0, 0, 1, 0, 1 )
+		this.pModelPage.addListener( ScrollPage.new( this ) )
+		
+		this.pModelStyledText = DefaultListModel.new()
+		this.scanStyledText( TestProject.getApp().getLoaders().getStyledTextDefinition(), "/styledtext" )
+		
+		this.createContent( this )
+		
+		if this.pModelStyledText.getCount() > 0
+			this.pComboBoxStyledText.setSelectedElement( 0 )
+			this.setStyledText( ( this.pModelStyledText.getAt( 0 ) cast NamedStyledText ).getStyledText() )
+		end
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		this.pModelStyledText = null
+		this.pComboBoxStyledText = null
+		this.pModelPage = null
+		this.pStyledText = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Styled text list model. */
+	private var DefaultListModel pModelStyledText
+	
+	/** \brief Styled text combo box. */
+	private var ComboBox pComboBoxStyledText
+	
+	/** \brief Display styled text. */
+	private var DisplayStyledText pStyledText
+	
+	/** \brief Page range model. */
+	private var DefaultRangeModel pModelPage
+	
+	
+	
+	/** \brief Update styled text. */
+	public func void updateStyledText()
+		this.setStyledText( ( this.pModelStyledText.getAt( \
+			this.pComboBoxStyledText.getSelectedElement() ) cast NamedStyledText ).getStyledText() )
+	end
+	
+	/** \brief Set styled text to display or \em null if not set. */
+	public func void setStyledText( StyledTextDefinition styledText )
+		if styledText == this.pStyledText.getStyledTextDefinition()
+			return
+		end
+		
+		this.pStyledText.setStyledTextDefinition( styledText )
+		this.pModelPage.setMaximum( DEMath.max( this.pStyledText.getPageCount() - 1, 0 ) )
+		this.pModelPage.setValue( 0 )
+	end
+	
+	/** \brief Update page to display. */
+	public func void updatePage()
+		if this.pModelPage.getMaximum() > 0
+			this.pStyledText.setCurrentPage( this.pModelPage.getValue() )
+		end
+	end
+	
+	/** \brief Scan directory for styled text and load them. */
+	public func void scanStyledText( LoadStyledTextDefinition loader, String directory )
+		FileSystem.searchFiles( directory, true, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( each, "*.xml" )
+				try
+					this.pModelStyledText.add( NamedStyledText.new( loader.loadFromFile( each ), \
+						File.new( each ).getName().substring( 0, -4 ) ) )
+					
+				catch Exception e
+					e.printTrace()
+				end
+			end
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Add content. */
+	private func void createContent( Container content )
+		content.setLayout( BorderLayout.new( 5 ) )
+		
+		// styled text selection
+		var Panel panel = Panel.new()
+		panel.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		this.pComboBoxStyledText = ComboBox.new( this.pModelStyledText )
+		this.pComboBoxStyledText.setSelectedElement( this.pModelStyledText.getCount() - 1 )
+		this.pComboBoxStyledText.setNumberDisplayLines( 5 )
+		this.pModelStyledText.addListener( SelectionListenerStyledTextDefinition.new( this ) )
+		panel.addWidget( Label.new( "Styled Text:" ) )
+		panel.addWidget( this.pComboBoxStyledText )
+		content.addWidget( panel, BorderLayout.Area.top )
+		
+		// display with explicit background canvas creator
+		this.pStyledText = DisplayStyledText.new()
+		this.pStyledText.setDesignerSelector( "DisplayStyledText" )
+		content.addWidget( this.pStyledText, BorderLayout.Area.content )
+		
+		// page scroll bar
+		var ScrollBar scrollbar = ScrollBar.new( Orientation.vertical )
+		scrollbar.setModel( this.pModelPage )
+		content.addWidget( scrollbar, BorderLayout.Area.right )
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		
+		this.pModelPage.setMaximum( DEMath.max( this.pStyledText.getPageCount() - 1, 0 ) )
+	end
+end

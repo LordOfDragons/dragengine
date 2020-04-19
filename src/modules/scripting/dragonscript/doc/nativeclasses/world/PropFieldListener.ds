@@ -1,0 +1,27 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Prop field listener.
+ * 
+ * This is a native class.
+ */
+interface PropFieldListener
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Fill prop field with instances.
+	 * \param propfield Propfield to create instances for.
+	 * \param density Percentage (in the range from 0 to 1) of instances to use compared to
+	 *                a fully populated prop field.
+	 */
+	func void createInstances( PropField propfield, float density )
+	/*@}*/
+end

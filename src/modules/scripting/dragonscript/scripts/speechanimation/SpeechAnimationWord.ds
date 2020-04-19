@@ -1,0 +1,63 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.SpeechAnimations
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Speech animation Word.
+ */
+class SpeechAnimationWord
+	/** Unique namel. */
+	private var StringID pName
+	/** Phoneme of the word. */
+	private var UnicodeString pPhonetics
+	
+	
+	
+	/** Creates a new speech animation phoneme. */
+	public func new( StringID name, UnicodeString phonetics )
+		if name == null or phonetics == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+		this.pPhonetics = phonetics
+	end
+	
+	
+	
+	/** Retrieves the unique name. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** Retrieves the phonetics. */
+	public func UnicodeString getPhonetics()
+		return this.pPhonetics
+	end
+end

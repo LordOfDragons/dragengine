@@ -1,0 +1,364 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load behavior tree from debehaviorTree file.
+ * 
+ * Supports caching behavior trees to avoid loading the same behavior tree multiple times.
+ * Returned behavior tree can thus be shared so do not change it.
+ */
+class LoadBehaviorTree extends BaseXmlLoader
+	/** \brief Dictionary of cached behavior trees (Dictionary: String -> BehaviorTree). */
+	private var Dictionary pBehaviorTrees
+	
+	
+	
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadBehaviorTree" )
+	end
+	
+	/** \brief Create new loader. */
+	public func new( Console console, String name ) super( console, name )
+		this.pBehaviorTrees = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Load behaviorTree from file. */
+	public func BehaviorTree loadFromFile( String filename )
+		var BehaviorTree behaviorTree = this.pBehaviorTrees.getAt( filename, null ) cast BehaviorTree
+		if behaviorTree != null
+			return behaviorTree
+		end
+		
+		this.logLoadingFromFile( filename )
+		
+		try
+			var EasyXML document = EasyXML.new( filename )
+			if document.hasParseFailed()
+				this.logParsingFailed( document.getParseLog() )
+				throw EInvalidParam.new()
+			end
+			
+			var EasyXMLElement root = document.getRootElement()
+			if not root.getTagName().equals( "behaviorTree" )
+				this.logUnknownTag( root )
+				throw EInvalidParam.new()
+			end
+			
+			var BehaviorTree behaviorTree = BehaviorTree.new()
+			this.readBehaviorTree( root, behaviorTree, File.new( filename ).getParent().getPath() )
+			
+			this.pBehaviorTrees.setAt( filename, behaviorTree )
+			return behaviorTree
+			
+		catch Exception e
+			this.logLoadingFailed( filename )
+			throw
+		end
+	end
+	
+	
+	
+	/** \brief Read behavior tree tag. */
+	private func void readBehaviorTree( EasyXMLElement root, BehaviorTree behaviorTree, String basePath )
+		var bool hasRootRule = false
+		var BTRule rule
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			rule = this.readRule( element, behaviorTree, "", "", basePath )
+			if rule == null
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+			
+			if hasRootRule
+				var String id = behaviorTree.getRootRule().getID()
+				this.logDuplicateObject( element, "Root rule", id != null if id else "" )
+				throw EInvalidParam.new()
+			end
+			
+			behaviorTree.setRootRule( rule )
+			hasRootRule = true
+			
+			if rule.getID() != null
+				behaviorTree.registerRule( rule )
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Read rule tag.
+	 * 
+	 * \returns Parse rule or \em null if not a rule tag.
+	 */
+	private func BTRule readRule( EasyXMLElement element, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID, String basePath )
+		var String tagName = element.getTagName()
+		
+		if tagName.equals( "action" )
+			return this.readRuleAction( element, behaviorTree, idPrefix, parentID )
+			
+		elif tagName.equals( "sequence" )
+			return this.readRuleSequence( element, behaviorTree, idPrefix, parentID, basePath )
+			
+		elif tagName.equals( "choice" )
+			return this.readRuleChoice( element, behaviorTree, idPrefix, parentID, basePath )
+			
+		elif tagName.equals( "success" )
+			return this.readRuleSuccess( element, behaviorTree, idPrefix, parentID )
+			
+		elif tagName.equals( "failure" )
+			return this.readRuleFailure( element, behaviorTree, idPrefix, parentID )
+			
+		elif tagName.equals( "subTree" )
+			return this.readRuleSubTree( element, behaviorTree, idPrefix, parentID, basePath )
+			
+		else
+			return null
+		end
+	end
+	
+	/** \brief Get rule identifier from element. */
+	private func String pGetRuleID( EasyXMLElement element, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID )
+		if not element.hasAttributeNamed( "id" )
+			return null
+		end
+		
+		var String id = element.getAttributeNamed( "id" )
+		if id.empty()
+			this.logInvalidValue( element, id )
+			throw EInvalidParam.new()
+		end
+		
+		if id.getAt( 0 ) == '.'
+			id = parentID + id
+		end
+		id = idPrefix + id
+		
+		if behaviorTree.hasRuleWithID( id )
+			this.logDuplicateObject( element, "rule", id )
+			throw EInvalidParam.new()
+		end
+		
+		return id
+	end
+	
+	/** \brief Read rule common. */
+	private func bool readRuleCommon( EasyXMLElement element, BTRule rule )
+		var String tagName = element.getTagName()
+		
+		if tagName.equals( "parameter" )
+			rule.getParameters().setAt( element.getAttributeNamed( "name" ), element.getFirstCData() )
+			
+		elif tagName.equals( "condition" )
+			rule.addCondition( element.getFirstCData() )
+			
+		elif tagName.equals( "conditionMode" )
+			var String value = element.getFirstCData()
+			
+			if value.equals( "allTrue" )
+				rule.setConditionMode( BTRule.ConditionMode.allTrue )
+				
+			elif value.equals( "anyTrue" )
+				rule.setConditionMode( BTRule.ConditionMode.anyTrue )
+				
+			elif value.equals( "anyFalse" )
+				rule.setConditionMode( BTRule.ConditionMode.anyFalse )
+				
+			elif value.equals( "allFalse" )
+				rule.setConditionMode( BTRule.ConditionMode.allFalse)
+				
+			else
+				this.logInvalidValue( element, value )
+				throw EInvalidParam.new()
+			end
+			
+		else
+			return false
+		end
+		
+		return true
+	end
+	
+	/** \brief Read action rule. */
+	private func BTRuleAction readRuleAction( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID )
+		var BTRuleAction rule = BTRuleAction.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ), \
+			root.getAttributeNamed( "name" ) )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if not this.readRuleCommon( element, rule )
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return rule
+	end
+	
+	/** \brief Read sequence rule. */
+	private func BTRuleSequence readRuleSequence( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID, String basePath )
+		var BTRuleSequence rule = BTRuleSequence.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ) )
+		var BTRule childRule
+		
+		if root.hasAttributeNamed( "loop" )
+			rule.setLooping( root.getAttributeNamed( "loop" ).equals( "true" ) )
+		end
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			childRule = this.readRule( element, behaviorTree, idPrefix, parentID, basePath )
+			if childRule != null
+				rule.addRule( childRule )
+				if childRule.getID() != null
+					behaviorTree.registerRule( childRule )
+				end
+				
+			elif not this.readRuleCommon( element, rule )
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return rule
+	end
+	
+	/** \brief Read choice rule. */
+	private func BTRuleChoice readRuleChoice( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID, String basePath )
+		var BTRuleChoice rule = BTRuleChoice.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ) )
+		var BTRule childRule
+		
+		if root.hasAttributeNamed( "loop" )
+			rule.setLooping( root.getAttributeNamed( "loop" ).equals( "true" ) )
+		end
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			childRule = this.readRule( element, behaviorTree, idPrefix, parentID, basePath )
+			if childRule != null
+				rule.addRule( childRule )
+				if childRule.getID() != null
+					behaviorTree.registerRule( childRule )
+				end
+				
+			elif not this.readRuleCommon( element, rule )
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return rule
+	end
+	
+	/** \brief Read success rule. */
+	private func BTRuleSuccess readRuleSuccess( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID )
+		var BTRuleSuccess rule = BTRuleSuccess.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ) )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if not this.readRuleCommon( element, rule )
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return rule
+	end
+	
+	/** \brief Read failure rule. */
+	private func BTRuleFailure readRuleFailure( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID )
+		var BTRuleFailure rule = BTRuleFailure.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ) )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if not this.readRuleCommon( element, rule )
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return rule
+	end
+	
+	/** \brief Read sub tree rule. */
+	private func BTRuleSequence readRuleSubTree( EasyXMLElement root, BehaviorTree behaviorTree, \
+	String idPrefix, String parentID, String basePath )
+		var BTRuleSequence rule = BTRuleSequence.new( \
+			this.pGetRuleID( root, behaviorTree, idPrefix, parentID ) )
+		
+		if root.hasAttributeNamed( "loop" )
+			rule.setLooping( root.getAttributeNamed( "loop" ).equals( "true" ) )
+		end
+		
+		var String filename = File.absolutePath( root.getFirstCData(), basePath ).getPath()
+		var String subBasePath = File.new( filename ).getParent().getPath()
+		var BTRule subRule
+		try
+			var EasyXML document = EasyXML.new( filename )
+			if document.hasParseFailed()
+				this.logParsingFailed( document.getParseLog() )
+				throw EInvalidParam.new()
+			end
+			
+			var EasyXMLElement subRoot = document.getRootElement()
+			if not subRoot.getTagName().equals( "behaviorTree" )
+				this.logUnknownTag( subRoot )
+				throw EInvalidParam.new()
+			end
+			
+			subRoot.forEachTag( block EasyXMLElement subElement, String subTagName
+				subRule = this.readRule( subElement, behaviorTree, idPrefix, "", subBasePath )
+				if subRule == null
+					this.logUnknownTag( subElement )
+					throw EInvalidParam.new()
+				end
+				
+				rule.addRule( subRule )
+				if subRule.getID() != null
+					behaviorTree.registerRule( subRule )
+				end
+			end )
+			
+		catch Exception e
+			this.logLoadingFailed( filename )
+			throw
+		end
+		
+		return rule
+	end
+end

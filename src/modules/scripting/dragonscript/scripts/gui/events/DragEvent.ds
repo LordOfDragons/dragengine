@@ -1,0 +1,99 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui.Events
+
+
+
+/**
+ * \brief Drag and drop event.
+ */
+class DragEvent extends ModifiableEvent
+	/** \brief Drag enter event identifier. */
+	public fixed var int idDragEnter = 40
+	
+	/** \brief Drag leave event identifier. */
+	public fixed var int idDragLeave = 41
+	
+	/** \brief Drag move event identifier. */
+	public fixed var int idDragOver = 42
+	
+	/** \brief Drag drop event identifier. */
+	public fixed var int idDragDrop = 43
+	
+	
+	
+	/** \brief Drag and drop action. */
+	private var DragAndDrop pDragAndDrop
+	
+	/** \brief Position of drag. */
+	private var Point pPosition
+	
+	
+	
+	/** \brief Event identifier is a drag and drop event identifier. */
+	public static func bool isDragEvent( int identifier )
+		return identifier >= idDragEnter and identifier <= idDragDrop
+	end
+	
+	
+	
+	/** \brief Creates drag event. */
+	public func new( Object source, int id, DragAndDrop dragAndDrop, int modifiers ) \
+	super( source, id, modifiers )
+		if dragAndDrop == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pDragAndDrop = dragAndDrop
+		this.pPosition = Point.new()
+	end
+	
+	/** \brief Create drag event. */
+	public func new( Object source, int id, DragAndDrop dragAndDrop, int modifiers, Point position ) \
+	super( source, id, modifiers )
+		if dragAndDrop == null or position == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pDragAndDrop = dragAndDrop
+		this.pPosition = position
+	end
+	
+	
+	
+	/** \brief Drag and drop action. */
+	public func DragAndDrop getDragAndDrop()
+		return this.pDragAndDrop
+	end
+	
+	/** \brief Position. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	
+	
+	/** \brief Create copy of drag event with new position. */
+	public func DragEvent relocate( Point position )
+		return new( this.getSource(), this.getIdentifier(), this.pDragAndDrop, this.getModifiers(), position )
+	end
+end

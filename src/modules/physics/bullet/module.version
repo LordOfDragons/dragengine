@@ -1,0 +1,4 @@
+PHYBULLET {
+  global: BulletCreateModule;
+  local: *;
+};

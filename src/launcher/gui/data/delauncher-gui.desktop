@@ -1,0 +1,14 @@
+[Desktop Entry]
+Categories=Game;
+Version=1.0
+Type=Application
+Name=Drag[en]gine GUI Launcher
+GenericName=Drag[en]gine GUI Launcher
+Comment=Run Drag[en]gine based games
+Exec=delauncher-gui %f
+TryExec=delauncher-gui
+MimeType=application/dragengine-gamedefinition;application/dragengine-delga;
+Icon=dragengine-delauncher-gui
+NoDisplay=false
+StartupNotify=false
+Terminal=false

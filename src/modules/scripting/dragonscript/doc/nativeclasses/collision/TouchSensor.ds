@@ -1,0 +1,219 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Touch sensor.
+ * 
+ * This is a native class.
+ */
+class TouchSensor
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create touch sensor. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Pposition. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+	
+	/** \brief Track enter leave. */
+	public func bool getTrackEnterLeave()
+	end
+	
+	/** \brief Set if enter and leaving is tracked. */
+	public func void setTrackEnterLeave( bool trackEnterLeave )
+	end
+	
+	/** \brief Touch sensor is enabled. */
+	public func bool getEnabled()
+	end
+	
+	/** \brief Set if touch sensor is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	
+	/** \brief Get shape. */
+	public func ShapeList getShape()
+	end
+	
+	/** \brief Set shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
+	
+	
+	/** \brief Touch sensor listener or \em null if not set. */
+	public func TouchSensorListener getListener()
+	end
+	
+	/** \brief Set touch sensor listener or \em null if not set. */
+	public func void setListener( TouchSensorListener listener )
+	end
+	
+	
+	
+	/** \brief Touch sensor contains colliders. */
+	public func bool isEmpty()
+	end
+	
+	/** \brief Number of colliders in touch sensor. */
+	public func int getColliderCount()
+	end
+	
+	/**
+	 * \brief Collider at index in touch sensor.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 * \throws EOutOfBoundary \em collider is less than 0 or larger than or equal to getColliderCount().
+	 */
+	public func Collider getColliderAt( int collider )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Ignore colliders */
+	/*@{*/
+	/** \brief Number of colliders to ignore. */
+	public func int getIgnoreColliderCount()
+	end
+	
+	/**
+	 * \brief Ignore collider at index.
+	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
+	 */
+	public func Collider getIgnoreColliderAt( int index )
+	end
+	
+	/** \brief Ignore collider is present. */
+	public func bool hasIgnoreCollider( Collider collider )
+	end
+	
+	/** \brief Add collider to ignore. */
+	public func void addIgnoreCollider( Collider collider )
+	end
+	
+	/**
+	 * \brief Remove collider to ignore.
+	 * \throws deeInvalidParam \em collider is absent.
+	 */
+	public func void removeIgnoreCollider( Collider collider )
+	end
+	
+	/** \brief Remove all colliders to ignore. */
+	public func void removeAllIgnoreColliders()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Collision detection */
+	/*@{*/
+	/** \brief Point is inside touch sensor. */
+	public func bool pointInside( DVector point )
+	end
+	
+	/**
+	 * \brief Visit all touching elements..
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void allHits( ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Ray cast intersection test.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void rayHits( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Closest ray cast intersection test.
+	 * \details Only closest intersection is reported to listener. rayHits() reports all intersections.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Test collider for intersection.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderHits( Collider collider, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Tests moving collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderMoveHits( Collider collider, Vector displacement, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Tests moving collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderMoveHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Test rotating collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderRotateHits( Collider collider, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Test rotating collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderRotateHitsClosest( Collider collider, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Test moving and rotating collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderMoveRotateHits( Collider collider, Vector displacement, ColliderListener listener )
+	end
+	
+	/**
+	 * \brief Test moving and rotating collider for collision.
+	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
+	 */
+	public func void colliderMoveRotateHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
+	end
+	/*@}*/
+end

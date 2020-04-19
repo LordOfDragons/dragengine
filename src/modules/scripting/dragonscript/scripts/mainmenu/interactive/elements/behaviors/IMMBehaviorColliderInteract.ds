@@ -1,0 +1,245 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding collider interact support.
+ */
+class IMMBehaviorColliderInteract extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var IMMBehaviorColliderInteract pECBehavior
+		private var ECBehaviorCollider.Instance pBaseCollider
+		private var ColliderRig pCollider
+		
+		
+		
+		/** \brief Create element. */
+		public func new( IMMBehaviorColliderInteract ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pBaseCollider = ecbehavior.getBaseCollider().instance( element )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			if this.pCollider != null
+				this.pCollider.setColliderListener( null )
+				this.pCollider.setOwner( null )
+				this.pCollider.removeAllCollisionTests()
+				this.pCollider.removeAllIgnoreColliders()
+				this.pCollider = null
+			end
+			
+			this.pBaseCollider = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			this.pCollider = this.createCollider( stub )
+			this.pCollider.setOwner( this.getElement() )
+			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+			
+			if this.pBaseCollider != null and this.pBaseCollider.getCollider() != null
+				this.pECBehavior.getAttach().attach( this.pBaseCollider.getCollider(), this.pCollider, stub )
+			end
+		end
+		
+		/**
+		 * \brief Create collider.
+		 * \param stub Stub to use.
+		 * \param component Component to use or \em null if absent.
+		 */
+		protected func ColliderRig createCollider( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			var ColliderRig collider = ColliderRig.new()
+			
+			collider.setRig( this.pECBehavior.getRig().getRig( stub, element.getClass() ) )
+			collider.setResponseType( CollisionResponse.kinematic )
+			collider.setCollisionFilter( this.pECBehavior.getCollisionFilter().getCollisionFilter() )
+			collider.setUseLocalGravity( true )
+			collider.setGravity( Vector.new() )
+			collider.setEnabled( true )
+			
+			return collider
+		end
+		
+		
+		
+		/** \brief Element class behavior. */
+		public func IMMBehaviorColliderInteract getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Base collider behavior instance. */
+		public func ECBehaviorCollider.Instance getBaseCollider()
+			return this.pBaseCollider
+		end
+		
+		/** \brief Collider Interact. */
+		public func ColliderRig getCollider()
+			return this.pCollider
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.geometryChanged()
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pBaseCollider
+	private var ECComposeCollisionFilter pCollisionFilter
+	private var ECPRig pRig
+	private var ECComposeAttachResource pAttach
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider baseCollider ) \
+	this( eclass, baseCollider, "colliderInteract." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider baseCollider, \
+	String prefix ) super( eclass )
+		if baseCollider == null
+			throw ENullPointer.new( "baseCollider" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pBaseCollider = baseCollider
+		
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.actorAI )
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.trigger )
+		
+		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		
+		this.pRig = ECPRig.new( prefix + "rig" )
+		eclass.addProperty( this.pRig )
+		
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pBaseCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Base collider behavior. */
+	public func ECBehaviorCollider getBaseCollider()
+		return this.pBaseCollider
+	end
+	
+	/** \brief Collision filter for AI collider. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Rig. */
+	public func ECPRig getRig()
+		return this.pRig
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type IMMBehaviorColliderInteract.
+	 */
+	static public func IMMBehaviorColliderInteract getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable IMMBehaviorColliderInteract
+		end ) cast IMMBehaviorColliderInteract
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type IMMBehaviorColliderInteract.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create element class behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

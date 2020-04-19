@@ -1,0 +1,145 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Floating point value element class property for use with XML loading.
+ */
+class ECPFloat extends ElementClassProperty
+	private var float pValue
+	private var bool pEnableLimitLower
+	private var float pLimitLower
+	private var bool pEnableLimitUpper
+	private var float pLimitUpper
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, float value ) super( name )
+		this.pValue = value
+		this.pEnableLimitLower = false
+		this.pLimitLower = 0.0
+		this.pEnableLimitUpper = false
+		this.pLimitUpper = 1.0
+	end
+	
+	/** \brief Create property. */
+	public func new( String name, float value, float lowerLimit ) this( name, value )
+		this.pEnableLimitLower = true
+		this.pLimitLower = lowerLimit
+	end
+	
+	/** \brief Create property. */
+	public func new( String name, float value, float lowerLimit, float upperLimit ) \
+	this( name, value, lowerLimit )
+		this.pEnableLimitUpper = true
+		this.pLimitUpper = upperLimit
+	end
+	
+	
+	
+	/** \brief Value. */
+	public func float getValue()
+		return this.pValue
+	end
+	
+	/** \brief Enable lower limit. */
+	public func bool getEnableLimitLower()
+		return this.pEnableLimitLower
+	end
+	
+	/** \brief Set enable lower limit. */
+	public func void setEnableLimitLower( bool enable )
+		this.pEnableLimitLower = enable
+	end
+	
+	/** \brief Lower limit. */
+	public func float getLimitLower()
+		return this.pLimitLower
+	end
+	
+	/** \brief Set lower limit. */
+	public func void setLimitLower( float limit )
+		this.pLimitLower = limit
+	end
+	
+	/** \brief Enable upper limit. */
+	public func bool getEnableLimitUpper()
+		return this.pEnableLimitUpper
+	end
+	
+	/** \brief Set enable upper limit. */
+	public func void setEnableLimitUpper( bool enable )
+		this.pEnableLimitUpper = enable
+	end
+	
+	/** \brief Upper limit. */
+	public func float getLimitUpper()
+		return this.pLimitUpper
+	end
+	
+	/** \brief Set upper limit. */
+	public func void setLimitUpper( float limit )
+		this.pLimitUpper = limit
+	end
+	
+	/** \brief Set limits. */
+	public func void setLimits( bool enableLower, float limitLower, bool enableUpper, float limitUpper )
+		this.pEnableLimitLower = enableLower
+		this.pLimitLower = limitLower
+		this.pEnableLimitUpper = enableUpper
+		this.pLimitUpper = limitUpper
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pValue = value cast float
+		
+		if this.pEnableLimitUpper
+			this.pValue = DEMath.min( this.pValue, this.pLimitUpper )
+		end
+		if this.pEnableLimitLower
+			this.pValue = DEMath.max( this.pValue, this.pLimitLower )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Floating point value modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored value is returned.
+	 * If the named stub property is present it is returned.
+	 */
+	public func float getValue( StubWithProperties stub )
+		return stub.getPropertyFloatFor( this.getName(), this.pValue )
+	end
+end

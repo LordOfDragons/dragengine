@@ -1,0 +1,32 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if not parent_env['OSPosix'] and not parent_env['OSWindows']:
+	Return()
+
+envLauncher = parent_env.Clone()
+if parent_env['OSWindows']:
+	envLauncher.Append(LINKFLAGS = ['-static', '-static-libgcc', '-static-libstdc++'])
+envLauncher.Append(LINKFLAGS = ['-s'])  # remove all symbol table and relocation information from binary
+envLauncher.Append(CPPFLAGS = ['-g0'])  # negate -g if present
+
+program = []
+
+if parent_env['OSPosix']:
+	program.extend(envLauncher.Program('linux64_launcher', ['src/launcher_linux.cpp', 'src/common.cpp']))
+	program.extend(envLauncher.Program('linux64_deigde', ['src/deigde_linux.cpp', 'src/common.cpp']))
+elif parent_env['OSWindows']:
+	program.extend(envLauncher.Program('windows64_launcher', ['src/launcher_windows.cpp', 'src/common.cpp']))
+	program.extend(envLauncher.Program('windows64_deigde', ['src/deigde_windows.cpp', 'src/common.cpp']))
+
+target = envLauncher.Alias('launcher_usbdrive', program)
+
+archive = {}
+for p in program:
+	archive[p.name] = p
+
+parent_targets['launcher_usbdrive'] = {
+	'name': 'USB-Drive Launcher',
+	'build': target,
+	'archive-special': archive}

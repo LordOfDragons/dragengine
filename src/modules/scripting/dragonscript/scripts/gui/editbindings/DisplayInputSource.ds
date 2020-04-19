@@ -1,0 +1,327 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Display button binding.
+ * 
+ * Shows display image and text of input source. Text is shown above image. Different
+ * input sources as well as only input devices can be shown.
+ */
+class DisplayInputSource extends Panel
+	private var int pIconHeight
+	
+	private var InputDevice pInputDevice
+	private var InputDeviceButton pInputButton
+	private var InputDeviceAxis pInputAxis
+	
+	private var DisplayImage pDisplayImageDevice
+	private var Label pLabelDevice
+	private var DisplayImage pDisplayImageSource
+	private var Label pLabelSource
+	
+	
+	
+	/** \brief Create display input source widget. */
+	public func new( int iconHeight )
+		if iconHeight < 1
+			throw EInvalidParam.new( "iconHeight < 1" )
+		end
+		
+		this.pIconHeight = iconHeight
+		
+		this.runWhileBlockingLayout( block
+			this.setLayout( FlowLayout.new( LayoutAxis.x, 2 ) )
+			
+			this.addWidget( Panel.new( StackLayout.new(), block Panel panel
+				panel.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x ), block Panel centrized
+					this.pDisplayImageDevice = DisplayImage.new()
+					this.pDisplayImageDevice.setMinimumSize( Point.new( iconHeight, iconHeight ) )
+					this.pDisplayImageDevice.setProtectMinimumSize( true )
+					centrized.addWidget( this.pDisplayImageDevice )
+				end ) )
+				
+				this.pLabelDevice = Label.new( " " )
+				panel.addWidget( this.pLabelDevice )
+			end ) )
+			
+			this.addWidget( Panel.new( StackLayout.new(), block Panel panel
+				panel.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x ), block Panel centrized
+					this.pDisplayImageSource = DisplayImage.new()
+					this.pDisplayImageSource.setMinimumSize( Point.new( iconHeight, iconHeight ) )
+					this.pDisplayImageSource.setProtectMinimumSize( true )
+					centrized.addWidget( this.pDisplayImageSource )
+				end ) )
+				
+				this.pLabelSource = Label.new( " " )
+				panel.addWidget( this.pLabelSource )
+			end ) )
+			
+			// has to come last since it modifies child widgets
+			this.setDesignerSelector( "DisplayInputSource" )
+		end )
+	end
+	
+	/** \brief Create display input source widget. */
+	public func new( int iconHeight, InputDevice device ) this( iconHeight )
+		this.set( device )
+	end
+	
+	/** \brief Create display input source widget. */
+	public func new( int iconHeight, InputDevice device, InputDeviceButton button ) this( iconHeight )
+		this.set( device, button )
+	end
+	
+	/** \brief Create display input source widget. */
+	public func new( int iconHeight, InputDevice device, InputDeviceAxis axis ) this( iconHeight )
+		this.set( device, axis )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pDisplayImageDevice = null
+		this.pLabelDevice = null
+		this.pDisplayImageSource = null
+		this.pLabelSource = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Icon height. */
+	public func int getIconHeight()
+		return this.pIconHeight
+	end
+	
+	/** \brief Set icon height. */
+	public func void setIconHeight( int height )
+		if height < 1
+			throw EInvalidParam.new( "height < 1" )
+		end
+		
+		if height == this.pIconHeight
+			return
+		end
+		
+		this.pIconHeight = height
+		
+		this.updateWidgets()
+	end
+	
+	/** \brief Input device or null if not set. */
+	public func InputDevice getInputDevice()
+		return this.pInputDevice
+	end
+	
+	/** \brief Input button or null if not set. */
+	public func InputDeviceButton getInputButton()
+		return this.pInputButton
+	end
+	
+	/** \brief Input axis or null if not set. */
+	public func InputDeviceAxis getInputAxis()
+		return this.pInputAxis
+	end
+	
+	
+	
+	/** \brief Clear. */
+	public func void clear()
+		this.pInputDevice = null
+		this.pInputButton = null
+		this.pInputAxis = null
+		
+		this.updateWidgets()
+	end
+	
+	/** \brief Set input device. */
+	public func void set( InputDevice device )
+		this.pInputDevice = device
+		this.pInputButton = null
+		this.pInputAxis = null
+		
+		this.updateWidgets()
+	end
+	
+	/**
+	 * \brief Set input button.
+	 * 
+	 * If device is not null shows device and button otherwise only button.
+	 */
+	public func void set( InputDevice device, InputDeviceButton button )
+		if button == null
+			throw ENullPointer.new( "button" )
+		end
+		
+		this.pInputDevice = device
+		this.pInputButton = button
+		this.pInputAxis = null
+		
+		this.updateWidgets()
+	end
+	
+	/**
+	 * \brief Set input axis.
+	 * 
+	 * If device is not null shows device and axis otherwise only axis.
+	 */
+	public func void set( InputDevice device, InputDeviceAxis axis )
+		if axis == null
+			throw ENullPointer.new( "axis" )
+		end
+		
+		this.pInputDevice = device
+		this.pInputButton = null
+		this.pInputAxis = axis
+		
+		this.updateWidgets()
+	end
+	
+	
+	
+	/**
+	 * \brief Set designer selector.
+	 * 
+	 * In addition to the base class behavior sets the designer selector of child widgets:
+	 * - Device image: Image.<selector>
+	 * - Source image: Image.<selector>
+	 * - Device label: Label.<selector>
+	 * - Source label: Label.<selector>
+	 */
+	public func void setDesignerSelector( String selector )
+		super.setDesignerSelector( selector )
+		
+		this.pDisplayImageDevice.setDesignerSelector( "Image." + selector )
+		this.pLabelDevice.setDesignerSelector( "Label." + selector )
+		this.pDisplayImageSource.setDesignerSelector( "Image." + selector )
+		this.pLabelSource.setDesignerSelector( "Label." + selector )
+	end
+	
+	
+	/** \brief Update widgets. */
+	protected func void updateWidgets()
+		var Image image
+		var String text
+		
+		this.runWhileBlockingLayout( block
+			if this.pInputDevice != null
+				image = this.pInputDevice.getLargestDisplayIconY( this.pIconHeight )
+				if image != null
+					this.pDisplayImageDevice.setImage( image )
+					this.pDisplayImageDevice.setMinimumSize( null )
+					
+				else
+					this.pDisplayImageDevice.setImage( null )
+					this.pDisplayImageDevice.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				end
+				
+				text = this.pInputDevice.getDisplayText()
+				if text.empty()
+					text = " "
+				end
+				this.pLabelDevice.setText( text )
+				
+			else
+				this.pDisplayImageDevice.setImage( null )
+				this.pDisplayImageDevice.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				
+				this.pLabelDevice.setText( " " )
+			end
+			
+			if this.pInputButton != null
+				image = this.pInputButton.getLargestDisplayIconY( this.pIconHeight )
+				if image != null
+					this.pDisplayImageSource.setImage( image )
+					this.pDisplayImageSource.setMinimumSize( null )
+					
+				else
+					this.pDisplayImageSource.setImage( null )
+					this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				end
+				this.pDisplayImageSource.setVisible( true )
+				
+				text = this.pInputButton.getDisplayText()
+				if text.empty()
+					text = " "
+				end
+				this.pLabelSource.setText( text )
+				this.pLabelSource.setVisible( true )
+				
+				this.pDisplayImageDevice.setVisible( this.pInputDevice != null )
+				this.pLabelDevice.setVisible( this.pInputDevice != null )
+				
+			elif this.pInputAxis != null
+				image = this.pInputAxis.getLargestDisplayIconY( this.pIconHeight )
+				if image != null
+					this.pDisplayImageSource.setImage( image )
+					this.pDisplayImageSource.setMinimumSize( null )
+					
+				else
+					this.pDisplayImageSource.setImage( null )
+					this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				end
+				this.pDisplayImageSource.setVisible( true )
+				
+				text = this.pInputAxis.getDisplayText()
+				if text.empty()
+					text = " "
+				end
+				this.pLabelSource.setText( text )
+				this.pLabelSource.setVisible( true )
+				
+				this.pDisplayImageDevice.setVisible( this.pInputDevice != null )
+				this.pLabelDevice.setVisible( this.pInputDevice != null )
+				
+			else
+				this.pDisplayImageSource.setImage( null )
+				this.pDisplayImageSource.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
+				this.pDisplayImageSource.setVisible( false )
+				
+				this.pLabelSource.setText( " " )
+				this.pLabelSource.setVisible( false )
+				
+				this.pDisplayImageDevice.setVisible( true )
+				this.pLabelDevice.setVisible( true )
+			end
+		end )
+		
+		this.doLayout()
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	/*
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.updateWidgets()
+	end
+	*/
+end

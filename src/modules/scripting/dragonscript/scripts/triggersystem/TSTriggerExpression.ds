@@ -1,0 +1,136 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TriggerSystem
+
+
+/**
+ * \brief Trigger expression.
+ */
+class TSTriggerExpression
+	private var TSTriggerExpressionComponent pRootComponent
+	private var bool pResult
+	private var bool pEnabled
+	
+	
+	
+	/** \brief Create trigger expression. */
+	public func new()
+		this.pResult = false
+		this.pEnabled = true
+	end
+	
+	/** \brief Dispose of trigger expression. */
+	public func void dispose()
+		if this.pRootComponent != null
+			this.pRootComponent.dispose()
+			this.pRootComponent = null
+		end
+	end
+	
+	
+	
+	/** \brief Root expression component or \em null if not set. */
+	public func TSTriggerExpressionComponent getRootComponent()
+		return this.pRootComponent
+	end
+	
+	/** \brief Set root expression component or \em null if not set. */
+	public func void setRootComponent( TSTriggerExpressionComponent component )
+		this.pRootComponent = component
+		this.pResult = false
+	end
+	
+	/** \brief Expression is empty hence root component is \em null. */
+	public func bool isEmpty()
+		return this.pRootComponent == null
+	end
+	
+	/** \brief Expression is not empty hence root component is not \em null. */
+	public func bool isNotEmpty()
+		return this.pRootComponent != null
+	end
+	
+	/** \brief Result. */
+	public func bool getResult()
+		return this.pResult
+	end
+	
+	/** \brief Set result. */
+	public func void setResult( bool result )
+		this.pResult = result
+	end
+	
+	/** \brief Expression is enabled. */
+	public func bool getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Set expression is enabled. */
+	public func void setEnabled( bool enabled )
+		this.pEnabled = enabled
+	end
+	
+	
+	
+	/** \brief Expression contains target. */
+	public func bool containsTarget( TSTriggerTarget target )
+		if this.pRootComponent == null
+			return false
+		end
+		
+		return this.pRootComponent.containsTarget( target )
+	end
+	
+	
+	
+	/**
+	 * \brief Link trigger targets using trigger table.
+	 * \details If trigger table is \em null all trigger targets are unlinked. The listener is
+	 *          registered for all targets. A previously existing listener is removed first.
+	 *          After linking the expression is evaluated.
+	 */
+	public func void linkTriggerTargets( TSTriggerTable triggerTable, TSTriggerListener listener )
+		if this.pRootComponent != null
+			this.pRootComponent.linkTriggerTargets( triggerTable, listener )
+			this.evaluate()
+		end
+	end
+	
+	/**
+	 * \brief Evaluate expression if not disabled.
+	 * \details Stores result for later use.
+	 * \returns \em true if result changed otherwise \em false.
+	 */
+	public func bool evaluate()
+		if this.pEnabled and this.pRootComponent != null
+			var bool result = this.pRootComponent.evaluate()
+			
+			if result != this.pResult
+				this.pResult = result
+				return true
+			end
+		end
+		
+		return false
+	end
+end

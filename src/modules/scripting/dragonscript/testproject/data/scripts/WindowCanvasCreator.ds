@@ -1,0 +1,112 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Designers
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project canvas creator window.
+ */
+class WindowCanvasCreator extends Window
+	/** \brief Create game. */
+	public func new() super( 0, 0, 600, 350 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Canvas Creator" )
+		this.createContent( this )
+	end
+	
+	
+	
+	/** \brief Add content. */
+	private func void createContent( Container content )
+		// see canvascreator.guitheme.xml for the designer definitions
+		
+		var Widget widget
+		var Panel row
+		
+		content.setLayout( FlowLayout.new( LayoutAxis.y, 10, FlowLayout.Stretch.last ) )
+		
+		// image creator
+		row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		content.addWidget( row )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas1a" )
+		row.addWidget( widget )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas1b" )
+		row.addWidget( widget )
+		
+		// image border creator
+		row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		content.addWidget( row )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas2a" )
+		row.addWidget( widget )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas2b" )
+		row.addWidget( widget )
+		
+		// theme1
+		row = Panel.new()
+		row.setLayout( BoxLayout.new( LayoutAxis.x, 10 ) )
+		content.addWidget( row )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas3a" )
+		row.addWidget( widget )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas3b" )
+		row.addWidget( widget )
+		
+		row = Panel.new()
+		row.setLayout( BoxLayout.new( LayoutAxis.x, 10 ) )
+		content.addWidget( row )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas3a" )
+		widget.setMinimumSize( Point.new( 80, 16 ) )
+		widget.setProtectMinimumSize( true )
+		row.addWidget( widget )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas3b" )
+		widget.setMinimumSize( Point.new( 80, 16 ) )
+		widget.setProtectMinimumSize( true )
+		row.addWidget( widget )
+		
+		// theme2
+		row = Panel.new()
+		row.setLayout( BoxLayout.new( LayoutAxis.x, 10 ) )
+		content.addWidget( row )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas4a" )
+		row.addWidget( widget )
+		widget = Widget.new()
+		widget.setDesignerSelector( "WindowCanvasCreator.Canvas4b" )
+		row.addWidget( widget )
+	end
+end

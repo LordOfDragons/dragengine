@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief String identifier value element class property for use with XML loading.
+ */
+class ECPStringID extends ElementClassProperty
+	/** \brief Value. */
+	private var StringID pValue
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) this( name, null )
+	end
+	
+	/** \brief Create property. */
+	public func new( String name, StringID value ) super( name )
+		this.pValue = value
+	end
+	
+	
+	
+	/** \brief Value. */
+	public func StringID getValue()
+		return this.pValue
+	end
+	
+	/** \brief Set value. */
+	public func void setValue( StringID value )
+		this.pValue = value
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pValue = StringID.new( value cast String )
+	end
+	
+	
+	
+	/**
+	 * \brief String value value modified by stub property if present.
+	 * 
+	 * If named stub property is not present the stored value is returned. If the named stub
+	 * property is present and is empty string null is returned. otherwise the named stub
+	 * property value is returned.
+	 */
+	public func StringID getValue( StubWithProperties stub )
+		var String value = stub.getPropertyValueFor( this.getName(), null )
+		
+		if value == null
+			return this.pValue
+			
+		elif value.empty()
+			return null
+			
+		else
+			return StringID.new( value )
+		end
+	end
+end

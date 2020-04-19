@@ -1,0 +1,135 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Floating point list value element class property for use with XML loading.
+ */
+class ECPFloatList extends ElementClassProperty
+	/** \brief Values as array of float. */
+	private var Array pValues
+	
+	/** \brief Enable lower limit. */
+	private var bool pEnableLimitLower
+	
+	/** \brief Lower limit. */
+	private var float pLimitLower
+	
+	/** \brief Enable upper limit. */
+	private var bool pEnableLimitUpper
+	
+	/** \brief Upper limit. */
+	private var float pLimitUpper
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pValues = Array.new()
+		this.pEnableLimitLower = false
+		this.pLimitLower = 0.0
+		this.pEnableLimitUpper = false
+		this.pLimitUpper = 1.0
+	end
+	
+	
+	
+	/** \brief Values as array of float. */
+	public func Array getValues()
+		return this.pValues
+	end
+	
+	/** \brief Set values as array of float. */
+	public func void setValues( Array values )
+		this.pValues = Array.new( values )
+	end
+	
+	/** \brief Enable lower limit. */
+	public func bool getEnableLimitLower()
+		return this.pEnableLimitLower
+	end
+	
+	/** \brief Set enable lower limit. */
+	public func void setEnableLimitLower( bool enable )
+		this.pEnableLimitLower = enable
+	end
+	
+	/** \brief Lower limit. */
+	public func float getLimitLower()
+		return this.pLimitLower
+	end
+	
+	/** \brief Set lower limit. */
+	public func void setLimitLower( float limit )
+		this.pLimitLower = limit
+	end
+	
+	/** \brief Enable upper limit. */
+	public func bool getEnableLimitUpper()
+		return this.pEnableLimitUpper
+	end
+	
+	/** \brief Set enable upper limit. */
+	public func void setEnableLimitUpper( bool enable )
+		this.pEnableLimitUpper = enable
+	end
+	
+	/** \brief Upper limit. */
+	public func float getLimitUpper()
+		return this.pLimitUpper
+	end
+	
+	/** \brief Set upper limit. */
+	public func void setLimitUpper( float limit )
+		this.pLimitUpper = limit
+	end
+	
+	/** \brief Set limits. */
+	public func void setLimits( bool enableLower, float limitLower, bool enableUpper, float limitUpper )
+		this.pEnableLimitLower = enableLower
+		this.pLimitLower = limitLower
+		this.pEnableLimitUpper = enableUpper
+		this.pLimitUpper = limitUpper
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pValues.removeAll()
+		( value cast Array ).forEach( block float each
+			if this.pEnableLimitUpper
+				each = DEMath.min( each, this.pLimitUpper )
+			end
+			if this.pEnableLimitLower
+				each = DEMath.max( each, this.pLimitLower )
+			end
+			this.pValues.add( each )
+		end )
+	end
+end

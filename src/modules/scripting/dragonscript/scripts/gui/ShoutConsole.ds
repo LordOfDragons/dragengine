@@ -1,0 +1,260 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Shout last console messages transparently onto screen for short amount of time.
+ * 
+ * Supports designing using designer selector "ShoutConsole".
+ */
+class ShoutConsole extends Widget implements ConsoleListener
+	/** \brief Update timer. */
+	class UpdateTimer extends Timer
+		private var ShoutConsole pWidget
+		
+		public func new( ShoutConsole widget ) super( 1.0, true )
+			this.pWidget = widget
+		end
+		
+		public func void fire()
+			this.pWidget.update()
+		end
+	end
+	
+	
+	
+	private var Console pConsole
+	private var Array pTextLayouts
+	private var Array pTimesToLive
+	private var int pMaxLines
+	private var float pNewMessageTTL
+	private var UpdateTimer pUpdateTimer
+	
+	
+	
+	/** \brief Create shout console. */
+	public func new( Console console )
+		this.pTextLayouts = Array.new( 10 )
+		this.pTimesToLive = Array.new( 10 )
+		this.pMaxLines = 5
+		this.pNewMessageTTL = 5 //3
+		
+		this.setDesignerSelector( "ShoutConsole" )
+		this.setMinimumSize( Point.new( 100, 100 ) )
+		
+		this.setConsole( console )
+		
+		this.pUpdateTimer = UpdateTimer.new( this )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		if this.pUpdateTimer != null
+			this.pUpdateTimer.giveUp()
+			this.pUpdateTimer = null
+		end
+		
+		if this.pConsole != null
+			this.pConsole.removeListener( this )
+			this.pConsole = null
+		end
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Console to monitor. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console to monitor. */
+	public func void setConsole( Console console )
+		if console == this.pConsole
+			return
+		end
+		
+		if this.pConsole != null
+			this.pConsole.removeListener( this )
+		end
+		
+		this.pConsole = console
+		
+		if console != null
+			console.addListener( this )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Message added to console.
+	 *
+	 * \param console Console sending notification.
+	 * \param message Message added to console.
+	 * \param removedTop True if topmost message had to be removed to be able to add message.
+	 */
+	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
+		// TODO change this to a list of Label with wrapping support to avoid depending
+		//      on the presence of a gui theme while building the text layouts
+		//      
+		var Color color = this.getTextColor()
+		var Font font = this.getFont()
+		if font == null or color == null
+			return  // no gui theme yet
+		end
+		
+		var int count = this.pTextLayouts.getCount()
+		var int width = this.getWidth()
+		var String messageText = ""
+		
+		// build text to display from message
+		if message.getSource() != null
+			messageText = messageText + message.getSource() + ": "
+		end
+		messageText = messageText + message.getMessage()
+		
+		// create text layout for this message text
+		var TextLayout layout = TextLayout.new( messageText, font )
+		layout.setColor( color )
+		layout.setAlignment( TextLayout.Align.left )
+		layout.setMaximalWidth( DEMath.max( width - 10, 0 ) )
+		layout.layoutText()
+		
+		// drop lines if buffer is full
+		if count == this.pMaxLines
+			this.pTextLayouts.remove( 0 )
+			this.pTimesToLive.remove( 0 )
+		end
+		
+		// add new message
+		this.pTextLayouts.add( layout )
+		this.pTimesToLive.add( this.pNewMessageTTL )
+		
+		this.updateCanvasConsole()
+	end
+	
+	/**
+	 * \brief Console cleared.
+	 *
+	 * \param console Console sending notification.
+	 */
+	public func void consoleCleared( Console console )
+		this.clear()
+	end
+	
+	
+	
+	/** \brief Clear window. */
+	public func void clear()
+		this.pTextLayouts.removeAll()
+		this.pTimesToLive.removeAll()
+		this.updateCanvasConsole()
+	end
+	
+	
+	
+	/**
+	 * \brief Update console.
+	 * \details Remove timed out console logs.
+	 */
+	public func void update()
+		var float elapsed = this.pUpdateTimer.getTriggerTime()
+		var int i, count = this.pTextLayouts.getCount()
+		var bool changed = false
+		
+		// update all time to live counters
+		for i = 0 to count
+			this.pTimesToLive.setAt( i, ( this.pTimesToLive.getAt( i ) cast float ) - elapsed )
+		end
+		
+		// remove all message which have died
+		while count > 0
+			if this.pTimesToLive.getAt( 0 ) cast float > 0
+				break
+			end
+			this.pTextLayouts.remove( 0 )
+			this.pTimesToLive.remove( 0 )
+			count--
+			changed = true
+		end
+		
+		// update if something changed
+		if changed
+			this.updateCanvasConsole()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Widget at coordinates or \em null if not found.
+	 * 
+	 * Overwritten to always return \em null. Prevents this widget from hovering. Keep this
+	 * in mind if you try to call this method. It might not work. If you need original
+	 * getWidgetAt behavior from super class use realGetWidgetAt().
+	 */
+	public func Widget getWidgetAt( Point position )
+		return null
+	end
+	
+	/** \brief Super class getWidgetAt without overwritten behavior. */
+	public func Widget realGetWidgetAt( Point position )
+		return super.getWidgetAt( position )
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		
+		// TODO: this has to be done more clever
+		this.pTextLayouts.removeAll()
+		this.pTimesToLive.removeAll()
+		this.updateCanvasConsole()
+	end
+	
+	/** \brief Update console canvas. */
+	public func void updateCanvasConsole()
+		var CanvasView canvas = this.getCanvasContent()
+		canvas.removeAllCanvas()
+		
+		var int count = this.pTextLayouts.getCount()
+		var int y = 0
+		var int i
+		
+		for i = 0 to count
+			var TextLayout layout = this.pTextLayouts.getAt( i ) cast TextLayout
+			layout.addToCanvas( canvas, 0, y )
+			y += layout.getHeight()
+		end
+	end
+end
+

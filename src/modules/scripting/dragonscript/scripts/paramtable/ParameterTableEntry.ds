@@ -1,0 +1,246 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Entry in a ParameterTable.
+ * 
+ * Values can be primitive values and objects implementing the Persistable interface.
+ * Primitive values are converted as best between the stored value and the requested
+ * value. Hence storing an integer value it can be retrieved later on as floating point
+ * value or even a String value. If you store a floating point value and retrieve it
+ * later on as integer value precision will be lost. If you store a string value and
+ * retrieve it later on as boolean value the values "1", "true" and "yes" will be
+ * converted to true with all other string values converted to false.
+ * 
+ * Values are cleared by setting them to \em null.
+ */
+class ParameterTableEntry
+	/** \brief Parameter name. */
+	private var String pName
+	
+	/** \brief Value or \em null if not set. */
+	private var Object pValue
+	
+	
+	
+	/** \brief Create parameter table entry. */
+	public func new( String name )
+		if name.empty()
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	
+	
+	/** \brief Boolean value or default value if parameter is not set. */
+	public func bool getValue( bool defaultValue )
+		if this.pValue != null
+			if this.pValue castable Persistable
+				return false
+				
+			elif this.pValue castable String
+				return this.pValue.equals( "1" ) \
+					or this.pValue.equals( "true" ) == 0 \
+					or this.pValue.equals( "yes" ) == 0
+				
+			else
+				return this.pValue cast bool
+			end
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	/** \brief Integer value or default value if parameter is not set. */
+	public func int getValue( int defaultValue )
+		if this.pValue != null
+			if this.pValue castable Persistable
+				return false
+				
+			elif this.pValue castable String
+				return ( this.pValue cast String ).toInt()
+				
+			else
+				return this.pValue cast int
+			end
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	/** \brief FLoating point value or default value if parameter is not set. */
+	public func float getValue( float defaultValue )
+		if this.pValue != null
+			if this.pValue castable Persistable
+				return false
+				
+			elif this.pValue castable String
+				return ( this.pValue cast String ).toFloat()
+				
+			else
+				return this.pValue cast float
+			end
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	/** \brief String value or default value if parameter is not set. */
+	public func String getValue( String defaultValue )
+		if this.pValue != null
+			return this.pValue.toString()
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	/** \brief Persistable value or default value if parameter is not set. */
+	public func Persistable getValue( Persistable defaultValue )
+		if this.pValue != null and this.pValue castable Persistable
+			return this.pValue cast Persistable
+			
+		else
+			return defaultValue
+		end
+	end
+	
+	/** \brief Value is \em null. */
+	public func bool isNull()
+		return this.pValue == null
+	end
+	
+	/** \brief Value is not \em null. */
+	public func bool isNotNull()
+		return this.pValue != null
+	end
+	
+	
+	
+	/** \brief Set value or \em null if not set. */
+	public func void setValue( bool value )
+		this.pValue = value
+	end
+	
+	/** \brief Set value or \em null if not set. */
+	public func void setValue( int value )
+		this.pValue = value
+	end
+	
+	/** \brief Set value or \em null if not set. */
+	public func void setValue( float value )
+		this.pValue = value
+	end
+	
+	/** \brief Set value or \em null if not set. */
+	public func void setValue( String value )
+		this.pValue = value
+	end
+	
+	/** \brief Set value or \em null if not set. */
+	public func void setValue( Persistable value )
+		this.pValue = value
+	end
+	
+	/** \brief Clear value setting it to \em null. */
+	public func void clearValue()
+		this.pValue = null
+	end
+	
+	
+	
+	/** \brief Read parameter table entry from file. */
+	static public func ParameterTableEntry readFromFile( PersistencyEnvironment env, FileReader reader )
+		var ParameterTableEntry entry = ParameterTableEntry.new( reader.readString8() )
+		
+		select reader.readByte()
+		case 0
+			// value is null
+			
+		case 1
+			entry.pValue = env.readBool( reader )
+			
+		case 2
+			entry.pValue = reader.readInt()
+			
+		case 3
+			entry.pValue = reader.readFloat()
+			
+		case 4
+			entry.pValue = reader.readString16()
+			
+		case 5
+			entry.pValue = env.readObject( reader )
+			
+		else
+			throw EInvalidParam.new()
+		end
+		
+		return entry
+	end
+	
+	/** \brief Write parameter table entry target to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeString8( this.pName )
+		
+		if this.pValue == null
+			writer.writeByte( 0 )
+			
+		elif this.pValue castable bool
+			writer.writeByte( 1 )
+			env.writeBool( writer, this.pValue cast bool )
+			
+		elif this.pValue castable int
+			writer.writeByte( 2 )
+			writer.writeInt( this.pValue cast int )
+			
+		elif this.pValue castable float
+			writer.writeByte( 3 )
+			writer.writeFloat( this.pValue cast float )
+			
+		elif this.pValue castable String
+			writer.writeByte( 4 )
+			writer.writeString( this.pValue cast String )
+			
+		else
+			writer.writeByte( 5 )
+			env.writeObject( writer, this.pValue cast Persistable )
+		end
+	end
+end

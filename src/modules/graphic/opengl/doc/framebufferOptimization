@@ -1,0 +1,15 @@
+See https://community.arm.com/graphics/b/blog/posts/mali-performance-2-how-to-correctly-handle-framebuffers
+
+In short:
+- Calling glClear() at the start of each FBO’s rendering sequence, for all attachments where
+  the old value is not needed.
+- Calling glInvalidateFramebuffer() or glDiscardFramebufferExt() at the end of each FBO’s
+  rendering sequence, before switching to a different FBO, for all attachments which are
+  simply transient working buffers for the intermediate state.
+
+Important Note:
+Scissor Test affects clearing. If scissor test is enabled a full clear with the sought
+after performance improvement is not possible. Hence whenever clearing is done in the
+render classes a check is done if this is the main pass (mask == NULL) or a masked path
+(mask != NULL). If the clearing is done in the main pass GL_SCISSOR_TEST is explicitly
+disabled for the course of the clearing then enabled again.

@@ -1,0 +1,51 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+/**
+ * \brief Interface knowing how to arrange child widgets in Container.
+ */
+interface Layout
+	/**
+	 * \brief Add widget to layout using settings.
+	 * \param widget Widget to add to layout.
+	 * \param settings Settings for widget. Can be null.
+	 */
+	func void addWidget( Widget widget, Object settings )
+	
+	/** \brief Remove widget from layout. */
+	func void removeWidget( Widget widget )
+	
+	/** \brief Layout widgets in container. */
+	func void doLayout( Container container )
+	
+	/** \brief Minimal size required for layout in container. */
+	func Point getMinimumSize( Container container )
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	func Point getMinimumSizeForWidth( Container container, int width )
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	func Point getMinimumSizeForHeight( Container container, int height )
+end

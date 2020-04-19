@@ -1,0 +1,157 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Collision information.
+ * 
+ * This is a native class.
+ */
+class CollisionInfo
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create collision information. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner bone or -1 if not applicable. */
+	public func int getOwnerBone()
+	end
+	
+	/** \brief Owner shape or -1 if not applicable. */
+	public func int getOwnerShape()
+	end
+	
+	/** \brief Owner face or -1 if not applicable. */
+	public func int getOwnerFace()
+	end
+	
+	
+	
+	/** \brief Ccollider or \em null if hit something else. */
+	public func Collider getCollider()
+	end
+	
+	/** \brief Collider bone or -1 if hit something else. */
+	public func int getBone()
+	end
+	
+	/** \brief Collider rig (bone) shape or -1 if hit something else. */
+	public func int getShape()
+	end
+	
+	/** \brief Collider bone or -1 if hit something else. */
+	public func int getFace()
+	end
+	
+	/** \brief Collision has occured. */
+	public func bool hasCollision()
+	end
+	
+	/** \brief Collision with collider occured, */
+	public func bool isCollider()
+	end
+	
+	/** \brief Collision with collider bone occured. */
+	public func bool hasBone()
+	end
+	
+	/** \brief Collision with collider rig (bone) shape occured. */
+	public func bool hasShape()
+	end
+	
+	/** \brief Collision with collider face occured. */
+	public func bool hasFace()
+	end
+	
+	
+	
+	/** \brief Particle lifetime. */
+	public func float getParticleLifetime()
+	end
+	
+	/** \brief Particle mass. */
+	public func float getParticleMass()
+	end
+	
+	/** \brief Particle position. */
+	public func DVector getParticlePosition()
+	end
+	
+	/** \brief Set particle position. */
+	public func void setParticlePosition( DVector position )
+	end
+	
+	/** \brief Particle velocity. */
+	public func Vector getParticleVelocity()
+	end
+	
+	/** \brief Set particle velocity. */
+	public func void setParticleVelocity( Vector velocity )
+	end
+	
+	/** \brief Collision response to apply to particle. */
+	public func ParticleCollisionResponse getParticleResponse()
+	end
+	
+	/** \brief Set collision response to apply to particle. */
+	public func void setParticleResponse( ParticleCollisionResponse respone )
+	end
+	
+	
+	
+	/** \brief Distance relative to displacement vector resulting in collision. */
+	public func float getDistance()
+	end
+	
+	/**
+	 * \brief Hit normal at collision point.
+	 * 
+	 * Depending on the geometry involved in the collision a single optimal
+	 * hit normal can not be defined. In this case the physics module sets
+	 * a reasonable hit normal. Hit normals are well defined with ray casts.
+	 */
+	public func Vector getNormal()
+	end
+	
+	/**
+	 * \brief Hit position.
+	 * 
+	 * Set by the physics module for dynamic collision response indicating
+	 * a reasonable hit position in world space. A typical use is to play
+	 * a sound or emit particles at this location.
+	 */
+	public func DVector getPosition()
+	end
+	
+	/**
+	 * \brief Hit impulse.
+	 * 
+	 * Set by the physics module for dynamic collision response to a reasonable
+	 * hit impulse relative between both collision objects.
+	 */
+	public func float getImpulse()
+	end
+	
+	
+	
+	/** \brief Collision detection has to stop. */
+	public func bool getStopTesting()
+	end
+	
+	/** \brief Set if collision detection has to stop. */
+	public func void setStopTesting( bool stopTesting )
+	end
+	/*@}*/
+end

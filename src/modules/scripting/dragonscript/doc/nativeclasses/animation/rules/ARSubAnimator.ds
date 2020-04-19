@@ -1,0 +1,74 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule sub animator.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARSubAnimator extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set sub animator or \em null if not set. */
+	public func void setSubAnimator( Animator animator )
+	end
+	
+	/** \brief Set connection between sub animator target and this animator instance controller. */
+	public func void setConnectionAt( int target, int controller )
+	end
+	
+	/** \brief Set connections by matching controller names. */
+	public func void setMatchingConnections( Animator animator )
+	end
+	
+	/** \brief Clear all connections setting them to -1. */
+	public func void clearConnections()
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( int target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( int target )
+	end
+	/*@}*/
+end

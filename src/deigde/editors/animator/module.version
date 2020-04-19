@@ -1,0 +1,4 @@
+ANIMATOR {
+  global: AnimatorEditorCreateModule;
+  local: *;
+};

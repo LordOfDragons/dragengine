@@ -1,0 +1,130 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky or sky instance controller.
+ * 
+ * Wraps a sky or sky instance controller by controller index. Valid only as long
+ * as the wrapped sky or sky instance does not change controller layout.
+ * 
+ * If wrapping a sky instance controller any changes to a controller triggers an
+ * update in the game engine.
+ * 
+ * If wrapping a sky controller the user is responsible to call Sky.contentChanged()
+ * after changing one or more controllers. Sky controllers should not be changed if
+ * possible after being used in sky instances.
+ * 
+ * This is a native class.
+ */
+class SkyController
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Sky controller can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner sky or \em null if not owned by sky. */
+	public func Sky getSky()
+		return null
+	end
+	
+	/** \brief Onwer sky instance or \em null if not owned by sky instance. */
+	public func SkyInstance getSkyInstance()
+		return null
+	end
+	
+	/** \brief Controller index. */
+	public func int getControllerIndex()
+		return 0
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Name. */
+	public func String getName()
+		return null
+	end
+	
+	/** \brief Set name. */
+	public func void setName( String name )
+	end
+	
+	/** \brief Lower limit. */
+	public func float getLower()
+		return 0
+	end
+	
+	/** \brief Upper limit. */
+	public func float getUpper()
+		return 0
+	end
+	
+	/** \brief Set value range. */
+	public func void setRange( float lower, float upper )
+	end
+	
+	/** \brief Value. */
+	public func float getValue()
+		return 0
+	end
+	
+	/** \brief Set value. */
+	public func void setValue( float value )
+	end
+	
+	/** \brief Controller is frozen. */
+	public func bool getFrozen()
+		return false
+	end
+	
+	/** \brief Set if controller is frozen. */
+	public func void setFrozen( bool frozen )
+	end
+	
+	/** \brief Controller value is clamped instead of wrapped around if outside range. */
+	public func bool getClamp()
+		return false
+	end
+	
+	/** \brief Set if controller value is clamped instead of wrapped around if outside range. */
+	public func void setClamp( bool clamp )
+	end
+	
+	/** \brief Increment controller value. */
+	public func void increment( float amount )
+	end
+	
+	/** \brief Set controller value to lower value. */
+	public func void setToLower()
+	end
+	
+	/** \brief Set controller value to upper value. */
+	public func void setToUpper()
+	end
+	
+	/** \brief Controller value is at lower value. */
+	public func bool isAtLower()
+		return false
+	end
+	
+	/** \brief Controller value is at upper value. */
+	public func bool isAtUpper()
+		return false
+	end
+	/*@}*/
+end

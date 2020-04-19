@@ -1,0 +1,224 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior used as base for class to use ECBehaviorRenderableCanvas.
+ * 
+ * This behavior only provides support to create a custom canvas managed by the subclass
+ * and add it to an ECBehaviorRenderableCanvas. This avoids some repeated code. To use this
+ * base class create a class like this:
+ * 
+ * \code{.ds}
+ * class MyElement extends ECBehaviorRenderableCanvasBase
+ *    class Instance extends ECBehaviorRenderableCanvasBase.Instance
+ *       private var Canvas myCanvas
+ *       
+ *       public func new(MyElement ecbehavior, BehaviorElement element) super(ecbehavior, element)
+ *          // Create myCanvas and assign it
+ *          myCanvas = ...
+ *          setCanvas(myCanvas)
+ *          
+ *          // If you need to dynamically adjust the content each frame update use thinking
+ *          setRequiresThink(true)
+ *       end
+ *       
+ *       public func void init(StubElement stub)
+ *          // If you need to init from stub do not forget to add the super call first
+ *          super.init(stub)
+ *          
+ *          // Do your own init using the stub
+ *       end
+ *       
+ *       public func void think( float elapsed )
+ *          // Update myCanvas
+ *       end
+ *    end
+ *    
+ *    private var ECPString text
+ *    
+ *    public func new(BehaviorElementClass eclass) super(eclass)
+ *       // If you need properties to allow mappers configurate your behavior add them here
+ *       text = ECPString.new("textPropertyName", "defaultText")
+ *       eclass.addProperty(text)
+ *    end
+ *    
+ *    public func ECBehaviorInstance createInstance(BehaviorElement element)
+ *       return Instance.new(this, element)
+ *    end
+ * end
+ * \endcode
+ * 
+ * This behavior will automatically pick the order value for the canvas based on the order
+ * in which the canvas are added. Basically the number of canvas in the renderable canvas
+ * view is used as order. During calls to setCanvas() the order of the canvas is set. If you
+ * want to use a specific order call setOrder().
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorRenderableCanvasBase extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorRenderableCanvasBase pECBehaviorRCB
+		private var ECBehaviorRenderableCanvas.Instance pRenderableCanvas
+		private var Canvas pCanvas
+		private var float pOrder
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorRenderableCanvasBase ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehaviorRCB = ecbehavior
+			
+			this.pRenderableCanvas = ecbehavior.getRenderableCanvas().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pRenderableCanvas = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pCanvas == null
+				return
+			end
+			
+			var CanvasView canvasView = this.pRenderableCanvas.getCanvasView()
+			if canvasView == null
+				return
+			end
+			
+			this.pOrder = canvasView.getCanvasCount()
+			this.pCanvas.setOrder( this.pOrder )
+			canvasView.addCanvas( this.pCanvas )
+		end
+		
+		
+		
+		/** \brief Renderable canvas behavior instance. */
+		public func ECBehaviorRenderableCanvas.Instance getRenderableCanvas()
+			return this.pRenderableCanvas
+		end
+		
+		/** \brief Canvas or \em null. */
+		public func Canvas getCanvas()
+			return this.pCanvas
+		end
+		
+		/** \brief Set canvas or \em null. */
+		public func void setCanvas( Canvas canvas )
+			if canvas == this.pCanvas
+				return
+			end
+			
+			if this.pRenderableCanvas == null
+				this.pCanvas = canvas
+				return
+			end
+			
+			var CanvasView canvasView = this.pRenderableCanvas.getCanvasView()
+			if canvasView == null
+				this.pCanvas = canvas
+				return
+			end
+			
+			if this.pCanvas != null
+				canvasView.removeCanvas( this.pCanvas )
+			end
+			
+			this.pCanvas = canvas
+			
+			if canvas == null
+				return
+			end
+			
+			this.pOrder = canvasView.getCanvasCount()
+			canvas.setOrder( this.pOrder )
+			canvasView.addCanvas( canvas )
+		end
+		
+		/** \brief Order to use for canvas. */
+		public func float getOrder()
+			return this.pOrder
+		end
+		
+		/** \brief Set order for canvas. */
+		public func void setOrder( float order )
+			this.pOrder = order
+			
+			if this.pCanvas != null
+				this.pCanvas.setOrder( order )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorRenderableCanvas pRenderableCanvas
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorRenderableCanvas renderableCanvas ) \
+	this( eclass, renderableCanvas, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorRenderableCanvas renderableCanvas, \
+	String id ) super( eclass, id )
+		if renderableCanvas == null
+			throw ENullPointer.new( "renderableCanvas" )
+		end
+		
+		this.pRenderableCanvas = renderableCanvas
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pRenderableCanvas = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Renderable canvas behavior. */
+	public func ECBehaviorRenderableCanvas getRenderableCanvas()
+		return this.pRenderableCanvas
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

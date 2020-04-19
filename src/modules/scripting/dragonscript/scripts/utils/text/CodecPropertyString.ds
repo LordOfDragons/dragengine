@@ -1,0 +1,844 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Provides support for encoding/decoding various data types from/to property strings.
+ * 
+ * \par Shape List Encoding
+ * 
+ * Shape list strings contain one or more shape definitions separated by whitespaces. The accepted separaters
+ * can be modified using CodecPropertyString.setTokenSeparators().
+ * > \em shape1 whitespaces \em shape2 whitespaces ... \em shapeN
+ * 
+ * Shape definitions contain the shape type and a list of parameters separated by colons without spaces. The
+ * separator can be modified using CodecPropertyString.setShapeParameterSeparator().
+ * > \em shapeType : \em parameter1 : \em parameter2 : ... \em parameterN
+ * 
+ * Shape parameters contain the parameter name and the parameter values separated by comma without spaces.
+ * The separator can be modified using CodecPropertyString.setShapeValueSeparator().
+ * > \em parameterName , \em value1 , \em value2 , ... \em valueN
+ * 
+ * Values are decimal or integer values. An example box shape definition would look like this:
+ * > box:position,0,0.5,0:extends,2,1,0.5
+ * 
+ * The following table show the supported shapes and parameters. The shape type and parameter name colon contains
+ * the exact string to use for the \em shapeType and \em parameterName.
+ * | Shape Type | Parameter Name | Values | Description |
+ * | ---------- | -------------- | ------ | ----------- |
+ * | sphere | position | x, y, z | Position of center of shape |
+ * | sphere | radius | radius | Radius of sphere |
+ * | box | position | x, y, z | Position of center of box |
+ * | box | rotation | x, y, z | Rotation of box in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
+ * | box | extends | x, y, z | Extends from center to box border. These are half the dimension of the box |
+ * | cylinder | position | x, y, z | Position of center of cylinder |
+ * | cylinder | rotation | x, y, z | Rotation of cylinder in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
+ * | cylinder | height | height | Height of cylinder from center to the top respective bottom |
+ * | cylinder | radius | top, bottom | Radius of top and bottom cap of cylinder. Use different radi for tapered cylinders |
+ * | cylinder | topAxisScaling | x, y | Scaling of top cap of cylinder. Allows for squeezed cylinders |
+ * | cylinder | bottomAxisScaling | x, y | Scaling of bottom cap of cylinder. Allows for squeezed cylinders |
+ * | capsule | position | x, y, z | Position of center of capsule |
+ * | capsule | rotation | x, y, z | Rotation of capsule in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
+ * | capsule | height | height | Height of capsule from center to the top respective bottom |
+ * | capsule | radius | top, bottom | Radius of top and bottom cap of capsule. Use different radi for tapered capsules |
+ * | capsule | topAxisScaling | x, y | Scaling of top cap of capsule. Allows for squeezed capsules |
+ * | capsule | bottomAxisScaling | x, y | Scaling of bottom cap of capsule. Allows for squeezed capsules |
+ * | hull | position | x, y, z | Position of center of hull |
+ * | hull | rotation | x, y, z | Rotation of hull in degrees applied in the order Z-Axis then X-Axis then Y-Axis |
+ * | hull | points | x1, y1, z1, ..., xN, yN, zN | Hull points |
+ * 
+ */
+class CodecPropertyString
+	/** \brief Basic separators for tokens in property strings containing multiple values. */
+	private var String pTokenSeparators
+	
+	/** \brief Separator for key and value in dictionaries. */
+	private var byte pKeyValueSeparator
+	
+	/** \brief Shape parameter separator character. */
+	private var byte pShapeParameterSeparator
+	
+	/** \brief Shape value separator character. */
+	private var byte pShapeValueSeparator
+	
+	/** \brief Character to separate tokens with for encoding. */
+	private var byte pEncodeTokenSeparator
+	
+	
+	
+	/** \brief Create codec. */
+	public func new()
+		this.pTokenSeparators = " \t\n\r"
+		this.pKeyValueSeparator = ':'
+		this.pShapeParameterSeparator = ':'
+		this.pShapeValueSeparator = ','
+		this.pEncodeTokenSeparator = ' '
+	end
+	
+	
+	
+	/** \brief Decode property string into a fixed sized list of floating point values. */
+	public func Array decodeFixedFloatList( String string, int valueCount )
+		var Array list = string.split( this.pTokenSeparators )
+		var int i, count = list.getCount()
+		var Array result = Array.new()
+		
+		if count > valueCount
+			count = valueCount
+		end
+		
+		for i = 0 to count
+			result.add( ( list.getAt( i ) cast String ).toFloat() )
+		end
+		
+		return result
+	end
+	
+	/** \brief Decode property string into a fixed sized list of integer point values. */
+	public func Array decodeFixedIntList( String string, int valueCount ) 
+		var Array list = string.split( this.pTokenSeparators )
+		var int i, count = list.getCount()
+		var Array result = Array.new()
+		
+		if count > valueCount
+			count = valueCount
+		end
+		
+		for i = 0 to count
+			result.add( ( list.getAt( i ) cast String ).toInt() )
+		end
+		
+		return result
+	end
+	
+	/** \brief Decode property string into a list of strings. */
+	public func Array decodeStringList( String string ) 
+		var int len = string.getLength()
+		var Array list = Array.new()
+		var int position = 0
+		var String token
+		var byte character
+		var int last
+		
+		while position < len
+			while position < len and this.pTokenSeparators.find( string.getAt( position ), 0 ) != -1
+				position++
+			end
+			
+			if position == len
+				break
+			end
+			
+			token = ""
+			
+			if string.getAt( position ) == '"'
+				position++
+				last = position
+				
+				while position < len
+					character = string.getAt( position )
+					
+					if character == '"'
+						if position > last
+							token = token + string.substring( last, position )
+						end
+						list.add( token )
+						token = null
+						
+						position++
+						
+						break
+						
+					elif character == '\\'
+						if position > last
+							token = token + string.substring( last, position )
+						end
+						token = token + character
+						
+						position++
+						
+						last = position + 1
+						
+					//else
+						// non escaped string
+					end
+					
+					position++
+				end
+				
+			// this is a non-quoted token
+			else
+				last = position
+				while position < len and this.pTokenSeparators.find( string.getAt( position ) ) == -1
+					position++
+				end
+				
+				if position > last
+					token = token + string.substring( last, position )
+				end
+				list.add( token )
+				token = null
+			end
+			
+			position++
+		end
+		
+		return list
+	end
+	
+	/**
+	 * \brief Decode property string into a dictionary of key/value strings.
+	 * \details Key/value pairs are separated by pTokenSeparators. Key and value
+	 *          are separated by pKeyValueSeparator.
+	 */
+	public func Dictionary decodeStringDictionary( String string ) 
+		var Dictionary dict = Dictionary.new()
+		
+		string.split( this.pTokenSeparators ).forEach( block String pair
+			var Array keyValue = pair.split( this.pKeyValueSeparator )
+			dict.setAt( keyValue.getAt( 0 ) cast String, keyValue.getAt( 1 ) cast String )
+		end )
+		
+		return dict
+	end
+	
+	/** \brief Decode property string into a 3-component vector. */
+	public func Vector decodeVector( String string )
+		var Array result = this.decodeFixedFloatList( string, 3 )
+		
+		if result.getCount() != 3
+			throw EInvalidParam.new()
+		end
+		
+		return Vector.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, result.getAt( 2 ) cast float )
+	end
+	
+	/** \brief Decode property string into a 3-component dvector. */
+	public func DVector decodeDVector( String string )
+		var Array result = this.decodeFixedFloatList( string, 3 )
+		
+		if result.getCount() != 3
+			throw EInvalidParam.new()
+		end
+		
+		return DVector.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, result.getAt( 2 ) cast float )
+	end
+	
+	/** \brief Decode property string into a 2-component vector. */
+	public func Vector2 decodeVector2( String string )
+		var Array result = this.decodeFixedFloatList( string, 2 )
+		
+		if result.getCount() != 2
+			throw EInvalidParam.new()
+		end
+		
+		return Vector2.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float )
+	end
+	
+	/** \brief Decode property string into a 4-component vector. */
+	/*
+	public func Vector4 decodeVector4( String string )
+		var Array result = this.decodeFixedFloatList( string, 4 )
+		
+		if result.getCount() != 4
+			throw EInvalidParam.new()
+		end
+		
+		return Vector4.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, result.getAt( 2 ) cast float, result.getAt( 3 ) cast float )
+	end
+	*/
+	
+	/** \brief Decode property string into a 4-component dvector. */
+	/*
+	public func DVector4 decodeDVector4( String string )
+		var Array result = this.decodeFixedFloatList( string, 4 )
+		
+		if result.getCount() != 4
+			throw EInvalidParam.new()
+		end
+		
+		return DVector4.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, result.getAt( 2 ) cast float, result.getAt( 3 ) cast float )
+	end
+	*/
+	
+	/** \brief Decode property string into a floating point rectangular area. */
+	public func FloatRectArea decodeFloatRectArea( String string )
+		var Array result = this.decodeFixedFloatList( string, 4 )
+		
+		if result.getCount() != 4
+			throw EInvalidParam.new()
+		end
+		
+		return FloatRectArea.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, \
+			result.getAt( 2 ) cast float, result.getAt( 3 ) cast float )
+	end
+	
+	/** \brief Decode property string into a rectangular area. */
+	public func RectArea decodeRectArea( String string )
+		var Array result = this.decodeFixedIntList( string, 4 )
+		
+		if result.getCount() != 4
+			throw EInvalidParam.new()
+		end
+		
+		return RectArea.new( result.getAt( 0 ) cast int, result.getAt( 1 ) cast int, \
+			result.getAt( 2 ) cast int, result.getAt( 3 ) cast int )
+	end
+	
+	/** \brief Decode property string into a 2-component point. */
+	public func Point decodePoint( String string )
+		var Array result = this.decodeFixedIntList( string, 2 )
+		
+		if result.getCount() != 2
+			throw EInvalidParam.new()
+		end
+		
+		return Point.new( result.getAt( 0 ) cast int, result.getAt( 1 ) cast int )
+	end
+	
+	/** \brief Decode property string into a 3-component color. */
+	public func Color decodeColor3( String string )
+		var Array result = this.decodeFixedFloatList( string, 3 )
+		
+		if result.getCount() != 3
+			throw EInvalidParam.new()
+		end
+		
+		return Color.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, result.getAt( 2 ) cast float )
+	end
+	
+	/**
+	 * \brief Decode property string into a 4-component color.
+	 * 
+	 * Accepts also 3-component color in which case alpha is 1.
+	 */
+	public func Color decodeColor4( String string )
+		var Array result = this.decodeFixedFloatList( string, 4 )
+		
+		if result.getCount() == 4
+			return Color.new( result.getAt( 0 ) cast float, result.getAt( 1 ) cast float, \
+				result.getAt( 2 ) cast float, result.getAt( 3 ) cast float )
+			
+		elif result.getCount() == 3
+			return Color.new( result.getAt( 0 ) cast float, \
+				result.getAt( 1 ) cast float, result.getAt( 2 ) cast float )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Decode property string into a shape list. */
+	public func ShapeList decodeShapeList( String string )
+		var Array tokenShapeList = string.split( this.pTokenSeparators )
+		var ShapeList shapeList = ShapeList.new()
+		var float x, y, z
+		var int i, j, k
+		
+		var int tokenSphereCount = tokenShapeList.getCount()
+		
+		for i = 0 to tokenSphereCount
+			var Array tokenParamList = ( tokenShapeList.getAt( i ) cast String ).split( this.pShapeParameterSeparator )
+			var String tokenShapeType = tokenParamList.getAt( 0 ) cast String
+			var int tokenParamCount = tokenParamList.getCount()
+			
+			if tokenShapeType.equals( "sphere" )
+				var Vector position = Vector.new()
+				var float radius = 1.0
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = ( tokenParamList.getAt( j ) cast String ).split( this.pShapeValueSeparator )
+					var String tokenParamName = tokenValueList.getAt( 0 ) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals( "position" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						position = Vector.new( x, y, z )
+						
+					elif tokenParamName.equals( "radius" )
+						if tokenValueCount != 2
+							throw EInvalidParam.new()
+						end
+						
+						radius = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				//BaseGameApp.getApp().getConsole().addMessage( "sphere: position=" + position + " radius=" + radius + "\n" )
+				shapeList.addSphere( position, radius )
+				
+			elif tokenShapeType.equals( "box" )
+				var Quaternion orientation = Quaternion.new()
+				var Vector position = Vector.new()
+				var Vector bextends = Vector.new()
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = ( tokenParamList.getAt( j ) cast String ).split( this.pShapeValueSeparator )
+					var String tokenParamName = tokenValueList.getAt( 0 ) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals( "position" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						position = Vector.new( x, y, z )
+						
+					elif tokenParamName.equals( "rotation" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						orientation = Matrix.newRotation( x, y, z ).toQuaternion()
+						
+					elif tokenParamName.equals( "extends" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						bextends = Vector.new( x, y, z )
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				//BaseGameApp.getApp().getConsole().addMessage( "box: position=" + position + " extends=" + bextends + " orientation=" + orientation + "\n" )
+				shapeList.addBox( position, bextends, orientation )
+				
+			elif tokenShapeType.equals( "cylinder" )
+				var Vector2 bottomAxisScaling = Vector2.new( 1.0, 1.0 )
+				var Vector2 topAxisScaling = Vector2.new( 1.0, 1.0 )
+				var Quaternion orientation = Quaternion.new()
+				var Vector position = Vector.new()
+				var float bottomRadius = 1.0
+				var float topRadius = 1.0
+				var float height = 1.0
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = ( tokenParamList.getAt( j ) cast String ).split( this.pShapeValueSeparator )
+					var String tokenParamName = tokenValueList.getAt( 0 ) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals( "position" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						position = Vector.new( x, y, z )
+						
+					elif tokenParamName.equals( "rotation" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						orientation = Matrix.newRotation( x, y, z ).toQuaternion()
+						
+					elif tokenParamName.equals( "height" )
+						if tokenValueCount != 2
+							throw EInvalidParam.new()
+						end
+						
+						height = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						
+					elif tokenParamName.equals( "radius" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						topRadius = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						bottomRadius = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						
+					elif tokenParamName.equals( "topAxisScaling" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						topAxisScaling = Vector2.new( x, y )
+						
+					elif tokenParamName.equals( "bottomAxisScaling" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						bottomAxisScaling = Vector2.new( x, y )
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				shapeList.addCylinder( height * 0.5, topRadius, bottomRadius, \
+					topAxisScaling, bottomAxisScaling, position, orientation )
+				
+			elif tokenShapeType.equals( "capsule" )
+				var Vector2 bottomAxisScaling = Vector2.new( 1.0, 1.0 )
+				var Vector2 topAxisScaling = Vector2.new( 1.0, 1.0 )
+				var Quaternion orientation = Quaternion.new()
+				var Vector position = Vector.new()
+				var float bottomRadius = 1.0
+				var float topRadius = 1.0
+				var float height = 1.0
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = ( tokenParamList.getAt( j ) cast String ).split( this.pShapeValueSeparator )
+					var String tokenParamName = tokenValueList.getAt( 0 ) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals( "position" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						position = Vector.new( x, y, z )
+						
+					elif tokenParamName.equals( "rotation" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						orientation = Matrix.newRotation( x, y, z ).toQuaternion()
+						
+					elif tokenParamName.equals( "height" )
+						if tokenValueCount != 2
+							throw EInvalidParam.new()
+						end
+						
+						height = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						
+					elif tokenParamName.equals( "radius" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						topRadius = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						bottomRadius = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						
+					elif tokenParamName.equals( "topAxisScaling" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						topAxisScaling = Vector2.new( x, y )
+						
+					elif tokenParamName.equals( "bottomAxisScaling" )
+						if tokenValueCount != 3
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						bottomAxisScaling = Vector2.new( x, y )
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				shapeList.addCapsule( height * 0.5, topRadius, bottomRadius, \
+					topAxisScaling, bottomAxisScaling, position, orientation )
+				
+			elif tokenShapeType.equals( "hull" )
+				var Quaternion orientation = Quaternion.new()
+				var Vector position = Vector.new()
+				var Array points = Array.new()
+				
+				for j = 1 to tokenParamCount
+					var Array tokenValueList = ( tokenParamList.getAt( j ) cast String ).split( this.pShapeValueSeparator )
+					var String tokenParamName = tokenValueList.getAt( 0 ) cast String
+					var int tokenValueCount = tokenValueList.getCount()
+					
+					if tokenParamName.equals( "position" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						position = Vector.new( x, y, z )
+						
+					elif tokenParamName.equals( "rotation" )
+						if tokenValueCount != 4
+							throw EInvalidParam.new()
+						end
+						
+						x = ( tokenValueList.getAt( 1 ) cast String ).toFloat()
+						y = ( tokenValueList.getAt( 2 ) cast String ).toFloat()
+						z = ( tokenValueList.getAt( 3 ) cast String ).toFloat()
+						orientation = Matrix.newRotation( x, y, z ).toQuaternion()
+						
+					elif tokenParamName.equals( "points" )
+						if ( tokenValueCount - 1 ) % 3 != 0
+							throw EInvalidParam.new()
+						end
+						
+						k = 1
+						while k < tokenValueCount
+							var float x = ( tokenValueList.getAt( k++ ) cast String ).toFloat()
+							var float y = ( tokenValueList.getAt( k++ ) cast String ).toFloat()
+							var float z = ( tokenValueList.getAt( k++ ) cast String ).toFloat()
+							points.add( Vector.new( x, y, z ) )
+						end
+						
+					else
+						throw EInvalidParam.new()
+					end
+				end
+				
+				shapeList.addHull( points, position, orientation )
+				
+			else
+				throw EInvalidParam.new()
+			end
+		end
+		
+		return shapeList
+	end
+	
+	
+	
+	/** \brief Encode a string list into a property string. */
+	public func String encodeStringList( Array list )
+		var int separatorCount = this.pTokenSeparators.getLength()
+		var int count = list.getCount()
+		var String string = ""
+		var int i, j, subcount
+		var bool quoteString
+		var String lstring
+		
+		for i = 0 to count
+			lstring = list.getAt( i ) cast String
+			
+			if i > 0
+				string = string + this.pEncodeTokenSeparator
+			end
+			
+			quoteString = false
+			for j = 0 to separatorCount
+				if lstring.find( this.pTokenSeparators.getAt( j ), 0 ) != -1
+					quoteString = true
+					break
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+			
+			subcount = lstring.getLength()
+			for j = 0 to subcount
+				if lstring.getAt( j ) == '"'
+					string = string + "\\\""
+					
+				else
+					string = string + lstring.getAt( j )
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+		end
+		
+		return string
+	end
+	
+	/** \brief Encode a string dictionary into a property string. */
+	public func String encodeStringDictionary( Dictionary dict )
+		var int separatorCount = this.pTokenSeparators.getLength()
+		var Array keys = dict.getKeys()
+		var int count = keys.getCount()
+		var String string = ""
+		var int i, j, subcount
+		var bool quoteString
+		var String key, value
+		
+		for i = 0 to count
+			if i > 0
+				string = string + this.pEncodeTokenSeparator
+			end
+			
+			// key
+			key = keys.getAt( i ) cast String
+			
+			quoteString = false
+			for j = 0 to separatorCount
+				if key.find( this.pTokenSeparators.getAt( j ), 0 ) != -1
+					quoteString = true
+					break
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+			
+			subcount = key.getLength()
+			for j = 0 to subcount
+				if key.getAt( j ) == '"'
+					string = string + "\\\""
+					
+				else
+					string = string + key.getAt( j )
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+			
+			// value
+			string = string + this.pKeyValueSeparator
+			
+			value = dict.getAt( key ) cast String
+			
+			quoteString = false
+			for j = 0 to separatorCount
+				if value.find( this.pTokenSeparators.getAt( j ), 0 ) != -1
+					quoteString = true
+					break
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+			
+			subcount = value.getLength()
+			for j = 0 to subcount
+				if value.getAt( j ) == '"'
+					string = string + "\\\""
+					
+				else
+					string = string + value.getAt( j )
+				end
+			end
+			
+			if quoteString
+				string = string + '"'
+			end
+		end
+		
+		return string
+	end
+	
+	/** \brief Encode a 3-component vector into a property string. */
+	public func String encodeVector( Vector vector )
+		return "" + vector.getX() + " " + vector.getY() + " " + vector.getZ()
+	end
+	
+	/** \brief Encode a 3-component dvector into a property string. */
+	public func String encodeDVector( DVector vector )
+		return "" + vector.getX() + " " + vector.getY() + " " + vector.getZ()
+	end
+	
+	/** \brief Encode a 2-component vector into a property string. */
+	public func String encodeVector2( Vector2 vector )
+		return "" + vector.getX() + " " + vector.getY()
+	end
+	
+	/** \brief Encode a 4-component vector into a property string. */
+	/*
+	public func String encodeVector4( Vector4 vector )
+		return "" + vector.getX() + " " + vector.getY() + " " + vector.getZ() + " " + vector.getW()
+	end
+	*/
+	
+	/** \brief Encode a 4-component vector into a property string. */
+	/*
+	public func String encodeDVector4( DVector4 vector )
+		return "" + vector.getX() + " " + vector.getY() + " " + vector.getZ() + " " + vector.getW()
+	end
+	*/
+	
+	/** \brief Encode a floating point rectangular area into a property string. */
+	public func String encodeFloatRectArea( FloatRectArea area )
+		return "" + area.getX1() + " " + area.getY1() + " " + area.getX2() + " " + area.getY2()
+	end
+	
+	/** \brief Encode a rectangular area into a property string. */
+	public func String encodeRectArea( RectArea area )
+		return "" + area.getX1() + " " + area.getY1() + " " + area.getX2() + " " + area.getY2()
+	end
+	
+	/** \brief Encode a 2-component point into a property string. */
+	public func String encodePoint( Point point )
+		return "" + point.getX() + " " + point.getY()
+	end
+	
+	/** \brief Encode a 3-component color into a property string. */
+	public func String encodeColor3( Color color )
+		return "" + color.getRed() + " " + color.getGreen() + " " + color.getBlue()
+	end
+	
+	/** \brief Encode a 4-component color into a property string. */
+	public func String encodeColor4( Color color )
+		return "" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " " + color.getAlpha()
+	end
+	
+	/** \brief Encode shape list into a property string. */
+	public func String encodeShapeList( ShapeList list )
+		throw EInvalidParam.new()
+	end
+end

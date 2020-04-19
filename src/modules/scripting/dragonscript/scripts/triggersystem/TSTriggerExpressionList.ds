@@ -1,0 +1,104 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TriggerSystem
+
+
+/**
+ * \brief List of trigger expressions.
+ */
+class TSTriggerExpressionList
+	/** \brief Expressions. */
+	private var Array pExpressions
+	
+	
+	
+	/** \brief Create trigger expression list. */
+	public func new()
+		this.pExpressions = Array.new()
+	end
+	
+	/** \brief Dispose of trigger expression list. */
+	public func void dispose()
+		this.pExpressions.forEach( block TSTriggerExpression each
+			each.dispose()
+		end )
+		this.pExpressions.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of expressions. */
+	public func int getExpressionCount()
+		return this.pExpressions.getCount()
+	end
+	
+	/** \brief Expression at position. */
+	public func TSTriggerExpression getExpressionAt( int position )
+		return this.pExpressions.getAt( position ) cast TSTriggerExpression
+	end
+	
+	/** \brief Add expression. */
+	public func void addExpression( TSTriggerExpression expression )
+		if expression == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pExpressions.add( expression )
+	end
+	
+	/** \brief Remove expression. */
+	public func void removeExpression( TSTriggerExpression expression )
+		this.pExpressions.remove( expression )
+	end
+	
+	/** \brief Remove all expressions. */
+	public func void removeAllExpressions()
+		this.pExpressions.removeAll()
+	end
+	
+	/** \brief Visit expressions with block with parameter TSTriggerExpression. */
+	public func void forEach( Block ablock )
+		this.pExpressions.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Read trigger expression list from file. */
+	public func void readFromFile( FileReader reader, TSTriggerExpressionParser parser )
+		var int count = reader.readUShort()
+		var int i
+		
+		this.pExpressions.removeAll()
+		for i = 0 to count
+			this.pExpressions.add( parser.stringToExpression( reader.readString16() ) )
+		end
+	end
+	
+	/** \brief Write trigger expression list to file. */
+	public func void writeToFile( FileWriter writer, TSTriggerExpressionParser parser )
+		writer.writeUShort( this.pExpressions.getCount() )
+		this.pExpressions.forEach( block TSTriggerExpression each
+			writer.writeString16( parser.expressionToString( each ) )
+		end )
+	end
+end

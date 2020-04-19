@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Effect color matrix.
+ * 
+ * This is a native class.
+ */
+class EffectColorMatrix extends Effect
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create effect color matrix. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Color matrix. */
+	public func ColorMatrix getColorMatrix()
+	end
+	
+	/** \brief Set color matrix. */
+	public func void setColorMatrix( ColorMatrix matrix )
+	end
+	
+	
+	
+	/**
+	 * \brief Effect is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type EffectColorMatrix and effect are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

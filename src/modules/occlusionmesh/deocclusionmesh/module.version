@@ -1,0 +1,4 @@
+OCCMDEOCCLUSIONMESH {
+  global: DEOccMeshCreateModule;
+  local: *;
+};

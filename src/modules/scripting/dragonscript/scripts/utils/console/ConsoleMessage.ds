@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Message send to console.
+ */
+class ConsoleMessage
+	/** \brief Type. */
+	enum Type
+		/** \brief Information. */
+		info
+		
+		/** \brief Warning. */
+		warning
+		
+		/** \brief Error. */
+		error
+	end
+	
+	
+	
+	var TimeDate pTimeStamp
+	var String pSource
+	var String pMessage
+	
+	
+	
+	/**
+	 * \brief Create message.
+	 * \param message The message itself.
+	 */
+	public func new( String message )
+		if message == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTimeStamp = TimeDate.new()
+		this.pMessage = message
+	end
+	
+	/**
+	 * \brief Create message.
+	 * \param source Optional source of message or null if not set.
+	 * \param message The message itself.
+	 */
+	public func new( String source, String message )
+		if message == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTimeStamp = TimeDate.new()
+		this.pSource = source
+		this.pMessage = message
+	end
+	
+	/**
+	 * \brief Create message.
+	 * \param timeStamp TimeStamp of the message.
+	 * \param source Optional source of message or null if not set.
+	 * \param message The message itself.
+	 */
+	public func new( TimeDate timeStamp, String source, String message )
+		if message == null or timeStamp == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTimeStamp = timeStamp
+		this.pSource = source
+		this.pMessage = message
+	end
+	
+	
+	
+	/** \brief Time stamp of the message. */
+	public func TimeDate getTimeStamp()
+		return this.pTimeStamp
+	end
+	
+	/** \brief Optional source of message or null if not used. */
+	public func String getSource()
+		return this.pSource
+	end
+	
+	/** \brief Message send. */
+	public func String getMessage()
+		return this.pMessage
+	end
+end

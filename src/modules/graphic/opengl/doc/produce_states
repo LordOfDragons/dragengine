@@ -1,0 +1,12 @@
+find -name "*.cpp" | \
+	xargs -- grep -hF "OGL_CHECK(" | \
+	sed -e "s/^[ \t]\+//g" | \
+	grep -vh "^//" | \
+	sed -e "s/OGL_CHECK( \\*this, //g" | \
+	sed -e "s/OGL_CHECK( \\*pOgl, //g" | \
+	sed -e "s/OGL_CHECK( ogl, //g" | \
+	sed -e "s/OGL_CHECK( \\*ogl, //g" | \
+	sed -e "s/OGL_CHECK( GetOgl(), //g" | \
+	sed -e "s/OGL_CHECK( pOgl->//g" | \
+	sed -e "s/OGL_CHECK( //g" | \
+	sort -u > STATES

@@ -1,0 +1,248 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Arrange widgets flowing along X or Y axis.
+ * 
+ * Widgets are resized to their minimum size along axis. Extra space is
+ * optionally added to the last or first widget.
+ * 
+ * Instances of this layout can be shared by multiple widgets.
+ */
+class FlowLayout extends BoxLayout
+	/** \brief Stretching. */
+	enum Stretch
+		/** \brief Stretch no widgets. */
+		none
+		
+		/** \brief Stretch last widget to fill extra space. */
+		last
+		
+		/** \brief Stretch first widget to fill extra space. */
+		first
+	end
+	
+	
+	
+	private var Stretch pStretch
+	
+	
+	
+	/**
+	 * \brief Create layout stretching no widget with 0 gap.
+	 */
+	public func new( LayoutAxis axis ) super( axis )
+		this.pStretch = Stretch.none
+	end
+	
+	/**
+	 * \brief Create layout stretching no widget.
+	 * \param gap Gap between widgets. Can be negative to overlap widgets.
+	 */
+	public func new( LayoutAxis axis, int gap ) super( axis, gap )
+		this.pStretch = Stretch.none
+	end
+	
+	/**
+	 * \brief Create layout.
+	 * \param gap Gap between widgets. Can be negative to overlap widgets.
+	 */
+	public func new( LayoutAxis axis, int gap, Stretch stretch ) super( axis, gap )
+		this.setStretch( stretch )
+	end
+	
+	
+	
+	/** \brief Stretch mode. */
+	public func Stretch getStretch()
+		return this.pStretch
+	end
+	
+	/** \brief Set stretch mode. */
+	public func void setStretch( Stretch stretch )
+		this.pStretch = stretch
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+		var int count = container.getWidgetCount()
+		
+		// determine first the minimum size needed. this is the real minimum size not a
+		// potentially artifial minimal size from container.getMinimumSize()
+		var int width = container.getContainerWidth()
+		var int height = container.getContainerHeight()
+		var Point minSize = this.getMinimumSizeFor( container, width, height )
+		var LayoutAxis axis = this.getAxis()
+		var bool negate = ( axis == LayoutAxis.inverseX or axis == LayoutAxis.inverseY )
+		
+		// now determine how much additional space we have got
+		// at our disposal to size child widgets beyond minimum
+		var int cx = container.getPadding().getLeft()
+		var int cy = container.getPadding().getTop()
+		var int gap = this.getGap()
+		var Point childSize
+		var int i, effSize
+		var Widget child
+		
+		var BorderSize borderSize
+		var int borderHeight
+		var int borderWidth
+		var int borderLeft
+		var int borderTop
+		
+		var Widget stretchWidget
+		var int indexFirst = 0
+		var int indexLast = count
+		
+		select this.pStretch
+		case Stretch.first
+			for indexFirst = 0 to count
+				child = container.getWidget( indexFirst )
+				if child.getVisible()
+					stretchWidget = child
+					break
+				end
+			end
+			
+		case Stretch.last
+			for indexLast = count - 1 downto 0
+				child = container.getWidget( indexLast )
+				if child.getVisible()
+					stretchWidget = child
+					break
+				end
+			end
+			indexLast++
+		end
+		
+		select axis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			var int availSpace = DEMath.max( width - minSize.getX(), 0 )
+			var int fixedHeight = height
+			if negate
+				cx += width
+			end
+			
+			for i = indexFirst to indexLast
+				child = container.getWidget( i )
+				if not child.getVisible()
+					continue
+				end
+				
+				childSize = child.getMinimumSizeForHeight( height )
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderWidth = 0
+					borderHeight = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				
+				if child == stretchWidget
+					child.setSize( Point.new( childSize.getX() + availSpace, fixedHeight - borderHeight ) )
+					
+				else
+					child.setSize( Point.new( childSize.getX(), fixedHeight - borderHeight ) )
+				end
+				
+				if negate
+					cx -= childSize.getX() + borderWidth + gap
+					if child == stretchWidget
+						cx -= availSpace
+					end
+					child.setPosition( Point.new( cx + borderLeft + gap, cy + borderTop ) )
+					
+				else
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
+					cx += childSize.getX() + borderWidth + gap
+					if child == stretchWidget
+						cx += availSpace
+					end
+				end
+			end
+			
+		else
+			var int availSpace = DEMath.max( height - minSize.getY(), 0 )
+			var int fixedWidth = width
+			if negate
+				cy += height
+			end
+			
+			for i = indexFirst to indexLast
+				child = container.getWidget( i )
+				if not child.getVisible()
+					continue
+				end
+				
+				childSize = child.getMinimumSizeForWidth( width )
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderWidth = 0
+					borderHeight = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				
+				if child == stretchWidget
+					child.setSize( Point.new( fixedWidth - borderWidth, childSize.getY() + availSpace ) )
+					
+				else
+					child.setSize( Point.new( fixedWidth - borderWidth, childSize.getY() ) )
+				end
+				
+				if negate
+					cy -= childSize.getY() + borderHeight + gap
+					if child == stretchWidget
+						cy -= availSpace
+					end
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop + gap ) )
+					
+				else
+					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
+					cy += childSize.getY() + borderHeight + gap
+					if child == stretchWidget
+						cy += availSpace
+					end
+				end
+			end
+		end
+	end
+end

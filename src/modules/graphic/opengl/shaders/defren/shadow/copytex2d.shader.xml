@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Shadow Copy Texture2D</name>
+	
+	<version>130</version>
+	
+	<texture name='texDepth' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/shadow/copytex2d.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/shadow/copytex2d.glsl</sourceCode>
+</shader>

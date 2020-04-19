@@ -1,0 +1,395 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+
+/**
+ * \brief DragonScript test project input device window.
+ */
+class WindowInputDevice extends Window
+	/** \brief Input device renderer. */
+	public class InputDeviceRenderer extends DefaultListElementRenderer
+		/** \brief Create renderer. */
+		public func new()
+		end
+		
+		/** \brief Update renderer with object state. */
+		public func void updateRenderer( ListBox listBox, Widget renderer, Object element, \
+		bool selected, bool focused )
+			if element != null
+				super.updateRenderer( listBox, renderer, \
+					( element cast InputDevice ).getName(), selected, focused )
+				
+			else
+				super.updateRenderer( listBox, renderer, " ", selected, focused )
+			end
+		end
+	end
+	
+	/** \brief Input device selection listener. */
+	public class SelectInputDevice extends DefaultListModelListener
+		/** \brief Window. */
+		private var WindowInputDevice pWindow
+		
+		/** \brief Create selection listener. */
+		public func new( WindowInputDevice window )
+			this.pWindow = window
+		end
+		
+		/** \brief Selection changed. */
+		public func void selectionChanged( ListModel listModel )
+			this.pWindow.setInputDevice( listModel.getAt( listModel.getSelected() ) cast InputDevice )
+		end
+	end
+	
+	/** \brief Log message. */
+	class LogMessage implements ConsoleListener
+		public func new()
+		end
+		
+		public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
+			BaseGameApp.getApp().getConsole().addMessage( message.getMessage() )
+		end
+		
+		public func void consoleCleared( Console console )
+		end
+	end
+	
+	/** \brief Auto-updating panel. */
+	public class AutoUpdatePanel extends Panel
+		/** \brief Update timer. */
+		public class UpdateTimer extends Timer
+			private var AutoUpdatePanel pPanel
+			
+			public func new( AutoUpdatePanel panel ) super( 0.0, true )
+				this.pPanel = panel
+			end
+			
+			public func void fire()
+				this.pPanel.updateState()
+			end
+		end
+		
+		/** \brief Update timer. */
+		private var UpdateTimer pUpdateTimer
+		
+		/** \brief Create renderer. */
+		public func new()
+			this.pUpdateTimer = UpdateTimer.new( this )
+		end
+		
+		/** \brief Dispose of window. */
+		public func void dispose()
+			if this.pUpdateTimer != null
+				this.pUpdateTimer.giveUp()
+				this.pUpdateTimer = null
+			end
+			super.dispose()
+		end
+		
+		/** \brief Update state. */
+		public func void updateState()
+		end
+	end
+	
+	/** \brief Input device axis renderer. */
+	public class InputDeviceAxisRenderer extends DefaultListElementRenderer
+		/** \brief Create renderer. */
+		public func new()
+		end
+		
+		/** \brief Create renderer. */
+		public func Widget createRenderer( ListBox listBox )
+			return AxisPanel.new()
+		end
+		
+		/** \brief Update renderer with object state. */
+		public func void updateRenderer( ListBox listBox, Widget renderer, Object element, \
+		bool selected, bool focused )
+			if element != null
+				( renderer cast AxisPanel ).setAxis( element cast InputDeviceAxis )
+			end
+		end
+	end
+	
+	/** \brief Axis panel. */
+	class AxisPanel extends AutoUpdatePanel
+		private static fixed var WeightLayout.LayoutSettings column1 = WeightLayout.LayoutSettings.new( 0, 100 )
+		private static fixed var WeightLayout.LayoutSettings column2 = WeightLayout.LayoutSettings.new( 1 )
+		
+		/** \brief Axis. */
+		private var InputDeviceAxis pAxis
+		
+		/** \brief Model name. */
+		private var TextModel pModelName
+		
+		/** \brief Model value. */
+		private var RangeModel pModelValue
+		
+		/** \brief Create axis panel. */
+		public func new()
+			this.pModelName = DefaultTextModel.new( "?: " )
+			this.pModelValue = DefaultRangeModel.new( -100, 100, 10, 0, 1 )
+			
+			this.setLayout( WeightLayout.new( LayoutAxis.x, 5 ) )
+			
+			this.addWidget( Label.new( this.pModelName, Label.middleLeft ), column1 )
+			this.addWidget( ProgressBar.new( Orientation.horizontal, this.pModelValue ), column2 )
+		end
+		
+		/** \brief Set axis. */
+		public func void setAxis( InputDeviceAxis axis )
+			this.pAxis = axis
+			this.pModelName.setText( axis.getName() )
+		end
+		
+		/** \brief Update state. */
+		public func void updateState()
+			this.pModelValue.setValue( ( this.pAxis.getValue() * 100.0 ) cast int )
+		end
+	end
+	
+	/** \brief Input device button renderer. */
+	public class InputDeviceButtonRenderer extends DefaultListElementRenderer
+		/** \brief Create renderer. */
+		public func new()
+		end
+		
+		/** \brief Create renderer. */
+		public func Widget createRenderer( ListBox listBox )
+			return ButtonPanel.new()
+		end
+		
+		/** \brief Update renderer with object state. */
+		public func void updateRenderer( ListBox listBox, Widget renderer, Object element, \
+		bool selected, bool focused )
+			if element != null
+				( renderer cast ButtonPanel ).setButton( element cast InputDeviceButton )
+			end
+		end
+	end
+	
+	/** \brief Button panel. */
+	class ButtonPanel extends AutoUpdatePanel
+		private static fixed var WeightLayout.LayoutSettings column1 = WeightLayout.LayoutSettings.new( 0, 100 )
+		private static fixed var WeightLayout.LayoutSettings column2 = WeightLayout.LayoutSettings.new( 1 )
+		
+		/** \brief Button. */
+		private var InputDeviceButton pButton
+		
+		/** \brief Model name. */
+		private var TextModel pModelName
+		
+		/** \brief Model value. */
+		private var RangeModel pModelValue
+		
+		/** \brief Create button panel. */
+		public func new()
+			this.pModelName = DefaultTextModel.new( "?: " )
+			this.pModelValue = DefaultRangeModel.new( 0, 1, 1, 0, 1 )
+			
+			this.setLayout( WeightLayout.new( LayoutAxis.x, 5 ) )
+			
+			this.addWidget( Label.new( this.pModelName, Label.middleLeft ), column1 )
+			this.addWidget( ProgressBar.new( Orientation.horizontal, this.pModelValue ), column2 )
+		end
+		
+		/** \brief Set button. */
+		public func void setButton( InputDeviceButton button )
+			this.pButton = button
+			this.pModelName.setText( button.getName() )
+		end
+		
+		/** \brief Update state. */
+		public func void updateState()
+			if this.pButton.isPressed()
+				this.pModelValue.setValue( 1 )
+				
+			else
+				this.pModelValue.setValue( 0 )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Create window. */
+	public func new() super( 0, 0, 700, 500 )
+		this.pConsole = Console.new( 20 )
+		this.pConsole.addListener( LogMessage.new() )
+		
+		this.pModelInputDevices = DefaultListModel.new()
+		this.pModelAxes = DefaultListModel.new()
+		this.pModelButtons = DefaultListModel.new()
+		
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Input Device" )
+		this.createContent( this )
+		this.updateInputDeviceModel()
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		this.setInputDevice( null )
+		
+		this.pModelButtons = null
+		this.pModelAxes = null
+		this.pModelInputDevices = null
+		this.pCBInputDevices = null
+		this.pConsole = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Console. */
+	private var Console pConsole
+	
+	/** \brief Gui theme list model. */
+	private var DefaultListModel pModelInputDevices
+	
+	/** \brief Gui theme combo box. */
+	private var ComboBox pCBInputDevices
+	
+	/** \brief Active input device. */
+	private var InputDevice pInputDevice
+	
+	/** \brief Model axes. */
+	private var DefaultListModel pModelAxes
+	
+	/** \brief Model buttons. */
+	private var DefaultListModel pModelButtons
+	
+	
+	
+	
+	/** \brief Create content. */
+	private func void createContent( Container content )
+		content.setLayout( BorderLayout.new( 5 ) )
+		
+		// input device selection
+		var Panel panel = Panel.new()
+		panel.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		this.pCBInputDevices = ComboBox.new( this.pModelInputDevices, InputDeviceRenderer.new() )
+		this.pCBInputDevices.setNumberDisplayLines( 5 )
+		this.pModelInputDevices.addListener( SelectInputDevice.new( this ) )
+		panel.addWidget( Label.new( "Input Device:" ) )
+		panel.addWidget( this.pCBInputDevices )
+		content.addWidget( panel, BorderLayout.Area.top )
+		
+		// content with list of axes and button states
+		panel = Panel.new()
+		panel.setLayout( BoxLayout.new( LayoutAxis.x, 10 ) )
+		content.addWidget( panel, BorderLayout.Area.content )
+		
+		// left side list of axes
+		var Panel subPanel = Panel.new()
+		subPanel.setLayout( BorderLayout.new( 3 ) )
+		subPanel.addWidget( Label.new( "Axes (absolute)", Label.center ), BorderLayout.Area.top )
+		
+		var ListBox listBox = ListBox.new( this.pModelAxes, InputDeviceAxisRenderer.new() )
+		subPanel.addWidget( ScrollPanel.new( listBox ), BorderLayout.Area.content )
+		
+		panel.addWidget( subPanel )
+		
+		// right side list of buttons
+		subPanel = Panel.new()
+		subPanel.setLayout( BorderLayout.new( 3 ) )
+		subPanel.addWidget( Label.new( "Buttons (no keys)", Label.center ), BorderLayout.Area.top )
+		
+		listBox = ListBox.new( this.pModelButtons, InputDeviceButtonRenderer.new() )
+		//listBox.setNumberDisplayLines( 1 )
+		//listBox.setType( ListBox.Type.verticalWrap )
+		subPanel.addWidget( ScrollPanel.new( listBox ), BorderLayout.Area.content )
+		
+		panel.addWidget( subPanel )
+	end
+	
+	/** \brief Update input device list. */
+	public func void updateInputDeviceModel()
+		var int count = InputSystem.getDeviceCount()
+		var int i
+		
+		this.pModelInputDevices.removeAll()
+		for i = 0 to count
+			this.pModelInputDevices.add( InputSystem.getDeviceAt( i ) )
+		end
+		
+		this.pCBInputDevices.setSelectedElement( 0 )
+		this.setInputDevice( this.pModelInputDevices.getAt( 0 ) cast InputDevice )
+	end
+	
+	/** \brief Set input device to show. */
+	public func void setInputDevice( InputDevice inputDevice )
+		if inputDevice == this.pInputDevice
+			return
+		end
+		
+		this.pInputDevice = inputDevice
+		
+		this.pModelAxes.removeAll()
+		this.pModelButtons.removeAll()
+		
+		if inputDevice == null
+			return
+		end
+		
+		select inputDevice.getType()
+		case InputDeviceType.keyboard
+			return // has lots of keys (buttons). show nothing
+		end
+		
+		this.runWhileBlockingLayout( block
+			var InputDeviceAxis axis
+			var Array list
+			var int i, count
+			
+			list = Array.new()
+			count = inputDevice.getAxisCount()
+			for i = 0 to count
+				axis = inputDevice.getAxisAt( i )
+				select axis.getType()
+				case InputDeviceAxisType.mouse, InputDeviceAxisType.mouseWheel
+					// not showing absolute axes
+				else
+					list.add( axis )
+				end
+			end
+			this.pModelAxes.addAll( list ) // causes only one notification not many
+			
+			list.removeAll()
+			count = inputDevice.getButtonCount()
+			for i = 0 to count
+				this.pModelButtons.add( inputDevice.getButtonAt( i ) )
+			end
+			this.pModelButtons.addAll( list ) // causes only one notification not many
+		end )
+	end
+end

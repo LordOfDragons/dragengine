@@ -1,0 +1,332 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Gui
+pin Dragengine.Utils.StyledText.Definition.Nodes
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load styled text document definition.
+ */
+class LoadStyledTextDefinition extends BaseXmlLoader
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadStyledTextDefinition" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+	end
+	
+	
+	
+	/** \brief Load styled text definition from file. */
+	public func StyledTextDefinition loadFromFile( String filename )
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "styledText" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		return this.parseStyledText( root, File.new( filename ).getParent().getPath() )
+	end
+	
+	
+	
+	/** \brief Parse styled text tag. */
+	public func StyledTextDefinition parseStyledText( EasyXMLElement root, String basePath )
+		var StyledTextDefinition styledText = StyledTextDefinition.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "pageSize" )
+				styledText.setPageSize( this.readPoint( element ) )
+				
+			elif tagName.equals( "margins" )
+				styledText.getPageStyle().setMargins( this.parseMargins( element ) )
+				
+			elif tagName.equals( "style" )
+				this.parseStyle( element, styledText, basePath )
+				
+			elif tagName.equals( "text" )
+				this.parseText( element, styledText, basePath )
+				
+			elif tagName.equals( "image" )
+				this.parseImage( element, styledText, basePath )
+				
+			elif tagName.equals( "video" )
+				this.parseVideo( element, styledText, basePath )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return styledText
+	end
+	
+	/** \brief Parse document style tag. */
+	private func void parseStyle( EasyXMLElement root, StyledTextDefinition styledText, String basePath )
+		var String styleName = root.getAttributeNamed( "name" )
+		if styledText.hasStyleNamed( styleName )
+			this.printOnConsole( root, "Duplicate style name '" + styleName + "'." )
+			throw EInvalidParam.new()
+		end
+		
+		var STDStyle stdstyle
+		
+		if root.hasAttributeNamed( "extend" )
+			var String extendName = root.getAttributeNamed( "extend" )
+			var STDStyle extendStyle = styledText.getStyleNamed( extendName )
+			if extendStyle == null
+				this.printOnConsole( root, "Style to extend not found '" + extendName + "'." )
+				throw EInvalidParam.new()
+			end
+			
+			stdstyle = STDStyle.new( styleName, extendStyle )
+			
+		else
+			stdstyle = STDStyle.new( styleName )
+		end
+		
+		var String cdata
+		var Font font
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "font" )
+				try
+					font = this.readFont( element )
+					
+				catch Exception e
+					this.printOnConsole( root, "Loading font failed." )
+					throw EInvalidParam.new()
+				end
+				
+				stdstyle.setFont( font )
+				
+			elif tagName.equals( "textColor" )
+				stdstyle.setTextColor( this.readColor( element ) )
+				
+			elif tagName.equals( "backgroundColor" )
+				stdstyle.setBackgroundColor( this.readColor( element ) )
+				
+			elif tagName.equals( "margins" )
+				stdstyle.setMargins( this.parseMargins( element ) )
+				
+			elif tagName.equals( "firstLineIndent" )
+				stdstyle.setFirstLineIndent( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "lineSpacing" )
+				stdstyle.setLineSpacing( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "characterSpacing" )
+				stdstyle.setCharacterSpacing( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "alignment" )
+				cdata = element.getFirstCData()
+				
+				if cdata.equals( "left" )
+					stdstyle.setAlignment( STDStyle.Align.left )
+					
+				elif cdata.equals( "right" )
+					stdstyle.setAlignment( STDStyle.Align.right )
+					
+				elif cdata.equals( "center" )
+					stdstyle.setAlignment( STDStyle.Align.center )
+					
+				elif cdata.equals( "block" )
+					stdstyle.setAlignment( STDStyle.Align.filled )
+					
+				else
+					this.logInvalidValue( element, cdata )
+					throw EInvalidParam.new()
+				end
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		styledText.addStyle( stdstyle )
+	end
+	
+	/** Parse document text tag. */
+	private func void parseText( EasyXMLElement root, StyledTextDefinition styledText, String basePath )
+		var int i, elementCount = root.getElementCount()
+		var STDNText textNode = STDNText.new()
+		var STDNTextSpan textSpan
+		var EasyXMLElement element
+		var String tagName
+		
+		if root.hasAttributeNamed( "style" )
+			textNode.setStyle( root.getAttributeNamed( "style" ) )
+		end
+		
+		for i = 0 to elementCount
+			element = root.getElementAt( i )
+			
+			if element.getType() == EasyXMLElementType.cdata
+				textNode.addSpan( STDNTextSpan.new( element.getCDataContent() ) )
+				
+			elif element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals( "span" )
+					textSpan = STDNTextSpan.new( element.getFirstCData() )
+					
+					if element.hasAttributeNamed( "style" )
+						textSpan.setStyle( element.getAttributeNamed( "style" ) )
+					end
+					
+					if element.hasAttributeNamed( "image" )
+						try
+							textSpan.setImage( Image.new( File.absolutePath( \
+								element.getAttributeNamed( "image" ), basePath ).getPath() ) )
+							
+						catch Exception e
+							this.logLoadFileFailed( root, element.getAttributeNamed( "image" ) )
+						end
+					end
+					
+					textNode.addSpan( textSpan )
+					
+				else
+					this.logUnknownTag( element )
+					throw EInvalidParam.new()
+				end
+			end
+		end
+		
+		styledText.addNode( textNode )
+	end
+	
+	/** \brief Parse document image tag. */
+	private func void parseImage( EasyXMLElement root, StyledTextDefinition styledText, String basePath )
+		var STDNImage imageNode = STDNImage.new()
+		
+		if root.hasAttributeNamed( "style" )
+			imageNode.setStyle( root.getAttributeNamed( "style" ) )
+		end
+		
+		var String path = root.getFirstCData()
+		if not path.empty()
+			try
+				imageNode.setImage( Image.new( File.absolutePath( path, basePath ).getPath() ) )
+				
+			catch Exception e
+				this.logLoadFileFailed( root, path )
+			end
+		end
+		
+		styledText.addNode( imageNode )
+	end
+	
+	/** \brief Parse document video tag. */
+	private func void parseVideo( EasyXMLElement root, StyledTextDefinition styledText, String basePath )
+		var STDNVideo videoNode = STDNVideo.new()
+		
+		if root.hasAttributeNamed( "style" )
+			videoNode.setStyle( root.getAttributeNamed( "style" ) )
+		end
+		
+		var String path = root.getFirstCData()
+		if not path.empty()
+			try
+				videoNode.setVideo( Video.new( File.absolutePath( path, basePath ).getPath() ) )
+				
+			catch Exception e
+				this.logLoadFileFailed( root, path )
+			end
+		end
+		
+		styledText.addNode( videoNode )
+	end
+	
+	/** \brief Parse margins tag. */
+	private func RectArea parseMargins( EasyXMLElement root )
+		var int i, elementCount = root.getElementCount()
+		var EasyXMLElement element
+		var int leftMargin = 0
+		var int topMargin = 0
+		var int rightMargin = 0
+		var int bottomMargin = 0
+		var String tagName
+		
+		if root.hasAttributeNamed( "left" )
+			leftMargin = root.getAttributeIntNamed( "left" )
+		end
+		if root.hasAttributeNamed( "top" )
+			topMargin = root.getAttributeIntNamed( "top" )
+		end
+		if root.hasAttributeNamed( "right" )
+			rightMargin = root.getAttributeIntNamed( "right" )
+		end
+		if root.hasAttributeNamed( "bottom" )
+			bottomMargin = root.getAttributeIntNamed( "bottom" )
+		end
+		if root.hasAttributeNamed( "all" )
+			leftMargin = root.getAttributeIntNamed( "all" )
+			topMargin = leftMargin
+			rightMargin = leftMargin
+			bottomMargin = leftMargin
+		end
+		
+		for i = 0 to elementCount
+			element = root.getElementAt( i )
+			
+			if element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals( "left" )
+					leftMargin = element.getFirstCDataInt()
+					
+				elif tagName.equals( "right" )
+					rightMargin = element.getFirstCDataInt()
+					
+				elif tagName.equals( "top" )
+					topMargin = element.getFirstCDataInt()
+					
+				elif tagName.equals( "bottom" )
+					bottomMargin = element.getFirstCDataInt()
+					
+				else
+					this.logUnknownTag( element )
+					throw EInvalidParam.new()
+				end
+			end
+		end
+		
+		return RectArea.new( leftMargin, topMargin, rightMargin, bottomMargin )
+	end
+end

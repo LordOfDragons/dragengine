@@ -1,0 +1,213 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Collision tester.
+ * 
+ * Utility class simplifying repeated collision testing as well as defining collision
+ * tests to be conducted later, possibly by an unrelated script class. Stores the
+ * parameters of a collision test to conduct. The holder of the collision tester
+ * can then just run the collision test without bothering about the details. The
+ * result is also stored in the collision tester for repeated retrieval which is
+ * useful if the collision tester is held by multiple script objects.
+ * 
+ * This is a native class.
+ */
+class CollisionTester
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create collision tester. */
+	public func new()
+	end
+	
+	/** \brief Creates copy of collision tester. */
+	public func new( CollisionTester collisionTester )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief World to use for collision testing or \em null if not set. */
+	public func World getWorld()
+	end
+	
+	/** \brief Set world to use for collision testing or \em null if not set. */
+	public func void setWorld( World world )
+	end
+	
+	/** \brief Touch sensor to use for testing collisions or \em null if not set. */
+	public func TouchSensor getTouchSensor()
+	end
+	
+	/** \brief Set touch sensor to use for testing collisions or \em null if not set. */
+	public func void setTouchSensor( TouchSensor touchSensor )
+	end
+	
+	
+	
+	/** \brief Set collision testing to use a ray test. */
+	public func void setCollisionRay()
+	end
+	
+	/** \brief Set collision testing to use a collision volume. */
+	public func void setCollisionShape( ShapeList shape )
+	end
+	
+	/** \brief Test direction for moving collision testing or \em null for hit collision testing. */
+	public func Vector getTestDirection()
+	end
+	
+	/** \brief Set test direction for moving collision testing or \em null for hit collision testing. */
+	public func void setTestDirection( Vector direction )
+	end
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+	
+	/** \brief Collision listener used to test if a collision is possible or \em null to only use collision filtering. */
+	public func ColliderListener getColliderListener()
+	end
+	
+	/** \brief Set collision listener used to test if a collision is possible or \em null to only use collision filtering. */
+	public func void setColliderListener( ColliderListener listener )
+	end
+	
+	
+	
+	/** \brief Add collider to ignore during collision testing if not present. */
+	public func void addIgnoreCollider( Collider collider )
+	end
+	
+	/** \brief Remove collider to ignore during collision testing if present. */
+	public func void removeIgnoreCollider( Collider collider )
+	end
+	
+	/** \brief Remove all ignored colliders. */
+	public func void removeAllIgnoreColliders()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Testing */
+	/*@{*/
+	/**
+	 * \brief Reset collision result.
+	 * \details After this call hasCollision() returns \em false and collision results are undefined.
+	 */
+	public func void reset()
+	end
+	
+	
+	
+	/** 
+	 * \brief Test ray collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool rayHits( DVector position, Vector direction )
+	end
+	
+	/**
+	 * \brief Test collider hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderHits( DVector position )
+	end
+	
+	/**
+	 * \brief Test collider hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderHits( DVector position, Quaternion orientation )
+	end
+	
+	/**
+	 * \brief Test collider move hits collision.
+	 * \returns \em true if a collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderMoveHits( DVector position, Vector direction )
+	end
+	
+	/**
+	 * \brief Test collider move hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderMoveHits( DVector position, Quaternion orientation, Vector direction )
+	end
+	
+	/**
+	 * \brief Test collider rotate hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderRotateHits( DVector position, Vector rotation )
+	end
+	
+	/**
+	 * \brief Test collider rotate hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderRotateHits( DVector position, Quaternion orientation, Vector rotation )
+	end
+	
+	/**
+	 * \brief Test collider move rotate hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderMoveRotateHits( DVector position, Vector direction, Vector rotation )
+	end
+	
+	/**
+	 * \brief Test collider move rotate hits collision.
+	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
+	 */
+	public func bool colliderMoveRotateHits( DVector position, Quaternion orientation, Vector direction, Vector rotation )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Result */
+	/*@{*/
+	/** \brief Collision has been found. */
+	public func bool hasCollision()
+	end
+	
+	/**
+	 * \brief Hit distance.
+	 * \details Only valid if hasCollision() returns \em true.
+	 */
+	public func float getHitDistance()
+	end
+	
+	/**
+	 * \brief Hit collider or \em null if something else than a collider has been hit.
+	 * \details Only valid if hasCollision() returns \em true.
+	 */
+	public func Collider getHitCollider()
+	end
+	
+	/**
+	 * \brief Hit collider bone or -1 if something else than a collider has been hit.
+	 * \details Only valid if hasCollision() returns \em true.
+	 */
+	public func int getHitBone()
+	end
+	/*@}*/
+end

@@ -1,0 +1,61 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Prop field.
+ * 
+ * This is a native class.
+ */
+class PropField
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create prop field. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set position of the prop field. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Listener or \em null if not set. */
+	public func PropFieldListener getListener()
+	end
+	
+	/** \brief Set listener or \em null if not set. */
+	public func void setListener( PropFieldListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Types */
+	/*@{*/
+	/** \brief Add type returning the type index. */
+	public func int addType( Model model, Skin skin, float rotPerForce, float restitution, \
+	CollisionFilter collisionFilter, int instanceCount )
+	end
+	
+	/** \brief Remove all types. */
+	public func void removeAllTypes()
+	end
+	
+	/**
+	 * \brief Set properties of a type.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to type count.
+	 */
+	public func void setInstanceAt( int type, int instance, Vector position, Vector rotation, float scaling )
+	end
+	/*@}*/
+end

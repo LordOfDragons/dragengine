@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<module>
+	<name>Particle Emitter Editor</name>
+	<description>Edit particle emitters.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<iconSmall>icons/editorIconSmall.png</iconSmall>
+	<iconLarge>icons/editorIconLarge.png</iconLarge>
+	<library>
+		<path>FILENAME</path>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>ParticleEmitterEditorCreateModule</entrypoint>
+	</library>
+</module>

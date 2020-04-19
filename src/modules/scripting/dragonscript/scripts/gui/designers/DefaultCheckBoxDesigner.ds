@@ -1,0 +1,243 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for CheckBox.
+ */
+class DefaultCheckBoxDesigner extends DefaultButtonDesigner
+	/** \brief Design for a particular widget state. */
+	public class CheckBoxStateDesign extends StateDesign
+		/** \brief Image for check box. */
+		private var Image pImageBox
+		
+		/** \brief Image for check mark. */
+		private var Image pImageCheck
+		
+		
+		
+		
+		/** \brief Create state design. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		public func new( CheckBoxStateDesign stateDesign ) super( stateDesign )
+			this.pImageBox = stateDesign.pImageBox
+			this.pImageCheck = stateDesign.pImageCheck
+		end
+		
+		
+		
+		/** \brief Image for check box. */
+		public func Image getImageBox()
+			return this.pImageBox
+		end
+		
+		/** \brief Set image for check box. */
+		public func void setImageBox( Image image )
+			this.pImageBox = image
+		end
+		
+		/** \brief Image for check mark. */
+		public func Image getImageCheck()
+			return this.pImageCheck
+		end
+		
+		/** \brief Set image for check mark. */
+		public func void setImageCheck( Image image )
+			this.pImageCheck = image
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | imageBox | Image | setImageBox |
+		 * | imageCheck | Image | setImageCheck |
+		 */
+		public func void setParameter( String name, Object value )
+			if name.equals( "imageBox" )
+				this.setImageBox( value cast Image )
+				
+			elif name.equals( "imageCheck" )
+				this.setImageCheck( value cast Image )
+				
+			else
+				super.setParameter( name, value )
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return CheckBoxStateDesign.new( this )
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge( DefaultWidgetDesigner.StateDesign state )
+			super.merge( state )
+			
+			var CheckBoxStateDesign cbstate = state cast CheckBoxStateDesign
+			
+			if this.pImageBox != null
+				cbstate.pImageBox = this.pImageBox
+			end
+			if this.pImageCheck != null
+				cbstate.pImageCheck = this.pImageCheck
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply( Widget widget )
+			super.apply( widget )
+			
+			var CheckBox checkBox = widget cast CheckBox
+			var DisplayImage widgetCheckBox = checkBox.getCheckBoxWidget() cast DisplayImage
+			var DisplayImage widgetCheck = checkBox.getCheckWidget() cast DisplayImage
+			
+			widgetCheckBox.setImage( this.pImageBox )
+			
+			if checkBox.getToggled()
+				widgetCheck.setImage( this.pImageCheck )
+				
+			else
+				widgetCheck.setImage( null )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Create new check box designer. */
+	public func new()
+		this.setDesignNormal( CheckBoxStateDesign.new() )
+		this.setDesignDisabled( CheckBoxStateDesign.new() )
+		this.setDesignFocused( CheckBoxStateDesign.new() )
+		this.setDesignHover( CheckBoxStateDesign.new() )
+		this.setDesignFocusedHover( CheckBoxStateDesign.new() )
+		
+		this.setDesignPressed( CheckBoxStateDesign.new() )
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultCheckBoxDesigner designer ) super( designer )
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func CheckBoxStateDesign getCheckBoxDesignNormal()
+		return this.getDesignNormal() cast CheckBoxStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func CheckBoxStateDesign getCheckBoxDesignDisabled()
+		return this.getDesignDisabled() cast CheckBoxStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func CheckBoxStateDesign getCheckBoxDesignFocused()
+		return this.getDesignFocused() cast CheckBoxStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func CheckBoxStateDesign getCheckBoxDesignHover()
+		return this.getDesignHover() cast CheckBoxStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func CheckBoxStateDesign getCheckBoxDesignFocusedHover()
+		return this.getDesignFocusedHover() cast CheckBoxStateDesign
+	end
+	
+	/** \brief Design for pressed state. */
+	public func CheckBoxStateDesign getCheckBoxDesignPressed()
+		return this.getDesignPressed() cast CheckBoxStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.imageBox | Image | getDesign{state}.setImageBox |
+	 * | {state}.imageCheck | Image | getDesign{state}.setImageCheck |
+	 */
+	public func void setParameter( String name, Object value )
+		super.setParameter( name, value )
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultCheckBoxDesigner.new( this )
+	end
+	
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget( Widget widget )
+		// create checkbox and check mark widgets if not existing
+		var CheckBox checkBox = widget cast CheckBox
+		
+		var DisplayImage widgetCheckBox = checkBox.getCheckBoxWidget() cast DisplayImage
+		if widgetCheckBox == null
+			widgetCheckBox = DisplayImage.new( null )
+			checkBox.setCheckBoxWidget( widgetCheckBox )
+		end
+		
+		var DisplayImage widgetCheck = checkBox.getCheckWidget() cast DisplayImage
+		if widgetCheck == null
+			widgetCheck = DisplayImage.new( null )
+			checkBox.setCheckWidget( widgetCheck )
+		end
+		
+		// design widget
+		super.designWidget( widget )
+	end
+end

@@ -1,0 +1,135 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+
+/**
+ * \brief Replace variables with resolved content.
+ * 
+ * Subclass and implement the resolvVariable method to return the requested values.
+ * The visited content is added to a new styled text definition to keep the original intact.
+ * Tokens are contained between curly brackets like "{binding quit}". The special token "{{"
+ * is converted to "{".
+ */
+class STDVariableResolver extends DefaultSTDNodeVisitor
+	private var StyledTextDefinition pDefinition
+	
+	
+	
+	/** \brief Create converter. */
+	public func new( StyledTextDefinition definition )
+		if definition == null
+			throw EInvalidParam.new()
+		end
+		this.pDefinition = definition
+	end
+	
+	
+	
+	/** \brief Styled text definition to add the visited content to. */
+	public func StyledTextDefinition getDefinition()
+		return this.pDefinition
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve variable returning the value to set in place of the variable.
+	 * 
+	 * The default implementation returns the variable name in curly brackets.
+	 * This can be used as error fallback.
+	 */
+	public func String resolveVariable( String variableName )
+		return "{" + variableName + "}"
+	end
+	
+	
+	
+	/** \brief Visit node. */
+	public func void visitNode( STDNode node )
+		this.pDefinition.addNode( node )
+	end
+	
+	/** \brief Visit text node. */
+	public func void visitText( STDNText node )
+		var int count = node.getSpanCount()
+		var STDNTextSpan span
+		var int i
+		
+		var STDNText resolvedNode = STDNText.new()
+		resolvedNode.setStyle( node.getStyle() )
+		
+		for i = 0 to count
+			span = node.getSpanAt( i )
+			resolvedNode.addSpan( STDNTextSpan.new( this.resolveVariables( span.getText() ), span.getStyle() ) )
+		end
+		
+		this.pDefinition.addNode( resolvedNode )
+	end
+	
+	/** \brief Visit image node. */
+	public func void visitImage( STDNImage node )
+		this.pDefinition.addNode( node )
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve variables.
+	 */
+	protected func String resolveVariables( String text )
+		var int variableBegin = text.find( '{' )
+		var int len = text.getLength()
+		var String result = ""
+		var int position = 0
+		var int variableEnd
+		
+		while variableBegin != -1
+			if position < variableBegin
+				result = result + text.substring( position, variableBegin )
+			end
+			
+			if text.getAt( variableBegin + 1 ) == '{'
+				variableEnd = variableBegin + 1
+				result = result + "{"
+				
+			else
+				variableEnd = text.find( '}', variableBegin + 1 )
+				result = result + this.resolveVariable( text.substring( variableBegin + 1, variableEnd ) )
+			end
+			
+			position = variableEnd + 1
+			variableBegin = text.find( '{', position )
+		end
+		
+		if position < len
+			result = result + text.substring( position )
+		end
+		
+		return result
+	end
+end

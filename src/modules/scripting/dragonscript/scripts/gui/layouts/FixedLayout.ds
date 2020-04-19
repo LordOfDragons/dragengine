@@ -1,0 +1,99 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Does not arrange nor resize widgets.
+ * 
+ * Instances of this layout can be shared by multiple widgets.
+ */
+class FixedLayout implements Layout
+	/** \brief Creat layout. */
+	public func new()
+	end
+	
+	
+	
+	/**
+	 * \brief Add widget to layout using settings.
+	 * \param widget Widget to add to layout.
+	 * \param settings Settings for widget. Can be null.
+	 */
+	public func void addWidget( Widget widget, Object settings )
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize( Container container )
+		var int i, count = container.getWidgetCount()
+		var RectArea rect = RectArea.new()
+		var BorderSize borderSize
+		var Border border
+		var Widget child
+		
+		for i = 0 to count
+			child = container.getWidget( i )
+			if not child.getVisible()
+				continue
+			end
+			
+			border = child.getBorder()
+			
+			if border == null
+				rect = rect.include( RectArea.new( child.getPosition(), child.getSize() ) )
+				
+			else
+				borderSize = border.getBorderSize()
+				rect = rect.include( RectArea.new( \
+					child.getPosition() - Point.new( borderSize.getLeft(), borderSize.getTop() ), \
+					child.getSize() + borderSize.getSize() ) )
+			end
+		end
+		
+		return rect.getSize() + container.getPadding().getSize()
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		return this.getMinimumSize( container )
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		return this.getMinimumSize( container )
+	end
+end

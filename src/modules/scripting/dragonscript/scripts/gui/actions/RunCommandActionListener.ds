@@ -1,0 +1,68 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Events
+
+/**
+ * \brief Action listener running a command.
+ */
+class RunCommandActionListener extends DefaultActionListener
+	/** \brief Command manager. */
+	private var CommandManager pCommandManager
+	
+	/** \brief Name of command to execute. */
+	private var String pCommand
+	
+	
+	
+	/** \brief Create action listener. */
+	public func new( CommandManager manager, String command )
+		if manager == null or command == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pCommandManager = manager
+		this.pCommand = command
+	end
+	
+	
+	
+	/**
+	 * \brief Perform action.
+	 * \details Command is looked up in the command manager using a string identifier.
+	 *          If found the command Command.start() and Command.stop() is called
+	 *          in this order without delay. If not found nothing is done.
+	 */
+	public func void onAction( ActionEvent event )
+		var Command command = this.pCommandManager.getNamed( this.pCommand )
+		
+		if command == null
+			return
+		end
+		
+		command.start()
+		command.stop()
+	end
+end

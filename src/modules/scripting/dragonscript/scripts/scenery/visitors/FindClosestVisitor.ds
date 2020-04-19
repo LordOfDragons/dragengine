@@ -1,0 +1,96 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery.Visitors
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Find closest element to a given position.
+ */
+class FindClosestVisitor extends ElementVisitor
+	private var Element pClosestElement
+	private var float pClosestDistance
+	private var DVector pOrigin
+	
+	
+	
+	/**
+	 * \brief Create visitor.
+	 * \param origin Position to measure distancefrom
+	 */
+	public func new( DVector origin )
+		if origin == null
+			throw EInvalidParam.new()
+		end
+		this.pOrigin = origin
+	end
+	
+	
+	
+	/**
+	 * \brief Closest element if found or null otherwise.
+	 */
+	public func Element getClosestElement()
+		return this.pClosestElement
+	end
+	
+	/** \brief Distance of closest element or 0 otherwise. */
+	public func float getClosestDistance()
+		return this.pClosestDistance
+	end
+	
+	/** \brief Clear closest element. */
+	public func void clearClosest()
+		this.pClosestElement = null
+		this.pClosestDistance = 0
+	end
+	
+	
+	
+	/** \brief Store element if distance of center to origin is less than closest element. */
+	public func void setIfCloser( Element element )
+		var float distance = ( element.getPosition() - this.pOrigin ).getLength()
+		if this.pClosestElement == null or distance < this.pClosestDistance
+			this.pClosestElement = element
+			this.pClosestDistance = distance
+		end
+	end
+	
+	/** \brief Store element if distance of center to origin is less than closest element. */
+	public func void keepIfCloser( Element element )
+		this.setIfCloser( element )
+	end
+	
+	
+	
+	/**
+	 * \brief Visit an element.
+	 * 
+	 * Store it as closest element if distance of center to origin is less than closest
+	 * element or if element is null.
+	 */
+	public func void visitElement( Element element )
+		this.keepIfCloser( element )
+	end
+end

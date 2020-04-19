@@ -1,0 +1,264 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Files
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of a synthesizer.
+ * 
+ * Once defined a synthesizer can be updated using the stored definition. Avoids
+ * storing real synthesizers as often multiple synthesizer definitions have to be
+ * loaded at the beginning of a gaming session.
+ * 
+ */
+class SynthesizerDefinition
+	/** \brief Path of file the synthesizer has been loaded from. */
+	private var String pPathFile
+	
+	/** \brief Path to directory the synthesizer file is located in. */
+	private var String pPathDirectory
+	
+	/** \brief Channel count. */
+	private var int pChannelCount
+	
+	/** \brief Sample rate. */
+	private var int pSampleRate
+	
+	/** \brief Bytes per sample. */
+	private var int pBytesPerSample
+	
+	/** \brief Number of samples to create. */
+	private var int pSampleCount
+	
+	/** \brief Controllers. */
+	private var Array pControllers
+	
+	/** \brief Links. */
+	private var Array pLinks
+	
+	/** \brief Sources. */
+	private var Array pSources
+	
+	
+	
+	/**
+	 * \brief Create synthesizer definition.
+	 * \param pathFile Absolute path the definition has been loaded from.
+	 */
+	public func new( String pathFile )
+		this.pPathFile = pathFile
+		this.pPathDirectory = File.new( pathFile ).getParent().getPath()
+		this.pChannelCount = 1
+		this.pBytesPerSample = 2
+		this.pSampleRate = 44100
+		this.pSampleCount = this.pSampleRate * 10
+		this.pControllers = Array.new()
+		this.pLinks = Array.new()
+		this.pSources = Array.new()
+	end
+	
+	
+	
+	/** \brief Path the synthesizer has been loaded from. */
+	public func String getPathFile()
+		return this.pPathFile
+	end
+	
+	/** \brief Path to directory the synthesizer file is located in. */
+	public func String getPathDirectory()
+		return this.pPathDirectory
+	end
+	
+	/** \brief Channel count. */
+	public func int getChannelCount()
+		return this.pChannelCount
+	end
+	
+	/** \brief Set channel count. */
+	public func void setChannelCount( int channelCount )
+		if channelCount < 1 or channelCount > 2
+			throw EInvalidParam.new()
+		end
+		this.pChannelCount = channelCount
+	end
+	
+	/** \brief Sample rate. */
+	public func int getSampleRate()
+		return this.pSampleRate
+	end
+	
+	/** \brief Set sample rate. */
+	public func void setSampleRate( int sampleRate )
+		if sampleRate != 44100 and sampleRate != 22050 and sampleRate != 11025
+			throw EInvalidParam.new()
+		end
+		this.pSampleRate = sampleRate
+	end
+	
+	/** \brief Bytes per sample. */
+	public func int getBytesPerSample()
+		return this.pBytesPerSample
+	end
+	
+	/** \brief Set bytes per sample. */
+	public func void setBytesPerSample( int bytesPerSample )
+		if bytesPerSample != 1 and bytesPerSample != 2
+			throw EInvalidParam.new()
+		end
+		this.pBytesPerSample = bytesPerSample
+	end
+	
+	/** \brief Number of samples to create. */
+	public func int getSampleCount()
+		return this.pSampleCount
+	end
+	
+	/** \brief Set number of samples to create. */
+	public func void setSampleCount( int sampleCount )
+		this.pSampleCount = DEMath.max( sampleCount, 0 )
+	end
+	
+	
+	
+	/** \brief Number of controllers. */
+	public func int getControllerCount()
+		return this.pControllers.getCount()
+	end
+	
+	/** \brief Controller at position. */
+	public func SDController getControllerAt( int position )
+		return this.pControllers.getAt( position ) cast SDController
+	end
+	
+	/** \brief Add controller. */
+	public func void addController( SDController controller )
+		if controller == null
+			throw EInvalidParam.new()
+		end
+		this.pControllers.add( controller )
+	end
+	
+	
+	
+	/** \brief Number of links. */
+	public func int getLinkCount()
+		return this.pLinks.getCount()
+	end
+	
+	/** \brief Link at position. */
+	public func SDLink getLinkAt( int position )
+		return this.pLinks.getAt( position ) cast SDLink
+	end
+	
+	/** \brief Add link. */
+	public func void addLink( SDLink link )
+		if link == null
+			throw EInvalidParam.new()
+		end
+		this.pLinks.add( link )
+	end
+	
+	
+	
+	/** \brief Number of sources. */
+	public func int getSourceCount()
+		return this.pSources.getCount()
+	end
+	
+	/** \brief Source at position. */
+	public func SDSource getSourceAt( int position )
+		return this.pSources.getAt( position ) cast SDSource
+	end
+	
+	/** \brief Add source. */
+	public func void addSource( SDSource source )
+		if source == null
+			throw EInvalidParam.new()
+		end
+		this.pSources.add( source )
+	end
+	
+	
+	
+	/** \brief Build synthesizer. */
+	public func void buildSynthesizer( Synthesizer synthesizer )
+		var int i, count
+		
+		if synthesizer == null
+			throw EInvalidParam.new()
+		end
+		
+		synthesizer.removeAllSources()
+		synthesizer.removeAllLinks()
+		synthesizer.setControllerCount( this.pControllers.getCount() )
+		
+		count = this.pControllers.getCount()
+		for i = 0 to count
+			( this.pControllers.getAt( i ) cast SDController ).addToSynthesizer( synthesizer, i )
+		end
+		
+		count = this.pLinks.getCount()
+		for i = 0 to count
+			( this.pLinks.getAt( i ) cast SDLink ).addToSynthesizer( synthesizer )
+		end
+		
+		count = this.pSources.getCount()
+		for i = 0 to count
+			synthesizer.addSource( ( this.pSources.getAt( i ) cast SDSource ).buildSource( synthesizer ) )
+		end
+		
+		synthesizer.setChannelCount( this.pChannelCount )
+		synthesizer.setSampleRate( this.pSampleRate )
+		synthesizer.setBytesPerSample( this.pBytesPerSample )
+		synthesizer.setSampleCount( this.pSampleCount )
+	end
+	
+	
+	
+	public func void debug( Console console )
+		var int i, count
+		
+		console.addMessage( "Synthesizer Definition:" )
+		
+		count = this.pControllers.getCount()
+		for i = 0 to count
+			( this.pControllers.getAt( i ) cast SDController ).debug( console, i )
+		end
+		
+		count = this.pLinks.getCount()
+		for i = 0 to count
+			( this.pLinks.getAt( i ) cast SDLink ).debug( console, i )
+		end
+		
+		count = this.pSources.getCount()
+		for i = 0 to count
+			( this.pSources.getAt( i ) cast SDSource ).debug( console )
+		end
+	end
+end

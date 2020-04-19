@@ -1,0 +1,231 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+
+/**
+ * \brief List of properties organized as tree to find best matching property.
+ * 
+ * Helps finding best matching properties for elements. The desired property is defined using
+ * a path string. The tree is searched to find the property with the best matching path string.
+ * This list allows to apply properties to a specific path or to a group of properties sharing
+ * the same path components.
+ * 
+ * A typical example for use of this list is assigning game specific material parameters to
+ * Skin resources applied to components. Usually you have a small number of material classes
+ * fine tuned for your game and a larger amount of Skin resources that should map to these
+ * material classes. Defining the material for each and every Skin resource is cumbersome
+ * especially since many Skin resources with similar path share the same material class.
+ * Here the properties can be stored for a group of Skin resources sharing the same directory
+ * on disk. This is an example list of Skin resources:
+ * 
+ * - /content/materials/asphalt/clean.deskin
+ * - /content/materials/asphalt/dirty.deskin
+ * - /content/materials/asphalt/weathered.deskin
+ * - /content/materials/asphalt/damaged.deskin
+ * - /content/materials/grass/lawn1.deskin
+ * - /content/materials/grass/lawn2.deskin
+ * - /content/materials/misc/crate.deskin
+ * 
+ * You can not define these material classes:
+ * - "asphalt" => "/content/materials/asphalt"
+ * - "asphalt damaged" => "/content/materials/asphalt/damaged.deskin"
+ * - "grass" => "/content/materials/grass"
+ * 
+ * "asphalt damaged" is the best match for the damaged asphalt skin only. All other asphalt
+ * skins will best match the generic "asphalt" material class. The same for the grass type
+ * skins covered by the generic "grass" material class. The crate skin does not match anything
+ * so null will be retrieved. If you want to use a default material class add an entry for "/"
+ * and it will cover everything not covered by a more specific path string.
+ * 
+ * The same object can be stored for different path strings.
+ */
+class BestMatchTreeList
+	/** \brief Entry. */
+	protected class Entry
+		public var String name
+		public var Object object
+		public var Dictionary entries  //!< Dictionary mapping String to Entry
+		
+		public func new( String name )
+			this.name = name
+			this.entries = Dictionary.new()
+		end
+	end
+	
+	
+	
+	private var Entry pRoot
+	private var byte pSeparator
+	private var String pRootPath
+	
+	
+	
+	/** \brief Create list. */
+	public func new() this( '/' )
+	end
+	
+	/** \brief Create list. */
+	public func new( byte separator )
+		this.pSeparator = separator
+		this.pRoot = Entry.new( "" )
+		this.pRootPath = separator.toString()
+	end
+	
+	
+	
+	/** \brief Get property best matching path. */
+	public func Object getAt( String path )
+		var Array components = path.split( this.pSeparator )
+		var int i, count = components.getCount()
+		var Object property = this.pRoot.object
+		var Entry entry = this.pRoot
+		
+		for i = 0 to count
+			entry = entry.entries.getAt( components.getAt( i ), null ) cast Entry
+			if entry == null
+				break
+			end
+			if entry.object != null
+				property = entry.object
+			end
+		end
+		
+		return property
+	end
+	
+	/** \brief Property matching exactly path is present. */
+	public func bool hasExact( String path )
+		return this.getAtExact( path ) != null
+	end
+	
+	/** \brief Get property matching exactly path or null if absent. */
+	public func Object getAtExact( String path )
+		var Array components = path.split( this.pSeparator )
+		var int i, count = components.getCount()
+		var Entry next, entry = this.pRoot
+		
+		for i = 0 to count
+			next = entry.entries.getAt( components.getAt( i ), null ) cast Entry
+			if next == null
+				return null
+			end
+			entry = next
+		end
+		
+		return entry.object
+	end
+	
+	/**
+	 * \brief Set property replacing existing one if present.
+	 * 
+	 * Path is not required to start with the path separator. If \em property is null the
+	 * property is ignored during getAt().
+	 */
+	public func void setAt( String path, Object property )
+		( path.split( this.pSeparator ).inject( this.pRoot, block Entry entry, String component
+			var Entry child = entry.entries.getAt( component, null ) cast Entry
+			if child == null
+				child = Entry.new( component )
+				entry.entries.setAt( component, child )
+			end
+			return child
+		end ) cast Entry ).object = property
+	end
+	
+	/** \brief Remove all properties from the list. */
+	public func void removeAll()
+		this.pRoot.entries.removeAll()
+	end
+	
+	/**
+	 * \brief Visit properties with block.
+	 * 
+	 * Block has signature String path, Object property.
+	 */
+	public func void forEach( Block ablock )
+		this.forEachEntry( this.pRoot, this.pRootPath, this.pRootPath, ablock )
+	end
+	
+	/** \brief List of all property path as Array of String. */
+	public func Array listPropertyPath()
+		var Array list = Array.new()
+		this.forEachEntry( this.pRoot, this.pRootPath, this.pRootPath, block String path, Object property
+			list.add( path )
+		end )
+		return list
+	end
+	
+	/**
+	 * \brief Visit all properties along path.
+	 * 
+	 * A typical use case for this method is to merge properties along the path to get a final
+	 * property to use. This avoids the need to fully define properties allowing to reuse and
+	 * extend properties.
+	 * 
+	 * Block has signature String path, Object property.
+	 */
+	public func void forEach( String path, Block ablock )
+		var Array components = path.split( this.pSeparator )
+		var int i, count = components.getCount()
+		var Entry entry = this.pRoot
+		var String buildPath = ""
+		var String component
+		
+		if this.pRoot.object != null
+			ablock.run( this.pRootPath, this.pRoot.object )
+		end
+		
+		for i = 0 to count
+			component = components.getAt( i ) cast String
+			entry = entry.entries.getAt( component, null ) cast Entry
+			if entry == null
+				break
+			end
+			
+			buildPath = buildPath + this.pSeparator + component
+			
+			if entry.object != null
+				ablock.run( buildPath, entry.object )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Recursive visit entries with block String path, Entry entry. */
+	protected func void forEachEntry( Entry entry, String path, String pathAppend, Block ablock )
+		if entry.object != null
+			ablock.run( path, entry.object )
+		end
+		
+		entry.entries.forEach( block String component, Entry childEntry
+			path = pathAppend + component
+			this.forEachEntry( childEntry, path, path + this.pSeparator, ablock )
+		end )
+	end
+end

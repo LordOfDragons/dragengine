@@ -1,0 +1,205 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding day time sky support.
+ * 
+ * Updates day time controller of a day time supporting sky assigned to ECBehaviorSky.
+ * To use ass ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call
+ * setDayTime() to adjust the day time to show.
+ * 
+ * This behavior can be present only once in the behavior element.
+ * 
+ * Element class properties have the prefix "dayTimeSky.".
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ */
+class ECBehaviorDayTimeSky extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorDayTimeSky pECBehavior
+		private var SkyController pController
+		private var ECBehaviorSky.Instance pSky
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorDayTimeSky ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pSky = ecbehavior.getSky().instance( element )
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var SkyInstance skyInstance = this.pSky.getSkyInstance()
+			if skyInstance == null
+				return
+			end
+			
+			this.pController = skyInstance.getControllerNamed( \
+				this.pECBehavior.getController().getValue( stub ) )
+			
+			this.setDayTime( this.pECBehavior.getDayTime().getValue( stub ) )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorDayTimeSky getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief ECBehaviorSky instance. */
+		public func ECBehaviorSky.Instance getSky()
+			return this.pSky
+		end
+		
+		/** \brief Day time controller or null if not found. */
+		public func SkyController getController()
+			return this.pController
+		end
+		
+		/** \brief Day time as hour of day in the range from 0 to 24. */
+		public func float getDayTime()
+			if this.pController != null
+				return this.pController.getValue()
+				
+			else
+				return 0
+			end
+		end
+		
+		/** \brief Set day time as hour of day in the range from 0 to 24. */
+		public func void setDayTime( float time )
+			if this.pController != null
+				this.pController.setValue( time )
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setDayTime( reader.readFloat() )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeFloat( this.getDayTime() )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorSky pSky
+	private var ECPString pController
+	private var ECPFloat pDayTime
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorSky sky ) \
+	this( eclass, sky, "dayTimeSky." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorSky sky, String prefix ) super( eclass )
+		if sky == null
+			throw BERequiresBehaviorException.new( eclass, this, "ECBehaviorSky" )
+		end
+		
+		this.pSky = sky
+		
+		this.pController = ECPString.new( prefix + "controllerDayTime", "daytime" )
+		eclass.addProperty( this.pController )
+		
+		this.pDayTime = ECPFloat.new( prefix + "dayTime", 10, 0, 24 )
+		eclass.addProperty( this.pDayTime )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Sky behavior. */
+	public func ECBehaviorSky getSky()
+		return this.pSky
+	end
+	
+	/** \brief Name of day time controller. */
+	public func ECPString getController()
+		return this.pController
+	end
+	
+	/** \brief Day time as hour of day in the range from 0 to 24. */
+	public func ECPFloat getDayTime()
+		return this.pDayTime
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorSky getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorSky
+		end ) cast ECBehaviorSky
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorSky.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

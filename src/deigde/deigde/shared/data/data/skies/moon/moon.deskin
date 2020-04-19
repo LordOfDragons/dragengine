@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>moonColor.png</image>
+		<image property='transparency'>moonTransparency.png</image>
+	</texture>
+</skin>

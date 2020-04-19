@@ -1,0 +1,250 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a inverse kinematic animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleInverseKinematic extends ADRule
+	/** Goal position. */
+	private var Vector pGoalPos
+	
+	/** Goal orientation. */
+	private var Vector pGoalOrient
+	
+	/** Local position. */
+	private var Vector pLocalPos
+	
+	/** Local orientation. */
+	private var Vector pLocalOrient
+	
+	/** Adjust orientation. */
+	private var bool pAdjustOrientation
+	
+	/** Name of the solver bone. */
+	private var String pSolverBone
+	
+	/** Determines if the solver bone is used. */
+	private var bool pUseSolverBone
+	
+	
+	
+	/** Limit reach in meters. 0 disables reach limit. */
+	private var float pReachRange
+	
+	/** Bone to use as reach origin. */
+	private var String pReachBone
+	
+	/** Reach center if no bone is used. */
+	private var Vector pReachCenter
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pGoalPos = Vector.new()
+		this.pGoalOrient = Vector.new()
+		this.pLocalPos = Vector.new()
+		this.pLocalOrient = Vector.new()
+		this.pAdjustOrientation = false
+		this.pSolverBone = ""
+		this.pUseSolverBone = false
+		
+		this.pReachRange = 0.0
+		this.pReachBone = ""
+		this.pReachCenter = Vector.new()
+	end
+	
+	
+	
+	/** Retrieves the goal position. */
+	public func Vector getGoalPosition()
+		return this.pGoalPos
+	end
+	
+	/** Sets the goal position. */
+	public func void setGoalPosition( Vector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pGoalPos = position
+	end
+		
+	/** Retrieves the goal orientation. */
+	public func Vector getGoalOrientation()
+		return this.pGoalOrient
+	end
+	
+	/** Sets the goal orientation. */
+	public func void setGoalOrientation( Vector orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pGoalOrient = orientation
+	end
+	
+	/** Retrieves the local position. */
+	public func Vector getLocalPosition()
+		return this.pLocalPos
+	end
+	
+	/** Sets the local position. */
+	public func void setLocalPosition( Vector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pLocalPos = position
+	end
+		
+	/** Retrieves the local orientation. */
+	public func Vector getLocalOrientation()
+		return this.pLocalOrient
+	end
+	
+	/** Sets the local orientation. */
+	public func void setLocalOrientation( Vector orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pLocalOrient = orientation
+	end
+	
+	/** Determines if the bone orientation is adjusted. */
+	public func bool getAdjustOrientation()
+		return this.pAdjustOrientation
+	end
+	
+	/** Sets if the bone orientation is adjusted. */
+	public func void setAdjustOrientation( bool adjust )
+		this.pAdjustOrientation = adjust
+	end
+	
+	
+	
+	/** Retrieves the solver bone name. */
+	public func String getSolverBone()
+		return this.pSolverBone
+	end
+	
+	/** Sets the solver bone name. */
+	public func void setSolverBone( String bone )
+		if bone == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pSolverBone = bone
+	end
+	
+	/** Determines if the solver bone is used. */
+	public func bool getUseSolverBone()
+		return this.pUseSolverBone
+	end
+	
+	/** Sets if the solver bone is used. */
+	public func void setUseSolverBone( bool useSolverBone )
+		this.pUseSolverBone = useSolverBone
+	end
+	
+	
+	
+	/** Limit reach in meters. 0 disables reach limit. */
+	public func float getReachRange()
+		return this.pReachRange
+	end
+	
+	/** Set limit reach in meters. 0 disables reach limit. */
+	public func void setReachRange( float range )
+		this.pReachRange = DEMath.max( range, 0.0 )
+	end
+	
+	/** Bone to use as reach origin or an empty string to use a constant position. */
+	public func String getReachBone()
+		return this.pReachBone
+	end
+	
+	/** Set bone to use as reach origin or an empty string to use a constant position. */
+	public func void setReachBone( String bone )
+		if bone == null
+			throw EInvalidParam.new()
+		end
+		this.pReachBone = bone
+	end
+	
+	/** Reach center if no bone is used. */
+	public func Vector getReachCenter()
+		return this.pReachCenter
+	end
+	
+	/** Set reach center if no bone is used. */
+	public func void setReachCenter( Vector center )
+		if center == null
+			throw EInvalidParam.new()
+		end
+		this.pReachCenter = center
+	end
+	
+	
+	
+	/** Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARInverseKinematic rule = ARInverseKinematic.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARInverseKinematicTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setGoalPosition( this.pGoalPos )
+		rule.setGoalOrientation( this.pGoalOrient )
+		rule.setLocalPosition( this.pLocalPos )
+		rule.setLocalOrientation( this.pLocalOrient )
+		rule.setAdjustOrientation( this.pAdjustOrientation )
+		rule.setSolverBone( this.pSolverBone )
+		rule.setUseSolverBone( this.pUseSolverBone )
+		
+		rule.setReachRange( this.pReachRange )
+		rule.setReachBone( this.pReachBone )
+		rule.setReachCenter( this.pReachCenter )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Inverse Kinematic" ) + \
+			" gpos=" + this.pGoalPos + " gorient" + this.pGoalOrient + " lpos=" + this.pLocalPos + \
+			" lorient" + this.pLocalOrient + " adjorient=" + this.pAdjustOrientation + " )" )
+	end
+end

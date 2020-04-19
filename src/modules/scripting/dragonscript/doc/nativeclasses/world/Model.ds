@@ -1,0 +1,98 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable model resources.
+ * 
+ * Model resources provide the meshes to render components with.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Model
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load model from file.
+	 * \details If the model file has been already loaded it is assigned to this object.
+	 *          If the model is not loaded yet the engine loads the model. This call
+	 *          blocks until the model is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded model resource. Once no object instance uses an model
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load model from file asynchronously.
+	 * \details Registers a request in the game engine to load an model. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          model or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the model has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/** \brief Number of LODs. */
+	public func int getLodCount()
+	end
+	
+	/** \brief Number of textures. */
+	public func int getTextureCount()
+	end
+	
+	/**
+	 * \brief Name of texture at index.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func String getTextureNameAt( int texture )
+	end
+	
+	/**
+	 * \brief Number of faces in LOD.
+	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
+	 */
+	public func int getFaceCount( int lod )
+	end
+	
+	/**
+	 * \brief Number of vertices in LOD.
+	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
+	 */
+	public func int getVertexCount( int lod )
+	end
+	
+	
+	
+	/**
+	 * \brief Model is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Model and both point to the same engine
+	 *          model resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

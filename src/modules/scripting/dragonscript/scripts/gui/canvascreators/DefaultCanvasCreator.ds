@@ -1,0 +1,59 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default canvas creator creating empty canvas.
+ */
+class DefaultCanvasCreator implements CanvasCreator
+	/** \brief Create canvas creator. */
+	public func new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new( DefaultCanvasCreator creator )
+	end
+	
+	
+	
+	/** \brief Set parameter. */
+	public func void setParameter( String name, Object value )
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return DefaultCanvasCreator.new( this )
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas( Point size )
+		return null
+	end
+end

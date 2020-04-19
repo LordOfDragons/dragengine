@@ -1,0 +1,140 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libpng-1.6.29'
+
+libLinkVersion = '16'
+libLinkName = 'png16'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
+	staticFileName = 'lib/lib{}.a'.format( libLinkName )
+else:
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
+	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+
+# check if system libpng is present
+hasSystemPNG = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_libpng' ] != TernaryVariableNo:
+	hasSystemPNG = conf.CheckLibWithHeader( libLinkName, 'png.h', 'c++', 'png_access_version_number();' )
+conf.Finish()
+
+if not hasSystemPNG and envLibrary[ 'with_system_libpng' ] == TernaryVariableYes:
+	Exit( 'Requested to use system libpng but no usable libpng found.' )
+
+libs = [ libLinkName ]
+libs.extend( parent_targets[ 'lib_zlib' ][ 'libs' ] )
+
+parent_report[ 'use system libpng' ] = 'yes' if hasSystemPNG else 'no'
+
+if hasSystemPNG:
+	parent_targets[ 'lib_libpng' ] = {
+		'name' : 'Internal libpng library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libpng
+def libpngBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	script = createScriptHeader( env, deps=[ parent_targets[ 'lib_zlib' ] ] )
+	
+	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	
+	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline.append( '--enable-silent-rules' )
+	"""
+	if buildStaticLinking:
+		cmdline.append( '--enable-shared=no' )
+		cmdline.append( '--enable-static=yes' )
+		cmdline.append( '--with-pic=yes' )
+	else:
+		cmdline.append( '--enable-shared=yes' )
+		cmdline.append( '--enable-static=no' )
+	"""
+	if env['OSWindows']:
+		cmdline.append( '--enable-shared=yes' )  # due to FOX
+	else:
+		cmdline.append( '--enable-shared=no' )
+	cmdline.append( '--enable-static=yes' )
+	cmdline.append( '--with-pic=yes' )
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+	
+	script.append( 'make install-libLTLIBRARIES'
+		+ ' install-pkgincludeHEADERS'
+		+ ' install-nodist_pkgincludeHEADERS'
+		+ ' install-header-links'
+		+ ' install-library-links || exit 1' )
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libpng')
+
+if buildStaticLinking:
+	targets = [ staticFileName ]
+else:
+	targets = [ libFileName ]
+targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ] )
+if envLibrary['OSWindows']:
+	targets.append(libFileName)
+
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(libpngBuild, 'Build libpng' ) )
+
+if parent_targets[ 'lib_zlib' ][ 'depends' ]:
+	envLibrary.Depends( library, parent_targets[ 'lib_zlib' ][ 'depends' ] )
+
+depends = parent_env.Alias( 'lib_libpng', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+cpppath = [ envLibrary.Dir( 'include' ) ]
+cpppath.extend( parent_targets[ 'lib_zlib' ][ 'cpppath' ] )
+
+libpath = [ envLibrary.Dir( 'lib' ) ]
+libpath.extend( parent_targets[ 'lib_zlib' ][ 'libpath' ] )
+
+forceRuntimeLibs = []
+forceRuntimeLibs.extend(parent_targets['lib_zlib']['forceRuntimeLibs'])
+if envLibrary['OSWindows']:
+	forceRuntimeLibs.append(library[-1])
+	library = library[0:-1]
+
+if buildStaticLinking:
+	libs = [ library[ 0 ] ]
+	libs.extend( parent_targets[ 'lib_zlib' ][ 'libs' ] )
+	runtimelibs = []
+else:
+	runtimelibs = [ library[ 0 ] ]
+runtimelibs.extend( parent_targets[ 'lib_zlib' ][ 'runtimelibs' ] )
+
+parent_targets[ 'lib_libpng' ] = {
+	'name' : 'Internal libpng library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'forceRuntimeLibs': forceRuntimeLibs,
+	'depends' : depends }

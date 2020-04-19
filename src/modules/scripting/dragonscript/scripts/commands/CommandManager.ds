@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief Game commands.
+ */
+class CommandManager
+	/** \brief Commands */
+	private var Array pCommands
+	
+	
+	
+	/** \brief Create command manager. */
+	public func new()
+		this.pCommands = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of commands. */
+	public func int getCount()
+		return this.pCommands.getCount()
+	end
+	
+	/** \brief Command at index. */
+	public func Command getAt( int index )
+		return this.pCommands.getAt( index ) cast Command
+	end
+	
+	/** \brief Named command or \em null if absent. */
+	public func Command getNamed( String name )
+		return this.pCommands.find( block Command each
+			return each.getName().equals( name )
+		end ) cast Command
+	end
+	
+	/** \brief Named command is present. */
+	public func bool hasNamed( String name )
+		return this.getNamed( name ) != null
+	end
+	
+	/** \brief Add command. */
+	public func void add( Command command )
+		if not isValidName( command.getName() ) or this.hasNamed( command.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pCommands.add( command )
+	end
+	
+	/** \brief Remove command. */
+	public func void remove( Command command )
+		this.pCommands.remove( command )
+	end
+	
+	/** \brief Removes all commands. */
+	public func void removeAll()
+		this.pCommands.removeAll()
+	end
+	
+	/** \brief Visit commands with a block. */
+	public func void forEach( Block ablock )
+		this.pCommands.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Command name is valid. */
+	public static func bool isValidName( String name )
+		var int i, count = name.getLength()
+		var int character
+		var bool valid
+		
+		for i = 0 to count
+			character = name.getAt( i )
+			valid = false
+			valid = valid or (character >= 'A' and character <= 'Z')
+			valid = valid or (character >= 'a' and character <= 'z')
+			valid = valid or character == '_'
+			if i > 0
+				valid = valid or (character >= '0' and character <= '9')
+			end
+			if not valid
+				return false
+			end
+		end
+		
+		return true
+	end
+end

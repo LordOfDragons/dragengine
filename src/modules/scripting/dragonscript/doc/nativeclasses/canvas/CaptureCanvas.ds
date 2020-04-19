@@ -1,0 +1,97 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Capture canvas.
+ * 
+ * Capture canvas allows to capture the rendering result of a canvas view into an
+ * deImage resource. Capturing is done by the graphic module during the next frame
+ * rendering. During the next GraphicSystem.renderWindows() call or at the end
+ * of the current GraphicSystem.renderWindows() call the result is stored back
+ * into the capture canvas. Whichever is the case depends on the rendering
+ * method of the graphic module. You know when the result is ready \em capture is
+ * set to \em false. The image resource is created by the caller and allows to
+ * request the result in a specific size and format. To do a successful capturing
+ * of a render view you have to do the following:
+ * - set image to a valid deImage object.
+ * - set \em capture to \em true.
+ * - during the next one or two GraphicSystem.renderWindows() calls check if
+ *   \em capture is \em false.
+ * You can capture the canvas view of a render window or any other canvas view
+ * similar to a deCanvasCanvas.
+ */
+fixed class CaptureCanvas
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create capture canvas. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Canvas view to capture. */
+	public func CanvasView getCanvasView()
+	end
+	
+	/**
+	 * \brief Set canvas view to capture.
+	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
+	 */
+	public func void setCanvasView( CanvasView canvasView )
+	end
+	
+	/** \brief Image to capture canvas view into. */
+	public func Image getImage()
+	end
+	
+	/**
+	 * \brief Set image to capture canvas view into.
+	 * \details Creates a new image with the requested parameters.
+	 * \throws EInvalidParam \em width is less than 1.
+	 * \throws EInvalidParam \em height is less than 1.
+	 * \throws EInvalidParam \em componentCount is not 1, 2, 3 or 4.
+	 * \throws EInvalidParam \em bitCount is not 8 or 24.
+	 */
+	public func void setImage( int width, int height, int componentCount, int bitCount )
+	end
+	
+	/** \brief Drop image if set. */
+	public func void dropImage()
+	end
+	
+	/** \brief Capture in progress. */
+	public func bool getCapture()
+	end
+	
+	/** \brief Set if capture is in progress. */
+	public func void setCapture( bool capture )
+	end
+	
+	
+	
+	/**
+	 * \brief Capture canvas is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type capture canvas and components are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

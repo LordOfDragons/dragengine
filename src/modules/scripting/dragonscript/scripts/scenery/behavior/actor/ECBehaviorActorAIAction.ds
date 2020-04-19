@@ -1,0 +1,470 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding AI and Action support to actors.
+ * 
+ * Allows instance of BaseActorAction and BaseActorAI to be assigned to actor. During thinking
+ * first the AI then the Action is called.
+ * 
+ * Actions allow actors to perform a specific, well defined and enclosed action like interacting
+ * with an object. Actions are suitable to be used by player and computer controlled actors
+ * alike. This concept allows using the same actions for both player and computer controlled
+ * actors reducing coding effort, misbehavior and overall ensures that what a player can do
+ * a computer controlled actor can do and vice versa.
+ * 
+ * AIs allow computer controlled actors to act on their own. With player controlled actors the
+ * AI is skipped and the player is the AI. AI provides long running actor actions like guarding
+ * a zone with the possiblity to switch between different actions depending on how the actor
+ * wants to react to events. This separation makes it simple to design AI in coarse grain
+ * placing actual small grained actions into reusable action instances. This separation also
+ * allows actors to easily switch between player and computer controlled because both can reuse
+ * the same action instances.
+ * 
+ * Supports these optional behaviors:
+ * - ECBehaviorConversationActor: Adds conversation commands to control behavior.
+ * 
+ * If conversation actor is used see ECBehaviorActorAIAction.ConvoCondition and
+ * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
+ */
+class ECBehaviorActorAIAction extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Collider AI listener forwarding to Action/AI. */
+		class ColliderAIListener extends ECBehaviorColliderAI.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void collisionResponse( ECBehaviorColliderAI.Instance instance, \
+			Collider collider, CollisionInfo info )
+				if this.pInstance.getAction() != null
+					this.pInstance.getAction().collisionResponse( collider, info )
+				end
+				if this.pInstance.getAI() != null
+					this.pInstance.getAI().collision( collider, info )
+				end
+			end
+			
+			public func bool canHitCollider( ECBehaviorColliderAI.Instance instance, \
+			Collider collider, Collider hitCollider )
+				return this.pInstance.getAction() != null \
+					and this.pInstance.getAction().canHitCollider( collider, hitCollider )
+			end
+			
+			public func void colliderChanged( ECBehaviorColliderAI.Instance instance, Collider collider )
+				if this.pInstance.getAction() != null
+					this.pInstance.getAction().colliderChanged( collider )
+				end
+			end
+		end
+		
+		/** \brief Conversation actor listener forwarding to Action/AI. */
+		class ConvoActorListener extends ECBehaviorConversationActor.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func bool wait( ECBehaviorConversationActor.Instance instance )
+				if this.pInstance.getAction() != null
+					return this.pInstance.getAction().conversationWait()
+					
+				else
+					return false
+				end
+			end
+			
+			public func void enterConversation( ECBehaviorConversationActor.Instance instance )
+				if this.pInstance.getAI() != null
+					this.pInstance.getAI().enterConversation()
+				end
+			end
+			
+			public func void leaveConversation( ECBehaviorConversationActor.Instance instance )
+				if this.pInstance.getAI() != null
+					this.pInstance.getAI().leaveConversation()
+				end
+			end
+		end
+		
+		/** \brief Forward player takes controll to Action/AI. */
+		class PlayerTakeControlListener extends ECBehaviorPlayerControllable.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void playerTakesControl( ECBehaviorPlayerControllable.Instance instance )
+				if this.pInstance.getAction() != null
+					this.pInstance.getAction().playerTakesControl()
+				end
+				if this.pInstance.getAI() != null
+					this.pInstance.getAI().playerTakesControl()
+				end
+			end
+			
+			public func void playerReleasesControl( ECBehaviorPlayerControllable.Instance instance )
+				if this.pInstance.getAction() != null
+					this.pInstance.getAction().playerReleasesControl()
+				end
+				if this.pInstance.getAI() != null
+					this.pInstance.getAI().playerReleasesControl()
+				end
+			end
+		end
+		
+		
+		
+		private var ECBehaviorActorAIAction pECBehavior
+		private var ECBehaviorColliderAI.Instance pColliderAI
+		private var ECBehaviorConversationActor.Instance pConversationActor
+		private var ECBehaviorPlayerControllable.Instance pPlayerControllable
+		
+		private var BaseActorAction pAction
+		private var BaseActorAI pAI
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorActorAIAction ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.setRequiresEnterFrame( true )
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.setAIAndDispose( null )
+			this.setActionAndDispose( null )
+			
+			this.pConversationActor = null
+			this.pPlayerControllable = null
+			this.pColliderAI = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			
+			if this.pECBehavior.getColliderAI() != null
+				this.pColliderAI = this.pECBehavior.getColliderAI().instance( element )
+			end
+			if this.pECBehavior.getConversationActor() != null
+				this.pConversationActor = this.pECBehavior.getConversationActor().instance( element )
+			end
+			if this.pECBehavior.getPlayerControllable() != null
+				this.pPlayerControllable = this.pECBehavior.getPlayerControllable().instance( element )
+			end
+			
+			if this.pColliderAI != null
+				this.pColliderAI.addListener( ColliderAIListener.new( this ) )
+			end
+			if this.pConversationActor != null
+				this.pConversationActor.addListener( ConvoActorListener.new( this ) )
+			end
+			if this.pPlayerControllable != null
+				this.pPlayerControllable.addListener( PlayerTakeControlListener.new( this ) )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorActorAIAction getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Conversation actor if present. */
+		public func ECBehaviorConversationActor.Instance getConversationActor()
+			return this.pConversationActor
+		end
+		
+		/** \brief Player controllable actor if present. */
+		public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+			return this.pPlayerControllable
+		end
+		
+		
+		
+		/** \brief Active action or \em null. */
+		public func BaseActorAction getAction()
+			return this.pAction
+		end
+		
+		/**
+		 * \brief Set active action or \em null.
+		 * 
+		 * Does not call dispose() on old action if present.
+		 */
+		public func void setAction( BaseActorAction action )
+			if action == this.pAction
+				return
+			end
+			
+			if this.pAction != null
+				this.pAction.deactivate()
+			end
+			
+			this.pAction = action
+			
+			if action != null
+				action.activate( this.getElement() )
+			end
+		end
+		
+		/**
+		 * \brief Set active action or \em null.
+		 * 
+		 * Calls dispose() on old action if present.
+		 */
+		public func void setActionAndDispose( BaseActorAction action )
+			var BaseActorAction disposeAction = this.pAction
+			this.setAction( null )
+			if disposeAction != null
+				disposeAction.dispose()
+			end
+		end
+		
+		
+		
+		/** \brief Active AI or \em null. */
+		public func BaseActorAI getAI()
+			return this.pAI
+		end
+		
+		/**
+		 * \brief Set active AI or \em null.
+		 * 
+		 * Does not call dispose() on old AI if present.
+		 */
+		public func void setAI( BaseActorAI ai )
+			if ai == this.pAI
+				return
+			end
+			
+			if this.pAI != null
+				this.pAI.deactivate()
+			end
+			
+			this.pAI = ai
+			
+			if ai != null
+				ai.activate( this.getElement() )
+			end
+		end
+		
+		/**
+		 * \brief Set active AI or \em null.
+		 * 
+		 * Calls dispose() on old AI if present.
+		 */
+		public func void setAIAndDispose( BaseActorAI ai )
+			var BaseActorAI disposeAI = this.pAI
+			this.setAI( null )
+			if disposeAI != null
+				disposeAI.dispose()
+			end
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if this.pAI != null
+				this.pAI.enterFrame()
+			end
+			if this.pAction != null
+				this.pAction.enterFrame()
+			end
+		end
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			if this.pAI != null
+				this.pAI.think( elapsed )
+			end
+			if this.pAction != null
+				this.pAction.think( elapsed )
+			end
+		end
+		
+		/** \brief Post thinking after physics processing is finished. */
+		public func void postThink( float elapsed )
+			if this.pAction != null
+				this.pAction.postThink( elapsed )
+			end
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
+			this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			env.writeObjectOrNull( writer, this.pAI )
+			env.writeObjectOrNull( writer, this.pAction )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorColliderAI pColliderAI
+	private var ECBehaviorConversationActor pConversationActor
+	private var ECBehaviorPlayerControllable pPlayerControllable
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em colliderAI, \em conversationActor,
+	 * \em playerControllable.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable ) \
+	this( eclass, colliderAI, conversationActor, playerControllable, "aiAction." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable, \
+	String prefix ) super( eclass )
+		this.pColliderAI = colliderAI
+		this.pConversationActor = conversationActor
+		this.pPlayerControllable = playerControllable
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pColliderAI = null
+		this.pConversationActor = null
+		this.pPlayerControllable = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider AI behavior or null. */
+	public func ECBehaviorColliderAI getColliderAI()
+		return this.pColliderAI
+	end
+	
+	/** \brief Set collider AI behavior or null. */
+	public func void setColliderAI( ECBehaviorColliderAI colliderAI )
+		this.pColliderAI = colliderAI
+	end
+	
+	/** \brief Conversation actor behavior or null. */
+	public func ECBehaviorConversationActor getConversationActor()
+		return this.pConversationActor
+	end
+	
+	/**
+	 * \brief Set conversation actor behavior or null.
+	 * 
+	 * If set conversation conditions and commands are added.
+	 */
+	public func void setConversationActor( ECBehaviorConversationActor conversationActor )
+		this.pConversationActor = conversationActor
+	end
+	
+	/** \brief Player controllable behavior or null. */
+	public func ECBehaviorPlayerControllable getPlayerControllable()
+		return this.pPlayerControllable
+	end
+	
+	/** \brief Set player controllable behavior or null. */
+	public func void setPlayerControllable( ECBehaviorPlayerControllable playerControllable )
+		this.pPlayerControllable = playerControllable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorActorAIAction.
+	 */
+	static public func ECBehaviorActorAIAction getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorActorAIAction
+		end ) cast ECBehaviorActorAIAction
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorAIAction.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

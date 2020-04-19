@@ -1,0 +1,288 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition
+
+pin Dragengine.Gui.Designers
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Styled text definition style.
+ *
+ * Defines a style for nodes in a styled text definition. The left
+ * and right margins are relative to the left and right page margins
+ * of the parent styled text definition object. The top margin is
+ * relative to the previous node lower position augmented by the
+ * previous node bottom margin. Hence the starting position of a
+ * node is the lower boundary of the previous node plus a gap equal
+ * to the sum of the previous nodes style bottom margin and this
+ * styles top margin.
+ */
+class STDStyle
+	/** \brief Text alignment. */
+	public enum Align
+		/** \brief Left aligned. */
+		left
+		
+		/** \brief Right aligned. */
+		right
+		
+		/** \brief Center aligned. */
+		center
+		
+		/** \brief Block aligned. */
+		filled
+	end
+	
+	
+	
+	private var String pName
+	private var Font pFont
+	private var Align pAlignment
+	private var Color pTextColor
+	private var Color pBackgroundColor
+	private var RectArea pMargins
+	private var int pFirstLineIndent
+	private var int pLineSpacing
+	private var int pCharacterSpacing
+	
+	
+	
+	/** \brief Create style. */
+	public func new( String name )
+		this.pName = name
+		this.pAlignment = Align.left
+		this.pTextColor = Color.black
+		this.pMargins = RectArea.new()
+		this.pFirstLineIndent = 0
+		this.pLineSpacing = 0
+		this.pCharacterSpacing = 0
+	end
+	
+	/** \brief Create copy of style. */
+	public func new( STDStyle style ) this( style.pName, style )
+	end
+	
+	/** \brief Create copy of style with different name. */
+	public func new( String name, STDStyle style )
+		this.pName = name
+		this.pFont = style.pFont
+		this.pAlignment = style.pAlignment
+		this.pTextColor = style.pTextColor
+		this.pBackgroundColor = style.pBackgroundColor
+		this.pMargins = RectArea.new( style.pMargins )
+		this.pFirstLineIndent = style.pFirstLineIndent
+		this.pLineSpacing = style.pLineSpacing
+		this.pCharacterSpacing = style.pCharacterSpacing
+	end
+	
+	/**
+	 * \brief Create style using parameters from widget designer state design.
+	 * 
+	 * Allows to derive a style from a designer obtained from a widget.
+	 * 
+	 * Uses the parameters "padding", "font" and "textColor".
+	 * 
+	 * \todo Support canvas designer as background. This way the canvas creator
+	 *       from the design can be used. Right now Color.transparent is used.
+	 */
+	public func new( String name, DefaultWidgetDesigner.StateDesign design )
+		this.pName = name
+		this.pAlignment = Align.left
+		
+		this.pFont = design.getFont()
+		
+		if design.getTextColor() != null
+			this.pTextColor = design.getTextColor()
+			
+		else
+			this.pTextColor = Color.black
+		end
+		
+		this.pBackgroundColor = null
+		
+		var BorderSize padding = design.getPadding()
+		if padding != null
+			this.pMargins = RectArea.new( padding.getLeft(), padding.getTop(), \
+				padding.getRight(), padding.getBottom() )
+			
+		else
+			this.pMargins = RectArea.new()
+		end
+		
+		this.pFirstLineIndent = 0
+		this.pLineSpacing = 0
+		this.pCharacterSpacing = 0
+	end
+	
+	/**
+	 * \brief Create style using parameters from label designer state design.
+	 * 
+	 * Allows to derive a style from a designer obtained from a widget.
+	 * 
+	 * Uses the parameters "padding", "font", "textColor" and "alignment".
+	 * 
+	 * \todo Support canvas designer as background. This way the canvas creator
+	 *       from the design can be used. Right now Color.transparent is used.
+	 */
+	public func new( String name, DefaultLabelDesigner.LabelStateDesign design )
+		this.pName = name
+		
+		this.pFont = design.getFont()
+		
+		if design.getTextColor() != null
+			this.pTextColor = design.getTextColor()
+			
+		else
+			this.pTextColor = Color.black
+		end
+		
+		this.pAlignment = Align.left
+		if design.getAlignment() != null
+			select design.getAlignment().value()
+			case Label.left
+				this.pAlignment = Align.left
+				
+			case Label.right
+				this.pAlignment = Align.right
+				
+			case Label.center
+				this.pAlignment = Align.center
+			end
+		end
+		
+		this.pBackgroundColor = null
+		
+		var BorderSize padding = design.getPadding()
+		if padding != null
+			this.pMargins = RectArea.new( padding.getLeft(), padding.getTop(), \
+				padding.getRight(), padding.getBottom() )
+			
+		else
+			this.pMargins = RectArea.new()
+		end
+		
+		this.pFirstLineIndent = 0
+		this.pLineSpacing = 0
+		this.pCharacterSpacing = 0
+	end
+	
+	
+	
+	/** \brief Name of style. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Font. */
+	public func Font getFont()
+		return this.pFont
+	end
+	
+	/** \brief Set font. */
+	public func void setFont( Font font )
+		if font == null
+			throw EInvalidParam.new()
+		end
+		this.pFont = font
+	end
+	
+	/** \brief Align. */
+	public func Align getAlignment()
+		return this.pAlignment
+	end
+	
+	/** \brief Set alignment. */
+	public func void setAlignment( Align alignment )
+		this.pAlignment = alignment
+	end
+	
+	/** \brief Text color. */
+	public func Color getTextColor()
+		return this.pTextColor
+	end
+	
+	/** \brief Set text color. */
+	public func void setTextColor( Color color )
+		if color == null
+			throw EInvalidParam.new()
+		end
+		this.pTextColor = color
+	end
+	
+	/** \brief Background color. */
+	public func Color getBackgroundColor()
+		return this.pBackgroundColor
+	end
+	
+	/** \brief Set background color. */
+	public func void setBackgroundColor( Color color )
+		if color == null
+			throw EInvalidParam.new()
+		end
+		this.pBackgroundColor = color
+	end
+	
+	/** \brief Margins in pixels. */
+	public func RectArea getMargins()
+		return this.pMargins
+	end
+	
+	/** \brief Set margins in pixels. */
+	public func void setMargins( RectArea margins )
+		if margins == null
+			throw EInvalidParam.new()
+		end
+		this.pMargins = margins
+	end
+	
+	/** \brief Indention of the first line in pixels. */
+	public func int getFirstLineIndent()
+		return this.pFirstLineIndent
+	end
+	
+	/** \brief Set indention of the first line in pixels. */
+	public func void setFirstLineIndent( int indent )
+		this.pFirstLineIndent = indent
+	end
+	
+	/** \brief Spacing between lines in pixels. */
+	public func int getLineSpacing()
+		return this.pLineSpacing
+	end
+	
+	/** \brief Set spacing between lines in pixels. */
+	public func void setLineSpacing( int spacing )
+		this.pLineSpacing = spacing
+	end
+	
+	/** \brief Spacing between characters in pixels. */
+	public func int getCharacterSpacing()
+		return this.pCharacterSpacing
+	end
+	
+	/** \brief Set spacing between characters in pixels. */
+	public func void setCharacterSpacing( int spacing )
+		this.pCharacterSpacing = spacing
+	end
+end

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='top'>
+		<image property='color'>images/spawnpoint.png</image>
+		<image property='emissivity'>images/spawnpoint.png</image>
+		<value property='emissivity.intensity'>0.1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+	<texture name='base'>
+		<color property='color' r='0.5' g='0.5' b='0.5'/>
+		<color property='emissivity' r='0.5' g='0.5' b='0.5'/>
+		<value property='emissivity.intensity'>0.1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+	<texture name='arrow'>
+		<color property='color' r='0' g='0' b='1'/>
+		<color property='emissivity' r='0' g='0' b='1'/>
+		<value property='emissivity.intensity'>0.1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+</skin>

@@ -1,0 +1,57 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * A controller value in a conversation script.
+ */
+class ConversationControllerValue
+	/** Index of the controller. */
+	private var int pController
+	/** Value of the controller. */
+	private var float pValue
+	
+	
+	
+	/** Create a new conversation controller value. */
+	public func new( int controller, float value )
+		this.pController = controller
+		this.pValue = value
+	end
+	
+	
+	
+	/** Retrieves the index of the controller. */
+	public func int getController()
+		return this.pController
+	end
+	
+	/** Retrieves the value of the controller. */
+	public func float getValue()
+		return this.pValue
+	end
+end

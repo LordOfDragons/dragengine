@@ -1,0 +1,126 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Extended math support.
+ * 
+ * Extends Math from Math package from base DragonScript.
+ * 
+ * Overwrites trigonometric methods to operate on degrees instead of radians. To use radians version
+ * use Math directly.
+ * 
+ * Furthermore adds some additional methods useful for game development.
+ * 
+ * This is a native class. This class is for static use only and can not instanciated but subclassed.
+ */
+class DEMath extends Math
+	/** \name Degrees based replacements for methods from Math. */
+	/*@{*/
+	/** \brief Arc cosine of n using degrees. */
+	public static func float acos( float n )
+	end
+	
+	/** \brief Arc sine of n using degrees. */
+	public static func float asin( float n )
+	end
+	
+	/** \brief Arc tangense of n using degrees. */
+	public static func float atan( float n )
+	end
+	
+	/** \brief Tangense of y/x using degrees. */
+	public static func float atan2( float y, float x )
+	end
+	
+	/** \brief Cosine of value x using degrees. */
+	public static func float cos( float x )
+	end
+	
+	/** \brief Hyperbolic cosine of value x using degrees. */
+	public static func float cosh( float x )
+	end
+	
+	/** \brief Sinus using degrees. */
+	public static func float sin( float x )
+	end
+	
+	/** \brief Hyperbolic sinus using degrees. */
+	public static func float sinh( float x )
+	end
+	
+	/** \brief Tangense using degrees. */
+	public static func float tan( float x )
+	end
+	
+	/** \brief Hhyperbolic tangense using degrees. */
+	public static func float tanh( float x )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Helper methods. */
+	/*@{*/
+	/** \brief Convert degrees to radians. */
+	public static func float degToRad( float degrees )
+	end
+	
+	/** \brief Converst radians to degrees. */
+	public static func float radToDeg( float radians )
+	end
+	
+	/** \brief Linear step function clamping normalized x linearly to the range from 0 to 1. */
+	public static func float linearStep( float x, float lower, float upper )
+	end
+	
+	/** \brief Linear step function clamping normalized x linearly to a new range. */
+	public static func float linearStep( float x, float lower, float upper, float mapLower, float mapUpper )
+	end
+	
+	/** \brief GLSL type smooth step into the range from 0 to 1. */
+	public static func float smoothStep( float x, float lower, float upper )
+	end
+	
+	/** \brief GLSL type smooth step into a new rage. */
+	public static func float smoothStep( float x, float lower, float upper, float mapLower, float mapUpper )
+	end
+	
+	/** \brief Normalize value into a range using wrapping around at the limits. */
+	public static func float normalize( float x, float lower, float upper )
+	end
+	
+	/**
+	 * \brief Normalize value into a range starting at 0 using wrapping around at the limits.
+	 * \details Same as normalize(x, 0.0, upper).
+	 */
+	public static func float normalize( float x, float upper )
+	end
+	
+	/** \brief GLSL type mix. */
+	public static func float mix( float a, float b, float blend )
+	end
+	
+	/** \brief Random float between 0 and 1 inclusive. */
+	public static func float random()
+	end
+	
+	/** \brief Random integer from range. */
+	public static func int random( int lower, int upper )
+	end
+	
+	/** \brief Random float from range. */
+	public static func float random( float lower, float upper )
+	end
+	
+	/** \brief Random value in the range from 0 to 1 inclusive is less than a propability threshold. */
+	public static func bool probability( float threshold )
+	end
+	/*@}*/
+end

@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Decorations
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Window decoration interface.
+ * 
+ * Renders a custom border around a Window supporting testing for hit window border areas.
+ */
+interface Decoration
+	/** \brief Area. */
+	enum Area
+		/** \brief No valid area. */
+		nothing
+		
+		/** \brief Close button area. */
+		close
+		
+		/** \brief Maximize button area. */
+		maximize
+		
+		/** \brief Minimize button area. */
+		minimize
+		
+		/** \brief Window menu button area. */
+		menu
+		
+		/** \brief Title area. */
+		title
+		
+		/** \brief Resize left. */
+		resizeLeft
+		
+		/** \brief Resize top. */
+		resizeTop
+		
+		/** \brief Resize right. */
+		resizeRight
+		
+		/** \brief Resize bottom. */
+		resizeBottom
+		
+		/** \brief Resize left-top. */
+		resizeTopLeft
+		
+		/** \brief Resize left-bottom. */
+		resizeBottomLeft
+		
+		/** \brief Resize right-top. */
+		resizeTopRight
+		
+		/** \brief Resize right-bottom. */
+		resizeBottomRight
+	end
+	
+	/** \brief Button. */
+	enum Button
+		/** \brief Close window button. */
+		close
+		
+		/** \brief Maximize window button. */
+		maximize
+		
+		/** \brief Minimize window button. */
+		minimize
+	end
+	
+	
+	
+	/** \brief Window the decoration is assigned to or null if there is none. */
+	func Window getWindow()
+	
+	/** \brief Set window the decoration is assigned to or null if there is none. */
+	func void setWindow( Window window )
+	
+	/** \brief Border size. */
+	func BorderSize getBorderSize()
+	
+	/** \brief Test which part of the decoration is hit if any. */
+	func Area areaHitBy( Point position )
+	
+	/** \brief Canvas to render this border. */
+	func Canvas getCanvas()
+	
+	/** \brief Resize canvas to fit window if window is set. */
+	func void resizeCanvas()
+	
+	/** \brief Window parameters changed that potentially affect the decoration. */
+	func void onWindowParametersChanged()
+	
+	/**
+	 * \brief Set button state.
+	 * \param button One from BUTTON_*
+	 * \param hover Mouse hovers over button.
+	 * \param pressed Button is pressed down.
+	 */
+	func void setButtonState( Button button, bool hover, bool pressed )
+end

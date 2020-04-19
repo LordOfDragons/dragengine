@@ -1,0 +1,29 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Particle emitter instance listener.
+ * 
+ * This is a native class.
+ */
+interface ParticleEmitterInstanceListener
+	/** \name Parameter constants */
+	/*@{*/
+	/** \brief Last particle cast by the emitter died. */
+	public func void lastParticleDied( ParticleEmitterInstance instance )
+	
+	/**
+	 * \brief Determine response for a custom particle collision.
+	 * 
+	 * Update \em collisionInfo with the particle response to use.
+	 */
+	public func void collisionResponse( ParticleEmitterInstance instance, CollisionInfo collisionInfo )
+	/*@}*/
+end

@@ -1,0 +1,159 @@
+/* 
+ * Drag[en]gine WorldSector Editor
+ *
+ * Copyright (C) 2007, Plüss Roland ( roland@rptd.ch )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include "meUScaleObject.h"
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
+#include "../../../world/meObject.h"
+#include "../../../world/meWorldSector.h"
+#include "../../../world/meSelectionObjects.h"
+#include "../../../worldedit.h"
+#include "dragengine/common/exceptions.h"
+
+
+
+// Class meUScaleObject
+////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+meUScaleObject::meUScaleObject( meWorld *world ){
+	if( ! world ) THROW( dueInvalidParam );
+	
+	meSelectionObjects *selection = world->GetSelectionObjects();
+	int count = selection->GetObjectCount();
+	
+	pWorld = world;
+	pObjects = NULL;
+	pObjectCount = 0;
+	
+	try{
+		if( count > 0 ){
+			pObjects = new meUndoDataObject*[ count ];
+			if( ! pObjects ) THROW( dueOutOfMemory );
+			
+			while( pObjectCount < count ){
+				pObjects[ pObjectCount ] = new meUndoDataObject( selection->GetObjectAt( pObjectCount ) );
+				if( ! pObjects[ pObjectCount ] ) THROW( dueOutOfMemory );
+				pObjectCount++;
+			}
+		}
+		
+		SetShortInfo( "Scale Object" );
+		
+	}catch( duException ){
+		pCleanUp();
+		throw;
+	}
+}
+
+meUScaleObject::~meUScaleObject(){
+	pCleanUp();
+}
+
+
+
+// Undo and Redo operations
+/////////////////////////////
+
+void meUScaleObject::UndoAction(){
+	meWorldSector *worldSector, *oldWorldSector;
+	meObject *object;
+	int i;
+	
+	for( i=0; i<pObjectCount; i++ ){
+		object = pObjects[ i ]->GetObject();
+		worldSector = object->GetWorldSector();
+		
+		object->SetPosition( pObjects[ i ]->GetOldPosition() );
+		object->SetSize( pObjects[ i ]->GetOldSize() );
+		
+		if( pObjects[ i ]->GetOldSector() != worldSector->GetCoordinates() ){
+			oldWorldSector = pWorld->GetSectorAt( pObjects[ i ]->GetOldSector() );
+			worldSector->RemoveObject( object, false );
+			oldWorldSector->AddObject( object );
+		}
+	}
+	
+	pWorld->SetChanged( true );
+}
+
+void meUScaleObject::RedoAction(){
+	const decVector &factors = GetFactors();
+	const decVector &center = GetCenter();
+	bool modifyPosition = GetModifyPosition();
+	bool modifySize = GetModifySize();
+	meWorldSector *newWorldSector;
+	decVector position;
+	decPoint3 sector;
+	int i;
+	
+	for( i=0; i<pObjectCount; i++ ){
+		meObject *object = pObjects[ i ]->GetObject();
+		meWorldSector *worldSector = object->GetWorldSector();
+		
+		// modify size if required
+		if( modifySize ){
+			const decVector &size = pObjects[ i ]->GetOldSize();
+			object->SetSize( decVector( size.x * factors.x, size.y * factors.y, size.z * factors.z ) );
+		}
+		
+		// scale position if requested
+		if( modifyPosition ){
+			sector = pObjects[ i ]->GetOldSector();
+			position = pObjects[ i ]->GetOldPosition() - center;
+			position.x = center.x + position.x * factors.x;
+			position.y = center.y + position.y * factors.y;
+			position.z = center.z + position.z * factors.z;
+			pWorld->AdjustPosition( sector, position );
+			
+			object->SetPosition( position );
+			pObjects[ i ]->SetNewSector( sector );
+			if( sector != worldSector->GetCoordinates() ){
+				newWorldSector = pWorld->GetSectorAt( sector );
+				worldSector->RemoveObject( object, false );
+				newWorldSector->AddObject( object );
+			}
+		}
+	}
+	
+	pWorld->SetChanged( true );
+}
+
+void meUScaleObject::ProgressiveRedo(){
+	RedoAction(); // redo is enough in this situation
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void meUScaleObject::pCleanUp(){
+	if( pObjects ){
+		while( pObjectCount > 0 ){
+			delete pObjects[ pObjectCount - 1 ];
+			pObjectCount--;
+		}
+		delete [] pObjects;
+	}
+}

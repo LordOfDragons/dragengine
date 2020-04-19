@@ -1,0 +1,12 @@
+we need the dlls but where to get them reliably from?
+
+under ubuntu they seem to be included in the main package and can be found here:
+
+/usr/lib/gcc/x86_64-w64-mingw32/8.3-posix/libgcc_s_seh-1.dll
+/usr/lib/gcc/x86_64-w64-mingw32/8.3-posix/libstdc++-6.dll
+/usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll
+
+this is for the "posix" threading model. for the "win32" threading model use "8.3-win32"
+
+under gentoo the wiki talks about this path:
+/usr/i686-w64-mingw32/usr/bin/

@@ -1,0 +1,805 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief Generate default bindings.
+ * 
+ * Helper for games running for the first time requiring a useful initial binding
+ * configuration the user can then adjust. The problem with initial binding configuration
+ * is that the user does not tap the keys for bindings but the game has to add some
+ * reasonable bindings for input devices it has little knowledge about. This class
+ * provides a simple way to achieve this goal. It uses the buttonMatchingKeyCode and
+ * buttonMatchingKeyChar methods to find suitable bindings.
+ * 
+ * Upon creating an instance of DefaultBindingHelper the present input devices are
+ * examine for typical candidates. The first found mouse, keyboard and gamepad type
+ * input device is stored. The user can then query the devices for some parameters
+ * for example how many buttons and axes a gamepad has if present. For each device
+ * the user can then add a binding using key code and/or key char. The first key matching
+ * the parameters is added. If required the user can examine the return value to learn
+ * if the binding has been assigned or not. This can be used to try a fallback assignment
+ * or trying a different layout altogether.
+ * 
+ * All changes are recorded in the DefaultBindingHelper instance. Once suitable the user
+ * can apply the changes to the binding manager.
+ */
+class DefaultBindingHelper
+	/** \brief Binding manager. */
+	private var BindingManager pBindingManager
+	
+	/** \brief Command manager. */
+	private var CommandManager pCommandManager
+	
+	/** \brief Axis bindings as array of Binding. */
+	private var Array pAxisBindings
+	
+	/** \brief Button bindings as array of Binding. */
+	private var Array pButtonBindings
+	
+	/** \brief First found mouse input device or \em null. */
+	private var InputDevice pMouse
+	
+	/** \brief First found keyboard input device or \em null. */
+	private var InputDevice pKeyboard
+	
+	/** \brief First found gamepad input device or \em null. */
+	private var InputDevice pGamepad
+	
+	
+	
+	/** \name Constructors */
+	/*@{*/
+	
+	/**
+	 * \brief Create default binding helper using BaseGameApp.
+	 * 
+	 * Stores the first mouse, keyboard and gamepad device found for quick access.
+	 * 
+	 * \param bindingManager Binding manager to update once finished.
+	 * \param commandManager Command manager to use for bindings.
+	 */
+	public func new() this( BaseGameApp.getApp().getBindingManager(), \
+	BaseGameApp.getApp().getCommandManager() )
+	end
+	
+	/**
+	 * \brief Create default binding helper for binding manager.
+	 * 
+	 * Stores the first mouse, keyboard and gamepad device found for quick access.
+	 * 
+	 * \param bindingManager Binding manager to update once finished.
+	 * \param commandManager Command manager to use for bindings.
+	 */
+	public func new( BindingManager bindingManager, CommandManager commandManager )
+		if bindingManager == null or commandManager == null
+			this.pBindingManager = bindingManager
+		end
+		
+		this.pBindingManager = bindingManager
+		this.pCommandManager = commandManager
+		
+		this.pAxisBindings = Array.new()
+		this.pButtonBindings = Array.new()
+		
+		this.findFirstDevices()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name General */
+	/*@{*/
+	
+	/** \brief Binding manager to update once finished. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Command manager to use for bindings. */
+	public func CommandManager getCommandManager()
+		return this.pCommandManager
+	end
+	
+	
+	
+	/** \brief Remove all bindings. */
+	public func void reset()
+		this.pButtonBindings.removeAll()
+		this.pAxisBindings.removeAll()
+	end
+	
+	/**
+	 * \brief Update binding manager with found bindings.
+	 * 
+	 * \param clear Removes first all bindings from binding manager. Set to false to add and
+	 *              overwrite found bindings leaving other bindings intact.
+	 */
+	public func void updateBindingManager( bool clear )
+		if clear
+			this.pBindingManager.removeAllAxisBindings()
+			this.pBindingManager.removeAllButtonBindings()
+			
+		else
+			this.pAxisBindings.forEach( block Binding each
+				this.pBindingManager.removeBindingsWithCommand( each.getCommand() )
+			end )
+			this.pButtonBindings.forEach( block Binding each
+				this.pBindingManager.removeBindingsWithCommand( each.getCommand() )
+			end )
+		end
+		
+		this.pAxisBindings.forEach( block Binding each
+			this.pBindingManager.addAxisBinding( each )
+		end )
+		this.pButtonBindings.forEach( block Binding each
+			this.pBindingManager.addButtonBinding( each )
+		end )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Mouse Input Device */
+	/*@{*/
+	
+	/** \brief Mouse device is present. */
+	public func bool hasMouse()
+		return this.pMouse != null
+	end
+	
+	/** \brief First mouse device or null. */
+	public func InputDevice getMouse()
+		return this.pMouse
+	end
+	
+	/** \brief Remove all mouse bindings. */
+	public func void mouseClear()
+		if this.pMouse != null
+			this.removeAllDeviceBindings( this.pMouse )
+		end
+	end
+	
+	/**
+	 * \brief Bind command to mouse movement.
+	 * 
+	 * \param moveX Name of command to bind to x movement or null.
+	 * \param moveY Name of command to bind to y movement or null.
+	 * \returns true if mouse is present and all commands have been bound.
+	 */
+	public func bool mouseBindMove( String moveX, String moveY )
+		return this.mouseBindMove( moveX, false, moveY, false )
+	end
+	
+	public func bool mouseBindMove( String moveX, bool inverseAxisX, String moveY, bool inverseAxisY )
+		if this.pMouse == null or ( moveX == null and moveY == null )
+			return false
+		end
+		
+		var int i, count = this.pMouse.getAxisCount()
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = this.pMouse.getAxisAt( i )
+			if axis.getType() != InputDeviceAxisType.mouse
+				continue
+			end
+			
+			if number == 0
+				if moveX != null
+					var Command command = this.pCommandManager.getNamed( moveX )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
+							axis.getID(), command, inverseAxisX ) )
+						moveX = null  // mark as found
+					end
+				end
+				
+			elif number == 1
+				if moveY != null
+					var Command command = this.pCommandManager.getNamed( moveY )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
+							axis.getID(), command, inverseAxisY ) )
+						moveY = null  // mark as found
+					end
+				end
+				break
+			end
+			
+			number++
+		end
+		
+		return moveX == null and moveY == null
+	end
+	
+	/**
+	 * \brief Bind command to mouse wheel.
+	 * 
+	 * \param wheel Number of wheel starting with 0 for the first wheel.
+	 * \param command Name of command to bind to mouse wheel or null.
+	 * \returns true if mouse is present and command has been bound.
+	 */
+	public func bool mouseBindWheel( int wheel, String command )
+		return this.mouseBindWheel( wheel, command, command )
+	end
+	
+	/**
+	 * \brief Bind commands to mouse wheel.
+	 * 
+	 * \param wheel Number of wheel starting with 0 for the first wheel.
+	 * \param up Name of command to bind to up mouse wheel movement or null.
+	 * \param down Name of command to bind to down mouse wheel movement or null.
+	 * \returns true if mouse is present and all commands have been bound.
+	 */
+	public func bool mouseBindWheel( int wheel, String up, String down )
+		if this.pMouse == null or wheel < 0 or ( up == null and down == null )
+			return false
+		end
+		
+		var int i, count = this.pMouse.getAxisCount()
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = this.pMouse.getAxisAt( i )
+			if axis.getType() != InputDeviceAxisType.mouseWheel
+				continue
+			end
+			
+			if number == wheel
+				if up != null
+					var Command command = this.pCommandManager.getNamed( up )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
+							axis.getID(), command, false ) )
+						
+						if up.equals( down )
+							down = null // both command equal so bind as single binding
+						end
+						
+						up = null  // mark as found
+					end
+				end
+				
+				if down != null
+					var Command command = this.pCommandManager.getNamed( down )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
+							axis.getID(), command, true ) )
+						down = null  // mark as found
+					end
+				end
+				
+				break
+			end
+			
+			number++
+		end
+		
+		return up == null and down == null
+	end
+	
+	/**
+	 * \brief Bind command to left, right and middle mouse buttons.
+	 * 
+	 * \param left Name of command to bind to left mouse button or null.
+	 * \param middle Name of command to bind to middle mouse button or null.
+	 * \param right Name of command to bind to right mouse button or null.
+	 * \returns true if mouse is present and all commands have been bound.
+	 */
+	public func bool mouseBindLMR( String left, String middle, String right )
+		if this.pMouse == null or ( left == null and right == null and middle == null )
+			return false
+		end
+		
+		var bool success = true
+		
+		if left != null
+			success &= this.bindButton( this.pMouse, 0, left )
+		end
+		if right != null
+			success &= this.bindButton( this.pMouse, 1, right )
+		end
+		if middle != null
+			success &= this.bindButton( this.pMouse, 2, middle )
+		end
+		
+		return success
+	end
+	
+	/**
+	 * \brief Bind command to auxiliary mouse button.
+	 * 
+	 * These are buttons 4 upwards if present. Typically 4 is "browse forward" and 5 is
+	 * "browse backward" but gaming mice can have any number of additional buttons with
+	 * different usage. Auxiliary buttons are usually not present and tend to be
+	 * unsuitable for an initial binding configuration.
+	 * 
+	 * \param number Number of auxiliary button starting with 0 for the first.
+	 * \param command Name of command to bind to mouse button or null.
+	 * \returns true if mouse is present and command has been bound.
+	 */
+	public func bool mouseBindAux( int number, String command )
+		if this.pMouse == null or command == null
+			return false
+		end
+		return this.bindButton( this.pMouse, 3 + number, command )
+	end
+	
+	/*@}*/
+	
+	
+	
+	/** \name Keyboard Input Device */
+	/*@{*/
+	
+	/** \brief Keyboard device is present. */
+	public func bool hasKeyboard()
+		return this.pKeyboard != null
+	end
+	
+	/** \brief First keyboard device or null. */
+	public func InputDevice getKeyboard()
+		return this.pKeyboard
+	end
+	
+	/** \brief Remove all keyboard bindings. */
+	public func void keyboardClear()
+		if this.pKeyboard != null
+			this.removeAllDeviceBindings( this.pKeyboard )
+		end
+	end
+	
+	/**
+	 * \brief Bind command to keyboard key matching key code.
+	 * 
+	 * Tries to find key matching key code. If found binding is added.
+	 * 
+	 * \param keyCode Key code to find.
+	 * \param command Name of command to bind.
+	 * \returns true if matching button is present and bound to command.
+	 */
+	public func bool keyboardBindKeyCode( int keyCode, String command )
+		if this.pKeyboard == null or command == null or keyCode <= 0
+			return false
+		end
+		
+		var int index = this.pKeyboard.buttonMatchingKeyCode( keyCode )
+		if index == -1
+			return false
+		end
+		
+		var Command cmd = this.pCommandManager.getNamed( command )
+		if cmd == null
+			return false
+		end
+		
+		this.addButtonBinding( Binding.new( this.pKeyboard.getID(), \
+			this.pKeyboard.getButtonAt( index ).getID(), cmd, false ) )
+		return true
+	end
+	
+	/**
+	 * \brief Bind command to keyboard key matching character.
+	 * 
+	 * Tries to find key matching character. If found binding is added.
+	 * 
+	 * \param character Character to find.
+	 * \param command Name of command to bind.
+	 * \returns true if matching key is present and bound to command.
+	 */
+	public func bool keyboardBindCharacter( int character, String command )
+		if this.pKeyboard == null or command == null or character <= 0
+			return false
+		end
+		
+		var int index = this.pKeyboard.buttonMatchingKeyChar( character )
+		if index == -1
+			return false
+		end
+		
+		var Command cmd = this.pCommandManager.getNamed( command )
+		if cmd == null
+			return false
+		end
+		
+		this.addButtonBinding( Binding.new( this.pKeyboard.getID(), \
+			this.pKeyboard.getButtonAt( index ).getID(), cmd, false ) )
+		return true
+	end
+	
+	/*@}*/
+	
+	
+	
+	/** \name Gamepad Binding */
+	/*@{*/
+	
+	/** \brief Gamepad device is present. */
+	public func bool hasGamepad()
+		return this.pGamepad != null
+	end
+	
+	/** \brief First gamepad device or null. */
+	public func InputDevice getGamepad()
+		return this.pGamepad
+	end
+	
+	/** \brief Remove all gamepad bindings. */
+	public func void gamepadClear()
+		if this.pGamepad != null
+			this.removeAllDeviceBindings( this.pGamepad )
+		end
+	end
+	
+	/**
+	 * \brief Bind command to gamepad stick.
+	 * 
+	 * \param stick Number of stick starting with 0 for the first.
+	 * \param horizontal Name of command to bind to horizontal movement or null.
+	 * \param vertical Name of command to bind to vertical movement or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindStick( int stick, String horizontal, String vertical )
+		return this.gamepadBindStick( stick, horizontal, horizontal, vertical, vertical )
+	end
+	
+	/**
+	 * \brief Bind command to gamepad stick.
+	 * 
+	 * \param stick Number of stick starting with 0 for the first.
+	 * \param left Name of command to bind to left movement or null.
+	 * \param right Name of command to bind to right movement or null.
+	 * \param up Name of command to bind to up movement or null.
+	 * \param down Name of command to bind to down movement or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindStick( int stick, String left, String right, String up, String down )
+		if stick < 0
+			throw EInvalidParam.new()
+		end
+		
+		if this.pGamepad == null \
+		or ( left == null and right == null and up == null and down == null )
+			return false
+		end
+		
+		var int i, count = this.pGamepad.getAxisCount()
+		var int axisHorz = stick * 2
+		var int axisVert = axisHorz + 1
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = this.pGamepad.getAxisAt( i )
+			if axis.getType() != InputDeviceAxisType.stick
+				continue
+			end
+			
+			if number == axisHorz
+				if right != null
+					var Command command = this.pCommandManager.getNamed( right )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, false ) )
+						if right.equals( left )
+							left = null
+						end
+						right = null  // mark as found
+					end
+				end
+				if left != null
+					var Command command = this.pCommandManager.getNamed( left )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, true ) )
+						left = null  // mark as found
+					end
+				end
+				
+			elif number == axisVert
+				if up != null
+					var Command command = this.pCommandManager.getNamed( up )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, false ) )
+						if up.equals( down )
+							down = null
+						end
+						up = null  // mark as found
+					end
+				end
+				if down != null
+					var Command command = this.pCommandManager.getNamed( down )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, true ) )
+						down = null  // mark as found
+					end
+				end
+				break
+			end
+			
+			number++
+		end
+		
+		return left == null and right == null and up == null and down == null
+	end
+	
+	/**
+	 * \brief Bind command to gamepad hat or directional pad.
+	 * 
+	 * \param hat Number of hat starting with 0 for the first.
+	 * \param horizontal Name of command to bind to left/right press or null.
+	 * \param vertical Name of command to bind to up/down press or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindHat( int hat, String horizontal, String vertical )
+		return this.gamepadBindHat( hat, horizontal, horizontal, vertical, vertical )
+	end
+	
+	/**
+	 * \brief Bind command to gamepad hat or directional pad.
+	 * 
+	 * \param hat Number of hat starting with 0 for the first.
+	 * \param left Name of command to bind to left press or null.
+	 * \param right Name of command to bind to right press or null.
+	 * \param up Name of command to bind to up press or null.
+	 * \param down Name of command to bind to down press or null.
+	 * \returns true if gamepad is present and all commands have been bound.
+	 */
+	public func bool gamepadBindHat( int hat, String left, String right, String up, String down )
+		if hat < 0
+			throw EInvalidParam.new()
+		end
+		
+		if this.pGamepad == null \
+		or ( left == null and right == null and up == null and down == null )
+			return false
+		end
+		
+		var int i, count = this.pGamepad.getAxisCount()
+		var int axisHorz = hat * 2
+		var int axisVert = axisHorz + 1
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = this.pGamepad.getAxisAt( i )
+			if axis.getType() != InputDeviceAxisType.hat
+				continue
+			end
+			
+			if number == axisHorz
+				if right != null
+					var Command command = this.pCommandManager.getNamed( right )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, false ) )
+						if right.equals( left )
+							left = null
+						end
+						right = null  // mark as found
+					end
+				end
+				if left != null
+					var Command command = this.pCommandManager.getNamed( left )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, true ) )
+						left = null  // mark as found
+					end
+				end
+				
+			elif number == axisVert
+				if up != null
+					var Command command = this.pCommandManager.getNamed( up )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, false ) )
+						if up.equals( down )
+							down = null
+						end
+						up = null  // mark as found
+					end
+				end
+				if down != null
+					var Command command = this.pCommandManager.getNamed( down )
+					if command != null
+						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
+							axis.getID(), command, true ) )
+						down = null  // mark as found
+					end
+				end
+				break
+			end
+			
+			number++
+		end
+		
+		return left == null and right == null and up == null and down == null
+	end
+	
+	/**
+	 * \brief Bind command to gamepad butrton.
+	 * 
+	 * \param button Number of button starting with 0 for the first.
+	 * \param command Name of command to bind to button or null.
+	 * \returns true if gamepad is present and command has been bound.
+	 */
+	public func bool gamepadBindButton( int button, String command )
+		if button < 0
+			throw EInvalidParam.new()
+		end
+		
+		if this.pGamepad == null or command == null
+			return false
+		end
+		
+		return this.bindButton( this.pGamepad, button, command )
+	end
+	
+	/*@}*/
+	
+	
+	
+	/** \name Manual Binding */
+	/*@{*/
+	
+	/**
+	 * \brief Bind command to axis on device.
+	 * 
+	 * \param device Device containing axis.
+	 * \param axis Index of axis to bind.
+	 * \param command Name of command to bind.
+	 * \returns true if axis is present on device and bound to command.
+	 */
+	public func bool bindAxis( InputDevice device, int axis, String command )
+		if axis >= device.getAxisCount()
+			return false
+		end
+		
+		var Command cmd = this.pCommandManager.getNamed( command )
+		if cmd == null
+			return false
+		end
+		
+		this.addAxisBinding( Binding.new( device.getID(), \
+			device.getAxisAt( axis ).getID(), cmd, false ) )
+		return true
+	end
+	
+	/**
+	 * \brief Bind command to button on device.
+	 * 
+	 * \param device Device containing axis.
+	 * \param button Index of button to bind.
+	 * \param command Name of command to bind.
+	 * \returns true if button is present on device and bound to command.
+	 */
+	public func bool bindButton( InputDevice device, int button , String command )
+		if button >= device.getButtonCount()
+			return false
+		end
+		
+		var Command cmd = this.pCommandManager.getNamed( command )
+		if cmd == null
+			return false
+		end
+		
+		this.addButtonBinding( Binding.new( device.getID(), \
+			device.getButtonAt( button ).getID(), cmd, false ) )
+		return true
+	end
+	
+	/** \brief Remove all bindings for device. */
+	public func void removeAllDeviceBindings( InputDevice device )
+		var String id = device.getID()
+		
+		this.pAxisBindings.removeIf( block Binding each
+			return each.getDeviceID().equals( id )
+		end )
+		this.pButtonBindings.removeIf( block Binding each
+			return each.getDeviceID().equals( id )
+		end )
+	end
+	
+	/*@}*/
+	
+	
+	
+	/** \name For Subclasses */
+	/*@{*/
+	
+	/** \brief Add axis binding replacing bindings with same command. */
+	protected func void addAxisBinding( Binding binding )
+		this.removeAxisBinding( binding.getDeviceID(), binding.getSourceID(), \
+			binding.getInverseAxis(), binding.getCommand() )
+		this.pAxisBindings.add( binding )
+	end
+	
+	/** \brief Add button binding replacing bindings with same command. */
+	protected func void addButtonBinding( Binding binding )
+		this.removeButtonBinding( binding.getDeviceID(), binding.getSourceID(), \
+			binding.getCommand() )
+		this.pButtonBindings.add( binding )
+	end
+	
+	/** \brief Remove axis binding matching device and source but not command. */
+	protected func void removeAxisBinding( String deviceID, String sourceID, \
+	bool inverseAxis, Command command )
+		this.pAxisBindings.removeIf( block Binding each
+			return each.getDeviceID().equals( deviceID ) \
+				and each.getSourceID().equals( sourceID ) \
+				and each.getInverseAxis() == inverseAxis \
+				and each.getCommand() != command
+		end )
+	end
+	
+	/** \brief Remove button binding matching device and source but not command. */
+	protected func void removeButtonBinding( String deviceID, String sourceID, Command command )
+		this.pButtonBindings.removeIf( block Binding each
+			return each.getDeviceID().equals( deviceID ) \
+				and each.getSourceID().equals( sourceID ) \
+				and each.getCommand() != command
+		end )
+	end
+	
+	/*@}*/
+	
+	
+	
+	/** \name Private */
+	/*@{*/
+	
+	/** \brief Find first mouse, keyboard and gamepad input device. */
+	protected func void findFirstDevices()
+		this.pMouse = null
+		this.pKeyboard = null
+		this.pGamepad = null
+		
+		this.pBindingManager.forEachDevice( block InputDevice each
+			select each.getType()
+			case InputDeviceType.mouse
+				if this.pMouse == null
+					this.pMouse = each
+				end
+				
+			case InputDeviceType.keyboard
+				if this.pKeyboard == null
+					this.pKeyboard = each
+				end
+				
+			case InputDeviceType.gamepad, InputDeviceType.joystick
+				if this.pGamepad == null
+					this.pGamepad = each
+				end
+			end
+		end )
+	end
+	
+	/*@}*/
+end

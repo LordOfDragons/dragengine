@@ -1,0 +1,394 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Component.
+ * 
+ * This is a native class.
+ */
+class Component
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create component. */
+	public func new()
+	end
+	
+	/** \brief Create component. */
+	public func new( Model model, Skin skin )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Scaling. */
+	public func Vector getScaling()
+	end
+	
+	/** \brief Set scaling. */
+	public func void setScaling( Vector scaling )
+	end
+	
+	/** \brief Matrix. */
+	public func DMatrix getMatrix()
+	end
+	
+	/** \brief Inverse matrix. */
+	public func DMatrix getInverseMatrix()
+	end
+	
+	/** \brief Component is visible. */
+	public func bool getVisible()
+	end
+	
+	/** \brief Set if component is visible. */
+	public func void setVisible( bool visible )
+	end
+	
+	
+	
+	/** \brief Model or \em null if not set. */
+	public func Model getModel()
+	end
+	
+	/**
+	 * \brief Set model or \em null if not set.
+	 * \details Textures are reset. To keep textures use setModelKeepTextures.
+	 */
+	public func void setModel( Model model )
+	end
+	
+	/**
+	 * \brief Set model or \em null if not set while keeping textures.
+	 * 
+	 * Restores current state of textures after switching model if possible.
+	 * Use this method instead of setModel if you set textures on the component
+	 * and the new model is similar enough to match. Textures not existing anymore
+	 * are not restored.
+	 */
+	public func void setModelKeepTextures( Model model )
+	end
+	
+	/** \brief Skin or \em null if not set. */
+	public func Skin getSkin()
+	end
+	
+	/** \brief Set skin or \em null if not set. */
+	public func void setSkin( Skin skin )
+	end
+	
+	/** \brief Set model and skin or \em null if not set. */
+	public func void setModelAndSkin( Model model, Skin skin )
+	end
+	
+	/** \brief Rig or \em null if not set. */
+	public func Rig getRig()
+	end
+	
+	/** \brief Set rig or \em null if not set. */
+	public func void setRig( Rig rig )
+	end
+	
+	/** \brief Occlusion mesh or \em null if not set. */
+	public func OcclusionMesh getOcclusionMesh()
+	end
+	
+	/** \brief Set occlusion mesh or \em null if not set. */
+	public func void setOcclusionMesh( OcclusionMesh occlusionMesh )
+	end
+	
+	/** \brief Audio model or \em null if not set. */
+	public func Model getAudioModel()
+	end
+	
+	/**
+	 * \brief Set audio model or \em null if not set.
+	 * 
+	 * Shares textures with assigned model.
+	 */
+	public func void setAudioModel( Model model )
+	end
+	
+	/** \brief Layer mask for visibility masking. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set layer mask for visibility masking. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	
+	/** \brief Dynamic skin or \em null if not set. */
+	public func DynamicSkin getDynamicSkin()
+	end
+	
+	/** \brief Set dynamic skin or \em null if not set. */
+	public func void setDynamicSkin( DynamicSkin dynamicSkin )
+	end
+	
+	
+	
+	/** \brief Update bone matrices. */
+	public func void updateBones()
+	end
+	
+	/** \brief Copy bone states to matching bones states of another component. */
+	public func void copyBonesToComponent( Component component )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Textures */
+	/*@{*/
+	/** \brief Number of textures in the skin or 0 if no skin is set. */
+	public func int getTextureCount()
+	end
+	
+	/** \brief Index of named texture or -1 if not found or skin is not set. */
+	public func int indexOfTextureNamed( String name )
+	end
+	
+	/**
+	 * \brief Skin of texture or \em null if not used.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func Skin getTextureSkinAt( int texture )
+	end
+	
+	/**
+	 * \brief Texture number of texture or \em null if not used.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func int getTextureTextureAt( int texture )
+	end
+	
+	/**
+	 * \brief Set skin of texture or \em null if not set.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void setTextureSkinAt( int texture, Skin skin, int skinTexture )
+	end
+	
+	/**
+	 * \brief Texture coordinates transformation of texture.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func TexMatrix2 getTextureTransformAt( int texture )
+	end
+	
+	/**
+	 * \brief Set texture coordinates transformation of texture.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void setTextureTransformAt( int texture, TexMatrix2 transform )
+	end
+	
+	/**
+	 * \brief Dynamic skin of texture or \em null if not set.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func DynamicSkin getTextureDynamicSkinAt( int texture )
+	end
+	
+	/**
+	 * \brief Set dynamic skin of texture or \em null if not set.
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func void setTextureDynamicSkinAt( int texture, DynamicSkin dynamicSkin )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bones */
+	/*@{*/
+	/** \brief Number of bones. */
+	public func int getBoneCount()
+	end
+	
+	/** \brief Index of named bone or -1 if not found in rig or rig is not set. */
+	public func int indexOfBoneNamed( String name )
+	end
+	
+	/**
+	 * \brief Name of bone.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func String boneGetName( int index )
+	end
+	
+	/**
+	 * \brief Position of bone relative to parent bone or component if bone has no parent.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Vector boneGetPosition( int bone )
+	end
+	
+	/**
+	 * \brief Set position of the bone.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func void boneSetPosition( int bone, Vector position )
+	end
+	
+	/**
+	 * \brief Rotation of bone relative to parent bone or component if bone has no parent.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Quaternion boneGetRotation( int bone )
+	end
+	
+	/**
+	 * \brief Set rotation of the bone.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func void boneSetRotation( int bone, Quaternion rotation )
+	end
+	
+	/**
+	 * \brief Bone matrix relative to component.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Matrix boneGetMatrix( int bone )
+	end
+	
+	/**
+	 * \brief Inverse bone matrix relative to component.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Matrix boneGetInverseMatrix( int bone )
+	end
+	
+	/**
+	 * \brief Bone origin matrix in component space.
+	 * \details The bone origina matrix is the matrix in component space where the bone
+	 *          has no position, no rotation and 1 scaling.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Matrix getBoneOriginMatrix( int bone )
+	end
+	
+	/**
+	 * \brief Inverse bone origin matrix in component space.
+	 * \details The bone origina matrix is the matrix in component space where the bone
+	 *          has no position, no rotation and 1 scaling.
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	public func Matrix getBoneOriginInverseMatrix( int bone )
+	end
+	
+	
+	
+	/**
+	 * \brief Position of bone relative to parent bone or component if bone has no parent.
+	 * \throws EInvalidParam No bone with name \em bone found.
+	 * \deprecated Use boneGetPosition( indexOfBoneNamed( bone ) )
+	 */
+	public func Vector getBonePosition( String bone )
+	end
+	
+	/**
+	 * \brief Set position of the bone.
+	 * \throws EInvalidParam No bone with name \em boneName found.
+	 * \deprecated Use boneSetPosition( indexOfBoneNamed( bone ), position )
+	 */
+	public func void setBonePosition( String bone, Vector position )
+	end
+	
+	/**
+	 * \brief Rotation of bone relative to parent bone or component if bone has no parent.
+	 * \throws EInvalidParam No bone with name \em boneName found.
+	 * \deprecated Use boneSetRotation( indexOfBoneNamed( bone ), position )
+	 */
+	public func Quaternion getBoneRotation( String bone )
+	end
+	
+	/**
+	 * \brief Set rotation of the bone.
+	 * \throws EInvalidParam No bone with name \em boneName found.
+	 * \deprecated Use boneSetRotation( indexOfBoneNamed( bone ), rotation )
+	 */
+	public func void setBoneRotation( String bone, Quaternion rotation )
+	end
+	
+	/**
+	 * \brief Bone matrix relative to component.
+	 * \throws EInvalidParam No bone with name \em boneName found.
+	 */
+	public func Matrix getBoneMatrix( String bone )
+	end
+	
+	/**
+	 * \brief Inverse bone matrix relative to component.
+	 * \throws EInvalidParam No bone with name \em boneName found.
+	 */
+	public func Matrix getBoneInverseMatrix( String bone )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Hint */
+	/*@{*/
+	/** \brief Movement hint. */
+	public func ComponentHintMovement getHintMovement()
+	end
+	
+	/** \brief Set movement hint. */
+	public func void setHintMovement( ComponentHintMovement hint )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Decals */
+	/*@{*/
+	/** \brief Number of decals. */
+	public func int getDecalCount()
+	end
+	
+	/** \brief Add decal. */
+	public func void addDecal( Decal decal )
+	end
+	
+	/** \brief Remove decal. */
+	public func void removeDecal( Decal decal )
+	end
+	
+	/** \brief Remove all decals. */
+	public func void removeAllDecals()
+	end
+	
+	/**
+	 * \brief Visit decals with block with parameter Decal.
+	 * 
+	 * \warning Do not add or remove decals from inside the block.
+	 */
+	public func void getDecalAt( Block ablock )
+	end
+	/*@}*/
+end

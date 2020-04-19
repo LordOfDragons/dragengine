@@ -1,0 +1,54 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Interface for interaction support with base actor actions.
+ * 
+ * Implementing actions provide a primary and secondary action.
+ * 
+ * Primary action is the main action the player can carry out. On a computer this is typically
+ * the left mouse button. On touch screen based platforms this is typically a tap motion.
+ * 
+ * Secondary action is an addtional action the player can carry out. On a computer this is
+ * typically the right mouse button. On a touch screen based platform this is typically a
+ * press motion.
+ * 
+ * This interface provides the most basic interaction form and is useful for simple player
+ * interactions. For more complex interactions create a custom interface providing the
+ * desired interactions.
+ */
+interface BAAInteract
+	/** \brief Start primary action. */
+	func void primaryActionStart()
+	
+	/** \brief Stop primary action. */
+	func void primaryActionStop()
+	
+	/** \brief Start secondary action. */
+	func void secondaryActionStart()
+	
+	/** \brief Stop secondary action. */
+	func void secondaryActionStop()
+end

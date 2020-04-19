@@ -1,0 +1,142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of an animation animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleAnimation extends ADRule
+	/** Move name. */
+	private var String pMoveName
+	/** Move time. */
+	private var float pMoveTime
+	/** Enables position manipulation. */
+	private var bool pEnablePosition
+	/** Enables orientation manipulation. */
+	private var bool pEnableOrientation
+	/** Enables size manipulation. */
+	private var bool pEnableSize
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pMoveName = "idle"
+		this.pMoveTime = 0.0
+		this.pEnablePosition = true
+		this.pEnableOrientation = true
+		this.pEnableSize = false
+	end
+	
+	
+	
+	/** Retrieves the move name. */
+	public func String getMoveName()
+		return this.pMoveName
+	end
+	
+	/** Sets the move name. */
+	public func void setMoveName( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMoveName = name
+	end
+	
+	/** Retrieves the move time. */
+	public func float getMoveTime()
+		return this.pMoveTime
+	end
+	
+	/** Sets the move time. */
+	public func void setMoveTime( float time )
+		this.pMoveTime = time
+	end
+	
+	/** Determines if the position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** Sets if the position manipulation is enabled. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** Determines if the orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** Sets if the orientation manipulation is enabled. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** Determines if the size manipulation is enabled. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** Sets if the size manipulation is enabled. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	
+	
+	/**
+	 * Build engine animator rule using the stored definition.
+	 */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARAnimation rule = ARAnimation.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARAnimationTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setMoveName( this.pMoveName )
+		rule.setMoveTime( this.pMoveTime )
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Animation" ) + " move=" + this.pMoveName + ":" + this.pMoveTime \
+			 + " epos=" + this.pEnablePosition + " eorient=" + this.pEnableOrientation + " esize=" + this.pEnableSize + " )" )
+	end
+end

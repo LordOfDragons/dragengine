@@ -1,0 +1,79 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse listener firing ActionListener objects upon using mouse wheel
+ * 
+ * Allows to set up quickly two actions for using the mouse wheel. The modifiers
+ * are repeated in the ActionEvent send to the action. Action is called number of
+ * times the wheel has been changed for each event received.
+ */
+class WheelActionMouseListener extends DefaultMouseListener
+	/** \brief Action to fire if the mouse is wheeled up or null to ignore. */
+	private var ActionListener pActionUp
+	
+	/** \brief Action to fire if the mouse is wheeled down or null to ignore. */
+	private var ActionListener pActionDown
+	
+	
+	
+	/** \brief Create mouse listener. */
+	public func new( ActionListener actionUp, ActionListener actionDown )
+		this.pActionUp = actionUp
+		this.pActionDown = actionDown
+	end
+	
+	
+	
+	/** \brief Mouse wheel has moved. */
+	public func void onMouseWheel( MouseEvent event )
+		var int y = event.getPosition().getY()
+		
+		if y > 0
+			if this.pActionUp != null
+				var ActionEvent aevent = ActionEvent.new( event.getSource(), \
+					ActionEvent.idAction, event.getModifiers() )
+				var int i
+				
+				for i = 0 to y
+					this.pActionUp.onAction( aevent )
+				end
+			end
+			
+		elif y < 0
+			if this.pActionDown != null
+				var ActionEvent aevent = ActionEvent.new( event.getSource(), \
+					ActionEvent.idAction, event.getModifiers() )
+				var int i
+				
+				for i = 0 to -y
+					this.pActionDown.onAction( aevent )
+				end
+			end
+		end
+	end
+end

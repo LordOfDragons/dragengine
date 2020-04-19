@@ -1,0 +1,144 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Console containing system and game messages.
+ * 
+ * Listeners are resposible to display the console output if required.
+ */
+class Console
+	private var Array pMessages
+	private var Array pListeners
+	private var int pBufferSize
+	
+	
+	
+	/** \brief Create console with initial size. */
+	public func new( int size )
+		if size < 1
+			throw EInvalidParam.new()
+		end
+		
+		this.pBufferSize = size
+		this.pMessages = Array.new( size )
+		this.pListeners = Array.new()
+	end
+	
+	
+	
+	/** \brief Buffer size. */
+	public func int getBufferSize()
+		return this.pBufferSize
+	end
+	
+	/** \brief Number of messages. */
+	public func int getMessageCount()
+		return this.pMessages.getCount()
+	end
+	
+	/** \brief Message at index. */
+	public func ConsoleMessage getMessage( int index )
+		return this.pMessages.getAt( index ) cast ConsoleMessage
+	end
+	
+	/** \brief Visit messages with block with parameter ConsoleMessage. */
+	public func void forEachMessage( Block ablock )
+		this.pMessages.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( ConsoleListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( ConsoleListener listener )
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Add message. */
+	public func void addMessage( ConsoleMessage message )
+		if message == null
+			throw EInvalidParam.new()
+		end
+		
+		var bool removedTop = false
+		if this.pMessages.getCount() == this.pBufferSize
+			this.pMessages.remove( 0 )
+			removedTop = true
+		end
+		
+		this.pMessages.add( message )
+		
+		this.pListeners.forEach( block ConsoleListener each
+			each.messageAdded( this, message, removedTop )
+		end )
+	end
+	
+	/** \brief Clear all messages. */
+	public func void clearConsole()
+		this.pMessages.removeAll()
+		
+		this.pListeners.forEach( block ConsoleListener each
+			each.consoleCleared( this )
+		end )
+	end
+	
+	
+	
+	/** \brief Add message.
+	 */
+	public func void addMessage( String message )
+		this.addMessage( ConsoleMessage.new( message ) )
+	end
+	
+	/**
+	 * \brief Add error message with exception trace.
+	 */
+	public func void addError( String message, Exception exception )
+		if exception == null
+			this.addMessage( ConsoleMessage.new( message + ": <null>" ) )
+			return
+		end
+		
+		var String text = message + ": " + exception.getReason()
+		var int i, count = exception.getTraceCount()
+		
+		for i = 0 to count
+			text = text + "\n" + ( i + 1 ) + ") " + exception.getTraceClass( i ) \
+				+ "." + exception.getTraceFunction( i ) + "() : " + exception.getTraceLine( i )
+		end
+		
+		this.addMessage( ConsoleMessage.new( text ) )
+	end
+end

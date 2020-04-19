@@ -1,0 +1,125 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of a synthesizer controller.
+ * 
+ * Once defined a controller can be added to an synthesizer using the stored definition.
+ */
+class SDController
+	private var String pName
+	private var bool pClamp
+	private var float pMinimum
+	private var float pMaximum
+	private var int pIndex
+	
+	
+	
+	/** \brief Create controller definition. */
+	public func new()
+		this.pName = ""
+		this.pClamp = true
+		this.pMinimum = 0
+		this.pMaximum = 1
+		this.pIndex = 0
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Set name. */
+	public func void setName( String name )
+		this.pName = name
+	end
+	
+	/** \brief Controller is clamped. */
+	public func bool getClamp()
+		return this.pClamp
+	end
+	
+	/** \brief Set controller is clamped. */
+	public func void setClamp( bool clamp )
+		this.pClamp = clamp
+	end
+	
+	/** \brief Minimum value. */
+	public func float getMinimum()
+		return this.pMinimum
+	end
+	
+	/** \brief Set minimum value. */
+	public func void setMinimum( float minimum )
+		this.pMinimum = minimum
+	end
+	
+	/** \brief Maximum value. */
+	public func float getMaximum()
+		return this.pMaximum
+	end
+	
+	/** \brief Set maximum value. */
+	public func void setMaximum( float maximum )
+		this.pMaximum = maximum
+	end
+	
+	
+	
+	/** \brief Index of controller in the synthesizer. */
+	public func int getIndex()
+		return this.pIndex
+	end
+	
+	
+	
+	/** \brief Add controller to synthesizer using the stored definition. */
+	public func void addToSynthesizer( Synthesizer synthesizer, int index )
+		if synthesizer == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pIndex = index
+		
+		var SynthesizerController controller = synthesizer.getControllerAt( index )
+		controller.setName( this.pName )
+		controller.setClamp( this.pClamp )
+		controller.setRange( this.pMinimum, this.pMaximum )
+	end
+	
+	
+	
+	public func void debug( Console console, int index )
+		this.pIndex = index
+		console.addMessage( "- Controller " + index + " name=" + this.pName \
+			+ " clamp=" + this.pClamp + " min=" + this.pMinimum + " max=" + this.pMaximum )
+	end
+end

@@ -1,0 +1,82 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Gesture in conversation script.
+ */
+class ConversationGesture
+	/** \brief Unique name. */
+	private var StringID pName
+	
+	/** \brief Name of animator to use. */
+	private var StringID pAnimator
+	
+	/** \brief Hold gesture after finishing it. */
+	private var bool pHold
+	
+	
+	
+	/** \brief Create conversation gesture. */
+	public func new( StringID name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+		this.pHold = false
+	end
+	
+	
+	
+	/** \brief Name. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** \brief Name of animator to use. */
+	public func StringID getAnimator()
+		return this.pAnimator
+	end
+	
+	/** \brief Set name of animator to use. */
+	public func void setAnimator( StringID animator )
+		if animator == null
+			throw EInvalidParam.new()
+		end
+		this.pAnimator = animator
+	end
+	
+	/** \brief Hold gesture after finishing it. */
+	public func bool getHold()
+		return this.pHold
+	end
+	
+	/** \brief Set if gesture is hold after finishing it. */
+	public func void setHold( bool hold )
+		this.pHold = hold
+	end
+end

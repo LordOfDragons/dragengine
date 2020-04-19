@@ -1,0 +1,92 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Mapping strings class property for use with XML loading.
+ */
+class ECPStringMap extends ElementClassProperty
+	/** \brief Dictionary of String mapping to String. */
+	private var Dictionary pMap
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pMap = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Number of mappings. */
+	public func int getMappingCount()
+		return this.pMap.getCount()
+	end
+	
+	/** \brief Map string or \em null if mapping does not exist. */
+	public func String map( String key )
+		return this.pMap.getAt( key, null ) cast String
+	end
+	
+	/** \brief Mapping is present. */
+	public func bool hasMapping( String key )
+		return this.pMap.has( key )
+	end
+	
+	/**
+	 * \brief Visit mappings with block.
+	 * 
+	 * First block parameter is String key. Second block parameter is String value.
+	 */
+	public func void forEachMapping( Block ablock )
+		this.pMap.forEach( ablock )
+	end
+	
+	/** \brief Remove all mappings. */
+	public func void removeAllMappings()
+		this.pMap.removeAll()
+	end
+	
+	/** \brief Add mapping replacing existing one if present. */
+	public func void addMapping( String key, String value )
+		if key == null or value == null
+			throw EInvalidParam.new()
+		end
+		this.pMap.setAt( key, value )
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pMap.removeAll()
+		( value cast Dictionary ).forEach( block String key, String value
+			this.pMap.setAt( key, value )
+		end )
+	end
+end

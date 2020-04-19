@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
+<gameDefinition>
+	<identifier>DragonScript InteractiveMainMenu</identifier>
+	<description>Game definition for projects using "Interactive Main Menu" on DragonScript Scripting Module. Add this game definition after "DragonScript Basic" if used. Using "DragonScript Basic" is not a requirement".</description>
+	<basePath>%{PATH_MODULE_SHARED}</basePath>
+	<vfsPath>/shareddata</vfsPath>
+	<scriptModule>DragonScript</scriptModule>
+	<baseGameDefinition>DragonScript Basic</baseGameDefinition>
+	<categories>
+		<classes>
+			<category>
+				<name>Dragengine</name>
+				<description>Object classes provided by DragonScript Script Module for in-game use.</description>
+				<category>
+					<name>InteractiveMainMenu</name>
+					<description>Classes used only for the interactive main menu scripts. Can not be used for regular games.</description>
+				</category>
+			</category>
+		</classes>
+	</categories>
+	<class name='DE_IMM_Prop'>
+		<description>Non-interactive scenery prop for interactive main menu.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorTwoStateAnimated'>
+			<propertyPrefix>twoStateAnimated.</propertyPrefix>
+		</inherit>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_HotSpot'>
+		<description>Interactive scenery prop for interactive main menu. Hot spots are highlighted if the mouse pointer hovers over the prop. Hot spots launch an action if mouse button is pressed while the hot spot is highlighted.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='DE_IMM_Prop'>
+		</inherit>
+		<inherit name='IMMBehaviorHotSpot'>
+			<propertyPrefix>hotspot.</propertyPrefix>
+		</inherit>
+		<inherit name='IMMBehaviorColliderInteract'>
+			<propertyPrefix>colliderInteract.</propertyPrefix>
+		</inherit>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_CameraSpot'>
+		<description>Defines the camera position and orientation to focus on a hot-spot.</description>
+		<ghost>true</ghost>
+		<billboard>
+			<skin>/igde/billboards/camera.deskin</skin>
+			<size x='0.4' y='0.4'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<camera>
+			<propName>name</propName>
+		</camera>
+		<property name='name'>
+			<description>Unique name of camera spot.</description>
+			<type>identifier</type>
+			<idGroup>de-imm-cameraspot-name</idGroup>
+			<idUsage>true</idUsage>
+		</property>
+		<partialHideTag>Camera</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_Light'>
+		<description>Base light class for interactive main menu. Don't use it directly.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorLight'>
+			<propertyPrefix>light.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/lamp.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Light</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_Speaker'>
+		<description>Speaker for interactive main menu.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorSpeaker'>
+			<propertyPrefix>speaker.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/speaker.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Sound</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_ParticleEmitter'>
+		<description>Particle emitter for interactive main menu.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorParticleEmitter'>
+			<propertyPrefix>particleEmitter.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/particleEmitter.deskin</skin>
+			<size x='0.4' y='0.4'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_EnvMap'>
+		<description>Environment map probe.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorEnvMapProbe'>
+			<propertyPrefix>envMapProbe.</propertyPrefix>
+		</inherit>
+		<partialHideTag>Info</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_TriggerEvaluate'>
+		<description>Base trigger firing if a trigger expression becomes true. This trigger is useful to reuse complex trigger expressions for various other objects.</description>
+		<ghost>true</ghost>
+		<inherit name='TriggerEvaluate'>
+		</inherit>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='DE_IMM_TriggerTimer'>
+		<description>Trigger firing and resetting a trigger target after a certain time elapses if trigger expression holds true.</description>
+		<ghost>true</ghost>
+		<inherit name='TriggerTimer'>
+		</inherit>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='DE_IMM_TriggerToggle'>
+		<description>Trigger toggling a trigger target if trigger expression holds true.</description>
+		<ghost>true</ghost>
+		<inherit name='TriggerToggle'>
+		</inherit>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='IMMBehaviorHotSpot'>
+		<description>Behavior element behavior adding interactive main menu hot spot support.</description>
+		<scaleMode>free</scaleMode>
+		<ghost>true</ghost>
+		<defaultInheritPropertyPrefix>hotspot.</defaultInheritPropertyPrefix>
+		<property name='action'>
+			<description>Action to trigger if activated. Define in the interactive main menu the script code to run for this action. If mismatching nothing is done. Use the other properties to modify the hot spot behavior.</description>
+			<type>string</type>
+		</property>
+		<property name='cameraSpot'>
+			<description>Camera spot to activate when hot-spot is activated.</description>
+			<type>identifier</type>
+			<idGroup>de-imm-cameraspot-name</idGroup>
+			<idUsage>false</idUsage>
+		</property>
+		<property name='transitionTime'>
+			<description>Time in seconds for camera spot transition. This is not necessary the same time required to play the animator activate or deactivate.</description>
+			<type>float</type>
+			<default>1.5</default>
+		</property>
+		<property name='delayActivate'>
+			<description>Delay in seconds to activate prop after hot-spot has been activated.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='delayDeactivate'>
+			<description>Delay in seconds to deactivate prop after hot-spot has been deactivated.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='displayText'>
+			<description>Display text to tell the player what this hotspot is going to do if used.</description>
+			<type>string</type>
+		</property>
+		<property name='targetHotSpotActive'>
+			<description>Name of trigger to fire if hot-spot is activate and reset if deactive.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetHotSpotActivated'>
+			<description>Name of trigger to pulse if hot-spot has been activated.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetHotSpotDeactivated'>
+			<description>Name of trigger to pulse if hot-spot has been deactivated.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetHotSpotHover'>
+			<description>Name of trigger to fire if hot-spot is hovered above and reset if not.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetHotSpotEntered'>
+			<description>Name of trigger to pulse if hot-spot is entered (start hovering).</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetHotSpotLeft'>
+			<description>Name of trigger to pulse if hot-spot is left (stop hovering).</description>
+			<type>triggerTarget</type>
+		</property>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+	<class name='IMMBehaviorColliderInteract'>
+		<description>Behavior element behavior adding collider interact support.</description>
+		<scaleMode>free</scaleMode>
+		<ghost>true</ghost>
+		<defaultInheritPropertyPrefix>colliderInteract.</defaultInheritPropertyPrefix>
+		<property name='rig'>
+			<description>An optional interact rig can be used for interaction instead of the regular rig. This can be used for animated props to have a more stable and predictable collider for the user to interact with.</description>
+			<type>path</type>
+			<pathPatternType>rig</pathPatternType>
+		</property>
+		<category>Dragengine/InteractiveMainMenu</category>
+	</class>
+</gameDefinition>

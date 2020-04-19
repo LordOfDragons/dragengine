@@ -1,0 +1,98 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Border size value element class property for use with XML loading.
+ */
+class ECPBorderSize extends ElementClassProperty
+	/** \brief Value. */
+	private var BorderSize pValue
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, BorderSize value ) super( name )
+		this.pValue = value
+	end
+	
+	
+	
+	/** \brief Value. */
+	public func BorderSize getBorderSize()
+		return this.pValue
+	end
+	
+	/** \brief Set value. */
+	public func void setBorderSize( BorderSize area )
+		this.pValue = area
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pValue = value cast BorderSize
+	end
+	
+	
+	
+	/**
+	 * \brief Border size modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored border size is returned.
+	 * If the named stub property is present it is decoded using codec.
+	 * 
+	 * The following property value formats are understood where "size", "left", "top", "right"
+	 * and "bottom" are positive integer values including 0:
+	 * - "size": BorderSize.new(size)
+	 * - "left top right bottom": BorderSize.new(left, top, right, bottom)
+	 */
+	public func BorderSize getBorderSize( StubWithProperties stub, CodecPropertyString codec )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pValue
+		end
+		
+		var Array list = codec.decodeFixedIntList( value, 4 )
+		
+		if list.getCount() == 1
+			// size
+			return BorderSize.new( ( list.getAt( 0 ) cast String ).toInt() )
+			
+		else
+			// left top right bottom
+			return BorderSize.new( \
+				( list.getAt( 0 ) cast String ).toInt(), \
+				( list.getAt( 1 ) cast String ).toInt(), \
+				( list.getAt( 2 ) cast String ).toInt(), \
+				( list.getAt( 3 ) cast String ).toInt() )
+		end
+	end
+end

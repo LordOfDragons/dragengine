@@ -1,0 +1,70 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Rendering.Elements
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Styled text rendering element.
+ */
+class STRElement
+	/** \brief Position of element. */
+	private var Point pPosition
+	
+	
+	
+	/** \brief Create styled text rendering object. */
+	public func new()
+		this.pPosition = Point.new()
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( Point position )
+		this.pPosition = position
+	end
+	
+	
+	
+	/** \brief Calculate size of element. */
+	public func Point calculateSize()
+		return Point.new()
+	end
+	
+	
+	
+	/**
+	 * \brief Add canvas for each element.
+	 * \details Canvas has to be of type Canvas.VIEW. Caller is responsible to remove all canvas if required.
+	 */
+	public func void addToCanvas( CanvasView canvas, Point position, StyledTextDocumentUpdater updater )
+	end
+end

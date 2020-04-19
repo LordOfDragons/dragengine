@@ -1,0 +1,4 @@
+AIDEAI {
+  global: DEAICreateModule;
+  local: *;
+};

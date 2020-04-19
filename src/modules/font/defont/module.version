@@ -1,0 +1,4 @@
+FONTDEFONT {
+  global: DEFontCreateModule;
+  local: *;
+};

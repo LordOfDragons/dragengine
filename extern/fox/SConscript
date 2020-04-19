@@ -1,0 +1,209 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return() # libudev not supported on android
+
+envLibrary = parent_env.Clone()
+
+# we can not link fox statically since this fails with a design concept present in fox
+buildStaticLinking = False
+
+# parameters
+foxSrcVersion = '1.7.67'
+srcdir = 'fox-{}'.format(foxSrcVersion)
+
+libFOXVersion = '1.7'
+libLinkVersion = '0'
+libLinkName = 'FOX-{}'.format(libFOXVersion)
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# check if system fox is present
+hasSystemFOX = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_fox'] != TernaryVariableNo:
+	hasSystemFOX = conf.CheckLibWithHeader(libLinkName,
+		'fox-{}/fx.h'.format(libFOXVersion), 'c++', 'fxgetticks();')
+conf.Finish()
+
+if not hasSystemFOX and envLibrary['with_system_fox'] == TernaryVariableYes:
+	Exit('Requested to use system FOX-Toolkit but no usable FOX-Toolkit found.')
+
+libs = [libLinkName]
+#libs.extend(parent_targets['lib_libpng']['libs'])
+
+parent_report['use system fox'] = 'yes' if hasSystemFOX else 'no'
+
+if hasSystemFOX:
+	parent_targets['lib_fox'] = {
+		'name' : 'Internal FOX-Toolkit library',
+		'cpppath' : [],
+		'libpath' : [],
+		'cppflags' : [],
+		'version' : libFOXVersion,
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [],
+		'linkWholeArchive' : []}
+	Return()
+
+# build fox
+patchSoname = None
+if not envLibrary['OSWindows']:
+	libLinkName = 'DEFOX-{}'.format(libFOXVersion)
+	libFileNameOrg = libFileName
+	patchSoname = envLibrary.subst('${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
+	libFileName = 'lib/{}'.format(patchSoname)
+	
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+	
+	libs = [libLinkName]
+	#libs.extend(parent_targets['lib_libpng']['libs'])
+
+def foxBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	deps = []
+	deps.append(parent_targets['lib_libpng'])
+	script = createScriptHeader(env, deps=deps)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('autoreconf -fi || exit 1')
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	
+	if env['with_debug']:
+		cmdline.append('--enable-debug')
+		# run with FOX_TRACE_LEVEL={1,50,100,150,200,250}
+	else:
+		cmdline.append('--enable-release')
+	
+	#cmdline.append('--disable-png')
+	cmdline.append('--disable-jpeg')
+	cmdline.append('--disable-jp2')
+	cmdline.append('--disable-webp')
+	cmdline.append('--disable-tiff')
+	cmdline.append('--disable-bz2lib')
+	cmdline.append('--with-opengl')
+	cmdline.append('--enable-threadsafe')
+	
+	if env['OSWindows']:
+		cmdline.append('--without-x')
+		cmdline.append('--without-xft')
+		cmdline.append('--without-xshm')
+		cmdline.append('--without-shape')
+		cmdline.append('--without-xcursor')
+		cmdline.append('--without-xrender')
+		cmdline.append('--without-xrandr')
+		cmdline.append('--without-xfixes')
+		cmdline.append('--without-xinput')
+		cmdline.append('--without-xim')
+	
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('cd lib || exit 1')
+	script.append('make install || exit 1')
+	
+	script.append('cd ../include')
+	script.append('make install || exit 1')
+	
+	if patchSoname:
+		script.append('cd ../.. || exit 1')
+		script.append('cp "{}" "{}" || exit 1'.format(libFileNameOrg, libFileName))
+		script.append('patchelf --set-soname "{}" "{}" || exit 1'.format(patchSoname, libFileName))
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building fox')
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches/{}'.format(foxSrcVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode().abspath, 'r') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(foxBuild, 'Build fox'))
+envLibrary.Depends(library, envLibrary['PATCHES'])
+if envLibrary['OSWindows']:
+	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
+
+depends = parent_env.Alias('lib_fox', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+if envLibrary['OSWindows']:
+	cpppath.extend(parent_targets['lib_libpng']['cpppath'])
+
+libpath = [envLibrary.Dir('lib')]
+if envLibrary['OSWindows']:
+	libpath.extend(parent_targets['lib_libpng']['libpath'])
+
+linkWholeArchive = []
+
+if buildStaticLinking:
+	linkWholeArchive.append(library[0])
+	libs = [library[0]]
+	#libs.extend(parent_targets['lib_libpng']['libs'])
+	if envLibrary['OSPosix']:
+		libs.extend(['pthread'])
+		libs.extend(['X11', 'Xext', 'Xrandr', 'Xrender', 'Xi'])
+		libs.extend(['Xft', 'fontconfig', 'Xfixes', 'Xcursor'])
+		libs.extend(['GL'])
+	elif envLibrary['OSWindows']:
+		libs.extend(['gdi32', 'imm32', 'wsock32', 'winspool', 'opengl32'])
+		#libs.extend(['comctl32', 'wsock32', 'imm32', 'msimg32'])
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+#runtimelibs.extend(parent_targets['lib_libpng']['runtimelibs'])
+
+if envLibrary['OSWindows']:
+	runtimelibs.extend(parent_targets['lib_libpng']['forceRuntimeLibs'])
+
+parent_targets['lib_fox'] = {
+	'name' : 'Internal FOX Toolkit library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'cppflags' : ['-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_'))],
+	'version' : libFOXVersion,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends,
+	'linkWholeArchive' : linkWholeArchive,
+	'globalInstallTracker' : []}

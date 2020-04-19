@@ -1,0 +1,13 @@
+Modifications
+=============
+
+The squish code included here is modified from the original distribution
+as well as various files removed to allow the code to directly compile
+into the opengl module instead of having yet another library hanging
+around. This also prevents compilation issues since after all the library
+has to be compiled together with the module to be of any use.
+
+The original source code can be found at: http://code.google.com/p/libsquish .
+
+Modifications are not marked inside the source code as this would be turn
+the code into a mess.

@@ -1,0 +1,151 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Rail defining path for elements.
+ * 
+ * Contains corner points defining the path for elements or other objects requiring a path
+ * placed down by a level artist in the game world. Each corner has a position, orientation
+ * and an order number. The order number is used to sort the corners along the rail path.
+ * The rail is non-forking running from the corner with the lowest order to the corner with
+ * the highest order. Adding corners inserts them sorted by their order.
+ * 
+ * Rails have a unique identifier. This identifier is used by elements to locate the path
+ * in RailList of the GameWorld they are located in. If not found RailList.getWithID()
+ * returns null. To define rails use RailList.getOrAddWithID(). This method creates the
+ * rail if not found and thus always returns a Rail instance. This is required because
+ * the loading order of elements in a GameWorld is not well defined.
+ * 
+ * While the Rail class is usually not subclasses the RailCorner is created by rail corner
+ * element classes and can be subclassed to add additional properties to corners.
+ */
+class Rail
+	private var StringID pID
+	private var Array pCorners
+	
+	
+	
+	/** \brief Create rail. */
+	public func new( StringID id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pID = id
+		this.pCorners = Array.new()
+	end
+	
+	/** \brief Dispose of rail. */
+	public func void dispose()
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func StringID getID()
+		return this.pID
+	end
+	
+	
+	
+	/** \brief Number of corners. */
+	public func int getCornerCount()
+		return this.pCorners.getCount()
+	end
+	
+	/** \brief Rail has corners. */
+	public func bool hasCorners()
+		return this.pCorners.getCount() > 0
+	end
+	
+	/** \brief Corner at index. */
+	public func RailCorner getCornerAt( int index )
+		return this.pCorners.getAt( index ) cast RailCorner
+	end
+	
+	/** \brief Corner with corner or \em null if absent. */
+	public func RailCorner getCornerWithOrder( int order )
+		return this.pCorners.find( block RailCorner each
+			return order == each.getOrder()
+		end ) cast RailCorner
+	end
+	
+	/** \brief Get corner at beginning of rail or \em null if rail is empty. */
+	public func RailCorner getFirstCorner()
+		if this.pCorners.getCount() > 0
+			return this.pCorners.getAt( 0 ) cast RailCorner
+			
+		else
+			return null
+		end
+	end
+	
+	/** \brief Get corner at end of rail or \em null if rail is empty. */
+	public func RailCorner getLastCorner()
+		if this.pCorners.getCount() > 0
+			return this.pCorners.getAt( this.pCorners.getCount() - 1 ) cast RailCorner
+			
+		else
+			return null
+		end
+	end
+	
+	/**
+	 * \brief Add corner.
+	 * \throws EInvalidParam Corner with same order is present.
+	 */
+	public func void addCorner( RailCorner corner )
+		var int count = this.pCorners.getCount()
+		var int testOrdeer = corner.getOrder()
+		var int i, curOrder
+		
+		for i = 0 to count
+			curOrder = ( this.pCorners.getAt( i ) cast RailCorner ).getOrder()
+			
+			if testOrdeer == curOrder
+				throw EInvalidParam.new()
+				
+			elif testOrdeer < curOrder
+				this.pCorners.insert( i, corner )
+				return
+			end
+		end
+		
+		this.pCorners.add( corner )
+	end
+	
+	
+	
+	/** \brief Closest point to location on rail . */
+	/*
+	public func DVector getClosestPoint( DVector location )
+		// TODO implement this
+		if this.pCorners.getCount() > 0
+			return ( this.pCorners.getAt( 0 ) cast RailCorner ).getPosition()
+		end
+		return DVector.new()
+	end
+	*/
+end

@@ -1,0 +1,77 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable animation resources.
+ * 
+ * Animation resources provide static precanned animation data to be used with Animators
+ * to produce dynamic animations.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Animation
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load animation from file.
+	 * \details If the animation file has been already loaded it is assigned to this object.
+	 *          If the animation is not loaded yet the engine loads the animation. This call
+	 *          blocks until the animation is fully loaded and ready to be used. For
+	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 *          same loaded animation resource. Once no object instance uses an animation
+	 *          file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load animation from file asynchronously.
+	 * \details Registers a request in the game engine to load an animation. Once finished
+	 *          or if the file is already loaded the listener is used to deliver the loaded
+	 *          animation or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the animation has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/**
+	 * \brief Playtime in seconds of named move.
+	 * \details If the move is not found 0 is returned.
+	 */
+	public func float getMovePlaytime( String name )
+	end
+	
+	
+	
+	/**
+	 * \brief Animation is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Animation and both point to the same engine
+	 *          animation resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

@@ -1,0 +1,87 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Runtime exception.
+ * 
+ * Runtime exceptions can be scripted exceptions or native class exceptions.
+ * 
+ * This is a native class.
+ */
+class Exception
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty exception. */
+	public func new()
+	end
+	
+	/** \brief Create exception with reason. */
+	public func new( String reason )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Reason. */
+	public func String getReason()
+		return null
+	end
+	
+	/**
+	 * \brief Print exception trace on the standard output.
+	 * \details If you want to modify this behaviour use the trace functions
+	 *          to obtain the trace informations.
+	 */
+	public func void printTrace()
+	end
+	
+	
+	
+	/** \brief Number of trace points. */
+	func int getTraceCount()
+		return 0
+	end
+	
+	/** \brief Trace class at index. */
+	func String getTraceClass( int index )
+		return null
+	end
+	
+	/** \brief Trace function at index. */
+	func String getTraceFunction( int index )
+		return null
+	end
+	
+	/** \brief Trace line number at index. */
+	func int getTraceLine( int index )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Exception is equal to another object.
+	 * \returns \em true if \em other is of type Exception and both are of the same exception class.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of the exception. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+end

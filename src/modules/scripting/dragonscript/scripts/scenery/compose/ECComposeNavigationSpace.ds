@@ -1,0 +1,162 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable navigation space for element class.
+ * 
+ * Provides navigation space and navigation blocking support to element class without
+ * subclassing from a specific class. Creates NavigationSpace resource.
+ */
+class ECComposeNavigationSpace
+	private var ECPInteger pLayer
+	private var ECPNavigationSpace pSpace
+	private var ECPFloat pSnapDistance
+	private var ECPShapeList pBlockerShape
+	private var ECPInteger pBlockingPriority
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, Loaders loaders ) \
+	this( ownerClass, loaders, "navigationSpace." )
+	end
+	
+	public func new( ElementClass ownerClass, Loaders loaders, String prefix )
+		if prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pLayer = ECPInteger.new( prefix + "layer", 0 )
+		ownerClass.addProperty( this.pLayer )
+		
+		this.pSnapDistance = ECPFloat.new( prefix + "snapDistance", 0.001, 0.001 )
+		ownerClass.addProperty( this.pSnapDistance )
+		
+		this.pSpace = ECPNavigationSpace.new( prefix + "path", loaders.getNavigationSpace() )
+		ownerClass.addProperty( this.pSpace )
+		
+		this.pBlockerShape = ECPShapeList.new( prefix + "blockerShape", \
+			ownerClass.getSharedCodecPropertyString() )
+		ownerClass.addProperty( this.pBlockerShape )
+		
+		this.pBlockingPriority = ECPInteger.new( prefix + "blockerPriority", 0 )
+		ownerClass.addProperty( this.pBlockingPriority )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Navigation space layer number. */
+	public func ECPInteger getLayer()
+		return this.pLayer
+	end
+	
+	/** \brief Navigation space or \em null if not set. */
+	public func ECPNavigationSpace getSpace()
+		return this.pSpace
+	end
+	
+	/** \brief Navigation space snap distance in meters. */
+	public func ECPFloat getSnapDistance()
+		return this.pSnapDistance
+	end
+	
+	/** \brief Navigation blocker shape or \em null if not set. */
+	public func ECPShapeList getBlockerShape()
+		return this.pBlockerShape
+	end
+	
+	/** \brief Navigation space blocking priority. */
+	public func ECPInteger getBlockingPriority()
+		return this.pBlockingPriority
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/** \brief Create navigation space or \em null if not used. */
+	public func NavigationSpace createNavigationSpace( Element element, StubElement stub )
+		var NavigationSpace navigationSpace
+		
+		// navigation space
+		var String value = stub.getPropertyValueFor( this.pSpace.getName(), null )
+		if value == null
+			navigationSpace = this.pSpace.getNavigationSpaceCopy()
+			
+		elif not value.empty()
+			try
+				navigationSpace = this.pSpace.getLoader().loadFromFile( value )
+				
+			catch Exception e
+				throw ELoadResourceFailed.new( value, element.getClass().getClassname() )
+			end
+		end
+		
+		// blockers
+		var ShapeList shape = this.pBlockerShape.getShapeList()
+		
+		value = stub.getPropertyValueFor( this.pBlockerShape.getName(), null )
+		if value != null
+			shape = this.pBlockerShape.getCodec().decodeShapeList( value )
+		end
+		
+		if shape.notEmpty()
+			if navigationSpace == null
+				navigationSpace = NavigationSpace.new()
+				navigationSpace.setType( NavigationSpaceType.mesh )
+			end
+			navigationSpace.setBlockerShapeList( shape )
+		end
+		
+		// set parameters
+		if navigationSpace != null
+			navigationSpace.setLayer( stub.getPropertyIntFor( \
+				this.pLayer.getName(), this.pLayer.getValue() ) )
+			navigationSpace.setBlockingPriority( stub.getPropertyIntFor( \
+				this.pBlockingPriority.getName(), this.pBlockingPriority.getValue() ) )
+			navigationSpace.setSnapDistance( this.pSnapDistance.getValue() )
+			
+			navigationSpace.setPosition( element.getPosition() )
+			navigationSpace.setOrientation( element.getOrientation() )
+		end
+		
+		return navigationSpace
+	end
+end

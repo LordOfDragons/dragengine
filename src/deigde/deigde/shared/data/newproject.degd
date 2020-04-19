@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<gameDefinition>
+	<identifier>%{PROJECT_NAME}</identifier>
+	<description>Game project %{PROJECT_NAME}.</description>
+	<basePath>%{PROJECT_PATH}</basePath>
+	<scriptModule>%{PROJECT_SCRIPT_MODULE}</scriptModule>
+	<categories>
+		<classes>
+			<category>
+				<name>Project</name>
+				<description>Project models.</description>
+				<autoCategorize>/content/models/*</autoCategorize>
+			</category>
+		</classes>
+		<skins>
+			<category>
+				<name>Project</name>
+				<description>Project materials.</description>
+				<autoCategorize>/content/materials/*</autoCategorize>
+			</category>
+		</skins>
+		<skies>
+			<category>
+				<name>Project</name>
+				<description>Project skies.</description>
+				<autoCategorize>/content/skies/*</autoCategorize>
+			</category>
+		</skies>
+	</categories>
+	<findPathClasses>/content/models</findPathClasses>
+	<findPathSkins>/content/materials</findPathSkins>
+	<findPathSkies>/content/skies</findPathSkies>
+	<defaultClass>IGDEElement</defaultClass>
+	<defaultSkin>/igde/materials/stoneFloor/material.deskin</defaultSkin>
+	<defaultSky>/igde/skies/static.desky</defaultSky>
+</gameDefinition>

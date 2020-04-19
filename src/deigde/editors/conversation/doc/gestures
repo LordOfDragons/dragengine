@@ -1,0 +1,62 @@
+conversation gestures:
+
+has 3 controllers:
+
+progress
+	from 0 to the duration of the gesture action in the speak action used to fade in and out of gestures
+	during playing back. the controller range and clamping is set by the playback code during runtime.
+	the artists can set it whatever he wants for testing purpose as it is overwritten at runtime.
+
+playback
+	from 0 to an artist defined play time. typically this is a looping controller. the playback code does
+	not touch the controller except setting the value to the elapsed time since the start of the playing
+	the gesture. this is used to provide looping animations inside the gesture and is artist controlled.
+
+variation
+	from 0 to 1. the artist has to set the controller to this range. the playback code sets a random
+	value upon starting playing back the gesture. this can be used to play back different variations of
+	a gesture for increasing the visual diversity. the random value stays the same for the entire duration
+	of the gesture.
+
+gestures are required to apply properly over existing animations. for this there are usually two possible
+solutions.
+
+animation difference:
+	an animation is faded over the existing animation state using a single animation with an animation
+	difference rule. the leading time is set to the current playback time (controller 'playback' or 'progress')
+	and the reference time to 0 in the same animation. this fades in the animation properly from the beginning
+	and fades out properly at the end given the animation state at the end matches the one at the beginning.
+	this solution is simple and fast but has the disadvantage of being restrictive on what kind of base
+	animation it can be applied. this is due to the fact the animation difference is applied is always applied
+	using the bone local coordinate frame. if the parent bone state is a lot different than the one used to
+	create the gesture animation with the result might not look as expected.
+
+blending:
+	uses a cut off animation with blending. this fully applies the gesture animation over the base animation
+	in contrary to the animation difference version. this is usually the more stable and predictable solution
+	but requires more work. the animation from the animation difference case is used but with the front and
+	back end cut off. the idea is to have the animation start and end in the gesture pose but at a position
+	where blending in and out from the base animation yields acceptable results. the problematic part on this
+	solution is picking the start and end pose and to create a good blending.
+	
+	the first step is adding a link to blend the animation. this link is applied to the source factor target
+	of the gesture rules and is usually a simple ramp shape like this:
+	
+	  /-----------------\
+	 /                   \
+	/  A               B  \
+	
+	the points A and B of reaching/leaving full strength can be freely chosen to make the transition looking
+	good. A and B are used for the next link to play back the animation gesture. the animation has to stand
+	still while blending is done and should play back only in between point A and B. so the next link artificially
+	extends the animation beyond point A and B to not interfere with the blending. trying to blend an animation
+	already moving from a reference state to the gesture state would look awefully. using the freezing before A
+	and after B this problem can be fixed. the link looks like this:
+	
+	   A  /---
+	     /
+	    /
+	___/  B
+	
+	the playback is thus keep frozen at 0 before A and 1 after B. in between it ramps linearly from 0 to 1 as
+	it would do with any other playback type link.

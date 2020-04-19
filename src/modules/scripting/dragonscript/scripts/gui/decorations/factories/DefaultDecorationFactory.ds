@@ -1,0 +1,149 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+  
+ 
+namespace Dragengine.Gui.Decorations.Factories
+
+
+/**
+ * Factory for no default decorations. Equals no decoration at all.
+ */
+class DefaultDecorationFactory implements DecorationFactory
+	/** \brief Active title color. */
+	private var Color pColorActiveTitle
+	
+	/** \brief Inactive title color. */
+	private var Color pColorInactiveTitle
+	
+	/** \brief Active title font. */
+	private var Font pFontActiveTitle
+	
+	/** \brief Inactive title font. */
+	private var Font pFontInactiveTitle
+	
+	
+	
+	/** Creates a new decoration factory. */
+	public func new()
+		this.pColorActiveTitle = Color.black
+		this.pColorInactiveTitle = Color.black
+	end
+	
+	/** \brief Create copy of decoration factory. */
+	public func new( DefaultDecorationFactory factory )
+		this.pColorActiveTitle = factory.pColorActiveTitle
+		this.pColorInactiveTitle = factory.pColorInactiveTitle
+		this.pFontActiveTitle = factory.pFontActiveTitle
+		this.pFontInactiveTitle = factory.pFontInactiveTitle
+	end
+	
+	
+	
+	/** \brief Color of the active window title. */
+	public func Color getActiveTitleColor()
+		return this.pColorActiveTitle
+	end
+	
+	/** \brief Set color of the active window title. */
+	public func void setActiveTitleColor( Color color )
+		this.pColorActiveTitle = color
+	end
+	
+	/** \brief Color of the inactive window title. */
+	public func Color getInactiveTitleColor()
+		return this.pColorInactiveTitle
+	end
+	
+	/** \brief Set color of the inactive window title. */
+	public func void setInactiveTitleColor( Color color )
+		this.pColorInactiveTitle = color
+	end
+	
+	/** \brief Font for active window title. */
+	public func Font getActiveTitleFont()
+		return this.pFontActiveTitle
+	end
+	
+	/** \brief Set font for active window title. */
+	public func void setActiveTitleFont( Font font )
+		this.pFontActiveTitle = font
+	end
+	
+	/** \brief Font for inactive window title. */
+	public func Font getInactiveTitleFont()
+		return this.pFontInactiveTitle
+	end
+	
+	/** \brief Set font for inactive window title. */
+	public func void setInactiveTitleFont( Font font )
+		this.pFontInactiveTitle = font
+	end
+	
+	
+	
+	/** \brief Create decoration. */
+	public func Decoration createDecoration()
+		var DefaultDecoration decoration = DefaultDecoration.new()
+		this.initDefaultDecoration( decoration )
+		return decoration
+	end
+	
+	/** \brief Init default decoration part for use by subclasses. */
+	protected func void initDefaultDecoration( DefaultDecoration decoration )
+		decoration.setActiveTitleColor( this.pColorActiveTitle )
+		decoration.setInactiveTitleColor( this.pColorInactiveTitle )
+		decoration.setActiveTitleFont( this.pFontActiveTitle )
+		decoration.setInactiveTitleFont( this.pFontInactiveTitle )
+	end
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | active.title.textColor | Color | setActiveTitleColor |
+	 * | active.title.font | Font | setActiveTitleFont |
+	 * | inactive.title.textColor | Color | setInactiveTitleColor |
+	 * | inactive.title.font | Font | setInactiveTitleFont |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "active.title.textColor" )
+			this.setActiveTitleColor( value cast Color )
+			
+		elif name.equals( "active.title.font" )
+			this.setActiveTitleFont( value cast Font )
+			
+		elif name.equals( "inactive.title.textColor" )
+			this.setInactiveTitleColor( value cast Color )
+			
+		elif name.equals( "inactive.title.font" )
+			this.setInactiveTitleFont( value cast Font )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create factory copy. */
+	public func DecorationFactory copyFactory()
+		return DefaultDecorationFactory.new()
+	end
+end

@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief DynamicSkin renderable type.
+ */
+enum DynamicSkinRenderableType
+	/**
+	 * \brief Floating point value type.
+	 * 
+	 * For texture properties requiring more than one component the same
+	 * value is used for all components except alphe which is set to 1.
+	 */
+	value
+	
+	/**
+	 * \brief Color type.
+	 * 
+	 * For texture properties requiring less than 4 components the
+	 * intensities red, green and blue are consumed in this order.
+	 */
+	color
+	
+	/**
+	 * \brief Image type.
+	 * 
+	 * Image pixels define content of texture properties. For texture
+	 * properties requiring less than 4 components the pixel intensities
+	 * red, green and blue are consumed in this order. For texture
+	 * properties requring a single value black is used. If image is not
+	 * set black color is used.
+	 */
+	image
+	
+	/**
+	 * \brief Canvas type.
+	 * 
+	 * Canvas is rendered into a texture and the pixels thereof used to
+	 * define content of texture properties. For texture properties
+	 * requiring less than 4 components the pixel intensities red, green
+	 * and blue are consumed in this order. For texture properties
+	 * requring a single value black is used. If canvas is not set black
+	 * color is used.
+	 */
+	canvas
+	
+	/**
+	 * \brief Video frame type.
+	 * 
+	 * Video player frame pixels define content of texture properties. For
+	 * texture properties requiring less than 4 components the pixel intensities
+	 * red, green and blue are consumed in this order. For texture properties
+	 * requring a single value black is used. The video player is not modified
+	 * by the renderable. The user has to update the video player. If image is
+	 * not set black color is used.
+	 */
+	videoFrame
+	
+	/**
+	 * \brief Camera type.
+	 * 
+	 * World rendered using a camera is used to define content of texture
+	 * properties. For texture properties requiring less than 4 components
+	 * the pixel intensities red, green and blue are consumed in this order.
+	 * For texture properties requring a single value black is used. If
+	 * camera is not set black color is used.
+	 */
+	camera
+end

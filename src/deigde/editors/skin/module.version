@@ -1,0 +1,4 @@
+SKIN {
+  global: SkinEditorCreateModule;
+  local: *;
+};

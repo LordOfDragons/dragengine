@@ -1,0 +1,255 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Arrange widgets in box formation along X or Y axis at minimum size.
+ * 
+ * Widgets are resized to fit their requested minimum size. Extra space is distributed around
+ * all laid out widgets using percentage placement to place the widget box in the container.
+ * In contrary to BoxLayout the widgets are not forced to equal size nor are the stretched.
+ * The placement allows to place the box anywhere inside the container area. A value of 0
+ * places the widgets at the left respective top border. A value of 1 places the widgets at
+ * the right respective bottom border. The default value of 0.5 centers the widgets in the
+ * center of the container. Values outside the range from 0 to 1 are allowed and can be used
+ * for example to create "fly-in/fly-out" effects by animating the placement value. You have
+ * to call Container.doLayout() after changing the parameter to apply the changes.
+ * 
+ * Instances of this layout can be shared by multiple widgets.
+ */
+class CentrizedBoxLayout extends BoxLayout
+	private var float pPlacementX
+	private var float pPlacementY
+	
+	
+	
+	/**
+	 * \brief Create layout with 0 gap and 50% placement.
+	 */
+	public func new( LayoutAxis axis ) this( axis, 0.5, 0.5 )
+	end
+	
+	/**
+	 * \brief Create layout with gap and 50% placement.
+	 * \param gap Size of gap between child widgets. Can be negative to overlap widgets.
+	 * \throws EInvalidParam axis is not LayoutAxis.x or LayoutAxis.y.
+	 */
+	public func new( LayoutAxis axis, int gap ) this( axis, gap, 0.5, 0.5 )
+	end
+	
+	/**
+	 * \brief Create layout with 0 gap and placement.
+	 * \param gap Size of gap between child widgets. Can be negative to overlap widgets.
+	 * \param placementX Percentage placement of box inside available container width.
+	 * \param placementY Percentage placement of box inside available container height.
+	 * \throws EInvalidParam axis is not LayoutAxis.x or LayoutAxis.y.
+	 */
+	public func new( LayoutAxis axis, float placementX, float placementY ) super( axis )
+		this.pPlacementX = placementX
+		this.pPlacementY = placementY
+	end
+	
+	/**
+	 * \brief Create layout with gap and placement.
+	 * \param gap Size of gap between child widgets. Can be negative to overlap widgets.
+	 * \param placementX Percentage placement of box inside available container width.
+	 * \param placementY Percentage placement of box inside available container height.
+	 * \throws EInvalidParam axis is not LayoutAxis.x or LayoutAxis.y.
+	 */
+	public func new( LayoutAxis axis, int gap, float placementX, float placementY ) super( axis, gap )
+		this.pPlacementX = placementX
+		this.pPlacementY = placementY
+	end
+	
+	
+	
+	/**
+	 * \brief Percentage placement of box inside available container width.
+	 * 
+	 * Value of 0 places the box on the left border. Value 1 places the box on the right
+	 * border. Values in between shift the box between left and right border. Values outside
+	 * the range of 0 to 1 are allowed.
+	 */
+	public func float getPlacementX()
+		return this.pPlacementX
+	end
+	
+	/**
+	 * \brief Set percentage placement of box inside available container width.
+	 * 
+	 * Value of 0 places the box on the left border. Value 1 places the box on the right
+	 * border. Values in between shift the box between left and right border. Values outside
+	 * the range of 0 to 1 are allowed.
+	 */
+	public func void setPlacementX( float placement )
+		this.pPlacementX = placement
+	end
+	
+	/**
+	 * \brief Percentage placement of box inside available container height.
+	 * 
+	 * Value of 0 places the box on the top border. Value 1 places the box on the bottom
+	 * border. Values in between shift the box between top and bottom border. Values outside
+	 * the range of 0 to 1 are allowed.
+	 */
+	public func float getPlacementY()
+		return this.pPlacementY
+	end
+	
+	/**
+	 * \brief Set percentage placement of box inside available container height.
+	 * 
+	 * Value of 0 places the box on the top border. Value 1 places the box on the bottom
+	 * border. Values in between shift the box between top and bottomborder. Values outside
+	 * the range of 0 to 1 are allowed.
+	 */
+	public func void setPlacementY( float placement )
+		this.pPlacementY = placement
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+		var int count = container.getWidgetCount()
+		
+		var Point paddingSize = container.getPadding().getSize()
+		var int paddingLeft = container.getPadding().getLeft()
+		var int paddingTop = container.getPadding().getTop()
+		var int width = container.getContainerWidth()
+		var int height = container.getContainerHeight()
+		var int gap = this.getGap()
+		
+		// determine first the minimum size needed. this is the real minimum size not a
+		// potentially artifial minimal size from container.getMinimumSize()
+		var LayoutAxis axis = this.getAxis()
+		var bool negate = ( axis == LayoutAxis.inverseX or axis == LayoutAxis.inverseY )
+		var Point minSize = this.getMinimumSizeFor( container, width, height ) - paddingSize
+		
+		// now determine how much additional space we have got
+		// at our disposal to size child widgets beyond minimum
+		var Point childSize
+		var Widget child
+		var int w
+		
+		var BorderSize borderSize
+		var int borderHeight
+		var int borderWidth
+		var int borderLeft
+		var int borderTop
+		
+		var int offsetx = paddingLeft + ( ( ( width - minSize.getX() ) * this.pPlacementX + 0.5 ) cast int )
+		var int offsety = paddingTop + ( ( ( height - minSize.getY() ) * this.pPlacementY + 0.5 ) cast int )
+		
+		select axis
+		case LayoutAxis.x, LayoutAxis.inverseX
+			var int boxHeight = minSize.getY()
+			var int cx = offsetx
+			if negate
+				cx += minSize.getX()
+			end
+			
+			for w = 0 to count
+				child = container.getWidget( w )
+				if not child.getVisible()
+					continue
+				end
+				
+				childSize = child.getMinimumSizeForHeight( height )
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderWidth = 0
+					borderHeight = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				
+				child.setSize( childSize )
+				
+				if negate
+					cx -= childSize.getX() + borderWidth + gap
+					child.setPosition( Point.new( cx + borderLeft + gap, offsety + borderTop \
+						+ ( boxHeight - childSize.getY() - borderHeight ) / 2 ) )
+					
+				else
+					child.setPosition( Point.new( cx + borderLeft, offsety + borderTop \
+						+ ( boxHeight - childSize.getY() - borderHeight ) / 2 ) )
+					cx += childSize.getX() + borderWidth + gap
+				end
+			end
+			
+		else
+			var int boxWidth = minSize.getX()
+			var int cy = offsety
+			if negate
+				cy += minSize.getY()
+			end
+			
+			for w = 0 to count
+				child = container.getWidget( w )
+				if not child.getVisible()
+					continue
+				end
+				
+				childSize = child.getMinimumSizeForWidth( width )
+				
+				if child.getBorder() == null
+					borderLeft = 0
+					borderTop = 0
+					borderHeight = 0
+					borderWidth = 0
+					
+				else
+					borderSize = child.getBorder().getBorderSize()
+					borderLeft = borderSize.getLeft()
+					borderTop = borderSize.getTop()
+					borderWidth = borderSize.getWidth()
+					borderHeight = borderSize.getHeight()
+				end
+				
+				child.setSize( childSize )
+				
+				if negate
+					cy -= childSize.getY() + borderHeight + gap
+					child.setPosition( Point.new( offsetx + borderLeft \
+						+ ( boxWidth - childSize.getX() - borderWidth ) / 2, \
+							cy + borderTop + gap ) )
+					
+				else
+					child.setPosition( Point.new( offsetx + borderLeft \
+						+ ( boxWidth - childSize.getX() - borderWidth ) / 2, \
+							cy + borderTop ) )
+					cy += childSize.getY() + borderHeight + gap
+				end
+			end
+		end
+	end
+end

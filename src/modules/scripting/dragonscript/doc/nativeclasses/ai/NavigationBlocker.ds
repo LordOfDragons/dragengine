@@ -1,0 +1,92 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Navigation blocker.
+ * 
+ * This is a native class.
+ */
+class NavigationBlocker
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create navigation blocker. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Orientation orientation )
+	end
+	
+	/** \brief Layer number. */
+	public func int getLayer()
+	end
+	
+	/** \brief Set layer number. */
+	public func void setLayer( int layer )
+	end
+	
+	/** \brief Space type to navigate. */
+	public func NavigationSpaceType getSpaceType()
+	end
+	
+	/** \brief Set space type to navigate. */
+	public func void setSpaceType( NavigationSpaceType spaceType )
+	end
+	
+	/**
+	 * \brief Blocking priority.
+	 * \details Blocks navigation meshes with a smaller or equal blocking priority.
+	 */
+	public func int getBlockingPriority()
+	end
+	
+	/**
+	 * \brief Set blocking priority.
+	 * \details Blocks navigation meshes with a smaller or equal blocking priority.
+	 */
+	public func void setBlockingPriority( int priority )
+	end
+	
+	/** \brief Enabled. */
+	public func bool getEnabled()
+	end
+	
+	/** \brief Set enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	
+	
+	
+	/** \brief Shape list. */
+	public func ShapeList getShapeList()
+	end
+	
+	/** \brief Set shape list. */
+	public func void setShapeList( ShapeList shapeList )
+	end
+	/*@}*/
+end

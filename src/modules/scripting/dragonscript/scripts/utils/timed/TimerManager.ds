@@ -1,0 +1,108 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Manage timers.
+ * 
+ * Provides default timer manager for simple timer creation. Individual instances of
+ * timer managers can be created to provide timer handling at different speeds if required.
+ */
+class TimerManager
+	/** \brief Default timer manager. */
+	private static var TimerManager pDefaultManager = null
+	
+	/** \brief Registered timers */
+	private var SafeArray pTimers
+	
+	
+	
+	/** \brief Create timer manager. */
+	public func new()
+		this.pTimers = SafeArray.new()
+	end
+	
+	
+	
+	/** \brief Register timer. */
+	public func void addTimer( Timer timer )
+		if timer == null
+			throw EInvalidParam.new()
+		end
+		this.pTimers.add( timer )
+	end
+	
+	/** \brief Unregister timer. */
+	public func void removeTimer( Timer timer )
+		this.pTimers.removeIfPresent( timer )
+	end
+	
+	
+	
+	/**
+	 * \brief Advance timers.
+	 * 
+	 * Timer implementation handles triggering. Ensures all timers are advanced once.
+	 */
+	public func void advance( float elapsed )
+		if elapsed <= 0.0
+			return
+		end
+		
+		this.pTimers.forEach( block Timer each
+			each.advance( elapsed )
+		end )
+	end
+	
+	
+	
+	/** \brief Default timer manager. */
+	public static func TimerManager getDefault()
+		if pDefaultManager == null
+			pDefaultManager = TimerManager.new()
+		end
+		return pDefaultManager
+	end
+	
+	/**
+	 * \brief Advance timers of default timer manager.
+	 * 
+	 * Timer implementation handles triggering. Ensures all timers are advanced once.
+	 */
+	public static func void advanceDefault()
+		getDefault().advance( Engine.getElapsedTime() )
+	end
+	
+	/**
+	 * \brief Advance timers of default timer manager.
+	 * 
+	 * Timer implementation handles triggering. Ensures all timers are advanced once.
+	 */
+	public static func void advanceDefault( float elapsed )
+		getDefault().advance( elapsed )
+	end
+end

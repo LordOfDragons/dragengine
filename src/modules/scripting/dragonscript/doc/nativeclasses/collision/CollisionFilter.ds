@@ -1,0 +1,84 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable collision filter.
+ * 
+ * This is a native class.
+ */
+class CollisionFilter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create collision filter with empty category and full filter. */
+	public func new()
+	end
+	
+	/** \brief Create collision filter with category and filter set to the same layer mask. */
+	public func new( LayerMask layerMask )
+	end
+	
+	/** \brief Create collision filter. */
+	public func new( LayerMask category, LayerMask filter )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Category. */
+	public func LayerMask getCategory()
+	end
+	
+	/** \brief Filter. */
+	public func LayerMask getFilter()
+	end
+	
+	/**
+	 * \brief Collision filters can collider.
+	 * \details To collide the \em filter of one collision filter and the \em category of the
+	 *          other collision filter have to share at least one bit. This has to be true
+	 *          for both collision filters.
+	 */
+	public func bool collides( CollisionFilter collisionFilter )
+	end
+	
+	/**
+	 * \brief Collision filters can not collide.
+	 * \details To not collide the \em filter of one collision filter and the \em category of the
+	 *          other collision filter have to share no bits. This has to be true for both
+	 *          collision filters.
+	 */
+	public func bool collidesNot( CollisionFilter collisionFilter )
+	end
+	
+	
+	
+	/** \brief Convert to string representation. */
+	public func String toString()
+	end
+	
+	/**
+	 * \brief Collision filter is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type CollisionFilter and both have the same bits
+	 *          set in the filter and category.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

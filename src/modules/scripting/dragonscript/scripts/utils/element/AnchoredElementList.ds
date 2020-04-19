@@ -1,0 +1,98 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief List of anchored elements.
+ * 
+ * Allows registering Element instances using a unique name for example for use with
+ * conversations where it is not convenient to locate elements using their UniqueID.
+ */
+class AnchoredElementList
+	private var Dictionary pElements
+	
+	
+	
+	/** \brief Create anchored element list. */
+	public func new()
+		this.pElements = Dictionary.new()
+	end
+	
+	/** \brief Dispose of list. */
+	public func void dispose()
+		this.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of anchored elements. */
+	public func int getCount()
+		return this.pElements.getCount()
+	end
+	
+	/** \brief Anchored element is present. */
+	public func bool has( StringID id )
+		return this.pElements.has( id )
+	end
+	
+	/** \brief Anchored element with identifier or \em null if absent. */
+	public func Element getAt( StringID id )
+		return this.pElements.getAt( id ) cast Element
+	end
+	
+	/** \brief Add anchored element. */
+	public func void add( StringID id, Element element )
+		if id == null or this.pElements.has( id )
+			throw EInvalidParam.new()
+		end
+		this.pElements.setAt( id, element )
+	end
+	
+	/** \brief Remove anchored element. */
+	public func void remove( StringID id )
+		this.pElements.remove( id )
+	end
+	
+	/** \brief Remove all anchored elements. */
+	public func void removeAll()
+		this.pElements.removeAll()
+	end
+	
+	/** \brief Visit anchored elements with block with parameter Element. */
+	public func void forEach( Block ablock )
+		this.pElements.forEachValue( ablock )
+	end
+	
+	/**
+	 * \brief Find anchored elements with block.
+	 * 
+	 * Block is called with arguments StringID (identifier) and Element. Block has to return
+	 * true if the element has been found.
+	 */
+	public func Element find( Block ablock )
+		return this.pElements.find( ablock ) cast Element
+	end
+end

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<version>130</version>
+	<!-- <version>140</version> nvidia hates this, ati works with it -->
+	
+	<name>DefRen Light Point</name>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	<texture name='texSpecular' target='3'/>
+	<texture name='texShadowLow' target='4'/>
+	<texture name='texShadowSolid' target='5'/>
+	<texture name='texShadowTransp' target='6'/>
+	<texture name='texShadowTranspColor' target='7'/>
+	<texture name='texNoise2D' target='8'/>
+	
+	<parameter name='pLightPos'/> <!-- 0 -->
+	<parameter name='pLightColor'/> <!-- 1 -->
+	<parameter name='pLightColorAmbient'/> <!-- 2 -->
+	<parameter name='pLightAtten'/> <!-- 3 -->
+	<parameter name='pLightDamp'/> <!-- 4 -->
+	<parameter name='pPosTransform'/> <!-- 5 -->
+	<parameter name='pShadowMatrix'/> <!-- 6 -->
+	<parameter name='pShaStaParams'/> <!-- 7 -->
+	<parameter name='pShaDynParams'/> <!-- 8 -->
+	<parameter name='pShaOpts2'/> <!-- 9 -->
+	<parameter name='pMatrixMVP'/> <!-- 10 -->
+	<parameter name='pMatrixMV'/> <!-- 11 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/light/lightvolume.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/light/point.glsl</sourceCode>
+</shader>

@@ -1,0 +1,282 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display list of choices for the player to select one from.
+ * 
+ * The choice is done asynchronously so the game scripts continue running. Once an option
+ * is selected a user provided ActionListener is triggered. The choices compose of a text
+ * and an optional image. The layout is determined by the used layout object.
+ * 
+ * Upon starting the player choice the window checks if the parent desktop mouse pointer is
+ * visible or not.
+ * 
+ * Mouse pointer is typically visible on games requiring the player to interact with the
+ * game by clicking on elements. In this case the player also clicks on the presented choice
+ * options to select them. By using GuiTheme styling hovering can be used to aid the player.
+ * 
+ * Mouse pointer is typically invisible on games using a first person type interaction.
+ * In this case the player chooses the presented choice options a bit differently. The mouse
+ * pointer is placed on the first choice option. When moving the mouse or pressing direction
+ * keys the mouse pointer is shifted over the center of the next choice option. By clicking
+ * the mouse button the hovered over choice is selected. Because the mouse pointer is not
+ * visible using GuiTheme selectors to do appropriate hovering is required otherwise the
+ * player does not know what option is the selected one.
+ * 
+ * By default the window captures the input processor. Upon starting the player choice the
+ * input processor on the BaseGameApp instance is stored and replaced by a widget input
+ * processor for parent desktop. Upon finishing the player choice the stored input processor
+ * is put back into BaseGameApp. This is required if the BaseGameApp uses a
+ * BindingInputProcess otherwise the player is unable to interact and finish the choice.
+ * If you are using already the desktop input processor for your game then there is no need
+ * to capture the input processor. Actually it could be looking strange if doing so. In this
+ * case disable the capturing. If you do not use BaseGameApp overwrite the
+ * replaceInputProcessor()  and restoreInputProcessor() method.
+ * 
+ * This behavior can be overwritten if desired.
+ * 
+ * Implements ConversationPlaybackPlayerChoice so the window can be directly used
+ * as player choice interface by a conversation playback if required.
+ */
+class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerChoice
+	private var PanelPlayerChoice pPanelPlayerChoice
+	private var bool pReplaceInputProcessor
+	private var InputProcessor pStoredInputProcessor
+	private var RectArea pStoredMouseArea
+	private var int pMaxEntryWidth
+	
+	
+	
+	/**
+	 * \brief Create player choice box.
+	 * 
+	 * Window is initially hidden.
+	 */
+	public func new( Desktop desktop ) super( Point.new(), desktop.getSize() )
+		this.pReplaceInputProcessor = true
+		this.pMaxEntryWidth = desktop.getSize().getX()
+		
+		this.runWhileBlockingLayout( block
+			this.setTitle( "" )
+			this.setDesignerSelector( "WindowPlayerChoice" )
+			this.setCanMove( false )
+			this.setCanResize( false )
+			this.setCanReorder( false )
+			this.setCanClose( false )
+			this.setCanMaximize( false )
+			this.setCanMinimize( false )
+			this.setVisible( false )
+			
+			this.pPanelPlayerChoice = this.createPanelPlayerChoice()
+			this.addWidget( this.pPanelPlayerChoice )
+		end )
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		this.pPanelPlayerChoice = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Replace input processor while player choice is in progress. */
+	public func bool getReplaceInputProcessor()
+		return this.pReplaceInputProcessor
+	end
+	
+	/** \brief Set to replace input processor while player choice is in progress. */
+	public func void setReplaceInputProcessor( bool restoreInputProcessor )
+		this.pReplaceInputProcessor = restoreInputProcessor
+	end
+	
+	/** \brief Maximum entry width. */
+	public func int getMaxEntryWidth()
+		return this.pMaxEntryWidth
+	end
+	
+	/** \brief Set maximum entry width. */
+	public func void setMaxEntryWidth( int width )
+		width = DEMath.max( width, 50 )
+		if width == this.pMaxEntryWidth
+			return
+		end
+		
+		this.pMaxEntryWidth = width
+		this.setWidth( width )
+	end
+	
+	
+	
+	/** \brief Remove all choices. */
+	public func void removeAllChoices()
+		this.pPanelPlayerChoice.removeAllChoices()
+	end
+	
+	/** \brief Add choice. */
+	public func void addChoice( String text, ActionListener action )
+		this.pPanelPlayerChoice.addChoice( text, action )
+	end
+	
+	/** \brief Add choice. */
+	public func void addChoice( String text, Image image, ActionListener action )
+		this.pPanelPlayerChoice.addChoice( text, image, action )
+	end
+	
+	/**
+	 * \brief Start player choosing.
+	 * 
+	 * Shows the choices to the player. Overwrite if you want to do a begin choosing
+	 * animation. The default implementation shows the window centered on screen,
+	 * shows it and moves it to the top. If there are no options an exception is thrown.
+	 */
+	public func void startChoosing()
+		this.pPanelPlayerChoice.startChoosing()
+		
+		this.fitToContent()
+		this.centerWindow()
+		this.setVisible( true )
+		this.moveToTop()
+		
+		if this.pReplaceInputProcessor
+			this.replaceInputProcessor()
+			this.replaceMouseArea()
+		end
+		
+		this.hoverOverFirstOption()
+	end
+	
+	/**
+	 * \brief End player choosing.
+	 * 
+	 * This hides the choices. Overwrite to if you want to do an end choosing animation.
+	 * The default implementation hides the window.
+	 */
+	public func void endChoosing()
+		if this.pReplaceInputProcessor
+			this.restoreInputProcessor()
+			this.restoreMouseArea()
+		end
+		
+		this.setVisible( false )
+		
+		// reset the window size to the desired initial size. this is required since
+		// PanelPlayerChoice by default uses the parent container width to figure out how wide
+		// options can be to do the proper layout. if we stay at the current size the calculation
+		// will produce smaller and smaller layouts until nothing works anymore
+		this.setWidth( this.pMaxEntryWidth )
+		
+		// end choosing
+		this.pPanelPlayerChoice.endChoosing()
+	end
+	
+	
+	
+	/** \brief Stored input processor or \em null. */
+	protected func InputProcessor getStoredInputProcessor()
+		return this.pStoredInputProcessor
+	end
+	
+	/** \brief Set stored input processor or \em null. */
+	protected func void setStoredInputProcessor( InputProcessor inputProcessor )
+		this.pStoredInputProcessor = inputProcessor
+	end
+	
+	/** \brief Stored mouse area or \em null. */
+	protected func RectArea getStoredMouseArea()
+		return this.pStoredMouseArea
+	end
+	
+	/** \brief Set stored mouse area or \em null. */
+	public func void setStoredMouseArea( RectArea mouseArea )
+		this.pStoredMouseArea = mouseArea
+	end
+	
+	
+	
+	/** \brief Create player choice panel. */
+	protected func PanelPlayerChoice createPanelPlayerChoice()
+		return PanelPlayerChoice.new()
+	end
+	
+	/**
+	 * \brief Store BaseGameApp input processor and replace it with WidgetInputProcessor for desktop.
+	 */
+	protected func void replaceInputProcessor()
+		this.pStoredInputProcessor = BaseGameApp.getApp().getInputProcessor()
+		BaseGameApp.getApp().setInputProcessorDesktop()
+	end
+	
+	/**
+	 * \brief Restore input processor.
+	 * 
+	 * Replaces input processor in BaseGameApp with the previously stored input processor.
+	 */
+	protected func void restoreInputProcessor()
+		if this.pStoredInputProcessor == null
+			return
+		end
+		
+		BaseGameApp.getApp().setInputProcessor( this.pStoredInputProcessor )
+		this.pStoredInputProcessor = null
+	end
+	
+	/**
+	 * \brief Store mouse area of parent desktop and replace it with window boundary.
+	 */
+	protected func void replaceMouseArea()
+		var Desktop desktop = this.getDesktop()
+		this.pStoredMouseArea = desktop.getMouseArea()
+		desktop.setMouseArea( this.getBoundary() )
+	end
+	
+	/**
+	 * \brief Restore mouse area.
+	 * 
+	 * Replaces mouse area in parent desktop with stored mouse area.
+	 */
+	protected func void restoreMouseArea()
+		if this.pStoredMouseArea == null
+			return
+		end
+		
+		this.getDesktop().setMouseArea( this.pStoredMouseArea )
+		this.pStoredMouseArea = null
+	end
+	
+	/** \brief Move mouse cursor to hover over first option. */
+	protected func void hoverOverFirstOption()
+		var Desktop desktop = this.getDesktop()
+		var Widget widget = this.findFocusableWidget()
+		widget.grabFocus()
+		desktop.warpCenterMouseIn( widget )
+	end
+end

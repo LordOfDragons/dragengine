@@ -1,0 +1,178 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Animate camera for interactive main menu.
+ * 
+ * Animates camera between positions using a smooth interpolation. This gives a slow in/out
+ * acceleration for a transition going easy on the eye.
+ */
+class IMMAnimateCamera
+	/** \brief Interactive main menu. */
+	private var InteractiveMainMenu pMainMenu
+	
+	/** \brief Current camera spot. */
+	private var IMMCameraSpot pCurSpot
+	
+	/** \brief Camera spot to transition to or null. */
+	private var IMMCameraSpot pTargetSpot
+	
+	/** \brief Transition time. */
+	private var float pTransitionTime
+	
+	/** \brief Elapsed transition time. */
+	private var float pElapsed
+	
+	
+	
+	/** \brief Create animate camera for interactive main menu. */
+	public func new( InteractiveMainMenu mainMenu )
+		if mainMenu == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMainMenu = mainMenu
+		this.pTransitionTime = 0.0
+		this.pElapsed = 0.0
+	end
+	
+	
+	
+	/** \brief Interactive main menu. */
+	public func InteractiveMainMenu getMainMenu()
+		return this.pMainMenu
+	end
+	
+	/** \brief Current camera spot. */
+	public func IMMCameraSpot getCurSpot()
+		return this.pCurSpot
+	end
+	
+	/**
+	 * \brief Set current camera spot.
+	 * 
+	 * Stops transition if running and clears target.
+	 */
+	public func void setCurSpot( IMMCameraSpot spot )
+		this.pCurSpot = spot
+		this.pTargetSpot = null
+		this.pTransitionTime = 0.0
+		this.pElapsed = 0.0
+	end
+	
+	/** \brief Camera spot to transition to or null. */
+	public func IMMCameraSpot getTargetSpot()
+		return this.pTargetSpot
+	end
+	
+	/** \brief Transition time. */
+	public func float getTransitionTime()
+		return this.pTransitionTime
+	end
+	
+	/** \brief Elapsed transition time. */
+	public func float getElapsed()
+		return this.pElapsed
+	end
+	
+	
+	
+	/** \brief Camera is in transition. */
+	public func bool inTransition()
+		return this.pTargetSpot != null
+	end
+	
+	/**
+	 * \brief Transition to camera spot.
+	 * 
+	 * Starts transition if current spot is not null. If current spot is null sets target
+	 * as current camera instead immediatly.
+	 */
+	public func void transitionTo( IMMCameraSpot spot, float transitionTime )
+		if this.pCurSpot == null
+			this.setCurSpot( spot )
+			return
+		end
+		
+		transitionTime = DEMath.max( transitionTime, 0.0 )
+		if transitionTime < 0.01
+			this.setCurSpot( spot )
+			return
+		end
+		
+		this.pTargetSpot = spot
+		this.pTransitionTime = transitionTime
+		this.pElapsed = 0.0
+	end
+	
+	/** \brief Update camera. */
+	public func void update( float elapsed )
+		if this.pTargetSpot != null
+			// transition
+			this.pElapsed += elapsed
+			if this.pElapsed >= this.pTransitionTime
+				this.setCurSpot( this.pTargetSpot )
+			end
+		end
+		
+		this.updateCamera()
+	end
+	
+	
+	
+	/** \brief Update camera. */
+	protected func void updateCamera()
+		var DVector position
+		var Quaternion orientation
+		
+		if this.pCurSpot == null
+			position = DVector.new()
+			orientation = Quaternion.new()
+			
+		elif this.pTargetSpot == null
+			position = this.pCurSpot.getPosition()
+			orientation = this.pCurSpot.getOrientation()
+			
+		else
+			var float blend = DEMath.smoothStep( this.pElapsed, 0.0, this.pTransitionTime )
+			
+			position = this.pCurSpot.getPosition() * ( 1.0 - blend ) \
+				+ this.pTargetSpot.getPosition() * blend
+			orientation = this.pCurSpot.getOrientation().slerp( \
+				this.pTargetSpot.getOrientation(), blend )
+		end
+		
+		var Camera camera = this.pMainMenu.getCamera()
+		camera.setPosition( position )
+		camera.setOrientation( orientation )
+		
+		var Microphone microphone = this.pMainMenu.getMicrophone()
+		microphone.setPosition( position )
+		microphone.setOrientation( orientation )
+	end
+end

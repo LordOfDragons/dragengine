@@ -1,0 +1,262 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Run command matching binding from binding manager.
+ * 
+ * Calls BindingManager.onInputDevicesChanged() if InputEventType.deviceAttached,
+ * InputEventType.deviceDetached or InputEventType.deviceParamsChanged is processed.
+ */
+class BindingInputProcessor extends DefaultInputProcessor
+	/** \brief Binding manager */
+	private var BindingManager pBindingManager
+	
+	/** \brief Mouse axis scaling factor. */
+	private var float pScaleMouseAxis
+	
+	/** \brief Mouse wheel scaling factor. */
+	private var float pScaleMouseWheel
+	
+	
+	
+	/** \brief Create input processor. */
+	public func new( BindingManager bindingManager )
+		if bindingManager == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pBindingManager = bindingManager
+		this.pScaleMouseAxis = 0.2
+		this.pScaleMouseWheel = 0.2
+	end
+	
+	
+	
+	/** \brief Binding manager */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Mouse axis scaling factor. */
+	public func float getScaleMouseAxis()
+		return this.pScaleMouseAxis
+	end
+	
+	/** \brief Set mouse axis scaling factor. */
+	public func void setScaleMouseAxis( float scale )
+		this.pScaleMouseAxis = DEMath.max( scale, 0.0 )
+	end
+	
+	/** \brief Mouse wheel scaling factor. */
+	public func float getScaleMouseWheel()
+		return this.pScaleMouseWheel
+	end
+	
+	/** \brief Set mouse wheel scaling factor. */
+	public func void setScaleMouseWheel( float scale )
+		this.pScaleMouseWheel = DEMath.max( scale, 0.0 )
+	end
+	
+	
+	
+	/**
+	 * \brief Activate binding command.
+	 * 
+	 * Default implementation calls Command.start() .
+	 */
+	protected func void activate( Binding binding )
+		binding.getCommand().start()
+	end
+	
+	/**
+	 * \brief Deactivate binding command.
+	 * 
+	 * Default implementation calls Command.stop() .
+	 */
+	protected func void deactivate( Binding binding )
+		binding.getCommand().stop()
+	end
+	
+	/**
+	 * \brief Relative analog input to binding command.
+	 * 
+	 * Default implementation calls Command.analogRelative() .
+	 */
+	protected func void analogRelative( Binding binding, float value )
+		binding.getCommand().analogRelative( value )
+	end
+	
+	/**
+	 * \brief Absolute analog input to binding command.
+	 * 
+	 * Default implementation calls Command.analogRelative() .
+	 */
+	protected func void analogAbsolute( Binding binding, float value )
+		binding.getCommand().analogAbsolute( value )
+	end
+	
+	
+	
+	/** \brief Process input event. */
+	public func void inputEvent( InputEvent event )
+		select event.getType()
+		case InputEventType.keyPress, \
+			InputEventType.mousePress, \
+			InputEventType.buttonPress
+				var Binding binding = this.pBindingManager.findButtonBinding( \
+					event.getDevice(), event.getCode() )
+				if binding != null
+					this.activate( binding )
+				end
+			
+		case InputEventType.keyRelease, \
+			InputEventType.mouseRelease, \
+			InputEventType.buttonRelease
+				var Binding binding = this.pBindingManager.findButtonBinding( \
+					event.getDevice(), event.getCode() )
+				if binding != null
+					this.deactivate( binding )
+				end
+			
+		case InputEventType.mouseMove
+			// first axis is X axis or horizontal axis
+			var Binding binding = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode() )
+			if binding != null
+				if binding.getInverseAxis()
+					this.analogRelative( binding, this.pScaleMouseAxis * -event.getX() )
+					
+				else
+					this.analogRelative( binding, this.pScaleMouseAxis * event.getX() )
+				end
+			end
+			
+			// second axis is Y axis or vertical axis
+			binding = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode() + 1 )
+			if binding != null
+				if binding.getInverseAxis()
+					this.analogRelative( binding, this.pScaleMouseAxis * -event.getY() )
+					
+				else
+					this.analogRelative( binding, this.pScaleMouseAxis * event.getY() )
+				end
+			end
+			
+		case InputEventType.mouseWheel
+			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode(), false )
+			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode(), true )
+			if bindingPositive == null and bindingNegative == null
+				break
+			end
+			
+			// analog input
+			var int value = event.getX() + event.getY()
+			
+			if bindingPositive != null
+				this.analogRelative( bindingPositive, this.pScaleMouseWheel * value )
+				
+			else
+				this.analogRelative( bindingNegative, this.pScaleMouseWheel * -value )
+			end
+			
+			// simulate button presses
+			if value > 0
+				if bindingPositive != null
+					while value-- > 0
+						this.activate( bindingPositive )
+						this.deactivate( bindingPositive )
+					end
+				end
+				
+			elif value < 0
+				if bindingNegative != null
+					while value++ < 0
+						this.activate( bindingNegative )
+						this.deactivate( bindingNegative )
+					end
+				end
+			end
+			
+		case InputEventType.axisMove
+			// axis can be used for buttons too. in this case the value is important to decide
+			// the right command to use. to support this properly first check if a binding
+			// exists with the right value range. if this is not the case try the axis
+			// without value range.
+			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode(), false )
+			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
+				event.getDevice(), event.getCode(), true )
+			if bindingPositive == null and bindingNegative == null
+				break
+			end
+			
+			// for axis input there should exist only one binding
+			var float value = event.getValue()
+			
+			if bindingPositive != null
+				this.analogAbsolute( bindingPositive, value )
+				
+			else
+				this.analogAbsolute( bindingNegative, -value )
+			end
+			
+			// simulate button presses
+			if bindingPositive != null
+				var bool simulatePressed = value > 0.5
+				
+				if simulatePressed != bindingPositive.getSimulateAxisPressed()
+					if simulatePressed
+						this.activate( bindingPositive )
+						
+					else
+						this.deactivate( bindingPositive )
+					end
+					
+					bindingPositive.setSimulateAxisPressed( simulatePressed )
+				end
+			end
+			
+			if bindingNegative != null
+				var bool simulatePressed = value < -0.5
+				
+				if simulatePressed != bindingNegative.getSimulateAxisPressed()
+					if simulatePressed
+						this.activate( bindingNegative )
+						
+					else
+						this.deactivate( bindingNegative )
+					end
+					
+					bindingNegative.setSimulateAxisPressed( simulatePressed )
+				end
+			end
+		end
+	end
+end

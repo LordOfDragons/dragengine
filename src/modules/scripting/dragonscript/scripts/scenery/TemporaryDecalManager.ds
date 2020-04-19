@@ -1,0 +1,122 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Manage list of temporary decals.
+ * 
+ * Typical temporary decals are weapon damages. To avoid hogging memory and loosing speed
+ * these temporary decals only stay alive for a given amount of time before they are removed.
+ * The manager provides the default behavoir to delete decals once their time to live reach
+ * 0 or below. The check is not done every update to avoid eating cpu time. The update
+ * interval indicates after how many seconds a test is carried out. This avoids wasting cpu
+ * time for checking decal times since usually a precise timing there is not required.
+ * Set this to 0 if you need full precision.
+ */
+class TemporaryDecalManager
+	private var Array pDecals
+	private var float pUpdateInterval
+	private var float pElapsedTime
+	
+	
+	
+	/** \brief Create temorary decal manager. */
+	public func new()
+		this.pDecals = Array.new()
+		this.pUpdateInterval = 1
+		this.pElapsedTime = 0
+	end
+	
+	
+	
+	/** \brief Update interval in seconds. */
+	public func float getUpdateInterval()
+		return this.pUpdateInterval
+	end
+	
+	/** \brief Set update interval in seconds. */
+	public func void setUpdateInterval( float seconds )
+		this.pUpdateInterval = DEMath.max( seconds, 0.0 )
+	end
+	
+	/** \brief Elapsed time in seconds. */
+	public func float getElapsedTime()
+		return this.pElapsedTime
+	end
+	
+	/** \brief Set elapsed time in seconds. */
+	public func void setElapsedTime( float seconds )
+		this.pElapsedTime = DEMath.max( seconds, 0.0 )
+	end
+	
+	
+	
+	/** \brief Count of decals. */
+	public func int getCount()
+		return this.pDecals.getCount()
+	end
+	
+	/** \brief Decal at index. */
+	public func TemporaryDecal getAt( int index )
+		return this.pDecals.getAt( index ) cast TemporaryDecal
+	end
+	
+	/** \brief Add decal. */
+	public func void add( TemporaryDecal decal )
+		if decal == null
+			throw EInvalidParam.new()
+		end
+		this.pDecals.add( decal )
+	end
+	
+	/** \brief Remove decal. */
+	public func void remove( TemporaryDecal decal )
+		this.pDecals.remove( decal )
+	end
+	
+	/** \brief Remove all decals. */
+	public func void removeAll()
+		this.pDecals.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Update decals.
+	 * 
+	 * Reduces the time to live of all decals by the given amount of seconds and removes
+	 * decals if their time to live drops below zero.
+	 */
+	public func void update( float elapsed )
+		this.pElapsedTime += elapsed
+		if this.pElapsedTime < this.pUpdateInterval
+			return
+		end
+		
+		this.pDecals.removeIf( block TemporaryDecal each
+			each.decreaseTimeToLive( elapsed )
+			return each.getTimeToLive() <= 0
+		end)
+	end
+end

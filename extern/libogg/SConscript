@@ -1,0 +1,110 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libogg-1.3.2'
+
+libLinkVersion = '0'
+libLinkName = 'ogg'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
+	staticFileName = 'lib/lib{}.a'.format( libLinkName )
+else:
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
+	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+
+# check if system libogg is present
+hasSystemOGG = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_libogg' ] != TernaryVariableNo:
+	hasSystemOGG = conf.CheckLibWithHeader( libLinkName, 'ogg/ogg.h', 'c++', 'ogg_sync_init(0);' )
+conf.Finish()
+
+if not hasSystemOGG and envLibrary[ 'with_system_libogg' ] == TernaryVariableYes:
+	Exit( 'Requested to use system libogg but no usable libogg found.' )
+
+libs = [ libLinkName ]
+
+parent_report[ 'use system libogg' ] = 'yes' if hasSystemOGG else 'no'
+
+if hasSystemOGG:
+	parent_targets[ 'lib_libogg' ] = {
+		'name' : 'Internal libogg library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libogg
+def liboggBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	script = createScriptHeader( env )
+	
+	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	
+	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline.append( '--enable-silent-rules' )
+	if buildStaticLinking:
+		cmdline.append( '--enable-shared=no' )
+		cmdline.append( '--enable-static=yes' )
+		cmdline.append( '--with-pic=yes' )
+	else:
+		cmdline.append( '--enable-shared=yes' )
+		cmdline.append( '--enable-static=no' )
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+	
+	script.append( 'cd src' )
+	script.append( 'make install-libLTLIBRARIES || exit 1' )
+	
+	script.append( 'cd ../include' )
+	script.append( 'make install || exit 1' )
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libogg')
+
+if buildStaticLinking:
+	targets = [ staticFileName ]
+else:
+	targets = [ libFileName ]
+targets.extend( [ 'include/ogg/ogg.h', 'include/ogg/config_types.h', 'include/ogg/os_types.h' ] )
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(liboggBuild, 'Build libogg' ) )
+
+depends = parent_env.Alias( 'lib_libogg', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+if buildStaticLinking:
+	libs = [ library[ 0 ] ]
+	runtimelibs = []
+else:
+	runtimelibs = [ library[ 0 ] ]
+
+parent_targets[ 'lib_libogg' ] = {
+	'name' : 'Internal libogg library',
+	'cpppath' : [ envLibrary.Dir( 'include' ) ],
+	'libpath' : [ envLibrary.Dir( 'lib' ) ],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

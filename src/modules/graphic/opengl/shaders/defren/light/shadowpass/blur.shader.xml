@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>DefRen Light ShadowPass Blur</name>
+	
+	<texture name="texDepth" target="0"/>
+	<texture name="texColor1" target="1"/>
+	<texture name="texColor2" target="2"/>
+	
+	<parameter name="pOffsets1"/> <!-- 0 -->
+	<parameter name="pOffsets2"/> <!-- 1 -->
+	<parameter name="pOffsets3"/> <!-- 2 -->
+	<parameter name="pOffsets4"/> <!-- 3 -->
+	<parameter name="pOptions"/> <!-- 4 -->
+	<parameter name="pPosTransform"/> <!-- 5 -->
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+uniform vec4 pOffsets1; // off1.u, off1.v, off2.u, off2.v
+uniform vec4 pOffsets2; // off3.u, off3.v, off4.u, off4.v
+uniform vec4 pOffsets3; // off5.u, off5.v, off6.u, off6.v
+uniform vec4 pOffsets4; // off7.u, off7.v, off8.u, off8.v
+uniform vec4 pOptions; // off0.u, off0.v, max.u, max.v
+uniform vec4 pPosTransform; // pt1, pt2, max-blur, blur-scale
+
+varying vec2 vTexCoord;
+
+void main( void ){
+	vTexCoord = gl_MultiTexCoord0.st + pOptions.xy;
+	gl_Position = vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+uniform vec4 pOffsets1; // off1.u, off1.v, off2.u, off2.v
+uniform vec4 pOffsets2; // off3.u, off3.v, off4.u, off4.v
+uniform vec4 pOffsets3; // off5.u, off5.v, off6.u, off6.v
+uniform vec4 pOffsets4; // off7.u, off7.v, off8.u, off8.v
+uniform vec4 pOptions; // off0.u, off0.v, max.u, max.v
+uniform vec4 pPosTransform; // position transform
+
+uniform sampler2D texDepth;
+uniform sampler2D texColor1;
+#ifdef HAS_BUFFER_2
+uniform sampler2D texColor2;
+#endif
+
+varying vec2 vTexCoord;
+
+const vec4 bf1 = vec4( 5.0 / 25.0 );
+const vec4 bf2 = vec4( 4.0 / 25.0 );
+const vec4 bf3 = vec4( 3.0 / 25.0 );
+const vec4 bf4 = vec4( 2.0 / 25.0 );
+const vec4 bf5 = vec4( 1.0 / 25.0 );
+
+#ifdef GEOM_ENCODED_DEPTH
+const vec3 unpackGeomDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+#endif
+
+void main( void ){
+#ifdef GEOM_ENCODED_DEPTH
+	float position = pPosTransform.x / ( pPosTransform.y - dot( texture2D( texDepth, vTexCoord ).rgb, unpackGeomDepth ) );
+#else
+	float position = pPosTransform.x / ( pPosTransform.y - texture2D( texDepth, vTexCoord ).r );
+#endif
+	float size = min( pPosTransform.z, pPosTransform.w / position );
+	
+	vec4 result = texture2D( texColor1, vTexCoord ) * bf1;
+	
+	vec4 tc = clamp( vTexCoord.stst + pOffsets1 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor1, tc.xy ) * bf2 + result;
+	result = texture2D( texColor1, tc.zw ) * bf3 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets2 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor1, tc.xy ) * bf4 + result;
+	result = texture2D( texColor1, tc.zw ) * bf5 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets3 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor1, tc.xy ) * bf2 + result;
+	result = texture2D( texColor1, tc.zw ) * bf3 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets4 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor1, tc.xy ) * bf4 + result;
+	gl_FragData[ 0 ] = texture2D( texColor1, tc.zw ) * bf5 + result;
+	
+#ifdef HAS_BUFFER_2
+	result = texture2D( texColor2, vTexCoord ) * bf1;
+	
+	tc = clamp( vTexCoord.stst + pOffsets1 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor2, tc.xy ) * bf2 + result;
+	result = texture2D( texColor2, tc.zw ) * bf3 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets2 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor2, tc.xy ) * bf4 + result;
+	result = texture2D( texColor2, tc.zw ) * bf5 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets3 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor2, tc.xy ) * bf2 + result;
+	result = texture2D( texColor2, tc.zw ) * bf3 + result;
+	
+	tc = clamp( vTexCoord.stst + pOffsets4 * vec4( size ), pOptions.xyxy, pOptions.zwzw );
+	result = texture2D( texColor2, tc.xy ) * bf4 + result;
+	gl_FragData[ 1 ] = texture2D( texColor2, tc.zw ) * bf5 + result;
+#endif
+}
+	]]></program>
+	
+</shader>

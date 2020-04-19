@@ -1,0 +1,1331 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+pin Dragengine.Gui
+pin Dragengine.Commands
+pin Dragengine.ConversationSystem
+pin Dragengine.LoadSave
+pin Dragengine.Networking
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+/**
+ * \brief Base class for game applications.
+ * 
+ * Basic implementation for game applications to use as super class. Provides various objects
+ * typically required to create a game with. This superclass can be used for 3D and 2D oriented
+ * projects alike. This class implements management logic but no game logic in any way. A typical
+ * subclass implementation looks like this:
+ * 
+ * \code{.ds}
+ * pin Dragengine.Gui
+ * pin Dragengine.Scenery
+ * 
+ * class ExampleApp extends BaseGameApp
+ *    // handles loading the game world and handing control over to the player
+ *    class LoadExampleGame extends WindowGameWorld.Loader
+ *       public func new(WindowGameWorld window, String path) super(window)
+ *          setPathWorld(path)
+ *          setDecalBuilder(MyExampleDecalBuilder.new())
+ *       end
+ *       
+ *       public func void onLoadWorldFinished()
+ *          var BaseGameApp app = BaseGameApp.getApp()
+ *          var GameWorld gameWorld = getStubWorld().getGameWorld()
+ *          
+ *          // do your game specific init work on gameWorld after loading
+ *          
+ *          // spawn player actor and take control of it
+ *          var ElementClass elementClass = app.getElementClassList().getNamed("Actor")
+ *          var UniqueID uid = app.getIDGenerator().nextID()
+ *          var BaseActor player = StubElement.new(elementClass, uid).createElement() cast BaseActor
+ *          gameWorld.getSpawnPoints().getNamed("player").spawn(gameWorld, player)
+ *          player.getPlayerControllable().activate()
+ *          
+ *          // make camera and microphone track player actor automatically
+ *          getWindow().setCameraDirector(PlayerControlledActorCameraDirector.new())
+ *          
+ *          // finish up and switch control to be processed by bindings
+ *          super.onLoadWorldFinished()
+ *          app.setInputProcessorBindings()
+ *          app.finishLoadGameWorld()
+ *       end
+ *       
+ *       public func void onLoadWorldFailed()
+ *          super.onLoadWorldFailed()
+ *          BaseGameApp.getApp().cancelLoadGameWorld()
+ *          // fall back to main menu for example
+ *       end
+ *    end
+ *    
+ *    public func new()
+ *       pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
+ *       // set more properties here if required. do all init work in initGame()
+ *    end
+ *    
+ *    public func void initGame()
+ *       super.initGame()
+ *       
+ *       // do all your initialization work here load the game world.
+ *       // control will be handed to player once loading finished
+ *       startLoadGameWorld(LoadExampleGame.new(getWindowGameWorld(), "/content/world/game.deworld"))
+ *    end
+ *    
+ *    public func void cleanUp()
+ *       // clean and everything
+ *       super.cleanUp()
+ *    end
+ * end
+ * \endcode
+ * 
+ * This initializes the game and starts loading a game world. Once the loading finishes the
+ * control is handed over to the player. Instead of directly loading the game a main menu
+ * can be shown instead in initGame() which then does the game loading in time.
+ * 
+ * This class is designed to be used as singleton. Use the getApp() method everywhere to
+ * obtain the one and only game application instance.
+ */
+class BaseGameApp extends Game
+	/** \brief Path of default gui theme provided by the DragonScript module. */
+	public static fixed var String defaultPathGuiTheme = \
+		"/shareddata/guithemes/modern/modern.guitheme.xml"
+	
+	/** \brief Invert looking up-down setting key. */
+	public static fixed var String settingInputInvertLookVertical = "input.invertLookVertical"
+	
+	/**
+	 * \brief Collision filter bits.
+	 * 
+	 * Use like \code{.ds} filter.setBit(BaseGameApp.CollisionFilterBit.geometry) \endcode .
+	 * Add your own collision filter bits with value BaseGameApp.CollisionFilterBit.custom
+	 * onwards. Up to 64 bits can be used in collision filters.
+	 * 
+	 * Using these collision filter bits is not mandatory. If you create your own list from
+	 * scratch make sure to adjust the collision filter of all elements classes.
+	 */
+	public class CollisionFilterBit
+		/**
+		 * \brief Default collision filter for CollisionResponse.none geometry.
+		 * 
+		 * Geometry does not collide with other geometry. They only collider with dynamic
+		 * elements like CollisionFilterBit.actorAI and CollisionFilterBit.dynamic.
+		 */
+		public static fixed var int geometry = 0
+		
+		/**
+		 * \brief Geometry under influence of CollisionResponse.dynamic or CollisionResponse.kinematic.
+		 * 
+		 * Kinematic and dynamic geometry is used for all geometry which moves either
+		 * under kinematic or dynamic control. Collides with CollisionFilterBit.geometry,
+		 * CollisionFilterBit.actor and other CollisionFilterBit.dynamic. Usually slower
+		 * to process by physics modules than CollisionFilterBit.geometry.
+		 */
+		public static fixed var int dynamic = 1
+		
+		/**
+		 * \brief Collision filter for BaseActor collider.
+		 * 
+		 * Separate collision filter bit is required since BaseActor owns two colliders.
+		 * The regular collider is used for collision with other objects and is typically
+		 * a ColliderComponent closely fitting the actor geometry. The AI collider is used
+		 * to move the actor and do AI logic. The two of them are not allowed to collide.
+		 * 
+		 * CollisionFilterBit.actor does not collide with CollisionFilterBit.geometry
+		 * nor CollisionFilterBit.actorAI.
+		 */
+		public static fixed var int actor = 2
+		
+		/**
+		 * \brief Collision filter for BaseActor AI collider.
+		 * 
+		 * Separate collision filter bit is required since BaseActor owns two colliders.
+		 * The regular collider is used for collision with other objects and is typically
+		 * a ColliderComponent closely fitting the actor geometry. The AI collider is used
+		 * to move the actor and do AI logic. The two of them are not allowed to collide.
+		 * 
+		 * CollisionFilterBit.actorAI does collide with CollisionFilterBit.geometry and
+		 * CollisionFilterBit.actorAI but not CollisionFilterBit.actor.
+		 */
+		public static fixed var int actorAI = 3
+		
+		/**
+		 * \brief Collision filter for triggers and touch sensors.
+		 * 
+		 * Used by trigger and touch sensor based elements to limit what elements can
+		 * touch a trigger. Elements able to trigger triggers have to set this bit in their
+		 * collision filter filter.
+		 */
+		public static fixed var int trigger = 4
+		
+		/**
+		 * \brief Collision filter for particles.
+		 */
+		public static fixed var int particle = 5
+		
+		/**
+		 * \brief Collision filter for force fields.
+		 */
+		public static fixed var int forceField = 6
+		
+		/**
+		 * \brief First custom collision filter bit.
+		 * 
+		 * Add any number of custom filters starting with this value to properly support
+		 * more default filter bits added in the future.
+		 */
+		public static fixed var int custom = 7
+	end
+	
+	/**
+	 * \brief Layer masks.
+	 * 
+	 * Used to define what scene elements can interact with each other. The following
+	 * world elements use layer masks:
+	 * - Component
+	 * - Light
+	 * - Camera
+	 * - EnvMapProbe
+	 * - Microphone
+	 * - Speaker
+	 */
+	public class WorldLayerBit
+		/** \brief Default layer mask for normal rendering. */
+		public static fixed var int default = 0
+		
+		/**
+		 * \brief Geometry visible in environment maps.
+		 * 
+		 * Elements without this layer mask bit set are not included in environment map
+		 * probes even if the graphic module would otherwise do.
+		 */
+		public static fixed var int envmap = 1
+		
+		/**
+		 * \brief Geometry affectsing audio.
+		 * 
+		 * Elements without this layer mask bit set are not affecting sounds propagating from
+		 * speakers to microphones. Otherwise the skin textures assigned to the element affect
+		 * the sound propagation if they have appropriate audio properties set. Skin textures
+		 * can also set an "affects audio" property to prevent particular element textures
+		 * to affect sound. By using the layer mask bit the entire element is easily excluded
+		 * from audio processing altogether.
+		 */
+		public static fixed var int audio = 2
+		
+		/**
+		 * \brief First custom layer bit.
+		 * 
+		 * Add any number of layer bits starting with this value to properly support more
+		 * default layer mask bits added in the future.
+		 */
+		public static fixed var int custom = 3
+	end
+	
+	
+	
+	/**
+	 * \brief Configuration file path property.
+	 * 
+	 * Default value is "/configuration.ptree.xml". Change this property before initGame is
+	 * called if the configuration parameter tree file is located in a different place.
+	 * 
+	 * Using a configuration parameter tree file is optional. If the file is not present it
+	 * is not loaded. Can also be set to \em null in this case.
+	 * 
+	 * If the configuration file is present and values exist matching properties defined
+	 * in this class the configuration file values take precendence. This allows to modify
+	 * the properties without having to change source files.
+	 */
+	protected var String pathConfiguration
+	
+	/**
+	 * \brief Desktop gui theme path property.
+	 * 
+	 * Set by default to defaultPathGuiTheme.
+	 */
+	protected var String pathDesktopGuiTheme
+	
+	/**
+	 * \brief Path to directory containing language packs.
+	 * 
+	 * Default value is \em null. To support internationalization in your game set the
+	 * property to a valid path. Also set default language property if required.
+	 */
+	protected var String pathLanguagePacks
+	
+	/**
+	 * \brief Name of default language pack to activate.
+	 * 
+	 * Default value is "English". If no such language pack is found internationalization
+	 * is disabled. The language pack name is matched case sensitive.
+	 */
+	protected var UnicodeString defaultLanguagePackName
+	
+	/**
+	 * \brief Binding save file path property.
+	 * 
+	 * Default value is "/config/bindings.xml". "/config" has to match the "Config Path"
+	 * set in the game project.
+	 */
+	protected var String pathSavedBindings
+	
+	/**
+	 * \brief Application settings file path property.
+	 * 
+	 * Default value is "/config/settings.xml". "/config" has to match the "Config Path"
+	 * set in the game project.
+	 */
+	protected var String pathSavedSettings
+	
+	
+	
+	private var ParameterTree pConfiguration
+	private var ParameterTree pSettings
+	private var Console pConsole
+	private var Loaders pLoaders
+	private var Desktop pDesktop
+	private var TranslationManager pTranslationManager
+	private var InputProcessor pInputProcessor
+	private var ElementClassList pElementClassList
+	private var CommandManager pCommandManager
+	private var ConsoleCommandList pConsoleCommands
+	private var BindingManager pBindingManager
+	private var ScreenshotCreator pScreenshotCreator
+	private var WindowConsole pWindowConsole
+	private var WindowGameWorld pWindowGameWorld
+	private var WindowSubTitle pWindowSubTitle
+	private var WindowPlayerChoice pWindowPlayerChoice
+	private var GameWorldLoader pGameWorldLoader
+	private var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
+	private var TSTriggerTable pTriggerTable
+	private var SkinAnnotations pSkinAnnotations
+	private var ConnectionTracker pConnectionTracker
+	private var NetworkStateTracker pNetworkStateTracker
+	private var MutableID pIDGenerator
+	
+	private static var BaseGameApp pApp = null
+	
+	
+	
+	/**
+	 * \brief Create game application.
+	 * 
+	 * Empty implementation. All initialization tasks have to be done in the initGame()
+	 * method call to support proper hook-method calls with custom subclass behavior.
+	 */
+	public func new()
+		this.pathDesktopGuiTheme = defaultPathGuiTheme
+		this.pathLanguagePacks = null
+		this.defaultLanguagePackName = UnicodeString.newFromUTF8( "English" )
+		this.pathConfiguration = "/configuration.ptree.xml"
+		this.pathSavedBindings = "/config/bindings.xml"
+		this.pathSavedSettings = "/config/settings.ptree.xml"
+			// TODO: make the config path used by the game available to the script
+			//       then this value can be calculated requiring less setting up
+	end
+	
+	
+	
+	/**
+	 * \brief Called by game engine to init game.
+	 * 
+	 * Subclass has to super-call this method first before doing own initialization.
+	 * Once this super-call returns all object instance provided by this class are created.
+	 * Initializing the content of the object instances is up to the subclass. This is done
+	 * either inside subclass initGame() implementation or one of the called hook methods.
+	 * 
+	 * After this super-call returns the following is true:
+	 * - BaseGameApp.getApp() returns this object instance.
+	 * - Console has a history of 50 entries.
+	 * - Console has a LogConsoleMessages listener added.
+	 * - InputSystem.setCaptureInputDevices() is set to true.
+	 * - Desktop widget is present with designer "Desktop".
+	 * - The default gui theme is loaded and assigned to the desktop widget.
+	 * - Input processor is set to forward input to the desktop widget.
+	 * - Console window potentially created and added to desktop (hidden)
+	 * - Game world window potentially created and added to desktop
+	 * - Bindings have been loaded from the saved bindings file or default bindings created
+	 * 
+	 * The super-call also invoked these hook methods to do initialization work:
+	 * - loadConfiguration()
+	 * - initLanguages()
+	 * - registerPersistencyFactories()
+	 * - createWindowGameWorld()
+	 * - createWindowConsole()
+	 * - createTriggerTable()
+	 * - createSkinAnnotations()
+	 * - createConnectionTracker()
+	 * - createAndAddElementClasses()
+	 * - createAndAddCommands()
+	 * - createAndAddConsoleCommands()
+	 * - loadSettings() and optionally initSettings()
+	 * - loadBindings() and optionally defaultBindings()
+	 */
+	public func void initGame()
+		this.pApp = this
+		
+		InputSystem.setCaptureInputDevices( true )
+		this.pIDGenerator = MutableID.new( 1 )
+		
+		this.pConsole = Console.new( 50 )
+		this.pConsole.addListener( LogConsoleMessages.new() )
+		
+		this.pConfiguration = ParameterTree.new()
+		this.pLoaders = Loaders.new( this.pConsole )
+		this.pTranslationManager = TranslationManager.new()
+		this.pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
+		
+		this.loadConfiguration()
+		this.initLanguages()
+		this.registerPersistencyFactories()
+		
+		this.createAndSetDesktop()
+		this.setInputProcessorDesktop()
+		
+		this.pWindowGameWorld = this.createWindowGameWorld()
+		if this.pWindowGameWorld != null
+			this.pDesktop.addWindow( this.pWindowGameWorld )
+		end
+		
+		this.pWindowSubTitle = this.createWindowSubTitle()
+		if this.pWindowSubTitle != null
+			this.pDesktop.addWindow( this.pWindowSubTitle )
+		end
+		
+		this.pWindowPlayerChoice = this.createWindowPlayerChoice()
+		if this.pWindowPlayerChoice != null
+			this.pDesktop.addWindow( this.pWindowPlayerChoice )
+		end
+		
+		this.pWindowConsole = this.createWindowConsole()
+		if this.pWindowConsole != null
+			this.pDesktop.addWindow( this.pWindowConsole )
+		end
+		
+		this.pTriggerTable = createTriggerTable()
+		this.pSkinAnnotations = createSkinAnnotations()
+		this.pConnectionTracker = createConnectionTracker()
+		this.pNetworkStateTracker = createNetworkStateTracker()
+		
+		this.pScreenshotCreator = ScreenshotCreator.new()
+		this.pScreenshotCreator.setConsole( this.pConsole )
+		
+		this.pCommandManager = CommandManager.new()
+		this.pConsoleCommands = ConsoleCommandList.new()
+		
+		this.createAndAddCommands()
+		this.createAndAddConsoleCommands()
+		
+		if this.pWindowConsole != null
+			this.pWindowConsole.setCommandManager( this.pCommandManager )
+			this.pWindowConsole.setConsoleCommands( this.pConsoleCommands )
+		end
+		
+		this.pSettings = ParameterTree.new()
+		this.loadSettings()
+		
+		this.pBindingManager = BindingManager.new()
+		this.loadBindings()
+		
+		this.pElementClassList = ElementClassList.new()
+		this.createAndAddElementClasses()
+		this.pLoaders.getWorld().setElementClassList( this.pElementClassList )
+	end
+	
+	/**
+	 * \brief Called by the game engine to clean up before the game exits.
+	 * 
+	 * Subclas has to super-call this method last after cleaing up.
+	 * 
+	 * After this super-call BaseGameApp.getApp() returns null.
+	 */
+	public func void cleanUp()
+		if this.pScreenshotCreator != null
+			this.pScreenshotCreator.dispose()
+		end
+		
+		if this.pElementClassList != null
+			this.pElementClassList.dispose()
+		end
+		
+		if this.pGameWorldLoader != null
+			this.cancelLoadGameWorld()
+		end
+		
+		this.pPlayerControlledActor = null
+		
+		this.pWindowSubTitle = null
+		this.pWindowPlayerChoice = null
+		this.pWindowConsole = null
+		this.pWindowGameWorld = null
+		
+		this.pBindingManager = null
+		
+		if this.pCommandManager != null
+			this.pCommandManager.removeAll()
+		end
+		
+		if this.pConsoleCommands != null
+			this.pConsoleCommands.removeAll()
+		end
+		
+		this.pTranslationManager = null
+		
+		this.pInputProcessor = null
+		
+		if this.pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas( this.pDesktop.getCanvasWidget() )
+			this.pDesktop.dispose()
+		end
+		
+		if this.pTriggerTable != null
+			this.pTriggerTable.dispose()
+			this.pTriggerTable = null
+		end
+		
+		this.pNetworkStateTracker = null
+		if this.pConnectionTracker != null
+			this.pConnectionTracker.removeAll()
+			this.pConnectionTracker = null
+		end
+		
+		this.pSkinAnnotations = null
+		
+		this.pLoaders = null
+		this.pConsole = null
+		
+		this.pApp = null
+	end
+	
+	/**
+	 * \brief Process input event.
+	 * 
+	 * Checks the input event with the BindingManager and then sends the event to the
+	 * active input processor. Make sure a valid InputProcessor is always set.
+	 * 
+	 * There is usually no need to overwrite this method in a subclass. If you do so
+	 * super-call this method first.
+	 */
+	public func void inputEvent( InputEvent event )
+		this.pBindingManager.checkInputEvent( event )
+		this.pInputProcessor.inputEvent( event )
+	end
+	
+	/**
+	 * \brief Called by the game engine at the beginning of each frame update.
+	 * 
+	 * Performs the following actions:
+	 * - Advances default TimerManager
+	 * - Notifies all listeners in default FrameUpdateManager
+	 * - Updates screenshot creator
+	 * 
+	 * Subclass has to super-call this method first before doing per-frame updates.
+	 */
+	public func void onFrameUpdate()
+		TimerManager.advanceDefault( Engine.getElapsedTime() )
+		FrameUpdateManager.notifyAllDefault()
+		this.pScreenshotCreator.update()
+	end
+	
+	/**
+	 * \brief Render window size changed.
+	 * 
+	 * Resizes desktop widget to fix primary canvas size.
+	 */
+	public func void onResizeRenderWindow()
+		this.pDesktop.setSize( GraphicSystem.getWindowSize() )
+	end
+	
+	/**
+	 * \brief User requested window to be closed.
+	 * 
+	 * Default implementation calls quitGame().
+	 */
+	public func void userRequestedQuit()
+		this.quitGame()
+	end
+	
+	
+	
+	/**
+	 * \brief Quit game.
+	 * 
+	 * Called by CommandQuitGame or by other scripts. Calls Engine.quit() to quit the game
+	 * the next time possible. This will call cleanUp(). Make sure no reference loops are
+	 * present after cleanUp() finishes to allow the Script Module to properly shut down.
+	 * 
+	 * Subclass can overwrite to ask user first if he wants to quit and optionally do
+	 * some additional closing actions. To close the game call Engine.quit() .
+	 */
+	public func void quitGame()
+		Engine.quit()
+	end
+	
+	
+	
+	/** \brief The one and only application object */
+	public static func BaseGameApp getApp()
+		return pApp
+	end
+	
+	
+	
+	/** \brief Game configuration. */
+	public func ParameterTree getConfiguration()
+		return this.pConfiguration
+	end
+	
+	/** \brief Saved settings. */
+	public func ParameterTree getSettings()
+		return this.pSettings
+	end
+	
+	
+	
+	/** \brief Console object. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return this.pLoaders
+	end
+	
+	/** \brief Translation manager. */
+	public func TranslationManager getTranslationManager()
+		return this.pTranslationManager
+	end
+	
+	
+	
+	/** \brief Desktop widget. */
+	public func Desktop getDesktop()
+		return this.pDesktop
+	end
+	
+	/**
+	 * \brief Set desktop widget.
+	 * 
+	 * Disposes of the old desktop if present and sets the new one. The new desktop is
+	 * added to the primary canvas making it visible on screen. During resizing events
+	 * the desktop is adjusted to fit the size to the primary canvas size.
+	 * 
+	 * This method does not modify the input processor. To change input processor to
+	 * send events to the set desktop instance call setInputProcessorDesktop().
+	 */
+	public func void setDesktop( Desktop desktop )
+		if desktop == null
+			throw EInvalidParam.new()
+		end
+		
+		if desktop == this.pDesktop
+			return
+		end
+		
+		desktop.setSize( GraphicSystem.getWindowSize() )
+		
+		if this.pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas( this.pDesktop.getCanvasWidget() )
+			this.pDesktop.dispose()
+		end
+		
+		this.pDesktop = desktop
+		GraphicSystem.getPrimaryCanvas().addCanvas( desktop.getCanvasWidget() )
+	end
+	
+	
+	
+	/** \brief Element classes list. */
+	public func ElementClassList getElementClassList()
+		return this.pElementClassList
+	end
+	
+	/** \brief Command Manager. */
+	public func CommandManager getCommandManager()
+		return this.pCommandManager
+	end
+	
+	/** \brief Console command list. */
+	public func ConsoleCommandList getConsoleCommands()
+		return this.pConsoleCommands
+	end
+	
+	/** \brief Binding manager. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Screenshot creator. */
+	public func ScreenshotCreator getScreenshotCreator()
+		return this.pScreenshotCreator
+	end
+	
+	/** \brief Trigger table. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Skin annotations. */
+	public func SkinAnnotations getSkinAnnotations()
+		return this.pSkinAnnotations
+	end
+	
+	/** \brief Connection tracker. */
+	public func ConnectionTracker getConnectionTracker()
+		return this.pConnectionTracker
+	end
+	
+	/** \brief Network state tracker. */
+	public func NetworkStateTracker getNetworkStateTracker()
+		return this.pNetworkStateTracker
+	end
+	
+	/** \brief ID Generator. */ 
+	public func MutableID getIDGenerator()
+		return this.pIDGenerator
+	end
+	
+	
+	
+	/** \brief Console window toggled using CommandToggleConsole or \em null if absent. */
+	public func WindowConsole getWindowConsole()
+		return this.pWindowConsole
+	end
+	
+	/** \brief SubTitle window or \em null if absent. */
+	public func WindowSubTitle getWindowSubTitle()
+		return this.pWindowSubTitle
+	end
+	
+	/** \brief PlayerChoice window or \em null if absent. */
+	public func WindowPlayerChoice getWindowPlayerChoice()
+		return this.pWindowPlayerChoice
+	end
+	
+	/** \brief Game world window or \em null. */
+	public func WindowGameWorld getWindowGameWorld()
+		return this.pWindowGameWorld
+	end
+	
+	
+	
+	/** \brief Input Processor. */
+	public func InputProcessor getInputProcessor()
+		return this.pInputProcessor
+	end
+	
+	/** \brief Set input processor. */
+	public func void setInputProcessor( InputProcessor inputProcessor )
+		this.pInputProcessor = inputProcessor
+	end
+	
+	/** \brief Set input processor to forward events to desktop widget. */
+	public func void setInputProcessorDesktop()
+		this.setInputProcessor( WidgetInputProcessor.new( this.pDesktop ) )
+	end
+	
+	/** \brief Set input processor to forward events to binding manager. */
+	public func void setInputProcessorBindings()
+		this.setInputProcessor( BindingInputProcessor.new( this.pBindingManager ) )
+	end
+	
+	
+	
+	/** \brief Load gui theme and assign it to desktop widget. */
+	public func void desktopLoadGuiTheme( String filename )
+		this.pDesktop.setGuiTheme( this.pLoaders.getGuiTheme().loadFromFile( filename ) )
+	end
+	
+	
+	
+	/** \brief Player controlled actor tracker. */
+	public func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
+		return this.pPlayerControlledActor
+	end
+	
+	/** \brief Invert looking up-down. */
+	public func bool getInverseLookVertical()
+		return this.pSettings.getBoolAt( BaseGameApp.settingInputInvertLookVertical, false )
+	end
+	
+	/**
+	 * \brief Set if looking up-down is inverted.
+	 * 
+	 * Call saveSettings() after changing value. Not called automatically.
+	 */
+	public func void setInverseLookVertical( bool inverseLookVertical )
+		this.pSettings.setAt( BaseGameApp.settingInputInvertLookVertical, inverseLookVertical )
+	end
+	
+	
+	
+	/**
+	 * \brief Load configuration from parameter tree XML file if present.
+	 * 
+	 * Uses pathConfiguration to located the file.
+	 */
+	protected func void loadConfiguration()
+		if pathConfiguration == null or not FileSystem.existsFile( this.pathConfiguration )
+			return
+		end
+		
+		try
+			this.pLoaders.getParameterTree().loadFromFile( \
+				this.pathConfiguration, this.pConfiguration )
+			
+		catch Exception e
+			this.pConsole.addError( "Failed loading configuration file '" \
+				+ this.pathConfiguration + "'.", e )
+		end
+		
+		//this.pConfiguration.log( this.pConsole, "BaseGameApp.Configuration" )
+	end
+	
+	/** \brief Create and set desktop. */
+	protected func void createAndSetDesktop()
+		var GuiTheme guitheme = this.pLoaders.getGuiTheme().loadFromFile( \
+			this.pConfiguration.getStringAt( "pathDesktopGuiTheme", this.pathDesktopGuiTheme ) )
+		var Desktop desktop = Desktop.new( GraphicSystem.getWindowSize() )
+		
+		try
+			desktop.setGuiTheme( guitheme )
+			this.setDesktop( desktop )
+			
+		catch Exception e
+			if desktop != null
+				desktop.dispose()
+			end
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Register persistency factories.
+	 * 
+	 * Persistency factories allow saving and loading object instances implementing the
+	 * Persistable interface for use with save states or network play.
+	 * While creating the Loaders instance Loaders.addDefaultPersistencyFactories() adds
+	 * all persistency factories provided by the DragonScript module. Subclass can implement
+	 * registerPersistencyFactories() to add game specific persistency factories. Default
+	 * implementation is empty. Super-calling is not required.
+	 */
+	protected func void registerPersistencyFactories()
+	end
+	
+	/**
+	 * \brief Load language packs and select active language pack.
+	 * 
+	 * Default implementation loads language packsg from path specified by property
+	 * pathLanguagePacks if property is not \em null and path is valid. Then activates the
+	 * language pack with name matching property defaultLanguagePackName if any such language
+	 * pack is present. The language pack name is matched case sensitive.
+	 */
+	protected func void initLanguages()
+		var String path = this.pConfiguration.getStringAt( "pathLanguagePacks", this.pathLanguagePacks )
+		if path == null
+			return
+		end
+		
+		this.pTranslationManager.addFromDirectory( path, true )
+		
+		var UnicodeString lpName = this.defaultLanguagePackName
+		var String paramValue = this.pConfiguration.getStringAt( "defaultLanguagePackName", null )
+		if paramValue != null
+			lpName = UnicodeString.newFromUTF8( paramValue )
+		end
+		this.pTranslationManager.setActiveNamedIfPresent( lpName )
+	end
+	
+	/**
+	 * \brief Create game world window.
+	 * 
+	 * Default implementation creates an instance of WindowGameWorld. Subclass can return
+	 * \em null to not use a game world window or changing window parameters for example
+	 * to hide it if a main menu requires this.
+	 */
+	protected func WindowGameWorld createWindowGameWorld()
+		return WindowGameWorld.new()
+	end
+	
+	/**
+	 * \brief Create console window.
+	 * 
+	 * Default implementation creates an instance of WinowConsole and assigns getConsole().
+	 * Subclass can return \em null to not use a console window.
+	 */
+	protected func WindowConsole createWindowConsole()
+		var WindowConsole window = WindowConsole.new()
+		window.setConsole( this.pConsole )
+		return window
+	end
+	
+	/**
+	 * \brief Create sub title window.
+	 * 
+	 * Default implementation creates an instance of WindowSubTitle. Subclass can return
+	 * \em null to not use a subtitle window. For conversations to work an instance
+	 * implementing the conversation subtitle interface is required. WindowSubTitle does
+	 * fulfill this requirement.
+	 */
+	protected func WindowSubTitle createWindowSubTitle()
+		return WindowSubTitle.new()
+	end
+	
+	/**
+	 * \brief Create player choice window.
+	 * 
+	 * Default implementation creates an instance of WindowPlayerChoice. Subclass can return
+	 * \em null to not use a player choise window. For conversations to work an instance
+	 * implementing the conversation player choice interface is required. WindowPlayerChoice
+	 * does fulfill this requirement.
+	 */
+	protected func WindowPlayerChoice createWindowPlayerChoice()
+		return WindowPlayerChoice.new( this.pDesktop )
+	end
+	
+	/**
+	 * \brief Create trigger table.
+	 * 
+	 * Creates instance of TSTriggerTable.
+	 */
+	protected func TSTriggerTable createTriggerTable()
+		return TSTriggerTable.new()
+	end
+	
+	/**
+	 * \brief Create skin annotations.
+	 * 
+	 * Creates instance of SkinAnnotations. Subclass can overwrite to load skin annotations
+	 * into the newly created object like this:
+	 * 
+	 * \code{ds}
+	 * protected func SkinAnnotations createSkinAnnotations()
+	 *    var sa = super.createSkinAnnotations()
+	 *    getLoaders().getSkinAnnotations().loadFromFiles(sa, "/content/materials", true)
+	 *    return sa
+	 * end
+	 * \endcode
+	 * 
+	 * See LoadSkinAnnotations.loadFromFiles for details about the *.deskinann files.
+	 */
+	protected func SkinAnnotations createSkinAnnotations()
+		return SkinAnnotations.new()
+	end
+	
+	/**
+	 * \brief Create connection tracker.
+	 * 
+	 * Creates instance of ConnectionTracker.
+	 */
+	protected func ConnectionTracker createConnectionTracker()
+		return ConnectionTracker.new()
+	end
+	
+	/**
+	 * \brief Create network state tracker.
+	 * 
+	 * Creates instance of NetworkStateTracker.
+	 */
+	protected func NetworkStateTracker createNetworkStateTracker()
+		return NetworkStateTracker.new()
+	end
+	
+	/**
+	 * \brief Create element classes and add them to element class list.
+	 * 
+	 * Element classes list contains all element classes world files are allowed to be used.
+	 * Default implementation creates and adds these element classes:
+	 * - AnimatedElementClass named "AnimatedElement"
+	 * - AttachableBaseLightClass named "AttachableBaseLight"
+	 * - AttachableBaseSpeakerClass named "AttachableBaseSpeaker"
+	 * - AttachableBaseParticleEmitterClass named "AttachableBaseParticleEmitter"
+	 * - AttachableBaseForceFieldClass named "AttachableBaseForceField"
+	 * - AttachableBillboardClass named "AttachableBillboard"
+	 * - BaseActorClass named "Actor"
+	 * - BaseSpeakerClass named "BaseSpeaker"
+	 * - BaseParticleEmitterClass named "BaseParticleEmitter"
+	 * - BaseSkyClass named "BaseSky"
+	 * - BaseLightClass named "BaseLight"
+	 * - BaseForceFieldClass named "BaseForceField"
+	 * - EnvironmentMapClass named "EnvironmentMap"
+	 * - IgnoreElementClass named "MapperNote" (helper IGDE class)
+	 * - IgnoreElementClass named "VirtualElement" (helper IGDE class)
+	 * - InfoConvoCoordSystem named "InfoConvoCoordSystem"
+	 * - RailCornerClass named "RailCorner"
+	 * - RandomElementClass named "RandomElement"
+	 * - SimpleElementClass named "SimpleElement"
+	 * - SimpleElementOnRailClass named "SimpleElementOnRail"
+	 * - BaseBillboardClass named "BaseBillboard"
+	 * - SpawnPointClass named "SpawnPoint"
+	 * - TriggerConversationClass named "TriggerConversation"
+	 * - TriggerEvaluateClass named "TriggerEvaluate"
+	 * - TriggerShoutClass named "TriggerShout"
+	 * - TriggerTimerClass named "TriggerTimer"
+	 * - TriggerToggleClass named "TriggerToggle"
+	 * - TriggerTouchClass named "TriggerTouch"
+	 * - TwoStateAnimatedElement named "TwoStateAnimatedElement"
+	 * 
+	 * If you do not want one of these classes to be available you can remove them after
+	 * super-calling createAndAddElementClasses() by using ElementClassList.removeNamed().
+	 * Optionally you can not super-call createAndAddElementClasses() to add the element
+	 * classes above manually according to your needs.
+	 */
+	protected func void createAndAddElementClasses()
+		this.pElementClassList.add( IgnoreElementClass.new( "VirtualElement" ) )
+		this.pElementClassList.add( IgnoreElementClass.new( "MapperNote" ) )
+		this.pElementClassList.add( SimpleElementClass.new( this.pLoaders ) )
+		this.pElementClassList.add( AnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
+		this.pElementClassList.add( TwoStateAnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
+		this.pElementClassList.add( RandomElementClass.new( this.pElementClassList ) )
+		this.pElementClassList.add( BaseLightClass.new() )
+		this.pElementClassList.add( BaseSpeakerClass.new() )
+		this.pElementClassList.add( BaseParticleEmitterClass.new() )
+		this.pElementClassList.add( BaseSkyClass.new() )
+		this.pElementClassList.add( BaseForceFieldClass.new() )
+		this.pElementClassList.add( BaseBillboardClass.new() )
+		this.pElementClassList.add( AttachableBaseLightClass.new() )
+		this.pElementClassList.add( AttachableBaseSpeakerClass.new() )
+		this.pElementClassList.add( AttachableBaseParticleEmitterClass.new() )
+		this.pElementClassList.add( AttachableBaseForceFieldClass.new() )
+		this.pElementClassList.add( AttachableBaseBillboardClass.new() )
+		this.pElementClassList.add( AttachSlotClass.new() )
+		this.pElementClassList.add( SpawnPointClass.new() )
+		this.pElementClassList.add( BaseActorClass.new() )
+		this.pElementClassList.add( EnvironmentMapClass.new() )
+		this.pElementClassList.add( TriggerEvaluateClass.new( this.pTriggerTable ) )
+		this.pElementClassList.add( TriggerTimerClass.new( this.pTriggerTable ) )
+		this.pElementClassList.add( TriggerToggleClass.new( this.pTriggerTable ) )
+		this.pElementClassList.add( TriggerTouchClass.new( this.pTriggerTable ) )
+		this.pElementClassList.add( TriggerShoutClass.new( this.pTriggerTable, this.pConsole ) )
+		this.pElementClassList.add( TriggerConversationClass.new( \
+			this.pTriggerTable, this.pLoaders, this.pPlayerControlledActor ) )
+		this.pElementClassList.add( RailCornerClass.new() )
+		this.pElementClassList.add( SimpleElementOnRailClass.new() )
+		this.pElementClassList.add( InfoConvoCoordSystemClass.new() )
+	end
+	
+	/**
+	 * \brief Create commands and add them to command list.
+	 * 
+	 * Commands are used by the BindingInputProcessor to bind player actions to player input.
+	 * Default implementation creates and adds these commands:
+	 * - CommandQuitGame named "quit"
+	 * - CommandScreenshot named "screenshot"
+	 * - Commands from CommandsBAAMovement
+	 * - Commands from CommandsBAAInteract
+	 * 
+	 * If WindowConsole is present this command is also added:
+	 * - CommandToggleConsole named "toggleConsole"
+	 */
+	protected func void createAndAddCommands()
+		this.pCommandManager.add( CommandQuitGame.new() )
+		this.pCommandManager.add( CommandScreenshot.new( this.pScreenshotCreator ) )
+		
+		if this.pWindowConsole != null
+			this.pCommandManager.add( CommandToggleConsole.new( this.pWindowConsole ) )
+		end
+		
+		CommandsBAAMovement.addCommands( this.pCommandManager, this.pPlayerControlledActor )
+		CommandsBAAInteract.addCommands( this.pCommandManager, this.pPlayerControlledActor )
+	end
+	
+	/**
+	 * \brief Create console commands and add them to console command list.
+	 * 
+	 * Console commands are used by WindowConsole (more precisely the ConsoleInputField inside)
+	 * to allow players and mostly developers to run actions not supposed to be bound to player
+	 * input. Default implementation creates and adds these console commands:
+	 * - HelpConsoleCommand named "help"
+	 * - GraSysConsoleCommand named "graphicSystem"
+	 * - PhySysConsoleCommand named "physicsSystem"
+	 * - AISysConsoleCommand named "aiSystem"
+	 * - LanguageConsoleCommand named "language"
+	 */
+	protected func void createAndAddConsoleCommands()
+		this.pConsoleCommands.add( HelpConsoleCommand.new( this.pConsoleCommands, this.pCommandManager ) )
+		this.pConsoleCommands.add( AISysConsoleCommand.new() )
+		this.pConsoleCommands.add( AmrSysConsoleCommand.new() )
+		this.pConsoleCommands.add( AudSysConsoleCommand.new() )
+		this.pConsoleCommands.add( CRSysConsoleCommand.new() )
+		this.pConsoleCommands.add( GraSysConsoleCommand.new() )
+		this.pConsoleCommands.add( InpSysConsoleCommand.new() )
+		this.pConsoleCommands.add( NetSysConsoleCommand.new() )
+		this.pConsoleCommands.add( PhySysConsoleCommand.new() )
+		this.pConsoleCommands.add( ScrSysConsoleCommand.new() )
+		this.pConsoleCommands.add( SynthSysConsoleCommand.new() )
+		this.pConsoleCommands.add( LanguageConsoleCommand.new( this.pTranslationManager ) )
+		
+		// if debugging is enabled
+		this.pConsoleCommands.add( ScriptModuleStatsConsoleCommand.new() )
+	end
+	
+	/**
+	 * \brief Load settings from saved settings or set default settings.
+	 * 
+	 * Loads the saved settings from pathSavedSettings property. If the saved settings file
+	 * is absent or damaged set default settings and saves the file. Ensures a valid
+	 * settings file with all known settings is saved to file. This way players can modify the
+	 * settings file and know all possible settings without needing to search.
+	 * 
+	 * If you change settings call saveSettings() to save the settings to the saved file.
+	 * It is best to save changes to the bindings immediately.
+	 */
+	protected func void loadSettings()
+		var String path = this.pConfiguration.getStringAt( "pathSavedSettings", this.pathSavedSettings )
+		
+		if FileSystem.existsFile( path )
+			try
+				this.pLoaders.getParameterTree().loadFromFile( path, this.pSettings )
+				return
+				
+			catch Exception e
+				this.pConsole.addError( "Failed loading '" + path + "'.", e )
+			end
+		end
+		
+		this.initSettings()
+		this.saveSettings()
+	end
+	
+	/**
+	 * \brief Save settings to the settings file.
+	 * 
+	 * Uses property pathSavedSettings as file name. If the file exists already creates
+	 * first a backup copy with ".backup" appended to pathSavedBindings.
+	 */
+	public func void saveSettings()
+		var String path = this.pConfiguration.getStringAt( "pathSavedSettings", this.pathSavedSettings )
+		
+		if FileSystem.existsFile( path )
+			try
+				FileWriter.new( path + ".backup" ).writeData( FileReader.new( path ) )
+				
+			catch Exception e
+				this.pConsole.addError( "Failed copying '" + path + "' to '" + path + ".backup'.", e )
+			end
+		end
+		
+		this.pLoaders.getParameterTree().saveToFile( path, this.pSettings )
+	end
+	
+	/**
+	 * \brief Init settings with default values.
+	 * 
+	 * Set the value of all settings supported by the application. Once saved the players
+	 * can modify the settings file and knows all possible settings without searching.
+	 */
+	public func void initSettings()
+		this.setInverseLookVertical( false )
+	end
+	
+	/**
+	 * \brief Load bindings from saved configuration or create default bindings.
+	 * 
+	 * Loads the saved configuration from pathSavedBindings property. If the saved bindings
+	 * file is absent or damaged default bindings are created.
+	 * 
+	 * If you change bindings call saveBindings() to save the bindings to the saved file.
+	 * It is best to save changes to the bindings immediately.
+	 * 
+	 * Default bindings are not saved automatically. This has two main reasons. First the
+	 * default bindings can be potentially created because of a damaged binding save file.
+	 * Not saving them allows the user to quit the game and fix the file manually if desired.
+	 * Second games not based on bindings should not save a useless binding file.
+	 * 
+	 * No implementation in this class calls saveBindings() itself. As long as you do not
+	 * call saveBindings() on your own no bindings save file will be produced.
+	 */
+	protected func void loadBindings()
+		var String path = this.pConfiguration.getStringAt( "pathSavedBindings", this.pathSavedBindings )
+		
+		if FileSystem.existsFile( path )
+			this.pConsole.addMessage( "Loading saved bindings..." )
+			
+			try
+				this.pLoaders.getBindings().loadFromFile( path, this.pBindingManager, this.pCommandManager )
+				return
+				
+			catch Exception e
+				this.pConsole.addError( "Failed loading bindings file.", e )
+			end
+		end
+		
+		this.pConsole.addMessage( "Creating default bindings..." )
+		this.defaultBindings().updateBindingManager( true )
+	end
+	
+	/**
+	 * \brief Create default bindings.
+	 * 
+	 * Default implementation creates instance of DefaultBindingHelper with these bindings:
+	 * - "quit" mapped to key "Escape" and "Q"
+	 * - "screenshot" mapped to key "F10"
+	 * 
+	 * If WindowConsole is present these additional bindings are added:
+	 * - "toggleConsole" mapped to "F1"
+	 *
+	 * If any of these commands are not present no binding is added form them.
+	 * 
+	 * 
+	 * Typical subclass implementation can look like this:
+	 * \code{.ds}
+	 * var DefaultBindingHelper helper = DefaultBindingHelper.new()
+	 * // or use the super-call created helper
+	 * 
+	 * if helper.hasMouse()
+	 *    helper.mouseBindMove( "analogTurn", "analogLook" )
+	 *    helper.mouseBindWheel( 0, "prevItem", "nextItem" )
+	 *    helper.mouseBindLMR( "use", "putAwayItem", "equipItem" )
+	 * end
+	 * 
+	 * if helper.hasKeyboard()
+	 *    helper.keyboardBindKeyCode( InputEventKey.escape, "showMainMenu" )
+	 *    // more keyboard bindings
+	 * end
+	 * 
+	 * if helper.hasGamepad()
+	 *    helper.gamepadBindStick( 0, "turnLeft", "turnRight", "lookUp", "lookDown" )
+	 *    helper.gamepadBindButton( 0, "use" )
+	 *    // more game pad button and axis bindings
+	 * end
+	 * \endcode
+	 */
+	public func DefaultBindingHelper defaultBindings()
+		var DefaultBindingHelper helper = DefaultBindingHelper.new()
+		
+		if helper.hasKeyboard()
+			if this.pCommandManager.hasNamed( "quit" )
+				helper.keyboardBindKeyCode( InputEventKey.escape, "quit" )
+				helper.keyboardBindKeyCode( InputEventKey.q, "quit" )
+			end
+			
+			if this.pCommandManager.hasNamed( "screenshot" )
+				helper.keyboardBindKeyCode( InputEventKey.f10, "screenshot" )
+			end
+			
+			if this.pWindowConsole != null and this.pCommandManager.hasNamed( "toggleConsole" )
+				helper.keyboardBindKeyCode( InputEventKey.f1, "toggleConsole" )
+			end
+		end
+		
+		CommandsBAAMovement.addDefaultBindings( helper, CommandsBAAMovement.InputScheme.wasd )
+		CommandsBAAInteract.addDefaultBindings( helper )
+		
+		return helper
+	end
+	
+	/**
+	 * \brief Save bindings to the bindings file.
+	 * 
+	 * Uses property pathSavedBindings as file name.
+	 */
+	public func void saveBindings()
+		this.pLoaders.getBindings().saveToFile( this.pConfiguration.getStringAt( \
+			"pathSavedBindings", this.pathSavedBindings ), this.pBindingManager )
+	end
+	
+	
+	
+	/** \brief Game world loader or \em null. */
+	public func GameWorldLoader getGameWorldLoader()
+		return this.pGameWorldLoader
+	end
+	
+	/**
+	 * \brief Start loading game world.
+	 * 
+	 * Calls startLoading() on \em loader. If this throws an exception cancelLoading() and
+	 * dispose() is called on \em loader. Hence you do not have to worry about \em loader
+	 * leaking if an exception is thrown.
+	 * 
+	 * \throws EInvalidParam A game world loader is already active.
+	 */
+	public func void startLoadGameWorld( GameWorldLoader loader )
+		if this.pGameWorldLoader != null or loader == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pGameWorldLoader = loader
+		
+		try
+			loader.startLoading()
+			
+		catch Exception e
+			this.pGameWorldLoader = null
+			loader.cancelLoading()
+			loader.dispose()
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Cancel loading game world.
+	 * 
+	 * If no game world loader is active this method does nothing. Otherwise cancelLoading()
+	 * and dispose() is called on the active game world. After this call returns no game
+	 * world loader is active.
+	 */
+	public func void cancelLoadGameWorld()
+		if this.pGameWorldLoader == null
+			return
+		end
+		
+		var GameWorldLoader loader = this.pGameWorldLoader
+		this.pGameWorldLoader = null
+		
+		loader.cancelLoading()
+		loader.dispose()
+	end
+	
+	/**
+	 * \brief Finish loading game world.
+	 * 
+	 * If no game world loader is active this method does nothing. Otherwise calls dispose()
+	 * on the active game world. After this call returns no game world loader is active.
+	 */
+	public func void finishLoadGameWorld()
+		if this.pGameWorldLoader == null
+			return
+		end
+		
+		var GameWorldLoader loader = this.pGameWorldLoader
+		this.pGameWorldLoader = null
+		
+		loader.dispose()
+	end
+	
+	/**
+	 * \brief Create conversation playback.
+	 * 
+	 * Default implementation create instance of BaseConversationPlayback. Overwrite to
+	 * create playback supporting game specific features like obtaining conversation actors
+	 * and coordinate system by identifier and running game commands and conditions.
+	 */
+	public func BaseConversationPlayback createConversationPlayback( Conversation conversation )
+		return BaseConversationPlayback.new( conversation )
+	end
+end

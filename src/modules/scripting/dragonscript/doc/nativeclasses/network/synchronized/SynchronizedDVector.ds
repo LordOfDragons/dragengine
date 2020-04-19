@@ -1,0 +1,70 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+pin Dragengine.Scenery
+
+/**
+ * \brief Synchronized double precision vector value.
+ * 
+ * Local double precision vector value optionally synchronized across the network using
+ * a NetworkState value.
+ * 
+ * This is a native class.
+ */
+class SynchronizedDVector
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create synchronized double precision vector value with initial value of 0. */
+	public func new()
+	end
+	
+	/** \brief Create synchronized double precision vector value with initial value. */
+	public func new( DVector value )
+	end
+	
+	/** \brief Create copy of synchronized double precision vector value. */
+	public func new( SynchronizedDVector copy )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Value of network state or local value if not set. */
+	public func DVector getValue()
+	end
+	
+	/** \brief Set value and update network state if set. */
+	public func void setValue( DVector value )
+	end
+	
+	/** \brief Linked network state or \em null if not set. */
+	public func NetworkState getNetworkState()
+	end
+	
+	/** \brief Linked network state value index or -1 if not set. */
+	public func int getNetworkStateValue()
+	end
+	
+	/**
+	 * \brief Set network state value to synchronize or \em null to clear.
+	 * \throws EOutOfBoundary \em value is less than 0 or larger than or equal to network state value count.
+	 */
+	public func void setNetworkState( NetworkState state, int value )
+	end
+	
+	
+	
+	/** \brief String representation. */
+	public String toString()
+	end
+	/*@}*/
+end

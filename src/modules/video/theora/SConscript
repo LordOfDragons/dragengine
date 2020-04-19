@@ -1,0 +1,84 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envModule = parent_env.Clone()
+
+buildModule = envModule[ 'build_video_theora' ] != TernaryVariableNo
+parent_report[ 'build Theora Video Module' ] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+libs = []
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+appendLibrary( envModule, parent_targets[ 'lib_libtheora' ], libs )
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/video/theora/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/video/theora/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# determine the source files
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+# setup the builders
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+library = envModule.SharedLibrary( target='vidtheora', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'vid_theora_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+for l in reversed( parent_targets[ 'lib_libtheora' ][ 'runtimelibs' ] ):
+	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
+	install.append( envModule.Install( pathModule, l ) )
+	archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+Depends( updateManifest, parent_targets[ 'lib_libtheora' ][ 'runtimelibs' ] )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+targetInstall = envModule.Alias( 'vid_theora', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+buildCloc = envModule.Alias( 'vid_theora_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'vid_theora' ] = {
+	'name' : 'Theora Video Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

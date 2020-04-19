@@ -1,0 +1,116 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.MousePointers.Factories
+
+
+/**
+ * \brief Default mouse pointer factory.
+ */
+public class DefaultMousePointerFactory implements MousePointerFactory
+	/** \brief Mouse pointer size. */
+	private var Point pSize
+	
+	/** \brief Canvas offset relative to mouse position. */
+	private var Point pOffset
+	
+	
+	
+	/** \brief Create mosue pointer factory. */
+	public func new()
+		this.pSize = Point.new()
+		this.pOffset = Point.new()
+	end
+	
+	/** \brief Create copy of mouse pointer factory. */
+	public func new( DefaultMousePointerFactory factory )
+		this.pSize = factory.pSize
+		this.pOffset = factory.pOffset
+	end
+	
+	
+	
+	/** \brief Mouse pointer size. */
+	public func Point getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set mouse pointer size. */
+	public func void setSize( Point size )
+		if size == null
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	/** \brief Canvas offset relative to mouse position. */
+	public func Point getOffset()
+		return this.pOffset
+	end
+	
+	/** \brief Set canvas offset relative to mouse position. */
+	public func void setOffset( Point offset )
+		if offset == null
+			throw EInvalidParam.new()
+		end
+		this.pOffset
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * | Name | Type | Method |
+	 * | size | Point | setSize |
+	 * | offset | Point | setOffset |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "size" )
+			this.setSize( value cast Point )
+			
+		elif name.equals( "offset" )
+			this.setOffset( value cast Point )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of factory. */
+	public func MousePointerFactory copyFactory()
+		return DefaultMousePointerFactory.new( this )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func MousePointer createMousePointer()
+		var DefaultMousePointer mousePointer = DefaultMousePointer.new()
+		this.initDefaultMousePointer( mousePointer )
+		return mousePointer
+	end
+	
+	/** \brief Initialize default part of mouse pointer. */
+	protected func void initDefaultMousePointer( DefaultMousePointer mousePointer )
+		mousePointer.setSize( this.pSize )
+		mousePointer.setOffset( this.pOffset )
+	end
+end

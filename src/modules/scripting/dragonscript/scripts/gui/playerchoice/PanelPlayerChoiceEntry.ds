@@ -1,0 +1,76 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Simple text to be used as option in a player choice box.
+ * 
+ * Changes the background and text color when the mouse enters and leaves the widget.
+ */
+class PanelPlayerChoiceEntry extends Label
+	/** \brief Action listener to use if the entry is selected. */
+	private var ActionListener pAction
+	
+	
+	
+	/** \brief Create player choice option. */
+	public func new( String text, ActionListener action ) super( text )
+		if action == null
+			throw EInvalidParam.new()
+		end
+		
+		this.setAlignment( Label.middleCenter )
+		this.setDesignerSelector( "PlayerChoiceEntry" )
+		this.setWordWrap( true )
+		this.setCanFocus( true )
+		
+		this.pAction = action
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		super.dispose()
+		this.pAction = null
+	end
+	
+	
+	
+	/** \brief Select action. */
+	public func ActionListener getAction()
+		return this.pAction
+	end
+	
+	
+	
+	/** \brief Mouse button pressed. */
+	public func void onButtonPress( MouseEvent event )
+		super.onButtonPress( event )
+		this.pAction.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+	end
+end

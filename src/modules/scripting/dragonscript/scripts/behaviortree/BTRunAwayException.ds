@@ -1,0 +1,88 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree run away exception.
+ * 
+ * Thrown if the number of steps run in BTContext.stepBehaviorTree() exceeds the run away
+ * limit. As additional information the sequence of BTRules resulting in the exception is
+ * provided.
+ */
+class BTRunAwayException extends Exception
+	/** \brief Run away list as Array of BTRule. */
+	private var Array pRunAwayList
+	
+	
+	
+	/**
+	 * \brief Create exception.
+	 * 
+	 * \param list Array of BTRule. A copy of the list is stored.
+	 */
+	public func new( Array list ) super( "Behavior Tree Run-Away" )
+		if list == null
+			throw EInvalidParam.new()
+		end
+		this.pRunAwayList = Array.new( list )
+	end
+	
+	
+	
+	/** \brief Number of entries in run away list. */
+	public func int getEntryCount()
+		return this.pRunAwayList.getCount()
+	end
+	
+	/** \brief Entry at index. */
+	public func BTRule getEntryAt( int index )
+		return this.pRunAwayList.getAt( index ) cast BTRule
+	end
+	
+	/** \brief Visit entries using block with parameter BTRule. */
+	public func void forEachEntry( Block ablock )
+		this.pRunAwayList.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Run away back-trace in string format. */
+	public func String getRunAwayBacktrace()
+		var int i, count = this.pRunAwayList.getCount()
+		var String string = ""
+		
+		for i = 0 to count
+			if i > 0
+				string = string + "\n"
+			end
+			string = string + ( i + 1 ) + ") " + ( this.pRunAwayList.getAt( i ) cast BTRule ).getID()
+		end
+		
+		return string
+	end
+end

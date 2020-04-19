@@ -1,0 +1,286 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+pin Dragengine.Scenery
+pin Dragengine.Commands
+
+
+/**
+ * \brief Console window.
+ * 
+ * Shows the most recent output of a Console object and provides support for
+ * developers and players to run console commands.
+ * 
+ * Supports designing using designer selector "Window.Console".
+ */
+class WindowConsole extends Window implements ConsoleListener
+	private var Console pConsole
+	private var ConsoleCommandList pConsoleCommands
+	private var CommandManager pCommandManager
+	private var TextLayout pTextLayout
+	private var Widget pWidgetBufferLines
+	private var ConsoleInputField pEditInput
+	private var bool pHasChanged
+	
+	
+	
+	/**
+	 * \brief Create console window.
+	 * 
+	 * Default size is entire width of screen and half the height.
+	 * 
+	 * Window is initially hidden. Use CommandToggleConsole to show/hide the window.
+	 */
+	public func new() this( 0, 0, GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2 )
+	end
+	
+	/**
+	 * \brief Create console window.
+	 * 
+	 * Window is initially hidden. Use CommandToggleConsole to show/hide the window.
+	 */
+	public func new( int x, int y, int width, int height ) super( x, y, width, height )
+		this.setLayout( BorderLayout.new( 2 ) )
+		this.setCanClose( false )
+		this.setVisible( false )
+		this.setCanMaximize( false )
+		this.setCanMinimize( false )
+		this.setDesignerSelector( "WindowConsole" )
+		
+		this.pHasChanged = false
+		this.pConsoleCommands = ConsoleCommandList.new()
+		
+		this.pWidgetBufferLines = Widget.new()
+		this.addWidget( this.pWidgetBufferLines, BorderLayout.Area.content )
+		
+		this.pEditInput = ConsoleInputField.new()
+		this.addWidget( this.pEditInput, BorderLayout.Area.bottom )
+		
+		this.setActiveWidget( this.pEditInput )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		if this.pConsole != null
+			this.pConsole.removeListener( this )
+		end
+		
+		this.pCommandManager = null
+		this.pConsoleCommands = null
+		this.pWidgetBufferLines = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Console to monitor. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console to monitor. */
+	public func void setConsole( Console console )
+		if console == this.pConsole
+			return
+		end
+		
+		if this.pConsole != null
+			this.pConsole.removeListener( this )
+		end
+		
+		this.pConsole = console
+		
+		if console != null
+			console.addListener( this )
+		end
+		
+		this.pHasChanged = true
+		if this.getVisible()
+			this.updateCanvasConsole()
+		end
+		
+		this.pEditInput.setConsole( console )
+	end
+	
+	/** \brief List of console commands users can enter into the input field. */
+	public func ConsoleCommandList getConsoleCommands()
+		return this.pConsoleCommands
+	end
+	
+	/** \brief Set list of console commands users can enter into the input field. */
+	public func void setConsoleCommands( ConsoleCommandList commands )
+		if commands == this.pConsoleCommands
+			return
+		end
+		
+		this.pConsoleCommands = commands
+		this.pEditInput.setConsoleCommands( commands )
+	end
+	
+	/** \brief Command manager for commands users can enter into the input field. */
+	public func CommandManager getCommandManager()
+		return this.pCommandManager
+	end
+	
+	/** \brief Set command manager for commands users can enter into the input field. */
+	public func void setCommandManager( CommandManager commandManager )
+		if commandManager == this.pCommandManager
+			return
+		end
+		
+		this.pCommandManager = commandManager
+		
+		this.pEditInput.setCommands( commandManager )
+	end
+	
+	/** \brief Edit field for entering console commands. */
+	public func ConsoleInputField getEditInput()
+		return this.pEditInput
+	end
+	
+	/** \brief Set command for closing console. */
+	public func void setCommandCloseConsole( Command command )
+		this.pEditInput.setCommandCloseConsole( command )
+	end
+	
+	
+	
+	/** \brief Window is shown. */
+	public func void onShown( WidgetEvent event )
+		super.onShown( event )
+		this.updateCanvasConsole()
+	end
+	
+	/** \brief Gui theme changed. */
+	public func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		this.updateCanvasConsole()
+	end
+	
+	/** \brief Desktop size changed. */
+	public func void onDesktopResized()
+		this.setSize( Point.new( GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2 ) )
+	end
+	
+	
+	
+	/** \brief Update canvas console if required. */
+	public func void updateCanvasConsole()
+		if not this.pHasChanged
+			return
+		end
+		
+		var CanvasView canvas = this.pWidgetBufferLines.getCanvasContent()
+		canvas.removeAllCanvas()
+		
+		this.updateBuffer()
+		
+		if this.pTextLayout != null
+			this.pTextLayout.addToCanvas( canvas, 2, this.getHeight() - 3 \
+				- this.pEditInput.getHeight() - this.pEditInput.getBorderSize().getHeight() \
+				- this.pTextLayout.getHeight() )
+		end
+		
+		this.pHasChanged = false
+	end
+	
+	
+	
+	/** \brief Message added to console. */
+	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
+		this.pHasChanged = true
+		if this.getVisible()
+			this.updateCanvasConsole()
+		end
+	end
+	
+	/** \brief Console cleared. */
+	public func void consoleCleared( Console console )
+		this.pHasChanged = true
+		if this.getVisible()
+			this.updateCanvasConsole()
+		end
+	end
+	
+	
+	
+	/** \brief Update buffer. */
+	private func void updateBuffer()
+		// NOTE
+		// building a layout out of a large number of log messages (for example 100)
+		// can be up to 10ms slow or more due to TextLayout being a script class and
+		// not running fast for building larg layouts.
+		// 
+		// TODO
+		// replace this with a more intelligent solution like a FlowLayout in Y Axis
+		// with Label widgets for each log message. this way the TextLayout class
+		// operates on smaller batches of text and messages can be added to the end
+		// and removed from the top. Layouting would then be automatic
+		
+		if this.pConsole == null
+			this.pTextLayout = null
+			return
+		end
+		
+		var Font font = this.getFont()
+		var Color color = this.getTextColor()
+		if font == null or color == null
+			this.pTextLayout = null
+			return
+		end
+		
+		var int i, count = this.pConsole.getMessageCount()
+		var String buffer = ""
+		var int width = this.getWidth()
+		
+		// build buffer containing all text
+		for i = 0 to count
+			var ConsoleMessage message = this.pConsole.getMessage( i )
+			if i > 0
+				buffer = buffer + "\n"
+			end
+			buffer = buffer + "[" + message.getTimeStamp() + "] "
+			if message.getSource() != null
+				buffer = buffer + message.getSource() + ": "
+			end
+			buffer = buffer + message.getMessage()
+		end
+		
+		// build layout
+		if count > 0
+			this.pTextLayout = TextLayout.new( buffer, font )
+			this.pTextLayout.setColor( color )
+			this.pTextLayout.setAlignment( TextLayout.Align.left )
+			this.pTextLayout.setMaximalWidth( DEMath.max( width - 10, 0 ) )
+			this.pTextLayout.layoutText()
+			
+		else
+			this.pTextLayout = null
+		end
+	end
+end

@@ -1,0 +1,85 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule animation select.
+ * 
+ * Apply animation state from an animation move selected from a list of animation movers.
+ * 
+ * The animation move to use is selected using a link. The animation moves are distributed
+ * evenly across the 0 to 1 link value range in the order they are defined. The closest
+ * animation move is chosen. To blend between multiple animation states use multiple
+ * deAnimatorRuleAnimationSelect.
+ * 
+ * This rule is best used for automated animation system requiring picking animations from
+ * a list of animations. This can be for example a motion matching system using a database
+ * of animations.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARAnimationSelect extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Number of moves. */
+	public func int getMoveCount()
+	end
+	
+	/** \brief Move at index. */
+	public func String getMoveAt( int index )
+	end
+	
+	/** \brief Add move. */
+	public func void addMove( String moveName )
+	end
+	
+	/** \brief Remove all move. */
+	public func void removeAllMoves()
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARAnimationSelectTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARAnimationSelectTarget target )
+	end
+	/*@}*/
+end

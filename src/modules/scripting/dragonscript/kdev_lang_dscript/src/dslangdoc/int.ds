@@ -1,0 +1,216 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Primitive integer value.
+ * 
+ * Primitive values are constant and stored as value not as reference. Primitive values
+ * act like objects but are not stored as true objects in memory. Primitive values own
+ * special operators not available to script languages:
+ * | Command | Description |
+ * | ------- | ----------- |
+ * | int \b = int | assign integer value |
+ * | int \b == int | integer values are equal |
+ * | int \b != int | integer values are not equal |
+ * | \b not int | true if integer value is not 0 |
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class int
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create integer. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Compare integer to another object.
+	 * \throws EInvalidAction \em other is not of type integer.
+	 * \retval 0 Both integer values are equal.
+	 * \retval <0 This integer value is less than the other integer value.
+	 * \retval >0 This integer value is greater than the other integer value.
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/**
+	 * \brief Integer is equal to another integer.
+	 * \returns \em true if \em other is of type integer and both are equal.
+	 */
+	public func bool equals( Object other )
+		return 0
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of integer value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Integer value is less than another integereger value. */
+	public func bool <( int other )
+		return false
+	end
+	
+	/** \brief Integer value is less than or equal to another integereger value. */
+	public func bool <=( int other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than another integereger value. */
+	public func bool >( int other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than or equal to another integereger value. */
+	public func bool >=( int other )
+		return false
+	end
+	
+	
+	
+	/** \brief Integer plus another integereger value. */
+	public func int +( int other )
+		return 0
+	end
+	
+	/** \brief Integer minus another integereger value. */
+	public func int -( int other )
+		return 0
+	end
+	
+	/** \brief Integer value timer another integereger value. */
+	public func int *( int other )
+		return 0
+	end
+	
+	/**
+	 * \brief Integer value divided by another integereger value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func int /( int other )
+		return 0
+	end
+	
+	/** \brief Integer modulo another integereger value. */
+	public func int %( int other )
+		return 0
+	end
+	
+	/** \brief Integer left shifted by digits. */
+	public func int <<( int digits )
+		return 0
+	end
+	
+	/** \brief Integer right shifted by digits. */
+	public func int >>( int digits )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value plus another integereger value. */
+	public func int +=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value minus another integereger value. */
+	public func int -=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value timer another integereger value. */
+	public func int *=( int other )
+		return 0
+	end
+	
+	/**
+	 * \brief Set integer value to integer value divided by another integereger value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func int /=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer modulo another integereger value. */
+	public func int %=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value left shifted by digits. */
+	public func int <<=( int digits )
+		return 0
+	end
+	
+	/** \brief Set integer value to integer value right shifted by digits. */
+	public func int >>=( int digits )
+		return 0
+	end
+	
+	
+	
+	/** \brief Bitwise and between this integer and another integer. */
+	public func int &( int other )
+		return 0
+	end
+	
+	/** \brief Bitwise  or between this integer and another integer. */
+	public func int |( int other )
+		return 0
+	end
+	
+	/** \brief Bitwise xor between this integer and another integer. */
+	public func int ^( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise and between this integer and another integer and return new value. */
+	public func int &=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise or between this integer and another integer and return new value. */
+	public func int |=( int other )
+		return 0
+	end
+	
+	/** \brief Set integer value to bitwise xor between this integer and another integer and return new value. */
+	public func int ^=( int other )
+		return 0
+	end
+	
+	
+	
+	/** \brief Negative value. */
+	public func int -()
+		return 0
+	end
+	
+	/** \brief Increment integer value by one. */
+	public func int ++()
+		return 0
+	end
+	
+	/** \brief Decrement integer value by one. */
+	public func int --()
+		return 0
+	end
+end

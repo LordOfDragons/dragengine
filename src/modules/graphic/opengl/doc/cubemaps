@@ -1,0 +1,54 @@
+Cube-Maps are handled differently depending on where they are used. This text file explains the reasons.
+
+
+
+Environment Map
+===============
+
+Environment maps are rendered using the game render code. This means especially that the final image is
+not bottom-up as OpenGL usually would do. This is due to the finalize part in deoglRenderWorld which
+flips the rendered image upside-down while applying various color corrections. Two times upside-down
+hence ends up with top-down again. In this case the cube map looks the following:
+
+	Face 1: Positive X, top-down
+	Face 2: Negative X, top-down
+	Face 3: Positive Y, top-down
+	Face 4: Negative Y, top-down
+	Face 5: Positive Z, top-down
+	Face 6: Negative Z: top-down
+
+This lines up with the 3D-Image resources an artist can load into the environmentmap texture property.
+Hence both external cube map images and the rendered cube maps do match. To tap into the cube map the
+normal model-view matrix converting from camera space into environment map space can be used.
+
+
+
+Shadow Cube Map
+===============
+
+With shadow cube maps unfortunately this system breaks down. The faces of the cube map are rendered
+directly. This especially means that the rendered images are not flipped upside-down a second time
+using a finalize shader pass and therefore end up bottom-up instead of top-down in the cube map.
+This results in various problems. If the cube map is used directly the shadow casting does not work
+since the top and bottom face do not match the other faces. Furthermore if a mirroring along the Y
+axis is applied to the render matrix to correct the upside-down problem gl_FrontFacing is not working
+properly anymore as it suddenly returns false for front facing instead of true as it should. The
+only solution is to modify the rendering of the cube map as well as the shadow matrix used to later
+on tap from the cube map. The cube map for shadow casting looks like this now:
+
+	Face 1: Positive X, bottom-up
+	Face 2: Negative X, bottom-up
+	Face 3: Negative Y, bottom-up
+	Face 4: Positive Y, bottom-up
+	Face 5: Positive Z, bottom-up
+	Face 6: Negative Z: bottom-up
+
+As you can see all faces are bottom-up instead of top-down and the faces 3 and 4 have been exchanged.
+The exchange of the faces 3 and 4 is required to match the other faces being flipped upside-down.
+As a result the entire cube map is now flipped along the Y-Axis. Obviously the shadow matrix used
+to transform the camera space vector into shadow cube space has to be altered like this:
+
+	ShadowMatrix' = ShadowMatrix * ScaleMatrix( 1, -1, 1 )
+
+This way no mirroring is applied to the rendering process keeping gl_FrontFacing working while still
+delivering the correct shadow casting result.

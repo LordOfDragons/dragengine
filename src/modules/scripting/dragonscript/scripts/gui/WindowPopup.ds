@@ -1,0 +1,223 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Decorations
+
+
+/**
+ * \brief Window for temporarily overlapping widgets.
+ * 
+ * Window is shown as top window using popup(). The window captures the
+ * mouse while shown and keeps recapturing if a child widget captures and
+ * release the mouse.
+ * 
+ * Supports designing using designer selector "WindowPopup".
+ */
+class WindowPopup extends Window
+	/** \brief Close on popdown. */
+	private var bool pCloseOnPopDown
+	
+	
+	
+	/**
+	 * \brief Create window.
+	 * 
+	 * Window is initially hidden.
+	 */
+	public func new()
+		this.runWhileBlockingLayout( block
+			this.pCloseOnPopDown = true
+			this.setVisible( false )
+			this.setEnabled( true )
+			this.setCanFocus( false )
+			this.setCanReorder( false )
+			this.setCanActivate( false )
+			this.setCanMove( false )
+			this.setCanResize( false )
+			this.setCanClose( false )
+			this.setCanMaximize( false )
+			this.setCanMinimize( false )
+			this.setLayout( FlowLayout.new( LayoutAxis.y ) )
+			this.setDesignerSelector( "WindowPopup" )
+		end )
+	end
+	
+	
+	
+	/** \brief Close on popdown. */
+	public func bool getCloseOnPopDown()
+		return this.pCloseOnPopDown
+	end
+	
+	/** \brief Set close on popdown. */
+	public func void setCloseOnPopDown( bool closeOnPopDown )
+		this.pCloseOnPopDown = closeOnPopDown
+	end
+	
+	
+	
+	/**
+	 * \brief Pop up window.
+	 * \details Shows the window at the top and grabs mouse and keyboard input.
+	 */
+	public func void popup( Point position )
+		this.fitToContent()
+		this.setPosition( position )
+		this.setVisible( true )
+		this.moveToTop()
+		this.captureMouse()
+		this.grabFocus()
+	end
+	
+	/**
+	 * \brief Pop up window at desktop coordinates.
+	 * \details Shows the window at the top and grabs mouse and keyboard input.
+	 */
+	public func void popup( int x, int y )
+		this.popup( Point.new( x, y ) )
+	end
+	
+	/**
+	 * \brief Pop up window not clipping outside area.
+	 * \details Shows the window at the top and grabs mouse and keyboard input.
+	 */
+	public func void popupInside( Point position, RectArea boundary )
+		this.fitToContent()
+		this.setPosition( boundary.grow( -this.getSize() ).clamp( position ) )
+		this.setVisible( true )
+		this.moveToTop()
+		this.captureMouse()
+		this.grabFocus()
+	end
+	
+	/**
+	 * \brief Pop down window.
+	 * \details Release mouse and hide window. If close on popdown is \em true
+	 *          close() is called too.
+	 */
+	public func void popdown()
+		this.releaseMouse()
+		this.setVisible( false )
+		
+		if this.pCloseOnPopDown
+			this.close()
+		end
+	end
+	
+	
+	
+	/** \brief Send event to the widget. */
+	public func void sendEvent( Event event )
+		// a child widget did not handle its event. ignore it
+		if event.getSource() != this
+			return
+		end
+		
+		// check if we have to intercept the event
+		var int ident = event.getIdentifier()
+		
+		select ident
+		case KeyEvent.idKeyPressed
+			if ( event cast KeyEvent ).getKeyCode() == InputEventKey.escape
+				this.popdown()
+				return
+			end
+			
+		case MouseEvent.idMousePressed
+			var MouseEvent mouseEvent = event cast MouseEvent
+			var Point position = mouseEvent.getPosition()
+			
+			if not ( position.isAtLeast( 0 ) and position <= this.getSize() )
+				this.popdown()
+				return
+			end
+		end
+		
+		// otherwise send event to widget under cursor if this is a mouse event
+		if not MouseEvent.isMouseEvent( ident )
+			return
+		end
+		
+		var MouseEvent mouseEvent = event cast MouseEvent
+		
+		if ident == MouseEvent.idMouseWheeled
+			var Point mouseLocation = this.getDesktop().getMouseLocation()
+			var Point windowPosition = this.getPosition()
+			var Widget hoverWidget = this.getWidgetAt( mouseLocation - windowPosition )
+			
+			if hoverWidget == null or hoverWidget == this
+				return
+			end
+			
+			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
+				mouseEvent.getButton(), mouseEvent.getModifiers(), \
+				mouseEvent.getPosition(), mouseEvent.getDevice() ) )
+			
+		else
+			var Widget hoverWidget = this.getWidgetAt( mouseEvent.getPosition() )
+			
+			if hoverWidget == null or hoverWidget == this
+				return
+			end
+			
+			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
+				mouseEvent.getButton(), mouseEvent.getModifiers(), \
+				mouseEvent.getPosition() - hoverWidget.getWindowPosition(), \
+				mouseEvent.getDevice() ) )
+		end
+	end
+	
+	/**
+	 * \brief Grab focus if possible.
+	 * 
+	 * Implementation for popup windows is slightly different than for regular
+	 * windows. Regular windows focus the first focusable widget if they are not
+	 * focusable itself. Popup windows can not grab the focus nor do they focus
+	 * the first focusable widget. This avoids popup windows stealing focus from
+	 * the underlaying window.
+	 */
+	public func void grabFocus()
+	end
+	
+	/**
+	 * \brief Request to release mouse capture.
+	 * \details Returns true if the request has been accepted. If the request is
+	 *          granted follow up with grabing capturing the mouse ourself. If
+	 *          somebody else did capture the mouse instead of us he is responsible
+	 *          to capture the mouse himself using an MouseListener on the child
+	 *          widget releasing the mouse.
+	 */
+	public func bool requestReleaseMouse( Widget widget )
+		var bool result = super.requestReleaseMouse( widget )
+		
+		if result
+			this.captureMouse()
+		end
+		
+		return result
+	end
+end

@@ -1,0 +1,413 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Audio.DynamicMusic
+pin Dragengine.Files
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project dynamic music window.
+ */
+class WindowDynamicMusic extends Window
+	/** \brief Update timer. */
+	private class UpdateTimer extends Timer
+		/** \brief Window. */
+		private var WindowDynamicMusic pWindow
+		
+		/** \brief Create timer. */
+		public func new( WindowDynamicMusic window ) super( 0.0, true )
+			this.pWindow = window
+		end
+		
+		/** \brief Timer fired. */
+		public func void fire()
+			this.pWindow.update()
+		end
+	end
+	
+	/** \brief Dynamic music list selection listener. */
+	private class SelectDynamicMusicListener extends DefaultListModelListener
+		/** \brief Window. */
+		private var WindowDynamicMusic pWindow
+		
+		/** \brief Create timer. */
+		public func new( WindowDynamicMusic window )
+			this.pWindow = window
+		end
+		
+		/** \brief Selection changed. */
+		public func void selectionChanged( ListModel listModel )
+			var int selection = listModel.getSelected()
+			if selection != -1
+				this.pWindow.setDynamicMusic( ( listModel.getAt( selection ) cast NamedDynamicMusic ).getDynamicMusic() )
+			end
+		end
+	end
+	
+	/** \brief Toggle switch action. */
+	private class ToggleSwitchAction extends DefaultActionListener
+		/** \brief Switch to toggle. */
+		private var DynamicMusicSwitch pSwitch
+		
+		/** \brief Create action. */
+		public func new( DynamicMusicSwitch switch )
+			this.pSwitch = switch
+		end
+		
+		/** \brief Do action. */
+		public func void onAction( ActionEvent event )
+			this.pSwitch.setState( not this.pSwitch.getState() )
+		end
+	end
+	
+	/** \brief Play action. */
+	private class PlayAction extends DefaultActionListener
+		/** \brief Window. */
+		private var WindowDynamicMusic pWindow
+		
+		/** \brief Create action. */
+		public func new( WindowDynamicMusic window )
+			this.pWindow = window
+		end
+		
+		/** \brief Do action. */
+		public func void onAction(ActionEvent event)
+			this.pWindow.play()
+		end
+	end
+	
+	/** \brief Stop action. */
+	private class StopAction extends DefaultActionListener
+		/** \brief Window. */
+		private var WindowDynamicMusic pWindow
+		
+		/** \brief Create action. */
+		public func new( WindowDynamicMusic window )
+			this.pWindow = window
+		end
+		
+		/** \brief Do action. */
+		public func void onAction(ActionEvent event)
+			this.pWindow.stop()
+		end
+	end
+	
+	/** \brief Dynamic music wrapped with display name for list use. */
+	private class NamedDynamicMusic
+		/** \brief Dynamic music. */
+		private var DynamicMusic pDynamicMusic
+		
+		/** \brief Name to display in list. */
+		private var String pName
+		
+		/** \brief Create named dynamic music. */
+		public func new( DynamicMusic dynamicMusic, String name )
+			this.pDynamicMusic = dynamicMusic
+			this.pName = name
+		end
+		
+		/** \brief Dynamic music. */
+		public func DynamicMusic getDynamicMusic()
+			return this.pDynamicMusic
+		end
+		
+		/** \brief String representation. */
+		public func String toString()
+			return this.pName
+		end
+	end
+	
+	/** \brief Preloading dynamic music finished. */
+	private class PreloadDynamicMusicFinished extends DefaultPreloadListener
+		/** \brief Window. */
+		private var WindowDynamicMusic pWindow
+		
+		/** \brief Named dynamic music. */
+		private var NamedDynamicMusic pDynamicMusic
+		
+		/** \brief Create listener. */
+		public func new( WindowDynamicMusic window, NamedDynamicMusic dynamicMusic )
+			this.pWindow = window
+			this.pDynamicMusic = dynamicMusic
+		end
+		
+		/** \brief Preloading of all resources finished. */
+		public func void preloadingFinished( Preloader preloader, bool success )
+			if success
+				this.pWindow.addDynamicMusic( this.pDynamicMusic ) 
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Dynamic music or \em null if not set. */
+	private var DynamicMusic pDynamicMusic
+	
+	/** \brief Update timer for dynamic music or \em null if not set. */
+	private var UpdateTimer pUpdateTimer
+	
+	/** \brief Dynamic music list model. */
+	private var DefaultListModel pModelDynamicMusic
+	
+	/** \brief Dynamic music list. */
+	private var ListBox pListDynamicMusic
+	
+	/** \brief Panel switches. */
+	private var Panel pPanelSwitches
+	
+	/** \brief Playing part model. */
+	private var TextModel pModelPlayingPart
+	
+	/** \brief Playing part. */
+	private var DynamicMusicPart pPlayingPart
+	
+	/** \brief Microphone. */
+	private var Microphone pMicrophone
+	
+	
+	
+	/** \brief Create window. */
+	public func new() super( 0, 0, 400, 250 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Dynamic Music" )
+		
+		this.pMicrophone = Microphone.new()
+		AudioSystem.setActiveMicrophone( this.pMicrophone )
+	
+		this.pModelPlayingPart = DefaultTextModel.new( "-" )
+		
+		this.pModelDynamicMusic = DefaultListModel.new()
+		this.scanDynamicMusic( TestProject.getApp().getLoaders().getDynamicMusic(), "/dynmusic" )
+		
+		this.createContent()
+		
+		if this.pModelDynamicMusic.getCount() > 0
+			this.pListDynamicMusic.setSelectedElement( 0 )
+			this.setDynamicMusic( ( this.pModelDynamicMusic.getAt( 0 ) cast NamedDynamicMusic ).getDynamicMusic() )
+		end
+		
+		this.pUpdateTimer = UpdateTimer.new( this )
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		super.dispose()
+		
+		if this.pUpdateTimer != null
+			this.pUpdateTimer.giveUp()
+			this.pUpdateTimer = null
+		end
+		this.pDynamicMusic = null
+		
+		this.pModelPlayingPart = null
+		this.pPlayingPart = null
+		this.pPanelSwitches = null
+		this.pListDynamicMusic = null
+		this.pModelDynamicMusic = null
+		
+		if this.pMicrophone != null
+			if this.pMicrophone.equals( AudioSystem.getActiveMicrophone() )
+				AudioSystem.setActiveMicrophone( null )
+			end
+			this.pMicrophone = null
+		end
+	end
+	
+	
+	
+	/** \brief Update in regular intervals. */
+	public func void update()
+		if this.pDynamicMusic == null
+			return
+		end
+		this.pDynamicMusic.update()
+		
+		var DynamicMusicPart part = this.pDynamicMusic.getCurPart()
+		if part != this.pPlayingPart
+			this.pPlayingPart = part
+			
+			if this.pPlayingPart == null
+				this.pModelPlayingPart.setText( "-" )
+				
+			else
+				this.pModelPlayingPart.setText( part.getName() )
+			end
+		end
+	end
+	
+	/** \brief Play selected dynamic music. */
+	public func void play()
+		if this.pDynamicMusic == null
+			return
+		end
+		
+		this.pDynamicMusic.play()
+		
+		this.pPlayingPart = this.pDynamicMusic.getCurPart()
+		
+		if this.pPlayingPart == null
+			this.pModelPlayingPart.setText( "-" )
+			
+		else
+			this.pModelPlayingPart.setText( this.pPlayingPart.getName() )
+		end
+	end
+	
+	/** \brief Stop selected dynamic music. */
+	public func void stop()
+		if this.pDynamicMusic == null
+			return
+		end
+		
+		this.pDynamicMusic.stop()
+		
+		this.pPlayingPart = null
+		this.pModelPlayingPart.setText( "-" )
+	end
+	
+	
+	
+	/** \brief Scan directory for dynamic music and load them. */
+	public func void scanDynamicMusic( LoadDynamicMusic loader, String directory )
+		FileSystem.searchFiles( directory, true, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern( each, "*.dynmusic.xml" )
+				try
+					// this version would load synchronously
+					//this.pModelDynamicMusic.add( NamedDynamicMusic.new( \
+					//	loader.loadFromFile( each ), File.new( each ).getName().substring( 0, -13 ) ) )
+					
+					// this version loads asynchronously. using preloaders is prefered over synchronous
+					// loading since this allows the game engine to load multiple resource efficiently
+					// in parallel and the gui does not block until loading finished
+					var PreloadDynamicMusic preloader = loader.loadFromFileAsync( each, null )
+					preloader.addListener( PreloadDynamicMusicFinished.new( this, NamedDynamicMusic.new( \
+						preloader.getDynamicMusic(), File.new( each ).getName().substring( 0, -13 ) ) ) )
+					preloader.checkFinished()
+					
+				catch Exception e
+					e.printTrace()
+				end
+			end
+			return true
+		end )
+	end
+	
+	/** \brief Add dynamic music. */
+	public func void addDynamicMusic( NamedDynamicMusic dynamicMusic )
+		// can be called by preloaders after window has been disposed so check this
+		if this.pModelDynamicMusic == null
+			return
+		end
+		
+		this.pModelDynamicMusic.add( dynamicMusic )
+	end
+	
+	/** \brief Set dynamic music to play or \em null if not set. */
+	public func void setDynamicMusic( DynamicMusic dynamicMusic )
+		if dynamicMusic == this.pDynamicMusic
+			return
+		end
+		
+		if this.pDynamicMusic != null
+			this.pMicrophone.removeSpeaker( this.pDynamicMusic.getSpeaker() )
+			this.pDynamicMusic.stop()
+		end
+		
+		this.pDynamicMusic = dynamicMusic
+		
+		if dynamicMusic != null
+			this.pMicrophone.addSpeaker( dynamicMusic.getSpeaker() )
+		end
+		
+		this.updateSwitches()
+	end
+	
+	/** \brief Create content. */
+	private func void createContent()
+		this.setLayout( BorderLayout.new( 5 ) )
+		
+		// dynamic music selector
+		this.pListDynamicMusic = ListBox.new( this.pModelDynamicMusic )
+		this.pListDynamicMusic.setDesignerSelector( "ListBox.DynamicMusic" )
+		var ScrollPanel scrollPanelMusic = ScrollPanel.new( this.pListDynamicMusic )
+		this.addWidget( scrollPanelMusic, BorderLayout.Area.left )
+		this.pModelDynamicMusic.addListener( SelectDynamicMusicListener.new( this ) )
+		
+		// switch list with currently playing part below it
+		var Panel panelSwitchesPart = Panel.new()
+		panelSwitchesPart.setLayout( BorderLayout.new( 5 ) )
+		this.addWidget( panelSwitchesPart, BorderLayout.Area.content )
+		
+		this.pPanelSwitches = Panel.new()
+		this.pPanelSwitches.setLayout( FlowLayout.new( LayoutAxis.y, 5 ) )
+		var ScrollPanel scrollPanelSwitches = ScrollPanel.new( Viewport.new( this.pPanelSwitches ) )
+		panelSwitchesPart.addWidget( scrollPanelSwitches, BorderLayout.Area.content )
+		
+		var Panel panelPart = Panel.new()
+		panelPart.setLayout( BorderLayout.new( 5 ) )
+		panelSwitchesPart.addWidget( panelPart, BorderLayout.Area.bottom )
+		panelPart.addWidget( Label.new( "Part:" ), BorderLayout.Area.left )
+		panelPart.addWidget( Label.new( this.pModelPlayingPart ), BorderLayout.Area.content )
+		
+		// button line
+		var Panel panelButtons = Panel.new()
+		panelButtons.setLayout( BoxLayout.new( LayoutAxis.x, 5 ) )
+		
+		var Button button = Button.new( "Play" )
+		button.addActionListener( PlayAction.new( this ) )
+		panelButtons.addWidget( button )
+		
+		button = Button.new( "Stop" )
+		button.addActionListener( StopAction.new( this ) )
+		panelButtons.addWidget( button )
+		
+		button = Button.new( "Close" )
+		button.addActionListener( CloseWindowActionListener.new( this ) )
+		panelButtons.addWidget( button )
+		
+		this.addWidget( panelButtons, BorderLayout.Area.bottom )
+	end
+	
+	/** \brief Update switches. */
+	public func void updateSwitches()
+		this.pPanelSwitches.removeAllWidgets()
+		
+		if this.pDynamicMusic == null
+			return
+		end
+		
+		this.pDynamicMusic.forEachSwitch( block DynamicMusicSwitch each
+			each.setState( false ) // start with off state
+			var CheckBox checkBox = CheckBox.new( each.getName() )
+			checkBox.addActionListener( ToggleSwitchAction.new( each ) )
+			this.pPanelSwitches.addWidget( checkBox )
+		end )
+	end
+end

@@ -1,0 +1,61 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+/**
+ * \brief Log messages added to Console instance to game engine logger.
+ */
+class LogConsoleMessages implements ConsoleListener
+	private var String pPrefix
+	
+	
+	
+	/** \brief Create console listener. */
+	public func new()
+		this.pPrefix = "[Console] "
+	end
+	
+	
+	
+	/** \brief Prefix added before logged messages. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	/** \brief Set prefix added before logged messages. */
+	public func void setPrefix( String prefix )
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Message added to console. */
+	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
+		Engine.log( this.pPrefix + "[" + message.getTimeStamp() + "] " + message.getMessage() + "\n" )
+	end
+	
+	/** \brief All messages removed from console. */
+	public func void consoleCleared( Console console )
+	end
+end

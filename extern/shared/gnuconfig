@@ -1,0 +1,11 @@
+GNU Config File Update
+
+Required for extern libraries on systems not properly supported at the time their
+gnu config file has been written in stone in the release files. These updated files
+can be downloaded from these locations:
+
+http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD
+http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD
+
+From the resulting files only the config.guess and config.sub are required to be placed
+in a tar.bz2 to be unpacked into respective build directories.

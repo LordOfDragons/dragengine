@@ -1,0 +1,270 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+pin Dragengine.Commands
+
+
+/**
+ * \brief Console panel input field.
+ * 
+ * Allows user to execute commands by entering them in a text field and pressing
+ * the Return key. Supports running commands from CommandManager and
+ * ConsoleCommandList. A history is stored allowing the user to retrieve the
+ * last run commands.
+ * 
+ * Supports designing using designer selector "TextField.ConsoleInput".
+ * 
+ * \todo
+ * 
+ * Implement a small pop-up list showing potential commands to enter while typing.
+ * Roughly 5 entries should be enough.
+ */
+class ConsoleInputField extends TextField
+	/** \brief Property string codec providing a decodeStringList. */
+	private var CodecPropertyString pCodec
+	
+	/** \brief Console command manager to find commands in or \em null if not used. */
+	private var ConsoleCommandList pConsoleCommands
+	
+	/** \brief Command manager to find commands in or \em null if not used. */
+	private var CommandManager pCommands
+	
+	/** \brief Command for closing console. */
+	private var Command pCommandCloseConsole
+	
+	/** \brief Console for output or \em null if not used. */
+	private var Console pConsole
+	
+	/** \brief History of previous commands. */
+	private var Array pHistory
+	
+	/** \brief Selection in the history. */
+	private var int pHistorySelection
+	
+	
+	
+	/** \brief Create console input field. */
+	public func new()
+		this.pCodec = CodecPropertyString.new()
+		this.pHistory = Array.new()
+		this.pHistorySelection = 0
+		this.setDesignerSelector( this.getDesignerSelector() + ".ConsoleInput" )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pCodec = null
+		this.pConsoleCommands = null
+		this.pCommands = null
+		this.pCommandCloseConsole = null
+		this.pHistory = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Console command manager to find commands in or \em null if not used. */
+	public func ConsoleCommandList getConsoleCommands()
+		return this.pConsoleCommands
+	end
+	
+	/** \brief Set console command manager to find commands in or \em null if not used. */
+	public func void setConsoleCommands( ConsoleCommandList commands )
+		this.pConsoleCommands = commands
+	end
+	
+	/** \brief Command manager to find commands in or \em null if not used. */
+	public func CommandManager getCommands()
+		return this.pCommands
+	end
+	
+	/** \brief Set command manager to find commands in or \em null if not used. */
+	public func void setCommands( CommandManager commands )
+		this.pCommands = commands
+	end
+	
+	/** \brief Command for closing console. */
+	public func Command getCommandCloseConsole()
+		return this.pCommandCloseConsole
+	end
+	
+	/** \brief Set command for closing console. */
+	public func void setCommandCloseConsole( Command command )
+		this.pCommandCloseConsole = command
+	end
+	
+	/** \brief Console for output or \em null if not used. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console for output or \em null if not used. */
+	public func void setConsole( Console console )
+		this.pConsole = console
+	end
+	
+	
+	
+	/** \brief History of previous commands. */
+	public func Array getHistory()
+		return this.pHistory
+	end
+	
+	/** \brief Selection in the history. */
+	public func int getHistorySelection()
+		return this.pHistorySelection
+	end
+	
+	/** \brief Set selection in the history. */
+	public func void setHistorySelection( int selection )
+		this.pHistorySelection = selection
+	end
+	
+	
+	
+	/** \brief Key on keyboard has been pressed. */
+	public func void onKeyPress( KeyEvent event )
+		this.stopRepeatEventTimer()
+		
+		select event.getKeyCode()
+		case InputEventKey.arrowUp
+			if this.pHistorySelection <= 0
+				break
+			end
+			
+			this.pHistorySelection--
+			this.getModel().setText( this.pHistory.getAt( this.pHistorySelection ) cast String )
+			this.setCursorPosition( this.getModel().getText().getLength() )
+			this.ensureCursorVisible()
+			
+		case InputEventKey.arrowDown
+			if this.pHistorySelection >= this.pHistory.getCount()
+				break
+			end
+			
+			this.pHistorySelection++
+			
+			if this.pHistorySelection < this.pHistory.getCount()
+				this.getModel().setText( this.pHistory.getAt( this.pHistorySelection ) cast String )
+				
+			else
+				this.getModel().setText( "" )
+			end
+			
+			this.setCursorPosition( this.getModel().getText().getLength() )
+			this.ensureCursorVisible()
+			
+		else
+			super.onKeyPress( event )
+		end
+	end
+	
+	/** \brief Key on keyboard has been released. */
+	public func void onKeyRelease( KeyEvent event )
+		super.onKeyRelease( event )
+		
+		// if escape is pressed use close console command if present. this is done while
+		// releasing the key not pressing the key to avoid matching game bindings to be
+		// used when the user releases the key
+		if event.getKeyCode() == InputEventKey.escape and this.pCommandCloseConsole != null
+			this.pCommandCloseConsole.pulse()
+		end
+	end
+	
+	/** \brief Key typed event. */
+	public func void onKeyType( KeyEvent event )
+		select event.getKeyCode()
+		case InputEventKey.enter
+			var String command = this.getModel().getText()
+			this.getModel().setText( "" )
+			
+			if this.pHistory.getCount() == 0 or not this.pHistory.getAt( this.pHistory.getCount() - 1 ).equals( command )
+				if this.pHistory.getCount() == 50
+					this.pHistory.removeFrom( 0 )
+				end
+				this.pHistory.add( command )
+			end
+			
+			this.runCommand( command )
+			
+		else
+			super.onKeyType( event )
+		end
+		
+		this.pHistorySelection = this.pHistory.getCount()
+	end
+	
+	
+	
+	/**
+	 * \brief Run command.
+	 * \details Overwrite to do your own parsing and processing.
+	 */
+	public func void runCommand( String commandString )
+		// parse command into an array of tokens
+		var Array tokens
+		
+		try
+			tokens = this.pCodec.decodeStringList( commandString )
+			if tokens.getCount() == 0
+				return
+			end
+			
+		catch Exception e
+			if this.pConsole != null
+				this.pConsole.addMessage( e.getReason() )
+			end
+			return
+		end
+		
+		var String commandName = tokens.getAt( 0 ) cast String
+		tokens.remove( 0 )
+		
+		// check if this is a console command
+		if this.pConsoleCommands != null
+			var ConsoleCommand consoleCommand = this.pConsoleCommands.getNamed( commandName )
+			if consoleCommand != null
+				consoleCommand.execute( this.pConsole, tokens )
+				return
+			end
+		end
+		
+		// check if this is a command
+		if this.pCommands != null
+			var Command command = this.pCommands.getNamed( commandName )
+			if command != null
+				command.pulse()
+				return
+			end
+		end
+		
+		// we do not understand the command
+		if this.pConsole != null
+			this.pConsole.addMessage( "Unknown command: " + commandName )
+		end
+	end
+end

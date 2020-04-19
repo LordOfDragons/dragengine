@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Renders a single transparent image as border.
+ * 
+ * The image is stretched to cover the entire widget. 
+ */
+class ImageBorder extends DefaultBorder
+	/** \brief Border image. */
+	private var Image pImage
+	
+	/** \brief Border size. */
+	private var BorderSize pBorderSize
+	
+	
+	
+	/** \brief Create border. */
+	public func new() this( null )
+	end
+	
+	/** \brief Create border. */
+	public func new( Image image ) this( image, BorderSize.new() )
+	end
+	
+	/** \brief Create border. */
+	public func new( Image image, BorderSize borderSize )
+		if image == null or borderSize == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pBorderSize = borderSize
+		this.pImage = image
+		this.updateCanvas()
+	end
+	
+	
+	
+	/** \brief Border image. */
+	public func Image getImage()
+		return this.pImage
+	end
+	
+	/** \brief Set image border. */
+	public func void setImage( Image image )
+		if image == null
+			throw EInvalidParam.new()
+		end
+		
+		if image == this.pImage
+			return
+		end
+		
+		this.pImage = image
+		this.updateCanvas()
+	end
+	
+	/** \brief Border size. */
+	public func BorderSize getBorderSize()
+		return this.pBorderSize
+	end
+	
+	/** \brief Set border size. */
+	public func void setBorderSize( BorderSize borderSize )
+		if borderSize.equals( this.pBorderSize )
+			return
+		end
+		
+		this.pBorderSize = borderSize
+		this.layoutContainer()
+		this.updateCanvas()
+	end
+	
+	
+	
+	/** Update canvas. */
+	public func void updateCanvas()
+		var CanvasView borderCanvas = this.getCanvasView()
+		borderCanvas.removeAllCanvas()
+		
+		var CanvasImage canvasImage = CanvasImage.new()
+		canvasImage.setImage( this.pImage )
+		canvasImage.setSize( borderCanvas.getSize() )
+		borderCanvas.addCanvas( canvasImage )
+	end
+end

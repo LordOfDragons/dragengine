@@ -1,0 +1,272 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Composable force field for element class.
+ * 
+ * Provides force field support to element class without subclassing from a specific class.
+ */
+class ECComposeForceField
+	private var ECPShapeList pInfluenceArea
+	private var ECPFloat pRadius
+	private var ECPFloat pExponent
+	private var ECPEnumeration pFieldType
+	private var ECPEnumeration pApplicationType
+	private var ECPVector pDirection
+	private var ECPFloat pForce
+	private var ECPFloat pFluctuationDirection
+	private var ECPFloat pFluctuationForce
+	private var ECPBoolean pEnabled
+	private var ECPShapeList pShape
+	
+	private var CollisionFilter pCollisionFilter
+	
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) this( ownerClass, "forceField." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, String prefix )
+		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.forceField )
+		
+		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		lmFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		
+		this.pCollisionFilter = CollisionFilter.new( lmCategory, lmFilter )
+		
+		this.pInfluenceArea = ECPShapeList.new( prefix + "influenceArea", \
+			ownerClass.getSharedCodecPropertyString() )
+		ownerClass.addProperty( this.pInfluenceArea )
+		
+		this.pRadius = ECPFloat.new( prefix + "radius", 0, 1 )
+		ownerClass.addProperty( this.pRadius )
+		
+		this.pExponent = ECPFloat.new( prefix + "exponent", 0, 1 )
+		ownerClass.addProperty( this.pExponent )
+		
+		this.pFieldType = ECPEnumeration.new( prefix + "fieldType", \
+			ForceFieldType.all(), ForceFieldType.radial )
+		ownerClass.addProperty( this.pFieldType )
+		
+		this.pApplicationType = ECPEnumeration.new( prefix + "applicationType", \
+			ForceFieldApplication.all(), ForceFieldApplication.direct )
+		ownerClass.addProperty( this.pApplicationType )
+		
+		this.pDirection = ECPVector.new( prefix + "direction", Vector.new() )
+		ownerClass.addProperty( this.pDirection )
+		
+		this.pForce = ECPFloat.new( prefix + "force", 0, 1 )
+		ownerClass.addProperty( this.pForce )
+		
+		this.pFluctuationDirection = ECPFloat.new( prefix + "fluctuationDirection", 0 )
+		ownerClass.addProperty( this.pFluctuationDirection )
+		
+		this.pFluctuationForce = ECPFloat.new( prefix + "fluctuationForce", 0 )
+		ownerClass.addProperty( this.pFluctuationForce )
+		
+		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
+		ownerClass.addProperty( this.pEnabled )
+		
+		this.pShape = ECPShapeList.new( prefix + "shape", ownerClass.getSharedCodecPropertyString() )
+		ownerClass.addProperty( this.pShape )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Influence area. */
+	public func ECPShapeList getInfluenceArea()
+		return this.pInfluenceArea
+	end
+	
+	/** \brief Falloff radius. */
+	public func ECPFloat getRadius()
+		return this.pRadius
+	end
+	
+	/** \brief Falloff exponent. */
+	public func ECPFloat getExponent()
+		return this.pExponent
+	end
+	
+	/** \brief Field type. */
+	public func ECPEnumeration getFieldType()
+		return this.pFieldType
+	end
+	
+	/** \brief Force application type. */
+	public func ECPEnumeration getApplicationType()
+		return this.pApplicationType
+	end
+	
+	/** \brief Force direction. */
+	public func ECPVector getDirection()
+		return this.pDirection
+	end
+	
+	/** \brief Force in newton. */
+	public func ECPFloat getForce()
+		return this.pForce
+	end
+	
+	/** \brief Fluctuation of direction in degrees. */
+	public func ECPFloat getFluctuationDirection()
+		return this.pFluctuationDirection
+	end
+	
+	/** \brief Fluctuation of force in newton. */
+	public func ECPFloat getFluctuationForce()
+		return this.pFluctuationForce
+	end
+	
+	/** \brief Initial force field enabled state. */
+	public func ECPBoolean getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	/** \brief Speaker shape. */
+	public func ECPShapeList getShape()
+		return this.pShape
+	end
+	
+	
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+		this.pCollisionFilter = collisionFilter
+	end
+	
+	/** \brief Convience function clearing bit in collision category. */
+	public func void collisionCategoryClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function setting bit in collision category. */
+	public func void collisionCategorySetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getCategory()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( mask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function replacing collision category. */
+	public func void collisionCategoryReplace( LayerMask layerMask )
+		this.pCollisionFilter = CollisionFilter.new( layerMask, this.pCollisionFilter.getFilter() )
+	end
+	
+	/** \brief Convience function clearing bit in collision filter. */
+	public func void collisionFilterClearBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.clearBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+	
+	/** \brief Convience function setting bit in collision filter. */
+	public func void collisionFilterSetBit( int bit )
+		var LayerMask mask = this.pCollisionFilter.getFilter()
+		mask.setBit( bit )
+		this.pCollisionFilter = CollisionFilter.new( this.pCollisionFilter.getCategory(), mask )
+	end
+	
+	
+	
+	/** \brief Initialize force field for element from stub. */
+	public func ForceField createForceField( Element element, StubElement stub )
+		var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+		var ForceField forceField = ForceField.new()
+		
+		forceField.setPosition( element.getPosition() )
+		forceField.setOrientation( element.getOrientation() )
+		
+		forceField.setInfluenceArea( this.pInfluenceArea.getShapeList( stub ) )
+		forceField.setRadius( this.pRadius.getValue( stub ) )
+		forceField.setExponent( this.pExponent.getValue( stub ) )
+		
+		forceField.setFieldType( this.pFieldType.getEnumeration( stub ) cast ForceFieldType )
+		forceField.setApplicationType( this.pApplicationType.getEnumeration( stub ) cast ForceFieldApplication )
+		forceField.setDirection( this.pDirection.getVector( stub, codec ) )
+		forceField.setForce( this.pForce.getValue( stub ) )
+		forceField.setFluctuationDirection( this.pFluctuationDirection.getValue( stub ) )
+		forceField.setFluctuationForce( this.pFluctuationForce.getValue( stub ) )
+		forceField.setShape( this.pShape.getShapeList( stub ) )
+		
+		forceField.setCollisionFilter( this.pCollisionFilter )
+		forceField.setEnabled( this.pEnabled.getValue( stub ) )
+		
+		return forceField
+	end
+	
+	/** \brief Create activate force field trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerEnable( Element element, StubElement stub )
+		return this.createTriggerEnable( element, stub, "" )
+	end
+	
+	/** \brief Create activate force field trigger expression from stub or \em null if not used. */
+	public func TSTriggerExpression createTriggerEnable( Element element, StubElement stub, String defaultValue )
+		var String value = stub.getPropertyValueFor( this.pPrefix + "trigger", defaultValue )
+		
+		if value.empty()
+			return null
+			
+		else
+			return element.getClass().getTriggerExpressionParser().stringToExpression( value )
+		end
+	end
+end

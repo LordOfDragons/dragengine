@@ -1,0 +1,14 @@
+[Desktop Entry]
+Categories=Development;
+Version=1.0
+Type=Application
+Name=Drag[en]gine IGDE
+GenericName=Drag[en]gine IGDE
+Comment=Work on Drag[en]gine base game projects
+Exec=deigde %f
+TryExec=deigde
+MimeType=application/deigde-gameproject;
+Icon=dragengine-deigde
+NoDisplay=false
+StartupNotify=false
+Terminal=false

@@ -1,0 +1,523 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Default implementation of ListModel.
+ */
+class DefaultListModel implements ListModel
+	private var Array pElements
+	private var Array pListeners
+	private var int pSelected
+	
+	
+	
+	/** \brief Create default list model. */
+	public func new()
+		this.pElements = Array.new()
+		this.pListeners = Array.new()
+		this.pSelected = -1
+	end
+	
+	/** \brief Create default list model with initial content. */
+	public func new( Array content )
+		this.pElements = Array.new( content )
+		this.pListeners = Array.new()
+		this.pSelected = content.getCount() > 0 if 0 else -1
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( ListModelListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( ListModelListener listener )
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Number of elements. */
+	public func int getCount()
+		return this.pElements.getCount()
+	end
+	
+	/**
+	 * \brief Element at index.
+	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func Object getAt( int index )
+		return this.pElements.getAt( index )
+	end
+	
+	/**
+	 * \brief Set element at index.
+	 * 
+	 * If element at index changed a content changed event is send to listeners. Changing many
+	 * elements at once can cause performance problems due to each change causing widgets to
+	 * relayout. If this is a problem use one of the mass editing methods.
+	 * 
+	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func void setAt( int index, Object element )
+		if element == this.pElements.getAt( index )
+			return
+		end
+		
+		this.pElements.setAt( index, element )
+		this.notifyContentChanged( index, index )
+	end
+	
+	/**
+	 * \brief Replaces elements in range.
+	 * 
+	 * If range is not empty a content changed event is send to listeners. Use this
+	 * method if you need to change multiple elements at once to cause only one change
+	 * notification resulting in widgets to relayout once instead of multiple times.
+	 * 
+	 * \throws EOutOfBounds \em firstIndex is less than 0 or larger than or equal getCount().
+	 * \throws EOutOfBounds \em lastIndex is less than 0 or larger than or equal getCount().
+	 * \throws EInvalidParam \em lastIndex is less than \em firstIndex.
+	 * \throws EInvalidParam Number of elements in \em elements does not equal number of
+	 *                       elements in range.
+	 */
+	public func void setRange( int firstIndex, int lastIndex, Array elements )
+		if firstIndex == lastIndex
+			return
+		end
+		
+		if lastIndex < firstIndex
+			throw EInvalidParam.new()
+		end
+		if lastIndex >= this.pElements.getCount()
+			throw EOutOfBounds.new()
+		end
+		
+		var int count = lastIndex - firstIndex + 1
+		if elements.getCount() != count
+			throw EInvalidParam.new()
+		end
+		
+		var int i
+		for i = 0 to count
+			this.pElements.setAt( firstIndex + i, elements.getAt( i ) )
+		end
+		this.notifyContentChanged( firstIndex, lastIndex )
+	end
+	
+	/**
+	 * \brief Replaces all elements.
+	 * 
+	 * If range is not empty a content changed event is send to listeners. Use this
+	 * method if you need to change all elements at once to cause only one change
+	 * notification resulting in widgets to relayout once instead of multiple times.
+	 * 
+	 * \throws EInvalidParam Number of elements in \em elements does not equal number
+	 *                       of elements in the model.
+	 */
+	public func void setAll( Array elements )
+		var int count = this.pElements.getCount()
+		if elements.getCount() != count
+			throw EInvalidParam.new()
+		end
+		
+		if count == 0
+			return
+		end
+		
+		var int i
+		for i = 0 to count
+			this.pElements.setAt( i, elements.getAt( i ) )
+		end
+		this.notifyContentChanged( 0, count - 1 )
+	end
+	
+	/** \brief Index of element or -1 if absent. */
+	public func int indexOf( Object element )
+		return this.pElements.indexOf( element )
+	end
+	
+	/** \brief Element is present. */
+	public func bool has( Object element )
+		return this.pElements.has( element )
+	end
+	
+	/**
+	 * \brief Add element.
+	 * 
+	 * After adding a content changed event is send to listeners. If you have to set
+	 * many elements at once performance problems can arise due to each change causing
+	 * widgets to relayout. If this is the case use one of the mass editing methods.
+	 */
+	public func void add( Object element )
+		this.pElements.add( element )
+		
+		var int index = this.pElements.getCount() - 1
+		this.notifyElementsAdded( index, index )
+	end
+	
+	/**
+	 * \brief Add elements from array.
+	 * 
+	 * After adding a content changed event is send to listeners. If you have
+	 * to add many elements addAll() instead of add() for performance reasons.
+	 */
+	public func void addAll( Array content )
+		var int count = content.getCount()
+		if count == 0
+			return
+		end
+		
+		var int fromIndex = this.pElements.getCount()
+		
+		content.forEach( block Object each
+			this.pElements.add( each )
+		end )
+		
+		this.notifyElementsAdded( fromIndex, fromIndex + count - 1 )
+	end
+	
+	/**
+	 * \brief Insert element at index.
+	 * 
+	 * After inserting a content changed event is send to listeners. If you have to insert
+	 * many elements at once performance problems can arise due to each change causing
+	 * widgets to relayout. If this is the case use one of the mass editing methods.
+	 * 
+	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
+	 */
+	public func void insert( int index, Object element )
+		this.pElements.insert( index, element )
+		this.notifyElementsAdded( index, index )
+	end
+	
+	/**
+	 * \brief Insert elements from array at index.
+	 * 
+	 * After inserting a content changed event is send to listeners. If you have to
+	 * insert many elements insertAll() instead of insert() for performance reasons.
+	 * 
+	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
+	 */
+	public func void insertAll( int index, Array content )
+		var int count = content.getCount()
+		if count == 0
+			return
+		end
+		
+		var int i
+		for i = 0 to count
+			this.pElements.insert( index + i, content.getAt( i ) )
+		end
+		
+		this.notifyElementsAdded( index, index + count - 1 )
+	end
+	
+	/**
+	 * \brief Remove element.
+	 * 
+	 * After removing a content changed event is send to listeners. If you have to remove
+	 * many elements at once performance problems can arise due to each change causing
+	 * widgets to relayout. If this is the case use one of the mass editing methods.
+	 * 
+	 * \throws EOutOfBounds Element is absent.
+	 */
+	public func void remove( Object element )
+		this.removeFrom( this.pElements.indexOf( element ) )
+	end
+	
+	/**
+	 * \brief Remove element.
+	 * 
+	 * After removing a content changed event is send to listeners. If you have to remove
+	 * many elements at once performance problems can arise due to each change causing
+	 * widgets to relayout. If this is the case use one of the mass editing methods.
+	 * 
+	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal getCount().
+	 */
+	public func void removeFrom( int index )
+		this.pElements.removeFrom( index )
+		this.notifyElementsRemoved( index, index )
+	end
+	
+	/**
+	 * \brief Remove elements from range.
+	 * 
+	 * After removing a content changed event is send to listeners.
+	 * 
+	 * \throws EOutOfBounds \em firstIndex is less than 0 or larger than or equal getCount().
+	 * \throws EOutOfBounds \em lastIndex is less than 0 or larger than or equal getCount().
+	 * \throws EInvalidParam \em lastIndex is less than \em firstIndex.
+	 */
+	public func void removeRange( int firstIndex, int lastIndex )
+		if firstIndex == lastIndex
+			return
+		end
+		
+		if lastIndex < firstIndex
+			throw EInvalidParam.new()
+		end
+		if lastIndex >= this.pElements.getCount()
+			throw EOutOfBounds.new()
+		end
+		
+		var int i
+		for i = firstIndex to lastIndex + 1
+			this.pElements.removeFrom( firstIndex )
+		end
+		
+		this.notifyElementsRemoved( firstIndex, lastIndex )
+	end
+	
+	/**
+	 * \brief Remove elements from array.
+	 * 
+	 * After removing a content changed event is send to listeners.
+	 * 
+	 * \throws EOutOfBounds Element is absent.
+	 */
+	public func void removeArray( Array content )
+		var int count = content.getCount()
+		if count == 0
+			return
+		end
+		
+		var int firstIndex = this.pElements.indexOf( content.getAt( 0 ) )
+		var int lastIndex = firstIndex
+		var int index
+		var int i
+		
+		for i = 1 to count
+			index = this.pElements.indexOf( content.getAt( i ) )
+			if index == -1
+				throw EOutOfBounds.new()
+			end
+			
+			firstIndex = DEMath.min( firstIndex, index )
+			lastIndex = DEMath.max( lastIndex, index )
+		end
+		
+		content.forEach( block Object each
+			this.pElements.remove( each )
+		end )
+		
+		this.notifyElementsRemoved( firstIndex, lastIndex )
+	end
+	
+	/**
+	 * \brief Remove all elements.
+	 * 
+	 * If elements are present a content changed event is send to listeners after
+	 * removing all elements.
+	 */
+	public func void removeAll()
+		var int count = this.pElements.getCount()
+		if count == 0
+			return
+		end
+		
+		this.pElements.removeAll()
+		this.notifyElementsRemoved( 0, count - 1 )
+	end
+	
+	/** \brief Get content as array. */
+	public func Array getContent()
+		return Array.new( this.pElements )
+	end
+	
+	/**
+	 * \brief Set content from array.
+	 * 
+	 * Same effect as calling first removeAll() then addAll(content). Sends at most two
+	 * notifications. If model contains elements sends first a elements removed notification.
+	 * Then if any content is added sends an elements added notification. If you just want
+	 * to replace all elements without changing the number of elements use setAll() which
+	 * sends only a content changed notification.
+	 */
+	public func void setContent( Array content )
+		var int count = this.pElements.getCount()
+		if count > 0
+			this.pElements.removeAll()
+			this.notifyElementsRemoved( 0, count - 1 )
+		end
+		
+		this.pElements = Array.new( content )
+		count = content.getCount()
+		if count > 0
+			this.notifyElementsAdded( 0, count - 1 )
+		end
+	end
+	
+	/** \brief Sort elements using element compare() method. */
+	public func void sort()
+		if this.pElements.getCount() == 0
+			return
+		end
+		
+		this.pElements.sort()
+		this.notifyContentChanged( 0, this.pElements.getCount() - 1 )
+	end
+	
+	/**
+	 * \brief Sort elements using block.
+	 * 
+	 * Block receives elements to compare as argument and returns compare result the same
+	 * way as Object.compare() does.
+	 */
+	public func void sort( Block ablock )
+		if this.pElements.getCount() == 0
+			return
+		end
+		
+		this.pElements.sort( ablock )
+		this.notifyContentChanged( 0, this.pElements.getCount() - 1 )
+	end
+	
+	
+	
+	/**
+	 * \brief Visit content with block with parameter Object.
+	 */
+	public func void forEach( Block ablock )
+		this.pElements.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find object with block with parameter Object returning bool.
+	 */
+	public func Object find( Block ablock )
+		return this.pElements.find( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Index of the selected element or -1 if there is no selected element.
+	 */
+	public func int getSelected()
+		return this.pSelected
+	end
+	
+	/**
+	 * \brief Set index of selected element or -1 if none is no selected element.
+	 */
+	public func void setSelected( int index )
+		if index < -1 or index >= this.pElements.getCount()
+			throw EInvalidParam.new()
+		end
+		
+		if index == this.pSelected
+			return
+		end
+		
+		this.pSelected = index
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.selectionChanged( this )
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Notify all that the content of the model in the given range changed.
+	 * \param fromIndex Index of first element that changed
+	 * \param toIndex Index of last element that changed
+	 */
+	public func void notifyContentChanged( int fromIndex, int toIndex )
+		var bool notifySelectedChanged
+		var int count = this.pElements.getCount()
+		
+		if count > 0
+			if this.pSelected >= count
+				this.pSelected = count - 1
+				notifySelectedChanged = true
+			end
+			
+		elif this.pSelected != -1
+			this.pSelected = -1
+			notifySelectedChanged = true
+		end
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.contentChanged( this, fromIndex, toIndex )
+		end )
+		
+		if notifySelectedChanged
+			this.pListeners.forEach( block ListModelListener each
+				each.selectionChanged( this )
+			end )
+		end
+	end
+	
+	/**
+	 * \brief Notify all elements have been added.
+	 * \param fromIndex Index of first added element.
+	 * \param toIndex Index of last added element.
+	 */
+	public func void notifyElementsAdded( int fromIndex, int toIndex )
+		this.pListeners.forEach( block ListModelListener each
+			each.elementsAdded( this, fromIndex, toIndex )
+		end )
+		
+		if this.pSelected == -1
+			this.setSelected( 0 )
+		end
+	end
+	
+	/**
+	 * \brief Notify all elements have been removed.
+	 * \param fromIndex Index of first removed element.
+	 * \param toIndex Index of last removed element.
+	 */
+	public func void notifyElementsRemoved( int fromIndex, int toIndex )
+		var bool notifySelectedChanged
+		
+		if this.pSelected > toIndex
+			this.pSelected -= toIndex - fromIndex + 1
+			notifySelectedChanged = true
+			
+		elif this.pSelected >= fromIndex
+			this.pSelected = DEMath.min( fromIndex, this.pElements.getCount() - 1 )
+			notifySelectedChanged = true
+		end
+		
+		this.pListeners.forEach( block ListModelListener each
+			each.elementsRemoved( this, fromIndex, toIndex )
+		end )
+		
+		if notifySelectedChanged
+			this.pListeners.forEach( block ListModelListener each
+				each.selectionChanged( this )
+			end )
+		end
+	end
+end

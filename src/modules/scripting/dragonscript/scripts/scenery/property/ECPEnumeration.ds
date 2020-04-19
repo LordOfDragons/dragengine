@@ -1,0 +1,133 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Enumeration value element class property for use with XML loading.
+ * 
+ * Value is an Enumeration value using a dictionary mapping string values to enumeration values.
+ */
+class ECPEnumeration extends ElementClassProperty
+	private var Enumeration pValue
+	private var Dictionary pMapping
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, Enumeration value ) super( name )
+		this.pValue = value
+		this.pMapping = Dictionary.new()
+	end
+	
+	public func new( String name, Set enumerationValues, Enumeration value ) this( name, value )
+		this.setMapping( enumerationValues )
+	end
+	
+	
+	
+	/** \brief Mapping between strings and enumerations. */
+	public func Dictionary getMapping()
+		return this.pMapping
+	end
+	
+	/** \brief Set mapping between strings and enumerations. */
+	public func void setMapping( Dictionary mapping )
+		this.pMapping = mapping
+	end
+	
+	/**
+	 * \brief Set mapping from set of enumeration values.
+	 * 
+	 * Uses enumeration name as mapping name.
+	 */
+	public func void setMapping( Set enumerationValues )
+		this.pMapping.removeAll()
+		enumerationValues.forEach( block Enumeration each
+			this.pMapping.setAt( each.name(), each )
+		end )
+	end
+	
+	
+	
+	/** \brief Value. */
+	public func Enumeration getEnumeration()
+		return this.pValue
+	end
+	
+	/**
+	 * \brief Set value.
+	 * 
+	 * Allowed if enumeration is part of mapping.
+	 */
+	public func void setEnumeration( Enumeration value )
+		if this.pMapping.find( block String key, Enumeration mappingValue
+			return mappingValue == value
+		end ) == null
+			throw EInvalidParam.new( "" + value + " not found in mapping" )
+		end
+		this.pValue = value
+	end
+	
+	
+	
+	/**
+	 * \brief Set value of property from XML decoded value.
+	 * 
+	 * Value can be:
+	 * - Castable to Enumeration. Allowed if enumeration is part of mapping.
+	 * - Castable to String. Looks up matching enumeration using mapping.
+	 */
+	public func void setValue( Object value )
+		if value castable Enumeration
+			this.setEnumeration( value cast Enumeration )
+			
+		else
+			this.pValue = this.pMapping.getAt( value cast String ) cast Enumeration
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Enumeration value modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored enumeration value
+	 * is returned. If the named stub property is present it is mapped against the mapping
+	 * and the matching enumeration value returned. If no match is found an exception is thrown.
+	 */
+	public func Enumeration getEnumeration( StubWithProperties stub )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pValue
+			
+		else
+			return this.pMapping.getAt( value ) cast Enumeration
+		end
+	end
+end

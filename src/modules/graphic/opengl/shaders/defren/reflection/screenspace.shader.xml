@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Reflection ScreenSpace</name>
+	
+	<version>150</version>
+	
+	<parameter name='pQuadTCTransform'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pMatrixP'/>
+	<parameter name='pMatrixBackProjection'/>
+	<parameter name='pClipReflDirNearDist'/>
+	<parameter name='pPixelSize'/>
+	<parameter name='pStepCount'/>
+	<parameter name='pSubStepCount'/>
+	<parameter name='pMaxRayLength'/>
+	<parameter name='pMinMaxTCFactor'/>
+	<parameter name='pCoverageFactor1'/>
+	<parameter name='pCoverageFactor2'/>
+	<parameter name='pRoughnessMaxTaps'/>
+	<parameter name='pRoughnessTapCountScale'/>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDepthMinMax' target='1'/>
+	<texture name='texDiffuse' target='2'/>
+	<texture name='texNormal' target='3'/>
+	<texture name='texRoughness' target='4'/>
+	<texture name='texAOSolidity' target='5'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outResult' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/reflection/screenspace.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/reflection/screenspace.glsl</sourceCode>
+</shader>

@@ -1,0 +1,4 @@
+GAMEDEFINITION {
+  global: GameDefEditorCreateModule;
+  local: *;
+};

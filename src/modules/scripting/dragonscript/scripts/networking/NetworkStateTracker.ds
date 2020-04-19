@@ -1,0 +1,107 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Networking
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief List of ECBehaviorNetworkState to send messages to.
+ * 
+ * Used by ECBehaviorNetworkState supporting behaviors to send and receive messages linked to
+ * their owner element. This registration is application wide since network states exist
+ * outside game worlds. Requires each element to have a unique identifier.
+ */
+class NetworkStateTracker
+	private var Dictionary pNetworkStates
+	
+	
+	
+	/** \brief Create connection tracker. */
+	public func new()
+		this.pNetworkStates = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Count of network states. */
+	public func int getCount()
+		return this.pNetworkStates.getCount()
+	end
+	
+	/** \brief Behavior instance with unique identifier or null if absent. */
+	public func ECBehaviorNetworkState.Instance getAt( UniqueID id )
+		return this.pNetworkStates.getAt( id, null ) cast ECBehaviorNetworkState.Instance
+	end
+	
+	/** \brief Behavior instance with unique identifier is present. */
+	public func bool has( UniqueID id )
+		return this.pNetworkStates.has( id )
+	end
+	
+	/**
+	 * \brief Add behavior instance.
+	 * \throws EInvalidParam Behavior instance with identifier is present.
+	 */
+	public func void add( ECBehaviorNetworkState.Instance instance )
+		var UniqueID id = instance.getElement().getID()
+		if this.pNetworkStates.has( id )
+			throw EInvalidParam.new()
+		end
+		
+		this.pNetworkStates.setAt( id, instance )
+	end
+	
+	/** \brief Remove behavior instance. */
+	public func void remove( ECBehaviorNetworkState.Instance instance )
+		this.pNetworkStates.remove( instance.getElement().getID() )
+	end
+	
+	/**
+	 * \brief Visit behavior instance with block.
+	 * 
+	 * Block receives as first argument UniqueID identifier and as second argument
+	 * ECBehaviorNetworkState.Instance instance.
+	 */
+	public func void forEach( Block ablock )
+		this.pNetworkStates.forEach( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Receive message send using ECBehaviorNetworkState.getMessageCode() .
+	 * 
+	 * Reads UniqueID from message sending the remainder of the message to the matching
+	 * behavior instance in getNetworkStateTracker() .
+	 */
+	public func void receiveMessage( Connection connection, FileReader message )
+		var UniqueID id = UniqueID.readFromFile( message )
+		var ECBehaviorNetworkState.Instance instance = this.getAt( id )
+		if instance == null
+			throw EInvalidParam.new( "Message for ID " + id + " but ID is not tracked" )
+		end
+		instance.messageReceived( connection, message )
+	end
+end

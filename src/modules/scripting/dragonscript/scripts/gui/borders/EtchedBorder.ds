@@ -1,0 +1,117 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * Draws an etched border around a widget with a given color and thickness.
+ */
+class EtchedBorder extends TwoColorBorder
+	/** Creates a new raised etched border. */
+	public func new()
+	end
+	
+	/** Creates a new raised etched border with the given colors. */
+	public func new( Color colorHilight, Color colorShadow ) super( colorHilight, colorShadow )
+	end
+	
+	/** Creates a new etched border. */
+	public func new( bool raised ) super( raised )
+	end
+	
+	/** Creates a new etched border with the given colors. */
+	public func new( bool raised, Color colorHilight, Color colorShadow ) super( raised, colorHilight, colorShadow )
+	end
+	
+	
+	
+	/** Border size. */
+	public func BorderSize getBorderSize()
+		return BorderSize.new( 2, 2, 2, 2 )
+	end
+	
+	/** Update canvas. */
+	public func void updateCanvas()
+		var Widget widget = this.getWidget()
+		if widget == null
+			return
+		end
+		
+		var CanvasView borderCanvas = this.getCanvasView()
+		var Point size = borderCanvas.getSize()
+		var int bottom = size.getY() - 1
+		var int right = size.getX() - 1
+		var Color color1, color2
+		var CanvasPaint canvas
+		
+		if this.getRaised()
+			color1 = this.getColorHilight()
+			color2 = this.getColorShadow()
+			
+		else
+			color1 = this.getColorShadow()
+			color2 = this.getColorHilight()
+		end
+		
+		borderCanvas.removeAllCanvas()
+		
+		// color 1 if existing
+		if color1 != null
+			canvas = CanvasPaint.new()
+			canvas.setShapeType( CanvasPaintShape.lines )
+			canvas.setLineColor( color1 )
+			canvas.setThickness( 1.0 )
+			canvas.setSize( size )
+			canvas.setOrder( 0.0 )
+			
+			canvas.addPoint( Point.new( 1, 1 ) )
+			canvas.addPoint( Point.new( right - 1, 1 ) )
+			
+			canvas.addPoint( Point.new( 1, 2 ) )
+			canvas.addPoint( Point.new( 1, bottom - 1 ) )
+			
+			canvas.addPoint( Point.new( right, 0 ) )
+			canvas.addPoint( Point.new( right, bottom + 1 ) )
+			
+			canvas.addPoint( Point.new( 0, bottom ) )
+			canvas.addPoint( Point.new( right, bottom ) )
+			
+			borderCanvas.addCanvas( canvas )
+		end
+		
+		// color 2 if existing
+		if color2 != null
+			canvas = CanvasPaint.new()
+			canvas.setShapeType( CanvasPaintShape.rectangle )
+			canvas.setLineColor( color2 )
+			canvas.setFillColor( Color.transparent )
+			canvas.setPosition( Point.new( 0, 0 ) )
+			canvas.setSize( Point.new( right, bottom ) )
+			canvas.setOrder( 1.0 )
+			borderCanvas.addCanvas( canvas )
+		end
+	end
+end

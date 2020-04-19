@@ -1,0 +1,77 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky target.
+ * 
+ * Wraps a sky target by target index. Valid only as long as the wrapped sky does not
+ * change layer layout and layer does not change target layout. The user is responsible
+ * to call Sky.contentChanged() after changing one or more targets. Sky targets should
+ * not be changed if possible after being used in sky instances.
+ * 
+ * This is a native class.
+ */
+class SkyTarget
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Sky target can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner sky. */
+	public func Sky getSky()
+	end
+	
+	/** \brief Owner layer index. */
+	public func int getLayerIndex()
+	end
+	
+	/** \brief Target in layer. */
+	public func int getTarget()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Targets */
+	/*@{*/
+	/** \brief Number of links. */
+	public func int getLinkCount()
+	end
+	
+	/**
+	 * \brief Link at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal
+	 *                        to getLinkCount().
+	 */
+	public func int getLinkAt( int index )
+	end
+	
+	/** \brief Add link. */
+	public func void addLink( int link )
+	end
+	
+	/**
+	 * \brief Remove link.
+	 * \throws EInvalidParam \em link is absent.
+	 */
+	public func void removeLink( int link )
+	end
+	
+	/** \brief Remove all links. */
+	public func void removeAllLinks()
+	end
+	/*@}*/
+end

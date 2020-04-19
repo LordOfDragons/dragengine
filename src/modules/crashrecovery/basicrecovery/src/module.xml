@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>BasicRecovery</name>
+	<description>Provides basic crash recovery support using the FOX Toolkit.
+		Allows the user to restart failed systems and to change modules.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>CrashRecovery</type>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>BRCreateModule</entrypoint>
+	</library>
+</module>

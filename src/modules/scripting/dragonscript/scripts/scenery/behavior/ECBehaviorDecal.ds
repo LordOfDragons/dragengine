@@ -1,0 +1,301 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding decal projected onto ECBehaviorComponent.
+ * 
+ * To use this behavior add first an ECBehaviorComponent. Then use setComponentID() to set
+ * the component behavior to project the decal upon. Only this component will received a
+ * decal instance.
+ * 
+ * Multiple ECBehaviorDecal instances can be added to add decals to individual
+ * ECBehaviorComponent instances using their identifiers like this example below.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorComponent.new(this)
+ *       ECBehaviorDecal.new(this)
+ *       
+ *       ECBehaviorComponent.new(this, "subComponent")
+ *       var ECBehaviorDecal decal = ECBehaviorDecal.new(this, "subDecal")
+ *       decal.setComponentID("subComponent")
+ *    end
+ * end
+ * \endcode
+ * 
+ * The skin used on the decal is static. Use other behaviors to alter the decal at runtime.
+ * 
+ * Element class properties have the prefix "decal{(id)}.".
+ * 
+ * To apply decal to world elements (like decals loaded with game worlds) use ECBehaviorWorldDecal.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorDecal extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorDecal pECBehavior
+		private var ECBehaviorComponent.Instance pComponent
+		private var Decal pDecal
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorDecal ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pComponent = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pDecal = Decal.new()
+			this.pDecal.setPosition( this.pECBehavior.getPosition().getVector() )
+			this.pDecal.setOrientation( Quaternion.newFromEuler( this.pECBehavior.getOrientation().getVector() ) )
+			this.pDecal.setSize( this.pECBehavior.getSize().getVector() )
+			
+			var String value = stub.getPropertyValueFor( this.pECBehavior.getSkin().getName(), "" )
+			if value.empty()
+				this.pDecal.setSkin( this.pECBehavior.getSkin().getSkin() )
+				
+			else
+				try
+					this.pDecal.setSkin( Skin.new( value ) )
+					
+				catch Exception e
+					throw ELoadResourceFailed.new( value, this.getElement().getClass().getClassname() )
+				end
+			end
+			
+			this.pComponent.getComponent().addDecal( this.pDecal )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorDecal getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior instance. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Decal. */
+		public func Decal getDecal()
+			return this.pDecal
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECPVector pPosition
+	private var ECPVector pOrientation
+	private var ECPVector pSize
+	private var ECPSkin pSkin
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
+	this( eclass, component, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
+	this( eclass, component, id, id.empty() if "decal." else "decal(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
+	String id, String prefix ) super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "component" )
+		end
+		
+		this.pComponent = component
+		
+		this.pPosition = ECPVector.new( prefix + "position", Vector.new() )
+		eclass.addProperty( this.pPosition )
+		
+		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
+		eclass.addProperty( this.pOrientation )
+		
+		this.pSize = ECPVector.new( prefix + "orientation", Vector.new( 0.1, 0.1, 0.1 ) )
+		eclass.addProperty( this.pSize )
+		
+		this.pSkin = ECPSkin.new( prefix + "skin" )
+		eclass.addProperty( this.pSkin )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior to apply decal to. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Position to project decal from. */
+	public func ECPVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Orientation to project decal from. */
+	public func ECPVector getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Size of decal to project. */
+	public func ECPVector getSize()
+		return this.pSize
+	end
+	
+	/** \brief Skin to apply to decal. */
+	public func ECPSkin getSkin()
+		return this.pSkin
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorDecal
+		end ) cast ECBehaviorDecal
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorDecal with specific identifier.
+	 */
+	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorDecal each
+			return each castable ECBehaviorDecal and \
+				( each cast ECBehaviorDecal ).getID().equals( id )
+		end ) cast ECBehaviorDecal
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorDecal behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorDecal
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorDecal.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorDecal.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorDecal.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

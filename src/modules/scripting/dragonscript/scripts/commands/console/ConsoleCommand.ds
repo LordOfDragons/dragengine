@@ -1,0 +1,112 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Console command.
+ * 
+ * Console commands are special commands taking parameters. They supposed to be used
+ * with a game console window or panel where the user can specify these parameters.
+ * These commands can not be bound to input events directly except using a wrapper.
+ */
+class ConsoleCommand
+	/** \brief Unique command name. */
+	private var String pName
+	
+	/** \brief Description to display to user. */
+	private var String pDescription
+	
+	/** \brief Command syntax. */
+	private var String pSyntax
+	
+	
+	
+	/** \brief Create console command. */
+	public func new()
+		this.pName = "unnamed"
+		this.pDescription = ""
+		this.pSyntax = ""
+	end
+	
+	
+	
+	/**
+	 * \brief Unique name of command.
+	 * \details Allowed are upper and lower case letters, numbers and underscore.
+	 */
+	public func String getName()
+		return this.pName
+	end
+	
+	/**
+	 * \brief Set unique name of command.
+	 * \details Allowed are upper and lower case letters, numbers and underscore.
+	 */
+	public func void setName( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+	end
+	
+	/** \brief Description to display to user. */
+	public func String getDescription()
+		return this.pDescription
+	end
+	
+	/** Set description to display to user. */
+	public func void setDescription( String description )
+		if description == null
+			throw EInvalidParam.new()
+		end
+		this.pDescription = description
+	end
+	
+	/** \brief Command syntax. */
+	public func String getSyntax()
+		return this.pSyntax
+	end
+	
+	/** \brief Set command syntax. */
+	public func void setSyntax( String syntax )
+		if syntax == null
+			throw EInvalidParam.new()
+		end
+		this.pSyntax = syntax
+	end
+	
+	
+	
+	/**
+	 * \brief Execute command.
+	 * \details Default implementation prints syntax to console.
+	 * \param console Console to send output to.
+	 * \param params List of parameters. Has to match command syntax.
+	 */
+	public func void execute( Console console, Array params )
+		console.addMessage( this.pSyntax )
+	end
+end

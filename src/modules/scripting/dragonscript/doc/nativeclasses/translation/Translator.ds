@@ -1,0 +1,97 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Translator.
+ * 
+ * This is a native class.
+ */
+class Translator
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create translator. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Llanguage pack or \em null if not set. */
+	public func LanguagePack getLanguagePack()
+	end
+	
+	/** \brief Set language pack or \em null if not set. */
+	public func void setLanguagePack( LanguagePack languagePack )
+	end
+	
+	/** \brief Update translations. */
+	public func void updateTranslations()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Sections */
+	/*@{*/
+	/** \brief Number of sections. */
+	public func int getSectionCount()
+	end
+	
+	/** \brief Index of named section or -1 if absent. */
+	public func int findSectionNamed( String name )
+	end
+	
+	/**
+	 * \brief Add section and return index.
+	 * \throws EInvalidParam Named section is present.
+	 */
+	public func int addSection( String name )
+	end
+	
+	/**
+	 * \brief Update translations of section.
+	 * \throws EOutOfBoundary \em section is less than 0 or greater than or equal to getSectionCount().
+	 */
+	public func void updateSectionTranslations( int section )
+	end
+	
+	/**
+	 * \brief Number of entries in section.
+	 * \throws EOutOfBoundary \em section is less than 0 or greater than or equal to getSectionCount().
+	 */
+	public func int getEntryCount( int section )
+	end
+	
+	/**
+	 * \brief Index of named entry in section or -1 if absent.
+	 * \throws EOutOfBoundary \em section is less than 0 or greater than or equal to getSectionCount().
+	 */
+	public func int findEntryNamed( int section, String name )
+	end
+	
+	/**
+	 * \brief Add named entry to section and return index.
+	 * \throws EOutOfBoundary \em section is less than 0 or greater than or equal to getSectionCount().
+	 * \throws EInvalidParam Named entry is present.
+	 */
+	public func int addEntry( int section, String name )
+	end
+	
+	/**
+	 * \brief Translation for entry in section.
+	 * \throws EOutOfBoundary \em section is less than 0 or greater than or equal to getSectionCount().
+	 * \throws EOutOfBoundary \em entry is less than 0 or greater than or equal to getEntryCount().
+	 */
+	public func UnicodeString getEntryTextAt( int section, int entry )
+	end
+	/*@}*/
+end

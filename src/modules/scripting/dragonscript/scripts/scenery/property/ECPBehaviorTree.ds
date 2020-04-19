@@ -1,0 +1,155 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief BehaviorTree element class property for use with XML loading.
+ * 
+ * BehaviorTree is set from XML using a path. Loads the behavior tree during preloading.
+ * The value of the property is then the loaded resource. If loading fails null
+ * behavior tree is stored.
+ */
+class ECPBehaviorTree extends ElementClassProperty
+	private var LoadBehaviorTree pLoader
+	private var String pPath
+	private var BehaviorTree pBehaviorTree
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, LoadBehaviorTree loader ) this( name, loader, null )
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, LoadBehaviorTree loader, String path ) super( name )
+		this.pLoader = loader
+		this.pPath = path
+	end
+	
+	
+	
+	/** \brief BehaviorTree loader. */
+	public func LoadBehaviorTree getLoader()
+		return this.pLoader
+	end
+	
+	/** \brief Path to behavior tree. */
+	public func String getPath()
+		return this.pPath
+	end
+	
+	/** \brief Set path to behavior tree. */
+	public func void setPath( String path )
+		this.pPath = path
+	end
+	
+	/** \brief BehaviorTree or \em null if not present. */
+	public func BehaviorTree getBehaviorTree()
+		return this.pBehaviorTree
+	end
+	
+	/** \brief Set behavior tree or \em null if not present. */
+	public func void setBehaviorTree( BehaviorTree behaviorTree )
+		this.pBehaviorTree = behaviorTree
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pPath = value cast String
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		
+		if this.pPath == null or this.pPath.empty()
+			return
+		end
+		
+		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		
+		try
+			this.pBehaviorTree = this.pLoader.loadFromFile( path )
+			
+		catch Exception e
+		end
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pPath != null and not this.pPath.empty() and this.pBehaviorTree == null
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Failed loading behavior tree " \
+				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+			return true
+		end
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief BehaviorTree modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored behavior tree is
+	 * returned. If the named stub property is present it is loaded as behavior tree resource.
+	 */
+	public func BehaviorTree getBehaviorTree( StubWithProperties stub, ElementClass eclass )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pBehaviorTree
+		end
+		
+		try
+			return this.pLoader.loadFromFile( value )
+			
+		catch Exception e
+			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+		end
+	end
+end

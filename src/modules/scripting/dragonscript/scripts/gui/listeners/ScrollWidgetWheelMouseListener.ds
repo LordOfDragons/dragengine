@@ -1,0 +1,69 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse listener scrolling widget using mouse wheel movement.
+ */
+class ScrollWidgetWheelMouseListener extends DefaultMouseListener
+	/** \brief Widget. */
+	private var Container pWidget
+	
+	
+	
+	/** \brief Create mouse listener. */
+	public func new( Container widget )
+		if widget == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pWidget = widget
+	end
+	
+	
+	
+	/** \brief Widget to scroll. */
+	public func Container getWidget()
+		return this.pWidget
+	end
+	
+	
+	
+	/** \brief Mouse wheel moved. */
+	public func void onMouseWheel( MouseEvent event )
+		var int y = event.getPosition().getY()
+		
+		var RangeModel model = this.pWidget.getVerticalRangeModel()
+		if model != null
+			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+				model.setValue( model.getValue() - model.getPageSize() * y )
+				
+			else
+				model.setValue( model.getValue() - model.getIncrement() * y )
+			end
+		end
+	end
+end

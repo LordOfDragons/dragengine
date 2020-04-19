@@ -1,0 +1,204 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Option box widget.
+ * 
+ * Specialization of the ToggleButton showing a tickable option box.
+ * 
+ * Supports designing using designer selector "OptionBox".
+ */
+class OptionBox extends ToggleButton
+	/** \brief Option box widget. */
+	private var Widget pWidgetOptionBox
+	
+	/** \brief Selected widget. */
+	private var Widget pWidgetSelected
+	
+	/** \brief Panel hosting optionbox widget. */
+	private var Panel pPanelOptionBox
+	
+	/** \brief Panel hosting selected widget. */
+	private var Panel pPanelSelected
+	
+	
+	
+	/** \brief Create option box. */
+	public func new()
+		this.setStickyToggled( true )
+		this.setDesignerSelector( "OptionBox" )
+	end
+	
+	/** \brief Create text option button. */
+	public func new( String text ) super( text )
+		this.setStickyToggled( true )
+		this.setDesignerSelector( "OptionBox" )
+	end
+	
+	/** \brief Create text and image option button. */
+	public func new( String text, Image image ) super( text, image )
+		this.setStickyToggled( true )
+		this.setDesignerSelector( "OptionBox" )
+	end
+	
+	/**
+	 * Disposes of the widget. This cleans all references and prepars the widget
+	 * for beeing freed. If the widget is already disposed nothing happens.
+	 */
+	public func void dispose()
+		this.pWidgetOptionBox = null
+		this.pWidgetSelected = null
+		this.pPanelOptionBox = null
+		this.pPanelSelected = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Option box widget or \em null if not set.
+	 * \details For use by option box designers.
+	 */
+	public func Widget getOptionBoxWidget()
+		return this.pWidgetOptionBox
+	end
+	
+	/**
+	 * \brief Set option box widget or \em null if not set.
+	 * \details For use by option box designers.
+	 */
+	public func void setOptionBoxWidget( Widget widget )
+		if widget == this.pWidgetOptionBox
+			return
+		end
+		
+		if this.pWidgetOptionBox != null
+			this.pPanelOptionBox.removeWidget( this.pWidgetOptionBox )
+			this.pWidgetOptionBox.dispose()
+		end
+		
+		this.pWidgetOptionBox = widget
+		
+		if widget != null
+			this.pPanelOptionBox.addWidget( widget )
+		end
+	end
+	
+	/**
+	 * \brief Option selected widget or \em null if not set.
+	 * \details For use by option box designers.
+	 */
+	public func Widget getSelectedWidget()
+		return this.pWidgetSelected
+	end
+	
+	/**
+	 * \brief Set option selected widget.
+	 * \details For use by option box designers.
+	 */
+	public func void setSelectedWidget( Widget widget )
+		if widget == this.pWidgetSelected
+			return
+		end
+		
+		if this.pWidgetSelected != null
+			this.pPanelSelected.removeWidget( this.pWidgetSelected )
+			this.pWidgetSelected.dispose()
+		end
+		
+		this.pWidgetSelected = widget
+		
+		if widget != null
+			this.pPanelSelected.addWidget( widget )
+		end
+	end
+	
+	
+	
+	/** \brief Designer changed. */
+	public func void onDesignerChanged()
+		this.setOptionBoxWidget( null )
+		this.setSelectedWidget( null )
+	end
+	
+	
+	
+	/**
+	 * \brief Create button content widgets.
+	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
+	 */
+	public func void createContentWidgets()
+		var bool enabled = this.getEnabled()
+		var String text = this.getText()
+		
+		this.pWidgetOptionBox = null
+		this.pWidgetSelected = null
+		this.pPanelOptionBox = null
+		this.pPanelSelected = null
+		
+		this.removeAllWidgets()
+		this.setWidgetImage( null )
+		this.setWidgetText( null )
+		
+		this.setLayout( BorderLayout.new( 5 ) )
+		
+		// optionbox with option mark
+		var Panel panel = Panel.new()
+		panel.setLayout( StackLayout.new() )
+		this.addWidget( panel, BorderLayout.Area.left )
+		
+		this.pPanelOptionBox = Panel.new()
+		this.pPanelOptionBox.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		panel.addWidget( this.pPanelOptionBox )
+		
+		this.pPanelSelected = Panel.new()
+		this.pPanelSelected.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		panel.addWidget( this.pPanelSelected )
+		
+		// image and text
+		panel = Panel.new()
+		panel.setLayout( FlowLayout.new( LayoutAxis.x ) )
+		this.addWidget( panel, BorderLayout.Area.content )
+		
+		var DisplayImage widgetImage = DisplayImage.new()
+		widgetImage.setEnabled( enabled )
+		panel.addWidget( widgetImage )
+		widgetImage.setVisible( false )
+		this.setWidgetImage( widgetImage )
+		
+		var Label widgetText = Label.new( text, Label.middleLeft )
+		widgetText.setFont( this.getFont() )
+		widgetText.setTextColor( this.getTextColor() )
+		widgetText.setEnabled( enabled )
+		panel.addWidget( widgetText )
+		widgetText.setVisible( not text.empty() )
+		this.setWidgetText( widgetText )
+	end
+end

@@ -1,0 +1,507 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.LoadSave
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Debugging
+
+
+/**
+ * \brief Load game worlds using a loading screen.
+ * 
+ * Helps loading game worlds without doing all the heavy lifting yourself.
+ * 
+ * The loading process starts by calling createLoadingWindow(). The default implementation
+ * creates a WindowLoading, shows it on the BaseGameApp desktop and sets an input processor
+ * forwarding input to the the desktop. If you are not using BaseGameApp reimplement the
+ * method to fit your needs.
+ * 
+ * Then the world file is loaded using LoadWorld into a StubGameWorld. Subclasses can modify
+ * the stubs if required by overwriting loadWorld() and modifying the stub after super call.
+ * 
+ * Then all element classes from a list of element classes are preloaded. Element class
+ * properties are responsible to preload resources only once. Optionally only element classes
+ * used by element stubs can be preloaded. Depending on he game structure this can be faster.
+ * By default all element classes are loaded.
+ * 
+ * After all resources to preload have been determined the loadGameWorld() metho returns.
+ * This class updates every frame update to show preloading progress in the loading window.
+ * 
+ * Once all resources are preloaded onLoadWorldFinished() will be called. Before this method is
+ * called all preloading problems are reported using reportPreloadProblems(). Preload problems
+ * are not considered errors. Exceptions thrown during preloading are logged and preloading
+ * continues to not break preload tracking of element classes. If any exceptions have been
+ * thrown onLoadWorldFailed() will be called instead.
+ * 
+ * Afterwards onPreloadingFinished() is called the loading window will be closed. Subclass is
+ * only responsible to properly set up the game window and to take over input control.
+ * 
+ * For creating world decals a DecalBuilder is required. The class creates a DecalBuilder by
+ * default and sets the CollisionFilter to have bit 0 enabled. Subclass has to change this to
+ * fit their use case. A typical solution is to designate a bit to decals projecting so you
+ * can choose for all elements if they can receive a decal or not. The decal build requires
+ * an ElementVisitor to actually create decals. This is required since the DecalBuilder visits
+ * the world along the projection box with this visitor. The default AddDecalVisitor set
+ * visits only SimpleElement instances. Subclass can set an own AddDecalVisitor subclass to
+ * add decal creation support to other element classes.
+ * 
+ * This class is designed as single use with new instances created for each loading process.
+ * Only one GameWorldLoader should be active at once. If you need to run multiple instances
+ * in parallel you have to carefully manage the loading windows (for example use hidden ones).
+ */
+class GameWorldLoader
+	/** \brief Frame update listener. */
+	private class FrameUpdater extends FrameUpdateListener
+		/** \brief Game world loader. */
+		private var GameWorldLoader pGameWorldLoader
+		
+		/** \brief Create frame update listener. */
+		public func new( GameWorldLoader gameWorldLoader )
+			this.pGameWorldLoader = gameWorldLoader
+		end
+		
+		/** \brief Do frame update. */
+		public func void frameUpdate( float elapsed )
+			this.pGameWorldLoader.updateLoading()
+		end
+	end
+	
+	
+	
+	private var Console pConsole
+	private var Loaders pLoaders
+	private var ElementClassList pElementClassList
+	private var DecalBuilder pDecalBuilder
+	private var WindowLoading pWindowLoading
+	private var PreloadManager pPreloadManager
+	private var bool pIgnorePersistableElements
+	private var bool pEnableNetworking
+	private var StubGameWorld pStubWorld
+	private var bool pCleanUpStubWorld
+	private var String pPathWorld
+	private var FrameUpdater pFrameUpdater
+	
+	private var DebugVerifyStubProperties pDebugVerifyStubProperties
+	
+	
+	
+	/**
+	 * \brief Create game world loader using BaseGameApp parameters.
+	 * 
+	 * Creates a DecalBuilder and an AddDecalVisitor.
+	 */
+	public func new() this( BaseGameApp.getApp().getConsole(), \
+	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getElementClassList() )
+	end
+	
+	/**
+	 * \brief Create game world loader.
+	 * 
+	 * Creates a DecalBuilder and an AddDecalVisitor.
+	 */
+	public func new( Console console, Loaders loaders, ElementClassList elementClassList )
+		if console == null or loaders == null or elementClassList == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConsole = console
+		this.pLoaders = loaders
+		this.pElementClassList = elementClassList
+		
+		this.pDecalBuilder = DecalBuilder.new()
+		this.pIgnorePersistableElements = false
+		this.pEnableNetworking = false
+		
+		this.pCleanUpStubWorld = false
+		
+		this.pPreloadManager = PreloadManager.new()
+	end
+	
+	/** \brief Dispose of game world loader to break reference loops. */
+	public func void dispose()
+		this.stopFrameUpdater()
+		this.setWindowLoading( null )
+		
+		if this.pDecalBuilder != null
+			this.pDecalBuilder.dispose()
+			this.pDecalBuilder = null
+		end
+		
+		this.pPreloadManager = null
+		this.pDebugVerifyStubProperties = null
+	end
+	
+	
+	
+	/** \brief Console console. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return this.pLoaders
+	end
+	
+	/** \brief Element classes list. */
+	public func ElementClassList getElementClassList()
+		return this.pElementClassList
+	end
+	
+	/** \brief Decal builder used for world decals. */
+	public func DecalBuilder getDecalBuilder()
+		return this.pDecalBuilder
+	end
+	
+	/**
+	 * \brief Set decal builder used for world decals.
+	 * 
+	 * The old decal builder is disposed of if present.
+	 */
+	public func void setDecalBuilder( DecalBuilder decalBuilder )
+		if decalBuilder == this.pDecalBuilder
+			return
+		end
+		
+		if this.pDecalBuilder != null
+			this.pDecalBuilder.dispose()
+		end
+		
+		this.pDecalBuilder = decalBuilder
+	end
+	
+	/** \brief Loading window window. */
+	public func WindowLoading getWindowLoading()
+		return this.pWindowLoading
+	end
+	
+	/** \brief Set loading window. */
+	public func void setWindowLoading( WindowLoading window )
+		if window == this.pWindowLoading
+			return
+		end
+		
+		if this.pWindowLoading != null
+			this.pWindowLoading.close()
+		end
+		
+		this.pWindowLoading = window
+	end
+	
+	/** \brief Preload manager. */
+	public func PreloadManager getPreloadManager()
+		return this.pPreloadManager
+	end
+	
+	/** \brief Ignore persistable elements. */
+	public func bool getIgnorePersistableElements()
+		return this.pIgnorePersistableElements
+	end
+	
+	/** \brief Set if persistable elements are ignored. */
+	public func void setIgnorePersistableElements( bool ignorePersistableElements )
+		this.pIgnorePersistableElements = ignorePersistableElements
+	end
+	
+	/** \brief Enable networking. */
+	public func bool getEnableNetworking()
+		return this.pEnableNetworking
+	end
+	
+	/** \brief Set if networking is enabled. */
+	public func void setEnableNetworking( bool enable )
+		this.pEnableNetworking = enable
+	end
+	
+	/** \brief Game world stub. */
+	public func StubGameWorld getStubWorld()
+		return this.pStubWorld
+	end
+	
+	/** \brief World file path. */
+	public func String getPathWorld()
+		return this.pPathWorld
+	end
+	
+	/** \brief Set world file path. */
+	public func void setPathWorld( String path )
+		this.pPathWorld = path
+	end
+	
+	
+	
+	/** \brief Debug verify stub properties while loading or null if not used. */
+	public func DebugVerifyStubProperties getDebugVerifyStubProperties()
+		return this.pDebugVerifyStubProperties
+	end
+	
+	/** \brief Set debug verify stub properties while loading or null if not used. */
+	public func void setDebugVerifyStubProperties( DebugVerifyStubProperties debug )
+		this.pDebugVerifyStubProperties = debug
+	end
+	
+	
+	
+	/**
+	 * \brief Start loading game world.
+	 * 
+	 * Set up all required parameters before calling this method, in particular setPathWorld().
+	 */
+	public func void startLoading()
+		if this.pPathWorld == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pStubWorld = null
+		this.pCleanUpStubWorld = false
+		
+		try
+			this.createLoadingWindow()
+			this.loadWorld()
+			
+			this.preloadResources()
+			this.pStubWorld.beginPreloading()
+			
+			if this.pWindowLoading != null
+				this.pWindowLoading.setPreloadManager( this.pPreloadManager )
+			end
+			
+			this.startFrameUpdater()
+			
+		catch Exception e
+			this.pConsole.addError( "Failed loading game world '" + this.pPathWorld + "'", e )
+			this.cleanUp()
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Update loading.
+	 * 
+	 * For use by FrameUpdater.
+	 */
+	public func void updateLoading()
+		var bool preloadProblemsReported = false
+		
+		try
+			this.pStubWorld.updatePreloading()
+			if this.pPreloadManager.getCounter().isNotZero()
+				return
+			end
+			
+			preloadProblemsReported = true
+			if this.reportPreloadProblems()
+				throw EInvalidParam.new()
+			end
+			
+			this.createContentFromStub()
+			this.pCleanUpStubWorld = false
+			
+		catch Exception e
+			this.pConsole.addError( "Failed loading game world '" + this.pPathWorld + "'", e )
+			if not preloadProblemsReported
+				this.reportPreloadProblems()
+			end
+			this.cancelLoading()
+			return
+		end
+		
+		this.cleanUp()
+		
+		try
+			this.onLoadWorldFinished()
+			
+		catch Exception e
+			this.pConsole.addError( "Failed calling onLoadWorldFinished after " \
+				+ "loading game world '" + this.pPathWorld + "'", e )
+			
+			this.pCleanUpStubWorld = true
+			this.cancelLoading()
+		end
+	end
+	
+	/**
+	 * \brief Cancel loading.
+	 * 
+	 * Call this after loadGameWorld() returned successfully to cancel the loading.
+	 * Calls onLoadWorldFailed().
+	 */
+	public func void cancelLoading()
+		this.cleanUp()
+		this.onLoadWorldFailed()
+	end
+	
+	
+	
+	/** \brief Set game world stub. */
+	protected func void setStubWorld( StubGameWorld stub )
+		this.pStubWorld = stub
+	end
+	
+	/** \brief Clean up world stub. */
+	protected func bool getCleanUpStubWorld()
+		return this.pCleanUpStubWorld
+	end
+	
+	/** \brief Set clean up world stub. */
+	protected func void setCleanUpStubWorld( bool cleanUpStubWorld )
+		this.pCleanUpStubWorld = cleanUpStubWorld
+	end
+	
+	/** \brief Cleaning up. */
+	protected func void cleanUp()
+		this.stopFrameUpdater()
+		this.setWindowLoading( null )
+		this.pPreloadManager = null
+		
+		if this.pStubWorld != null and this.pCleanUpStubWorld
+			this.pStubWorld.getGameWorld().dispose()
+			this.pStubWorld = null
+		end
+	end
+	
+	
+	
+	/** \brief Start frame updater if not started. */
+	protected func void startFrameUpdater()
+		if this.pFrameUpdater == null
+			this.pFrameUpdater = FrameUpdater.new( this )
+		end
+	end
+	
+	/** \brief Stop frame updater if running. */
+	protected func void stopFrameUpdater()
+		if this.pFrameUpdater != null
+			this.pFrameUpdater.giveUp()
+			this.pFrameUpdater = null
+		end
+	end
+	
+	/**
+	 * \brief Create loading window.
+	 */
+	protected func void createLoadingWindow()
+		var WindowLoading window = WindowLoading.new()
+		//window.setBgStyle( "Bg1" )
+		window.getModelText().setText( "Loading..." )
+		this.setWindowLoading( window )
+		
+		BaseGameApp.getApp().getDesktop().addWindow( window )
+		window.grabFocus()
+		
+		BaseGameApp.getApp().setInputProcessorDesktop()
+	end
+	
+	/** \brief Load world. */
+	protected func void loadWorld()
+		this.pStubWorld = StubGameWorld.new( this.createGameWorld(), \
+			this.pPreloadManager.getCounter() )
+		this.pCleanUpStubWorld = true
+		this.pLoaders.getWorld().loadFromFile( this.pStubWorld, this.pPathWorld, \
+			this.pIgnorePersistableElements, this.pEnableNetworking )
+	end
+	
+	/**
+	 * \brief Preload resources.
+	 * 
+	 * Preloads resources from all elements classes.
+	 */
+	protected func void preloadResources()
+		this.pElementClassList.preloadAll( this.pPreloadManager )
+		
+		/*
+		this.pStubWorld.addElementClassesTo( this.pPreloadManager )
+		
+		this.pPreloadManager.addElementClassDependencies()
+		*/
+		
+		this.pPreloadManager.preloadElementClasses()
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	protected func bool reportPreloadProblems()
+		return this.pElementClassList.logPreloadProblems( this.pConsole )
+	end
+	
+	/**
+	 * \brief Create GameWorld instance.
+	 * 
+	 * Default implementation creates instance of GameWorld. Overwrite in subclass to create
+	 * instance of your own class if used.
+	 */
+	protected func GameWorld createGameWorld()
+		return GameWorld.new()
+	end
+	
+	/**
+	 * \brief Create world content from stubs.
+	 * 
+	 * Calls verifyPreloading(), createAndAddElements() and createWorldDecals() on
+	 * the world stub.
+	 * 
+	 * \note If DebugVerifyStubProperties is set verifies stub elements before creating them.
+	 */
+	protected func void createContentFromStub()
+		this.pStubWorld.verifyPreloading( this.pConsole )
+		if this.pDebugVerifyStubProperties != null
+			this.pDebugVerifyStubProperties.verifyWorld( this.pStubWorld )
+		end
+		this.pStubWorld.createAndAddElements( this.pConsole )
+		this.pStubWorld.createWorldDecals( this.pDecalBuilder, this.pConsole )
+	end
+	
+	
+	
+	/**
+	 * \brief Loading world finished.
+	 * 
+	 * Game loader has been cleaned up before calling this method. For this reason the
+	 * result of loading is provided as parameters. It is safe to dispose() of the
+	 * game loader upon entering this method.
+	 * 
+	 * Subclasses of BaseGameApp should call
+	 * \code{.ds} BaseGameApp.getApp().finishLoadGameWorld() \endcode
+	 * at the end of the implementation.
+	 */
+	public func void onLoadWorldFinished()
+	end
+	
+	/**
+	 * \brief Loading world failed.
+	 * 
+	 * Game loader has been cleaned up before calling this method. It is safe to dispose()
+	 * of the game loader upon entering this method.
+	 * 
+	 * Subclasses of BaseGameApp should call
+	 * \code{.ds} BaseGameApp.getApp().cancelLoadGameWorld() \endcode
+	 * at the end of the implementation.
+	 */
+	public func void onLoadWorldFailed()
+	end
+end

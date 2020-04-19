@@ -1,0 +1,142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Console command showing information about commands.
+ * 
+ * Displays either all supported commands or detailed information about a specific command.
+ */
+class HelpConsoleCommand extends ConsoleCommand
+	/** \brief Console command list. */
+	private var ConsoleCommandList pConsoleCommands
+	
+	/** \brief Command manager. */
+	private var CommandManager pCommandManager
+	
+	
+	
+	/**
+	 * \brief Create console command.
+	 *
+	 * Both \em consoleCommands and \em commandManager can be \em null.
+	 */
+	public func new( ConsoleCommandList consoleCommands, CommandManager commandManager )
+		this.pConsoleCommands = consoleCommands
+		this.pCommandManager = commandManager
+		
+		this.setName( "help" )
+		this.setDescription( "Display help about commands." )
+		this.setSyntax( "help <command>\n" + \
+			"   command => command to display help for" )
+	end
+	
+	
+	
+	/** \brief Console command list. */
+	public func ConsoleCommandList getConsoleCommands()
+		return this.pConsoleCommands
+	end
+	
+	/** \brief Set console command list. */
+	public func void setConsoleCommands( ConsoleCommandList consoleCommands )
+		this.pConsoleCommands = consoleCommands
+	end
+	
+	/** \brief Command manager. */
+	public func CommandManager getCommandManager()
+		return this.pCommandManager
+	end
+	
+	/** \brief Set command manager. */
+	public func void setCommandManager( CommandManager commandManager )
+		this.pCommandManager = commandManager
+	end
+	
+	
+	
+	/**
+	 * \brief Execute command.
+	 * \param console Console to send output to.
+	 * \param params List of parameters. Has to match command syntax.
+	 */
+	public func void execute( Console console, Array params )
+		if params.getCount() > 0
+			if not ( params.getAt( 0 ) castable String )
+				console.addMessage( "invalid command " + params.getAt( 0 ) )
+				return
+			end
+			
+			var String name = params.getAt( 0 ) cast String
+			
+			var Command command
+			if this.pCommandManager != null
+				command = this.pCommandManager.getNamed( name )
+				if command != null
+					console.addMessage( command.getName() \
+						+ " => " + command.getDescription() )
+					return
+				end
+			end
+			
+			var ConsoleCommand consoleCommand
+			if this.pConsoleCommands != null
+				consoleCommand = this.pConsoleCommands.getNamed( name )
+				if consoleCommand != null
+					console.addMessage( consoleCommand.getName() \
+						+ " => " + consoleCommand.getDescription() )
+					console.addMessage( consoleCommand.getSyntax() )
+				end
+			end
+			
+			console.addMessage( "invalid command " + name )
+			
+		else
+			var Array commands = Array.new()
+			
+			if this.pCommandManager != null
+				this.pCommandManager.forEach( block Command each
+					commands.add( each.getName() )
+				end )
+			end
+			
+			if this.pConsoleCommands != null
+				this.pConsoleCommands.forEach( block ConsoleCommand each
+					commands.add( each.getName() )
+				end )
+			end
+			
+			if commands.getCount() > 0
+				console.addMessage( commands.sorted().fold( block String a, String b
+					return a + ", " + b
+				end ).toString() )
+				
+			else
+				console.addMessage( "< no commands >" )
+			end
+		end
+	end
+end

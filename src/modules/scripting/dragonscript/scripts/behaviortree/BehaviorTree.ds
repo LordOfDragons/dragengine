@@ -1,0 +1,86 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree.
+ * 
+ * Default behavior tree contains BTRuleFailure root rule with id "root".
+ */
+class BehaviorTree
+	/** \brief Root rule. */
+	private var BTRule pRootRule
+	
+	/** \brief Dictionary mapping String rule identifier to BTRule. */
+	private var Dictionary pRuleMap
+	
+	
+	
+	/** \brief Create behavior tree. */
+	public func new()
+		this.pRootRule = BTRuleFailure.new( "root" )
+		this.pRuleMap = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Root rule. */
+	public func BTRule getRootRule()
+		return this.pRootRule
+	end
+	
+	/** \brief Set root rule. */
+	public func void setRootRule( BTRule rule )
+		if rule == null
+			throw EInvalidParam.new()
+		end
+		this.pRootRule = rule
+	end
+	
+	/** \brief Registered rule with identifier is present. */
+	public func bool hasRuleWithID( String id )
+		return this.pRuleMap.has( id )
+	end
+	
+	/** \brief Registered rule with identifier or \em null if absent. */
+	public func BTRule getRuleWithID( String id )
+		return this.pRuleMap.getAt( id, null ) cast BTRule
+	end
+	
+	/**
+	 * \brief Register rule for retrieval by identifier.
+	 * \throws EInvalidParam Rule has \em null identifier.
+	 * \throws EInvalidParam Another rule with the same ID is already registered.
+	 */
+	public func void registerRule( BTRule rule )
+		if rule == null or rule.getID() == null or this.pRuleMap.has( rule.getID() )
+			throw EInvalidParam.new()
+		end
+		this.pRuleMap.setAt( rule.getID(), rule )
+	end
+end

@@ -1,0 +1,4 @@
+LANGDELANGPACK {
+  global: DELangPackCreateModule;
+  local: *;
+};

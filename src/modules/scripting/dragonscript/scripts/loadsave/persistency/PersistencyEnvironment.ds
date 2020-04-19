@@ -1,0 +1,361 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Persistency environment for reading and writing for complex objects.
+ * 
+ * Carries information required to properly restore complex objects. Stores a
+ * file version number which can be used to track file format changes. The file
+ * version is static during the lifetime of the object instance. Provides also
+ * helper methods to reduce code lines for typical persistency tasks.
+ * 
+ * Variables can be set by the user to temporarily store additional information
+ * specific persistency factories required to properly restore objects. Variables
+ * are identified by a string name and can contain any type of object. Best
+ * practice is to create a copy of a persistency environment if temporary
+ * variables have to be modified and use this new environment for subsequent
+ * restoring. You can also set and restore the temporary variables but using a
+ * copy of a persistency environment is simpler.
+ */
+class PersistencyEnvironment
+	/**
+	 * \brief Variable animation loader.
+	 * 
+	 * Used by some factories to load animators. If variable is not set factories will
+	 * consider loading the resource having failed. Some can cope with this while
+	 * others throw an exception. The following factories are known to use this variable:
+	 * - ConversationGesturePlayback
+	 * 
+	 * If set has to be an instance of LoadAnimator.
+	 */
+	public static fixed var String varLoadAnimator = "loadAnimator"
+	
+	/**
+	 * \brief Variable conversation loader.
+	 * 
+	 * Used by some factories to load conversations. If variable is not set factories
+	 * will consider loading the resource having failed. Some can cope with this while
+	 * others throw an exception. The following factories are known to use this variable:
+	 * - ConversationPlayback
+	 * 
+	 * If set has to be an instance of LoadConversation.
+	 */
+	public static fixed var String varLoadConversation = "loadConversation"
+	
+	/**
+	 * \brief Variable conversation playback.
+	 * 
+	 * Used by some factories to call one of the methods subclassed by a game class. If
+	 * variable is not set factories will use null objects where possible while in other
+	 * cases it might fail loading. In this case subclasses are responsible to restore
+	 * the missing objects.
+	 * 
+	 * If set has to be an instance of ConversationPlayback.
+	 */
+	public static fixed var String varConvoPlayback = "conversationPlayback"
+	
+	
+	
+	/** \brief Persistency with factories. */
+	private var Persistency pPersistency
+	
+	/** \brief File version number. */
+	private var int pVersion
+	
+	/** \brief Variables. */
+	private var Dictionary pVariables
+	
+	
+	
+	/** \brief Create persistency environment. */
+	public func new( Persistency persistency ) this( persistency, 0 )
+	end
+	
+	/** \brief Create persistency environment. */
+	public func new( Persistency persistency, int version )
+		if persistency == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPersistency = persistency
+		this.pVersion = version
+		this.pVariables = Dictionary.new()
+	end
+	
+	/** \brief Create copy of persistency environment. */
+	public func new( PersistencyEnvironment environment )
+		this.pPersistency = environment.pPersistency
+		this.pVersion = environment.pVersion
+		this.pVariables = Dictionary.new( environment.pVariables )
+	end
+	
+	
+	
+	/** \brief Persistency with factories. */
+	public func Persistency getPersistency()
+		return this.pPersistency
+	end
+	
+	/** \brief File version number. */
+	public func int getVersion()
+		return this.pVersion
+	end
+	
+	
+	
+	/**
+	 * \brief Variable value.
+	 * \throws EInvalidParam Named variable is absent.
+	 */
+	public func Object getVariable( String name )
+		return this.pVariables.getAt( name )
+	end
+	
+	/** \brief Variable value or default value if absent. */
+	public func Object getVariable( String name, Object defaultValue )
+		return this.pVariables.getAt( name, defaultValue )
+	end
+	
+	/** \brief Set variable. */
+	public func void setVariable( String name, Object value )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pVariables.setAt( name, value )
+	end
+	
+	/** \brief Remove variable if present. */
+	public func void removeVariable( String name )
+		this.pVariables.removeIfExisting( name )
+	end
+	
+	/** \brief Remove all variables. */
+	public func void removeAllVariables()
+		this.pVariables.removeAll()
+	end
+	
+	/** \brief Visit variables with block with parameters String name and Object value. */
+	public func void forEachVariable( Block ablock )
+		this.pVariables.forEach( ablock )
+	end
+	
+	/** \brief Set variables from another environment. */
+	public func void setVariables( PersistencyEnvironment environment )
+		environment.pVariables.forEach( block String key, Object value
+			this.pVariables.setAt( key, value )
+		end )
+	end
+	
+	/**
+	 * \brief Set common variables from Loader.
+	 * 
+	 * Call this after creating a new environment to work properly with factories
+	 * provides by the DragonScript module.
+	 */
+	public func void setCommonVariables( Loaders loaders )
+		this.pVariables.setAt( varLoadAnimator, loaders.getAnimator() )
+		this.pVariables.setAt( varLoadConversation, loaders.getConversation() )
+	end
+	
+	
+	
+	/** \brief Read string with 8-bit length or \em null if empty. */
+	public func String readString8OrNullIfEmpty( FileReader reader )
+		var String string = reader.readString8()
+		
+		if string.empty()
+			return null
+			
+		else
+			return string
+		end
+	end
+	
+	/** \brief Write string with 8-bit length or empty string if \em null. */
+	public func void writeString8OrEmptyIfNull( FileWriter writer, String string )
+		if string == null
+			writer.writeString8( "" )
+			
+		else
+			writer.writeString8( string )
+		end
+	end
+	
+	/** \brief Read string with 16-bit length or \em null if empty. */
+	public func String readString16OrNullIfEmpty( FileReader reader )
+		var String string = reader.readString16()
+		
+		if string.empty()
+			return null
+			
+		else
+			return string
+		end
+	end
+	
+	/** \brief Write string with 16-bit length or empty string if \em null. */
+	public func void writeString16OrEmptyIfNull( FileWriter writer, String string )
+		if string == null
+			writer.writeString16( "" )
+			
+		else
+			writer.writeString16( string )
+		end
+	end
+	
+	/** \brief Read StringID with 8-bit length or \em null if empty. */
+	public func StringID readStringIDOrNullIfEmpty( FileReader reader )
+		var String string = reader.readString8()
+		
+		if string.empty()
+			return null
+			
+		else
+			return StringID.new( string )
+		end
+	end
+	
+	/** \brief Write StringID with 8-bit length or empty string if \em null. */
+	public func void writeStringIDOrEmptyIfNull( FileWriter writer, StringID string )
+		if string == null
+			writer.writeString8( "" )
+			
+		else
+			writer.writeString8( string.toString() )
+		end
+	end
+	
+	
+	
+	/** \brief Read boolean. */
+	public func bool readBool( FileReader reader )
+		return reader.readByte() == 1
+	end
+	
+	/** \brief Write boolean. */
+	public func void writeBool( FileWriter writer, bool value )
+		writer.writeByte( value if 1 else 0 )
+	end
+	
+	/**
+	 * \brief Read object using factory and file reader.
+	 * \throws EInvalidParam \em reader is \em null.
+	 * \throws EInvalidParam Read factory name is absent in getPersistency().
+	 */
+	public func Persistable readObject( FileReader reader )
+		var Persistable persistable = readObjectOrNull( reader )
+		if persistable == null
+			throw EInvalidParam.new()
+		end
+		return persistable
+	end
+	
+	/**
+	 * \brief Read object using factory and file reader or \em null if empty factory name.
+	 * \throws EInvalidParam Read factory name is absent in getPersistency().
+	 */
+	public func Persistable readObjectOrNull( FileReader reader )
+		if this.pPersistency.getDebugEnableCanaryValue()
+			if not reader.readString( Persistency.debugCanaryValue_BEGIN.getLength() ).equals( Persistency.debugCanaryValue_BEGIN )
+				this.pPersistency.getConsole().addMessage( \
+					"readObjectOrNull(): Start canary value invalid at reader position " + reader.getPosition() )
+				throw EInvalidParam.new()
+			end
+		end
+		
+		var Persistable persistable
+		var String name = reader.readString8()
+		if not name.empty()
+			persistable = this.pPersistency.getFactoryNamed( name ).readObjectFromFile( this, reader )
+		end
+		
+		if this.pPersistency.getDebugEnableCanaryValue()
+			if not reader.readString( Persistency.debugCanaryValue_END.getLength() ).equals( Persistency.debugCanaryValue_END )
+				this.pPersistency.getConsole().addMessage( "readObjectOrNull(): " + name \
+					+ ": End canary value invalid at reader position " + reader.getPosition() )
+				throw EInvalidParam.new()
+			end
+		end
+		
+		return persistable
+	end
+	
+	/**
+	 * \brief Write object using file writer.
+	 * 
+	 * Writes persistency factory name as string with 8-bit length and
+	 * then calls Persistable.writeToFile().
+	 * 
+	 * \throws EInvalidParam \em writer is \em null.
+	 * \throws EInvalidParam \em object is \em null.
+	 * \throws EInvalidParam \em object.persistencyFactoryName() is empty.
+	 */
+	public func void writeObject( FileWriter writer, Persistable object )
+		if object == null
+			throw EInvalidParam.new()
+		end
+		this.writeObjectOrNull( writer, object )
+	end
+	
+	/**
+	 * \brief Write object or \em null using file writer.
+	 * 
+	 * If \em object is \em null writes empty string with 8-bit length.
+	 * Otherwise writes persistency factory name as string with 8-bit length
+	 * and then calls Persistable.writeToFile().
+	 * 
+	 * \throws EInvalidParam \em writer is \em null.
+	 * \throws EInvalidParam \em object is not \em null and \em object.persistencyFactoryName() is empty.
+	 */
+	public func void writeObjectOrNull( FileWriter writer, Persistable object )
+		if writer == null
+			throw EInvalidParam.new()
+		end
+		
+		if this.pPersistency.getDebugEnableCanaryValue()
+			writer.writeString( Persistency.debugCanaryValue_BEGIN )
+		end
+		
+		if object == null
+			writer.writeString8( "" )
+			
+		else
+			var String name = object.persistencyFactoryName()
+			if name.empty()
+				throw EInvalidParam.new()
+			end
+			writer.writeString8( name )
+			object.writeObjectToFile( this, writer )
+		end
+		
+		if this.pPersistency.getDebugEnableCanaryValue()
+			writer.writeString( Persistency.debugCanaryValue_END )
+		end
+	end
+end

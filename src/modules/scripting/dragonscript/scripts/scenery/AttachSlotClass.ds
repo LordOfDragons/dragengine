@@ -1,0 +1,87 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Element providing a single ECBehaviorAttachSlot.
+ * 
+ * Can be used to provide arbitrary attach slots in a game world not connected to a behavior
+ * element. Typical use for this element is to provide another element to the player he can
+ * retrieve during the game. Usually this element is placed in the game world in the appropriate
+ * place and is static in nature. This element supports though also ECBehaviorAttachToParent
+ * allowing it to be attached to other elements. This allows arbitrary elements to be equipped
+ * with attachment slots moving along.
+ */
+class AttachSlotClass extends BehaviorElementClass
+	private var ECBehaviorCollider pCollider
+	private var ECBehaviorAttachSlot pAttachSlot
+	private var ECBehaviorAttachToParent pAttachToParent
+	
+	
+	
+	/** \brief Create element class. */
+	public func new() this( "AttachSlot" )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) super( className )
+		this.pCollider = ECBehaviorCollider.new( this, null )
+		this.pCollider.setGhost()
+		this.pAttachSlot = ECBehaviorAttachSlot.new( this, this.pCollider )
+		this.pAttachToParent = ECBehaviorAttachToParent.new( this, this.pCollider, null )
+	end
+	
+	
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Attach slot behavior. */
+	public func ECBehaviorAttachSlot getAttachSlot()
+		return this.pAttachSlot
+	end
+	
+	/** \brief Attach to parent behavior. */
+	public func ECBehaviorAttachToParent getAttachToParent()
+		return this.pAttachToParent
+	end
+	
+	
+	
+	/** \brief Create copy of element class. */
+	public func ElementClass duplicateNamed( String classname )
+		return AttachSlotClass.new( classname )
+	end
+	
+	
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return AttachSlot.new( this )
+	end
+end

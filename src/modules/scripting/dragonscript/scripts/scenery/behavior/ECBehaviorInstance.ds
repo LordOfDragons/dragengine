@@ -1,0 +1,88 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior instance interface providing the actual element behavior.
+ */
+public interface ECBehaviorInstance
+	/** \brief Behavior element to apply behavior to. */
+	func BehaviorElement getElement()
+	
+	/** \brief Behavior instance index. */
+	func int getInstanceIndex()
+	
+	/** \brief Dispose of composeable instance. */
+	func void dispose()
+	
+	/** \brief Initialize element from stub. */
+	func void init( StubElement stub )
+	
+	/** \brief State changed (visble, touchable). */
+	func void stateChanged()
+	
+	/** \brief Position, orientation or size changed. */
+	func void geometryChanged()
+	
+	/** \brief Add element to game world. */
+	func void addToGameWorld()
+	
+	/** \brief Remove element from game world. */
+	func void removeFromGameWorld()
+	
+	/** \brief Behavior instance requires enterFrame() to be called. */
+	func bool requiresEnterFrame()
+	
+	/** \brief Frame update started. */
+	func void enterFrame()
+	
+	/** \brief Behavior instance requires think() to be called. */
+	func bool requiresThink()
+	
+	/** \brief Think about what to do for the next frame update. */
+	func void think( float elapsed )
+	
+	/** \brief Post thinking after physics processing is finished. */
+	func void postThink( float elapsed )
+	
+	/**
+	 * \brief Attach element to object set by the mapper in the IGDE World Editor.
+	 * 
+	 * Behavior instance is responsible to call BehaviorElement.setParent() if the
+	 * attaching succeedes. If multiple behaviors support attaching they have to negotiate
+	 * with each other who does the attaching for example by using BehaviorElement.getParent().
+	 */
+	func void attachToParent( Element parent )
+	
+	/** \brief Read element from file. */
+	func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	
+	/** \brief Write element to file. */
+	func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+end

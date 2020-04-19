@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE styledText SYSTEM 'DragengineStyledText.dtd'>
+<styledText>
+	<margins all='5'/>
+	
+	<style name='first'>
+		<font size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0' g='0' b='0'/>
+		<firstLineIndent>20</firstLineIndent>
+		<alignment>left</alignment>
+	</style>
+	
+	<style name='leftAlign'>
+		<font size='12'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0' g='0' b='1'/>
+		<margins top='12'/>
+		<alignment>left</alignment>
+	</style>
+	
+	<style name='rightAlign'>
+		<font size='20'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0' g='0.5' b='0'/>
+		<margins top='12'/>
+		<alignment>right</alignment>
+	</style>
+	
+	<style name='centerAlign'>
+		<font size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0.75' g='0' b='0'/>
+		<margins top='12'/>
+		<alignment>center</alignment>
+	</style>
+	
+	<style name='text'>
+		<font size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0' g='0' b='0'/>
+		<margins top='12'/>
+		<firstLineIndent>20</firstLineIndent>
+		<alignment>block</alignment>
+	</style>
+	
+	<text style='first'>This is a sample text content for the MemoPad. Each MemoPad
+	has one Memo object assigned. This Memo object is loaded from a *.memo.xml file.
+	In the world editor the mapper simply specifies the path of the *.memo.xml file
+	to use. This allows for good flexibility.</text>
+	
+	<text style='leftAlign'>This is a sample text which is left aligned. Some
+	more text to fill a couple of lines for testing this alignment.</text>
+	
+	<text style='centerAlign'>This is a sample text which is center aligned.
+	Some more text to fill a couple of lines for testing this alignment.</text>
+	
+	<text style='rightAlign'>This is a sample text which is right aligned. Some
+	more text to fill a couple of lines for testing this alignment.</text>
+	
+	<text style='text'>Memo objects define one one side the textual content of the
+	memo which can be displayed page wise in a MemoPad as well as knowledge
+	objects which define the information found in the memo. The textual content can
+	be currently formatted only in a limited way. This will be changed later on to
+	improve the possibilities for rich memos to read and investigate.</text>
+	
+	<text style='text'>The important part on memos is the ability to carry knowlegde
+	objects. This way by the game scripts know which informations can be found in
+	a memo. To solve cases the player needs to find the right knowledge objects
+	which lead from the case facts to the goal of the case. If the player can
+	establish a chain of knowledge objects the case is solved. Obtaining though the
+	right set of information as well as figuring out which informations are the
+	right ones is up to the player. This is the basic priniciple of Dynamic
+	Investigation.</text>
+	
+	<text style='text'>So what to talk now more to fill those lines. I get it. A bit
+	or lorum ipsum is always nice for such a task.</text>
+	
+	<text style='text'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+	Vivamus ac nisl ante. Fusce urna arcu, congue ut ultrices ut, aliquam vitae urna.
+	Donec vel purus in metus fermentum fermentum at at risus. Curabitur viverra est
+	ut orci gravida at scelerisque magna mollis. Nunc auctor malesuada nisl non
+	adipiscing. Etiam varius sollicitudin ligula vitae ultricies. Curabitur
+	pellentesque quam quis sapien vulputate consequat. Aliquam consequat, mi vel
+	scelerisque condimentum, lacus nulla faucibus neque, nec feugiat lacus odio congue
+	metus. Fusce adipiscing, sapien sed cursus hendrerit, sem neque porttitor metus,
+	sit amet tempor lacus risus ac tortor. Cras sodales malesuada purus vel cursus.
+	Aliquam eget diam eget tellus imperdiet consectetur sit amet sed tortor.
+	Vestibulum aliquam orci quis ante congue ac feugiat lorem suscipit. Fusce velit
+	felis, hendrerit venenatis placerat ac, consequat at eros. Praesent pretium enim
+	in metus vestibulum et vulputate urna consequat. Praesent ac libero vulputate dui
+	posuere consequat. Duis sit amet posuere sem. Aliquam nulla dui, dignissim vitae
+	egestas at, varius et massa.</text>
+	
+	<text style='text'>Suspendisse potenti. Phasellus nunc massa, imperdiet eu rutrum
+	vel, pulvinar sed elit. Donec mattis sodales ligula vel commodo. Duis egestas
+	vehicula dui fermentum porta. Praesent adipiscing rhoncus ipsum in viverra. Aenean
+	ornare elit ut dui porta id aliquet erat sagittis. Fusce rutrum molestie lacinia.
+	Suspendisse et mauris non sem venenatis congue at eu metus. Donec laoreet euismod
+	lacus, at fermentum massa euismod vel. Etiam sagittis ligula mi, non pulvinar
+	turpis. Cras eu dui nisl, sed pharetra risus. Proin non libero magna, eget
+	volutpat sapien.</text>
+	
+	<text style='text'>Duis ac diam nec nunc blandit scelerisque eget ac est. Proin
+	malesuada felis ut ipsum scelerisque ac porta lorem facilisis. Vivamus dapibus,
+	magna ac molestie pulvinar, justo metus ultrices urna, vel viverra velit arcu eget
+	lorem. Cras commodo lorem et augue adipiscing a semper metus vulputate. Suspendisse
+	consequat dictum justo, a pharetra ligula sagittis eu. Lorem ipsum dolor sit amet,
+	consectetur adipiscing elit. Phasellus pellentesque nibh id nisi porttitor id
+	consequat dolor mollis. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Vivamus dolor magna, pretium non porttitor sit amet,
+	congue ac urna. Sed ut odio nulla, id ullamcorper nisl. Nullam eu sem ipsum,
+	venenatis suscipit lorem. Donec vehicula condimentum justo, at posuere magna
+	malesuada ut. Duis viverra euismod pharetra.</text>
+	
+	<text style='text'>Cras vehicula nisi non orci cursus vestibulum. Quisque eget ipsum
+	sed massa dapibus euismod vel et sem. Ut semper egestas risus id malesuada. Donec
+	vel lectus et sem auctor laoreet at ac erat. Nam hendrerit lacinia sem vitae varius.
+	Curabitur venenatis, magna sed suscipit congue, purus dui porttitor magna, vitae
+	luctus elit quam id nisi. Quisque urna quam, mollis id sollicitudin quis, pulvinar
+	non erat. Aenean in lorem purus, et volutpat erat. Ut fermentum arcu eleifend orci
+	consectetur nec rutrum odio congue. Cras faucibus urna at diam interdum in
+	condimentum tellus vehicula. Nam non nisi in erat vestibulum fermentum sed et lectus.
+	Curabitur at nunc erat, et ullamcorper orci.</text>
+	
+	<text style='text'>Fusce tincidunt congue porta. Cum sociis natoque penatibus et
+	magnis dis parturient montes, nascetur ridiculus mus. Ut dolor dui, commodo vel
+	ultricies ut, varius ut felis. Integer felis dui, ullamcorper eleifend consequat
+	pellentesque, tristique sit amet enim. Duis accumsan, orci in lobortis aliquam,
+	turpis sapien dapibus sapien, nec tincidunt mi purus id sapien. Quisque volutpat
+	mattis sem, eget ornare dui elementum sit amet. Suspendisse ipsum massa, ultrices in
+	luctus vitae, posuere posuere neque. Aenean eleifend vehicula eros eu bibendum. Lorem
+	ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vestibulum placerat
+	consequat. Nullam egestas ipsum quis est vulputate viverra congue lacus rutrum.
+	Aenean ac risus non ante rutrum egestas. Duis ligula ligula, scelerisque non feugiat
+	non, cursus non lectus. Vivamus id eros eu orci sagittis pulvinar.</text>
+</styledText>

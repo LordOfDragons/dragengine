@@ -1,0 +1,254 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Networking
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding geometry network state support.
+ * 
+ * If ECBehaviorNetworkState is present and activate adds network values to synchronize
+ * the owner element position and orientation.
+ * 
+ * No element class properties are added.
+ * 
+ * This behavior can be present only once in the element class.
+ */
+class ECBehaviorNStateGeometry extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Network state listener. */
+		class NetworkStateListener extends ECBehaviorNetworkState.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void addValues( ECBehaviorNetworkState.Instance instance )
+				this.pInstance.onAddValues()
+			end
+		end
+		
+		/** \brief Position value. */
+		class ValuePosition extends ECBehaviorNetworkState.DVectorValue
+			private var Instance pInstance
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating64, precision )
+				this.pInstance = instance
+			end
+			
+			protected func void onValueChanged( DVector value )
+				this.pInstance.getElement().setPosition( value )
+			end
+			
+			protected func DVector getUpdateValue()
+				return this.pInstance.getElement().getPosition()
+			end
+		end
+		
+		/** \brief Orientation value. */
+		class ValueOrientation extends ECBehaviorNetworkState.QuaternionValue
+			private var Instance pInstance
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pInstance = instance
+			end
+			
+			protected func void onValueChanged( Quaternion value )
+				this.pInstance.getElement().setOrientation( value )
+			end
+			
+			protected func Quaternion getUpdateValue()
+				return this.pInstance.getElement().getOrientation()
+			end
+		end
+		
+		
+		private var ECBehaviorNStateGeometry pECBehavior
+		private var ECBehaviorNetworkState.Instance pNetworkState
+		private var ValuePosition pValuePosition
+		private var ValueOrientation pValueOrientation
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorNStateGeometry ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pNetworkState = ecbehavior.getNetworkState().instance( element )
+			this.pNetworkState.addListener( NetworkStateListener.new( this ) )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pValueOrientation = null
+			this.pValuePosition = null
+			this.pNetworkState = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorNStateGeometry getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Network state behavior instance or null if not connected. */
+		public func ECBehaviorNetworkState.Instance getNetworkState()
+			return this.pNetworkState
+		end
+		
+		/** \brief Position value or \em null if not connected. */
+		protected func ValuePosition getValuePosition()
+			return this.pValuePosition
+		end
+		
+		/** \brief Orientation value or \em null if not connected. */
+		protected func ValueOrientation getValueOrientation()
+			return this.pValueOrientation
+		end
+		
+		
+		
+		/** \brief Add values to network state. */
+		public func void onAddValues()
+			this.pValuePosition = ValuePosition.new( this, this.pECBehavior.getPrecisionPosition() )
+			this.pValueOrientation = ValueOrientation.new( this, this.pECBehavior.getPrecisionOrientation() )
+		end
+		
+		/** \brief Position or orientation changed. */
+		public func void geometryChanged()
+			if this.pValuePosition == null
+				return
+			end
+			
+			this.pValuePosition.updateValue()
+			this.pValueOrientation.updateValue()
+		end
+	end
+	
+	
+	
+	private var ECBehaviorNetworkState pNetworkState
+	private var float pPrecisionPosition
+	private var float pPrecisionOrientation
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorNetworkState networkState ) super( eclass )
+		if networkState == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pNetworkState = networkState
+		this.pPrecisionPosition = 0.001
+		this.pPrecisionOrientation = 0.001
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Network state behavior. */
+	public func ECBehaviorNetworkState getNetworkState()
+		return this.pNetworkState
+	end
+	
+	/** \brief Set network state behavior. */
+	public func void setNetworkState( ECBehaviorNetworkState networkState )
+		if networkState == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pNetworkState = networkState
+	end
+	
+	/** \brief Precision of position updates. */
+	public func float getPrecisionPosition()
+		return this.pPrecisionPosition
+	end
+	
+	/** \brief Set precision of position updates. */
+	public func void setPrecisionPosition( float precision )
+		this.pPrecisionPosition = precision
+	end
+	
+	/** \brief Precision of orientation updates. */
+	public func float getPrecisionOrientation()
+		return this.pPrecisionOrientation
+	end
+	
+	/** \brief Set precision of orientation updates. */
+	public func void setPrecisionOrientation( float precision )
+		this.pPrecisionOrientation = precision
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorNStateGeometry getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorNStateGeometry
+		end ) cast ECBehaviorNStateGeometry
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNStateGeometry.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

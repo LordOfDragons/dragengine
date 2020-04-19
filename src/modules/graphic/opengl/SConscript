@@ -1,0 +1,163 @@
+from SConsCommon import *
+
+# import whatever is given by the parent builder
+Import('parent_env parent_targets parent_report')
+
+# setup the environment matching the OS
+envModule = parent_env.Clone()
+
+libs = []
+
+if envModule['OSBeOS']:
+	libs.extend(['be', 'game'])
+
+# do configure stuff
+hasOpenGL = False
+buildModule = False
+
+if envModule['build_graphics_opengl'] != TernaryVariableNo:
+	conf = envModule.Configure()
+	
+	if envModule['with_opengl'] != TernaryVariableNo:
+		hasOpenGL = conf.CheckLibWithHeader('GL', 'GL/gl.h', 'c++', 'glEnable(0);')
+		if hasOpenGL:
+			buildModule = True
+			envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
+			libs.append('GL')
+		if not hasOpenGL and envModule['platform_android'] != 'no':
+			hasOpenGL = True
+			buildModule = True
+		
+		if not hasOpenGL:
+			hasOpenGL = conf.CheckLibWithHeader('opengl32', 'GL/gl.h', 'c++', 'glEnable(0);')
+			if hasOpenGL:
+				buildModule = True
+				envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
+				libs.append('opengl32')
+		
+		if envModule['OSMacOS']:
+			hasOpenGL = True
+			buildModule = True
+		
+		if hasOpenGL:
+			if envModule['OSPosix']:
+				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', 'glXGetProcAddress(NULL);')
+				if hasFuncProc:
+					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
+		
+		if not hasOpenGL and envModule['with_opengl'] == TernaryVariableYes:
+			Exit('Requested to use OpenGL but gl.h or libGL could not be found or is not usable.')
+	
+	conf.Finish()
+
+if envModule['build_graphics_opengl'] == TernaryVariableYes and not hasOpenGL:
+	Exit('Requested to build OpenGL Graphics Module but OpenGL could not be found or is not usable.')
+
+# build module if requested
+parent_report['build OpenGL Graphics Module'] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+if envModule['OSWindows']:
+	libs.append(['kernel32', 'user32', 'gdi32'])
+	#envModule.Append(CXXFLAGS = '-g')
+
+if envModule['platform_android'] != 'no':
+	libs.extend(envModule['ANDROID_LIBS'])
+	#libs.extend(['dl'])
+	libs.extend(['GLESv3', 'GLESv2', 'GLESv1_CM', 'EGL'])
+
+if envModule['OSBeOS']:
+	pass
+	# beos has a strange compiler bug. without debug flags compiled binary is faulty
+	#envModule.Append(CXXFLAGS = ['-g'])
+
+if envModule['OSMacOS']:
+	envModule.Append(FRAMEWORKS = ['Cocoa', 'OpenGL'])
+
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format(versionMajor, versionMinor)
+
+pathConfig = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+pathShares = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# setup the builders
+sources = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'squish', '*.cpp', sources)
+
+headers = []
+globFiles(envModule, 'src', '*.h', headers)
+globFiles(envModule, 'squish', '*.h', headers)
+
+sharedStuff = []
+globFiles(envModule, 'shaders', '*.shader.xml', sharedStuff)
+globFiles(envModule, 'shaderSources', '*.glsl', sharedStuff)
+
+if envModule['OSMacOS']:
+	globFiles(envModule, 'src', '*.mm', sources)
+
+objects = [envModule.SharedObject(s) for s in sources]
+
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+
+library = envModule.SharedLibrary(target='graopengl', source=objects, LIBS=libs)
+targetBuild = envModule.Alias('gra_opengl_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM' }]
+
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+for s in sharedStuff:
+	filename = os.path.join(pathShares, s)
+	install.append(envModule.InstallAs(filename, s))
+	archive[filename] = envModule.File(s).srcnode()
+
+targetInstall = envModule.Alias('gra_opengl', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule,
+	['{}/src'.format(srcdir), '{}/shaders'.format(srcdir), '{}/shaderSources'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+Depends(buildClocBare, sharedStuff)
+buildCloc = envModule.Alias('gra_opengl_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['gra_opengl'] =  {
+	'name' : 'OpenGL Graphic Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

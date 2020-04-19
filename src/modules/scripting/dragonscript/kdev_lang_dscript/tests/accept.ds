@@ -1,0 +1,172 @@
+/* 
+ * DragonScript Test File
+ *
+ * Copyright (C) 2018, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+namespace Dragengine.Elements.  Front.Back  /* ccc */.  Both   .Last
+  namespace Dragengine.Elements  /* aaa */  // end of line
+
+/* empty line comment */
+
+/**
+ * \brief documentation comment
+ */
+pin Dragengine.Elements
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+requires "Math"
+
+  public  abstract/* blanks */static  class EmptyClass
+end
+
+class ApplicationClass extends Game
+end
+
+class ClassExtend extends EmptyClass
+end
+
+class ClassImplement implements ActionListener
+end
+
+class ClassExtendImplement extends ClassExtend implements ActionListener, ColliderListener
+	public func new( String arg1, bool arg2 )
+	end
+	
+	public func void callMe( int value, Block ablock )
+		ablock.run( 0 )
+	end
+	
+	protected func int pFunc()
+		return 80
+	end
+	
+	public var int blistering
+end
+
+class ClassExtendImplement2 \
+  extends ElementVisitor /* comment */ \
+  implements ActionListener, ColliderListener : end
+
+  interface InterfaceEmpty
+end
+
+interface InterfaceExtend implements ActionListener, ColliderListener
+end
+
+public class OuterClass extends ClassExtendImplement
+	protected class InnerClass
+	end
+	
+	public interface InnerInterface implements InterfaceExtend
+	end
+	
+	private enum SimpleEnum
+		ENUM_AUTO_1
+		ENUM_FIXED_1 = 8
+		ENUM_AUTO_2 = -isATest(ENUM_AUTO_1 + 3, 10)
+	end
+	
+	private var int pMember1
+	private var OuterClass pMember2
+	public static fixed var int CONSTANT = 8
+	
+	static public func int isATest( int value1, int value2 )
+		return value1 + value2
+	end
+	
+	public func new( String arg1, bool arg2 ) super( arg1, arg2 )
+		this.pMember1 = ( arg1 + ENUM_AUTO_1 * ( arg2 cast int )++ ).toInt()
+		pMember2 = null
+		this.callThat().pMember2 = OuterClass.new( this.pMember1 > 8 if "String literal" else this.toString(), null )
+		this.callMe( arg1.toInt() + 2, block int each
+			each.equals( this.pFunc().toString() )
+			return true
+		end )
+	end
+	
+	public func new() this( "Something", true )
+	end
+	
+	func destructor(): end
+	
+	private func OuterClass callThat()
+		while pMember1 > 0
+			pMember1--
+		end
+		return this
+	end
+	
+	/**
+	 * \brief This is the documentation of callMe function.
+	 * 
+	 * Some more stuff to fill some lins.
+	 * 
+	 * \param value A value parameter.
+	 * \param ablock A block with some parameters.
+	 */
+	public func void callMe( int value, Block ablock )
+		select value
+		case 0, 1, 2
+			ablock.run( value )
+		case 10
+			ablock.run( value * 10 )
+		else
+			super.callMe( value, ablock )
+		end
+	end
+	
+	public func OuterClass +( int value )
+		if value > 0
+			return pMember1 + value
+		elif value < -10
+			return pMember1 - value
+		elif value < 0
+			var int temp = value * 2
+			return pMember1 - temp
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	public func void repeater( Block ablock )
+		var int i, begin = 0, last = 10
+		for i = begin to last step 2
+			callMe( pMember1.toString().toInt(), ablock )
+			continue
+		end
+		for i = 5 downto 0
+			callMe( pMember1, ablock )
+			break
+		end
+	end
+	
+	public func void thrower( InterfaceExtend something )
+		try
+			( this.toString().toInt() + this.pMember2.pMember1 + this.blistering + blistering ).toString()
+		catch EInvalidParam e
+			throw e
+		end
+	end
+end
+
+class AnotherTest implements OuterClass.InnerInterface
+end

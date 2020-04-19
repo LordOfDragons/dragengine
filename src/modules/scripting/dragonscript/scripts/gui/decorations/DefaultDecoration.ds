@@ -1,0 +1,311 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Decorations
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of Decoration rendering nothing and reporting no hits.
+ */
+class DefaultDecoration implements Decoration
+	/** \brief Canvas view for the border. */
+	private var CanvasView pCanvas
+	
+	/** \brief Active title color. */
+	private var Color pColorActiveTitle
+	
+	/** \brief Inactive title color. */
+	private var Color pColorInactiveTitle
+	
+	/** \brief Active title font. */
+	private var Font pFontActiveTitle
+	
+	/** \brief Inactive title font. */
+	private var Font pFontInactiveTitle
+	
+	
+	
+	/** \brief Window the decoration is assigned to or null if there is none. */
+	private var Window pWindow
+	
+	/** \brief Close button hover state. */
+	private var bool pButtonCloseHover
+	
+	/** \brief Close button pressed state. */
+	private var bool pButtonClosePressed
+	
+	/** \brief Maximize button hover state. */
+	private var bool pButtonMaximizeHover
+	
+	/** \brief Maximize button pressed state. */
+	private var bool pButtonMaximizePressed
+	
+	/** \brief Minimize button hover state. */
+	private var bool pButtonMinimizeHover
+	
+	/** \brief Minimize button pressed state. */
+	private var bool pButtonMinimizePressed
+	
+	
+	
+	/** \brief Create decoration. */
+	public func new()
+		this.pCanvas = CanvasView.new()
+		this.pColorActiveTitle = Color.black
+		this.pColorInactiveTitle = Color.black
+		this.pButtonCloseHover = false
+		this.pButtonClosePressed = false
+		this.pButtonMaximizeHover = false
+		this.pButtonMaximizePressed = false
+		this.pButtonMinimizeHover = false
+		this.pButtonMinimizePressed = false
+	end
+	
+	
+	
+	/** \brief Window the decoration is assigned to or null if there is none. */
+	public func Window getWindow()
+		return this.pWindow
+	end
+	
+	/** \brief Set window the decoration is assigned to or null if there is none. */
+	public func void setWindow( Window window )
+		if window == this.pWindow
+			return
+		end
+		
+		this.pWindow = window
+		
+		this.onWindowChanged()
+	end
+	
+	
+	
+	/** \brief Color of active window title. */
+	public func Color getActiveTitleColor()
+		return this.pColorActiveTitle
+	end
+	
+	/** \brief Set color of the active window title. */
+	public func void setActiveTitleColor( Color color )
+		this.pColorActiveTitle = color
+	end
+	
+	/** \brief Color of the inactive window title. */
+	public func Color getInactiveTitleColor()
+		return this.pColorInactiveTitle
+	end
+	
+	/** \brief Set color of the inactive window title. */
+	public func void setInactiveTitleColor( Color color )
+		this.pColorInactiveTitle = color
+	end
+	
+	/** \brief Font for active window title. */
+	public func Font getActiveTitleFont()
+		return this.pFontActiveTitle
+	end
+	
+	/** \brief Set font for active window title. */
+	public func void setActiveTitleFont( Font font )
+		this.pFontActiveTitle = font
+	end
+	
+	/** \brief Font for inactive window title. */
+	public func Font getInactiveTitleFont()
+		return this.pFontInactiveTitle
+	end
+	
+	/** \brief Set font for inactive window title. */
+	public func void setInactiveTitleFont( Font font )
+		this.pFontInactiveTitle = font
+	end
+	
+	
+	
+	/** \brief Close button hover state. */
+	public func bool getButtonCloseHover()
+		return this.pButtonCloseHover
+	end
+	
+	/** \brief Close button pressed state. */
+	public func bool getButtonClosePressed()
+		return this.pButtonClosePressed
+	end
+	
+	/** \brief Maximize button hover state. */
+	public func bool getButtonMaximizeHover()
+		return this.pButtonMaximizeHover
+	end
+	
+	/** \brief Maximize button pressed state. */
+	public func bool getButtonMaximizePressed()
+		return this.pButtonMaximizePressed
+	end
+	
+	/** \brief Minimize button hover state. */
+	public func bool getButtonMinimizeHover()
+		return this.pButtonMinimizeHover
+	end
+	
+	/** \brief Minimize button pressed state. */
+	public func bool getButtonMinimizePressed()
+		return this.pButtonMinimizePressed
+	end
+	
+	
+	
+	/**
+	 * \brief Border size.
+	 * \details Default implementation returns 0-size.
+	 */
+	public func BorderSize getBorderSize()
+		return BorderSize.new()
+	end
+	
+	/**
+	 * \brief Test which part of the decoration is hit if any.
+	 * \details The default implementation reports no hits at all.
+	 */
+	public func Decoration.Area areaHitBy( Point position )
+		return Decoration.Area.nothing
+	end
+	
+	/** \brief Canvas to render this border. */
+	public func Canvas getCanvas()
+		return this.pCanvas
+	end
+	
+	/** \brief Canvas to render this border. */
+	public func CanvasView getCanvasView()
+		return this.pCanvas
+	end
+	
+	/**
+	 * \brief Resize canvas to fit widget.
+	 * \details Does nothing if no window is set.
+	 */
+	public func void resizeCanvas()
+		if this.pWindow == null
+			return
+		end
+		
+		this.pCanvas.setSize( this.pWindow.getSize() + this.getBorderSize().getSize() )
+		this.updateCanvas()
+	end
+	
+	/**
+	 * \brief Update canvas.
+	 * \details Overwrite to create canvas content.
+	 */
+	public func void updateCanvas()
+	end
+	
+	
+	
+	/**
+	 * \brief Title font matching state.
+	 * 
+	 * If window is deactivate and deactivate font is null the activated font is used.
+	 */
+	public func Font getTitleFont()
+		if this.pWindow.getActivated() or this.pFontInactiveTitle == null
+			return this.pFontActiveTitle
+			
+		else
+			return this.pFontInactiveTitle
+		end
+	end
+	
+	/**
+	 * \brief Title color matching state.
+	 * 
+	 * If window is deactivate and deactivate title color is null the activated title
+	 * color is used.
+	 */
+	public func Color getTitleColor()
+		if this.pWindow.getActivated() or this.pFontInactiveTitle == null
+			return this.pColorActiveTitle
+			
+		else
+			return this.pColorInactiveTitle
+		end
+	end
+	
+	
+	
+	/** \brief Window changed. */
+	public func void onWindowChanged()
+		this.updateCanvas()
+	end
+	
+	/** \brief Window parameters changed. */
+	public func void onWindowParametersChanged()
+		this.updateCanvas()
+	end
+	
+	/**
+	 * \brief Set button state.
+	 * \param button One from BUTTON_*
+	 * \param hover Mouse hovers over button.
+	 * \param pressed Button is pressed down.
+	 */
+	public func void setButtonState( Decoration.Button button, bool hover, bool pressed )
+		select button
+		case Decoration.Button.close
+			if hover == this.pButtonCloseHover and pressed == this.pButtonClosePressed
+				break
+			end
+			this.pButtonCloseHover = hover
+			this.pButtonClosePressed = pressed
+			this.onButtonStateChanged()
+			
+		case Decoration.Button.maximize
+			if hover == this.pButtonMaximizeHover and pressed == this.pButtonMaximizePressed
+				break
+			end
+			this.pButtonMaximizeHover = hover
+			this.pButtonMaximizePressed = pressed
+			this.onButtonStateChanged()
+			
+		case Decoration.Button.minimize
+			if hover == this.pButtonMinimizeHover and pressed == this.pButtonMinimizePressed
+				break
+			end
+			this.pButtonMinimizeHover = hover
+			this.pButtonMinimizePressed = pressed
+			this.onButtonStateChanged()
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/** \brief One or more button states changed. */
+	public func void onButtonStateChanged()
+		this.updateCanvas()
+	end
+end

@@ -1,0 +1,275 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Base actor action for use with ECBehaviorActorCutscene.
+ * 
+ * While activate no update are allowed potentially interfering with cutscene handling.
+ * Optionally a BaseActorAction can be set to be activated if cutscene is stopped.
+ * This allows to play a single cutscene automatically reverting to another action once
+ * finished. This only checks if the cutscene is in stopped state at element thinking time.
+ * By using this mode you have to start the cutscene before the action has the chance to
+ * think or it will immediately switch to the next action. By default no action is set and
+ * the BAACutscene action waits until manually switched to anoterh one. This mode of operation
+ * is recommended since it is the best to control.
+ */
+class BAACutscene extends BaseActorAction
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "BAACutscene"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return BAACutscene.new( env, reader )
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Property update actor geometry on collider changed.
+	 * 
+	 * For performance reasons updating the actor geometry not done during colliderChanged()
+	 * but during postThink() when project to ground has been done. Between postThink() and
+	 * the next elementThink() actor geometry has to be updated or the actor element matrix
+	 * is out of sync when AI operates on it. This parameter is used to keep track of this.
+	 */
+	protected var bool moveIfColliderChanged
+	
+	private var BaseActorAction pAction
+	
+	/** \brief Collider AI Behavior. */
+	protected var ECBehaviorColliderAI.Instance colliderAI
+	
+	/** \brief Project to ground behavior. */
+	protected var ECBehaviorProjectToGround.Instance projectToGround
+	
+	/** \brief Actor cutscene behavior. */
+	protected var ECBehaviorActorCutscene.Instance actorCutscene
+	
+	
+	
+	/** \brief Create cutscene action. */
+	public func new()
+		this.moveIfColliderChanged = true
+	end
+	
+	/**
+	 * \brief Create cutscene action switching to another action if cutscene stops.
+	 */
+	public func new( BaseActorAction action )
+		this.moveIfColliderChanged = true
+		this.pAction = action
+	end
+	
+	/** \brief Create align actor action from persisted state. */
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+		this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+	end
+	
+	
+	
+	/** \brief Action to switch to if cutscene stopped or null to do nothing. */
+	public func BaseActorAction getAction()
+		return this.pAction
+	end
+	
+	/** \brief Set action to switch to if cutscene stopped or null to do nothing. */
+	public func void setAction( BaseActorAction action )
+		this.pAction = action
+	end
+	
+	/** \brief Collider AI behavior. */
+	public func ECBehaviorColliderAI.Instance getColliderAI()
+		return this.colliderAI
+	end
+	
+	/** \brief Actor cutscene behavior. */
+	public func ECBehaviorActorCutscene.Instance getActorCutscene()
+		return this.actorCutscene
+	end
+	
+	/** \brief Project to ground behavior. */
+	public func ECBehaviorProjectToGround.Instance getProjectToGround()
+		return this.projectToGround
+	end
+	
+	
+	
+	/**
+	 * \brief Action has been set as active action in an actor.
+	 * 
+	 * Clears locomotion input to ensure actor is not moving.
+	 */
+	public func void activate( BehaviorElement actor )
+		super.activate( actor )
+		locomotion.getLocomotion().cancelInput()
+	end
+	
+	/**
+	 * \brief Thinking.
+	 * 
+	 * If cutscene is stopped and an action is set switches to the action.
+	 */
+	public func void think( float elapsed )
+		super.think( elapsed )
+		this.moveIfColliderChanged = false
+		
+		if this.pAction != null and this.actorCutscene.isStopped() and this.aiAction != null
+			this.aiAction.setAction( this.pAction )
+		end
+	end
+	
+	/**
+	 * \brief Post physics.
+	 * 
+	 * Actor position is updated by ECBehaviorProjectToGround if present in the actor.
+	 * Otherwise updates the actor element position and orientation from AI collider.
+	 * 
+	 * Default implementation does these actions in this order:
+	 * - Update position and orientation if not using ECBehaviorProjectToGround
+	 * - updateLocomotionPost()
+	 */
+	public func void postThink( float elapsed )
+		if this.projectToGround == null
+			this.colliderAI.setGeometryFromCollider()
+		end
+		
+		this.updateLocomotionPost( elapsed )
+		
+		this.moveIfColliderChanged = true
+	end
+	
+	
+	
+	/**
+	 * \brief Init behaviors.
+	 * 
+	 * Retrieve and store required and optional behavior instances from the actor element.
+	 */
+	protected func void initBehaviors()
+		super.initBehaviors()
+		
+		if actor castable BaseActor
+			var BaseActor baseActor = actor cast BaseActor
+			this.colliderAI = baseActor.getColliderAI()
+			this.projectToGround = baseActor.getProjectToGround()
+			
+		else
+			this.colliderAI = ECBehaviorColliderAI.getInstanceIn( actor )
+			this.projectToGround = ECBehaviorProjectToGround.getInstanceIn( actor )
+		end
+		
+		this.actorCutscene = ECBehaviorActorCutscene.getInstanceIn( actor )
+	end
+	
+	/**
+	 * \brief Update locomotion.
+	 * 
+	 * Locomotion is updated to ensure body tilting still works although a cutscene is running.
+	 * All other input is cancelled during activate so nothing else should happen.
+	 */
+	protected func void updateLocomotion( float elapsed )
+		locomotion.update( elapsed )
+	end
+	
+	/**
+	 * \brief Post-Update locomotion.
+	 */
+	protected func void updateLocomotionPost( float elapsed )
+		locomotion.updatePost( elapsed )
+	end
+	
+	/**
+	 * \brief Update collider.
+	 * 
+	 * Ensures collider is still properly updated although a cutscene is running.
+	 * 
+	 * Actor is considered not touching ground if ProjectToGround has not found a ground
+	 * collider during the last postThink() call.
+	 */
+	protected func void updateAICollider( float elapsed )
+		if this.projectToGround == null or this.projectToGround.getTouchesGround()
+			this.colliderAI.setFromLocomotion( locomotion )
+			
+		else
+			this.colliderAI.applyGravity( elapsed )
+		end
+	end
+	
+	
+	
+	/** \brief Collision detected. */
+	public func void collisionResponse( Collider owner, CollisionInfo info )
+		owner.setLinearVelocity( Vector.new() )
+		if this.projectToGround != null
+			this.projectToGround.setTouchesGround( true )
+		end
+	end
+	
+	/** \brief Two colliders can hit each other. */
+	public func bool canHitCollider( Collider owner, Collider collider )
+		return true
+	end
+	
+	/** \brief Collider changed. */
+	public func void colliderChanged( Collider owner )
+		// update actor geometry if between postThink() and next elementThink().
+		if this.moveIfColliderChanged
+			actor.setGeometry( owner.getPosition(), owner.getOrientation() )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		env.writeObjectOrNull( writer, this.pAction )
+	end
+end

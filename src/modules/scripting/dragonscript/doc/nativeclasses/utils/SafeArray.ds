@@ -1,0 +1,109 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Re-entrant safe array.
+ * 
+ * Version of Array supporting modifying content while visited safely.
+ * 
+ * This is a native class.
+ */
+class SafeArray
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create safe array. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Nnumber of elements in the array. */
+	public func int getCount()
+	end
+	
+	/** \brief Element is present. */
+	public func bool has( Object element )
+	end
+	
+	/** \brief Index of element or -1 if absent. */
+	public func int indexOf( Object element )
+	end
+	
+	/**
+	 * \brief Element at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func Object getAt( int index )
+	end
+	
+	/**
+	 * \brief Set element at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getCount().
+	 */
+	public func void setAt( int index, Object element )
+	end
+	
+	/**
+	 * \brief Add element.
+	 * \throws EInvalidParam \em element is present.
+	 */
+	public func void add( Object element )
+	end
+	
+	/** \brief Add element if absent. */
+	public func void addIfAbsent( Object element )
+	end
+	
+	/**
+	 * \brief Remove element.
+	 * \throws EInvalidParam \em element is absent.
+	 */
+	public func void remove( Object element )
+	end
+	
+	/**
+	 * \brief Remove element from index.
+	 * \throws EInvalidParam \em index is less than 0 or greater than or equal to getCount() - 1.
+	 */
+	public func void removeFrom( int index )
+	end
+	
+	/** \brief Remove element if present. */
+	public func void removeIfPresent( Object element )
+	end
+	
+	/** \brief Remove all elements. */
+	public func void removeAll()
+	end
+	
+	/** \brief Remove all elements applying a block to each element before removing. */
+	public func void removeAll( Block ablock )
+	end
+	
+	
+	
+	/** \brief Visit elements in the array with a block. */
+	public func void forEach( Block ablock )
+	end
+	
+	/**
+	 * \brief Find element using a block.
+	 * \returns Found element or \em null if no element matches,
+	 */
+	public func Object find( Block ablock )
+	end
+	/*@}*/
+end

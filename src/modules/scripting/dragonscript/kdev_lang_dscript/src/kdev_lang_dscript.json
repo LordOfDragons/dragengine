@@ -1,0 +1,25 @@
+{
+	"KPlugin": {
+		"Category": "Language Support",
+		"Id": "dragonscriptlanguagesupport",
+		"License": "GPL",
+		"Name": "DragonScript Language Support",
+		"Name[x-test]": "xxDragonScript Language Supportxx",
+		"Description": "DragonScript Language Plugin",
+		"Description[x-test]": "xxDragonScript Language Pluginxx",
+		"ServiceTypes": [
+			"KDevelop/Plugin"
+		]
+	},
+	"X-KDevelop-Interfaces": [
+		"ILanguageSupport"
+	],
+	"X-KDevelop-Languages": [
+		"DragonScript"
+	],
+	"X-KDevelop-Category": "Global",
+	"X-KDevelop-Mode": "NoGUI",
+	"X-KDevelop-SupportedMimeTypes": [
+		"text/x-dragonscript"
+	]
+}

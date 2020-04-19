@@ -1,0 +1,85 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Default implementation of ECBehavior.
+ * 
+ * Stores identifier for behaviors supporting multi-use (empty string for single-use).
+ * Stores also the instance index. This allows to quickly obtain the instance for
+ * behavior element instances matching the element class this behavior is located in.
+ * This is typically used in behavior element constructors to store the instances for
+ * directly accessed behaviors without finding them.
+ */
+abstract public class DefaultECBehavior implements ECBehavior
+	private var String pID
+	private var int pInstanceIndex
+	
+	
+	
+	/** \brief Create default composeable behavior with empty identifier. */
+	protected func new( BehaviorElementClass eclass )
+		this.pID = ""
+		this.pInstanceIndex = -1
+	end
+	
+	/** \brief Create default composeable behavior. */
+	protected func new( BehaviorElementClass eclass, String id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pID = id
+		this.pInstanceIndex = -1
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return this.pID
+	end
+	
+	/** \brief Instance index. */
+	public func int getInstanceIndex()
+		return this.pInstanceIndex
+	end
+	
+	/**
+	 * \brief Assign instance index.
+	 * \warning For use by BehaviorElementClass only! Do not call yourself!
+	 */
+	public func void assignInstanceIndex( int instanceIndex )
+		this.pInstanceIndex = instanceIndex
+	end
+end

@@ -1,0 +1,437 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding locomotion support for actors.
+ * 
+ * Adds Locomotion. Actors use Locomotion to move their AI colliders across the game world.
+ * Locomotion also provides values for AnimatorController to provide animation to actors
+ * matching their movement.
+ * 
+ * Uses collider of ECBehaviorColliderAI or ECBehaviorCollider depending which one is present.
+ * If both are present ECBehaviorColliderAI is preferred.
+ * 
+ * By default creates instance of Locomotion. This class provides all the basic behavior to do
+ * locomotion for different type of actors. Supports organic locomotion of 2-legged and 4-legged
+ * characters with natural and FPS type movement patterns as well as mechanical locomotion
+ * like vehicles.
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ */
+class ECBehaviorLocomotion extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorLocomotion pECBehavior
+		private var ECBehaviorColliderAI.Instance pColliderAI
+		private var ECBehaviorCollider.Instance pCollider
+		private var Locomotion pLocomotion
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorLocomotion ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			if ecbehavior.getColliderAI() != null
+				this.pColliderAI = ecbehavior.getColliderAI().instance( element )
+				
+			else
+				this.pCollider = ecbehavior.getCollider().instance( element )
+			end
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pColliderAI = null
+			this.pCollider = null
+			this.pLocomotion = null
+			super.dispose()
+		end
+		
+		
+		
+		/**
+		 * \brief Initialize element from stub.
+		 * 
+		 * Calls initHuman() with a speed of 4.
+		 */
+		public func void init( StubElement stub )
+			var Collider collider
+			
+			if this.pColliderAI != null
+				collider = this.pColliderAI.getCollider()
+				
+			else
+				collider = this.pCollider.getCollider()
+			end
+			
+			this.pLocomotion = this.createLocomotion( stub )
+			if collider != null
+				this.pLocomotion.setAICollider( collider )
+			end
+			
+			this.initHuman( 4 )
+		end
+		
+		/**
+		 * \brief Create locomotion.
+		 * 
+		 * Creates instance of Locomotion.
+		 */
+		protected func Locomotion createLocomotion( StubElement stub )
+			return Locomotion.new()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorLocomotion getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief ColliderAI behavior instance or null. */
+		public func ECBehaviorColliderAI.Instance getColliderAI()
+			return this.pColliderAI
+		end
+		
+		/** \brief Collider behavior instance or null. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Locomotion. */
+		public func Locomotion getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/**
+		 * \brief Initialize locomotion with common human actor parameters.
+		 * 
+		 * Sets these parameters:
+		 * - Can turn: yes
+		 * - Can turn in-place: yes
+		 * - Linear velocity adjust range: Actor element class run speed
+		 * - Linear velocity adjust time: 1
+		 * - Moving left right adjust time: 0
+		 * - Looking limits: -80..80 (up-down) and -90..90 (left-right)
+		 * - Looking adjust times: 1
+		 * - Orientation adjust time: 1
+		 * - Turn adjust look left-right: yes
+		 * - Turn in-place limit: -70..70
+		 * - Turn in-place adjust time: 1
+		 * 
+		 * \param speed Average speed of actor used to calculate adjustment speed.
+		 *              Using running speed of actor is a good value.
+		 */
+		public func void initHuman( float averageSpeed )
+			this.pLocomotion.setAdjustRangeLinearVelocity( averageSpeed )
+			this.pLocomotion.setAdjustTimeAnalogMovingHorizontal( 0 )
+			
+			this.pLocomotion.setLimitLookUp( 80 )
+			this.pLocomotion.setLimitLookDown( -80 )
+			this.pLocomotion.setLimitLookLeft( -90 )
+			this.pLocomotion.setLimitLookRight( 90 )
+			
+			this.pLocomotion.setCanTurn( true )
+			this.pLocomotion.setCanTurnInPlace( true )
+			this.pLocomotion.setTurnAdjustLookHorizontal( true )
+			this.pLocomotion.setLimitTurnInPlaceLeft( -70 )
+			this.pLocomotion.setLimitTurnInPlaceRight( 70 )
+			
+			this.pLocomotion.setAdjustTimeOrientation( 1 )
+			this.pLocomotion.setAdjustTimeTurnIP( 1 )
+			
+			this.pLocomotion.setAdjustTimeVertical( 0.5 )
+			this.pLocomotion.setAdjustTimeHorizontal( 0.5 )
+			this.pLocomotion.setAdjustTimeLinearVelocity( 1 )
+		end
+	
+		/**
+		 * \brief Initialize locomotion with common vehicle parameters.
+		 * 
+		 * Sets these initial parameters:
+		 * - Can turn: yes
+		 * - Can turn in-place: yes
+		 * - Linear velocity adjust range: Actor element class run speed
+		 * - Linear velocity adjust time: 0.5
+		 * - Moving left right adjust time: 0
+		 * - Looking limits: -80..80 (up-down) and -90..90 (left-right)
+		 * - Looking adjust times: 0
+		 * - Orientation adjust time: 1
+		 * - Turn adjust look left-right: yes
+		 * - Turn in-place limit: -70..70
+		 * - Turn in-place adjust time: 1
+		 * 
+		 * These values are suitable for player controlled actors. For non-player controlled
+		 * actors it might be useful to set these additional parameters:
+		 * - Looking adjust time: 1
+		 * - Linear velocity adjust time: 1
+		 * 
+		 * \param speed Average speed of actor used to calculate adjustment speed.
+		 *              Using running speed of actor is a good value.
+		 */
+		public func void initVehicle( float averageSpeed )
+			this.pLocomotion.setAdjustRangeLinearVelocity( averageSpeed )
+			this.pLocomotion.setAdjustTimeAnalogMovingHorizontal( 0 )
+			
+			this.pLocomotion.setLimitLookUp( 80 )
+			this.pLocomotion.setLimitLookDown( -80 )
+			this.pLocomotion.setLimitLookLeft( -90 )
+			this.pLocomotion.setLimitLookRight( 90 )
+			
+			this.pLocomotion.setCanTurn( true )
+			this.pLocomotion.setCanTurnInPlace( false )
+			this.pLocomotion.setTurnAdjustLookHorizontal( false )
+			
+			this.pLocomotion.setAdjustTimeOrientation( 1 )
+			
+			this.pLocomotion.setAdjustTimeVertical( 0 )
+			this.pLocomotion.setAdjustTimeHorizontal( 0 )
+			this.pLocomotion.setAdjustTimeLinearVelocity( 0.5 )
+			
+			//this.pLocomotion.setAdjustTimeVertical( 1 )
+			//this.pLocomotion.setAdjustTimeHorizontal( 1 )
+			//this.pLocomotion.setAdjustTimeLinearVelocity( 1 )
+		end
+		
+		/**
+		 * \brief Apply looking around changes to locomotion.
+		 * 
+		 * Typically called for player controlled actors only.
+		 */
+		public func void applyLookAround( float deltaHorizontal, float deltaVertical )
+			this.pLocomotion.setLookVerticalGoal( this.pLocomotion.getLookVerticalGoal() + deltaVertical )
+			this.pLocomotion.setLookHorizontalGoal( this.pLocomotion.getLookHorizontalGoal() + deltaHorizontal )
+		end
+		
+		
+		
+		/**
+		 * \brief Set locomotion orientation in euler angles in world coordinates.
+		 */
+		public func void setOrientation( float orientation )
+			this.pLocomotion.setOrientation( orientation )
+			this.pLocomotion.setMovingOrientation( orientation )
+		end
+		
+		/** \brief View direction. */
+		public func Vector getViewDirection()
+			return this.getViewMatrix().getViewVector()
+		end
+		
+		/** \brief View matrix. */
+		public func Matrix getViewMatrix()
+			return Matrix.newRotation( this.pLocomotion.getLookVertical(), \
+				this.pLocomotion.getOrientation() + this.pLocomotion.getLookHorizontal(), 0 )
+		end
+		
+		
+		
+		/**
+		 * \brief Update locomotion.
+		 * 
+		 * Calls Locomotion.updateLooking() to pull the look-around values towards their goal
+		 * values with the set adjustment velocities. Then Locomotion.updateLocomotion() is
+		 * called to update all the locomotion parameters for later use.
+		 */
+		public func void update( float elapsed )
+			this.pLocomotion.updateLooking( elapsed )
+			this.pLocomotion.updateLocomotion( elapsed )
+		end
+		
+		/**
+		 * \brief Update animator controllers.
+		 * 
+		 * Calls Locomotion.updateAnimatorInstance() to update animator controller for which
+		 * mappings have been defined.
+		 */
+		public func void updateAnimator( float elapsed )
+			this.pLocomotion.updateAnimatorInstance( elapsed )
+		end
+		
+		/**
+		 * \brief Post-Update locomotion.
+		 * 
+		 * Called by postThink() if auto-updating is enabled. For actors auto-thinking is set to
+		 * false allowing actor to call updatePost() in the appropriate time.
+		 * 
+		 * Calls Locomotion.updatePostLocomotion() to apply tilting and foot projecting which
+		 * can be done only after physics have been calculated.
+		 */
+		public func void updatePost( float elapsed )
+			this.pLocomotion.updatePostLocomotion( elapsed )
+		end
+		
+		/**
+		 * \brief Clear all movement to ensure actor is not unintentially moving.
+		 */
+		public func void stopMoving()
+			this.pLocomotion.setLookHorizontalGoal( 0 )
+			this.pLocomotion.setLookVerticalGoal( 0 )
+			this.pLocomotion.applyStates()
+			this.pLocomotion.cancelMotion()
+		end
+		
+		
+		
+		/**
+		 * \brief Add element to game world.
+		 * 
+		 * Clears locomotion movement to ensure actor is not unintentially moving.
+		 */
+		public func void addToGameWorld()
+			this.stopMoving()
+			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pLocomotion.readFromFile( reader )
+			
+			// restore parameters
+			this.getElement().setOrientation( this.pLocomotion.getOrientationQuaternion() )
+			
+			var Collider collider = this.pLocomotion.getAICollider()
+			if collider != null
+				collider.setLinearVelocity( this.pLocomotion.getLinearVelocity() )
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			this.pLocomotion.writeToFile( writer )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorColliderAI pColliderAI
+	private var ECBehaviorCollider pCollider
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI ) \
+	this( eclass, colliderAI, "locomotion." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, "locomotion." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix ) \
+	this( eclass, colliderAI, null, prefix )
+		if colliderAI == null
+			throw ENullPointer.new( "colliderAI" )
+		end
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix ) \
+	this( eclass, null, collider, prefix )
+		if collider == null
+			throw ENullPointer.new( "collider" )
+		end
+	end
+	
+	private func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorCollider collider, String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pColliderAI = colliderAI
+		this.pCollider = collider
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		this.pColliderAI = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief ColliderAI behavior or null. */
+	public func ECBehaviorColliderAI getColliderAI()
+		return this.pColliderAI
+	end
+	
+	/** \brief Collider behavior or null. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorLocomotion.
+	 */
+	static public func ECBehaviorLocomotion getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorLocomotion
+		end ) cast ECBehaviorLocomotion
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLocomotion.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

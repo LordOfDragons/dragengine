@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
+<gameDefinition>
+	<identifier/>dstestproject<description/>
+	<basePath>/localhome/roland/encrypted/mp/progs/dragengine/src/modules/scripting/dragonscript/testproject/data</basePath>
+	<scriptModule>DragonScript</scriptModule>
+	<categories>
+	</categories>
+	<class name='StaticGeometry'>
+		<description>Static world geometry.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorNavigationSpace'>
+			<propertyPrefix>navigationSpace.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+	</class>
+</gameDefinition>

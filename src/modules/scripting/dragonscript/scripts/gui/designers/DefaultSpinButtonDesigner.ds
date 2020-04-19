@@ -1,0 +1,253 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of SpinButtonDesigner.
+ */
+class DefaultSpinButtonDesigner extends DefaultWidgetDesigner implements SpinButtonDesigner
+	/** \brief Spin button size. */
+	private var int pSize
+	
+	/** \brief Button designer factory for up button. */
+	private var WidgetDesigner pButtonUp
+	
+	/** \brief Button designer factory for down button. */
+	private var WidgetDesigner pButtonDown
+	
+	/** \brief Button up image normal. */
+	private var Image pButtonUpImageNormal
+	
+	/** \brief Button up image hover. */
+	private var Image pButtonUpImageHover
+	
+	/** \brief Button down image normal. */
+	private var Image pButtonDownImageNormal
+	
+	/** \brief Button down image hover. */
+	private var Image pButtonDownImageHover
+	
+	
+	
+	/** \brief Create new spin button designer. */
+	public func new()
+		this.pSize = 16
+		
+		this.pButtonUp = DefaultButtonDesigner.new()
+		this.pButtonDown = DefaultButtonDesigner.new()
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultSpinButtonDesigner designer ) super( designer )
+		this.pSize = designer.pSize
+		this.pButtonUp = designer.pButtonUp
+		this.pButtonDown = designer.pButtonDown
+		this.pButtonUpImageNormal = designer.pButtonUpImageNormal
+		this.pButtonUpImageHover = designer.pButtonUpImageHover
+		this.pButtonDownImageNormal = designer.pButtonDownImageNormal
+		this.pButtonDownImageHover = designer.pButtonDownImageHover
+	end
+	
+	
+	
+	/** \brief Spin button size. */
+	public func int getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set spinbutton size. */
+	public func void setSize( int size )
+		if size < 0
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	
+	
+	/** \brief Button designer factory for up button. */
+	public func WidgetDesigner getButtonUp()
+		return this.pButtonUp
+	end
+	
+	/** \brief Set button designer factory for up button. */
+	public func void setButtonUp( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonUp = factory
+	end
+	
+	/** \brief Button designer factory for down button. */
+	public func WidgetDesigner getButtonDown()
+		return this.pButtonDown
+	end
+	
+	/** \brief Set button designer factory for down button. */
+	public func void setButtonDown( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonDown = factory
+	end
+	
+	
+	
+	/** \brief Button up image normal. */
+	public func Image getButtonUpImageNormal()
+		return this.pButtonUpImageNormal
+	end
+	
+	/** \brief Set button up image normal. */
+	public func void setButtonUpImageNormal( Image image )
+		this.pButtonUpImageNormal = image
+	end
+	
+	/** \brief Button up image hover. */
+	public func Image getButtonUpImageHover()
+		return this.pButtonUpImageHover
+	end
+	
+	/** \brief Set button up image hover. */
+	public func void setButtonUpImageHover( Image image )
+		this.pButtonUpImageHover = image
+	end
+	
+	/** \brief Button down image normal. */
+	public func Image getButtonDownImageNormal()
+		return this.pButtonDownImageNormal
+	end
+	
+	/** \brief Set button down image normal. */
+	public func void setButtonDownImageNormal( Image image )
+		this.pButtonDownImageNormal = image
+	end
+	
+	/** \brief Button down image hover. */
+	public func Image getButtonDownImageHover()
+		return this.pButtonDownImageHover
+	end
+	
+	/** \brief Set button down image hover. */
+	public func void setButtonDownImageHover( Image image )
+		this.pButtonDownImageHover = image
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | size | int | setSize |
+	 * | buttonUp | WidgetDesigner | setButtonUp |
+	 * | buttonDown | WidgetDesigner | setButtonDown |
+	 * | imageUpNormal | Image | setButtonUpImageNormal |
+	 * | imageUpHover | Image | setButtonUpImageHover |
+	 * | imageDownNormal | Image | setButtonDownImageNormal |
+	 * | imageDownHover | Image | setButtonDownImageHover |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "size" )
+			this.setSize( value cast int )
+			
+		elif name.equals( "buttonUp" )
+			this.setButtonUp( value cast WidgetDesigner )
+			
+		elif name.equals( "buttonDown" )
+			this.setButtonDown( value cast WidgetDesigner )
+			
+		elif name.equals( "imageUpNormal" )
+			this.setButtonUpImageNormal( value cast Image )
+			
+		elif name.equals( "imageUpHover" )
+			this.setButtonUpImageHover( value cast Image )
+			
+		elif name.equals( "imageDownNormal" )
+			this.setButtonDownImageNormal( value cast Image )
+			
+		elif name.equals( "imageDownHover" )
+			this.setButtonDownImageHover( value cast Image )
+		end
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultSpinButtonDesigner.new( this )
+	end
+	
+	
+	
+	/** \brief Size of spin button. */
+	public func int spinButtonSize( SpinButton spinbutton )
+		return this.pSize
+	end
+	
+	/** \brief Create up button. */
+	public func Button createButtonUp( SpinButton spinbutton )
+		var Button button = Button.new()
+		
+		button.setImage( this.pButtonUpImageNormal )
+		button.setHoverImage( this.pButtonUpImageHover )
+		if this.pButtonUpImageNormal == null
+			button.setText( "^" )
+			button.setMinimumSize( Point.new( 0, this.spinButtonSize( spinbutton ) ) )
+		end
+		button.setDesigner( this.pButtonUp )
+		
+		return button
+	end
+	
+	/** \brief Create down button. */
+	public func Button createButtonDown( SpinButton spinbutton )
+		var Button button = Button.new()
+		
+		button.setImage( this.pButtonDownImageNormal )
+		button.setHoverImage( this.pButtonDownImageHover )
+		if this.pButtonDownImageNormal == null
+			button.setText( "v" )
+			button.setMinimumSize( Point.new( 0, this.spinButtonSize( spinbutton ) ) )
+		end
+		button.setDesigner( this.pButtonDown )
+		
+		return button
+	end
+	
+	
+	
+	/**
+	 * \brief Design widget.
+	 * 
+	 * Method not used for SpinButton. Default implementation is empty. Use the methods
+	 * defined in SpinButtonDesigner to design the SpinButton.
+	 */
+	public func void designWidget( Widget widget )
+	end
+end

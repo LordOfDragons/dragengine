@@ -1,0 +1,106 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Microphone.
+ * 
+ * This is a native class.
+ */
+class Microphone
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create microphone. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Type. */
+	public func MicrophoneType getType()
+	end
+	
+	/** \brief Set type. */
+	public func void setType( MicrophoneType type )
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Velocity in m/s. */
+	public func Vector getVelocity()
+	end
+	
+	/** \brief Set velocity in m/s. */
+	public func void setVelocity( Vector velocity )
+	end
+	
+	
+	
+	/** \brief Microphone is muted. */
+	public func bool getMuted()
+	end
+	
+	/** \brief Set if microphone is muted. */
+	public func void setMuted( bool muted )
+	end
+	
+	/** \brief Volume. */
+	public func float getVolume()
+	end
+	
+	/** \brief Set volume. */
+	public func void setVolume( float volume )
+	end
+	
+	/** \brief Layer mask for visibility masking. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set layer mask for visibility masking. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Speakers */
+	/*@{*/
+	/** \brief Add speaker. */
+	public func void addSpeaker( Speaker speaker )
+	end
+	
+	/**
+	 * \brief Remove speaker.
+	 * \throws EInvalidParam \em speaker is absent.
+	 */
+	public func void removeSpeaker( Speaker speaker )
+	end
+	
+	/** \brief Remove all speakers. */
+	public func void removeAllSpeakers()
+	end
+	/*@}*/
+end

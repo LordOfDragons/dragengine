@@ -1,0 +1,212 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Unicode string.
+ * 
+ * This is a native class.
+ */
+class UnicodeString
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty unicode string. */
+	public func new()
+	end
+	
+	/** \brief Create copy of unicode string. */
+	public func new( UnicodeString string )
+	end
+	
+	/** \brief Create unicode string from unicode character. */
+	public static func UnicodeString newFromCharacter( int character )
+	end
+	
+	/** \brief Create unicode string from utf8 encoded string. */
+	public static func UnicodeString newFromUTF8( String string )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Count of characters in the unicode string. */
+	public func int getLength()
+	end
+	
+	/**
+	 * \brief Unicode character at the given location.
+	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
+	 */
+	public func int getCharacterAt( int position )
+	end
+	
+	/**
+	 * \brief Unicode string with characters from beginning.
+	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
+	 */
+	public func UnicodeString getLeft( int count )
+	end
+	
+	/**
+	 * \brief Unicode string with characters from the end.
+	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
+	 */
+	public func UnicodeString getRight( int count )
+	end
+	
+	/**
+	 * \brief Unicode string with characters from middle.
+	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
+	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
+	 */
+	public func UnicodeString getSubString( int position,  int count )
+	end
+	
+	/** \brief Unicode string with the reversed order of characters. */
+	public func UnicodeString reverse()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Trim */
+	/*@{*/
+	/** \brief Unicode string with white spaces stripped from beginning. */
+	public func UnicodeString trimLeft()
+	end
+	
+	/** \brief Unicode string with white spaces stripped from the end. */
+	public func UnicodeString trimRight()
+	end
+	
+	/** \brief Unicode string with white spaces stripped from beginning and end. */
+	public func UnicodeString trimBoth()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Search */
+	/*@{*/
+	/**
+	 * \brief Index of first occurance of character.
+	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
+	 */
+	public func int findCharacter( int character, int position )
+	end
+	
+	/**
+	 * \brief Index of first occurance of character from end to start.
+	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
+	 */
+	public func int findCharacterReverse( int character, int position )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Compare */
+	/*@{*/
+	/**
+	 * \brief Compare cases sensitive to another unicode string.
+	 * \retval 0 Strings are equal.
+	 * \retval <0 First differing character has smaller lexicographical value.
+	 * \retval >0 First differing character has larger lexicographical value.
+	 */
+	public func int compareTo( UnicodeString string )
+	end
+	
+	/**
+	 * \brief Compare cases insensitive to another unicode string
+	 * \retval 0 Strings are equal.
+	 * \retval <0 First differing character has smaller lexicographical value.
+	 * \retval >0 First differing character has larger lexicographical value.
+	 */
+	public func int compareToNoCase( UnicodeString string )
+	end
+	
+	
+	
+	/** \brief UTF8 encoded string. */
+	public func String toString()
+	end
+	
+	/**
+	 * \brief Unicode string is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type UnicodeString and both are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Convert */
+	/*@{*/
+	/** \brief Unicode string with all characters converted to lower case. */
+	public func UnicodeString toLower()
+	end
+	
+	/** \brief Unicode string with all characters converted to upper case. */
+	public func UnicodeString toUpper()
+	end
+	
+	/** \brief Converted to integer if possible. */
+	public func int toInt()
+	end
+	
+	/** \brief Converted to floating point value if possible. */
+	public func float toFloat()
+	end
+	
+	/** \brief UTF8 encoding of the unicode string. */
+	public func String toUTF8()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Concatenation of two unicode strings. */
+	public func UnicodeString +( UnicodeString string )
+	end
+	
+	/** \brief Concatenation of unicode string and character. */
+	public func UnicodeString +( byte value )
+	end
+	
+	/** \brief Concatenation of unicode string and boolean value converted to string. */
+	public func UnicodeString +( bool value )
+	end
+	
+	/** \brief Concatenation of unicode string and integer value converted to string. */
+	public func UnicodeString +( int value )
+	end
+	
+	/** \brief Concatenation of unicode string and floating point value converted to string. */
+	public func UnicodeString +( float value )
+	end
+	
+	/** \brief Concatenation of unicode string and object value converted to string using Object.toString(). */
+	public func UnicodeString +( Object object )
+	end
+	/*@}*/
+end

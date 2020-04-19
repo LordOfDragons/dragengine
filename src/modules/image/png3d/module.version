@@ -1,0 +1,4 @@
+IMGPNG3D {
+  global: PNG3DCreateModule;
+  local: *;
+};

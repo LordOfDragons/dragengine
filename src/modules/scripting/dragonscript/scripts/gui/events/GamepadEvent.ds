@@ -1,0 +1,101 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui.Events
+
+
+
+/**
+ * \brief Immutable gamepad event.
+ * 
+ * Used for input events outside mouse and keyboard handling.
+ */
+class GamepadEvent extends ModifiableEvent
+	/** \brief Input device axis moved event identifier. */
+	public fixed var int idGamepadAxisMoved = 90
+	
+	/** \brief Input device button pressed event identifier. */
+	public fixed var int idGamepadButtonPressed = 91
+	
+	/** \brief Input device button released event identifier. */
+	public fixed var int idGamepadButtonReleased = 92
+	
+	
+	
+	/** \brief Input device index. */
+	private var int pDevice
+	
+	/** \brief Axis or button index or -1 if not used. */
+	private var int pCode
+	
+	/** \brief Axis value or 0 if not used. */
+	private var float pAxisValue
+	
+	
+	
+	/** \brief Event identifier is an input device event identifier. */
+	public static func bool isGamepadEvent( int identifier )
+		return identifier >= idGamepadAxisMoved and identifier <= idGamepadButtonReleased
+	end
+	
+	
+	
+	/**
+	 * \brief Create event.
+	 * 
+	 * For use with idGamepadButtonPressed and idGamepadButtonReleased.
+	 */
+	public func new( Object source, int id, int device, int code, int modifiers ) \
+	super( source, id, modifiers )
+		this.pDevice = device
+		this.pCode = code
+		this.pAxisValue = 0.0
+	end
+	
+	/**
+	 * \brief Create event.
+	 * 
+	 * For use with idGamepadAxisMoved.
+	 */
+	public func new( Object source, int id, int device, int code, int modifiers, float axisValue ) \
+	super( source, id, modifiers )
+		this.pDevice = device
+		this.pCode = code
+		this.pAxisValue = axisValue
+	end
+	
+	
+	
+	/** \brief Input device index. */
+	public func int getDevice()
+		return this.pDevice
+	end
+	
+	/** \brief Axis or button index. */
+	public func int getCode()
+		return this.pCode
+	end
+	
+	/** \brief Axis value. */
+	public func float getAxisValue()
+		return this.pAxisValue
+	end
+end

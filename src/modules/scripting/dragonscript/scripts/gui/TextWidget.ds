@@ -1,0 +1,162 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Super class for widgets supporting text input.
+ * 
+ * Provides onKeyType() method called if key press event contains printable character.
+ */
+class TextWidget extends Widget implements TextModelListener
+	/** \brief Text model */
+	private var TextModel pModel
+	
+	/** \brief Text validator or null if not used. */
+	private var TextValidator pValidator
+	
+	
+	
+	/** \brief Create text widget. */
+	public func new( TextModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pModel = model
+		this.pModel.addListener( this )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		if this.pModel != null
+			this.pModel.removeListener( this )
+			this.pModel = null
+		end
+		
+		this.pValidator = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Text model. */
+	public func TextModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Set text model. */
+	public func void setModel( TextModel model )
+		if model == this.pModel
+			return
+		end
+		
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pModel.removeListener( this )
+		this.pModel = model
+		this.pModel.addListener( this )
+		
+		this.onModelChanged()
+	end
+	
+	/** \brief Text validator or null if not used. */
+	public func TextValidator getValidator()
+		return this.pValidator
+	end
+	
+	/**
+	 * \brief Set text validator or null if not used.
+	 * 
+	 * Current model text is not re-validated. Caller has to ensure text is valid before
+	 * assigning a new validator to avoid impossible to solve situations.
+	 */
+	public func void setValidator( TextValidator validator )
+		this.pValidator = validator
+	end
+	
+	
+	
+	/**
+	 * \brief Get text.
+	 * 
+	 * Convenience method for calling getModel().getText().
+	 */
+	public func String getText()
+		return this.pModel.getText()
+	end
+	
+	/**
+	 * \brief Set text.
+	 * 
+	 * Convenience method for calling getModel().setText().
+	 */
+	public func void setText( String text )
+		this.pModel.setText( text )
+	end
+	
+	
+	
+	/**
+	 * \brief Key typed event.
+	 " 
+	 " Convenience method called if onKeyPress is called with an event containing a printable key.
+	 */
+	public func void onKeyType( KeyEvent event )
+	end
+	
+	/** \brief Text model changed. */
+	public func void onModelChanged()
+	end
+	
+	/**
+	 * \brief Text in model changed.
+	 * 
+	 * Implementation of TextModelListener.textChanged().
+	 */
+	public func void textChanged( TextModel textModel )
+	end
+	
+	
+	
+	/**
+	 * \brief Key has been pressed.
+	 * 
+	 * If event contains a printable character onKeyType() is called after super.onKeyPress().
+	 */
+	public func void onKeyPress( KeyEvent event )
+		super.onKeyPress( event )
+		if event.getKeyChar() > 0
+			this.onKeyType( event )
+		end
+	end
+end

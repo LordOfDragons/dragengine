@@ -1,0 +1,319 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * Shows two buttons allowing to manipulate a range value.
+ * 
+ * Supports designing using designer selector "SpinButton". Designer has to implement
+ * interface SpinButtonDesigner.
+ */
+class SpinButton extends Container implements RangeModelListener
+	/** Direction button state change listener. */
+	class DirectionButtonStateListener extends DefaultStateChangeListener
+		/** Spin action. */
+		private var ActionListener pActionSpin
+		
+		/** Repeat spin timer */
+		private var RepeatActionTimer pRepeatSpinTimer
+		
+		/** Create direction button. */
+		public func new( ActionListener spinAction )
+			this.pActionSpin = spinAction
+		end
+		
+		/** \brief Widget changed state. */
+		public func void onStateChanged( StateChangeEvent event )
+			if ( event.getSource() cast Button ).getPressed()
+				if this.pRepeatSpinTimer == null
+					this.pRepeatSpinTimer = RepeatActionTimer.new( this.pActionSpin, event.getSource(), 0 )
+					this.pRepeatSpinTimer.sendEvent()
+				end
+				
+			else
+				if this.pRepeatSpinTimer != null
+					this.pRepeatSpinTimer.giveUp()
+					this.pRepeatSpinTimer = null
+				end
+			end
+		end
+		
+		/** \brief Dispose of listener. */
+		public func void dispose()
+			if this.pRepeatSpinTimer != null
+				this.pRepeatSpinTimer.giveUp()
+				this.pRepeatSpinTimer = null
+			end
+		end
+	end
+	
+	/** Action spin up action. */
+	class ActionSpinUp extends DefaultActionListener
+		private var SpinButton pSpinButton
+		public func new( SpinButton spinButton )
+			this.pSpinButton = spinButton
+		end
+		public func void onAction( ActionEvent event )
+			var RangeModel model = this.pSpinButton.getModel()
+			
+			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+				model.setValue( model.getValue() + model.getPageSize() )
+				
+			else
+				model.setValue( model.getValue() + model.getIncrement() )
+			end
+		end
+	end
+	
+	/** Action spin down action. */
+	class ActionSpinDown extends DefaultActionListener
+		private var SpinButton pSpinButton
+		public func new( SpinButton spinButton )
+			this.pSpinButton = spinButton
+		end
+		public func void onAction( ActionEvent event )
+			var RangeModel model = this.pSpinButton.getModel()
+			
+			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
+				model.setValue( model.getValue() - model.getPageSize() )
+				
+			else
+				model.setValue( model.getValue() - model.getIncrement() )
+			end
+		end
+	end
+	
+	
+	
+	/** Range Model */
+	private var RangeModel pModel
+	
+	/** Up direction button. */
+	private var Widget pButtonUp
+	
+	/** Down direction button. */
+	private var Widget pButtonDown
+	
+	/** \brief Button state listeners to clean up upon dispose. */
+	private var Array pDisposeButtonStateListeners
+	
+	
+	
+	/** Create spin button widget. */
+	public func new() this( DefaultRangeModel.new() )
+	end
+	
+	/** Create spin button widget. */
+	public func new( RangeModel model )
+		this.pDisposeButtonStateListeners = Array.new()
+		
+		this.setDesignerSelector( "SpinButton" )
+		
+		this.addMouseListener( WheelActionMouseListener.new( \
+			ActionSpinUp.new( this ), ActionSpinDown.new( this ) ) )
+		
+		this.pModel = model
+		this.pModel.addListener( this )
+		
+		this.createContent()
+		this.enableDirectionButtons()
+	end
+	
+	/** Dispose of widget. */
+	public func void dispose()
+		if this.pDisposeButtonStateListeners != null
+			this.pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
+				each.dispose()
+			end )
+			this.pDisposeButtonStateListeners = null
+		end
+		this.pButtonUp = null
+		this.pButtonDown = null
+		if this.pModel != null
+			this.pModel.removeListener( this )
+			this.pModel = null
+		end
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** Range model. */
+	public func RangeModel getModel()
+		return this.pModel
+	end
+	
+	/** Set range model. */
+	public func void setModel( RangeModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		if model == this.pModel
+			return
+		end
+		
+		this.pModel.removeListener( this )
+		this.pModel = model
+		this.pModel.addListener( this )
+		
+		this.enableDirectionButtons()
+	end
+	
+	
+	
+	/**
+	 * Send if the outer range properties like minimum value,
+	 * maximum value or page size has changed.
+	 */
+	public func void rangeChanged( RangeModel rangeModel )
+		this.enableDirectionButtons()
+	end
+	
+	/** Send if the value has changed. */
+	public func void valueChanged( RangeModel rangeModel )
+		this.enableDirectionButtons()
+	end
+	
+	
+	
+	/** \brief Remove all widgets. */
+	public func void removeAllWidgets()
+		super.removeAllWidgets()
+		
+		if this.pDisposeButtonStateListeners != null
+			this.pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
+				each.dispose()
+			end )
+			this.pDisposeButtonStateListeners.removeAll()
+		end
+	end
+	
+	
+	
+	/** Notification that the gui theme changed. */
+	public func void onGuiThemeChanged()
+		this.createContent()
+		this.enableDirectionButtons()
+		
+		super.onGuiThemeChanged() // does doLayout
+	end
+	
+	/** \brief Designer changed. */
+	public func void onDesignerChanged()
+		this.createContent()
+	end
+	
+	
+	
+	/**
+	 * \brief Get designer from gui theme.
+	 * 
+	 * Modified to ensure a DefaultSpinButtonDesigner is used if
+	 * super.getDesignerFromTheme() returns null.
+	 */
+	protected func WidgetDesigner getDesignerFromTheme()
+		var WidgetDesigner designer = super.getDesignerFromTheme()
+		if designer == null
+			designer = DefaultSpinButtonDesigner.new()
+		end
+		return designer
+	end
+	
+	
+	
+	/** Create content widgets. */
+	public func void createContent()
+		if this.getGuiTheme() == null
+			this.pButtonUp = null
+			this.pButtonDown = null
+			this.removeAllWidgets()
+			return
+		end
+		
+		var SpinButtonDesigner designer = this.getDesigner() cast SpinButtonDesigner
+		
+		this.runWhileBlockingLayout( block
+			// clear minimum size
+			this.setMinimumSize( null )
+			
+			// remove all widgets
+			this.pButtonUp = null
+			this.pButtonDown = null
+			this.removeAllWidgets()
+			
+			// set fixed width
+			//this.setMinimumSize( Point.new( designer.spinButtonSize( this ), 0 ) )
+			
+			// set layout to box layout
+			this.setLayout( BoxLayout.new( LayoutAxis.y ) )
+			
+			// create shared wheel action mouse listener
+			var MouseListener wheelListener = WheelActionMouseListener.new( \
+				ActionSpinUp.new( this ), ActionSpinDown.new( this ) )
+			
+			// create direction buttons
+			this.pButtonUp = designer.createButtonUp( this )
+			this.pButtonUp.setCanFocus( false )
+			this.pButtonUp.addMouseListener( wheelListener )
+			var DirectionButtonStateListener stateListener = \
+				DirectionButtonStateListener.new( ActionSpinUp.new( this ) )
+			this.pDisposeButtonStateListeners.add( stateListener )
+			this.pButtonUp.addStateChangeListener( stateListener )
+			this.addWidget( this.pButtonUp )
+			
+			this.pButtonDown = designer.createButtonDown( this )
+			this.pButtonDown.setCanFocus( false )
+			this.pButtonDown.addMouseListener( wheelListener )
+			stateListener = DirectionButtonStateListener.new( ActionSpinDown.new( this ) )
+			this.pDisposeButtonStateListeners.add( stateListener )
+			this.pButtonDown.addStateChangeListener( stateListener )
+			this.addWidget( this.pButtonDown )
+		end )
+		
+		this.doLayout()
+		
+		// set fixed width
+		this.setMinimumSize( Point.new( designer.spinButtonSize( this ), this.getMinimumSize().getY() ) )
+	end
+	
+	/** Enable direction buttons depending on the model value. */
+	public func void enableDirectionButtons()
+		if this.pButtonUp != null
+			this.pButtonUp.setEnabled( this.pModel.getValue() < this.pModel.getMaximum() )
+		end
+		if this.pButtonDown != null
+			this.pButtonDown.setEnabled( this.pModel.getValue() > this.pModel.getMinimum() )
+		end
+	end
+end

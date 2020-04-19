@@ -1,0 +1,283 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Navigation space.
+ * 
+ * This is a native class.
+ */
+class NavigationSpace
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create navigation space. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Orientation orientation )
+	end
+	
+	/** \brief Layer number. */
+	public func int getLayer()
+	end
+	
+	/** \brief Set layer number. */
+	public func void setLayer( int layer )
+	end
+	
+	/** \brief Space type. */
+	public func NavigationSpaceTpe getType()
+	end
+	
+	/** \brief Set space type. */
+	public func void setType( NavigationSpaceTpe type )
+	end
+	
+	/**
+	 * \brief Blocking priority.
+	 * \details Navigation meshes is blocked by all blockers with an equal or larger blocking priority.
+	 *          If a blocker shape exists it blocks all navigation meshes with equal or less blocking priority.
+	 */
+	public func int getBlockingPriority()
+	end
+	
+	/**
+	 * \brief Set blocking priority.
+	 * \details Navigation meshes is blocked by all blockers with an equal or larger blocking priority.
+	 *          If a blocker shape exists it blocks all navigation meshes with equal or less blocking priority.
+	 */
+	public func void setBlockingPriority( int priority )
+	end
+	
+	
+	
+	/**
+	 * \brief Snap distance in meters up to which edges are linked to neighbor spaces.
+	 * \details The default snap distance is 0.001 (1mm).
+	 */
+	public func float getSnapDistance()
+	end
+	
+	/**
+	 * \brief Set snap distance in meters up to which edges are linked to neighbor spaces.
+	 * \details The default snap distance is 0.001 (1mm).
+	 */
+	public func void setSnapDistance( float distance )
+	end
+	
+	/**
+	 * \brief Snap angle in degrees up to which edges are linked to neighbor spaces.
+	 * \details The default snap angle is 180°.
+	 */
+	public func float getSnapAngle()
+	end
+	
+	/**
+	 * \brief Set snap angle in degrees up to which edges are linked to neighbor spaces.
+	 * \details The default snap angle is 180°.
+	 */
+	public func void setSnapAngle( float angle )
+	end
+	
+	
+	
+	/**
+	 * \brief Notifies the peers that the layout of the navigation space changed.
+	 * \details This has to be called after changes made to vertices or faces
+	 */
+	public func void layoutChanged()
+	end
+	
+	
+	
+	/** \brief Blocker shape list. */
+	public func ShapeList getBlockerShapeList()
+	end
+	
+	/** \brief Set blocker shape list. */
+	public func void setBlockerShapeList( ShapeList shapeList )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Vertices (grid, space, volume) */
+	/*@{*/
+	/** \brief Number of vertices.. */
+	public func int getVertexCount()
+	end
+	
+	/** \brief Set number of vertices. */
+	public func void setVertexCount( int count )
+	end
+	
+	/** \brief Vertex at index. */
+	public func Vector getVertexAt( int index )
+	end
+	
+	/** \brief Set vertex at index. */
+	public func void setVertexAt( int index, Vector position )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Edges (grid, space, volume) */
+	/*@{*/
+	/** \brief Number of edges. */
+	public func int getEdgeCount()
+	end
+	
+	/** \brief Set number of edges. */
+	public func void setEdgeCount( int count )
+	end
+	
+	/** \brief Index of the first vertex of edge at index. */
+	public func int getEdgeVertex1( int edge )
+	end
+	
+	/** \brief Index of the second vertex of edge at index. */
+	public func int getEdgeVertex2( int edge )
+	end
+	
+	/** \brief Type number to use for the edge at position crossing the edge from the first to the second vertex. */
+	public func int getEdgeType1( int edge )
+	end
+	
+	/** \brief Type number to use for the edge at position crossing the edge from the second to the first vertex. */
+	public func int getEdgeType2( int edge )
+	end
+	
+	/** \brief Set parameters for edge at index. */
+	public func void setEdgeAt( int edge, int vertex1, int vertex2, int type1, int type2 )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Corners (space, volume) */
+	/*@{*/
+	/** \brief Number of corners. */
+	public func int getCornerCount()
+	end
+	
+	/** \brief Set number of corners. */
+	public func void setCornerCount( int count )
+	end
+	
+	/** \brief Index of the vertex for corner at index. */
+	public func int getCornerVertex( int corner )
+	end
+	
+	/** \brief Type number for corner at position used when crossing the edge from the parent face to the other face. */
+	public func int getCornerType( int corner )
+	end
+	
+	/** \brief Set parameters of corner at index. */
+	public func void setCornerAt( int corner, int vertex, int type )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Faces (space, volume) */
+	/*@{*/
+	/** \brief Number of faces. */
+	public func int getFaceCount()
+	end
+	
+	/** \brief Set number of faces. */
+	public func void setFaceCount( int count )
+	end
+	
+	/** \brief Number of corners for face at index. */
+	public func int getFaceCornerCount( int face )
+	end
+	
+	/** \brief Type number to use while crossing face at index. */
+	public func int getFaceType( int face )
+	end
+	
+	/** \brief Set parameters of face at index. */
+	public func void setFaceAt( int face, int cornerCount, int type )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Walls (volume) */
+	/*@{*/
+	/** \brief Number of walls. */
+	public func int getWallCount()
+	end
+	
+	/** \brief Set number of walls. */
+	public func void setWallCount( int count )
+	end
+	
+	/** \brief Index of face for wall at index. */
+	public func int getWallFace( int wall )
+	end
+	
+	/** \brief Type number to use for crossing wall at index. */
+	public func int getWallType( int wall )
+	end
+	
+	/** \brief Set parameters for wall at index. */
+	public func void setWallAt( int wall, int face, int type )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Rooms (volume) */
+	/*@{*/
+	/** \brief Number of rooms. */
+	public func int getRoomCount()
+	end
+	
+	/** \brief Set number of rooms. */
+	public func void setRoomCount( int count )
+	end
+	
+	/** \brief Number of front facing walls in room at index. */
+	public func int getRoomFrontWallCount( int room )
+	end
+	
+	/** \brief Number of back facing walls in room at index. */
+	public func int getRoomBackWallCount( int room )
+	end
+	
+	/** \brief Type number to use for crossing room at index. */
+	public func int getRoomType()
+	end
+	
+	/** \brief Set parameters for room at index. */
+	public func void setRoomAt( int room, int frontWallCount, int backWallCount, int type )
+	end
+	/*@}*/
+end

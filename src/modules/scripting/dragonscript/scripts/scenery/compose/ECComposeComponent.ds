@@ -1,0 +1,261 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Composable component for element class.
+ * 
+ * Provides component support to element class without subclassing from a specific class.
+ */
+class ECComposeComponent
+	private var ECPModel pModel
+	private var ECPSkin pSkin
+	private var ECPRig pRig
+	private var ECPOcclusionMesh pOcclusionMesh
+	private var ECPModel pAudioModel
+	private var ECPTextureReplacementList pTextureReplacements
+	private var ECPBoolean pRenderEnvMap
+	private var ECPBoolean pAffectsAudio
+	private var LayerMask pLayerMask
+	private var LayerMask pLayerMaskRenderEnvMap
+	private var LayerMask pLayerMaskAffectsAudio
+	private var ECPEnumeration pHintMovement
+	
+	private var String pPrefix
+	
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass ) \
+	this( ownerClass, ECPTextureReplacementList.new( "textureReplacements" ), "component." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, String prefix ) \
+	this( ownerClass, ECPTextureReplacementList.new( "textureReplacements" ), prefix )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, ECPTextureReplacementList textureReplacement ) \
+	this( ownerClass, textureReplacement, "component." )
+	end
+	
+	/**
+	 * \brief Create composable element class.
+	 * 
+	 * Adds all properties to \em ownerClass. If you do not want a property to be configurable
+	 * using XML subclassing use ownerClass.removeProperty() to remove them.
+	 */
+	public func new( ElementClass ownerClass, ECPTextureReplacementList textureReplacement, String prefix )
+		if textureReplacement == null or prefix == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pModel = ECPModel.new( prefix + "model" )
+		ownerClass.addProperty( this.pModel )
+		
+		this.pSkin = ECPSkin.new( prefix + "skin" )
+		ownerClass.addProperty( this.pSkin )
+		
+		this.pRig = ECPRig.new( prefix + "rig" )
+		ownerClass.addProperty( this.pRig )
+		
+		this.pOcclusionMesh = ECPOcclusionMesh.new( prefix + "occlusionMesh" )
+		ownerClass.addProperty( this.pOcclusionMesh )
+		
+		this.pAudioModel = ECPModel.new( prefix + "audioModel" )
+		ownerClass.addProperty( this.pAudioModel )
+		
+		this.pTextureReplacements = textureReplacement
+		ownerClass.addProperty( this.pTextureReplacements )
+		
+		this.pRenderEnvMap = ECPBoolean.new( prefix + "renderEnvMap", true )
+		ownerClass.addProperty( this.pRenderEnvMap )
+		
+		this.pAffectsAudio = ECPBoolean.new( prefix + "affectsAudio", true )
+		ownerClass.addProperty( this.pAffectsAudio )
+		
+		this.pHintMovement = ECPEnumeration.new( prefix + "hintMovement", \
+			ComponentHintMovement.all(), ComponentHintMovement.stationary )
+		ownerClass.addProperty( this.pHintMovement )
+		
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+		this.pLayerMaskRenderEnvMap = LayerMask.newWith( BaseGameApp.WorldLayerBit.envmap )
+		this.pLayerMaskAffectsAudio = LayerMask.newWith( BaseGameApp.WorldLayerBit.audio )
+		
+		this.pPrefix = prefix
+	end
+	
+	
+	
+	/** \brief Model resource. */
+	public func ECPModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Skin resource. */
+	public func ECPSkin getSkin()
+		return this.pSkin
+	end
+	
+	/** \brief Rig resource. */
+	public func ECPRig getRig()
+		return this.pRig
+	end
+	
+	/** \brief Occlusion mesh resource. */
+	public func ECPOcclusionMesh getOcclusionMesh()
+		return this.pOcclusionMesh
+	end
+	
+	/** \brief Audio model resource. */
+	public func ECPModel getAudioModel()
+		return this.pAudioModel
+	end
+	
+	/** \brief Texture replacements. */
+	public func ECPTextureReplacementList getTextureReplacements()
+		return this.pTextureReplacements
+	end
+	
+	/** \brief Render prop in environment maps. */
+	public func ECPBoolean getRenderEnvMap()
+		return this.pRenderEnvMap
+	end
+	
+	/** \brief Prop affects audio. */
+	public func ECPBoolean getAffectsAudio()
+		return this.pAffectsAudio
+	end
+	
+	/** \brief Layer mask to set (basic layer mask). */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask to set (basic layer mask). */
+	public func void setLayerMask( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMask = layerMask
+	end
+	
+	/** \brief Layer mask to set if render environment map is true. */
+	public func LayerMask getLayerMaskRenderEnvMap()
+		return this.pLayerMaskRenderEnvMap
+	end
+	
+	/** \brief Set layer mask to set if render environment map is true. */
+	public func void setLayerMaskRenderEnvMap( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMaskRenderEnvMap = layerMask
+	end
+	
+	/** \brief Layer mask to set if affects audio is true. */
+	public func LayerMask getLayerMaskAffectsAudio()
+		return this.pLayerMaskAffectsAudio
+	end
+	
+	/** \brief Set layer mask to set if affects audio is true. */
+	public func void setLayerMaskAffectsAudio( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMaskAffectsAudio = layerMask
+	end
+	
+	/** \brief Hint movement. */
+	public func ECPEnumeration getHintMovement()
+		return this.pHintMovement
+	end
+	
+	/** \brief Property prefix. */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
+	
+	
+	/** \brief Initialize component for element from stub. */
+	public func Component createComponent( Element element, StubElement stub )
+		var ElementClass eclass = element.getClass()
+		var Component component = Component.new( \
+			this.pModel.getModel( stub, eclass ), this.pSkin.getSkin( stub, eclass ) )
+		component.setRig( this.pRig.getRig( stub, eclass ) )
+		component.setOcclusionMesh( this.pOcclusionMesh.getOcclusionMesh( stub, eclass ) )
+		component.setAudioModel( this.pAudioModel.getModel( stub, eclass ) )
+		component.setPosition( element.getPosition() )
+		component.setOrientation( element.getOrientation() )
+		component.setScaling( element.getScaling() )
+		component.setHintMovement( this.pHintMovement.getEnumeration( stub ) cast ComponentHintMovement )
+		return component
+	end
+	
+	/**
+	 * \brief Create component layer mask.
+	 */
+	public func LayerMask createLayerMask( StubElement stub )
+		var LayerMask layerMask =  LayerMask.new( this.pLayerMask )
+		
+		if stub.getPropertyBoolFor( this.pRenderEnvMap.getName(), this.pRenderEnvMap.getValue() )
+			layerMask |= this.pLayerMaskRenderEnvMap
+		end
+		
+		if stub.getPropertyBoolFor( this.pAffectsAudio.getName(), this.pAffectsAudio.getValue() )
+			layerMask |= this.pLayerMaskAffectsAudio
+		end
+		
+		return layerMask
+	end
+	
+	/** \brief Replace textures using element class and a stub. */
+	public func void replaceTextures( Component component, StubElement stub )
+		this.pTextureReplacements.getList().applyToComponent( component )
+		
+		var TextureReplacementList stubReplacements = TextureReplacementList.new()
+		stubReplacements.addFromStub( stub )
+		stubReplacements.applyToComponent( component )
+	end
+end

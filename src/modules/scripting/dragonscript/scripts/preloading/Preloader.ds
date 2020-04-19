@@ -1,0 +1,204 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Preloads multiple resources for one or more objects.
+ * 
+ * To use create preloader create preloader instance and preload resources
+ * using ResourceFinishedListener subclass as resource listener. Add preload
+ * listener to be notified when all resources finished preloading. Call
+ * checkFinished() in case no resources have been started preloading or all
+ * resources are already loaded. As soon as all resources have been finished
+ * the preloader listener is called.
+ * 
+ */
+class Preloader
+	/**
+	 * \brief Listener used by preloaded resources.
+	 * \details Subclass for handling for resource but always super call
+	 *          to not break finished tracking.
+	 */
+	public class ResourceFinishedListener implements ResourceListener
+		/** \brief Preloader. */
+		private var Preloader pPreloader
+		
+		/**
+		 * \brief Create resource listener.
+		 * \details Increments total number of resources to preload in preloader by 1.
+		 */
+		public func new( Preloader preloader )
+			this.pPreloader = preloader
+			preloader.getCounter().increase()
+		end
+		
+		/**
+		 * \brief Resource finished loading.
+		 * \details Notifies preloader about resource finished loading.
+		 */
+		public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+			this.pPreloader.resourceFinished( true )
+		end
+		
+		/**
+		 * \brief Resource has failed loading.
+		 * \details Notifies preloader about resource finished loading.
+		 */
+		public func void failedLoading( String path, ResourceLoaderType resourceType )
+			this.pPreloader.resourceFinished( false )
+		end
+	end
+	
+	
+	
+	/** \brief Preload counter. */
+	private var PreloadCounter pCounter
+	
+	/** \brief Total number of resources to preload. */
+	private var int pTotalResourceCount
+	
+	/** \brief All resources preloaded successfully. */
+	private var bool pSuccess
+	
+	/** \brief Preloading. */
+	private var bool pPreloading
+	
+	/** \brief Preload listeners. */
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create preloader. */
+	public func new( PreloadCounter parentCounter )
+		this.pTotalResourceCount = 0
+		this.pSuccess = true
+		this.pPreloading = true
+		this.pListeners = Array.new()
+		
+		this.pCounter = PreloadCounter.new()
+		this.pCounter.setParent( parentCounter )
+	end
+	
+	
+	
+	/** \brief Preload counter. */
+	public func PreloadCounter getCounter()
+		return this.pCounter
+	end
+	
+	/** \brief Total number of resources to preload. */
+	public func int getTotalResourceCount()
+		return this.pTotalResourceCount
+	end
+	
+	/** \brief Percentage of resources finished preloading. */
+	public func float percentageFinished()
+		if this.pTotalResourceCount == 0
+			return 1.0
+			
+		else
+			return this.pCounter.getValue() cast float / this.pTotalResourceCount cast float
+		end
+	end
+	
+	/** \brief All resources preloaded successfully. */
+	public func bool getSuccess()
+		return this.pSuccess
+	end
+	
+	/** \brief Preloading. */
+	public func bool getPreloading()
+		return this.pPreloading
+	end
+	
+	
+	
+	/**
+	 * \brief Check if preloading finished.
+	 * \details If finished calls finish() and notifyAllResourcesFinished().
+	 */
+	public func void checkFinished()
+		if not this.pPreloading or this.pCounter.isNotZero()
+			return
+		end
+		
+		this.pPreloading = false
+		this.finishPreloading()
+		this.notifyAllPreloadingFinished()
+	end
+	
+	/**
+	 * \brief Finish preloading.
+	 * \details Implement in subclass to ready preloaded object(s) for use if required.
+	 *          See getSuccess() to see if preloading succeeded or not.
+	 */
+	public func void finishPreloading()
+	end
+	
+	
+	
+	/** \brief Resource finished preloading. */
+	public func void resourceFinished( bool success )
+		this.pSuccess &= success
+		this.pCounter.decrease()
+		this.notifyAllResourcesFinished()
+		this.checkFinished()
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( PreloadListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( PreloadListener listener )
+		if this.pListeners.has( listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	
+	
+	/** \brief Notify listeners resources finished preloading. */
+	public func void notifyAllResourcesFinished()
+		this.pListeners.forEach( block PreloadListener each
+			each.resourcesFinished( this )
+		end )
+	end
+	
+	/** \brief Notify listeners preloading finished. */
+	public func void notifyAllPreloadingFinished()
+		this.pListeners.forEach( block PreloadListener each
+			each.preloadingFinished( this, this.pSuccess )
+		end )
+	end
+end

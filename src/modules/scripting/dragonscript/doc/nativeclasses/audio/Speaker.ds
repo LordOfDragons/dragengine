@@ -1,0 +1,228 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Speaker.
+ *
+ * Defines a sound or music emmiting source in a world similar to a speaker. Every speaker can
+ * play a sound file once or in a loop multiple times as well as music. To avoid a lot of adding
+ * and removing of speakers they can be muted individually preventing them from emitting sound
+ * or music without removing them. Speakers usually act like a point source emitting sound in
+ * all directions. Optionally the speaker can be set to be directed like a spot light emitting
+ * sound only in one direction.
+ * 
+ * The range and roll-off factor is used to shape the attenuation of the speaker. The roll-off
+ * factor works similar to the Inverse Distance attenuation model. A value of 1 indicates
+ * physically realistic behavior. Values above 1 produce stronger attenuation while values
+ * less than 1 produce weaker attenuation. Beyond the range the sound becomes fully inaudible.
+ * The sound modules ensure the sound is attenuated in a way it reaches 0 at the range boundary.
+ * Typically this is done with a linear scaling across the entire range but can be chosen by
+ * the audio module to produce best results.
+ * 
+ * The best way to set these parameters is to start with the default values to get a physically
+ * realistic sound attenuation. Then adjust the range to be smaller to reduce the number of
+ * speakers affecting the listener at the same time. Doing so usually saves processing time.
+ * If the range becomes small it might be required to alter the roll-off to compensate. Usually
+ * though there is no need to change the roll-off value.
+ * 
+ * This is a native class.
+ */
+class Speaker
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create speaker. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Type. */
+	public func SpeakerType getType()
+	end
+	
+	/** \brief Set type. */
+	public func void setType( SpeakerType type )
+	end
+	
+	/** \brief Sound or \em null if not set. */
+	public func Sound getSound()
+	end
+	
+	/** \brief Set sound or \em null to not set. */
+	public func void setSound( Sound sound )
+	end
+	
+	/** \brief Synthesizer or \em null if not set. */
+	public func SynthesizerInstance getSynthesizer()
+	end
+	
+	/** \brief Set synthesizer or \em null to not set. */
+	public func void setSynthesizer( SynthesizerInstance synthesizer )
+	end
+	
+	/** \brief Video player or \em null if not set. */
+	public func VideoPlayer getVideoPlayer()
+	end
+	
+	/** \brief Set video player or \em null to not set. */
+	public func void setVideoPlayer( VideoPlayer videoPlayer )
+	end
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Velocity in m/s. */
+	public func Vector getVelocity()
+	end
+	
+	/** \brief Set velocity in m/s. */
+	public func void setVelocity( Vector velocity )
+	end
+	
+	
+	
+	/** \brief Speaker is muted. */
+	public func bool getMuted()
+	end
+	
+	/** \brief Set if speaker is muted. */
+	public func void setMuted( bool muted )
+	end
+	
+	/** \brief Sound is looping. */
+	public func bool getLooping()
+	end
+	
+	/** \brief Set if sound is looping. */
+	public func void setLooping( bool looping )
+	end
+	
+	/** \brief Play speed. */
+	public func float getPlaySpeed()
+	end
+	
+	/** \brief Set play speed. */
+	public func void setPlaySpeed( float playSpeed )
+	end
+	
+	/** \brief Volume. */
+	public func float getVolume()
+	end
+	
+	/** \brief Set volume. */
+	public func void setVolume( float volume )
+	end
+	
+	
+	
+	/** \brief Range in meters beyond which the sound is inaudible. */
+	public func float getRange()
+	end
+	
+	/** \brief Set range in meters beyond which the sound is inaudible. */
+	public func void setRange( float range )
+	end
+	
+	/**
+	 * \brief Roll off factor.
+	 * 
+	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
+	 * apply weaker attenuation.
+	 */
+	public func float getRollOff()
+	end
+	
+	/**
+	 * \brief Set roll off factor.
+	 * 
+	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
+	 * apply weaker attenuation.
+	 */
+	public func void setRollOff( float rollOff )
+	end
+	
+	/** \brief Layer mask for visibility masking. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set layer mask for visibility masking. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+	
+	
+	
+	/** \brief Object owning the speaker for use with SoundLevelMeter or \em null if not used. */
+	public func Object getOwner()
+	end
+	
+	/** \brief Set object owning the speaker for use with SoundLevelMeter or \em null if not used. */
+	public func void setOwner( Object owner )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Playback */
+	/*@{*/
+	/** \brief Start play position in samples. */
+	public func int getPlayFrom()
+	end
+	
+	/** \brief End play position in samples. */
+	public func int getPlayTo()
+	end
+	
+	/** \brief Set play position in samples. */
+	public func void setPlayPosition( int playFrom, int playTo )
+	end
+	
+	
+	
+	/** \brief Speaker is playing. */
+	public func bool getPlaying()
+	end
+	
+	/** \brief Speaker is paused. */
+	public func bool getPaused()
+	end
+	
+	/** \brief Speaker is stopped. */
+	public func bool getStopped()
+	end
+	
+	/** \brief Start playing. */
+	public func void play()
+	end
+	
+	/** \brief Stop playing. */
+	public func void stop()
+	end
+	
+	/** \brief Pause playing. */
+	public func void pause()
+	end
+	/*@}*/
+end

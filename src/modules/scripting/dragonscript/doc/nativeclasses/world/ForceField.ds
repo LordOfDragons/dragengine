@@ -1,0 +1,137 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Force field.
+ * 
+ * This is a native class.
+ */
+class ForceField
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create force field. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	
+	
+	/** \brief Influence area. */
+	public func ShapeList getInfluenceArea()
+	end
+	
+	/** \brief Set influence area. */
+	public func void setInfluenceArea( ShapeList area )
+	end
+	
+	/** \brief Falloff radius. */
+	public func float getRadius()
+	end
+	
+	/** \brief Set falloff radius. */
+	public func void setRadius( float radius )
+	end
+	
+	/** \brief Falloff exponent. */
+	public func float getExponent()
+	end
+	
+	/** \brief Set falloff exponent. */
+	public func void setExponent( float exponent )
+	end
+	
+	
+	
+	/** \brief Field type. */
+	public func ForceFieldType getFieldType()
+	end
+	
+	/** \brief Set field type. */
+	public func void setFieldType( ForceFieldType type )
+	
+	/** \brief Force application type. */
+	public func ForceFieldApplication getApplicationType()
+	end
+	
+	/** \brief Set application type. */
+	public func void setApplicationType( ForceFieldApplication type )
+	end
+	
+	/** \brief Force direction. */
+	public func Vector getDirection()
+	end
+	
+	/** \brief Set force direction. */
+	public func void setDirection( Vector direction )
+	end
+	
+	/** \brief Force in newton. */
+	public func float getForce()
+	end
+	
+	/** \brief Set force in newton. */
+	public func void setForce( float force )
+	end
+	
+	/** \brief Fluctuation of direction in radians. */
+	public func float getFluctuationDirection()
+	end
+	
+	/** \brief Set fluctuation of direction in radians. */
+	public func void setFluctuationDirection( float fluctuation )
+	end
+	
+	/** \brief Fluctuation of force in newton. */
+	public func float getFluctuationForce()
+	end
+	
+	/** \brief Set fluctuation of force in newton. */
+	public func void setFluctuationForce( float fluctuation )
+	end
+	
+	
+	
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter filter )
+	end
+	
+	/** \brief Force field is enabled. */
+	public func bool getEnabled()
+	end
+	
+	/** \brief Set if force field is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	/*@}*/
+end

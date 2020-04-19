@@ -1,0 +1,4 @@
+SYNTHDESYNTHESIZER {
+  global: DESynthesizerCreateModule;
+  local: *;
+};

@@ -1,0 +1,97 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Runtime meter.
+ * 
+ * Support for time consumption testing for debugging purpose.
+ * 
+ * This is a native class.
+ */
+class RuntimeMeter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create runtime meter. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Reset meter by 0-based index.
+	 * \details If not used yet the meter is created.
+	 */
+	public func void reset( int meter )
+	end
+	
+	/**
+	 * \brief Reset range of meters by 0-based index.
+	 * \details If not used yet the meters are created.
+	 */
+	public func void reset( int meterFirst, int meterCount )
+	end
+	
+	/**
+	 * \brief Elapsed time in seconds for meter.
+	 * \details Resets the meter to 0 after returning.
+	 */
+	public func float elapsed( int meter )
+	end
+	
+	/**
+	 * \brief Elapsed time in micro-seconds for meter.
+	 * \details Resets the meter to 0 after returning.
+	 */
+	public func int elapsedMicroSec( int meter )
+	end
+	
+	
+	
+	/**
+	 * \brief Reset counter.
+	 * \details If not used yet the counter is created.
+	 */
+	public func void counterReset( int counter )
+	end
+	
+	/**
+	 * \brief Reset range of counters.
+	 * \details If not used yet the counters are created.
+	 */
+	public func void counterReset( int counterFirst, int counterCount )
+	end
+	
+	/**
+	 * \brief Add elapsed time in micro-seconds off meter to a counter.
+	 * \details Resets the meter to 0 afterwards.
+	 */
+	public func void counterAdd( int meter, int counter )
+	end
+	
+	/** \brief Accumulated time in a counter in micro-seconds. */
+	public func int counterTime( int counter )
+	end
+	
+	/** \brief Number of times a counter has been incremented. */
+	public func int counterUpdates( int counter )
+	end
+	
+	/**
+	 * \brief Average time per update from a counter.
+	 * \details If no updates have been done 0 is returned.
+	 */
+	public func int counterAverageTime( int counter )
+	end
+	/*@}*/
+end

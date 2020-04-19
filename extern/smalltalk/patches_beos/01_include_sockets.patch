@@ -1,0 +1,18 @@
+diff -rupN smalltalk-3.2.5_org/libgst/sysdep/posix/files.c smalltalk-3.2.5/libgst/sysdep/posix/files.c
+--- smalltalk-3.2.5_org/libgst/sysdep/posix/files.c	2017-07-10 11:58:03.601620480 +0000
++++ smalltalk-3.2.5/libgst/sysdep/posix/files.c	2017-07-10 12:08:21.084672512 +0000
+@@ -89,6 +89,14 @@
+ #define MAXSYMLINKS 5
+ #endif
+ 
++// Haiku requires an include for socket stuff
++#include <posix/sys/socket.h>
++#ifndef SIGIO
++	#define SIGIO -1
++#endif
++// haiku messes this up. it is a macro but compiled as function causing missing symbol
++int FD_TO_SOCKET(int fd){ return fd; }
++
+ char *
+ _gst_get_full_file_name (const char *name)
+ {

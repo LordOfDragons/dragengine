@@ -1,0 +1,305 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior showing message to player if triggered.
+ * 
+ * By default message is printed on console. Typically a shout panel is used to show the
+ * latest console messages for a short time. Optionally you can also use subtitle instead.
+ * 
+ * Element class properties have the prefix "showMessage{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorShowMessage extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Show message listener. */
+		public class ShowMessageListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.showMessage()
+			end
+		end
+		
+		
+		
+		private var ECBehaviorShowMessage pECBehavior
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var String pMessage
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorShowMessage ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTrigger = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getTriggerTable() == null
+				return
+			end
+			
+			this.pTrigger = this.pECBehavior.getTriggered().instance( this.getElement() )
+			this.pTrigger.addListener( ShowMessageListener.new( this ) )
+			
+			this.pMessage = this.pECBehavior.getMessage().getValue( stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorShowMessage getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Trigger or \em null. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Message to show or \em null. */
+		public func String getMessage()
+			return this.pMessage
+		end
+		
+		
+		
+		/** \brief Show message. */
+		public func void showMessage()
+			if this.pMessage.equals( "" )
+				return
+			end
+			
+			this.showConsoleMessage()
+			this.showSubtitleMessage()
+		end
+		
+		/** \brief Show console message. */
+		public func void showConsoleMessage()
+			var Console console = this.pECBehavior.getConsole()
+			if console != null
+				console.addMessage( this.pMessage )
+			end
+		end
+		
+		/** \brief Show subtitle message. */
+		public func void showSubtitleMessage()
+			// TODO
+		end
+	end
+	
+	
+	
+	private var ECBehaviorTriggered pTriggered
+	private var ECPString pMessage
+	private var TSTriggerTable pTriggerTable
+	private var Console pConsole
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) \
+	this( eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), id )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console ) \
+	this( eclass, triggerTable, console, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, String id ) \
+	this( eclass, triggerTable, console, id, id.empty() if "showMessage." else "showMessage(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console, \
+	String id, String prefix ) super( eclass, id )
+		this.pTriggerTable = triggerTable
+		this.pConsole = console
+		
+		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, id, prefix + "trigger" )
+		
+		this.pMessage = ECPString.new( prefix + "message", "" )
+		eclass.addProperty( this.pMessage )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Trigger to show message. */
+	public func ECBehaviorTriggered getTriggered()
+		return this.pTriggered
+	end
+	
+	/** \brief Message to show. */
+	public func ECPString getMessage()
+		return this.pMessage
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	/** \brief Console. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console. */
+	public func void setConsole( Console console )
+		this.pConsole = console
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorShowMessage getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorShowMessage
+		end ) cast ECBehaviorShowMessage
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorShowMessage with specific identifier.
+	 */
+	static public func ECBehaviorShowMessage getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorShowMessage each
+			return each castable ECBehaviorShowMessage and \
+				( each cast ECBehaviorShowMessage ).getID().equals( id )
+		end ) cast ECBehaviorShowMessage
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorShowMessage behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorShowMessage
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorShowMessage.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorShowMessage.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorShowMessage.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

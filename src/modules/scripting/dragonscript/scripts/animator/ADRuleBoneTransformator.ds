@@ -1,0 +1,245 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a bone transformator animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleBoneTransformator extends ADRule
+	/** Minimm translation. */
+	private var Vector pMinimumTranslation
+	/** Maximum translation. */
+	private var Vector pMaximumTranslation
+	/** Minimm rotation. */
+	private var Vector pMinimumRotation
+	/** Maximum rotation. */
+	private var Vector pMaximumRotation
+	/** Minimm scaling. */
+	private var Vector pMinimumScaling
+	/** Maximum scaling. */
+	private var Vector pMaximumScaling
+	/** Coordinate frame of rotation. */
+	private var ARBoneTransformatorCFrame pCoordFrame
+	/** Determines if the transformation affects the position. */
+	private var bool pEnablePosition
+	/** Determines if the transformation affects the orientation. */
+	private var bool pEnableOrientation
+	/** Determines if the transformation affects the size, */
+	private var bool pEnableSize
+	/** Name of the target bone. */
+	private var String pTargetBone
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pMinimumTranslation = Vector.new()
+		this.pMaximumTranslation = Vector.new()
+		this.pMinimumRotation = Vector.new()
+		this.pMaximumRotation = Vector.new()
+		this.pMinimumScaling = Vector.new( 1.0, 1.0, 1.0 )
+		this.pMaximumScaling = Vector.new( 1.0, 1.0, 1.0 )
+		this.pCoordFrame = ARBoneTransformatorCFrame.component
+		this.pEnablePosition = false
+		this.pEnableOrientation = true
+		this.pEnableSize = false
+		this.pTargetBone = ""
+	end
+	
+	
+	
+	/** Retrieves the minimum translation. */
+	public func Vector getMinimumTranslation()
+		return this.pMinimumTranslation
+	end
+	
+	/** Sets the minimum translation. */
+	public func void setMinimumTranslation( Vector translation )
+		if translation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMinimumTranslation = translation
+	end
+	
+	/** Retrieves the maximum translation. */
+	public func Vector getMaximumTranslation()
+		return this.pMaximumTranslation
+	end
+	
+	/** Sets the maximum translation. */
+	public func void setMaximumTranslation( Vector translation )
+		if translation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMaximumTranslation = translation
+	end
+	
+	/** Retrieves the minimum rotation. */
+	public func Vector getMinimumRotation()
+		return this.pMinimumRotation
+	end
+	
+	/** Sets the minimum rotation. */
+	public func void setMinimumRotation( Vector rotation )
+		if rotation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMinimumRotation = rotation
+	end
+	
+	/** Retrieves the maximum rotation. */
+	public func Vector getMaximumRotation()
+		return this.pMaximumRotation
+	end
+	
+	/** Sets the maximum rotation. */
+	public func void setMaximumRotation( Vector rotation )
+		if rotation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMaximumRotation = rotation
+	end
+	
+	/** Sets the minimum scaling. */
+	public func void setMinimumScaling( Vector scaling )
+		if scaling == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMinimumScaling = scaling
+	end
+	
+	/** Retrieves the maximum scaling. */
+	public func Vector getMaximumScaling()
+		return this.pMaximumScaling
+	end
+	
+	/** Sets the maximum scaling. */
+	public func void setMaximumScaling( Vector scaling )
+		if scaling == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMaximumScaling = scaling
+	end
+	
+	/** Retrieves the coordinate frame of rotation. */
+	public func ARBoneTransformatorCFrame getCoordinateFrame()
+		return this.pCoordFrame
+	end
+	
+	/** Sets if the coordinate frame of rotation. */
+	public func void setCoordinateFrame( ARBoneTransformatorCFrame coordFrame )
+		this.pCoordFrame = coordFrame
+	end
+	
+	/** Determines if the transformation affects the position. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** Sets if the transformation affects the position. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** Determines if the transformation affects the orientation. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** Sets if the transformation affects the orientation. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** Determines if the transformation affects the size. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** Sets if the transformation affects the size. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	/** Retrieves the target bone name. */
+	public func String getTargetBone()
+		return this.pTargetBone
+	end
+	
+	/** Sets the target bone name. */
+	public func void setTargetBone( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTargetBone = name
+	end
+	
+	
+	
+	/** Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARBoneTransformator rule = ARBoneTransformator.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARBoneTransformatorTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setMinimumTranslation( this.pMinimumTranslation )
+		rule.setMaximumTranslation( this.pMaximumTranslation )
+		rule.setMinimumRotation( this.pMinimumRotation )
+		rule.setMaximumRotation( this.pMaximumRotation )
+		rule.setMinimumScaling( this.pMinimumScaling )
+		rule.setMaximumScaling( this.pMaximumScaling )
+		rule.setCoordinateFrame( this.pCoordFrame )
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		rule.setTargetBone( this.pTargetBone )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Bone Transformator" ) + \
+			" minTrans=" + this.pMinimumTranslation + " maxTrans=" + this.pMaximumTranslation + \
+			" minRot=" + this.pMinimumRotation + " maxRot=" + this.pMaximumRotation + \
+			" minScale=" + this.pMinimumScaling + " maxScale=" + this.pMaximumScaling + " )" )
+	end
+end

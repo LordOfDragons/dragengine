@@ -1,0 +1,181 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Skin builder.
+ * 
+ * Builds skin resource without requiring a skin resource file. The created skin can
+ * either be unnamed (if filename is empty string) or named (if filename is not empty
+ * string). Named skins can not clash with filenames present in the virtual file system.
+ * For this reason use unnamed skins if possible. Using named skins though can be useful
+ * if you want to provide skin resources to scripts not needing to know if the path they
+ * try to load is a build skin instead of a resource one.
+ * 
+ * To use the skin builder create a subclass and implement SkinBuilder.buildSkin() .
+ * You are only allowed to call methods from SkinBuilder from inside this function call.
+ * To create the skin call SkinBuilder.build() . This will call SkinBuilder.buildSkin()
+ * to fill a new skin resource with content. Once finished the build method returns the
+ * ready to use skin resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class Skin
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create skin builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build skin using filename.
+	 * 
+	 * The created skin can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named skins can not clash with filenames present
+	 * in the virtual file system. For this reason use unnamed skins if possible. Using
+	 * named skins though can be useful if you want to provide skin resources to scripts
+	 * not needing to know if the path they try to load is a build skin instead of a
+	 * resource one.
+	 * 
+	 * To create the skin call build() . This will call buildSkin() to fill a new skin
+	 * resource with content. Once finished the build method returns the ready to use
+	 * skin resource. Otherwise an exception is thrown.
+	 */
+	public func Skin build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build skin.
+	 * 
+	 * Called by build(String) to fill a new skin resource with content. You are only
+	 * allowed to call methods from SkinBuilder from inside this function call.
+	 */
+	abstract protected func void buildSkin()
+	
+	/**
+	 * \brief Add texture.
+	 */
+	protected func void addTexture( String name )
+	end
+	
+	/**
+	 * \brief Add value texture property.
+	 */
+	protected func void addPropertyValue( int texture, String type, String texCoordSet, \
+	String renderable, float value )
+	end
+	
+	/**
+	 * \brief Add color texture property.
+	 */
+	protected func void addPropertyColor( int texture, String type, String texCoordSet, \
+	String renderable, Color color )
+	end
+	
+	/**
+	 * \brief Add image texture property.
+	 */
+	protected func void addPropertyImage( int texture, String type, String texCoordSet, \
+	String renderable, String pathImage, Image image )
+	end
+	
+	/**
+	 * \brief Add video texture property.
+	 */
+	protected func void addPropertyVideo( int texture, String type, String texCoordSet, \
+	String renderable, String pathVideo, Video video, bool sharedTime )
+	end
+	
+	/**
+	 * \brief Add constructed texture property.
+	 */
+	protected func void addPropertyConstructed( int texture, String type, String texCoordSet, \
+	String renderable, Color color, bool tileX, bool tileY, Point3 size )
+	end
+	
+	/**
+	 * \brief Add mapped texture property.
+	 */
+	protected func void addPropertyMapped( int texture, String type, String texCoordSet, String renderable, \
+	CurveBezier redCurve, SkinPropertyMappedInputType redInputType, Vector2 redInputRange, bool redInputClamped, String redBone, \
+	CurveBezier greenCurve, SkinPropertyMappedInputType greenInputType, Vector2 greenInputRange, bool greenInputClamped, String greenBone, \
+	CurveBezier blueCurve, SkinPropertyMappedInputType blueInputType, Vector2 blueInputRange, bool blueInputClamped, String blueBone, \
+	CurveBezier alphaCurve, SkinPropertyMappedInputType alphaInputType, Vector2 alphaInputRange, bool alphaInputClamped, String alphaBone )
+	end
+	
+	/**
+	 * \brief Open constructed property content node.
+	 * 
+	 * Content node becomes open node to operate on. Call closeNode() to close it.
+	 */
+	protected func void constructedOpenContent( int texture, int property )
+	end
+	
+	/**
+	 * \brief Add image node to open node.
+	 */
+	protected func void addNodeImage( Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, \
+	String path, Image image, Point repeat )
+	end
+	
+	/**
+	 * \brief Add text node to open node.
+	 */
+	protected func void addNodeText( Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, \
+	String path, Font font, float fontSize, String text, Color color )
+	end
+	
+	/**
+	 * \brief Add shape node to open node.
+	 */
+	protected func void addNodeShape( Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, \
+	int shapeType, Color fillColor, Color lineColor, float thickness )
+	end
+	
+	/**
+	 * \brief Add group node to open node.
+	 * 
+	 * Sets created group node as new open node to operate on.
+	 */
+	protected func void addNodeGroup( Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode )
+	end
+	
+	/**
+	 * \brief Set the next node created using addNode*() call as node mask.
+	 */
+	protected func void nextNodeAsMask()
+	end
+	
+	/**
+	 * \brief Close open node.
+	 * 
+	 * Sets the previous open node as the open node to operate on.
+	 */
+	protected func void closeNode()
+	end
+	/*@}*/
+end

@@ -1,0 +1,185 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+
+/**
+ * \brief List of annotations for Skin resources.
+ * 
+ * Skin resources store texture properties for engine modules to know how to use the skin
+ * according to the designer wishes. They though do not contain game sepcific information.
+ * While it is possible to assign skin related properties to element classes directly it
+ * works only as long as the skins used for the element class are well known. Many world
+ * geometry like buildings, rooms or exterior places have skins assigned by the mapper.
+ * In this case skin related properties would have to be duplicated and maintained all over
+ * the place. In this situation the SkinAnnotations class helps storing game related
+ * properties which are linked to Skin resources themselves.
+ * 
+ * Skin annotations are organized hierarchically by path. See BestMatchTreeList for an
+ * explanation of how this process works. What goes for this class annotations for skins
+ * can be attached to directories affecting all skin files underneath, individual skin files
+ * and also individual textures inside skin files. Annotations can be either retrieved in
+ * best match mode or accumulated mode. In best match mode the annotation with the longest
+ * path (most specific) will be returned. In accumulated mode all annotations for a path
+ * are collected using best match mode and returned. 
+ * 
+ * These are example path that can be used:
+ * - "directory": Applies to all skins in the directory and subdirectories
+ * - "directory/material.deskin": Applies to the skin and all textures inside.
+ * - "directory/material.deskin/texture": Applies to only a specific texture inside the skin
+ * 
+ * Annotations are stored in "*.deskinann" (Drag[en]gine Skin Annotations) and can be loaded
+ * using LoadSkinAnnotations. This class provides concenience methods for loading annotations.
+ * 
+ * Annotations for skins are stored as dictionary each containing one annotation keyed by name.
+ * The value can be any type you want similar ParameterTree class. See LoadSkinAnnotations
+ * for the supported tags that you can use in the XML files.
+ */
+class SkinAnnotations
+	private var BestMatchTreeList pAnnotations
+	
+	
+	
+	/** \brief Create skin annotations. */
+	public func new()
+		this.pAnnotations = BestMatchTreeList.new()
+	end
+	
+	
+	
+	/** \brief Get best matching annotation for skin. */
+	public func Object get( Skin skin, String annotation )
+		var ObjectReference result = ObjectReference.new()
+		this.pAnnotations.forEach( skin.getFilename(), block String path, Dictionary annotations
+			var Object value = annotations.getAt( annotation, null )
+			if value != null
+				result.set( value )
+			end
+		end )
+		return result.get()
+	end
+	
+	/** \brief Get best matching annotation for texture inside skin. */
+	public func Object get( Skin skin, String texture, String annotation )
+		var ObjectReference result = ObjectReference.new()
+		this.pAnnotations.forEach( skin.getFilename() + "/" + texture, block String path, Dictionary annotations
+			var Object value = annotations.getAt( annotation, null )
+			if value != null
+				result.set( value )
+			end
+		end )
+		return result.get()
+	end
+	
+	/** \brief Get all annotations for skin as Dictionary mapping String key to Object value. */
+	public func Dictionary getAll( Skin skin )
+		var Dictionary result = Dictionary.new()
+		this.pAnnotations.forEach( skin.getFilename(), block String path, Dictionary annotations
+			annotations.forEach( block String key, Object value
+				result.setAt( key, value )
+			end )
+		end )
+		return result
+	end
+	
+	/** \brief Get all annotations for skin as Dictionary mapping String key to Object value. */
+	public func Dictionary getAll( Skin skin, String texture )
+		var Dictionary result = Dictionary.new()
+		this.pAnnotations.forEach( skin.getFilename() + "/" + texture, block String path, Dictionary annotations
+			annotations.forEach( block String key, Object value
+				result.setAt( key, value )
+			end )
+		end )
+		return result
+	end
+	
+	/**
+	 * \brief Set annotation replacing existing one if present.
+	 * 
+	 * Path is not required to start with the path separator. If \em property is null the
+	 * property is ignored during getAt().
+	 */
+	public func void set( Skin skin, String annotation, Object value )
+		this.set( skin.getFilename(), annotation, value )
+	end
+	
+	/**
+	 * \brief Set annotation replacing existing one if present.
+	 * 
+	 * Path is not required to start with the path separator. If \em property is null the
+	 * property is ignored during getAt().
+	 */
+	public func void set( Skin skin, String texture, String annotation, Object value )
+		this.set( skin.getFilename() + "/" + texture, annotation, value )
+	end
+	
+	/**
+	 * \brief Set annotation replacing existing one if present.
+	 * 
+	 * Path is not required to start with the path separator. If \em property is null the
+	 * property is ignored during getAt(). Valid path formats are these:
+	 * - "directory": Applies to all skins in the directory and subdirectories
+	 * - "directory/material.deskin": Applies to the skin and all textures inside.
+	 * - "directory/material.deskin/texture": Applies to only a specific texture inside the skin
+	 * 
+	 * You should not use this method directlry. It is used by LoadSkinAnnotations.
+	 */
+	public func void set( String path, String annotation, Object value )
+		var Dictionary annotations = this.pAnnotations.getAtExact( path ) cast Dictionary
+		if annotations == null
+			annotations = Dictionary.new()
+			this.pAnnotations.setAt( path, annotations )
+		end
+		annotations.setAt( annotation, value )
+	end
+	
+	/** \brief Remove all annotations for skin if present. */
+	public func void removeAll( Skin skin )
+		this.pAnnotations.setAt( skin.getFilename(), null )
+	end
+	
+	/** \brief Remove all annotations for skin if present. */
+	public func void removeAll( Skin skin, String texture )
+		this.pAnnotations.setAt( skin.getFilename() + "/" + texture, null )
+	end
+	
+	/** \brief Remove all annotations. */
+	public func void removeAll()
+		this.pAnnotations.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Visit annotations with block.
+	 * 
+	 * Block has signature String path, Dictionary annotations.
+	 */
+	public func void forEach( Block ablock )
+		this.pAnnotations.forEach( ablock )
+	end
+end

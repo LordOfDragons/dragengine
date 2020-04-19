@@ -1,0 +1,450 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding looking around player input.
+ * 
+ * Keeps track of looking around player input and applies them to actor locomotion.
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ * 
+ * \par Digital Input
+ * 
+ * Supports digital input by player for looking left-right and up-down using digital input
+ * devices like keyboard or game pad buttons. The setSpeedLookHorizontal() and
+ * setSpeedLookVertical() methods set the speed of looking while the input is enabled.
+ * The calculation of looking delta by digital input is this:
+ * 
+ * \code delta = (+/-) speed * elapsedTime \endcode
+ * 
+ * Whereas + is if left input is enabled while - is used if right input is enabled.
+ * Using negative speed switches direction.
+ * 
+ * \par Analog Input
+ * 
+ * Supports analog input by player for looking left-right and up-down using analog input
+ * devices like mouse, game pad analog sticksothers. The analog input can be set directly
+ * from the input event (for example mouse move deltas). The setAnalogFactorLookHorizontal()
+ * and setAnalogFactorLookVertical() methods set the sensitivity of the input value transforming
+ * it into a value comparable to using digital input. The default value is 0.01 resulting
+ * in analog input suitable for first person navigation. Smaller values make analog input
+ * slower increasing accuracy pointing at specific locations while larger values make
+ * analog input faster. The same holds true for changing the digital input speed.
+ * The calculation of looking delta by analog input is this:
+ * 
+ * \code delta = analogInput * analogFactor * speed \endcode
+ * 
+ * Using negative factor switches direction. Using negative factor and speed keeps the
+ * direction unchanged.
+ */
+class ECBehaviorPlayerInputLook extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorPlayerInputLook pECBehavior
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		
+		private var bool pLookLeft
+		private var bool pLookRight
+		private var bool pLookUp
+		private var bool pLookDown
+		private var float pSpeedLookHorizontal
+		private var float pSpeedLookVertical
+		private var float pAnalogLookHorizontal
+		private var float pAnalogLookVertical
+		private var float pAnalogFactorLookHorizontal
+		private var float pAnalogFactorLookVertical
+		private var float pAnalogLookHorizontalSticky
+		private var float pAnalogLookVerticalSticky
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorPlayerInputLook ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pAnalogFactorLookHorizontal = 0.01
+			this.pAnalogFactorLookVertical = 0.01
+			
+			this.pSpeedLookHorizontal = 45
+			this.pSpeedLookVertical = 45
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pLocomotion = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getLocomotion() != null
+				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorPlayerInputLook getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Locomotion behavior or null if absent. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Llook left key is pressed. */
+		public func bool getLookLeft()
+			return this.pLookLeft
+		end
+		
+		/** \brief Set if look left key is pressed. */
+		public func void setLookLeft( bool pressed )
+			this.pLookLeft = pressed
+		end
+		
+		/** \brief Toggle look left key pressed. */
+		public func void toggleLookLeft()
+			this.pLookLeft = not this.pLookLeft
+		end
+		
+		/** \brief Look right key is pressed. */
+		public func bool getLookRight()
+			return this.pLookRight
+		end
+		
+		/** \brief Set if look right key is pressed. */
+		public func void setLookRight( bool pressed )
+			this.pLookRight = pressed
+		end
+		
+		/** \brief Toggle look right key pressed. */
+		public func void toggleLookRight()
+			this.pLookRight = not this.pLookRight
+		end
+		
+		/** \brief Look up key is pressed. */
+		public func bool getLookUp()
+			return this.pLookUp
+		end
+		
+		/** \brief Set if look up key is pressed. */
+		public func void setLookUp( bool pressed )
+			this.pLookUp = pressed
+		end
+		
+		/** \brief Toggle look up key pressed. */
+		public func void toggleLookUp()
+			this.pLookUp = not this.pLookUp
+		end
+		
+		/** \brief Look down key is pressed. */
+		public func bool getLookDown()
+			return this.pLookDown
+		end
+		
+		/** \brief Set if look down key is pressed. */
+		public func void setLookDown( bool pressed )
+			this.pLookDown = pressed
+		end
+		
+		/** \brief Toggle look down key pressed. */
+		public func void toggleLookDown()
+			this.pLookDown = not this.pLookDown
+		end
+		
+		/** \brief Look left right speed in degrees per second. */
+		public func float getSpeedLookHorizontal()
+			return this.pSpeedLookHorizontal
+		end
+		
+		/** \brief Set look left right speed in degrees per second. */
+		public func void setSpeedLookHorizontal( float speed )
+			this.pSpeedLookHorizontal = speed
+		end
+		
+		/** \brief Look up down speed in degrees per second. */
+		public func float getSpeedLookVertical()
+			return this.pSpeedLookVertical
+		end
+		
+		/** \brief Set look up down speed in degrees per second. */
+		public func void setSpeedLookVertical( float speed )
+			this.pSpeedLookVertical = speed
+		end
+		
+		/** \brief Analog look left right. */
+		public func float getAnalogLookHorizontal()
+			return this.pAnalogLookHorizontal
+		end
+		
+		/** \brief Set analog look left right. */
+		public func void setAnalogLookHorizontal( float value )
+			this.pAnalogLookHorizontal = value
+		end
+		
+		/** \brief Analog look up down. */
+		public func float getAnalogLookVertical()
+			return this.pAnalogLookVertical
+		end
+		
+		/** \brief Set analog look up down. */
+		public func void setAnalogLookVertical( float value )
+			this.pAnalogLookVertical = value
+		end
+		
+		/** \brief Analog Look left right factor relative to left right input speed. */
+		public func float getAnalogFactorLookHorizontal()
+			return this.pAnalogFactorLookHorizontal
+		end
+		
+		/**
+		 * \brief Set analog look left right factor relative to left right input speed.
+		 * 
+		 * Use negative value to flip analog input direction.
+		 */
+		public func void setAnalogFactorLookHorizontal( float factor )
+			this.pAnalogFactorLookHorizontal = factor
+		end
+		
+		/** \brief Analog Look up down factor relative to up down input speed. */
+		public func float getAnalogFactorLookVertical()
+			return this.pAnalogFactorLookVertical
+		end
+		
+		/**
+		 * \brief Set analog look up down factor relative to up down input speed.
+		 * 
+		 * Use negative value to flip analog input direction.
+		 */
+		public func void setAnalogFactorLookVertical( float factor )
+			this.pAnalogFactorLookVertical = factor
+		end
+		
+		/** \brief Sticky analog look left right. */
+		public func float getAnalogLookHorizontalSticky()
+			return this.pAnalogLookHorizontalSticky
+		end
+		
+		/** \brief Set sticky analog look left right. */
+		public func void setAnalogLookHorizontalSticky( float value )
+			this.pAnalogLookHorizontalSticky = value
+		end
+		
+		/** \brief Sticky analog look up down. */
+		public func float getAnalogLookVerticalSticky()
+			return this.pAnalogLookVerticalSticky
+		end
+		
+		/** \brief Set sticky analog look up down. */
+		public func void setAnalogLookVerticalSticky( float value )
+			this.pAnalogLookVerticalSticky = value
+		end
+		
+		
+		
+		/** \brief Calculate look left right delta value and reset analog input. */
+		public func float calculateLookHorizontal( float elapsed )
+			var float value = 0
+			
+			if this.pLookLeft
+				value += this.pSpeedLookHorizontal * elapsed
+			end
+			if this.pLookRight
+				value -= this.pSpeedLookHorizontal * elapsed
+			end
+			
+			value += this.pAnalogLookHorizontalSticky * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
+			value += this.pAnalogLookHorizontal * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
+			this.pAnalogLookHorizontal = 0
+			
+			return value
+		end
+		
+		/** \brief Calculate look up down delta value and reset analog input. */
+		public func float calculateLookVertical( float elapsed )
+			var float value = 0
+			
+			if this.pLookUp
+				value += this.pSpeedLookVertical * elapsed
+			end
+			if this.pLookDown
+				value -= this.pSpeedLookVertical * elapsed
+			end
+			
+			value += this.pAnalogLookVerticalSticky * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
+			value += this.pAnalogLookVertical * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
+			this.pAnalogLookVertical = 0
+			
+			return value
+		end
+		
+		
+		
+		/** \brief Reset input. */
+		public func void reset()
+			this.pLookLeft = false
+			this.pLookRight = false
+			this.pLookUp = false
+			this.pLookDown = false
+			this.pAnalogLookHorizontal = 0
+			this.pAnalogLookVertical = 0
+			this.pAnalogLookHorizontalSticky = 0
+			this.pAnalogLookVerticalSticky = 0
+		end
+		
+		
+		
+		/**
+		 * \brief Update locomotion.
+		 * 
+		 * Calls calculateLookHorizontal() and calculateLookVertical() to obtain the looking
+		 * changes and applies using ECBehaviorLocomotion.applyLookAround().
+		 */
+		public func void updateLocomotion( float elapsed )
+			if this.pLocomotion == null
+				return
+			end
+			
+			var float deltaHorizontal = this.calculateLookHorizontal( elapsed )
+			var float deltaVertical = this.calculateLookVertical( elapsed )
+			this.pLocomotion.applyLookAround( deltaHorizontal, deltaVertical )
+		end
+		
+		
+		
+		/**
+		 * \brief Add element to game world.
+		 * 
+		 * Clears player input to ensure actor is not unintentially moving.
+		 */
+		public func void addToGameWorld()
+			this.reset()
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.pSpeedLookHorizontal = reader.readFloat()
+			this.pSpeedLookVertical = reader.readFloat()
+			this.pAnalogFactorLookHorizontal = reader.readFloat()
+			this.pAnalogFactorLookVertical = reader.readFloat()
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeFloat( this.pSpeedLookHorizontal )
+			writer.writeFloat( this.pSpeedLookVertical )
+			writer.writeFloat( this.pAnalogFactorLookHorizontal )
+			writer.writeFloat( this.pAnalogFactorLookVertical )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
+	this( eclass, locomotion, "playerInputLook." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pLocomotion = locomotion
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLocomotion = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior or null. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorPlayerInputLook.
+	 */
+	static public func ECBehaviorPlayerInputLook getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorPlayerInputLook
+		end ) cast ECBehaviorPlayerInputLook
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorPlayerInputLook.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

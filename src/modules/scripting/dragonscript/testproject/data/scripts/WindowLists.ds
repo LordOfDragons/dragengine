@@ -1,0 +1,385 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2020, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project lists window.
+ */
+class WindowLists extends Window
+	/** \brief Test class. */
+	class TestClass
+		/** \brief Icon. */
+		private var Image pIcon
+		
+		/** \brief Text. */
+		private var String pText
+		
+		/** \brief Create instance. */
+		public func new( Image icon, String text )
+			this.pIcon = icon
+			this.pText = text
+		end
+		
+		/** \brief Icon. */
+		public func Image getIcon()
+			return this.pIcon
+		end
+		
+		/** \brief Text. */
+		public func String getText()
+			return this.pText
+		end
+	end
+	
+	/** \brief Test class list element renderer. */
+	class TestClassRenderer extends DefaultListElementRenderer
+		/** \brief Create test class list element renderer. */
+		public func new()
+			this.setDefaultObject( TestClass.new( null, "XXX\nXXX" ) )
+		end
+		
+		/** \brief Create renderer. */
+		public func Widget createRenderer( ListBox listBox )
+			var Panel renderer = Panel.new()
+			renderer.setLayout( FlowLayout.new( LayoutAxis.y, 2, FlowLayout.Stretch.last ) )
+			
+			var Panel panel = Panel.new()
+			panel.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+			var DisplayImage image = DisplayImage.new( null, RepeatMode.once )
+			image.setMinimumSize( Point.new( 32, 32 ) )
+			image.setProtectMinimumSize( true )
+			panel.addWidget( image )
+			renderer.addWidget( panel )
+			
+			panel = Panel.new()
+			panel.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+			var Label label = Label.new( "", Label.topCenter )
+			label.setMaximalWidth( 96 )
+			label.setWordWrap( true )
+			panel.addWidget( label )
+			renderer.addWidget( panel )
+			
+			return renderer
+		end
+		
+		/** \brief Update renderer with object state. */
+		public func void updateRenderer( ListBox listBox, Widget renderer, \
+		Object element, bool selected, bool focused )
+			var TestClass testClass = element cast TestClass
+			var Panel panel = renderer cast Panel
+			var DisplayImage image = ( panel.getWidget( 0 ) cast Panel ).getWidget( 0 ) cast DisplayImage
+			var Label label = ( panel.getWidget( 1 ) cast Panel ).getWidget( 0 ) cast Label
+			
+			image.setImage( testClass.getIcon() )
+			label.setText( testClass.getText() )
+			
+			if selected
+				image.setColorTransformation( ColorMatrix.newScaling( 0.5, 0.5, 1.0, 1.0 ) )
+				label.setDesignerSelector( "Label.ListRenderer.IconList.Text.Selected" )
+				
+			else
+				image.setColorTransformation( ColorMatrix.new() )
+				label.setDesignerSelector( "Label.ListRenderer.IconList.Text" )
+			end
+		end
+		
+		/** \brief Default height of list element. */
+		public func Point getDefaultSize( ListBox listBox )
+			return Point.new( 100, 50 ).largest( super.getDefaultSize( listBox ) )
+		end
+	end
+	
+	/** \brief Change edit text model action listener. */
+	class ChangeEditTextActionListener extends DefaultActionListener
+		/** \brief Text model. */
+		private var TextModel pModel
+		
+		/** \brief Create action listener. */
+		public func new( TextModel model )
+			this.pModel = model
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			this.pModel.setText( ( event.getSource() cast ComboBoxEditor ).getEditorValue().toString() )
+		end
+	end
+	
+	/** \brief Set list type action. */
+	class SetListTypeAction extends DefaultActionListener
+		/** \brief List box to manipulate. */
+		private var ListBox pListBox
+		
+		/** \brief Type to set. */
+		private var ListBox.Type pType
+		
+		/** \brief Create action listener. */
+		public func new( ListBox listBox, ListBox.Type type )
+			this.pListBox = listBox
+			this.pType = type
+		end
+		
+		/** \brief Perform action. */
+		public func void onAction( ActionEvent event )
+			this.pListBox.setType( this.pType )
+		end
+	end
+	
+	
+	
+	/** \brief Combo box edit text model. */
+	private var TextModel pModelComboBoxEditText
+	
+	
+	
+	/** \brief Create game. */
+	public func new() super( 0, 0, 700, 320 )
+		this.setDesignerSelector( "WindowPadding" )
+		this.setTitle( "Lists" )
+		this.createContent( this )
+	end
+	
+	
+	
+	/** \brief Create list model with some testing data in it. */
+	private func ListModel createListModel()
+		var DefaultListModel model = DefaultListModel.new()
+		
+		model.add( "BorderSize.ds" )
+		model.add( "Button.ds" )
+		model.add( "ComboBox.ds" )
+		model.add( "Container.ds" )
+		model.add( "DefaultListElementRenderer.ds" )
+		model.add( "DefaultListModel.ds" )
+		model.add( "DefaultListModelListener.ds" )
+		model.add( "DefaultListModelListener.ds" )
+		model.add( "DefaultRangeModel.ds" )
+		model.add( "DefaultRangeModelListener.ds" )
+		model.add( "DefaultSelectionModel.ds" )
+		model.add( "DefaultSelectionModelListener.ds" )
+		model.add( "DefaultTextModel.ds" )
+		model.add( "DefaultTextModelListener.ds" )
+		model.add( "Desktop.ds" )
+		model.add( "DisplayImage.ds" )
+		model.add( "DisplayStyledText.ds" )
+		model.add( "GameRoot.ds" )
+		model.add( "GuiTheme.ds" )
+		model.add( "Button.ds" )
+		model.add( "IntegerTextField.ds" )
+		model.add( "Label.ds" )
+		model.add( "Layout.ds" )
+		model.add( "ListBox.ds" )
+		model.add( "ListElementRenderer.ds" )
+		model.add( "ListModel.ds" )
+		model.add( "ListModelListener.ds" )
+		model.add( "ListSelectionListener.ds" )
+		model.add( "MousePointer.ds" )
+		model.add( "Panel.ds" )
+		model.add( "ProgressBar.ds" )
+		model.add( "RangeModel.ds" )
+		model.add( "RangeModelListener.ds" )
+		model.add( "RectArea.ds" )
+		model.add( "ScrollBar.ds" )
+		model.add( "ScrollPanel.ds" )
+		model.add( "SelectionModel.ds" )
+		model.add( "SelectionModelListener.ds" )
+		model.add( "SpinButton.ds" )
+		model.add( "TextArea.ds" )
+		model.add( "Button.ds" )
+		model.add( "TextField.ds" )
+		model.add( "TextModel.ds" )
+		model.add( "TextModelListener.ds" )
+		model.add( "Viewport.ds" )
+		model.add( "Widget.ds" )
+		model.add( "WidgetInputProcessor.ds" )
+		model.add( "Window.ds" )
+		model.add( "WindowPopup.ds" )
+		model.add( "WorldRenderer.ds" )
+		
+		return model
+	end
+	
+	/** \brief Create test class list model with some testing data. */
+	private func ListModel createListModel2()
+		var DefaultListModel model = DefaultListModel.new()
+		var Image icon1 = Image.new( "/images/icons/icon1.png" )
+		var Image icon2 = Image.new( "/images/icons/icon2.png" )
+		var Image icon3 = Image.new( "/images/icons/icon3.png" )
+		
+		model.add( TestClass.new( icon1, "Border Size" ) )
+		model.add( TestClass.new( icon2, "Button" ) )
+		model.add( TestClass.new( icon3, "Combo Box" ) )
+		model.add( TestClass.new( icon1, "Container" ) )
+		model.add( TestClass.new( icon2, "Default Gui Theme" ) )
+		model.add( TestClass.new( icon3, "Default List Element Renderer" ) )
+		model.add( TestClass.new( icon1, "Default List Model" ) )
+		model.add( TestClass.new( icon2, "Default List Model Listener" ) )
+		model.add( TestClass.new( icon3, "Default List Selection Listener" ) )
+		model.add( TestClass.new( icon1, "Default Range Model" ) )
+		model.add( TestClass.new( icon2, "Default Range Model Listener" ) )
+		model.add( TestClass.new( icon3, "Default Selection Model" ) )
+		model.add( TestClass.new( icon1, "Default Selection Model Listener" ) )
+		model.add( TestClass.new( icon2, "Default Text Model" ) )
+		model.add( TestClass.new( icon3, "Default Text Model Listener" ) )
+		model.add( TestClass.new( icon1, "Desktop" ) )
+		model.add( TestClass.new( icon2, "Display Image" ) )
+		model.add( TestClass.new( icon3, "Display Styled Text" ) )
+		model.add( TestClass.new( icon1, "Game Root" ) )
+		model.add( TestClass.new( icon2, "Gui Theme" ) )
+		model.add( TestClass.new( icon3, "Button" ) )
+		model.add( TestClass.new( icon1, "Integer Text Field" ) )
+		model.add( TestClass.new( icon2, "Label" ) )
+		model.add( TestClass.new( icon3, "Layout" ) )
+		model.add( TestClass.new( icon1, "List Box" ) )
+		model.add( TestClass.new( icon2, "List Element Renderer" ) )
+		model.add( TestClass.new( icon3, "List Model" ) )
+		model.add( TestClass.new( icon1, "List Model Listener" ) )
+		model.add( TestClass.new( icon2, "List Selection Listener" ) )
+		model.add( TestClass.new( icon3, "Mouse Pointer" ) )
+		model.add( TestClass.new( icon1, "Panel" ) )
+		model.add( TestClass.new( icon2, "Progress Bar" ) )
+		model.add( TestClass.new( icon3, "Range Model" ) )
+		model.add( TestClass.new( icon1, "Range Model Listener" ) )
+		model.add( TestClass.new( icon2, "Rect Area" ) )
+		model.add( TestClass.new( icon3, "Scroll Bar" ) )
+		model.add( TestClass.new( icon1, "Scroll Panel" ) )
+		model.add( TestClass.new( icon2, "Selection Model" ) )
+		model.add( TestClass.new( icon3, "Selection Model Listener" ) )
+		model.add( TestClass.new( icon1, "Spin Button" ) )
+		model.add( TestClass.new( icon2, "Text Area" ) )
+		model.add( TestClass.new( icon3, "Button" ) )
+		model.add( TestClass.new( icon1, "Text Field" ) )
+		model.add( TestClass.new( icon2, "Text Model" ) )
+		model.add( TestClass.new( icon3, "Text Model Listener" ) )
+		model.add( TestClass.new( icon1, "Viewport" ) )
+		model.add( TestClass.new( icon2, "Widget" ) )
+		model.add( TestClass.new( icon3, "Widget Input Processor" ) )
+		model.add( TestClass.new( icon1, "Window" ) )
+		model.add( TestClass.new( icon2, "Window Popup" ) )
+		model.add( TestClass.new( icon3, "World Renderer" ) )
+		
+		return model
+	end
+	
+	/** \brief Add content. */
+	private func void createContent( Container content )
+		content.setLayout( BorderLayout.new( 10 ) )
+		content.addWidget( this.createListPanel1(), BorderLayout.Area.left )
+		content.addWidget( this.createListPanel2(), BorderLayout.Area.content )
+	end
+	
+	/** \brief Create list panel 1. */
+	private func Panel createListPanel1()
+		var Panel panel  = Panel.new()
+		panel.setLayout( FlowLayout.new( LayoutAxis.y, 10, FlowLayout.Stretch.last ) )
+		panel.setMinimumSize( Point.new( 250, 100 ) )
+		panel.setProtectMinimumSize( true )
+		
+		// combo box edit text model
+		this.pModelComboBoxEditText = DefaultTextModel.new()
+		
+		// list model
+		var ListModel model = this.createListModel()
+		
+		// combo box
+		var Panel row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		row.addWidget( Label.new( "Script File:" ) )
+		var ComboBox comboBox = ComboBox.new( model )
+		row.addWidget( comboBox )
+		panel.addWidget( row )
+		
+		// combo box editable
+		row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		row.addWidget( Label.new( "Script File:" ) )
+		comboBox = ComboBox.new( model )
+		comboBox.setEditor( DefaultComboBoxEditor.new() )
+		comboBox.getEditor().addActionListener( ChangeEditTextActionListener.new( this.pModelComboBoxEditText ) )
+		row.addWidget( comboBox )
+		panel.addWidget( row )
+		
+		// combo box edited text test
+		row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		var Label label = Label.new( "Edited:" )
+		label.setAlignment( Label.middleLeft )
+		row.addWidget( label )
+		label = Label.new( this.pModelComboBoxEditText )
+		label.setAlignment( Label.middleLeft )
+		row.addWidget( label )
+		panel.addWidget( row )
+		
+		// list box
+		var ListBox listBox = ListBox.new( model )
+		panel.addWidget( ScrollPanel.new( listBox ) )
+		
+		return panel
+	end
+	
+	/** \brief Create list panel 2. */
+	private func Panel createListPanel2()
+		var Panel panel  = Panel.new()
+		panel.setLayout( FlowLayout.new( LayoutAxis.y, 10, FlowLayout.Stretch.last ) )
+		
+		// list box for option box to manipulate
+		var ListBox listBox = ListBox.new( this.createListModel2(), TestClassRenderer.new() )
+		listBox.setNumberDisplayLines( 1 )
+		listBox.setType( ListBox.Type.verticalWrap )
+		
+		// type choice
+		var Panel row = Panel.new()
+		row.setLayout( FlowLayout.new( LayoutAxis.x, 10, FlowLayout.Stretch.last ) )
+		
+		var ToggleButtonGroup optionGroup = ToggleButtonGroup.new()
+		var OptionBox optionBox = OptionBox.new( "List" )
+		optionGroup.add( optionBox )
+		optionBox.addActionListener( SetListTypeAction.new( listBox, ListBox.Type.vertical ) )
+		row.addWidget( optionBox )
+		
+		optionBox = OptionBox.new( "Vertical" )
+		optionGroup.add( optionBox )
+		optionBox.addActionListener( SetListTypeAction.new( listBox, ListBox.Type.verticalWrap ) )
+		row.addWidget( optionBox )
+		
+		optionBox = OptionBox.new( "Horizontal" )
+		optionGroup.add( optionBox )
+		optionBox.addActionListener( SetListTypeAction.new( listBox, ListBox.Type.horizontalWrap ) )
+		row.addWidget( optionBox )
+		
+		optionGroup.setSelected( 1 )
+		
+		panel.addWidget( row )
+		
+		// list box
+		panel.addWidget( ScrollPanel.new( listBox ) )
+		
+		return panel
+	end
+end

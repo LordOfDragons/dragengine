@@ -1,0 +1,142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of a state snapshot animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleStateSnapshot extends ADRule
+	/** Use the last state. */
+	private var bool pUseLastState
+	
+	/** \brief Identifier to snapshot state using animator instance. */
+	private var int pID
+	
+	/** Enables position manipulation. */
+	private var bool pEnablePosition
+	/** Enables orientation manipulation. */
+	private var bool pEnableOrientation
+	/** Enables size manipulation. */
+	private var bool pEnableSize
+	
+	
+	
+	/** Creates a new animation rule definition. */
+	public func new()
+		this.pUseLastState = true
+		this.pID = 0
+		this.pEnablePosition = true
+		this.pEnableOrientation = true
+		this.pEnableSize = false
+	end
+	
+	
+	
+	/** Determines if the last state is used. */
+	public func bool getUseLastState()
+		return this.pUseLastState
+	end
+	
+	/** Sets if the last state is used. */
+	public func void setUseLastState( bool useLastState )
+		this.pUseLastState = useLastState
+	end
+	
+	/** \brief Identifier to snapshot state using animator instance. */
+	public func int getID()
+		return this.pID
+	end
+	
+	/** \brief Set identifier to snapshot state using animator instance. */
+	public func void setID( int identifier )
+		this.pID = identifier
+	end
+	
+	/** Determines if the position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** Sets if the position manipulation is enabled. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** Determines if the orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** Sets if the orientation manipulation is enabled. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** Determines if the size manipulation is enabled. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** Sets if the size manipulation is enabled. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	
+	
+	/**
+	 * Build engine animator rule using the stored definition.
+	 */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARStateSnapshot rule = ARStateSnapshot.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARStateSnapshotTarget, each.getLink().getIndex() )
+		end )
+		
+		rule.setUseLastState( this.pUseLastState )
+		rule.setID( this.pID )
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "State Snapshot" ) \
+			+ " last=" + this.pUseLastState + " id=" + this.pID \
+			+ " epos=" + this.pEnablePosition + " eorient=" \
+			+ this.pEnableOrientation + " esize=" + this.pEnableSize + " )" )
+	end
+end

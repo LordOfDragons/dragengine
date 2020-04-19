@@ -1,0 +1,83 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Simple element.
+ * 
+ * Simple behavior element composing of these behaviors:
+ * - ECBehaviorComponent
+ * - ECBehaviorCollider
+ * - ECBehaviorNavigationSpace
+ * - ECBehaviorAttachToParent
+ * 
+ * This class is a quick way to add basic elements to a game world. You can create new
+ * element classes by subclassing and adding additional behaviors. It is usually though
+ * better to create a new BehaviorElementClass subclass instead adding the desired
+ * behaviors. This also allows to use subclassed behaviors for specific needs.
+ */
+class SimpleElement extends BehaviorElement
+	private var ECBehaviorComponent.Instance pComponent
+	private var ECBehaviorCollider.Instance pCollider
+	private var ECBehaviorNavigationSpace.Instance pNavigationSpace
+	private var ECBehaviorAttachToParent.Instance pAttachToParent
+	
+	
+	
+	/** \brief Create element. */
+	public func new( SimpleElementClass eclass ) super( eclass )
+		this.pComponent = eclass.getComponent().instance( this )
+		this.pCollider = eclass.getCollider().instance( this )
+		this.pNavigationSpace = eclass.getNavigationSpace().instance( this )
+		this.pAttachToParent = eclass.getAttachToParent().instance( this )
+	end
+	
+	
+	/** \brief Component behavio instance. */
+	public func ECBehaviorComponent.Instance getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Collider behavior instance. */
+	public func ECBehaviorCollider.Instance getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Navigation space behavior instance. */
+	public func ECBehaviorNavigationSpace.Instance getNavigationSpace()
+		return this.pNavigationSpace
+	end
+	
+	/** \brief Attach to parent behavior instance. */
+	public func ECBehaviorAttachToParent.Instance getAttachToParent()
+		return this.pAttachToParent
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitSimpleElement( this )
+	end
+end

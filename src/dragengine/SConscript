@@ -1,0 +1,300 @@
+from SConsCommon import *
+
+# import whatever is given by the parent builder
+Import('parent_env parent_targets parent_report')
+
+# setup the environment matching the OS
+envDragengine = parent_env.Clone()
+
+if envDragengine['OSBeOS']:
+	libs = ['root', 'be']
+	
+elif envDragengine['OSMacOS']:
+	envDragengine.Append(FRAMEWORKS = ['Cocoa'])
+	libs = []
+	
+elif envDragengine['OSPosix']:
+	libs = []
+	
+elif envDragengine['OSWindows']:
+	libs = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32']
+	
+else:
+	Exit('No supported OS found!')
+
+if envDragengine['platform_android'] != 'no':
+	libs.extend(envDragengine['ANDROID_LIBS'])
+
+binlibs = []
+linklibs = ['dragengine']
+
+# do configure stuff
+conf = envDragengine.Configure()
+
+if envDragengine['OSPosix']:
+	hasDL = False
+	if envDragengine['with_dl'] != TernaryVariableNo:
+		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', 'dlerror();')
+		if hasDL:
+			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_DL')
+			if envDragengine['platform_android'] == 'no':
+				libs.append('dl')
+				binlibs.append('dl')
+		elif envDragengine['with_dl'] == TernaryVariableYes:
+			print('Requested to use dynamic library system but dlfcn.h or libdl could not be found or is not usable.')
+			Exit(1)
+	
+	hasPThreads = False
+	if envDragengine['platform_android'] != 'no':
+		envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
+		hasPThreads = True # special implementation bundled in OS. no library include
+	elif envDragengine['with_pthread'] != TernaryVariableNo:
+		hasPThreads = conf.CheckLibWithHeader('pthread', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+		if hasPThreads:
+			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
+			libs.append('pthread')
+			binlibs.append('pthread')
+		else:
+			hasPThreads = conf.CheckLibWithHeader('pthreads', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+			if hasPThreads:
+				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
+				libs.append('pthreads')
+				binlibs.append('pthreads')
+			else:
+				hasPThreads = conf.CheckLibWithHeader('root', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+				if hasPThreads:
+					envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
+					# no lib append since root is already included
+				elif envDragengine['with_pthread'] == TernaryVariableYes:
+					print('Requested to use pthreads but pthread.h or libpthread could not be found or is not usable.')
+					Exit(1)
+	
+	hasX11 = False
+	if envDragengine['with_x'] != TernaryVariableNo:
+		hasX11 = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', 'XOpenDisplay(NULL);')
+		if hasX11:
+			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_X11')
+			libs.append('X11')
+			binlibs.append('X11')
+			
+			if conf.CheckLibWithHeader('Xrandr', 'X11/extensions/Xrandr.h', 'c++', 'XRRQueryVersion(NULL,NULL,NULL);'):
+				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_XRANDR')
+				libs.append('Xrandr')
+				binlibs.append('Xrandr')
+			else:
+				Exit('X11 is used but no Xrandr extension is not found.')
+			
+		elif envDragengine['with_x'] == TernaryVariableYes:
+			print('Requested to use X Window System but Xlib.h or libX11 could not be found or is not usable.')
+			Exit(1)
+	
+	# android specific problems
+	#hasUtimensat = conf.CheckFunc('utimensat', 'sys/stat.h')
+	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
+
+conf.Finish()
+
+# write the configuration file required by a few source files
+configFilePath = envDragengine.File('src/dragengine_configuration.h').srcnode().abspath
+configFileDefines = {}
+configFileDefines['OS_UNIX'] = envDragengine['OSPosix']
+configFileDefines['OS_W32'] = envDragengine['OSWindows']
+configFileDefines['OS_BEOS'] = envDragengine['OSBeOS']
+configFileDefines['OS_MACOS'] = envDragengine['OSMacOS']
+configFileDefines['OS_ANDROID'] = (envDragengine['platform_android'] != 'no')
+if envDragengine['OSPosix']:
+	configFileDefines['HAS_LIB_X11'] = hasX11
+	configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
+	configFileDefines['HAS_LIB_DL'] = hasDL
+	# android specific problems
+	#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
+	configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+
+if WriteConfigFile(configFilePath, configFileDefines, envDragengine):
+	Exit('Writing configuration file failed')
+
+# fetch values in expanded form for later use
+pathLib = envDragengine.subst(envDragengine['path_de_lib'])
+pathInclude = envDragengine.subst(envDragengine['path_de_include'])
+pathConfig = envDragengine.subst(envDragengine['path_de_config'])
+pathEngine = envDragengine.subst(envDragengine['path_de_data'])
+pathShare = envDragengine.subst(envDragengine['path_de_share'])
+pathCache = envDragengine.subst(envDragengine['path_de_cache'])
+
+if envDragengine['OSWindows']:
+	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
+	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
+
+# update the compile flags
+# envDragengine.Append(CXXFLAGS=' -D__DEBUG__')
+# envDragengine.Append(CXXFLAGS=' -D_TESTING_')
+envDragengine.Append(CXXFLAGS = [
+	cmdlineDefinePath(envDragengine, 'DE_ENGINE_PATH', pathEngine),
+	cmdlineDefinePath(envDragengine, 'DE_CONFIG_PATH', pathConfig),
+	cmdlineDefinePath(envDragengine, 'DE_SHARE_PATH', pathShare),
+	cmdlineDefinePath(envDragengine, 'DE_CACHE_PATH', pathCache)])
+
+if envDragengine['OSWindows']:
+	pathEngineBase = envDragengine.subst(envDragengine['path_de'])
+	envDragengine.Append(CXXFLAGS = [
+		cmdlineDefinePath(envDragengine, 'DE_ENGINE_BASE_PATH', pathEngineBase)])
+
+if envDragengine['platform_android'] != 'no':
+	envDragengine.Append(CXXFLAGS = [
+		cmdlineDefinePath(envDragengine, 'ANDROID_ARCH', envDragengine['platform_android']),
+		cmdlineDefinePath(envDragengine, 'ANDROID_JNIDIR', envDragengine['ANDROID_JNIDIR'])])
+
+if 'mingw' in envDragengine['TOOLS']:
+	# this line is important or else we have to ship libstdc++-6.dll and libgcc_s_sjlj-1.dll alongside
+	# the build library which is a pain. if this library depends on another cross-compiled library
+	# comment out this line or the static inclusion is duplicate causing errors
+	pass #envDragengine.Append(LINKFLAGS = ['-static', '-static-libgcc', '-static-libstdc++'])
+
+envDragengine.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
+
+if envDragengine['OSWindows']:
+	envDragengine.Append(LINKFLAGS = ['-Wl,--export-all-symbols'])
+
+if envDragengine['OSMacOS']:
+	envDragengine.Append(LINKFLAGS = ['-install_name', '@rpath/libdragengine.dylib'])
+
+# seems to affect only 32-bit compiler version
+#if envDragengine['OSBeOS']:
+#	envDragengine.Append(CXXFLAGS = '-Wno-multichar')
+
+envDragengine.Append(CPPFLAGS = envDragengine['SANITIZE_FLAGS'])
+envDragengine.Append(LINKFLAGS = envDragengine['SANITIZE_FLAGS'])
+
+# setup the builders
+sources = []
+headers = []
+globFiles(envDragengine, 'src', '*.cpp', sources)
+globFiles(envDragengine, 'src', '*.h', headers)
+if envDragengine['OSMacOS']:
+	globFiles(envDragengine, 'src', '*.mm', sources)
+
+ignoreHeaders = []
+ignoreHeaders.append('src/doxy_main.h')
+
+headers = [h for h in headers if not h in ignoreHeaders]
+
+objects = [envDragengine.SharedObject(s) for s in sources]
+
+if envDragengine['HostOSWindows']:
+	cut = len(objects) // 2
+	objgroup1 = envDragengine.StaticLibrary(target='objgroup1', source=objects[:cut])
+	objgroup2 = envDragengine.StaticLibrary(target='objgroup2', source=objects[cut:])
+	objects = objgroup1 + objgroup2
+
+libs.extend(parent_targets['lib_zlib']['libs'])
+envDragengine.Append(CPPPATH = parent_targets['lib_zlib']['cpppath'])
+envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
+
+library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
+targetBuild = envDragengine.Alias('dragengine_build', library)
+
+copyHeaders = []
+for h in headers:
+	copyHeaders.append(envDragengine.Command(
+		os.path.join('include', 'dragengine', *(h.split(os.sep)[1:])),
+		h, Copy('$TARGET', '$SOURCE')))
+envDragengine.Depends(library, copyHeaders)
+
+install = [envDragengine.InstallAs(
+	os.path.join(pathInclude, *(h.split(os.sep)[1:])), h)
+		for h in headers]
+archiveDevelop = {
+	os.path.join(pathInclude, *(h.split(os.sep)[1:])):
+		envDragengine.File(h).srcnode() for h in headers}
+archiveEngine = {}
+
+if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
+	for l in library:
+		lname = '%s/%s.1.0.0' % (pathLib, l.name)
+		install.append(envDragengine.InstallAs(lname, l))
+		install.append(envDragengine.Command('%s/%s.1' % (pathLib, l), lname, Action(SymLinkLibrary)))
+		install.append(envDragengine.Command('%s/%s' % (pathLib, l), lname, Action(SymLinkLibrary)))
+		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
+	
+elif envDragengine['OSWindows']:
+	install.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
+	install.append(envDragengine.Install(pathLib, 'dragengine.lib'))
+	install.append(envDragengine.Install(pathLib, 'dragengine.def'))
+	archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
+	archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
+	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
+
+
+if envDragengine['OSPosix']:
+	pathDataDir = envDragengine.subst('${datadir}')
+	
+	for s in ['128', '64', '32']:
+		target = os.path.join(pathDataDir, 'icons', 'hicolor',
+			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-delga.png')
+		source = 'data/mime-dragengine-delga{}.png'.format(s)
+		install.append(envDragengine.InstallAs(target, source))
+		archiveEngine[target] = envDragengine.File(source).srcnode()
+		
+		target = os.path.join(pathDataDir, 'icons', 'hicolor',
+			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-game.png')
+		source = 'data/mime-dragengine-game{}.png'.format(s)
+		install.append(envDragengine.InstallAs(target, source))
+		archiveEngine[target] = envDragengine.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-dragengine.xml')
+	source = 'data/mimetypes.xml'
+	install.append(envDragengine.InstallAs(target, source))
+	archiveEngine[target] = envDragengine.File(source).srcnode()
+
+
+targetInstall = envDragengine.Alias('dragengine', install)
+
+# source directory required for special commands
+srcdir = Dir('src').srcnode().abspath
+
+# doxygen
+targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
+	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
+#parent_targets['dragengine_doc'] = ['Drag[en]gine Documentation', targetDoxygen]
+
+# cloc
+targetClocBare = BuildCLOC(envDragengine, [srcdir], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(targetClocBare, sources)
+Depends(targetClocBare, headers)
+targetCloc = envDragengine.Alias('dragengine_cloc', targetClocBare)
+
+# add the targets to the targets list
+cpppath = [envDragengine.Dir('include')]
+libpath = [library[0].get_dir()]
+binlibs = []
+
+if not 'mingw' in envDragengine['TOOLS']:
+	cpppath.extend(parent_targets['lib_zlib']['cpppath'])
+	libpath.extend(parent_targets['lib_zlib']['libpath'])
+	binlibs.extend(parent_targets['lib_zlib']['libs'])
+
+parent_targets['dragengine'] = {
+	'name' : 'Drag[en]gine Game Engine',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'binlibs' : binlibs,
+	'libs' : linklibs,
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'library' : library,
+	'archive-engine' : archiveEngine,
+	'archive-engine-develop' : archiveDevelop,
+	'doxygen' : targetDoxygen,
+	'cloc' : targetCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir) }
+
+# report
+if envDragengine['OSPosix']:
+	if hasDL:
+		parent_report['use dynamic libraries'] = 'yes'
+	else:
+		parent_report['use dynamic libraries'] = 'no'
+	if hasX11:
+		parent_report['use X Window System'] = 'yes'
+	else:
+		parent_report['use dynamic libraries'] = 'no'

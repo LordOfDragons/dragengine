@@ -1,0 +1,140 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Designers
+
+
+
+/**
+ * \brief Default implementation of ListElementRenderer using Label.
+ * 
+ * Text is set to Object.toString(). Uses a Label widget to display the text. The label
+ * designer selectors are stored in the renderer and assigned to all created labels.
+ * Two selectors can be assigned one for the selected and one for the deselected (normal)
+ * state of the label. They are derived from a base designer selector with the default
+ * value 'Label.ListRenderer'. The derived selectors are these:
+ * 
+ * - normal (deselected) state: base-selector
+ * - selected state: base-selector + '.Selected'
+ */
+class DefaultListElementRenderer implements ListElementRenderer
+	private var String pDesignerSelector
+	private var Object pDefaultObject
+	
+	
+	
+	/** \brief Create default list element renderer. */
+	public func new() this( null )
+	end
+	
+	/** \brief Create default list element renderer. */
+	public func new( Object defaultObject )
+		this.pDesignerSelector = "Label.ListRenderer"
+		this.pDefaultObject = defaultObject
+	end
+	
+	
+	
+	/** \brief Dsigner selector. */
+	public func String getDesignerSelector()
+		return this.pDesignerSelector
+	end
+	
+	/** \brief Set designer selector. */
+	public func void setDesignerSelector( String selector )
+		this.pDesignerSelector = selector
+	end
+	
+	/**
+	 * \brief Object used to measure default size with.
+	 * 
+	 * Default reference object is null.
+	 */
+	public func Object getDefaultObject()
+		return this.pDefaultObject
+	end
+	
+	/** \brief Object used to measure default size with. */
+	public func void setDefaultObject( Object object )
+		this.pDefaultObject = object
+	end
+	
+	
+	
+	/** \brief Create renderer. */
+	public func Widget createRenderer( ListBox listBox )
+		return Label.new( "", Label.middleLeft )
+	end
+	
+	/** \brief Update renderer with object state. */
+	public func void updateRenderer( ListBox listBox, Widget renderer, \
+	Object element, bool selected, bool focused )
+		var Label label = renderer cast Label
+		
+		if selected
+			label.setDesignerSelector( this.pDesignerSelector + ".Selected" )
+			
+		else
+			label.setDesignerSelector( this.pDesignerSelector )
+		end
+		
+		if element == null
+			label.setText( "" )
+			
+		else
+			label.setText( element.toString() )
+		end
+	end
+	
+	/**
+	 * \brief Default size of list element.
+	 * 
+	 * Default implementation constructs a temporary renderer using createRenderer() and
+	 * updates using updateRenderer() with the assigned minimum size object. The minimum
+	 * size reported by this renderer instance is returned as default size.
+	 */
+	public func Point getDefaultSize( ListBox listBox )
+		// to properly measure the size a Container instance is created with the gui theme
+		// from the listBox. if the gui theme would be assigned directly to the renderer
+		// potentially use of gui theme selectors are skipped causing strange to find
+		// errors. the empty widget designer ensures the container has no padding nor any
+		// other unwanted designer parameters applied
+		var Container container = Container.new()
+		container.runWhileBlockingLayout( block
+			container.setLayout( BoxLayout.new( LayoutAxis.y ) )
+			container.setDesigner( DefaultWidgetDesigner.new() )
+			container.setGuiTheme( listBox.getGuiTheme() )
+			
+			var Widget renderer = this.createRenderer( listBox )
+			container.addWidget( renderer )
+			this.updateRenderer( listBox, renderer, this.pDefaultObject, false, false )
+		end )
+		container.doLayout()
+		
+		var Point size = container.getMinimumSize()
+		container.dispose()
+		return size
+	end
+end

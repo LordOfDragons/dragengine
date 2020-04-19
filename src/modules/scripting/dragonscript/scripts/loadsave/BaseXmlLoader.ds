@@ -1,0 +1,805 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * Basic xml loader class providing functionality useful across various xml file loaders.
+ * Stores also a name and a console so the error functions are more generic.
+ */
+class BaseXmlLoader
+	/** \brief Console to print messages to. */
+	public var Console pConsole
+	
+	/** \brief Name of the loader object for error reporting. */
+	public var String pName
+	
+	
+	
+	/** Creates a new base file loader. */
+	public func new( Console console, String name )
+		if name == null or console == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConsole = console
+		this.pName = name
+	end
+	
+	
+	
+	/** Retrieves the console. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** Retrieves the name. */
+	public func String getName()
+		return this.pName
+	end
+	
+	
+	
+	/**
+	 * \brief Multi-line string or an empty string if absent.
+	 * 
+	 * Multi-line strings support br-tags to add line-breaks. Parsing stops if no more CDATA
+	 * are present or a non-br tag is encountered.
+	 */
+	public func String readMultilineString( EasyXMLElement root )
+		var int i, elementCount = root.getElementCount()
+		var bool skipLeadingWhitespaces = false
+		var EasyXMLElement element
+		var String string = ""
+		
+		for i = 0 to elementCount
+			element = root.getElementAt( i )
+			
+			select element.getType()
+			case EasyXMLElementType.cdata
+				if skipLeadingWhitespaces
+					string = string + element.getCDataContent().trimLeft()
+					
+				else
+					string = string + element.getCDataContent()
+				end
+				skipLeadingWhitespaces = false
+				
+			case EasyXMLElementType.tag
+				if element.getTagName().equals( "br" )
+					string = string + '\n'
+					skipLeadingWhitespaces = true
+					
+				else
+					break
+				end
+				
+			case EasyXMLElementType.comment
+				// ignore
+				
+			else
+				break
+			end
+		end
+		
+		return string
+	end
+	
+	/** Read vector2 tag. */
+	public func Vector2 readVector2( EasyXMLElement root )
+		var float x = 0.0
+		var float y = 0.0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeFloatNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeFloatNamed( "y" )
+		end
+		
+		return Vector2.new( x, y )
+	end
+	
+	/** Read vector2 tag using the uv instead of xy notation. */
+	public func Vector2 readVector2UV( EasyXMLElement root )
+		var float x = 0.0
+		var float y = 0.0
+		
+		if root.hasAttributeNamed( "u" )
+			x = root.getAttributeFloatNamed( "u" )
+		end
+		if root.hasAttributeNamed( "v" )
+			y = root.getAttributeFloatNamed( "v" )
+		end
+		
+		return Vector2.new( x, y )
+	end
+	
+	/** Read vector tag. */
+	public func Vector readVector( EasyXMLElement root )
+		var float x = 0.0
+		var float y = 0.0
+		var float z = 0.0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeFloatNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeFloatNamed( "y" )
+		end
+		if root.hasAttributeNamed( "z" )
+			z = root.getAttributeFloatNamed( "z" )
+		end
+		
+		return Vector.new( x, y, z )
+	end
+	
+	/** Read double vector tag. */
+	public func DVector readDVector( EasyXMLElement root )
+		var float x = 0.0
+		var float y = 0.0
+		var float z = 0.0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeFloatNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeFloatNamed( "y" )
+		end
+		if root.hasAttributeNamed( "z" )
+			z = root.getAttributeFloatNamed( "z" )
+		end
+		
+		return DVector.new( x, y, z )
+	end
+	
+	/** \brief Read vector tag as quaternion. */
+	public func Quaternion readVectorAsQuaternion( EasyXMLElement root )
+		var float x = 0.0
+		var float y = 0.0
+		var float z = 0.0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeFloatNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeFloatNamed( "y" )
+		end
+		if root.hasAttributeNamed( "z" )
+			z = root.getAttributeFloatNamed( "z" )
+		end
+		
+		return Quaternion.newFromEuler( x, y, z )
+	end
+	
+	/** Read point tag. */
+	public func Point readPoint( EasyXMLElement root )
+		var int x = 0
+		var int y = 0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeIntNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeIntNamed( "y" )
+		end
+		
+		return Point.new( x, y )
+	end
+	
+	/** Read 3-component point tag. */
+	public func Point3 readPoint3( EasyXMLElement root )
+		var int x = 0
+		var int y = 0
+		var int z = 0
+		
+		if root.hasAttributeNamed( "x" )
+			x = root.getAttributeIntNamed( "x" )
+		end
+		if root.hasAttributeNamed( "y" )
+			y = root.getAttributeIntNamed( "y" )
+		end
+		if root.hasAttributeNamed( "z" )
+			z = root.getAttributeIntNamed( "z" )
+		end
+		
+		return Point3.new( x, y, z )
+	end
+	
+	/** \brief Read rectangular area. */
+	public func RectArea readRectArea( EasyXMLElement root )
+		var int x1 = 0
+		var int y1 = 0
+		var int x2 = 0
+		var int y2 = 0
+		
+		if root.hasAttributeNamed( "x1" )
+			x1 = root.getAttributeIntNamed( "x1" )
+		end
+		if root.hasAttributeNamed( "y1" )
+			y1 = root.getAttributeIntNamed( "y1" )
+		end
+		if root.hasAttributeNamed( "x2" )
+			x2 = root.getAttributeIntNamed( "x2" )
+		end
+		if root.hasAttributeNamed( "y2" )
+			y2 = root.getAttributeIntNamed( "y2" )
+		end
+		
+		return RectArea.new( x1, y1, x2, y2 )
+	end
+	
+	/** \brief Read floating point rectangular area. */
+	public func FloatRectArea readFloatRectArea( EasyXMLElement root )
+		var float x1 = 0.0
+		var float y1 = 0.0
+		var float x2 = 0.0
+		var float y2 = 0.0
+		
+		if root.hasAttributeNamed( "x1" )
+			x1 = root.getAttributeFloatNamed( "x1" )
+		end
+		if root.hasAttributeNamed( "y1" )
+			y1 = root.getAttributeFloatNamed( "y1" )
+		end
+		if root.hasAttributeNamed( "x2" )
+			x2 = root.getAttributeFloatNamed( "x2" )
+		end
+		if root.hasAttributeNamed( "y2" )
+			y2 = root.getAttributeFloatNamed( "y2" )
+		end
+		
+		return FloatRectArea.new( x1, y1, x2, y2 )
+	end
+	
+	/** \brief Read border size area. */
+	public func BorderSize readBorderSize( EasyXMLElement root )
+		if root.hasAttributeNamed( "all" )
+			var int value = root.getAttributeIntNamed( "all" )
+			return BorderSize.new( value, value, value, value )
+			
+		else
+			var int left = 0
+			var int top = 0
+			var int right = 0
+			var int bottom = 0
+			
+			if root.hasAttributeNamed( "left" )
+				left = root.getAttributeIntNamed( "left" )
+			end
+			if root.hasAttributeNamed( "top" )
+				top = root.getAttributeIntNamed( "top" )
+			end
+			if root.hasAttributeNamed( "right" )
+				right = root.getAttributeIntNamed( "right" )
+			end
+			if root.hasAttributeNamed( "bottom" )
+				bottom = root.getAttributeIntNamed( "bottom" )
+			end
+			
+			return BorderSize.new( left, top, right, bottom )
+		end
+	end
+	
+	/**
+	 * Read color tag. The color components are defined using one or more
+	 * child tags. One group of tags is red, green, blue and alpha to specify
+	 * the color components in the range from 0 to 1. Another group of tags
+	 * is intRed, intGreen, intBlue and intAlpha to specify the color
+	 * components in the range from 0 to 255 where 0 equals to 0 intensity
+	 * and 255 equals to full intensity. A third group of tags is hexRed,
+	 * hexGreen, hexBlue and hexAlpha to specify the color components using
+	 * a 1 or 2 digit hexadecimal number. The hexadecimal number can contain
+	 * upper or lower case alphabetic characters. No prefix is required.
+	 * If a component is not specified the default value is used which is 0
+	 * for red, green and blue and 1 for alpha.
+	 */
+	public func Color readColor( EasyXMLElement root )
+		return this.readColor( root, Color.black )
+	end
+	
+	/**
+	 * Read color tag. The color components are defined using one or more
+	 * child tags. One group of tags is red, green, blue and alpha to specify
+	 * the color components in the range from 0 to 1. Another group of tags
+	 * is intRed, intGreen, intBlue and intAlpha to specify the color
+	 * components in the range from 0 to 255 where 0 equals to 0 intensity
+	 * and 255 equals to full intensity. A third group of tags is hexRed,
+	 * hexGreen, hexBlue and hexAlpha to specify the color components using
+	 * a 1 or 2 digit hexadecimal number. The hexadecimal number can contain
+	 * upper or lower case alphabetic characters. No prefix is required.
+	 * If a component is not specified the default value is used which is 0
+	 * for red, green and blue and 1 for alpha.
+	 */
+	public func Color readColor( EasyXMLElement root, Color defaultColor )
+		var int e, elementCount = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName
+		var float red = defaultColor.getRed()
+		var float green = defaultColor.getGreen()
+		var float blue = defaultColor.getBlue()
+		var float alpha = defaultColor.getAlpha()
+		
+		if root.hasAttributeNamed( "hex" )
+			var String hexValue = root.getAttributeNamed( "hex" )
+			
+			red = ( ( this.hexToInt( hexValue.getAt( 0 ) ) * 10 + this.hexToInt( hexValue.getAt( 1 ) ) ) cast float ) / 255.0
+			green = ( ( this.hexToInt( hexValue.getAt( 2 ) ) * 10 + this.hexToInt( hexValue.getAt( 3 ) ) ) cast float ) / 255.0
+			blue = ( ( this.hexToInt( hexValue.getAt( 4 ) ) * 10 + this.hexToInt( hexValue.getAt( 5 ) ) ) cast float ) / 255.0
+			
+			if hexValue.getLength() > 6
+				alpha = ( ( this.hexToInt( hexValue.getAt( 6 ) ) * 10 + this.hexToInt( hexValue.getAt( 7 ) ) ) cast float ) / 255.0
+			end
+			
+		else
+			if root.hasAttributeNamed( "r" )
+				red = root.getAttributeFloatNamed( "r" )
+			end
+			if root.hasAttributeNamed( "g" )
+				green = root.getAttributeFloatNamed( "g" )
+			end
+			if root.hasAttributeNamed( "b" )
+				blue = root.getAttributeFloatNamed( "b" )
+			end
+			if root.hasAttributeNamed( "a" )
+				alpha = root.getAttributeFloatNamed( "a" )
+			end
+			
+			if root.hasAttributeNamed( "ir" )
+				red = root.getAttributeFloatNamed( "ir" ) / 255.0
+			end
+			if root.hasAttributeNamed( "ig" )
+				green = root.getAttributeFloatNamed( "ig" ) / 255.0
+			end
+			if root.hasAttributeNamed( "ib" )
+				blue = root.getAttributeFloatNamed( "ib" ) / 255.0
+			end
+			if root.hasAttributeNamed( "ia" )
+				alpha = root.getAttributeFloatNamed( "ia" ) / 255.0
+			end
+		end
+		
+		return Color.new( red, green, blue, alpha )
+	end
+	
+	/** \brief Read color matrix. */
+	public func ColorMatrix readColorMatrix( EasyXMLElement root )
+		var int i, elementCount = root.getElementCount()
+		var ColorMatrix colorMatrix = ColorMatrix.new()
+		var EasyXMLElement element
+		var String tagName
+		
+		for i = 0 to elementCount
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "translate" )
+				colorMatrix = colorMatrix * ColorMatrix.newTranslation( \
+					this.readColor( element, Color.new( 0.0, 0.0, 0.0, 0.0 ) ) )
+				
+			elif tagName.equals( "scale" )
+				colorMatrix = colorMatrix * ColorMatrix.newScaling( this.readColor( element ) )
+				
+			elif tagName.equals( "brightness" )
+				colorMatrix = colorMatrix * ColorMatrix.newBrightness( \
+					this.readColor( element, Color.new( 0.0, 0.0, 0.0, 0.0 ) ) )
+				
+			elif tagName.equals( "contrast" )
+				colorMatrix = colorMatrix * ColorMatrix.newContrast( this.readColor( element ) )
+				
+			elif tagName.equals( "saturation" )
+				colorMatrix = colorMatrix * ColorMatrix.newSaturation( this.readColor( element ) )
+				
+			elif tagName.equals( "invertColor" )
+				colorMatrix = colorMatrix * ColorMatrix.newColorInversion()
+				
+			elif tagName.equals( "custom" )
+				colorMatrix = colorMatrix * this.readCustomColorMatrix( element )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end
+		
+		return colorMatrix
+	end
+	
+	/** \brief Read custom color matrix. */
+	private func ColorMatrix readCustomColorMatrix( EasyXMLElement root )
+		var int i, elementCount = root.getElementCount()
+		var Color red = Color.new( 1.0, 0.0, 0.0, 0.0 )
+		var Color green = Color.new( 0.0, 1.0, 0.0, 0.0 )
+		var Color blue = Color.new( 0.0, 0.0, 1.0, 0.0 )
+		var Color alpha = Color.new( 0.0, 0.0, 0.0, 1.0 )
+		var Color white = Color.new( 0.0, 0.0, 0.0, 0.0 )
+		var EasyXMLElement element
+		var String tagName
+		
+		for i = 0 to elementCount
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "red" )
+				red = this.readColor( element, Color.new( 1.0, 0.0, 0.0, 0.0 ) )
+				
+			elif tagName.equals( "green" )
+				green = this.readColor( element, Color.new( 0.0, 1.0, 0.0, 0.0 ) )
+				
+			elif tagName.equals( "blue" )
+				blue = this.readColor( element, Color.new( 0.0, 0.0, 1.0, 0.0 ) )
+				
+			elif tagName.equals( "alpha" )
+				alpha = this.readColor( element, Color.new( 0.0, 0.0, 0.0, 1.0 ) )
+				
+			elif tagName.equals( "white" )
+				white = this.readColor( element, Color.new( 0.0, 0.0, 0.0, 0.0 ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end
+		
+		return ColorMatrix.new( red, green, blue, alpha, white )
+	end
+	
+	
+	
+	/** Read curve tag. */
+	public func CurveBezier readCurveBezier( EasyXMLElement root )
+		var int i, count = root.getElementCount()
+		var CurveBezier curve = CurveBezier.new()
+		var EasyXMLElement element
+		var String tagName
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			
+			if element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals( "interpolation" )
+					var CurveBezierInterpolation interpolation = CurveBezierInterpolation.named( element.getFirstCData() )
+					if interpolation != null
+						curve.setInterpolationMode( interpolation )
+						
+					else
+						this.logInvalidValue( element, element.getFirstCData() )
+					end
+					
+				elif tagName.equals( "point" )
+					this.readCurveBezierPoint( element, curve )
+					
+				else
+					this.logUnknownTag( element )
+				end
+			end
+		end
+		
+		return curve
+	end
+	
+	/** Read curve point tag. */
+	public func void readCurveBezierPoint( EasyXMLElement root, CurveBezier curve )
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var Vector2 coordinates
+		var Vector2 handle1
+		var Vector2 handle2
+		var String tagName
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			
+			if element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals( "coordinates" )
+					coordinates = this.readVector2( element )
+					
+				elif tagName.equals( "handle1" )
+					handle1 = this.readVector2( element )
+					
+				elif tagName.equals( "handle2" )
+					handle2 = this.readVector2( element )
+					
+				else
+					this.logUnknownTag( element )
+				end
+			end
+		end
+		
+		if coordinates == null
+			coordinates = Vector2.new()
+		end
+		if handle1 == null
+			handle1 = Vector2.new()
+		end
+		if handle2 == null
+			handle2 = Vector2.new()
+		end
+		
+		curve.addPoint( coordinates, handle1, handle2 )
+	end
+	
+	
+	
+	/**
+	 * \brief Parse font tag.
+	 * 
+	 * The font properties are defined using child tags. The file tag defines the font
+	 * file to use while the size tag defines the size of the font object. The size is
+	 * given as the height of the font in pixels. Both tags are required. If one or both
+	 * are missing a null font object is returned.
+	 */
+	public func Font readFont( EasyXMLElement root )
+		var int size = root.getAttributeIntNamed( "size" )
+		var String filename = root.getFirstCData()
+		return Font.new( filename, size )
+	end
+	
+	/**
+	 * \brief Parse font tag.
+	 * 
+	 * The font properties are defined using child tags. The file tag defines the font
+	 * file to use while the size tag defines the size of the font object. The size is
+	 * given as the height of the font in pixels. Both tags are required. If one or both
+	 * are missing a null font object is returned.
+	 */
+	public func Font readFont( EasyXMLElement root, String basePath )
+		var int size = root.getAttributeIntNamed( "size" )
+		var String filename = File.absolutePath( root.getFirstCData(), basePath ).getPath()
+		return Font.new( filename, size )
+	end
+	
+	
+	/**
+	 * Read CData as int where the value is stored hexadecial. If no CData
+	 * is specified 0 is returned. The hexadecimal value is specified as a
+	 * one or two character value. The characters have to be in the range
+	 * from 0 to 9, a to f or A to F. No prefix is used. If more than two
+	 * characters are specified only the first two are used.
+	 */
+	public func int readCDataHex( EasyXMLElement tag )
+		var String cdata = tag.getFirstCData()
+		
+		if cdata == null
+			return 0
+			
+		else
+			var int length = cdata.getLength()
+			var int value = 0
+			
+			if length == 1
+				value = this.hexToInt( cdata.getAt( 0 ) )
+				
+			else // if longer than 2 ignore the exeecing bytes
+				value = this.hexToInt( cdata.getAt( 0 ) ) * 10 + this.hexToInt( cdata.getAt( 1 ) )
+			end
+			
+			return value
+		end
+	end
+	
+	/** Converts a hex value to an integer value. */
+	public func int hexToInt( byte hex )
+		if hex >= '0' and hex <= '9'
+			return ( hex - '0' ) cast int
+			
+		elif hex >= 'a' and hex <= 'f'
+			return 10 + ( ( hex - 'a' ) cast int )
+			
+		elif hex >= 'A' and hex <= 'F'
+			return 10 + ( ( hex - 'A' ) cast int )
+			
+		else
+			return 0
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Load file safely.
+	 * 
+	 * Loads file inside a try-catch block to report failures in a debuggable way. The file
+	 * is loaded then checked if the root tag has the correct name. Then the block is called
+	 * to parse the root tag. The block receives as only parameter the root tag of type
+	 * EasyXMLElement. The return value of the block is returned.
+	 */
+	protected func Object loadAndParseRootTag( String filename, String rootTagName, Block parseBlock )
+		try
+			var EasyXML document = EasyXML.new( filename )
+			if document.hasParseFailed()
+				this.logParsingFailed( document.getParseLog() )
+				throw EInvalidParam.new()
+			end
+			
+			var EasyXMLElement root = document.getRootElement()
+			if not root.getTagName().equals( rootTagName )
+				this.logUnknownTag( root )
+				throw EInvalidParam.new()
+			end
+			
+			return parseBlock.run( root )
+			
+		catch Exception e
+			this.logLoadingFailed( filename )
+			throw
+		end
+	end
+	
+	
+	
+	/** Outputs an error message on the application console. */
+	public func void printOnConsole( String message )
+		this.pConsole.addMessage( this.pName + ": " + message )
+	end
+	
+	/** Log filename on the application console. */
+	public func void logLoadingFromFile( String filename )
+		//this.printOnConsole( "Loading from file " + filename )
+	end
+	
+	/** \brief Log filename on the application console. */
+	public func void logSavingFromFile( String filename )
+		//this.printOnConsole( "Saving to file " + filename )
+	end
+	
+	/** Log parsing failed with error log. */
+	public func void logParsingFailed( String errorLog )
+		this.printOnConsole( "Parsing failed: " + errorLog )
+	end
+	
+	/** \brief Log loading file failed with error log. */
+	public func void logLoadingFailed( String filename )
+		this.printOnConsole( "Failed loading from file " + filename )
+	end
+	
+	/** \brief Log saving to file failed with error log. */
+	public func void logSavingFailed( String filename )
+		this.printOnConsole( "Failed saving to file " + filename )
+	end
+	
+	/** Outputs error message missing tag on the application console. */
+	public func void logMissingTag( String tagName )
+		this.printOnConsole( "Missing tag " + tagName + "." )
+	end
+	
+	/** Outputs an error message on the application console. */
+	public func void printOnConsole( EasyXMLElement tag, String errorMessage )
+		this.pConsole.addMessage( this.pName + " (" + tag.getLine() + \
+			"," + tag.getPosition() + "): " + errorMessage )
+	end
+	
+	/** \brief Print message on console. */
+	public func void printOnConsole( String filename, String message )
+		this.pConsole.addMessage( this.pName + " (" + filename + "): " + message )
+	end
+	
+	/** \brief Print message on console. */
+	public func void printOnConsole( String filename, EasyXMLElement tag, String message )
+		this.pConsole.addMessage( this.pName + " (" + filename + ":" + tag.getLine() + \
+			"," + tag.getPosition() + "): " + message )
+	end
+	
+	/** Outputs an deprecated message on the application console. */
+	public func void logDeprecatedTag( EasyXMLElement tag )
+		this.printOnConsole( tag, "The tag " + tag.getTagName() + " is deprecated." )
+	end
+	
+	/** Outputs an deprecated message on the application console. */
+	public func void logDeprecated( EasyXMLElement tag, String whatIsDeprecated )
+		this.printOnConsole( tag, "The use of " + whatIsDeprecated + " is deprecated." )
+	end
+	
+	/** Outputs an deprecated message on the application console. */
+	public func void logDeprecated( EasyXMLElement tag, String whatIsDeprecated, String useWhatInstead )
+		this.printOnConsole( tag, "The use of " + whatIsDeprecated + " is deprecated. Use " + useWhatInstead + " instead" )
+	end
+	
+	/** Outputs error message missing attribute on the application console. */
+	public func void logMissingAttribute( EasyXMLElement tag, String attrName )
+		this.printOnConsole( tag, "Missing attribute " + attrName + "." )
+	end
+	
+	/** Outputs error message about incompatible attributes. */
+	public func void logIncompatibleAttributes( EasyXMLElement tag, String attributeNames )
+		this.printOnConsole( tag, "Attributes " + attributeNames + " can not be specified at the same time." )
+	end
+	
+	/** Outputs error message invalid attribute value on the application console. */
+	public func void logInvalidAttributeValue( EasyXMLElement tag, String attribute, String value )
+		this.printOnConsole( tag, "Invalid value " + value + " for attribute " + attribute + "." )
+	end
+	
+	/** \brief Log attribute not allowed. */
+	public func void logInvalidAttribute( String filename, EasyXMLElement tag, String attribute )
+		this.printOnConsole( filename, tag, "Invalid attribute " + attribute + "." )
+	end
+	
+	/** Outputs error message invalid value on the application console. */
+	public func void logInvalidValue( EasyXMLElement tag, String value )
+		this.printOnConsole( tag, "Invalid value " + value + "." )
+	end
+	
+	/** Outputs error message invalid value on the application console. */
+	public func void logInvalidValue( String filename, EasyXMLElement tag, String value )
+		this.printOnConsole( filename, tag, "Invalid value " + value + "." )
+	end
+	
+	/** \brief Output error message duplicate object on the application console. */
+	public func void logDuplicateObject( EasyXMLElement tag, String object, String identifier )
+		this.printOnConsole( tag, object + " '" + identifier + "' exists already." )
+	end
+	
+	/** \brief Output error message value exists already on the application console. */
+	public func void logObjectExists( EasyXMLElement tag, String object, String value )
+		this.printOnConsole( tag, object + " '" + value + "' exists." )
+	end
+	
+	/** Outputs error message invalid empty string on the application console. */
+	public func void logInvalidEmptyString( EasyXMLElement tag )
+		this.printOnConsole( tag, "Invalid empty string." )
+	end
+	
+	/** Outputs error message invalid axis on the application console. */
+	public func void logUnknownTag( EasyXMLElement tag )
+		this.printOnConsole( tag, "Unknown tag " + tag.getTagName() + "." )
+	end
+	
+	/** Outputs error message invalid axis on the application console. */
+	public func void logUnknownTag(  String filename, EasyXMLElement tag )
+		this.printOnConsole( filename, tag, "Unknown tag " + tag.getTagName() + "." )
+	end
+	
+	/** Outputs error message missing attribute on the application console. */
+	public func void logMissingCData( EasyXMLElement tag )
+		this.printOnConsole( tag, "Missing character data in tag " + tag.getTagName() + "." )
+	end
+	
+	/** Outputs error message about a failure to load another file or resource. */
+	public func void logLoadFileFailed( EasyXMLElement tag, String filename )
+		this.printOnConsole( tag, "Failed to load '" + filename + "' in tag " + tag.getTagName() + "." )
+	end
+	
+	/** Outputs error message about a feature not being supported. */
+	public func void logNotSupported( EasyXMLElement tag, String whatIsNotSupported )
+		this.printOnConsole( tag, whatIsNotSupported + " is not supported." )
+	end
+end

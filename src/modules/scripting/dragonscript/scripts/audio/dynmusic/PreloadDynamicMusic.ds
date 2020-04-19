@@ -1,0 +1,88 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.DynamicMusic
+
+pin Dragengine.Preloading
+pin Dragengine.Files
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Preload dynamic music.
+ * 
+ * Preloads sound files and finishes the dynamic music once all resources are loaded.
+ * To use create preloader and add one or more listeners to them. Once ready to
+ * preload call startPreloading().
+ * 
+ */
+class PreloadDynamicMusic extends Preloader
+	/** \brief Preload part music listener. */
+	public class PartMusicFinishedListener extends ResourceFinishedListener
+		/** \brief Part. */
+		private var DynamicMusicPart pPart
+		
+		/** \brief Create listener. */
+		public func new( PreloadDynamicMusic preloader, DynamicMusicPart part ) super( preloader )
+			this.pPart = part
+		end
+		
+		/** \brief Resource finished loading. */
+		public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+			this.pPart.setMusic( resource cast Sound )
+			super.finishedLoading( path, resourceType, resource )
+		end
+	end
+	
+	
+	
+	/** \brief Dynamic music to preload. */
+	private var DynamicMusic pDynamicMusic
+	
+	
+	
+	/** \brief Create preloader. */
+	public func new( DynamicMusic dynamicMusic, PreloadCounter parentCounter ) super( parentCounter )
+		if dynamicMusic == null
+			throw EInvalidParam.new()
+		end
+		this.pDynamicMusic = dynamicMusic
+	end
+	
+	
+	
+	/** \brief Dynamic music to preload. */
+	public func DynamicMusic getDynamicMusic()
+		return this.pDynamicMusic
+	end
+	
+	
+	
+	/** \brief Finish preloading. */
+	public func void finishPreloading()
+		if this.getSuccess()
+			this.pDynamicMusic.updateSpeaker()
+		end
+	end
+end

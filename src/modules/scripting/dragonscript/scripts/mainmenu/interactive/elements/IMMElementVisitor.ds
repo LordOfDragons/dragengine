@@ -1,0 +1,80 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Extended element visitor for interactive main menu.
+ * 
+ * Extends ElementVisitor to support visiting element classe created for this test
+ * project. The prefix TP is used to distinguish the extended element visitor from
+ * the super class. Otherwise name conflicts can result.
+ * 
+ * ElementVisitor forwards visit calls to the visit call matching the parent class.
+ * This allows writing generic visitors operating for example on a SimpleElement
+ * if they do not need to know what extra features a subclass introduces.
+ */
+class IMMElementVisitor extends ElementVisitor
+	/** \brief Create visitor. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Visit non-interactive prop. */
+	public func void visitProp( IMMProp prop )
+		this.visitBehaviorElement( prop )
+	end
+	
+	/** \brief Visit interactive hot-spot. */
+	public func void visitHotSpot( IMMHotSpot hotSpot )
+		this.visitProp( hotSpot )
+	end
+	
+	/** \brief Visit camera spot. */
+	public func void visitCameraSpot( IMMCameraSpot cameraSpot )
+		this.visitElement( cameraSpot )
+	end
+	
+	/** \brief Visit light. */
+	public func void visitLight( IMMLight light )
+		this.visitBehaviorElement( light )
+	end
+	
+	/** \brief Visit speaker. */
+	public func void visitSpeaker( IMMSpeaker speaker )
+		this.visitBehaviorElement( speaker )
+	end
+	
+	/** \brief Visit particle emitter. */
+	public func void visitParticleEmitter( IMMParticleEmitter particleEmitter )
+		this.visitBehaviorElement( particleEmitter )
+	end
+	
+	/** \brief Visit environment map probe. */
+	public func void visitEnvironmentMap( IMMEnvironmentMap environmentMap )
+		this.visitElement( environmentMap )
+	end
+end

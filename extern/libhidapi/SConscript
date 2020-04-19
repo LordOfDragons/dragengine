@@ -1,0 +1,151 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return() # requires libffi
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'hidapi-hidapi-0.8.0-rc1'
+
+libLinkNames = []
+dependencies = []
+
+if envLibrary['OSWindows']:
+	libLinkNames = ['hidapi']
+	libFileNames = ['bin/lib{}.dll'.format(x) for x in libLinkNames]
+	staticFileNames = ['lib/lib{}.a'.format(x) for x in libLinkNames]
+else:
+	libLinkNames = ['hidapi-hidraw', 'hidapi-libusb']
+	dependencies.append(parent_targets['lib_libusb'])
+	libFileNames = [envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(x)) for x in libLinkNames]
+	staticFileNames = [envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(x)) for x in libLinkNames]
+
+# check if system libhidapi is present
+hasSystemLibHidApi = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libhidapi'] != TernaryVariableNo:
+	hasSystemLibHidApi = conf.CheckLibWithHeader(libLinkNames, 'hidapi/hidapi.h', 'c++', 'hid_init();')
+conf.Finish()
+
+if not hasSystemLibHidApi and envLibrary['with_system_libhidapi'] == TernaryVariableYes:
+	Exit('Requested to use system libhidapi but no usable libhidapi found.')
+
+libs = libLinkNames[:]
+for x in dependencies:
+	libs.extend(x['libs'])
+
+parent_report['use system libhidapi'] = 'yes' if hasSystemLibHidApi else 'no'
+
+if hasSystemLibHidApi:
+	parent_targets['lib_libhidapi'] = {
+		'name' : 'Internal libhidapi library',
+		'cpppath' : [],
+		'libpath' : [],
+		'pkgconfig' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build animated libhidapi
+def libhidapiBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env, deps=dependencies)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if not buildStaticLinking:
+		for p in env['PATCHES']:
+			script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('./bootstrap || exit 1')
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--enable-silent-rules')
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make install || exit 1')
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libhidapi')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = staticFileNames[:]
+else:
+	targets = libFileNames[:]
+targets.extend(['include/hidapi/hidapi.h'])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(libhidapiBuild, 'Build libhidapi'))
+
+for x in dependencies:
+	if x['depends']:
+		envLibrary.Depends(library, x['depends'])
+
+if not buildStaticLinking:
+	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_libhidapi', library)
+
+envLibrary.Clean(library, ['include', 'lib', 'share', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+for x in dependencies:
+	cpppath.extend(x['cpppath'])
+
+libpath = [envLibrary.Dir('lib')]
+for x in dependencies:
+	libpath.extend(x['libpath'])
+
+pkgconfig = [envLibrary.Dir('lib/pkgconfig')]
+for x in dependencies:
+	pkgconfig.extend(x['pkgconfig'])
+
+if buildStaticLinking:
+	libs = library[:]
+	for x in dependencies:
+		libs.extend(x['libs'])
+	runtimelibs = []
+else:
+	runtimelibs = library[:]
+for x in dependencies:
+	runtimelibs.extend(x['runtimelibs'])
+
+parent_targets['lib_libhidapi'] = {
+	'name' : 'Internal libhidapi library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'pkgconfig' : pkgconfig,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

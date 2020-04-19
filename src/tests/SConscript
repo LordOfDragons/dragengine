@@ -1,0 +1,49 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+if not parent_env['with_tests']:
+	Return()
+
+if parent_env[ 'platform_android' ] != 'no':
+	Return()
+
+envTests = parent_env.Clone()
+
+pathBin = envTests.subst( envTests[ 'path_de_bin' ] )
+
+if envTests[ 'OSWindows' ]:
+	envTests.Append( CXXFLAGS = '-DDEBUG_RELOCATE_STDOUT' )
+
+# determine the source files
+sources = []
+globFiles( envTests, 'src', '*.cpp', sources )
+
+# HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK 
+useSpecial = False
+if useSpecial:
+	envTests.Append( CXXFLAGS = '-I{}/src/modules/physics/bullet/Bullet'.format( str( Dir('#').srcnode() ) ) )
+	envTests.Append( LINKFLAGS = '{}/src/modules/physics/bullet/build/libphybullet.so'.format( str( Dir('#').srcnode() ) ) )
+else:
+	envTests.Append( CXXFLAGS = '-DDETESTS_SPECIAL_OFF' )
+# HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK HACK 
+
+# setup the builders
+objects = [ envTests.StaticObject( s ) for s in sources ]
+
+libs = []
+appendLibrary( envTests, parent_targets[ 'dragengine' ], libs )
+libs.extend( parent_targets[ 'dragengine' ][ 'binlibs' ] ) # ???????
+
+program = envTests.Program( target='detests', source=objects, LIBS=libs )
+targetBuild = envTests.Alias( 'detests_build', program )
+
+install = []
+install.append( envTests.Install( pathBin, program ) )
+targetInstall = envTests.Alias( 'detests', install )
+
+# add the targets to the targets list
+parent_targets[ 'detests' ] = {
+	'name' : 'Drag[en]gine Tests',
+	'build' : targetBuild,
+	'install' : targetInstall }

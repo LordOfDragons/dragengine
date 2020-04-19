@@ -1,0 +1,4 @@
+RIGDERIG {
+  global: DERigCreateModule;
+  local: *;
+};

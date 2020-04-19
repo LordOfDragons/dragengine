@@ -1,0 +1,95 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Integer enumeration value element class property for use with XML loading.
+ * 
+ * Value is an integer value using a dictionary mapping string values to enumeration values.
+ */
+class ECPEnumerationInt extends ElementClassProperty
+	private var int pValue
+	private var Dictionary pMapping
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, int value ) super( name )
+		this.pValue = value
+		this.pMapping = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Value. */
+	public func int getValue()
+		return this.pValue
+	end
+	
+	/** \brief Set value. */
+	public func void setValue( int value )
+		this.pValue = value
+	end
+	
+	/** \brief Mapping between strings and enumerations. */
+	public func Dictionary getMapping()
+		return this.pMapping
+	end
+	
+	/** \brief Set mapping between strings and enumerations. */
+	public func void setMapping( Dictionary mapping )
+		this.pMapping = mapping
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pValue = this.pMapping.getAt( value cast String ) cast int
+	end
+	
+	
+	
+	/**
+	 * \brief Enumeration value modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored enumeration value
+	 * is returned. If the named stub property is present it is mapped against the mapping
+	 * and the matching enumeration value returned. If no match is found an exception is thrown.
+	 */
+	public func int getValue( StubWithProperties stub )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pValue
+			
+		else
+			return this.pMapping.getAt( value ) cast int
+		end
+	end
+end

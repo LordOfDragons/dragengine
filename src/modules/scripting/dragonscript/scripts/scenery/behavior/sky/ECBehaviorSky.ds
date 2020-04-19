@@ -1,0 +1,262 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding sky support.
+ * 
+ * Adds a SkyInstance resources to the world with support to mainpulate controllers.
+ * If a playback controller is set it is updated with the elapsed time. Other behaviors
+ * can update individual named controllers to add special effects.
+ * 
+ * Multiple skies can be added to a game world by different elements. In this case the
+ * graphic module concatenates them as if one single sky is used. This allows to split
+ * skies into multiple sky instances to add individual effects easily. To ensure the
+ * correct drawing order each sky is required to have a unique order value. Higher
+ * order values are rendered ontop of lower order values.
+ * 
+ * This behavior can be present only once in the behavior element.
+ * 
+ * Element class properties have the prefix "sky.".
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ */
+class ECBehaviorSky extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorSky pECBehavior
+		private var SkyInstance pSkyInstance
+		private var SkyController pControllerPlayback
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorSky ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var Sky sky = this.pECBehavior.getSky().getSky( stub, this.getElement().getClass() )
+			if sky == null
+				return
+			end
+			
+			this.pSkyInstance = SkyInstance.new()
+			this.pSkyInstance.setSky( sky )
+			this.pSkyInstance.setOrder( this.pECBehavior.getOrder().getValue( stub ) )
+			this.pSkyInstance.setLayerMask( this.pECBehavior.getLayerMask() )
+			
+			var String name = this.pECBehavior.getControllerPlayback().getValue( stub )
+			if not name.empty()
+				this.pControllerPlayback = this.pSkyInstance.getControllerNamed( name )
+			end
+			
+			this.setRequiresThink( this.pControllerPlayback != null )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorSky getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Sky instance. */
+		public func SkyInstance getSkyInstance()
+			return this.pSkyInstance
+		end
+		
+		/** \brief Playback controller or null if not used. */
+		public func SkyController getControllerPlayback()
+			return this.pControllerPlayback
+		end
+		
+		/** \brief Playback time. */
+		public func float getPlaybackTime()
+			if this.pControllerPlayback != null
+				return this.pControllerPlayback.getValue()
+				
+			else
+				return 0
+			end
+		end
+		
+		/** \brief Set playback time. */
+		public func void setPlaybackTime( float time )
+			if this.pControllerPlayback != null
+				this.pControllerPlayback.setValue( time )
+			end
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pSkyInstance != null
+				this.getElement().getGameWorld().getWorld().addSky( this.pSkyInstance )
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			if this.pSkyInstance != null
+				this.getElement().getGameWorld().getWorld().removeSky( this.pSkyInstance )
+			end
+		end
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			if this.pControllerPlayback == null
+				this.pControllerPlayback.increment( elapsed )
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setPlaybackTime( reader.readFloat() )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeFloat( this.getPlaybackTime() )
+		end
+	end
+	
+	
+	
+	private var ECPSky pSky
+	private var ECPInteger pOrder
+	private var ECPString pControllerPlayback
+	private var LayerMask pLayerMask
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) this( eclass, BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String prefix ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), prefix )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders) this( eclass, loaders, "sky." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders, String prefix ) super( eclass )
+		this.pLayerMask = LayerMask.new()
+		
+		this.pSky = ECPSky.new( prefix + "path", loaders.getSky() )
+		eclass.addProperty( this.pSky )
+		
+		this.pOrder = ECPInteger.new( prefix + "order", 0 )
+		eclass.addProperty( this.pOrder )
+		
+		this.pControllerPlayback = ECPString.new( prefix + "controllerPlayback", "" )
+		eclass.addProperty( this.pControllerPlayback )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Sky resource. */
+	public func ECPSky getSky()
+		return this.pSky
+	end
+	
+	/** \brief Order. */
+	public func ECPInteger getOrder()
+		return this.pOrder
+	end
+	
+	/** \brief Name of playback controller or empty string if not used. */
+	public func ECPString getControllerPlayback()
+		return this.pControllerPlayback
+	end
+	
+	/** \brief Layer mask. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+		if layerMask == null
+			throw EInvalidParam.new()
+		end
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorSky getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorSky
+		end ) cast ECBehaviorSky
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorSky.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

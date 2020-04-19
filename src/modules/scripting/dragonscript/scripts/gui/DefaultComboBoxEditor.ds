@@ -1,0 +1,133 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+
+/**
+ * \brief Default implementation of ComboBoxEditor using a TextField.
+ * 
+ * Uses Object.toString() of the value object as text to edit. Returns
+ * A String object if asked for the value.
+ * 
+ * Supports designing using designer selector "TextField.ComboBoxEditor".
+ */
+class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
+	/** \brief Action listeners. */
+	private var Array pActionListeners
+	
+	
+	
+	/** \brief Create default combo box editor. */
+	public func new() this( DefaultTextModel.new() )
+	end
+	
+	/** \brief Create default combo box editor. */
+	public func new( TextModel model ) super( model )
+		this.pActionListeners = Array.new()
+		this.setDesignerSelector( this.getDesignerSelector() + ".ComboBoxEditor" )
+		//this.setBorder( null )
+	end
+	
+	/** \brief Create default combo box editor. */
+	public func new( TextModel model, int displayCharCount ) this( model )
+		this.setDisplayCharCount( displayCharCount )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		// it is possible the dispose is triggered due to an action listener call.
+		// if Array.removeAll() is called in this case an exception is thrown due to
+		// modifying the array while iterating over it. dropping the array is enough
+		this.pActionListeners = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Get widget to use for editing. */
+	public func Widget getWidget()
+		return this
+	end
+	
+	/**
+	 * \brief Get editor value.
+	 * \details The returned object can be the one previously set by
+	 *          setEditorValue() if unchanged or a new object if changed.
+	 */
+	public func Object getEditorValue()
+		return this.getModel().getText()
+	end
+	
+	/**
+	 * \brief Set editor value to object or \em null to clear.
+	 * \details \em object is garanteed to not be modified by the editor.
+	 */
+	public func void setEditorValue( Object object )
+		if object == null
+			this.getModel().setText( "" )
+			
+		else
+			this.getModel().setText( object.toString() )
+		end
+	end
+	
+	/**
+	 * \brief Add action listener.
+	 * \details Action listener is called whenever the edited object changes.
+	 */
+	public func void addActionListener( ActionListener listener )
+		this.pActionListeners.add( listener )
+	end
+	
+	/** \brief Remove action listener. */
+	public func void removeActionListener( ActionListener listener )
+		this.pActionListeners.remove( listener )
+	end
+	
+	/**
+	 * \brief Start editing.
+	 * \details Typically this selects the entire text or otherwise prepare
+	 *          editor for directly manipulating the set value. There is no
+	 *          stop editing call since the widget is hidden in this case.
+	 */
+	public func void startEditing()
+		// selection not implemented yet on TextField
+		this.grabFocus()
+	end
+	
+	
+	
+	/** \brief Text string has changed. */
+	public func void textChanged( TextModel textModel )
+		super.textChanged( textModel )
+		
+		var ActionEvent event = ActionEvent.new( this, ActionEvent.idAction, 0 )
+		
+		this.pActionListeners.forEach( block ActionListener each
+			each.onAction( event )
+		end )
+	end
+end

@@ -1,0 +1,76 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule track to.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARTrackTo extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set track bone name or empty string to use none. */
+	public func void setTrackBone( String bone )
+	end
+	
+	/**
+	 * \brief Set track axis.
+	 * \throws EInvalidParam \em axis is not a valid value.
+	 */
+	public func void setTrackAxis( ARTrackToAxis axis )
+	end
+	
+	/**
+	 * \brief Set up axis.
+	 * \throws EInvalidParam \em axis is not a valid value.
+	 */
+	public func void setUpAxis( ARTrackToAxis axis )
+	end
+	
+	/**
+	 * \brief Set up target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void setUpTarget( ARTrackToUp target )
+	end
+	
+	/**
+	 * \brief Set lockec axis.
+	 * \throws EInvalidParam \em axis is not a valid value.
+	 */
+	public func void setLockedAxis( ARTrackToLocked axis )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARTrackToTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARTrackToTarget target )
+	end
+	/*@}*/
+end

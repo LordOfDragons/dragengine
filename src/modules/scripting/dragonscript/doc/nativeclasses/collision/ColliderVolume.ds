@@ -1,0 +1,66 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Volume collider.
+ * 
+ * Collider defined by a list of shapes. For articulated colliders use ColliderRig or ColliderComponent.
+ * 
+ * This is a native class.
+ */
+class ColliderVolume extends Collider
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create volume collider. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*
+	/** \brief Collider shape. */
+	public func ShapeList getShape()
+	end
+	
+	/** \brief Set collider shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
+	
+	
+	/**
+	 * \brief Collider is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Two colliders are equal.
+	 * \details This is an extended version of equals() accepting also \em null for \em collider1
+	 *          and \em collider2. equals() would thrown an exception if \em null is compared to
+	 *          anything. This call though allows to compare \em null against colliders or even
+	 *          \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
+	 *          If both are \em null \em true is returned.
+	 */
+	public static func bool equals( Collider collider1, Collider collider2 )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

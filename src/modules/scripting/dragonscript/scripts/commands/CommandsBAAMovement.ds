@@ -1,0 +1,530 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAMovement action.
+ * 
+ * Contains various commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAMovement
+	/** \brief Base class operating only on actors with BAAMovement action. */
+	public class Base extends Command
+		private var ECBehaviorPlayerControllable.Tracker pTracker
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description ) super( name, description )
+			if tracker == null
+				throw ENullPointer.new()
+			end
+			this.pTracker = tracker
+		end
+		
+		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+			return this.pTracker
+		end
+		
+		protected func BAAMovement getMovement()
+			var ECBehaviorPlayerControllable.Instance actor = this.pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorActorAIAction.Instance aiAction = \
+				ECBehaviorActorAIAction.getInstanceIn( actor.getElement() )
+			if aiAction != null and aiAction.getAction() castable BAAMovement
+				return aiAction.getAction() cast BAAMovement
+				
+			else
+				return null
+			end
+		end
+		
+		public func void start()
+			var BAAMovement movement = this.getMovement()
+			if movement != null
+				this.start( movement )
+			end
+		end
+		
+		public func void stop()
+			var BAAMovement movement = this.getMovement()
+			if movement != null
+				this.stop( movement )
+			end
+		end
+		
+		public func void analogRelative( float value )
+			var BAAMovement movement = this.getMovement()
+			if movement != null
+				this.analogRelative( movement, value )
+			end
+		end
+		
+		public func void analogAbsolute( float value )
+			var BAAMovement movement = this.getMovement()
+			if movement != null
+				this.analogAbsolute( movement, value )
+			end
+		end
+		
+		
+		
+		/** \brief Start command on action. */
+		public func void start( BAAMovement action )
+		end
+		
+		/** \brief Start command on action. */
+		public func void stop( BAAMovement action )
+		end
+		
+		/**
+		 * \brief Relative input device axis position changed.
+		 * 
+		 * Value is the change in the relative axis. It is reset to 0 right after sending the
+		 * event. No event is sent for the reset. A typical device is mouse movement resulting
+		 * in this method to be called.
+		 * 
+		 * \param value Relative axis position change in axis units. Caller is responsible to
+		 *              adjust the range to make different input devices match in magnitude.
+		 */
+		public func void analogRelative( BAAMovement action, float value )
+		end
+		
+		/**
+		 * \brief Absolute input device axis position changed.
+		 * 
+		 * Axis keeps position until next event. Gamepad events typically send this method
+		 * when the stick is pushed to a new position.
+		 * 
+		 * \param value New axis position in the range -1 to 1.
+		 */
+		public func void analogAbsolute( BAAMovement action, float value )
+		end
+	end
+	
+	
+	
+	/** \brief Move forward. */
+	public class MoveForward extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "moveForward" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Move forward" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.moveForwardStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.moveForwardStop()
+		end
+	end
+	
+	/** \brief Move backward. */
+	public class MoveBackward extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "moveBackward" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Move backward" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.moveBackwardStart()
+		end
+		
+		/** \brief Start command on action. */
+		public func void stop( BAAMovement action )
+			action.moveBackwardStop()
+		end
+	end
+	
+	/** \brief Move left. */
+	public class MoveLeft extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "moveLeft" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Move left" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.moveLeftStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.moveLeftStop()
+		end
+	end
+	
+	/** \brief Move right. */
+	public class MoveRight extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "moveRight" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Move right" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.moveRightStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.moveRightStop()
+		end
+	end
+	
+	
+	
+	/** \brief Look left. */
+	public class LookLeft extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "lookLeft" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Look left" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.lookLeftStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.lookLeftStop()
+		end
+	end
+	
+	/** \brief Look right. */
+	public class LookRight extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "lookRight" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Look right" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.lookRightStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.lookRightStop()
+		end
+	end
+	
+	/** \brief Look up. */
+	public class LookUp extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "lookUp" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Look up" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.lookUpStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.lookUpStop()
+		end
+	end
+	
+	/** \brief Look down. */
+	public class LookDown extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "lookDown" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Look down" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.lookDownStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.lookDownStop()
+		end
+	end
+	
+	
+	
+	/** \brief Analog movement forward/backward. */
+	public class AnalogMoveFB extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "analogMoveFB" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Analog move forward/backward" )
+		end
+		
+		public func void analogRelative( BAAMovement action, float value )
+			action.analogMoveFB( value, false )
+		end
+		
+		public func void analogAbsolute( BAAMovement action, float value )
+			action.analogMoveFB( value, true )
+		end
+	end
+	
+	/** \brief Analog movement left/right. */
+	public class AnalogMoveLR extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "analogMoveLR" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Analog move left/right" )
+		end
+		
+		public func void analogRelative( BAAMovement action, float value )
+			action.analogMoveLR( value, false )
+		end
+		
+		public func void analogAbsolute( BAAMovement action, float value )
+			action.analogMoveLR( value, true )
+		end
+	end
+	
+	/** \brief Analog lookment left/right. */
+	public class AnalogLookLR extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "analogLookLR" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Analog look left/right" )
+		end
+		
+		public func void analogRelative( BAAMovement action, float value )
+			action.analogLookLR( value, false )
+		end
+		
+		public func void analogAbsolute( BAAMovement action, float value )
+			action.analogLookLR( value, true )
+		end
+	end
+	
+	/** \brief Analog lookment up/down. */
+	public class AnalogLookUD extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "analogLookUD" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Analog look up/down" )
+		end
+		
+		public func void analogRelative( BAAMovement action, float value )
+			action.analogLookUD( value, false )
+		end
+		
+		public func void analogAbsolute( BAAMovement action, float value )
+			action.analogLookUD( value, true )
+		end
+	end
+	
+	
+	
+	/** \brief Crouching. */
+	public class Crouch extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "crouch" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Crouching" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.crouchStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.crouchStop()
+		end
+	end
+	
+	/** \brief Toggle crouching. */
+	public class ToggleCrouch extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "toggleCrouch" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Toggle crouching" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.crouchToggle()
+		end
+	end
+	
+	/** \brief Running. */
+	public class Run extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "run" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Running" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.runStart()
+		end
+		
+		public func void stop( BAAMovement action )
+			action.runStop()
+		end
+	end
+	
+	/** \brief Toggle running. */
+	public class ToggleRun extends Base
+		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "toggleRun" )
+		end
+		
+		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
+		super( tracker, name, "Toggle running" )
+		end
+		
+		public func void start( BAAMovement action )
+			action.runToggle()
+		end
+	end
+	
+	
+	
+	/** \brief Add commands to command manager. */
+	public static func void addCommands( CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker )
+		commands.add( MoveForward.new( tracker ) )
+		commands.add( MoveBackward.new( tracker ) )
+		commands.add( MoveLeft.new( tracker ) )
+		commands.add( MoveRight.new( tracker ) )
+		
+		commands.add( LookLeft.new( tracker ) )
+		commands.add( LookRight.new( tracker ) )
+		commands.add( LookUp.new( tracker ) )
+		commands.add( LookDown.new( tracker ) )
+		
+		commands.add( AnalogMoveFB.new( tracker ) )
+		commands.add( AnalogMoveLR.new( tracker ) )
+		commands.add( AnalogLookLR.new( tracker ) )
+		commands.add( AnalogLookUD.new( tracker ) )
+		
+		commands.add( Crouch.new( tracker ) )
+		commands.add( ToggleCrouch.new( tracker ) )
+		commands.add( Run.new( tracker ) )
+		commands.add( ToggleRun.new( tracker ) )
+	end
+	
+	
+	
+	/** \brief Input scheme to use for adding default bindings. */
+	public enum InputScheme
+		/** \brief DYXC. */
+		dyxc
+		
+		/** WASD. */
+		wasd
+	end
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands:
+	 * - "moveForward"
+	 * - "moveBackward"
+	 * - "moveLeft"
+	 * - "moveRight"
+	 * - "lookLeft"
+	 * - "lookRight"
+	 * - "lookUp"
+	 * - "lookDown"
+	 * - "analogMoveFB"
+	 * - "analogMoveLR"
+	 * - "analogLookLR"
+	 * - "analogLookUD"
+	 * - "toggleCrouch"
+	 * - "toggleRun"
+	 * 
+	 * These commands are not added as bindings:
+	 * - "crouch"
+	 * - "run"
+	 */
+	public static func void addDefaultBindings( DefaultBindingHelper helper, InputScheme scheme )
+		select scheme
+		case InputScheme.dyxc
+			if helper.hasMouse()
+				helper.mouseBindMove( "analogLookLR", "analogLookUD" )
+			end
+			
+			if helper.hasKeyboard()
+				helper.keyboardBindKeyCode( InputEventKey.d, "moveForward" )
+				helper.keyboardBindKeyCode( InputEventKey.c, "moveBackward" )
+				helper.keyboardBindKeyCode( InputEventKey.y, "moveLeft" )
+				helper.keyboardBindKeyCode( InputEventKey.v, "moveRight" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowLeft, "lookLeft" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowRight, "lookRight" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowUp, "lookUp" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowDown, "lookDown" )
+				helper.keyboardBindKeyCode( InputEventKey.x, "toggleCrouch" )
+				helper.keyboardBindKeyCode( InputEventKey.e, "toggleRun" )
+			end
+			
+			if helper.hasGamepad()
+				helper.gamepadBindStick( 0, "analogMoveLR", "analogMoveFB" )
+				helper.gamepadBindStick( 1, "analogLookLR", "analogLookUD" )
+			end
+			
+		case InputScheme.wasd
+			if helper.hasMouse()
+				helper.mouseBindMove( "analogLookLR", "analogLookUD" )
+			end
+			
+			if helper.hasKeyboard()
+				helper.keyboardBindKeyCode( InputEventKey.w, "moveForward" )
+				helper.keyboardBindKeyCode( InputEventKey.s, "moveBackward" )
+				helper.keyboardBindKeyCode( InputEventKey.a, "moveLeft" )
+				helper.keyboardBindKeyCode( InputEventKey.d, "moveRight" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowLeft, "lookLeft" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowRight, "lookRight" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowUp, "lookUp" )
+				helper.keyboardBindKeyCode( InputEventKey.arrowDown, "lookDown" )
+				helper.keyboardBindKeyCode( InputEventKey.x, "toggleCrouch" )
+				helper.keyboardBindKeyCode( InputEventKey.e, "toggleRun" )
+			end
+			
+			if helper.hasGamepad()
+				helper.gamepadBindStick( 0, "analogMoveLR", "analogMoveFB" )
+				helper.gamepadBindStick( 1, "analogLookLR", "analogLookUD" )
+			end
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+end

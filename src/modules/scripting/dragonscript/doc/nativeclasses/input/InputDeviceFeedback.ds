@@ -1,0 +1,145 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Input device feedback.
+ * 
+ * Wraps a input device feedback by feedback index.
+ * 
+ * Feedback provides support for games to give a feedback in the form of lights, vibration
+ * or other haptic feeling. The maximum is fixed to 1 to make it simpler for scripts to work
+ * with. The null point is 0 where the feedback is switched off. Using the input module the
+ * value  of feedback can be requested to be changed. The input module itself decides if the
+ * request is honored or not. The current value of the feedback can be read any time.
+ * 
+ * This is a native class.
+ */
+class InputDeviceFeedback
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Input device feedback can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner input device. */
+	public func InputDevice getInputDevice()
+	end
+	
+	/** \brief Feedback index. */
+	public func int getFeedbackIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Feedbacks */
+	/*@{*/
+	/**
+	 * \brief Feedback identifier.
+	 * 
+	 * Unique identifier for the feedback identifying it inside the parent device. The prefix
+	 * is a normalized string that contains only letters, numbers and underscores. It is
+	 * suitable to be combined with the device identifier to store them in config files as
+	 * key bindings.
+	 */
+	public func String getID()
+	end
+	
+	/**
+	 * \brief Display name.
+	 * 
+	 * Dispaly name is human readable like for example 'Feedback #1'. The name is unique but
+	 * not guaranteed to stay the same across restarting the input module or game engine.
+	 */
+	public func String getName()
+	end
+	
+	/** \brief Feedback type. */
+	public func InputDeviceFeedbackType getType()
+	end
+	
+	/**
+	 * \brief Image to represent the feedback in 2D user interfaces or NULL if not set.
+	 * 
+	 * Large image of 128 pixels squared or larger.
+	 */
+	public func Image getDisplayImage()
+		return null
+	end
+	
+	/** \brief Count of icons representing the feedback in bindings. */
+	public func int getDisplayIconCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Icon at index representing the feedback in bindings.
+	 * 
+	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getDisplayIconAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding width representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconX( int maxWidth )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding height representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconY( int maxHeight )
+		return null
+	end
+	
+	/** \brief Text to display centered across display image or icon. */
+	public String getDisplayText()
+		return ""
+	end
+	
+	
+	
+	/**
+	 * \brief Get current value.
+	 * 
+	 * Get current value from input module. If the device has been detached from the host
+	 * platform in the mean time 0 is returned. In contrary to InputSystem.getFeedbackValue()
+	 * no exception is thrown. This allows to keep a reference to this instance without
+	 * worrying about the device being detached from the system. If reattached the device
+	 * properly works again.
+	 */
+	public func float getValue()
+	end
+	
+	/**
+	 * \brief Set current value.
+	 * 
+	 * Request input module to set current value of feedback. If the device has been detached
+	 * from the host platform in the mean time nothing is done. In contrary to
+	 * InputSystem.setFeedbackValue() no exception is thrown. This allows to keep a reference
+	 * to this instance without worrying about the device being detached from the system. If
+	 * reattached the device properly works again.
+	 */
+	public func void setValue( float value )
+	end
+	/*@}*/
+end

@@ -1,0 +1,69 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * A face pose in a conversation script.
+ */
+class ConversationFacePose
+	/** Unique name. */
+	private var StringID pName
+	/** List of controller values. */
+	private var Array pControllers
+	
+	
+	
+	/** Create a new conversation face pose. */
+	public func new( StringID name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pName = name
+		this.pControllers = Array.new()
+	end
+	
+	
+	
+	/** Retrieves the name. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** Visit all controller values. */
+	public func void forEachController( Block aBlock )
+		this.pControllers.forEach( aBlock )
+	end
+	
+	/** Adds a controller value. */
+	public func void addControllerValue( ConversationControllerValue controllerValue )
+		if controllerValue == null
+			throw EInvalidParam.new()
+		end
+		this.pControllers.add( controllerValue )
+	end
+end

@@ -1,0 +1,129 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of synthesizer source.
+ * 
+ * Once defined a source can be added to an synthesizer using the stored definition.
+ * 
+ */
+class SDSourceSound extends SDSource
+	/** \brief Sound. */
+	private var Sound pSound
+	
+	/** \brief Minimum speed. */
+	private var float pMinSpeed
+	
+	/** \brief Maximum speed. */
+	private var float pMaxSpeed
+	
+	/** \brief Sound is played back looping. */
+	private var bool pLooping
+	
+	
+	
+	/** \brief Create synthesizer source definition. */
+	public func new()
+		this.pMinSpeed = 1.0
+		this.pMaxSpeed = 1.0
+		this.pLooping = false
+	end
+	
+	
+	
+	/** \brief Sound. */
+	public func Sound getSound()
+		return this.pSound
+	end
+	
+	/** \brief Set sound. */
+	public func void setSound( Sound sound )
+		this.pSound = sound
+	end
+	
+	/** \brief Minimum speed. */
+	public func float getMinSpeed()
+		return this.pMinSpeed
+	end
+	
+	/** \brief Set minimum speed. */
+	public func void setMinSpeed( float speed )
+		this.pMinSpeed = speed
+	end
+	
+	/** \brief Maximum speed. */
+	public func float getMaxSpeed()
+		return this.pMaxSpeed
+	end
+	
+	/** \brief Set maximum speed. */
+	public func void setMaxSpeed( float speed )
+		this.pMaxSpeed = speed
+	end
+	
+	/** \brief Sound is played back looping. */
+	public func bool getLooping()
+		return this.pLooping
+	end
+	
+	/** \brief Set if sound is played back looping. */
+	public func void setLooping( bool looping )
+		this.pLooping = looping
+	end
+	
+	
+	
+	/**
+	 * \brief Build engine synthesizer source using the stored definition.
+	 */
+	public func SynthesizerSource buildSource( Synthesizer synthesizer )
+		var SSSound source = SSSound.new()
+		
+		this.buildSourceCommon( synthesizer, source )
+		
+		this.forEachTarget( block SDSourceTargetLink each
+			source.targetAddLink( each.getTarget() cast SSSoundTarget, each.getLink().getIndex() )
+		end )
+		
+		source.setSound( this.pSound )
+		source.setMinSpeed( this.pMinSpeed )
+		source.setMaxSpeed( this.pMaxSpeed )
+		source.setLooping( this.pLooping )
+		
+		return source
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( console, "Sound" ) + " sound=" \
+			+ ( this.pSound == null if "-" else this.pSound.getFilename() ) + " speed=" \
+			+ this.pMinSpeed + "-" + this.pMaxSpeed + " loop=" + this.pLooping + ")" )
+	end
+end

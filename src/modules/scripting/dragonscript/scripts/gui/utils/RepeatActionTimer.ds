@@ -1,0 +1,142 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Timer repeating an action.
+ */
+class RepeatActionTimer extends Timer
+	/** \brief Action to repeat. */
+	private var ActionListener pAction
+	
+	/** \brief Source sending event. */
+	private var Object pSource
+	
+	/** \brief Modifiers for sending event. */
+	private var int pModifiers
+	
+	/** \brief Repeat delay in seconds. */
+	private var float pRepeatDelay
+	
+	
+	
+	/**
+	 * \brief Create repeat action timer with 0.5s initial delay and 0.05 repeat delay.
+	 * \param action Action to repeat.
+	 * \param source Source sending the action.
+	 * \param modifiers Modifiers for sending event.
+	 */
+	public func new( ActionListener action, Object source, int modifiers ) \
+	this( action, source, modifiers, 0.5, 0.05 )
+	end
+	
+	/**
+	 * \brief Create repeat action timer.
+	 * \param action Action to repeat.
+	 * \param source Source sending the action.
+	 * \param modifiers Modifiers for sending event.
+	 * \param initialDelay Delay before repeating actions in seconds.
+	 * \param repeatDelay Delay between repeated actions in seconds.
+	 */
+	public func new( ActionListener action, Object source, int modifiers, \
+	float initialDelay, float repeatDelay ) super( initialDelay, true )
+		if action == null or source == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pAction = action
+		this.pSource = source
+		this.pModifiers = modifiers
+		this.pRepeatDelay = repeatDelay
+	end
+	
+	
+	
+	/** \brief Action to repeat. */
+	public func ActionListener getAction()
+		return this.pAction
+	end
+	
+	/** \brief Set action to repeat. */
+	public func void setAction( ActionListener action )
+		if action == null
+			throw EInvalidParam.new()
+		end
+		this.pAction = action
+	end
+	
+	/** \brief Source sending event. */
+	public func Object getSource()
+		return this.pSource
+	end
+	
+	/** \brief Set source sending event. */
+	public func void setSource( Object source )
+		if source == null
+			throw EInvalidParam.new()
+		end
+		this.pSource = source
+	end
+	
+	/** \brief Modifiers for sending event. */
+	public func int getModifiers()
+		return this.pModifiers
+	end
+	
+	/** \brief Set modifiers for sending event. */
+	public func void setModifiers( int modifiers )
+		this.pModifiers = modifiers
+	end
+	
+	/** \brief Repeat delay in seconds. */
+	public func float getRepeatDelay()
+		return this.pRepeatDelay
+	end
+	
+	/** \brief Set repeat delay in seconds. */
+	public func void setRepeatDelay( float delay )
+		this.pRepeatDelay = delay
+	end
+	
+	
+	
+	/** \brief Send event. */
+	public func void sendEvent()
+		this.pAction.onAction( ActionEvent.new( this.pSource, \
+			ActionEvent.idAction, this.pModifiers ) )
+	end
+	
+	
+	
+	/** \brief Timer elapsed. */
+	public func void fire()
+		this.setTriggerTime( this.pRepeatDelay )
+		this.sendEvent()
+	end
+end

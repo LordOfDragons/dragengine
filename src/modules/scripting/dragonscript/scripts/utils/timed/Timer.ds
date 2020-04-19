@@ -1,0 +1,176 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Timer triggered after a specific amount of time elapsed.
+ * 
+ * Can be set as a trigger once timer which will remove itself after having fired or a
+ * trigger periodic timer which goes on triggering each time the given amount of time
+ * elapsed. A timer always registers with a TimerManager object. If no such object is
+ * specified during construction time the default timer manager is used which is a
+ * static timer manager.
+ */
+abstract class Timer
+	/** \brief Timer manager this timer is registered at. */
+	private var TimerManager pTimerManager
+	
+	/** \brief Amount of seconds to wait until triggering. */
+	private var float pTriggerTime
+	
+	/** \brief Amount of seconds already elapsed. */
+	private var float pElapsedTime
+	
+	/** \brief Timer is triggered periodically. */
+	private var bool pIsPeriodic
+	
+	
+	
+	/**
+	 * \brief Create timer registered at default timer manager.
+	 * 
+	 * \param triggerTime Seconds to wait before triggering
+	 * \param periodic Reschedule trigger once finished.
+	 */
+	public func new( float triggerTime, bool periodic ) \
+	this( TimerManager.getDefault(), triggerTime, periodic )
+	end
+	
+	/**
+	 * \brief Create timer registered at timer manager.
+	 * 
+	 * \param manager Timer Manager to register timer at
+	 * \param triggerTime Seconds to wait before triggering
+	 * \param periodic True if this timer is periodic
+	 */
+	public func new( TimerManager manager, float triggerTime, bool periodic )
+		if manager == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pTimerManager = manager
+		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
+		this.pElapsedTime = 0.0
+		this.pIsPeriodic = periodic
+		
+		this.pTimerManager.addTimer( this )
+	end
+	
+	
+	
+	/**
+	 * \brief Give up timer if registered with a timer manager.
+	 * 
+	 * Call to give up pending timer. Dropping the reference alone does not give up the timer.
+	 */
+	public func void giveUp()
+		if this.pTimerManager == null
+			return
+		end
+		
+		this.pTimerManager.removeTimer( this )
+		this.pTimerManager = null
+	end
+	
+	
+	
+	/** \brief Timer manager the timer is registered at. */
+	public func TimerManager getTimerManager()
+		return this.pTimerManager
+	end
+	
+	/** \brief Seconds until timer elapsed. */
+	public func float getTriggerTime()
+		return this.pTriggerTime
+	end
+	
+	/** \brief Set seconds until timer elapses. */
+	public func void setTriggerTime( float triggerTime )
+		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
+	end
+	
+	/** \brief Timer is periodic. */
+	public func bool getIsPeriodic()
+		return this.pIsPeriodic
+	end
+	
+	/** \brief Set if timer is periodic. */
+	public func void setIsPeriodic( bool periodic )
+		this.pIsPeriodic = periodic
+	end
+	
+	/** \brief Elapsed seconds. */
+	public func float getElapsedTime()
+		return this.pElapsedTime
+	end
+	
+	/** \brief Set elapsed seconds. */
+	public func void setElapsedTime( float elapsedTime )
+		this.pElapsedTime = elapsedTime
+	end
+	
+	/** \brief Remaining seconds until timer elapses. */
+	public func float getRemainingTime()
+		return DEMath.max( this.pTriggerTime - this.pElapsedTime, 0.0 )
+	end
+	
+	
+	
+	/**
+	 * \brief Advance timer.
+	 * 
+	 * If elapsed time reaches 0 fire() is called. If the timer is not periodic it is
+	 * unregistered from timer manager. fire() is called after the timer has been removed.
+	 * If timer is periodic the timer is rescheduled with the trigger time. This makes
+	 * periodic timers not well suited for precise timing purpose at small update intervals.
+	 * If you need this kind of precise timing use FrameUpdateListener and track elapsed
+	 * time directly.
+	 */
+	public func void advance( float elapsed )
+		if elapsed <= 0.0
+			return
+		end
+		
+		this.pElapsedTime += elapsed
+		if this.pElapsedTime < this.pTriggerTime
+			return
+		end
+		
+		if this.pIsPeriodic
+			//this.pElapsedTime = DEMath.normalize( this.pElapsedTime, this.pTriggerTime )
+			this.pElapsedTime = 0.0
+			
+		else
+			this.giveUp()
+		end
+		
+		this.fire()
+	end
+	
+	
+	
+	/** \brief Timer time elapsed. */
+	abstract public func void fire()
+end

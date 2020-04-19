@@ -1,0 +1,506 @@
+/* 
+ * Drag[en]gine OpenGL Graphic Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "deoglPixelBuffer.h"
+
+#include <dragengine/common/exceptions.h>
+
+
+
+// Class deoglPixelBuffer
+///////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+deoglPixelBuffer::deoglPixelBuffer( ePixelFormats format, int width, int height, int depth ){
+	if( width < 1 || height < 1 || depth < 1 || format < 0 || format >= EPF_COUNT ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pFormat = format;
+	pWidth = width;
+	pHeight = height;
+	pDepth = depth;
+	pPixels = NULL;
+	
+	if( format == epfByte1 ){
+		pUnitSize = 1;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RED;
+		pGLPixelType = GL_UNSIGNED_BYTE;
+		
+	}else if( format == epfByte2 ){
+		pUnitSize = 2;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RG;
+		pGLPixelType = GL_UNSIGNED_BYTE;
+		
+	}else if( format == epfByte3 ){
+		pUnitSize = 3;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RGB;
+		pGLPixelType = GL_UNSIGNED_BYTE;
+		
+	}else if( format == epfByte4 ){
+		pUnitSize = 4;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RGBA;
+		pGLPixelType = GL_UNSIGNED_BYTE;
+		
+	}else if( format == epfFloat1 ){
+		pUnitSize = 4;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RED;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfFloat2 ){
+		pUnitSize = 8;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RG;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfFloat3 ){
+		pUnitSize = 12;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RGB;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfFloat4 ){
+		pUnitSize = 16;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RGBA;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfDepth ){
+		pUnitSize = 4;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_DEPTH_COMPONENT;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfStencil ){
+		pUnitSize = 1;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_STENCIL_INDEX;
+		pGLPixelType = GL_UNSIGNED_BYTE;
+		
+	}else if( format == epfDepthStencil ){
+		pUnitSize = 4;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_DEPTH_COMPONENT;
+		pGLPixelType = GL_FLOAT;
+		
+	}else if( format == epfDXT1 ){
+		const int blockCountX = ( ( width - 1 ) >> 2 ) + 1;
+		const int blockCountY = ( ( height - 1 ) >> 2 ) + 1;
+		
+		pUnitSize = 8;
+		pStrideLine = pUnitSize * blockCountX;
+		pStrideLayer = pStrideLine * blockCountY;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = true;
+		pGLPixelFormat = 0; // unsupported
+		pGLPixelType = 0; // unsupported
+		
+	}else if( format == epfDXT3 ){
+		const int blockCountX = ( ( width - 1 ) >> 2 ) + 1;
+		const int blockCountY = ( ( height - 1 ) >> 2 ) + 1;
+		
+		pUnitSize = 16;
+		pStrideLine = pUnitSize * blockCountX;
+		pStrideLayer = pStrideLine * blockCountY;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = true;
+		pGLPixelFormat = 0; // unsupported
+		pGLPixelType = 0; // unsupported
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+	
+	pPixels = new GLubyte[ pImageSize ];
+}
+
+deoglPixelBuffer::deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer ) :
+pWidth( pixelBuffer.pWidth ),
+pHeight( pixelBuffer.pHeight ),
+pDepth( pixelBuffer.pDepth ),
+pFormat( pixelBuffer.pFormat ),
+pUnitSize( pixelBuffer.pUnitSize ),
+pStrideLine( pixelBuffer.pStrideLine ),
+pStrideLayer( pixelBuffer.pStrideLayer ),
+pImageSize( pixelBuffer.pImageSize ),
+pCompressed( pixelBuffer.pCompressed ),
+pGLPixelFormat( pixelBuffer.pGLPixelFormat ),
+pGLPixelType( pixelBuffer.pGLPixelType ),
+pPixels( NULL )
+{
+	pPixels = new GLubyte[ pImageSize ];
+	memcpy( pPixels, pixelBuffer.pPixels, pImageSize );
+}
+
+deoglPixelBuffer::~deoglPixelBuffer(){
+	if( pPixels ){
+		delete [] ( GLubyte* )pPixels;
+	}
+}
+
+
+
+// Management
+///////////////
+
+deoglPixelBuffer::sByte1 *deoglPixelBuffer::GetPointerByte1() const{
+	if( pFormat != epfByte1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sByte1* )pPixels;
+}
+
+deoglPixelBuffer::sByte2 *deoglPixelBuffer::GetPointerByte2() const{
+	if( pFormat != epfByte2 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sByte2* )pPixels;
+}
+
+deoglPixelBuffer::sByte3 *deoglPixelBuffer::GetPointerByte3() const{
+	if( pFormat != epfByte3 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sByte3* )pPixels;
+}
+
+deoglPixelBuffer::sByte4 *deoglPixelBuffer::GetPointerByte4() const{
+	if( pFormat != epfByte4 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sByte4* )pPixels;
+}
+
+deoglPixelBuffer::sFloat1 *deoglPixelBuffer::GetPointerFloat1() const{
+	if( pFormat != epfFloat1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sFloat1* )pPixels;
+}
+
+deoglPixelBuffer::sFloat2 *deoglPixelBuffer::GetPointerFloat2() const{
+	if( pFormat != epfFloat2 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sFloat2* )pPixels;
+}
+
+deoglPixelBuffer::sFloat3 *deoglPixelBuffer::GetPointerFloat3() const{
+	if( pFormat != epfFloat3 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sFloat3* )pPixels;
+}
+
+deoglPixelBuffer::sFloat4 *deoglPixelBuffer::GetPointerFloat4() const{
+	if( pFormat != epfFloat4 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sFloat4* )pPixels;
+}
+
+deoglPixelBuffer::sDepth *deoglPixelBuffer::GetPointerDepth() const{
+	if( pFormat != epfDepth ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sDepth* )pPixels;
+}
+
+deoglPixelBuffer::sStencil *deoglPixelBuffer::GetPointerStencil() const{
+	if( pFormat != epfStencil ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sStencil* )pPixels;
+}
+
+deoglPixelBuffer::sDepthStencil *deoglPixelBuffer::GetPointerDepthStencil() const{
+	if( pFormat != epfDepthStencil ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sDepthStencil* )pPixels;
+}
+
+deoglPixelBuffer::sDXT1 *deoglPixelBuffer::GetPointerDXT1() const{
+	if( pFormat != epfDXT1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sDXT1* )pPixels;
+}
+
+deoglPixelBuffer::sDXT3 *deoglPixelBuffer::GetPointerDXT3() const{
+	if( pFormat != epfDXT3 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return ( sDXT3* )pPixels;
+}
+
+
+
+void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
+	const int pixelcount = pWidth * pHeight * pDepth;
+	int i;
+	
+	if( pFormat == epfByte1 ){
+		sByte1 * const pixels = ( sByte1* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		
+	}else if( pFormat == epfByte2 ){
+		sByte2 * const pixels = ( sByte2* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		
+	}else if( pFormat == epfByte3 ){
+		sByte3 * const pixels = ( sByte3* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		const GLubyte gblue = ( GLubyte )blue;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		
+	}else if( pFormat == epfByte4 ){
+		sByte4 * const pixels = ( sByte4* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		const GLubyte gblue = ( GLubyte )blue;
+		const GLubyte galpha = ( GLubyte )alpha;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		
+	}else if( pFormat == epfFloat1 ){
+		sFloat1 * const pixels = ( sFloat1* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		
+	}else if( pFormat == epfFloat2 ){
+		sFloat2 * const pixels = ( sFloat2* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		
+	}else if( pFormat == epfFloat3 ){
+		sFloat3 * const pixels = ( sFloat3* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		const GLfloat gblue = ( GLfloat )blue / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		
+	}else if( pFormat == epfFloat4 ){
+		sFloat4 * const pixels = ( sFloat4* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		const GLfloat gblue = ( GLfloat )blue / ( GLfloat )255.0;
+		const GLfloat galpha = ( GLfloat )alpha / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		
+	}else{
+		// with the rest not supported
+	}
+}
+
+void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, float alpha ){
+	const int pixelcount = pWidth * pHeight * pDepth;
+	int i;
+	
+	if( pFormat == epfByte1 ){
+		sByte1 * const pixels = ( sByte1* )pPixels;
+		const GLubyte gred = ( GLubyte )( red * 255.0f );
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		
+	}else if( pFormat == epfByte2 ){
+		sByte2 * const pixels = ( sByte2* )pPixels;
+		const GLubyte gred = ( GLubyte )( red * 255.0f );
+		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		
+	}else if( pFormat == epfByte3 ){
+		sByte3 * const pixels = ( sByte3* )pPixels;
+		const GLubyte gred = ( GLubyte )( red * 255.0f );
+		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
+		const GLubyte gblue = ( GLubyte )( blue * 255.0f );
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		
+	}else if( pFormat == epfByte4 ){
+		sByte4 * const pixels = ( sByte4* )pPixels;
+		const GLubyte gred = ( GLubyte )( red * 255.0f );
+		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
+		const GLubyte gblue = ( GLubyte )( blue * 255.0f );
+		const GLubyte galpha = ( GLubyte )( alpha * 255.0f );
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		
+	}else if( pFormat == epfFloat1 ){
+		sFloat1 * const pixels = ( sFloat1* )pPixels;
+		const GLfloat gred = ( GLfloat )red;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		
+	}else if( pFormat == epfFloat2 ){
+		sFloat2 * const pixels = ( sFloat2* )pPixels;
+		const GLfloat gred = ( GLfloat )red;
+		const GLfloat ggreen = ( GLfloat )green;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		
+	}else if( pFormat == epfFloat3 ){
+		sFloat3 * const pixels = ( sFloat3* )pPixels;
+		const GLfloat gred = ( GLfloat )red;
+		const GLfloat ggreen = ( GLfloat )green;
+		const GLfloat gblue = ( GLfloat )blue;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		
+	}else if( pFormat == epfFloat4 ){
+		sFloat4 * const pixels = ( sFloat4* )pPixels;
+		const GLfloat gred = ( GLfloat )red;
+		const GLfloat ggreen = ( GLfloat )green;
+		const GLfloat gblue = ( GLfloat )blue;
+		const GLfloat galpha = ( GLfloat )alpha;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		
+	}else{
+		// with the rest not supported
+	}
+}

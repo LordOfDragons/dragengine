@@ -1,0 +1,515 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rig>
+	<mass>1</mass>
+	<centralMassPoint x='0' y='0' z='0'/>
+	<box>
+		<position x='47.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='42.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='37.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='32.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='27.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='22.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='17.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='12.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='7.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='2.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-2.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-7.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-12.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-17.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-22.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-27.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-32.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-37.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-42.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-47.5' y='2.8' z='51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='47.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='42.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='37.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='32.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='27.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='22.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='17.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='12.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='7.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='2.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-2.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-7.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-12.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-17.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-22.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-27.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-32.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-37.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-42.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='51.2' y='2.8' z='-47.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='180' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-47.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-42.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-37.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-32.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-27.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-22.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-17.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-12.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-7.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-2.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='2.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='7.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='12.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='17.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='22.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='27.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='32.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='37.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='42.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='47.5' y='2.8' z='-51.2'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='90' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-47.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-42.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-37.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-32.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-27.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-22.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-17.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-12.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-7.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='-2.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='2.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='7.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='12.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='17.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='22.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='27.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='32.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='37.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='42.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+	<box>
+		<position x='0' y='2.5' z='52.4'/>
+		<halfExtends x='55' y='2.5' z='2.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall</property>
+	</box>
+	<box>
+		<position x='52.4' y='2.5' z='0'/>
+		<halfExtends x='2.5' y='2.5' z='50'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall</property>
+	</box>
+	<box>
+		<position x='0' y='2.5' z='-52.4'/>
+		<halfExtends x='55' y='2.5' z='2.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall</property>
+	</box>
+	<box>
+		<position x='-52.4' y='2.5' z='0'/>
+		<halfExtends x='2.5' y='2.5' z='50'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall</property>
+	</box>
+	<box>
+		<position x='0' y='-2.5' z='0'/>
+		<halfExtends x='55' y='2.5' z='55'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>floor</property>
+	</box>
+	<box>
+		<position x='-51.2' y='2.8' z='47.5'/>
+		<halfExtends x='2' y='2.8' z='0.5'/>
+		<rotation x='0' y='-0' z='-0'/>
+		<property>wall inset</property>
+	</box>
+</rig>

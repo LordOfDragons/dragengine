@@ -1,0 +1,321 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+  
+ 
+namespace Dragengine.Gui.Decorations.Factories
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Factory for CanvasCreatorDecoration.
+ */
+class CanvasCreatorDecorationFactory extends DefaultDecorationFactory
+	/** \brief Canvas creator factory for active window. */
+	private var CanvasCreator pCreatorActive
+	
+	/** \brief Canvas creator factory for inactive window. */
+	private var CanvasCreator pCreatorInactive
+	
+	/** \brief Decoration border size. */
+	private var BorderSize pDecorationSize
+	
+	/** \brief Image for close button in normal state. */
+	private var Image pImageButtonCloseNormal
+	
+	/** \brief Image for close button in hover state. */
+	private var Image pImageButtonCloseHover
+	
+	/** \brief Image for close button in pressed state. */
+	private var Image pImageButtonClosePressed
+	
+	/** \brief Image for maximize button in normal state. */
+	private var Image pImageButtonMaximizeNormal
+	
+	/** \brief Image for maximize button in hover state. */
+	private var Image pImageButtonMaximizeHover
+	
+	/** \brief Image for maximize button in pressed state. */
+	private var Image pImageButtonMaximizePressed
+	
+	/** \brief Image for minimize button in normal state. */
+	private var Image pImageButtonMinimizeNormal
+	
+	/** \brief Image for minimize button in hover state. */
+	private var Image pImageButtonMinimizeHover
+	
+	/** \brief Image for minimize button in pressed state. */
+	private var Image pImageButtonMinimizePressed
+	
+	
+	
+	/** \brief Create decoration factory. */
+	public func new()
+		this.pDecorationSize = BorderSize.new( 0 )
+	end
+	
+	/** \brief Create copy of decoration factory. */
+	public func new( CanvasCreatorDecorationFactory factory ) super( factory )
+		this.pCreatorActive = factory.pCreatorActive
+		this.pCreatorInactive = factory.pCreatorInactive
+		this.pDecorationSize = BorderSize.new( factory.pDecorationSize )
+		
+		this.pImageButtonCloseNormal = factory.pImageButtonCloseNormal
+		this.pImageButtonCloseHover = factory.pImageButtonCloseHover
+		this.pImageButtonClosePressed = factory.pImageButtonClosePressed
+		this.pImageButtonMaximizeNormal = factory.pImageButtonMaximizeNormal
+		this.pImageButtonMaximizeHover = factory.pImageButtonMaximizeHover
+		this.pImageButtonMaximizePressed = factory.pImageButtonMaximizePressed
+		this.pImageButtonMinimizeNormal = factory.pImageButtonMinimizeNormal
+		this.pImageButtonMinimizeHover = factory.pImageButtonMinimizeHover
+		this.pImageButtonMinimizePressed = factory.pImageButtonMinimizePressed
+	end
+	
+	
+	
+	/** \brief Canvas creator factory for active window. */
+	public func CanvasCreator getCreatorActive()
+		return this.pCreatorActive
+	end
+	
+	/** \brief Set canvas creator factory for active window. */
+	public func void setCreatorActive( CanvasCreator factory )
+		this.pCreatorActive = factory
+	end
+	
+	/** \brief Canvas creator factory for inactive window. */
+	public func CanvasCreator getCreatorInactive()
+		return this.pCreatorInactive
+	end
+	
+	/** \brief Set canvas creator factory for inactive window. */
+	public func void setCreatorInactive( CanvasCreator factory )
+		this.pCreatorInactive = factory
+	end
+	
+	/** \brief Decoration border size. */
+	public func BorderSize getDecorationSize()
+		return this.pDecorationSize
+	end
+	
+	/** \brief Set decoration border size. */
+	public func void setDecorationSize( BorderSize size )
+		this.pDecorationSize = BorderSize.new( DEMath.max( size.getLeft(), 0 ), \
+			DEMath.max( size.getTop(), 0 ), DEMath.max( size.getRight(), 0 ), \
+			DEMath.max( size.getBottom(), 0 ) )
+	end
+	
+	
+	
+	/** \brief Image for close button in normal state. */
+	public func Image getImageButtonCloseNormal()
+		return this.pImageButtonCloseNormal
+	end
+	
+	/** \brief Set image for close button in normal state. */
+	public func void setImageButtonCloseNormal( Image image )
+		this.pImageButtonCloseNormal = image
+	end
+	
+	/** \brief Image for close button in hover state. */
+	public func Image getImageButtonCloseHover()
+		return this.pImageButtonCloseHover
+	end
+	
+	/** \brief Set image for close button in hover state. */
+	public func void setImageButtonCloseHover( Image image )
+		this.pImageButtonCloseHover = image
+	end
+	
+	/** \brief Image for close button in pressed state. */
+	public func Image getImageButtonClosePressed()
+		return this.pImageButtonClosePressed
+	end
+	
+	/** \brief Set image for close button in pressed state. */
+	public func void setImageButtonClosePressed( Image image )
+		this.pImageButtonClosePressed = image
+	end
+	
+	
+	
+	/** \brief Image for maximize button in normal state. */
+	public func Image getImageButtonMaximizeNormal()
+		return this.pImageButtonMaximizeNormal
+	end
+	
+	/** \brief Set image for maximize button in normal state. */
+	public func void setImageButtonMaximizeNormal( Image image )
+		this.pImageButtonMaximizeNormal = image
+	end
+	
+	/** \brief Image for maximize button in hover state. */
+	public func Image getImageButtonMaximizeHover()
+		return this.pImageButtonMaximizeHover
+	end
+	
+	/** \brief Set image for maximize button in hover state. */
+	public func void setImageButtonMaximizeHover( Image image )
+		this.pImageButtonMaximizeHover = image
+	end
+	
+	/** \brief Image for maximize button in pressed state. */
+	public func Image getImageButtonMaximizePressed()
+		return this.pImageButtonMaximizePressed
+	end
+	
+	/** \brief Set image for maximize button in pressed state. */
+	public func void setImageButtonMaximizePressed( Image image )
+		this.pImageButtonMaximizePressed = image
+	end
+	
+	
+	
+	/** \brief Image for minimize button in normal state. */
+	public func Image getImageButtonMinimizeNormal()
+		return this.pImageButtonMinimizeNormal
+	end
+	
+	/** \brief Set image for minimize button in normal state. */
+	public func void setImageButtonMinimizeNormal( Image image )
+		this.pImageButtonMinimizeNormal = image
+	end
+	
+	/** \brief Image for minimize button in hover state. */
+	public func Image getImageButtonMinimizeHover()
+		return this.pImageButtonMinimizeHover
+	end
+	
+	/** \brief Set image for minimize button in hover state. */
+	public func void setImageButtonMinimizeHover( Image image )
+		this.pImageButtonMinimizeHover = image
+	end
+	
+	/** \brief Image for minimize button in pressed state. */
+	public func Image getImageButtonMinimizePressed()
+		return this.pImageButtonMinimizePressed
+	end
+	
+	/** \brief Set image for minimize button in pressed state. */
+	public func void setImageButtonMinimizePressed( Image image )
+		this.pImageButtonMinimizePressed = image
+	end
+	
+	
+	
+	/** \brief Create decoration. */
+	public func Decoration createDecoration()
+		var CanvasCreatorDecoration decoration = CanvasCreatorDecoration.new()
+		this.initCanvasCreatorDecoration( decoration )
+		return decoration
+	end
+	
+	/** \brief Init canvas creator decoration part for use by subclasses. */
+	protected func void initCanvasCreatorDecoration( CanvasCreatorDecoration decoration )
+		this.initDefaultDecoration( decoration )
+		
+		decoration.setCreatorActive( this.pCreatorActive )
+		decoration.setCreatorInactive( this.pCreatorInactive )
+		decoration.setDecorationSize( this.pDecorationSize )
+		
+		decoration.setImageButtonCloseNormal( this.pImageButtonCloseNormal )
+		decoration.setImageButtonCloseHover( this.pImageButtonCloseHover )
+		decoration.setImageButtonClosePressed( this.pImageButtonClosePressed )
+		decoration.setImageButtonMaximizeNormal( this.pImageButtonMaximizeNormal )
+		decoration.setImageButtonMaximizeHover( this.pImageButtonMaximizeHover )
+		decoration.setImageButtonMaximizePressed( this.pImageButtonMaximizePressed )
+		decoration.setImageButtonMinimizeNormal( this.pImageButtonMinimizeNormal )
+		decoration.setImageButtonMinimizeHover( this.pImageButtonMinimizeHover )
+		decoration.setImageButtonMinimizePressed( this.pImageButtonMinimizePressed )
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | decorationSize | BorderSize | setDecorationSize |
+	 * | active.canvas | CanvasCreator | setCreatorActive |
+	 * | active.title.textColor | Color | setActiveTitleColor |
+	 * | active.title.font | Font | setActiveTitleFont |
+	 * | inactive.canvas | CanvasCreator | setCreatorInactive |
+	 * | inactive.title.textColor | Color | setInactiveTitleColor |
+	 * | inactive.title.font | Font | setInactiveTitleFont |
+	 * | imageButtonCloseNormal | Image | setImageButtonCloseNormal |
+	 * | imageButtonCloseHover | Image | setImageButtonCloseHover |
+	 * | imageButtonClosePressed | Image | setImageButtonClosePressed |
+	 * | imageButtonMaximizeNormal | Image | setImageButtonMaximizeNormal |
+	 * | imageButtonMaximizeHover | Image | setImageButtonMaximizeHover |
+	 * | imageButtonMaximizePressed | Image | setImageButtonMaximizePressed |
+	 * | imageButtonMinimizeNormal | Image | setImageButtonMinimizeNormal |
+	 * | imageButtonMinimizeHover | Image | setImageButtonMinimizeHover |
+	 * | imageButtonMinimizePressed | Image | setImageButtonMinimizePressed |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "active.canvas" )
+			this.setCreatorActive( value cast CanvasCreator )
+			
+		elif name.equals( "inactive.canvas" )
+			this.setCreatorInactive( value cast CanvasCreator )
+			
+		elif name.equals( "decorationSize" )
+			this.setDecorationSize( value cast BorderSize )
+			
+		elif name.equals( "imageButtonCloseNormal" )
+			this.setImageButtonCloseNormal( value cast Image )
+			
+		elif name.equals( "imageButtonCloseHover" )
+			this.setImageButtonCloseHover( value cast Image )
+			
+		elif name.equals( "imageButtonClosePressed" )
+			this.setImageButtonClosePressed( value cast Image )
+			
+		elif name.equals( "imageButtonMaximizeNormal" )
+			this.setImageButtonMaximizeNormal( value cast Image )
+			
+		elif name.equals( "imageButtonMaximizeHover" )
+			this.setImageButtonMaximizeHover( value cast Image )
+			
+		elif name.equals( "imageButtonMaximizePressed" )
+			this.setImageButtonMaximizePressed( value cast Image )
+			
+		elif name.equals( "imageButtonMinimizeNormal" )
+			this.setImageButtonMinimizeNormal( value cast Image )
+			
+		elif name.equals( "imageButtonMinimizeHover" )
+			this.setImageButtonMinimizeHover( value cast Image )
+			
+		elif name.equals( "imageButtonMinimizePressed" )
+			this.setImageButtonMinimizePressed( value cast Image )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
+	
+	/** \brief Create factory copy. */
+	public func DecorationFactory copyFactory()
+		return CanvasCreatorDecorationFactory.new( this )
+	end
+end

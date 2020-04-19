@@ -1,0 +1,414 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Networking
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding locomotion state support.
+ * 
+ * If ECBehaviorNetworkState is present and activate adds network values to synchronize
+ * ECBehaviorLocomotion certain values.
+ * 
+ * No element class properties are added.
+ * 
+ * This behavior can be present only once in the element class.
+ */
+class ECBehaviorNStateLocomotion extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Network state listener. */
+		class NetworkStateListener extends ECBehaviorNetworkState.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void addValues( ECBehaviorNetworkState.Instance instance )
+				this.pInstance.onAddValues()
+			end
+		end
+		
+		/** \brief Orientation value. */
+		class ValueOrientation extends ECBehaviorNetworkState.FloatValue
+			private var Locomotion pLocomotion
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pLocomotion = instance.getLocomotion().getLocomotion()
+			end
+			
+			protected func void onValueChanged( float value )
+				this.pLocomotion.setOrientation( value )
+				this.pLocomotion.setMovingDirection( this.pLocomotion.getMovingOrientation() - value )
+			end
+			
+			protected func float getUpdateValue()
+				return this.pLocomotion.getOrientation()
+			end
+		end
+		
+		/** \brief Looking value. */
+		class ValueLooking extends ECBehaviorNetworkState.Vector2Value
+			private var Locomotion pLocomotion
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pLocomotion = instance.getLocomotion().getLocomotion()
+			end
+			
+			protected func void onValueChanged( Vector2 value )
+				this.pLocomotion.setLookVerticalGoal( value.getY() )
+				this.pLocomotion.setLookVertical( value.getY() )
+				this.pLocomotion.setLookHorizontalGoal( value.getX() )
+				this.pLocomotion.setLookHorizontal( value.getX() )
+			end
+			
+			protected func Vector2 getUpdateValue()
+				return Vector2.new( this.pLocomotion.getLookHorizontal(), \
+					this.pLocomotion.getLookVertical() )
+			end
+		end
+		
+		/** \brief Turning horizontal value. */
+		class ValueTurningSpeed extends ECBehaviorNetworkState.FloatValue
+			private var Locomotion pLocomotion
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pLocomotion = instance.getLocomotion().getLocomotion()
+			end
+			
+			protected func void onValueChanged( float value )
+				this.pLocomotion.setTurningSpeed( value )
+			end
+			
+			protected func float getUpdateValue()
+				return this.pLocomotion.getTurningSpeed()
+			end
+		end
+		
+		/** \brief Turning in-place value. */
+		class ValueTurnIP extends ECBehaviorNetworkState.FloatValue
+			private var Locomotion pLocomotion
+			private var float pCenterThreshold
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pLocomotion = instance.getLocomotion().getLocomotion()
+				this.pCenterThreshold = precision
+			end
+			
+			protected func void onValueChanged( float value )
+				this.pLocomotion.setTurnIP( value )
+				this.pLocomotion.setIsTurningIP( DEMath.fabs( value ) > this.pCenterThreshold )
+			end
+			
+			protected func float getUpdateValue()
+				return this.pLocomotion.getTurnIP()
+			end
+		end
+		
+		/** \brief Linear velocity value. */
+		class ValueLinearVelocity extends ECBehaviorNetworkState.VectorValue
+			private var Locomotion pLocomotion
+			private var float pCenterThreshold
+			
+			public func new( Instance instance, float precision ) \
+			super( instance.getNetworkState(), NetworkStateValueFormat.floating16, precision )
+				this.pLocomotion = instance.getLocomotion().getLocomotion()
+				this.pCenterThreshold = precision
+			end
+			
+			protected func void onValueChanged( Vector value )
+				if value.getLength() > this.pCenterThreshold
+					this.pLocomotion.setMovingSpeed( value.getLength() )
+					this.pLocomotion.setMovingOrientation( -DEMath.atan2( value.getX(), value.getZ() ) )
+					this.pLocomotion.setLinearVelocity( value )
+					
+				else
+					this.pLocomotion.setMovingSpeed( 0 )
+					this.pLocomotion.setMovingOrientation( this.pLocomotion.getOrientation() )
+					this.pLocomotion.setLinearVelocity( Vector.new() )
+				end
+				
+				this.pLocomotion.setMovingDirection( this.pLocomotion.getMovingOrientation() \
+					- this.pLocomotion.getOrientation() )
+			end
+			
+			protected func Vector getUpdateValue()
+				return this.pLocomotion.getLinearVelocity()
+			end
+		end
+		
+		
+		private var ECBehaviorNStateLocomotion pECBehavior
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		private var ECBehaviorNetworkState.Instance pNetworkState
+		private var ValueOrientation pValueOrientation
+		private var ValueLooking pValueLooking
+		private var ValueTurningSpeed pValueTurningSpeed
+		private var ValueTurnIP pValueTurnIP
+		private var ValueLinearVelocity pValueLinearVelocity
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorNStateLocomotion ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
+			this.pNetworkState = ecbehavior.getNetworkState().instance( element )
+			this.pNetworkState.addListener( NetworkStateListener.new( this ) )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pValueLinearVelocity = null
+			this.pValueTurnIP = null
+			this.pValueTurningSpeed = null
+			this.pValueLooking = null
+			this.pValueOrientation = null
+			this.pNetworkState = null
+			this.pLocomotion = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorNStateLocomotion getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Locomotion behavior instance. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		/** \brief Network state behavior instance or null if not connected. */
+		public func ECBehaviorNetworkState.Instance getNetworkState()
+			return this.pNetworkState
+		end
+		
+		/** \brief Orientation value or \em null if not connected. */
+		protected func ValueOrientation getValueOrientation()
+			return this.pValueOrientation
+		end
+		
+		/** \brief Looking vertical value or \em null if not connected. */
+		protected func ValueLooking getValueLooking()
+			return this.pValueLooking
+		end
+		
+		/** \brief Turning horizontal value or \em null if not connected. */
+		protected func ValueTurningSpeed getValueTurningSpeed()
+			return this.pValueTurningSpeed
+		end
+		
+		/** \brief Turning in-place value or \em null if not connected. */
+		protected func ValueTurnIP getValueTurnIP()
+			return this.pValueTurnIP
+		end
+		
+		/** \brief Linear velocity value or \em null if not connected. */
+		protected func ValueLinearVelocity getValueLinearVelocity()
+			return this.pValueLinearVelocity
+		end
+		
+		
+		
+		/** \brief Add values to network state. */
+		public func void onAddValues()
+			this.pValueOrientation = ValueOrientation.new( this, this.pECBehavior.getPrecisionOrientation() )
+			this.pValueLooking = ValueLooking.new( this, this.pECBehavior.getPrecisionLooking() )
+			this.pValueTurningSpeed = ValueTurningSpeed.new( this, this.pECBehavior.getPrecisionTurningSpeed() )
+			this.pValueTurnIP = ValueTurnIP.new( this, this.pECBehavior.getPrecisionTurnIP() )
+			this.pValueLinearVelocity = ValueLinearVelocity.new( this, this.pECBehavior.getPrecisionLinearVelocity() )
+			
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Think about what to do for the next frame update. */
+		public func void think( float elapsed )
+			if this.pValueLooking == null
+				return
+			end
+			
+			this.pValueOrientation.updateValue()
+			this.pValueLooking.updateValue()
+			this.pValueTurningSpeed.updateValue()
+			this.pValueTurnIP.updateValue()
+			this.pValueLinearVelocity.updateValue()
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	private var ECBehaviorNetworkState pNetworkState
+	private var float pPrecisionOrientation
+	private var float pPrecisionLooking
+	private var float pPrecisionTurningSpeed
+	private var float pPrecisionTurnIP
+	private var float pPrecisionLinearVelocity
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorNetworkState networkState, \
+	ECBehaviorLocomotion locomotion ) super( eclass )
+		if networkState == null
+			throw ENullPointer.new( "networkState" )
+		end
+		if locomotion == null
+			throw ENullPointer.new( "locomotion" )
+		end
+		
+		this.pLocomotion = locomotion
+		this.pNetworkState = networkState
+		this.pPrecisionOrientation = 1
+		this.pPrecisionLooking = 1
+		this.pPrecisionTurningSpeed = 1
+		this.pPrecisionTurnIP = 1
+		this.pPrecisionLinearVelocity = 1
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Locomotion behavior. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Network state behavior. */
+	public func ECBehaviorNetworkState getNetworkState()
+		return this.pNetworkState
+	end
+	
+	/** \brief Set network state behavior. */
+	public func void setNetworkState( ECBehaviorNetworkState networkState )
+		if networkState == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pNetworkState = networkState
+	end
+	
+	/** \brief Precision of orientation updates. */
+	public func float getPrecisionOrientation()
+		return this.pPrecisionOrientation
+	end
+	
+	/** \brief Set precision of orientation updates. */
+	public func void setPrecisionOrientation( float precision )
+		this.pPrecisionOrientation = precision
+	end
+	
+	/** \brief Precision of looking updates. */
+	public func float getPrecisionLooking()
+		return this.pPrecisionLooking
+	end
+	
+	/** \brief Set precision of looking updates. */
+	public func void setPrecisionLooking( float precision )
+		this.pPrecisionLooking = precision
+	end
+	
+	/** \brief Precision of turning speed updates. */
+	public func float getPrecisionTurningSpeed()
+		return this.pPrecisionTurningSpeed
+	end
+	
+	/** \brief Set precision of turning speed updates. */
+	public func void setPrecisionTurningSpeed( float precision )
+		this.pPrecisionTurningSpeed = precision
+	end
+	
+	/** \brief Precision of turning in-place updates. */
+	public func float getPrecisionTurnIP()
+		return this.pPrecisionTurnIP
+	end
+	
+	/** \brief Set precision of turning in-place updates. */
+	public func void setPrecisionTurnIP( float precision )
+		this.pPrecisionTurnIP = precision
+	end
+	
+	/** \brief Precision of linear velocity updates. */
+	public func float getPrecisionLinearVelocity()
+		return this.pPrecisionLinearVelocity
+	end
+	
+	/** \brief Set precision of linear velocity updates. */
+	public func void setPrecisionLinearVelocity( float precision )
+		this.pPrecisionLinearVelocity = precision
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorNStateLocomotion getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorNStateLocomotion
+		end ) cast ECBehaviorNStateLocomotion
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNStateLocomotion.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

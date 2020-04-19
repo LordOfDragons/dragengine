@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='skin'>
+		<image property='color'>color.png</image>
+		<image property='normal'>normal.png</image>
+		<image property='roughness'>roughness.png</image>
+		<value property='roughness.remap.lower'>0</value>
+		<value property='roughness.remap.upper'>0.1</value>
+	</texture>
+</skin>

@@ -1,0 +1,130 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Rig builder.
+ * 
+ * Builds rig resource without requiring a rig resource file. The created rig can
+ * either be unnamed (if filename is empty string) or named (if filename is not empty
+ * string). Named rigs can not clash with filenames present in the virtual file system.
+ * For this reason use unnamed rigs if possible. Using named rigs though can be useful
+ * if you want to provide rig resources to scripts not needing to know if the path they
+ * try to load is a build rig instead of a resource one.
+ * 
+ * To use the rig builder create a subclass and implement RigBuilder.buildRig() .
+ * You are only allowed to call methods from RigBuilder from inside this function call.
+ * To create the rig call RigBuilder.build() . This will call RigBuilder.buildRig()
+ * to fill a new rig resource with content. Once finished the build method returns the
+ * ready to use rig resource. Otherwise an exception is thrown.
+ * 
+ * This is a native class.
+ */
+abstract class Rig
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create rig builder.
+	 */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Build rig using filename.
+	 * 
+	 * The created rig can either be unnamed (if filename is empty string) or named
+	 * (if filename is not empty string). Named rigs can not clash with filenames present
+	 * in the virtual file system. For this reason use unnamed rigs if possible. Using
+	 * named rigs though can be useful if you want to provide rig resources to scripts
+	 * not needing to know if the path they try to load is a build rig instead of a
+	 * resource one.
+	 * 
+	 * To create the rig call build() . This will call buildRig() to fill a new rig
+	 * resource with content. Once finished the build method returns the ready to use
+	 * rig resource. Otherwise an exception is thrown.
+	 */
+	public func Rig build( String filename )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Build rig.
+	 * 
+	 * Called by build(String) to fill a new rig resource with content. You are only
+	 * allowed to call methods from RigBuilder from inside this function call.
+	 */
+	abstract protected func void buildRig()
+	
+	/**
+	 * \brief Set central mass point position.
+	 */
+	protected func void setCentralMassPoint( Vector cmp )
+	end
+	
+	/**
+	 * \brief Set if component model is used for collision instead of shapes if present.
+	 */
+	protected func void setModelCollision( bool modelCollision )
+	end
+	
+	/**
+	 * \brief Add bone.
+	 */
+	protected func void addBone( String name, int parent, Vector position, Vector rotation, \
+	Vector centralMassPoint, bool dynamic, float mass, Vector ikLimitsLower, Vector ikLimitsUpper, \
+	Vector ikResistance, bool ikLockedX, bool ikLockedY, bool ikLockedZ, ShapeList shapes )
+	end
+	
+	/**
+	 * \brief Add shape property to bone.
+	 */
+	protected func void addBoneShapeProperty( int index, String property )
+	end
+	
+	/**
+	 * \brief Add bone constraint.
+	 */
+	protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset, \
+	float linearDamping, float angularDamping, float springDamping, bool isRope,
+	float breakingThreshold, int parentBone )
+	end
+	
+	/**
+	 * \brief Set bone constraint dof.
+	 */
+	protected func void setBoneConstraintDof( int bone, int constraint, ColliderConstraintDof dof, \
+	float lowerLimit, float upperLimit, float staticFriction, float kinematicFriction, float springStiffness )
+	end
+	
+	/**
+	 * \brief Set root bone.
+	 */
+	protected func void setRootBone( int bone )
+	end
+	
+	/**
+	 * \brief Set shapes.
+	 */
+	protected func void setShapes( ShapeList shapes )
+	end
+	
+	/**
+	 * \brief Add shape property.
+	 */
+	protected func void addShapeProperty( String property )
+	end
+	/*@}*/
+end

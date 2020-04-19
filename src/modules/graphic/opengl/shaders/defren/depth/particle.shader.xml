@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Particle Depth</name>
+	
+	<version>130</version>
+	
+	<texture name='texDiffuse' target='0'/>
+	<texture name='texDepth' target='1'/>
+	
+	<parameter name='pMatrixMV'/> <!-- 0 -->
+	<parameter name='pMatrixProj'/> <!-- 1 -->
+	<parameter name='pMaterialGamma'/> <!-- 2 -->
+	<parameter name='pClipPlane'/> <!-- 3 -->
+	<parameter name='pViewport'/> <!-- 4 -->
+	<parameter name='pAttributes1'/> <!-- 5 -->
+	<parameter name='pPosition'/> <!-- 6 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='3'/>
+	<!-- <attribute name='inAttributes0' target='0'/>
+	<attribute name='inAttributes1' target='1'/>
+	<attribute name='inAttributes2' target='2'/>
+	<attribute name='inAttributes3' target='3'/> -->
+	
+	<output name='outDepth' target='0'/>
+	
+	<!-- <sourceCode unit='geometry'>v130/geometry/defren/geometry/particle.glsl</sourceCode> -->
+	<sourceCode unit='vertex'>v130/vertex/defren/geometry/depth_particle.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/geometry/depth.glsl</sourceCode>
+</shader>

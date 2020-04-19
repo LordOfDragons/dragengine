@@ -1,0 +1,54 @@
+UpdateOctrees calls
+
+// debpWorld::pStepPhysics
+// debpWorld::PredictCustomMotions
+// debpWorld::StepCustomMotions
+// debpWorld::UpdateCustomMotions
+// debpWorld::VisitRegionMinMax
+
+debpWorld::VisitRegion
+	=> UpdateOctrees
+
+debpWorld::PhysicsChanged
+	=> UpdateOctrees
+
+debpWorld::ColliderHits
+	=> UpdateOctrees
+
+debpWorld::CollliderMoveHits
+	=> UpdateOctrees
+
+debpWorld::Update
+	=> UpdateOctrees
+
+debpTouchSensor::pCheckTouching
+	if dirtyTouching:
+		debpWorld::VisitRegion (caller is responsible this is correct. only one caller and he does)
+
+debpWorld::DetectCollisions
+	=> UpdateOctrees
+	each collider:
+		debpColliderComponent::DetectCustomCollision
+			=> UpdateOctrees
+	debpWorld::PrepareForStep
+		=> UpdateOctrees
+
+debpWorld::UpdateOctrees
+	each collider:
+		debpCollider::UpdateOctreePosition
+			if dirtyOctree:
+				debpWorld::VisitRegion (uses current touch sensor octree status => no problem)
+				debpTouchSensor::TestCollider
+					!!! COMPLEX SHAPE HIT TEST FOR COMPONENTS WITHOUT RIG SHAPES !!!
+	each touchSensor:
+		debpTouchSensor::UpdateOctreePosition
+			debpTouchSensor::pCheckTouching
+				if dirtyTouching:
+					debpWorld::VisitRegion (collider octree status is up to date => all fine)
+					debpTouchSensor::TestCollider
+						!!! COMPLEX SHAPE HIT TEST FOR COMPONENTS WITHOUT RIG SHAPES !!!
+
+debpTouchSensor::TestCollider
+	if collider canhit and aabb hits:
+		each shape:
+			add if shape hits collider:   !!! COMPLEX FOR COMPONENTS WITHOUT RIG SHAPES !!!

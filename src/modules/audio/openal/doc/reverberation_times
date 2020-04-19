@@ -1,0 +1,76 @@
+rt60 = 13.8 * meanFreePath / (soundSpeed * roomAbsorption)
+rt60 * soundSpeed * roomAbsorption = 13.8 * meanFreePath
+roomAbsorption = (13.8 * meanFreePath) / (rt60 * soundSpeed)
+
+rt60 = 0.161 * V / (S * a)
+rt60 * S * a = 0.161 * V
+a = (0.161 * V) / (rt60 * S)
+
+
+
+estimate absorption required on walls:
+
+1) using sabine: a = (0.161 * V) / (rt60 * S)
+   this requires the knowledge of the room size. this yields the function:
+     absorption(size) = 0.161 * (size.x * size.y * size.z) /
+        ((size.x * size.y + size.y * size.z + size.z * size.x) * 2.0 * rt60)
+     the absorption is for the middle frequency band
+
+2) using mean-free-path. this is a quick estimation but in many situations
+   similar to value than the sabine above without needing all the information.
+   simply use the shortest distance in the room (typically 
+
+
+
+def absorption(size, rt60):
+	return 0.161 * (size.x * size.y * size.z) / ((size.x * size.y + size.y * size.z + size.z * size.x) * 2.0 * rt60)
+
+living room:
+	absorption((5,2.6,4), 0.8) = 0.12
+	absorption((5,2.6,4), 0.9) = 0.11
+
+bathroom:
+	absorption((4,2.6,3), 0.8) = 0.10
+
+bedroom:
+	absorption((4,2.6,3), 0.5) = 0.16
+
+
+
+def calcVolume(size):
+	return size[0]*size[1]*size[2]
+
+def calcSurface(size):
+	return 2*(size[0]*size[1]+size[1]*size[2]+size[2]*size[0])
+
+def calcRTSabine(size,absorption):
+	return tuple([0.161*calcVolume(size)/(calcSurface(size)*x) for x in absorption])
+
+def calcRTMfp(size,mfp,absorption):
+	return tuple([13.8*mfp/(343*x) for x in absorption])
+
+size = (6.0,2.5,8.0)
+a = (0.044,0.110,0.186)
+mfp = 2.187
+
+
+
+// Energy Decay Curve, Schrödinger Integration and Impulse Response
+/////////////////////////////////////////////////////////////////////
+
+with an audible range of 100m the maximum length of the impulse response is 100/343~=0.3s .
+calculating the decay cuve using schrödinger integration can be done but due to the short
+time frame we end up in the "early decay" part which has a much steeper slope. the results
+from this calculation are not usable.
+
+as an example a common room has (6,2.5,8) size with mean absorption (0.044,0.110,0.186).
+using sabine this results in an RT60 of 2.4s . using schrödinger yields though 0.35s .
+
+there is no way to fix the decay curve derived from the impulse response to produce an
+acceptable result. we have thus to estimate our way around the mean-free-path or similar
+calculations to figure out an RT60. main problem are open spaces where the mean-free-path
+calculation fails.
+
+also the idea of calculating RT60 per ray and averaging them is not working since it has
+the same problem as the schrödinger version. the early reflections drop is strong and the
+required late reverberation impulse response data is simpy not present.

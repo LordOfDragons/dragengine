@@ -1,0 +1,245 @@
+
+/* 
+ * Drag[en]gine DragonScript Module
+ *
+ * Copyright (C) 2018, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Borders.Factories
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for ProgressBar.
+ */
+class DefaultProgressBarDesigner extends DefaultWidgetDesigner
+	/** \brief Design for particular widget state. */
+	public class ProgressBarStateDesign extends StateDesign
+		/** \brief Show percentage label. */
+		private var Boolean pShowPercentageLabel
+		
+		/** \brief Invert color for text over bar. */
+		private var Boolean pInvertColorOverBar
+		
+		
+		
+		/** \brief Create state design. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		public func new( ProgressBarStateDesign stateDesign ) super( stateDesign )
+			this.pShowPercentageLabel = stateDesign.pShowPercentageLabel
+			this.pInvertColorOverBar = stateDesign.pInvertColorOverBar
+		end
+		
+		
+		
+		/** \brief Show percentage label or null. */
+		public func Boolean getShowPercentage()
+			return this.pShowPercentageLabel
+		end
+		
+		/** \brief Set if percentage label is shown or null. */
+		public func void setShowPercentage( Boolean show )
+			this.pShowPercentageLabel = show
+		end
+		
+		/** \brief Invert color for text over bar or null. */
+		public func Boolean getInvertColorOverBar()
+			return this.pInvertColorOverBar
+		end
+		
+		/** \brief Set if color for text over bar is inverted or null. */
+		public func void setInvertColorOverBar( Boolean invert )
+			this.pInvertColorOverBar = invert
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | showPercentage | bool | setShowPercentage |
+		 * | invertColorOverBar | bool | setInvertColorOverBar |
+		 */
+		public func void setParameter( String name, Object value )
+			if name.equals( "showPercentage" )
+				this.setShowPercentage( Boolean.new( value cast bool ) )
+				
+			elif name.equals( "invertColorOverBar" )
+				this.setInvertColorOverBar( Boolean.new( value cast bool ) )
+				
+			else
+				super.setParameter( name, value )
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return ProgressBarStateDesign.new( this )
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge( DefaultWidgetDesigner.StateDesign state )
+			super.merge( state )
+			
+			var ProgressBarStateDesign pbstate = state cast ProgressBarStateDesign
+			
+			if this.pShowPercentageLabel != null
+				pbstate.pShowPercentageLabel = this.pShowPercentageLabel
+			end
+			if this.pInvertColorOverBar != null
+				pbstate.pInvertColorOverBar = this.pInvertColorOverBar
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply( Widget widget )
+			super.apply( widget )
+			
+			var ProgressBar progressBar = widget cast ProgressBar
+			
+			if this.pShowPercentageLabel != null
+				progressBar.setShowPercentage( this.pShowPercentageLabel.value() )
+			end
+			if this.pInvertColorOverBar != null
+				progressBar.setInvertColorOverBar( this.pInvertColorOverBar.value() )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Canvas creator for bar. */
+	private var CanvasCreator pCreatorBar
+	
+	
+	
+	/** \brief Create new progress bar designer. */
+	public func new()
+		this.setDesignNormal( ProgressBarStateDesign.new() )
+		this.setDesignDisabled( ProgressBarStateDesign.new() )
+		this.setDesignFocused( ProgressBarStateDesign.new() )
+		this.setDesignHover( ProgressBarStateDesign.new() )
+		this.setDesignFocusedHover( ProgressBarStateDesign.new() )
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultProgressBarDesigner designer ) super( designer )
+		this.pCreatorBar = designer.pCreatorBar
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func ProgressBarStateDesign getProgressBarDesignNormal()
+		return this.getDesignNormal() cast ProgressBarStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func ProgressBarStateDesign getProgressBarDesignDisabled()
+		return this.getDesignDisabled() cast ProgressBarStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func ProgressBarStateDesign getProgressBarDesignFocused()
+		return this.getDesignFocused() cast ProgressBarStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func ProgressBarStateDesign getProgressBarDesignHover()
+		return this.getDesignHover() cast ProgressBarStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func ProgressBarStateDesign getProgressBarDesignFocusedHover()
+		return this.getDesignFocusedHover() cast ProgressBarStateDesign
+	end
+	
+	
+	
+	/** \brief Canvas creator for progress bar. */
+	public func CanvasCreator getCreatorBar()
+		return this.pCreatorBar
+	end
+	
+	/** \brief Set canvas creator for progress bar. */
+	public func void setCreatorBar( CanvasCreator creator )
+		this.pCreatorBar = creator
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.showPercentage | bool | getDesign{state}.setShowPercentage |
+	 * | {state}.invertColorOverBar | bool | getDesign{state}.setInvertColorOverBar |
+	 * | bar | CanvasCreator | setCreatorBar |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "bar" )
+			this.setCreatorBar( value cast CanvasCreator )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
+		
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultProgressBarDesigner.new( this )
+	end
+
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget( Widget widget )
+		var ProgressBar progressBar = widget cast ProgressBar
+		
+		super.designWidget( widget )
+		progressBar.setBarCanvasCreator( this.pCreatorBar )
+	end
+end

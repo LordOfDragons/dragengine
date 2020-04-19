@@ -1,0 +1,98 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Displays list of sub titles.
+ * 
+ * By default texts are stacked from newest to oldest. The text vanish after their hide timer
+ * elapses. Optionally the SubTitleBox can be set to remove all texts before adding a new one.
+ * This turns the SubTitleBox into an RPG like text box where each new text replaces existing
+ * one if present.
+ * 
+ * The default layout is CentrizedBoxLayout using Y_AXIS_NEG. This displays each block of text
+ * with as much width as required but at most the entire width in which case text blocks
+ * wrap around using multiple lines. To get all blocks spanning the entire width use FlowLayout.
+ */
+class SubTitleBox extends Panel implements ConversationPlaybackSubTitle
+	private var bool pRemoveAllBeforeAdd
+	
+	
+	
+	/** \brief Create sub title box. */
+	public func new()
+		this.pRemoveAllBeforeAdd = false
+		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.inverseY ) )
+		this.setDesignerSelector( "SubTitleBox" )
+	end
+	
+	
+	
+	/** \brief Remove all text before adding a new one. */
+	public func bool getRemoveAllBeforeAdd()
+		return this.pRemoveAllBeforeAdd
+	end
+	
+	/** \brief Set to remove all text before adding a new one. */
+	public func void setRemoveAllBeforeAdd( bool removeAllBeforeAdd )
+		this.pRemoveAllBeforeAdd = removeAllBeforeAdd
+	end
+	
+	
+	
+	// this is an own class so later on gradual resizing can be implemented to avoid text blocks
+	// jumping around on the screen too much. for the time being though this is a simple panel
+	// with an y-axis flow layout.
+	
+	/**
+	 * \brief Add sub title text widget.
+	 * 
+	 * Text is added at the bottom since the layout fills up from the botton starting with
+	 * the first text. Adding it at the top would make the newest text to appear at the top
+	 * instead of the bottom.
+	 * 
+	 * This could be also solved by using multiple panels but this is simpler.
+	 */
+	public func void addSubTitleText( Widget text )
+		if this.pRemoveAllBeforeAdd
+			this.removeAllSubTitleText()
+			this.addWidget( text )
+			
+		else
+			this.addWidget( text )
+			this.moveWidget( text, 0 )
+		end
+	end
+	
+	/** \brief Remove all text from the box. */
+	public func void removeAllSubTitleText()
+		this.removeAllWidgets()
+	end
+end

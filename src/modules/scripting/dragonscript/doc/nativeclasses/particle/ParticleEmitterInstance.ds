@@ -1,0 +1,213 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Particle emitter instance.
+ * 
+ * This is a native class.
+ */
+class ParticleEmitterInstance
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create particle emitter instance. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Pparticle emitter or \em null if not set. */
+	public func ParticleEmitter getEmitter()
+	end
+	
+	/**
+	 * \brief Set particle emitter or \em null if not set.
+	 * \warning Replaces collision filter with the on in \em emitter.
+	 */
+	public func void setEmitter( ParticleEmitter emitter )
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Casting particles is enabled. */
+	public func bool getEnableCasting()
+	end
+	
+	/** \brief Set if casting particles is enabled. */
+	public func void setEnableCasting( bool enable )
+	end
+	
+	/** \brief Emitter instance is removed from the world if the last particle died. */
+	public func bool getRemoveAfterLastParticleDied()
+	end
+	
+	/** \brief Set if the emitter instance is removed from the world if the last particle died. */
+	public func void setRemoveAfterLastParticleDied( bool remove )
+	end
+	
+	/** \brief Scaling for the time to be added to controllers linked to time. */
+	public func float getTimeScale()
+	end
+	
+	/** \brief Set scaling for the time to be added to controllers linked to time. */
+	public func void setTimeScale( float scale )
+	end
+	
+	
+	
+	/** \brief Rendr layer mask. */
+	public func LayerMask getLayerMask()
+	end
+	
+	/** \brief Set render layer mask. */
+	public func void setLayerMask( LayerMask layerMask )
+	end
+		
+	/** \brief Collision filter. */
+	public func CollisionFilter getCollisionFilter()
+	end
+	
+	/** \brief Set collision filter. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	end
+
+	
+	
+	/** \brief Reset burst. */
+	public func void resetBurst()
+	end
+	
+	/** \brief Kill all particles. */
+	public func void killAllParticles()
+	end
+	
+	
+	
+	/** \brief Listener or \em null if not set. */
+	public func ParticleEmitterInstanceListener getListener()
+	end
+	
+	/** \brief Set listener or \em null if not set. */
+	public func void setListener( ParticleEmitterInstanceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Types */
+	/*@{*/
+	/**
+	 * \brief Component for type used for casting or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
+	 */
+	public func Component getTypeComponent( int type )
+	end
+	
+	/**
+	 * \brief Set component for type used for casting or \em null.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
+	 */
+	public func void setTypeComponent( int type, Component component )
+	end
+	
+	/**
+	 * \brief Dynamic skin for type or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
+	 */
+	public func DynamicSkin getTypeDynamicSkin( int type )
+	end
+	
+	/**
+	 * \brief Set dynamic skin for type or \em null if not used.
+	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
+	 */
+	public func void setTypeDynamicSkin( int type, DynamicSkin dynamicSkin )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Controllers */
+	/*@{*/
+	/** \brief Nnumber of controllers. */
+	public func int getControllerCount()
+	end
+	
+	/**
+	 * \brief Get wrapper for controller.
+	 * 
+	 * \warning The wrapper is only valid as long as the particle emitter is not changed and the
+	 *          controller structure in the particle emitter instance is not changed.
+	 * 
+	 * \param index Index of controller. If index is negative controller count is added to it.
+	 *              This allows to get controllers starting from the last controller.
+	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
+	 *                        than or equal to getControllerCount().
+	 */
+	public func ParticleEmitterController getControllerAt( int index )
+	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the particle emitter is not changed and the
+	 *          controller structure in the particle emitter instance is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func ParticleEmitterController getControllerNamed( String name )
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+	end
+	
+	/**
+	 * \brief Copy the first count controller values and vectors from another particle emitter instance.
+	 * \details Bones outside the number of controllers are ignored.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void copyControllerStates( ParticleEmitterInstance instance, int count )
+	
+	/**
+	 * \brief Copy the first count controller values and vectors from another particle emitter instance.
+	 * \details Offset index of controller to copy from other particle emitter. Bones outside the number
+	 *          of controllers are ignored.
+	 * \throws EInvalidParam \em count is less than 0.
+	 */
+	public func void copyControllerStates( ParticleEmitterInstance instance, int offset, int count )
+	end
+	
+	/**
+	 * \brief Copy name matching controller values and vectors from another particle emitter instance.
+	 * \details Non-matching controllers are ignored.
+	 */
+	public func void copyNamedControllerStates( ParticleEmitterInstance instance )
+	/*@}*/
+end

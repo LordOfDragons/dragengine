@@ -1,0 +1,123 @@
+from SConsCommon import *
+
+# contrib include
+import sys
+sys.path.append( Dir( '.' ).srcnode().abspath )
+
+# import whatever is given by the parent builder
+Import( 'parent_env parent_targets parent_report' )
+
+# setup the environment matching the OS
+envModule = parent_env.Clone()
+
+libs = []
+
+# do configure stuff
+buildModule = True
+
+# build module if requested
+parent_report[ 'build Drag[en]gine Synthesizer Module' ] = 'yes' if buildModule else 'no'
+if not buildModule:
+	Return()
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/synthesizer/desynthesizer/{}'.format(
+	envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/synthesizer/desynthesizer/{}'.format(
+	envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# we need this also for soundtouch to fix a bug
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+# required for sound touch. it does some not-so good things which we usually do not allow
+envSpecialSoundTouch = envModule.Clone()
+
+# soundtouch source code contains of warnings and other problems. with with_warnerrors enabled
+# this causes problems. disable the problematic warnings in this case
+#if envSpecialSoundTouch[ 'with_warnerrors' ]:
+#	envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-error=unknown-pragmas' )
+#	envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-error=unused-but-set-variable' )
+"""
+envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-unknown-pragmas' )
+envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-unused-but-set-variable'])
+envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-maybe-uninitialized'])
+"""
+
+if envSpecialSoundTouch['with_warnerrors']:
+	envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-error'])
+
+# setup the builders
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+sourcesSoundTouch = []
+headersSoundTouch = []
+globFiles( envModule, 'soundtouch', '*.cpp', sourcesSoundTouch )
+globFiles( envModule, 'soundtouch', '*.h', headersSoundTouch )
+
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+if envModule['OSWindows']:
+	objgroup1 = []
+	for s in sourcesSoundTouch:
+		objgroup1.append( envSpecialSoundTouch.SharedObject( s ) )
+	libgroup1 = envModule.StaticLibrary( target='objgroup1', source=objgroup1 )
+	objects.append( libgroup1 )
+	
+else:
+	for s in sourcesSoundTouch:
+		objects.append( envSpecialSoundTouch.SharedObject( s ) )
+
+#appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+library = envModule.SharedLibrary( target='synthdesynthesizer', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'synth_desynthesizer_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+targetInstall = envModule.Alias( 'synth_desynthesizer', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+buildCloc = envModule.Alias( 'synth_desynthesizer_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'synth_desynthesizer' ] = {
+	'name' : 'Drag[en]gine Synthesizer Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
+<shader>
+	<name>Line</name>
+	
+	<program language="glsl" unit="vertex"><![CDATA[
+void main( void ){
+	gl_FrontColor = gl_Color;
+	gl_Position = gl_ModelViewProjectionMatrix * vec4( gl_Vertex.xyz, 1.0 );
+}
+	]]></program>
+	
+	<program language="glsl" unit="fragment"><![CDATA[
+void main( void ){
+	gl_FragColor = gl_Color;
+}
+	]]></program>
+	
+</shader>

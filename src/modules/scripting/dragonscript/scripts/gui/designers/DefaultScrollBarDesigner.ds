@@ -1,0 +1,542 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of ScrollBarDesigner.
+ */
+class DefaultScrollBarDesigner extends DefaultWidgetDesigner implements ScrollBarDesigner
+	/**
+	 * \brief Mouse listener for scrollbar knob to redesign knob.
+	 */
+	class DesignKnobMouseListener extends DefaultMouseListener
+		/** \brief Knob to design. */
+		private var Widget pKnob
+		
+		/** \brief Scrollbar designer. */
+		private var DefaultScrollBarDesigner pDesigner
+		
+		
+		
+		/** \brief Create state change listener. */
+		public func new( Widget knob, DefaultScrollBarDesigner designer )
+			this.pKnob = knob
+			this.pDesigner = designer
+		end
+		
+		
+		
+		/** \brief Mouse has entered widget.. */
+		public func void onMouseEnter( MouseEvent event )
+			this.pDesigner.designKnob( this.pKnob )
+		end
+		
+		/** \brief Mouse has left widget. */
+		public func void onMouseLeave( MouseEvent event )
+			this.pDesigner.designKnob( this.pKnob )
+		end
+	end
+	
+	
+	
+	/** \brief Canvas creator for scrollbar frame. */
+	private var CanvasCreator pCreatorFrame
+	
+	/** \brief Canvas creator for scrollbar knob. */
+	private var CanvasCreator pCreatorKnob
+	
+	/** \brief Canvas creator for scrollbar knob hover or \em null to use normal. */
+	private var CanvasCreator pCreatorKnobHover
+	
+	/** \brief Scrollbar size. */
+	private var int pSize
+	
+	/** \brief Padding between knob and frame. */
+	private var BorderSize pPaddingKnobFrame
+	
+	/** \brief Button designer for scrollbar up button. */
+	private var WidgetDesigner pButtonUp
+	
+	/** \brief Button designer for scrollbar down button. */
+	private var WidgetDesigner pButtonDown
+	
+	/** \brief Button designer for scrollbar left button. */
+	private var WidgetDesigner pButtonLeft
+	
+	/** \brief Button designer for scrollbar right button. */
+	private var WidgetDesigner pButtonRight
+	
+	/** \brief Button up image normal. */
+	private var Image pButtonUpImageNormal
+	
+	/** \brief Button up image hover. */
+	private var Image pButtonUpImageHover
+	
+	/** \brief Button down image normal. */
+	private var Image pButtonDownImageNormal
+	
+	/** \brief Button down image hover. */
+	private var Image pButtonDownImageHover
+	
+	/** \brief Button left image normal. */
+	private var Image pButtonLeftImageNormal
+	
+	/** \brief Button left image hover. */
+	private var Image pButtonLeftImageHover
+	
+	/** \brief Button right image normal. */
+	private var Image pButtonRightImageNormal
+	
+	/** \brief Button right image hover. */
+	private var Image pButtonRightImageHover
+	
+	
+	
+	/** \brief Create new scrollbar designer. */
+	public func new()
+		this.pSize = 16
+		this.pPaddingKnobFrame = BorderSize.new( 1 )
+		
+		this.pButtonUp = DefaultButtonDesigner.new()
+		this.pButtonDown = DefaultButtonDesigner.new()
+		this.pButtonLeft = DefaultButtonDesigner.new()
+		this.pButtonRight = DefaultButtonDesigner.new()
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new( DefaultScrollBarDesigner designer ) super( designer )
+		this.pCreatorFrame = designer.pCreatorFrame
+		this.pCreatorKnob = designer.pCreatorKnob
+		this.pCreatorKnobHover = designer.pCreatorKnobHover
+		this.pSize = designer.pSize
+		this.pPaddingKnobFrame = designer.pPaddingKnobFrame
+		this.pButtonUp = designer.pButtonUp
+		this.pButtonDown = designer.pButtonDown
+		this.pButtonLeft = designer.pButtonLeft
+		this.pButtonRight = designer.pButtonRight
+		this.pButtonUpImageNormal = designer.pButtonUpImageNormal
+		this.pButtonUpImageHover = designer.pButtonUpImageHover
+		this.pButtonDownImageNormal = designer.pButtonDownImageNormal
+		this.pButtonDownImageHover = designer.pButtonDownImageHover
+		this.pButtonLeftImageNormal = designer.pButtonLeftImageNormal
+		this.pButtonLeftImageHover = designer.pButtonLeftImageHover
+		this.pButtonRightImageNormal = designer.pButtonRightImageNormal
+		this.pButtonRightImageHover = designer.pButtonRightImageHover
+	end
+	
+	
+	
+	/** \brief Canvas creator for scrollbar frame. */
+	public func CanvasCreator getCreatorFrame()
+		return this.pCreatorFrame
+	end
+	
+	/** \brief Set canvas creator for scrolbar frame. */
+	public func void setCreatorFrame( CanvasCreator creator )
+		this.pCreatorFrame = creator
+	end
+	
+	/** \brief Canvas creator for scrollbar knob. */
+	public func CanvasCreator getCreatorKnob()
+		return this.pCreatorKnob
+	end
+	
+	/** \brief Set canvas creator for scrollbar knob. */
+	public func void setCreatorKnob( CanvasCreator creator )
+		this.pCreatorKnob = creator
+	end
+	
+	/** \brief Canvas creator for scrollbar knob hover or \em null to use normal. */
+	public func CanvasCreator getCreatorKnobHover()
+		return this.pCreatorKnobHover
+	end
+	
+	/** \brief Set canvas creator for scrollbar knob hover or \em null to use normal. */
+	public func void setCreatorKnobHover( CanvasCreator creator )
+		this.pCreatorKnobHover = creator
+	end
+	
+	/** \brief Scrollbar size. */
+	public func int getSize()
+		return this.pSize
+	end
+	
+	/** \brief Set scrollbar size. */
+	public func void setSize( int size )
+		if size < 0
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	/** \brief Padding between knob and frame. */
+	public func BorderSize getPaddingKnobFrame()
+		return this.pPaddingKnobFrame
+	end
+	
+	/** \brief Set padding between knob and frame. */
+	public func void setPaddingKnobFrame( BorderSize padding )
+		if padding == null
+			throw EInvalidParam.new()
+		end
+		this.pPaddingKnobFrame = padding
+	end
+	
+	
+	
+	/** \brief Button designer for scrollbar up button. */
+	public func WidgetDesigner getButtonUp()
+		return this.pButtonUp
+	end
+	
+	/** \brief Set button designer for scrollbar up button. */
+	public func void setButtonUp( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonUp = factory
+	end
+	
+	/** \brief Button designer for scrollbar down button. */
+	public func WidgetDesigner getButtonDown()
+		return this.pButtonDown
+	end
+	
+	/** \brief Set button designer for scrollbar down button. */
+	public func void setButtonDown( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonDown = factory
+	end
+	
+	/** \brief Button designer for scrollbar left button. */
+	public func WidgetDesigner getButtonLeft()
+		return this.pButtonLeft
+	end
+	
+	/** \brief Set button designer for scrollbar left button. */
+	public func void setButtonLeft( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonLeft = factory
+	end
+	
+	/** \brief Button designer for scrollbar right button. */
+	public func WidgetDesigner getButtonRight()
+		return this.pButtonRight
+	end
+	
+	/** \brief Set button designer for scrollbar right button. */
+	public func void setButtonRight( WidgetDesigner factory )
+		if factory == null
+			throw EInvalidParam.new()
+		end
+		this.pButtonRight = factory
+	end
+	
+	
+	
+	/** \brief Button up image normal. */
+	public func Image getButtonUpImageNormal()
+		return this.pButtonUpImageNormal
+	end
+	
+	/** \brief Set button up image normal. */
+	public func void setButtonUpImageNormal( Image image )
+		this.pButtonUpImageNormal = image
+	end
+	
+	/** \brief Button up image hover. */
+	public func Image getButtonUpImageHover()
+		return this.pButtonUpImageHover
+	end
+	
+	/** \brief Set button up image hover. */
+	public func void setButtonUpImageHover( Image image )
+		this.pButtonUpImageHover = image
+	end
+	
+	/** \brief Button down image normal. */
+	public func Image getButtonDownImageNormal()
+		return this.pButtonDownImageNormal
+	end
+	
+	/** \brief Set button down image normal. */
+	public func void setButtonDownImageNormal( Image image )
+		this.pButtonDownImageNormal = image
+	end
+	
+	/** \brief Button down image hover. */
+	public func Image getButtonDownImageHover()
+		return this.pButtonDownImageHover
+	end
+	
+	/** \brief Set button down image hover. */
+	public func void setButtonDownImageHover( Image image )
+		this.pButtonDownImageHover = image
+	end
+	
+	/** \brief Button left image normal. */
+	public func Image getButtonLeftImageNormal()
+		return this.pButtonLeftImageNormal
+	end
+	
+	/** \brief Set button left image normal. */
+	public func void setButtonLeftImageNormal( Image image )
+		this.pButtonLeftImageNormal = image
+	end
+	
+	/** \brief Button left image hover. */
+	public func Image getButtonLeftImageHover()
+		return this.pButtonLeftImageHover
+	end
+	
+	/** \brief Set button left image hover. */
+	public func void setButtonLeftImageHover( Image image )
+		this.pButtonLeftImageHover = image
+	end
+	
+	/** \brief Button right image normal. */
+	public func Image getButtonRightImageNormal()
+		return this.pButtonRightImageNormal
+	end
+	
+	/** \brief Set button right image normal. */
+	public func void setButtonRightImageNormal( Image image )
+		this.pButtonRightImageNormal = image
+	end
+	
+	/** \brief Button right image hover. */
+	public func Image getButtonRightImageHover()
+		return this.pButtonRightImageHover
+	end
+	
+	/** \brief Set button right image hover. */
+	public func void setButtonRightImageHover( Image image )
+		this.pButtonRightImageHover = image
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | canvasFrame | CanvasCreator | setCreatorFrame |
+	 * | canvasKnob | CanvasCreator | setCreatorKnob |
+	 * | canvasKnobHover | CanvasCreator or null | setCreatorKnobHover |
+	 * | size | int | setSize |
+	 * | paddingKnobFrame | BorderSize | setPaddingKnobFrame |
+	 * | buttonUp | WidgetDesignerFactory | setButtonUp |
+	 * | buttonDown | WidgetDesignerFactory | setButtonDown |
+	 * | buttonLeft | WidgetDesignerFactory | setButtonLeft |
+	 * | buttonRight | WidgetDesignerFactory | setButtonRight |
+	 * | imageUpNormal | Image | setButtonUpImageNormal |
+	 * | imageUpHover | Image | setButtonUpImageHover |
+	 * | imageDownNormal | Image | setButtonDownImageNormal |
+	 * | imageDownHover | Image | setButtonDownImageHover |
+	 * | imageLeftNormal | Image | setButtonLeftImageNormal |
+	 * | imageLeftHover | Image | setButtonLeftImageHover |
+	 * | imageRightNormal | Image | setButtonRightImageNormal |
+	 * | imageRightHover | Image | setButtonRightImageHover |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "canvasFrame" )
+			this.setCreatorFrame( value cast CanvasCreator )
+			
+		elif name.equals( "canvasKnob" )
+			this.setCreatorKnob( value cast CanvasCreator )
+			
+		elif name.equals( "canvasKnobHover" )
+			this.setCreatorKnobHover( value cast CanvasCreator )
+			
+		elif name.equals( "size" )
+			this.setSize( value cast int )
+			
+		elif name.equals( "paddingKnobFrame" )
+			this.setPaddingKnobFrame( value cast BorderSize )
+			
+		elif name.equals( "buttonUp" )
+			this.setButtonUp( value cast WidgetDesigner )
+			
+		elif name.equals( "buttonDown" )
+			this.setButtonDown( value cast WidgetDesigner )
+			
+		elif name.equals( "buttonLeft" )
+			this.setButtonLeft( value cast WidgetDesigner )
+			
+		elif name.equals( "buttonRight" )
+			this.setButtonRight( value cast WidgetDesigner )
+			
+		elif name.equals( "imageUpNormal" )
+			this.setButtonUpImageNormal( value cast Image )
+			
+		elif name.equals( "imageUpHover" )
+			this.setButtonUpImageHover( value cast Image )
+			
+		elif name.equals( "imageDownNormal" )
+			this.setButtonDownImageNormal( value cast Image )
+			
+		elif name.equals( "imageDownHover" )
+			this.setButtonDownImageHover( value cast Image )
+			
+		elif name.equals( "imageLeftNormal" )
+			this.setButtonLeftImageNormal( value cast Image )
+			
+		elif name.equals( "imageLeftHover" )
+			this.setButtonLeftImageHover( value cast Image )
+			
+		elif name.equals( "imageRightNormal" )
+			this.setButtonRightImageNormal( value cast Image )
+			
+		elif name.equals( "imageRightHover" )
+			this.setButtonRightImageHover( value cast Image )
+		end
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultScrollBarDesigner.new( this )
+	end
+	
+	
+	
+	/** \brief Size of scrollbar. */
+	public func int scrollbarSize( ScrollBar scrollbar )
+		return this.pSize
+	end
+	
+	/** \brief Padding between knob and frame. */
+	public func BorderSize paddingKnobFrame( ScrollBar scrollbar )
+		return this.pPaddingKnobFrame
+	end
+	
+	/** \brief Canvas creator for scrollbar frame widget. */
+	public func CanvasCreator canvasCreatorFrame( ScrollBar scrollbar )
+		return this.pCreatorFrame
+	end
+	
+	/** \brief Canvas creator for scrollbar knob widget. */
+	public func CanvasCreator canvasCreatorKnob( ScrollBar scrollbar )
+		return this.pCreatorKnob
+	end
+	
+	/** \brief Create left or up button. */
+	public func Button createButtonLeftUp( ScrollBar scrollbar )
+		var Button button = Button.new()
+		
+		if scrollbar.getOrientation() == Orientation.horizontal
+			button.setImage( this.pButtonLeftImageNormal )
+			button.setHoverImage( this.pButtonLeftImageHover )
+			if this.pButtonLeftImageNormal == null
+				button.setText( "<" )
+				button.setMinimumSize( Point.new( this.scrollbarSize( scrollbar ), 0 ) )
+			end
+			button.setDesigner( this.pButtonLeft )
+			
+		else
+			button.setImage( this.pButtonUpImageNormal )
+			button.setHoverImage( this.pButtonUpImageHover )
+			if this.pButtonUpImageNormal == null
+				button.setText( "^" )
+				button.setMinimumSize( Point.new( 0, this.scrollbarSize( scrollbar ) ) )
+			end
+			button.setDesigner( this.pButtonUp )
+		end
+		
+		return button
+	end
+	
+	/** \brief Create right or down button. */
+	public func Button createButtonRightDown( ScrollBar scrollbar )
+		var Button button = Button.new()
+		
+		if scrollbar.getOrientation() == Orientation.horizontal
+			button.setImage( this.pButtonRightImageNormal )
+			button.setHoverImage( this.pButtonRightImageHover )
+			if this.pButtonRightImageNormal == null
+				button.setText( ">" )
+				button.setMinimumSize( Point.new( this.scrollbarSize( scrollbar ), 0 ) )
+			end
+			button.setDesigner( this.pButtonRight )
+			
+		else
+			button.setImage( this.pButtonDownImageNormal )
+			button.setHoverImage( this.pButtonDownImageHover )
+			if this.pButtonDownImageNormal == null
+				button.setText( "v" )
+				button.setMinimumSize( Point.new( 0, this.scrollbarSize( scrollbar ) ) )
+			end
+			button.setDesigner( this.pButtonDown )
+		end
+		
+		return button
+	end
+	
+	/** \brief Create knob widget. */
+	public func Widget createKnob( ScrollBar scrollbar )
+		var Widget knob = Widget.new()
+		
+		knob.setBackgroundCanvasCreator( this.pCreatorKnob )
+		knob.addMouseListener( DesignKnobMouseListener.new( knob, this ) )
+		
+		return knob
+	end
+	
+	
+	
+	/** \brief Design knob. */
+	public func void designKnob( Widget knob )
+		if knob.isMouseInside()
+			if this.pCreatorKnobHover == null
+				knob.setBackgroundCanvasCreator( this.pCreatorKnob )
+				
+			else
+				knob.setBackgroundCanvasCreator( this.pCreatorKnobHover )
+			end
+			
+		else
+			knob.setBackgroundCanvasCreator( this.pCreatorKnob )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Design widget.
+	 * 
+	 * Method not used for SpinButton. Default implementation is empty. Use the methods
+	 * defined in SpinButtonDesigner to design the SpinButton.
+	 */
+	public func void designWidget( Widget widget )
+	end
+end

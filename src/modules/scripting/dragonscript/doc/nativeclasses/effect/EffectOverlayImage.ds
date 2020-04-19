@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Effect overlay image.
+ * 
+ * This is a native class.
+ */
+class EffectOverlayImage extends Effect
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create effect overlay image. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set overlay image or \em null if not set. */
+	public func void setOverlayImage( Image image )
+	end
+	
+	/** \brief Set overlay transparency clamped to the range from 0 to 1. */
+	public func void setOverlayTransparency( float transparency )
+	end
+	
+	
+	
+	/**
+	 * \brief Effect is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type EffectOverlayImage and effect are equal.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

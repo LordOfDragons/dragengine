@@ -1,0 +1,94 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Decal.
+ * 
+ * This is a native class.
+ */
+class Decal
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create decal. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Position. */
+	public func Vector getPosition()
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( Vector position )
+	end
+	
+	/** \brief Orientation. */
+	public func Quaterion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Size. */
+	public func Vector getSize()
+	end
+	
+	/** \brief Set size. */
+	public func void setSize( Vector size )
+	end
+	
+	
+	
+	/** \brief Skin. */
+	public func Skin getSkin()
+	end
+	
+	/** \brief Set skin. */
+	public func void setSkin( Skin skin )
+	end
+	
+	/** \brief Texture number in the skin. */
+	public func int getTexture()
+	end
+	
+	/** \brief Set texture number in the skin. */
+	public func void setTexture( int texture )
+	end
+	
+	/** \brief Dynamic skin. */
+	public func DynamicSkin getDynamicSkin()
+	end
+	
+	/** \brief Set dynamic skin. */
+	public func void setDynamicSkin( DynamicSkin dynamicSkin )
+	end
+	
+	
+	
+	/** \brief Decal is visible. */
+	public func bool getVisible()
+	end
+	
+	/** \brief Set if decal is visible. */
+	public func void setVisible( bool visible )
+	end
+	
+	
+	
+	/** \brief Parent component or \em null. */
+	public func Component getParentComponent()
+	end
+	/*@}*/
+end

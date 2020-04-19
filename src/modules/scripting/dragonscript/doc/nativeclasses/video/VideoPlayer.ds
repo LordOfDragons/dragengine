@@ -1,0 +1,106 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Video player resources.
+ * 
+ * This is a native class.
+ */
+class VideoPlayer
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create video player. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Video or \em null if not set. */
+	public func Video getVideo()
+	end
+	
+	/** \brief Set video or \em null to unset. */
+	public func void setVideo( Video sound )
+	end
+	
+	
+	
+	/** \brief Video is looping. */
+	public func bool getLooping()
+	end
+	
+	/** \brief Set if video is looping. */
+	public func void setLooping( bool looping )
+	end
+	
+	/** \brief Start play position. */
+	public func float getPlayFrom()
+	end
+	
+	/** \brief End play position. */
+	public func float getPlayTo()
+	end
+	
+	/** \brief Set play range. */
+	public func void setPlayRange( float playFrom, float playTo )
+	end
+	
+	/** \brief Play position. */
+	public func float getPlayPosition()
+	end
+	
+	/** \brief Set play position. */
+	public func void setPlayPosition( float position )
+	end
+	
+	/** \brief Play speed. */
+	public func float getPlaySpeed()
+	end
+	
+	/** \brief Set play speed. */
+	public func void setPlaySpeed( float playSpeed )
+	end
+	
+	
+	
+	/** \brief Video is playing back. */
+	public func bool getPlaying()
+	end
+	
+	/** \brief Video is paused. */
+	public func bool getPaused()
+	end
+	
+	/** \brief Video is stopped. */
+	public func bool getStopped()
+	end
+	
+	/** \brief Start playing. */
+	public func void play()
+	end
+	
+	/** \brief Stop playing. */
+	public func void stop()
+	end
+	
+	/** \brief Pause playing. */
+	public func void pause()
+	end
+	
+	
+	
+	/** \brief Update video player. */
+	public func void update( float elapsed )
+	end
+	/*@}*/
+end

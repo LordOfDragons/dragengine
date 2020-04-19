@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE announcer SYSTEM 'DragengineAnnouncer.dtd'>
+<announcer>
+	<!-- Loads files mattching pattern. -->
+	<!-- <parts idCutOff='4' pattern='*.ogg'>words</parts> -->
+	
+	<!-- Invidiaul files can be added to have specific id. -->
+	<!-- <part id='test'>testfile.ogg</part> -->
+</announcer>

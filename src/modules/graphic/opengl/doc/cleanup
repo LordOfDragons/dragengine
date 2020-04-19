@@ -1,0 +1,34 @@
+This document contains a bunch of bash scripts that are useful to help cleaning up external files not
+required anymore. These files are typically left over from development cycles.
+
+
+
+Shaders
+-------
+This bash script lists *.shader.xml files that are no longer referenced in the source code. This script
+has to be run from the opengl/shaders directory. The script does not remove files directly. Replace
+"echo $f" with "svn delete $f" for this to happen.
+
+for f in `find -name "*.shader.xml"`; do
+   NAME=`grep "\s*<name>[^<]\+</name>" $f | sed -e "s@\s*<name>\([^<]\+\)</name>@\1@g"`
+   TEST=`find ../src -name "*.cpp" | xargs -- grep -nH "GetSourcesNamed(\s*\"$NAME\"\s*)"`
+   if [[ -z $TEST ]]; then
+      echo $f;
+   fi
+done
+
+
+
+Shader Sources
+--------------
+This bash script lists *.glsl files that are no longer referenced by *.shader.xml files. This script has
+to be run from the opengl/shaders directory. The script does not remove files directly. Replace "echo $f"
+with "svn delete ../shaderSources/$f" for this to happen.
+
+for f in `cd ../shaderSources; find -type f | sed -e "s@\\./@@g"`; do
+   TEST1=`find -name "*.shader.xml" | xargs -- grep -nHF "$f"`
+   TEST2=`find ../src -name "*.cpp" | xargs -- grep -nHF "\"$f\""`
+   if [[ -z $TEST1 && -z $TEST2 ]]; then
+      echo $f;
+   fi
+done

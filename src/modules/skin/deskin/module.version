@@ -1,0 +1,4 @@
+SKINDESKIN {
+  global: DESkinCreateModule;
+  local: *;
+};

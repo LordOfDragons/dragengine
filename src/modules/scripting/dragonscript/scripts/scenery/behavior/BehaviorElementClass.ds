@@ -1,0 +1,130 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element element class.
+ * 
+ * Behavior elements are jack of all trade elements. They allow building complex element
+ * behaviors by using behavior building blocks. These behavior building blocks are
+ * provided by ECBehavior classes attached to the element class.
+ * 
+ * Behavior elements are suited for prototyping and rapid development since they require
+ * little written code. For highly optimized elements building them using the conventional
+ * way might be a better option. For all other uses behavior elements are fast and reusable.
+ * 
+ * To create an element based on BehaviorElement create a new subclass of BehaviorElementClass
+ * and add all the desired ECBehavior instance. There is no need to subclas BehaviorElement.
+ * When creating a new instance the BehaviorElement is filled with ECBehavior created
+ * ECBehaviorInstance instances. These provide the actual behavior to the element.
+ */
+class BehaviorElementClass extends ElementClass
+	private var Array pBehaviors
+	
+	
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new() this( "BehaviorElement", BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( Loaders loaders ) this( "BehaviorElement", loaders )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, Loaders loaders ) super( className )
+		this.pBehaviors = Array.new()
+	end
+	
+	/** \brief Dispose of element class. */
+	public func void dispose()
+		if this.pBehaviors != null
+			this.pBehaviors.forEachReverse( block ECBehavior each
+				each.dispose()
+			end )
+			this.pBehaviors = null
+		end
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Number of behaviors. */
+	public func int getBehaviorCount()
+		return this.pBehaviors.getCount()
+	end
+	
+	/** \brief Behavior at index. */
+	public func ECBehavior getBehaviorAt( int index )
+		return this.pBehaviors.getAt( index ) cast ECBehavior
+	end
+	
+	/**
+	 * \brief Add behavior.
+	 * 
+	 * This is called by constructors of class implementing ECBehavior. Usually you do not
+	 * have to call this manually.
+	 */
+	public func void addBehavior( ECBehavior behavior )
+		if behavior == null or this.pBehaviors.has( behavior )
+			throw EInvalidParam.new()
+		end
+		
+		var int instanceIndex = this.pBehaviors.getCount()
+		this.pBehaviors.add( behavior )
+		behavior.assignInstanceIndex( instanceIndex )
+	end
+	
+	/** \brief Visit behaviors with block with parameter ECBehavior. */
+	public func void forEachBehavior( Block ablock )
+		this.pBehaviors.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find behavior with block.
+	 * 
+	 * Block is required to have one parameter ECBehavior and returning true if the
+	 * right instance is found otherwise false.
+	 */
+	public func ECBehavior findBehavior( Block ablock )
+		return this.pBehaviors.find( ablock ) cast ECBehavior
+	end
+	
+	
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return BehaviorElement.new( this )
+	end
+end

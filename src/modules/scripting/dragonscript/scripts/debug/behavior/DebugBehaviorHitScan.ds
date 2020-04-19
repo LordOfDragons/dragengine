@@ -1,0 +1,163 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Debug ECBehaviorHitScan.
+ * 
+ * To use create an instance of DebugBehaviorHitScan with the behavior to track. Call update()
+ * after hit scan is done to update debug drawers. Call clear() to hide.
+ */
+class DebugBehaviorHitScan
+	private var ECBehaviorHitScan.Instance pBehavior
+	private var DebugDrawer pDebugDrawer
+	private var GameWorld pGameWorld
+	private var float pBoxHalfExtends
+	private var float pSphereRadius
+	
+	
+	
+	/** \brief Create debug instance for behavior. */
+	public func new( ECBehaviorHitScan.Instance behavior )
+		this.pBoxHalfExtends = 0.002
+		this.pSphereRadius = 0.02
+		
+		this.pBehavior = behavior
+		
+		this.pDebugDrawer = DebugDrawer.new()
+		this.pDebugDrawer.setVisible( true )
+		this.pDebugDrawer.setXRay( true )
+		this.pDebugDrawer.setShapeCount( 2 )
+		this.pDebugDrawer.shapeSetEdgeColor( 0, Color.new( 0, 0, 1, 1 ) )
+		this.pDebugDrawer.shapeSetFillColor( 0, Color.new( 0, 0, 1, 0.2 ) )
+		this.pDebugDrawer.shapeSetEdgeColor( 1, Color.new( 1, 0, 0, 1 ) )
+		this.pDebugDrawer.shapeSetFillColor( 1, Color.new( 1, 0, 0, 0.2 ) )
+	end
+	
+	
+	
+	/** \brief Box half-extends. */
+	public func float getBoxHalfExtends()
+		return this.pBoxHalfExtends
+	end
+	
+	/** \brief Set box half-extends. */
+	public func void setBoxHalfExtends( float halfExtends )
+		this.pBoxHalfExtends = DEMath.max( halfExtends, 0.0001 )
+	end
+	
+	/** \brief Sphere radius. */
+	public func float getSphereRadius()
+		return this.pSphereRadius
+	end
+	
+	/** \brief Set sphere radius. */
+	public func void setSphereRadius( float radius )
+		this.pSphereRadius = DEMath.max( radius, 0.001 )
+	end
+	
+	/** \brief Debug drawer. */
+	protected func DebugDrawer getDebugDrawer()
+		return this.pDebugDrawer
+	end
+	
+	/** \brief Set XRay mode. */
+	public func void setXRay( bool xray )
+		this.pDebugDrawer.setXRay( xray )
+	end
+	
+	
+	
+	/** \brief Update drawer shape. */
+	public func void update()
+		var ShapeList shapesRay = ShapeList.new()
+		var ShapeList shapesHits = ShapeList.new()
+		var DVector rayStart, rayEnd, rayCenter
+		var Vector direction
+		var float distance
+		var int i, hitCount
+		
+		var DVector origin = this.pDebugDrawer.getPosition()
+		if this.pBehavior.getTestCount() > 0
+			origin = this.pBehavior.getTestAt( 0 ).getTestOrigin()
+		end
+		this.pDebugDrawer.setPosition( origin )
+		
+		this.pBehavior.forEachTest( block ColliderCollisionTest each
+			// ray shape
+			var DVector rayStart = each.getTestOrigin()
+			var DVector rayEnd = rayStart + each.getTestDirection()
+			var DVector rayCenter = ( rayStart + rayEnd ) * 0.5
+			var Vector direction = each.getTestDirection().toVector()
+			var float distance = direction.getLength()
+			
+			if distance > 0.01
+				var Vector view = direction / distance
+				var Quaternion orientation
+				
+				if DEMath.fabs( view.getY() ) < 0.99
+					orientation = Matrix.newVU( view, Vector.new( 0, 1, 0 ) ).toQuaternion()
+					
+				else
+					orientation = Matrix.newVU( view, Vector.new( 0, 0, 1 ) ).toQuaternion()
+				end
+				
+				shapesRay.addBox( direction * 0.5 + ( rayStart - origin ).toVector(), \
+					Vector.new( this.pBoxHalfExtends, this.pBoxHalfExtends, distance * 0.5 ), orientation )
+			end
+			
+			// hits
+			hitCount = each.getCollisionCount()
+			for i = 0 to hitCount
+				shapesHits.addSphere( ( each.hitPointWorld( i ) - origin ).toVector(), this.pSphereRadius )
+			end
+		end )
+		
+		this.pDebugDrawer.shapeSetShapes( 0, shapesRay )
+		this.pDebugDrawer.shapeSetShapes( 1, shapesHits )
+		
+		if this.pGameWorld == null
+			this.pGameWorld = this.pBehavior.getElement().getGameWorld()
+			if this.pGameWorld != null
+				this.pGameWorld.getWorld().addDebugDrawer( this.pDebugDrawer )
+			end
+		end
+	end
+	
+	/** \brief Clear debug drawer. */
+	public func void clear()
+		if this.pGameWorld != null
+			this.pGameWorld.getWorld().removeDebugDrawer( this.pDebugDrawer )
+			this.pGameWorld = null
+		end
+		
+		var ShapeList shapes = ShapeList.new()
+		this.pDebugDrawer.shapeSetShapes( 0, shapes )
+		this.pDebugDrawer.shapeSetShapes( 1, shapes )
+	end
+end

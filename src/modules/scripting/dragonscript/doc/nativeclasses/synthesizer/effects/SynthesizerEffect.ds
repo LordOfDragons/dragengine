@@ -1,0 +1,32 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief SynthesizerEffect effect.
+ * 
+ * This is a native class. It can not be instanced directly.
+ */
+class SynthesizerEffect
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator effect. */
+	protected func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Effect is enabled. */
+	public func void setEnabled( bool enabled )
+	end
+	/*@}*/
+end

@@ -1,0 +1,4 @@
+CRBASICRECOVERY {
+  global: BRCreateModule;
+  local: *;
+};

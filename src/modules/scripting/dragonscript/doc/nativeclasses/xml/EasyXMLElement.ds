@@ -1,0 +1,267 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.XML
+
+
+/**
+ * \brief XML element.
+ * 
+ * This is a native class.
+ */
+class EasyXMLElement
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create element. */
+	public func new( EasyXMLElementType type )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Line number of tag. */
+	public func int getLine()
+	end
+	
+	/** \brief Position on line of tag. */
+	public func int getPosition()
+	end
+	
+	/** \brief Type of element. */
+	public func EasyXMLElementType getType()
+	end
+	
+	
+	
+	/** \brief Name of tag. */
+	public func String getTagName()
+	end
+	
+	/** \brief Set name of tag. */
+	public func void setTagName( String name )
+	end
+	
+	
+	
+	/** \brief Character data content. */
+	public func String getCDataContent()
+	end
+	
+	/** \brief Set character data content. */
+	public func void setCDataContent( String content )
+	end
+	
+	
+	
+	/** \brief Comment. */
+	public func String getComment()
+	end
+	
+	/** \brief Set comment. */
+	public func void setComment( String comment )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Attributes */
+	/*@{*/
+	/** \brief Number of attributes. */
+	public func int getAttributeCount()
+	end
+	
+	/**
+	 * \brief Named attribute.
+	 * 
+	 * \throws EInvalidParam Named attribute is absent.
+	 */
+	public func String getAttributeNamed( String name )
+	end
+	
+	/**
+	 * \brief Named integer attribute.
+	 * 
+	 * \throws EInvalidParam Named attribute is absent.
+	 */
+	public func int getAttributeIntNamed( String name )
+	end
+	
+	/**
+	 * \brief Named float attribute.
+	 * 
+	 * \throws EInvalidParam Named attribute is absent.
+	 */
+	public func float getAttributeFloatNamed( String name )
+	end
+	
+	/**
+	 * \brief Named boolean attribute.
+	 * 
+	 * Value with text "true", "yes" or "1" are converted to \em true.
+	 * Value with text "false", "no" or "0" are converted to \em false.
+	 * All other values are converted to \em false.
+	 * 
+	 * \throws EInvalidParam Named attribute is absent.
+	 */
+	public func bool getAttributeBoolNamed( String name )
+	end
+	
+	/** \brief Named attribute is present. */
+	public func bool hasAttributeNamed( String name )
+	end
+	
+	/**
+	 * \brief Set attribute.
+	 * 
+	 * If attribute is present its value is changed. Otherwise a new attribute is added.
+	 */
+	public func void setAttribute( String name, String value )
+	end
+	
+	/**
+	 * \brief Set attribute.
+	 * 
+	 * If attribute is present its value is changed. Otherwise a new attribute is added.
+	 */
+	public func void setAttribute( String name, int value )
+	end
+	
+	/**
+	 * \brief Set attribute.
+	 * 
+	 * If attribute is present its value is changed. Otherwise a new attribute is added.
+	 */
+	public func void setAttribute( String name, float value )
+	end
+	
+	/**
+	 * \brief Set attribute.
+	 * 
+	 * If attribute is present its value is changed. Otherwise a new attribute is added.
+	 * Value contains "true" or "false".
+	 */
+	public func void setAttribute( String name, bool value )
+	end
+	
+	/** \brief Remove named attribute if present. */
+	public func void removeAttributeNamed( String name )
+	end
+	
+	/** \brief Remove all attributes. */
+	public func void removeAllAttributes()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Child elements */
+	/*@{*/
+	/** \brief Number of child elements. */
+	public func int getElementCount()
+	end
+	
+	/** \brief Child element is present. */
+	public func void hasElement( EasyXMLElement child )
+	end
+	
+	/**
+	 * \brief Child element at index.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getElementCount().
+	 */
+	public func EasyXMLElement getElementAt( int index )
+	end
+	
+	/**
+	 * \brief Add child element.
+	 * 
+	 * Elements can only be child of one parent at each time.
+	 * 
+	 * \throws EInvalidParam Element is already a child of another parent.
+	 */
+	public func void addElement( EasyXMLElement child )
+	end
+	
+	/** \brief Remove child element. */
+	public func void removeElement( EasyXMLElement child )
+	end
+	
+	/** \brief Remove all child elements. */
+	public func void removeAllElements()
+	end
+	
+	
+	
+	/** \brief Add element of type TAG with name. */
+	public func EasyXMLElement addTag( String name )
+	
+	/** \brief Add tag with name and string CData child element. */
+	public func EasyXMLElement addDataTag( String name, String cdata )
+	
+	/** \brief Add tag with name and integer CData child element. */
+	public func EasyXMLElement addDataTag( String name, int cdata )
+	
+	/** \brief Add tag with name and float CData child element. */
+	public func EasyXMLElement addDataTag( String name, float cdata )
+	
+	/**
+	 * \brief Add tag with name and boolean CData child element.
+	 * 
+	 * CData contains "true" or "false" as text.
+	 */
+	public func EasyXMLElement addDataTag( String name, bool cdata )
+	
+	/** \brief Add comment element. */
+	public func void addComment( String comment )
+	
+	
+	
+	/** \brief First child CData or empty string if absent. */
+	public func String getFirstCData()
+	end
+	
+	/** \brief First child CData converted to integer or 0 if absent. */
+	public func int getFirstCDataInt()
+	end
+	
+	/** \brief First child CData converted to string or 0.0 if absent. */
+	public func float getFirstCDataFloat()
+	end
+	
+	/**
+	 * \brief First child CData converted to boolean or \em false if absent.
+	 * 
+	 * CData with text "true", "yes" or "1" are converted to \em true.
+	 * CData with text "false", "no" or "0" are converted to \em false.
+	 * All other CData text are converted to \em false.
+	 */
+	public func bool getFirstCDataBool()
+	end
+	
+	
+	
+	/**
+	 * \brief Visit all TAG type elements with block.
+	 * 
+	 * Block receives the parameters EasyXMLElement element and String tagName. The typical
+	 * usage scenario is quickly reading a tag content like this:
+	 * 
+	 * \code{.ds}
+	 * rootElement.forEachTag( block EasyXMLElement element, String tagName
+	 *    if tagName.equals( "childTag" )
+	 *       // process child tag 'element'
+	 *    }
+	 * end )
+	 * \endcode
+	 */
+	public func void forEachTag( Block ablock )
+	end
+	/*@}*/
+end

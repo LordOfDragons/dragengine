@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>images/particleColor.png</image>
+		<image property='solidity'>images/particleSolidity.png</image>
+		<value property='solidity.masked'>1</value>
+		<value property='reflectivity'>0</value>
+		<value property='reflected'>'0</value>
+		<value property='roughness'>1</value>
+		<image property='emissivity'>images/particleColor.png</image>
+		<value property='emissivity.intensity'>4</value>
+		<value property='shadow.none'>1</value>
+		<value property='hint.nocompression'>1</value>
+	</texture>
+</skin>

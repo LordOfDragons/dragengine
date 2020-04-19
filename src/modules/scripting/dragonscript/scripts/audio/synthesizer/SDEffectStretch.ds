@@ -1,0 +1,130 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.SynthesizerDefinition
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of time and pitch stretch effect.
+ * 
+ * Once defined a effect can be added to a source using the stored definition.
+ * 
+ */
+class SDEffectStretch extends SDEffect
+	/** \brief Minimum time. */
+	private var float pMinTime
+	
+	/** \brief Maximum time. */
+	private var float pMaxTime
+	
+	/** \brief Minimum pitch. */
+	private var float pMinPitch
+	
+	/** \brief Maximum pitch. */
+	private var float pMaxPitch
+	
+	
+	
+	/** \brief Create synthesizer effect definition. */
+	public func new()
+		this.pMinTime = 0.0
+		this.pMaxTime = 0.0
+		this.pMinPitch = 0.0
+		this.pMaxPitch = 0.0
+	end
+	
+	
+	
+	/** \brief Minium time. */
+	public func float getMinTime()
+		return this.pMinTime
+	end
+	
+	/** \brief Set minimum time. */
+	public func void setMinTime( float time )
+		this.pMinTime = time
+	end
+	
+	/** \brief Maxium time. */
+	public func float getMaxTime()
+		return this.pMaxTime
+	end
+	
+	/** \brief Set maximum time. */
+	public func void setMaxTime( float time )
+		this.pMaxTime = time
+	end
+	
+	/** \brief Minium pitch. */
+	public func float getMinPitch()
+		return this.pMinPitch
+	end
+	
+	/** \brief Set minimum pitch. */
+	public func void setMinPitch( float pitch )
+		this.pMinPitch = pitch
+	end
+	
+	/** \brief Maxium pitch. */
+	public func float getMaxPitch()
+		return this.pMaxPitch
+	end
+	
+	/** \brief Set maximum pitch. */
+	public func void setMaxPitch( float pitch )
+		this.pMaxPitch = pitch
+	end
+	
+	
+	
+	/**
+	 * \brief Build engine synthesizer effect using the stored definition.
+	 */
+	public func SynthesizerEffect buildEffect( Synthesizer synthesizer )
+		var SEStretch effect = SEStretch.new()
+		
+		this.buildEffectCommon( effect )
+		
+		this.forEachTarget( block SDSourceTargetLink each
+			effect.targetAddLink( each.getTarget() cast SEStretchTarget, each.getLink().getIndex() )
+		end )
+		
+		effect.setMinTime( this.pMinTime )
+		effect.setMaxTime( this.pMaxTime )
+		effect.setMinPitch( this.pMinPitch )
+		effect.setMaxPitch( this.pMaxPitch )
+		
+		return effect
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Stretch" ) \
+			+ " time=" + this.pMinTime + "-" + this.pMaxTime \
+			 + " pitch=" + this.pMinPitch + "-" + this.pMaxPitch + " )" )
+	end
+end

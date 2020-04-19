@@ -1,0 +1,339 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * Displays video in the widget.
+ * 
+ * Uses a video player to play back the video. The widget updates the playback. To share
+ * video playback between multiple widgets use one DisplayVideo widget as the master and
+ * DisplayCanvas widgets as slave using getCanvasContent() as their source.
+ * 
+ * By default no audio is played if the video has audio. To play audio assign a Speaker.
+ */
+class DisplayVideo extends Widget
+	/** \brief Canvas video. */
+	private var CanvasVideoPlayer pCanvasVideo
+	
+	/** \brief Repeat mode. */
+	private var RepeatMode pRepeatMode
+	
+	/** \brief Video player. */
+	private var VideoPlayer pVideoPlayer
+	
+	/** \brief Speaker or null. */
+	private var Speaker pSpeaker
+	
+	
+	
+	/** \brief Create display video widget. */
+	public func new() this( null, RepeatMode.once, true, null )
+	end
+	
+	/** \brief Create display video widget. */
+	public func new( Video video ) this( video, RepeatMode.once, true, null )
+	end
+	
+	/** Create display video widget. */
+	public func new( Video video, RepeatMode repeatMode ) this( video, RepeatMode.once, true, null )
+	end
+	
+	/** Create display video widget. */
+	public func new( Video video, RepeatMode repeatMode, bool autoPlay ) this( video, repeatMode, autoPlay, null )
+	end
+	
+	/** Create display video widget. */
+	public func new( Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker )
+		this.pRepeatMode = RepeatMode.once
+		this.pVideoPlayer = VideoPlayer.new()
+		this.pVideoPlayer.setLooping( true )
+		
+		this.pCanvasVideo = CanvasVideoPlayer.new()
+		this.pCanvasVideo.setVideoPlayer( this.pVideoPlayer )
+		this.getCanvasContent().addCanvas( this.pCanvasVideo )
+		
+		this.setVideo( video )
+		this.setRepeatMode( repeatMode )
+		this.setSpeaker( speaker )
+		
+		if autoPlay
+			this.play()
+		end
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.stop()
+		this.setSpeaker( null )
+		super.dispose()
+	end
+	
+	
+	
+	/** Video to display or null if not set. */
+	public func Video getVideo()
+		return this.pVideoPlayer.getVideo()
+	end
+	
+	/** Set video to display. */
+	public func void setVideo( Video video )
+		if video == this.pVideoPlayer.getVideo()
+			return
+		end
+		
+		this.pVideoPlayer.setVideo( video )
+		
+		this.layoutParent()
+		this.updateCanvasVideo()
+	end
+	
+	/** Repeat mode. */
+	public func RepeatMode getRepeatMode()
+		return this.pRepeatMode
+	end
+	
+	/** Set repeat mode. Has to be one of REPEAT_* . */
+	public func void setRepeatMode( RepeatMode repeatMode )
+		if repeatMode == this.pRepeatMode
+			return
+		end
+		
+		this.pRepeatMode = repeatMode
+		
+		this.updateCanvasVideo()
+	end
+	
+	/** \brief Speaker or null. */
+	public func Speaker getSpeaker()
+		return this.pSpeaker
+	end
+	
+	/** \brief Set speaker or null. */
+	public func void setSpeaker( Speaker speaker )
+		if speaker == this.pSpeaker
+			return
+		end
+		
+		if speaker != null and speaker.getVideoPlayer() != null
+			throw EInvalidParam.new()
+		end
+		
+		if this.pSpeaker != null
+			this.pSpeaker.setVideoPlayer( this.pVideoPlayer )
+		end
+		
+		this.pSpeaker = speaker
+		
+		if speaker != null
+			speaker.setVideoPlayer( this.pVideoPlayer )
+		end
+	end
+	
+	
+	
+	/** Minimal size of widget. */
+	public func Point getMinimumSize()
+		var Video video = this.pVideoPlayer.getVideo()
+		if video == null or this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		return this.getPadding().getSize() + video.getSize()
+	end
+	
+	
+	
+	/**
+	 * \brief State changed.
+	 * \details Sends event to listeners.
+	 */
+	public func void onStateChanged( StateChangeEvent event )
+		super.onStateChanged( event )
+		this.updateCanvasVideo()
+	end
+	
+	/** \brief Padding changed. */
+	public func void onPaddingChanged()
+		this.updateCanvasVideo()
+	end
+	
+	
+	
+	/** \brief Looping playback. */
+	public func bool getLooping()
+		return this.pVideoPlayer.getLooping()
+	end
+	
+	/** \brief Set if playback is looping. */
+	public func void setLooping( bool looping )
+		this.pVideoPlayer.setLooping( looping )
+	end
+	
+	/** \brief Start playback. */
+	public func void play()
+		if this.pVideoPlayer.isPlaying()
+			return
+		end
+		
+		this.pVideoPlayer.play()
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Pause playback. */
+	public func void pause()
+		this.pVideoPlayer.pause()
+		this.stopFrameUpdater()
+	end
+	
+	/** \brief Stop playback. */
+	public func void stop()
+		this.pVideoPlayer.stop()
+		this.stopFrameUpdater()
+	end
+	
+	/** \brief Video is playing back. */
+	public func bool isPlaying()
+		return this.pVideoPlayer.isPlaying()
+	end
+	
+	/** \brief Video is paused. */
+	public func bool isPaused()
+		return this.pVideoPlayer.isPaused()
+	end
+	
+	/** \brief Video is stopped. */
+	public func bool isStopped()
+		return this.pVideoPlayer.isStopped()
+	end
+	
+	/**
+	 * \brief Do frame update.
+	 * 
+	 * Called every frame update if startFrameUpdater() is called.
+	 * 
+	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
+	 */
+	public func void onFrameUpdate( float elapsed )
+		this.pVideoPlayer.update( elapsed )
+		
+		if this.pVideoPlayer.getLooping() and not this.pVideoPlayer.isPlaying()
+			this.stop()
+		end
+	end
+	
+	
+	
+	/** \brief Get play time in seconds. */
+	public func float getPlayTime()
+		return this.pVideoPlayer.getPlayTo()
+	end
+	
+	/** \brief Playback position in seconds. */
+	public func float getPlayPosition()
+		return this.pVideoPlayer.getPlayPosition()
+	end
+	
+	/** \brief Set playback position in seconds clamped to play range. */
+	public func void setPlayPosition( float position )
+		this.pVideoPlayer.setPlayPosition( position )
+	end
+	
+	/**
+	 * \brief Advance play position wrapping around.
+	 * 
+	 * Use this if you want to advance the play time in variable time steps independend of
+	 * the game frame time. Negative values advance the time backwards.
+	 */
+	public func void advancePlayPosition( float seconds )
+		this.pVideoPlayer.setPlayPosition( DEMath.normalize( \
+			this.pVideoPlayer.getPlayPosition() + seconds, this.pVideoPlayer.getPlayTo() ) )
+	end
+	
+	
+	
+	/** Update canvas video. */
+	public func void updateCanvasVideo()
+		var Video video = this.pVideoPlayer.getVideo()
+		if video == null
+			return
+		end
+		
+		var BorderSize padding = this.getPadding()
+		var Point size = Point.new().largest( this.getSize() - padding.getSize() )
+		var Point position = Point.new( padding.getLeft(), padding.getTop() )
+		
+		select this.pRepeatMode
+		case RepeatMode.once
+			this.pCanvasVideo.setRepeatX( 1 )
+			this.pCanvasVideo.setRepeatY( 1 )
+			this.pCanvasVideo.setPosition( position )
+			this.pCanvasVideo.setSize( video.getSize() )
+			
+		case RepeatMode.stretch
+			this.pCanvasVideo.setRepeatX( 1 )
+			this.pCanvasVideo.setRepeatY( 1 )
+			this.pCanvasVideo.setPosition( position )
+			this.pCanvasVideo.setSize( size )
+			
+		case RepeatMode.tileX
+			var int videoWidth = video.getWidth()
+			var int videoHeight = video.getHeight()
+			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
+			this.pCanvasVideo.setRepeatX( repeatX )
+			this.pCanvasVideo.setRepeatY( 1 )
+			this.pCanvasVideo.setPosition( position )
+			this.pCanvasVideo.setSize( Point.new( videoWidth * repeatX, videoHeight ) )
+			
+		case RepeatMode.tileY
+			var int videoWidth = video.getWidth()
+			var int videoHeight = video.getHeight()
+			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
+			this.pCanvasVideo.setRepeatX( 1 )
+			this.pCanvasVideo.setRepeatY( repeatY )
+			this.pCanvasVideo.setPosition( position )
+			this.pCanvasVideo.setSize( Point.new( videoWidth, videoHeight * repeatY ) )
+			
+		case RepeatMode.tile
+			var int videoWidth = video.getWidth()
+			var int videoHeight = video.getHeight()
+			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
+			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
+			this.pCanvasVideo.setRepeatX( repeatX )
+			this.pCanvasVideo.setRepeatY( repeatY )
+			this.pCanvasVideo.setPosition( position )
+			this.pCanvasVideo.setSize( Point.new( videoWidth * repeatX, videoHeight * repeatY ) )
+		end
+	end
+	
+	
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.updateCanvasVideo()
+	end
+end

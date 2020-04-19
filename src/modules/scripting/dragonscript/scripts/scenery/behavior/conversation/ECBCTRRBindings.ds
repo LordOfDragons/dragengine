@@ -1,0 +1,215 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Designers
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.ConversationSystem
+pin Dragengine.Utils.StyledText.Definition
+
+
+/**
+ * \brief Behavior element behavior adding bindings tag resolving using CTRRBinding.
+ * 
+ * Adds a CTRRBinding rule to ECBehaviorConversation or ECBehaviorConversationActor.
+ * 
+ * Element class properties have the prefix "ctrrBinding.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBCTRRBindings extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBCTRRBindings pECBehavior
+		private var ECBehaviorConversationActor.Instance pConversationActor
+		
+		
+		/** \brief Create element. */
+		public func new( ECBCTRRBindings ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pConversationActor = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pConversationActor = this.pECBehavior.getConversationActor().instance( this.getElement() )
+			this.pConversationActor.getTagResolver().addRule( "binding", this.createRule( stub ) )
+		end
+		
+		/** \brief Create tag resolver rule. */
+		protected func CTRRBinding createRule( StubElement stub )
+			var DefaultWidgetDesigner designer = this.pECBehavior.getSubtitleTheme() \
+				.getWidgetDesigner( "Label.SubTitleBoxText.Text.Binding" ) cast DefaultWidgetDesigner
+			
+			var STDStyle style = STDStyle.new( "binding" )
+			style.setFont( designer.getDesignNormal().getFont() )
+			style.setTextColor( designer.getDesignNormal().getTextColor() )
+			
+			return CTRRBinding.new( this.pECBehavior.getCommandManager(), \
+				this.pECBehavior.getBindingManager(), style )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBCTRRBindings getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Conversation actor behavior instance. */
+		public func ECBehaviorConversationActor.Instance getConversationActor()
+			return this.pConversationActor
+		end
+	end
+	
+	
+	
+	private var ECBehaviorConversationActor pConversationActor
+	private var CommandManager pCommandManager
+	private var BindingManager pBindingManager
+	private var GuiTheme pSubtitleTheme
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor ) \
+	this( eclass, conversationActor, BaseGameApp.getApp().getCommandManager(), \
+	BaseGameApp.getApp().getBindingManager(), BaseGameApp.getApp().getWindowSubTitle().getGuiTheme() )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
+	CommandManager commandManager, BindingManager bindingManager, GuiTheme subtitleTheme ) super( eclass )
+		if conversationActor == null
+			throw ENullPointer.new( "conversationActor" )
+		end
+		if commandManager == null
+			throw ENullPointer.new( "commandManager" )
+		end
+		if bindingManager == null
+			throw ENullPointer.new( "bindingManager" )
+		end
+		if subtitleTheme == null
+			throw ENullPointer.new( "subtitleTheme" )
+		end
+		
+		this.pConversationActor = conversationActor
+		this.pCommandManager = commandManager
+		this.pBindingManager = bindingManager
+		this.pSubtitleTheme = subtitleTheme
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pConversationActor = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Conversation actor behavior or null. */
+	public func ECBehaviorConversationActor getConversationActor()
+		return this.pConversationActor
+	end
+	
+	/** \brief Command manager used to add CTRRBinding or null if not used. */
+	public func CommandManager getCommandManager()
+		return this.pCommandManager
+	end
+	
+	/** \brief Set command manager used to add CTRRBinding or null if not used. */
+	public func void setCommandManager( CommandManager commandManager )
+		this.pCommandManager = commandManager
+	end
+	
+	/** \brief Binding manager used to add CTRRBinding or null if not used. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Set binding manager used to add CTRRBinding or null if not used. */
+	public func void setBindingManager( BindingManager bindingManager )
+		this.pBindingManager = bindingManager
+	end
+	
+	/** \brief Gui theme to use for sub title box creation. */
+	public func GuiTheme getSubtitleTheme()
+		return this.pSubtitleTheme
+	end
+	
+	/** \brief Set gui theme to use for sub title box creation. */
+	public func void setSubtitleTheme( GuiTheme guiTheme )
+		this.pSubtitleTheme = guiTheme
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBCTRRBindings.
+	 */
+	static public func ECBCTRRBindings getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBCTRRBindings
+		end ) cast ECBCTRRBindings
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBCTRRBindings.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

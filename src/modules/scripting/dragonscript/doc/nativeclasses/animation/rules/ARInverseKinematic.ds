@@ -1,0 +1,84 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule inverse kinematic.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARInverseKinematic extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set goal position. */
+	public func void setGoalPosition( Vector position )
+	end
+	
+	/** \brief Set goal orientation. */
+	public func void setGoalOrientation( Vector orientation )
+	end
+	
+	/** \brief Set local position. */
+	public func void setLocalPosition( Vector position )
+	end
+	
+	/** \brief Set local orientation. */
+	public func void setLocalOrientation( Vector orientation )
+	end
+	
+	/** \brief Set adjust orientation. */
+	public func void setAdjustOrientation( bool adjustOrientation )
+	end
+	
+	/** \brief Set solver bone or empty string to use none. */
+	public func void setSolverBone( String bone )
+	end
+	
+	/** \brief Set use solver bone. */
+	public func void setUseSolverBone( bool useSolverBone )
+	end
+	
+	/** \brief Set reach range in meters. */
+	public func void setReachRange( float range )
+	end
+	
+	/** \brief Set reach bone name or empty string to use none. */
+	public func void setReachBone( Strnig bone )
+	end
+	
+	/** \brief Set reach center. */
+	public func void setReachCenter( Vector center )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARInverseKinematicTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARInverseKinematicTarget target )
+	end
+	/*@}*/
+end

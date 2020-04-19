@@ -1,0 +1,327 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Files
+pin Dragengine.Utils
+pin Dragengine.Scenery
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load sky from desky file.
+ * 
+ * Caches loaded skies to load files only one.
+ */
+class LoadSky extends BaseXmlLoader
+	private var Dictionary pSkies
+	
+	
+	
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadSky" )
+	end
+	
+	/** \brief Create loader. */
+	public func new( Console console, String name ) super( console, name )
+		this.pSkies = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Load sky from file. */
+	public func Sky loadFromFile( String filename )
+		var Sky sky = this.pSkies.getAt( filename, null ) cast Sky
+		if sky != null
+			return sky
+		end
+		
+		return this.loadAndParseRootTag( filename, "sky", block EasyXMLElement root
+			sky = Sky.new()
+			this.readSky( root, sky, File.new( filename ).getParent().getPath() )
+			this.pSkies.setAt( filename, sky )
+			return sky
+		end ) cast Sky
+	end
+	
+	
+	
+	/** \brief Read sky. */
+	private func void readSky( EasyXMLElement root, Sky sky, String basePath )
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName
+		
+		var int controllerCount, linkCount, layerCount
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "controller" )
+				controllerCount++
+				
+			elif tagName.equals( "link" )
+				linkCount++
+				
+			elif tagName.equals( "layer" )
+				layerCount++
+			end
+		end
+		
+		sky.setControllerCount( controllerCount )
+		sky.setLinkCount( linkCount )
+		sky.setLayerCount( layerCount )
+		
+		var int controllerIndex, linkIndex, layerIndex
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "bgColor" )
+				sky.setBgColor( this.readColor( element ) )
+				
+			elif tagName.equals( "controller" )
+				this.readController( element, sky.getControllerAt( controllerIndex++ ) )
+				
+			elif tagName.equals( "link" )
+				this.readLink( element, sky.getLinkAt( linkIndex++ ) )
+				
+			elif tagName.equals( "layer" )
+				this.readLayer( element, sky.getLayerAt( layerIndex++ ), basePath )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end
+		
+		sky.contentChanged()
+	end
+	
+	/** \brief Read controller. */
+	private func void readController( EasyXMLElement root, SkyController controller )
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "name" )
+				controller.setName( element.getFirstCData() )
+				
+			elif tagName.equals( "clamp" )
+				controller.setClamp( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "frozen" )
+				controller.setFrozen( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "limits" )
+				controller.setRange( element.getAttributeFloatNamed( "min" ), \
+					element.getAttributeFloatNamed( "max" ) )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end
+	end
+	
+	/** \brief Read link. */
+	private func void readLink( EasyXMLElement root, SkyLink link )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "name" )
+				// used in editor only
+				
+			elif tagName.equals( "controller" )
+				link.setController( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "repeat" )
+				link.setRepeat( element.getFirstCDataInt() )
+				
+			elif tagName.equals( "curve" )
+				link.setCurve( this.readCurveBezier( element ) )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+	end
+	
+	/** \brief Read layer. */
+	private func void readLayer( EasyXMLElement root, SkyLayer layer, String basePath )
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName
+		
+		var int bodyCount
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "body" )
+				bodyCount++
+			end
+		end
+		
+		layer.setBodyCount( bodyCount )
+		
+		var int bodyIndex
+		
+		for i = 0 to count
+			element = root.getElementAt( i )
+			if element.getType() != EasyXMLElementType.tag
+				continue
+			end
+			
+			tagName = element.getTagName()
+			
+			if tagName.equals( "name" )
+				// only for editing
+				
+			elif tagName.equals( "offset" )
+				layer.setOffset( this.readVector( element ) )
+				
+			elif tagName.equals( "orientation" )
+				layer.setOrientation( this.readVector( element ) )
+				
+			elif tagName.equals( "color" )
+				layer.setColor( this.readColor( element ) )
+				
+			elif tagName.equals( "intensity" )
+				layer.setIntensity( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "transparency" )
+				layer.setTransparency( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "mulBySkyLight" )
+				layer.setMultiplyBySkyLight( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "mulBySkyColor" )
+				layer.setMultiplyBySkyColor( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "skin" )
+				var String path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						layer.setSkin( Skin.new( File.absolutePath( path, basePath ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			elif tagName.equals( "lightOrientation" )
+				layer.setLightOrientation( this.readVectorAsQuaternion( element ) )
+				
+			elif tagName.equals( "lightColor" )
+				layer.setLightColor( this.readColor( element ) )
+				
+			elif tagName.equals( "lightIntensity" )
+				layer.setLightIntensity( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "ambientIntensity" )
+				layer.setAmbientIntensity( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "body" )
+				this.readBody( element, layer.getBodyAt( bodyIndex++ ), basePath )
+				
+			elif tagName.equals( "target" )
+				this.readTarget( element, layer )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end
+	end
+	
+	/** \brief Read target. */
+	private func void readTarget( EasyXMLElement root, SkyLayer layer )
+		var String typeName = root.getAttributeNamed( "type" )
+		var SkyLayerTargetType type = SkyLayerTargetType.named( typeName )
+		if type == null
+			this.logInvalidValue( root, typeName )
+			throw EInvalidParam.new()
+		end
+		var SkyTarget target = layer.getTarget( type )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "link" )
+				target.addLink( element.getFirstCDataInt() )
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+	end
+	
+	/** \brief Read body. */
+	private func void readBody( EasyXMLElement root, SkyBody body, String basePath )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "orientation" )
+				body.setOrientation( this.readVectorAsQuaternion( element ) )
+				
+			elif tagName.equals( "size" )
+				body.setSize( this.readVector2( element ) )
+				
+			elif tagName.equals( "color" )
+				body.setColor( this.readColor( element ) )
+				
+			elif tagName.equals( "skin" )
+				var String path = element.getFirstCData()
+				
+				if not path.empty()
+					try
+						body.setSkin( Skin.new( File.absolutePath( path, basePath ).getPath() ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, path )
+					end
+				end
+				
+			else
+				this.logUnknownTag( element )
+			end
+		end )
+	end
+end

@@ -1,0 +1,30 @@
+name	dragengine_igde
+version	1.0-1
+architecture	x86
+summary	"Drag[en]gine Integrated Game Development Environment"
+description	"Provides the integrated game development environment for developing games using the Drag[en]gine game engine."
+packager	"Drag[en]gine Team <info@dragengine.rptd.ch>"
+vendor	"Drag[en]gine Team"
+licenses {
+	"GNU GPL v3"
+	"GNU LGPL v3"
+}
+copyrights {
+	"Copyright (C) by Drag[en]gine Team <info@dragengine.rptd.ch>"
+}
+provides {
+	dragengine_igde = 1.0-1
+	lib:libdeigdeshared = 1.0-1
+	app:deigde = 1.0-1
+}
+requires {
+	dragengine >= 1.0-1
+	lib:libdragengine >= 1.0-1
+}
+urls {
+	"https://dragengine.rptd.ch"
+	"http://indiedb.com/engines/dragengine"
+}
+global-writable-files {
+	"settings/deigde" directory keep-old
+}

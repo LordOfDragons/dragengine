@@ -1,0 +1,25 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sound level meter listener.
+ * 
+ * This is a native class.
+ */
+interface SoundLevelMeterListener
+	/** \name Management */
+	/*@{*/
+	/** \brief Speaker become audible. */
+	func void speakerAudible( SoundLevelMeterSpeaker speaker )
+	
+	/** \brief Speaker became inaudible. */
+	func void speakerInaudible( Speaker speaker )
+	/*@}*/
+end

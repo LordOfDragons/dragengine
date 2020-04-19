@@ -1,0 +1,4 @@
+FONT {
+  global: FontEditorCreateModule;
+  local: *;
+};

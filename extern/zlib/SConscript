@@ -1,0 +1,143 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'zlib-1.2.11'
+libLinkName = 'z'
+
+if envLibrary[ 'OSWindows' ]:
+	libFileName = 'bin/zlib1.dll'
+	staticFileName = 'lib/libz.a'
+else:
+	libFileName = 'lib/${SHLIBPREFIX}z${SHLIBSUFFIX}.1'
+	staticFileName = envLibrary.subst( 'lib/${LIBPREFIX}z${LIBSUFFIX}' )
+
+# check if system libapng is present
+hasSystemZLib = False
+conf = envLibrary.Configure()
+if envLibrary[ 'with_system_zlib' ] != TernaryVariableNo:
+	hasSystemZLib = conf.CheckLibWithHeader( libLinkName, 'zlib.h', 'c++', 'zlibVersion();' )
+conf.Finish()
+
+if not hasSystemZLib and envLibrary[ 'with_system_zlib' ] == TernaryVariableYes:
+	Exit( 'Requested to use system zlib but no usable zlib found.' )
+
+libs = [ libLinkName ]
+
+parent_report[ 'use system zlib' ] = 'yes' if hasSystemZLib else 'no'
+
+if hasSystemZLib:
+	parent_targets[ 'lib_zlib' ] = {
+		'name' : 'Internal zlib library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build zlib
+def zlibBuild( target, source, env ):
+	buildDir = target[ 0 ].get_dir().up()
+	
+	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	
+	def specificBuild(buildStaticLinking):
+		cflags = []
+		if buildStaticLinking and not env[ 'OSWindows' ]:
+			cflags.append( '-fPIC' )
+		script = createScriptHeader( env, cflags=cflags )
+		
+		script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+		
+		if envLibrary[ 'OSWindows' ]:
+			if 'CROSSCOMPILE_HOST' in envLibrary:
+				script.append( 'export BINARY_PATH="{}"'.format( buildDir.Dir( 'bin' ).abspath ) )
+				script.append( 'export INCLUDE_PATH="{}"'.format( buildDir.Dir( 'include' ).abspath ) )
+				script.append( 'export LIBRARY_PATH="{}"'.format( buildDir.Dir( 'lib' ).abspath ) )
+				
+				if buildStaticLinking:
+					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
+						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+				else:
+					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=1'
+						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+			else:
+				line = ['mingw32-make.exe', '-f"win32\\Makefile.gcc"', 'install']
+				line.append('BINARY_PATH="{}"'.format(buildDir.Dir('bin').abspath))
+				line.append('INCLUDE_PATH="{}"'.format(buildDir.Dir('include').abspath))
+				line.append('LIBRARY_PATH="{}"'.format(buildDir.Dir('lib').abspath))
+				line.append('SHARED_MODE={}'.format(0 if buildStaticLinking else 1))
+				script.append('{}'.format(' '.join(line)))
+		else:
+			cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+			if buildStaticLinking:
+				cmdline.append( '--static' )
+			
+			#if env[ 'platform_android' ] != 'no':
+			#	cmdline.append( '--with-sysroot={} --host={}'.format( env[ 'ANDROID_SYSROOT' ], env[ 'ANDROID_HOST' ] ) )
+			#cmdline.append( '--64' )
+			#cmdline.append( '--archs="-arch i386 -arch x86_64"' )
+			script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
+			
+			script.append( 'make install || exit 1' )
+		
+		# NOTE under windows calling this command can do nothing at all with no error given.
+		#      examining the problem shows that python seems to have troubles if the path
+		#      name includes non-ascii7 characters. all attempts to fix this have failed so
+		#      far. only solution is to use a path name not containing such characters.
+		#      maybe it's also a windows problem, no idea.
+		if not env.RunIsolatedSystem(script):
+			raise Exception('Failed building zlib')
+		
+	if env['OSWindows']:
+		specificBuild(False)  # due to FOX
+		specificBuild(True)
+	else:
+		specificBuild(buildStaticLinking)
+
+if buildStaticLinking:
+	targets = [ staticFileName ]
+else:
+	targets = [ libFileName ]
+targets.extend( [ 'include/zlib.h', 'include/zconf.h' ] )
+if envLibrary['OSWindows']:
+	targets.append(libFileName)
+
+library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
+	envLibrary.Action(zlibBuild, 'Build zlib' ) )
+
+depends = parent_env.Alias( 'lib_zlib', library )
+
+envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+
+forceRuntimeLibs = []
+if envLibrary['OSWindows']:
+	forceRuntimeLibs.append(library[-1])
+	library = library[0:-1]
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets[ 'lib_zlib' ] = {
+	'name' : 'Internal zlib library',
+	'cpppath' : [ envLibrary.Dir( 'include' ) ],
+	'libpath' : [ envLibrary.Dir( 'lib' ) ],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'forceRuntimeLibs': forceRuntimeLibs,
+	'depends' : depends }

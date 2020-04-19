@@ -1,0 +1,217 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * Stub for a decal. Used during asynchronous loading to hold the
+ * settings of a decal until all resources have been loaded.
+ */
+class StubDecal implements ResourceListener
+	/** Skin path. */
+	private var String pPathSkin
+	/** Skin. */
+	private var Skin pSkin
+	/** Texture name. */
+	private var String pTextureName
+	/** Texture name. */
+	private var Vector pPosition
+	/** Rotation. */
+	private var Vector pRotation
+	/** Size. */
+	private var Vector pSize
+	/** Visible. */
+	private var bool pVisible
+	/** Transform. */
+	private var TexMatrix2 pTransform
+	/** Color tint. */
+	private var Color pColorTint
+	/** Preload counter. */
+	private var PreloadCounter pCounter
+	
+	
+	
+	/** Creates a new stub decal. */
+	public func new()
+		this.pPathSkin = ""
+		this.pTextureName = ""
+		this.pPosition = Vector.new()
+		this.pRotation = Vector.new()
+		this.pSize = Vector.new( 0.5, 0.5, 1.0 )
+		this.pVisible = true
+	end
+	
+	
+	
+	/** Sets the counter. */
+	public func void setCounter( PreloadCounter counter )
+		this.pCounter = counter
+	end
+	
+	/** Retrieves the skin path. */
+	public func String getPathSkin()
+		return this.pPathSkin
+	end
+	
+	/** Sets the skin path. */
+	public func void setPathSkin( String pathSkin )
+		if pathSkin == null
+			throw EInvalidParam.new()
+		end
+		this.pPathSkin = pathSkin
+	end
+	
+	/** Retrieves the skin. */
+	public func Skin getSkin()
+		return this.pSkin
+	end
+	
+	/** Retrieves the texture name. */
+	public func String getTextureName()
+		return this.pTextureName
+	end
+	
+	/** Sets the texture name. */
+	public func void setTextureName( String textureName )
+		if textureName == null
+			throw EInvalidParam.new()
+		end
+		this.pTextureName = textureName
+	end
+	
+	/** Retrieves the position. */
+	public func Vector getPosition()
+		return this.pPosition
+	end
+	
+	/** Sets the position. */
+	public func void setPosition( Vector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+	end
+	
+	/** Retrieves the rotation. */
+	public func Vector getRotation()
+		return this.pRotation
+	end
+	
+	/** Sets the rotation. */
+	public func void setRotation( Vector rotation )
+		if rotation == null
+			throw EInvalidParam.new()
+		end
+		this.pRotation = rotation
+	end
+	
+	/** Retrieves the size. */
+	public func Vector getSize()
+		return this.pSize
+	end
+	
+	/** Sets the size. */
+	public func void setSize( Vector size )
+		if size == null
+			throw EInvalidParam.new()
+		end
+		this.pSize = size
+	end
+	
+	/** Retrieves the visiblity. */
+	public func bool getVisible()
+		return this.pVisible
+	end
+	
+	/** Sets the visibility. */
+	public func void setVisible( bool visible )
+		this.pVisible = visible
+	end
+	
+	/** Retrieves the texture coordinates transformation or null to not replace the transformation. */
+	public func TexMatrix2 getTransform()
+		return this.pTransform
+	end
+	
+	/** Sets the texture coordinates transformation or null to not replace the transformation. */
+	public func void setTransform( TexMatrix2 transform )
+		this.pTransform = transform
+	end
+	
+	/** Retrieves the color tint or null to not replace the color tint. */
+	public func Color getColorTint()
+		return this.pColorTint
+	end
+	
+	/** Sets the color tint or null to not replace the color tint. */
+	public func void setColorTint( Color color )
+		this.pColorTint = color
+	end
+	
+	
+	
+	/** Adds preload resources. */
+	public func void preloadResources()
+		Skin.loadAsynchron( this.pPathSkin, this )
+		this.pCounter.increase()
+	end
+	
+	/** Creates decal from the stub informations. */
+	public func Decal createDecal()
+		var Decal decal = Decal.new()
+		
+		if this.pSkin != null
+			decal.setSkin( this.pSkin )
+		end
+		//decal.setTextureName( this.pTextureName )
+		
+		decal.setPosition( this.pPosition )
+		decal.setOrientation( Matrix.newRotation( this.pRotation ).toQuaternion() )
+		decal.setSize( this.pSize )
+		//decal.setVisible( this.pVisible )
+		if this.pTransform != null
+			decal.setTransform( this.pTransform )
+		end
+		
+		this.pSkin = null
+		
+		return decal
+	end
+	
+	
+	
+	/** Resource has finished loading. */
+	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
+		this.pSkin = resource cast Skin
+		this.pCounter.decrease()
+	end
+	
+	/** Resource has failed loading. */
+	public func void failedLoading( String path, ResourceLoaderType resourceType )
+		this.pCounter.decrease()
+	end
+	
+end

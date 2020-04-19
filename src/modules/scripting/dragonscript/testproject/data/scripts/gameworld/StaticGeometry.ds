@@ -1,0 +1,147 @@
+/* 
+ * Drag[en]gine Library Scripts -- Game Engine
+ *
+ * Copyright (C) 2017, Plüss Roland ( roland@rptd.dnsalias.net )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace ExampleWorld
+
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief DragonScript test project world renderer window static geometry.
+ * 
+ * Copy of SimpleElement as example implementation of a static geometry world element.
+ * Most elements in game worlds are static like buildings, streets or the inside of a
+ * space station. The game engine itself does not make a distinction between static
+ * and dynamic world elements. This is only a distinction on the script level to help
+ * define a common set of behaviors for similar objects.
+ * 
+ * The actual configuration of the element is stored in the StaticGeometryClass.
+ * All elements have the ElementClass assigned used to create them. Storing preloaded
+ * resources in element classes speeds up element creation and avoids waiting for new
+ * resources to load while the game is running.
+ */
+class StaticGeometry extends BehaviorElement
+	private var ECBehaviorComponent.Instance pComponent
+	private var ECBehaviorCollider.Instance pCollider
+	
+	
+	
+	/**
+	 * \brief Create element.
+	 * \param eclass Element class creating this element.
+	 */
+	public func new( StaticGeometryClass eclass ) super( eclass )
+		// Set here the initial value of class members added in this class. Typically
+		// behaviors required to be modified are stored here. It is not required to
+		// store them here. Often it is also enough to retrieve them lazy at a later
+		// time if someone really is interested in a behavior. This speeds up loading
+		// 
+		// As an example the component behavior is stored here. Using instance() call
+		// is fast since it does not require searching for the matching instance in
+		// the element. It is though restricted to the BehaviorElementClass the behavior
+		// has been created for. Using instance() in all other situations will fail.
+		this.pComponent = eclass.getComponent().instance( this )
+	end
+	
+	/**
+	 * \brief Dispose of element.
+	 * 
+	 * Dispose is called to break reference loops to clean up elements fast. This is
+	 * required to ensure elements do not leak. You need to overwrite this method only
+	 * if you need disposing.
+	 */
+	public func void dispose()
+		// Clear all parameters containing potential reference loops here. once you are
+		// finished always super-call dispose. It is usually not required to clear the
+		// behavior reference held except if this element adds listeners to behaviors.
+		// In this case a reference loop exists which has to be broken here by setting
+		// the behavior instances to \em null.
+		// 
+		// BehaviorElement requires super.dispose() to be called to not cause leaks.
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Initialize element from stub.
+	 * 
+	 * This method is called to initialize parameters from a StubElement which contains
+	 * artists properties set in the World Editor for this instance of the element.
+	 */
+	public func void init( StubElement stub )
+		// BehaviorElement requires super.init() to be called to properly configurate
+		// behavior instances added during BehaviorElement constructor.
+		super.init( stub )
+		
+		// Do your own initialization stuff here if required. While possible to add
+		// functionality to BehaviorElement subclasses directly it is recommended to
+		// create behaviors instead. This allows to plug the behavior on different
+		// element classes easily.
+	end
+	
+	
+	
+	/**
+	 * \brief Component behavio instance.
+	 */
+	public func ECBehaviorComponent.Instance getComponent()
+		return this.pComponent
+	end
+	
+	/**
+	 * \brief Collider behavior instance.
+	 */
+	public func ECBehaviorCollider.Instance getCollider()
+		// Example of a lazy obtained behavior instance. This avoids retrieving all
+		// behavior instances during constructor of which most if not all are never used.
+		// By using lazy retrieval the instance is looked up the first time it is needed
+		// and then stored.
+		// 
+		// In general though it is simpler to just retrieve the instances during the
+		// constructor and storing them. Except for extreme situations this barely
+		// makes a difference in performance and is simpler.
+		// 
+		// As a side note. This way of retrieving behavior instances is only valid for
+		// behaviors belonging to the element class. If you need to retrieve behaviors
+		// for arbitrary elements (potentially not having this behavior in the first
+		// place) you have to use ECBehaviorCollider.getInstanceIn() instead. This method
+		// call does search the element for the matching behavior if present.
+		if this.pCollider == null
+			this.pCollider = ( this.getClass() cast StaticGeometryClass ).getCollider().instance( this )
+		end
+		return this.pCollider
+	end
+	
+	
+	
+	/**
+	 * \brief Visit element.
+	 */
+	public func void visit( ElementVisitor visitor )
+		// we expect this class to be used only with a visitor based on TPElementVisitor
+		( visitor cast TPElementVisitor ).visitStaticGeometry( this )
+	end
+end

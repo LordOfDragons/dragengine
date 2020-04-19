@@ -1,0 +1,87 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Camera spot for InteractiveMainMenu.
+ * 
+ * Defines the camera position and orientation to focus on a hot-spot. Camera spots
+ * are identified using a unique name. Each hot-spot can defines the camera spot to
+ * use when the hot spot is active.
+ */
+class IMMCameraSpotClass extends ElementClass
+	/** \brief Main menu. */
+	private var InteractiveMainMenu pMainMenu
+	
+	/** \brief Name. */
+	private var ECPString pName
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu ) \
+	this( mainMenu, "DE_IMM_CameraSpot" )
+	end
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu, String name ) super( name )
+		if mainMenu == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pMainMenu = mainMenu
+		
+		this.pName = ECPString.new( "name", "" )
+		this.addProperty( this.pName )
+	end
+	
+	
+	
+	/** \brief Main menu. */
+	public func InteractiveMainMenu getMainMenu()
+		return this.pMainMenu
+	end
+	
+	/** \brief Name. */
+	public func ECPString getName()
+		return this.pName
+	end
+	
+	
+	
+	/** \brief Create IMMCameraSpotClass with different name. */
+	public func ElementClass duplicateNamed( String name )
+		return IMMCameraSpotClass.new( this.pMainMenu, name )
+	end
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return IMMCameraSpot.new( this )
+	end
+end

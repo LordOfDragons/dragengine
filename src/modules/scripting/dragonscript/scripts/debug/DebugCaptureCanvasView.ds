@@ -1,0 +1,132 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Debug element class saving the content of a canvas view into a file.
+ * 
+ * To use create instance of this class with the filename and canvas view to capture.
+ * The class keeps itself alive as long as the capturing takes place. There is no need
+ * to store the created instance. If a console is set the class will add a message if
+ * the capturing finished successfully. Uses by default BaseGameApp console if present.
+ */
+class DebugCaptureCanvasView extends FrameUpdateListener
+	private var CaptureCanvas pCaptureCanvas
+	private var String pFilename
+	private var Console pConsole
+	
+	
+	/**
+	 * \brief Start capturing canvas view into file.
+	 */
+	public func new( String filename, CanvasView canvasView ) \
+	this( filename, canvasView, BaseGameApp.getApp().getConsole() )
+	end
+	
+	/**
+	 * \brief Start capturing canvas view into file and add console message if finished.
+	 */
+	public func new( String filename, CanvasView canvasView, Console console )
+		this.pFilename = filename
+		this.pConsole = console
+		
+		this.pCaptureCanvas = CaptureCanvas.new()
+		this.pCaptureCanvas.setCanvasView( canvasView )
+		this.pCaptureCanvas.setImage( canvasView.getSize().getX(), canvasView.getSize().getY(), 4, 8 )
+		this.pCaptureCanvas.setCapture( true )
+	end
+	
+	/**
+	 * \brief Start capturing widget into file.
+	 */
+	public func new( String filename, Widget widget ) \
+	this( filename, widget.getCanvasWidget() )
+	end
+	
+	/**
+	 * \brief Start capturing widget into file and add console message if finished.
+	 */
+	public func new( String filename, Widget widget, Console console ) \
+	this( filename, widget.getCanvasWidget(), console )
+	end
+	
+	
+	
+	/**
+	 * \brief Frame update.
+	 */
+	public func void frameUpdate( float elapsed )
+		if this.pCaptureCanvas.getCapture()
+			return
+		end
+		
+		var bool success = true
+		
+		try
+			this.pCaptureCanvas.getImage().saveToFile( this.pFilename )
+			
+		catch Exception e
+			success = false
+			if this.pConsole != null
+				this.pConsole.addError( "DebugCaptureCanvasView failed for '" + this.pFilename + "'", e )
+			end
+		end
+		
+		try
+			if success
+				if this.pConsole != null
+					this.pConsole.addMessage( "DebugCaptureCanvasView saved '" + this.pFilename + "'" )
+				end
+				this.onCaptureSucceeded()
+				
+			else
+				this.onCaptureFailed()
+			end
+			
+		catch Exception e
+			if this.pConsole != null
+				this.pConsole.addError( "DebugCaptureCanvasView", e )
+			end
+		end
+		
+		this.pCaptureCanvas = null
+		this.giveUp()
+	end
+	
+	/**
+	 * \brief Capture succeeded.
+	 */
+	protected func void onCaptureSucceeded()
+	end
+	
+	/**
+	 * \brief Capture failed.
+	 */
+	protected func void onCaptureFailed()
+	end
+end

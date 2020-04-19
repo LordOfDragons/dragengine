@@ -1,0 +1,4 @@
+CONVERSATION {
+  global: ConversationEditorCreateModule;
+  local: *;
+};

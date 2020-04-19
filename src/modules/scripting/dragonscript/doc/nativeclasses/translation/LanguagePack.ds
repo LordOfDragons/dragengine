@@ -1,0 +1,92 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+/**
+ * \brief Immutable language pack resources.
+ * 
+ * Language pack contain a list of entries assigning translations to names
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class LanguagePack
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load language pack from file.
+	 * 
+	 * If the language pack file has been already loaded it is assigned to this object.
+	 * If the language pack is not loaded yet the engine loads the language pack. This call
+	 * blocks until the language pack is fully loaded and ready to be used. For
+	 * asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 * same loaded language pack resource. Once no object instance uses an language pack
+	 * file anymore it is released from memory.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Load language pack from file asynchronously.
+	 * 
+	 * Registers a request in the game engine to load an language pack. Once finished
+	 * or if the file is already loaded the listener is used to deliver the loaded
+	 * language pack or \em null if the loading failed.
+	 */
+	static public func void loadAsynchron( String filename, ResourceListener listener )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the language pack has been loaded from. */
+	public func String getFilename()
+	end
+	
+	/** \brief Name. */
+	public func UnicodeString getName()
+	end
+	
+	/** \brief Description. */
+	public func UnicodeString getDescription()
+	end
+	
+	
+	
+	/** \brief Translation for entry name or missing text if absent. */
+	public func UnicodeString translate( String name )
+	end
+	
+	/** \brief Translation for entry name or default value if absent. */
+	public func UnicodeString translate( String name, UnicodeString defaultValue )
+	end
+	
+	
+	
+	/**
+	 * \brief LanguagePack is equal to another object.
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
+	 * \returns \em true if \em other is of type LanguagePack and both point to the same engine
+	 *          language pack resource.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * 
+	 * Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+end

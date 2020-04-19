@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<skin>
+	<texture name='material'>
+		<image property='color'>sunColor.png</image>
+		<image property='transparency'>sunTransparency.png</image>
+	</texture>
+</skin>

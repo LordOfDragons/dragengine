@@ -1,0 +1,467 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Base actor action.
+ * 
+ * This class defines the events used by CommandBaseActor* classes to use.
+ * 
+ * Action supports the Persistable interface an can be read from and writen to file writers.
+ */
+class BaseActorAction implements Persistable
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory
+		public static fixed var String NAME = "BaseActorAction"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return BaseActorAction.new()
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+	end
+	
+	
+	
+	/** \brief Actor the action is assigned to or \em null. */
+	protected var BehaviorElement actor
+	
+	/** \brief Locomotion behavior. */
+	protected var ECBehaviorLocomotion.Instance locomotion
+	
+	/** \brief Conversation actor behavior if present. */
+	protected var ECBehaviorConversationActor.Instance conversationActor
+	
+	/** \brief Actor animated behavior if present. */
+	protected var ECBehaviorActorAnimated.Instance actorAnimated
+	
+	/** \brief Behavior player controllable or \em null. */
+	protected var ECBehaviorPlayerControllable.Instance playerControllable
+	
+	/** \brief Behavior actor ai-action or \em null. */
+	protected var ECBehaviorActorAIAction.Instance aiAction
+	
+	
+	
+	/** \brief Create actor action. */
+	public func new()
+	end
+	
+	/** \brief Create actor action from persisted state. */
+	public func new( PersistencyEnvironment env, FileReader reader )
+	end
+	
+	/** \brief Dispose of actor action. */
+	public func void dispose()
+		this.actor = null
+	end
+	
+	
+	
+	/** \brief Actor the action is assigned to or \em null. */
+	public func BehaviorElement getActor()
+		return this.actor
+	end
+	
+	/** \brief Locomotion behavior. */
+	public func ECBehaviorLocomotion.Instance getLocomotion()
+		return this.locomotion
+	end
+	
+	/** \brief Conversation actor behavior if present. */
+	public func ECBehaviorConversationActor.Instance getConversationActor()
+		return this.conversationActor
+	end
+	
+	/** \brief Actor animated behavior if present. */
+	public func ECBehaviorActorAnimated.Instance getActorAnimated()
+		return this.actorAnimated
+	end
+	
+	/** \brief Behavior player controllable or \em null. */
+	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+		return this.playerControllable
+	end
+	
+	/** \brief Behavior actor ai-action or \em null. */
+	public func ECBehaviorActorAIAction.Instance getAIAction()
+		return this.aiAction
+	end
+	
+	/** \brief Actor is controlled by player. */
+	public func bool isControlledByPlayer() 
+		return this.playerControllable != null and this.playerControllable.isPlayerControlled()
+	end
+	
+	
+	
+	/**
+	 * \brief Action has been set as active action in an actor.
+	 * 
+	 * Stores the actor and calls initAnimator() and ECBehaviorActorAnimated.applyAnimations().
+	 * 
+	 * Calls these hook methods:
+	 * - initBehaviors()
+	 * - initAnimator()
+	 */
+	public func void activate( BehaviorElement actor )
+		this.actor = actor
+		
+		this.initBehaviors()
+		
+		this.initAnimator()
+		if this.actorAnimated != null
+			this.actorAnimated.applyAnimations() // avoid problems if activated past postThink
+		end
+	end
+	
+	/**
+	 * \brief Action has been unset as active action in an actor.
+	 * 
+	 * The stored actor is not cleared to allow aiFinished() and aiFailed() calls to function.
+	 */
+	public func void deactivate()
+	end
+	
+	/** \brief Actor has been added to game world and enterFrame() is called once. */
+	public func void enterFrame()
+	end
+	
+	/** \brief Player takes control of actor. */
+	public func void playerTakesControl()
+	end
+	
+	/** \brief Player released control of actor. */
+	public func void playerReleasesControl()
+	end
+	
+	/**
+	 * \brief Thinking.
+	 * 
+	 * Default implementation does these actions in this order:
+	 * - playerThink() if player is controlling this actor
+	 * - ECBehaviorConversationActor.updateLocomotion()
+	 * - updateLocomotion()
+	 * - updateAICollider()
+	 * - updateAnimator()
+	 * - applyAnimations()
+	 */
+	public func void think( float elapsed )
+		if this.isControlledByPlayer()
+			this.playerThink( elapsed )
+		end
+		
+		if this.conversationActor != null
+			this.conversationActor.updateLocomotion( elapsed )
+		end
+		
+		this.updateLocomotion( elapsed )
+		this.updateAICollider( elapsed )
+		this.updateAnimator( elapsed )
+		this.applyAnimations()
+	end
+	
+	/** \brief Post physics. */
+	public func void postThink( float elapsed )
+	end
+	
+	
+	
+	/**
+	 * \brief Cancel action the next time possible.
+	 * 
+	 * Calls aiFailed().
+	 */
+	public func void cancel()
+		this.aiFailed()
+	end
+	
+	
+	
+	/**
+	 * \brief Notify actor AI this action failed.
+	 * 
+	 * Calls actionFailed() on actor AI if all of these conditions apply:
+	 * - Actor is not player controlled
+	 * - Actor AI is not null
+	 */
+	public func void aiFailed()
+		if this.isControlledByPlayer()
+			return
+		end
+		
+		if this.aiAction != null and this.aiAction.getAI() != null
+			this.aiAction.getAI().actionFailed()
+		end
+	end
+	
+	/**
+	 * \brief Notify actor AI this action failed.
+	 * 
+	 * Calls actionFinished() on actor AI if all of these conditions apply:
+	 * - Actor is not player controlled
+	 * - Actor AI is not null
+	 */
+	public func void aiFinished()
+		if this.isControlledByPlayer()
+			return
+		end
+		
+		if this.aiAction != null and this.aiAction.getAI() != null
+			this.aiAction.getAI().actionFinished()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Init behaviors.
+	 * 
+	 * Retrieve and store required and optional behavior instances from the actor element.
+	 */
+	protected func void initBehaviors()
+		if this.actor castable BaseActor
+			var BaseActor baseActor = this.actor cast BaseActor
+			this.locomotion = baseActor.getLocomotion()
+			this.conversationActor = baseActor.getConversationActor()
+			this.actorAnimated = baseActor.getActorAnimated()
+			this.playerControllable = baseActor.getPlayerControllable()
+			this.aiAction = baseActor.getAIAction()
+			
+		else
+			this.locomotion = ECBehaviorLocomotion.getInstanceIn( this.actor )
+			this.conversationActor = ECBehaviorConversationActor.getInstanceIn( this.actor )
+			this.actorAnimated = ECBehaviorActorAnimated.getInstanceIn( this.actor )
+			this.playerControllable = ECBehaviorPlayerControllable.getInstanceIn( this.actor )
+			this.aiAction = ECBehaviorActorAIAction.getInstanceIn( this.actor )
+		end
+	end
+	
+	/**
+	 * \brief Initialize animator.
+	 * 
+	 * Overwrite to change animator to use for this actor.
+	 * 
+	 * Default implementation does nothing.
+	 * 
+	 * \par Using ECBehaviorActorAnimated
+	 * 
+	 * Call setActiveAnimatorID() with the identifier of the desired animator as set up in
+	 * the "actorAnimated.animators" element class property. If you set up controller mappings
+	 * using this.actorAnimated.setDefaultControllerMappings() or manually you can stop here
+	 * since controller mappings are automatically updated. By default BaseActorClass does
+	 * calls setDefaultControllerMappings().
+	 * 
+	 * A typical implementation can look like this:
+	 * 
+	 * \code{.ds}
+	 * this.actorAnimated.setActiveAnimatorID("default")
+	 * \endcode
+	 * 
+	 * \par Manually handling AnimatorInstance and Animator
+	 * 
+	 * If you change the animator you should usually also change the locomotion controller
+	 * mappings to automatically animate them unless you plan to do it manually.
+	 * 
+	 * A typical implementation can look like this:
+	 * 
+	 * \code{.ds}
+	 * var Animator animator = ...  // animator you would like to set
+	 * var AnimatorInstance ainst = ... // animator instance created and handled by yourself
+	 * ainst.setAnimator(animator)
+	 * 
+	 * var Locomotion locomotion = getActor().getLocomotion()
+	 * locomotion.removeAllControllerMappings()
+	 * locomotion.addControllerMapping(ainst.getControllerAt(0), Locomotion.ATTR_ELAPSED_TIME)
+	 * locomotion.addControllerMapping(ainst.getControllerAt(1), Locomotion.ATTR_DISPLACEMENT)
+	 * locomotion.addControllerMapping(ainst.getControllerAt(2), Locomotion.ATTR_LOOK_HORIZONTAL)
+	 * locomotion.addControllerMapping(ainst.getControllerAt(3), Locomotion.ATTR_LOOK_VERTICAL)
+	 * \endcode
+	 * 
+	 * This example code sets an animator which is known to have 4 controllers. The mappings
+	 * are set to automatically update the controllers with values matching their use.
+	 * In this case the first controller is playback while actor is not moving. The second
+	 * controller is playback while actor is walking. Using ATTR_DISPLACEMENT uses the distance
+	 * moved by the actor as controller value. Using distance avoids feet shuffling and works
+	 * well with variable movement speeds. The other two controllers affect the direction the
+	 * actor is looking.
+	 */
+	protected func void initAnimator()
+	end
+	
+	/**
+	 * \brief Thinking for player controlled actor only.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void playerThink( float elapsed )
+	end
+	
+	/**
+	 * \brief Update locomotion.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	protected func void updateLocomotion( float elapsed )
+	end
+	
+	/**
+	 * \brief Update AI collider.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	protected func void updateAICollider( float elapsed )
+	end
+	
+	/**
+	 * \brief Update animator controllers.
+	 * 
+	 * Default implementation calls these method if the behvaiors are present:
+	 * - ECBehaviorLocomotion.updateAnimator()
+	 * - ECBehaviorActorAnimated.notifyControllersChanged()
+	 */
+	protected func void updateAnimator( float elapsed )
+		this.locomotion.updateAnimator( elapsed )
+		if this.actorAnimated != null
+			this.actorAnimated.notifyControllersChanged( elapsed )
+		end
+	end
+	
+	/**
+	 * \brief Apply animations.
+	 * 
+	 * Default implementation calls these method if the behvaiors are present:
+	 * - ECBehaviorActorAnimated.applyAnimations()
+	 */
+	protected func void applyAnimations()
+		if this.actorAnimated != null
+			this.actorAnimated.applyAnimations()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Check if conversation actions have to wait for actor to finish this action.
+	 * 
+	 * BaseActor adds a listener to ECBehaviorConversationActor using conversationWait()
+	 * to answer waiting queries by conversation scripts.
+	 * 
+	 * The default implementation returns false which equals no waiting required.
+	 */
+	public func bool conversationWait()
+		return false
+	end
+	
+	
+	
+	/** \brief Collision detected. */
+	public func void collisionResponse( Collider owner, CollisionInfo info )
+	end
+	
+	/** \brief Two colliders can hit each other. */
+	public func bool canHitCollider( Collider owner, Collider collider )
+		return false
+	end
+	
+	/** \brief Collider changed. */
+	public func void colliderChanged( Collider owner )
+	end
+	
+	
+	
+	/** \brief Log text to BaseGameApp console prefixed with actor information. */
+	public func void log( String text )
+		this.log( BaseGameApp.getApp().getConsole(), text )
+	end
+	
+	/** \brief Log text to console prefixed with actor information. */
+	public func void log( Console console, String text )
+		console.addMessage( this.loggingPrefix() + ": " + text )
+	end
+	
+	/** \brief Log text about element to BaseGameApp console prefixed with actor information. */
+	public func void log( Element element, String text )
+		this.log( BaseGameApp.getApp().getConsole(), element, text )
+	end
+	
+	/** \brief Log text about element to console prefixed with actor information. */
+	public func void log( Console console, Element element, String text )
+		if element == null
+			console.addMessage( this.loggingPrefix() + " <null>: " + text )
+			
+		else
+			console.addMessage( this.loggingPrefix() + " " + element.getClass().getClassname() \
+				+ " " + element.getPosition() + ": " + text )
+		end
+	end
+	
+	/** \brief Log exception to BaseGameApp console prefixed with actor information. */
+	public func void log( Exception exception )
+		this.log( BaseGameApp.getApp().getConsole(), exception )
+	end
+	
+	/** \brief Log exception to console prefixed with actor information. */
+	public func void log( Console console, Exception exception )
+		console.addError( this.loggingPrefix(), exception )
+	end
+	
+	/**
+	 * \brief Logging prefix.
+	 * 
+	 * Returns string in the form "<actor-class>/<action-class>".
+	 */
+	public func String loggingPrefix()
+		return this.actor.getClass().getClassname().split( '.' ).getAt( -1 ).toString() \
+			+ "/" + this.className().split( '.' ).getAt( -1 )
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+	end
+end

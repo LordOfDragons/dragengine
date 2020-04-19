@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief List of Rail instances.
+ * 
+ * Rails define path for for elements or other objects requiring a path placed down by a
+ * level artist in the game world. Rails have a unique identifier. This identifier is used
+ * by elements to locate the path in RailList of the GameWorld they are located in. If not
+ * found getWithID() returns null. To define rails use getOrAddWithID(). This method creates
+ * the rail if not found and thus always returns a Rail instance. This is required because
+ * the loading order of elements in a GameWorld is not well defined.
+ * 
+ * Rail class is usually not subclassed. To use subclasses Rail class overwrite createRail().
+ */
+class RailList
+	private var Dictionary pRails
+	
+	
+	
+	/** \brief Create rail list. */
+	public func new()
+		this.pRails = Dictionary.new()
+	end
+	
+	/** \brief Dispose. */
+	public func void dispose()
+		this.pRails.forEachValue( block Rail each
+			each.dispose()
+		end )
+		this.pRails.removeAll()
+	end
+	
+	
+	
+	/** \brief Number of rails. */
+	public func int getCount()
+		return this.pRails.getCount()
+	end
+	
+	/** \brief Rail with identifier is present. */
+	public func bool hasWithID( StringID id )
+		return this.pRails.has( id )
+	end
+	
+	/** \brief Rail with identifier or \em null if absent. */
+	public func Rail getWithID( StringID id )
+		return this.pRails.getAt( id, null ) cast Rail
+	end
+	
+	/**
+	 * \brief Rail with identifier.
+	 * 
+	 * Rail is created using createRail() if absent.
+	 */
+	public func Rail getOrAddWithID( StringID id )
+		var Rail rail = this.getWithID( id )
+		if rail == null
+			rail = this.createRail( id )
+			this.pRails.setAt( id, rail )
+		end
+		return rail
+	end
+	
+	/** \brief Remove rail. */
+	public func void remove( Rail rail )
+		this.pRails.remove( rail.getID() )
+		rail.dispose()
+	end
+	
+	/** \brief Visit rails with block with parameter Rail. */
+	public func void forEachRail( Block ablock )
+		this.pRails.forEachValue( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Create rail.
+	 * 
+	 * Overwrite by subclass to create instances of subclass of Rail.
+	 */
+	protected func Rail createRail( StringID id )
+		return Rail.new( id )
+	end
+end

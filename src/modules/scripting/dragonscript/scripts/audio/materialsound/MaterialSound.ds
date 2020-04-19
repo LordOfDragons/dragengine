@@ -1,0 +1,304 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Audio.MaterialSounds
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Material sound.
+ * 
+ * Plays a random sound from a list of sounds or using a synthesizer. Volume and range is
+ * adjusted according to a power parameter. Usually power is calculated from impact force or
+ * similar physical parameters but can be also static for example depending on used weapon type.
+ * 
+ * If a synthesizer is used the following named controllers are set if present:
+ * - "power": Constant curve with the power used to play the material sound.
+ * - "random": Constant curve with random value between 0 and 1.
+ * 
+ * In both cases (either sound or synthesizer) the speaker volume and range is set to linear
+ * blend between minimum to maximum power and 0 to maximum volume/range. For synthesizer use
+ * this means that the synthesizer should in general not adjust the sound volume since this
+ * is done already by the speaker configuration.
+ */
+class MaterialSound
+	private var float pMinPower
+	private var float pMaxPower
+	private var float pMinVolume
+	private var float pMaxVolume
+	private var float pMinRange
+	private var float pMaxRange
+	private var LayerMask pLayerMask
+	private var Array pSounds
+	private var Synthesizer pSynthesizer
+	
+	
+	
+	/** \brief Create material sound. */
+	public func new()
+		this.pMinPower = 0
+		this.pMaxPower = 1
+		this.pMinVolume = 0
+		this.pMaxVolume = 1
+		this.pMinRange = 10
+		this.pMaxRange = 20
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.audio )
+		this.pSounds = Array.new()
+	end
+	
+	/** \brief Create copy of material sound. */
+	public func new( MaterialSound materialSound )
+		this.pMinPower = materialSound.pMinPower
+		this.pMaxPower = materialSound.pMaxPower
+		this.pMinVolume = materialSound.pMinVolume
+		this.pMaxVolume = materialSound.pMaxVolume
+		this.pMinRange = materialSound.pMinRange
+		this.pMaxRange = materialSound.pMaxRange
+		this.pLayerMask = materialSound.pLayerMask
+		this.pSounds = Array.new( materialSound.pSounds )
+		this.pSynthesizer = materialSound.pSynthesizer
+	end
+	
+	
+	
+	/** \brief Minimum power. */
+	public func float getMinPower()
+		return this.pMinPower
+	end
+	
+	/** \brief Set minimum power. */
+	public func void setMinPower( float power )
+		this.pMinPower = DEMath.max( power, 0.0 )
+	end
+	
+	/** \brief Maximum power. */
+	public func float getMaxPower()
+		return this.pMaxPower
+	end
+	
+	/** \brief Set maximum power. */
+	public func void setMaxPower( float power )
+		this.pMaxPower = DEMath.max( power, 0.0 )
+	end
+	
+	/** \brief Minimum volume. */
+	public func float getMinVolume()
+		return this.pMinVolume
+	end
+	
+	/** \brief Set minimum volume. */
+	public func void setMinVolume( float volume )
+		this.pMinVolume = DEMath.max( volume, 0.0 )
+	end
+	
+	/** \brief Maximum volume. */
+	public func float getMaxVolume()
+		return this.pMaxVolume
+	end
+	
+	/** \brief Set maximum volume. */
+	public func void setMaxVolume( float volume )
+		this.pMaxVolume = DEMath.max( volume, 0.0 )
+	end
+	
+	/** \brief Minimum sound range in meters. */
+	public func float getMinRange()
+		return this.pMinRange
+	end
+	
+	/** \brief Set minimum sound range in meters. */
+	public func void setMinRange( float range )
+		this.pMinRange = DEMath.max( range, 0.1 )
+	end
+	
+	/** \brief Maximum sound range in meters. */
+	public func float getMaxRange()
+		return this.pMaxRange
+	end
+	
+	/** \brief Set maximum sound range in meters. */
+	public func void setMaxRange( float range )
+		this.pMaxRange = DEMath.max( range, 0.1 )
+	end
+	
+	/** \brief Layer mask used by createSpeaker() only. */
+	public func LayerMask getLayerMask()
+		return this.pLayerMask
+	end
+	
+	/** \brief Set layer mask used by createSpeaker() only. */
+	public func void setLayerMask( LayerMask layerMask )
+		this.pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Number of sounds. */
+	public func int getSoundCount()
+		return this.pSounds.getCount()
+	end
+	
+	/** \brief Sound at index. */
+	public func Sound getSoundAt( int index )
+		return this.pSounds.getAt( index ) cast Sound
+	end
+	
+	/** \brief Random sound or \em null if no sounds are present. */
+	public func Sound randomSound()
+		return this.pSounds.random() cast Sound
+	end
+	
+	/** \brief Add sounds. */
+	public func void addSound( Sound sound )
+		if sound == null
+			throw EInvalidParam.new()
+		end
+		this.pSounds.add( sound )
+	end
+	
+	/** \brief Remove all sounds. */
+	public func void removeAllSound()
+		this.pSounds.removeAll()
+	end
+	
+	
+	
+	/** \brief Synthesizer or \em null to use sound files. */
+	public func Synthesizer getSynthesizer()
+		return this.pSynthesizer
+	end
+	
+	/** \brief Set synthesizer or \em null to use sound files. */
+	public func void setSynthesizer( Synthesizer synthesizer )
+		this.pSynthesizer = synthesizer
+	end
+	
+	
+	
+	/**
+	 * \brief Play sound using collision as parameter source.
+	 * 
+	 * Plays sound at collision position using collision impulse as power.
+	 * Uses GameWorld.playSoundOnce() or GameWorld.playSynthesizerOnce().
+	 * 
+	 * To control the speaker used to play the sound use createSpeaker() instead.
+	 */
+	public func void playSound( GameWorld world, CollisionInfo collision )
+		this.playSound( world, collision.getPosition(), collision.getImpulse() )
+	end
+	
+	/**
+	 * \brief Play sound.
+	 * 
+	 * Plays sound at collision position using collision impulse as power.
+	 * Uses GameWorld.playSoundOnce() or GameWorld.playSynthesizerOnce().
+	 * 
+	 * To control the speaker used to play the sound use createSpeaker() instead.
+	 */
+	public func void playSound( GameWorld world, DVector position, float power )
+		if this.pSynthesizer == null
+			if this.pSounds.getCount() == 0
+				return
+			end
+			
+			world.playSoundOnce( this.randomSound(), position, \
+				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinVolume, this.pMaxVolume ), \
+				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinRange, this.pMaxRange ) )
+			
+		else
+			var SynthesizerInstance instance = SynthesizerInstance.new()
+			instance.setSynthesizer( this.pSynthesizer )
+			
+			var SynthesizerController controller
+			controller = instance.getControllerNamed( "power" )
+			if controller != null
+				controller.setCurveConstant( power )
+			end
+			
+			controller = instance.getControllerNamed( "random" )
+			if controller != null
+				controller.setCurveConstant( DEMath.random() )
+			end
+			
+			world.playSynthesizerOnce( instance, position, \
+				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinVolume, this.pMaxVolume ), \
+				DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinRange, this.pMaxRange ) )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Create speaker to play sound using collision as parameter source.
+	 * 
+	 * Uses collision position using collision impulse as power. If no sound nor synthesizer
+	 * is present or usable \en null is returned.
+	 */
+	public func Speaker createSpeaker( CollisionInfo collision )
+		return this.createSpeaker( collision.getPosition(), collision.getImpulse() )
+	end
+	
+	/**
+	 * \brief Create speaker.
+	 * 
+	 * If no sound nor synthesizer is present or usable \en null is returned.
+	 */
+	public func Speaker createSpeaker( DVector position, float power )
+		var Speaker speaker
+		
+		if this.pSynthesizer == null
+			if this.pSounds.getCount() == 0
+				return null
+			end
+			
+			speaker = Speaker.new()
+			speaker.setSound( this.randomSound() )
+			
+		else
+			var SynthesizerInstance instance = SynthesizerInstance.new()
+			instance.setSynthesizer( this.pSynthesizer )
+			
+			var SynthesizerController controller
+			controller = instance.getControllerNamed( "power" )
+			if controller != null
+				controller.setCurveConstant( power )
+			end
+			
+			controller = instance.getControllerNamed( "random" )
+			if controller != null
+				controller.setCurveConstant( DEMath.random() )
+			end
+			
+			speaker = Speaker.new()
+			speaker.setSynthesizer( instance )
+		end
+		
+		speaker.setPosition( position )
+		speaker.setLooping( false )
+		speaker.setVolume( DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinVolume, this.pMaxVolume ) )
+		speaker.setRange( DEMath.linearStep( power, this.pMinPower, this.pMaxPower, this.pMinRange, this.pMaxRange ) )
+		speaker.setLayerMask( this.pLayerMask )
+		speaker.play()
+		return speaker
+	end
+end

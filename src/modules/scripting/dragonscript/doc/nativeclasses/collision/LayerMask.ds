@@ -1,0 +1,173 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Layer mask.
+ * 
+ * Bit mask holding up to 64 bits.
+ * 
+ * This is a native class.
+ */
+class LayerMask
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create layer mask. */
+	public func new()
+	end
+	
+	/** \brief Create copy of layer mask. */
+	public func new( LayerMask copy )
+	end
+	
+	/** \brief Create layer mask with 1 bit set. */
+	public static func LayerMask newWith( int bit )
+	end
+	
+	/** \brief Create layer mask with 2 bits set. */
+	public static func LayerMask newWith( int bit1, int bit2 )
+	end
+	
+	/** \brief Create layer mask with 3 bits set. */
+	public static func LayerMask newWith( int bit1, int bit2, int bit3 )
+	end
+	
+	/** \brief Create layer mask with 4 bits set. */
+	public static func LayerMask newWith( int bit1, int bit2, int bit3, int bit4 )
+	end
+	
+	/** \brief Create layer mask with all bits set. */
+	public static func LayerMask newAll()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Clear the mask. */
+	public func void clearMask()
+	end
+	
+	/**
+	 * \brief Set bit.
+	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
+	 */
+	public func void setBit( int bit )
+	end
+	
+	/**
+	 * \brief Clear bit.
+	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
+	 */
+	public func void clearBit( int bit )
+	end
+	
+	/** \brief All bits are cleared. */
+	public func bool isEmpty()
+	end
+	
+	/**
+	 * \brief Bit is set.
+	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
+	 */
+	public func bool isBitSet( int bit )
+	end
+	
+	/**
+	 * \brief Bit is cleared.
+	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
+	 */
+	public func bool isBitCleared( int bit )
+	end
+	
+	
+	
+	/** \brief Layer masks share at least one bit. */
+	public func bool matches( LayerMask layerMask )
+	end
+	
+	/** \brief Layer masks share no bits. */
+	public func bool matchesNot( LayerMask layerMask )
+	end
+	
+	
+	
+	/** \brief Bit string representation. */
+	public func String toBitString()
+	end
+	
+	/** \brief Set bits from bit string. */
+	public func void setFromBitString( String string )
+	end
+	
+	/** \brief Hex string representation. */
+	public func String toHexString()
+	end
+	
+	/** \brief Set bits from hex string. */
+	public func void setFromHexString( String string )
+	end
+	
+	
+	
+	/** \brief Convert to string representation. */
+	public func String toString()
+	end
+	
+	/**
+	 * \brief Collision filter is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type LayerMask and both have the same bits
+	 *          set in the filter and category.
+	 */
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Inverse of layer mask with bits set where not set and vice versa. */
+	public func LayerMask ~()
+	end
+	
+	/** \brief Layer mask with all bits shared by both layer masks. */
+	public func LayerMask &( LayerMask layerMask )
+	end
+	
+	/** \brief Layer mask with all bits set which are set in at least one layer mask. */
+	public func LayerMask |( LayerMask layerMask )
+	end
+	
+	/** \brief Layer mask with all bits set which are not set or cleared at the same time in both layer masks. */
+	public func LayerMask ^( LayerMask layerMask )
+	end
+	
+	/** \brief Clear all bits which are not set in \em layerMask. */
+	public func LayerMask &=( LayerMask layerMask )
+	end
+	
+	/** \brief Set all bits which are set in \em layerMask. */
+	public func LayerMask |=( LayerMask layerMask )
+	end
+	
+	/** \brief Set all bits that are different in \em layerMask and clear all which are identical. */
+	public func LayerMask ^=( LayerMask layerMask )
+	end
+	/*@}*/
+end

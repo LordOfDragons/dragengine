@@ -1,0 +1,399 @@
+diff -rupN libpng-1.6.29_org/Makefile.in libpng-1.6.29/Makefile.in
+--- libpng-1.6.29_org/Makefile.in	2017-03-16 13:21:11.000000000 +0100
++++ libpng-1.6.29/Makefile.in	2017-04-22 18:30:39.961438220 +0200
+@@ -17,9 +17,9 @@
+ # Makefile.am, the source file for Makefile.in (and hence Makefile), is
+ #
+ # Copyright (c) 2004-2016 Glenn Randers-Pehrson
+-# Last changed in libpng 1.6.25 [September 1, 2016]
++# Last changed in libapng 1.6.25 [September 1, 2016]
+ #
+-# This code is released under the libpng license.
++# This code is released under the libapng license.
+ # For conditions of distribution and use, see the disclaimer
+ # and license in png.h
+ 
+@@ -119,10 +119,10 @@ bin_PROGRAMS = pngfix$(EXEEXT) png-fix-i
+ 
+ 
+ #   Versioned symbols and restricted exports
+-@HAVE_LD_VERSION_SCRIPT_TRUE@@HAVE_SOLARIS_LD_TRUE@am__append_6 = -Wl,-M -Wl,libpng.vers
+-@HAVE_LD_VERSION_SCRIPT_TRUE@@HAVE_SOLARIS_LD_FALSE@am__append_7 = -Wl,--version-script=libpng.vers
++@HAVE_LD_VERSION_SCRIPT_TRUE@@HAVE_SOLARIS_LD_TRUE@am__append_6 = -Wl,-M -Wl,libapng.vers
++@HAVE_LD_VERSION_SCRIPT_TRUE@@HAVE_SOLARIS_LD_FALSE@am__append_7 = -Wl,--version-script=libapng.vers
+ #   Only restricted exports when possible
+-@HAVE_LD_VERSION_SCRIPT_FALSE@am__append_8 = -export-symbols libpng.sym
++@HAVE_LD_VERSION_SCRIPT_FALSE@am__append_8 = -export-symbols libapng.sym
+ @DO_PNG_PREFIX_TRUE@am__append_9 = -DPNG_PREFIX='@PNG_PREFIX@'
+ subdir = .
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+@@ -140,7 +140,7 @@ am__CONFIG_DISTCLEAN_FILES = config.stat
+  configure.lineno config.status.lineno
+ mkinstalldirs = $(install_sh) -d
+ CONFIG_HEADER = config.h
+-CONFIG_CLEAN_FILES = libpng.pc libpng-config
++CONFIG_CLEAN_FILES = libapng.pc libapng-config
+ CONFIG_CLEAN_VPATH_FILES =
+ am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+ am__vpath_adj = case $$p in \
+@@ -174,8 +174,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
+ 	"$(DESTDIR)$(man5dir)" "$(DESTDIR)$(pkgconfigdir)" \
+ 	"$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pkgincludedir)"
+ LTLIBRARIES = $(lib_LTLIBRARIES)
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LIBADD =
+-am__libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES_DIST = png.c \
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LIBADD =
++am__libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES_DIST = png.c \
+ 	pngerror.c pngget.c pngmem.c pngpread.c pngread.c pngrio.c \
+ 	pngrtran.c pngrutil.c pngset.c pngtrans.c pngwio.c pngwrite.c \
+ 	pngwtran.c pngwutil.c png.h pngconf.h pngdebug.h pnginfo.h \
+@@ -193,23 +193,23 @@ am__dirstamp = $(am__leading_dot)dirstam
+ @PNG_INTEL_SSE_TRUE@	intel/filter_sse2_intrinsics.lo
+ @PNG_POWERPC_VSX_TRUE@am__objects_4 = powerpc/powerpc_init.lo \
+ @PNG_POWERPC_VSX_TRUE@	powerpc/filter_vsx_intrinsics.lo
+-am_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS = png.lo pngerror.lo \
++am_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS = png.lo pngerror.lo \
+ 	pngget.lo pngmem.lo pngpread.lo pngread.lo pngrio.lo \
+ 	pngrtran.lo pngrutil.lo pngset.lo pngtrans.lo pngwio.lo \
+ 	pngwrite.lo pngwtran.lo pngwutil.lo $(am__objects_1) \
+ 	$(am__objects_2) $(am__objects_3) $(am__objects_4)
+-nodist_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS =
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS =  \
+-	$(am_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) \
+-	$(nodist_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS)
++nodist_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS =
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS =  \
++	$(am_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) \
++	$(nodist_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS)
+ AM_V_lt = $(am__v_lt_@AM_V@)
+ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+ am__v_lt_0 = --silent
+ am__v_lt_1 = 
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LINK = $(LIBTOOL) $(AM_V_lt) \
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LINK = $(LIBTOOL) $(AM_V_lt) \
+ 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
+ 	$(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS) $(LDFLAGS) -o \
++	$(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS) $(LDFLAGS) -o \
+ 	$@
+ @HAVE_CLOCK_GETTIME_TRUE@am__EXEEXT_1 = timepng$(EXEEXT)
+ PROGRAMS = $(bin_PROGRAMS)
+@@ -218,28 +218,28 @@ png_fix_itxt_OBJECTS = $(am_png_fix_itxt
+ png_fix_itxt_LDADD = $(LDADD)
+ am_pngcp_OBJECTS = contrib/tools/pngcp.$(OBJEXT)
+ pngcp_OBJECTS = $(am_pngcp_OBJECTS)
+-pngcp_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngcp_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngfix_OBJECTS = contrib/tools/pngfix.$(OBJEXT)
+ pngfix_OBJECTS = $(am_pngfix_OBJECTS)
+-pngfix_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngfix_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngimage_OBJECTS = contrib/libtests/pngimage.$(OBJEXT)
+ pngimage_OBJECTS = $(am_pngimage_OBJECTS)
+-pngimage_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngimage_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngstest_OBJECTS = contrib/libtests/pngstest.$(OBJEXT)
+ pngstest_OBJECTS = $(am_pngstest_OBJECTS)
+-pngstest_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngstest_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngtest_OBJECTS = pngtest.$(OBJEXT)
+ pngtest_OBJECTS = $(am_pngtest_OBJECTS)
+-pngtest_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngtest_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngunknown_OBJECTS = contrib/libtests/pngunknown.$(OBJEXT)
+ pngunknown_OBJECTS = $(am_pngunknown_OBJECTS)
+-pngunknown_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngunknown_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_pngvalid_OBJECTS = contrib/libtests/pngvalid.$(OBJEXT)
+ pngvalid_OBJECTS = $(am_pngvalid_OBJECTS)
+-pngvalid_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngvalid_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ am_timepng_OBJECTS = contrib/libtests/timepng.$(OBJEXT)
+ timepng_OBJECTS = $(am_timepng_OBJECTS)
+-timepng_DEPENDENCIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++timepng_DEPENDENCIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ SCRIPTS = $(bin_SCRIPTS)
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
+@@ -285,13 +285,13 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+ am__v_CCLD_0 = @echo "  CCLD    " $@;
+ am__v_CCLD_1 = 
+-SOURCES = $(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES) \
+-	$(nodist_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES) \
++SOURCES = $(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES) \
++	$(nodist_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES) \
+ 	$(png_fix_itxt_SOURCES) $(pngcp_SOURCES) $(pngfix_SOURCES) \
+ 	$(pngimage_SOURCES) $(pngstest_SOURCES) $(pngtest_SOURCES) \
+ 	$(pngunknown_SOURCES) $(pngvalid_SOURCES) $(timepng_SOURCES)
+ DIST_SOURCES =  \
+-	$(am__libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES_DIST) \
++	$(am__libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES_DIST) \
+ 	$(png_fix_itxt_SOURCES) $(pngcp_SOURCES) $(pngfix_SOURCES) \
+ 	$(pngimage_SOURCES) $(pngstest_SOURCES) $(pngtest_SOURCES) \
+ 	$(pngunknown_SOURCES) $(pngvalid_SOURCES) $(timepng_SOURCES)
+@@ -505,8 +505,8 @@ TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)
+ TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
+ 	$(TEST_LOG_FLAGS)
+ am__DIST_COMMON = $(dist_man_MANS) $(srcdir)/Makefile.in \
+-	$(srcdir)/config.h.in $(srcdir)/libpng-config.in \
+-	$(srcdir)/libpng.pc.in INSTALL README TODO compile \
++	$(srcdir)/config.h.in $(srcdir)/libapng-config.in \
++	$(srcdir)/libapng.pc.in INSTALL README TODO compile \
+ 	config.guess config.sub depcomp install-sh ltmain.sh missing \
+ 	test-driver
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+@@ -527,7 +527,7 @@ am__distuninstallcheck_listfiles = $(dis
+   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
+ distcleancheck_listfiles = find . -type f -print
+ 
+-#distribute headers in /usr/include/libpng/*
++#distribute headers in /usr/include/libapng/*
+ pkgincludedir = $(includedir)/$(PNGLIB_BASENAME)
+ ACLOCAL = @ACLOCAL@
+ AMTAR = @AMTAR@
+@@ -630,7 +630,7 @@ am__tar = @am__tar@
+ am__untar = @am__untar@
+ 
+ # generate the -config scripts if required
+-binconfigs = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config
++binconfigs = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config
+ bindir = @bindir@
+ build = @build@
+ build_alias = @build_alias@
+@@ -661,7 +661,7 @@ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+ pdfdir = @pdfdir@
+ 
+-# pkg-config stuff, note that libpng.pc is always required in order
++# pkg-config stuff, note that libapng.pc is always required in order
+ # to get the correct library
+ pkgconfigdir = @pkgconfigdir@
+ prefix = @prefix@
+@@ -675,7 +675,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-PNGLIB_BASENAME = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@
++PNGLIB_BASENAME = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@
+ ACLOCAL_AMFLAGS = -I scripts
+ 
+ # This ensures that pnglibconf.h gets built at the start of 'make all' or
+@@ -688,22 +688,22 @@ ACLOCAL_AMFLAGS = -I scripts
+ # always wrong and always very confusing.
+ BUILT_SOURCES = pnglibconf.h
+ pngtest_SOURCES = pngtest.c
+-pngtest_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngtest_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ pngvalid_SOURCES = contrib/libtests/pngvalid.c
+-pngvalid_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngvalid_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ pngstest_SOURCES = contrib/libtests/pngstest.c
+-pngstest_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngstest_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ pngunknown_SOURCES = contrib/libtests/pngunknown.c
+-pngunknown_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngunknown_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ pngimage_SOURCES = contrib/libtests/pngimage.c
+-pngimage_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngimage_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ timepng_SOURCES = contrib/libtests/timepng.c
+-timepng_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++timepng_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ pngfix_SOURCES = contrib/tools/pngfix.c
+-pngfix_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngfix_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ png_fix_itxt_SOURCES = contrib/tools/png-fix-itxt.c
+ pngcp_SOURCES = contrib/tools/pngcp.c
+-pngcp_LDADD = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++pngcp_LDADD = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+ 
+ # Generally these are single line shell scripts to run a test with a particular
+ # set of parameters:
+@@ -727,29 +727,29 @@ TESTS = \
+ 
+ 
+ # man pages
+-dist_man_MANS = libpng.3 libpngpf.3 png.5
+-EXTRA_SCRIPTS = libpng-config libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config
++dist_man_MANS = libapng.3 libapngpf.3 png.5
++EXTRA_SCRIPTS = libapng-config libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config
+ bin_SCRIPTS = @binconfigs@
+ 
+-# rules to build libpng, only build the old library on request
+-lib_LTLIBRARIES = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
+-# EXTRA_LTLIBRARIES= libpng.la
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES = png.c pngerror.c \
++# rules to build libapng, only build the old library on request
++lib_LTLIBRARIES = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la
++# EXTRA_LTLIBRARIES= libapng.la
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES = png.c pngerror.c \
+ 	pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c \
+ 	pngrutil.c pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c \
+ 	pngwutil.c png.h pngconf.h pngdebug.h pnginfo.h pngpriv.h \
+ 	pngstruct.h pngusr.dfa $(am__append_2) $(am__append_3) \
+ 	$(am__append_4) $(am__append_5)
+-nodist_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES = pnglibconf.h
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS = -no-undefined \
++nodist_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_SOURCES = pnglibconf.h
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LDFLAGS = -no-undefined \
+ 	-export-dynamic -version-number \
+ 	@PNGLIB_MAJOR@@PNGLIB_MINOR@:@PNGLIB_RELEASE@:0 \
+ 	$(am__append_6) $(am__append_7) $(am__append_8)
+-@HAVE_LD_VERSION_SCRIPT_FALSE@libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libpng.sym
+-@HAVE_LD_VERSION_SCRIPT_TRUE@libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libpng.vers
++@HAVE_LD_VERSION_SCRIPT_FALSE@libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libapng.sym
++@HAVE_LD_VERSION_SCRIPT_TRUE@libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES = libapng.vers
+ pkginclude_HEADERS = png.h pngconf.h
+ nodist_pkginclude_HEADERS = pnglibconf.h
+-pkgconfig_DATA = libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.pc
++pkgconfig_DATA = libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.pc
+ 
+ # Extra source distribution files, '${srcdir}' is used below to stop build files
+ # from those directories being included.  This only works if the configure is
+@@ -759,11 +759,11 @@ EXTRA_DIST = \
+ 	pngtest.png pngbar.png pngnow.png pngbar.jpg autogen.sh \
+ 	${srcdir}/contrib ${srcdir}/projects ${srcdir}/scripts \
+ 	$(TESTS) $(XFAIL_TESTS) tests/pngstest \
+-	CMakeLists.txt example.c libpng-manual.txt
++	CMakeLists.txt example.c libapng-manual.txt
+ 
+ SCRIPT_CLEANFILES = scripts/*.out scripts/*.chk
+-CLEANFILES = *.tf? pngout.png libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.pc \
+-	libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config libpng.vers libpng.sym \
++CLEANFILES = *.tf? pngout.png libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.pc \
++	libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@-config libapng.vers libapng.sym \
+ 	check.new pnglibconf.h pngprefix.h symbols.new pngtest-log.txt \
+ 	pnglibconf.out pnglibconf.c pnglibconf.pre pnglibconf.dfn \
+ 	$(SCRIPT_CLEANFILES)
+@@ -840,9 +840,9 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_
+ 
+ distclean-hdr:
+ 	-rm -f config.h stamp-h1
+-libpng.pc: $(top_builddir)/config.status $(srcdir)/libpng.pc.in
++libapng.pc: $(top_builddir)/config.status $(srcdir)/libapng.pc.in
+ 	cd $(top_builddir) && $(SHELL) ./config.status $@
+-libpng-config: $(top_builddir)/config.status $(srcdir)/libpng-config.in
++libapng-config: $(top_builddir)/config.status $(srcdir)/libapng-config.in
+ 	cd $(top_builddir) && $(SHELL) ./config.status $@
+ 
+ install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+@@ -919,8 +919,8 @@ powerpc/powerpc_init.lo: powerpc/$(am__d
+ powerpc/filter_vsx_intrinsics.lo: powerpc/$(am__dirstamp) \
+ 	powerpc/$(DEPDIR)/$(am__dirstamp)
+ 
+-libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la: $(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) $(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES) $(EXTRA_libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES) 
+-	$(AM_V_CCLD)$(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LINK) -rpath $(libdir) $(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) $(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LIBADD) $(LIBS)
++libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@.la: $(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) $(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES) $(EXTRA_libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_DEPENDENCIES) 
++	$(AM_V_CCLD)$(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LINK) -rpath $(libdir) $(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS) $(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_LIBADD) $(LIBS)
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+ 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+@@ -2125,21 +2125,21 @@ uninstall-man: uninstall-man3 uninstall-
+ .PRECIOUS: Makefile
+ 
+ 
+-$(PNGLIB_BASENAME).pc: libpng.pc
+-	cp libpng.pc $@
++$(PNGLIB_BASENAME).pc: libapng.pc
++	cp libapng.pc $@
+ 
+-$(PNGLIB_BASENAME)-config: libpng-config
+-	cp libpng-config $@
++$(PNGLIB_BASENAME)-config: libapng-config
++	cp libapng-config $@
+ 
+ scripts/sym.out scripts/vers.out: png.h pngconf.h pnglibconf.h
+ scripts/prefix.out: png.h pngconf.h pnglibconf.out
+ scripts/symbols.out: png.h pngconf.h $(srcdir)/scripts/pnglibconf.h.prebuilt
+ scripts/intprefix.out: pnglibconf.h
+ 
+-libpng.sym: scripts/sym.out
++libapng.sym: scripts/sym.out
+ 	rm -f $@
+ 	cp $? $@
+-libpng.vers: scripts/vers.out
++libapng.vers: scripts/vers.out
+ 	rm -f $@
+ 	cp $? $@
+ 
+@@ -2236,7 +2236,7 @@ scripts/pnglibconf.c: scripts/pnglibconf
+ 	rm pnglibconf.tf6
+ 	mv pnglibconf.tf7 $@
+ 
+-$(libpng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS): png.h pngconf.h \
++$(libapng@PNGLIB_MAJOR@@PNGLIB_MINOR@_la_OBJECTS): png.h pngconf.h \
+ 	pnglibconf.h pngpriv.h pngdebug.h pnginfo.h pngstruct.h pngprefix.h
+ 
+ test: check-am
+@@ -2259,32 +2259,32 @@ install-header-links:
+ uninstall-header-links:
+ 	cd '$(DESTDIR)$(includedir)'; rm -f $(HEADERS)
+ 
+-install-libpng-pc:
+-	@set -ex; cd '$(DESTDIR)$(pkgconfigdir)'; rm -f libpng.pc; \
+-	   $(LN_S) '$(PNGLIB_BASENAME).pc' libpng.pc
++install-libapng-pc:
++	@set -ex; cd '$(DESTDIR)$(pkgconfigdir)'; rm -f libapng.pc; \
++	   $(LN_S) '$(PNGLIB_BASENAME).pc' libapng.pc
+ 
+-uninstall-libpng-pc:
+-	rm -f '$(DESTDIR)$(pkgconfigdir)/libpng.pc'
++uninstall-libapng-pc:
++	rm -f '$(DESTDIR)$(pkgconfigdir)/libapng.pc'
+ 
+ install-library-links:
+ 	@set -x; cd '$(DESTDIR)$(libdir)';\
+ 	for ext in $(EXT_LIST); do\
+-	   rm -f "libpng.$$ext";\
++	   rm -f "libapng.$$ext";\
+            if test -f "$(PNGLIB_BASENAME).$$ext"; then\
+-              $(LN_S) "$(PNGLIB_BASENAME).$$ext" "libpng.$$ext" || exit 1;\
++              $(LN_S) "$(PNGLIB_BASENAME).$$ext" "libapng.$$ext" || exit 1;\
+            fi;\
+ 	done
+ 
+ uninstall-library-links:
+ 	@set -x; cd '$(DESTDIR)$(libdir)'; for ext in $(EXT_LIST); do\
+-	   rm -f "libpng.$$ext"; done
++	   rm -f "libapng.$$ext"; done
+ 
+-install-libpng-config:
+-	@set -ex; cd '$(DESTDIR)$(bindir)'; rm -f libpng-config; \
+-	   $(LN_S) '$(PNGLIB_BASENAME)-config' libpng-config
++install-libapng-config:
++	@set -ex; cd '$(DESTDIR)$(bindir)'; rm -f libapng-config; \
++	   $(LN_S) '$(PNGLIB_BASENAME)-config' libapng-config
+ 
+-uninstall-libpng-config:
+-	rm -f '$(DESTDIR)$(bindir)/libpng-config'
++uninstall-libapng-config:
++	rm -f '$(DESTDIR)$(bindir)/libapng-config'
+ 
+ # If --enable-unversioned-links is specified the header and lib file links
+ # will be automatically made on a 'make install':
+@@ -2294,18 +2294,18 @@ uninstall-libpng-config:
+ @DO_INSTALL_LINKS_TRUE@install-exec-hook: install-library-links
+ @DO_INSTALL_LINKS_TRUE@uninstall-hook: uninstall-library-links
+ 
+-# Likewise, --install-pc causes libpng.pc to be constructed:
++# Likewise, --install-pc causes libapng.pc to be constructed:
+ 
+-@DO_INSTALL_LIBPNG_PC_TRUE@install-data-hook: install-libpng-pc
+-@DO_INSTALL_LIBPNG_PC_TRUE@uninstall-hook: uninstall-libpng-pc
++@DO_INSTALL_LIBPNG_PC_TRUE@install-data-hook: install-libapng-pc
++@DO_INSTALL_LIBPNG_PC_TRUE@uninstall-hook: uninstall-libapng-pc
+ 
+ # And --install-config:
+ 
+-@DO_INSTALL_LIBPNG_CONFIG_TRUE@install-exec-hook: install-libpng-config
+-@DO_INSTALL_LIBPNG_CONFIG_TRUE@uninstall-hook: uninstall-libpng-config
++@DO_INSTALL_LIBPNG_CONFIG_TRUE@install-exec-hook: install-libapng-config
++@DO_INSTALL_LIBPNG_CONFIG_TRUE@uninstall-hook: uninstall-libapng-config
+ 
+ # The following addition ensures that 'make all' always builds the test programs
+-# too.  It used to, but some change either in libpng or configure stopped this
++# too.  It used to, but some change either in libapng or configure stopped this
+ # working.
+ all-am: $(check_PROGRAMS)
+ 

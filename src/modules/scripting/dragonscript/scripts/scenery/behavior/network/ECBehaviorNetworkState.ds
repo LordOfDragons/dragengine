@@ -1,0 +1,1074 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Networking
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding network state support.
+ * 
+ * The behavior is only active during creation time the StubElement contains Connection
+ * instance. Behavior can not be attached to a connection later.
+ * 
+ * Network states allow elements to link their state to a network state on a remote host.
+ * This behavior can operate in two modes depending on how the element is created.
+ * 
+ * If the element is created on the local host the owner of this behavior is the master
+ * state. As such the master state is changed with the linked state on the remote side
+ * updated by the Network Module to match. The behavior creates a NetworkState resources
+ * and links it to the server network state during init().
+ * 
+ * If the element is requested to be created by the server the NetworkState is created
+ * by the Network Module and is handed over to the game using ConnectionListener.linkState().
+ * In this case the behavior uses the provided network state resource and and acts as the
+ * slave. The server side changes the state and this behavior receives update notifications.
+ * 
+ * In both situations other behaviors add values to track. If this state is the server state
+ * they apply changes to the value if their state changes. If this state is the client state
+ * they will be notified if the remote side modifies the value. Such behaviors have to add
+ * a listener during constructor time implementing Listener.addValues() to add the values at
+ * init time in the correct time. Doing this anywhere else likely results in problems.
+ * 
+ * To enable network state support add ECBehaviorNetworkState then add behaviors designed
+ * to add and maintain network state values. A typical example of such a behaviors are
+ * ECBehaviorNStateGeometry or ECBehaviorNStateLocomotion.
+ * 
+ * No element class properties are added.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * This behavior can be present only once in the element class.
+ */
+class ECBehaviorNetworkState extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Add values to network state. */
+		func void addValues( Instance instance )
+		
+		/** \brief Determine if link to client should be writable. */
+		func bool writableLink( Instance instance, Connection connection )
+		
+		/** \brief Write to link request message. */
+		func void writeToLinkMessage( Instance instance, Connection connection, FileWriter writer )
+		
+		/** \brief Read from request message. */
+		func void readFromLinkMessage( Instance instance, FileReader reader )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Add values to network state. */
+		public func void addValues( Instance instance )
+		end
+		
+		/**
+		 * \brief Determine if link to client should be writable.
+		 * 
+		 * Default implementation returns false.
+		 */
+		public func bool writableLink( Instance instance, Connection connection )
+			return false
+		end
+		
+		/** \brief Write to link request message. */
+		public func void writeToLinkMessage( Instance instance, Connection connection, FileWriter writer )
+		end
+		
+		/** \brief Read from request message. */
+		public func void readFromLinkMessage( Instance instance, FileReader reader )
+		end
+	end
+	
+	/** \brief Value listener. */
+	interface ValueListener
+		/** \brief Value changed. */
+		func void valueChanged( NetworkState networkState )
+	end
+	
+	/** \brief Default implementation of value listener. */
+	class DefaultValueListener implements ValueListener
+		/** \brief Create default value listener. */
+		public func new()
+		end
+		
+		/** \brief Value changed. */
+		public func void valueChanged( NetworkState networkState )
+		end
+	end
+	
+	/** \brief Message listener. */
+	interface MessageListener
+		/** \brief Message received. */
+		func void messageReceived( Connection connection, FileReader message )
+	end
+	
+	/** \brief Default implementation of message listener. */
+	class DefaultMessageListener implements MessageListener
+		/** \brief Create default message listener. */
+		public func new()
+		end
+		
+		/** \brief Message received. */
+		public func void messageReceived( Connection connection, FileReader message )
+		end
+	end
+	
+	/** \brief Value listener for integer type values. */
+	abstract class IntegerValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.integer, format, this )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Integer value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( int value )
+		
+		/** \brief Get integer value from element to update link with. */
+		abstract protected func int getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueIntAt( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueIntAt( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for float type values. */
+	abstract class FloatValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format, float precision )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.floating, format, this )
+			this.pInstance.getNetworkState().setValuePrecisionAt( this.pIndex, precision )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Float value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( float value )
+		
+		/** \brief Get float value from element to update link with. */
+		abstract protected func float getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueFloatAt( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueFloatAt( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for string type values. */
+	abstract class StringValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.string, format, this )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief String value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( String value )
+		
+		/** \brief Get string value from element to update link with. */
+		abstract protected func String getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueStringAt( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueStringAt( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for Point type values. */
+	abstract class PointValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.point2, format, this )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Point2 value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( Point value )
+		
+		/** \brief Get Point2 value from element to update link with. */
+		abstract protected func Point getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValuePoint2At( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValuePoint2At( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for Point3 type values. */
+	abstract class Point3Value extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.point3, format, this )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Point value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( Point3 value )
+		
+		/** \brief Get Point value from element to update link with. */
+		abstract protected func Point3 getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValuePoint3At( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValuePoint3At( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for Vector2 type values. */
+	abstract class Vector2Value extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format, float precision )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.vector2, format, this )
+			this.pInstance.getNetworkState().setValuePrecisionAt( this.pIndex, precision )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Vector2 value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( Vector2 value )
+		
+		/** \brief Get Vector2 value from element to update link with. */
+		abstract protected func Vector2 getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueVector2At( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueVector2At( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for Vector type values. */
+	abstract class VectorValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format, float precision )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.vector3, format, this )
+			this.pInstance.getNetworkState().setValuePrecisionAt( this.pIndex, precision )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Vector value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( Vector value )
+		
+		/** \brief Get Vector value from element to update link with. */
+		abstract protected func Vector getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueVector3At( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueVector3At( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for DVector type values. */
+	abstract class DVectorValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance, NetworkStateValueFormat format, float precision )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.vector3, format, this )
+			this.pInstance.getNetworkState().setValuePrecisionAt( this.pIndex, precision )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief DVector value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( DVector value )
+		
+		/** \brief Get DVector value from element to update link with. */
+		abstract protected func DVector getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueDVector3At( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueDVector3At( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for Quaternion type values. */
+	abstract class QuaternionValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		
+		public func new( Instance instance ) this( instance, NetworkStateValueFormat.floating16, 0.001 )
+		end
+		
+		public func new( Instance instance, NetworkStateValueFormat format, float precision )
+			this.pInstance = instance
+			this.pIndex = instance.addValue( NetworkStateValueType.quaternion, format, this )
+			this.pInstance.getNetworkState().setValuePrecisionAt( this.pIndex, precision )
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return this.pIndex
+		end
+		
+		/** \brief Quaternion value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged( Quaternion value )
+		
+		/** \brief Get Quaternion value from element to update link with. */
+		abstract protected func Quaternion getUpdateValue()
+		
+		public func void valueChanged( NetworkState networkState )
+			this.onValueChanged( networkState.getValueQuaternionAt( this.pIndex ) )
+		end
+		
+		public func void updateValue()
+			if not this.pInstance.getReadOnly()
+				this.pInstance.getNetworkState().setValueQuaternionAt( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Link state if connection is added. */
+		class LinkStateListener extends DefaultConnectionTrackerListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void connectionAdded( ConnectionTracker tracker, Connection connection )
+				this.pInstance.linkState( connection )
+			end
+		end
+		
+		/** \brief State update listener. */
+		class StateUpdateListener implements NetworkStateListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void stateValueChanged( int value )
+				this.pInstance.onStateValueChanged( value )
+			end
+		end
+		
+		
+		private var ECBehaviorNetworkState pECBehavior
+		private var Connection pConnection
+		private var ConnectionTracker pConnectionTracker
+		private var NetworkStateTracker pNetworkStateTracker
+		private var LinkStateListener pLinkStateListener
+		private var NetworkState pNetworkState
+		private var bool pIsServer
+		private var bool pReadOnly
+		private var Array pValueListeners
+		private var Array pMessageListeners
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorNetworkState ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pMessageListeners = Array.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pMessageListeners = null
+			this.pValueListeners = null
+			if this.pNetworkState != null
+				this.pNetworkState.setStateListener( null )
+				this.pNetworkState = null
+			end
+			
+			if this.pLinkStateListener != null
+				this.pConnectionTracker.removeListener( this.pLinkStateListener )
+				this.pLinkStateListener = null
+			end
+			this.pConnectionTracker = null
+			this.pConnection = null
+			
+			this.pListeners = null
+			
+			if this.pNetworkStateTracker != null
+				this.pNetworkStateTracker.remove( this )
+				this.pNetworkStateTracker = null
+			end
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if not stub.getEnableNetworking()
+				return
+			end
+			
+			this.pConnection = stub.getConnection()
+			this.pNetworkState = stub.getNetworkState()
+			if this.pNetworkState == null
+				this.pIsServer = true
+				this.pNetworkState = NetworkState.new()
+			end
+			
+			this.pValueListeners = Array.new()
+			this.pReadOnly = this.pNetworkState.getReadOnly()
+			
+			this.pListeners.forEach( block Listener each
+				each.addValues( this )
+			end )
+			
+			this.pNetworkState.setStateListener( StateUpdateListener.new( this ) )
+			
+			this.pECBehavior.getNetworkStateTracker().add( this )
+			this.pNetworkStateTracker = this.pECBehavior.getNetworkStateTracker()
+			
+			if this.pIsServer
+				this.pConnectionTracker = this.pECBehavior.getConnectionTracker()
+				if this.pConnectionTracker != null
+					this.linkStateAllConnections()
+					
+					this.pLinkStateListener = LinkStateListener.new( this )
+					this.pConnectionTracker.addListener( this.pLinkStateListener )
+				end
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorNetworkState getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Connection tracker or null if not connected. */
+		public func ConnectionTracker getConnectionTracker()
+			return this.pConnectionTracker
+		end
+		
+		/** \brief Connection to server or null if not connected. */
+		public func Connection getConnection()
+			return this.pConnection
+		end
+		
+		/** \brief Network state tracker or null if not connected. */
+		public func NetworkStateTracker getNetworkStateTracker()
+			return this.pNetworkStateTracker
+		end
+		
+		/** \brief Network state or \em null if not tracked. */
+		public func NetworkState getNetworkState()
+			return this.pNetworkState
+		end
+		
+		/** \brief Network state is the server state. */
+		public func bool getIsServer()
+			return this.pIsServer
+		end
+		
+		/**
+		 * \brief Network state is read only.
+		 * 
+		 * Usually reflects the read-only state of the resource network state but can be
+		 * changed by  scripts (typically server side) to turn the behavior read-only.
+		 * This is typically  the case for network states belonging to a client player
+		 * which is changed by the client player not the server.
+		 * 
+		 * If true behaviors must not change state values while running. Otherwise strange
+		 * effects can happen. If false behaviors can change state values while updating.
+		 */
+		public func bool getReadOnly()
+			return this.pReadOnly
+		end
+		
+		/**
+		 * \brief Set if network state is read only.
+		 * 
+		 * Usually reflects the read-only state of the resource network state but can be
+		 * changed by  scripts (typically server side) to turn the behavior read-only.
+		 * This is typically  the case for network states belonging to a client player
+		 * which is changed by the client player not the server.
+		 * 
+		 * If true behaviors must not change state values while running. Otherwise strange
+		 * effects can happen. If false behaviors can change state values while updating.
+		 */
+		public func void setReadOnly( bool readOnly )
+			this.pReadOnly = readOnly
+		end
+		
+		
+		
+		/**
+		 * \brief Link state to connection if server.
+		 * 
+		 * Same as calling linkState(Connection,bool) with the result of calling
+		 * Listener.writableLink() on all listeners.
+		 */
+		public func void linkState( Connection connection )
+			this.linkState( connection, this.pListeners.find( block Listener each
+				return each.writableLink( this, connection )
+			end ) == null )
+		end
+		
+		/**
+		 * \brief Link state to connection if server.
+		 * 
+		 * Calls Listener.prepareLinkState() on listeners to allow modify link request message.
+		 */
+		public func void linkState( Connection connection, bool readOnly )
+			if not this.pIsServer
+				return
+			end
+			
+			var NetworkMessage message = NetworkMessage.new()
+			var FileWriter writer = message.getWriter( false )
+			
+			this.writeRequestLinkMessage( this.getElement().getStub(), connection, writer )
+			
+			connection.linkState( message, this.pNetworkState, readOnly )
+		end
+		
+		/**
+		 * \brief Link state to all tracked connections if server.
+		 * 
+		 * Links state for all connections in ConnectionTracker. Calls linkState(Connection)
+		 * for each tracked connection.
+		 */
+		public func void linkStateAllConnections()
+			if not this.pIsServer
+				return
+			end
+			
+			this.pConnectionTracker.forEach( block Connection each
+				this.linkState( each )
+			end )
+		end
+		
+		/**
+		 * \brief Create network message to request linking state with server.
+		 * 
+		 * Create message by writing 8-bit code to message followed by stub content using
+		 * StubElement.writeToFile().
+		 */
+		public func void writeRequestLinkMessage( StubElement stub, Connection connection, FileWriter writer )
+			writer.writeByte( this.pECBehavior.getRequestLinkCode() )
+			stub.writeToFile( writer )
+			this.pListeners.forEach( block Listener each
+				each.writeToLinkMessage( this, connection, writer )
+			end )
+		end
+		
+		/** \brief Call readFromLinkMessage for all listeners. */
+		public func void readFromLinkMessage( FileReader reader )
+			this.pListeners.forEach( block Listener each
+				each.readFromLinkMessage( this, reader )
+			end )
+		end
+		
+		/**
+		 * \brief Process message received using ECBehaviorNetworkState.getMessageCode() .
+		 */
+		public func void messageReceived( Connection connection, FileReader message )
+			( this.pMessageListeners.getAt( message.readUShort() ) cast MessageListener ) \
+				.messageReceived( connection, message )
+		end
+		
+		
+		
+		/**
+		 * \brief Add value.
+		 * 
+		 * If no network state is present this function does nothing and returns -1 . It is
+		 * thus safe to try adding a value if this behavior is detected. Network state
+		 * support has then to be enabled only if addValue() returns anything else but -1.
+		 * 
+		 * \warning Call this method only in response to Listener.addValues()
+		 * 
+		 * \warning Make sure the element class on the local and remote side add values
+		 *          in the exact same order with the exact same type and format.
+		 * 
+		 * \param type Type of value with values from NetworkState.VALUE_* .
+		 * \param format Format of value with values from NetworkState.FORMAT_* .
+		 * \param listener Listener called if value changes on remote side.
+		 * \returns index of value in the network state or -1 if there is no network state.
+		 */
+		public func int addValue( NetworkStateValueType type, NetworkStateValueFormat format, ValueListener listener )
+			if this.pNetworkState == null
+				return -1
+			end
+			
+			var int index = this.pNetworkState.getValueCount()
+			this.pNetworkState.addValue( type, format )
+			this.pValueListeners.add( listener )
+			return index
+		end
+		
+		/**
+		 * \brief Set listener for value.
+		 */
+		public func void setValueListener( int value, ValueListener listener )
+			if this.pValueListeners == null
+				return
+			end
+			
+			this.pValueListeners.setAt( value, listener )
+		end
+		
+		
+		
+		/**
+		 * \brief Add message listener.
+		 * 
+		 * \warning Make sure the element class on the local and remote side add messages
+		 *          in the exact same order.
+		 * 
+		 * \param listener Listener called if message is received.
+		 * \returns index of message to use to send message.
+		 */
+		public func int addMessage( MessageListener listener )
+			var int index = this.pMessageListeners.getCount()
+			this.pMessageListeners.add( listener )
+			return index
+		end
+		
+		/**
+		 * \brief Set listener for message.
+		 */
+		public func void setMessageListener( int message, ValueListener listener )
+			this.pMessageListeners.setAt( message, listener )
+		end
+		
+		/**
+		 * \brief Send reliable message.
+		 */
+		public func void sendReliableMessage( int message, NetworkMessage content )
+			var NetworkMessage realMessage = this.createMessage( message, content )
+			
+			if this.pConnection != null
+				this.pConnection.sendReliableMessage( realMessage )
+				
+			else
+				this.pConnectionTracker.forEach( block Connection each
+					each.sendReliableMessage( realMessage )
+				end )
+			end
+		end
+		
+		/**
+		 * \brief Send unreliable message.
+		 * 
+		 * Send message with a maximum delay in milliseconds before giving up.
+		 */
+		public func void sendMessage( int message, NetworkMessage content, int maxDelay )
+			var NetworkMessage realMessage = this.createMessage( message, content )
+			
+			if this.pConnection != null
+				this.pConnection.sendReliableMessage( realMessage )
+				
+			else
+				this.pConnectionTracker.forEach( block Connection each
+					each.sendReliableMessage( realMessage )
+				end )
+			end
+		end
+		
+		/** \brief Create message to send. */
+		protected func NetworkMessage createMessage( int message, NetworkMessage content )
+			var NetworkMessage realMessage = NetworkMessage.new()
+			var FileWriter writer = realMessage.getWriter( false )
+			writer.writeByte( this.pECBehavior.getMessageCode() )
+			this.getElement().getID().writeToFile( writer )
+			writer.writeUShort( message )
+			writer.writeData( content.getReader() )
+			return realMessage
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/**
+		 * \brief State value changed on the remote side.
+		 * 
+		 * Called by StateUpdateListener only.
+		 */
+		public func void onStateValueChanged( int value )
+			var ValueListener listener = this.pValueListeners.getAt( value ) cast ValueListener
+			if listener != null
+				listener.valueChanged( this.pNetworkState )
+			end
+		end
+	end
+	
+	
+	
+	private var ConnectionTracker pConnectionTracker
+	private var NetworkStateTracker pNetworkStateTracker
+	private var byte pRequestLinkCode
+	private var byte pMessageCode
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, byte requestLinkCode, byte messageCode ) \
+	this( eclass, requestLinkCode, messageCode, BaseGameApp.getApp().getConnectionTracker(), \
+	BaseGameApp.getApp().getNetworkStateTracker() )
+	end
+	
+	public func new( BehaviorElementClass eclass, byte requestLinkCode, byte messageCode, \
+	ConnectionTracker connectionTracker, NetworkStateTracker networkStateTracker ) super( eclass )
+		if connectionTracker == null or networkStateTracker == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConnectionTracker = connectionTracker
+		this.pNetworkStateTracker = networkStateTracker
+		this.pRequestLinkCode = requestLinkCode
+		this.pMessageCode = messageCode
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Connection tracker. */
+	public func ConnectionTracker getConnectionTracker()
+		return this.pConnectionTracker
+	end
+	
+	/** \brief Set connection tracker. */
+	public func void setConnectionTracker( ConnectionTracker connectionTracker )
+		if connectionTracker == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConnectionTracker = connectionTracker
+	end
+	
+	/** \brief Network state tracker. */
+	public func NetworkStateTracker getNetworkStateTracker()
+		return this.pNetworkStateTracker
+	end
+	
+	/** \brief Set network state tracker. */
+	public func void setNetworkStateTracker( NetworkStateTracker networkStateTracker )
+		if networkStateTracker == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pNetworkStateTracker = networkStateTracker
+	end
+	
+	/** \brief Request link code to use. */
+	public func byte getRequestLinkCode()
+		return this.pRequestLinkCode
+	end
+	
+	/** \brief Set request link code to use. */
+	public func void setRequestLinkCode( byte code )
+		this.pRequestLinkCode = code
+	end
+	
+	/** \brief Message code to use. */
+	public func byte getMessageCode()
+		return this.pMessageCode
+	end
+	
+	/** \brief Set message code to use. */
+	public func void setMessageCode( byte code )
+		this.pMessageCode = code
+	end
+	
+	
+	
+	/**
+	 * \brief Create element from link request message.
+	 * 
+	 * Call this after reading the request link code from the network message reader.
+	 * This method does the following:
+	 * - Reads one StubElement from the network message reader
+	 * - Assigns a newly creates NetworkState to the stub
+	 * - Calls StubElement.createElement() to create the element
+	 * - Returns ECBehaviorNetworkState instance from created element
+	 * 
+	 * The caller is responsible for the behavior element owning the returned instance.
+	 * Add it to a game world or store it in a place where it is properly disposed off later.
+	 * Not doing so will causing memory leaks. Typical use case is to create a player actor
+	 * for spawning later. For most other situations createAndAddFromLinkRequest() is better.
+	 * 
+	 * A typical use looks like this:
+	 * \code{.ds}
+	 * pin Dragengine.Networking
+	 * pin Dragengine.Preloading
+	 * pin Dragengine.Scenery
+	 * 
+	 * class MyConnectionHandler implements ConnectionListener
+	 *    public var GameWorld gameWorld
+	 *    public var Connection connection
+	 *    ...
+	 *    public func bool linkState(NetworkState state, NetworkMessage message)
+	 *       var FileReader reader = message.getReader()
+	 *       var int requestLinkCode = reader.readByte()
+	 *       select requestLinkCode
+	 *       case 1  // change to math request link code used for this behavior
+	 *          // store instance or instance.getElement() somewhere for spawning later
+	 *          storeMe = ECBehaviorNetworkState.createFromLinkRequest(connection, state, reader)
+	 *          return true
+	 *       ...
+	 *       end
+	 *    end
+	 * end
+	 * \endcode
+	 */
+	static public func ECBehaviorNetworkState.Instance createFromLinkRequest( \
+	Connection connection, NetworkState state, FileReader reader )
+		return createFromLinkRequest( connection, state, reader, BaseGameApp.getApp().getElementClassList() )
+	end
+	
+	static public func ECBehaviorNetworkState.Instance createFromLinkRequest( \
+	Connection connection, NetworkState state, FileReader reader, ElementClassList elementClassList )
+		var StubElement stub = StubElement.readFromFile( reader, elementClassList )
+		stub.setEnableNetworking( true )
+		stub.setConnection( connection )
+		stub.setNetworkState( state )
+		
+		var Element element = stub.createElement()
+		try
+			var ECBehaviorNetworkState.Instance behavior = getInstanceIn( element cast BehaviorElement )
+			behavior.readFromLinkMessage( reader )
+			return behavior
+			
+		catch Exception e
+			element.dispose()
+			throw
+		end
+	end
+	
+	/**
+	 * \brief Create element from link request message and add it to game world.
+	 * 
+	 * Call this after reading the request link code from the network message reader.
+	 * This method does the following:
+	 * - Reads one StubElement from the network message reader
+	 * - Assigns a newly creates NetworkState to the stub
+	 * - Calls StubElement.createElement() to create the element
+	 * - Calls GameWorld.addElement() to add created element to game world
+	 * - Returns NetworkState stored in ECBehaviorNetworkState instance from created element
+	 * 
+	 * The caller is not responsible for the behavior element behind the returned NetworkState
+	 * since the GameWorld owns it now. This is the most common function call to use.
+	 * 
+	 * A typical use looks like this:
+	 * \code{.ds}
+	 * pin Dragengine.Networking
+	 * pin Dragengine.Preloading
+	 * pin Dragengine.Scenery
+	 * 
+	 * class MyConnectionHandler implements ConnectionListener
+	 *    public var GameWorld gameWorld
+	 *    public var Connection connection
+	 *    ...
+	 *    public func bool linkState(NetworkState state, NetworkMessage message)
+	 *       var FileReader reader = message.getReader()
+	 *       var int requestLinkCode = reader.readByte()
+	 *       select requestLinkCode
+	 *       case 1  // change to math request link code used for this behavior
+	 *          return ECBehaviorNetworkState.createAndAddFromLinkRequest(connection, state, reader, gameWorld)
+	 *       ...
+	 *       end
+	 *    end
+	 * end
+	 * \endcode
+	 */
+	static public func bool createAndAddFromLinkRequest( Connection connection, \
+	NetworkState state, FileReader reader, GameWorld gameWorld )
+		return createAndAddFromLinkRequest( connection, state, reader, gameWorld, \
+			BaseGameApp.getApp().getElementClassList() )
+	end
+	
+	static public func bool createAndAddFromLinkRequest( Connection connection, \
+	NetworkState state, FileReader reader, GameWorld gameWorld, ElementClassList elementClassList )
+		var Instance instance = createFromLinkRequest( connection, state, reader, elementClassList )
+		try
+			gameWorld.addElement( instance.getElement() )
+			return true
+			
+		catch Exception e
+			instance.getElement().safeDispose()
+		end
+		return false
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorNetworkState getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorNetworkState
+		end ) cast ECBehaviorNetworkState
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNetworkState.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

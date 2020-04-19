@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config>
+	<!--
+	Example global OpenAL Module Configuration file. Place this file under
+	<dragengine-config-path>/modules/audio/openal/1.0/openal.xml .
+	This will replace the global configuration. Users can overwrite the
+	settings in here using Game Profiles.
+	-->
+	
+	<!--
+	Force device to be used by OpenAL. The default is empty string which
+	automatically picsk the best device. To find the supported device names
+	either use your operating system diagnostic tools or look into log files
+	produced while running games with the dragengine. The OpenAL module
+	prints out in the beginning a listing of all found device names.
+	-->
+	<!-- <deviceName>Default</deviceName> -->
+	
+	
+	
+	<!--
+	Set number of rays to use for Sound Tracing. Sound Tracing is used to
+	simulate sound effects due to room shape. Higher ray count is more
+	accurate but requires more processing time.
+	-->
+	<!-- <soundTraceRayCount>64</soundTraceRayCount> -->
+	
+	<!--
+	Set maximum number of bounces during Sound Tracing. More bounces
+	capture far traveling sound sources better but require more
+	processing time.
+	-->
+	<!-- <soundTraceMaxBounceCount>20</soundTraceMaxBounceCount> -->
+	
+	<!--
+	Set maximum number of transmission during Sound Tracing. More
+	transmissiong capture better complex rooms with sounds penetrating
+	walls and objects but require more processing time. Incrementing
+	the number of maximum transmissions by 1 typically increases
+	processing time by 50-100%.
+	-->
+	<!-- <soundTraceMaxTransmitCount>2</soundTraceMaxTransmitCount> -->
+	
+	<!--
+	Set number of rays to use for Estimating Room Parameters. Estimating
+	room parameters is used to simulate sound effects due to room shape.
+	This is a simpler version of ray tracing than used by Sound Tracing.
+	This serves the purpose to estimate how a room sounds like without
+	doing full ray tracing. Higher ray count is more accurate but
+	requires more processing time. In general estimate room parameters
+	uses higher ray count than sound tracing since it is much cheaper.
+	-->
+	<!-- <estimateRoomRayCount>128</estimateRoomRayCount> -->
+	
+	
+	
+	<!--
+	Size in bytes of buffers to use for streaming. Smaller buffer sizes
+	allow to react quicker to dynamic changes in audio data but runs the
+	risk of skipping if audio processing lags behind. Larger buffers
+	protect against skipping but react slower to dynamic changes in audio
+	data.
+	-->
+	<!-- <streamBufSizeThreshold>700000</streamBufSizeThreshold> -->
+	
+	<!--
+	Disable OpenAL Extensions. Use this only if the OpenAL module detecs
+	an extension but the audio driver is broken. This is more of a short
+	term solution until a permanent fix is provided. Use this configuration
+	option only if told. To disable multiple extensions use multiple
+	occurances of the disableExtension tag.
+	-->
+	<!-- <disableExtension>ALC_SOFT_HRTF</disableExtension> -->
+</config>

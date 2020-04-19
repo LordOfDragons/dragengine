@@ -1,0 +1,89 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Drag and drop data type list.
+ */
+class DNDTypeList
+	/** \brief List of types. */
+	private var Array pTypes
+	
+	
+	
+	/** \brief Create drag and drop data type list. */
+	public func new()
+		this.pTypes = Array.new()
+	end
+	
+	/** \brief Create copy of a drag and drop data type list. */
+	public func new( DNDTypeList list )
+		this.pTypes = Array.new( list.pTypes )
+	end
+	
+	
+	
+	/** \brief Number of data types. */
+	public func int getCount()
+		return this.pTypes.getCount()
+	end
+	
+	/** \brief Type at index. */
+	public func String getAt( int index )
+		return this.pTypes.getAt( index ) cast String
+	end
+	
+	/** \brief Type is present. */
+	public func bool has( String type )
+		return this.pTypes.has( type )
+	end
+	
+	/** \brief Add type if absent. */
+	public func void add( String type )
+		if type == null
+			throw EInvalidParam.new()
+		end
+		
+		if not this.pTypes.has( type )
+			this.pTypes.add( type )
+		end
+	end
+	
+	/** \brief Remove type if present. */
+	public func void remove( String type )
+		if this.pTypes.has( type )
+			this.pTypes.remove( type )
+		end
+	end
+	
+	/** \brief Remove all types. */
+	public func void removeAll()
+		this.pTypes.removeAll()
+	end
+	
+	/** \brief Visit types with a block. */
+	public func void forEach( Block ablock )
+		this.pTypes.forEach( ablock )
+	end
+end

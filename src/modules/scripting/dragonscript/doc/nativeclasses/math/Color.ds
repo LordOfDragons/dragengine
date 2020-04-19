@@ -1,0 +1,199 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Immutable 3-component double precision color.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Color
+	/** \name Color constants */
+	/*@{*/
+	/** \brief White. */
+	public static fixed var Color white = Color.new( 1.0, 1.0, 1.0, 1.0 )
+	
+	/** \brief light gray. */
+	public static fixed var Color lightGray = Color.new( 0.75, 0.75, 0.75, 1.0 )
+	
+	/** \brief gray. */
+	public static fixed var Color gray = Color.new( 0.5, 0.5, 0.5, 1.0 )
+	
+	/** \brief Dark gray. */
+	public static fixed var Color darkGray = Color.new( 0.25, 0.25, 0.25, 1.0 )
+	
+	/** \brief Black. */
+	public static fixed var Color black = Color.new( 0.0, 0.0, 0.0, 1.0 )
+	
+	/** \brief Red. */
+	public static fixed var Color red = Color.new( 1.0, 0.0, 0.0, 1.0 )
+	
+	/** \brief Dark red. */
+	public static fixed var Color darkRed = Color.new( 0.5, 0.0, 0.0, 1.0 )
+	
+	/** \brief Green. */
+	public static fixed var Color green = Color.new( 0.0, 1.0, 0.0, 1.0 )
+	
+	/** \brief Dark green. */
+	public static fixed var Color darkGreen = Color.new( 0.0, 0.5, 0.0, 1.0 )
+	
+	/** \brief Blue. */
+	public static fixed var Color blue = Color.new( 0.0, 0.0, 1.0, 1.0 )
+	
+	/** \brief Dark blue. */
+	public static fixed var Color darkBlue = Color.new( 0.0, 0.0, 0.5, 1.0 )
+	
+	/** \brief Yellow. */
+	public static fixed var Color yellow = Color.new( 1.0, 1.0, 0.0, 1.0 )
+	
+	/** \brief Transparent. */
+	public static fixed var Color transparent = Color.new( 0.0, 0.0, 0.0, 0.0 )
+	/*@}*/
+	
+	
+	
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create color. */
+	public func new( float red, float green, float blue )
+	end
+	
+	/** \brief Create color. */
+	public func new( float red, float green, float blue, float alpha )
+	end
+	
+	/** \brief Create color from another color with alpha replaced. */
+	public func new( Color color, float alpha )
+	end
+	
+	/** \brief Create color from rgb values in the range from 0 to 1. */
+	public static func Color newRGB( int red, int green, int blue )
+		return null
+	end
+	
+	/** \brief Create color from rgb values in the range from 0 to 1. */
+	public static func Color newRGBA( int red, int green, int blue, int alpha )
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Red intensity. */
+	public func float getRed()
+		return 0
+	end
+	
+	/** \brief Green intensity. */
+	public func float getGreen()
+		return 0
+	end
+	
+	/** \brief Blue intensity. */
+	public func float getBlue()
+		return 0
+	end
+	
+	/** \brief Alpha value. */
+	public func float getAlpha()
+		return 0
+	end
+	
+	/** \brief Color with all intensities clamped to the range of 0 to 1. */
+	public func Color clamp()
+		return null
+	end
+	
+	/** \brief Inverted color. */
+	public func Color invert()
+		return null
+	end
+	
+	/** \brief Color is equal to another object.. */
+	public func bool isEqual( Color c )
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief Color is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Color and components are equal.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+		return 0
+	end
+	
+	/**
+	 * \brief String representation of color.
+	 * \details Implements Object.toString()
+	 */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read color from a file reader. */
+	static public func Color readFromFile( FileReader reader )
+		return null
+	end
+	
+	/** \brief Write color to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Sum of two colors. */
+	public func Color +( Color v )
+		return null
+	end
+	
+	/** \brief Difference of two colors. */
+	public func Color -( Color v )
+		return null
+	end
+	
+	/** \brief Color scaled by scalar. */
+	public func Color *( float scalar )
+		return null
+	end
+	
+	/**
+	 * \brief Color with each component divided by a value.
+	 * \throws EDivisionByZero \em scalar is \em 0.
+	 */
+	public func Color /( float scalar )
+		return null
+	end
+	
+	/** \brief Two colors intensity wise multiplied. */
+	public func Color *( Color v )
+		return null
+	end
+	/*@}*/
+end

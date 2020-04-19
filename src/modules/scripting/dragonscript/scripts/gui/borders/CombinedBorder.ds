@@ -1,0 +1,179 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Combine two borders into one.
+ * 
+ * Borders are called "inner" and "outer" border with outer border layered ontop of inner border.
+ */
+class CombinedBorder extends DefaultBorder
+	/** \brief Inner border or \em null. */
+	private var Border pInnerBorder
+	
+	/** \brief Outer border or \em null. */
+	private var Border pOuterBorder
+	
+	
+	
+	/** \brief Create border. */
+	public func new()
+	end
+	
+	/** \brief Create border. */
+	public func new( Border innerBorder, Border outerBorder )
+		this.pInnerBorder = innerBorder
+		this.pOuterBorder = outerBorder
+	end
+	
+	
+	
+	/** \brief Inner border or \em null. */
+	public func Border getInnerBorder()
+		return this.pInnerBorder
+	end
+	
+	/** \brief Set inner border or \em null. */
+	public func void setInnerBorder( Border border )
+		if border == this.pInnerBorder
+			return
+		end
+		this.pInnerBorder = border
+		this.onWidgetChanged()
+	end
+	
+	/** \brief Outer border or \em null. */
+	public func Border getOuterBorder()
+		return this.pOuterBorder
+	end
+	
+	/** \brief Set outer border or \em null. */
+	public func void setOuterBorder( Border border )
+		if border == this.pOuterBorder
+			return
+		end
+		this.pOuterBorder = border
+		this.onWidgetChanged()
+	end
+	
+	
+	
+	/** \brief Set widget the border is assigned to or \em null. */
+	public func void setWidget( Widget widget )
+		if this.pInnerBorder != null
+			this.pInnerBorder.setWidget( widget )
+		end
+		if this.pOuterBorder != null
+			this.pOuterBorder.setWidget( widget )
+		end
+		super.setWidget( widget )
+	end
+	
+	/** \brief Border size. */
+	public func BorderSize getBorderSize()
+		var BorderSize borderSize = BorderSize.new()
+		if this.pInnerBorder != null
+			borderSize = this.pInnerBorder.getBorderSize()
+		end
+		if this.pOuterBorder != null
+			borderSize = borderSize.enlarge( this.pOuterBorder.getBorderSize() )
+		end
+		return borderSize
+	end
+	
+	/** \brief Resize canvas to fit widget if widget is set. */
+	public func void resizeCanvas( Point widgetSize )
+		super.resizeCanvas( widgetSize )
+		
+		var Point innerPosition = Point.new()
+		var Point outerSize = widgetSize
+		
+		if this.pInnerBorder != null
+			outerSize = widgetSize + this.pInnerBorder.getBorderSize().getSize()
+		end
+		if this.pOuterBorder != null
+			var BorderSize borderSize = this.pOuterBorder.getBorderSize()
+			innerPosition = Point.new( borderSize.getLeft(), borderSize.getTop() )
+		end
+		
+		if this.pInnerBorder != null
+			this.pInnerBorder.resizeCanvas( widgetSize )
+			this.pInnerBorder.getCanvas().setPosition( innerPosition )
+		end
+		if this.pOuterBorder != null
+			this.pOuterBorder.resizeCanvas( outerSize )
+		end
+	end
+	
+	/** \brief Update canvas. */
+	public func void updateCanvas()
+		if this.getWidget() == null
+			return
+		end
+		
+		var CanvasView view = this.getCanvasView()
+		var Canvas canvas
+		
+		view.removeAllCanvas()
+		
+		if this.pOuterBorder != null
+			canvas = this.pOuterBorder.getCanvas()
+			canvas.setOrder( 1.0 )
+			view.addCanvas( canvas )
+		end
+		
+		if this.pInnerBorder != null
+			canvas = this.pInnerBorder.getCanvas()
+			canvas.setOrder( 0.0 )
+			view.addCanvas( canvas )
+		end
+	end
+	
+	
+	
+	/** \brief Gui theme of widget changed. */
+	public func void onGuiThemeChanged()
+		if this.pInnerBorder != null
+			this.pInnerBorder.onGuiThemeChanged()
+		end
+		if this.pOuterBorder != null
+			this.pOuterBorder.onGuiThemeChanged()
+		end
+		super.onGuiThemeChanged()
+	end
+	
+	/** \brief Widget parameters changed. */
+	public func void onWidgetParametersChanged()
+		if this.pInnerBorder != null
+			this.pInnerBorder.onWidgetParametersChanged()
+		end
+		if this.pOuterBorder != null
+			this.pOuterBorder.onWidgetParametersChanged()
+		end
+		super.onWidgetParametersChanged()
+	end
+end

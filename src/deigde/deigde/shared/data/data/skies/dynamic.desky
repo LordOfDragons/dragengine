@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sky>
+	<bgColor r='0' g='0' b='0'/>
+	<controller>
+		<name>Daytime</name>
+		<limits min='0' max='24'/>
+		<clamp>true</clamp>
+	</controller>
+	<link>
+		<name>Orbit rotation</name>
+		<controller>0</controller>
+		<curve>
+			<interpolation>linear</interpolation>
+			<point>
+				<coordinates x='0' y='1'/>
+				<handle1 x='-0.25' y='1'/>
+				<handle2 x='0.25' y='1'/>
+			</point>
+			<point>
+				<coordinates x='1' y='0'/>
+				<handle1 x='0.75' y='0'/>
+				<handle2 x='1.25' y='0'/>
+			</point>
+		</curve>
+	</link>
+	<link>
+		<name>Skymap day intensity</name>
+		<controller>0</controller>
+		<curve>
+			<interpolation>linear</interpolation>
+			<point>
+				<coordinates x='0.125' y='0.0005'/>
+				<handle1 x='-0.125' y='0.0005'/>
+				<handle2 x='0.375' y='0.0005'/>
+			</point>
+			<point>
+				<coordinates x='0.208' y='0.1328'/>
+				<handle1 x='0.158' y='0.1328'/>
+				<handle2 x='0.258' y='0.1328'/>
+			</point>
+			<point>
+				<coordinates x='0.375' y='1'/>
+				<handle1 x='0.325' y='1'/>
+				<handle2 x='0.425' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.625' y='1'/>
+				<handle1 x='0.575' y='1'/>
+				<handle2 x='0.675' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.75' y='0.1497'/>
+				<handle1 x='0.7' y='0.1497'/>
+				<handle2 x='0.8' y='0.1497'/>
+			</point>
+			<point>
+				<coordinates x='0.875' y='0.0005'/>
+				<handle1 x='0.625' y='0.000499999'/>
+				<handle2 x='1.125' y='0.000499999'/>
+			</point>
+		</curve>
+	</link>
+	<link>
+		<name>Sun ambient intensity</name>
+		<controller>0</controller>
+		<curve>
+			<interpolation>linear</interpolation>
+			<point>
+				<coordinates x='0.125' y='0'/>
+				<handle1 x='0.1' y='0'/>
+				<handle2 x='0.15' y='0'/>
+			</point>
+			<point>
+				<coordinates x='0.25' y='1'/>
+				<handle1 x='0.225' y='1'/>
+				<handle2 x='0.275' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.75' y='1'/>
+				<handle1 x='0.5' y='1'/>
+				<handle2 x='1' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.875' y='0'/>
+				<handle1 x='0.825' y='0'/>
+				<handle2 x='0.925' y='0'/>
+			</point>
+		</curve>
+	</link>
+	<link>
+		<name>Sun light intensity</name>
+		<controller>0</controller>
+		<curve>
+			<interpolation>linear</interpolation>
+			<point>
+				<coordinates x='0.208333' y='0'/>
+				<handle1 x='-0.0416667' y='0'/>
+				<handle2 x='0.458333' y='0'/>
+			</point>
+			<point>
+				<coordinates x='0.375' y='1'/>
+				<handle1 x='0.125' y='1'/>
+				<handle2 x='0.625' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.625' y='1'/>
+				<handle1 x='0.575' y='1'/>
+				<handle2 x='0.675' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.791667' y='0'/>
+				<handle1 x='0.741667' y='0'/>
+				<handle2 x='0.841667' y='0'/>
+			</point>
+		</curve>
+	</link>
+	<link>
+		<name>Skymap day transparency</name>
+		<controller>0</controller>
+		<curve>
+			<interpolation>linear</interpolation>
+			<point>
+				<coordinates x='0.125' y='0'/>
+				<handle1 x='-0.125' y='0'/>
+				<handle2 x='0.375' y='0'/>
+			</point>
+			<point>
+				<coordinates x='0.375' y='1'/>
+				<handle1 x='0.125' y='1'/>
+				<handle2 x='0.625' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.625' y='1'/>
+				<handle1 x='0.575' y='1'/>
+				<handle2 x='0.675' y='1'/>
+			</point>
+			<point>
+				<coordinates x='0.875' y='0'/>
+				<handle1 x='0.825' y='0'/>
+				<handle2 x='0.925' y='0'/>
+			</point>
+		</curve>
+	</link>
+	
+	<layer>
+		<name>Skymap Night</name>
+		<intensity>1</intensity>
+		<skin>background/stars.deskin</skin>
+	</layer>
+	<layer>
+		<name>Moon</name>
+		<orientation x='55' y='0' z='0'/>
+		<intensity>1</intensity>
+		<lightColor r='0.431373' g='0.447059' b='0.694118'/>
+		<lightIntensity>0.009</lightIntensity>
+		<ambientIntensity>0.001</ambientIntensity>
+		<body>
+			<size x='5' y='5'/>
+			<skin>moon/moon.deskin</skin>
+		</body>
+		<target type='rotationY'>
+			<link>0</link>
+		</target>
+	</layer>
+	<layer>
+		<name>Skymap Day</name>
+		<intensity>1</intensity>
+		<skin>background/desert.deskin</skin>
+		<mulBySkyLight>true</mulBySkyLight>
+		<target type='transparency'>
+			<link>4</link>
+		</target>
+	</layer>
+	<layer>
+		<name>Sun</name>
+		<orientation x='-60' y='180' z='0'/>
+		<intensity>20</intensity>
+		<lightIntensity>16</lightIntensity>
+		<ambientIntensity>4</ambientIntensity>
+		<body>
+			<size x='12' y='12'/>
+			<skin>sun/sun.deskin</skin>
+		</body>
+		<target type='rotationY'>
+			<link>0</link>
+		</target>
+		<target type='lightIntensity'>
+			<link>3</link>
+		</target>
+		<target type='ambientIntensity'>
+			<link>3</link>
+		</target>
+	</layer>
+</sky>

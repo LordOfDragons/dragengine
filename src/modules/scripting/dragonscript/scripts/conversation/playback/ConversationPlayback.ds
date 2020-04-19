@@ -1,0 +1,962 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+/**
+ * \brief Play back conversation.
+ */
+abstract class ConversationPlayback implements Persistable
+	private var Conversation pConversation
+	private var ConversationTopicGroup pTopicGroup
+	private var ConversationTopic pTopic
+	private var Array pActors
+	private var Array pCoordSystems
+	private var ConversationCameraDirector pCameraDirector
+	private var Dictionary pVariables
+	private var Array pLayers
+	private var bool pActionWaiting
+	private var float pActionTime
+	private var bool pRunning
+	private var bool pPaused
+	private var bool pEnableFastForwardSpeaking
+	private var ConversationPlaybackSubTitle pSubTitle
+	private var ConversationPlaybackPlayerChoice pPlayerChoice
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create conversation playback. */
+	public func new( Conversation conversation )
+		if conversation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pConversation = conversation
+		this.pActors = Array.new()
+		this.pCoordSystems = Array.new()
+		this.pVariables = Dictionary.new()
+		this.pLayers = Array.new()
+		this.pActionTime = 0.0
+		this.pActionWaiting = false
+		this.pRunning = false
+		this.pPaused = false
+		this.pEnableFastForwardSpeaking = false
+		this.pListeners = Array.new()
+	end
+	
+	/** \brief Dispose of conversation playback. */
+	public func void dispose()
+		this.setRunning( false )
+		this.removeAllLayers()
+		this.removeAllVariables()
+		this.removeAllCoordSystems()
+		this.removeAllActors()
+		this.pListeners = null
+		this.pPlayerChoice = null
+		this.pSubTitle = null
+		if this.pCameraDirector != null
+			this.pCameraDirector.setCameraShot( null )
+			this.pCameraDirector = null
+		end
+		this.pTopic = null
+		this.pTopicGroup = null
+		this.pConversation = null
+	end
+	
+	
+	
+	/**
+	 * \brief Read from file.
+	 * 
+	 * This call loads only data not accessing subclass implemented methods.
+	 * To finish loading call readDelayedFromFile().
+	 * 
+	 * The typical factory call would look like this:
+	 * 
+	 * \code{.ds}
+	 * public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+	 *    var MyConversationPlayback playback = MyConversationPlayback.new( env, reader )
+	 *    playback.readDelayedFromFile( env, reader )
+	 *    return playback
+	 * end
+	 * \endcode
+	 * 
+	 * These objects are not persisted. Subclass is responsible to set them.
+	 * - CameraDirector
+	 * - SubTitle
+	 * - pPlayerChoice
+	 * 
+	 * Subclass is usually not required to store additional data except initializing
+	 * the above mentioned.
+	 */
+	public func new( PersistencyEnvironment env, FileReader reader )
+		var int i, count
+		var String path
+		var StringID id
+		
+		path = env.readString16OrNullIfEmpty( reader )
+		if path != null
+			var LoadConversation loadConversation = env.getVariable( \
+				PersistencyEnvironment.varLoadConversation ) cast LoadConversation
+			this.pConversation = loadConversation.loadFromFile( path )
+		end
+		
+		id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pTopicGroup = this.pConversation.getTopicGroupWithID( id )
+		end
+		
+		id = env.readStringIDOrNullIfEmpty( reader )
+		if id != null
+			this.pTopic = this.pTopicGroup.getTopicWithID( id )
+		end
+		
+		var String variableName
+		var int variableValue
+		count = reader.readUShort()
+		for i = 0 to count
+			variableName = reader.readString8()
+			variableValue = reader.readInt()
+			this.pVariables.setAt( variableName, variableValue )
+		end
+		
+		count = reader.readUShort()
+		for i = 0 to count
+			this.pLayers.add( ConversationPlaybackLayer.readFromFile( env, reader ) )
+		end
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
+		this.pActionWaiting = flags.getAt( 0 )
+		this.pRunning = flags.getAt( 1 )
+		this.pPaused = flags.getAt( 2 )
+		this.pEnableFastForwardSpeaking = flags.getAt( 3 )
+		
+		this.pActionTime = reader.readFloat()
+	end
+	
+	/**
+	 * \brief Read data from file accessing subclass implemented methods.
+	 * 
+	 * Call after subclass is properly constructed. Subclass usually does not
+	 * require to overwrite this method.
+	 */
+	public func void readDelayedFromFile( PersistencyEnvironment env, FileReader reader )
+		var int i, count = reader.readUShort()
+		for i = 0 to count
+			this.addActor( this.loadConversationActor( StringID.new( reader.readString8() ) ) )
+		end
+		
+		var ConversationCoordSystem coordSystem
+		count = reader.readUShort()
+		for i = 0 to count
+			coordSystem = this.createConversationCoordSystem( StringID.new( reader.readString8() ) )
+			coordSystem.readFromFile( env, reader )
+			this.addCoordSystem( coordSystem )
+		end
+		
+		// restore object links that can only be restored once the parent playback is present
+		this.pActors.forEach( block ConversationActor each
+			each.playbackRestoreObjectLinks()
+		end )
+		
+		// ConversationCameraDirector pCameraDirector
+		// ConversationPlaybackSubTitle pSubTitle
+		// ConversationPlaybackPlayerChoice pPlayerChoice
+	end
+	
+	
+	
+	/** \brief Conversation. */
+	public func Conversation getConversation()
+		return this.pConversation
+	end
+	
+	/** \brief Topic group being talking about. */
+	public func ConversationTopicGroup getTopicGroup()
+		return this.pTopicGroup
+	end
+	
+	/** \brief Topic being talking about. */
+	public func ConversationTopic getTopic()
+		return this.pTopic
+	end
+	
+	/** \brief Set topic to talk about. */
+	public func void setTopic( ConversationTopicGroup group, ConversationTopic topic )
+		this.pTopicGroup = group
+		this.pTopic = topic
+		
+		this.removeAllLayers()
+		this.pActionTime = 0
+		this.pActionWaiting = true
+		
+		if topic == null
+			this.setPaused( false )
+			this.setRunning( false )
+		end
+		
+		this.advanceToNextAction()
+	end
+	
+	/** \brief Playback is running. */
+	public func bool getRunning()
+		return this.pRunning
+	end
+	
+	/** \brief Set if playback is running. */
+	public func void setRunning( bool running )
+		if this.pTopic == null
+			running = false
+		end
+		
+		if running == this.pRunning
+			return
+		end
+		
+		this.pRunning = running
+		
+		if running
+			this.update( 0.0 ) // ensure first action is activated at the first frame
+			
+		else
+			this.clearDoneActorSubTitles()
+		end
+		
+		this.notifyRunningChanged()
+		
+		if running
+			this.onConversationStarted()
+			
+		else
+			this.onConversationStopped()
+		end
+	end
+	
+	/** \brief Playback is paused. */
+	public func bool getPaused()
+		return this.pPaused
+	end
+	
+	/** \brief Set if playback is paused. */
+	public func void setPaused( bool paused )
+		this.pPaused = paused
+	end
+	
+	/** \brief Enabling calling fastForwardSpeaking() to be allowed. */
+	public func bool getEnableFastForwardSpeaking()
+		return this.pEnableFastForwardSpeaking
+	end
+	
+	/** \brief Set if calling fastForwardSpeaking() is allowed. */
+	public func void setEnableFastForwardSpeaking( bool enable )
+		this.pEnableFastForwardSpeaking = enable
+	end
+	
+	
+	
+	/** \brief Number of actors. */
+	public func int getActorCount()
+		return this.pActors.getCount()
+	end
+	
+	/** \brief Actor by index. */
+	public func ConversationActor getActorAt( int index )
+		return this.pActors.getAt( index ) cast ConversationActor
+	end
+	
+	/** \brief Actor with ID or number or null if absent. */
+	public func ConversationActor getActorMatching( StringID id )
+		return this.pActors.find( block ConversationActor each
+			return id.equals( each.getAliasID() ) or each.getID().equals( id )
+		end ) cast ConversationActor
+	end
+	
+	/** \brief Add actor with no alias if absent. */
+	public func void addActor( ConversationActor actor )
+		this.addActor( actor, null )
+	end
+	
+	/** \brief Add actor with alias if absent. */
+	public func void addActor( ConversationActor actor, StringID alias )
+		if this.pActors.has( actor )
+			return
+		end
+		
+		if actor.getPlayback() != null
+			throw EInvalidParam.new()
+		end
+		
+		this.pActors.add( actor )
+		
+		if alias == null or alias.toString().empty()
+			actor.setAliasID( null )
+			
+		else
+			actor.setAliasID( alias )
+		end
+		
+		actor.setPlayback( this )
+		
+	end
+	
+	/** \brief Remove actor if present. */
+	public func void removeActor( ConversationActor actor )
+		if not this.pActors.has( actor )
+			return
+		end
+		
+		actor.setRemainingSpeechTime( 0.0 )
+		actor.setSubTitleText( null ) // hide timer takes care of it if present
+		
+		this.pActors.remove( actor )
+		actor.setPlayback( null )
+	end
+	
+	/** \brief Remove all actors. */
+	public func void removeAllActors()
+		this.pActors.forEach( block ConversationActor each
+			each.setPlayback( null )
+		end )
+		
+		this.pActors.removeAll()
+	end
+	
+	/**
+	 * \brief Clear sub title from all actors done speaking.
+	 * 
+	 * This only remove the sub title from affected actors. The sub title text itself is
+	 * not removed from the sub title box. If you want to clear the sub title box call
+	 * getSubTitle().removeAllSubTitleText().
+	 */
+	public func void clearDoneActorSubTitles()
+		this.pActors.forEach( block ConversationActor each
+			if not each.isSpeaking()
+				each.setSubTitleText( null )
+			end
+		end )
+	end
+	
+	/** \brief Visit actors with block with parameter ConversationActor. */
+	public func void forEachActor( Block ablock )
+		this.pActors.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Number of coordinate systems. */
+	public func int getCoordSystemCount()
+		return this.pCoordSystems.getCount()
+	end
+	
+	/** \brief Coordinate system with ID or <em null if absent. */
+	public func ConversationCoordSystem getCoordSystemByID( StringID id )
+		return this.pCoordSystems.find( block ConversationCoordSystem each
+			return id.equals( each.getAliasID() ) or each.getID().equals( id )
+		end ) cast ConversationCoordSystem
+	end
+	
+	/** \brief Add coordinate system without alias if absent. */
+	public func void addCoordSystem( ConversationCoordSystem coordSystem )
+		this.addCoordSystem( coordSystem, null )
+	end
+	
+	/** \brief Add coordinate system with alias if absent. */
+	public func void addCoordSystem( ConversationCoordSystem coordSystem, StringID alias )
+		if this.pCoordSystems.has( coordSystem )
+			return
+		end
+		
+		if alias == null or alias.toString().empty()
+			coordSystem.setAliasID( null )
+			
+		else
+			coordSystem.setAliasID( alias )
+		end
+		
+		this.pCoordSystems.add( coordSystem )
+	end
+	
+	/** \brief Remove coordinate system if present. */
+	public func void removeCoordSystem( ConversationCoordSystem coordSystem )
+		if this.pCoordSystems.has( coordSystem )
+			this.pCoordSystems.remove( coordSystem )
+		end
+	end
+	
+	/** \brief Remove all coordinate systems. */
+	public func void removeAllCoordSystems()
+		this.pCoordSystems.removeAll()
+	end
+	
+	/** \brief Visit coordinate systems with block with parameter ConversationCoordSystem. */
+	public func void forEachCoordSystem( Block ablock )
+		this.pCoordSystems.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Camera director or \em null. */
+	public func ConversationCameraDirector getCameraDirector()
+		return this.pCameraDirector
+	end
+	
+	/** \brief Set camera director or \em null. */
+	public func void setCameraDirector( ConversationCameraDirector director )
+		this.pCameraDirector = director
+	end
+	
+	
+	
+	/** \brief Variable is set. */
+	public func bool hasVariable( String name )
+		return this.pVariables.has( name )
+	end
+	
+	/** \brief Variable value or default value if not set */
+	public func int getVariable( String name, int defaultValue )
+		return this.pVariables.getAt( name, defaultValue ) cast int
+	end
+	
+	/** \brief Set variable. */
+	public func void setVariable( String name, int value )
+		this.pVariables.setAt( name, value )
+	end
+	
+	/** \brief Remove variable if set. */
+	public func void removeVariable( String name )
+		this.pVariables.removeIfExisting( name )
+	end
+	
+	/** \brief Remove all variables. */
+	public func void removeAllVariables()
+		this.pVariables.removeAll()
+	end
+	
+	
+	
+	/** \brief Sub title or \em null. */
+	public func ConversationPlaybackSubTitle getSubTitle()
+		return this.pSubTitle
+	end
+	
+	/** \brief Set sub title or \em null. */
+	public func void setSubTitle( ConversationPlaybackSubTitle subTitle )
+		this.pSubTitle = subTitle
+	end
+	
+	/** \brief Player choice interface or \em null. */
+	public func ConversationPlaybackPlayerChoice getPlayerChoice()
+		return this.pPlayerChoice
+	end
+	
+	/** \brief Set player choice interface or \em null. */
+	public func void setPlayerChoice( ConversationPlaybackPlayerChoice playerChoice )
+		this.pPlayerChoice = playerChoice
+	end
+	
+	
+	
+	/** \brief Update playback. */
+	public func void update( float elapsed )
+		if not this.pPaused
+			this.processActions( elapsed, false )
+		end
+		
+		if this.pCameraDirector != null
+			this.pCameraDirector.advanceCameraTime( elapsed )
+		end
+	end
+	
+	/** \brief Process actions. */
+	public func void processActions( float elapsed, bool skipDelay )
+		// decrement the remaining speech time of all actors
+		this.pActors.forEach( block ConversationActor each
+			each.decrementRemainingSpeechTime( elapsed )
+		end )
+		
+		// loop until there are no more actions able to be processed in elapsed time
+		var ConversationPlaybackLayer layer
+		var ConversationCondition condition
+		var ConversationAction action
+		var int i
+		
+		while true
+			action = null
+			
+			// check if any stack entry upwards contains a condition evaluating to false. in
+			// this case all actions up to this level are cancelled. in particular this means
+			// if two looping conditions are nested and the outer condition becomes false then
+			// control passes outside the outer layer. this also means top-level layer
+			// boundaries are skiped so be careful how you nest conditional loops
+			for i = this.pLayers.getCount() - 1 downto 0
+				layer = this.pLayers.getAt( i ) cast ConversationPlaybackLayer
+				
+				condition = layer.getLoopCondition()
+				if condition != null
+					// TODO use getLoopEvalConditionInterval() to improve performance
+					if not condition.evaluate( this )
+						layer.cancelLooping()
+						this.pLayers.resize( i + 1 )
+						this.pActionTime = 0.0
+						this.pActionWaiting = true
+						break
+					end
+				end
+			end
+			
+			// determine the next action
+			if this.pLayers.getCount() > 0
+				layer = this.getTopLayer()
+				action = this.getTopLayer().getNextAction()
+				
+				// special case. it is possible the stack entry is looping but contains no actions.
+				// in this case skip processing until a change comes from the outside world
+				if action == null and layer.getLooping()
+					return
+				end
+			end
+			
+			// if there is a next action process it
+			if action != null
+				// check for waiting conditions
+				if this.pActionWaiting
+					if action.getWaitForActor()
+						var bool notDone = false
+						
+						if action.getWaitForActorID() != null
+							var ConversationActor actor = this.getActorMatching( \
+								StringID.new( action.getWaitForActorID() ) )
+							if actor != null
+								notDone = actor.isSpeaking() or actor.wait()
+							end
+							
+						else
+							notDone = ( this.pActors.find( block ConversationActor each
+								return each.isSpeaking() or each.wait()
+							end ) != null )
+						end
+						
+						if notDone
+							return
+						end
+					end
+					
+					this.pActionWaiting = false
+				end
+				
+				// wait the delay time then process the action
+				if skipDelay
+					this.pActionTime = action.getDelay()
+					
+				else
+					this.pActionTime += elapsed
+				end
+				
+				if this.pActionTime >= action.getDelay()
+					action.execute( this )
+					this.pActionTime = 0.0
+					this.pActionWaiting = true
+					
+				else
+					return // end the loop
+				end
+				
+			// if there is no next action this can be either because a looping action has no actions or
+			// we actually arrive at the end of the conversation.
+			else
+				if this.pLayers.getCount() > 1
+					// looping action without actions. advance to the next action in the stack below
+					this.advanceToNextAction()
+					
+				else
+					// end of conversation. wait for all actors to be done speaking and exit the loop
+					var bool notDone = false
+					
+					notDone = ( this.pActors.find( block ConversationActor each
+						return each.isSpeaking()
+					end ) != null )
+					
+					if not notDone
+						this.setRunning( false )
+					end
+					
+					return
+				end
+			end
+		end
+	end
+	
+	/** \brief Advance to next action. */
+	public func void advanceToNextAction()
+		if this.pLayers.getCount() == 0
+			if this.pTopic == null
+				this.setRunning( false )
+				
+			else
+				var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( this.pTopic.getIteratorActions() )
+				layer.setTopicTopLevel( true )
+				this.pLayers.add( layer )
+			end
+			
+		else
+			while true
+				var ConversationPlaybackLayer layer = this.getTopLayer()
+				
+				layer.advance()
+				
+				if layer.hasNextAction()
+					this.pActionWaiting = true
+					this.pActionTime = 0.0
+					break
+				end
+				
+				if this.pLayers.getCount() < 2
+					break
+				end
+				
+				this.popLayer()
+			end
+		end
+	end
+	
+	/**
+	 * \brief Fast forward until the actor stopped speaking.
+	 * 
+	 * Used by ConversationInputProcessor to allow player to skip dialog.
+	 * Use setEnableFastForwardSpeaking() to allow/deny fast forwarding. If complex and timed
+	 * conversation parts are used disabling fast forward speaking should be disabled to avoid
+	 * conversation scripts breaking.
+	 */
+	public func void fastForwardSpeaking()
+		if this.pTopic == null or not this.pRunning or not this.pEnableFastForwardSpeaking
+			return
+		end
+		
+		var float timeToForward = 0
+		var float timeStep = 0.1
+		var ConversationActor actor
+		var Speaker speaker
+		var float actorTime
+		var float subStep
+		
+		var ConversationPlaybackLayer layer = this.getTopLayer()
+		if layer.hasNextAction()
+			timeToForward = DEMath.max( layer.getNextAction().getDelay() - this.pActionWaiting, 0.0 )
+		end
+		
+		var int i, count= this.pActors.getCount()
+		for i = 0 to count
+			actor = this.pActors.getAt( i ) cast ConversationActor
+			
+			speaker = actor.getVoiceSpeaker()
+			if speaker == null
+				continue
+			end
+			
+			/* // getPlayPosition missing
+			if speaker.getPlaying()
+				var Sound sound = speaker.getSound()
+				if sound != null
+					actorTime = ( ( speaker.getPlayTo() - speaker.getPlayPosition() ) cast float ) \
+						/ ( sound.getSampleRate() cast float )
+				end
+				
+				timeToForward = DEMath.max( timeToForward, actorTime )
+			end
+			*/
+			
+			actorTime = actor.getRemainingSpeechTime()
+			timeToForward = DEMath.max( timeToForward, actorTime )
+			
+			// this not correct but should work in the most cases. correctly the speaker of each actor
+			// has to be advanced properly but if somebody skips chances are slim this actually would
+			// be noticed. so all voice audio of all actors is simply stopped here
+			speaker.stop()
+			speaker.setSound( null )
+		end
+		
+		while timeToForward > 0.00001
+			subStep = DEMath.min( timeStep, timeToForward )
+			
+			this.pActors.forEach( block ConversationActor each
+				if each.getSpeechAnimationPlayback() != null
+					each.getSpeechAnimationPlayback().update( subStep )
+				end
+			end )
+			
+			this.processActions( subStep, true )
+			
+			timeToForward -= timeStep
+		end
+	end
+	
+	/** \brief Cancel looping layer removing all layers below. */
+	public func void cancelLoopingLayer( ConversationPlaybackLayer layer )
+		var int i
+		
+		for i = this.pLayers.getCount() - 1 downto 0
+			if this.pLayers.getAt( i ) == layer
+				layer.cancelLooping()
+				this.pLayers.resize( i + 1 )
+				this.pActionTime = 0.0
+				this.pActionWaiting = true
+				return
+			end
+		end
+		
+		throw EInvalidParam.new()
+	end
+	
+	
+	
+	/** \brief Number of layers. */
+	public func int getLayerCount()
+		return this.pLayers.getCount()
+	end
+	
+	/** \brief Top layer. */
+	public func ConversationPlaybackLayer getTopLayer()
+		return this.pLayers.getAt( this.pLayers.getCount() - 1 ) cast ConversationPlaybackLayer
+	end
+	
+	/** \brief Push layer to top of stack. */
+	public func void pushLayer( ConversationPlaybackLayer layer )
+		if layer == null
+			throw EInvalidParam.new()
+		end
+		this.pLayers.add( layer )
+	end
+	
+	/** \brief Pop top layer off stack. */
+	public func void popLayer()
+		this.pLayers.remove( this.pLayers.getCount() - 1 )
+	end
+	
+	/** \brief Next action or \em null if top layer is finished. */
+	public func bool hasNextAction()
+		return this.pLayers.getCount() > 0 and this.getTopLayer().hasNextAction()
+	end
+	
+	/** \brief Remove all layers. */
+	public func void removeAllLayers()
+		this.pLayers.removeAll()
+	end
+	
+	/** \brief Stop conversation. */
+	public func void stopConversation()
+		this.pLayers.removeAll()
+		this.pActionWaiting = false
+		this.pActionTime = 0.0
+		this.setRunning( false )
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( ConversationPlaybackListener listener )
+		if not this.pListeners.has( listener )
+			this.pListeners.add( listener )
+		end
+	end
+	
+	/** \brief Remove listener if present. */
+	public func void removeListener( ConversationPlaybackListener listener )
+		if this.pListeners.has( listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	/** \brief Notify listeners running state changed. */
+	public func void notifyRunningChanged()
+		if this.pListeners == null
+			return // can happen if somebody disposed of us very quickly
+		end
+		
+		this.pListeners.forEach( block ConversationPlaybackListener each
+			each.runningChanged( this )
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Obtain actor for a conversation identifier.
+	 * 
+	 * This is used by readFromFile to add actors for playing back the conversation.
+	 * Implement to return the actors matching a conversation identifier.
+	 */
+	abstract public func ConversationActor loadConversationActor( StringID id )
+	
+	/**
+	 * \brief Create coordinate system for a conversation identifier.
+	 * 
+	 * This is used by readFromFile to add coordinate system for playing back the
+	 * conversation. Subclass to create the coordinate system matching a
+	 * conversation identifier.
+	 */
+	abstract public func ConversationCoordSystem createConversationCoordSystem( StringID id )
+	
+	/**
+	 * \brief Obtain trigger table to use.
+	 * 
+	 * Implement to return the trigger table.
+	 */
+	abstract public func TSTriggerTable getTriggerTable()
+	
+	/**
+	 * \brief Game command send by the conversation script.
+	 * 
+	 * Overwrite to make the game execute the action. The default implementation does nothing.
+	 */
+	public func void gameCommand( String command )
+	end
+	
+	/**
+	 * \brief Game condition command send by the conversation script.
+	 * 
+	 * Overwrite to make the game evaluate the command returning true or false as result.
+	 * The default implementation returns false.
+	 */
+	public func bool conditionGameCommand( String command )
+		return false
+	end
+	
+	/**
+	 * \brief Switch music.
+	 * 
+	 * Overwrite to make the game change music. The default implementation does nothing.
+	 */
+	public func void changeMusic( String music )
+	end
+	
+	/**
+	 * \brief Conversation started hook method.
+	 * 
+	 * Called if running state changed to true after sending notifications to listeners.
+	 */
+	public func void onConversationStarted()
+	end
+	
+	/**
+	 * \brief Conversation stopped hook method.
+	 * 
+	 * Called if running state changed to false after sending notifications to listeners.
+	 */
+	public func void onConversationStopped()
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return null
+	end
+	
+	/**
+	 * \brief Write object to file writer.
+	 * 
+	 * This method supports reading object using constructor and readDelayedFromFile().
+	 * Subclass has to overwrite writeObjectConstructToFile() and writeObjectDelayedToFile().
+	 * This method should not be changed.
+	 */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		this.writeObjectConstructToFile( env, writer )
+		this.writeObjectDelayedToFile( env, writer )
+	end
+	
+	/**
+	 * \brief Write object data to file writer read during construction time.
+	 * 
+	 * Writes all data which are read during construction time not accessing
+	 * subclass implemented methods. This affects besides others the use of
+	 * loadConversationActor() and createConversationCoordSystem().
+	 * 
+	 * Subclass usually does not required to overwrite this method.
+	 */
+	public func void writeObjectConstructToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeString16( this.pConversation != null if this.pConversation.getPathFile() else "" )
+		writer.writeString8( this.pTopicGroup != null if this.pTopicGroup.getID().toString() else "" )
+		writer.writeString8( this.pTopic != null if this.pTopic.getID().toString() else "" )
+		
+		writer.writeUShort( this.pVariables.getCount() )
+		this.pVariables.forEach( block String name, int value
+			writer.writeString8( name )
+			writer.writeInt( value )
+		end )
+		
+		writer.writeUShort( this.pLayers.getCount() )
+		this.pLayers.forEach( block ConversationPlaybackLayer each
+			each.writeToFile( env, writer )
+		end )
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 4 )
+		flags.setAt( 0, this.pActionWaiting )
+		flags.setAt( 1, this.pRunning )
+		flags.setAt( 2, this.pPaused )
+		flags.setAt( 3, this.pEnableFastForwardSpeaking )
+		flags.writeToFile( writer )
+		
+		writer.writeFloat( this.pActionTime )
+	end
+	
+	/**
+	 * \brief Write object data to file writer read during readDelayedFromFile.
+	 * 
+	 * Writes all data which are read from inside readDelayedFromFile() accessing
+	 * subclass implemented methods. This affects besides others the use of
+	 * loadConversationActor() and createConversationCoordSystem().
+	 * 
+	 * Subclass usually does not required to overwrite this method.
+	 */
+	public func void writeObjectDelayedToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeUShort( this.pActors.getCount() )
+		this.pActors.forEach( block ConversationActor each
+			writer.writeString8( each.getID().toString() )
+		end )
+		
+		writer.writeUShort( this.pCoordSystems.getCount() )
+		this.pCoordSystems.forEach( block ConversationCoordSystem each
+			each.writeToFile( env, writer )
+		end )
+		
+		// ConversationCameraDirector pCameraDirector
+		// ConversationPlaybackPlayerChoice pPlayerChoice
+		
+		// SubTitle: handled by actors adding their text boxes while loading
+	end
+end

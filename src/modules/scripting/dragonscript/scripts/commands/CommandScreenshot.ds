@@ -1,0 +1,67 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Command for taking screenshots using a ScreenshotCreator,
+ */
+class CommandScreenshot extends Command
+	private var ScreenshotCreator pScreenshotCreator
+	
+	
+	
+	/** \brief Create screenshot command. */
+	public func new( ScreenshotCreator screenshotCreator ) \
+	this( screenshotCreator, "screenshot", "Save screenshot" )
+	end
+	
+	/** \brief Create screenshot command. */
+	public func new( ScreenshotCreator screenshotCreator, String name, String description ) \
+	super( name, description )
+		if screenshotCreator == null
+			throw EInvalidParam.new()
+		end
+		this.pScreenshotCreator = screenshotCreator
+	end
+	
+	
+	
+	/** \brief Screenshot creator. */
+	public func ScreenshotCreator getScreenshotCreator()
+		return this.pScreenshotCreator
+	end
+	
+	
+	
+	/**
+	 * \brief Start command.
+	 * 
+	 * Called if an input key has been pressed.
+	 */
+	public func void start()
+		this.pScreenshotCreator.takeScreenshot()
+	end
+end

@@ -1,0 +1,95 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule bone transformator.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARBoneTransformator extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set minimum translation value. */
+	public func void setMinimumTranslation( Vector translation )
+	end
+	
+	/** \brief Set maximum translation value. */
+	public func void setMaximumTranslation( Vector translation )
+	end
+	
+	/** \brief Set minimum rotation value. */
+	public func void setMinimumRotation( Vector rotation )
+	end
+	
+	/** \brief Set maximum rotation value. */
+	public func void setMaximumRotation( Vector rotation )
+	end
+	
+	/** \brief Set minimum scaleing value. */
+	public func void setMinimumScaling( Vector scaling )
+	end
+	
+	/** \brief Set maximum scaling value. */
+	public func void setMaximumScaling( Vector scaling )
+	end
+	
+	
+	
+	/**
+	 * \brief Set coordinate frame.
+	 * \throws EInvalidParam \em coordinateFrame is an invalid value.
+	 */
+	public func void setCoordinateFrame( ARBoneTransformatorCFrame coordinateFrame )
+	end
+	
+	/** \brief Set target bone or empty string if not set. */
+	public func void setTargetBone( String bone )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARBoneTransformatorTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARBoneTransformatorTarget target )
+	end
+	/*@}*/
+end

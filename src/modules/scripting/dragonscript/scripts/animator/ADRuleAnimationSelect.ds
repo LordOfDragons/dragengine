@@ -1,0 +1,148 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Definition of an animation difference animator rule. Once defined a rule can be
+ * added to an animator using the stored definition.
+ */
+class ADRuleAnimationSelect extends ADRule
+	/** \brief Moves as Array of String. */
+	private var Array pMoves
+	
+	/** \brief Enable position manipulation. */
+	private var bool pEnablePosition
+	
+	/** \brief Enable orientation manipulation. */
+	private var bool pEnableOrientation
+	
+	/** \brief Enable size manipulation. */
+	private var bool pEnableSize
+	
+	
+	
+	/** \brief Create animation rule definition. */
+	public func new()
+		this.pMoves = Array.new()
+		this.pEnablePosition = true
+		this.pEnableOrientation = true
+		this.pEnableSize = false
+	end
+	
+	
+	
+	/** \brief Number of moves. */
+	public func int getMoveCount()
+		return this.pMoves.getCount()
+	end
+	
+	/** \brief Move at index. */
+	public func String getMoveAt( int index )
+		return this.pMoves.getAt( index ) cast String
+	end
+	
+	/** \brief Add move. */
+	public func void addMove( String move )
+		if move == null
+			throw EInvalidParam.new()
+		end
+		this.pMoves.add( move )
+	end
+	
+	/** \brief Remove all moves. */
+	public func void removeAllMoves()
+		this.pMoves.removeAll()
+	end
+	
+	
+	
+	/** \brief Position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return this.pEnablePosition
+	end
+	
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition( bool enable )
+		this.pEnablePosition = enable
+	end
+	
+	/** \brief Orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return this.pEnableOrientation
+	end
+	
+	/** \brief Set if orientation manipulation is enabled. */
+	public func void setEnableOrientation( bool enable )
+		this.pEnableOrientation = enable
+	end
+	
+	/** \brief Size manipulation is enabled. */
+	public func bool getEnableSize()
+		return this.pEnableSize
+	end
+	
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize( bool enable )
+		this.pEnableSize = enable
+	end
+	
+	
+	
+	/**
+	 * \brief Build engine animator rule using the stored definition.
+	 */
+	public func AnimatorRule buildRule( Animator animator )
+		var ARAnimationSelect rule = ARAnimationSelect.new()
+		
+		this.buildRuleCommon( rule )
+		
+		this.forEachTarget( block ADRuleTargetLink each
+			rule.targetAddLink( each.getTarget() cast ARAnimationSelectTarget, each.getLink().getIndex() )
+		end )
+		
+		this.pMoves.forEach( block String each
+			rule.addMove( each )
+		end )
+		
+		rule.setEnablePosition( this.pEnablePosition )
+		rule.setEnableOrientation( this.pEnableOrientation )
+		rule.setEnableSize( this.pEnableSize )
+		
+		return rule
+	end
+	
+	
+	
+	public func void debug( Console console )
+		console.addMessage( this.debugCommon( "Animation Select" ) \
+			+ " moves=" + this.pMoves.getCount() \
+			+ " epos=" + this.pEnablePosition \
+			+ " eorient=" + this.pEnableOrientation \
+			+ " esize=" + this.pEnableSize + " )" )
+	end
+end

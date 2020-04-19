@@ -1,0 +1,87 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Memory file.
+ * 
+ * Stores byte string data in memory allowing FileReader and FileWriter
+ * to be used to read and write the data.
+ * 
+ * This is a native class.
+ */
+class MemoryFile
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create memory file.
+	 * \param filename Filename shown if FileReader.getFilename() or FileWriter.getFilename() is called.
+	 */
+	public func new( String filename )
+	end
+	
+	/**
+	 * \brief Create copy of memory file.
+	 * \param memoryFile Memory file to create copy of.
+	 */
+	public func new( MemoryFile memoryFile )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief File name. */
+	public func String getFilename()
+	end
+	
+	/** \brief Data size in bytes. */
+	public func int getSize()
+	end
+	
+	/**
+	 * \brief Set data size in bytes.
+	 * \details If size changes the data is undefined.
+	 */
+	public func void setSize( int size )
+	end
+	
+	
+	
+	/**
+	 * \brief Get new FileReader starting reading at the start of the data.
+	 * 
+	 * Multiple file readers can be active on the same memory file at different
+	 * read positions. If the data is changed while file readers are using this
+	 * memory file the next read calls can cause exceptions due to reading past
+	 * the end of file.
+	 */
+	public func FileReader getReader()
+	end
+	
+	/**
+	 * \brief Get new FileWriter.
+	 * 
+	 * Using multiple file writers is allowed but discouraged. Each writer maintain
+	 * its own write position. If multiple writers attempt to write on the same
+	 * memory file the data ist overwritten. If you need to use multiple file writers
+	 * you have to manually move the write pointers to the right location.
+	 * 
+	 * If file readers are using this memory file while writers change the content
+	 * the next read calls can cause exceptions due to reading past the end of file.
+	 * 
+	 * \param append If \em true start writing at end of data. If \em false resizes
+	 *               data to 0 bytes and starts writing.
+	 */
+	public func FileWriter getWriter( bool append )
+	end
+	/*@}*/
+end

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE styledText SYSTEM 'DragengineStyledText.dtd'>
+<styledText>
+	<margins all ='5'/>
+	
+	<style name='text'>
+		<font size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='0' g='0' b='0'/>
+		<margins top='12'/>
+		<firstLineIndent>20</firstLineIndent>
+		<alignment>block</alignment>
+	</style>
+	
+	
+	<style name='red'>
+		<font size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+		<textColor r='1' g='0' b='0'/>
+	</style>
+	
+	<text style='text'>This is a sample text content for a <span style='red'>Single Page Styled Text</span>.
+	This kind of text is laid out on a single virtual page using <span style='red'>DisplayStyledText</span>
+	using non-paged mode. In this mode the widget supports calculating a minmal size
+	in contrary to the paged mode where a fixed size is required. This allows to use
+	a styled text in a similar way to a Label but with all the bells and whistles of
+	a styled text object.</text>
+</styledText>

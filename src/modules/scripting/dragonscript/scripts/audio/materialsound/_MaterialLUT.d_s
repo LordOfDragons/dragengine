@@ -1,0 +1,225 @@
+/* 
+ * Epsylon - Game Scripts
+ *
+ * Copyright (C) 2016, Plüss Roland ( roland@rptd.ch )
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Epsylon.MaterialSystem
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Material look up.
+ * 
+ * Speed up looking up materials by storing them in a look up table.
+ * 
+ * \author Plüss Roland
+ * \version 1.0
+ * \date 2016
+ */
+class MaterialLUT
+	/** \brief Base look up table entry returning a material. */
+	protected class Entry
+		/** \brief Material. */
+		protected var Material pMaterial
+		
+		/** \brief Create entry. */
+		public func new( Material material )
+			this.pMaterial = material
+		end
+		
+		/** \brief Get material for collision. */
+		public func Material getMaterial( ColliderComponent owner, DVector position, int bone )
+			return this.pMaterial
+		end
+	end
+	
+	/** \brief Look up table supporting a front and back material. */
+	protected class EntryTwoSided extends Entry
+		/** \brief Back side material. */
+		protected var Material pMaterialBack
+		
+		/** \brief Plane normal relative to parent. */
+		protected var Vector pPlaneNormal
+		
+		/** \brief Plane distance relative to parent. */
+		protected var float pPlaneDistance
+		
+		/** \brief Create entry. */
+		public func new( Material materialFront, Material materialBack, Vector planeNormal, \
+		float planeDistance ) super( materialFront )
+			this.pMaterialBack = materialBack
+			this.pPlaneNormal = planeNormal
+			this.pPlaneDistance = planeDistance
+		end
+		
+		/** \brief Get material for collision. */
+		public func Material getMaterial( ColliderComponent owner, DVector position, int bone )
+			var Vector localPosition
+			
+			if bone == -1
+				localPosition = ( owner.getInverseMatrix() * position ).toVector()
+				
+			else
+				localPosition = ( owner.boneGetInverseMatrix( bone ) * position ).toVector()
+			end
+			
+			if localPosition * this.pPlaneNormal > this.pPlaneDistance
+				return this.pMaterial
+				
+			else
+				return this.pMaterialBack
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief List of entries.
+	 * 
+	 * The list contains rig shapes at index 0 with bone i at index i+1. Shapes are an array
+	 * of Entry with index 0 for -1 shape and shape i mapping to i+1. This allows to get
+	 * the material from the array using two look-ups in all cases.
+	 */
+	private var Array pEntries
+	
+	/** \brief Collider component for which the entries have been generated. */
+	private var ColliderComponent pCollider
+	
+	
+	
+	/** \brief Create material look up table. */
+	public func new()
+		this.pEntries = Array.new()
+	end
+	
+	
+	
+	/** \brief Look up material which can be \em null if not found. */
+	public func Material lookUpMaterial( DVector position, int bone, int shape )
+		return ( ( this.pEntries.getAt( bone + 1 ) cast Array ). \
+			getAt( shape + 1 ) cast Entry ). \
+			getMaterial( this.pCollider, position, bone )
+	end
+	
+	
+	
+	/** \brief Clear the look up table. */
+	public func void clear( Material defaultMaterial )
+		this.pEntries.removeAll()
+		this.pEntries.add( Array.newWith( Entry.new( defaultMaterial ) ) ) // bone = -1; shape = -1
+		this.pCollider = null
+	end
+	
+	/** \brief Build look up table from a collider. */
+	public func void buildFromCollider( Collider collider, Dictionary rigShapeDataMap, \
+	MaterialList materials, Material defaultMaterial )
+		if collider == null
+			this.clear( defaultMaterial )
+			
+		elif collider castable ColliderComponent
+			this.buildFromColliderComponent( collider cast ColliderComponent, \
+				rigShapeDataMap, materials, defaultMaterial )
+			
+		else
+			this.buildFromColliderVolume( collider cast ColliderVolume, defaultMaterial )
+		end
+	end
+	
+	/** \brief Build look up table from a collider volume. */
+	public func void buildFromColliderVolume( ColliderVolume collider, Material material )
+		this.clear( material )
+		
+		// build shapes. all use the same default material so add the default entry multiple times
+		var Array entries = this.pEntries.getAt( 0 ) cast Array
+		var int shapeCount = collider.getShape().getCount()
+		var Object entry = entries.getAt( 0 )
+		var int i
+		
+		for i = 0 to shapeCount
+			entries.add( entry )
+		end
+	end
+	
+	/** \brief Build look up table from a collider component. */
+	public func void buildFromColliderComponent( ColliderComponent collider, Dictionary rigShapeDataMap, \
+	MaterialList materials, Material defaultMaterial )
+		this.clear( defaultMaterial )
+		
+		var Component component = collider.getComponent()
+		if component == null
+			return
+		end
+		
+		var Rig rig = component.getRig()
+		if rig == null
+			return
+		end
+		
+		this.pCollider = collider
+		
+		// build rig shapes
+		var Array entries = this.pEntries.getAt( 0 ) cast Array
+		var int shapeCount = rig.getShapes().getCount()
+		var int i
+		
+		for i = 0 to shapeCount
+			// use sub-classes instead of Material directly to support stuff like front/back
+			// selection per shape depending on CollisionInfo
+			entries.add( this.createEntryForProperty( component, rigShapeDataMap, \
+				materials, rig.shapeGetProperty( i ), defaultMaterial ) )
+		end
+		
+		// build rig bone shapes
+		var int boneCount = rig.getBoneCount()
+		var int j
+		
+		for i = 0 to boneCount
+			shapeCount = rig.boneGetShapes( i ).getCount()
+			entries = Array.newWith( Entry.new( defaultMaterial ) ) // shape = -1
+			this.pEntries.add( entries )
+			
+			for j = 0 to shapeCount
+				// use sub-classes instead of Material directly to support stuff like front/back
+				// selection per shape depending on CollisionInfo
+				entries.add( this.createEntryForProperty( component, rigShapeDataMap, \
+					materials, rig.boneShapeGetProperty( i, j ), defaultMaterial ) )
+			end
+		end
+	end
+	
+	/** \brief Create entry for property. */
+	public func Entry createEntryForProperty( Component component, Dictionary rigShapeDataMap, \
+	MaterialList materials, String property, Material defaultMaterial )
+		if component == null or property.empty()
+			return Entry.new( defaultMaterial )
+		end
+		
+		var Entry entry
+		
+		// single entry case is the default
+		entry = Entry.new( rigShapeDataMap.getAt( property, defaultMaterial ) cast Material )
+		
+		// front/back if property is of the form "front:material-name,back:material-name"
+		
+		return entry
+	end
+end

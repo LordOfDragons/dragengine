@@ -1,0 +1,4 @@
+SCRSMALLTALK {
+  global: STCreateModule;
+  local: *;
+};

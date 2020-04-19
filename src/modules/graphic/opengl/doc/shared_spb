@@ -1,0 +1,51 @@
+Handling of deoglSharedSPB, deoglSharedSPBElement and deoglSharedSPBList
+
+Shared-SPB allows to group multiple elements to render under a single deoglRenderTaskInstance.
+Such a group of sub-instances can be rendered using Instancing. The Per-Instance-Data is
+provided either by an UBO or an SSBO. A Per-Render-Task Instance-Index UBO/SSBO is then used
+to provide the indexing required for the instanced rendering to work. Since buffers have only
+a restricted size multiple shared SPB for the same logical unit is used. This requires correct
+handling to get the desired results.
+
+deoglSharedSPB:
+	The actual UBO/SSBO storing Per-Instance-Data. Stores a slot-list of weak
+	deoglSharedSPBElement pointers. Initially all slots are NULL. When a new element is
+	requested an empty slot is chosen and a new element created inside.
+
+deoglSharedSPBElement:
+	One element in a deoglSharedSPB. Stored one Instance-Data. This object is reference
+	counted. When the last reference is released the element removes itself from the
+	parent deoglSharedSPB slot it is located in.
+
+deoglSharedSPBList:
+	List of deoglSharedSPB. When an element is requested and all deoglSharedSPB in the list
+	are full a new deoglSharedSPB is created to hold the element. This is transparent to the
+	caller and provides endless deoglSharedSPBElement.
+
+Per-Instance-Data compose of these parameters:
+- Component parameter like Model-View matrices for transforming vertices
+- Per-Instance texture parameters required by the Shader used for rendering
+
+Due to this an unique deoglSharedSPBElement is required for every element of this list:
+- Component Texture which is unique use of Model-LOD Texture
+- Occlusion Double Sided faces
+- Occlusion Single Sided faces
+
+Render Task uses deoglRenderTaskInstanceGroup to define groups of sub-instances forming an
+actual Render Task Instance. All Sub-Instances in a deoglRenderTaskInstanceGroup have to
+share these properties to form a group:
+- First Point
+- Point Count
+- First Index
+- Index Count
+- Double Sided
+- Primitive Type
+- Same deoglSharedSPB
+
+The last point is problematic. All other points above are naturally given by using
+deoglRenderTaskInstanceGroup per Model-LOD Texture. A Model-LOD Texture is though linked to
+one deoglSharedSPBElement not deoglSharedSPB as required. This means one Model-LOD Texture
+can have multiple deoglRenderTaskInstanceGroup.
+
+deoglRenderTaskInstanceGroup contains the parameters required for the Render Task to efficiently
+manage, find and use sub instance groups. It is usually allocated as direct membery of classes.

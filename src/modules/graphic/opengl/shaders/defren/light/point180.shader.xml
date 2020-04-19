@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Light Point 180</name>
+	
+	<version>130</version>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	<texture name='texSpecular' target='3'/>
+	<texture name='texShadowObj' target='4'/>
+	<texture name='texShadowTer' target='5'/>
+	<texture name='texShadowTra' target='6'/>
+	<texture name='texShadowTraClr' target='7'/>
+	<texture name='texNoise2D' target='8'/>
+	<texture name='texAmbientMap' target='9'/>
+	
+	<parameter name='pMatrixMVP'/> <!-- 0 -->
+	<parameter name='pMatrixMV'/> <!-- 1 -->
+	<parameter name='pPosTransform'/> <!-- 2 -->
+	<parameter name='pPosToTC'/> <!-- 3 --> <!-- DEPRECATED -->
+	<parameter name='pLightPos'/> <!-- 4 -->
+	<parameter name='pLightColor'/> <!-- 5 -->
+	<parameter name='pLightAtten'/> <!-- 6 -->
+	<parameter name='pShadowMatrix'/> <!-- 7 -->
+	<parameter name='pShaOpts1'/> <!-- 8 -->
+	<parameter name='pShaOpts2'/> <!-- 9 -->
+	<parameter name='pShaOpts3'/> <!-- 10 -->
+	<parameter name='pPosToATC'/> <!-- 11 -->
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/light/lightvolume.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/light/semipoint.glsl</sourceCode>
+</shader>

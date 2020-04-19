@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief List of float rect area values class property for use with XML loading.
+ */
+class ECPFloatRectAreaList extends ElementClassProperty
+	/** \brief List of float rect areas (Array of FloatRectArea). */
+	private var Array pFloatRectAreas
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name ) super( name )
+		this.pFloatRectAreas = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of float rect areas. */
+	public func int getCount()
+		return this.pFloatRectAreas.getCount()
+	end
+	
+	/** \brief FloatRectArea at index. */
+	public func FloatRectArea getAt( int index )
+		return this.pFloatRectAreas.getAt( index ) cast FloatRectArea
+	end
+	
+	/** \brief Get random float react area or \em null if no float react areas are present. */
+	public func FloatRectArea getRandom()
+		if this.pFloatRectAreas.getCount() == 0
+			return null
+			
+		else
+			return this.pFloatRectAreas.random() cast FloatRectArea
+		end
+	end
+	
+	/** \brief For each float react area with block with FloatRectArea as parameter. */
+	public func void forEach( Block ablock )
+		this.pFloatRectAreas.forEach( ablock )
+	end
+	
+	/** \brief Remove all float react areas. */
+	public func void removeAll()
+		this.pFloatRectAreas.removeAll()
+	end
+	
+	/** \brief Add float react area. */
+	public func void add( FloatRectArea area )
+		this.pFloatRectAreas.add( area )
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pFloatRectAreas.removeAll()
+		( value cast Array ).forEach( block FloatRectArea each
+			this.pFloatRectAreas.add( each )
+		end )
+	end
+end

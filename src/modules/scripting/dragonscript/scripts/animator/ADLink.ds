@@ -1,0 +1,117 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of an animator link.
+ * 
+ * Once defined a link can be added to an animator using the stored definition.
+ */
+class ADLink
+	private var ADController pController
+	private var int pIndex
+	private var CurveBezier pCurve
+	private var int pRepeat
+	
+	
+	
+	/** \brief Create link definition. */
+	public func new()
+		this.pIndex = 0
+		this.pCurve = CurveBezier.newDefaultLinear()
+		this.pRepeat = 1
+	end
+	
+	
+	
+	/** \brief Controller or \em null if not set. */
+	public func ADController getController()
+		return this.pController
+	end
+	
+	/** \brief Set controller or \em null if not set. */
+	public func void setController( ADController controller )
+		this.pController = controller
+	end
+	
+	/** \brief Curve. */
+	public func CurveBezier getCurve()
+		return this.pCurve
+	end
+	
+	/** \brief Set curve. */
+	public func void setCurve( CurveBezier curve )
+		this.pCurve = curve
+	end
+	
+	/** \brief Repeat count along X axis. */
+	public func int getRepeat()
+		return this.pRepeat
+	end
+	
+	/** \brief Set repeat along X axis. */
+	public func void setRepeat( int repeat )
+		this.pRepeat = repeat
+	end
+	
+	
+	
+	/** \brief Index of link in animator. */
+	public func int getIndex()
+		return this.pIndex
+	end
+	
+	
+	
+	/** \brief Add link to animator using the stored definition. */
+	public func void addToAnimator( Animator animator )
+		if animator == null
+			throw EInvalidParam.new()
+		end
+		
+		if this.pController == null
+			this.pIndex = animator.addLink( -1 )
+			
+		else
+			this.pIndex = animator.addLink( this.pController.getIndex() )
+		end
+		
+		animator.setLinkCurve( this.pIndex, this.pCurve )
+		animator.setLinkRepeat( this.pIndex, this.pRepeat )
+	end
+	
+	
+	
+	public func void debug( Console console, int index )
+		this.pIndex = index
+		
+		console.addMessage( "- Link " + index + " ( controller=" \
+			+ ( this.pController == null if -1 else this.pController.getIndex() ) \
+			+ " repeat=" + this.pRepeat + ")" )
+	end
+end

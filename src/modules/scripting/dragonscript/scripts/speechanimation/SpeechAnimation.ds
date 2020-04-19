@@ -1,0 +1,197 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.SpeechAnimations
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * Speech animation.
+ */
+class SpeechAnimation
+	/** Name of the neutral move. */
+	private var String pNeutralMove
+	/** List of phonemes. */
+	private var Array pPhonemes
+	/** List of words. */
+	private var Array pWords
+	/** Path to the animation. */
+	private var String pPathAnimation
+	/** Path to the rig. */
+	private var String pPathRig
+	/** Animator for playback. */
+	private var Animator pAnimator
+	
+	
+	
+	/** Creates a new speech animation. */
+	public func new()
+		this.pNeutralMove = ""
+		this.pPhonemes = Array.new()
+		this.pWords = Array.new()
+		this.pAnimator = Animator.new()
+	end
+	
+	
+	
+	/** Retrieves the name of the neutral move. */
+	public func String getNeutralMove()
+		return this.pNeutralMove
+	end
+	
+	/** Sets the name of the neutral move. */
+	public func void setNeutralMove( String moveName )
+		if moveName == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pNeutralMove = moveName
+	end
+	
+	/** Retrieves the path to the animation or null if not set. */
+	public func String getPathAnimation()
+		return this.pPathAnimation
+	end
+	
+	/** Sets the path to the animation or null if not set. */
+	public func void setPathAnimation( String path )
+		this.pPathAnimation = path
+	end
+	
+	/** Retrieves the path to the rig or null if not set. */
+	public func String getPathRig()
+		return this.pPathRig
+	end
+	
+	/** Sets the path to the rig or null if not set. */
+	public func void setPathRig( String path )
+		this.pPathRig = path
+	end
+	
+	/** Retrieves the phoneme with the given IPA symbol or null if not found. */
+	public func SpeechAnimationPhoneme getPhonemeWithIPA( int ipa )
+		return this.pPhonemes.find( block SpeechAnimationPhoneme each
+			return each.getIPA() == ipa
+		end ) cast SpeechAnimationPhoneme
+	end
+	
+	/** Adds a phoneme. */
+	public func void addPhoneme( SpeechAnimationPhoneme phoneme )
+		if this.getPhonemeWithIPA( phoneme.getIPA() ) != null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPhonemes.add( phoneme )
+	end
+	
+	/** Visits each phoneme. */
+	public func void forEachPhoneme( Block aBlock )
+		this.pPhonemes.forEach( aBlock )
+	end
+	
+	/** Retrieves the word with the given name or null if not found. */
+	public func SpeechAnimationWord getWordNamed( StringID name )
+		return this.pWords.find( block SpeechAnimationWord each
+			return each.getName().equals( name )
+		end ) cast SpeechAnimationWord
+	end
+	
+	/** Adds a word. */
+	public func void addWord( SpeechAnimationWord word )
+		if this.getWordNamed( word.getName() ) != null
+			throw EInvalidParam.new()
+		end
+		
+		this.pWords.add( word )
+	end
+	
+	/** Visits each word. */
+	public func void forEachWord( Block aBlock )
+		this.pWords.forEach( aBlock )
+	end
+	
+	/** Retrieves the animator. */
+	public func Animator getAnimator()
+		return this.pAnimator
+	end
+	
+	/** Build animator. */
+	public func void buildAnimator()
+		var int phonemeCount = this.pPhonemes.getCount()
+		var Array visemeList = Array.new()
+		var int i, visemeCount
+		
+		// build list of the viseme move names and set the controller indices at the same time
+		this.pPhonemes.forEach( block SpeechAnimationPhoneme phoneme
+			phoneme.setController( visemeList.indexOf( visemeList.find( block String each
+				return each.equals( phoneme.getMoveName() )
+			end ) cast String ) )
+			
+			if phoneme.getController() == -1
+				phoneme.setController( visemeList.getCount() )
+				visemeList.add( phoneme.getMoveName() )
+			end
+		end )
+		visemeCount = visemeList.getCount()
+		
+		// for each animation move used in all phonemes/ one controller and one
+		// animation rule is added. these are considered the used visemes of all
+		// phonemes. the controller is used to set the blend strength of each
+		// viseme. The matching controllers are then assigned to each phoneme.
+		// Multiple phonemes can therefore use the same controller.
+		this.pAnimator.removeAllRules()
+		this.pAnimator.removeAllLinks()
+		this.pAnimator.setControllerCount( visemeCount )
+		
+		// use the existing animation state
+		var ARStateSnapshot ruleLastState = ARStateSnapshot.new()
+		ruleLastState.setEnabled( true )
+		ruleLastState.setBlendMode( AnimatorRuleBlendMode.blend )
+		ruleLastState.setBlendFactor( 1 )
+		ruleLastState.setUseLastState( true )
+		this.pAnimator.addRule( ruleLastState )
+		
+		// set up controllers and add links and rules
+		var AnimatorController controller
+		for i = 0 to visemeCount
+			controller = this.pAnimator.getControllerAt( i )
+			controller.setClamp( true )
+			controller.setRange( 0, 1 )
+			
+			this.pAnimator.addLink( i )
+			this.pAnimator.setLinkCurve( i, CurveBezier.newDefaultLinear() )
+			
+			var ARAnimation rule = ARAnimation.new()
+			rule.setEnabled( true )
+			rule.setBlendMode( AnimatorRuleBlendMode.overlay )
+			rule.setBlendFactor( 1 )
+			rule.setMoveName( visemeList.getAt( i ) cast String )
+			rule.setMoveTime( 0 )
+			rule.targetAddLink( ARAnimationTarget.blendFactor, i )
+			this.pAnimator.addRule( rule )
+		end
+	end
+end

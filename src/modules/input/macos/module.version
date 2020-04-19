@@ -1,0 +1,4 @@
+INPMACOS {
+  global: MacOSInpCreateModule;
+  local: *;
+};

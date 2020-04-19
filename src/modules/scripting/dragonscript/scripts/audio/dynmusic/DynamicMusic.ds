@@ -1,0 +1,387 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Audio.DynamicMusic
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Dynamic music.
+ *
+ * Play back dynamic music using a synthesizer loaded from an XML file.
+ */
+class DynamicMusic
+	/** \brief State controller values. */
+	public fixed var float statePlay  = 3
+	public fixed var float stateWait  = 2
+	
+	private var Array pSwitches
+	private var Array pParts
+	private var DynamicMusicPart pInit
+	private var DynamicMusicPart pCurPart
+	private var float pRemainingTime
+	private var float pSelectNextTime
+	private var bool pNeedSelectNextPart
+	private var int pSampleRate
+	private var DynamicMusicPart pNextPart
+	private var SynthesizerInstance pSynthesizer
+	private var SynthesizerController pControllerPart
+	private var SynthesizerController pControllerState
+	private var Speaker pSpeaker
+	
+	
+	
+	/** \brief Create dynamic music. */
+	public func new()
+		this.pSwitches = Array.new()
+		this.pInit = DynamicMusicPart.new()
+		this.pParts = Array.new()
+		this.pRemainingTime = 0
+		this.pSelectNextTime = 0.5
+		this.pSampleRate = 44100
+		this.pSynthesizer = SynthesizerInstance.new()
+		this.pSpeaker = Speaker.new()
+	end
+	
+	
+	
+	/** \brief Number of switches. */
+	public func int getSwitchCount()
+		return this.pSwitches.getCount()
+	end
+	
+	/** \brief Get switch at index. */
+	public func DynamicMusicSwitch getSwitchAt( int index )
+		return this.pSwitches.getAt( index ) cast DynamicMusicSwitch
+	end
+	
+	/** \brief Get named switch or \em null if not found. */
+	public func DynamicMusicSwitch getSwitchNamed( String name )
+		return this.pSwitches.find( block DynamicMusicSwitch each
+			return each.getName().equals( name )
+		end ) cast DynamicMusicSwitch
+	end
+	
+	/** \brief Named switch is present. */
+	public func bool hasSwitchNamed( String name )
+		return this.pSwitches.find( block DynamicMusicSwitch each
+			return each.getName().equals( name )
+		end ) != null
+	end
+	
+	/** \brief Add switch. */
+	public func void addSwitch( DynamicMusicSwitch switch )
+		if this.hasSwitchNamed( switch.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pSwitches.add( switch )
+	end
+	
+	/** \brief Remove switch. */
+	public func void removeSwitch( DynamicMusicSwitch switch )
+		this.pSwitches.remove( switch )
+	end
+	
+	/** \brief Remove all switches. */
+	public func void removeAllSwitches()
+		this.pSwitches.removeAll()
+	end
+	
+	/** \brief Visit switches with block with DynamicMusicSwitch as only parameter. */
+	public func void forEachSwitch( Block ablock )
+		this.pSwitches.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Number of parts. */
+	public func int getPartCount()
+		return this.pParts.getCount()
+	end
+	
+	/** \brief Get part at index. */
+	public func DynamicMusicPart getPartAt( int index )
+		return this.pParts.getAt( index ) cast DynamicMusicPart
+	end
+	
+	/** \brief Get named part. */
+	public func DynamicMusicPart getPartNamed( String name )
+		return this.pParts.find( block DynamicMusicPart each
+			return each.getName().equals( name )
+		end ) cast DynamicMusicPart
+	end
+	
+	/** \brief Part is present. */
+	public func bool hasPart( DynamicMusicPart part )
+		return this.pParts.has( part )
+	end
+	
+	/** \brief Named part is present. */
+	public func bool hasPartNamed( String name )
+		return this.pParts.find( block DynamicMusicPart each
+			return each.getName().equals( name )
+		end ) != null
+	end
+	
+	/** \brief Add part. */
+	public func void addPart( DynamicMusicPart part )
+		if this.hasPartNamed( part.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pParts.add( part )
+	end
+	
+	/** \brief Remove part. */
+	public func void removePart( DynamicMusicPart part )
+		this.pParts.remove( part )
+	end
+	
+	/** \brief Remove all parts. */
+	public func void removeAllParts()
+		this.pParts.removeAll()
+	end
+	
+	/** \brief Visit parts with block with DynamicMusicPart as only parameter. */
+	public func void forEachPart( Block ablock )
+		this.pParts.forEach( ablock )
+	end
+	
+	
+	
+	/** \brief Init part with no music used to find the first part to play. */
+	public func DynamicMusicPart getInit()
+		return this.pInit
+	end
+	
+	/** \brief Current part played back or \em null if finished. */
+	public func DynamicMusicPart getCurPart()
+		return this.pCurPart
+	end
+	
+	/** \brief Remaining time in the current part. */
+	public func float getRemainingTime()
+		return this.pRemainingTime
+	end
+	
+	/** \brief Seconds before part finishes to select next part. */
+	public func float getSelectNextTime()
+		return this.pSelectNextTime
+	end
+	
+	/** \brief Next part to play back or \em null to stop. */
+	public func DynamicMusicPart getNextPart()
+		return this.pNextPart
+	end
+	
+	/** \brief Synthesizer used for playing back dynamic music. */
+	public func SynthesizerInstance getSynthesizer()
+		return this.pSynthesizer
+	end
+	
+	/** \brief Part selector controller. */
+	public func SynthesizerController getControllerPart()
+		return this.pControllerPart
+	end
+	
+	/** \brief Play state controller. */
+	public func SynthesizerController getControllerState()
+		return this.pControllerState
+	end
+	
+	/** \brief Speaker used to play back dynamic music. */
+	public func Speaker getSpeaker()
+		return this.pSpeaker
+	end
+	
+	
+	
+	/** \brief Stop and reset. */
+	public func void stop()
+		this.pSpeaker.stop()
+		this.pCurPart = null
+		this.pNextPart = null
+		this.pNeedSelectNextPart = false
+		this.pRemainingTime = 0
+	end
+	
+	/**
+	 * \brief Start playing.
+	 * 
+	 * Evaluates switches with init part to select part to start playing.
+	 * If not valid does not start playing.
+	 */
+	public func void play()
+		this.pCurPart = null
+		var String partName = this.pInit.nextPart()
+		if partName != null
+			this.pCurPart = this.getPartNamed( partName )
+		end
+		
+		if this.pCurPart == null
+			return
+		end
+		this.pNextPart = null
+		this.pNeedSelectNextPart = true
+		
+		this.pControllerPart.setCurveConstant( this.pCurPart.getControllerValue() )
+		this.pControllerState.setCurveConstant( statePlay )
+		
+		this.pRemainingTime = this.pCurPart.getMusic().getPlayTime()
+		
+		this.pSpeaker.setLooping( true )
+		this.pSpeaker.play()
+	end
+	
+	/** \brief Update playback. */
+	public func void update()
+		if not this.pSpeaker.getPlaying()
+			return
+		end
+		
+		// TODO get the play state from the speaker since we do not know if the user
+		//      messed with the speaker parameters from outside this class
+		this.pRemainingTime -= Engine.getElapsedTime()
+		
+		if this.pRemainingTime <= this.pSelectNextTime and this.pNeedSelectNextPart
+			this.pNextPart = null
+			this.pNeedSelectNextPart = false
+			
+			if this.pCurPart != null
+				var String partName = this.pCurPart.nextPart()
+				if partName != null
+					this.pNextPart = this.getPartNamed( partName )
+				end
+			end
+			
+			if this.pNextPart == null
+				this.pControllerState.setCurveConstant( stateWait )
+				
+			else
+				this.pControllerPart.setCurveConstant( this.pNextPart.getControllerValue() )
+			end
+		end
+		
+		if this.pRemainingTime <= 0
+			if this.pNextPart == null
+				this.stop()
+				return
+			end
+			
+			this.pCurPart = this.pNextPart
+			this.pRemainingTime += this.pCurPart.getMusic().getPlayTime()
+			this.pNeedSelectNextPart = true
+		end
+	end
+	
+	/**
+	 * \brief Update speaker for playing back dynamic music.
+	 * \details Call this method after modifying the parts.
+	 */
+	public func void updateSpeaker()
+		var int count = this.pParts.getCount()
+		var int i
+		
+		for i = 0 to count
+			( this.pParts.getAt( i ) cast DynamicMusicPart ).setControllerValue( i )
+		end
+		
+		this.pSpeaker.setSynthesizer( null )
+		this.pControllerPart = null
+		this.pControllerState = null
+		
+		this.pSynthesizer.setSynthesizer( this.createSynthesizer() )
+		
+		if this.pSynthesizer.getControllerCount() >= 2
+			this.pControllerPart = this.pSynthesizer.getControllerAt( 0 )
+			this.pControllerPart.setCurveConstant( 0 )
+			
+			this.pControllerState = this.pSynthesizer.getControllerAt( 1 )
+		end
+		
+		this.pSpeaker.setSynthesizer( this.pSynthesizer )
+		
+		this.stop()
+		this.updateSampleRate()
+	end
+	
+	
+	
+	/** \brief Update next remaining sample rate from synthesizer if present. */
+	public func void updateSampleRate()
+		var Synthesizer synthesizer = this.pSynthesizer.getSynthesizer()
+		
+		if synthesizer == null
+			this.pSampleRate = 44100
+			
+		else
+			this.pSampleRate = synthesizer.getSampleRate()
+		end
+	end
+	
+	/** \brief Create synthesizer from dynamic music definition. */
+	public func Synthesizer createSynthesizer()
+		if this.pParts.getCount() == 0
+			return null
+		end
+		
+		var Synthesizer synthesizer = Synthesizer.new()
+		
+		// add controllers. 0 is part selector, 1 is play state
+		synthesizer.setControllerCount( 2 )
+		synthesizer.getControllerAt( 0 ).setRange( 0, this.pParts.getCount() - 1 )
+		synthesizer.getControllerAt( 1 ).setRange( 0, 3 )
+		
+		// add part selector and play state curves. both use default linear curves.
+		var CurveBezier curve = CurveBezier.new()
+		curve.setInterpolationMode( CurveBezierInterpolation.linear )
+		curve.addPoint( Vector2.new( 0, 0 ), Vector2.new( -0.1, -0.1 ), Vector2.new( 0.1, 0.1 ) )
+		curve.addPoint( Vector2.new( 1, 1 ), Vector2.new( 0.9, 0.9 ), Vector2.new( 1.1, 1.1 ) )
+		
+		var int linkPart = synthesizer.addLink( 0 )
+		synthesizer.linkSetCurve( linkPart, curve )
+		
+		var int linkPlay = synthesizer.addLink( 1 )
+		synthesizer.linkSetCurve( linkPlay, curve )
+		
+		// add chain source responsible for playing back parts
+		var SSChain source = SSChain.new()
+		source.targetAddLink( SSChainTarget.selection, linkPart )
+		source.targetAddLink( SSChainTarget.play, linkPlay )
+		
+		this.pParts.forEach( block DynamicMusicPart each
+			source.addSound( each.getMusic() )
+		end )
+		
+		synthesizer.addSource( source )
+		
+		// set remaining synthesizer parameters based on first part since all have to be equal
+		var Sound music = ( this.pParts.getAt( 0 ) cast DynamicMusicPart ).getMusic()
+		synthesizer.setChannelCount( music.getChannelCount() )
+		synthesizer.setSampleRate( music.getSampleRate() )
+		synthesizer.setBytesPerSample( music.getBytesPerSample() )
+		synthesizer.setSampleCount( music.getSampleRate() * 4 ) // 4 seconds play time. not so important
+		
+		return synthesizer
+	end
+end

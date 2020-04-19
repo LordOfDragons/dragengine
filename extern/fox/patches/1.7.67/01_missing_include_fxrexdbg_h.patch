@@ -1,0 +1,12 @@
+diff -rupN fox-1.7.67/lib/FXRex.cpp patch-fox-1.7.67/lib/FXRex.cpp
+--- fox-1.7.67/lib/FXRex.cpp	2019-08-22 21:46:14.000000000 +0200
++++ patch-fox-1.7.67/lib/FXRex.cpp	2019-12-17 10:13:05.548815641 +0100
+@@ -503,7 +503,7 @@
+ */
+ 
+ // Debugging regex code
+-#define REXDEBUG 1
++//#define REXDEBUG 1
+ 
+ // As close to infinity as we're going to get; this seems big enough.  We can not make
+ // it too large as this may wrap around when added to something else!

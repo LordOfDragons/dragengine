@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<projectTemplate>
+	<!-- Template Information -->
+	<name>DragonScript: Basic Project</name>
+	<description>
+		Basic project based on the the BaseGameApp application class with no content
+		using the DragonScript Script Module.<br/>
+		<br/>
+		Creates an application script file named GameApp.ds extending BaseGameApp
+		serving as starting point.
+	</description>
+	<scriptModule>DragonScript</scriptModule>
+	<baseGameDefinition>DragonScript Basic</baseGameDefinition>
+	
+	
+	<!-- Rules used to set up the new project -->
+	<file>
+		<path>content/models/Notes</path>
+	</file>
+	<file>
+		<path>content/materials/Notes</path>
+	</file>
+	<file>
+		<path>content/skies/Notes</path>
+	</file>
+	<file>
+		<path>scripts/GameApp.ds</path>
+	</file>
+	<file>
+		<path>scripts/StartGame.ds</path>
+	</file>
+	<file>
+		<path>develop/Notes</path>
+	</file>
+	
+	<!-- KDevelop project file for editing scripts. -->
+	<file>
+		<path>project.kdev4</path>
+		<directory>project</directory>
+		<replace>
+			<token>%{GAME_ALIAS_ID}</token>
+			<value>gameAliasId</value>
+			<format>text</format>
+		</replace>
+	</file>
+	
+	<!--  Include path could be set with .kdev_include_paths file -->
+	
+	<!-- This file provides a default configuration for the Project Editor -->
+	<file>
+		<path>project.xml</path>
+		<directory>project</directory>
+		<replace>
+			<token>%{GAME_ID}</token>
+			<value>gameId</value>
+			<format>xml</format>
+		</replace>
+		<replace>
+			<token>%{GAME_ALIAS_ID}</token>
+			<value>gameAliasId</value>
+			<format>xml</format>
+		</replace>
+		<replace>
+			<token>%{GAME_TITLE}</token>
+			<value>projectName</value>
+			<format>xml</format>
+		</replace>
+		<replace>
+			<token>%{GAME_DESCRIPTION}</token>
+			<value>projectDescription</value>
+			<format>xmlMultiline</format>
+		</replace>
+		<replace>
+			<token>%{DELGA_FILE_TITLE}</token>
+			<value>projectName</value>
+			<format>xml</format>
+		</replace>
+	</file>
+</projectTemplate>

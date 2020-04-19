@@ -1,0 +1,1039 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * Displays an edit field where the user can enter a text with more
+ * than one line.
+ * 
+ * Supports designing using designer selector "TextArea".
+ */
+class TextArea extends TextWidget implements RangeModelListener
+	/** Text layout */
+	private var TextLayout pTextLayout
+	
+	/** Caret position */
+	private var Point pCaret
+	
+	/** Position of cursor in text */
+	private var int pCursorPos
+	
+	/** Maximal width of text before break occurs */
+	private var int pMaxWidth
+	
+	/** Determines if the text is read only. */
+	private var bool pReadOnly
+	
+	/** Determines if an update is needed */
+	private var bool pNeedsUpdate
+	
+	/** Reference x position for cursor movement */
+	private var int pRefXPos
+	
+	/** Determines if reference position is valid */
+	private var bool pRefXPosDirty
+	
+	/** Selection */
+	private var Point pSelection
+	
+	/** Old cursor used by selecting with mouse */
+	private var int pOldCursorPos
+	
+	/** Selection x offsets */
+	private var Point pSelXOffsets
+	
+	/** Vertical range model */
+	private var DefaultRangeModel pVertRangeModel
+	
+	/** \brief Number display rows. */
+	private var int pRowCount
+	
+	
+	
+	/** Creates a new Text Area. */
+	public func new() this( DefaultTextModel.new() )
+	end
+	
+	/** Creates a new Text Field. */
+	public func new( String text ) this( DefaultTextModel.new( text ) )
+	end
+	
+	/** Creates a new Text Field. */
+	public func new( TextModel textModel ) super( textModel )
+		this.pCursorPos = 0
+		this.pReadOnly = false
+		this.pMaxWidth = 150
+		this.pOldCursorPos = -1
+		this.pRefXPos = 0
+		this.pRefXPosDirty = true
+		this.pNeedsUpdate = true
+		this.pRowCount = 5
+		
+		this.setCanFocus( true )
+		this.pVertRangeModel = DefaultRangeModel.new( 0, 0, 1, 0, 1 )
+		this.pVertRangeModel.addListener( this )
+		
+		this.setDesignerSelector( "TextArea" )
+		this.setCanFocus( true )
+		
+		this.updateCanvasText()
+	end
+	
+	/** \brief Create text area. */
+	public func new( TextModel textModel, int rowCount ) this( textModel )
+		this.setRowCount( rowCount )
+	end
+	
+	/** \brief Create text area. */
+	public func new( TextModel textModel, int rowCount, bool readOnly ) this( textModel )
+		this.setRowCount( rowCount )
+		this.setReadOnly( readOnly )
+	end
+	
+	/** Dispose of this widget. */
+	public func void dispose()
+		this.pVertRangeModel.removeListener( this )
+		this.pVertRangeModel = null
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * Retrieves the vertical range model. Viewport widgets can
+	 * use this range model to synchronize with their vertical
+	 * scrollbar. If this widget has no reasonable vertical
+	 * range model it should return null.
+	 */
+	public func RangeModel getVerticalRangeModel()
+		return this.pVertRangeModel
+	end
+	
+	/**
+	 * Retrieves the horizontal range model. Viewport widgets can
+	 * use this range model to synchronize with their horizontal
+	 * scrollbar. If this widget has no reasonable horizontal
+	 * range model it should return null.
+	 */
+	public func RangeModel getHorizontalRangeModel()
+		return null
+	end
+	
+	
+	
+	/** Retrieves the line the cursor is on. */
+	public func int getCursorLine()
+		var int i, count = this.pTextLayout.getLineCount()
+		
+		for i = 1 to count
+			if this.pCursorPos < this.pTextLayout.getLine( i ).getFirstChar()
+				return i - 1
+			end
+		end
+		
+		return count - 1
+	end
+	
+	/** Retrieves the line for a spefici cursor position. */
+	public func int getCursorLineFor( int pos )
+		if pos < 0 or pos > this.getModel().getText().getLength()
+			throw EInvalidParam.new()
+		end
+		
+		var int i, count = this.pTextLayout.getLineCount()
+		
+		for i = 1 to count
+			if pos < this.pTextLayout.getLine( i ).getFirstChar()
+				return i - 1
+			end
+		end
+		
+		return count - 1
+	end
+	
+	/** Retrieves the current position of the cursor in the text. */
+	public func int getCursorPosition()
+		return this.pCursorPos
+	end
+	
+	/** Retrieves the selection if present. */
+	public func Point getSelection()
+		return this.pSelection
+	end
+	
+	/** Retrieves the index of the first line visible. */
+	public func int getFirstLine()
+		return this.pVertRangeModel.getValue()
+	end
+	
+	/** Retrieve maximal width of text before break occurs. */
+	public func int getMaximalWidth()
+		return this.pMaxWidth
+	end
+	
+	/** Retrieves the number of text lines. */
+	public func int getLineCount()
+		return this.pTextLayout.getLineCount()
+	end
+	
+	/** Determines if the text is read only. */
+	public func bool getReadOnly()
+		return this.pReadOnly
+	end
+	
+	/** Sets if the text is read only. */
+	public func void setReadOnly( bool readOnly )
+		this.pReadOnly = readOnly
+	end
+	
+	/** Retrieves the number of characters on the current line. */
+	public func int getCursorLineCharCount()
+		return this.pTextLayout.getLine( this.getCursorLine() ).getCharCount()
+	end
+	
+	/**
+	 * Sets the current cursor position in the text. If the cursor is outside
+	 * the visible area the text is shifted to make the cursor visible.
+	 */
+	public func void setCursorPosition( int pos )
+		if pos < 0 or pos > this.getModel().getText().getLength()
+			throw EInvalidParam.new()
+		end
+		
+		this.pCursorPos = pos
+		this.pCaret = null
+		this.pRefXPosDirty = true
+		this.pNeedsUpdate = true
+		this.updateCanvasText()
+	end
+	
+	/** Sets the cursor position to the start of the text. */
+	public func void setCursorPositionStart()
+		this.setCursorPosition( 0 )
+	end
+	
+	/** Sets the cursor position to the end of the text. */
+	public func void setCursorPositionEnd()
+		this.setCursorPosition( this.getModel().getText().getLength() )
+	end
+	
+	/** Sets the selection or clears it. */
+	public func void setSelection( Point selection )
+		if selection != null
+			if selection.getX() < 0 or selection.getY() > this.getModel().getText().getLength() \
+			or selection.getX() > selection.getY()
+				throw EInvalidParam.new()
+			end
+		end
+		
+		this.pSelection = selection
+		this.pSelXOffsets = null
+		this.pNeedsUpdate = true
+		this.updateCanvasText()
+	end
+	
+	/** Sets the selection to the entire text. */
+	public func void setSelectionAll()
+		this.setSelection( Point.new( 0, this.getModel().getText().getLength() ) )
+	end
+	
+	/** Sets maximal width of text before break occurs. */
+	public func void setMaximalWidth( int width )
+		if width < 0
+			throw EInvalidParam.new()
+		end
+		
+		this.pMaxWidth = width
+		this.pTextLayout = null
+		this.pSelXOffsets = null
+		this.pCaret = null
+		this.updateCanvasText()
+	end
+	
+	/** Calculates the size of the content text. */
+	public func Point getTextSize()
+		return Point.new( this.pTextLayout.getWidth(), this.pTextLayout.getHeight() )
+	end
+	
+	/** \brief Number display rows. */
+	public func int getRowCount()
+		return this.pRowCount
+	end
+	
+	/** \brief Set number display rows. */
+	public func void setRowCount( int rowCount )
+		if rowCount == this.pRowCount
+			return
+		end
+		
+		if rowCount < 1
+			throw EInvalidParam.new()
+		end
+		
+		this.pRowCount = rowCount
+		this.pTextLayout = null
+		this.updateCanvasText()
+	end
+	
+	
+	
+	/** Deletes the selected text if present. */
+	public func void deleteSelectedText()
+		if this.pReadOnly or this.pSelection == null
+			return
+		end
+		
+		var String curText = this.getModel().getText()
+		var int textLen = curText.getLength()
+		var String newText = ""
+		
+		if this.pSelection.getX() > 0
+			newText = newText + curText.substring( 0, this.pSelection.getX() )
+		end
+		if textLen - this.pSelection.getY() > 0
+			newText = newText + curText.substring( this.pSelection.getY() )
+		end
+		
+		if this.getValidator() == null or this.getValidator().validates( newText )
+			this.pCursorPos = this.pSelection.getX()
+			this.pSelection = null
+			this.getModel().setText( newText )
+		end
+	end
+	
+	
+	
+	/** Ensure that the cursor is visible by scrolling the text if necessary. */
+	public func void ensureCursorVisible()
+		/*
+		var Font font = this.getFont()
+		var int width = this.getWidth() - this.getPadding().getWidth()
+		var int i, textLen = 0
+		var String text
+		// check for password
+		if this.pPasswordChar == noPasswordChar
+			text = this.pText
+		else
+			text = String.new(this.pPasswordChar cast byte, this.pText.getLength())
+		end
+		// check if the cursor is outside the left boundary
+		if this.pCaretPos < this.pFirstChar
+			this.pFirstChar = this.pCaretPos
+		else
+			// check if the cursor is outside the right boundary
+			for i = this.pCaretPos - 1 downto this.pFirstChar
+				textLen += font.getCharAdvance( text.getAt(i) )
+				if textLen + 2 >= width
+					this.pFirstChar = i + 1
+					break
+				end
+			end
+			// check if there is still space to fill up on the right side
+			for i = this.pCaretPos to text.getLength()
+				textLen += font.getCharAdvance( text.getAt(i) )
+				if textLen + 2 >= width
+					break
+				end
+			end
+			if textLen + 2 < width
+				for i = this.pFirstChar - 1 downto 0
+					textLen += font.getCharAdvance( text.getAt(i) )
+					if textLen + 2 >= width
+						break
+					end
+					this.pFirstChar = i
+				end
+			end
+		end
+		*/
+	end
+	
+	
+	
+	/** Notification that the gui theme changed. */
+	public func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		
+		this.pTextLayout = null
+		this.pSelXOffsets = null
+		this.pCaret = null
+		this.pRefXPosDirty = true
+		this.pNeedsUpdate = true
+		this.updateCanvasText()
+	end
+	
+	/** \brief Padding changed. */
+	public func void onPaddingChanged()
+		super.onPaddingChanged()
+		
+		this.pTextLayout = null
+		this.pSelXOffsets = null
+		this.pNeedsUpdate = true
+		this.pCaret = null
+		this.updateCanvasText()
+	end
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.pTextLayout = null
+		this.pSelXOffsets = null
+		this.pCaret = null
+		this.pNeedsUpdate = true
+		this.updateCanvasText()
+	end
+	
+	/** Notify about font change. */
+	public func void onSetFont()
+		this.pTextLayout = null
+		this.pSelXOffsets = null
+		this.pCaret = null
+		this.pRefXPosDirty = true
+		this.pNeedsUpdate = true
+		this.updateCanvasText()
+	end
+	
+	/** Foreground color changed. */
+	public func void onSetTextColor()
+		this.updateCanvasText()
+	end
+	
+	/** \brief Widget received focus. */
+	public func void onFocusReceived( FocusEvent event )
+		super.onFocusReceived( event )
+		this.updateCanvasText()
+	end
+	
+	/** \brief Widget lost focus. */
+	public func void onFocusLost( FocusEvent event )
+		super.onFocusLost( event )
+		this.updateCanvasText()
+	end
+	
+	
+	
+	/** Retrieve the minimal size of widget. */
+	public func Point getMinimumSize()
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		var Font font = this.getFont()
+		if font == null
+			return super.getMinimumSize()
+		end
+		
+		return Point.new( this.pMaxWidth, font.getSize() * this.pRowCount \
+			+ this.getPadding().getHeight() )
+	end
+	
+	
+	
+	/**
+	 * \brief Minimum size of widget using reference widget width and variable height.
+	 * \details Default implementation uses getMinimumSize().
+	 */
+	public func Point getMinimumSizeForWidth( int width )
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		var Font font = this.getFont()
+		if font == null
+			return Point.new()
+		end
+		
+		return Point.new( DEMath.min( width, this.pMaxWidth ), \
+			font.getSize() * this.pRowCount + this.getPadding().getHeight() )
+	end
+	
+	
+	
+	/** Key pressed event. */
+	public func void onKeyPress( KeyEvent event )
+		var int line = this.getCursorLine()
+		var int first = this.pTextLayout.getLine( line ).getFirstChar()
+		var int count = this.pTextLayout.getLine( line ).getCharCount()
+		var bool update = false
+		
+		select event.getKeyCode()
+		case InputEventKey.arrowUp
+			// move cursor up
+			if line > 0
+				this.pCursorPos = this.bestCharNear( line - 1, this.getRefXPos() )
+				update = true
+			end
+			
+		case InputEventKey.arrowDown
+			// move cursor down
+			if line < this.getLineCount() - 1
+				this.pCursorPos = this.bestCharNear( line + 1, this.getRefXPos() )
+				update = true
+			end
+			
+		case InputEventKey.arrowLeft
+			// move cursor left
+			if this.pCursorPos > 0
+				this.pCursorPos--
+				this.pRefXPosDirty = true
+				update = true
+			end
+			
+		case InputEventKey.arrowRight
+			// move cursor right
+			if this.pCursorPos < this.getModel().getText().getLength()
+				this.pCursorPos++
+				this.pRefXPosDirty = true
+				update = true
+			end
+			
+		case InputEventKey.home
+			// move to the beginning of the line
+			if this.pCursorPos != first
+				this.pCursorPos = first
+				this.pRefXPosDirty = true
+				update = true
+			end
+			
+		case InputEventKey.last
+			// move to the end of the line
+			if this.pCursorPos != first + count
+				this.pCursorPos = first + count
+				this.pRefXPosDirty = true
+				update = true
+			end
+			
+		//case InputEventKey.enter
+			// we intercept enter to avoid launching a default button. later on a property can
+			// be used to allow this if required
+			
+			// PROBLEM. super class call is required for KEY_RETURN to be processed as onKeyType()
+			//          when default button is working we need a real solution for this. most
+			//          probably adding a parameter to TextWidget to state if KEY_RETURN has to
+			//          be swallowed or not
+			
+		else
+			super.onKeyPress( event )
+		end
+		
+		// update if needed
+		if update
+			this.pCaret = null
+			this.pSelection = null
+			this.pSelXOffsets = null
+			this.ensureCursorVisible()
+			this.updateCanvasText()
+		end
+	end
+	
+	/** Key released event. */
+//	public func void onKeyRelease(KeyEvent event)
+//	end
+	
+	
+	
+	/** Notification that a mouse button has been pressed. */
+	public func void onButtonPress( MouseEvent event )
+		super.onButtonPress( event )
+		
+		var int scrollOffsetY = this.pVertRangeModel.getValue() * this.getFont().getSize()
+		
+		if event.getButton() == InputEventMouseButton.left
+			var Point position = event.getPosition()
+			var int realX = position.getX() - this.getPadding().getLeft()
+			var int realY = position.getY() - this.getPadding().getTop() + scrollOffsetY
+			
+			this.captureMouse()
+			this.pCursorPos = this.bestCharNear( this.bestLineNear( realY ), realX )
+			this.pOldCursorPos = this.pCursorPos
+			this.pCaret = null
+			this.pSelection = null
+			this.pSelXOffsets = null
+			this.pRefXPosDirty = true
+			this.updateCanvasText()
+		end
+	end
+	
+	/** Notification that a mouse button has been released. */
+	public func void onButtonRelease( MouseEvent event )
+		super.onButtonRelease( event )
+		
+		if this.pOldCursorPos > -1
+			this.pOldCursorPos = -1
+			this.releaseMouse()
+		end
+	end
+	
+	/** Notification that the mouse has moved. */
+	public func void onMouseMove( MouseEvent event )
+		super.onMouseMove( event )
+		
+		var int scrollOffsetY = this.pVertRangeModel.getValue() * this.getFont().getSize()
+		
+		if this.pOldCursorPos != -1
+			var Point position = event.getPosition()
+			var int realX = position.getX() - this.getPadding().getLeft()
+			var int realY = position.getY() - this.getPadding().getTop() + scrollOffsetY
+			
+			this.pCursorPos = this.bestCharNear( this.bestLineNear( realY ), realX )
+			
+			if this.pCursorPos == this.pOldCursorPos
+				this.pSelection = null
+			elif this.pCursorPos < this.pOldCursorPos
+				this.pSelection = Point.new( this.pCursorPos, this.pOldCursorPos )
+			else
+				this.pSelection = Point.new( this.pOldCursorPos, this.pCursorPos )
+			end
+			
+			this.pSelXOffsets = null
+			this.pCaret = null
+			this.pRefXPosDirty = true
+			this.updateCanvasText()
+		end
+	end
+	
+	
+	
+	/**
+	 * Retrieves the index of the best character on line
+	 * in respect to the reference x position.
+	 */
+	protected func int bestCharNear( int line, int refXPos )
+		var int first = this.pTextLayout.getLine( line ).getFirstChar()
+		var int count = this.pTextLayout.getLine( line ).getCharCount()
+		var float floatRefXPos = refXPos cast float
+		var Font font = this.getFont()
+		var String curText
+		var float x = 0.0
+		var int i
+		
+		curText = this.getModel().getText()
+		
+		if count > 0
+			x = font.getCharAdvance( curText.getAt( first ) )
+			for i = 1 to count
+				if floatRefXPos < x
+					return first + i - 1
+				end
+				x += font.getCharAdvance( curText.getAt( first + i ) )
+			end
+		end
+		
+		return first + count
+	end
+	
+	/** Finds best line in reference to a given y position. */
+	protected func int bestLineNear( int refYPos )
+		var int i, count = this.pTextLayout.getLineCount()
+		
+		for i = 1 to count
+			if refYPos < this.pTextLayout.getLine( i ).getY()
+				return i - 1
+			end
+		end
+		
+		return count - 1
+	end
+	
+	/** Calculates the offset to cursor. */
+	protected func Point getOffsetToCursor()
+		var int line = this.getCursorLine()
+		var int first = this.pTextLayout.getLine( line ).getFirstChar()
+		var Font font = this.getFont()
+		var String curText
+		var float x = 0.0
+		var int i
+		
+		curText = this.getModel().getText()
+		
+		for i = first to this.pCursorPos
+			x += font.getCharAdvance( curText.getAt( i ) )
+		end
+		
+		return Point.new( x cast int, this.pTextLayout.getLine( line ).getY() )
+	end
+	
+	/** Retrieves the reference x position. */
+	protected func int getRefXPos()
+		if this.pRefXPosDirty
+			this.pRefXPos = this.getCaret().getX()
+			this.pRefXPosDirty = false
+		end
+		
+		return this.pRefXPos
+	end
+	
+	/** Retrieves the caret position. */
+	protected func Point getCaret()
+		if this.pCaret == null
+			this.pCaret = this.getOffsetToCursor()
+		end
+		return this.pCaret
+	end
+	
+	/** Retrieves the selection x offsets. */
+	protected func Point getSelectionXOffsets()
+		if this.pSelXOffsets == null and this.pSelection != null
+			var int startLine = this.getCursorLineFor( this.pSelection.getX() )
+			var int endLine = this.getCursorLineFor( this.pSelection.getY() )
+			var Font font = this.getFont()
+			var String curText
+			var int first
+			var int i, pos
+			var float xs = 0.0
+			var float xe = 0.0
+			
+			// start offset
+			curText = this.getModel().getText()
+			first = this.pTextLayout.getLine( startLine ).getFirstChar()
+			pos = this.pSelection.getX()
+			for i = first to pos
+				xs += font.getCharAdvance( curText.getAt( i ) )
+			end
+			
+			// end offset
+			first = this.pTextLayout.getLine( endLine ).getFirstChar()
+			pos = this.pSelection.getY()
+			for i = first to pos
+				xe += font.getCharAdvance( curText.getAt( i ) )
+			end
+			
+			// store offsets
+			this.pSelXOffsets = Point.new( xs cast int, xe cast int )
+		end
+		
+		return this.pSelXOffsets
+	end
+	
+	/** Update range models. */
+	protected func void updateRangeModels()
+		var int height = this.getHeight() - this.getPadding().getHeight()
+		var int windowLines = DEMath.max( height / this.getFont().getSize(), 1 )
+		var int maxLines = DEMath.max( this.getLineCount() - windowLines, 0 )
+		
+		this.pVertRangeModel.setAll( 0, maxLines, windowLines, this.getFirstLine(), 1 )
+	end
+	
+	
+	
+	/** Checks that the cursor is inside the text boundaries and adjust it if necessary. */
+	protected func void checkBoundaries()
+		var int textLen = this.getModel().getText().getLength()
+		
+		// check selection positions
+		if this.pSelection != null
+			var int selStart = DEMath.clamp( this.pSelection.getX(), 0, textLen )
+			var int selEnd = DEMath.clamp( this.pSelection.getY(), 0, textLen )
+			
+			if selEnd > selStart
+				this.pSelection = Point.new( selStart, selEnd )
+				
+			else
+				this.pSelection = null
+			end
+		end
+		this.pSelXOffsets = null
+		
+		// check cursorposition
+		this.pCursorPos = DEMath.clamp( this.pCursorPos, 0, textLen )
+		this.pCaret = null
+		this.pRefXPosDirty = true
+		
+		// we need update next round
+		this.pNeedsUpdate = true
+	end
+	
+	
+	
+	/** Update canvas. */
+	private func void updateCanvasText()
+		var Font font = this.getFont()
+		if font == null
+			this.getCanvasContent().removeAllCanvas()
+			return
+		end
+		
+		this.updateTextLayout()
+		
+		var Color color = this.getTextColor()
+		if color == null
+			this.getCanvasContent().removeAllCanvas()
+			return
+		end
+		
+		this.pTextLayout.setFont( font )
+		this.pTextLayout.setColor( color )
+		this.pCaret = null
+		
+		var Point caret = this.getCaret()
+		var int charHeight = font.getSize()
+		var int scrollOffsetY = this.pVertRangeModel.getValue() * charHeight
+		var int width = this.getWidth() - 1 - this.getPadding().getWidth()
+		var int height = this.getHeight() - 1 - this.getPadding().getHeight()
+		var int i
+		var int selFrom = -1, selTo = -1, soff, eoff
+		var int realHeight = charHeight + 3
+		var Point selXOffsets
+		
+		// check for update
+		if this.pNeedsUpdate
+			this.ensureCursorVisible()
+			this.pNeedsUpdate = false
+		end
+		
+		// add text lines as canvas including selection rectangles
+		var CanvasView canvas = this.getCanvasContent()
+		canvas.removeAllCanvas()
+		
+		var int lineCount = this.pTextLayout.getLineCount()
+		var int x = this.getPadding().getLeft()
+		var int y = this.getPadding().getTop() - scrollOffsetY
+		
+		if this.pSelection != null
+			selXOffsets = this.getSelectionXOffsets()
+			selFrom = this.pSelection.getX()
+			selTo = this.pSelection.getY()
+		end
+		
+		for i = 0 to lineCount
+			var TextLayoutLine textLine = this.pTextLayout.getLine( i )
+			
+			if selFrom != -1
+				var int firstChar = textLine.getFirstChar()
+				var int charCount = textLine.getCharCount()
+				
+				// add selection background rectangle if required
+				if selFrom <= firstChar + charCount and selTo >= firstChar
+					if selFrom < firstChar
+						soff = 0
+						
+					else
+						soff = selXOffsets.getX()
+					end
+					
+					if selTo > firstChar + charCount
+						eoff = textLine.getWidth()
+						
+					else
+						eoff = selXOffsets.getY()
+					end
+					
+					// add canvas
+					var CanvasPaint canvasSelect = CanvasPaint.new()
+					canvasSelect.setShapeType( CanvasPaintShape.rectangle )
+					canvasSelect.setFillColor( Color.lightGray )
+					canvasSelect.setThickness( 0.0 )
+					canvasSelect.setPosition( Point.new( x + soff, y + textLine.getY() ) )
+					canvasSelect.setSize( Point.new( eoff - soff, textLine.getHeight() ) )
+					canvasSelect.setOrder( canvas.getCanvasCount() cast float )
+					canvas.addCanvas( canvasSelect )
+				end
+			end
+			
+			// add text line canvas
+			textLine.addToCanvas( this.pTextLayout, canvas, x, y )
+		end
+		
+		// draw cursor
+		if this.getHasFocus()
+			x = caret.getX()
+			y = caret.getY() - scrollOffsetY
+			
+			if x >= 0 and x <= width
+				var CanvasPaint canvasCaret = CanvasPaint.new()
+				canvasCaret.setShapeType( CanvasPaintShape.lines )
+				canvasCaret.setFillColor( Color.transparent )
+				canvasCaret.setLineColor( Color.black )
+				canvasCaret.setPosition( Point.new( x + this.getPadding().getLeft(), y + this.getPadding().getTop() ) )
+				canvasCaret.setSize( Point.new( 1, charHeight ) )
+				canvasCaret.setOrder( canvas.getCanvasCount() cast float )
+				
+				canvasCaret.addPoint( Point.new( 0, 0 ) )
+				canvasCaret.addPoint( Point.new( 0, charHeight + 1 ) )
+				
+				canvas.addCanvas( canvasCaret )
+			end
+		end
+	end
+	
+	/** Updates the text layout for the label. */
+	protected func void updateTextLayout()
+		// WARNING! right now the model text is not UTF8 anymore if characters are typed
+		//          actually the entire widget has to be modified to properly handle utf8
+		//          by updating pCursorPos with unicode character width (1-4) instead of
+		//          ascii character wide (1). to handle this for the time being the text
+		//          is considered ASCII-8 and being converted into UTF8 for the layout
+		// Too many problems. >127 characters disabled altogether until the widget is fully reworked
+		/*
+		var UnicodeString utext = UnicodeString.new()
+		var String text = this.getModel().getText()
+		var int i, len = text.getLength()
+		for i = 0 to len
+			utext = utext + text.getAt( i )
+		end
+		this.pTextLayout = TextLayout.new( utext.toUTF8(), this.getFont() )
+		*/
+		this.pTextLayout = TextLayout.new( this.getModel().getText(), this.getFont() )
+		this.pTextLayout.setMaximalWidth( DEMath.max( \
+			this.getWidth() - this.getPadding().getWidth(), 0 ) )
+		this.pTextLayout.setAlignment( TextLayout.Align.left )
+		this.pTextLayout.setAtLeastOneLine( true )
+		
+		this.pTextLayout.layoutText()
+		
+		this.updateRangeModels()
+	end
+	
+	
+	
+	/** Key typed event. */
+	public func void onKeyType( KeyEvent event )
+		if this.pReadOnly
+			return
+		end
+		
+		var String curText, newText = ""
+		var int textLen
+		
+		select event.getKeyCode()
+		case InputEventKey.backspace
+			// delete character left of cursor
+			if this.pSelection == null
+				if this.pCursorPos > 0
+					curText = this.getModel().getText()
+					textLen = curText.getLength()
+					if this.pCursorPos - 1 > 0
+						newText = newText + curText.substring( 0, this.pCursorPos - 1 )
+					end
+					if textLen - this.pCursorPos > 0
+						newText = newText + curText.substring( this.pCursorPos )
+					end
+					if this.getValidator() == null or this.getValidator().validates( newText )
+						this.pCursorPos--
+						this.getModel().setText( newText )
+					end
+				end
+				
+			else
+				this.deleteSelectedText()
+			end
+			
+		case InputEventKey.delete
+			// delete character to the right of the cursor
+			if this.pSelection == null
+				curText = this.getModel().getText()
+				textLen = curText.getLength()
+				
+				if this.pCursorPos < textLen
+					if this.pCursorPos > 0
+						newText = newText + curText.substring( 0, this.pCursorPos )
+					end
+					if textLen - this.pCursorPos > 1
+						newText = newText + curText.substring( this.pCursorPos + 1 )
+					end
+					if this.getValidator() == null or this.getValidator().validates( newText )
+						this.getModel().setText( newText )
+					end
+				end
+				
+			else
+				this.deleteSelectedText()
+			end
+			
+		case InputEventKey.enter
+			// new line
+			this.deleteSelectedText()
+			curText = this.getModel().getText()
+			textLen = curText.getLength()
+			if this.pCursorPos > 0
+				newText = newText + curText.substring( 0, this.pCursorPos )
+			end
+			newText = newText + '\n'
+			if textLen - this.pCursorPos > 0
+				newText = newText + curText.substring( this.pCursorPos )
+			end
+			if this.getValidator() == null or this.getValidator().validates( newText )
+				this.pCursorPos++
+				this.getModel().setText( newText )
+			end
+			
+		else
+			// TEMPORARY HACK UNTIL WIDGET CAN HANDLE UTF8
+			if event.getKeyChar() > 127
+				break
+			end
+			
+			// otherwise add character to string
+			if this.getFont().getCharAdvance( event.getKeyChar() ) > 0.0
+				this.deleteSelectedText()
+				curText = this.getModel().getText()
+				textLen = curText.getLength()
+				if this.pCursorPos > 0
+					newText = newText + curText.substring( 0, this.pCursorPos )
+				end
+				newText = newText + event.getKeyChar() cast byte
+				if textLen - this.pCursorPos > 0
+					newText = newText + curText.substring( this.pCursorPos )
+				end
+				if this.getValidator() == null or this.getValidator().validates( newText )
+					this.pCursorPos++
+					this.getModel().setText( newText )
+				end
+			end
+		end
+	end
+	
+	/** \brief Text model changed. */
+	public func void onModelChanged()
+		this.updateCanvasText()
+	end
+	
+	/**
+	 * Send if the text string has changed.
+	 * Implementation of TextModle interface.
+	 */
+	public func void textChanged( TextModel textModel )
+		this.checkBoundaries()
+		this.updateCanvasText()
+	end
+	
+	
+	
+	/**
+	 * Send if the outer range properties like minimum value, maximum value
+	 * or page size has changed.
+	 */
+	public func void rangeChanged( RangeModel rangeModel )
+	end
+	
+	/** Send if the value has changed. */
+	public func void valueChanged( RangeModel rangeModel )
+		this.updateCanvasText()
+	end
+end

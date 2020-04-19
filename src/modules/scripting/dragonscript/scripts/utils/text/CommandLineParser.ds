@@ -1,0 +1,222 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * Provides support for parsing command lines into an argument list and to build a
+ * command line from an argument list.
+ */
+class CommandLineParser
+	/** Whitespaces. */
+	private var String pWhiteSpaces
+	
+	
+	
+	/** Creates a new object. */
+	public func new()
+		this.pWhiteSpaces = " \t\n\r"
+	end
+	
+	
+	
+	/** Parse a command line string into a list of string arguments. */
+	public func Array parseCommand( String command )
+		var int len = command.getLength()
+		var Array list = Array.new()
+		var int position = 0
+		var String argument
+		var byte character
+		var int last
+		
+		while position < len
+			// skip whitespaces
+			while position < len and this.pWhiteSpaces.find( command.getAt( position ), 0 ) != -1
+				position++
+			end
+			
+			if position == len
+				break
+			end
+			
+			argument = ""
+			
+			// check if the next character is a double quote argument
+			if command.getAt( position ) == '"'
+				position++
+				last = position
+				
+				while position < len
+					character = command.getAt( position )
+					
+					if character == '"'
+						if position > last
+							argument = argument + command.substring( last, position )
+						end
+						list.add( argument )
+						argument = null
+						
+						position++
+						
+						break
+						
+					elif character == '\\'
+						var int count = 0
+						var byte value = 0
+						
+						if position > last
+							argument = argument + command.substring( last, position )
+						end
+						
+						position++
+						
+						// first character determines the escape format
+						character = command.getAt( position )
+						
+						if character == 'x'
+							// hexadecimal number
+							position++
+							
+							while position < len and count < 2
+								character = command.getAt( position )
+								
+								if character >= '0' and character <= '9'
+									value = ( ( value << 4 ) + ( character - '0' ) ) cast byte
+									
+								elif character >= 'a' and character <= 'f'
+									value = ( ( value << 4 ) + 10 + ( character - 'a' ) ) cast byte
+									
+								elif character >= 'A' and character <= 'F'
+									value = ( ( value << 4 ) + 10 + ( character - 'A' ) ) cast byte
+									
+								else
+									break
+								end
+								
+								count++
+								position++
+							end
+							
+							argument = argument + value
+							position--
+							
+						elif character >= '0' and character <= '7'
+							// octal number
+							while position < len and count < 3
+								character = command.getAt( position )
+								
+								if character < '0' or character > '7'
+									position--
+									break
+								end
+								
+								value = ( ( value << 3 ) + ( character - '0' ) ) cast byte
+								count++
+								position++
+							end
+							
+							argument = argument + value
+							
+						else
+							// next character as is
+							argument = argument + character
+						end
+						
+						last = position + 1
+						
+					else
+						// non escaped string
+					end
+					
+					position++
+				end
+				
+			// this is a non-quoted argument
+			else
+				last = position
+				while position < len and this.pWhiteSpaces.find( command.getAt( position ) ) == -1
+					position++
+				end
+				
+				if position > last
+					argument = argument + command.substring( last, position )
+				end
+				list.add( argument )
+				argument = null
+			end
+			
+			position++
+		end
+		
+		return list
+	end
+	
+	/** Build command string from an argument list. */
+	public func String buildCommand( Array list )
+		var int separatorCount = this.pWhiteSpaces.getLength()
+		var int count = list.getCount()
+		var String command = ""
+		var int i, j, subcount
+		var bool quoteString
+		var String argument
+		
+		for i = 0 to count
+			argument = list.getAt( i ) cast String
+			
+			if i > 0
+				command = command + ' '
+			end
+			
+			quoteString = false
+			for j = 0 to separatorCount
+				if argument.find( this.pWhiteSpaces.getAt( j ), 0 ) != -1
+					quoteString = true
+					break
+				end
+			end
+			
+			if quoteString
+				command = command + '"'
+			end
+			
+			subcount = argument.getLength()
+			for j = 0 to subcount
+				if argument.getAt( j ) == '"'
+					command = command + "\\\""
+					
+				else
+					command = command + argument.getAt( j )
+				end
+			end
+			
+			if quoteString
+				command = command + '"'
+			end
+		end
+		
+		return command
+	end
+end

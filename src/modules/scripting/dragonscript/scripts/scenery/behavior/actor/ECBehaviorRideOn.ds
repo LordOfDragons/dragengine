@@ -1,0 +1,439 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to actors to ride on ECBehaviorRidable.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorColliderAI
+ * - ECBehaviorProjectToGround
+ * - ECBehaviorLocomotion
+ * 
+ * If ECBehaviorProjectToGround and ECBehaviorColliderAI are enabled sets the ridable to
+ * the ground element if element supports ECBehaviorRidable. Otherwise clears the ridable.
+ * 
+ * Sometimes it is necessary to prevent the ridable to change although it usually would.
+ * This can be for example if an actor interacts with an object like sitting on a chair.
+ * Projecting to ground usually has to be disabled in this case to prevent the actor
+ * climbing on the chair instead of sitting on it. In general this is not a problem since
+ * the actor is usually not riding on another element. If tough the actor does ride on
+ * another element disabling projecting to ground will clear the ridable. This in turn
+ * causes the element to no more move together with the ridable element causing issues.
+ * To prevent this problem the ridable can be locked using setLocked(). While locked
+ * changes due to ECBehaviorProjectToGround changes will not cause setRidable() to be
+ * called. While locked you can still manually call setRidable() to assign a ridable of
+ * your choice.
+ * 
+ * Behavior supports persistency.
+ */
+class ECBehaviorRideOn extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		func void ridableChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		public func new()
+		end
+		
+		public func void ridableChanged( Instance instance )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Update locomotion on collider changed. */
+		protected class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void colliderChanged( ECBehaviorColliderAI.Instance instance, Collider collider )
+				this.pInstance.updateLocomotion()
+			end
+		end
+		
+		/** \brief Clear ridable and apply ridable velocity if no more touching ground. */
+		class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
+			protected var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void touchesGroundChanged( ECBehaviorProjectToGround.Instance instance )
+				if not instance.getTouchesGround()
+					this.pInstance.onNoMoreTouchingGround()
+				end
+			end
+		end
+		
+		
+		private var ECBehaviorRideOn pECBehavior
+		private var ECBehaviorProjectToGround.Instance pProjectToGround
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		private var ECBehaviorRidable.Instance pRidable
+		
+		private var bool pLocked
+		private var ElementResolver pElementResolver
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorRideOn ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pLocked = false
+			this.pListeners = Array.new()
+			
+			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
+			this.pProjectToGround = ecbehavior.getProjectToGround().instance( element )
+			
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pRidable = null
+			this.pListeners = null
+			this.pLocomotion = null
+			this.pProjectToGround = null
+			this.pElementResolver = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pLocomotion.getColliderAI().addListener( UpdateLocomotionListener.new( this ) )
+			this.pProjectToGround.addListener( NoMoreTouchingGround.new( this ) )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRideOn getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Project to ground behavior instance. */
+		public func ECBehaviorProjectToGround.Instance getProjectToGround()
+			return this.pProjectToGround
+		end
+		
+		/** \brief Locomotion behavior instance. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		
+		
+		/** \brief Ridable the actor is riding on or null. */
+		public func ECBehaviorRidable.Instance getRidable()
+			return this.pRidable
+		end
+		
+		/**
+		 * \brief Set ridable the actor is riding on or null.
+		 * 
+		 * If actor changes from riding to not riding applies the linear velocity of the
+		 * ridable before clearing the ridable. This ensures an actor keeps moving into
+		 * the direction the ridable has been moving if the actor for example jumps or
+		 * the ridable vanishes.
+		 */
+		public func void setRidable( ECBehaviorRidable.Instance ridable )
+			if ridable == this.pRidable
+				return
+			end
+			
+			var ColliderVolume colliderAI = this.pLocomotion.getColliderAI().getCollider()
+			
+			if this.pRidable != null
+				// during game world disposing it is possible the behavior is disposed of before
+				// the elements riding on it are disposed of. in this case the collider becomes
+				// null before we properly detach from it. avoid a null pointer in this case
+				var Collider collider = this.pRidable.getCollider().getCollider()
+				if collider != null
+					collider.detach( colliderAI )
+				end
+				
+				// apply ridable linear velocity to AI collider
+				this.pLocomotion.getColliderAI().addLinearVelocity( this.pRidable.getLinearVelocity() )
+			end
+			
+			this.pRidable = ridable
+			
+			if ridable != null
+				ridable.getCollider().getCollider().attachRelativeMovement( colliderAI )
+			end
+			
+			this.pListeners.forEach( block Listener each
+				each.ridableChanged( this )
+			end )
+		end
+		
+		/** \brief Actor is riding. */
+		public func bool isRiding()
+			return this.pRidable != null
+		end
+		
+		/** \brief Actor is not riding. */
+		public func bool isNotRiding()
+			return this.pRidable == null
+		end
+		
+		/**
+		 * \brief Set ridable to null.
+		 * 
+		 * Same as calling setRidable(null).
+		 */
+		public func void clearRidable()
+			this.setRidable( null )
+		end
+		
+		/** \brief Lock ridable. */
+		public func bool getLocked()
+			return this.pLocked
+		end
+		
+		/** \brief Set if ridable is locked. */
+		public func void setLocked( bool locked )
+			this.pLocked = locked
+		end
+		
+		
+		
+		/** \brief Linear velocity of ridable or zero vector if absent. */
+		public func Vector getLinearVelocity()
+			if this.pRidable != null
+				return this.pRidable.getLinearVelocity()
+			end
+			return Vector.new()
+		end
+		
+		/** \brief Update locomotion orientation from ridable if present. */
+		public func void updateLocomotion()
+			if this.pRidable != null
+				this.pLocomotion.getLocomotion().setOrientation( this.pLocomotion.getColliderAI() \
+					.getCollider().getOrientation().getEulerAngles().getY() )
+			end
+		end
+		
+		
+		
+		/**
+		 * \brief Actor is no more touching ground.
+		 * 
+		 * If not locked calls setRidable(null).
+		 */
+		public func void onNoMoreTouchingGround()
+			if this.pLocked
+				return
+			end
+			
+			this.setRidable( null )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		
+		/**
+		 * \brief Post think about what to do for the next frame update.
+		 * 
+		 * If locked does nothing. Otherwise if actor is grounded and element underneath is a
+		 * behavior element set it as ridable otherwise clear it. If ridable is cleared applies
+		 * ridable velocities to owner element.
+		 */
+		public func void postThink( float elapsed )
+			if this.pLocked
+				return
+			end
+			
+			var Element groundElement = this.pProjectToGround.getGroundElement()
+			if groundElement != null and groundElement castable BehaviorElement
+				this.setRidable( ECBehaviorRidable.getInstanceIn( groundElement cast BehaviorElement ) )
+			end
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
+		end
+		
+		/**
+		 * \brief Remove from game world.
+		 * 
+		 * Calls setRidable(null).
+		 */
+		public func void removeFromGameWorld()
+			this.setRidable( null )
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			this.pLocked = flags.getAt( 0 )
+			
+			if flags.getAt( 1 )
+				this.pElementResolver = ElementResolver.new()
+				this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance ridable
+					this.setRidable( ridable )
+				end )
+				this.setRequiresEnterFrame( true )
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 2 )
+			flags.setAt( 0, this.pLocked )
+			flags.setAt( 1, this.pRidable != null )
+			flags.writeToFile( writer )
+			
+			if this.pRidable != null
+				ElementResolver.writeToFileBehavior( writer, this.pRidable )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	private var ECBehaviorProjectToGround pProjectToGround
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorProjectToGround projectToGround ) super( eclass )
+		if locomotion == null
+			throw ENullPointer.new( "locomotion" )
+		end
+		if projectToGround == null
+			throw ENullPointer.new( "projectToGround" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pLocomotion = locomotion
+		this.pProjectToGround = projectToGround
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLocomotion = null
+		this.pProjectToGround = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Project to ground behavior. */
+	public func ECBehaviorProjectToGround getProjectToGround()
+		return this.pProjectToGround
+	end
+	
+	
+	
+	/** \brief Create behavior element class. */
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorProjectToGround.
+	 */
+	static public func ECBehaviorRideOn getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorRideOn
+		end ) cast ECBehaviorRideOn
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorProjectToGround.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

@@ -1,0 +1,84 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Mouse pointer using image.
+ */
+class ImageMousePointer extends DefaultMousePointer
+	/** \brief Image. */
+	private var Image pImage
+	
+	
+	
+	/** \brief Create mouse pointer. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief Image or \em null if not set. */
+	public func Image getImage()
+		return this.pImage
+	end
+	
+	/** \brief Set image. */
+	public func void setImage( Image image )
+		if image == this.pImage
+			return
+		end
+		
+		this.pImage = image
+		
+		if image != null
+			this.setSize( image.getSize() )
+			
+		else
+			this.setSize( Point.new() )
+		end
+		
+		this.updateCanvas()
+	end
+	
+	
+	
+	/** \brief Update canvas. */
+	public func void updateCanvas()
+		var CanvasView canvasView = this.getCanvasView()
+		
+		canvasView.removeAllCanvas()
+		
+		if this.pImage == null
+			return
+		end
+		
+		var CanvasImage canvasImage = CanvasImage.new()
+		canvasImage.setImage( this.pImage )
+		canvasImage.setSize( this.pImage.getSize() )
+		canvasView.addCanvas( canvasImage )
+	end
+end

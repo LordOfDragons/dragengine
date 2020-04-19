@@ -1,0 +1,72 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Environment map probe for InteractiveMainMenu.
+ */
+class IMMEnvironmentMapClass extends BehaviorElementClass
+	private var ECBehaviorEnvMapProbe pEnvMapProbe
+	private var InteractiveMainMenu pMainMenu
+	
+	
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu ) this( mainMenu, "DE_IMM_EnvMap" )
+	end
+	
+	/** \brief Create element class. */
+	public func new( InteractiveMainMenu mainMenu, String name ) super( name )
+		this.pMainMenu = mainMenu
+		
+		this.pEnvMapProbe = ECBehaviorEnvMapProbe.new( this, null )
+	end
+	
+	
+	
+	/** \brief Main menu. */
+	public func InteractiveMainMenu getMainMenu()
+		return this.pMainMenu
+	end
+	
+	/** \brief Environment map probe behavior. */
+	public func ECBehaviorEnvMapProbe getEnvMapProbe()
+		return this.pEnvMapProbe
+	end
+	
+	
+	
+	/** \brief Create IMMEnvironmentMapClass with different name. */
+	public func ElementClass duplicateNamed( String name )
+		return IMMEnvironmentMapClass.new( this.getMainMenu(), name )
+	end
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return IMMEnvironmentMap.new( this )
+	end
+end

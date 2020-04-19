@@ -1,0 +1,257 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+
+/**
+ * \brief Conversation playback look-at.
+ */
+class ConversationPlaybackLookAt
+	private var DVector pPosition
+	private var Quaternion pOrientation
+	private var String pBone
+	private var ConversationActor pActor
+	private var ConversationCoordSystem pCoordSystem
+	private var bool pUsePlaybackCamera
+	private var ConversationCustomTarget pCustomTarget
+	private var DMatrix pLocalMatrix
+	private var ConversationTarget pTarget
+	
+	
+	
+	/** \brief Create look-at. */
+	public func new()
+		this.pPosition = DVector.new()
+		this.pOrientation = Quaternion.new()
+	end
+	
+	/** \brief Create look-at with dynamic conversation target. */
+	public func new( ConversationPlayback playback, ConversationTarget target )
+		this.pTarget = target
+		
+		this.pPosition = DVector.new( target.getPosition() )
+		this.pOrientation = target.getOrientation()
+		this.pBone = target.getBone()
+		
+		if target.getCoordSystemID() != null
+			this.pCoordSystem = playback.getCoordSystemByID( target.getCoordSystemID() )
+			
+		elif target.getActorID() != null
+			this.pActor = playback.getActorMatching( target.getActorID() )
+			
+		else
+			this.pUsePlaybackCamera = true
+		end
+	end
+	
+	/** \brief Create look-at relative to custom conversation target. */
+	public func new( ConversationCustomTarget target ) this( target, DVector.new(), Quaternion.new() )
+	end
+	
+	/** \brief Create look-at relative to custom conversation target. */
+	public func new( ConversationCustomTarget target, DVector displacement ) this( target, displacement, Quaternion.new() )
+	end
+	
+	/** \brief Create look-at relative to custom conversation target. */
+	public func new( ConversationCustomTarget target, DVector displacement, Quaternion orientation )
+		this.pCustomTarget = target
+		this.pPosition = displacement
+		this.pOrientation = orientation
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = position
+		this.pLocalMatrix = null
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pOrientation = orientation
+		this.pLocalMatrix = null
+	end
+	
+	/** \brief Bone or \em null if not used. */
+	public func String getBone()
+		return this.pBone
+	end
+	
+	/** \brief Set bone or \em null if not used. */
+	public func void setBone( String bone )
+		this.pBone = bone
+	end
+	
+	/** \brief Actor the look-at is relative to or \em null if in world space. */
+	public func ConversationActor getActor()
+		return this.pActor
+	end
+	
+	/** \brief Set actor the look-at is relative to or null if in world space. */
+	public func void setActor( ConversationActor actor )
+		this.pActor = actor
+	end
+	
+	/** \brief Coordinate system the look-at is relative to or null if in world space. */
+	public func ConversationCoordSystem getCoordSystem()
+		return this.pCoordSystem
+	end
+	
+	/** \brief Set coordinate system the look-at is relative to or null if in world space. */
+	public func void setCoordSystem( ConversationCoordSystem coordSystem )
+		this.pCoordSystem = coordSystem
+	end
+	
+	/** \brief Use playback camera as target. */
+	public func bool getUsePlaybackCamera()
+		return this.pUsePlaybackCamera
+	end
+	
+	/** \brief Set if playback camera is used as target. */
+	public func void setUsePlaybackCamera( bool usePlaybackCamera )
+		this.pUsePlaybackCamera = usePlaybackCamera
+	end
+	
+	/** \brief Custom target or \em null if not used. */
+	public func ConversationCustomTarget getCustomTarget()
+		return this.pCustomTarget
+	end
+	
+	/** \brief Set custom target or \em null if not used. */
+	public func void setCustomTarget( ConversationCustomTarget target )
+		this.pCustomTarget
+	end
+	
+	
+	
+	/** \brief Current look-at world matrix. */
+	public func DMatrix getLookAtMatrix( ConversationPlayback playback )
+		if this.pLocalMatrix == null
+			this.pLocalMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
+		end
+		
+		var DMatrix matrix = this.pLocalMatrix
+		
+		if this.pUsePlaybackCamera
+			var Camera camera = playback.getCameraDirector().getCamera()
+			matrix = matrix * DMatrix.newWorld( camera.getPosition(), camera.getOrientation() )
+			
+		elif this.pCustomTarget != null
+			matrix = matrix * this.pCustomTarget.getMatrix()
+			
+		elif this.pCoordSystem != null
+			matrix = matrix * this.pCoordSystem.getMatrix()
+			
+		elif this.pActor != null
+			matrix = matrix * this.pActor.getMatrix( this.pBone )
+		end
+		
+		return matrix
+	end
+	
+	/** \brief Current look-at world position. */
+	public func DVector getLookAtPosition( ConversationPlayback playback )
+		return this.getLookAtMatrix( playback ).getPosition()
+	end
+	
+	
+	
+	/**
+	 * \brief Restore linked objects after loading.
+	 * 
+	 * While loading playback object is not available yet. Linked objects can not be
+	 * restored during readFromFile(). Once all loading is done and the playback is
+	 * present objects this call is used to restore the object links.
+	 */
+	public func void playbackRestoreObjectLinks( ConversationPlayback playback )
+		if this.pTarget == null
+			return
+		end
+		
+		if this.pTarget.getCoordSystemID() != null
+			this.pCoordSystem = playback.getCoordSystemByID( this.pTarget.getCoordSystemID() )
+			
+		elif this.pTarget.getActorID() != null
+			this.pActor = playback.getActorMatching( this.pTarget.getActorID() )
+		end
+	end
+	
+	/** \brief Read from file. */
+	static public func ConversationPlaybackLookAt readFromFile( PersistencyEnvironment env, FileReader reader )
+		var ConversationPlaybackLookAt lookat = ConversationPlaybackLookAt.new()
+		
+		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+		lookat.pUsePlaybackCamera = flags.getAt( 0 )
+		
+		lookat.pPosition = DVector.readFromFile( reader )
+		lookat.pOrientation = Quaternion.readFromFile( reader )
+		lookat.pBone = env.readString8OrNullIfEmpty( reader )
+		lookat.pCustomTarget = env.readObjectOrNull( reader ) cast ConversationCustomTarget
+		if flags.getAt( 1 )
+			lookat.pTarget = ConversationTarget.readFromFile( env, reader )
+		end
+		
+		return lookat
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		var PersistencyFlags flags = PersistencyFlags.new( 2 )
+		flags.setAt( 0, this.pUsePlaybackCamera )
+		flags.setAt( 1, this.pTarget != null )
+		flags.writeToFile( writer )
+		
+		this.pPosition.writeToFile( writer )
+		this.pOrientation.writeToFile( writer )
+		env.writeString8OrEmptyIfNull( writer, this.pBone )
+		env.writeObjectOrNull( writer, this.pCustomTarget )
+		if flags.getAt( 1 )
+			this.pTarget.writeToFile( env, writer )
+		end
+	end
+end

@@ -1,0 +1,425 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Divide container into 5 areas each with at most one widget inside.
+ * 
+ * The top, right, bottom and left area are of fixed size fitting in width
+ * respectively height the minimum size of the widget inside if present.
+ * The center area is stretched to fill the remaining space.
+ * 
+ * Instances of this layout can not be shared by multiple widgets.
+ */
+class BorderLayout implements Layout
+	/** \brief Area to place widget in. */
+	enum Area
+		/** \brief Place widget in content area. */
+		content
+		
+		/** \brief Place widget in left border. */
+		left
+		
+		/** \brief Place widget in top border. */
+		top
+		
+		/** \brief Place widget in right border. */
+		right
+		
+		/** \brief Place widget in bottom border. */
+		bottom
+	end
+	
+	
+	
+	/** \brief Widget in content area. */
+	private var Widget pContentWidget
+	
+	/** \brief Widget in left border. */
+	private var Widget pLeftWidget
+	
+	/** \brief Widget in top border. */
+	private var Widget pTopWidget
+	
+	/** \brief Widgets in right border. */
+	private var Widget pRightWidget
+	
+	/** \brief Widgets in bottom border. */
+	private var Widget pBottomWidget
+	
+	/** \brief Gap between areas. */
+	private var int pGap
+	
+	
+	
+	/** \brief Create layout with 0 gap. */
+	public func new()
+		this.pGap = 0
+	end
+	
+	/**
+	 * \brief Create layout.
+	 * \param gap Gap in pixels between areas. Gap can be negative to overlap areas.
+	 */
+	public func new( int gap )
+		this.setGap( gap )
+	end
+	
+	
+	
+	/** \brief Gap between areas in pixels. */
+	public func int getGap()
+		return this.pGap
+	end
+	
+	/**
+	 * \brief Set gap between areas in pixels.
+	 * \details Can be negative to overlap widgets.
+	 */
+	public func void setGap( int gap )
+		this.pGap = gap
+	end
+	
+	
+	
+	/** \brief Widget in content area or \em null if empty. */
+	public func Widget getContentWidget()
+		return this.pContentWidget
+	end
+	
+	/** \brief Widget in left area or \em null if empty. */
+	public func Widget getLeftWidget()
+		return this.pLeftWidget
+	end
+	
+	/** \brief Widget in top area or \em null if empty. */
+	public func Widget getTopWidget()
+		return this.pTopWidget
+	end
+	
+	/** \brief Widget in right area or \em null if empty. */
+	public func Widget getRightWidget()
+		return this.pRightWidget
+	end
+	
+	/** \brief Widget in bottom area or \em null if empty. */
+	public func Widget getBottomWidget()
+		return this.pBottomWidget
+	end
+	
+	
+	
+	/**
+	 * \brief Add widget to layout into area.
+	 * 
+	 * \param widget Widget to add to layout.
+	 * \param settings Area to place widget in. Has to be of type \ref Area.
+	 * \throws EInvalidParam widget is \em null.
+	 * \throws EInvalidParam settings is not of type \ref Area.
+	 * \throws EInvalidParam area is not empty.
+	 */
+	public func void addWidget( Widget widget, Object settings )
+		if widget == null
+			throw EInvalidParam.new()
+		end
+		
+		select settings cast Area
+		case Area.content
+			if this.pContentWidget != null
+				throw EInvalidParam.new()
+			end
+			this.pContentWidget = widget
+			
+		case Area.left
+			if this.pLeftWidget != null
+				throw EInvalidParam.new()
+			end
+			this.pLeftWidget = widget
+			
+		case Area.top
+			if this.pTopWidget != null
+				throw EInvalidParam.new()
+			end
+			this.pTopWidget = widget
+			
+		case Area.right
+			if this.pRightWidget != null
+				throw EInvalidParam.new()
+			end
+			this.pRightWidget = widget
+			
+		case Area.bottom
+			if this.pBottomWidget != null
+				throw EInvalidParam.new()
+			end
+			this.pBottomWidget = widget
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Remove widget from layout. */
+	public func void removeWidget( Widget widget )
+		if widget == null
+			throw EInvalidParam.new()
+		end
+		
+		if this.pContentWidget == widget
+			this.pContentWidget = null
+			
+		elif this.pLeftWidget == widget
+			this.pLeftWidget = null
+			
+		elif this.pTopWidget == widget
+			this.pTopWidget = null
+			
+		elif this.pRightWidget == widget
+			this.pRightWidget = null
+			
+		elif this.pBottomWidget == widget
+			this.pBottomWidget = null
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	
+	
+	/** \brief Layout widgets in container. */
+	public func void doLayout( Container container )
+		var int borderLeft = container.getPadding().getLeft()
+		var int borderTop = container.getPadding().getTop()
+		var int borderRight = container.getPadding().getRight()
+		var int borderBottom = container.getPadding().getBottom()
+		var int width = container.getContainerWidth()
+		var int height = container.getContainerHeight()
+		var bool hasContent = this.pContentWidget != null and this.pContentWidget.getVisible()
+		var bool hasLeft = this.pLeftWidget != null and this.pLeftWidget.getVisible()
+		var bool hasRight = this.pRightWidget != null and this.pRightWidget.getVisible()
+		var bool hasTop = this.pTopWidget != null and this.pTopWidget.getVisible()
+		var bool hasBottom = this.pBottomWidget != null and this.pBottomWidget.getVisible()
+		
+		var BorderSize borderSize
+		var int leftSize = 0
+		var int leftDist = 0
+		var int leftBorderLeft = 0
+		var int leftBorderTop = 0
+		var int leftBorderBottom = 0
+		var int topSize = 0
+		var int topDist = 0
+		var int topBorderLeft = 0
+		var int topBorderTop = 0
+		var int topBorderRight = 0
+		var int rightSize = 0
+		var int rightDist = 0
+		var int rightBorderRight = 0
+		var int rightBorderTop = 0
+		var int rightBorderBottom = 0
+		var int bottomSize = 0
+		var int bottomDist = 0
+		var int bottomBorderLeft = 0
+		var int bottomBorderBottom = 0
+		var int bottomBorderRight = 0
+		var int contentBorderLeft = 0
+		var int contentBorderTop = 0
+		var int contentBorderWidth = 0
+		var int contentBorderHeight = 0
+		
+		// determine the size of all widgets
+		if hasLeft
+			leftSize = this.pLeftWidget.getMinimumSizeForHeight( height ).getX()
+			leftDist = leftSize + this.pGap
+			if this.pLeftWidget.getBorder() != null
+				borderSize = this.pLeftWidget.getBorder().getBorderSize()
+				leftBorderLeft = borderSize.getLeft()
+				leftBorderTop = borderSize.getTop()
+				leftBorderBottom = borderSize.getBottom()
+				leftDist += borderSize.getWidth()
+			end
+		end
+		
+		if hasTop
+			topSize = this.pTopWidget.getMinimumSizeForWidth( width ).getY()
+			topDist = topSize + this.pGap
+			if this.pTopWidget.getBorder() != null
+				borderSize = this.pTopWidget.getBorder().getBorderSize()
+				topBorderLeft = borderSize.getLeft()
+				topBorderTop = borderSize.getTop()
+				topBorderRight = borderSize.getRight()
+				topDist += borderSize.getHeight()
+			end
+		end
+		
+		if hasRight
+			rightSize = this.pRightWidget.getMinimumSizeForHeight( height ).getX()
+			rightDist = rightSize + this.pGap
+			if this.pRightWidget.getBorder() != null
+				borderSize = this.pRightWidget.getBorder().getBorderSize()
+				rightBorderRight = borderSize.getRight()
+				rightBorderTop = borderSize.getTop()
+				rightBorderBottom = borderSize.getBottom()
+				rightDist += borderSize.getWidth()
+			end
+		end
+		
+		if hasBottom
+			bottomSize = this.pBottomWidget.getMinimumSizeForWidth( width ).getY()
+			bottomDist = bottomSize + this.pGap
+			if this.pBottomWidget.getBorder() != null
+				borderSize = this.pBottomWidget.getBorder().getBorderSize()
+				bottomBorderLeft = borderSize.getLeft()
+				bottomBorderBottom = borderSize.getBottom()
+				bottomBorderRight = borderSize.getRight()
+				bottomDist += borderSize.getHeight()
+			end
+		end
+		
+		if hasContent
+			if this.pContentWidget.getBorder() != null
+				borderSize = this.pContentWidget.getBorder().getBorderSize()
+				contentBorderLeft = borderSize.getLeft()
+				contentBorderTop = borderSize.getTop()
+				contentBorderWidth = borderSize.getWidth()
+				contentBorderHeight = borderSize.getHeight()
+			end
+		end
+		
+		// set position and size of all widgets
+		if hasTop
+			this.pTopWidget.setPosition( Point.new( \
+				borderLeft + topBorderLeft, borderTop + topBorderTop ) )
+			this.pTopWidget.setSize( Point.new( \
+				width - topBorderLeft - topBorderRight, topSize ) )
+		end
+		
+		if hasLeft
+			this.pLeftWidget.setPosition( Point.new( \
+				borderLeft + leftBorderLeft, borderTop + leftBorderTop + topDist ) )
+			this.pLeftWidget.setSize( Point.new( \
+				leftSize, height - topDist - bottomDist - leftBorderTop - leftBorderBottom ) )
+		end
+		
+		if hasContent
+			this.pContentWidget.setPosition( Point.new( \
+				borderLeft + contentBorderLeft + leftDist, \
+				borderTop + contentBorderTop + topDist ) )
+			this.pContentWidget.setSize( Point.new( \
+				width - leftDist - rightDist - contentBorderWidth, \
+				height - topDist - bottomDist - contentBorderHeight ) )
+		end
+		
+		if hasRight
+			this.pRightWidget.setPosition( Point.new( \
+				borderLeft + width - rightSize - rightBorderRight, \
+				borderTop + topDist + rightBorderTop ) )
+			this.pRightWidget.setSize( Point.new( \
+				rightSize, height - topDist - bottomDist - rightBorderTop - rightBorderBottom ) )
+		end
+		
+		if hasBottom
+			this.pBottomWidget.setPosition( Point.new( \
+				borderLeft + bottomBorderLeft, \
+				borderTop + height - bottomSize - bottomBorderBottom ) )
+			this.pBottomWidget.setSize( Point.new( \
+				width - bottomBorderLeft - bottomBorderRight, bottomSize ) )
+		end
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize( Container container )
+		return this.getMinimumSizeFor( container, \
+			container.getContainerWidth(), container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference width and variable height. */
+	public func Point getMinimumSizeForWidth( Container container, int width )
+		return this.getMinimumSizeFor( container, \
+			DEMath.max( 0, width - container.getPadding().getWidth() ), container.getContainerHeight() )
+	end
+	
+	/** \brief Minimum size of layout using reference widget height and variable width. */
+	public func Point getMinimumSizeForHeight( Container container, int height )
+		return this.getMinimumSizeFor( container, \
+			container.getContainerWidth(), DEMath.max( 0, height - container.getPadding().getHeight() ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Minimum size of layout using reference and variable size.
+	 * \details If X_AXIS is used height is the reference size. If Y_AXIS is used
+	 *          widthis the reference size.
+	 */
+	protected func Point getMinimumSizeFor( Container container, int width, int height )
+		var Point childSize
+		var int cx = 0
+		var int cy = 0
+		
+		if this.pContentWidget != null and this.pContentWidget.getVisible()
+			childSize = this.pContentWidget.getMinimumSizeWithBorderForWidth( width )
+			cx = childSize.getX()
+			cy = childSize.getY()
+		end
+		
+		if this.pLeftWidget != null and this.pLeftWidget.getVisible()
+			childSize = this.pLeftWidget.getMinimumSizeWithBorderForHeight( height )
+			cx += childSize.getX() + this.pGap
+			if childSize.getY() > cy
+				cy = childSize.getY()
+			end
+		end
+		
+		if this.pTopWidget != null and this.pTopWidget.getVisible()
+			childSize = this.pTopWidget.getMinimumSizeWithBorderForWidth( width )
+			if childSize.getX() > cx
+				cx = childSize.getX()
+			end
+			cy += childSize.getY() + this.pGap
+		end
+		
+		if this.pRightWidget != null and this.pRightWidget.getVisible()
+			childSize = this.pRightWidget.getMinimumSizeWithBorderForHeight( height )
+			cx += childSize.getX() + this.pGap
+			if childSize.getY() > cy
+				cy = childSize.getY()
+			end
+		end
+		
+		if this.pBottomWidget != null and this.pBottomWidget.getVisible()
+			childSize = this.pBottomWidget.getMinimumSizeWithBorderForWidth( width )
+			if childSize.getX() > cx
+				cx = childSize.getX()
+			end
+			cy += childSize.getY() + this.pGap
+		end
+		
+		return Point.new( 1, 1 ).largest( cx, cy ) + container.getPadding().getSize()
+	end
+end

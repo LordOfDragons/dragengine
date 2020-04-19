@@ -1,0 +1,98 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+
+/**
+ * \brief Module parameter.
+ * 
+ * This is a native class.
+ */
+class ModuleParameter
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create module parameter. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Unique name. */
+	public func String getName()
+		return null
+	end
+	
+	/** \brief Description. */
+	public func String getDescription()
+		return null
+	end
+	
+	/** \brief Type. */
+	public func ModuleParameterType getType()
+		return null
+	end
+	
+	/** \brief Minimum value. */
+	public func float getMinimumValue()
+		return 0
+	end
+	
+	/** \brief Maximum value. */
+	public func float getMaximumValue()
+		return 0
+	end
+	
+	/** \brief Value step. */
+	public func float getValueStepSize()
+		return 0
+	end
+	
+	/** \brief Count of selection entries. */
+	public func int getSelectionEntryCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Value of selection entry at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getSelectCount().
+	 */
+	public func String getSelectionEntryValueAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Display name of selection entry at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getSelectCount().
+	 */
+	public func String getSelectionEntryDisplayNameAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Description of selection entry at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getSelectCount().
+	 */
+	public func String getSelectionEntryDescriptionAt( int index )
+		return null
+	end
+	
+	/** \brief Display category. */
+	public func ModuleParameterDisplayCategory getDisplayCategory()
+		return null
+	end
+	
+	/** \brief Display name for use in configuration dialogs. */
+	public func String getDisplayName()
+		return null
+	end
+	/*@}*/
+end

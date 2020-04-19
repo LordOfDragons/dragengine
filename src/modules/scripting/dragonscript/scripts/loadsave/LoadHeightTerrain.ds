@@ -1,0 +1,211 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * Loads an XML Height Terrain Sector.
+ */
+class LoadHeightTerrain extends BaseXmlLoader
+	/** \brief Height terrain navspace loader. */
+	private var LoadHeightTerrainNavSpace pLoadHTNavSpace
+	
+	
+	
+	/** Creates a new loader. */
+	public func new( Console console, LoadHeightTerrainNavSpace loadHTNavSpace ) \
+	this( console, "LoadHeightTerrain", loadHTNavSpace )
+	end
+	
+	/** Creates a new loader. */
+	public func new( Console console, String name, LoadHeightTerrainNavSpace loadHTNavSpace ) super( console, name )
+		this.pLoadHTNavSpace = loadHTNavSpace
+	end
+	
+	
+	
+	/** \brief Load height terrain and assign it to game world. */
+	public func void loadFromFile( GameWorld world, String filename )
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "heightTerrain" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		var HeightTerrain heightTerrain = HeightTerrain.new( \
+			root.getAttributeFloatNamed( "sectorSize" ), \
+			root.getAttributeIntNamed( "sectorResolution" ) )
+		world.getWorld().setHeightTerrain( heightTerrain )
+		
+		world.setCachedVegetation( this.createCachedVegetation( heightTerrain ) )
+		
+		this.pParseHeightTerrain( root, world, heightTerrain, File.new( filename ).getParent().getPath() )
+	end
+	
+	
+	
+	/** \brief Create cached vegetation. */
+	protected func CachedVegetation createCachedVegetation( HeightTerrain heightTerrain )
+		return CachedVegetation.new( heightTerrain.getSectorSize(), 10 )
+	end
+	
+	/** \brief Parse height terrain tag. */
+	private func void pParseHeightTerrain( EasyXMLElement root, GameWorld world, \
+	HeightTerrain heightTerrain, String basePath )
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "baseHeight" )
+				heightTerrain.setBaseHeight( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "heightScaling" )
+				heightTerrain.setHeightScaling( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "sector" )
+				this.pParseSector( element, world, heightTerrain, basePath )
+				
+			elif tagName.equals( "vegetationLayer" )
+// 				this.logNotSupported( element, "Rule based vegetation" )
+			end
+		end )
+	end
+	
+	/** Parse sector tag. */
+	private func void pParseSector( EasyXMLElement root, GameWorld world, \
+	HeightTerrain heightTerrain, String basePath )
+		var int sector = heightTerrain.getSectorCount()
+		var Point coords = Point.new( root.getAttributeIntNamed( "x" ), root.getAttributeIntNamed( "z" ) )
+		heightTerrain.addSector( coords )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "heightImage" )
+				var String filename = element.getFirstCData()
+				if not filename.empty()
+					heightTerrain.setHeightImage( sector, Image.new( \
+						File.absolutePath( filename, basePath ).getPath() ) )
+				end
+				
+			elif tagName.equals( "visibilityImage" )
+				var String filename = element.getFirstCData()
+				if not filename.empty()
+					heightTerrain.setVisibilityFromImage( sector, Image.new( \
+						File.absolutePath( filename, basePath ).getPath() ) )
+				end
+				
+			elif tagName.equals( "pfcache" )
+				var String filename = element.getFirstCData()
+				var CachedVegetation cv = world.getCachedVegetation()
+				if cv != null and not filename.empty()
+					cv.addSector( coords, File.absolutePath( filename, basePath ).getPath() )
+				end
+				
+			elif tagName.equals( "texture" )
+				this.pParseTexture( element, heightTerrain, sector, basePath )
+				
+			elif tagName.equals( "navigationSpace" )
+				this.pParseNavSpace( element, heightTerrain, sector, basePath )
+			end
+		end )
+	end
+	
+	/** Parse texture tag. */
+	private func void pParseTexture( EasyXMLElement root, HeightTerrain heightTerrain, \
+	int sector, String basePath )
+		var int texture = heightTerrain.getTextureCount( sector )
+		heightTerrain.addTexture( sector )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "skin" )
+				var String filename = element.getFirstCData()
+				if not filename.empty()
+					filename = File.absolutePath( filename, basePath ).getPath()
+					try
+						heightTerrain.textureSetSkin( sector, texture, Skin.new( filename ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, filename )
+					end
+				end
+				
+			elif tagName.equals( "uvOffset" )
+				heightTerrain.textureSetUVOffset( sector, texture, this.readVector2UV( element ) )
+				
+			elif tagName.equals( "uvScaling" )
+				heightTerrain.textureSetUVScaling( sector, texture, this.readVector2UV( element ) )
+				
+			elif tagName.equals( "uvRotation" )
+				heightTerrain.textureSetUVRotation( sector, texture, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "mask" )
+				var String filename = element.getFirstCData()
+				if not filename.empty()
+					filename = File.absolutePath( filename, basePath ).getPath()
+					try
+						heightTerrain.textureSetMask( sector, texture, Image.new( filename ) )
+						
+					catch Exception e
+						this.logLoadFileFailed( element, filename )
+					end
+				end
+			end
+		end )
+	end
+	
+	/** \brief Parse navspace tag. */
+	private func void pParseNavSpace( EasyXMLElement root, HeightTerrain heightTerrain, \
+	int sector, String basePath )
+		var int navspace = heightTerrain.getNavSpaceCount( sector )
+		heightTerrain.addNavSpace( sector )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "layer" )
+				heightTerrain.navspaceSetLayer( sector, navspace, element.getFirstCDataInt() )
+				
+			elif tagName.equals( "snapDistance" )
+				heightTerrain.navspaceSetSnapDistance( sector, navspace, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "snapAngle" )
+				heightTerrain.navspaceSetSnapAngle( sector, navspace, element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "path" )
+				var String filename = element.getFirstCData()
+				if not filename.empty()
+					filename = File.absolutePath( filename, basePath ).getPath()
+					this.pLoadHTNavSpace.loadFromFile( filename, heightTerrain, sector, navspace )
+				end
+			end
+		end )
+	end
+end

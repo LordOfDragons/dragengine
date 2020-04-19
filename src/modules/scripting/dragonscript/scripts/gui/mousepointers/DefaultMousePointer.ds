@@ -1,0 +1,148 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MousePointers
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default mouse pointer.
+ * 
+ * Canvas is placed at an offset to the mouse pointer position.
+ */
+class DefaultMousePointer implements MousePointer
+	/** \brief Mouse position. */
+	private var Point pPosition
+	
+	/** \brief Canvas offset relative to mouse position. */
+	private var Point pOffset
+	
+	/** \brief Canvas. */
+	private var CanvasView pCanvas
+	
+	/** \brief Transformation or \em null if not used. */
+	private var TexMatrix2 pTransformation
+	
+	
+	
+	/** \brief Create mouse pointer. */
+	public func new() this( Point.new(), Point.new(), 1.0 )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func new( Point size ) this( size, Point.new(), 1.0 )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func new( Point size, Point offset ) this( size, offset, 1.0 )
+	end
+	
+	/** \brief Create mouse pointer. */
+	public func new( Point size, Point offset, float transparency )
+		if size == null or offset == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = Point.new()
+		this.pOffset = offset
+		
+		this.pCanvas = CanvasView.new()
+		this.pCanvas.setSize( size )
+		this.pCanvas.setTransparency( transparency )
+	end
+	
+	
+	
+	/** \brief Mouse pointer size. */
+	public func Point getSize()
+		return this.pCanvas.getSize()
+	end
+	
+	/** \brief Set mouse pointer size. */
+	public func void setSize( Point size )
+		this.pCanvas.setSize( size )
+	end
+	
+	/** \brief Canvas offset relative to mouse pointer position. */
+	public func Point getOffset()
+		return this.pOffset
+	end
+	
+	/** \brief Set canvas X offset relative to mouse pointer position. */
+	public func void setOffset( Point offset )
+		if offset.equals( this.pOffset )
+			return
+		end
+		
+		this.pOffset = offset
+		this.pCanvas.setPosition( this.pPosition + this.pOffset )
+	end
+	
+	/** \brief Transparency. */
+	public func float getTransparency()
+		return this.pCanvas.getTransparency()
+	end
+	
+	/** \brief Set the transparency. */
+	public func void setTransparency( float transparency )
+		this.pCanvas.setTransparency( transparency )
+	end
+	
+	/** \brief Transformation or null if not set. */
+	public func TexMatrix2 getTransformation()
+		return this.pTransformation
+	end
+	
+	/** \brief Set transformation or null if not set. */
+	public func void setTransformation( TexMatrix2 transformation )
+		this.pTransformation = transformation
+	end
+	
+	
+	
+	/** \brief Mouse position. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set mouse position. */
+	public func void setPosition( Point position )
+		if position.equals( this.pPosition )
+			return
+		end
+		
+		this.pPosition = position
+		this.pCanvas.setPosition( this.pPosition + this.pOffset )
+	end
+	
+	/** \brief Canvas to render mouse pointer with. */
+	public func Canvas getCanvas()
+		return this.pCanvas
+	end
+	
+	/** \brief Canvas to render mouse pointer with. */
+	public func CanvasView getCanvasView()
+		return this.pCanvas
+	end
+end

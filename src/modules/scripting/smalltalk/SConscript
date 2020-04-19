@@ -1,0 +1,105 @@
+from SConsCommon import *
+
+Import( 'parent_env parent_targets parent_report' )
+
+buildModule = parent_env[ 'build_script_smalltalk' ] != TernaryVariableNo
+
+parent_report[ 'build Smalltalk Script Module' ] = 'yes' if buildModule else 'no'
+if not buildModule:
+	Return()
+
+envModule = parent_env.Clone()
+
+libs = []
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+appendLibrary( envModule, parent_targets[ 'lib_smalltalk' ], libs )
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/scripting/smalltalk/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/scripting/smalltalk/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+pathShared = '{}/modules/scripting/smalltalk/{}'.format( envModule.subst( envModule[ 'path_de_share' ] ), versionString )
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# setup the builders
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+scripts = []
+globFiles( envModule, 'scripts', '*.st', scripts )
+
+data = []
+globFiles( envModule, 'data', '*', data )
+
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+library = envModule.SharedLibrary( target='scrsmalltalk', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'scr_smalltalk_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+for l in reversed( parent_targets[ 'lib_smalltalk' ][ 'runtimelibs' ] ):
+	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
+	install.append( envModule.Install( pathModule, l ) )
+	archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+Depends( updateManifest, parent_targets[ 'lib_smalltalk' ][ 'runtimelibs' ] )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+for s in scripts:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+	
+for s in data:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+
+targetInstall = envModule.Alias( 'scr_smalltalk', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+#cloc
+buildClocBare = BuildCLOC( envModule,
+	[ '{}/src'.format( srcdir ), '{}/scripts'.format( srcdir ) ],
+	'{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+Depends( buildClocBare, scripts )
+buildCloc = envModule.Alias( 'scr_smalltalk_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'scr_smalltalk' ] = {
+	'name' : 'Smalltalk Script Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

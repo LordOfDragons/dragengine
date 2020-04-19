@@ -1,0 +1,30 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+/**
+ * \brief Server listener interface.
+ * 
+ * This is a native class.
+ */
+interface ServerListener
+	/** \name Notifications */
+	/*@{*/
+	/**
+	 * \brief Client connected.
+	 * 
+	 * Start processing client to add him to the game. Typically this means assigning the
+	 * connection instance to a new player instance and calling Connection.setConnectionListener()
+	 * somewhere down the line. Call Connection.disconnect() to reject the client.
+	 * 
+	 * If an exception is thrown or no listener is set client is disconnected.
+	 */
+	public func void clientConnected( Connection connection )
+	/*@}*/
+end

@@ -1,0 +1,197 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Navigator.
+ * 
+ * This is a native class.
+ */
+class Navigator
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create navigator. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Layer number. */
+	public func int getLayer()
+	end
+	
+	/** \brief Set layer number. */
+	public func void setLayer( int layer )
+	end
+	
+	/** \brief Space type to navigate. */
+	public func NavigationSpaceType getSpaceType()
+	end
+	
+	/** \brief Set space type to navigate. */
+	public func void setSpaceType( NavigationSpaceType spaceType )
+	end
+	
+	/**
+	 * \brief Maximum distance the start and goal point are allowed to be outside any navigation space.
+	 * \details If the start or goal point is outside the range path update returns an empty path.
+	 *          The default disstance is 0.5m .
+	 */
+	public func float getMaxOutsideDistance()
+	end
+	
+	/**
+	 * \brief Set maximum distance the start and goal point are allowed to be outside any navigation space.
+	 * \details If the start or goal point is outside the range path update returns an empty path.
+	 */
+	public func void setMaxOutsideDistance( float maxDistance )
+	end
+	
+	
+	
+	/** \brief Fix cost to use if no matching type is found. */
+	public func float getDefaultFixCost()
+	end
+	
+	/** \brief Set fix cost to use if no matching type is found. */
+	public func void setDefaultFixCost( float cost )
+	end
+	
+	/** \brief Cost per meter to use if no matching type is found. */
+	public func float getDefaultCostPerMeter()
+	end
+	
+	/** \brief Set cost per meter to use if no matching type is found. */
+	public func void setDefaultCostPerMeter( float costPerMeter )
+	end
+	
+	/** \brief Maximum cost beyond which a node or path is considered impassable. */
+	public func float getBlockingCost()
+	end
+	
+	/** \brief Set maximum cost beyond which a node or path is considered impassable. */
+	public func void setBlockingCost( float cost )
+	end
+	
+	
+	
+	/** \brief Fix cost for type or default fix cost if not found. */
+	public func float getTypeFixCost( int type )
+	end
+	
+	/** \brief Set fix cost for type or default fix cost if not found. */
+	public func void setTypeFixCost( int type, float fixCost )
+	end
+	
+	/** \brief Cost per meter for type or default cost per meter if not found. */
+	public func float getTypeCostPerMeter( int type )
+	end
+	
+	/** \brief Set cost per meter for type or default cost per meter if not found. */
+	public func void setTypeCostPerMeter( int type, float costPerMeter )
+	end
+	
+	
+	/** \brief Remove type. */
+	public func void removeType( int type )
+	end
+	
+	/** \brief Remove all types. */
+	public func void removeAllTypes()
+	end
+	
+	
+	
+	/**
+	 * \brief Find path.
+	 * \details Replaces path with found path. If path can not be found the path is empty.
+	 */
+	public func void findPath( NavigatorPath path, DVector start, DVector goal )
+	end
+	
+	
+	
+	/**
+	 * \brief Nearest point on nearest navigation space.
+	 * \param point Point to find nearest point for.
+	 * \param radius Maximum radius clamped to 0 or larger to find nearest point in.
+	 * \returns Nearest point (sets position, costType) if found or \em null if not found.
+	 */
+	public func NavigationInfo nearestPoint( DVector point, float radius )
+	end
+	
+	/**
+	 * \brief Distance moving from point along direction before crossing navigation space boundaries.
+	 * 
+	 * \param origin Origin to start moving. Use NearestPoint() to make sure it is located
+	 *               on a navigation space.
+	 * \param direction Direction to move starting at \em origin.
+	 * \returns navigation information if navigation space boundary is touched before end of
+	 *          direction is reached. If no border is touched null is returned. Null is also
+	 *          returned if origin is not located in the navigation space. In the returned
+	 *          NavigationInfo object the following parameter set set:
+	 *          - getPathFactor() to get the percentage distance along direction (0 to 1).
+	 *          - getPosition() to get position of hit point at navigation space boundary.
+	 */
+	public func NavigationInfo lineCollide( DVector origin, Vector direction )
+	end
+	
+	
+	
+	/**
+	 * \brief Test path for collision using ray test against collider.
+	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
+	 */
+	public func NavigationInfo pathCollideRay( NavigatorPath path, Collider collider )
+	end
+	
+	/**
+	 * \brief Test path for collision using ray test against collider inside range.
+	 * 
+	 * \param path Path to use.
+	 * \param collider Collider to use for testing.
+	 * \param startPosition Starting position for testing.
+	 * \param nextPoint Index of next point along the path to test. If this is equal to
+	 *                  getPathPointCount() the goal position is used.
+	 * \param maxDistance Limit testing to \em maxDistance meters after \em startPosition along path.
+	 * \throws EOutOfBoundary \em nextPoint is less than 0 or larger than getPathPointCount().
+	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
+	 */
+	public func NavigationInfo pathCollideRay( NavigatorPath path, Collider collider, \
+	DVector startPosition, int nextPoint, float maxDistance )
+	end
+	
+	/**
+	 * \brief Test path for collision using an agent collider moved along the path against a collider.
+	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
+	 */
+	public func NavigationInfo pathCollideShape( NavigatorPath path, Collider collider, Collider agent )
+	end
+	
+	/**
+	 * \brief Test path for collision using an agent collider moved along the path against a collider inside range.
+	 * 
+	 * \param path Path to use.
+	 * \param collider Collider to use for testing.
+	 * \param agent Collider representing the agent.
+	 * \param startPosition Starting position for testing.
+	 * \param nextPoint Index of next point along the path to test. If this is equal to
+	 *                  getPathPointCount() the goal position is used.
+	 * \param maxDistance Limit testing to \em maxDistance meters after \em startPosition along path.
+	 * \throws EOutOfBoundary \em nextPoint is less than 0 or larger than getPathPointCount().
+	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
+	 */
+	public func NavigationInfo pathCollideShape( NavigatorPath path, Collider collider, \
+	Collider agent, DVector startPosition, int nextPoint, float maxDistance )
+	end
+	/*@}*/
+end

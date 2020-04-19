@@ -1,0 +1,134 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return() # bugged: program_invocation_short_name missing, needs patch
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libevdev-1.5.6'
+
+libLinkVersion = '2.1.18'
+libLinkName = 'evdev'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst(
+		'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst(
+		'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# check if system libevdev is present
+hasSystemEvdev = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libevdev'] != TernaryVariableNo:
+	hasSystemEvdev = conf.CheckLibWithHeader(
+		libLinkName, 'evdev.h', 'c++', 'libevdev_has_event_type(0,0);')
+conf.Finish()
+
+if not hasSystemEvdev and envLibrary['with_system_libevdev'] == TernaryVariableYes:
+	Exit('Requested to use system libevdev but no usable libevdev found.')
+
+libs = [libLinkName]
+
+parent_report['use system libevdev'] = 'yes' if hasSystemEvdev else 'no'
+
+if hasSystemEvdev:
+	parent_targets['lib_libevdev'] = {
+		'name' : 'Internal libevdev library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libevdev
+def libevdevBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env, deps=[parent_targets['lib_zlib']])
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if not buildStaticLinking:
+		for p in env['PATCHES']:
+			script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--enable-silent-rules')
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make || exit 1')
+	
+	script.append('cd libevdev || exit 1')
+	script.append('make install-libLTLIBRARIES install-libevdevincludeHEADERS || exit 1')
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building libevdev')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/libevdev-1.0/libevdev/libevdev.h',
+	'include/libevdev-1.0/libevdev/libevdev-uinput.h'])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(libevdevBuild, 'Build libevdev'))
+
+if not buildStaticLinking:
+	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_libevdev', library)
+
+envLibrary.Clean(library, ['include', 'lib', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_libevdev'] = {
+	'name' : 'Internal libevdev library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

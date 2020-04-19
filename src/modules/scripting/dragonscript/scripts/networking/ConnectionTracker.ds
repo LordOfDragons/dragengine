@@ -1,0 +1,129 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Networking
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief List of connections to create network states for.
+ * 
+ * Used by behaviors to track connections for which network states have to be created.
+ * The behaviros register a listener to be notified if connections are added and removed.
+ */
+class ConnectionTracker
+	private var Array pConnections
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create connection tracker. */
+	public func new()
+		this.pConnections = Array.new()
+		this.pListeners = Array.new()
+	end
+	
+	
+	
+	/** \brief Count of connections. */
+	public func int getCount()
+		return this.pConnections.getCount()
+	end
+	
+	/** \brief Connection at index. */
+	public func Connection getAt( int index )
+		return this.pConnections.getAt( index ) cast Connection
+	end
+	
+	/** \brief Connection is present. */
+	public func bool has( Connection connection )
+		return this.pConnections.has( connection )
+	end
+	
+	/** \brief Add connection. */
+	public func void add( Connection connection )
+		if connection == null or this.pConnections.has( connection )
+			throw EInvalidParam.new()
+		end
+		
+		this.pConnections.add( connection )
+		
+		this.pListeners.forEach( block ConnectionTrackerListener each
+			each.connectionAdded( this, connection )
+		end )
+	end
+	
+	/** \brief Remove connection. */
+	public func void remove( Connection connection )
+		this.pConnections.remove( connection )
+		
+		this.pListeners.forEach( block ConnectionTrackerListener each
+			each.connectionRemoved( this, connection )
+		end )
+	end
+	
+	/** \brief Remove all connections. */
+	public func void removeAll()
+		while this.pConnections.getCount() > 0
+			var Connection connection = this.pConnections.getAt( 0 ) cast Connection
+			this.pConnections.removeFrom( 0 )
+			
+			this.pListeners.forEach( block ConnectionTrackerListener each
+				each.connectionRemoved( this, connection )
+			end )
+		end
+	end
+	
+	/**
+	 * \brief Visit connections with block.
+	 * 
+	 * Block receives as argument connection of type Connection.
+	 */
+	public func void forEach( Block ablock )
+		this.pConnections.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find connection with block.
+	 * 
+	 * Block receives as argument connection of type Connection and returns true if found.
+	 */
+	public func Connection find( Block ablock )
+		return this.pConnections.find( ablock ) cast Connection
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener( ConnectionTrackerListener listener )
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener( ConnectionTrackerListener listener )
+		this.pListeners.remove( listener )
+	end
+end

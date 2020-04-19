@@ -1,0 +1,341 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding navigation blocker support.
+ * 
+ * Behavior adds a NavigationBlocker resource to the the behavior element. This allow elements
+ * using Navigator resource to avoid moving into the blocked space. Actors have a navigator by
+ * default. Other elements can use ECBehaviorNavigator to interact with
+ * ECBehaviorNavigationBlocker.
+ * 
+ * This behavior can be added multiple times to an element. Each instance creates one
+ * navigation blocker attached to the element collider which can be individually modified.
+ * To distinguish the navigation blockers each instance has an identifier which can be used to
+ * retrieve a specific instance. By default navigation blocker class properties have no prefix.
+ * If the identifier is not empty the navigation blocker element class properties have the
+ * prefix "{id}.". This can be overwritten if required. Hence to use more than one navigation
+ * blocker use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorNavigationBlocker.new(this)
+ *       ECBehaviorNavigationBlocker.new(this, "subNavBlocker")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the parameters to use for both navigation blockers using for example the
+ * properties "navigationBlocker" for the first navigation blocker and "subNavBlocker.navigationBlocker"
+ * for the second navigation blocker.
+ * 
+ * Using more than one navigation blocker for behavior elements can be required if different
+ * actors have different spacing requirements or to support different navigation blocker types.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element before this
+ * behavior is added the light is attached. The light is attached to the named bone if
+ * defined otherwise it is attached statically.
+ * 
+ * Element class properties have the prefix "navigationBlocker{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorNavigationBlocker extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorNavigationBlocker pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var NavigationBlocker pNavigationBlocker
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorNavigationBlocker ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pCollider = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			this.pNavigationBlocker = this.createNavigationBlocker( stub )
+			if this.pNavigationBlocker == null
+				return
+			end
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachNavigationBlocker( stub, this.pCollider )
+			end
+		end
+		
+		/**
+		 * \brief Create navigation blocker.
+		 * 
+		 * Default implementation calls ECComposeNavigationBlocker.createNavigationBlocker().
+		 */
+		protected func NavigationBlocker createNavigationBlocker( StubElement stub )
+			return this.pECBehavior.getNavigationBlocker().createNavigationBlocker( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Attach navigation blocker to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachNavigationBlocker( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pNavigationBlocker, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorNavigationBlocker getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior or null if not attached. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief NavigationBlocker. */
+		public func NavigationBlocker getNavigationBlocker()
+			return this.pNavigationBlocker
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			if this.pNavigationBlocker != null
+				this.getElement().getGameWorld().getWorld().addNavigationBlocker( this.pNavigationBlocker )
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			if this.pNavigationBlocker != null
+				this.getElement().getGameWorld().getWorld().removeNavigationBlocker( this.pNavigationBlocker )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeNavigationBlocker pNavigationBlocker
+	private var ECComposeAttachResource pAttach
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, BaseGameApp.getApp().getLoaders(), "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, BaseGameApp.getApp().getLoaders(), id )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders ) \
+	this( eclass, collider, loaders, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	Loaders loaders, String id ) this( eclass, collider, loaders, id, \
+	id.empty() if "navigationBlocker." else "navigationBlocker(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	Loaders loaders, String id, String prefix ) super( eclass, id )
+		this.pCollider = collider
+		
+		this.pNavigationBlocker = ECComposeNavigationBlocker.new( eclass, loaders, prefix )
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null to not attach. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Composeable navigation blocker for element class. */
+	public func ECComposeNavigationBlocker getNavigationBlocker()
+		return this.pNavigationBlocker
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	
+	
+	/** \brief Set parameters quickly. */
+	public func void setBox( int layer, int priority, Vector center, Vector halfExtents )
+		this.pNavigationBlocker.getLayer().setValue( layer )
+		this.pNavigationBlocker.getPriority().setValue( priority )
+		this.pNavigationBlocker.getShape().getShapeList().removeAllShapes()
+		this.pNavigationBlocker.getShape().getShapeList().addBox( center, halfExtents )
+	end
+	
+	public func void setBox( int layer, int priority, Vector center, Vector halfExtents, Quaternion orientation )
+		this.pNavigationBlocker.getLayer().setValue( layer )
+		this.pNavigationBlocker.getPriority().setValue( priority )
+		this.pNavigationBlocker.getShape().getShapeList().removeAllShapes()
+		this.pNavigationBlocker.getShape().getShapeList().addBox( center, halfExtents, orientation )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorNavigationBlocker getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorNavigationBlocker
+		end ) cast ECBehaviorNavigationBlocker
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorNavigationBlocker with specific identifier.
+	 */
+	static public func ECBehaviorNavigationBlocker getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorNavigationBlocker each
+			return each castable ECBehaviorNavigationBlocker and \
+				( each cast ECBehaviorNavigationBlocker ).getID().equals( id )
+		end ) cast ECBehaviorNavigationBlocker
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorNavigationBlocker behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorNavigationBlocker
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNavigationBlocker.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorNavigationBlocker.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorNavigationBlocker.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

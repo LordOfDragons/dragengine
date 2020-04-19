@@ -1,0 +1,94 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree rule running an action.
+ * 
+ * This is the main working rule connecting game logic to the behavior tree. BTAction subclasses
+ * are created by the game developer and added to the behavior tree. If the rule is run the
+ * action is looked up and run. The return value of the action becomes the return value of the
+ * rule.
+ * 
+ * For performance reasons the action is looked up once then stored in the rule. This is
+ * correct behavior as long as the rules are not changed at run-time. If you need changing
+ * actions at run-time implement a BTAction forwarding to the desired BTAction. This way the
+ * cached action stays valid while the actual BTAction called inside can change. This is though
+ * an elaborate situation. Usually actions are added to the behavior tree once and then never
+ * change.
+ */
+class BTRuleAction extends BTRule
+	/** \brief Action identifier. */
+	private var String pActionID
+	
+	/** \brief Action or \em null if not cached. */
+	private var BTAction pAction
+	
+	
+	
+	/** \brief Create behavior tree rule. */
+	public func new( String id, String actionID ) super( id )
+		if actionID == null
+			throw EInvalidParam.new()
+		end
+		this.pActionID = actionID
+	end
+	
+	
+	
+	/** \brief Action identifier. */
+	public func String getActionID()
+		return this.pActionID
+	end
+	
+	/** \brief Action or \em null if not cached. */
+	public func BTAction getAction()
+		return this.pAction
+	end
+	
+	
+	
+	/**
+	 * \brief Run action.
+	 * \returns Action return value if no rule condition evaluates to false and the named
+	 *          action is found in the BTContext. Otherwise BTResult.failure is returned.
+	 */
+	public func BTResult run( BTContext context )
+		if this.pAction == null
+			this.pAction = context.getAction( this.pActionID )
+		end
+		
+		if this.pAction == null or not this.evaluateConditions( context )
+			return BTResult.failure
+		end
+		
+		var BTResult result = this.pAction.runAction( context, this.getParameters() )
+		context.setActionFirstRun( false )
+		return result
+	end
+end

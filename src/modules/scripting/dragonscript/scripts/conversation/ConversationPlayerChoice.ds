@@ -1,0 +1,114 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+
+
+/**
+ * \brief Action for player choice window entry setting the next conversation actions to run.
+ */
+class ConversationPlayerChoice implements ActionListener
+	/** \brief Conversation playback. */
+	private var ConversationPlayback pPlayback
+	
+	/** \brief Layer to go back to. */
+	private var ConversationPlaybackLayer pLayer
+	
+	/** \brief Action iterator to activate. */
+	private var ConversationActionIterator pActionIterator
+	
+	/** \brief Name of variable to set with the selected option or null if not used. */
+	private var String pVariable
+	
+	/** \brief Value to set the variable to. */
+	private var int pValue
+	
+	
+	
+	/** \brief Create conversation player choice option. */
+	public func new( ConversationPlayback playback, ConversationPlaybackLayer layer, \
+	ConversationActionIterator actionIterator, String variable, int value )
+		if playback == null or layer == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPlayback = playback
+		this.pLayer = layer
+		this.pActionIterator = actionIterator
+		this.pVariable = variable
+		this.pValue = value
+	end
+	
+	
+	
+	/** \brief Name of variable to set with the selected option or null if not used. */
+	public func String getVariable()
+		return this.pVariable
+	end
+	
+	/** \brief Value to set the variable to. */
+	public func int getValue()
+		return this.pValue
+	end
+	
+	/** \brief Conversation playback. */
+	public func ConversationPlayback getPlayback()
+		return this.pPlayback
+	end
+	
+	/** \brief Layer to go back to. */
+	public func ConversationPlaybackLayer getLayer()
+		return this.pLayer
+	end
+	
+	/** \brief Action iterator or null if not set. */
+	public func ConversationActionIterator getActionIterator()
+		return this.pActionIterator
+	end
+	
+	
+	
+	/** \brief Action fired. */
+	public func void onAction( ActionEvent event )
+		// end the player choosing
+		this.pPlayback.getPlayerChoice().endChoosing()
+		
+		// set variable
+		if this.pVariable != null
+			this.pPlayback.setVariable( this.pVariable, this.pValue )
+		end
+		
+		// cancel looping layer and remove all layers below
+		this.pPlayback.cancelLoopingLayer( this.pLayer )
+		
+		// push option actions to stack or advance to the next action if missing
+		if this.pActionIterator != null
+			this.pPlayback.pushLayer( ConversationPlaybackLayer.new( this.pActionIterator ) )
+			
+		else
+			this.pPlayback.advanceToNextAction()
+		end
+	end
+end

@@ -1,0 +1,70 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition.Nodes
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Styled text definition node.
+ */
+class STDNode
+	/** \brief Style or \em null to use parent node style. */
+	private var String pStyle
+	
+	
+	
+	/** \brief Create styled text definition node. */
+	public func new()
+	end
+	
+	/** \brief Create copy of styled text definition node. */
+	public func new( STDNode node )
+		this.pStyle = node.pStyle
+	end
+	
+	
+	
+	/** \brief Style or \em null to use the parent node style. */
+	public func String getStyle()
+		return this.pStyle
+	end
+	
+	/** \brief Set style or \em null to use the parent node style. */
+	public func void setStyle( String style )
+		this.pStyle = style
+	end
+	
+	
+	
+	/** \brief Create copy of styled text definition node. */
+	public func STDNode copy()
+		return STDNode.new( this )
+	end
+	
+	/** \brief Visit node. */
+	public func void visit( STDNodeVisitor visitor )
+		visitor.visitNode( this )
+	end
+end

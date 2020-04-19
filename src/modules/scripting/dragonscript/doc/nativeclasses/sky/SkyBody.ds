@@ -1,0 +1,82 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky body.
+ * 
+ * Wraps a sky body by body index. Valid only as long as the wrapped sky does not
+ * change layer layout and layer does not change body layout. The user is responsible
+ * to call Sky.contentChanged() after changing one or more bodys. Sky bodys should
+ * not be changed if possible after being used in sky instances.
+ * 
+ * This is a native class.
+ */
+class SkyBody
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Sky body can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner sky. */
+	public func Sky getSky()
+	end
+	
+	/** \brief Owner layer index. */
+	public func int getLayerIndex()
+	end
+	
+	/** \brief Body index. */
+	public func int getBodyIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Bodys */
+	/*@{*/
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation( Quaternion orientation )
+	end
+	
+	/** \brief Size in radians. */
+	public func Vector2 getSize()
+	end
+	
+	/** \brief Set size in radians. */
+	public func void setSize( Vector2 size )
+	end
+	
+	/** \brief Blending color. */
+	public func Color getColor()
+	end
+	
+	/** \brief Set blending color. */
+	public func void setColor( Color color )
+	end
+	
+	/** \brief Skin or \em null if not set. */
+	public func Skin getSkin()
+	end
+	
+	/** \brief Set skin or \em null if not set. */
+	public func void setSkin( Skin skin )
+	end
+	/*@}*/
+end

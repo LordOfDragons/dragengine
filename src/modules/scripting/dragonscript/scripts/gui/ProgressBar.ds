@@ -1,0 +1,352 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Show progress of value inside range.
+ * 
+ * Supports designing using designer selector "ProgressBar".
+ */
+class ProgressBar extends Widget implements RangeModelListener
+	/** \brief Orientation*/
+	private var Orientation pOrientation
+	
+	/** \brief Range Model */
+	private var RangeModel pModel
+	
+	/** \brief Bar canvas creator or \em null to not show bar. */
+	private var CanvasCreator pBarCanvasCreator
+	
+	/** \brief Canvas bar or \em null if not present. */
+	private var Canvas pCanvasBar
+	
+	/** \brief Canvas text. */
+	private var CanvasText pCanvasText
+	
+	/** \brief Canvas inverse text. */
+	private var CanvasText pCanvasTextOverBar
+	
+	/** \brief Draw percentage label. */
+	private var bool pShowPercentage
+	
+	/** \brief Invert color for text over bar. */
+	private var bool pInvertColorOverBar
+	
+	
+	
+	/** \brief Create horizontal progress bar widget. */
+	public func new() this( Orientation.horizontal, DefaultRangeModel.new( 0, 100, 1, 0, 1 ) )
+	end
+	
+	/** \brief Create progress bar widget. */
+	public func new( Orientation orientation ) this( orientation, DefaultRangeModel.new( 0, 100, 1, 0, 1 ) )
+	end
+	
+	/** \brief Create progress bar widget with model. */
+	public func new( Orientation orientation, RangeModel model )
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pShowPercentage = true
+		this.pInvertColorOverBar = true
+		
+		this.pCanvasText = CanvasText.new()
+		this.pCanvasText.setOrder( 1.0 )
+		this.getCanvasContent().addCanvas( this.pCanvasText )
+		
+		this.pCanvasTextOverBar = CanvasText.new()
+		this.pCanvasTextOverBar.setOrder( 3.0 )
+		this.getCanvasContent().addCanvas( this.pCanvasTextOverBar )
+		
+		this.pOrientation = orientation
+		
+		this.setDesignerSelector( "ProgressBar" )
+		
+		this.pModel = model
+		model.addListener( this )
+		
+		this.updateProgress()
+	end
+	
+	/** \brief Disposes of widget. */
+	public func void dispose()
+		this.pBarCanvasCreator = null
+		this.pModel.removeListener( this )
+		this.pModel = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Orientation. */
+	public func Orientation getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set oriantation. */
+	public func void setOrientation( Orientation orientation )
+		if orientation == this.pOrientation
+			return
+		end
+		
+		this.pOrientation = orientation
+		this.updateProgress()
+	end
+	
+	/** \brief Model. */
+	public func RangeModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Set model. */
+	public func void setModel( RangeModel model )
+		if model == this.pModel
+			return
+		end
+		
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pModel.removeListener( this )
+		this.pModel = model
+		model.addListener( this )
+		
+		this.updateProgress()
+	end
+	
+	/** \brief Show percentage label. */
+	public func bool getShowPercentage()
+		return this.pShowPercentage
+	end
+	
+	/** \brief Set if percentage label is shown. */
+	public func void setShowPercentage( bool show )
+		if show == this.pShowPercentage
+			return
+		end
+		
+		this.pShowPercentage = show
+		this.updateLabelCanvasParams()
+	end
+	
+	/** \brief Invert color for text over bar. */
+	public func bool getInvertColorOverBar()
+		return this.pInvertColorOverBar
+	end
+	
+	/** \brief Set if color for text over bar is inverted. */
+	public func void setInvertColorOverBar( bool invert )
+		if this.pInvertColorOverBar == invert
+			return
+		end
+		
+		this.pInvertColorOverBar = invert
+		this.updateLabelCanvasParams()
+	end
+	
+	
+	
+	/** \brief Bar canvas creator or \em null to show no bar. */
+	public func CanvasCreator getBarCanvasCreator()
+		return this.pBarCanvasCreator
+	end
+	
+	/** \brief Set bar canvas creator or \em null to show no bar. */
+	public func void setBarCanvasCreator( CanvasCreator creator )
+		if creator == this.pBarCanvasCreator
+			return
+		end
+		
+		this.pBarCanvasCreator = creator
+		this.updateProgress()
+	end
+	
+	
+	
+	/** \brief Range model minimum, maximum or page size changed. */
+	public func void rangeChanged( RangeModel rangeModel )
+		this.updateProgress()
+	end
+	
+	/** \brief Range model value changed. */
+	public func void valueChanged( RangeModel rangeModel )
+		this.updateProgress()
+	end
+	
+	
+	
+	/** \brief Minimal size of widget. */
+	public func Point getMinimumSize()
+		if this.isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		var int textSize = 0
+		
+		if this.pShowPercentage
+			var Font font = this.getFont()
+			if font != null
+				textSize = font.getSize()
+			end
+		end
+		
+		if this.pOrientation == Orientation.horizontal
+			return Point.new( 0, textSize ) + this.getPadding().getSize()
+			
+		else
+			return Point.new( textSize, 0 ) + this.getPadding().getSize()
+		end
+	end
+	
+	
+	
+	/** \brief Widget font changed. */
+	public func void onSetFont()
+		this.updateLabelCanvasParams()
+		this.updateProgress()
+	end
+	
+	/** \brief Text color changed. */
+	public func void onSetTextColor()
+		this.updateLabelCanvasParams()
+		this.updateProgress()
+	end
+	
+	/** \brief Size changed. */
+	public func void onResize( WidgetEvent event )
+		super.onResize( event )
+		this.updateProgress()
+	end
+	
+	/** \brief Gui theme changed. */
+	public func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		this.updateLabelCanvasParams()
+		this.updateProgress()
+	end
+	
+	
+	
+	/** \brief Progress percentage in the range from 0 to 1. */
+	public func float getPercentage()
+		if this.pModel == null
+			return 0.0
+		end
+		
+		return DEMath.linearStep( this.pModel.getValue() cast float, \
+			this.pModel.getMinimum() cast float, this.pModel.getMaximum() cast float )
+	end
+	
+	
+	
+	/** \brief Update progress. */
+	protected func void updateProgress()
+		var float percentage = this.getPercentage()
+		
+		// update progress bar
+		if this.pCanvasBar != null
+			this.getCanvasContent().removeCanvas( this.pCanvasBar )
+			this.pCanvasBar = null
+		end
+		
+		if this.pBarCanvasCreator != null
+			var int width = this.getWidth()
+			var int height = this.getHeight()
+			var Point barSize
+			
+			if this.pOrientation == Orientation.horizontal
+				barSize = Point.new( ( percentage * ( width cast float ) ) cast int, height )
+				
+			else
+				barSize = Point.new( width, ( percentage * ( height cast float ) ) cast int )
+			end
+			
+			this.pCanvasBar = this.pBarCanvasCreator.createCanvas( barSize )
+			if this.pCanvasBar != null
+				this.pCanvasBar.setOrder( 2.0 )
+				this.getCanvasContent().addCanvas( this.pCanvasBar )
+			end
+		end
+		
+		// update progress text. invert text is adjusted to be visible only where bar is below
+		var String text = "" + ( ( percentage * 100.0 ) cast int ) + "%"
+		var Point textSize = Point.new( 1, 1 )
+		var Font font = this.pCanvasText.getFont()
+		
+		if font != null
+			textSize = font.getTextSize( text )
+		end
+		
+		var Point position = ( this.getSize() - textSize ) / 2
+		
+		this.pCanvasText.setText( text )
+		this.pCanvasText.setPosition( position )
+		this.pCanvasText.setSize( textSize )
+		
+		this.pCanvasTextOverBar.setText( text )
+		this.pCanvasTextOverBar.setPosition( position )
+		
+		if this.pCanvasBar == null
+			this.pCanvasTextOverBar.setSize( Point.new( 0, textSize.getY() ) )
+			
+		else
+			this.pCanvasTextOverBar.setSize( Point.new( DEMath.clamp( \
+				this.pCanvasBar.getSize().getX() - position.getX(), 0, textSize.getX() ), textSize.getY() ) )
+		end
+	end
+	
+	/** \brief Update label canvas font, color and visibility. */
+	protected func void updateLabelCanvasParams()
+		// font
+		var Font font = this.getFont()
+		this.pCanvasText.setFont( font )
+		this.pCanvasTextOverBar.setFont( font )
+		
+		// text color
+		var Color color = this.getTextColor()
+		if color == null
+			color = Color.transparent
+		end
+		
+		this.pCanvasText.setColor( color )
+		
+		if this.pInvertColorOverBar
+			this.pCanvasTextOverBar.setColor( color.invert() )
+			
+		else
+			this.pCanvasTextOverBar.setColor( color )
+		end
+		
+		// visibility
+		this.pCanvasText.setVisible( this.pShowPercentage )
+		this.pCanvasTextOverBar.setVisible( this.pShowPercentage )
+	end
+end

@@ -1,0 +1,60 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer effect stretch time and pitch.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SEStretch extends SynthesizerSource
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create synthesizer effect. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Set minimum time stretch. */
+	public func void setMinTime( float stretch )
+	end
+	
+	/** \brief Set maximum time stretch. */
+	public func void setMaxTime( float stretch )
+	end
+	
+	/** \brief Set minimum pitch shift. */
+	public func void setMinPitch( float shift )
+	end
+	
+	/** \brief Set maximum pitch shift. */
+	public func void setMaxPitch( float shift )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( SEStretchTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( SEStretchTarget target )
+	end
+	/*@}*/
+end

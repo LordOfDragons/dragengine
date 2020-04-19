@@ -1,0 +1,51 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui
+
+
+
+/**
+ * \brief Interface for a drag and drop operation.
+ */
+interface DragAndDrop
+	/** \brief Drag source. */
+	public func Widget getDragSource()
+	
+	/** \brief List of supported data types by the drag source. */
+	public func DNDTypeList getDataTypes()
+	
+	/** \brief Drag source supports a type. */
+	public func bool supportsDataType( String type )
+	
+	/** \brief Drag data in a specific format or \em null if not supported. */
+	public func Object getDragDataAs( String type )
+	
+	/** \brief Set if dropping is possible at the current location. */
+	public func void setCanDrop( bool canDrop )
+	
+	/**
+	 * \brief Drop has been processed.
+	 * 
+	 * The drag and drop operation is finished after this call.
+	 */
+	public func void dropDone( bool success )
+end

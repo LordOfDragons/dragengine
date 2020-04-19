@@ -1,0 +1,204 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Canvas creator creating a canvas with a paint only simple bevel border.
+ */
+class BevelCanvasCreator extends DefaultCanvasCreator
+	/** Highlight color. */
+	private var Color pColorHilight
+	
+	/** Shadow color. */
+	private var Color pColorShadow
+	
+	/** Background color. */
+	private var Color pColorBackground
+	
+	/** \brief Color matrix to use for created canvas or \em null to use none. */
+	private var ColorMatrix pColorMatrix
+	
+	
+	
+	/** \brief Create canvas creator. */
+	public func new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new( BevelCanvasCreator creator ) super( creator )
+		this.pColorHilight = creator.pColorHilight
+		this.pColorShadow = creator.pColorShadow
+		this.pColorBackground = creator.pColorBackground
+	end
+	
+	
+	
+	/** \brief Hilight color. */
+	public func Color getColorHilight()
+		return this.pColorHilight
+	end
+	
+	/** \brief Set hilight color. */
+	public func void setColorHilight( Color color )
+		this.pColorHilight = color
+	end
+	
+	/** \brief Shadow color. */
+	public func Color getColorShadow()
+		return this.pColorShadow
+	end
+	
+	/** \brief Set shadow color. */
+	public func void setColorShadow( Color color )
+		this.pColorShadow = color
+	end
+	
+	/** \brief Background color. */
+	public func Color getColorBackground()
+		return this.pColorBackground
+	end
+	
+	/** \brief Set background color. */
+	public func void setColorBackground( Color color )
+		this.pColorBackground = color
+	end
+	
+	/** \brief Color matrix to use for created canvas or \em null to use none. */
+	public func ColorMatrix getColorMatrix()
+		return this.pColorMatrix
+	end
+	
+	/** \brief Set color matrix to use for created canvas or \em null to use none. */
+	public func void setColorMatrix( ColorMatrix colorMatrix )
+		this.pColorMatrix = colorMatrix
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | colorHilight | Color | setColorHilight |
+	 * | colorShadow | Color | setColorShadow |
+	 * | colorBackground | Color | setColorBackground |
+	 * | colorMatrix | ColorMatrix | setColorMatrix |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "colorHilight" )
+			this.setColorHilight( value cast Color )
+			
+		elif name.equals( "colorShadow" )
+			this.setColorShadow( value cast Color )
+			
+		elif name.equals( "colorBackground" )
+			this.setColorBackground( value cast Color )
+			
+		elif name.equals( "colorMatrix" )
+			this.setColorMatrix( value cast ColorMatrix )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return BevelCanvasCreator.new( this )
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas( Point size )
+		var CanvasView content = CanvasView.new()
+		content.setSize( size )
+		
+		var int bottom = size.getY() - 1
+		var int right = size.getX() - 1
+		var CanvasPaint canvas
+		
+		if this.pColorMatrix != null
+			content.setColorTransform( this.pColorMatrix )
+		end
+		
+		if this.pColorBackground != null
+			canvas = CanvasPaint.new()
+			canvas.setShapeType( CanvasPaintShape.rectangle )
+			canvas.setLineColor( Color.transparent )
+			canvas.setFillColor( this.pColorBackground )
+			canvas.setPosition( Point.new( 1, 1 ) )
+			canvas.setSize( size - Point.new( 2, 2 ) )
+			canvas.setOrder( 0.0 )
+			
+			canvas.addPoint( Point.new( 0, 0 ) )
+			canvas.addPoint( Point.new( right + 1, 0 ) )
+			
+			canvas.addPoint( Point.new( 0, 1 ) )
+			canvas.addPoint( Point.new( 0, bottom + 1 ) )
+			
+			content.addCanvas( canvas )
+		end
+		
+		if this.pColorHilight != null
+			canvas = CanvasPaint.new()
+			canvas.setShapeType( CanvasPaintShape.lines )
+			canvas.setLineColor( this.pColorHilight )
+			canvas.setFillColor( Color.transparent )
+			canvas.setSize( size )
+			canvas.setOrder( 1.0 )
+			
+			canvas.addPoint( Point.new( 0, 0 ) )
+			canvas.addPoint( Point.new( right + 1, 0 ) )
+			
+			canvas.addPoint( Point.new( 0, 1 ) )
+			canvas.addPoint( Point.new( 0, bottom + 1 ) )
+			
+			content.addCanvas( canvas )
+		end
+		
+		if this.pColorShadow != null
+			canvas = CanvasPaint.new()
+			canvas.setShapeType( CanvasPaintShape.lines )
+			canvas.setLineColor( this.pColorShadow )
+			canvas.setFillColor( Color.transparent )
+			canvas.setSize( size )
+			canvas.setOrder( 2.0 )
+			
+			canvas.addPoint( Point.new( right, 1 ) )
+			canvas.addPoint( Point.new( right, bottom + 1 ) )
+			
+			canvas.addPoint( Point.new( 1, bottom ) )
+			canvas.addPoint( Point.new( right, bottom ) )
+			
+			content.addCanvas( canvas )
+		end
+		
+		return content
+	end
+end

@@ -1,0 +1,56 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Immutable float object class.
+ * 
+ * Wraps a primitive int value. Allows float values which can be null.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Float
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create float. */
+	public func new( float value )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Float value. */
+	public func float value()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Float is equal to another float.
+	 * \returns \em true if \em other is of type Float and both are equal.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Value difference between objects. */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of float value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+end

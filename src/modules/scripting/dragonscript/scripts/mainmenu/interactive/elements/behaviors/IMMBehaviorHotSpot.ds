@@ -1,0 +1,552 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.MainMenus.Interactive
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding interactive main menu hot spot support.
+ */
+class IMMBehaviorHotSpot extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var IMMBehaviorHotSpot pECBehavior
+		private var ECBehaviorTwoStateAnimated.Instance pAnimated
+		private var String pAction
+		private var String pCameraSpot
+		private var float pTransitionTime
+		private var String pDisplayText
+		private var float pDelayActivate
+		private var float pDelayDeactivate
+		private var float pRemainingDelay
+		private var bool pHotSpotActive
+		private var TSNamedTriggerTarget pTargetHotSpotActive
+		private var TSNamedTriggerTarget pTargetHotSpotActivated
+		private var TSNamedTriggerTarget pTargetHotSpotDeactivated
+		private var TSNamedTriggerTarget pTargetHotSpotHover
+		private var TSNamedTriggerTarget pTargetHotSpotEntered
+		private var TSNamedTriggerTarget pTargetHotSpotLeft
+		
+		
+		
+		/** \brief Create element. */
+		public func new( IMMBehaviorHotSpot ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pRemainingDelay = 0
+			this.pHotSpotActive = false
+			
+			this.pAnimated = ecbehavior.getAnimated().instance( this.getElement() )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTargetHotSpotActive = null
+			this.pTargetHotSpotActivated = null
+			this.pTargetHotSpotDeactivated = null
+			this.pTargetHotSpotHover = null
+			this.pTargetHotSpotEntered = null
+			this.pTargetHotSpotLeft = null
+			this.pAnimated = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pAction = this.pECBehavior.getAction().getValue( stub )
+			this.pCameraSpot = this.pECBehavior.getCameraSpot().getValue( stub )
+			this.pTransitionTime = this.pECBehavior.getTransitionTime().getValue( stub )
+			this.pDelayActivate = this.pECBehavior.getDelayActivate().getValue( stub )
+			this.pDelayDeactivate = this.pECBehavior.getDelayDeactivate().getValue( stub )
+			this.pDisplayText = this.pECBehavior.getDisplayText().getValue( stub )
+			this.pTargetHotSpotActive = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotActive().getValue( stub ) )
+			this.pTargetHotSpotActivated = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotActivated().getValue( stub ) )
+			this.pTargetHotSpotDeactivated = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotDeactivated().getValue( stub ) )
+			this.pTargetHotSpotHover = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotHover().getValue( stub ) )
+			this.pTargetHotSpotEntered = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotEntered().getValue( stub ) )
+			this.pTargetHotSpotLeft = TSNamedTriggerTarget.new( \
+				this.pECBehavior.getTargetHotSpotLeft().getValue( stub ) )
+		end
+		
+		
+		
+		/** \brief Element class behavior. */
+		public func IMMBehaviorHotSpot getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Action to carry out. */
+		public func String getAction()
+			return this.pAction
+		end
+		
+		/** \brief Set action to carry out. */
+		protected func void setAction( String action )
+			this.pAction = action
+		end
+		
+		/** \brief Camera spot to activate when hot-spot is activated. */
+		public func String getCameraSpot()
+			return this.pCameraSpot
+		end
+		
+		/** \brief Set camera spot to activate when hot-spot is activated. */
+		protected func void setCameraSpot( String cameraSpot )
+			this.pCameraSpot = cameraSpot
+		end
+		
+		/** \brief Transition time. */
+		public func float getTransitionTime()
+			return this.pTransitionTime
+		end
+		
+		/** \brief Set transition time. */
+		protected func void setTransitionTime( float time )
+			this.pTransitionTime = DEMath.max( time, 0.0 )
+		end
+		
+		/** \brief Display text. */
+		public func String getDisplayText()
+			return this.pDisplayText
+		end
+		
+		/** \brief Set display text. */
+		protected func void setDisplayText( String text )
+			this.pDisplayText = text
+		end
+		
+		/** \brief Delay for activating IMMProp after hotspot has been activated. */
+		public func float getDelayActivate()
+			return this.pDelayActivate
+		end
+		
+		/** \brief Set delay for activating IMMProp after hotspot has been activated. */
+		protected func void setDelayActivate( float delay )
+			this.pDelayActivate = DEMath.max( delay, 0.0 )
+		end
+		
+		/** \brief Delay for deactivating IMMProp after hotspot has been deactivated. */
+		public func float getDelayDeactivate()
+			return this.pDelayDeactivate
+		end
+		
+		/** \brief Set delay for deactivating IMMProp after hotspot has been deactivated. */
+		protected func void setDelayDeactivate( float delay )
+			this.pDelayDeactivate = DEMath.max( delay, 0.0 )
+		end
+		
+		/** \brief Remaing prop (de)activate prop delay. */
+		public func float getRemainingDelay()
+			return this.pRemainingDelay
+		end
+		
+		/** \brief Set remaing prop (de)activate prop delay. */
+		protected func void setRemainingDelay( float time )
+			this.pRemainingDelay = time
+		end
+		
+		/** \brief Hot-spot is active. */
+		public func bool getHotSpotActive()
+			return this.pHotSpotActive
+		end
+		
+		
+		
+		/** \brief Trigger target to reflect activated state. */
+		public func TSNamedTriggerTarget getTargetHotSpotActivated()
+			return this.pTargetHotSpotActive
+		end
+		
+		/** \brief Trigger target to notify activating. */
+		public func TSNamedTriggerTarget getTargetHotSpotActivating()
+			return this.pTargetHotSpotActivated
+		end
+		
+		/** \brief Trigger target to notify deactivating. */
+		public func TSNamedTriggerTarget getTargetHotSpotDeactivating()
+			return this.pTargetHotSpotDeactivated
+		end
+		
+		/** \brief Trigger target to reflect hovering state. */
+		public func TSNamedTriggerTarget getTargetHotSpotHover()
+			return this.pTargetHotSpotHover
+		end
+		
+		/** \brief Trigger target to notify entering. */
+		public func TSNamedTriggerTarget getTargetHotSpotEntered()
+			return this.pTargetHotSpotEntered
+		end
+		
+		/** \brief Trigger target to notify leaving. */
+		public func TSNamedTriggerTarget getTargetHotSpotLeft()
+			return this.pTargetHotSpotLeft
+		end
+		
+		
+		
+		/**
+		 * \brief Hot-spot has been activated.
+		 * 
+		 * Hot-spot has to start activate transition (possibly delayed).
+		 */
+		public func void onHotSpotActivated()
+			this.pRemainingDelay = this.pDelayActivate
+			this.pHotSpotActive = true
+			this.setRequiresThink( true )
+			
+			this.pTargetHotSpotActive.fire()
+			this.pTargetHotSpotActivated.pulse()
+		end
+		
+		/**
+		 * \brief Hot-spot has been deactivated.
+		 * 
+		 * Hot-spot has to stop running the action and start deactivate transition (possibly delayed).
+		 */
+		public func void onHotSpotDeactivated()
+			this.pRemainingDelay = this.pDelayDeactivate
+			this.pHotSpotActive = false
+			this.setRequiresThink( true )
+			
+			this.pTargetHotSpotActive.reset()
+			this.pTargetHotSpotDeactivated.pulse()
+		end
+		
+		
+		
+		/** \brief Reset initial state immediately. */
+		public func void reset()
+			this.pRemainingDelay = 0
+			this.pHotSpotActive = false
+			this.setRequiresThink( false )
+			this.pTargetHotSpotActive.reset()
+		end
+		
+		/** \brief Set activated now. */
+		public func void setActivated()
+			this.pRemainingDelay = 0
+			this.pHotSpotActive = true
+			this.setRequiresThink( false )
+			this.pTargetHotSpotActive.fire()
+			this.pAnimated.setActivated()
+		end
+		
+		
+		
+		/**
+		 * \brief Mouse pointer is hovering over Hot-spot.
+		 * 
+		 * Hot-spot has to start hover actions if present.
+		 */
+		public func void onHotSpotHoverEnter()
+			if this.pECBehavior.getTextDisplay() != null
+				this.pECBehavior.getTextDisplay().setText( this.pDisplayText )
+			end
+			
+			this.pTargetHotSpotHover.fire()
+			this.pTargetHotSpotEntered.pulse()
+		end
+		
+		/**
+		 * \brief Mouse pointer is no more hovering over Hot-spot.
+		 * 
+		 * Hot-spot has to stop hover actions if present.
+		 */
+		public func void onHotSpotHoverExit()
+			if this.pECBehavior.getTextDisplay() != null
+				this.pECBehavior.getTextDisplay().clearText()
+			end
+			
+			this.pTargetHotSpotHover.reset()
+			this.pTargetHotSpotLeft.pulse()
+		end
+		
+		
+		
+		/** \brief Add to game world. */
+		public func void addToGameWorld()
+			var TSTriggerTable triggerTable = this.pECBehavior.getTriggerTable()
+			this.pTargetHotSpotActive.acquireTarget( triggerTable )
+			this.pTargetHotSpotActivated.acquireTarget( triggerTable )
+			this.pTargetHotSpotDeactivated.acquireTarget( triggerTable )
+			this.pTargetHotSpotHover.acquireTarget( triggerTable )
+			this.pTargetHotSpotEntered.acquireTarget( triggerTable )
+			this.pTargetHotSpotLeft.acquireTarget( triggerTable )
+		end
+		
+		/** \brief Remove from game world. */
+		public func void removeFromGameWorld()
+			this.pTargetHotSpotActive.dropTarget()
+			this.pTargetHotSpotActivated.dropTarget()
+			this.pTargetHotSpotDeactivated.dropTarget()
+			this.pTargetHotSpotHover.dropTarget()
+			this.pTargetHotSpotEntered.dropTarget()
+			this.pTargetHotSpotLeft.dropTarget()
+		end
+		
+		
+		
+		/** \brief Think about what the element is going to do in this frame. */
+		public func void think( float elapsed )
+			if this.pHotSpotActive
+				if not this.pAnimated.isDeactivated()
+					return
+				end
+				
+				this.pRemainingDelay -= elapsed
+				if this.pRemainingDelay > 0
+					return
+				end
+				
+				this.setRequiresThink( false )
+				this.pAnimated.activate()
+				
+			else
+				if not this.pAnimated.isActivated()
+					return
+				end
+				
+				this.pRemainingDelay -= elapsed
+				if this.pRemainingDelay > 0
+					return
+				end
+				
+				this.setRequiresThink( false )
+				this.pAnimated.deactivate()
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorTwoStateAnimated pAnimated
+	private var ECPString pAction
+	private var ECPString pCameraSpot
+	private var ECPFloat pTransitionTime
+	private var ECPString pDisplayText
+	private var ECPFloat pDelayActivate
+	private var ECPFloat pDelayDeactivate
+	private var ECPString pTargetHotSpotActive
+	private var ECPString pTargetHotSpotActivated
+	private var ECPString pTargetHotSpotDeactivated
+	private var ECPString pTargetHotSpotHover
+	private var ECPString pTargetHotSpotEntered
+	private var ECPString pTargetHotSpotLeft
+	private var TSTriggerTable pTriggerTable
+	private var IMMTextDisplay pTextDisplay
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorTwoStateAnimated animated ) \
+	this( eclass, animated, BaseGameApp.getApp().getLoaders(), null )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorTwoStateAnimated animated, \
+	Loaders loaders, TSTriggerTable triggerTable ) \
+	this( eclass, animated, loaders, triggerTable, "hotspot." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorTwoStateAnimated animated, \
+	Loaders loaders, TSTriggerTable triggerTable, String prefix ) super( eclass )
+		if animated == null
+			throw ENullPointer.new( "animated" )
+		end
+		
+		this.pAnimated = animated
+		this.pTriggerTable = triggerTable
+		
+		this.pAction = ECPString.new( prefix + "action", "" )
+		eclass.addProperty( this.pAction )
+		
+		this.pCameraSpot = ECPString.new( prefix + "cameraSpot", "" )
+		eclass.addProperty( this.pCameraSpot )
+		
+		this.pTransitionTime = ECPFloat.new( prefix + "transitionTime", 1.5, 0 )
+		eclass.addProperty( this.pTransitionTime )
+		
+		this.pDisplayText = ECPString.new( prefix + "displayText", "" )
+		eclass.addProperty( this.pDisplayText )
+		
+		this.pDelayActivate = ECPFloat.new( prefix + "delayActivate", 0, 0 )
+		eclass.addProperty( this.pDelayActivate )
+		
+		this.pDelayDeactivate = ECPFloat.new( prefix + "delayDeactivate", 0, 0 )
+		eclass.addProperty( this.pDelayDeactivate )
+		
+		this.pTargetHotSpotActive = ECPString.new( prefix + "targetHotSpotActive", "" )
+		eclass.addProperty( this.pTargetHotSpotActive )
+		
+		this.pTargetHotSpotActivated = ECPString.new( prefix + "targetHotSpotActivated", "" )
+		eclass.addProperty( this.pTargetHotSpotActivated )
+		
+		this.pTargetHotSpotDeactivated = ECPString.new( prefix + "targetHotSpotDeactivated", "" )
+		eclass.addProperty( this.pTargetHotSpotDeactivated )
+		
+		this.pTargetHotSpotHover = ECPString.new( prefix + "targetHotSpotHover", "" )
+		eclass.addProperty( this.pTargetHotSpotHover )
+		
+		this.pTargetHotSpotEntered = ECPString.new( prefix + "targetHotSpotEntered", "" )
+		eclass.addProperty( this.pTargetHotSpotEntered )
+		
+		this.pTargetHotSpotLeft = ECPString.new( prefix + "targetHotSpotLeft", "" )
+		eclass.addProperty( this.pTargetHotSpotLeft )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pAnimated = null
+		super.dispose()
+	end
+	
+	
+	
+	public func ECBehaviorTwoStateAnimated getAnimated()
+		return this.pAnimated
+	end
+	
+	public func ECPString getAction()
+		return this.pAction
+	end
+	
+	public func ECPString getCameraSpot()
+		return this.pCameraSpot
+	end
+	
+	public func ECPFloat getTransitionTime()
+		return this.pTransitionTime
+	end
+	
+	public func ECPString getDisplayText()
+		return this.pDisplayText
+	end
+	
+	public func ECPFloat getDelayActivate()
+		return this.pDelayActivate
+	end
+	
+	public func ECPFloat getDelayDeactivate()
+		return this.pDelayDeactivate
+	end
+	
+	public func ECPString getTargetHotSpotActive()
+		return this.pTargetHotSpotActive
+	end
+	
+	public func ECPString getTargetHotSpotActivated()
+		return this.pTargetHotSpotActivated
+	end
+	
+	public func ECPString getTargetHotSpotDeactivated()
+		return this.pTargetHotSpotDeactivated
+	end
+	
+	public func ECPString getTargetHotSpotHover()
+		return this.pTargetHotSpotHover
+	end
+	
+	public func ECPString getTargetHotSpotEntered()
+		return this.pTargetHotSpotEntered
+	end
+	
+	public func ECPString getTargetHotSpotLeft()
+		return this.pTargetHotSpotLeft
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	public func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	/** \brief Text display or \em null if not used. */
+	public func IMMTextDisplay getTextDisplay()
+		return this.pTextDisplay
+	end
+	
+	/** \brief Set text display or \em null if not used. */
+	public func void setTextDisplay( IMMTextDisplay textDisplay )
+		this.pTextDisplay = textDisplay
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func IMMBehaviorHotSpot getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable IMMBehaviorHotSpot
+		end ) cast IMMBehaviorHotSpot
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type IMMBehaviorHotSpot.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create element class behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

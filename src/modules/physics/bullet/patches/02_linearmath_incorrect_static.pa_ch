@@ -1,0 +1,27 @@
+--- genpatch/LinearMath/btScalar.cpp	2015-06-21 20:40:41.143043398 +0200
++++ Bullet/LinearMath/btScalar.cpp	2014-05-20 00:45:44.000000000 +0200
+@@ -0,0 +1,4 @@
++// bullet tries to define a static variable in a header which is quite stupid.
++// not only does it cause compiler errors it is also sub-optimal. this is a
++// quick fix for the problem
++int btInfinityMask = 0x7F800000;
+--- genpatch/LinearMath/btScalar.h	2015-06-21 20:37:26.931200364 +0200
++++ Bullet/LinearMath/btScalar.h	2014-04-15 21:06:30.000000000 +0200
+@@ -282,7 +282,7 @@ static int btNanMask = 0x7F800001;
+ #endif
+ 
+ #ifndef BT_INFINITY
+-static  int btInfinityMask = 0x7F800000;
++extern int btInfinityMask; // static here is stupid... and duplicate... and stupid... did I repeat myself?
+ #define BT_INFINITY (*(float*)&btInfinityMask)
+ #endif
+ 
+@@ -334,7 +334,7 @@ inline __m128 operator * (const __m128 A
+ #else//BT_USE_NEON
+ 
+ 	#ifndef BT_INFINITY
+-	static  int btInfinityMask = 0x7F800000;
++	extern  int btInfinityMask; // static here is simply wrong... plain wrong
+ 	#define BT_INFINITY (*(float*)&btInfinityMask)
+ 	#endif
+ #endif//BT_USE_NEON

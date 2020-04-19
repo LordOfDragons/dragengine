@@ -1,0 +1,577 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.ConversationSystem
+
+pin Dragengine.Animators
+pin Dragengine.Gui
+pin Dragengine.SpeechAnimations
+pin Dragengine.Scenery
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Actor in a conversation.
+ * 
+ * Contains the playback information required to animate and interact properly with the actor.
+ * Set all the required parameters to customize the actor. Optionally create a subclass to
+ * overwrite basic behavior with your own for complex custom actors. These are the methods
+ * that are typically overwritten for such complex actors:
+ * 
+ * - bool wait()
+ * - void command( Array argList )
+ * - bool conditionCommand( Array argList )
+ * - DMatrix getMatrix()
+ * - ConversationPlaybackGesturePose getGesturePose( StringID gestureId )
+ */
+class ConversationActor
+	private var StringID pID
+	private var StringID pAliasID
+	private var UnicodeString pName
+	private var ConversationPlayback pPlayback
+	private var Speaker pVoiceSpeaker
+	private var ParameterTable pParameterTable
+	private var ConversationGesturePoseList pGesturePoses
+	private var SpeechAnimationPlayback pSpeechAnimationPlayback
+	private var ConversationGesturePlayback pGesturePlayback
+	private var ConversationLookAtPlayback pHeadLookAtPlayback
+	private var ConversationFacePosePlayback pFacePosePlayback
+	private var ConversationLookAtPlayback pEyesLookAtPlayback
+	private var SubTitleBoxText pSubTitleText
+	private var float pRemainingSpeechTime
+	
+	
+	
+	/** \brief Creates conversation actor. */
+	public func new( StringID id )
+		if id == null
+			throw EInvalidParam.new()
+		end
+		this.pID = id
+		this.pName = UnicodeString.newFromUTF8( "?" )
+	end
+	
+	
+	
+	/** \brief Unique identifier of the actor in the conversation. */
+	public func StringID getID()
+		return this.pID
+	end
+	
+	/** \brief Optional unique alias identifier of the actor in the conversation. */
+	public func StringID getAliasID()
+		return this.pAliasID
+	end
+	
+	/** \brief Set optional unique alias identifier of the actor in the conversation. */
+	public func void setAliasID( StringID id )
+		this.pAliasID = id
+	end
+	
+	/** \brief Name to display for the actor in subtitle boxes. */
+	public func UnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief Set name to display for the actor in subtitle boxes. */
+	public func void setName( UnicodeString name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+	end
+	
+	/** \brief Conversation playback of this actor. */
+	public func ConversationPlayback getPlayback()
+		return this.pPlayback
+	end
+	
+	/** \brief Set conversation playback of this actor. */
+	public func void setPlayback( ConversationPlayback playback )
+		if playback == this.pPlayback
+			return
+		end
+		
+		if this.pPlayback != null
+			this.leaveConversation()
+		end
+		
+		this.pPlayback = playback
+		
+		if playback != null
+			this.enterConversation()
+		end
+	end
+	
+	/** \brief Speaker to play the actor voice during conversation. */
+	public func Speaker getVoiceSpeaker()
+		return this.pVoiceSpeaker
+	end
+	
+	/** \brief Set speaker to play the actor voice during conversation. */
+	public func void setVoiceSpeaker( Speaker speaker )
+		this.pVoiceSpeaker = speaker
+	end
+	
+	/** \brief Parameter table to use or \em null. */
+	public func ParameterTable getParameterTable()
+		return this.pParameterTable
+	end
+	
+	/** \brief Parameter table to use or \em null. */
+	public func void setParameterTable( ParameterTable parameterTable )
+		this.pParameterTable = parameterTable
+	end
+	
+	/** \brief Gesture poses to use or \em null. */
+	public func ConversationGesturePoseList getGesturePoses()
+		return this.pGesturePoses
+	end
+	
+	/** \brief Set gesture poses to use or \em null. */
+	public func void setGesturePoses( ConversationGesturePoseList gesturePoses )
+		this.pGesturePoses = gesturePoses
+	end
+	
+	/** \brief Speech animation playback. */
+	public func SpeechAnimationPlayback getSpeechAnimationPlayback()
+		return this.pSpeechAnimationPlayback
+	end
+	
+	/** \brief Set speech animation playback. */
+	public func void setSpeechAnimationPlayback( SpeechAnimationPlayback playback )
+		this.pSpeechAnimationPlayback = playback
+	end
+	
+	/** \brief Sub title text or null if not set. */
+	public func SubTitleBoxText getSubTitleText()
+		return this.pSubTitleText
+	end
+	
+	/** \brief Set sub title text or null to clear it. */
+	public func void setSubTitleText( SubTitleBoxText text )
+		this.pSubTitleText = text
+	end
+	
+	/** \brief Gesture playback or null if not used. */
+	public func ConversationGesturePlayback getGesturePlayback()
+		return this.pGesturePlayback
+	end
+	
+	/** \brief Set gesture playback or null if not used. */
+	public func void setGesturePlayback( ConversationGesturePlayback playback )
+		this.pGesturePlayback = playback
+	end
+	
+	/** \brief Head look-at playback or null if not used. */
+	public func ConversationLookAtPlayback getHeadLookAtPlayback()
+		return this.pHeadLookAtPlayback
+	end
+	
+	/** \brief Set head look-at playback or null if not used. */
+	public func void setHeadLookAtPlayback( ConversationLookAtPlayback playback )
+		this.pHeadLookAtPlayback = playback
+	end
+	
+	/** \brief Face pose playback or null if not used. */
+	public func ConversationFacePosePlayback getFacePosePlayback()
+		return this.pFacePosePlayback
+	end
+	
+	/** \brief Set face pose playback or null if not used. */
+	public func void setFacePosePlayback( ConversationFacePosePlayback playback )
+		this.pFacePosePlayback = playback
+	end
+	
+	/** \brief Eyes look-at playback or null if not used. */
+	public func ConversationLookAtPlayback getEyesLookAtPlayback()
+		return this.pEyesLookAtPlayback
+	end
+	
+	/** \brief Set eyes look-at playback or null if not used. */
+	public func void setEyesLookAtPlayback( ConversationLookAtPlayback playback )
+		this.pEyesLookAtPlayback = playback
+	end
+	
+	
+	
+	/** \brief Remaining speech playback time in seconds. */
+	public func float getRemainingSpeechTime()
+		return this.pRemainingSpeechTime
+	end
+	
+	/** \brief Set ramaining speech playback time in seconds. */
+	public func void setRemainingSpeechTime( float remainingTime )
+		this.pRemainingSpeechTime = DEMath.max( remainingTime, 0.0 )
+	end
+	
+	/** \brief Decrement remaining speech playback time in seconds. */
+	public func void decrementRemainingSpeechTime( float elapsedTime )
+		this.setRemainingSpeechTime( this.pRemainingSpeechTime - elapsedTime )
+	end
+	
+	
+	
+	/**
+	 * \brief Update existing playback objects affecting actor locomotion.
+	 * 
+	 * This method is called before the actor locomotion is updated. This includes the head
+	 * look-at playback if existing. This does not apply the animation yet to allow proper
+	 * use of state capturing.
+	 */
+	public func void updateBeforeLocomotion( float elapsed )
+		if this.pHeadLookAtPlayback != null
+			this.pHeadLookAtPlayback.update( this, elapsed )
+		end
+	end
+	
+	/**
+	 * \brief Update existing playback objects not affecting actor locomotion.
+	 * 
+	 * This method is called after the actor locomotion is updated. This includes all existing
+	 * playback objects not updated in updatePlaybackBeforeLocomotion. This does not apply the
+	 * animation yet to allow proper use of state capturing.
+	 */
+	public func void updateAfterLocomotion( float elapsed, AnimatorInstance sourceAnimatorInstance )
+		if this.pGesturePlayback != null
+			this.pGesturePlayback.update( this, sourceAnimatorInstance, elapsed )
+		end
+		if this.pFacePosePlayback != null
+			this.pFacePosePlayback.update( elapsed )
+		end
+		if this.pEyesLookAtPlayback != null
+			this.pEyesLookAtPlayback.update( this, elapsed )
+		end
+		if this.pSpeechAnimationPlayback != null
+			this.pSpeechAnimationPlayback.update( elapsed )
+		end
+	end
+	
+	/**
+	 * \brief Apply animation for all present playback instances.
+	 * 
+	 * This method is called after all animations states have been updated and the all animation
+	 * states are about to be applied in the correct order.
+	 */
+	public func void applyAnimations()
+		if this.pGesturePlayback != null
+			this.pGesturePlayback.applyAnimation()
+		end
+		if this.pFacePosePlayback != null
+			this.pFacePosePlayback.applyAnimation()
+		end
+		if this.pEyesLookAtPlayback != null
+			this.pEyesLookAtPlayback.applyAnimation()
+		end
+		if this.pSpeechAnimationPlayback != null
+			this.pSpeechAnimationPlayback.applyAnimation()
+		end
+	end
+	
+	/** \brief Clear all playbacks. */
+	public func void clearAllPlayback()
+		if this.pHeadLookAtPlayback != null
+			this.pHeadLookAtPlayback.clearLookAtState()
+		end
+		if this.pGesturePlayback != null
+			this.pGesturePlayback.removeAllGestures()
+		end
+		if this.pFacePosePlayback != null
+			this.pFacePosePlayback.removeAllPoses()
+		end
+		if this.pEyesLookAtPlayback != null
+			this.pEyesLookAtPlayback.clearLookAtState()
+		end
+		if this.pSpeechAnimationPlayback != null
+			this.pSpeechAnimationPlayback.removeAllPhonemes()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Actor has finished speaking.
+	 * 
+	 * This is used by the conversation playback. Checks if the voice speaker
+	 * (if existing) is playing back a sound or if the speech animation
+	 * (playback (if existing) is playing back.
+	 */
+	public func bool isSpeaking()
+		return this.pRemainingSpeechTime > 0.0
+		//return ( this.pVoiceSpeaker != null and this.pVoiceSpeaker.getPlaying() ) \
+		//	or ( this.pSpeechAnimationPlayback != null and this.pSpeechAnimationPlayback.getSpeaking() )
+	end
+	
+	
+	
+	/**
+	 * \brief Actor is blocking if conversation action waits for this actor.
+	 * 
+	 * Overload to retrieve the value form the real actor. The default
+	 * implementation returns false.
+	 */
+	public func bool wait()
+		return false
+	end
+	
+	/**
+	 * \brief Command send by the conversation script.
+	 * 
+	 * Overload to make the actor execute the action. The default
+	 * implementation does nothing.
+	 */
+	public func void command( String command )
+	end
+	
+	/**
+	 * \brief Condition command send by the conversation script.
+	 * 
+	 * Overload to make the actor evaluate the command returning true or false as result.
+	 * The default implementation returns false.
+	 */
+	public func bool conditionCommand( String command )
+		return false
+	end
+	
+	/**
+	 * \brief Named actor parameter.
+	 * 
+	 * Returns value from set parameter table entry with matching name. Returns 0 if no
+	 * parameter table is set, no entry matches the name or the matching entry is has
+	 * no value set.
+	 */
+	public func int getParameter( String parameter )
+		if this.pParameterTable != null
+			var ParameterTableEntry entry = this.pParameterTable.getAtOrNull( parameter )
+			if entry != null
+				return entry.getValue( 0 )
+			end
+		end
+		return 0
+	end
+	
+	/**
+	 * \brief Set named actor parameter.
+	 * 
+	 * Sets value in parameter table if parameter table is set.
+	 */
+	public func void setParameter( String parameter, int value )
+		if this.pParameterTable != null
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+	end
+	
+	/**
+	 * \brief Conversation matrix.
+	 * 
+	 * This is the matrix relative to the actor coordinate frame. In general this is
+	 * the same as the position and orientation of the actor. This is also the
+	 * reference frame expected by the conversation editor. Overwrite to return the
+	 * actor matrix. The default implementation returns the identity matrix.
+	 */
+	public func DMatrix getMatrix()
+		return this.getMatrix( null )
+	end
+	
+	/**
+	 * \brief Conversation matrix.
+	 * 
+	 * This is the matrix relative to the actor coordinate frame. In general this is
+	 * the same as the position and orientation of the actor. This is also the
+	 * reference frame expected by the conversation editor. Overwrite to return the
+	 * actor matrix. The default implementation returns the identity matrix. If bone
+	 * is not null the matrix has to be relative to the named bone if existing.
+	 */
+	public func DMatrix getMatrix( String bone )
+		return DMatrix.new()
+	end
+	
+	/** \brief Inverse conversation matrix. */
+	public func DMatrix getInverseMatrix()
+		return this.getInverseMatrix( null )
+	end
+	
+	/** \brief Inverse conversation matrix. */
+	public func DMatrix getInverseMatrix( String bone )
+		return DMatrix.new()
+	end
+	
+	/**
+	 * \brief Gesture pose or null if not found.
+	 * 
+	 * Default implementation looks up the gesture pose in the assigned gesture poses
+	 * if the gesture poses is not null.
+	 */
+	public func ConversationPlaybackGesturePose getGesturePose( StringID gestureId )
+		if this.pGesturePoses != null
+			return this.pGesturePoses.getAt( gestureId )
+		end
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Create sub title widget for actor matching speech style.
+	 * 
+	 * Default implementation creates instance of SubTitleBoxTexBordert.
+	 * 
+	 * \param text Text to speak.
+	 * \param style Identifier of style to adjust font, color or sub title in general.
+	 */
+	public func SubTitleBoxText createSubTitleText( UnicodeString text, StringID style )
+		return SubTitleBoxTextBorder.new( text.toString(), this.pName.toString(), \
+			null, null, null, null, SubTitleBoxTextBorder.Placement.leftBelow )
+	end
+	
+	
+	
+	/**
+	 * \brief Actor enters conversation.
+	 * \details Overwrite to switch actor to operate in conversation.
+	 */
+	public func void enterConversation()
+	end
+	
+	/**
+	 * \brief Actor leaves conversation.
+	 * \details Overwrite to switch actor back to operating on its own.
+	 */
+	public func void leaveConversation()
+	end
+	
+	
+	
+	/**
+	 * \brief Restore linked objects after loading.
+	 * 
+	 * While loading playback object is not available yet. Linked objects can not be
+	 * restored during readFromFile(). Once all loading is done and the playback is
+	 * present objects this call is used to restore the object links.
+	 */
+	public func void playbackRestoreObjectLinks()
+		// pSpeechAnimationPlayback
+		// pGesturePlayback
+		
+		if this.pHeadLookAtPlayback != null
+			this.pHeadLookAtPlayback.playbackRestoreObjectLinks( this.pPlayback )
+		end
+		
+		// pFacePosePlayback
+		
+		if this.pEyesLookAtPlayback != null
+			this.pEyesLookAtPlayback.playbackRestoreObjectLinks( this.pPlayback )
+		end
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+		
+		this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
+		
+		if flags.getAt( 0 )
+			this.pSpeechAnimationPlayback.readFromFile( env, reader )
+		end
+		if flags.getAt( 1 )
+			this.pGesturePlayback.readFromFile( env, reader )
+		end
+		if flags.getAt( 2 )
+			this.pFacePosePlayback.readFromFile( env, reader )
+		end
+		if flags.getAt( 3 )
+			this.pHeadLookAtPlayback.readFromFile( env, reader )
+		end
+		if flags.getAt( 4 )
+			this.pEyesLookAtPlayback.readFromFile( env, reader )
+		end
+		
+		this.pSubTitleText = env.readObjectOrNull( reader ) cast SubTitleBoxText
+		if this.pSubTitleText != null
+			this.pPlayback.getSubTitle().addSubTitleText( this.pSubTitleText.subtitleWidget() )
+		end
+		
+		if flags.getAt( 5 )
+			this.pVoiceSpeaker.setSound( Sound.new( reader.readString16() ) )
+			var int playFrom = reader.readInt()
+			var int playTo = reader.readInt()
+			this.pVoiceSpeaker.setPlayPosition( playFrom, playTo )
+			reader.readInt() //getPlayPosition not working yet
+			this.pVoiceSpeaker.setPlaySpeed( reader.readFloat() )
+			this.pVoiceSpeaker.setVolume( reader.readFloat() )
+			
+			this.pVoiceSpeaker.play()
+		end
+		
+		this.pRemainingSpeechTime = reader.readFloat()
+	end
+	
+	/** \brief Write to file. */
+	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		var PersistencyFlags flags = PersistencyFlags.new( 6 )
+		flags.setAt( 0, this.pSpeechAnimationPlayback != null )
+		flags.setAt( 1, this.pGesturePlayback != null )
+		flags.setAt( 2, this.pFacePosePlayback != null )
+		flags.setAt( 3, this.pHeadLookAtPlayback != null )
+		flags.setAt( 4, this.pEyesLookAtPlayback != null )
+		flags.setAt( 5, this.pVoiceSpeaker != null and this.pVoiceSpeaker.getPlaying() )
+		flags.writeToFile( writer )
+		
+		env.writeStringIDOrEmptyIfNull( writer, this.pAliasID )
+		
+		if this.pSpeechAnimationPlayback != null
+			this.pSpeechAnimationPlayback.writeToFile( env, writer )
+		end
+		if this.pGesturePlayback != null
+			this.pGesturePlayback.writeToFile( env, writer )
+		end
+		if this.pFacePosePlayback != null
+			this.pFacePosePlayback.writeToFile( env, writer )
+		end
+		if this.pHeadLookAtPlayback != null
+			this.pHeadLookAtPlayback.writeToFile( env, writer )
+		end
+		if this.pEyesLookAtPlayback != null
+			this.pEyesLookAtPlayback.writeToFile( env, writer )
+		end
+		
+		if this.pSubTitleText castable Persistable
+			env.writeObjectOrNull( writer, this.pSubTitleText cast Persistable )
+			
+		else
+			env.writeObjectOrNull( writer, null )
+		end
+		
+		if this.pVoiceSpeaker != null and this.pVoiceSpeaker.getPlaying()
+			writer.writeString16( this.pVoiceSpeaker.getSound().getFilename() )
+			writer.writeInt( this.pVoiceSpeaker.getPlayFrom() )
+			writer.writeInt( this.pVoiceSpeaker.getPlayTo() )
+			writer.writeInt( 0 /* this.pVoiceSpeaker.getPlayPosition() */ ) // not working yet
+			writer.writeFloat( this.pVoiceSpeaker.getPlaySpeed() )
+			writer.writeFloat( this.pVoiceSpeaker.getVolume() )
+		end
+		
+		writer.writeFloat( this.pRemainingSpeechTime )
+	end
+end

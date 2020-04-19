@@ -1,0 +1,30 @@
+SoundTouch audio processing library
+Copyright (c) Olli Parviainen
+http://soundtouch.surina.net
+
+
+
+================== LICENSE INFORMATION ========================
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License version 2.1 as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General
+Public License along with this library; if not, write to the
+Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+Boston, MA 02111-1307 USA
+
+
+
+================= DRAG[EN]GINE INFORMATION =====================
+
+This source files in this library are used unmodified. For
+compacting purpose only all other files except source files
+are not included under the 'soundtouch' directory. Please find
+the full SoundTouch Library distrubtion files under
+http://soundtouch.surina.net

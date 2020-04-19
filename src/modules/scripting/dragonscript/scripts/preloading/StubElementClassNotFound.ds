@@ -1,0 +1,108 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Stub for an element with unknown object class.
+ * 
+ * Used during asynchronous loading to keep track of missing element classes so they can be
+ * reported all at once instead of only the first one encountered.
+ * 
+ * Extends StubElement.verifyPreloading() to log the problem. All attempts to create the
+ * element will thrown an exception. The missing element class is temporarily created and
+ * stored only in the stub for error printing.
+ */
+class StubElementClassNotFound extends StubElement
+	/** \brief Create element stub. */
+	public func new( String eclassName ) this( eclassName, UniqueID.new() )
+	end
+	
+	/** \brief Create element stub. */
+	public func new( String eclassName, UniqueID id ) super( ElementClass.new( eclassName ), id )
+	end
+	
+	/** \brief Create element stub. */
+	public func new( String eclassName, UniqueID id, StubWithProperties properties ) this( eclassName, id )
+		this.setFrom( properties )
+	end
+	
+	/** \brief Create copy of element stub. */
+	public func new( StubElement stub ) super( stub )
+	end
+	
+	
+	
+	/**
+	 * \brief Verify if a resource failed preloading and print the problems to the console.
+	 * 
+	 * In addition to StubElement.verifyPreloading() logs the missing element class and
+	 * always returns \em false.
+	 */
+	public func bool verifyPreloading( Console console )
+		super.verifyPreloading( console )
+		
+		console.addMessage( "Element class '" + this.getClass().getClassname() + "' not found" \
+			+ "' for object with ID " + this.getID() + " located at " + this.getPosition() )
+		return false
+	end
+	
+	
+	
+	/** \brief Always throws an exception. */
+	public func Element createElement()
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Always throws an exception. */
+	public func void createAndAddElement( GameWorld gameWorld )
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Always throws an exception. */
+	public func Element loadElement( PersistencyEnvironment env, FileReader reader )
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Always throws an exception. */
+	public func void loadAndAddElement( PersistencyEnvironment env, FileReader reader, GameWorld gameWorld )
+		throw EInvalidParam.new()
+	end
+	
+	
+	
+	/** \brief Always throws an exception. */
+	public static func StubElement readFromFile( FileReader reader, ElementClassList ElementClassList )
+		throw EInvalidParam.new()
+	end
+	
+	/** \brief Always throws an exception. */
+	public func void writeToFile( FileWriter writer )
+		throw EInvalidParam.new()
+	end
+end

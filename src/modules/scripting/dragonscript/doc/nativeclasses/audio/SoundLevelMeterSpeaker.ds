@@ -1,0 +1,34 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sound level meter audible speaker.
+ * 
+ * This class is immutable. This is a native class.
+ */
+class SoundLevelMeterSpeaker
+	/** \name Management */
+	/*@{*/
+	private func new()
+	end
+	
+	
+	
+	/** \brief Speaker. */
+	public func Speaker getSpeaker()
+		return null
+	end
+	
+	/** \brief Audible volume. */
+	public func float getVolume()
+		return 0
+	end
+	/*@}*/
+end

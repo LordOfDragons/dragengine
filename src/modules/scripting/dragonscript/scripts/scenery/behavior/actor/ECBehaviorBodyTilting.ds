@@ -1,0 +1,396 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief behavior adding body tilting support for actors projected to ground.
+ * 
+ * Helps actors with appropriate animator setup to align their body to uneven ground underneath.
+ * This is done by using a set of collider collision tests to probe the terain. The result is
+ * handed over to a Locomotion insatance to calculate the tilting values. These values are then
+ * set to animator controlled linked to tilting values.
+ * 
+ * Behavior uses 4 collider collision tests located front-left, front-right, back-left and
+ * back-right.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorLocomotion
+ * - ECBehaviorProjectToGround
+ * - ECBehaviorColliderAI or ECBehaviorCollider
+ * 
+ * To this behavior add it and either set the class properties or call setShape(), setOrigin()
+ * and setDirection() to initialize. Then use Locomotion.addControllerMapping() with
+ * Locomotion.ATTR_TILT_OFFSET, Locomotion.ATTR_TILT_VERTICAL and Locomotion.ATTR_TILT_HORIZONTAL
+ * for animators supporting tilting
+ */
+class ECBehaviorBodyTilting extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorBodyTilting pECBehavior
+		private var ECBehaviorLocomotion.Instance pLocomotion
+		private var ECBehaviorProjectToGround.Instance pProjectToGround
+		private var ColliderVolume pTestCollider
+		private var DVector pNormTestDirection
+		private var ColliderCollisionTest pTestFrontLeft
+		private var ColliderCollisionTest pTestFrontRight
+		private var ColliderCollisionTest pTestBackLeft
+		private var ColliderCollisionTest pTestBackRight
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorBodyTilting ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
+			this.pProjectToGround = ecbehavior.getProjectToGround().instance( element )
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTestFrontLeft = null
+			this.pTestFrontRight = null
+			this.pTestBackLeft = null
+			this.pTestBackRight = null
+			this.pNormTestDirection = null
+			this.pLocomotion = null
+			this.pProjectToGround = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			locomotion.setTiltMode( LocomotionTilt.weighted )
+			
+			var TouchSensor touchSensor = this.pProjectToGround.getTouchSensor()
+			
+			// create test test collider
+			this.pTestCollider = ColliderVolume.new()
+			
+			// create colliision tests and add them to element collider and locomotion
+			var Collider collider = this.pLocomotion.getLocomotion().getAICollider()
+			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
+			var CollisionFilter collisionFilter = collider.getCollisionFilter()
+			var Vector testDirection = Vector.new( 0, this.pECBehavior.getTestDirection().getValue( stub ), 0 )
+			var Vector testOrigin = this.pECBehavior.getTestOrigin().getVector( stub, codec )
+			var float testOriginX = testOrigin.getX()
+			var float testOriginY = testOrigin.getY()
+			var float testOriginZ = testOrigin.getZ()
+			
+			this.pNormTestDirection = DVector.new( testDirection.normalize() )
+			
+			this.pTestFrontLeft = ColliderCollisionTest.new( touchSensor, collisionFilter, \
+				Vector.new( -testOriginX, testOriginY, testOriginZ ), testDirection )
+			this.pTestFrontLeft.setCollider( this.pTestCollider )
+			collider.addCollisionTest( this.pTestFrontLeft )
+			locomotion.setCCTTiltFrontLeft( this.pTestFrontLeft )
+			
+			this.pTestFrontRight = ColliderCollisionTest.new( touchSensor, collisionFilter, \
+				Vector.new( testOriginX, testOriginY, testOriginZ ), testDirection )
+			this.pTestFrontRight.setCollider( this.pTestCollider )
+			collider.addCollisionTest( this.pTestFrontRight )
+			locomotion.setCCTTiltFrontRight( this.pTestFrontRight )
+			
+			this.pTestBackLeft = ColliderCollisionTest.new( touchSensor, collisionFilter, \
+				Vector.new( -testOriginX, testOriginY, -testOriginZ ), testDirection )
+			this.pTestBackLeft.setCollider( this.pTestCollider )
+			collider.addCollisionTest( this.pTestBackLeft )
+			locomotion.setCCTTiltBackLeft( this.pTestBackLeft )
+			
+			this.pTestBackRight = ColliderCollisionTest.new( touchSensor, collisionFilter, \
+				Vector.new( testOriginX, testOriginY, -testOriginZ ), testDirection )
+			this.pTestBackRight.setCollider( this.pTestCollider )
+			collider.addCollisionTest( this.pTestBackRight )
+			locomotion.setCCTTiltBackRight( this.pTestBackRight )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorBodyTilting getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Locomotion behavior. */
+		public func ECBehaviorLocomotion.Instance getLocomotion()
+			return this.pLocomotion
+		end
+		
+		/** \brief Project to ground behavior. */
+		public func ECBehaviorProjectToGround.Instance getProjectToGround()
+			return this.pProjectToGround
+		end
+		
+		
+		
+		/** \brief Enable body tilting. */
+		public func bool getEnabled()
+			return this.pTestFrontLeft.getEnabled()
+		end
+		
+		/** \brief Set if body tilting is enabled. */
+		public func void setEnabled( bool enabled )
+			this.pTestFrontLeft.setEnabled( enabled )
+			this.pTestFrontRight.setEnabled( enabled )
+			this.pTestBackLeft.setEnabled( enabled )
+			this.pTestBackRight.setEnabled( enabled )
+		end
+		
+		
+		
+		/**
+		 * \brief Set shape of test collider.
+		 * 
+		 * For best results a shape should be used which is slightly smaller than the shape of the
+		 * collider used to move an element through the game world. If the shape used for the test
+		 * collider is equal or larger strange behavior can be the result (for example climbing).
+		 * 
+		 * Recommended is setting a ShapeList with a box at (0, 0.05, 0), no orientation and
+		 * half-extends (0.05, 0.05, 0.05).
+		 */
+		public func void setShape( ShapeList shape )
+			this.pTestCollider.setShape( shape )
+		end
+		
+		/** \brief Set test collision filter. */
+		public func void setCollisionFilter( CollisionFilter filter )
+			this.pTestFrontLeft.setCollisionFilter( filter )
+			this.pTestFrontRight.setCollisionFilter( filter )
+			this.pTestBackLeft.setCollisionFilter( filter )
+			this.pTestBackRight.setCollisionFilter( filter )
+		end
+		
+		
+		
+		/** \brief Test direction. */
+		public func Vector getDirection()
+			return this.pTestFrontLeft.getDirection()
+		end
+		
+		/**
+		 * \brief Set test direction.
+		 * 
+		 * \param distance Distance to test along. This is the furthest distance the actor can
+		 *                 be projected down to. Typical value is -0.3 to project the actor
+		 *                 down by at most 0.3 meters.
+		 */
+		public func void setDirection( float distance )
+			this.setDirection( Vector.new( 0, distance, 0 ) )
+		end
+		
+		/**
+		 * \brief Set test direction.
+		 * 
+		 * \param distance Distance to test along. This is the furthest distance the actor can
+		 *                 be projected down to. Typical value is (0, -0.3, 0) to project the
+		 *                 actor down by at most 0.3 meters.
+		 */
+		public func void setDirection( Vector distance )
+			this.pTestFrontLeft.setDirection( distance )
+			this.pTestFrontRight.setDirection( distance )
+			this.pTestBackLeft.setDirection( distance )
+			this.pTestBackRight.setDirection( distance )
+			this.pNormTestDirection = DVector.new( distance ).normalize()
+		end
+		
+		/**
+		 * \brief Set test origins.
+		 * 
+		 * Tests are distributed front-left, front-right, back-left and back-right.
+		 * 
+		 * \param right Offset to the left and right. Typical value is 0.2m
+		 * \param front Offset to the front and back. Typical value is 0.2m
+		 * \param up Offset upwards. Typical value is 0.2.
+		 */
+		public func void setOrigin( float right, float front, float up )
+			this.setOrigin( \
+				Vector.new( -right, up,  front ), Vector.new( right, up,  front ), \
+				Vector.new( -right, up, -front ), Vector.new( right, up, -front ) )
+		end
+		
+		/**
+		 * \brief Set test origins.
+		 * 
+		 * Tests are distributed front-left, front-right, back-left and back-right.
+		 * 
+		 * \param frontLeft Offset for the front-left test.
+		 * \param frontRight Offset for the front-right test.
+		 * \param backLeft Offeset for the back-left test.
+		 * \param backRight Offeset for the back-right test.
+		 */
+		public func void setOrigin( Vector frontLeft, Vector frontRight, Vector backLeft, Vector backRight )
+			this.pTestFrontLeft.setOrigin( frontLeft )
+			this.pTestFrontRight.setOrigin( frontRight )
+			this.pTestBackLeft.setOrigin( backLeft )
+			this.pTestBackRight.setOrigin( backRight )
+		end
+		
+		
+		
+		/** \brief Collier to attach collision tests to. */
+		public func ColliderVolume getTestCollider()
+			return this.pTestCollider
+		end
+		
+		/** \brief Tilt front left collision test. */
+		public func ColliderCollisionTest getTestFrontLeft()
+			return this.pTestFrontLeft
+		end
+		
+		/** \brief Tilt front right collision test. */
+		public func ColliderCollisionTest getTestFrontRight()
+			return this.pTestFrontRight
+		end
+		
+		/** \brief Tilt back left collision test. */
+		public func ColliderCollisionTest getTestBackLeft()
+			return this.pTestBackLeft
+		end
+		
+		/** \brief Tilt back right collision test. */
+		public func ColliderCollisionTest geTestBackRight()
+			return this.pTestBackRight
+		end
+	end
+	
+	
+	
+	private var ECBehaviorLocomotion pLocomotion
+	private var ECBehaviorProjectToGround pProjectToGround
+	private var ECPFloat pTestDirection
+	private var ECPVector pTestOrigin
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorProjectToGround projectToGround ) \
+	this( eclass, locomotion, projectToGround, "bodyTilting." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorProjectToGround projectToGround, String prefix ) super( eclass )
+		if locomotion == null
+			throw ENullPointer.new( "locomotion" )
+		end
+		if projectToGround == null
+			throw ENullPointer.new( "projectToGround" )
+		end
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pLocomotion = locomotion
+		this.pProjectToGround = projectToGround
+		
+		this.pTestDirection = ECPFloat.new( prefix + "testDirection", -0.6 )
+		eclass.addProperty( this.pTestDirection )
+		
+		this.pTestOrigin = ECPVector.new( prefix + "testOrigin", Vector.new( 0.2, 0.2, 0.2 ) )
+		eclass.addProperty( this.pTestOrigin )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pLocomotion = null
+		this.pProjectToGround = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior. */
+	public func ECBehaviorLocomotion getLocomotion()
+		return this.pLocomotion
+	end
+	
+	/** \brief Project to ground behavior. */
+	public func ECBehaviorProjectToGround getProjectToGround()
+		return this.pProjectToGround
+	end
+	
+	/** \brief Test direction. */
+	public func ECPFloat getTestDirection()
+		return this.pTestDirection
+	end
+	
+	/**
+	 * \brief Test origin.
+	 * 
+	 * Used as Instance.setOrigin(x, z, y) hence right=x, front=z, up=y .
+	 */
+	public func ECPVector getTestOrigin()
+		return this.pTestOrigin
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBodyTilting.
+	 */
+	static public func ECBehaviorBodyTilting getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorBodyTilting
+		end ) cast ECBehaviorBodyTilting
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBodyTilting.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

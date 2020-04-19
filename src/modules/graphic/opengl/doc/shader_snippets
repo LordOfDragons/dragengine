@@ -1,0 +1,21 @@
+// mat3 from quaternion
+/////////////////////////
+
+const vec4 dota11 = vec4(  1.0, -1.0, -1.0,  1.0 );
+const vec4 dota22 = vec4( -1.0,  1.0, -1.0,  1.0 );
+const vec4 dota33 = vec4( -1.0, -1.0,  1.0,  1.0 );
+const vec2 cinv = vec2( 1.0, 2.0 );
+
+mat3 mat3FromQuaternion( vec4 q ){
+	vec4 qsq = q * q;
+	vec2 inv = cinv / vec2( dot( q, q ) );
+	vec3 t1 = vec3( dot( qsq, dota11 ), dot( qsq, dota22 ), dot( qsq, dota33 ) ) * inv.xxx;
+	vec3 t2 = q.xxy * q.yzz * inv.yyy;
+	vec3 t3 = q.zyx * q.www * inv.yyy;
+	vec3 t4 = t2 + t3;
+	vec3 t5 = t2 - t3;
+	
+	return mat3( t1.x, t4.x, t5.y, t5.x, t1.y, t4.z, t4.y, t5.z, t1.z );
+}
+
+

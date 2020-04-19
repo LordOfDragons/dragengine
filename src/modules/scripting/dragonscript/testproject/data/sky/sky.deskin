@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE skin SYSTEM 'DragengineSkin.dtd'>
+<skin>
+	<texture name='sky.sphere'>
+		<image property='color'>sky.png</image>
+	</texture>
+</skin>

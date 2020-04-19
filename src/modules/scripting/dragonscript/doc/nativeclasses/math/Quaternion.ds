@@ -1,0 +1,185 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Immutable 4-component quaternion.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Quaternion
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create quaternion with components set to (0,0,0,1). */
+	public func new()
+	end
+	
+	/** \brief Create quaternion from values. */
+	public func new( float x, float y, float z, float w )
+	end
+	
+	/** \brief Create copy of quaternion. */
+	public func new( Quaternion q )
+	end
+	
+	/** \brief Create quaternion from euler angles. */
+	static public func Quaternion newFromEuler( float rx, float ry, float rz )
+	end
+	
+	/** \brief Create quaternion from euler angles. */
+	static public func Quaternion newFromEuler( Vector angles )
+	end
+	
+	/** \brief Create quaternion from an euler angle around the x axis. */
+	static public func Quaternion newFromEulerX( float angle )
+	end
+	
+	/** \brief Create quaternion from an euler angle around the y axis. */
+	static public func Quaternion newFromEulerY( float angle )
+	end
+	
+	/** \brief Create quaternion from an euler angle around the z axis. */
+	static public func Quaternion newFromEulerZ( float angle )
+	end
+	
+	/** \brief Create quaternion from axis and angle around the axis. */
+	static public func Quaternion newFromAxis( Vector axis, float angle )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief X-Component. */
+	public func float getX()
+	end
+	
+	/** \brief Y-Component. */
+	public func float getY()
+	end
+	
+	/** \brief Z-Component. */
+	public func float getZ()
+	end
+	
+	/** \brief W-Component. */
+	public func float getW()
+	end
+	
+	/** \brief Component by index (0=X, 1=Y, 2=Z, 3=W). */
+	public func float get( int component )
+	end
+	
+	/** \brief Length. */
+	public func float getLength()
+	end
+	
+	/**
+	 * \brief Quaternion divided by length().
+	 * \throws EDivisionByZero Length is \em 0.
+	 */
+	public func Quaternion normalize()
+	
+	/** \brief Conjugated quaternion. */
+	public func Quaternion conjugate()
+	end
+	
+	/** \brief Absolute quaternion. */
+	public func Quaternion absolute()
+	end
+	
+	/**
+	 * \brief Euler angles matching quaternion rotation.
+	 * \details Result is only correct if the quaternion is normalized.
+	 */
+	public func Vector getEulerAngles()
+	end
+	
+	/** \brief Slerp quaternion with another quaternion. */
+	public func Quaternion slerp( Quaternion other, float factor )
+	end
+	
+	/** \brief Two quaternions are equal. */
+	public func bool isEqualTo( Quaternion q, float threshold )
+	
+	
+	
+	/**
+	 * \brief Quaternion is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Quaternion and components are equal.
+	*/
+	public func bool equals( Object other )
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	public func int hashCode()
+	end
+	
+	/**
+	 * \brief String representation of quaternion.
+	 * \details Implements Object.toString()
+	 */
+	public func String toString()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/** \brief Read quaternion from a file reader. */
+	static public func Quaternion readFromFile( FileReader reader )
+	end
+	
+	/** \brief Write quaternion to a file writer. */
+	public func void writeToFile( FileWriter writer )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Returns the negated of quaternion. */
+	public func Quaternion -()
+	end
+	
+	/** \brief Returns the sum of quaternion with another Quaternion. */
+	public func Quaternion +( Quaternion quaternion )
+	end
+	
+	/** \brief Returns the difference of quaternion and another Quaternion. */
+	public func Quaternion -( Quaternion quaternion )
+	end
+	
+	/** \brief Returns quaternion multiplied by a factor. */
+	public func Quaternion *( float scalar )
+	end
+	
+	/**
+	 * \brief Returns quaternion divided by a factor.
+	 * \throws EDivisionByZero \em scalar is \em 0.
+	 */
+	public func Quaternion /( float scalar )
+	end
+	
+	/** \brief Rotate vector by quaternion. */
+	public func Vector *( Vector vector )
+	end
+	
+	/** \brief Rotate vector by quaternion. */
+	public func DVector *( DVector vector )
+	end
+	/*@}*/
+end

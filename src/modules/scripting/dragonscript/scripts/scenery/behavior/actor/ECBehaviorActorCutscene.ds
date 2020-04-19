@@ -1,0 +1,701 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding cutscene support to actors.
+ * 
+ * Allows actor to perform cutscene actions controlled by conversation scripts.
+ * 
+ * Loads a custom animator and applies it to ECBehaviorConversationActor. Controller mappings
+ * assigned to ECBehaviorConversationActor do affect the loaded animator so cutscene animators can
+ * integrate into switched animators. In addition this behavior adds a controller named
+ * "cutscene" which is used to play back the cutscene.
+ * 
+ * Upon starting the animation captures the current animation state into state number 0.
+ * This allows cutscenes to blend over from the current state if required.
+ * 
+ * Supports adding break points to interrupt playing back a cutscene until the conversation
+ * script decides to continue. This allows for special configurations and requires the used
+ * animator to support playing back an idle animation (for example using "idle" controller)
+ * while the cutscene controller is frozen at the break point value.
+ * 
+ * Also supports loading a sound or synthesizer to play back while the cutscene is running.
+ * 
+ * Adds these conversation condition and command named "cutscene".
+ *
+ * Element class property prefix is "cutscene".
+ */
+class ECBehaviorActorCutscene extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Cutscene started. */
+		func void cutsceneStarted( Instance instance )
+		
+		/** \brief Cutscene stopped. */
+		func void cutsceneStopped( Instance instance )
+		
+		/** \brief Cutscene hit break point and is now waiting. */
+		func void cutscenePaused( Instance instance )
+		
+		/** \brief Cutscene continues after waiting at a break point. */
+		func void cutsceneResumed( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Cutscene started. */
+		public func void cutsceneStarted( Instance instance )
+		end
+		
+		/** \brief Cutscene stopped. */
+		public func void cutsceneStopped( Instance instance )
+		end
+		
+		/** \brief Cutscene hit break point and is now waiting. */
+		public func void cutscenePaused( Instance instance )
+		end
+		
+		/** \brief Cutscene continues after waiting at a break point. */
+		public func void cutsceneResumed( Instance instance )
+		end
+	end
+	
+	/** \brief States. */
+	public enum State
+		/** \brief Cutscene is stopped. */
+		stopped
+		
+		/** \brief Cutscene is playing back. */
+		playing
+		
+		/** \brief Cutscene is waiting at a break point. */
+		paused
+	end
+	
+	/**
+	 * \brief Conversation condition and command controlling cutscene.
+	 * 
+	 * Condition Syntax:
+	 * cutscene playing|paused|stopped
+	 *   Checks if cutscene is playing, paused or stopped.
+	 * 
+	 * Command Syntax:
+	 * cutscene start [path] {[breakPoint1] ... [breakPointN]}
+	 *   path: Path to animator to load
+	 *   breakPoint*: Break points to wait on in seconds in ascending order
+	 * 
+	 * cutscene resume
+	 *   Resume cutscene if paused (hence waiting at a break point).
+	 * 
+	 * cutscene stop
+	 *   Stop cutscene if running
+	 * 
+	 * cutscene synthesizer [path] [range] {[positionX] [positionY] [positionZ] {[bone]}}
+	 *   Loads synthesizer and starts playing it back. Attaches the speaker to the actor.
+	 *   path: Absolute path to synthesizer to load
+	 *   range: Range in meters of speaker
+	 *   position*: Position relative to actor origin to attach speaker to
+	 *   bone: Attach relative to bone instead of actor origin
+	 */
+	class ConversationController implements ECBehaviorConversationActor.ConversationCondition, \
+	ECBehaviorConversationActor.ConversationCommand
+		private var Instance pInstance
+		
+		public func new( Instance instance )
+			this.pInstance = instance
+		end
+		
+		public func bool evaluateCondition( ECBehaviorConversationActor.Instance instance, Array arguments )
+			var String action = arguments.getAt( 1 ) cast String
+			if action.equals( "playing" )
+				return this.pInstance.isPlaying()
+				
+			elif action.equals( "paused" )
+				return this.pInstance.isPaused()
+				
+			elif action.equals( "stopped" )
+				return this.pInstance.isStopped()
+				
+			else
+				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+			end
+		end
+		
+		public func void runCommand( ECBehaviorConversationActor.Instance instance, Array arguments )
+			var String action = arguments.getAt( 1 ) cast String
+			
+			if action.equals( "start" )
+				this.pInstance.stop()
+				this.pInstance.setAnimator( arguments.getAt( 2 ) cast String )
+				arguments.slice( 3 ).forEach( block String each
+					this.pInstance.addBreakPoint( each.toFloat() )
+				end )
+				this.pInstance.start()
+				
+			elif action.equals( "resume" )
+				this.pInstance.resume()
+				
+			elif action.equals( "stop" )
+				this.pInstance.stop()
+				
+			elif action.equals( "synthesizer" )
+				var String path = arguments.getAt( 2 ) cast String
+				var float range = ( arguments.getAt( 3 ) cast String ).toFloat()
+				var int count = arguments.getCount()
+				var Vector position = Vector.new()
+				var String bone = null
+				
+				if count >= 7
+					position = Vector.new( ( arguments.getAt( 4 ) cast String ).toFloat(), \
+						( arguments.getAt( 5 ) cast String ).toFloat(), \
+						( arguments.getAt( 6 ) cast String ).toFloat() )
+					
+					if count >= 8
+						bone = arguments.getAt( 7 ) cast String
+					end
+				end
+				
+				this.pInstance.playSynthesizer( path, range, position, bone )
+			else
+				throw EInvalidParam.new( "Unknown action '" + action + "'" )
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Update controllers listener. */
+		private class UpdateControllers extends ECBehaviorActorAnimated.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void updateControllers( ECBehaviorActorAnimated.Instance instance, float elapsed )
+				this.pInstance.updateControllers( elapsed )
+			end
+		end
+		
+		
+		private var ECBehaviorActorCutscene pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var ECBehaviorConversationActor.Instance pConversationActor
+		
+		private var State pState
+		private var String pPathAnimator
+		private var Animator pAnimator
+		private var String pPathSynthesizer
+		private var Speaker pSpeakerSynth
+		private var Vector pSpeakerPosition
+		private var String pSpeakerBone
+		private var Array pBreakPoints
+		private var int pNextBreakPoint
+		private var String pControllerName
+		private var AnimatorController pController
+		
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new( ECBehaviorActorCutscene ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pBreakPoints = Array.new()
+			this.pNextBreakPoint = 0
+			this.pState = State.stopped
+		
+			this.pListeners = Array.new()
+			
+			this.pCollider = ecbehavior.getCollider().instance( element )
+			this.pConversationActor = ecbehavior.getActorAnimated().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pConversationActor = null
+			this.pCollider = null
+			this.pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			this.pControllerName = this.pECBehavior.getControllerName().getValue( stub )
+			
+			this.pConversationActor.getActorAnimated().addListener( UpdateControllers.new( this ) )
+			
+			var ConversationController convoController = ConversationController.new( this )
+			this.pConversationActor.addCondition( "cutscene", convoController )
+			this.pConversationActor.addCommand( "cutscene", convoController )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorActorCutscene getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Actor animated behavior. */
+		public func ECBehaviorConversationActor.Instance getActorAnimated()
+			return this.pConversationActor
+		end
+		
+		
+		
+		/** \brief Animator or \em null if absent. */
+		public func Animator getAnimator()
+			return this.pAnimator
+		end
+		
+		/** \brief Set animator from path or \em null if absent. */
+		public func void setAnimator( String path )
+			if path == null
+				this.pAnimator = null
+				
+			else
+				this.pPathAnimator = path
+				this.pAnimator = this.pECBehavior.getLoaders().getAnimator().loadFromFile( path )
+			end
+		end
+		
+		
+		
+		/** \brief Count of break points. */
+		public func int getBreakPointCount()
+			return this.pBreakPoints.getCount()
+		end
+		
+		/** \brief Break point at index. */
+		public func float getBreakPointAt( int index )
+			return this.pBreakPoints.getAt( index ) cast float
+		end
+		
+		/** \brief Add break point. */
+		public func void addBreakPoint( float breakPoint )
+			this.pBreakPoints.add( breakPoint )
+		end
+		
+		/** \brief Remove all break points. */
+		public func void removeAllBreakPoints()
+			this.pBreakPoints.removeAll()
+		end
+		
+		/** \brief Index of next break point. */
+		public func int getNextBreakPoint()
+			return this.pNextBreakPoint
+		end
+		
+		/** \brief Set index of next break point. */
+		public func void setNextBreakPoint( int index )
+			if index < 0
+				throw EInvalidParam.new()
+			end
+			this.pNextBreakPoint = index
+		end
+		
+		
+		
+		/** \brief State. */
+		public func State getState()
+			return this.pState
+		end
+		
+		/** \brief Set state. */
+		protected func void setState( State state )
+			this.pState = state
+		end
+		
+		/** \brief Cutscene is playing back. */
+		public func bool isPlaying()
+			return this.pState == State.playing
+		end
+		
+		/** \brief Cutscene is waiting at a break point. */
+		public func bool isPaused()
+			return this.pState == State.paused
+		end
+		
+		/** \brief Cutscene is stopped. */
+		public func bool isStopped()
+			return this.pState == State.stopped
+		end
+		
+		/** \brief Play back cutscene. */
+		public func void start()
+			this.stop()
+			
+			if this.pAnimator == null
+				throw EInvalidParam.new( "No animator loaded to play back" )
+			end
+			
+			var ECBehaviorActorAnimated.Instance animated = this.pConversationActor.getActorAnimated()
+			
+			animated.setAnimator( this.pAnimator )
+			
+			this.pController = animated.getControllerNamed( this.pControllerName )
+			this.pController.setValue( 0 )
+			
+			animated.captureState( 0 )
+			
+			this.pNextBreakPoint = 0
+			this.pState = State.playing
+			
+			this.pListeners.forEach( block Listener each
+				each.cutsceneStarted( this )
+			end )
+		end
+		
+		/** \brief Break cutscene at break point. */
+		public func void pause()
+			if this.pState != State.playing
+				return
+			end
+			
+			this.pState = State.paused
+			
+			this.pListeners.forEach( block Listener each
+				each.cutscenePaused( this )
+			end )
+		end
+		
+		/** \brief Continue cutscene if waiting on break point. */
+		public func void resume()
+			if this.pState != State.paused
+				return
+			end
+			
+			this.pNextBreakPoint++
+			this.pState = State.playing
+			
+			this.pListeners.forEach( block Listener each
+				each.cutsceneResumed( this )
+			end )
+		end
+		
+		/** \brief Stop cutscene if running. */
+		public func void stop()
+			if this.pState == State.stopped
+				return
+			end
+			
+			if this.pSpeakerSynth != null
+				this.pSpeakerSynth.stop()
+				this.getElement().getGameWorld().getWorld().removeSpeaker( this.pSpeakerSynth )
+				this.pSpeakerSynth = null
+			end
+			
+			this.pController = null
+			
+			this.pState = State.stopped
+			
+			this.pListeners.forEach( block Listener each
+				each.cutsceneStopped( this )
+			end )
+		end
+		
+		/** \brief Update controllers. */
+		public func void updateControllers( float elapsed )
+			if this.pState != State.playing
+				return
+			end
+			
+			this.pController.increment( elapsed )
+			
+			if this.pNextBreakPoint < this.pBreakPoints.getCount()
+				var float time = this.pBreakPoints.getAt( this.pNextBreakPoint ) cast float
+				if this.pController.getValue() >= time
+					this.pController.setValue( time )
+					this.pause()
+				end
+				
+			elif this.pController.isAtUpper()
+				this.stop()
+			end
+		end
+		
+		
+		
+		/** \brief Load synthesizer and create speaker playing it back. */
+		public func void playSynthesizer( String path, float range, Vector position, String bone )
+			if this.pState == State.stopped
+				return
+			end
+			
+			var SynthesizerInstance synthinst = SynthesizerInstance.new()
+			this.pPathSynthesizer = path
+			synthinst.setSynthesizer( this.pECBehavior.getLoaders().getSynthesizer().loadFromFile( path ) )
+			synthinst.getControllerNamed( this.pControllerName ).setCurveTime()
+			
+			this.pSpeakerSynth = Speaker.new()
+			this.pSpeakerSynth.setLooping( false )
+			this.pSpeakerSynth.setVolume( 1 )
+			this.pSpeakerSynth.setRange( range )
+			this.pSpeakerSynth.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+			
+			if bone != null
+				( this.pCollider.getCollider() cast ColliderRig ).attachBone( \
+					this.pSpeakerSynth, bone, position, Quaternion.new() )
+				
+			else
+				this.pCollider.getCollider().attachStatic( this.pSpeakerSynth, position, Quaternion.new() )
+			end
+			
+			this.pSpeakerSynth.setSynthesizer( synthinst )
+			this.getElement().getGameWorld().getWorld().addSpeaker( this.pSpeakerSynth )
+			this.pSpeakerSynth.play()
+			
+			this.pSpeakerPosition = position
+			this.pSpeakerBone = bone
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+			
+			this.pState = State.withOrder( reader.readByte() )
+			
+			if flags.getAt( 0 )
+				this.setAnimator( reader.readString8() )
+				this.pController.setValue( reader.readFloat() )
+			end
+			
+			if flags.getAt( 1 )
+				var SynthesizerInstance synthinst = SynthesizerInstance.new()
+				this.pPathSynthesizer = reader.readString8()
+				synthinst.setSynthesizer( this.pECBehavior.getLoaders().getSynthesizer() \
+					.loadFromFile( this.pPathSynthesizer ) )
+				synthinst.getControllerNamed( this.pControllerName ).setCurveTime()
+				
+				this.pSpeakerSynth = Speaker.new()
+				this.pSpeakerSynth.setLooping( flags.getAt( 2 ) )
+				this.pSpeakerSynth.setVolume( reader.readFloat() )
+				this.pSpeakerSynth.setRange( reader.readFloat() )
+				this.pSpeakerSynth.setRollOff( reader.readFloat() )
+				this.pSpeakerSynth.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+				
+				this.pSpeakerBone = env.readString8OrNullIfEmpty( reader )
+				this.pSpeakerPosition = Vector.readFromFile( reader )
+				
+				if this.pSpeakerBone != null
+					( this.pCollider.getCollider() cast ColliderRig ).attachBone( \
+						this.pSpeakerSynth, this.pSpeakerBone, this.pSpeakerPosition, Quaternion.new() )
+					
+				else
+					this.pCollider.getCollider().attachStatic( \
+						this.pSpeakerSynth, this.pSpeakerPosition, Quaternion.new() )
+				end
+				
+				this.pSpeakerSynth.setSynthesizer( synthinst )
+				this.getElement().getGameWorld().getWorld().addSpeaker( this.pSpeakerSynth )
+				this.pSpeakerSynth.setPlayPosition( reader.readInt(), this.pSpeakerSynth.getPlayTo() )
+				this.pSpeakerSynth.play()
+			end
+			
+			var int i, count = reader.readByte()
+			for i = 0 to count
+				this.pBreakPoints.add( reader.readFloat() )
+			end
+			
+			this.pNextBreakPoint = reader.readByte()
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 3 )
+			flags.setAt( 0, this.pAnimator != null )
+			flags.setAt( 1, this.pSpeakerSynth != null and this.pSpeakerSynth.getPlaying() )
+			flags.setAt( 2, this.pSpeakerSynth != null and this.pSpeakerSynth.getLooping() )
+			flags.writeToFile( writer )
+			
+			writer.writeByte( this.pState.order() )
+			if this.pAnimator != null
+				writer.writeString8( this.pPathAnimator )
+				writer.writeFloat( this.pController.getValue() )
+			end
+			
+			if this.pSpeakerSynth != null and this.pSpeakerSynth.getPlaying()
+				writer.writeString8( this.pPathSynthesizer )
+				writer.writeFloat( this.pSpeakerSynth.getVolume() )
+				writer.writeFloat( this.pSpeakerSynth.getRange() )
+				writer.writeFloat( this.pSpeakerSynth.getRollOff() )
+				env.writeString8OrEmptyIfNull( writer, this.pSpeakerBone )
+				this.pSpeakerPosition.writeToFile( writer )
+				writer.writeInt( this.pSpeakerSynth.getPlayFrom() )
+			end
+			
+			writer.writeByte( this.pBreakPoints.getCount() )
+			this.pBreakPoints.forEach( block float each
+				writer.writeFloat( each )
+			end )
+			
+			writer.writeByte( this.pNextBreakPoint )
+		end
+	end
+	
+	
+	
+	private var Loaders pLoaders
+	private var ECBehaviorCollider pCollider
+	private var ECBehaviorConversationActor pConversationActor
+	private var ECPString pControllerName
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorConversationActor conversationActor ) \
+	this( eclass, collider, conversationActor, BaseGameApp.getApp().getLoaders() )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorConversationActor conversationActor, Loaders loaders ) \
+	this( eclass, collider, conversationActor, loaders, "cutscene." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorConversationActor conversationActor, Loaders loaders, String prefix ) super( eclass )
+		if collider == null
+			throw ENullPointer.new( "collider" )
+		end
+		if conversationActor == null
+			throw ENullPointer.new( "conversationActor" )
+		end
+		
+		this.pCollider = collider
+		this.pConversationActor = conversationActor
+		this.pLoaders = loaders
+		
+		this.pControllerName = ECPString.new( prefix + "controllerName", "cutscene" )
+		eclass.addProperty( this.pControllerName )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		this.pConversationActor = null
+		this.pLoaders = null
+	end
+	
+	
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return this.pLoaders
+	end
+	
+	/** \brief Collider behavior. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Actor animated behavior. */
+	public func ECBehaviorConversationActor getActorAnimated()
+		return this.pConversationActor
+	end
+	
+	/** \brief Name of playback controller (default "cutscene"). */
+	public func ECPString getControllerName()
+		return this.pControllerName
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorConversationActor.
+	 */
+	static public func ECBehaviorActorCutscene getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorActorCutscene
+		end ) cast ECBehaviorActorCutscene
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorCutscene.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen Reflection</name>
+	
+	<version>150</version>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	<texture name='texReflectivity' target='3'/>
+	<texture name='texRoughness' target='4'/>
+	<texture name='texAOSolidity' target='5'/>
+	<texture name='texEnvMapArray' target='6'/>
+	<texture name='texEnvMapSky' target='7'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/reflection/reflection.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/reflection/reflection.glsl</sourceCode>
+</shader>

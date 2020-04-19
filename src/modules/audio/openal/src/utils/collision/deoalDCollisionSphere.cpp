@@ -1,0 +1,277 @@
+/* 
+ * Drag[en]gine OpenAL Audio Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "deoalDCollisionSphere.h"
+#include "deoalDCollisionCylinder.h"
+#include "deoalDCollisionCapsule.h"
+#include "deoalDCollisionBox.h"
+#include "deoalDCollisionTriangle.h"
+#include "deoalDCollisionFrustum.h"
+#include "deoalDCollisionDetection.h"
+#include "deoalDCollisionVolumeVisitor.h"
+#include <dragengine/common/exceptions.h>
+
+
+
+// Collision Detection Sphere
+///////////////////////////////
+
+// constructors, destructors
+//////////////////////////////
+
+deoalDCollisionSphere::deoalDCollisionSphere(){
+	SetAll( decDVector( 0, 0, 0 ), 1 );
+}
+
+deoalDCollisionSphere::deoalDCollisionSphere( const decDVector &center, double radius ){
+	SetAll( center, radius );
+}
+
+deoalDCollisionSphere::~deoalDCollisionSphere(){
+}
+
+
+
+// double dispatching calls
+/////////////////////////////
+
+bool deoalDCollisionSphere::VolumeHitsVolume( deoalDCollisionVolume *volume ){
+	return volume->SphereHitsVolume( this );
+}
+
+double deoalDCollisionSphere::VolumeMoveHitsVolume( deoalDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ){
+	return volume->SphereMoveHitsVolume( this, displacement, normal );
+}
+
+
+
+// first stage calls
+//////////////////////
+
+bool deoalDCollisionSphere::SphereHitsVolume( deoalDCollisionSphere *sphere ){
+	return SphereHitsSphere( sphere );
+}
+
+bool deoalDCollisionSphere::CylinderHitsVolume( deoalDCollisionCylinder *cylinder ){
+	return cylinder->SphereHitsCylinder( this );
+}
+
+bool deoalDCollisionSphere::CapsuleHitsVolume( deoalDCollisionCapsule *capsule ){
+	return capsule->SphereHitsCapsule( this );
+}
+
+bool deoalDCollisionSphere::BoxHitsVolume( deoalDCollisionBox *box ){
+	return box->SphereHitsBox( this );
+}
+
+bool deoalDCollisionSphere::TriangleHitsVolume( deoalDCollisionTriangle *triangle ){
+	return triangle->SphereHitsTriangle( this );
+}
+
+bool deoalDCollisionSphere::FrustumHitsVolume( deoalDCollisionFrustum *frustum ){
+	return frustum->SphereHitsFrustum( this );
+}
+
+
+
+double deoalDCollisionSphere::SphereMoveHitsVolume( deoalDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+	return SphereMoveHitsSphere( sphere, displacement, normal );
+}
+
+double deoalDCollisionSphere::CylinderMoveHitsVolume( deoalDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
+	double distance = cylinder->SphereMoveHitsCylinder( this, -displacement, normal );
+	if( normal ) normal->Negate();
+	return distance;
+}
+
+double deoalDCollisionSphere::CapsuleMoveHitsVolume( deoalDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
+	double distance = capsule->SphereMoveHitsCapsule( this, -displacement, normal );
+	if( normal ) normal->Negate();
+	return distance;
+}
+
+double deoalDCollisionSphere::BoxMoveHitsVolume( deoalDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
+	double distance = box->SphereMoveHitsBox( this, -displacement, normal );
+	if( normal ) normal->Negate();
+	return distance;
+}
+
+double deoalDCollisionSphere::TriangleMoveHitsVolume( deoalDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
+	double distance = triangle->SphereMoveHitsTriangle( this, -displacement, normal );
+	if( normal ) normal->Negate();
+	return distance;
+}
+
+double deoalDCollisionSphere::FrustumMoveHitsVolume( deoalDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal ){
+	double distance = frustum->SphereMoveHitsFrustum( this, -displacement, normal );
+	if( normal ) normal->Negate();
+	return distance;
+}
+
+double deoalDCollisionSphere::PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ){
+	double lambda = ( ( pCenter - point ) * displacement ) / ( displacement * displacement );
+	if( lambda < 0 || lambda > 1 ){
+		return 1;
+	}else{
+		if( normal ){
+			*normal = point - pCenter;
+			normal->Normalize();
+		}
+		return lambda;
+	}
+}
+
+
+
+// Enclosing Volumes
+//////////////////////
+
+void deoalDCollisionSphere::GetEnclosingSphere( deoalDCollisionSphere *sphere ){
+	if( ! sphere ) DETHROW( deeInvalidParam );
+	sphere->SetAll( pCenter, pRadius );
+}
+
+void deoalDCollisionSphere::GetEnclosingBox( deoalDCollisionBox *box ){
+	if( ! box ) DETHROW( deeInvalidParam );
+	box->SetCenter( pCenter );
+	box->SetHalfSize( decDVector( pRadius, pRadius, pRadius ) );
+}
+
+
+
+// Miscelanous Functions
+//////////////////////////
+
+bool deoalDCollisionSphere::IsPointInside( const decDVector &point ){
+	return ( point - pCenter ).Length() <= pRadius;
+}
+
+decDVector deoalDCollisionSphere::ClosestPointTo( const decDVector &point ){
+	decDVector result = point - pCenter;
+	double length = result.Length();
+	if( length <= pRadius ){
+		return point;
+	}else{
+		return ( result / length ) * pRadius;
+	}
+}
+
+decDVector deoalDCollisionSphere::NormalAtPoint( const decDVector &point ){
+	decDVector normal = point - pCenter;
+	double length = normal.Length();
+	
+	if( length < 1e-5 ){
+		return decDVector( 1.0, 0.0, 0.0 );
+	}
+	
+	normal.Normalize();
+	return normal;
+}
+
+bool deoalDCollisionSphere::RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance ){
+	return deoalDCollisionDetection::RayHitsSphere( rayOrigin, rayDirection, pCenter, pRadius, hitDistance );
+}
+
+
+
+// Visiting
+/////////////
+
+void deoalDCollisionSphere::Visit( deoalDCollisionVolumeVisitor *visitor ){
+	if( ! visitor ) DETHROW( deeInvalidParam );
+	visitor->VisitSphere( this );
+}
+
+
+
+// collision routines
+///////////////////////
+
+bool deoalDCollisionSphere::SphereHitsSphere( deoalDCollisionSphere *sphere ){
+	decDVector centerDist = pCenter - sphere->GetCenter();
+	double radiusDist = pRadius + sphere->GetRadius();
+	return ( centerDist * centerDist ) <= radiusDist * radiusDist;
+}
+
+double deoalDCollisionSphere::SphereMoveHitsSphere( deoalDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+	const decDVector &sc1 = sphere->GetCenter();
+	decDVector diff( sc1 - pCenter );
+	double a, b, r, rr, disc, lambda, factor;
+	// check for a collision at the beginning
+	r = sphere->GetRadius() + pRadius;
+	factor = diff * diff;
+	rr = r * r;
+	if( factor <= rr ){
+		//printf( "[DEBUG] %i\n", __LINE__ );
+		if( normal ){
+			factor = diff.Length();
+			if( factor <= 0.000001 ){
+				normal->Set( -displacement );
+			}else{
+				normal->Set( diff );
+			}
+			normal->Normalize();
+		}
+		return 0.0;
+	}
+	// check if there exist one or more points on the line with the needed distance
+	a = displacement * displacement;
+	b = ( diff * displacement ) * 2.0;
+	disc = b * b - a * ( factor - rr ) * 4.0;
+	if( disc < 0.0 ) return 1.0;
+	// determine the closer of the two points
+	disc = sqrt( disc );
+	factor = 1.0 / ( a * 2.0 );
+	lambda = ( -b - disc ) * factor;
+	if( lambda < 0 ) lambda = ( -b + disc ) * factor;
+	// check if the point is inside the movement range
+	if( lambda <= 0.0 || lambda >= 1.0 ) return 1.0;
+	if( normal ){
+		normal->Set( sc1 + displacement * lambda - pCenter );
+		normal->Normalize();
+	}
+	//printf( "[DEBUG] %i, %f\n", __LINE__, lambda );
+	return lambda;
+}
+
+
+
+// management
+///////////////
+
+void deoalDCollisionSphere::SetCenter( const decDVector &center ){
+	pCenter = center;
+}
+
+void deoalDCollisionSphere::SetRadius( double radius ){
+	pRadius = decMath::max( radius, 0.0 );
+	pSquareRadius = radius * radius;
+}
+
+void deoalDCollisionSphere::SetAll( const decDVector &center, double radius ){
+	pCenter = center;
+	pRadius = decMath::max( radius, 0.0 );
+	pSquareRadius = radius * radius;
+}

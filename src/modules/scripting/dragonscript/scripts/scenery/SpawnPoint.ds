@@ -1,0 +1,121 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Spawn point for actors and props.
+ * 
+ * Spawn points have a unique name and are added to the SpawnPointList of a GameWorld.
+ */
+class SpawnPoint
+	private var String pName
+	private var DVector pPosition
+	private var Quaternion pOrientation
+	
+	
+	
+	/** \brief Create spawn point. */
+	public func new( String name )
+		if name == null
+			throw EInvalidParam.new()
+		end
+		this.pName = name
+	end
+	
+	
+	
+	/** \brief Unique name of spawn point. */
+	public func String getName()
+		return this.pName
+	end
+	
+	/** \brief Spawn position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set spawn position. */
+	public func void setPosition( DVector position )
+		if position == null
+			throw EInvalidParam.new()
+		end
+		this.pPosition = position
+	end
+	
+	/** \brief Spawn orientation. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Set spawn orientation. */
+	public func void setOrientation( Quaternion orientation )
+		if orientation == null
+			throw EInvalidParam.new()
+		end
+		this.pOrientation = orientation
+	end
+	
+	/** \brief Spawn matrix. */
+	public func DMatrix getMatrix()
+		return DMatrix.newWorld( this.pPosition, this.pOrientation )
+	end
+	
+	
+	
+	/**
+	 * \brief Spawn element in game world at position and orientation defined in the spawn point.
+	 * 
+	 * If the element is spawned already in another world it teleport instead.
+	 */
+	public func void spawn( GameWorld gameWorld, Element element )
+		this.spawn( gameWorld, element, Vector.new(), Vector.new() )
+	end
+	
+	/**
+	 * \brief Spawn element in game world at position and orientation defined in the spawn point.
+	 * 
+	 * The position and rotation are relative to the spawn point. If the element is already
+	 * in the game world teleports the element instead.
+	 */
+	public func void spawn( GameWorld gameWorld, Element element, Vector position, Vector rotation )
+		if gameWorld == null or element == null or position == null or rotation == null
+			throw EInvalidParam.new()
+		end
+		
+		if element.getGameWorld() == gameWorld
+			element.setGeometry( this.pPosition + DVector.new( position ), \
+				this.pOrientation * Quaternion.newFromEuler( rotation ) )
+			
+		else
+			element.removeFromGameWorldIfPresent()
+			element.setGeometry( this.pPosition + DVector.new( position ), \
+				this.pOrientation * Quaternion.newFromEuler( rotation ) )
+			gameWorld.addElement( element )
+		end
+	end
+end

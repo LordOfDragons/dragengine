@@ -1,0 +1,64 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Synthesizer source group.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class SSGroup extends SynthesizerSource
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator source. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Set application type.
+	 * \throws EInvalidParam \em applicationType is not a valid value.
+	 */
+	public func void setApplicationType( SSGroupApplication applicationType )
+	
+	
+	
+	/** \brief Add source. */
+	public func void addSource( SynthesizerSource source )
+	end
+	
+	/** \brief Remove source. */
+	public func void removeSource( SynthesizerSource source )
+	end
+	
+	/** \brief Remove all sources. */
+	public func void removeAllSources()
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( SSGroupTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( SSGroupTarget target )
+	end
+	/*@}*/
+end

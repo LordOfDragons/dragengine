@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+	<mime-type type='text/x-dragonscript'>
+		<comment>DragonScript source code</comment>
+		<comment xml:lang='de'>DragonScript Quelltext</comment>
+		<comment xml:lang='en_GB'>DragonScript source code</comment>
+		<acronym>DragonScript</acronym>
+		<sub-class-of type='text/x-text'/>
+		<glob pattern='*.ds'/>
+		<alias type='text/x-dragonscript'/>
+	</mime-type>
+</mime-info>

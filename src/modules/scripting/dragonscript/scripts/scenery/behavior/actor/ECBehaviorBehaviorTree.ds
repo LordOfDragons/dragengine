@@ -1,0 +1,450 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding BehaviorTree support.
+ * 
+ * Loads a single behavior tree from file and creates a BTContext. Other behaviors can
+ * add actions and conditions to this behavior tree allowing to compose behavior tree
+ * actions and conditions easily.
+ * 
+ * This behavior can be used in different ways depending on the needs.
+ * 
+ * \par Single Behavior Tree Usage
+ * 
+ * This is the most simple solution where only one behavior tree is used. For many AI
+ * situations this is enough and is the most simple solution to use. Add one
+ * ECBehaviorBehaviorTree with no ID to the element and as many other behaviors adding
+ * actions and conditions as required. Set the "behaviorTree.path" property to define
+ * the behavior tree to load. If you want to use this behavior for simple elements
+ * you can set the "behaviorTree.run" to "true". In this case the behavior will run
+ * the behavior tree on "think()" calls. For BaseActor use it is better to keep this
+ * feature disabled and using a BaseActorAI supporting this behavior. This is an
+ * example code for such a setup:
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btbehavior = ECBehaviorBehaviorTree.new(this)
+ *       btbehavior.getPath().setValue("/content/myBehavior.debtree")
+ *       btbehavior.getRun().setValue(true)
+ *       
+ *       // here you can add now behaviors adding actions and conditions for
+ *       // the behavior tree to use
+ *       ...
+ *    end
+ * end
+ * \endcode
+ * 
+ * \par Multiple Behavior Tree Usage
+ * 
+ * You can add multiple instances of ECBehaviorBehaviorTree to the element to load and
+ * use multiple behavior trees. This can be either because you want to switch between
+ * behavior trees or using multiple trees together to model complex AI logic. In this
+ * situation behaviors adding actions and conditions do add them to all instances of
+ * ECBehaviorBehaviorTree. This is usually not a problem since the behavior trees are
+ * written to use only the actions and conditions making sense to be used. You can
+ * set any ECBehaviorBehaviorTree to run during "think()". If enabling more than one
+ * behavior like this make sure the individual behavior trees properly work together.
+ * This is an example code for such a setup:
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btSpecific = ECBehaviorBehaviorTree.new(this, "specific")
+ *       btSpecific.getPath().setValue("/content/mySpecificBehavior.debtree")
+ *       btSpecific.getRun().setValue(true)
+ *       
+ *       var ECBehaviorBehaviorTree btIdle = ECBehaviorBehaviorTree.new(this, "idle")
+ *       btIdle.getPath().setValue("/content/myIdleBehavior.debtree")
+ *       btIdle.getRun().setValue(true)
+ *       
+ *       // here you can add now behaviors adding actions and conditions for both
+ *       // behavior trees to use
+ *       ...
+ *    end
+ * end
+ * \endcode
+ * 
+ * The above example loads and runs two behavior trees. The first one is running specific
+ * behavior tree with AI behavior like searching for the player or communicating with
+ * other actors. The second behavior tree provides idle actions used if the specific
+ * behavior tree is doing nothing. By choosing conditions properly the two trees do
+ * not interfere with each other and allow to split up behavior trees into multiple trees
+ * which can help create complex AI more simple and stable.
+ * 
+ * \par BaseActor Usage
+ * 
+ * This use case allows to use this behavior for BaseActor usage. BaseActor supports using
+ * BaseActorAI which can be exchanged to allow multiple different AI routines to be used
+ * without needing one large behavior tree. In this situation the behavior tree is not run
+ * by this behavior but by a BaseActorAI subclass. Both of the above scenarios are possible
+ * either using one behavior tree or multiple. Typically BaseActorAI does not use the
+ * BTContext from this behavior directly but instead create a copy. This has the advantage
+ * that each time a BaseActorAI is switched on it starts with a fresh context initialized
+ * with all actions and conditions added by other behaviors. Furthermore you can change
+ * the BehaviorTree to use during copy time opening up all kinds of possibilities to create
+ * actor AI easily. This is an example code for such a setup:
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btree = ECBehaviorBehaviorTree.new(this)
+ *       btSpecific.getPath().setValue("/content/basic.debtree")
+ *       //btSpecific.getRun().setValue(false) // the default is false
+ *       
+ *       // here you can add now behaviors adding actions and conditions for both
+ *       // behavior trees to use
+ *       ...
+ *    end
+ * end
+ * 
+ * class MyActorAI extends BAAIBehaviorTree
+ *    public func new()
+ *       // load behavior tree to use. this is not required but allows to use different
+ *       // behavior trees for different AI routines. if not used the "/content/basic.debtree"
+ *       // would be used as defined in MyElementClass.
+ *       var BehaviorTree btree = BaseGameApp.getApp().getLoaders() \
+ *          .getBehaviorTree().loadFromFile("/content/aiRoutine1.debtree")
+ *       
+ *       // create context. BAAIBehaviorTree requires a BTContextAI subclass hence we can
+ *       // use the ECBehaviorBehaviorTree context directly. if you write your own BaseActorAI
+ *       // subclasses this can be tough a viable option to use less script code. this copy
+ *       // here will ensure all actions and conditions are present so this is easy and quick
+ *       setContext(BTContextAI.new(this, ECBehaviorBehaviorTree.getInstanceIn(getActor()).getContext(), btree)
+ *       
+ *       // run behavior tree during think()
+ *       setRunning( true )
+ *    end
+ * end
+ * \endcode
+ * 
+ * This behavior does require the element class to be persistable (setPersistable) only if
+ * the context is run by the behavior itself.
+ */
+class ECBehaviorBehaviorTree extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorBehaviorTree pECBehavior
+		private var BehaviorTree pBehaviorTree
+		private var BTContext pContext
+		private var bool pRun
+		private var bool pFailed
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorBehaviorTree ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pFailed = false
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pContext = null
+			this.pBehaviorTree = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pRun = this.pECBehavior.getRun().getValue( stub )
+			
+			this.pBehaviorTree = this.loadBehaviorTree( stub )
+			if this.pBehaviorTree == null
+				this.pBehaviorTree = BehaviorTree.new()
+			end
+			
+			this.pContext = this.createContext( stub, this.pBehaviorTree )
+			if BaseGameApp.getApp() != null
+				this.pContext.setConsole( BaseGameApp.getApp().getConsole() )
+			end
+			
+			this.setRequiresThink( this.pRun )
+		end
+		
+		/** \brief Load behavior tree. */
+		protected func BehaviorTree loadBehaviorTree( StubElement stub )
+			return this.pECBehavior.getBehaviorTree().getBehaviorTree( stub, this.getElement().getClass() )
+		end
+		
+		/** \brief Create context. */
+		protected func BTContext createContext( StubElement stub, BehaviorTree behaviorTree )
+			return BTContext.new( behaviorTree )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorBehaviorTree getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Behavior tree. */
+		public func BehaviorTree getBehaviorTree()
+			return this.pBehaviorTree
+		end
+		
+		/** \brief Context. */
+		public func BTContext getContext()
+			return this.pContext
+		end
+		
+		/** \brief Run behavior tree on element thinking. */
+		public func bool getRun()
+			return this.pRun
+		end
+		
+		/** \brief Behavior tree failed and will not run again. */
+		public func bool getFailed()
+			return this.pFailed
+		end
+		
+		
+		
+		/** \brief Think about what the element is going to do in this frame. */
+		public func void think( float elapsed )
+			if not this.pRun and not this.pFailed
+				return
+			end
+			
+			try
+				if this.pContext.stepBehaviorTree()
+					return
+				end
+				
+			catch Exception e
+			end
+			
+			this.pFailed = true
+			this.setRequiresThink( false )
+		end
+		
+		/** \brief Restart behavior tree to run it again. */
+		protected func void restartContext()
+			if not this.pRun
+				return
+			end
+			
+			this.pContext.reset()
+			this.pFailed = false
+			this.setRequiresThink( true )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			this.pRun = flags.getAt( 0 )
+			this.pFailed = flags.getAt( 1 )
+			
+			if this.pRun
+				this.pContext.readFromFile( env, reader )
+			end
+			
+			this.setRequiresThink( this.pRun and not this.pFailed )
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			var PersistencyFlags flags = PersistencyFlags.new( 2 )
+			flags.setAt( 0, this.pRun )
+			flags.setAt( 1, this.pFailed )
+			flags.writeToFile( writer )
+			
+			if this.pRun
+				this.pContext.writeToFile( env, writer )
+			end
+		end
+	end
+	
+	
+	
+	private var ECPBehaviorTree pBehaviorTree
+	private var ECPBoolean pRun
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id, String prefix ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), id, prefix )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders ) this( eclass, loaders, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id ) \
+	this( eclass, loaders, id, id.empty() if "behaviorTree" else "behaviorTree(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID ) \
+	this( eclass, loaders, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID, \
+	String prefix ) super( eclass, id )
+		this.pBehaviorTree = ECPBehaviorTree.new( prefix + "path", loaders.getBehaviorTree() )
+		eclass.addProperty( this.pBehaviorTree )
+		
+		this.pRun = ECPBoolean.new( prefix + "run", false )
+		eclass.addProperty( this.pRun )
+		
+		eclass.addBehavior( this )
+	end
+	
+	
+	
+	/** \brief Behavior tree. */
+	public func ECPBehaviorTree getBehaviorTree()
+		return this.pBehaviorTree
+	end
+	
+	/** \brief Run behavior tree during element thinking. */
+	public func ECPBoolean getRun()
+		return this.pRun
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorBehaviorTree getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorBehaviorTree
+		end ) cast ECBehaviorBehaviorTree
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorBehaviorTree with specific identifier.
+	 */
+	static public func ECBehaviorBehaviorTree getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorBehaviorTree each
+			return each castable ECBehaviorBehaviorTree and \
+				( each cast ECBehaviorBehaviorTree ).getID().equals( id )
+		end ) cast ECBehaviorBehaviorTree
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTree behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorBehaviorTree
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTree.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorBehaviorTree.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorBehaviorTree.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

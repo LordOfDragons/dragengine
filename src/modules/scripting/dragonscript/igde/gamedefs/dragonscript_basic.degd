@@ -1,0 +1,2337 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
+<gameDefinition>
+	<identifier>DragonScript Basic</identifier>
+	<description>Base game definition for projects based on DragonScript Scripting Module.</description>
+	<basePath>%{PATH_MODULE_SHARED}</basePath>
+	<vfsPath>/shareddata</vfsPath>
+	<scriptModule>DragonScript</scriptModule>
+	<categories>
+		<classes>
+			<category>
+				<name>Dragengine</name>
+				<description>Object classes provided by DragonScript Script Module for in-game use.</description>
+				<autoCategorize>/shareddata/models/*</autoCategorize>
+				<category>
+					<name>Trigger</name>
+					<description>Object classes reacting to changes in triggers or changing triggers.</description>
+				</category>
+				<category>
+					<name>Behavior</name>
+					<description>Composable elements are jack of all trade elements that can be build using ECCompose* classes implementing the Composable interface to provide various abilities (or traits). Composable elements are suited for prototyping or rapid development since they require little written code. Building element classes the conventional way though is usually preferred.<br/><br/>Here in the game definition you can add behaviors as "inherited" classes to get access to the properties they define. These object classes themselves can not be used but only as inherited objects.</description>
+					<hidden>true</hidden>
+				</category>
+			</category>
+		</classes>
+		<skins>
+			<category>
+				<name>Dragengine</name>
+				<description>Skins provided by DragonScript Script Module for in-game use.</description>
+				<autoCategorize>/shareddata/materials/*</autoCategorize>
+			</category>
+		</skins>
+	</categories>
+	<findPathClasses>/shareddata/models</findPathClasses>
+	<findPathSkins>/shareddata/materials</findPathSkins>
+	<defaultClass>SimpleElement</defaultClass>
+	<defaultSkin>/shareddata/materials/testMap.deskin</defaultSkin>
+	<class name='SimpleElement'>
+		<description>Basic class for elements containing a single component and collider.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorNavigationSpace'>
+			<propertyPrefix>navigationSpace.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='GhostElement'>
+		<description>Low cost class for decorative elements containing only a component not interacting with the game world.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='BaseActor'>
+		<description>Base class for actors using behaviors.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorColliderAI'>
+			<propertyPrefix>colliderAI.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorProjectToGround'>
+			<propertyPrefix>projectToGround.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorLocomotion'>
+			<propertyPrefix>locomotion.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorActorAnimated'>
+			<propertyPrefix>actorAnimated.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorNavigator'>
+			<propertyPrefix>navigator.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorFootSteps'>
+			<propertyPrefix>footSteps.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorRideOn'>
+			<propertyPrefix>rideOn.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorActorMover'>
+			<propertyPrefix>actorMover.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAlignActor'>
+			<propertyPrefix>alignActor.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAvoidedByActor'>
+			<propertyPrefix>avoidedByActor.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAvoidCollision'>
+			<propertyPrefix>avoidCollision.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorParameterTable'>
+			<propertyPrefix>parameterTable.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorConversationActor'>
+			<propertyPrefix>convoActor.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorPlayerInputLook'>
+			<propertyPrefix>playerInputLook.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorPlayerInputTurn'>
+			<propertyPrefix>playerInputTurn.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorPlayerInputCrouch'>
+			<propertyPrefix>playerInputCrouch.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorPlayerInputMove'>
+			<propertyPrefix>playerInputMove.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='AnimatedElement'>
+		<description>Basic class for elements containing a single component and collider with support for animation.</description>
+		<inherit name='SimpleElement'>
+		</inherit>
+		<inherit name='ECBehaviorAnimated'>
+			<propertyPrefix>animated.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='TwoStateAnimatedElement'>
+		<description>Two state animated element extends SimpleElement with support to play back animations for elements in two different states with transition between them. The used animator is required to have 4 controllers set up in a specific way to function with this element class.<br/><br/>Controller 0: Deactivated Playback<br/>This controller is used to play back the animation for the element in the deactivated state. This has to be a looping animation advanced by the elapsed time.<br/><br/>Controller 1: Activate<br/>This controller is used to transition from the deactivated state animation to the activated state animation. This controller has to be non-looping (aka clamped). The transition time is the difference between the upper and lower controller value. Upon starting the transition the controller is reset to the lower value and incremented by the elapsed time. When the controller reaches the upper value the transition is considered done and the element enters the activated state.<br/><br/>Controller 2: Deactivate<br/>This is the inverse of the activate controller transitioning from the activated state animation to the deactivated state animation. The same properties apply to this controller as to the activate controller.<br/><br/>Controller 3: Activated Playback<br/>This is the same as the deactivated playback controller but for the activated state.</description>
+		<inherit name='SimpleElement'>
+		</inherit>
+		<inherit name='ECBehaviorTwoStateAnimated'>
+			<propertyPrefix>twoStateAnimated.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='SimpleElementOnRail'>
+		<description>Basic class for simple elements moving on a rail. Whenever triggered the element starts moving to the opposite end of the rail. If no trigger is used the element keeps moving forth and back between the first and last corner of the rail.</description>
+		<inherit name='SimpleElement'>
+		</inherit>
+		<inherit name='ECBehaviorMoveOnRail'>
+			<propertyPrefix>moveOnRail.</propertyPrefix>
+		</inherit>
+		<property name='canTrigger'>
+			<description>Element can trigger TriggerTouch and other touch sensors with the CFB_TRIGGER bit set.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<propertyValue name='component.renderEnvMap'>0</propertyValue>
+		<category>Dragengine</category>
+	</class>
+	<class name='RailCorner'>
+		<description>Defines a corner in a rail. Elements can use the rail to move along corners. Corners are ordered in the rail using their order number. The corner with the smallest order is the first corner in the rail. All other corners follow according to increasing order value.</description>
+		<billboard>
+			<skin>/igde/billboards/rail.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<property name='id'>
+			<description>Identifier of rail to assign this corner to.</description>
+			<type>identifier</type>
+			<idGroup>de-rail</idGroup>
+			<idUsage>true</idUsage>
+		</property>
+		<property name='order'>
+			<description>Order of the corners. The corner with the smallest order is the first corner in the rail. All other corners follow according to increasing order value.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine</category>
+	</class>
+	<class name='RandomElement'>
+		<description>Use random element class from list of element classes. This class supports only persistable element classes. If you try to use a non-persistable element class an exception will be thrown. This is requied since the random state can only be saved if the created element is persisted. If not persisted the element would simply vanish during loading.</description>
+		<billboard>
+			<skin>/igde/billboards/randomElement.deskin</skin>
+			<size x='0.5' y='0.5'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<property name='generateChance'>
+			<description>Chance to generate the element at all. Floating point value in the range from 0 to 1. A value of 1 equals 100% chance to generate the element.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='elementClasses'>
+			<description>List of element classes replacing the list stored in the element class itself. Of the form "className1 className2 ... classNameN".</description>
+			<type>list</type>
+		</property>
+		<property name='minRandomRotation'>
+			<description>Minimum random rotation in degrees applied to element rotation. Used only if element class has random rotation and scaling enabled.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='maxRandomRotation'>
+			<description>Maximum random rotation in degrees applied to element rotation. Used only if element class has random rotation and scaling enabled.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='minRandomScale'>
+			<description>Minimum random scaling applied to element scaling. Used only if element class has random rotation and scaling enabled.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='maxRandomScale'>
+			<description>Maximum random scaling applied to element scaling. Used only if element class has random rotation and scaling enabled.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine</category>
+	</class>
+	<class name='SpawnPoint'>
+		<description>Spawn point for actors and props. Spawn points have a unique name and are added to the SpawnPointList of a GameWorld.</description>
+		<ghost>true</ghost>
+		<component>
+			<model>/igde/models/interactionZone/izone.demodel</model>
+			<skin>/igde/models/interactionZone/materials/spawnPoint.deskin</skin>
+			<rig>/igde/models/interactionZone/izone.derig</rig>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		<property name='name'>
+			<description>Unique name of spawn point.</description>
+			<type>identifier</type>
+			<idGroup>spawn-point</idGroup>
+			<idUsage>true</idUsage>
+		</property>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Spawn</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='BaseLight'>
+		<description>Base light source.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorLight'>
+			<propertyPrefix>light.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/lamp.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Light</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachableBaseLight'>
+		<description>Extends BaseLight with support to be attached to other elements using a ghost collider. This allows to quickly attach a light to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeLight and ECComposeAttachLight.</description>
+		<ghost>true</ghost>
+		<billboard>
+			<skin>/igde/billboards/lamp.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorLight'>
+			<propertyPrefix>light.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<propertyValue name='light.hintMovement'>dynamic</propertyValue>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Light</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachSlot'>
+		<description>Element providing a single ECBehaviorAttachSlot. Can be used to provide arbitrary attach slots in a game world not connected to a behaviorelement. Typical use for this element is to provide another element to the player he can retrieve during the game. Usually this element is placed in the game world in the appropriate place and is static in nature. This element supports though also ECBehaviorAttachToParent allowing it to be attached to other elements. This allows arbitrary elements to be equipped with attachment slots moving along.</description>
+		<ghost>true</ghost>
+		<billboard>
+			<skin>/igde/billboards/attachSlot.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachSlot'>
+			<propertyPrefix>attachSlot.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<partialHideTag>Editing</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='TriggerTouch'>
+		<description>Trigger firing if elements enter/leave the trigger area. By default shape is set to box matching trigger size. To use custom shape use the shape property to define the shape and set shapeFromSize property to 1.</description>
+		<scaleMode>free</scaleMode>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorTouching'>
+			<propertyPrefix>touching.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/sensor.deskin</skin>
+			<size x='0.5' y='0.5'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<noScaling>true</noScaling>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<propertyValue name='touching.touchSensor.shapeFromSize'>1</propertyValue>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='TriggerEvaluate'>
+		<description>Base trigger firing if a trigger expression becomes true. This trigger is useful to reuse complex trigger expressions for various other objects.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorEvaluate'>
+			<propertyPrefix>evaluate.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/evaluate.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='TriggerShout'>
+		<description>Trigger adding message to console every time trigger expression becomes true.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorShowMessage'>
+			<propertyPrefix>showMessage.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/console.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='TriggerToggle'>
+		<description>Trigger toggling a trigger target between fired and reset state if trigger expression becomes true.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorToggle'>
+			<propertyPrefix>toggle.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/toggle.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='TriggerTimer'>
+		<description>Base trigger firing and resetting a trigger target after a certain time elapses if a trigger expression holds true.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorTimer'>
+			<propertyPrefix>timer.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/timer.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='TriggerConversation'>
+		<description>Trigger starting conversation if trigger expression changes to true.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorConversationActor'>
+			<propertyPrefix>convoActor.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorConversation'>
+			<propertyPrefix>conversation.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/conversation.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Trigger</partialHideTag>
+		<category>Dragengine/Trigger</category>
+	</class>
+	<class name='VirtualElement'>
+		<description>Virtual element for IGDE Editor use only. This element class is ignored while loading game worlds. Helps mappers to place a virtual element in the world as reference for the content worked on. This can be for example adjacend elements required for proper alignment. Use ECBehaviorComponent properties and texture replacements to change the look of the element.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='MapperNote'>
+		<description>Information for mappers during development or for modders. Ignored inside a production game run.</description>
+		<billboard>
+			<skin>/igde/billboards/note.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<property name='note'>
+			<description>Note.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine</category>
+	</class>
+	<class name='BaseSpeaker'>
+		<description>Base speaker. Supports triggers to toggle playing back sound and muting speaker. The base implementation does not persist position nor orientation only playing/muted state. Create subclass if you need to save moving speakers.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorSpeaker'>
+			<propertyPrefix>speaker.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/speaker.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Audio</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachableBaseSpeaker'>
+		<description>Extends BaseSpeaker with support to be attached to other elements using a ghost collider. This allows to quickly attach a speaker to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeSpeaker and ECComposeAttachSpeaker.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorSpeaker'>
+			<propertyPrefix>speaker.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/speaker.deskin</skin>
+			<size x='0.25' y='0.25'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Audio</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='BaseParticleEmitter'>
+		<description>Base particle emitter. Supports triggers to toggle playing back sound and muting particle emitter. The base implementation does not persist position nor orientation only playing/muted state. Create subclass if you need to save moving particle emitters.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorParticleEmitter'>
+			<propertyPrefix>particleEmitter.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/particle.deskin</skin>
+			<size x='0.4' y='0.4'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>ParticleEmitter</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachableBaseParticleEmitter'>
+		<description>Extends BaseParticleEmitter with support to be attached to other elements using a ghost collider. This allows to quickly attach a particle emitter to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeParticleEmitter and ECComposeAttachParticleEmitter.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorParticleEmitter'>
+			<propertyPrefix>particleEmitter.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/particle.deskin</skin>
+			<size x='0.4' y='0.4'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>ParticleEmitter</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='EnvironmentMap'>
+		<description>Environment map probe.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorEnvMapProbe'>
+			<propertyPrefix>envMapProbe.</propertyPrefix>
+		</inherit>
+		<hideTag>Info</hideTag>
+		<hideTag>EnvironmentMap</hideTag>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>EnvironmentMap</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='InfoConvoCoordSystem'>
+		<description>Defines a named conversation coordinate system.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorConvoCoordSystem'>
+			<propertyPrefix>convoCoordSystem.</propertyPrefix>
+		</inherit>
+		<component>
+			<model>/igde/models/box/oriented.demodel</model>
+			<skin>/igde/models/box/materials/coordSystem.deskin</skin>
+			<rig>/igde/models/box/box.derig</rig>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Info</partialHideTag>
+		<partialHideTag>Conversation</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='ECBehaviorComponent'>
+		<description>Behavior element behavior adding component support.<br/><br/>This behavior uses property prefix "component.". If you use multiple instances of ECBehaviorComponent use unique identifiers like "component(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>component.</defaultInheritPropertyPrefix>
+		<component>
+			<model>/igde/models/box/box.demodel</model>
+			<link target='model' property='model'/>
+			<link target='skin' property='skin'/>
+			<link target='rig' property='rig'/>
+			<link target='occlusionMesh' property='occlusionMesh'/>
+			<link target='audioModel' property='audioModel'/>
+			<link target='renderEnvMap' property='renderEnvMap'/>
+			<link target='affectsAudio' property='affectsAudio'/>
+		</component>
+		<property name='model'>
+			<description>Model file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>model</pathPatternType>
+		</property>
+		<property name='skin'>
+			<description>Skin file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>skin</pathPatternType>
+		</property>
+		<property name='rig'>
+			<description>Rig file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>rig</pathPatternType>
+		</property>
+		<property name='occlusionMesh'>
+			<description>Occlusion mesh file to use.</description>
+			<type>path</type>
+			<pathPatternType>occlusionMesh</pathPatternType>
+		</property>
+		<property name='audioModel'>
+			<description>Audio model to use. Replaces the model resource for audio modules only.</description>
+			<type>path</type>
+			<pathPatternType>model</pathPatternType>
+		</property>
+		<property name='renderEnvMap'>
+			<description>Element is rendered into environment maps. By default all elements are rendered into environment maps. For dynamic objects and objects close to environment map probes it is useful to not include them into environment maps.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='affectsAudio'>
+			<description>Element affects audio. By default all elements affect audio if their skin textures have audio properties set. For certain objects it might be useful to exclude them from affecting audio for example to improve performance or to avoid audio environments to change in an undesired way. In general though skin textures audio properties should determine if elements affect audio.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='hintMovement'>
+			<description>Hint telling graphic module how the component moves. Used for optimization purpose only.</description>
+			<type>selection</type>
+			<option>stationary</option>
+			<option>jittering</option>
+			<option>dynamic</option>
+			<default>stationary</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAnimated'>
+		<description>Playings back an animation using an animator for an ECBehaviorComponent.<br/><br/>This behavior uses property prefix "animated.". If you use multiple instances of ECBehaviorAnimated use unique identifiers like "animated(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>animated.</defaultInheritPropertyPrefix>
+		<property name='animator'>
+			<description>Path to animator resource to use. Uses the first controller in the animator as playback controller.</description>
+			<type>path</type>
+			<pathPatternType>animator</pathPatternType>
+		</property>
+		<property name='animation'>
+			<description>If not empty string loads animation resource replacing the one used in the animator.</description>
+			<type>path</type>
+			<pathPatternType>animation</pathPatternType>
+		</property>
+		<property name='playSpeed'>
+			<description>Playback speed of the animator. Elapsed time is multiplied by this value before controller is advanced. Hence a value of 1 is normal playback speed, values less than 1 slow down playback while values larger than 1 speed up playback. Negative values are allowed and play back the animator backwards.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='playing'>
+			<description>Animator starts playing when the object enters the game world unless triggers are used.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='playbackController'>
+			<description>Name of controller to use in the animator for playback.</description>
+			<type>string</type>
+			<default>playback</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression activating the animation.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='targetPlaying'>
+			<description>Trigger target mirroring activated state.</description>
+			<type>triggerTarget</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAttachToParent'>
+		<description>Behavior element behavior adding attach to parent support.<br/><br/>This behavior can be present only one and has the property prefix "attachToParent.".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>attachToParent.</defaultInheritPropertyPrefix>
+		<property name='bone'>
+			<description>Name of bone in parent behavior element to attach to. Use empty string to attach to the parent behavior element itself.</description>
+			<type>string</type>
+		</property>
+		<property name='attachSlot'>
+			<description>Attach to named ECBehaviorAttachSlot in the target element. Requires this element to use ECBehaviorAttachable.</description>
+			<type>string</type>
+		</property>
+		<property name='position'>
+			<description>If not empty string use attach position relative to parent instead of current object coordinate system.</description>
+			<type>vector3</type>
+		</property>
+		<property name='orientation'>
+			<description>If not empty string use attach orientation in euler angles relative to parent instead of current object coordinate system.</description>
+			<type>vector3</type>
+		</property>
+		<property name='relative'>
+			<description>Attach relative to world position or using explicit position.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='rigMode'>
+			<description>Attach using rig mode if supported by colliders. Requires both colliders to be at least rig colliders with rig resources assign which have one or more bones. This property is used to disable rig mode in case the default behavior is undesired.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAttachable'>
+		<description>Behavior element behavior adding support to be attached to an ECBehaviorAttachSlot.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>attachable.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorCollider'>
+		<description>Behavior element behavior adding collider support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>collider.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorColliderAI'>
+		<description>Behavior element behavior adding collider support suitable for actor AI.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>colliderAI.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorProjectToGround'>
+		<description>Behavior element behavior adding project to ground support for actor AI.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>projectToGround.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorLocomotion'>
+		<description>Behavior element behavior adding locomotion support for actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>locomotion.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlayerInputLook'>
+		<description>Behavior element behavior adding looking around player input.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerInputLook.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlayerInputTurn'>
+		<description>Behavior element behavior adding turning player input.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerInputTurn.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlayerInputMove'>
+		<description>Behavior element behavior adding moving player input.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerInputMove.</defaultInheritPropertyPrefix>
+		<property name='speedWalk'>
+			<description>Walking speed.</description>
+			<type>float</type>
+			<default>1.25</default>
+		</property>
+		<property name='speedRun'>
+			<description>Running speed.</description>
+			<type>float</type>
+			<default>4</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlayerInputCrouch'>
+		<description>Behavior element behavior adding crouching player input.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerInputCrouch.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorNavigator'>
+		<description>Behavior element behavior adding navigator support for actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>navigator.</defaultInheritPropertyPrefix>
+		<property name='layer'>
+			<description>Navigation space layer to use.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='spaceType'>
+			<description>Navigation space type to use.</description>
+			<type>selection</type>
+			<option>grid</option>
+			<option>mesh</option>
+			<option>volume</option>
+			<default>mesh</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorActorMover'>
+		<description>Behavior element behavior adding mover support to actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>actorMover.</defaultInheritPropertyPrefix>
+		<property name='speed'>
+			<description>Movement speed.</description>
+			<type>float</type>
+			<default>1.25</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorFootSteps'>
+		<description>Behavior element behavior adding foot step support to actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>footSteps.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableCanvas'>
+		<description>Behavior element behavior adding a renderable canvas view.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>renderableCanvas.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='size'>
+			<description>Size of canvas.</description>
+			<type>point2</type>
+			<default>512 512</default>
+		</property>
+		<property name='backgroundColor'>
+			<description>Background color of canvas.</description>
+			<type>color</type>
+		</property>
+		<property name='backgroundImage'>
+			<description>Background image of canvas.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableLight'>
+		<description>Behavior element behavior matching renderable to light intensity.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>renderableLight.</defaultInheritPropertyPrefix>
+		<property name='renderableIntensity'>
+			<description>Name of renderable to create for intensity or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='scaleIntensity'>
+			<description>Scale factor to apply to light intensity.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='renderableColor'>
+			<description>Name of renderable to create for color or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='scaleColor'>
+			<description>Scale factor to apply to light color.</description>
+			<type>color</type>
+			<default>1 1 1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableCamera'>
+		<description>Behavior element behavior adding a renderable showing the view of an ECBehaviorCamera.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>renderableCamera.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorShowMessage'>
+		<description>Behavior element behavior showing message to player if triggered.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>showMessage.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger to show message.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='message'>
+			<description>Message to show.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorConvoCoordSystem'>
+		<description>Behavior element behavior adding conversation coordinate support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>convoCoordSystem.</defaultInheritPropertyPrefix>
+		<property name='name'>
+			<description>Name of conversation coordinate system.</description>
+			<type>identifier</type>
+			<idGroup>de-convodoordsys-name</idGroup>
+			<idUsage>true</idUsage>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation relative to behavior element.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorDecal'>
+		<description>Behavior element behavior adding decal projected onto ECBehaviorComponent.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>decal.</defaultInheritPropertyPrefix>
+		<property name='position'>
+			<description>Position to project decal from.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation to project decal from.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='size'>
+			<description>Size of decal to project.</description>
+			<type>vector3</type>
+			<default>0.1 0.1 0.1</default>
+		</property>
+		<property name='skin'>
+			<description>Skin to apply to decal.</description>
+			<type>path</type>
+			<pathPatternType>skin</pathPatternType>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorDynamicSkin'>
+		<description>Behavior element behavior adding dynamic skin support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>dynamicSkin.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorEvaluate'>
+		<description>Behavior element behavior evaluating trigger expression.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>evaluate.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger expression to evaluate.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='target'>
+			<description>Trigger target to operate.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='pulse'>
+			<description>Pulse trigger target instead of fire it.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorTimer'>
+		<description>Behavior element behavior timer trigger target.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>timer.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger to start timer.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='target'>
+			<description>Trigger target to operate.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='timeout'>
+			<description>Time in seconds until target is fired/reset after expression becomes true.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='fireOnTimeout'>
+			<description>Trigger is fired (true) or reset (false) on timeout.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='startActivated'>
+			<description>Trigger is triggered during post loading the world.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='fullReset'>
+			<description>Full reset target instead of simple reset.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='pulse'>
+			<description>Set if target has to be pulsed if timeout elapses.<br/><br/>If FireOnTimeout is true invokes fire() then reset()/fullReset() on the target. If FireOnTimeout is false invokes reset()/fullReset() then fire() on the target.<br/><br/>Using pulse avoids the need to use two TriggerTimer to trigger a target multiple times in a row.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='cancelOnReset'>
+			<description>Trigger timer is cancelled if trigger expression evaluates to false.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorToggle'>
+		<description>Behavior element behavior toggling trigger target.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>toggle.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger to toggle.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='target'>
+			<description>Trigger target to operate.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='startActivated'>
+			<description>Initial state of trigger target when behavior is added to trigger table.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorTouchSensor'>
+		<description>Behavior element behavior adding touch sensor support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>touchSensor.</defaultInheritPropertyPrefix>
+		<property name='shape'>
+			<description>Shape of touch sensor. Used only if shapeFromSize is 0.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='shapeFromSize'>
+			<description>Use stub element scaling as touch sensor shape.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='bone'>
+			<description>Bone to attach to or empty string to attach to collider.</description>
+			<type>string</type>
+		</property>
+		<property name='position'>
+			<description>Position to attach to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles to attach to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAttachSlot'>
+		<description>Behavior element behavior adding support to attach other behavior elements.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>attachSlot.</defaultInheritPropertyPrefix>
+		<property name='bone'>
+			<description>Bone to attach to or empty string to attach to collider.</description>
+			<type>string</type>
+		</property>
+		<property name='position'>
+			<description>Position to attach to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles to attach to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorConversation'>
+		<description>Behavior element behavior adding conversation support.<br/><br/>This element behavior can be present only once and has the property prefix "converstion.".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>conversation.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to conversation resource to load.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Conversation' pattern='*.deconvo' default='.deconvo'/>
+			</customPathPattern>
+		</property>
+		<property name='addPlayer'>
+			<description>If not an empty string adds the player actor to the conversation using the value of this property as conversation actor identifier.</description>
+			<type>string</type>
+			<default>player</default>
+		</property>
+		<property name='topicGroup'>
+			<description>Name of topic group to use from the conversation.</description>
+			<type>string</type>
+		</property>
+		<property name='topic'>
+			<description>Topic from the topic group specified by "topicGroup" to use.</description>
+			<type>string</type>
+		</property>
+		<property name='directCamera'>
+			<description>Upon starting the conversation the conversation script takes control of the game world camera. Disabling this property can be used to do first person conversation control of the player or setting up scenarios if "addPlayer" is not used.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression used to start the conversation.</description>
+			<type>triggerExpression</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorEnvMapProbe'>
+		<description>Behavior element behavior adding environment map probe support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>envMapProbe.</defaultInheritPropertyPrefix>
+		<component>
+			<model>/igde/models/environmentMap/envmap.demodel</model>
+			<skin>/igde/models/environmentMap/envmap.deskin</skin>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</component>
+		<environmentMapProbe>
+			<link target='influenceArea' property='influenceArea'/>
+			<link target='influenceBorderSize' property='influenceBorderSize'/>
+			<link target='influencePriority' property='influencePriority'/>
+			<link target='reflectionShape' property='reflectionShape'/>
+			<link target='reflectionMask' property='reflectionMask'/>
+		</environmentMapProbe>
+		<property name='influenceArea'>
+			<description>Area inside which the environment map should take effect. The influence area is defined by a shape list. Any number and type of shapes can be assigned. The area is the union of all shapes.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='influenceBorderSize'>
+			<description>Size of the border inside the influence area defined by influenceArea. The influence fades towards the border of the influence area. The fading starts at the distance influenceBorderSize in meters from the real border of the influence area. This helps to smooth the transition should the Graphic Module support smooth transitions of environment maps.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='influencePriority'>
+			<description>If more than one environment map affects a scene element the priority indicates the order in which they are applied. This allows to place a finer grained environment map inside a larger environment map. The smaller environment map has to use a higher priority number. This way if the scene element is inside the larger environment map but also inside the smaller one the smaller one is used instead of the larger one.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='reflectionShape'>
+			<description>The reflection shape defines the virtual shape into which the reflection is mapped. This allows to give locality to environment map reflections. The reflection shape is usually defined by a box shape. Align the box shape with the scene geometry to obtain a better fitting environment map. Without a proper box shape the reflection is global and does not change with the relative position of the reflecting geometry.</description>
+			<type>shape</type>
+		</property>
+		<property name='reflectionMask'>
+			<description>The reflection mask defines areas in the reflection shape where the reflection is masked. Due to the limited nature of the reflection shape projection two environment map probes with reflection shapes next to each other create artifacts where they meet (or where they are close enough like doors). Using the reflection mask individual parts of the reflection shape are prevented from affecting the final reflection. This allows the neighbor environment map to be used in these cases providing a better result. The reflection shape masks out all surface areas overlapped by the shapes from the reflection mask.</description>
+			<type>shapeList</type>
+		</property>
+		<hideTag>Info</hideTag>
+		<hideTag>EnvironmentMap</hideTag>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorHearSounds'>
+		<description>Behavior element behavior adding hearing sounds support.<br/><br/>This behavior uses property prefix "hearSound.". If you use multiple instances of ECBehaviorHearSounds use unique identifiers like "hearSound(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>hearSound.</defaultInheritPropertyPrefix>
+		<property name='audibleDistance'>
+			<description>Audible distance in meters.</description>
+			<type>float</type>
+			<default>100</default>
+		</property>
+		<property name='volumeThreshold'>
+			<description>Volume threshold required for elements to be considered audible.</description>
+			<type>float</type>
+			<default>0.01</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorLight'>
+		<description>Behavior element behavior adding light support.<br/><br/>This behavior uses property prefix "light.". If you use multiple instances of ECBehaviorLight use unique identifiers like "light(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>light.</defaultInheritPropertyPrefix>
+		<light>
+			<color r='1' g='1' b='1'/>
+			<intensity>1</intensity>
+			<range>10</range>
+			<hintMovement>static</hintMovement>
+			<hintParameter>activation</hintParameter>
+			<link target='type' property='type'/>
+			<link target='color' property='color'/>
+			<link target='intensity' property='intensity'/>
+			<link target='range' property='range'/>
+			<link target='ambientRatio' property='ambientRatio'/>
+			<link target='halfIntensityDistance' property='halfIntensityDistance'/>
+			<link target='spotAngle' property='spotAngle'/>
+			<link target='spotRatio' property='spotRatio'/>
+			<link target='spotSmoothness' property='spotSmoothness'/>
+			<link target='spotExponent' property='spotExponent'/>
+			<link target='lightSkin' property='lightSkin'/>
+			<link target='activated' property='activated'/>
+			<link target='castShadows' property='castShadows'/>
+			<link target='hintShadowImportance' property='hintShadowImportance'/>
+			<link target='attachPosition' property='position'/>
+			<link target='attachRotation' property='orientation'/>
+			<trigger target='activated' property='trigger'/>
+		</light>
+		<property name='type'>
+			<description>Type of light. Point lights shine in all directions equally. Spot lights shine in a cone area with no light outside the cone area. Projector is similar to spot but with a pyramidal shape instead of a cone shape.</description>
+			<type>selection</type>
+			<option>point</option>
+			<option>spot</option>
+			<option>projector</option>
+			<default>point</default>
+		</property>
+		<property name='color'>
+			<description>Color of the light. If light skin is used the color is multiplied with the light skin.</description>
+			<type>color</type>
+			<default>1 1 1</default>
+		</property>
+		<property name='intensity'>
+			<description>Intensity of the light source. Intensity is based on lumen but scaled to better fit into better range. A value of 1 equals a lit living room. A value of 20 equals a clear sunny day.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='halfIntensityDistance'>
+			<description>Relative distance compared to range where the intensity of the light is reduced to 50%. A natural value is 0.1 whereas most of the time it is better to use a higher value to keep light range low.</description>
+			<type>float</type>
+			<default>0.1</default>
+		</property>
+		<property name='ambientRatio'>
+			<description>Ratio of ambient intensity compared to light intensity. Ambient intensity is used for shadow areas and helps simulate bouncing light. Graphic modules can choose to ignore this value if they can calculate dynamic ambient intensity.</description>
+			<type>range</type>
+			<range min='0' max='1'/>
+			<default>0</default>
+		</property>
+		<property name='activated'>
+			<description>Light is switched on if triggerActivate is not used.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='hintShadowImportance'>
+			<description>Sets the importance of the light casting shadows. The more important the shadows are the higher is the chance that the Graphic Module renders the light with dynamic shadows. The importance values ranges f0 equaling to ignoring dynamic shadows whenever the Graphic Modules requires more speed to 100 forcing the shadows to be dynamic always. The user can set the shadow quality in steps of 10.</description>
+			<type>integer</type>
+			<default>100</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression to use to activate the light. Empty string disables this expression.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='range'>
+			<description>Range of light in meters. Beyond this range light contribution is reduced to 0.</description>
+			<type>float</type>
+			<default>10</default>
+		</property>
+		<property name='shape'>
+			<description>Shape of the light source. Using shape the light source becomes an area light. Using shapes is usually slower than using regular light sources.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='lightSkin'>
+			<description>Use image to modulate light. For spot lights use a 2D image. For point lights use a 3D image.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
+		</property>
+		<property name='hintMovement'>
+			<description>Hint telling graphic module how the light source moves. Used for optimization purpose only.</description>
+			<type>selection</type>
+			<option>stationary</option>
+			<option>jittering</option>
+			<option>dynamic</option>
+			<default>stationary</default>
+		</property>
+		<property name='hintParameter'>
+			<description>Hint telling graphic module how light parameters change. Used for optimization purpose only.</description>
+			<type>selection</type>
+			<option>initial</option>
+			<option>activation</option>
+			<option>flicker</option>
+			<option>dynamic</option>
+			<default>activation</default>
+		</property>
+		<property name='castShadows'>
+			<description>Light casts shadows.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='spotAngle'>
+			<description>Outer spot angle in degrees.</description>
+			<type>range</type>
+			<range min='0' max='179'/>
+			<default>30</default>
+		</property>
+		<property name='spotRatio'>
+			<description>Spot angle ratio as height divided by width.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='spotSmoothness'>
+			<description>Spot smooth area fouter angle towards inside relative to radius.</description>
+			<type>range</type>
+			<range min='0' max='1'/>
+			<default>1</default>
+		</property>
+		<property name='spotExponent'>
+			<description>Spot exponent.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach light to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach light to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach light to.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorLightDimmer'>
+		<description>Behavior element behavior adding dimming support to ECBehaviorLight.<br/><br/>This behavior uses property prefix "lightDimmer.". If you use multiple instances of ECBehaviorLightDimmer use unique identifiers like "lightDimmer(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>lightDimmer.</defaultInheritPropertyPrefix>
+		<property name='timeRaise'>
+			<description>Time in seconds for light to reach maximum intensity after being activated.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='timeLower'>
+			<description>Time in seconds for light to reach zero intensity after being deactivated.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorNavigationBlocker'>
+		<description>Behavior element behavior adding navigation blocker support.<br/><br/>This behavior uses property prefix "navigationBlocker.". If you use multiple instances of ECBehaviorNavigationBlocker use unique identifiers like "navigationBlocker(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>navigationBlocker.</defaultInheritPropertyPrefix>
+		<navigationBlocker>
+			<link target='shape' property='shape'/>
+			<link target='layer' property='layer'/>
+			<link target='blockingPriority' property='priority'/>
+		</navigationBlocker>
+		<property name='shape'>
+			<description>Shape to use for blocker.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='layer'>
+			<description>Layer number to affect.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='priority'>
+			<description>Blocks navigation spaces with the same or lower priority number.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach navigation blocker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach navigation blocker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach navigation blocker to.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorNavigationSpace'>
+		<description>Behavior element behavior adding navigation space and blocker support.<br/><br/>This behavior uses property prefix "navigationSpace.". If you use multiple instances of ECBehaviorNavigationSpace use unique identifiers like "navigationSpace(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>navigationSpace.</defaultInheritPropertyPrefix>
+		<navigationSpace>
+			<link target='path' property='path'/>
+			<link target='blockerShape' property='blockerShape'/>
+			<link target='layer' property='layer'/>
+			<link target='blockingPriority' property='blockerPriority'/>
+		</navigationSpace>
+		<property name='path'>
+			<description>Navigation space to use.</description>
+			<type>path</type>
+			<pathPatternType>navigationSpace</pathPatternType>
+		</property>
+		<property name='blockerShape'>
+			<description>Navigation blocker shape to use. Can be used together with navigation space if element is not only blocking but also adding navigation space.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='layer'>
+			<description>Navigation layer to use for navigation spaces and navigation blocking if present.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='blockerPriority'>
+			<description>Priority used to decide if navigation blocker affects other navigation spaces. Navigation blockers affect only navigation spaces with an equal or lower priority.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach navigation space to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach navigation space to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach navigation space to.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorParticleEmitter'>
+		<description>Behavior element behavior adding particle emitter support.<br/><br/>This behavior uses property prefix "particleEmitter.". If you use multiple instances of ECBehaviorParticleEmitter use unique identifiers like "particleEmitter(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>particleEmitter.</defaultInheritPropertyPrefix>
+		<particleEmitter>
+			<link target='path' property='path'/>
+			<link target='attachPosition' property='position'/>
+			<link target='attachRotation' property='rotation'/>
+			<link target='casting' property='casting'/>
+			<trigger target='casting' property='trigger'/>
+		</particleEmitter>
+		<property name='path'>
+			<description>Path to particle emitter resource to use.</description>
+			<type>path</type>
+			<pathPatternType>particleEmitter</pathPatternType>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression used to enable casting particles. If burst mode is used a burst of particles is emitted each time the trigger expression changes to true. Using a pulsing trigger event is best in this situation.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach particle emitter to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach particle emitter to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach particle emitter to.</description>
+			<type>string</type>
+		</property>
+		<property name='casting'>
+			<description>Particle emitter is casting particles.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='targetCasting'>
+			<description>Trigger target reflecting casting state.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetLastParticleDied'>
+			<description>Trigger target pulsed if particles died.</description>
+			<type>triggerTarget</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlaySound'>
+		<description>Behavior element behavior play sound using one shot speaker.<br/><br/>This behavior uses property prefix "playSound.". If you use multiple instances of ECBehaviorPlaySound use unique identifiers like "playSound(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playSound.</defaultInheritPropertyPrefix>
+		<property name='trigger'>
+			<description>Trigger expression used to trigger playing sound once. Each time a new one-time speaker is created hence triggering sounds quickly makes them build up.</description>
+			<type>triggerExpression</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlaySoundRandom'>
+		<description>Extends ECBehaviorPlaySound to pick sound to play randomly from a list of sounds.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playSound.</defaultInheritPropertyPrefix>
+		<property name='triggerPlay'>
+			<description>Trigger expression used to trigger playing sound once. Each time a new one-time speaker is created hence triggering sounds quickly makes them build up.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='sounds'>
+			<description>Speaker sounds.</description>
+			<type>list</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorSpeaker'>
+		<description>Behavior element behavior adding speaker support.<br/><br/>This behavior uses property prefix "speaker.". If you use multiple instances of ECBehaviorSpeaker use unique identifiers like "speaker(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>speaker.</defaultInheritPropertyPrefix>
+		<speaker>
+			<range>10</range>
+			<rollOff>1</rollOff>
+			<link target='sound' property='sound'/>
+			<link target='looping' property='looping'/>
+			<link target='playing' property='playing'/>
+			<link target='volume' property='volume'/>
+			<link target='range' property='range'/>
+			<link target='rollOff' property='rollOff'/>
+			<link target='playSpeed' property='playSpeed'/>
+			<link target='attachPosition' property='position'/>
+			<link target='attachRotation' property='orientation'/>
+			<trigger target='playing' property='trigger'/>
+			<trigger target='muted' property='trigger(muted)'/>
+		</speaker>
+		<property name='sound'>
+			<description>Sound resource to play back with the speaker.</description>
+			<type>path</type>
+			<pathPatternType>sound</pathPatternType>
+		</property>
+		<property name='synthesizer'>
+			<description>Synthesizer resource to play back with the speaker. If synthesizer is set and properly loaded it is used otherwise the sound if set.</description>
+			<type>path</type>
+			<pathPatternType>synthesizer</pathPatternType>
+		</property>
+		<property name='volume'>
+			<description>Volume of speaker in the range from 0(silent) to 1(maximum possible volume).</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='range'>
+			<description>Range of sound in meters. Beyond this range the sound is silent. To shape the sound volume along the range use rollOff.</description>
+			<type>float</type>
+			<default>30</default>
+		</property>
+		<property name='rollOff'>
+			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='playSpeed'>
+			<description>Playing speed relative to normal speed. A value of 1 is normal playing speed. A value of 2 plays back at double the speed while 0.5 plays back at half the speed. Negative values are allowed and play backwards.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='muted'>
+			<description>Speaker is muted. Muted speakers consume no audio processing time while keeping playing back without lossing playback position or manually set volume. Muted state can be triggered.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<property name='looping'>
+			<description>Speaker is playing back looping back to the beginning when reaching the end. If disabled playback stops. If looping is disabled the speaker plays back sound once whenever the playing trigger is fired.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='playing'>
+			<description>Speaker starts playing when entering the game world. Set to false if you want to use playing trigger.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression toggling playing state of speaker.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='trigger(muted)'>
+			<description>Trigger expression toggling muted state of speaker.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='type'>
+			<description>Type of speaker.</description>
+			<type>selection</type>
+			<option>point</option>
+			<option>projected</option>
+			<default>point</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach speaker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach speaker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach speaker to.</description>
+			<type>string</type>
+		</property>
+		<property name='shape'>
+			<description>Shape of the speaker source. Using shape the speaker source becomes an area speaker. Using shapes is usually slower than using regular speaker sources.</description>
+			<type>shapeList</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorCamera'>
+		<description>Behavior element behavior adding camera support.<br/><br/>This behavior uses property prefix "camera.". If you use multiple instances of ECBehaviorCamera use unique identifiers like "camera(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>camera.</defaultInheritPropertyPrefix>
+		<property name='fov'>
+			<description>Vertical field  of view in degrees for the entire view. Typical values:<br/>- Normal: 39.6<br/>- Wide: 65.47<br/>- Ultra Wide: 83.97<br/>- Short Tele: 22.62<br/>- Medium Tele: 10.29<br/>- Long Tele: 6.87<br/>- First Person (Ego): 90</description>
+			<type>range</type>
+			<range min='0' max='180'/>
+			<default>39.6</default>
+		</property>
+		<property name='fovRatio'>
+			<description>Aspect ratio of the horizontal field of view to the vertical field of view.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='imageDistance'>
+			<description>Distance to the image plane.</description>
+			<type>float</type>
+			<default>0.01</default>
+		</property>
+		<property name='viewDistance'>
+			<description>Viewing distance up to which world geometry is rendered.</description>
+			<type>float</type>
+			<default>200</default>
+		</property>
+		<property name='exposure'>
+			<description>Exposure.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='lowestIntensity'>
+			<description>Lowest intensity the eye can adapt to.</description>
+			<type>float</type>
+			<default>10</default>
+		</property>
+		<property name='highestIntensity'>
+			<description>Highest intensity the eye can adapt to.</description>
+			<type>float</type>
+			<default>20</default>
+		</property>
+		<property name='adaptionTime'>
+			<description>Adaption time of the eye in seconds.</description>
+			<type>float</type>
+			<default>0.1</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach camera to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach camera to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach camera to.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorTwoStateAnimated'>
+		<description>Playings back an animation using an animator for an ECBehaviorComponent.<br/><br/>This behavior uses property prefix "twoStateAnimated.". If you use multiple instances of ECBehaviorTwoStateAnimated use unique identifiers like "twoStateAnimated(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>twoStateAnimated.</defaultInheritPropertyPrefix>
+		<property name='animator'>
+			<description>Path to animator resource to use. Uses the first controller in the animator as playback controller.</description>
+			<type>path</type>
+			<pathPatternType>animator</pathPatternType>
+		</property>
+		<property name='animation'>
+			<description>If not empty string loads animation resource replacing the one used in the animator.</description>
+			<type>path</type>
+			<pathPatternType>animation</pathPatternType>
+		</property>
+		<property name='playSpeed'>
+			<description>Playback speed of the animator. Elapsed time is multiplied by this value before controller is advanced. Hence a value of 1 is normal playback speed, values less than 1 slow down playback while values larger than 1 speed up playback. Negative values are allowed and play back the animator backwards.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='looping'>
+			<description>Animation is played back in looping mode. If in looping mode the animation is started if the trigger becomes true and stopped if it becomes false. In non-looping mode the animation is started if triggered and stops once finished.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression switching between activated and deactivated state.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='targetActivated'>
+			<description>Trigger target fired if behavior instance is in activated state.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetActivating'>
+			<description>Trigger target fired if behavior instance is in activating state.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='targetDeactivating'>
+			<description>Trigger target fired if behavior instance is in deactivating state.</description>
+			<type>triggerTarget</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorTouching'>
+		<description>Behavior element behavior matching trigger target to touching sensor.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>touching.</defaultInheritPropertyPrefix>
+		<inherit name='ECBehaviorTouchSensor'>
+			<propertyPrefix>touchSensor.</propertyPrefix>
+		</inherit>
+		<property name='target'>
+			<description>Trigger target to operate.</description>
+			<type>triggerTarget</type>
+		</property>
+		<property name='pulse'>
+			<description>Pulse trigger target instead of fire it.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorMoveOnRail'>
+		<description>Behavior element behavior adding moving on rail support.<br/><br/>This element behavior can be present only once and has the property prefix "moveOnRail.".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>moveOnRail.</defaultInheritPropertyPrefix>
+		<property name='rail'>
+			<description>Identifier of rail to move along. Add RailCorner to define the rail path.</description>
+			<type>identifier</type>
+			<idGroup>de-rail</idGroup>
+			<idUsage>false</idUsage>
+		</property>
+		<property name='velocity'>
+			<description>Velocity in m/s of the moving element.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='acceleration'>
+			<description>Acceleration in m/s^2 of element when starting to move.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='deceleration'>
+			<description>Deceleration in m/s^2 of element when slowing down near target.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='startAtFirstCorner'>
+			<description>Element is placed at the first corner of the rail when entering the game world. If false places the element at the last corner of the rail.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression starting the element moving whenever the trigger expression changes to true and the element is not currently moving.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='targetMoving'>
+			<description>Name of trigger target to fire if the element starts moving and reset if the element stops moving. If not set no trigger target is used.</description>
+			<type>triggerTarget</type>
+		</property>
+		<propertyValue name='component.renderEnvMap'>0</propertyValue>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorBehaviorTree'>
+		<description>Loads a single behavior tree from file and creates a BTContext. Other behaviors can add actions and conditions to this behavior tree allowing to compose behavior tree actions and conditions easily.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>behaviorTree.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to behavior tree to load. If empty uses empty behavior tree always failing to run.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Conversation' pattern='*.debtree' default='.debtree'/>
+			</customPathPattern>
+		</property>
+		<property name='run'>
+			<description>Run behavior tree during element thinking.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRidable'>
+		<description>Behavior adding support to elements to be ridden by actors. Actors will attach using relative mode if ECBehaviorProjectToGround hits this element.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>ridable.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRideOn'>
+		<description>Behavior adding support to actors to ride on ECBehaviorRidable.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>ridable.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAvoidedByActor'>
+		<description>Behavior adding support to elements to be avoided by actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>avoidedByActor.</defaultInheritPropertyPrefix>
+		<property name='origin'>
+			<description>Avoid origin.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='size'>
+			<description>Avoid size</description>
+			<type>vector2</type>
+			<default>1 1</default>
+		</property>
+		<property name='orientation'>
+			<description>Avoid orientation.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='radius'>
+			<description>Avoid radius.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAvoidCollision'>
+		<description>Behavior adding support to actors to avoid collisions with ECBehaviorAvoidedByActor.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>avoidCollision.</defaultInheritPropertyPrefix>
+		<property name='radius'>
+			<description>Avoid radius.</description>
+			<type>float</type>
+			<default>0.4</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorNetworkState'>
+		<description>Behavior element behavior adding network state support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>networkState.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorConversationActor'>
+		<description>Behavior adding conversation actor support to actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>convoActor.</defaultInheritPropertyPrefix>
+		<property name='id'>
+			<description>Actor identifier. Has to be unique in the game world. If empty string no conversation actor is created.</description>
+			<type>string</type>
+		</property>
+		<property name='aliasId'>
+			<description>Alias identifier. Alternate helper identifier for actors which has to be unique in the conversation but not in the game world.</description>
+			<type>string</type>
+		</property>
+		<property name='name'>
+			<description>Name shown in sub title box.</description>
+			<type>string</type>
+			<default>?</default>
+		</property>
+		<property name='subtitleSelectorID'>
+			<description>Sub title style selector. Widgets in the sub title text have designer selectors like "SubTitleBoxText{.&lt;selectorId&gt;}{.&lt;style&gt;}" where "style" is used by the conversation artists (for example "think" or "shout") while "selectorId" allows per-actor variations. Empty string uses no ID.</description>
+			<type>string</type>
+		</property>
+		<property name='headRotatorOffset'>
+			<description>Head rotator offset used for Head-Look-At handling.</description>
+			<type>vector3</type>
+			<default>0 -1.65 0</default>
+		</property>
+		<property name='registerConvoActor'>
+			<description>Register conversation actor with game world.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorParameterTable'>
+		<description>Behavior element behavior adding parameter table support for actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>parameterTable.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorAlignActor'>
+		<description>Behavior adding support to actors to align to a specific position and orientation.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>alignActor.</defaultInheritPropertyPrefix>
+		<property name='speed'>
+			<description>Movement speed.</description>
+			<type>float</type>
+			<default>1.25</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorActorAnimated'>
+		<description>Behavior element behavior adding animation support to actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>actorAnimated.</defaultInheritPropertyPrefix>
+		<property name='animators'>
+			<description>Map of animators to switch between. List in the form "id1:path1 ... idN:pathN".</description>
+			<type>list</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorActorCutscene'>
+		<description>Behavior adding cutscene support to actors.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>cutscene.</defaultInheritPropertyPrefix>
+		<property name='controllerName'>
+			<description>Name of controller used for cutscene progress. Value is incremented with elapsed time until a break point is hit. Value stays at break point until continue command is send by conversation script.</description>
+			<type>string</type>
+			<default>cutscene</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorInventory'>
+		<description>Behavior adding inventory support.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>inventory.</defaultInheritPropertyPrefix>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorStashable'>
+		<description>Behavior adding support to elements to be put into ECBehaviorInventory.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>stashable.</defaultInheritPropertyPrefix>
+		<property name='image'>
+			<description>Image to display in inventory.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
+		</property>
+		<property name='video'>
+			<description>Video to display in inventory.</description>
+			<type>path</type>
+			<pathPatternType>video</pathPatternType>
+		</property>
+		<property name='name'>
+			<description>Name to display in inventory.</description>
+			<type>string</type>
+		</property>
+		<property name='description'>
+			<description>Description to display in inventory.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorLookAt'>
+		<description>Behavior adding support to actors to know what element they are looking at.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>lookAt.</defaultInheritPropertyPrefix>
+		<property name='range'>
+			<description>Test range.</description>
+			<type>float</type>
+			<default>2</default>
+		</property>
+		<property name='origin'>
+			<description>Test origin.</description>
+			<type>vector3</type>
+			<default>0 1.6 0</default>
+		</property>
+		<property name='bone'>
+			<description>Test bone.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorHitScan'>
+		<description>Behavior adding hit-scan support to elements.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>hitScan.</defaultInheritPropertyPrefix>
+		<property name='range'>
+			<description>Test range.</description>
+			<type>float</type>
+			<default>20</default>
+		</property>
+		<property name='origin'>
+			<description>Test origin.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='direction'>
+			<description>Test direction.</description>
+			<type>vector3</type>
+			<default>0 0 1</default>
+		</property>
+		<property name='bone'>
+			<description>Test bone.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorSky'>
+		<description>Adds a SkyInstance resources to the world with support to mainpulate controllers. If a playback controller is set it is updated with the elapsed time. Other behaviors can update individual named controllers to add special effects.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>sky.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to sky resource to use.</description>
+			<type>path</type>
+			<pathPatternType>sky</pathPatternType>
+		</property>
+		<property name='order'>
+			<description>Render order with higher order covering lower order.</description>
+			<type>integer</type>
+			<default>0</default>
+		</property>
+		<property name='controllerPlayback'>
+			<description>Name of playback controller or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorDayTimeSky'>
+		<description>Updates day time controller of a day time supporting sky assigned to ECBehaviorSky. To use ass ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call setDayTime() to adjust the day time to show.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>dayTimeSky.</defaultInheritPropertyPrefix>
+		<property name='controller'>
+			<description>Name of day time controller or empty string if not used.</description>
+			<type>string</type>
+			<default>daytime</default>
+		</property>
+		<property name='dayTime'>
+			<description>Day time as hour of day in the range from 0 to 24.</description>
+			<type>float</type>
+			<default>10</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='BaseSky'>
+		<description>Base sky. Supports static skies, skies with playback and dynamic skies for day-of-time use.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorSky'>
+			<propertyPrefix>sky.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorDayTimeSky'>
+			<propertyPrefix>dayTimeSky.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/sky.deskin</skin>
+			<size x='1' y='1'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>Sky</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='ECBehaviorForceField'>
+		<description>Behavior element behavior adding force field support.<br/><br/>This behavior uses property prefix "forceField.". If you use multiple instances of ECBehaviorForceField use unique identifiers like "forceField(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>forceField.</defaultInheritPropertyPrefix>
+		<forceField>
+			<link target='influenceArea' property='influenceArea'/>
+			<link target='radius' property='radius'/>
+			<link target='exponent' property='exponent'/>
+			<link target='fieldType' property='fieldType'/>
+			<link target='applicationType' property='applicationType'/>
+			<link target='direction' property='direction'/>
+			<link target='force' property='force'/>
+			<link target='fluctuationDirection' property='fluctuationDirection'/>
+			<link target='fluctuationForce' property='fluctuationForce'/>
+			<link target='shape' property='shape'/>
+			<link target='enabled' property='enabled'/>
+			<link target='attachPosition' property='position'/>
+			<link target='attachRotation' property='orientation'/>
+		</forceField>
+		<property name='influenceArea'>
+			<description>Influence area.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='radius'>
+			<description>Radius.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='exponent'>
+			<description>Exponent.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='fieldType'>
+			<description>Field type.</description>
+			<type>selection</type>
+			<option>radial</option>
+			<option>linear</option>
+			<option>vortex</option>
+			<default>radial</default>
+		</property>
+		<property name='applicationType'>
+			<description>Application type.</description>
+			<type>selection</type>
+			<option>direct</option>
+			<option>surface</option>
+			<option>mass</option>
+			<option>speed</option>
+			<default>direct</default>
+		</property>
+		<property name='direction'>
+			<description>Direction.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='force'>
+			<description>Force in newton.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='fluctuationDirection'>
+			<description>Fluctuation direction in degrees.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='fluctuationForce'>
+			<description>Fluctuation force in newton.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='enabled'>
+			<description>Force field is switched on if trigger is not used.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='shape'>
+			<description>Shape of the force field. Using shape the force field becomes an area force field. Using shapes is usually slower than using regular force fields.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression to use to enable the forceField. Empty string disables this expression.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach force field to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach force field to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='BaseForceField'>
+		<description>Base force field source.</description>
+		<ghost>true</ghost>
+		<inherit name='ECBehaviorForceField'>
+			<propertyPrefix>forceField.</propertyPrefix>
+		</inherit>
+		<billboard>
+			<skin>/igde/billboards/forceField.deskin</skin>
+			<size x='0.5' y='0.5'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<noScaling>true</noScaling>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>ForceField</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachableBaseForceField'>
+		<description>Extends BaseForceField with support to be attached to other elements using a ghost collider. This allows to quickly attach a force field to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeForceField and ECComposeAttachForceField.</description>
+		<ghost>true</ghost>
+		<billboard>
+			<skin>/igde/billboards/forceField.deskin</skin>
+			<size x='0.5' y='0.5'/>
+			<locked>false</locked>
+			<spherical>false</spherical>
+			<noScaling>true</noScaling>
+			<partialHide>true</partialHide>
+			<renderEnvMap>false</renderEnvMap>
+		</billboard>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorForceField'>
+			<propertyPrefix>forceField.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<propertyValue name='forceField.hintMovement'>dynamic</propertyValue>
+		<partialHideTag>Editing</partialHideTag>
+		<partialHideTag>ForceField</partialHideTag>
+		<category>Dragengine</category>
+	</class>
+	<class name='ECBehaviorBillboard'>
+		<description>Behavior element behavior adding billboard support.<br/><br/>This behavior uses property prefix "billboard.". If you use multiple instances of ECBehaviorBillboard use unique identifiers like "billboard(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>billboard.</defaultInheritPropertyPrefix>
+		<billboard>
+			<skin>/igde/billboards/light/light.deskin</skin>
+			<link target='skin' property='skin'/>
+			<link target='offset' property='offset'/>
+			<link target='locked' property='locked'/>
+			<link target='spherical' property='spherical'/>
+			<link target='renderEnvMap' property='renderEnvMap'/>
+		</billboard>
+		<property name='skin'>
+			<description>Skin file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>skin</pathPatternType>
+		</property>
+		<property name='offset'>
+			<description>Offset along axis to place billboard at relative to element position.</description>
+			<type>vector2</type>
+			<default>0 0</default>
+		</property>
+		<property name='axis'>
+			<description>Axis along which billboard rotates.</description>
+			<type>vector3</type>
+			<default>0 1 0</default>
+		</property>
+		<property name='locked'>
+			<description>View direction of billboard is locked to camera position.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='spherical'>
+			<description>Billboard rotation is spherical(1) or cylindrical(0).</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='renderEnvMap'>
+			<description>Element is rendered into environment maps. By default all elements are rendered into environment maps. For dynamic objects and objects close to environment map probes it is useful to not include them into environment maps.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='BaseBillboard'>
+		<description>Basic class for elements containing a single billboard and collider.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='ECBehaviorBillboard'>
+			<propertyPrefix>billboard.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='AttachableBaseBillboard'>
+		<description>Attachable basic class for elements containing a single billboard and collider.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='ECBehaviorBillboard'>
+			<propertyPrefix>billboard.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='ECBehaviorAnnouncer'>
+		<description>Behavior element behavior adding announcer support.<br/><br/>This behavior uses property prefix "announer.". If you use multiple instances of ECBehaviorAnnouncer use unique identifiers like "announcer(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>announcer.</defaultInheritPropertyPrefix>
+		<speaker>
+			<range>10</range>
+			<rollOff>1</rollOff>
+			<link target='volume' property='volume'/>
+			<link target='range' property='range'/>
+			<link target='rollOff' property='rollOff'/>
+			<link target='attachPosition' property='position'/>
+			<link target='attachRotation' property='orientation'/>
+			<trigger target='playing' property='trigger'/>
+		</speaker>
+		<property name='path'>
+			<description>Announcer to use.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Announcer Definition' pattern='*.announcer.xml' default='.announcer.xml'/>
+			</customPathPattern>
+		</property>
+		<property name='volume'>
+			<description>Volume of speaker in the range from 0(silent) to 1(maximum possible volume).</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='range'>
+			<description>Range of sound in meters. Beyond this range the sound is silent. To shape the sound volume along the range use rollOff.</description>
+			<type>float</type>
+			<default>30</default>
+		</property>
+		<property name='rollOff'>
+			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression toggling playing state of speaker.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='type'>
+			<description>Type of speaker.</description>
+			<type>selection</type>
+			<option>point</option>
+			<option>projected</option>
+			<default>point</default>
+		</property>
+		<property name='position'>
+			<description>Position relative to behavior element to attach speaker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to behavior element to attach speaker to.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='bone'>
+			<description>If not empty string name of bone in ECBehaviorComponent to attach speaker to.</description>
+			<type>string</type>
+		</property>
+		<property name='shape'>
+			<description>Shape of the speaker source. Using shape the speaker source becomes an area speaker. Using shapes is usually slower than using regular speaker sources.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='text'>
+			<description>Announcement text.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+</gameDefinition>

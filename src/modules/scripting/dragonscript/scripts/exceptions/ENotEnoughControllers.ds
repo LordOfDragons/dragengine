@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Animator instance controller count too low.
+ * 
+ * This exception is thrown if an resource has a smaller controller count than required.
+ * As additional information the the source, the number of controllers and the number of
+ * required controllers are added. The source can be the path of the file the resource
+ * has been loaded from, a script class or anything else helping to identify the source
+ * of the problem. Optionally an owner object can be added to help identify which object
+ * has the failed requirements.
+ */
+class ENotEnoughControllers extends Exception
+	private var String pSource
+	private var int pControllerCount
+	private var int pRequiredControllerCount
+	private var Object pOwner
+	
+	
+	/** \brief Create exception. */
+	public func new( String source, int controllerCount, int requiredControllerCount ) \
+	this( source, controllerCount, requiredControllerCount, null )
+	end
+	
+	/** \brief Create exception. */
+	public func new( String source, int controllerCount, int requiredControllerCount, Object owner ) \
+	super( "Not enough controllers in '" + source + "': Found " + controllerCount \
+	+ ", expected at least " + requiredControllerCount )
+		this.pSource = source
+		this.pControllerCount = controllerCount
+		this.pRequiredControllerCount = requiredControllerCount
+		this.pOwner = owner
+	end
+	
+	
+	
+	/**
+	 * \brief Source.
+	 * 
+	 * Can be the path of the file the resource has been loaded from, a script class or
+	 * anything else helping to identify the source of the problem.
+	 */
+	public func String getSource()
+		return this.pSource
+	end
+	
+	/** \brief Number of controllers present in resource. */
+	public func int getControllerCount()
+		return this.pControllerCount
+	end
+	
+	/** \brief Number of required controllers. */
+	public func int getRequiredControllerCount()
+		return this.pRequiredControllerCount
+	end
+	
+	/**
+	 * \brief Owner object.
+	 * 
+	 * Can be present to help identify which object has the failed requirements.
+	 * Is null if not set.
+	 */
+	public func Object getOwner()
+		return this.pOwner
+	end
+end
+

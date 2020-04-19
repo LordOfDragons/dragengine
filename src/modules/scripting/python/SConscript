@@ -1,0 +1,132 @@
+from SConsCommon import *
+
+# import whatever is given by the parent builder
+Import( 'parent_env parent_targets parent_report' )
+
+# setup the environment matching the OS
+envModule = parent_env.Clone()
+
+libs = []
+
+if parent_env[ 'OSWindows' ]:
+	libs.append( 'kernel32' )
+	libs.append( 'user32' )
+	libs.append( 'gdi32' )
+	libs.append( 'ds32' )
+
+# python has ill programming practise so we have to shut it up somehow
+envModule.Append( CXXFLAGS = "-Wno-strict-aliasing" )
+
+# do configure stuff
+hasPython = False
+buildModule = False
+
+if envModule[ 'build_script_python' ] != TernaryVariableNo:
+	conf = envModule.Configure()
+	
+	if envModule[ 'with_python' ] != TernaryVariableNo:
+		testlibs = [ '3.5', '3.4', '3.4m', '3.3' ] #, '2.7', '2.6.', '2.5' ]
+		for l in testlibs:
+			hasPython = conf.CheckLibWithHeader( 'python{}'.format( l ), 'python{}/Python.h'.format( l ), 'c', 'Py_Initialize();' )
+			if hasPython:
+				buildModule = True
+				envModule.Append( CXXFLAGS = '-DHAS_LIB_PYTHON' )
+				envModule.Append( CXXFLAGS = '-DHAVE_PYTHON_{}_H'.format( l.replace( '.', '_' ) ) )
+				libs.append( 'python{}'.format( l ) )
+				break
+		if not hasPython and envModule[ 'with_python' ] == TernaryVariableYes:
+			Exit( 'Requested to use Python but Python.h or libpython.so could not be found or is not usable.' )
+	
+	conf.Finish()
+
+if envModule[ 'build_script_python' ] == TernaryVariableYes and not hasPython:
+	Exit( 'Requested to build Python Script Module but Python could not be found or is not usable.' )
+
+# build module if requested
+parent_report[ 'build Python Script Module' ] = 'yes' if buildModule else 'no'
+if not buildModule:
+	Return()
+
+# fetch values in expanded form for later use
+versionMajor = 1
+versionMinor = 0
+versionString = '{}.{}'.format( versionMajor, versionMinor )
+
+pathConfig = '{}/modules/scripting/python/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
+pathModule = '{}/modules/scripting/python/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
+pathShared = '{}/modules/scripting/python/{}'.format( envModule.subst( envModule[ 'path_de_share' ] ), versionString )
+
+envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+# setup the builders
+sources = []
+headers = []
+globFiles( envModule, 'src', '*.cpp', sources )
+globFiles( envModule, 'src', '*.h', headers )
+
+scripts = []
+globFiles( envModule, 'scripts', '*.py', scripts )
+
+data = []
+globFiles( envModule, 'data', '*', data )
+
+objects = [ envModule.SharedObject( s ) for s in sources ]
+
+appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+
+library = envModule.SharedLibrary( target='scrpython', source=objects, LIBS=libs )
+targetBuild = envModule.Alias( 'scr_python_build', library )
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+		install.append( envModule.Install( pathModule, l ) )
+		archive[ os.path.join( pathModule, l.name ) ] = l
+
+manifestUpdates = [
+	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+
+manifest = envModule.File( 'src/module.xml' )
+updateManifest = envModule.Command( manifest, manifest.srcnode(),
+	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+Depends( updateManifest, library )
+
+install.append( envModule.Install( pathModule, updateManifest ) )
+archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+
+for s in scripts:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+	
+for s in data:
+	filename = os.path.join( pathShared, s )
+	install.append( envModule.InstallAs( filename, s ) )
+	archive[ filename ] = envModule.File( s ).srcnode()
+
+targetInstall = envModule.Alias( 'scr_python', install )
+
+# source directory required for special commands
+srcdir = Dir( '.' ).srcnode().abspath
+
+#cloc
+buildClocBare = BuildCLOC( envModule,
+	[ '{}/src'.format( srcdir ), '{}/scripts'.format( srcdir ) ],
+	'{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+Depends( buildClocBare, sources )
+Depends( buildClocBare, headers )
+Depends( buildClocBare, scripts )
+buildCloc = envModule.Alias( 'scr_python_cloc', buildClocBare )
+
+# add the targets to the targets list
+parent_targets[ 'scr_python' ] = {
+	'name' : 'Python Script Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

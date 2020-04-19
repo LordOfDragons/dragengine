@@ -1,0 +1,94 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief List of spawn points.
+ */
+class SpawnPointList
+	/** \brief Dictionary of SpawnPoint keyed by String. */
+	private var Dictionary pSpawnPoints
+	
+	
+	
+	/** \brief Create spawn point list. */
+	public func new()
+		this.pSpawnPoints = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Number of spawn points. */
+	public func int getCount()
+		return this.pSpawnPoints.getCount()
+	end
+	
+	/** \brief Named spawn point or \em null if absent. */
+	public func SpawnPoint getNamed( String name )
+		return this.pSpawnPoints.getAt( name, null ) cast SpawnPoint
+	end
+	
+	/** \brief Named spawn point is present. */
+	public func bool hasNamed( String name )
+		return this.pSpawnPoints.has( name )
+	end
+	
+	/** \brief Add spawn point. */
+	public func void add( SpawnPoint spawnPoint )
+		if this.pSpawnPoints.has( spawnPoint.getName() )
+			throw EInvalidParam.new()
+		end
+		this.pSpawnPoints.setAt( spawnPoint.getName(), spawnPoint )
+	end
+	
+	/** \brief Remove spawn point. */
+	public func void remove( SpawnPoint spawnPoint )
+		this.pSpawnPoints.remove( spawnPoint.getName() )
+	end
+	
+	/** \brief Remove named spawn point if present. */
+	public func void removeNamed( String name )
+		if this.pSpawnPoints.has( name )
+			this.pSpawnPoints.remove( name )
+		end
+	end
+	
+	/** \brief Remove all spawn points. */
+	public func void removeAll()
+		this.pSpawnPoints.removeAll()
+	end
+	
+	/**
+	 * \brief Visit spawn pointes using block.
+	 * 
+	 * Block parameter is of type SpawnPoint.
+	 */
+	public func void forEach( Block ablock )
+		this.pSpawnPoints.forEachValue( ablock )
+	end
+end

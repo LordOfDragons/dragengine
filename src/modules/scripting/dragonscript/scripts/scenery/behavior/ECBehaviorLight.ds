@@ -1,0 +1,572 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding light support.
+ * 
+ * Behavior adds a Light resource to the the behavior element. This behavior can be added
+ * multiple times to an element. Each instance creates one light attached to the element
+ * collider which can be individually modified. To distinguish the lights each instance
+ * has an identifier which can be used to retrieve a specific instance. The prefix of the
+ * light class properties is "light." . If the identifier is not empty the light element
+ * class properties have the prefix "{id}.light.". This can be overwritten if required.
+ * Hence to use more than one light use code like this in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorLight.new(this)
+ *       ECBehaviorLight.new(this, "subLight")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the parameters to use for both lights using for example the properties
+ * "color" for the first light and "subLight.color" for the second light.
+ * 
+ * It is recommended to always specify an identifier even if only one light is used.
+ * This avoids potentially name conflicts especially if other behaviors are added attaching
+ * other resources too.
+ * 
+ * If the \em ECBehaviorCollider behavior is present in the behavior element before this
+ * behavior is added the light is attached. The light is attached to the named bone if
+ * defined otherwise it is attached statically.
+ * 
+ * Element class properties have the prefix "light{(id)}.".
+ * 
+ * 
+ * 
+ * \par Listening and Customized Light Handling
+ * 
+ * The owner element class and other behaviors can register a listener to be notified if the
+ * light is (de)activated. This can be used to provide customized light handling support for
+ * example flickering or dimmable lights.
+ * 
+ * If another behaviors wants to control the light parameters in response to these events it
+ * should call setCustomLightHandling(true). In this case the behavior implementing the light
+ * parameter handling has to use requiresThink() to think while the effect lasts.
+ * 
+ * 
+ * 
+ * \par Owner Element Visibility
+ * 
+ * The activated state of the light source is linked with the visibility state of the owner
+ * element. If the owner element becomes invisible the light resource is always deactivated.
+ * If the owner element becomes visible the light resource is activated if the behavior is
+ * activated too.
+ * 
+ * If custom light handling is used the behavior resposible for the custom light handling is
+ * required to listen to stateChanged() calls and act accordingly. The light resource will be
+ * always activated no matter if the custom light handling is enabled or not. Only if the
+ * behavior is (de)activated or the element becomes visible the light parameters are not
+ * modified if custom light handling is enabled.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorLight extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Light has been activated. */
+		func void lightActivated( Instance instance )
+		
+		/** \brief Light has been deactivated. */
+		func void lightDeactivated( Instance instance )
+		
+		/** \brief Light parameters have been changed. */
+		func void lightParametersChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Light has been activated. */
+		public func void lightActivated( Instance instance )
+		end
+		
+		/** \brief Light has been deactivated. */
+		public func void lightDeactivated( Instance instance )
+		end
+		
+		/** \brief Light parameters have been changed. */
+		public func void lightParametersChanged( Instance instance )
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Trigger listener to activate light. */
+		public class ActivateListener extends ECBehaviorTriggered.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setActivated( true )
+			end
+			
+			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
+				this.pInstance.setActivated( false )
+			end
+		end
+		
+		private var ECBehaviorLight pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var bool pActivated
+		private var Light pLight
+		private var ECBehaviorTriggered.Instance pTrigger
+		private var Array pListeners
+		private var bool pCustomLightHandling
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorLight ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pActivated = true
+			this.pCustomLightHandling = false
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pTrigger = null
+			this.pCollider = null
+			this.pListeners = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getCollider() != null
+				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+			end
+			
+			this.pLight = this.createLight( stub )
+			if this.pLight == null
+				return
+			end
+			
+			if this.pECBehavior.getTriggerTable() != null
+				this.pTrigger = this.getTriggerBehavior()
+				this.pTrigger.addListener( ActivateListener.new( this ) )
+			end
+			
+			if this.pTrigger != null and this.pTrigger.getTriggerExpression() != null
+				// required because of createLight()
+				this.pLight.setActivated( false )
+				this.pActivated = false
+				
+			else
+				this.setActivated( this.pLight.getActivated() )
+			end
+			
+			if this.pCollider != null and this.pCollider.getCollider() != null
+				this.attachLight( stub, this.pCollider )
+			end
+		end
+		
+		/**
+		 * \brief Create light.
+		 * 
+		 * Default implementation calls ECComposeLight.createLight().
+		 */
+		protected func Light createLight( StubElement stub )
+			return this.pECBehavior.getLight().createLight( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Get activate trigger behavior.
+		 * 
+		 * Default implementation uses owner class trigger behavior. If getSyncTrigger()
+		 * of parent ECBehaviorLight is not null uses referenced behavior trigger behavior.
+		 */
+		protected func ECBehaviorTriggered.Instance getTriggerBehavior()
+			var ECBehaviorLight behavior = this.pECBehavior.getSyncTrigger()
+			var BehaviorElement element = this.getElement()
+			
+			if behavior != null
+				return behavior.instance( element ).getTrigger()
+				
+			else
+				return this.pECBehavior.getTrigger().instance( element )
+			end
+		end
+		
+		/**
+		 * \brief Attach light to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachLight( StubElement stub, ECBehaviorCollider.Instance collider )
+			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pLight, stub )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorLight getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Collider behavior or null if not attached. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return this.pCollider
+		end
+		
+		/** \brief Trigger activate or \em null. */
+		public func ECBehaviorTriggered.Instance getTrigger()
+			return this.pTrigger
+		end
+		
+		/** \brief Light. */
+		public func Light getLight()
+			return this.pLight
+		end
+		
+		
+		
+		/** \brief Light is activated. */
+		public func bool getActivated()
+			return this.pActivated
+		end
+		
+		/** \brief Set if light is activated. */
+		public func void setActivated( bool activated )
+			if activated == this.pActivated
+				return
+			end
+			
+			this.pActivated = activated
+			
+			if not this.pCustomLightHandling
+				this.pLight.setActivated( activated and this.getElement().getVisible() )
+			end
+			
+			if activated
+				this.pListeners.forEach( block Listener each
+					each.lightActivated( this )
+				end )
+				
+			else
+				this.pListeners.forEach( block Listener each
+					each.lightDeactivated( this )
+				end )
+			end
+		end
+		
+		/** \brief Toggle light activated state. */
+		public func void toggle()
+			this.setActivated( not this.pActivated )
+		end
+		
+		
+		
+		/** \brief Light parameters are handled by another behavior. */
+		public func bool getCustomLightHandling()
+			return this.pCustomLightHandling
+		end
+		
+		/** \brief Set if light parameters are handled by another behavior. */
+		public func void setCustomLightHandling( bool customLightHandling )
+			this.pCustomLightHandling = customLightHandling
+		end
+		
+		/**
+		 * \brief Notify listeners light parameters changed.
+		 * 
+		 * Call this method after changing light parameters other than (de)activating light.
+		 */
+		public func void notifyParametersChanged()
+			this.pListeners.forEach( block Listener each
+				each.lightParametersChanged( this )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief State changed (visible, touchable). */
+		public func void stateChanged()
+			if this.getElement().getVisible()
+				if not this.pCustomLightHandling
+					this.pLight.setActivated( this.pActivated )
+				end
+				
+			else
+				this.pLight.setActivated( false )
+			end
+		end
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			this.getElement().getGameWorld().getWorld().addLight( this.pLight )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.getElement().getGameWorld().getWorld().removeLight( this.pLight )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			this.setActivated( env.readBool( reader ) )
+		end
+		
+		/** Writes the element to a file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			env.writeBool( writer, this.pActivated )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCollider pCollider
+	private var ECComposeLight pLight
+	private var ECComposeAttachResource pAttach
+	private var ECBehaviorTriggered pTrigger
+	private var ECBehaviorLight pSyncTrigger
+	private var TSTriggerTable pTriggerTable
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em collider.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
+	this( eclass, collider, null cast TSTriggerTable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
+	this( eclass, collider, null cast TSTriggerTable, id )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable ) this( eclass, collider, triggerTable, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id ) this( eclass, collider, triggerTable, \
+	id, id.empty() if "light" else "light(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id, String subID ) \
+	this( eclass, collider, triggerTable, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
+		this.pCollider = collider
+		this.pTriggerTable = triggerTable
+		
+		this.pLight = ECComposeLight.new( eclass, prefix )
+		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		
+		this.pTrigger = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCollider = null
+		this.pSyncTrigger = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider behavior or null to not attach. */
+	public func ECBehaviorCollider getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Composeable light for element class. */
+	public func ECComposeLight getLight()
+		return this.pLight
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return this.pAttach
+	end
+	
+	/** \brief Trigger activate. */
+	public func ECBehaviorTriggered getTrigger()
+		return this.pTrigger
+	end
+	
+	/** \brief ECBehaviorLight to synchronize triggers with or \em null to disable. */
+	public func ECBehaviorLight getSyncTrigger()
+		return this.pSyncTrigger
+	end
+	
+	/** \brief Set ECBehaviorLight to synchronize triggers with or \em null to disable. */
+	public func void setSyncTrigger( ECBehaviorLight behavior )
+		this.pSyncTrigger = behavior
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorLight getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorLight
+		end ) cast ECBehaviorLight
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorLight with specific identifier.
+	 */
+	static public func ECBehaviorLight getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorLight each
+			return each castable ECBehaviorLight and \
+				( each cast ECBehaviorLight ).getID().equals( id )
+		end ) cast ECBehaviorLight
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorLight behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorLight
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLight.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLight.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorLight.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

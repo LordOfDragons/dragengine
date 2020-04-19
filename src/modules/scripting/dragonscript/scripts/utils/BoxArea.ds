@@ -1,0 +1,96 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Immutable box area.
+ */
+class BoxArea
+	/** \brief Position. */
+	private var DVector pPosition
+	
+	/** \brief Half extends. */
+	private var Vector pHalfExtends
+	
+	/** \brief Orientation. */
+	private var Quaternion pOrientation
+	
+	
+	
+	/** \brief Create box area. */
+	public func new( DVector position, Vector halfExtends )
+		if position == null or halfExtends == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = position
+		this.pHalfExtends = halfExtends
+		this.pOrientation = Quaternion.new()
+	end
+	
+	/** \brief Create box area. */
+	public func new( DVector position, Vector halfExtends, Quaternion orientation )
+		if position == null or halfExtends == null or orientation == null
+			throw EInvalidParam.new()
+		end
+		
+		this.pPosition = position
+		this.pHalfExtends = halfExtends
+		this.pOrientation = orientation
+	end
+	
+	
+	
+	/** \brief Position. */
+	public func DVector getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Orientation. */
+	public func Quaternion getOrientation()
+		return this.pOrientation
+	end
+	
+	/** \brief Half extends. */
+	public func Vector getHalfExtends()
+		return this.pHalfExtends
+	end
+	
+	/** \brief Box contains point. */
+	public func bool containsPoint( DVector point )
+		var Vector tp
+		
+		if this.pOrientation.equals( Quaternion.new() )
+			tp = ( point - this.pPosition ).toVector()
+			
+		else
+			tp = ( DMatrix.newWorld( this.pPosition, this.pOrientation ).getInverse() * point ).toVector()
+		end
+		
+		return tp >= -this.pHalfExtends and tp <= this.pHalfExtends
+	end
+end

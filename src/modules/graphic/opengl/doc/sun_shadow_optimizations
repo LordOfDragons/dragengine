@@ -1,0 +1,167 @@
+Sun light shadows are an extreme problem for the OpenGL module since range of possible scenes vary between
+vaste areas with little number of components to dense environments with lots of components. The more components
+have to be rendered the slower the rendering gets. Due to the highly variable nature of scene composition
+supported by the Drag[en]gine the rendering is time consuming and thus reducing the number of elements to
+render has a high priority. The sun light rendering uses various tricks to cull elements as much as possible.
+
+
+
+Combine Collide List Generation
+===============================
+
+Sun light works using a CSM method using 4 splits with conventional shadow mapping. A box oriented with the sun
+light direction is fitted around the camera frustum. To ensure a correct result with components located outside
+the frustum the box is enlarged a great distance towards the light direction. This is not an optimal solution but
+catches potential shadow casters outside the view. Running this collide list population step for each split
+consumes time.
+
+To reduce this a pre-collection pass is done. In this pass the entire box is used to collect all scene elements
+potentially included in the boxes enclosing the individual splits. This includes potentially too many elements but
+avoids the need to repeat this process multiple times. The real collide lists are then populated for each split
+using this pre-collection collide list.
+
+During the pre-collection the boundaries in sun shadow space are stored in the components. These are then used
+with a simple AABB test against the individual split boundary boxes to apply only the objects to each split that
+are located in them.
+
+
+
+Pre-Collection Frustum Culling
+==============================
+
+While looking at the scene from the sun direction a lot of scene elements cast shadows that do not intersect with
+the camera frustum. All these shadows are invisible to the camera and are thus slowing down the shadow map
+rendering. These objects can be culled using a 2D test.
+
+Along the view direction shadow shafts have the same boundary boxes as the object casting the shadow shaft. Thus
+from the view of the sun light we can check the boundary boxes of all elements against the projection of the
+camera frustum. If the element boundary boxes do not intersect the camera frustum their shadow shafts also do not
+intersect the camera frustum. This test can be conducted using a convex hull test. The camera frustum is projected
+to the shadow map plane using the 4 far points of the frustum and the camera position. The near frustum points are
+unlikely to improve the result in a considerable way. Using these 5 points a convex hull generation algorithm for
+the 2D space is used to obtain a set of edges. These are at most 5 edges potentially less. This convex hull is then
+used to test the box boundary boxes against. This can cull up to 50% of scene elements in the most optimal case.
+The boundary boxes calculated in the test are also stored away for the split tests later on.
+
+When a boundary box intersects the camera frustum projection it is still possible an element is not intersecting.
+This is the case if the element starts behind the camera frustum. There the shadow shaft starts behind the frustum
+and runs all the way to the back of the shadow box missing the camera frustum. This test can be done using a fast
+conservative test missing some cullable elements but this does not affect speed too much. The 4 sides of the
+camera frustum are used as culling planes to test the AABB shadow shaft against the plane. Only the planes facing
+towards the sun are tested. These are the back planes of the camera frustum since frustums store planes with
+normals pointing inside.
+
+All this can potentially cull up to 50% of the scene elements and thus provides the largest culling for both
+densly and scarcely populated scenes.
+
+
+
+Hardware Occlusion Testing
+==========================
+
+For densly populated scenes the Pre-Collection Frustum Culling still leaves too many objects to be rendered. In
+the camera view though many shadow shafts are hidden behind other scene elements especially occlusion meshes.
+The occlusion map created for culling elements in the camera view can be reused to cull also shadow shafts
+reducing a lot the number of elements rendered for densly populated scenes.
+
+To do this the shadow shafts are calculated in a shader relative to the light direction. The shaft includes the
+boundary box of the element and extends all the way to the back of the shadow box. This AABB boundary box is then
+transformed back into world space and tested against the occlusion map as if an object had this boundary box in
+the view. If invisible the object has not to be rendered in the shadow map for all splits.
+
+While able to cull shafts this way the percentage of cullable objects is rather. This is due to the fact that
+cameras frustums are typically of 70-90 degrees field of view resulting in very long shadow shafts. These long
+shadow shafts have a high chance to intersect with the near view plane of the camera and are flagged visible
+since testing boxes crossing the near view plane is mathematically a problem.
+
+The solution for this problem is to shorten the shadow shaft. The shaft of an object located over a street only
+extends all the way to the street below. Beyond this point the street casts shadows. If this shorter shadow
+shaft is not visible the result is still correct since the street provides already all the shadow casting that
+is needed. The object can thus be safely culled from shadow casting.
+
+The optimal solution is to render a second occlusion map as seen from the sun to find the largest depth for the
+area covered by the object boundary box. The occlusion testing shader does this already just that it compares
+the depth to the object boundary box. Here we need to use the found depth as the new maximum extend in z
+direction for the object. In theory this works but in practice there is a huge problem.
+
+Correctly for each split an occlusion map has to be calculated to obtain correct results. An occlusion pass
+though requires 1-4ms depending on the graphic card used. This would be 4-16ms lost to occlusion testing which
+nullifies all the benefits of culling shadow shafts. Another possibility is to render only one occlusion map
+over the entire shadow box covering all splits.
+
+This reduces the overhead to 1-4ms but introduces another problem. In the resulting occlusion map the occlusion
+meshes are very small often less than a pixel in height. This causes occlusion meshes to overlap in the occlusion
+map. Due to the GL_LEQUAL depth comparison function overlapping pixels store the smallest depth value of all the
+overlapping occlusion meshes. We are though looking for the largest depth value across a range of pixels. This
+discrepancy leeds to wrong depth values used during testing causing scene elements to be culled from casting
+shadows that have to cast. There is no cure for this problem except insanely increasing the occlusion map
+resolution or to render an occlusion map for each split. Lucky us though there is an interesting property that
+can be used that solves all our needs although being not that optimal in culling as this solution would be.
+
+
+
+Shadow Shaft Frustum Clipping
+=============================
+
+Looking at shadow shafts from the camera view it is logical that the part of the shadow shaft passing out of
+the camera frustum has no influence on the shadow map creation process since we see no geometry outside the
+camera frustum. If we cut away these parts of the shadow shaft the result is still correct. Doing so though
+the shadow shaft is shortened to a length where it can no longer penetrate the near view plane. In fact most
+shadow shafts clamped to the frustum planes do not cross the near view plane anymore and thus can be properly
+culled by the occlusion test. For this to work the frustum culling has to be calculated in the shader.
+
+The following parameters are required to do culling against a frustum plane:
+
+	planeNormal (ni : n1..n4)
+	frustumPosition (p)
+	boxCenter (c)
+	sunDirection (d)
+	lambda (l)
+
+The planeNormal is the normal of the camera frustum as calculated by the decCollisionFrustum class from a
+camera-projection matrix. The frustumPosition is the camera position. Since all frustum planes cross in the
+camera position this point can be used for all planes as a point-on-plane. The boxCenter is the center of
+the near boundary box plane. The shadow shaft far z coordinate is located along the sun direction through
+this point. This avoids the need for a bunch of complex calculations later on. lambda is the distance from
+the boxCenter to the intersection point along the sun direction on the plane. The calculation is the
+standard point-hits-plane calculation and looks like this:
+
+	l = ( p dot ni - c dot ni ) / ( d dot ni )
+
+We are only interested in planes with normals pointing towards the sun. Hence we only use planes where
+d dot ni is less than 0. This avoids also the division by zero problem if properly implemented in the
+shader. This can be rewritten in a more shader friendly form like this:
+
+	l = ( c dot ni ) * fm + fa
+
+With the following factors:
+
+	fm = -1 / ( d dot ni )
+	fa = ( p dot ni ) / ( d dot ni )
+
+fm and fa can be precalculated for all plane normals and provided as uniform parameters. Actually they can
+be even packed into two vec4 uniforms as you can see from the occlusion test shaders allowing to calculate
+the MAD for all 4 planes in one single instruction. The new z depth for the shadow shaft is thus:
+
+	shadowShaftMaxZ = min( c + min( l1, l2, l3, l4 ), componentBoxMaxZ );
+
+This reduces the shadow shaft to the closest intersection point. Using the largest would be wrong since we
+test against planes not frustum triangles. Left over now are planes we do not want to calculate as they
+would yield wrong results. This can be correctly achieved though by using (0,0,0) as normal, 0 as fm and
+1 as fa. Such a plane yields thus always the value 1 which is the depth value used for a shadow shaft if
+not clipping against a camera frustum woule be done. This defacto disables a plane without the need for
+conditionals in shaders. The actual shader code for this calculation boils down to 7 lines of code which
+is as fast as it gets.
+
+This algorithm culls easily over 50% of scene elements in a densly populated scene. It is also rather fast
+since no occlusion map rendering is required. The test can be done in less than 1.5ms as a constant time for
+a single sun light no matter how many splits are used.
+
+
+
+Summary
+=======
+
+Using the culling tricks mentioned above 77% of elements have been culled in a city tests scene. For scenes
+with a low density of elements the culling potential is lower but the result is still good since the used
+culling techniques consume not that much time.

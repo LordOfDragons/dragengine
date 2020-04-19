@@ -1,0 +1,190 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+
+/**
+ * \brief Dictionary of animators element class property for use with XML loading.
+ * 
+ * Similar to ECPAnimator but assigns each animator a unique name. This is useful to define
+ * a list of animators to use mapped against well known identifiers. Also allows to map
+ * the same animator to multiple unique identifiers if required.
+ */
+class ECPAnimatorMap extends ElementClassProperty
+	private var LoadAnimator pLoader
+	private var Dictionary pPath
+	private var Dictionary pAnimators
+	private var Array pFailedLoading
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, LoadAnimator loader ) super( name )
+		this.pLoader = loader
+		this.pPath = Dictionary.new()
+		this.pAnimators = Dictionary.new()
+	end
+	
+	/** \brief Dispose of element class property to break reference loops. */
+	public func void dispose()
+		this.pAnimators = null
+	end
+	
+	
+	
+	/** \brief Animator loader. */
+	public func LoadAnimator getLoader()
+		return this.pLoader
+	end
+	
+	/** \brief Remove all path. */
+	public func void removeAllPath()
+		this.pPath.removeAll()
+	end
+	
+	/** \brief Set path to load for identifier. */
+	public func void setPathAt( String id, String path )
+		this.pPath.setAt( id, path )
+	end
+	
+	
+	
+	/** \brief Number of animators. */
+	public func int getCount()
+		return this.pAnimators.getCount()
+	end
+	
+	/** \brief Animator with identifier or \em null if absent. */
+	public func Animator getAt( String id )
+		return this.pAnimators.getAt( id ) cast Animator
+	end
+	
+	/** \brief Visit animators with block with String id and Animator value. */
+	public func void forEach( Block ablock )
+		this.pAnimators.forEach( ablock )
+	end
+	
+	/** \brief Remove all animators. */
+	public func void removeAll()
+		this.pAnimators.removeAll()
+	end
+	
+	/** \brief Set animator for identifier. */
+	public func void setAt( String id, Animator animator )
+		this.pAnimators.setAt( id, animator )
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pPath.removeAll()
+		( value cast Dictionary ).forEach( block String id, String path
+			this.pPath.setAt( id, path )
+		end )
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		this.pFailedLoading = null
+		this.pAnimators.removeAll()
+		
+		var String realPath, basePath = elementClass.getBasePath()
+		
+		this.pPath.forEach( block String id, String path
+			if path.empty()
+				return null
+			end
+			
+			realPath = File.absolutePath( path, basePath ).getPath()
+			try
+				this.pAnimators.setAt( id, this.pLoader.loadFromFile( realPath ) )
+				
+			catch Exception e
+				this.pFailedLoading.add( realPath )
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pFailedLoading == null
+			return false
+		end
+		
+		this.pFailedLoading.forEach( block String each
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Failed loading animator " + each )
+		end )
+		return true
+	end
+	
+	
+	
+	/**
+	 * \brief Animator map modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored animator map
+	 * is returned. If the named stub property is present it is decoded using codec 
+	 * 
+	 * Supported element stub property values are:
+	 * - "id1:path1 ... idN:pathN"
+	 * 
+	 * \returns Dictionary mapping String id to Animator.
+	 */
+	public func Dictionary getAnimators( StubWithProperties stub, CodecPropertyString codec )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return Dictionary.new( this.pAnimators )
+		end
+		
+		var Dictionary map = Dictionary.new()
+		codec.decodeStringList( value ).forEach( block String each
+			var Array parts = each.split( ':' )
+			map.setAt( parts.getAt( 0 ) cast String, this.pLoader.loadFromFile( parts.getAt( 1 ) cast String ) )
+		end )
+		return map
+	end
+end

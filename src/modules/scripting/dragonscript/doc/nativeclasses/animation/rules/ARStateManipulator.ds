@@ -1,0 +1,82 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Animator rule state manipulator.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+class ARStateManipulator extends AnimatorRule
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create animator rule. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
+	end
+	
+	
+	
+	/** \brief Set minimum position. */
+	public func void setMinimumPosition( Vector position )
+	end
+	
+	/** \brief Set maximum position. */
+	public func void setMaximumPosition( Vector position )
+	end
+	
+	/** \brief Set minimum rotation value. */
+	public func void setMinimumRotation( Vector rotation )
+	end
+	
+	/** \brief Set maximum rotation value. */
+	public func void setMaximumRotation( Vector rotation )
+	end
+	
+	/** \brief Set minimum size. */
+	public func void setMinimumSize( Vector size )
+	end
+	
+	/** \brief Set maximum size. */
+	public func void setMaximumSize( Vector size )
+	end
+	
+	
+	
+	/**
+	 * \brief Add link to target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetAddLink( ARStateManipulatorTarget target, int link )
+	end
+	
+	/**
+	 * \brief Remove all links from target.
+	 * \throws EInvalidParam \em target is not a valid value.
+	 */
+	public func void targetRemoveAllLinks( ARStateManipulatorTarget target )
+	end
+	/*@}*/
+end

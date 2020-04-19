@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator type='ImageBorder'>
+	<image parameter='center'>background/center.png</image>
+	<image parameter='sideLeft'>background/side_left.png</image>
+	<image parameter='sideTop'>background/side_top.png</image>
+	<image parameter='sideRight'>background/side_right.png</image>
+	<image parameter='sideBottom'>background/side_bottom.png</image>
+	<image parameter='cornerTopLeft'>background/corner_top_left.png</image>
+	<image parameter='cornerTopRight'>background/corner_top_right.png</image>
+	<image parameter='cornerBottomLeft'>background/corner_bottom_left.png</image>
+	<image parameter='cornerBottomRight'>background/corner_bottom_right.png</image>
+</canvasCreator>

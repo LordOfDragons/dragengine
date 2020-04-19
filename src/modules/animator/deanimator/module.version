@@ -1,0 +1,4 @@
+ANIDEANIMATOR {
+  global: DEAnimatorCreateModule;
+  local: *;
+};

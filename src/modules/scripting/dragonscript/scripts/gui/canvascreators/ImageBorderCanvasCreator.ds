@@ -1,0 +1,414 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Canvas creator creating a single image bordered by 8 border images canvas.
+ * 
+ * Creates an image canvas with an image stretched to fit the entire widget with
+ * 4 corner and 4 side canvas image located around it.
+ * 
+ * Stores 9 images:
+ * - corner top left
+ * - corner top right
+ * - corner bottom left
+ * - corner bottom right
+ * - side left
+ * - side top
+ * - side right
+ * - side bottom
+ * - center
+ * 
+ * create a canvas view with size and 9 image canvas added to it in the appropriate
+ * location. corners are all fixed size. sides are stretched to touch the respective
+ * corners. center is stretched to touch all sides. if any image is null it is not
+ * used and assumed to have 0 size.
+ */
+class ImageBorderCanvasCreator extends DefaultCanvasCreator
+	private var Image pImageCenter
+	private var Image pImageSideLeft
+	private var Image pImageSideTop
+	private var Image pImageSideRight
+	private var Image pImageSideBottom
+	private var Image pImageCornerTopLeft
+	private var Image pImageCornerTopRight
+	private var Image pImageCornerBottomLeft
+	private var Image pImageCornerBottomRight
+	private var ColorMatrix pColorMatrix
+	
+	
+	
+	/** \brief Create canvas creator. */
+	public func new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new( ImageBorderCanvasCreator creator ) super( creator )
+		this.pImageCenter = creator.pImageCenter
+		this.pImageSideLeft = creator.pImageSideLeft
+		this.pImageSideTop = creator.pImageSideTop
+		this.pImageSideRight = creator.pImageSideRight
+		this.pImageSideBottom = creator.pImageSideBottom
+		this.pImageCornerTopLeft = creator.pImageCornerTopLeft
+		this.pImageCornerTopRight = creator.pImageCornerTopRight
+		this.pImageCornerBottomLeft = creator.pImageCornerBottomLeft
+		this.pImageCornerBottomRight = creator.pImageCornerBottomRight
+		this.pColorMatrix = creator.pColorMatrix
+	end
+	
+	
+	
+	/** \brief Center image. */
+	public func Image getImageCenter()
+		return this.pImageCenter
+	end
+	
+	/** \brief Set center image. */
+	public func void setImageCenter( Image image )
+		this.pImageCenter = image
+	end
+	
+	/** \brief Left side image. */
+	public func Image getImageSideLeft()
+		return this.pImageSideLeft
+	end
+	
+	/** \brief Set left side image. */
+	public func void setImageSideLeft( Image image )
+		this.pImageSideLeft = image
+	end
+	
+	/** \brief Top side image. */
+	public func Image getImageSideTop()
+		return this.pImageSideTop
+	end
+	
+	/** \brief Set top side image. */
+	public func void setImageSideTop( Image image )
+		this.pImageSideTop = image
+	end
+	
+	/** \brief Right side image. */
+	public func Image getImageSideRight()
+		return this.pImageSideRight
+	end
+	
+	/** \brief Set right side image. */
+	public func void setImageSideRight( Image image )
+		this.pImageSideRight = image
+	end
+	
+	/** \brief Bottom side image. */
+	public func Image getImageSideBottom()
+		return this.pImageSideBottom
+	end
+	
+	/** \brief Set bottom side image. */
+	public func void setImageSideBottom( Image image )
+		this.pImageSideBottom = image
+	end
+	
+	/** \brief Top left corner image. */
+	public func Image getImageCornerTopLeft()
+		return this.pImageCornerTopLeft
+	end
+	
+	/** \brief Set top left corner image. */
+	public func void setImageCornerTopLeft( Image image )
+		this.pImageCornerTopLeft = image
+	end
+	
+	/** \brief Top right corner image. */
+	public func Image getImageCornerTopRight()
+		return this.pImageCornerTopRight
+	end
+	
+	/** \brief Set top right corner image. */
+	public func void setImageCornerTopRight( Image image )
+		this.pImageCornerTopRight = image
+	end
+	
+	/** \brief Bottom left corner image. */
+	public func Image getImageCornerBottomLeft()
+		return this.pImageCornerBottomLeft
+	end
+	
+	/** \brief Set bottom left corner image. */
+	public func void setImageCornerBottomLeft( Image image )
+		this.pImageCornerBottomLeft = image
+	end
+	
+	/** \brief Bottom right corner image. */
+	public func Image getImageCornerBottomRight()
+		return this.pImageCornerBottomRight
+	end
+	
+	/** \brief Set bottom right corner image. */
+	public func void setImageCornerBottomRight( Image image )
+		this.pImageCornerBottomRight = image
+	end
+	
+	/** \brief Color matrix to use for created canvas or \em null to use none. */
+	public func ColorMatrix getColorMatrix()
+		return this.pColorMatrix
+	end
+	
+	/** \brief Set color matrix to use for created canvas or \em null to use none. */
+	public func void setColorMatrix( ColorMatrix colorMatrix )
+		this.pColorMatrix = colorMatrix
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | center | Image | setImageCenter |
+	 * | sideLeft | Image | setImageSideLeft |
+	 * | sideTop | Image | setImageSideTop |
+	 * | sideBottom | Image | setImageSideBottom |
+	 * | cornerTopLeft | Image | setImageCornerTopLeft |
+	 * | cornerTopRight | Image | setImageCornerTopRight |
+	 * | cornerBottomLeft | Image | setImageCornerBottomLeft |
+	 * | cornerBottomRight | Image | setImageCornerBottomRight |
+	 * | colorMatrix | ColorMatrix | setColorMatrix |
+	 */
+	public func void setParameter( String name, Object value )
+		if name.equals( "center" )
+			this.setImageCenter( value cast Image )
+			
+		elif name.equals( "sideLeft" )
+			this.setImageSideLeft( value cast Image )
+			
+		elif name.equals( "sideTop" )
+			this.setImageSideTop( value cast Image )
+			
+		elif name.equals( "sideRight" )
+			this.setImageSideRight( value cast Image )
+			
+		elif name.equals( "sideBottom" )
+			this.setImageSideBottom( value cast Image )
+			
+		elif name.equals( "cornerTopLeft" )
+			this.setImageCornerTopLeft( value cast Image )
+			
+		elif name.equals( "cornerTopRight" )
+			this.setImageCornerTopRight( value cast Image )
+			
+		elif name.equals( "cornerBottomLeft" )
+			this.setImageCornerBottomLeft( value cast Image )
+			
+		elif name.equals( "cornerBottomRight" )
+			this.setImageCornerBottomRight( value cast Image )
+			
+		elif name.equals( "colorMatrix" )
+			this.setColorMatrix( value cast ColorMatrix )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return ImageBorderCanvasCreator.new( this )
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas( Point size )
+		var int width = size.getX()
+		var int height = size.getY()
+		
+		var CanvasView content = CanvasView.new()
+		content.setSize( size )
+		
+		if width < 1 or height < 1
+			return content
+		end
+		
+		if this.pColorMatrix != null
+			content.setColorTransform( this.pColorMatrix )
+		end
+		
+		var BorderSize borderSize = this.borderSize()
+		var int left = borderSize.getLeft()
+		var int top = borderSize.getTop()
+		var int right = borderSize.getRight()
+		var int bottom = borderSize.getBottom()
+		var int innerWidth = width - left - right
+		var int innerHeight = height - top - bottom
+		var int innerRight = width - right
+		var int innerBottom = height - bottom
+		var CanvasImage image
+		
+		if innerWidth < 0
+			var float factor = ( width cast float ) / ( ( left + right ) cast float )
+			left = ( ( left cast float ) * factor ) cast int
+			right = ( ( right cast float ) * factor ) cast int
+			innerWidth = 0
+			innerRight = width - right - 1
+		end
+		
+		if innerHeight < 0
+			var float factor = ( height cast float ) / ( ( top + bottom ) cast float )
+			top = ( ( top cast float ) * factor ) cast int
+			bottom = ( ( bottom cast float ) * factor ) cast int
+			innerHeight = 0
+			innerBottom = height - bottom - 1
+		end
+		
+		if this.pImageCenter != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageCenter )
+			image.setPosition( Point.new( left, top ) )
+			image.setSize( Point.new( innerWidth, innerHeight ) )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageSideLeft != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageSideLeft )
+			image.setPosition( Point.new( 0, top ) )
+			image.setSize( Point.new( left, innerHeight ) )
+			image.setOrder( 1.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageSideTop != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageSideTop )
+			image.setPosition( Point.new( left, 0 ) )
+			image.setSize( Point.new( innerWidth, top ) )
+			image.setOrder( 2.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageSideRight != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageSideRight )
+			image.setPosition( Point.new( innerRight, top ) )
+			image.setSize( Point.new( right, innerHeight ) )
+			image.setOrder( 3.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageSideBottom != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageSideBottom )
+			image.setPosition( Point.new( left, innerBottom ) )
+			image.setSize( Point.new( innerWidth, bottom ) )
+			image.setOrder( 4.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageCornerTopLeft != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageCornerTopLeft )
+			image.setSize( Point.new( left, top ) )
+			image.setOrder( 5.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageCornerTopRight != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageCornerTopRight )
+			image.setPosition( Point.new( innerRight, 0 ) )
+			image.setSize( Point.new( right, top ) )
+			image.setOrder( 6.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageCornerBottomLeft != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageCornerBottomLeft )
+			image.setPosition( Point.new( 0, innerBottom ) )
+			image.setSize( Point.new( left, bottom ) )
+			image.setOrder( 7.0 )
+			content.addCanvas( image )
+		end
+		
+		if this.pImageCornerBottomRight != null
+			image = CanvasImage.new()
+			image.setImage( this.pImageCornerBottomRight )
+			image.setPosition( Point.new( innerRight, innerBottom ) )
+			image.setSize( Point.new( right, bottom ) )
+			image.setOrder( 8.0 )
+			content.addCanvas( image )
+		end
+		
+		return content
+	end
+	
+	/**
+	 * \brief Calculate size of border elements.
+	 * \details Returns the minimum and maximum width and height of side and corner
+	 *          images if existing for the appropriate border side.
+	 */
+	public func BorderSize borderSize()
+		var int left
+		var int top
+		var int right
+		var int bottom
+		
+		if this.pImageSideLeft != null
+			left = DEMath.max( left, this.pImageSideLeft.getWidth() )
+		end
+		if this.pImageSideTop != null
+			top = DEMath.max( top, this.pImageSideTop.getHeight() )
+		end
+		if this.pImageSideRight != null
+			right = DEMath.max( right, this.pImageSideRight.getWidth() )
+		end
+		if this.pImageSideBottom != null
+			bottom = DEMath.max( bottom, this.pImageSideBottom.getHeight() )
+		end
+		
+		if this.pImageCornerTopLeft != null
+			left = DEMath.max( left, this.pImageCornerTopLeft.getWidth() )
+			top = DEMath.max( top, this.pImageCornerTopLeft.getHeight() )
+		end
+		if this.pImageCornerTopRight != null
+			right = DEMath.max( right, this.pImageCornerTopRight.getWidth() )
+			top = DEMath.max( top, this.pImageCornerTopRight.getHeight() )
+		end
+		if this.pImageCornerBottomLeft != null
+			left = DEMath.max( left, this.pImageCornerBottomLeft.getWidth() )
+			bottom = DEMath.max( bottom, this.pImageCornerBottomLeft.getHeight() )
+		end
+		if this.pImageCornerBottomRight != null
+			right = DEMath.max( right, this.pImageCornerBottomRight.getWidth() )
+			bottom = DEMath.max( bottom, this.pImageCornerBottomRight.getHeight() )
+		end
+		
+		return BorderSize.new( left, top, right, bottom )
+	end
+	
+end

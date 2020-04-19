@@ -1,0 +1,4 @@
+AUDNULL {
+  global: NullAudioCreateModule;
+  local: *;
+};

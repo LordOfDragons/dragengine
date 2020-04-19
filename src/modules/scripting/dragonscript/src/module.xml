@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE module SYSTEM "DragengineModule.dtd">
+<module>
+	<name>DragonScript</name>
+	<description>Provides access to the Drag[en]gine using the DragonScript
+		scripting language. Loaded by default is a basic script package with
+		mathematical classes. Additional frameworks can be loaded depending
+		on the needs of your game. This is an interprated language hence
+		if you need time critical calculations using another language might
+		be better.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>1.0</version>
+	<type>Script</type>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>DSCreateModule</entrypoint>
+	</library>
+	<data>
+		<directory>/</directory>
+	</data>
+</module>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator type='ImageBorder'>
+	<image parameter='sideLeft'>hover/side_left.png</image>
+	<image parameter='sideTop'>hover/side_top.png</image>
+	<image parameter='sideRight'>hover/side_right.png</image>
+	<image parameter='sideBottom'>hover/side_bottom.png</image>
+	<image parameter='cornerTopLeft'>hover/corner_top_left.png</image>
+	<image parameter='cornerTopRight'>hover/corner_top_right.png</image>
+	<image parameter='cornerBottomLeft'>hover/corner_bottom_left.png</image>
+	<image parameter='cornerBottomRight'>hover/corner_bottom_right.png</image>
+</canvasCreator>

@@ -1,0 +1,116 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+ 
+ 
+namespace Dragengine.Gui.Borders.Factories
+
+
+/**
+ * Factory for TwoColorBorder.
+ */
+public class TwoColorBorderFactory implements BorderFactory
+	/** Raised or lowered edge. */
+	private var bool pRaised
+	/** Highlight color or null to use the widget gui theme highlight color. */
+	private var Color pColorHilight
+	/** Shadow color or null to use the widget gui theme shadow color. */
+	private var Color pColorShadow
+	
+	
+	
+	/** Creates a new raised etched border factory. */
+	public func new()
+		this.pRaised = true
+	end
+	
+	/** \brief Create copy of border factory. */
+	public func new( TwoColorBorderFactory factory )
+		this.pRaised = factory.pRaised
+		this.pColorHilight = factory.pColorHilight
+		this.pColorShadow = factory.pColorShadow
+	end
+	
+	
+	
+	/** Determines if the border is raised or lowered. */
+	public func bool getRaised()
+		return this.pRaised
+	end
+	
+	/** Sets if the border is raised or lowered. */
+	public func void setRaised( bool raised )
+		this.pRaised = raised
+	end
+	
+	/** Retrieves the hilight color or null to use the widget gui theme hilight color. */
+	public func Color getColorHilight()
+		return this.pColorHilight
+	end
+	
+	/** Sets the hilight color or null to use the widget gui theme hilight color. */
+	public func void setColorHilight( Color color )
+		this.pColorHilight = color
+	end
+	
+	/** Retrieves the shadow color or null to use the widget gui theme shadow color. */
+	public func Color getColorShadow()
+		return this.pColorShadow
+	end
+	
+	/** Sets the shadow color or null to use the widget gui theme shadow color. */
+	public func void setColorShadow( Color color )
+		this.pColorShadow = color
+	end
+	
+	
+	
+	/** Create border. */
+	public func Border createBorder()
+		var TwoColorBorder border = TwoColorBorder.new()
+		
+		border.setRaised( this.pRaised )
+		border.setColorHilight( this.pColorHilight )
+		border.setColorShadow( this.pColorShadow )
+		
+		return border
+	end
+	
+	/** \brief Create factory copy. */
+	public func BorderFactory copyFactory()
+		return TwoColorBorderFactory.new( this )
+	end
+	
+	/** \brief Set parameter. */
+	public func void setParameter( String name, Object value )
+		if name.equals( "raised" )
+			this.setRaised( value cast bool )
+			
+		elif name.equals( "colorHilight" )
+			this.setColorHilight( value cast Color )
+			
+		elif name.equals( "colorShadow" )
+			this.setColorShadow( value cast Color )
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+end

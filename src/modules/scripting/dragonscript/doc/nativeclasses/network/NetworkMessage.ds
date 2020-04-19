@@ -1,0 +1,66 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Networking
+
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+/**
+ * \brief Network message.
+ * 
+ * This is a native class.
+ */
+class NetworkMessage
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create network message. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Llength of the message data. */
+	public func int getDataLength()
+	end
+	
+	/** \brief Clear message data. */
+	public func void clear()
+	end
+	
+	/**
+	 * \brief Get new FileReader starting reading at the start of the data.
+	 * 
+	 * Multiple file readers can be active on the same message at different read positions.
+	 * If the data is changed while file readers are using this message file the next read
+	 * calls can cause exceptions due to reading past the end of file.
+	 */
+	public func FileReader getReader()
+	end
+	
+	/**
+	 * \brief Get new FileWriter.
+	 * 
+	 * Using multiple file writers is allowed but discouraged. Each writer maintain its own
+	 * write position. If multiple writers attempt to write on the same message file the data
+	 * is overwritten. If you need to use multiple file writers you have to manually move the
+	 * write pointers to the right location.
+	 * 
+	 * If file readers are using this message file while writers change the content the next
+	 * read calls can cause exceptions due to reading past the end of file.
+	 * 
+	 * \param append If \em true start writing at end of data. If \em false resizes
+	 *               data to 0 bytes and starts writing.
+	 */
+	public func FileWriter getWriter( bool append )
+	end
+	/*@}*/
+end

@@ -1,0 +1,107 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Helper class for preloading resources.
+ * 
+ * To properly track the progress of preloading do the following:
+ * - Add all element classes to the manager
+ * - For all StubGameWorld set this counter as the parent of the stub counter
+ * - For all other loading tasks use this counter
+ * 
+ * Doing so this counter can be used to monitor the entire loading process.
+ */
+class PreloadManager
+	/** \brief List of element classes to preload. */
+	private var Array pElementClasses
+	
+	/** \brief Preload counter. */
+	private var PreloadCounter pCounter
+	
+	
+	
+	/** \brief Create preload manager instance. */
+	public func new()
+		this.pElementClasses = Array.new()
+		this.pCounter = PreloadCounter.new()
+	end
+	
+	
+	
+	/** \brief Reset preload manager to initial state. */
+	public func void reset()
+		this.pElementClasses.removeAll()
+		this.pCounter.reset()
+	end
+	
+	
+	
+	/** \brief Add element class if absent. */
+	public func void addElementClass( ElementClass elementClass )
+		if elementClass == null
+			throw EInvalidParam.new()
+		end
+		
+		if not this.pElementClasses.has( elementClass )
+			this.pElementClasses.add( elementClass )
+		end
+	end
+	
+	/** \brief Remove all element classes. */
+	public func void removeAllElementClasses()
+		this.pElementClasses = Array.new()
+	end
+	
+	/**
+	 * \brief Add element classes registered classes depend upon.
+	 * 
+	 * Call this function before calling the preloadElementClasses function.
+	 */
+	public func void addElementClassDependencies()
+		this.pElementClasses.forEach( block ElementClass each
+			each.addDependencies( this )
+		end )
+	end
+	
+	/** \brief Preload element classes. */
+	public func void preloadElementClasses()
+		this.pElementClasses.forEach( block ElementClass each
+			each.preloadResources( this.pCounter )
+		end )
+		
+		this.removeAllElementClasses()
+	end
+	
+	
+	
+	/** \brief Preload counter. */
+	public func PreloadCounter getCounter()
+		return this.pCounter
+	end
+end

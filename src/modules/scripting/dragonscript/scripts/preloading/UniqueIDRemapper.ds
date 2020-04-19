@@ -1,0 +1,236 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Preloading
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Remap UniqueIDs to use multiple GameWorld resources simulatanously.
+ */
+class UniqueIDRemapper
+	/** \brief Immutable remap entry. */
+	public class RemapEntry
+		/** \brief First UniqueID to remap. */
+		private var UniqueID pFirstID
+		
+		/** \brief Last UniqueID just outside the remap range. */
+		private var UniqueID pLastID
+		
+		/** \brief Offset to add to UniqueID ids to remap them. */
+		private var UniqueID pOffset
+		
+		/** \brief First remapped UniqueID. */
+		private var UniqueID pRemappedFirstID
+		
+		/** \brief Last remapped UniqueID just outside the range. */
+		private var UniqueID pRemappedLastID
+		
+		
+		
+		/** \brief Create immutable remap entry. */
+		public func new( UniqueID firstID, UniqueID lastID, UniqueID offset )
+			if firstID == null or lastID == null or offset == null
+				throw EInvalidParam.new()
+			end
+			
+			this.pFirstID = firstID
+			this.pLastID = lastID
+			this.pOffset = offset
+			this.pRemappedFirstID = firstID + offset
+			this.pRemappedLastID = lastID + offset
+		end
+		
+		
+		
+		/** \brief First UniqueID to remap. */
+		public func UniqueID getFirstID()
+			return this.pFirstID
+		end
+		
+		/** \brief Last UniqueID just outside the remap range. */
+		public func UniqueID getLastID()
+			return this.pLastID
+		end
+		
+		/** \brief Offset to add to UniqueID ids to remap them. */
+		public func UniqueID getOffset()
+			return this.pOffset
+		end
+		
+		/** \brief First remapped UniqueID. */
+		public func UniqueID getRemappedFirstID()
+			return this.pRemappedFirstID
+		end
+		
+		/** \brief Last remapped UniqueID just outside the range. */
+		public func UniqueID getRemappedLastID()
+			return this.pRemappedLastID
+		end
+		
+		
+		
+		/** \brief ID falls into range. */
+		public func bool inRange( UniqueID id )
+			return id >= this.pFirstID and id < this.pLastID
+		end
+		
+		/** \brief ID does not fall into range. */
+		public func bool notInRange( UniqueID id )
+			return id < this.pFirstID or id >= this.pLastID
+		end
+		
+		/**
+		 * \brief Remap ID if falling into range.
+		 * \returns Offset ID if falling into range otherwise \em id.
+		 */
+		public func UniqueID remap( UniqueID id )
+			if id >= this.pFirstID and id < this.pLastID
+				return id + this.pOffset
+				
+			else
+				return id
+			end
+		end
+		
+		/** \brief ID falls into remapped range. */
+		public func bool inRemappedRange( UniqueID id )
+			return id >= this.pRemappedFirstID and id < this.pRemappedLastID
+		end
+		
+		/** \brief ID does not fall into remapped range. */
+		public func bool notInRemapedRange( UniqueID id )
+			return id < this.pRemappedFirstID or id >= this.pRemappedLastID
+		end
+		
+		
+		
+		/** \brief Read from file. */
+		public static func RemapEntry readFromFile( FileReader reader )
+			var UniqueID firstID = UniqueID.readFromFile( reader )
+			var UniqueID lastID = UniqueID.readFromFile( reader )
+			var UniqueID offset = UniqueID.readFromFile( reader )
+			return RemapEntry.new( firstID, lastID, offset )
+		end
+		
+		/** \brief Write to file. */
+		public func void writeToFile( FileWriter writer )
+			this.pFirstID.writeToFile( writer )
+			this.pLastID.writeToFile( writer )
+			this.pOffset.writeToFile( writer )
+		end
+	end
+	
+	
+	
+	/** \brief Array of RemapEntry. */
+	private var Array pRemapEntries
+	
+	
+	
+	/** \brief Create unique id mapper. */
+	public func new()
+		this.pRemapEntries = Array.new()
+	end
+	
+	
+	
+	/** \brief Number of remap entries. */
+	public func int getCount()
+		return this.pRemapEntries.getCount()
+	end
+	
+	/** \brief Remap entry at index. */
+	public func RemapEntry getAt( int index )
+		return this.pRemapEntries.getAt( index ) cast RemapEntry
+	end
+	
+	/** \brief Remap entry containing ID or \em null if absent. */
+	public func RemapEntry getContaining( UniqueID id )
+		return this.pRemapEntries.find( block RemapEntry each
+			return each.inRange( id )
+		end ) cast RemapEntry
+	end
+	
+	/** \brief Add remap entry. */
+	public func void add( RemapEntry remapEntry )
+		if remapEntry == null
+			throw EInvalidParam.new()
+		end
+		this.pRemapEntries.add( remapEntry )
+	end
+	
+	/**
+	 * \brief Add remap entry.
+	 * 
+	 * Entry remaps IDs from range (firstID..lastID) to (target..target+(lastID-firstID)).
+	 * 
+	 * \returns Added entry.
+	 */
+	public func RemapEntry add( UniqueID firstID, UniqueID lastID, UniqueID target )
+		var RemapEntry entry = RemapEntry.new( firstID, lastID, target - firstID )
+		this.pRemapEntries.add( entry )
+		return entry
+	end
+	
+	/** \brief Remove all remap entries. */
+	public func void removeAll()
+		this.pRemapEntries.removeAll()
+	end
+	
+	/** \brief Visit remap entries with block with parameter RemapEntry. */
+	public func void forEach( Block ablock )
+		this.pRemapEntries.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Remap ID if falling into a remap range.
+	 * \returns Offset ID if falling into a remap range otherwise \em id.
+	 */
+	public func UniqueID remap( UniqueID id )
+		return this.pRemapEntries.inject( id, block UniqueID id, RemapEntry entry
+			return entry.remap( id )
+		end ) cast UniqueID
+	end
+	
+	
+	
+	/** \brief Read from file. */
+	public static func UniqueIDRemapper readFromFile( FileReader reader )
+		var UniqueIDRemapper remapper = UniqueIDRemapper.new()
+		var int i, count = reader.readUShort()
+		for i = 0 to count
+			remapper.pRemapEntries.add( RemapEntry.readFromFile( reader ) )
+		end
+		return remapper
+	end
+	
+	/** \brief Write to file. */
+	public func void writeToFile( FileWriter writer )
+		var int i, count = this.pRemapEntries.getCount()
+		writer.writeUShort( count )
+		this.pRemapEntries.forEach( block RemapEntry each
+			each.writeToFile( writer )
+		end )
+	end
+end

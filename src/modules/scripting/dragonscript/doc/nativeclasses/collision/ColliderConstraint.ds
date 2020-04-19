@@ -1,0 +1,243 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Collider constraint.
+ * 
+ * This is a native class.
+ */
+class ColliderConstraint
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create collider constraint. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Target collider or \em null to target the world. */
+	public func Collider getTargetCollider()
+	end
+	
+	/** \brief Set target collider or \em null to target the world. */
+	public func void setTargetCollider( Collider collider )
+	end
+	
+	/** \brief Taret bone or empty string if not targeting a bone. */
+	public func String getTargetBone()
+	end
+	
+	/** \brief Set target bone or empty string if not targeting a bone. */
+	public func void setTargetBone( String bone )
+	end
+	
+	
+	
+	/** \brief Position of the reference coordinate system. */
+	public func Vector getPosition1()
+	end
+	
+	/** \brief Set position of the reference coordinate system. */
+	public func void setPosition1( Vector position )
+	end
+	
+	/** \brief Orientation of the reference coordinate system. */
+	public func Quaternion getOrientation1()
+	end
+	
+	/** \brief Set orientation of the reference coordinate system. */
+	public func void setOrientation1( Quaternion orientation )
+	end
+	
+	/** \brief Position of the reference coordinate system. */
+	public func Vector getPosition2()
+	end
+	
+	/** \brief Set position of the reference coordinate system. */
+	public func void setPosition2( Vector position )
+	end
+	
+	/** \brief Orientation of the reference coordinate system. */
+	public func Quaternion getOrientation2()
+	end
+	
+	/** \brief Set orientation of the reference coordinate system. */
+	public func void setOrientation2( Quaternion orientation )
+	end
+	
+	/** \brief Bone index or -1 if attached to the entire component. */
+	public func int getBone()
+	end
+	
+	/** \brief Set bone index or -1 if attached to the entire component. */
+	public func void setBone( int bone )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Degree of freedom (DOF) limits */
+	/*@{*/
+	/**
+	 * \brief Lower limit for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getLowerLimitFor( ColliderConstraintDof dof )
+	end
+	
+	/**
+	 * \brief Upper limit for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getUpperLimitFor( ColliderConstraintDof dof )
+	end
+	
+	/**
+	 * \brief Set lower and upper limit.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setLimitsFor( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	end
+	
+	/**
+	 * \brief Set given DOF to locked.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setLockedFor( ColliderConstraintDof dof )
+	end
+	
+	/**
+	 * \brief Set given DOF free.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setFreeFor( ColliderConstraintDof dof )
+	end
+	
+	
+	
+	/** \brief Lower limits for all linear DOFs as a vector. */
+	public func Vector getLinearLowerLimits()
+	end
+	
+	/** \brief Upper limits for all linear DOFs as a vector. */
+	public func Vector getLinearUpperLimits()
+	end
+	
+	/** \brief Set limits for linear all linear DOFs from vectors. */
+	public func void setLinearLimits( Vector lowerLimits, Vector upperLimits )
+	end
+	
+	/** \brief Lower limits for all angular DOFs as a vector. */
+	public func Vector getAngularLowerLimits()
+	end
+	
+	/** \brief Upper limits for all angular DOFs as a vector. */
+	public func Vector getAngularUpperLimits()
+	end
+	
+	/** \brief Set limits for angular all angular DOFs from vectors. */
+	public func void setAngularLimits( Vector lowerLimits, Vector upperLimits )
+	end
+	
+	
+	
+	/** \brief Lock all DOFs. */
+	public func void lockAll()
+	end
+	
+	/** \brief Lock all linear DOFs and sets all angular DOFs free. */
+	public func void setToBallJoint()
+	end
+	
+	/** \brief Set upper and lower limit for the given angular DOF and locks all others. */
+	public func void setToHingeJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	end
+	
+	/** \brief Set upper and lower limit for the given linear DOF and locks all others. */
+	public func void setPistonJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Degree of freedom (DOF) damping */
+	/*@{*/
+	/**
+	 * \brief Linear damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getLinearDamping()
+	end
+	
+	/**
+	 * \brief Set linear damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setLinearDamping( float damping )
+	end
+	
+	/**
+	 * \brief Angular damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getAngularDamping()
+	end
+	
+	/**
+	 * \brief Set angular damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setAngularDamping( float damping )
+	end
+	
+	/**
+	 * \brief Spring damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getSpringDamping()
+	end
+	
+	/**
+	 * \brief Set spring damping for DOF.
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setSpringDamping( float damping )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Rope */
+	/*@{*/
+	/** \brief Use rope physics. */
+	public func bool getIsRope()
+	end
+	
+	/** \brief Set use rope physics. */
+	public func void setIsRope( bool isRope )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Breaking */
+	/*@{*/
+	/** \brief Breaking threshold impulse. */
+	public func float getBreakingThreshold()
+	end
+	
+	/** \brief Set breaking threshold impulse. */
+	public func void setBreakingThreshold( float impuls )
+	end
+	/*@}*/
+end

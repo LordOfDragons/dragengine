@@ -1,0 +1,74 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Sky link.
+ * 
+ * Wraps a sky link by link index. Valid only as long as the wrapped sky does not
+ * change link layout. The user is responsible to call Sky.contentChanged() after
+ * changing one or more links. Sky links should not be changed if possible after
+ * being used in sky instances.
+ * 
+ * This is a native class.
+ */
+class SkyLink
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Sky link can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner sky. */
+	public func Sky getSky()
+	end
+	
+	/** \brief Link index. */
+	public func int getLinkIndex()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Links */
+	/*@{*/
+	/** \brief Controller index or -1 if not assigned. */
+	public func int getController()
+	end
+	
+	/** \brief Set controller index or -1 if not assigned. */
+	public func void setController( int controller )
+	end
+	
+	/** \brief Curve mapping controller value to property value. */
+	public func CurveBezier getCurve()
+	end
+	
+	/**
+	 * \brief Set curve mapping controller value to property value.
+	 * 
+	 * Can be null to set an empty curve.
+	 */
+	public func void setCurve( CurveBezier curve )
+	end
+	
+	/** \brief Link repeat. */
+	public func int getRepeat()
+	end
+	
+	/** \brief Set link repeat. */
+	public func void setRepeat( int repeat )
+	end
+	/*@}*/
+end
