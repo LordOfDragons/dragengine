@@ -4,3 +4,6 @@ build
 __pycache__
 *.pyc
 cloc*.csv
+custom.py
+build.log
+config.log
