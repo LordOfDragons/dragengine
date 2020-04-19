@@ -1,5 +1,9 @@
 # Drag[en]gine Game Engine
 
+Website: https://dragondreams.ch/?page_id=152
+
+Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
