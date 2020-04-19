@@ -8,6 +8,9 @@
 - Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
 - Source Code Repository: https://github.com/LordOfDragons/dragengine
 
+Example projects can be found on Development Wiki or in this repository:
+- Example Projects Repository: https://github.com/LordOfDragons/deexamples
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
