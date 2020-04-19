@@ -1,9 +1,9 @@
 # Drag[en]gine Game Engine
 
-Website: https://dragondreams.ch/?page_id=152
-IndieDB Engine Profile: https://www.indiedb.com/engines/dragengine
-GameDev Engine Profile: https://www.gamedev.net/manage/projects/356/
-Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
+- Website: https://dragondreams.ch/?page_id=152
+- IndieDB Engine Profile: https://www.indiedb.com/engines/dragengine
+- GameDev Engine Profile: https://www.gamedev.net/manage/projects/356/
+- Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
 
 # Building Linux
 
