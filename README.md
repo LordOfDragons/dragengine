@@ -6,6 +6,7 @@
 - IndieDB Engine Profile: https://www.indiedb.com/engines/dragengine
 - GameDev Engine Profile: https://www.gamedev.net/manage/projects/356/
 - Development Wiki: https://developer.dragondreams.ch/wiki/doku.php
+- Source Code Repository: https://github.com/LordOfDragons/dragengine
 
 # Building Linux
 
