@@ -373,23 +373,14 @@ bool deglLauncher::RunCommandLineGame(){
 		pCmdLineGame = list.GetAt( 0 ); // TODO support multiple games using a choice for for example
 		pCmdLineGame->AddReference();
 		
-		// if a game file is specified it is always used even if a game with the same identifier
-		// is already installed. running a game by explicit game file overrides the installed
-		// one. otherwise it is difficult for the user to understand why something else happens
-		// than he indented
-// 		printf( "IDENTIFIER: '%s'\n", pCmdLineGame->GetIdentifier().GetString() );
-// 		printf( "DELGA: '%s'\n", pCmdLineGame->GetDelgaFile().GetString() );
-		//deglGame * const gameCheck = pGameManager->GetGameList().GetWithID( game->GetIdentifier() );
+		// load configuration if the game is not installed. this allows to keep the parameter
+		// changes alive done by the player inside the game
+		if( ! pGameManager->GetGameList().Has( pCmdLineGame ) ){
+			pCmdLineGame->LoadConfig();
+		}
 		
-		/*if( gameCheck ){
-			game->FreeReference();
-			game = gameCheck;
-			
-		}else{*/
-			// otherwise init the game as it would have been if loaded normally
-			pCmdLineGame->VerifyRequirements();
-			game = pCmdLineGame;
-		//}
+		pCmdLineGame->VerifyRequirements();
+		game = pCmdLineGame;
 		
 	}else{
 		try{

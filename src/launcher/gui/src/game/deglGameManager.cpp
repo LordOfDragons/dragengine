@@ -115,10 +115,6 @@ void deglGameManager::Verify(){
 	
 	for( i=0; i<count; i++ ){
 		deglGame &game = *pGameList.GetAt( i );
-		
-		if( game.GetCustomProfile() ){
-			game.GetCustomProfile()->Verify( *pLauncher );
-		}
 		game.VerifyRequirements();
 	}
 }

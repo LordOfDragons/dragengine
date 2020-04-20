@@ -234,6 +234,11 @@ void deglGame::VerifyRequirements(){
 	deglEngineModule *module;
 	deModuleSystem::eModuleTypes formatType;
 	
+	// verify custom profile if present
+	if( pCustomProfile ){
+		GetCustomProfile()->Verify( pLauncher );
+	}
+	
 	// check if all file formats are supported
 	pAllFormatsSupported = true;
 	

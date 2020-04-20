@@ -35,7 +35,8 @@ elif envLauncher['OSWindows']:
 	envLauncher.Append(LINKFLAGS = '-Wl,-subsystem,windows')
 	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
-envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
+if not envLauncher['with_debug']:
+	envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
 
 # write the configuration file required by a few source files
 configFilePath = '{}/src/glconfig.h'.format(Dir('.').srcnode().abspath)
