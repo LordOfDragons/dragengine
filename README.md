@@ -15,14 +15,16 @@ Example projects can be found on Development Wiki or in this repository:
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
 parameters in custom.py.dist as command line arguments. For example:
-  scons with_debug=yes with_system_openal=no
+    scons with_debug=yes with_system_openal=no
 
 
 To see the list of supported build targets run
-  scons -h
+
+    scons -h
 
 To compile and install run
-  scons
+
+    scons
 
 By default the build tries to find as many dependency libraries as possiible in
 the host system. Not found libraries are compiled from in-tree sourced under "extern".
@@ -31,12 +33,14 @@ respective "with_system_*" parameter to 'yes' (to force using the library from h
 system and fail if not found) or 'no' (to force compile from in-tree version).
 
 To build distribution archives run
-  scons archive
+
+    scons archive
 
 The archives will be located under "archive/build"
 
 To build installers run
-  scons installer
+
+    scons installer
 
 The installers will be located under "installer/build"
 
@@ -61,7 +65,8 @@ Install MinGW 64-Bit cross-compiler for your system or use a docker image with i
 
 To build use the same commands as under the "Building Linux" section but append
 "tools=mingw64" to the command line like this:
-  scons tools=mingw64 archive
+
+    scons tools=mingw64 archive
 
 Always use a build target otherwise scons tries to install into your linux system
 using windows path names.
@@ -71,13 +76,16 @@ The "build_windows.sh" script is a little helper.
 To build the windows installers you need a docker image supporting the InnoSetup
 compiler. You can build the docker image yourself using the
 "windowsSetupCompiler.dockerfile" docker file:
-  docker build --file=windowsSetupCompiler.dockerfile --tag=compile-windows-installer .
+
+    docker build --file=windowsSetupCompiler.dockerfile --tag=compile-windows-installer .
 
 To build the installer first build the archives using
-  scons tools=mingw64 archive
+
+    scons tools=mingw64 archive
 
 Then change into the "installer/windows" directory and run
-  ./create_installer.sh
+
+    ./create_installer.sh
 
 The installer is now located inside "installer/windows/build"
 
