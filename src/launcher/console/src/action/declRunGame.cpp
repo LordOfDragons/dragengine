@@ -409,6 +409,7 @@ void declRunGame::InitLauncher(){
 	
 	// if game file has been specified manual verification is required
 	if( ! gameManager.GetGameList().Has( pGame ) ){
+		pGame->LoadConfig();
 		pGame->VerifyRequirements();
 	}
 }
