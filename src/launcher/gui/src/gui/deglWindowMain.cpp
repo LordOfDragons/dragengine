@@ -196,6 +196,7 @@ deglWindowMain::~deglWindowMain(){
 
 bool deglWindowMain::RunCommandLineActions(){
 	if( ! pLauncher->GetCommandLineInstallDelga().IsEmpty() ){
+		show();
 		try{
 			if( deglInstallDelga( *this ).Run( pLauncher->GetCommandLineInstallDelga() ) ){
 				ReloadGamesAndPatches();
@@ -206,13 +207,13 @@ bool deglWindowMain::RunCommandLineActions(){
 		}
 		
 	}else if( pLauncher->HasCommandLineRunGame() ){
-		minimize( true );
 		if( ! pLauncher->RunCommandLineGame() ){
 			return false;
 		}
+		
+	}else{
+		show();
 	}
-	
-	show();// PLACEMENT_SCREEN );
 	
 	getApp()->addTimeout( this, ID_TIMER_PULSE, PULSE_TIME );
 	return true;

@@ -473,14 +473,17 @@ void deglLauncher::RunCommandLineGameStopCheck(){
 		return;
 	}
 	
-	const deglGameList &gameList = pGameManager->GetGameList();
-	const int gameCount = gameList.GetCount();
-	int i;
+	if( ! pCmdLineGame ){
+		pWindowMain->close( false );
+		return;
+	}
 	
-	for( i=0; i<gameCount; i++ ){
-		if( gameList.GetAt( i )->IsRunning() ){
-			return;
-		}
+	if( ! pGameManager->GetGameList().Has( pCmdLineGame ) ){
+		pCmdLineGame->PulseChecking();
+	}
+	
+	if( pCmdLineGame->IsRunning() ){
+		return;
 	}
 	
 	pWindowMain->close( false );
