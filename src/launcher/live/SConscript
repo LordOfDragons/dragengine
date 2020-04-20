@@ -59,6 +59,7 @@ if envLauncher['OSPosix']:
 	
 elif envLauncher['OSWindows']:
 	envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/windows64\''])
+	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 	program = envLauncher.Program(target='LaunchWindows64', source=objects, LIBS=libs)
 
 targetBuild = envLauncher.Alias('launcher_live', program)
