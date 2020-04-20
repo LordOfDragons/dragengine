@@ -15,6 +15,7 @@ Example projects can be found on Development Wiki or in this repository:
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
 parameters in custom.py.dist as command line arguments. For example:
+
     scons with_debug=yes with_system_openal=no
 
 
@@ -29,8 +30,9 @@ To compile and install run
 By default the build tries to find as many dependency libraries as possiible in
 the host system. Not found libraries are compiled from in-tree sourced under "extern".
 You can force building certain libraries either in-tree or from system by setting the
-respective "with_system_*" parameter to 'yes' (to force using the library from host
-system and fail if not found) or 'no' (to force compile from in-tree version).
+respective with_system_* parameter to 'yes' (to force using the library from host
+system and fail if not found) or 'no' (to force compile from in-tree version) or
+'auto' (use from system if found otherwise fall back to in-tree version).
 
 To build distribution archives run
 
