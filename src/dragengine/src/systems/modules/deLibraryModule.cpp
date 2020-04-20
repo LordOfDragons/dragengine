@@ -48,34 +48,6 @@
 
 
 
-/*
-NOTE for dlopen on linux from deEngine::GetOSFileSystem().
-
-in this case dlopen has a problemsince it expects a disk file name. a possible solution
-is using a temporary file to read the library file into. this temporary file can then
-be used with dlopen and afterwards deleted. the following code snippet represent such
-a use case:
-
-// first get the temporary filename.
-decString tempFilename( "/tmp" );
-const char * const envPathTempDir = getenv( "TMPDIR" );
-if( envPathTempDir ){
-	tempFilename = envPathTempDir;
-}
-tempFilename += "/dragengine.module.XXXXXX";
-int tempFileDescriptor = mkstemp( ( char* )tempFilename.GetString() );
-if( tempFileDescriptor == -1 ){
-	DETHROW( deeInvalidParam );
-}
-
-// after calling mkstemp the XXXXXX is replaced with a unique name.
-// write library data into the file.
-// then dlopen using tempFilename as filename.
-// then close tempFileDescriptor.
-*/
-
-
-
 // Definitions
 ////////////////
 
@@ -531,6 +503,27 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 }
 
 bool deLibraryModule::pVerifyLibrary( const char* filename ){
+#ifdef OS_W32
+	wchar_t widePath[ MAX_PATH ];
+	deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
+	
+	WIN32_FILE_ATTRIBUTE_DATA fa;
+	if( ! GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
+		SetErrorCode( eecLibFileNotFound );
+		return false;
+	}
+	
+	if( ( fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
+		SetErrorCode( eecLibFileNotRegularFile );
+		return false;
+	}
+	
+	if( ( ( uint64_t )fa.nFileSizeHigh << 32 ) + ( uint64_t )fa.nFileSizeLow != ( uint64_t )pLibFileSize ){
+		SetErrorCode( eecLibFileSizeMismatch );
+		return false;
+	}
+	
+#else
 	struct stat fs;
 	
 	// get file attributes
@@ -550,6 +543,7 @@ bool deLibraryModule::pVerifyLibrary( const char* filename ){
 		SetErrorCode( eecLibFileSizeMismatch );
 		return false;
 	}
+#endif
 	
 	// check that the sha1 sum is the same
 	

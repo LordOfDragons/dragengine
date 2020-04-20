@@ -104,7 +104,6 @@ public:
 private:
 	void pInitVFS();
 	void pInitLogger();
-	void pGetWorkingDirectory();
 	void pUpdateEnvironment();
 };
 

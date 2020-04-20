@@ -27,6 +27,7 @@
 
 #ifdef OS_W32
 	#include <direct.h>
+	#include "../string/unicode/decUnicodeString.h"
 #endif
 #ifdef OS_UNIX
 	#include <unistd.h>
@@ -174,11 +175,20 @@ void decPath::SetWorkingDirectory(){
 	SetFromNative( buffer );
 	
 	#elif defined OS_W32
-	char buffer[ FILENAME_MAX ];
-	if( ! _getcwd( buffer, FILENAME_MAX ) ){
+	wchar_t buffer[ FILENAME_MAX ];
+	if( ! _wgetcwd( buffer, FILENAME_MAX ) ){
 		DETHROW( deeInvalidAction );
 	}
-	SetFromNative( buffer );
+	
+	const int count = wcslen( buffer );
+	decUnicodeString unicode;
+	int i;
+	unicode.Set( 0, count );
+	for( i=0; i<count; i++ ){
+		unicode.SetAt( i, buffer[ i ] );
+	}
+	
+	SetFromNative( unicode.ToUTF8() );
 	
 	#else
 	#error "Missing implementation for decPath::SetWorkingDirectory for platform"

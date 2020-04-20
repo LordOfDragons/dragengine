@@ -76,7 +76,7 @@ void dellLauncher::AddArgument( const decUnicodeString &argument ){
 
 
 void dellLauncher::Init(){
-	pGetWorkingDirectory();
+	pWorkingDir.SetWorkingDirectory();
 	pUpdateEnvironment();
 	
 	pFileSystem.TakeOver( new deVirtualFileSystem );
@@ -122,20 +122,6 @@ void dellLauncher::pInitLogger(){
 	decBaseFileWriterReference fileWriter;
 	fileWriter.TakeOver( pFileSystem->OpenFileForWriting( decPath::CreatePathUnix( "/logs/launcher.log" ) ) );
 	pLogger.TakeOver( new deLoggerFile( fileWriter ) );
-}
-
-void dellLauncher::pGetWorkingDirectory(){
-	char buffer[ FILENAME_MAX ];
-	#ifdef OS_UNIX
-	if( ! getcwd( buffer, FILENAME_MAX ) ){
-	#elif defined OS_W32
-	if( ! _getcwd( buffer, FILENAME_MAX ) ){
-	#endif
-		pLogger->LogError( LOGSOURCE, "GetWorkingDirectory: getcwd failed" );
-		DETHROW( deeInvalidParam );
-	}
-	
-	pWorkingDir.SetFromNative( buffer );
 }
 
 void dellLauncher::pUpdateEnvironment(){
