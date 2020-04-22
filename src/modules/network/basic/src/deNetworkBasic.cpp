@@ -375,7 +375,7 @@ void deNetworkBasic::UnregisterSocket( debnSocket *bnSocket ){
 
 void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 	// unix version
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && ! defined OS_BEOS
 	const int sock = socket( AF_INET, SOCK_DGRAM, 0 );
 	if( sock == -1 ){
 		DETHROW( deeInvalidParam );
@@ -417,6 +417,12 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 		close( sock );
 		throw;
 	}
+	#endif
+	
+	// beos version
+	#ifdef OS_BEOS
+	(void)list;
+	DETHROW_INFO( deeInvalidParam, "TODO Implement this using BeOS means" );
 	#endif
 	
 	// windows version

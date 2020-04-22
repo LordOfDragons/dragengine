@@ -345,6 +345,38 @@ void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileS
 				continue;
 			}
 			
+			#ifdef OS_BEOS
+			// missing d_type and DT_* in dirent
+			decPath pathLink( searchPath );
+			pathLink.AddComponent( entry->d_name );
+			const decString strPathLink( pathLink.GetPathNative() );
+			
+			struct stat st;
+			lstat( strPathLink, &st );
+			
+			if( S_ISREG( st.st_mode ) ){
+				searcher.Add( entry->d_name, deVFSContainer::eftRegularFile );
+				
+			}else if( S_ISDIR( st.st_mode ) ){
+				searcher.Add( entry->d_name, deVFSContainer::eftDirectory );
+				
+			}else if( S_ISLNK( st.st_mode ) ){
+				if( stat( strPathLink, &st ) ){
+					// dangling link. assume it is a file
+					searcher.Add( entry->d_name, deVFSContainer::eftRegularFile );
+					
+				}else if( S_ISREG( st.st_mode ) ){
+					searcher.Add( entry->d_name, deVFSContainer::eftRegularFile );
+					
+				}else if( S_ISDIR( st.st_mode ) ){
+					searcher.Add( entry->d_name, deVFSContainer::eftDirectory );
+					
+				}else{
+					searcher.Add( entry->d_name, deVFSContainer::eftSpecial );
+				}
+			}
+			
+			#else
 			if( entry->d_type == DT_REG ){
 				searcher.Add( entry->d_name, deVFSContainer::eftRegularFile );
 				
@@ -370,6 +402,7 @@ void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileS
 					searcher.Add( entry->d_name, deVFSContainer::eftSpecial );
 				}
 			}
+			#endif
 		}
 		
 		closedir( theDir );

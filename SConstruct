@@ -64,11 +64,16 @@ elif sys.platform == 'win32':
 	##parent_env.Append( ENV = { 'PATH' : 'C:\MinGW\bin;' + os.environ[ 'PATH' ] } )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
-
+	
 else:
 	parent_env = Environment( CPPPATH='.', LIBPATH='.' )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+
+# Haiku: The PATH found by SCons are wrong in many ways causing binaries to be not found.
+#        Replace them with sane values. This is not a 'good' solution but should work.
+if sys.platform == 'haiku1':
+	parent_env['ENV']['PATH'] = os.environ['PATH']
 
 parent_env.Tool('logStdOut')
 parent_env.Tool('runIsolated')

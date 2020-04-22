@@ -89,8 +89,7 @@
 #ifdef OS_BEOS
 deoglRRenderWindow::cGLView::cGLView( deoglRRenderWindow::cDirectWindow &window, const BRect &frame ) :
 BGLView( frame, "glview", B_FOLLOW_ALL, B_WILL_DRAW, BGL_RGB | BGL_DOUBLE | BGL_DEPTH | BGL_STENCIL ),
-pWindow( window ),
-pNotifySizeChanged( false )
+pWindow( window )
 {
 	//SetViewColor( 0, 0, 0 );
 	
