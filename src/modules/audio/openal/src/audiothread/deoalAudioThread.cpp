@@ -307,6 +307,10 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 }
 
 void deoalAudioThread::WaitFinishAudio(){
+	if( ! pReadyToWait ){
+		return; // true if audio thread is waiting on pBarrierSyncIn otherwise pBarrierSyncOut
+	}
+	
 	switch( pThreadState ){
 	case etsStopped:
 	case etsFinishedAudio:
