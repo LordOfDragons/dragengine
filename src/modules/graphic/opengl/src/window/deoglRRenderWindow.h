@@ -69,13 +69,13 @@ private:
 	
 	#ifdef OS_BEOS
 	class cGLView;
-	class cDirectWindow;
+	class cGLWindow;
 	
 	class cGLView : public BGLView{
 	private:
-		cDirectWindow &pWindow;
+		cGLWindow &pWindow;
 	public:
-		cGLView( cDirectWindow &widow, const BRect &frame );
+		cGLView( cGLWindow &widow, const BRect &frame );
 		virtual void KeyDown( const char *bytes, int32 numBytes );
 		virtual void KeyUp( const char *bytes, int32 numBytes );
 		virtual void MouseDown( BPoint point );
@@ -83,25 +83,28 @@ private:
 		virtual void MouseUp( BPoint point );
 	};
 	
-	class cDirectWindow : public BDirectWindow{
+	class cGLWindow : public BDirectWindow{
 	private:
 		deoglRRenderWindow &pWindow;
 		cGLView *pGLView;
 		BCursor *pCursor;
+		bool pBlockQuitRequested;
 	public:
-		cDirectWindow( deoglRRenderWindow &window );
-		virtual ~cDirectWindow();
+		cGLWindow( deoglRRenderWindow &window );
+		virtual ~cGLWindow();
 		inline deoglRRenderWindow &GetWindow() const{ return pWindow; }
 		inline cGLView *GetGLView() const{ return pGLView; }
 		void SendCurMessageToEngine();
 		virtual void DirectConnected( direct_buffer_info *info );
 		virtual void WindowActivated( bool active );
 		virtual void MessageReceived( BMessage *message );
-		virtual	void FrameResized(float newWidth, float newHeight);
+		virtual	void FrameResized( float newWidth, float newHeight );
+		virtual	bool QuitRequested();
+		void SetBlockQuitRequested( bool blockQuitRequested );
 	};
 	
 	BWindow *pHostWindow;
-	cDirectWindow *pWindow;
+	cGLWindow *pWindow;
 	#endif
 	
 	#ifdef OS_W32
@@ -163,7 +166,7 @@ public:
 	
 	#ifdef OS_BEOS
 	inline BWindow *GetHostWindow() const{ return pHostWindow; }
-	inline BDirectWindow *GetWindow() const{ return pWindow; }
+	inline cGLWindow *GetWindow() const{ return pWindow; }
 	void SetHostWindow( BWindow *window );
 	BGLView *GetGLView() const;
 	#endif

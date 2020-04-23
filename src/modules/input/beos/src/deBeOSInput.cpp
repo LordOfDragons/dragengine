@@ -106,7 +106,6 @@ pOldThreshold( 0 ),
 pKeyStates( NULL ),
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
-pCurMouseButtonPressed( -1 ),
 
 pDevices( NULL ){
 }
@@ -124,8 +123,6 @@ bool deBeOSInput::Init(){
 	pMouseButtons = 0;
 	pWindowWidth = 0;
 	pWindowHeight = 0;
-	
-	pCurMouseButtonPressed = -1;
 	
 	if( pOSBeOS->GetWindow() ){
 		const BRect bounds( pOSBeOS->GetWindow()->Bounds() );
@@ -434,37 +431,68 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		const BPoint devicePosition( message.GetPoint( "where", BPoint() ) );
 		const decPoint position( ( int )( devicePosition.x + 0.5f ), ( int )( devicePosition.y + 0.5f ) );
-		const int buttonCode = message.GetInt32( "buttons", B_PRIMARY_MOUSE_BUTTON );
+		const int buttons = message.GetInt32( "buttons", B_PRIMARY_MOUSE_BUTTON );
+		const int modifiers = pModifiersFromKeyState();
 		
-		pCurMouseButtonPressed = pDevices->GetMouse()->IndexOfButtonWithBICode( buttonCode );
-		if( pCurMouseButtonPressed == -1 ){
-			break;
+		//LogInfoFormat( "B_MOUSE_DOWN: button=%x modifiers=%d pos=(%d,%d)",
+		//	buttons, modifiers, position.x, position.y );
+		
+		const uint32 masks[ 3 ] = { B_PRIMARY_MOUSE_BUTTON, B_SECONDARY_MOUSE_BUTTON, B_TERTIARY_MOUSE_BUTTON };
+		int i;
+		for( i=0; i<3; i++ ){
+			if( ! ( buttons & masks[ i ] ) ){
+				continue;
+			}
+			
+			const int buttonIndex = pDevices->GetMouse()->IndexOfButtonWithBICode( masks[ i ] );
+			if( buttonIndex == -1 ){
+				continue;
+			}
+			
+			pDevices->GetMouse()->GetButtonAt( buttonIndex )->SetPressed( true );
+			pAddMousePress( pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime );
 		}
-		
-		//LogInfoFormat( "B_MOUSE_DOWN: code=%d button=%d modifiers=%d pos=(%d,%d)",
-		//	buttonCode, pCurMouseButtonPressed, message.GetInt32( "modifiers", 0 ),
-		//	position.x, position.y );
-		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed )->SetPressed( true );
-		pAddMousePress( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
-			pModifiersFromKeyState(), eventTime );
 		} break;
 		
 	case B_MOUSE_UP:{
-		if( pCurMouseButtonPressed == -1 ){
+		// BeOS is missing buttons information in B_MOUSE_UP. we have to hack around this.
+		// we can use BView::GetMouse but we have no idea how the graphic module creates
+		// the render windows. fortunately it is not important which BView we are using
+		// as long as it is connected to the app_server. for this reason we take the first
+		// BView inside the current application window if present
+		if( ! pOSBeOS->GetWindow() || pOSBeOS->GetWindow()->CountChildren() == 0 ){
 			break;
 		}
 		
-		//const int modifiers = message.GetInt32( "modifiers", 0 );
+		BPoint ignoreLocation;
+		uint32 buttons = 0;
+		BView &view = *pOSBeOS->GetWindow()->ChildAt( 0 );
+		view.LockLooper();
+		view.GetMouse( &ignoreLocation, &buttons, false );
+		view.UnlockLooper();
+		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		const BPoint devicePosition( message.GetPoint( "where", BPoint() ) );
 		const decPoint position( ( int )( devicePosition.x + 0.5f ), ( int )( devicePosition.y + 0.5f ) );
+		const int modifiers = pModifiersFromKeyState();
 		
-		//LogInfoFormat( "B_MOUSE_UP: button=%d pos=(%d,%d)", pCurMouseButtonPressed, position.x, position.y );
-		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed )->SetPressed( false );
-		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
-			pModifiersFromKeyState(), eventTime );
+		//LogInfoFormat( "B_MOUSE_UP: buttons=%x pos=(%d,%d)", buttons, position.x, position.y );
 		
-		pCurMouseButtonPressed = -1;
+		const uint32 masks[ 3 ] = { B_PRIMARY_MOUSE_BUTTON, B_SECONDARY_MOUSE_BUTTON, B_TERTIARY_MOUSE_BUTTON };
+		int i;
+		for( i=0; i<3; i++ ){
+			if( buttons & masks[ i ] ){
+				continue;
+			}
+			
+			const int buttonIndex = pDevices->GetMouse()->IndexOfButtonWithBICode( masks[ i ] );
+			if( buttonIndex == -1 ){
+				continue;
+			}
+			
+			pDevices->GetMouse()->GetButtonAt( buttonIndex )->SetPressed( false );
+			pAddMouseRelease( pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime );
+		}
 		} break;
 		
 	case B_MOUSE_WHEEL_CHANGED:{

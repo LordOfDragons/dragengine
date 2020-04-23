@@ -220,14 +220,6 @@ void deOSBeOS::ProcessEventLoop( bool sendToInputModule ){
 		// process message
 		try{
 			switch( message->what ){
-			case B_WINDOW_RESIZED:
-				//const int windowWidth = message->GetInt32( "width", pWindowWidth );
-				//const int windowHeight = message->FindInt32( "height", pWindowHeight );
-				
-				// notify graphic module about the change
-				// notify the script module about the change
-				break;
-				
 			case B_APP_ACTIVATED:
 				SetAppActive( message->GetBool( "active", true ) );
 				break;

@@ -93,10 +93,6 @@ public:
 	}
 	
 	virtual void MessageReceived( BMessage *message ){
-		const char whatStr[4] = {(char)((message->what>>24)&0xff), (char)((message->what>>16)&0xff),
-			(char)((message->what>>8)&0xff), (char)(message->what&0xff)};
-		printf( "BApp.MessageReceived: received %.4s\n", (char*)whatStr );
-		
 		if( pLauncher.GetEngine().GetEngine() ){
 			pLauncher.GetEngine().GetEngine()->GetOS()->CastToOSBeOS()->MessageReceived( message );
 		}
