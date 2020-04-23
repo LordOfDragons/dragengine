@@ -160,6 +160,9 @@ protected:
 	/** \brief Write bezier curve point. */
 	void WriteCurveBezierPoint( decXmlWriter &writer, const char *name, const decCurveBezierPoint &point );
 	
+	/** \brief Write bezier curve point without handles. */
+	void WriteCurveBezierPointNoHandles( decXmlWriter &writer, const char *name, const decCurveBezierPoint &point );
+	
 	/** \brief Write color. */
 	void WriteColor( decXmlWriter &writer, const char *name, const decColor &color );
 	

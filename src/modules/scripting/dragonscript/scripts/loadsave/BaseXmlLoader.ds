@@ -548,10 +548,10 @@ class BaseXmlLoader
 			coordinates = Vector2.new()
 		end
 		if handle1 == null
-			handle1 = Vector2.new()
+			handle1 = coordinates
 		end
 		if handle2 == null
-			handle2 = Vector2.new()
+			handle2 = coordinates
 		end
 		
 		curve.addPoint( coordinates, handle1, handle2 )

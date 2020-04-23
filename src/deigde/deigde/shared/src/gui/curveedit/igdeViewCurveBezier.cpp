@@ -160,7 +160,8 @@ void igdeViewCurveBezier::cActionSetInterpolationMode::Update(){
 static decCurveBezier vIgdeViewCurveBezierCopyCurve;
 
 igdeViewCurveBezier::cActionCopyCurve::cActionCopyCurve( igdeViewCurveBezier &view ) :
-igdeAction( "Copy Curve", NULL, "Copy curve to clipboard" ),
+igdeAction( "Copy Curve", view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+"Copy curve to clipboard" ),
 pView( view ){
 }
 
@@ -174,7 +175,8 @@ void igdeViewCurveBezier::cActionCopyCurve::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionPasteCurve::cActionPasteCurve( igdeViewCurveBezier &view ) :
-igdeAction( "Paste Curve", NULL, "Paste curve from clipboard" ),
+igdeAction( "Paste Curve", view.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+"Paste curve from clipboard" ),
 pView( view ){
 }
 

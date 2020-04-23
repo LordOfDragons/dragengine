@@ -315,6 +315,8 @@ void igdeBaseXML::ReadCurveBezier( const decXmlElementTag &root, decCurveBezier 
 
 void igdeBaseXML::ReadCurveBezierPoint( const decXmlElementTag &root, decCurveBezier &curve ){
 	const int elementCount = root.GetElementCount();
+	bool hasHandle1 = false;
+	bool hasHandle2 = false;
 	decVector2 coordinates;
 	decVector2 handle1;
 	decVector2 handle2;
@@ -331,15 +333,23 @@ void igdeBaseXML::ReadCurveBezierPoint( const decXmlElementTag &root, decCurveBe
 			
 		}else if( strcmp( tag->GetName(), "handle1" ) == 0 ){
 			ReadVector2( *tag, handle1 );
+			hasHandle1 = true;
 			
 		}else if( strcmp( tag->GetName(), "handle2" ) == 0 ){
 			ReadVector2( *tag, handle2 );
+			hasHandle2 = true;
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
+	if( ! hasHandle1 ){
+		handle1 = coordinates;
+	}
+	if( ! hasHandle2 ){
+		handle2 = coordinates;
+	}
 	curve.AddPoint( decCurveBezierPoint( coordinates, handle1, handle2 ) );
 }
 
@@ -491,19 +501,30 @@ void igdeBaseXML::WriteCurveBezier( decXmlWriter &writer, const char *name, cons
 	}
 	
 	for( p=0; p<pointCount; p++ ){
-		WriteCurveBezierPoint( writer, "point", curve.GetPointAt( p ) );
+		if( curve.GetInterpolationMode() == decCurveBezier::eimBezier ){
+			WriteCurveBezierPoint( writer, "point", curve.GetPointAt( p ) );
+			
+		}else{
+			WriteCurveBezierPointNoHandles( writer, "point", curve.GetPointAt( p ) );
+		}
 	}
 	
 	writer.WriteClosingTag( name, true );
 }
 
-void igdeBaseXML::WriteCurveBezierPoint( decXmlWriter &writer, const char *name, const decCurveBezierPoint &point ){
+void igdeBaseXML::WriteCurveBezierPoint( decXmlWriter &writer, const char *name,
+const decCurveBezierPoint &point ){
 	writer.WriteOpeningTag( name, false, true );
-	
 	WriteVector2( writer, "coordinates", point.GetPoint() );
 	WriteVector2( writer, "handle1", point.GetHandle1() );
 	WriteVector2( writer, "handle2", point.GetHandle2() );
-	
+	writer.WriteClosingTag( name, true );
+}
+
+void igdeBaseXML::WriteCurveBezierPointNoHandles( decXmlWriter &writer, const char *name,
+const decCurveBezierPoint &point ){
+	writer.WriteOpeningTag( name, false, true );
+	WriteVector2( writer, "coordinates", point.GetPoint() );
 	writer.WriteClosingTag( name, true );
 }
 
