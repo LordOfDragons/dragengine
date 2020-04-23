@@ -813,10 +813,12 @@ class Desktop extends Container
 		this.setMouseLocation( this.pMouseLocation + event.getPosition() )
 		
 		if this.pCaptureWidget != null
-			this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
-				event.getIdentifier(), event.getButton(), event.getModifiers(), \
-				this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-				event.getDevice() ) )
+			if this.pCaptureWidget != this
+				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+					event.getIdentifier(), event.getButton(), event.getModifiers(), \
+					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
+					event.getDevice() ) )
+			end
 			return
 		end
 		
@@ -846,151 +848,177 @@ class Desktop extends Container
 					
 					select decoration.areaHitBy( this.pMouseLocation )
 					case Decoration.Area.close
-						decoration.setButtonState( Decoration.Button.close, true, true )
-						
-						this.pDragWindow = window
-						this.pDragArea = Decoration.Area.close
-						this.requestCaptureMouse( this )
+						if event.getButton() == InputEventMouseButton.left
+							decoration.setButtonState( Decoration.Button.close, true, true )
+							
+							this.pDragWindow = window
+							this.pDragArea = Decoration.Area.close
+							this.requestCaptureMouse( this )
+						end
 						return
 						
 					case Decoration.Area.maximize
-						decoration.setButtonState( Decoration.Button.maximize, true, true )
-						
-						this.pDragWindow = window
-						this.pDragArea = Decoration.Area.maximize
-						this.requestCaptureMouse( this )
+						if event.getButton() == InputEventMouseButton.left
+							decoration.setButtonState( Decoration.Button.maximize, true, true )
+							
+							this.pDragWindow = window
+							this.pDragArea = Decoration.Area.maximize
+							this.requestCaptureMouse( this )
+						end
 						return
 						
 					case Decoration.Area.minimize
-						decoration.setButtonState( Decoration.Button.minimize, true, true )
-						
-						this.pDragWindow = window
-						this.pDragArea = Decoration.Area.minimize
-						this.requestCaptureMouse( this )
+						if event.getButton() == InputEventMouseButton.left
+							decoration.setButtonState( Decoration.Button.minimize, true, true )
+							
+							this.pDragWindow = window
+							this.pDragArea = Decoration.Area.minimize
+							this.requestCaptureMouse( this )
+						end
 						return
 						
 					case Decoration.Area.menu
-						BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Open window menu: " + window.className() + "\n" )
-						if window.getCanReorder()
-							window.moveToTop()
+						if event.getButton() == InputEventMouseButton.left
+							BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Open window menu: " + window.className() + "\n" )
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
 						end
-						window.grabFocus()
 						return
 						
 					case Decoration.Area.title
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanMove()
-							this.pDragWindow = window
-							this.pDragOffset = this.pMouseLocation - window.getPosition()
-							this.pDragArea = Decoration.Area.title
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanMove()
+								this.pDragWindow = window
+								this.pDragOffset = this.pMouseLocation - window.getPosition()
+								this.pDragArea = Decoration.Area.title
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeLeft
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX(), this.pDragOffset.getY() )
-							this.pDragArea = Decoration.Area.resizeLeft
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX(), this.pDragOffset.getY() )
+								this.pDragArea = Decoration.Area.resizeLeft
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeTop
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() )
-							this.pDragArea = Decoration.Area.resizeTop
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() )
+								this.pDragArea = Decoration.Area.resizeTop
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeRight
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX() - window.getWidth(), this.pDragOffset.getY() )
-							this.pDragArea = Decoration.Area.resizeRight
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX() - window.getWidth(), this.pDragOffset.getY() )
+								this.pDragArea = Decoration.Area.resizeRight
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeBottom
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() - window.getHeight() )
-							this.pDragArea = Decoration.Area.resizeBottom
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() - window.getHeight() )
+								this.pDragArea = Decoration.Area.resizeBottom
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeTopLeft
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = this.pMouseLocation - window.getPosition()
-							this.pDragArea = Decoration.Area.resizeTopLeft
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = this.pMouseLocation - window.getPosition()
+								this.pDragArea = Decoration.Area.resizeTopLeft
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeBottomLeft
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( 0, window.getHeight() )
-							this.pDragArea = Decoration.Area.resizeBottomLeft
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( 0, window.getHeight() )
+								this.pDragArea = Decoration.Area.resizeBottomLeft
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeTopRight
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( window.getWidth(), 0 )
-							this.pDragArea = Decoration.Area.resizeTopRight
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( window.getWidth(), 0 )
+								this.pDragArea = Decoration.Area.resizeTopRight
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 						
 					case Decoration.Area.resizeBottomRight
-						if window.getCanReorder()
-							window.moveToTop()
-						end
-						window.grabFocus()
-						if window.getCanResize()
-							this.pDragWindow = window
-							this.pDragOffset = this.pMouseLocation - window.getPosition() - window.getSize()
-							this.pDragArea = Decoration.Area.resizeBottomRight
-							this.requestCaptureMouse( this ) //this.captureMouse()
+						if event.getButton() == InputEventMouseButton.left
+							if window.getCanReorder()
+								window.moveToTop()
+							end
+							window.grabFocus()
+							if window.getCanResize()
+								this.pDragWindow = window
+								this.pDragOffset = this.pMouseLocation - window.getPosition() - window.getSize()
+								this.pDragArea = Decoration.Area.resizeBottomRight
+								this.requestCaptureMouse( this ) //this.captureMouse()
+							end
 						end
 						return
 					end
@@ -1050,6 +1078,10 @@ class Desktop extends Container
 		this.setMouseLocation( this.pMouseLocation + event.getPosition() )
 		
 		if this.pDragWindow != null
+			if event.getButton() != InputEventMouseButton.left
+				return
+			end
+			
 			this.requestReleaseMouse( this )
 			
 			select this.pDragArea
@@ -1096,10 +1128,13 @@ class Desktop extends Container
 			
 		elif this.pCaptureWidget != null
 			//this.pHoverWidget = this.pCaptureWidget // mouse move should do this already
-			this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
-				event.getIdentifier(), event.getButton(), event.getModifiers(), \
-				this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-				event.getDevice() ) )
+			
+			if this.pCaptureWidget != this
+				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+					event.getIdentifier(), event.getButton(), event.getModifiers(), \
+					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
+					event.getDevice() ) )
+			end
 			
 		else
 			for i = count - 1 downto 0
@@ -1119,7 +1154,6 @@ class Desktop extends Container
 					end
 				end
 			end
-			
 		end
 	end
 	
@@ -1216,10 +1250,13 @@ class Desktop extends Container
 			
 		elif this.pCaptureWidget != null
 			this.setHoverWidget( this.pCaptureWidget, event )
-			this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
-				event.getIdentifier(), event.getButton(), event.getModifiers(), \
-				this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-				event.getDevice() ) )
+			
+			if this.pCaptureWidget != this
+				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+					event.getIdentifier(), event.getButton(), event.getModifiers(), \
+					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
+					event.getDevice() ) )
+			end
 			
 		else
 			var Decoration decoration
