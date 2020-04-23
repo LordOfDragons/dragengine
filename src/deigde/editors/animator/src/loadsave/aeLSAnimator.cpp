@@ -1495,10 +1495,10 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator
 				controller->SetName( tag->GetFirstData()->GetData() );
 				
 			}else if( strcmp( tag->GetName(), "clamp" ) == 0 ){
-				controller->SetClamp( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				controller->SetClamp( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "frozen" ) == 0 ){
-				controller->SetFrozen( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				controller->SetFrozen( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "limit" ) == 0 ){
 				pLoadControllerLimit( tag, controller );
@@ -1722,13 +1722,13 @@ aeRule *aeLSAnimator::pLoadRuleAnimation( decXmlElementTag *root, aeAnimator *an
 						rule->SetMoveTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 						name = pGetAttributeString( tag, "name" );
@@ -1792,13 +1792,13 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference( decXmlElementTag *root, aeAn
 						rule->SetReferenceMoveTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 						name = pGetAttributeString( tag, "name" );
@@ -1861,13 +1861,13 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect( decXmlElementTag *root, aeAnimat
 				moves.Add( tag->GetFirstData()->GetData() );
 				
 			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-				rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnablePosition( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-				rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnableOrientation( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-				rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = pGetAttributeString( tag, "name" );
@@ -1975,13 +1975,13 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnim
 						}
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 						cdata = tag->GetFirstData();
@@ -2080,13 +2080,13 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnima
 						rule->SetMaximumSize( vector );
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableRotation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableRotation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 						name = pGetAttributeString( tag, "name" );
@@ -2145,16 +2145,16 @@ aeRule *aeLSAnimator::pLoadRuleStateSnapshot( decXmlElementTag *root, aeAnimator
 			if( tag ){
 				if( ! pLoadRuleCommon( tag, animator, rule ) ){
 					if( strcmp( tag->GetName(), "useLastState" ) == 0 ){
-						rule->SetUseLastState( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetUseLastState( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 						name = pGetAttributeString( tag, "name" );
@@ -2225,7 +2225,7 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnima
 						rule->SetLocalOrientation( vector );
 						
 					}else if( strcmp( tag->GetName(), "adjustOrientation" ) == 0 ){
-						rule->SetAdjustOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetAdjustOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "position" ) == 0 ){ // deprecated
 						vector.SetZero();
@@ -2253,7 +2253,7 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnima
 						}
 						
 					}else if( strcmp( tag->GetName(), "useSolverBone" ) == 0 ){
-						rule->SetUseSolverBone( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetUseSolverBone( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "reachRange" ) == 0 ){
 						rule->SetReachRange( strtof( tag->GetFirstData()->GetData(), NULL ) );
@@ -2344,22 +2344,22 @@ aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator 
 			if( tag ){
 				if( ! pLoadRuleCommon( tag, animator, rule ) ){
 					if( strcmp( tag->GetName(), "scalePosition" ) == 0 ){
-						rule->SetScalePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetScalePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "scaleOrientation" ) == 0 ){
-						rule->SetScaleOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetScaleOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "scaleSize" ) == 0 ){
-						rule->SetScaleSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetScaleSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnablePosition( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableOrientation( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+						rule->SetEnableSize( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "foreignBone" ) == 0 ){
 						rule->SetForeignBone( tag->GetFirstData()->GetData() );
@@ -2471,16 +2471,16 @@ aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator *animat
 				}
 				
 			}else if( strcmp( tag->GetName(), "useCurrentState" ) == 0 ){
-				rule->SetUseCurrentState( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetUseCurrentState( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-				rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnablePosition( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-				rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnableOrientation( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-				rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+				rule->SetEnableSize( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				const char * const name = pGetAttributeString( tag, "name" );
@@ -2569,13 +2569,13 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator( decXmlElementTag *root, aeAnimator *
 					rule->SetControllerAt( targetIndex, animator->GetControllers().GetAt( controller ) );
 					
 				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-					rule->SetEnablePosition( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-					rule->SetEnableOrientation( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+					rule->SetEnableOrientation( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-					rule->SetEnableSize( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+					rule->SetEnableSize( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
@@ -2926,7 +2926,7 @@ bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator *animator,
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "enabled" ) == 0 ){
-		rule->SetEnabled( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
+		rule->SetEnabled( GetCDataBool( *tag ) );
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "blendMode" ) == 0 ){

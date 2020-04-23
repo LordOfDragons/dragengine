@@ -88,7 +88,7 @@ int igdeBaseXML::GetAttributeInt( const decXmlElementTag &tag, const char *name 
 	const decXmlAttValue * const value = tag.FindAttribute( name );
 	
 	if( value ){
-		return ( int )strtol( value->GetValue(), NULL, 10 );
+		return value->GetValue().ToInt();
 		
 	}else{
 		pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
@@ -101,7 +101,7 @@ float igdeBaseXML::GetAttributeFloat( const decXmlElementTag &tag, const char *n
 	const decXmlAttValue * const value = tag.FindAttribute( name );
 	
 	if( value ){
-		return strtof( value->GetValue(), NULL );
+		return value->GetValue().ToFloat();
 		
 	}else{
 		pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
@@ -114,7 +114,7 @@ double igdeBaseXML::GetAttributeDouble( const decXmlElementTag &tag, const char 
 	const decXmlAttValue * const value = tag.FindAttribute( name );
 	
 	if( value ){
-		return strtof( value->GetValue(), NULL );
+		return value->GetValue().ToDouble();
 		
 	}else{
 		pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
@@ -127,7 +127,7 @@ bool igdeBaseXML::GetAttributeBool( const decXmlElementTag &tag, const char *nam
 	const decXmlAttValue * const value = tag.FindAttribute( name );
 	
 	if( value ){
-		return strcmp( value->GetValue(), "true" ) == 0 || strcmp( value->GetValue(), "1" ) == 0;
+		return value->GetValue() == "true" || value->GetValue() == "yes" || value->GetValue() == "1";
 		
 	}else{
 		pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
@@ -142,8 +142,7 @@ bool igdeBaseXML::GetCDataBool( const decXmlElementTag &tag ) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
 	if( cdata ){
-		//return strcmp( cdata->GetData(), "true" ) == 0;
-		return strcmp( cdata->GetData(), "true" ) == 0 || strcmp( cdata->GetData(), "1" ) == 0;
+		return cdata->GetData() == "true" || cdata->GetData() == "yes" || cdata->GetData() == "1";
 	}
 	
 	return 0;
@@ -153,7 +152,7 @@ int igdeBaseXML::GetCDataInt( const decXmlElementTag &tag ) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
 	if( cdata ){
-		return ( int )strtol( cdata->GetData(), NULL, 10 );
+		return cdata->GetData().ToInt();
 	}
 	
 	return 0;
@@ -163,7 +162,7 @@ float igdeBaseXML::GetCDataFloat( const decXmlElementTag &tag ) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
 	if( cdata ){
-		return strtof( cdata->GetData(), NULL );
+		return cdata->GetData().ToFloat();
 	}
 	
 	return 0.0f;
@@ -173,7 +172,7 @@ double igdeBaseXML::GetCDataDouble( const decXmlElementTag &tag ) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
 	if( cdata ){
-		return strtof( cdata->GetData(), NULL );
+		return cdata->GetData().ToDouble();
 	}
 	
 	return 0.0;
@@ -249,17 +248,17 @@ void igdeBaseXML::ReadVector( const decXmlElementTag &tag, decVector &vector ){
 	
 	value = tag.FindAttribute( "x" );
 	if( value ){
-		vector.x = strtof( value->GetValue(), NULL );
+		vector.x = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "y" );
 	if( value ){
-		vector.y = strtof( value->GetValue(), NULL );
+		vector.y = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "z" );
 	if( value ){
-		vector.z = strtof( value->GetValue(), NULL );
+		vector.z = value->GetValue().ToFloat();
 	}
 }
 
@@ -268,12 +267,12 @@ void igdeBaseXML::ReadVector2( const decXmlElementTag &tag, decVector2 &vector )
 	
 	value = tag.FindAttribute( "x" );
 	if( value ){
-		vector.x = strtof( value->GetValue(), NULL );
+		vector.x = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "y" );
 	if( value ){
-		vector.y = strtof( value->GetValue(), NULL );
+		vector.y = value->GetValue().ToFloat();
 	}
 }
 
@@ -349,17 +348,17 @@ void igdeBaseXML::ReadColor( const decXmlElementTag &tag, decColor &color ){
 	
 	value = tag.FindAttribute( "r" );
 	if( value ){
-		color.r = strtof( value->GetValue(), NULL );
+		color.r = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "g" );
 	if( value ){
-		color.g = strtof( value->GetValue(), NULL );
+		color.g = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "b" );
 	if( value ){
-		color.b = strtof( value->GetValue(), NULL );
+		color.b = value->GetValue().ToFloat();
 	}
 }
 
@@ -368,22 +367,22 @@ void igdeBaseXML::ReadColor4( const decXmlElementTag &tag, decColor &color ){
 	
 	value = tag.FindAttribute( "r" );
 	if( value ){
-		color.r = strtof( value->GetValue(), NULL );
+		color.r = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "g" );
 	if( value ){
-		color.g = strtof( value->GetValue(), NULL );
+		color.g = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "b" );
 	if( value ){
-		color.b = strtof( value->GetValue(), NULL );
+		color.b = value->GetValue().ToFloat();
 	}
 	
 	value = tag.FindAttribute( "a" );
 	if( value ){
-		color.a = strtof( value->GetValue(), NULL );
+		color.a = value->GetValue().ToFloat();
 	}
 }
 
@@ -392,12 +391,12 @@ void igdeBaseXML::ReadPoint( const decXmlElementTag &tag, decPoint &point ){
 	
 	value = tag.FindAttribute( "x" );
 	if( value ){
-		point.x = ( int )strtol( value->GetValue(), NULL, 10 );
+		point.x = value->GetValue().ToInt();
 	}
 	
 	value = tag.FindAttribute( "y" );
 	if( value ){
-		point.y = ( int )strtol( value->GetValue(), NULL, 10 );
+		point.y = value->GetValue().ToInt();
 	}
 }
 
@@ -406,17 +405,17 @@ void igdeBaseXML::ReadPoint3( const decXmlElementTag &tag, decPoint3 &point ){
 	
 	value = tag.FindAttribute( "x" );
 	if( value ){
-		point.x = ( int )strtol( value->GetValue(), NULL, 10 );
+		point.x = value->GetValue().ToInt();
 	}
 	
 	value = tag.FindAttribute( "y" );
 	if( value ){
-		point.y = ( int )strtol( value->GetValue(), NULL, 10 );
+		point.y = value->GetValue().ToInt();
 	}
 	
 	value = tag.FindAttribute( "z" );
 	if( value ){
-		point.z = ( int )strtol( value->GetValue(), NULL, 10 );
+		point.z = value->GetValue().ToInt();
 	}
 }
 
