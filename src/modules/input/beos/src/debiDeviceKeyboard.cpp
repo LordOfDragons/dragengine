@@ -97,8 +97,12 @@ debiDevice( module )
 		}
 		
 		// create buttons
-		SetButtonCount( keyCount );
+		deObjectReference refSharedButton;
+		refSharedButton.TakeOver( new debiDeviceButton( module ) );
+		debiDeviceButton &sharedButton = ( debiDeviceButton& )( deObject& )refSharedButton;
+		sharedButton.SetDisplayImages( "key" );
 		
+		deObjectReference refButton;
 		int buttonIndex = 0;
 		const char *keyCharBegin;
 		char keyCharUtf8[ 5 ];
@@ -370,7 +374,9 @@ debiDevice( module )
 				string.SetAt( 0, toupper( string.GetAt( 0 ) ) );
 			}
 			
-			debiDeviceButton &button = GetButtonAt( buttonIndex );
+			refButton.TakeOver( new debiDeviceButton( module ) );
+			debiDeviceButton &button = ( debiDeviceButton& )( deObject& )refButton;
+			AddButton( &button );
 			
 			button.SetName( string );
 			string.Format( "k%d", i );
@@ -379,6 +385,9 @@ debiDevice( module )
 			button.SetBIChar( reprChar );
 			button.SetKeyCode( engKeyCode );
 			button.SetMatchPriority( matchPriority );
+			
+			button.SetDisplayImages( sharedButton );
+			button.SetDisplayText( button.GetName() );
 			
 			buttonIndex++;
 		}
@@ -412,7 +421,7 @@ int debiDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		if( GetButtonAt( i ).GetBIChar() == keyChar ){
+		if( GetButtonAt( i )->GetBIChar() == keyChar ){
 			return i;
 		}
 	}

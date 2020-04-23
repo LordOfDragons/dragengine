@@ -76,7 +76,6 @@ private:
 		cDirectWindow &pWindow;
 	public:
 		cGLView( cDirectWindow &widow, const BRect &frame );
-		virtual void FrameResized( float width, float height );
 		virtual void KeyDown( const char *bytes, int32 numBytes );
 		virtual void KeyUp( const char *bytes, int32 numBytes );
 		virtual void MouseDown( BPoint point );
@@ -88,13 +87,17 @@ private:
 	private:
 		deoglRRenderWindow &pWindow;
 		cGLView *pGLView;
+		BCursor *pCursor;
 	public:
 		cDirectWindow( deoglRRenderWindow &window );
+		virtual ~cDirectWindow();
+		inline deoglRRenderWindow &GetWindow() const{ return pWindow; }
 		inline cGLView *GetGLView() const{ return pGLView; }
 		void SendCurMessageToEngine();
 		virtual void DirectConnected( direct_buffer_info *info );
 		virtual void WindowActivated( bool active );
 		virtual void MessageReceived( BMessage *message );
+		virtual	void FrameResized(float newWidth, float newHeight);
 	};
 	
 	BWindow *pHostWindow;

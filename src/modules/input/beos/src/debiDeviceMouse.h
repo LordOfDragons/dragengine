@@ -48,6 +48,8 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
+	/** \brief Update device state. */
+	virtual void Update();
 	/*@}*/
 };
 

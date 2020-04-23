@@ -22,9 +22,16 @@
 #include <stdlib.h>
 
 #include "debiDeviceButton.h"
+#include "deBeOSInput.h"
 
-#include <dragengine/common/exceptions.h>
+#include <dragengine/deEngine.h>
 #include <dragengine/input/deInputDeviceButton.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputDeviceButton.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImageManager.h>
 
 
 
@@ -34,7 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debiDeviceButton::debiDeviceButton() :
+debiDeviceButton::debiDeviceButton( deBeOSInput &module ) :
+pModule( module ),
 pPressed( false ),
 pBICode( -1 ),
 pBIChar( 0 ),
@@ -64,6 +72,44 @@ void debiDeviceButton::SetPressed( bool pressed ){
 
 
 
+void debiDeviceButton::SetDisplayImages( const char *name ){
+	pDisplayImage = NULL;
+	pDisplayIcons.RemoveAll();
+	
+	if( ! name ){
+		return;
+	}
+	
+	deImageManager &imageManager = *pModule.GetGameEngine()->GetImageManager();
+	deVirtualFileSystem * const vfs = &pModule.GetVFS();
+	const char * const basePath = "/share/image/button";
+	decString filename;
+	
+	filename.Format( "%s/%s/image.png", basePath, name );
+	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	
+	const int sizes[ 4 ] = {128, 64, 32, 16};
+	deImageReference icon;
+	int i;
+	
+	for( i=0; i<4; i++ ){
+		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
+		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+		pDisplayIcons.Add( ( deImage* )icon );
+	}
+}
+
+void debiDeviceButton::SetDisplayImages( const debiDeviceButton &button ){
+	pDisplayImage = button.pDisplayImage;
+	pDisplayIcons = button.pDisplayIcons;
+}
+
+void debiDeviceButton::SetDisplayText( const char *text ){
+	pDisplayText = text;
+}
+
+
+
 void debiDeviceButton::SetBICode( int code ){
 	pBICode = code;
 }
@@ -83,6 +129,14 @@ void debiDeviceButton::SetMatchPriority( int priority ){
 
 
 void debiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
+	int i;
+	
 	info.SetID( pID );
 	info.SetName( pName );
+	
+	info.SetDisplayImage( pDisplayImage );
+	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
+		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	}
+	info.SetDisplayText( pDisplayText );
 }

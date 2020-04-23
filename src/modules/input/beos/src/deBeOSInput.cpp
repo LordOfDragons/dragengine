@@ -224,11 +224,11 @@ int deBeOSInput::IndexOfFeedbackWithID( int device, const char *id ){
 }
 
 bool deBeOSInput::GetButtonPressed( int device, int button ){
-	return pDevices->GetAt( device )->GetButtonAt( button ).GetPressed();
+	return pDevices->GetAt( device )->GetButtonAt( button )->GetPressed();
 }
 
 float deBeOSInput::GetAxisValue( int device, int axis ){
-	return pDevices->GetAt( device )->GetAxisAt( axis ).GetValue();
+	return pDevices->GetAt( device )->GetAxisAt( axis )->GetValue();
 }
 
 float deBeOSInput::GetFeedbackValue( int device, int feedback ){
@@ -251,8 +251,7 @@ int deBeOSInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyC
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const debiDeviceButton &button = rdevice.GetButtonAt( i );
-		
+		const debiDeviceButton &button = *rdevice.GetButtonAt( i );
 		if( button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority ){
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
@@ -330,9 +329,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 			keyChar, modifiers );*/
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( true );
-
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( true );
+		
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, keyChar,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -360,9 +359,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_KEY_UP: code=%d char=%d modifiers=%d", virtualKeyCode, keyChar, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( false );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( false );
+		
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, keyChar,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -388,9 +387,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_UNMAPPED_KEY_DOWN: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( true );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( true );
+		
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, 0,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -416,9 +415,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_UNMAPPED_KEY_UP: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( false );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( false );
+		
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, 0,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -445,7 +444,7 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_MOUSE_DOWN: code=%d button=%d modifiers=%d pos=(%d,%d)",
 		//	buttonCode, pCurMouseButtonPressed, message.GetInt32( "modifiers", 0 ),
 		//	position.x, position.y );
-		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed ).SetPressed( true );
+		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
 			pModifiersFromKeyState(), eventTime );
 		} break;
@@ -461,7 +460,7 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		const decPoint position( ( int )( devicePosition.x + 0.5f ), ( int )( devicePosition.y + 0.5f ) );
 		
 		//LogInfoFormat( "B_MOUSE_UP: button=%d pos=(%d,%d)", pCurMouseButtonPressed, position.x, position.y );
-        pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed ).SetPressed( false );
+		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
 			pModifiersFromKeyState(), eventTime );
 		
@@ -474,15 +473,15 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		
 		//LogInfoFormat( "B_MOUSE_WHEEL_CHANGED: x=%f y=%f", x, y );
-        if( y != 0 ){
-            pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 2,
-                pModifiersFromKeyState(), 0, -y, eventTime );
-        }
-        
-        if( x != 0 ){
-            pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 3,
-                pModifiersFromKeyState(), x, 0, eventTime );
-        }
+		if( y != 0 ){
+			pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 2,
+				pModifiersFromKeyState(), 0, -y, eventTime );
+		}
+		
+		if( x != 0 ){
+			pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 3,
+				pModifiersFromKeyState(), x, 0, eventTime );
+		}
 		} break;
 		
 	case B_MOUSE_MOVED: /*{
@@ -660,7 +659,7 @@ void deBeOSInput::pQueryMousePosition( bool sendEvents ){
 		timeval eventTime;
 		gettimeofday( &eventTime, NULL );
 		pAddMouseMove( pDevices->GetMouse()->GetIndex(), pModifiersFromKeyState(),
-			diffX, diffY, eventTime );
+			pLastMouseX, pLastMouseY, eventTime );
 	}
 }
 

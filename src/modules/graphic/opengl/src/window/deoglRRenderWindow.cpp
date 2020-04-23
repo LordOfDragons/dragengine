@@ -46,6 +46,7 @@
 #ifdef OS_BEOS
 #include <Window.h>
 #include <DirectWindow.h>
+#include <Cursor.h>
 #include <GLView.h>
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSBeOS.h>
@@ -100,10 +101,6 @@ pWindow( window )
 	//SetEventMask( B_POINTER_EVENTS | B_KEYBOARD_EVENTS, B_NO_POINTER_HISTORY );
 }
 
-void deoglRRenderWindow::cGLView::FrameResized( float width, float height ){
-	pWindow.SendCurMessageToEngine();
-}
-
 void deoglRRenderWindow::cGLView::KeyDown( const char *bytes, int32 numBytes ){
 	pWindow.SendCurMessageToEngine();
 }
@@ -129,12 +126,24 @@ BDirectWindow(
 	BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ),
 	"Drag[en]gine", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0, B_CURRENT_WORKSPACE ),
 pWindow( window ),
-pGLView( NULL )
+pGLView( NULL ),
+pCursor( NULL )
 {
 	// for full-screen: B_NO_BORDER_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL
 	pGLView = new cGLView( *this, BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ) );
 	AddChild( pGLView );
 	pGLView->MakeFocus();
+	
+	// create empty cursor and assign it
+	pCursor = new BCursor( B_CURSOR_ID_NO_CURSOR );
+	pGLView->SetViewCursor( pCursor );
+}
+
+deoglRRenderWindow::cDirectWindow::~cDirectWindow(){
+	if( pCursor ){
+		pGLView->SetViewCursor( B_CURSOR_SYSTEM_DEFAULT );
+		delete pCursor;
+	}
 }
 
 void deoglRRenderWindow::cDirectWindow::SendCurMessageToEngine(){
@@ -152,6 +161,11 @@ void deoglRRenderWindow::cDirectWindow::WindowActivated( bool active ){
 void deoglRRenderWindow::cDirectWindow::MessageReceived( BMessage *message ){
 	BDirectWindow::MessageReceived( message );
 	SendCurMessageToEngine();
+}
+
+void deoglRRenderWindow::cDirectWindow::FrameResized( float newWidth, float newHeight ){
+	BDirectWindow::FrameResized( newWidth, newHeight );
+	pWindow.OnResize( ( int )( newWidth + 0.5f ), ( int )( newHeight + 0.5f ) );
 }
 
 // TODO

@@ -24,9 +24,12 @@
 
 #include <sys/time.h>
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceAxis.h>
+#include <dragengine/resources/image/deImageReference.h>
 
+class deBeOSInput;
 class debiDevice;
 class deInputDeviceAxis;
 
@@ -35,12 +38,18 @@ class deInputDeviceAxis;
 /**
  * \brief Input device axis.
  */
-class debiDeviceAxis{
+class debiDeviceAxis : public deObject{
 private:
+	deBeOSInput &pModule;
+	
 	int pIndex;
 	decString pID;
 	decString pName;
 	deInputDeviceAxis::eAxisTypes pType;
+	
+	deImageReference pDisplayImage;
+	decObjectOrderedSet pDisplayIcons;
+	decString pDisplayText;
 	
 	int pMinimum;
 	int pMaximum;
@@ -63,16 +72,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device axis. */
-	debiDeviceAxis();
+	debiDeviceAxis( deBeOSInput &module );
 	
+protected:
 	/** \brief Clean up device axis. */
-	~debiDeviceAxis();
+	virtual ~debiDeviceAxis();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Module Management */
 	/*@{*/
+	/** \brief Input module. */
+	inline deBeOSInput &GetModule() const{ return pModule; }
+	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
@@ -96,6 +110,23 @@ public:
 	
 	/** \brief Set type. */
 	void SetType( deInputDeviceAxis::eAxisTypes type );
+	
+	
+	
+	/** \brief Display image. */
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	
+	/** \brief Display icons (deImage*). */
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	
+	/** \brief Set display image and icons. */
+	void SetDisplayImages( const char *name );
+	
+	/** \brief Display text. */
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	
+	/** \brief Set display text. */
+	void SetDisplayText( const char *text );
 	
 	
 	
