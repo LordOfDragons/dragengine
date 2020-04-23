@@ -74,27 +74,37 @@ class EMPSystem extends Panel
 	end
 	
 	/** \brief CheckBox supporting ParameterValueEditor. */
-	public class PVECheckBox extends CheckBox implements ParameterValueEditor
+	public class PVECheckBox extends Panel implements ParameterValueEditor
 		private var SysParamWrapper pWrapper
 		private var ModuleParameter pParameter
+		private var CheckBox pCheckBox
 		
 		/** \brief Create text field. */
 		public func new( SysParamWrapper wrapper, ModuleParameter parameter )
 			this.pWrapper = wrapper
 			this.pParameter = parameter
-			this.setDesignerSelector( "CheckBox.EMPSystem.Value" )
-			this.setToggled( wrapper.getParameterValue( parameter.getName() ).equals( "1" ) )
+			this.pCheckBox = CheckBox.new()
+			this.pCheckBox.setDesignerSelector( "CheckBox.EMPSystem.Value" )
+			this.pCheckBox.setToggled( wrapper.getParameterValue( parameter.getName() ).equals( "1" ) )
+			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
+			this.addWidget( this.pCheckBox )
+		end
+		
+		/** \brief Dispose of widget. */
+		public func void dispose()
+			this.pCheckBox = null
+			super.dispose()
 		end
 		
 		/** \brief Reset parameter changes. */
 		public func void resetChanges()
-			this.setToggled( this.pWrapper.getParameterValue( this.pParameter.getName() ).equals( "1" ) )
+			this.pCheckBox.setToggled( this.pWrapper.getParameterValue( this.pParameter.getName() ).equals( "1" ) )
 		end
 		
 		/** \brief Apply parameter changes. */
 		public func void applyChanges()
 			var bool oldValue = this.pWrapper.getParameterValue( this.pParameter.getName() ).equals( "1" )
-			var bool newValue = this.getToggled()
+			var bool newValue = this.pCheckBox.getToggled()
 			if newValue != oldValue
 				this.pWrapper.setParameterValue( this.pParameter.getName(), newValue if "1" else "0" )
 			end
@@ -570,10 +580,7 @@ class EMPSystem extends Panel
 	protected func Widget createEditWidgetBoolean( ModuleParameter parameter )
 		var PVECheckBox widget = PVECheckBox.new( this.pWrapper, parameter )
 		widget.addFocusListener( FocusShowInfo.new( parameter, this ) )
-		//return widget
-		return Panel.new( CentrizedBoxLayout.new( LayoutAxis.x ), block Panel panel
-			panel.addWidget( widget )
-		end )
+		return widget
 	end
 	
 	/** \brief Create widget to edit parameter as ranged. */
