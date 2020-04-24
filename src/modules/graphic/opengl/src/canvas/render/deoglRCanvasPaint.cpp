@@ -477,24 +477,26 @@ void deoglRCanvasPaint::pWriteVBOData(){
 		pDrawOffsetLine = pDrawCountFill;
 		
 		if( thickness > 0.5f ){
+			const float geomTypeReduce = pIsThick ? 0.0f : 1.0f;
+			
 			if( cornerPointCount > 1 ){
 				pCalcArc( outer, cornerCenter, cornerCenter,
 					DEG2RAD * 270.0f, DEG2RAD * 180.0f, cornerPointCount );
 				pCalcArc( outer + cornerPointCount,
-					decVector2( size.x - 1.0f - cornerCenter.x, cornerCenter.y ), cornerCenter,
+					decVector2( size.x - geomTypeReduce - cornerCenter.x, cornerCenter.y ), cornerCenter,
 					DEG2RAD * 180.0f, DEG2RAD * 90.0f, cornerPointCount );
 				pCalcArc( outer + cornerPointCount * 2,
-					size - decVector2( 1.0f, 1.0f ) - cornerCenter, cornerCenter,
+					size - decVector2( geomTypeReduce, geomTypeReduce ) - cornerCenter, cornerCenter,
 					DEG2RAD * 90.0f, 0.0f, cornerPointCount );
 				pCalcArc( outer + cornerPointCount * 3,
-					decVector2( cornerCenter.x, size.y - 1.0f - cornerCenter.y ), cornerCenter,
+					decVector2( cornerCenter.x, size.y - geomTypeReduce - cornerCenter.y ), cornerCenter,
 					0.0f, DEG2RAD * -90.0f, cornerPointCount );
 				
 			}else{
 				outer[ 0 ].Set( 0.0f, 0.0f );
-				outer[ 1 ].Set( size.x - 1.0f, 0.0f );
-				outer[ 2 ].Set( size.x - 1.0f, size.y - 1.0f );
-				outer[ 3 ].Set( 0.0f, size.y - 1.0f );
+				outer[ 1 ].Set( size.x - geomTypeReduce, 0.0f );
+				outer[ 2 ].Set( size.x - geomTypeReduce, size.y - geomTypeReduce );
+				outer[ 3 ].Set( 0.0f, size.y - geomTypeReduce );
 			}
 			
 			if( pIsThick ){

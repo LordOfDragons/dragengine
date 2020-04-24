@@ -44,7 +44,7 @@ pThickness( 1.0f ),
 pRoundCornerX( 0.0f ),
 pRoundCornerY( 0.0f ),
 pStartAngle( 0.0f ),
-pEndAngle( 0.0f ),
+pEndAngle( TWO_PI ),
 
 pPoints( NULL ),
 pPointCount( 0 ){
