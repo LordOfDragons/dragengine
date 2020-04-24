@@ -124,13 +124,12 @@ void deoglRRenderWindow::cGLView::MouseUp( BPoint point ){
 deoglRRenderWindow::cGLWindow::cGLWindow( deoglRRenderWindow &window ) :
 BDirectWindow(
 	BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ),
-	"Drag[en]gine", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0, B_CURRENT_WORKSPACE ),
+	"Drag[en]gine", B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0, B_CURRENT_WORKSPACE ),
 pWindow( window ),
 pGLView( NULL ),
 pCursor( NULL ),
 pBlockQuitRequested( true )
 {
-	// for full-screen: B_NO_BORDER_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL
 	pGLView = new cGLView( *this, BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ) );
 	AddChild( pGLView );
 	pGLView->MakeFocus();
