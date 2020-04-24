@@ -309,6 +309,10 @@ void deoglSCBuildConstructed::VisitImage( deSkinPropertyNodeImage &node ){
 }
 
 void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
+	if( node.GetSize().x == 0 || node.GetSize().y == 0 || node.GetSize().z == 0 ){
+		return;
+	}
+	
 	sContext &context = *pContext;
 	sTarget target;
 	pDrawMaskIfPresent( node, target );
@@ -317,27 +321,27 @@ void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
 	const decColor &colorLine = node.GetLineColor();
 	const decColor &colorFill = node.GetFillColor();
 	
-	const decVector2 innerFrom( thickness, thickness );
-	const decVector2 innerTo(
-		( float )context.clamp.x - thickness,
-		( float )context.clamp.y - thickness );
-	
 	// paint image
 	const int strideLine = pTarget->pixBufWidth * pTarget->pixBufComponentCount;
 	const int strideImage = strideLine * pTarget->pixBufHeight;
 	const int pixBufComponentCount = pTarget->pixBufComponentCount;
 	const int depth = context.clipTo.z - context.clipFrom.z;
 	decVector2 position;
-	decPoint center;
 	float maskAlpha;
 	decColor color;
 	decPoint i;
 	int z;
 	
 	switch( node.GetShapeType() ){
-	case deSkinPropertyNodeShape::estRectangle:
+	case deSkinPropertyNodeShape::estRectangle:{
+		const decVector2 innerFrom( thickness, thickness );
+		const decVector2 innerTo(
+			( float )context.clamp.x - thickness,
+			( float )context.clamp.y - thickness );
+		
 		for( i.y=context.clipFrom.y; i.y<=context.clipTo.y; i.y++ ){
-			int offset = strideImage * context.clipFrom.z + strideLine * i.y + pixBufComponentCount * context.clipFrom.x;
+			int offset = strideImage * context.clipFrom.z + strideLine * i.y
+				+ pixBufComponentCount * context.clipFrom.x;
 			
 			for( i.x=context.clipFrom.x; i.x<=context.clipTo.x; i.x++ ){
 				// transform position from root up to this context clipping at each step
@@ -349,15 +353,15 @@ void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
 				
 				while( marchContext ){
 					position = marchContext->transformInverse * position;
-					center = position.Round();
+					const decPoint rounded( position.Round() );
 					
-					if( ! ( center >= decPoint() && center <= marchContext->clamp ) ){
+					if( ! ( rounded >= decPoint() && rounded <= marchContext->clamp ) ){
 						break;
 					}
 					
 					if( marchContext->mask ){
 						maskAlpha *= ( float )marchContext->mask->pixBufDataFloat[
-							marchContext->mask->pixBufWidth * center.y + center.x ];
+							marchContext->mask->pixBufWidth * rounded.y + rounded.x ];
 					}
 					
 					marchContext = marchContext->child;
@@ -385,10 +389,82 @@ void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
 				offset += pixBufComponentCount;
 			}
 		}
-		break;
+		}break;
 		
-	case deSkinPropertyNodeShape::estEllipse:
-		break;
+	case deSkinPropertyNodeShape::estEllipse:{
+		const decPoint size( node.GetSize().x - 1, node.GetSize().y - 1 );
+		const decVector2 center( ( float )size.x * 0.5f, ( float )size.y * 0.5f );
+		const decPoint absSize( size.Absolute() );
+		const decVector2 axisLen( ( float )absSize.x * 0.5f, ( float )absSize.y * 0.5f );
+		const float scale = absSize.y > 0 ? axisLen.x / axisLen.y : 1.0f;
+		const float invScale = 1.0f / scale;
+		const float unitThreshold = axisLen.y + 0.5f;
+		const float thicknessThreshold = thickness + 0.5f;
+		
+		for( i.y=context.clipFrom.y; i.y<=context.clipTo.y; i.y++ ){
+			int offset = strideImage * context.clipFrom.z + strideLine * i.y
+				+ pixBufComponentCount * context.clipFrom.x;
+			
+			for( i.x=context.clipFrom.x; i.x<=context.clipTo.x; i.x++ ){
+				// transform position from root up to this context clipping at each step
+				position.x = ( float )i.x;
+				position.y = ( float )i.y;
+				maskAlpha = 1.0f;
+				
+				sContext *marchContext = context.root;
+				while( marchContext ){
+					position = marchContext->transformInverse * position;
+					const decPoint rounded( position.Round() );
+					
+					if( ! ( rounded >= decPoint() && rounded <= marchContext->clamp ) ){
+						break;
+					}
+					
+					if( marchContext->mask ){
+						maskAlpha *= ( float )marchContext->mask->pixBufDataFloat[
+							marchContext->mask->pixBufWidth * rounded.y + rounded.x ];
+					}
+					
+					marchContext = marchContext->child;
+				}
+				
+				if( marchContext ){
+					offset += pixBufComponentCount;
+					continue;
+				}
+				
+				// paint shape
+				const decVector2 relPos( position - center );
+				const decVector2 unitRelPos( relPos.x * invScale, relPos.y );
+				const float unitRelPosLen = unitRelPos.Length();
+				if( unitRelPosLen > unitThreshold ){
+					offset += pixBufComponentCount;
+					continue;
+				}
+				
+				decVector2 ellipsePos;
+				if( unitRelPosLen > 0.0f ){
+					ellipsePos = unitRelPos * ( axisLen.y / unitRelPosLen );
+					ellipsePos.x *= scale;
+				}
+				
+				if( relPos.Length() < ellipsePos.Length() - thicknessThreshold ){
+					color = colorFill;
+					
+				}else{
+					color = colorLine;
+				}
+				
+				color.a *= maskAlpha;
+				
+				for( z=0; z<depth; z++ ){
+					pWritePixel( context, offset + strideImage * z, color );
+				}
+				
+				offset += pixBufComponentCount;
+			}
+		}
+		}break;
 	}
 }
 
