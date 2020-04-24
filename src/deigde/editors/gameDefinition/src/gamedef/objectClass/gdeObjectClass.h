@@ -105,10 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object class. */
-	gdeObjectClass();
-	
-	/** \brief Create object class. */
-	gdeObjectClass( const char *name );
+	gdeObjectClass( const char *name = "NewClass" );
 	
 	/** \brief Create copy of object class. */
 	gdeObjectClass( const gdeObjectClass &objectClass );

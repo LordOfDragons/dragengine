@@ -51,14 +51,6 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeObjectClass::gdeObjectClass() :
-pGameDefinition( NULL ),
-pName( "NewClass" ),
-pScaleMode( esmFixed ),
-
-pIsGhost( false ){
-}
-
 gdeObjectClass::gdeObjectClass( const char *name ) :
 pGameDefinition( NULL ),
 pName( name ),
