@@ -85,6 +85,10 @@ InitCommon( parent_env )
 #print('os.name', os.name)
 #print('sys.platform', sys.platform)
 
+# load platform specific tools
+if parent_env['OSBeOS']:
+	parent_env.Tool('beosResource')
+
 # append flags
 parent_env.Replace( MODULE_CPPFLAGS = [] )
 parent_env.Replace( MODULE_LINKFLAGS = [] )
@@ -268,7 +272,7 @@ elif parent_env['OSBeOS']:
 	params.Add( PathVariable( 'datadir', 'System shares', '${prefix}/data', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'sysconfdir', 'System configuration', '${prefix}/settings', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'execdir', 'System binaries', '${prefix}/bin', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'sysvardir', 'System var', '${prefix}/var', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'sysvardir', 'System var', '${prefix}/settings', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'cachedir', 'System cache', '${prefix}/cache', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'docdir', 'System documentation', '${prefix}/documentation', PathVariable.PathAccept ) )
 
@@ -311,7 +315,7 @@ elif parent_env['OSBeOS']:
 	params.Add( PathVariable( 'path_launcher_share', 'Path to the Launcher shares',
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
-		'/boot/system/delauncher/games', PathVariable.PathAccept ) )
+		'${sysvardir}/delauncher/games', PathVariable.PathAccept ) )
 	
 elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )

@@ -121,7 +121,7 @@ for l in reversed(parent_targets['lib_fox']['runtimelibs']):
 		archive[os.path.join(pathBinLib, l.name)] = l
 
 
-if envLauncher['OSPosix']:
+if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	pathDataDir = envLauncher.subst('${datadir}')
 	
 	for s in ['128', '64', '32']:

@@ -68,17 +68,14 @@ public:
 	virtual void ArgvReceived( int32 argc, char** argv ){
 		int i;
 		for( i=1; i<argc; i++ ){
-			printf( "[DELAUNCH] ArgvReceived: %d = '%s'\n", i, argv[ i ] );
 			pLauncher.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
 		}
 	}
 	
 	virtual void AboutRequested(){
-		printf( "[DELAUNCH] AboutRequested()\n" );
 	}
 	
 	virtual bool QuitRequested(){
-		printf( "[DELAUNCH] QuitRequested()\n" );
 		return true;
 	}
 	
@@ -127,15 +124,7 @@ public:
 };
 
 int main( int argcount, char **args ){
-	/*
-	new deBApp();
-	be_app->Run();
-	delete be_app;
-	return 0;
-	*/
-	deBApp app;
-	app.Run();
-	printf( "Quit finished\n" );
+	deBApp().Run();
 	return 0;
 }
 
