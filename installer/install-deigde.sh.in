@@ -29,15 +29,15 @@ if [ `id -u` != 0 ]; then
 	exit -1
 fi
 
-if [ ! -x "/usr/bin/xdg-mime" ]; then
-	echo -e "\e[31m\e[1mMissing /usr/bin/xdg-mime .\e[39m\e[0m"
-	echo -e "\e[93m(Reason: Required to install mime-types)\e[39m"
+if [[ ! $(builtin type -P "tar") ]]; then
+	echo -e "\e[31m\e[1mMissing tar binary in path.\e[39m\e[0m"
+	echo -e "\e[93m(Reason: Required to unpack archive)\e[39m"
 	exit -1
 fi
 
-if [ ! -x "/usr/bin/tar" ]; then
-	echo -e "\e[31m\e[1mMissing /usr/bin/tar .\e[39m\e[0m"
-	echo -e "\e[93m(Reason: Required to unpack archive)\e[39m"
+if [[ ! $(builtin type -P "xdg-mime") ]]; then
+	echo -e "\e[31m\e[1mMissing xdg-mime in path .\e[39m\e[0m"
+	echo -e "\e[93m(Reason: Required to install mime-types)\e[39m"
 	exit -1
 fi
 
