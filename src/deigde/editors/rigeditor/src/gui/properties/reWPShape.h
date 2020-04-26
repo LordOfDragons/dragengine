@@ -33,6 +33,7 @@ class reWPPanelShapeSphere;
 class reWPPanelShapeBox;
 class reWPPanelShapeCylinder;
 class reWPPanelShapeCapsule;
+class reWPPanelShapeHull;
 class reWindowProperties;
 
 
@@ -52,6 +53,7 @@ private:
 	reWPPanelShapeBox *pPanelBox;
 	reWPPanelShapeCylinder *pPanelCylinder;
 	reWPPanelShapeCapsule *pPanelCapsule;
+	reWPPanelShapeHull *pPanelHull;
 	reWPPanelShape *pActivePanel;
 	
 	

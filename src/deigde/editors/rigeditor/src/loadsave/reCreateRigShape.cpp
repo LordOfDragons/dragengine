@@ -26,6 +26,7 @@
 #include "../rig/shape/reRigShapeSphere.h"
 #include "../rig/shape/reRigShapeCapsule.h"
 #include "../rig/shape/reRigShapeCylinder.h"
+#include "../rig/shape/reRigShapeHull.h"
 #include "dragengine/deEngine.h"
 #include "dragengine/common/shape/decShape.h"
 #include "dragengine/common/shape/decShapeBox.h"
@@ -98,7 +99,7 @@ void reCreateRigShape::VisitShapeBox( decShapeBox &box ){
 	pRigShape = rigBox;
 	
 	rigBox->SetPosition( box.GetPosition() );
-	rigBox->SetOrientation( decMatrix::CreateFromQuaternion( box.GetOrientation() ).GetEulerAngles() / DEG2RAD );
+	rigBox->SetOrientation( decMatrix::CreateFromQuaternion( box.GetOrientation() ).GetEulerAngles() * RAD2DEG );
 	rigBox->SetHalfExtends( box.GetHalfExtends() );
 }
 
@@ -113,7 +114,7 @@ void reCreateRigShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
 	pRigShape = rigCylinder;
 	
 	rigCylinder->SetPosition( cylinder.GetPosition() );
-	rigCylinder->SetOrientation( decMatrix::CreateFromQuaternion( cylinder.GetOrientation() ).GetEulerAngles() / DEG2RAD );
+	rigCylinder->SetOrientation( decMatrix::CreateFromQuaternion( cylinder.GetOrientation() ).GetEulerAngles() * RAD2DEG );
 	rigCylinder->SetHalfHeight( cylinder.GetHalfHeight() );
 	rigCylinder->SetTopRadius( cylinder.GetTopRadius() );
 	rigCylinder->SetBottomRadius( cylinder.GetBottomRadius() );
@@ -130,12 +131,23 @@ void reCreateRigShape::VisitShapeCapsule( decShapeCapsule &capsule ){
 	pRigShape = rigCapsule;
 	
 	rigCapsule->SetPosition( capsule.GetPosition() );
-	rigCapsule->SetOrientation( decMatrix::CreateFromQuaternion( capsule.GetOrientation() ).GetEulerAngles() / DEG2RAD );
+	rigCapsule->SetOrientation( decMatrix::CreateFromQuaternion( capsule.GetOrientation() ).GetEulerAngles() * RAD2DEG );
 	rigCapsule->SetHalfHeight( capsule.GetHalfHeight() );
 	rigCapsule->SetTopRadius( capsule.GetTopRadius() );
 	rigCapsule->SetBottomRadius( capsule.GetBottomRadius() );
 }
 
 void reCreateRigShape::VisitShapeHull( decShapeHull &hull ){
-	VisitShape( hull );
+	Reset();
+	
+	reRigShapeHull * const rigHull = new reRigShapeHull( pEngine );
+	pRigShape = rigHull;
+	
+	rigHull->SetPosition( hull.GetPosition() );
+	rigHull->SetOrientation( decMatrix::CreateFromQuaternion( hull.GetOrientation() ).GetEulerAngles() * RAD2DEG );
+	const int count = hull.GetPointCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		rigHull->AddPoint( hull.GetPointAt( i ) );
+	}
 }

@@ -31,6 +31,7 @@
 #include "../../../rig/shape/reRigShapeBox.h"
 #include "../../../rig/shape/reRigShapeCylinder.h"
 #include "../../../rig/shape/reRigShapeCapsule.h"
+#include "../../../rig/shape/reRigShapeHull.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -143,31 +144,35 @@ float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
 		const reRigShape &shape = *bone.GetShapeAt( i );
 		const reRigShape::eShapeTypes type = shape.GetShapeType();
 		
-		if( type == reRigShape::estSphere ){
-			const reRigShapeSphere &sphere = *( ( reRigShapeSphere* )&shape );
+		switch( type ){
+		case reRigShape::estSphere:{
+			const reRigShapeSphere &sphere = ( reRigShapeSphere& )shape;
 			const float radius = sphere.GetRadius();
 			volume += PI * radius * radius * radius * 4.0f / 3.0f;
+			}break;
 			
-		}else if( type == reRigShape::estBox ){
+		case reRigShape::estBox:{
 			const reRigShapeBox &box = *( ( reRigShapeBox* )&shape );
 			const decVector extends = box.GetHalfExtends() * 2.0f;
 			volume += extends.x * extends.y * extends.z;
+			}break;
 			
-		}else if( type == reRigShape::estCylinder ){
-			const reRigShapeCylinder &cylinder = *( ( reRigShapeCylinder* )&shape );
+		case reRigShape::estCylinder:{
+			const reRigShapeCylinder &cylinder = ( reRigShapeCylinder& )shape;
 			const float height = cylinder.GetHalfHeight() * 2.0f;
 			const float radiusBottom = cylinder.GetBottomRadius();
 			const float radiusTop = cylinder.GetTopRadius();
 			const float radius = ( radiusTop + radiusBottom ) * 0.5f;
 			volume += PI * radius * radius * height;
+			}break;
 			
-		}else if( type == reRigShape::estCapsule ){
+		case reRigShape::estCapsule:{
 			// NOTE this solution is not fully correct. the spheres at the top and bottom are
 			//      calculate as if the top and bottom radius are equal. correctly though due
 			//      to the different radi the spheres are slightly moved in or out of the
 			//      cylinder. this can be achieved by calculating the tilt angle of the base
 			//      cylinder and using this as the angle where the sphere is truely cut.
-			const reRigShapeCapsule &capsule = *( ( reRigShapeCapsule* )&shape );
+			const reRigShapeCapsule &capsule = ( reRigShapeCapsule& )shape;
 			const float height = capsule.GetHalfHeight() * 2.0f;
 			const float radiusBottom = capsule.GetBottomRadius();
 			const float radiusTop = capsule.GetTopRadius();
@@ -175,6 +180,32 @@ float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
 			volume += PI * radius * radius * height; // base cylinder
 			volume += PI * radiusTop * radiusTop * radiusTop * 2.0f / 3.0f; // top half-sphere
 			volume += PI * radiusBottom * radiusBottom * radiusBottom * 2.0f / 3.0f; // bottom half-sphere
+			}break;
+			
+		case reRigShape::estHull:{
+			// this calculation is a crude approximation for the time being
+			const reRigShapeHull &hull = ( reRigShapeHull& )shape;
+			const int count = hull.GetPointCount();
+			decVector minExtend, maxExtend;
+			int i;
+			
+			for( i=0; i<count; i++ ){
+				const decVector &point = hull.GetPointAt( i );
+				if( i == 0 ){
+					minExtend = maxExtend = point;
+					
+				}else{
+					minExtend.SetSmallest( point );
+					maxExtend.SetLargest( point );
+				}
+			}
+			
+			const decVector extends( maxExtend - minExtend );
+			volume += extends.x * extends.y * extends.z;
+			}break;
+			
+		default:
+			break;
 		}
 	}
 	

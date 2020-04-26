@@ -31,6 +31,7 @@
 #include "panels/reWPPanelShapeBox.h"
 #include "panels/reWPPanelShapeCylinder.h"
 #include "panels/reWPPanelShapeCapsule.h"
+#include "panels/reWPPanelShapeHull.h"
 #include "../reWindowMain.h"
 #include "../../rig/reRig.h"
 #include "../../rig/shape/reRigShape.h"
@@ -65,6 +66,7 @@ pPanelSphere( NULL ),
 pPanelBox( NULL ),
 pPanelCylinder( NULL ),
 pPanelCapsule( NULL ),
+pPanelHull( NULL ),
 pActivePanel( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -88,6 +90,9 @@ pActivePanel( NULL )
 	
 	pPanelCapsule = new reWPPanelShapeCapsule( *this );
 	pSwitcher->AddChild( pPanelCapsule );
+	
+	pPanelHull = new reWPPanelShapeHull( *this );
+	pSwitcher->AddChild( pPanelHull );
 	
 	pSwitcher->SetCurrent( 0 );
 }
@@ -168,6 +173,10 @@ void reWPShape::SetShape( reRigShape *shape ){
 	}else if( shapeType == pPanelCapsule->GetRequiredShapeType() ){
 		pSwitcher->SetCurrent( 4 );
 		pActivePanel = pPanelCapsule;
+		
+	}else if( shapeType == pPanelHull->GetRequiredShapeType() ){
+		pSwitcher->SetCurrent( 5 );
+		pActivePanel = pPanelHull;
 		
 	}else{
 		pSwitcher->SetCurrent( 0 );
