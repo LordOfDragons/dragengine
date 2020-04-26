@@ -596,7 +596,6 @@ void reRig::UpdateWorld( float elapsed ){
 		for( s=0; s<pShapeCount; s++ ){
 			pShapes[ s ]->Update();
 		}
-		
 		pPoseChanged = false;
 	}
 	

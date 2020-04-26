@@ -220,6 +220,10 @@ void reWindowMain::SetRig( reRig *rig ){
 	
 	pView3D->SetRig( rig );
 	pWindowProperties->SetRig( rig );
+	
+	if( rig && GetEngineController().GetRunning() ){
+		rig->InitDelegates();
+	}
 }
 
 void reWindowMain::CreateNewRig(){
@@ -228,10 +232,6 @@ void reWindowMain::CreateNewRig(){
 	reRig * const rig = ( reRig* )refRig.operator->();
 	
 	SetRig( rig );
-	
-	if( GetEngineController().GetRunning() ){
-		rig->InitDelegates();
-	}
 }
 
 void reWindowMain::SaveRig( const char *filename ){

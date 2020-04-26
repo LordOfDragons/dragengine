@@ -68,7 +68,6 @@ void reCLRigSimulation::CollisionResponse( deCollider *owner, deCollisionInfo *i
 	
 	switch( collider.GetResponseType() ){
 	case deCollider::ertDynamic:{
-		
 		const int ownerBoneIndex = info->GetOwnerBone();
 		
 		if( ownerBoneIndex == -1 ){
