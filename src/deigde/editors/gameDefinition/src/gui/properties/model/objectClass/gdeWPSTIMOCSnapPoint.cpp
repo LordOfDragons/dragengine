@@ -113,4 +113,5 @@ void gdeWPSTIMOCSnapPoint::UpdateName(){
 	decString text;
 	text.Format( "Snap Point #%d: %s", pIndex + 1, pSnapPoint->GetName().GetString() );
 	SetText( text );
+	ItemChanged();
 }
