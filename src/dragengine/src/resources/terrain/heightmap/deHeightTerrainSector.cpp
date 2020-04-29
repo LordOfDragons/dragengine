@@ -372,6 +372,9 @@ void deHeightTerrainSector::RemoveDecal( deDecal *decal ){
 void deHeightTerrainSector::RemoveAllDecals(){
 	while( pDecalTail ){
 		deDecal * const next = pDecalTail->GetLLComponentPrev();
+		pDecalTail->SetParentHeightTerrainSector( NULL );
+		pDecalTail->SetLLHeightTerrainSectorPrev( NULL );
+		pDecalTail->SetLLHeightTerrainSectorNext( NULL );
 		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;

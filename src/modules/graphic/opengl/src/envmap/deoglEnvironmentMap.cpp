@@ -638,6 +638,9 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	
 	cmf = pNextUpdateFace;
 	
+	pEnvMap->CreateCubeMap();
+	//pEnvMapDepth->CreateCubeMap();
+	
 	if( cmf == 0 ){
 		// initial clear and mip maps creation. this is required or else it won't work.
 		// better would be here using a placeholder environment map until the true
@@ -671,9 +674,6 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	}
 	
 	try{
-		pEnvMap->CreateCubeMap();
-		//pEnvMapDepth->CreateCubeMap();
-		
 		fbo = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( pSize, pSize );
 		pRenderThread.GetFramebuffer().Activate( fbo );
 		
@@ -712,7 +712,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 					fbo->DecreaseUsageCount();
 				}
 				plan.SetFBOTarget( NULL );
-				pNextUpdateFace  = 6;
+				pNextUpdateFace = 6;
 				pDirty = false;
 				return;
 			}
@@ -809,7 +809,17 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 				renderTime[ 4 ], renderTime[ 5 ], renderTime[ 6 ], renderTime[ 7 ] );
 		}
 		
-	}catch( const deException & ){
+		/*
+		if( pEnvMap ){
+			decString filename;
+			filename.Format( "envmap/render-%g-%g-%g_%d", pPosition.x, pPosition.y, pPosition.z, pNextUpdateFace );
+			pRenderThread.GetDebug().GetDebugSaveTexture().SaveCubeMapConversion(
+				*pEnvMap, filename, true, deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
+		}
+		*/
+		
+	}catch( const deException &e ){
+		pRenderThread.GetLogger().LogException( e );
 // 		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		pRenderThread.GetFramebuffer().Activate( NULL );
 		if( fbo ){

@@ -24,6 +24,7 @@
 
 #include "../deoglBasics.h"
 
+#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 
@@ -47,6 +48,13 @@ private:
 	int pFillPointCount;
 	int pLineFirstPoint;
 	int pLinePointCount;
+	
+	decVector *pHullPoints;
+	int pHullPointCount;
+	decIntList pHullIndices;
+	bool pDirtyHulls;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -124,6 +132,11 @@ public:
 	/** \brief Write points to VBO data. */
 	void WriteVBOData( const deDebugDrawerShape &ddshape, oglVector3 *vboData );
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareHulls();
 };
 
 #endif

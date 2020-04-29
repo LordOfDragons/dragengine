@@ -58,26 +58,18 @@
 ////////////////////////////
 
 reLSRig::reLSRig( deBaseRigModule *module ){
-	if( ! module ) DETHROW( deeInvalidParam );
-	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	if( ! module ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	pModule = module;
 	
-	pName = NULL;
-	pPattern = NULL;
-	
-	try{
-		SetName( loadableModule.GetName() );
-		SetPattern( loadableModule.GetPatternList().GetAt( 0 ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	pName = loadableModule.GetName();
+	pPattern = loadableModule.GetPatternList().GetAt( 0 );
 }
 
 reLSRig::~reLSRig(){
-	pCleanUp();
 }
 
 
@@ -86,25 +78,11 @@ reLSRig::~reLSRig(){
 ///////////////
 
 void reLSRig::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
-	char *newStr = new char[ strlen( name ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, name );
-	
-	if( pName ) delete [] pName;
-	pName = newStr;
+	pName = name;
 }
 
 void reLSRig::SetPattern( const char *pattern ){
-	if( ! pattern ) DETHROW( deeInvalidParam );
-	
-	char *newStr = new char[ strlen( pattern ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	sprintf( newStr, "%s", pattern );
-	
-	if( pPattern ) delete [] pPattern;
-	pPattern = newStr;
+	pPattern = pattern;
 }
 
 
@@ -269,14 +247,4 @@ void reLSRig::SaveRig( reRig *rig, decBaseFileWriter *file ){
 	if( ! rig->GetEngineRig() ) DETHROW( deeInvalidParam );
 	
 	pModule->SaveRig( *file, *rig->GetEngineRig() );
-}
-
-
-
-// Private functions
-//////////////////////
-
-void reLSRig::pCleanUp(){
-	if( pPattern ) delete [] pPattern;
-	if( pName ) delete [] pName;
 }

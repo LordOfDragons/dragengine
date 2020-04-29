@@ -96,7 +96,7 @@ void dermWriteShape::VisitShapeBox( decShapeBox &box ){
 	pWriter.WriteAttributeFloat( "z", position.z );
 	pWriter.WriteOpeningTagEnd( true );
 	
-	decVector rotation = decMatrix::CreateFromQuaternion( box.GetOrientation() ).GetEulerAngles() / DEG2RAD;
+	decVector rotation = decMatrix::CreateFromQuaternion( box.GetOrientation() ).GetEulerAngles() * RAD2DEG;
 	pWriter.WriteOpeningTagStart( "rotation" );
 	pWriter.WriteAttributeFloat( "x", rotation.x );
 	pWriter.WriteAttributeFloat( "y", rotation.y );
@@ -130,7 +130,7 @@ void dermWriteShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
 	pWriter.WriteAttributeFloat( "z", position.z );
 	pWriter.WriteOpeningTagEnd( true );
 	
-	decVector rotation = decMatrix::CreateFromQuaternion( cylinder.GetOrientation() ).GetEulerAngles() / DEG2RAD;
+	decVector rotation = decMatrix::CreateFromQuaternion( cylinder.GetOrientation() ).GetEulerAngles() * RAD2DEG;
 	pWriter.WriteOpeningTagStart( "rotation" );
 	pWriter.WriteAttributeFloat( "x", rotation.x );
 	pWriter.WriteAttributeFloat( "y", rotation.y );
@@ -169,7 +169,7 @@ void dermWriteShape::VisitShapeCapsule( decShapeCapsule &capsule ){
 	pWriter.WriteAttributeFloat( "z", position.z );
 	pWriter.WriteOpeningTagEnd( true );
 	
-	decVector rotation = decMatrix::CreateFromQuaternion( capsule.GetOrientation() ).GetEulerAngles() / DEG2RAD;
+	decVector rotation = decMatrix::CreateFromQuaternion( capsule.GetOrientation() ).GetEulerAngles() * RAD2DEG;
 	pWriter.WriteOpeningTagStart( "rotation" );
 	pWriter.WriteAttributeFloat( "x", rotation.x );
 	pWriter.WriteAttributeFloat( "y", rotation.y );
@@ -205,7 +205,7 @@ void dermWriteShape::VisitShapeHull( decShapeHull &hull ){
 	pWriter.WriteAttributeFloat( "z", position.z );
 	pWriter.WriteOpeningTagEnd( true );
 	
-	const decVector rotation( decMatrix::CreateFromQuaternion( hull.GetOrientation() ).GetEulerAngles() / DEG2RAD );
+	const decVector rotation( decMatrix::CreateFromQuaternion( hull.GetOrientation() ).GetEulerAngles() * RAD2DEG );
 	pWriter.WriteOpeningTagStart( "rotation" );
 	pWriter.WriteAttributeFloat( "x", rotation.x );
 	pWriter.WriteAttributeFloat( "y", rotation.y );
@@ -227,5 +227,5 @@ void dermWriteShape::VisitShapeHull( decShapeHull &hull ){
 		pWriter.WriteDataTagString( "property", pProperty );
 	}
 	
-	pWriter.WriteClosingTag( "box" );
+	pWriter.WriteClosingTag( "hull" );
 }

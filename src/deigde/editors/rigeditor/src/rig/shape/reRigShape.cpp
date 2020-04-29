@@ -52,7 +52,7 @@
 ////////////////////////////
 
 reRigShape::reRigShape( deEngine *engine, reRigShape::eShapeTypes shapeType ){
-	if( ! engine || shapeType < estSphere || shapeType > estCapsule ){
+	if( ! engine ){
 		DETHROW( deeInvalidParam );
 	}
 	

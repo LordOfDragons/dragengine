@@ -180,8 +180,8 @@ void deoglRDebugDrawer::UpdateShapes( const deDebugDrawer &debugDrawer ){
 		pShapes[ i ].SetShapeList( ddshape.GetShapeList() );
 	}
 	
-	pUpdateHasFlags( debugDrawer );
 	pWriteVBOData( debugDrawer );
+	pUpdateHasFlags( debugDrawer );
 	
 	pDirtyVBO = true;
 }
@@ -273,7 +273,7 @@ void deoglRDebugDrawer::pUpdateHasFlags( const deDebugDrawer &debugDrawer ){
 	int i;
 	
 	pHasShapes = false;
-	pHasFaces = false;
+	//pHasFaces = false;
 	
 	for( i=0; i<shapeCount; i++ ){
 		const deDebugDrawerShape &ddshape = *debugDrawer.GetShapeAt( i );
@@ -281,10 +281,12 @@ void deoglRDebugDrawer::pUpdateHasFlags( const deDebugDrawer &debugDrawer ){
 		if( ddshape.GetShapeList().GetCount() > 0 ){
 			pHasShapes = true;
 		}
-		if( ddshape.GetFaceCount() > 0 ){
-			pHasFaces = true;
-		}
+		//if( ddshape.GetFaceCount() > 0 ){
+		//	pHasFaces = true;
+		//}
 	}
+	
+	pHasFaces = pVBOPointCount > 0; // this covers also convex hull shapes
 }
 
 void deoglRDebugDrawer::pWriteVBOData( const deDebugDrawer &debugDrawer ){

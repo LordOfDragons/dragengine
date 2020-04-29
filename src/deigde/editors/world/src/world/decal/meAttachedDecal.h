@@ -42,7 +42,6 @@ private:
 	
 	meDecal *pDecal;
 	meObject *pParentObject;
-	bool pAttached;
 	
 	
 	

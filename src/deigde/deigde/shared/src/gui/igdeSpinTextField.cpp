@@ -238,6 +238,7 @@ void igdeSpinTextField::Focus(){
 
 
 void igdeSpinTextField::SetValue( int value ){
+	value = decMath::clamp( value, pLower, pUpper );
 	if( value == pValue ){
 		return;
 	}
@@ -253,7 +254,15 @@ void igdeSpinTextField::SetRange( int lower, int upper ){
 	
 	pLower = lower;
 	pUpper = decMath::max( upper, lower );
+	
+	const int oldValue = pValue;
+	pValue = decMath::clamp( pValue, lower, upper );
+	
 	OnRangeChanged();
+	
+	if( pValue != oldValue ){
+		OnValueChanged();
+	}
 }
 
 

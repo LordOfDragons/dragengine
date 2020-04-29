@@ -646,6 +646,9 @@ void deComponent::RemoveDecal( deDecal *decal ){
 void deComponent::RemoveAllDecals(){
 	while( pDecalTail ){
 		deDecal * const next = pDecalTail->GetLLComponentPrev();
+		pDecalTail->SetParentComponent( NULL );
+		pDecalTail->SetLLComponentPrev( NULL );
+		pDecalTail->SetLLComponentNext( NULL );
 		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;

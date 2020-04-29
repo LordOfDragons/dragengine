@@ -19,19 +19,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _RELSRIG_H_
 #define _RELSRIG_H_
 
-
-
-// includes
 #include "reLSRig.h"
-#include "dragengine/common/math/decMath.h"
+
+#include <dragengine/common/string/decString.h>
 
 
-
-// predefinitions
 class reRig;
 class deBaseRigModule;
 class decBaseFileReader;
@@ -40,33 +35,54 @@ class decBaseFileWriter;
 
 
 /**
- * Loads and saves rigs in the Drag[en]gine Actor Rig XML format.
+ * \brief Loads and saves rigs in the Drag[en]gine Actor Rig XML format.
  */
 class reLSRig{
 private:
 	deBaseRigModule *pModule;
 	
-	char *pName;
-	char *pPattern;
+	decString pName;
+	decString pPattern;
+	
+	
 	
 public:
-	// constructor, destructor
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create load-save. */
 	reLSRig( deBaseRigModule *module );
+	
+	/** \brief Clean up load-save. */
 	~reLSRig();
+	/*@}*/
 	
-	// management
-	inline const char *GetName() const{ return ( const char * )pName; }
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Name. */
+	inline const decString &GetName() const{ return pName; }
+	
+	/** \brief Set name. */
 	void SetName( const char *name );
-	inline const char *GetPattern() const{ return ( const char * )pPattern; }
+	
+	/** \brief Pattern. */
+	inline const decString &GetPattern() const{ return pPattern; }
+	
+	/** \brief Set pattern. */
 	void SetPattern( const char *pattern );
+	/*@}*/
 	
-	// loading and saving
+	
+	
+	/** \name Loading and Saving */
+	/*@{*/
+	/** \brief Load from file. */
 	void LoadRig( reRig *rig, decBaseFileReader *file );
-	void SaveRig( reRig *rig, decBaseFileWriter *file );
 	
-private:
-	void pCleanUp();
+	/** \brief Write to file. */
+	void SaveRig( reRig *rig, decBaseFileWriter *file );
+	/*@}*/
 };
 
-// end of include only once
 #endif

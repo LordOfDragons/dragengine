@@ -307,7 +307,7 @@ void reLoadSaveSystem::pRebuildFDPattern(){
 	
 	try{
 		for( i=0; i<pLSRigCount; i++ ){
-			pattern.Format( "*%s", pLSRigs[ i ]->GetPattern() );
+			pattern.Format( "*%s", pLSRigs[ i ]->GetPattern().GetString() );
 			
 			filePattern = new igdeFilePattern( pLSRigs[ i ]->GetName(), pattern, pLSRigs[ i ]->GetPattern() );
 			if( ! filePattern ) DETHROW( deeOutOfMemory );

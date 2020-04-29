@@ -46,7 +46,8 @@ public:
 		estSphere,
 		estBox,
 		estCylinder,
-		estCapsule
+		estCapsule,
+		estHull
 	};
 	
 private:

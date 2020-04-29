@@ -424,7 +424,6 @@ void meObject::OnGameDefinitionChanged(){
 		pWObject->SetGDClass( classDef ); // can trigger WOAsyncFinished in the future
 		
 		pUpdateDDSCoordSysArrowsLength();
-		pCreateSnapPoints();
 		pUpdateCamera();
 		UpdateTriggerTargets();
 		UpdateNavPathTest();
@@ -440,6 +439,8 @@ void meObject::OnGameDefinitionChanged(){
 	DecrementIDGroupIDUsage();
 	
 	pClassDef = classDef;
+	
+	pCreateSnapPoints();
 }
 
 void meObject::OnActiveCameraChanged(){

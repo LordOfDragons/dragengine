@@ -217,7 +217,7 @@ void debpColliderVolume::UpdateFromBody(){
 }
 
 void debpColliderVolume::UpdateExtends(){
-	if( pColliderVolume.GetShapes().GetCount() == 0 ){
+	if( pShapes.GetShapeCount() == 0 ){
 		SetExtends( decDVector(), decDVector() );
 		return;
 	}
@@ -637,31 +637,31 @@ void debpColliderVolume::UpdateShapesWithMatrix( const decDMatrix &transformatio
 }
 
 void debpColliderVolume::UpdateShapeExtends(){
-	if( pColliderVolume.GetShapes().GetCount() > 0 ){
-		int s, shapeCount = pShapes.GetShapeCount();
-		decDVector distance( pPredictDisp * 0.5 );
-		decDVector minExtendShape, maxExtendShape;
-		decDVector minExtendAll, maxExtendAll;
-		debpDCollisionBox colBox;
-		
-		// determine the bounding box of all collision volumes
-		pShapes.GetShapeAt( 0 )->GetCollisionVolume()->GetEnclosingBox( &colBox );
-		minExtendAll = colBox.GetCenter() - colBox.GetHalfSize();
-		maxExtendAll = colBox.GetCenter() + colBox.GetHalfSize();
-		
-		for( s=1; s<shapeCount; s++ ){
-			pShapes.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
-			
-			minExtendAll.SetSmallest( colBox.GetCenter() - colBox.GetHalfSize() );
-			maxExtendAll.SetLargest( colBox.GetCenter() + colBox.GetHalfSize() );
-		}
-		
-		// set the extends we found
-		SetShapeExtends( minExtendAll, maxExtendAll );
-		
-	}else{
+	if( pShapes.GetShapeCount() == 0 ){
 		SetShapeExtends( decDVector(), decDVector() );
+		return;
 	}
+	
+	int s, shapeCount = pShapes.GetShapeCount();
+	decDVector distance( pPredictDisp * 0.5 );
+	decDVector minExtendShape, maxExtendShape;
+	decDVector minExtendAll, maxExtendAll;
+	debpDCollisionBox colBox;
+	
+	// determine the bounding box of all collision volumes
+	pShapes.GetShapeAt( 0 )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+	minExtendAll = colBox.GetCenter() - colBox.GetHalfSize();
+	maxExtendAll = colBox.GetCenter() + colBox.GetHalfSize();
+	
+	for( s=1; s<shapeCount; s++ ){
+		pShapes.GetShapeAt( s )->GetCollisionVolume()->GetEnclosingBox( &colBox );
+		
+		minExtendAll.SetSmallest( colBox.GetCenter() - colBox.GetHalfSize() );
+		maxExtendAll.SetLargest( colBox.GetCenter() + colBox.GetHalfSize() );
+	}
+	
+	// set the extends we found
+	SetShapeExtends( minExtendAll, maxExtendAll );
 }
 
 

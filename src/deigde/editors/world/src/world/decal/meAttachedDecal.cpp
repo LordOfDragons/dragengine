@@ -45,8 +45,7 @@
 meAttachedDecal::meAttachedDecal( deEngine *engine, meDecal *decal ) :
 pEngine( engine ),
 pDecal( decal ),
-pParentObject( NULL ),
-pAttached( false )
+pParentObject( NULL )
 {
 	if( ! engine || ! decal ){
 		DETHROW( deeInvalidParam );
@@ -112,20 +111,10 @@ void meAttachedDecal::AttachToParent(){
 	pEngDecal->SetSize( size );
 	
 	engComponent->AddDecal( pEngDecal );
-	pAttached = true;
 }
 
 void meAttachedDecal::RemoveFromParent(){
-	if( ! pAttached ){
-		return;
+	if( pEngDecal->GetParentComponent() ){
+		pEngDecal->GetParentComponent()->RemoveDecal( pEngDecal );
 	}
-	
-	if( pParentObject ){
-		deComponent * const engComponent = pParentObject->GetObjectWrapper()->GetComponent();
-		if( engComponent ){
-			engComponent->RemoveDecal( pEngDecal );
-		}
-	}
-	
-	pAttached = false;
 }
