@@ -1102,5 +1102,5 @@ void deoglRenderCanvas::pActivateVAOShapes(){
 	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindVertexArray( pVAOShapes ) );
-	pVAOShapes = pVAOShapes;
+	pActiveVAO = pVAOShapes;
 }
