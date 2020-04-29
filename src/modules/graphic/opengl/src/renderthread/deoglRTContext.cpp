@@ -30,6 +30,7 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../extensions/deoglExtensions.h"
+#include "../extensions/deoglExtResult.h"
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
