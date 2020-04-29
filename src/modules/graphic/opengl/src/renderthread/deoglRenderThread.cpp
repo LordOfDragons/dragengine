@@ -1542,9 +1542,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 				+ sizeof( deModelFace ) * lod.GetFaceCount()
 				+ sizeof( decVector2 ) * ( lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount() );
 		}
-		modelMemUsage += sizeof( decVector ) * scanModel->GetNormalCount() /* deprecated */
-			+ sizeof( decVector ) * scanModel->GetTangentCount() /* deprecated */
-			+ sizeof( deModel::sHackWeight ) * scanModel->GetHackWeightCount() /* deprecated */ ;
 		modelCount++;
 		scanModel = ( deModel* )scanModel->GetLLManagerNext();
 	}
@@ -1596,8 +1593,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	int componentCount = 0;
 	while( scanComponent ){
 		if( scanComponent->GetModel() ){
-			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount()
-				+ sizeof( decMatrix ) * scanComponent->GetModel()->GetHackWeightCount();
+			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount();
 		}
 		componentCount++;
 		scanComponent = ( deComponent* )scanComponent->GetLLManagerNext();

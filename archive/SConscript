@@ -72,7 +72,9 @@ for target in parent_targets.values():
 # create builders
 archive = []
 archiveEngine = None
+archiveEngineDev = None
 archiveIgde = None
+archiveIgdeDev = None
 archiveSpecial = None
 
 if envArchive['archive_format'] == 'tarbz2':

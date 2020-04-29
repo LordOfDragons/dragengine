@@ -88,6 +88,22 @@ public:
 	 */
 	static decPath AbsolutePathNative( const char *path, const char *baseDirectory );
 	
+	/**
+	 * \brief Create relative or absolute path of source path relative to base directory.
+	 * \param[in] path Source path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	static decPath RelativePathUnix( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	
+	/**
+	 * \brief Create relative or absolute path of source path relative to base directory.
+	 * \param[in] path Source path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	static decPath RelativePathNative( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	
 	/** \brief Path prefix. */
 	inline const decString &GetPrefix() const{ return pPrefix; }
 	
@@ -158,6 +174,25 @@ public:
 	
 	/** \brief Path matches file pattern. */
 	bool MatchesPattern( const decPath &filePattern ) const;
+	
+	/**
+	 * \brief Create absolute path of base directory and a potential relative path.
+	 * 
+	 * Used for loading files relative to a base path where the file path can be absolute
+	 * or relative. If path is absolute a File instance of path is returned.  If path is
+	 * relative a File instance of baseDirectory with path appended is returned.
+	 * 
+	 * This method is safe to be used with path containing '..' at the beginning.
+	 */
+	decPath AbsolutePath( const decPath &baseDirectory ) const;
+	
+	/**
+	 * \brief Relative path of source path relative to base directory if possible.
+	 * \note Relative path is returned it possible otherwise copy of this path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	decPath RelativePath( const decPath &baseDirectory, bool onlyBelow = false ) const;
 	/*@}*/
 	
 	

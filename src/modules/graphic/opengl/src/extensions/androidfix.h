@@ -25,6 +25,10 @@
 // the missing definitions are listed here. Since GL has to use fully core
 // version this has to be fixed one way or the other
 
+// android get proc address
+__eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
+
+
 // Types missing from EGL since they are not used
 typedef unsigned int GLhandleARB;
 typedef char GLcharARB;

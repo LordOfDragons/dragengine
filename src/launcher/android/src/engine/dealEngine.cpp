@@ -307,7 +307,7 @@ void dealEngine::AddModulesFrom( const char *directory, int type ){
 	const int count = moduleDirs.GetCount();
 	for( i=0; i<count; i++ ){
 		deCollectDirectorySearchVisitor collect2;
-		vfs->SearchFiles( moduleDirs.GetAt( i ), collect2 );
+		vfs.SearchFiles( moduleDirs.GetAt( i ), collect2 );
 		
 		const dePathList &versionDirs = collect2.GetDirectories();
 		const int count2 = versionDirs.GetCount();

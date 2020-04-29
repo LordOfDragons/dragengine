@@ -22,6 +22,8 @@
 #ifndef _DEVFSCONTAINER_H_
 #define _DEVFSCONTAINER_H_
 
+#include <stdint.h>
+
 #include "../deObject.h"
 #include "../common/file/decPath.h"
 #include "../common/utils/decDateTime.h"

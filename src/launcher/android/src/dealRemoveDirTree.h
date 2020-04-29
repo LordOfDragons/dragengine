@@ -24,6 +24,7 @@
 
 class deLogger;
 class deVirtualFileSystem;
+class decPath;
 
 
 

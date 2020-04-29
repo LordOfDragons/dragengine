@@ -533,7 +533,8 @@ parent_env.Append( CPPFLAGS = [ '-Wall' ] )
 # the idea behind all this is all nice and dandy but it prevents legit fast memory handling
 # trying to pretend idiots from shooting themselves in the foot. if somebody uses memcpy then
 # he should know what he is doing so stop breaking builds with non-sense errors.
-parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
+if parent_env[ 'platform_android' ] == 'no':
+	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env[ 'with_warnerrors' ]:
 	parent_env.Append( CPPFLAGS = [ '-Werror' ] )
@@ -541,6 +542,7 @@ if parent_env[ 'with_warnerrors' ]:
 if parent_env[ 'platform_android' ] != 'no':
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 	parent_env.Append(CPPFLAGS = ['-Wno-tautological-constant-compare'])
+	parent_env.Append(CPPFLAGS = ['-Wno-unused-function'])
 
 # no default targets
 Default( None )
@@ -690,7 +692,7 @@ scdirs.append( 'src/modules/archive/delga' )
 # launchers
 scdirs.append( 'src/launcher/console' )
 scdirs.append( 'src/launcher/gui' )
-#scdirs.append( 'src/launcher/android' )
+scdirs.append( 'src/launcher/android' )
 scdirs.append( 'src/launcher/live' )
 
 # tests
@@ -728,14 +730,12 @@ SConscript( dirs='src/launcher/usbdrive', variant_dir='src/launcher/usbdrive/bui
 
 
 # archiving
-SConscript( dirs='archive', variant_dir='archive/build',
-	duplicate=0, exports='parent_env parent_targets parent_report' )
+SConscript(dirs='archive', variant_dir='archive/build',
+	duplicate=0, exports='parent_env parent_targets parent_report')
 
-"""
-SConscript( 'src/tools/launcher/android/SConscriptSpecial',
-	variant_dir='src/tools/launcher/android/build_apk',
-	duplicate=0, exports='parent_env parent_targets parent_report' )
-"""
+SConscript('src/launcher/android/SConscriptSpecial',
+	variant_dir='src/launcher/android/build_apk',
+	duplicate=0, exports='parent_env parent_targets parent_report')
 
 SConscript('archive/SConsHaikuHpkg.py', variant_dir='archive/buildPackage',
 	duplicate=0, exports='parent_env parent_targets parent_report')

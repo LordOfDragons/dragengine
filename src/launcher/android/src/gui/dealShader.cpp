@@ -20,6 +20,7 @@
  */
  
 #include <stdio.h>
+#include <string.h>
 
 #include "dealShader.h"
 #include "dealDisplay.h"

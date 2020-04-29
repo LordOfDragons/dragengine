@@ -33,7 +33,7 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/dePatternList.h>
-#include <dragengine/filesystem/deFileSearchVisitor.h>
+#include <dragengine/filesystem/deContainerFileSearch.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -119,7 +119,7 @@ static int ZCALLBACK fZipErrorFileFunc( voidpf opaque, voidpf stream ){
 //////////////////////////////////////////
 
 dealVFSZipArchive::cArchiveFile::cArchiveFile( const char *filename,
-const unz_file_pos &archivePosition, long fileSize, TIME_SYSTEM modificationTime ) :
+	const unz_file_pos &archivePosition, uint64_t fileSize, TIME_SYSTEM modificationTime ) :
 pFilename( filename ),
 pArchivePosition( archivePosition ),
 pFileSize( fileSize ),
@@ -508,8 +508,7 @@ void dealVFSZipArchive::TouchFile( const decPath &path ){
 	DETHROW( deeInvalidAction );
 }
 
-void dealVFSZipArchive::SearchFiles( const deVirtualFileSystem &vfs,
-const decPath &directory, deFileSearchVisitor &visitor ){
+void dealVFSZipArchive::SearchFiles( const decPath &directory, deContainerFileSearch &searcher ){
 	if( ! pArchiveDirectory ){
 		return;
 	}
@@ -527,39 +526,16 @@ const decPath &directory, deFileSearchVisitor &visitor ){
 		return;
 	}
 	
-	decPath filePath( directory );
-	filePath.AddComponent( "x" );
-	
-	dePathList directories, files;
 	const int directoryCount = adir->GetDirectoryCount();
 	const int fileCount = adir->GetFileCount();
 	int i;
 	
 	for( i=0; i<directoryCount; i++ ){
-		filePath.SetLastComponent( adir->GetDirectoryAt( i )->GetFilename() );
-		directories.Add( filePath );
-	}
-	
-	for( i=0; i<fileCount; i++ ){
-		filePath.SetLastComponent( adir->GetFileAt( i )->GetFilename() );
-		files.Add( filePath );
-	}
-	
-	for( i=0; i<directoryCount; i++ ){
-		if( ! visitor.VisitDirectory( vfs, directories.GetAt( i ) ) ){
-			return;
-		}
+		searcher.Add( adir->GetDirectoryAt( i )->GetFilename(), deVFSContainer::eftDirectory );
 	}
 	for( i=0; i<fileCount; i++ ){
-		if( ! visitor.VisitFile( vfs, files.GetAt( i ) ) ){
-			return;
-		}
+		searcher.Add( adir->GetFileAt( i )->GetFilename(), deVFSContainer::eftRegularFile );
 	}
-	
-	/*if( pEngineInstance.GetLogger() ){
-		pEngineInstance.GetLogger()->LogInfoFormat( LOGSOURCE,
-			"SearchFilesMatching: found %d files", list.GetCount() );
-	}*/
 }
 
 deVFSContainer::eFileTypes dealVFSZipArchive::GetFileType( const decPath &path ){

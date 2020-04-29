@@ -92,7 +92,7 @@ void dealGameManager::LoadGameList(){
 	logger.LogInfo( LOGSOURCE, "Loading game list" );
 	
 	deCollectFileSearchVisitor collect( "*.degame" );
-	vfs.SearchFiles( decPath::CreateUnixPath( "/data/games" ), collect );
+	vfs.SearchFiles( decPath::CreatePathUnix( "/data/games" ), collect );
 	
 	const dePathList &result = collect.GetFiles();
 	count = result.GetCount();
