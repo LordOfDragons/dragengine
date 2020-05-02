@@ -4,16 +4,16 @@
 	#define NO_TRANSFORMATION 1
 #endif
 
-void transformNormal( in int spbIndex ){
+void transformNormal( in int spbIndex, out vec3 normal, out vec3 normalVn ){
 	#ifdef BILLBOARD
 		#ifdef PROP_FIELD
-			vNormal = normalize( mat3( matRSMV ) * -bbMat[ 2 ] );
+			normalVn = normal = normalize( mat3( matRSMV ) * -bbMat[ 2 ] );
 			#ifdef TEXTURE_NORMAL
 				vTangent = normalize( mat3( matRSMV ) * bbMat[ 0 ] );
-				vBitangent = cross( vNormal, vTangent );
+				vBitangent = cross( normal, vTangent );
 			#endif
 		#else
-			vNormal = vec3( 0.0, 0.0, 1.0 );
+			normalVn = normal = vec3( 0.0, 0.0, 1.0 );
 			#ifdef TEXTURE_NORMAL
 				vTangent = vec3( 1.0, 0.0, 0.0 );
 				vBitangent = vec3( 0.0, 1.0, 0.0 );
@@ -22,18 +22,19 @@ void transformNormal( in int spbIndex ){
 		
 	#else
 		#ifdef HEIGHT_MAP
-			vNormal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) ) * vec3( 1.9921569 ) + vec3( -0.9921722 ) );
+			normal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) )
+				* vec3( 1.9921569 ) + vec3( -0.9921722 ) );
 		#else
-			vNormal = normalize( inNormal );
+			normal = normalize( inNormal );
 		#endif
 		#ifdef TEXTURE_NORMAL
 			#ifdef HEIGHT_MAP
 				vTangent = normalize( vec3( pMatrixTexCoord[0][0], 0.0, pMatrixTexCoord[0][1] ) );
-				vBitangent = cross( vNormal, vTangent );
+				vBitangent = cross( normal, vTangent );
 			#else
 				vTangent = normalize( vec3( inTangent ) );
-				vBitangent = cross( vNormal, vTangent );
-				vTangent = cross( vBitangent, vNormal ) * vec3( inTangent.w );
+				vBitangent = cross( normal, vTangent );
+				vTangent = cross( vBitangent, normal ) * vec3( inTangent.w );
 			#endif
 		#endif
 		
@@ -41,11 +42,7 @@ void transformNormal( in int spbIndex ){
 		// "normal" is suddenly no more normalized resulting in render artifacts. there are only two solutions. one is to use
 		// normalize as done here. the other solution is to calculate a normal matrix not containing any scaling. this solution
 		// though is not so easy and has its own problems
-		#ifdef NO_TRANSFORMATION
-			mat3 matrixNormal = pMatrixNormal;
-		#else
-			mat3 matrixNormal = pMatrixNormal * pMatrixVn;
-		#endif
+		mat3 matrixNormal = pMatrixNormal;
 		
 		#ifdef PROP_FIELD
 			// see doc/shader_propfield
@@ -69,22 +66,36 @@ void transformNormal( in int spbIndex ){
 			matrixNormal = transpose( matBend * pfiRotScale ) * matrixNormal; // ~= inverted( matBend * pMatrixPropField )
 		#endif
 		
-		vNormal = normalize( vNormal * matrixNormal );
+		normal = normalize( normal * matrixNormal );
+		normalVn = normal;
+		
+		#ifdef WITH_OUTLINE
+			normalVn = -normalVn;
+		#endif
+		
+		#ifndef NO_TRANSFORMATION
+			normalVn = normalize( normalVn * pMatrixVn );
+		#endif
+		
 		#ifdef TEXTURE_NORMAL
+			#ifndef NO_TRANSFORMATION
+				matrixNormal *= pMatrixVn;
+			#endif
+			
 			vTangent = vTangent * matrixNormal;
 			vBitangent = vBitangent * matrixNormal;
 			
 			#ifndef HEIGHT_MAP
-			// using static or dynamic models it is possible cross(normal,tangent) becomes 0-vector.
-			// doing normalize would result in inf values in the interpolation unit resulting in
-			// all kinds of nasty problems on different gpu drivers. better use a degenerated vector.
-			// this results in wrong lighting calculations but it does not blow up the gpu driver
-			if( dot( vTangent, vTangent ) > 0.00001 ){
-				vTangent = normalize( vTangent );
-			}
-			if( dot( vBitangent, vBitangent ) > 0.00001 ){
-				vBitangent = normalize( vBitangent );
-			}
+				// using static or dynamic models it is possible cross(normal,tangent) becomes 0-vector.
+				// doing normalize would result in inf values in the interpolation unit resulting in
+				// all kinds of nasty problems on different gpu drivers. better use a degenerated vector.
+				// this results in wrong lighting calculations but it does not blow up the gpu driver
+				if( dot( vTangent, vTangent ) > 0.00001 ){
+					vTangent = normalize( vTangent );
+				}
+				if( dot( vBitangent, vBitangent ) > 0.00001 ){
+					vBitangent = normalize( vBitangent );
+				}
 			#endif
 		#endif
 	#endif

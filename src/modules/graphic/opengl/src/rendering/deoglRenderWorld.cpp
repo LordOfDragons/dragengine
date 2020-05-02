@@ -167,8 +167,10 @@ pDebugInfo( renderThread )
 	try{
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false );
 		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		
 		pRenderTask = new deoglRenderTask;
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
+		
 		pParticleSorter = new deoglParticleSorter;
 		pRenderTaskParticles = new deoglRenderTaskParticles;
 		pAddToRenderTaskParticles = new deoglAddToRenderTaskParticles( renderThread, pRenderTaskParticles );

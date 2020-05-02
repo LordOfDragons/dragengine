@@ -24,11 +24,12 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-
+#include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #ifdef SHARED_SPB
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 #ifdef NODE_VERTEX_UNIFORMS
 NODE_VERTEX_UNIFORMS
@@ -55,20 +56,12 @@ NODE_VERTEX_UNIFORMS
 #ifdef HEIGHT_MAP
 	in vec2 inPosition;
 	in float inHeight;
-	#ifdef REQUIRES_NORMAL
-		in float inNormal;
-	#endif
+	in float inNormal;
 #else
 	in vec3 inPosition;
-	#ifdef REQUIRES_NORMAL
-		in vec3 inNormal;
-		#ifdef TEXTURE_NORMAL
-			in vec4 inTangent;
-		#endif
-	#endif
-	#ifdef REQUIRES_TEX_COLOR
-		in vec2 inTexCoord;
-	#endif
+	in vec3 inNormal;
+	in vec4 inTangent;
+	in vec2 inTexCoord;
 #endif
 
 #ifdef NODE_VERTEX_INPUTS
@@ -195,16 +188,37 @@ NODE_VERTEX_OUTPUTS
 //////////////////
 
 #include "v130/shared/defren/skin/transform_position.glsl"
-#ifdef REQUIRES_NORMAL
+#if defined REQUIRES_NORMAL || defined WITH_OUTLINE
 	#include "v130/shared/defren/skin/transform_normal.glsl"
 #endif
 
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
+	// transform the texture coordinates
+	#ifdef REQUIRES_TEX_COLOR
+		#ifdef HEIGHT_MAP
+			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
+		#else
+			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );
+		#endif
+		vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
+	#endif
+	
+	// normal calculation
+	vec3 normal;
+	#if defined REQUIRES_NORMAL || defined WITH_OUTLINE
+		#ifndef REQUIRES_NORMAL
+			vec3 vNormal;
+		#endif
+		transformNormal( spbIndex, normal, vNormal );
+	#else
+		normal = vec3( 0.0 );
+	#endif
+	
 	// transform position
 	vec3 position;
-	transformPosition( position, spbIndex );
+	transformPosition( position, spbIndex, normal );
 	
 	// non-perspective depth values if required
 	#ifndef HAS_TESSELLATION_SHADER
@@ -240,21 +254,6 @@ void main( void ){
 				vClipCoord = pMatrixV * vec4( position, 1.0 );
 			#endif
 		#endif
-	#endif
-	
-	// transform the texture coordinates
-	#ifdef REQUIRES_TEX_COLOR
-		#ifdef HEIGHT_MAP
-			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
-		#else
-			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );
-		#endif
-		vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
-	#endif
-	
-	// normal calculation
-	#ifdef REQUIRES_NORMAL
-		transformNormal( spbIndex );
 	#endif
 	
 	// height terrain mask. this can be interpolated since each texel refers to exactly one vertex in the height map

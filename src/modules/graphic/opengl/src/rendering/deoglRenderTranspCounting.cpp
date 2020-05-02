@@ -300,6 +300,34 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	}
 	
 	
+	// outline
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	
+	addToRenderTask.Reset();
+	addToRenderTask.SetOutline( true );
+	addToRenderTask.SetFilterDecal( true );
+	addToRenderTask.SetDecal( false );
+	addToRenderTask.SetSolid( false );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	
+	if( mask && mask->GetUseClipPlane() ){
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineCounterClipPlane );
+		
+	}else{
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineCounter );
+	}
+	
+	addToRenderTask.AddComponents( collideList );
+	
+	if( renderTask.GetShaderCount() > 0 ){
+		renderTask.PrepareForRender( renderThread );
+		SetCullMode( ! plan.GetFlipCulling() );
+		rengeom.RenderTask( renderTask );
+		SetCullMode( plan.GetFlipCulling() );
+	}
+	
+	
 	// calculate the maximum layer count. uses ping pong between diffuse and reflectivity buffer.
 	renderThread.GetShader().ActivateShader( pShaderTraCountMaxCount );
 	shader = pShaderTraCountMaxCount->GetCompiled();

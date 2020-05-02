@@ -134,6 +134,10 @@ void deoglRenderTask::Clear(){
 }
 
 void deoglRenderTask::PrepareForRender( deoglRenderThread &renderThread ){
+	if( pShaderCount == 0 ){
+		return;
+	}
+	
 	pCalcSPBInstancesMaxEntries( renderThread );
 	pAssignSPBInstances( renderThread );
 	pUpdateSPBInstances();

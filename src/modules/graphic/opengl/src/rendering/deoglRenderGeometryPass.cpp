@@ -371,10 +371,39 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	rengeom.RenderTask( renderTask );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	
+	
+	// outline
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	
+	addToRenderTask.Reset();
+	addToRenderTask.SetOutline( true );
+	addToRenderTask.SetFilterDecal( true );
+	addToRenderTask.SetDecal( false );
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoRendered( true );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
+	addToRenderTask.AddComponents( collideList );
+	
+	renderTask.PrepareForRender( renderThread );
+	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTask, true );
+	
+	if( renderTask.GetShaderCount() > 0 ){
+		SetCullMode( ! plan.GetFlipCulling() );
+		rengeom.RenderTask( renderTask );
+		SetCullMode( plan.GetFlipCulling() );
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
+	}
+	
+	
+	// decals
 	RenderDecals( plan );
 // 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );  // WARNING! this can disable z-optimizations if switched, really necessary???????????
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
 	QUICK_DEBUG_END
+	
 	
 	// downsample depth into mip-map levels if some later feature requires this. this can be done only after the
 	// geometry pass since this writes to the stencil mask of the depth texture. writing to the stencil part

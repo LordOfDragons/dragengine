@@ -777,9 +777,13 @@ void main( void ){
 		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
 	#endif
 	
-	normal = clamp( normal, vec3( -1.0 ), vec3( 1.0 ) ); // some shader writes broken normals (or missing clear?). temporary fix
-	
-	normal = normalize( normal );
+// 	if( dot( normal, normal ) < 0.0001 ){
+// 		normal = lightDir; // 0-normal means always point towards light source
+// 		
+// 	}else{
+		normal = clamp( normal, vec3( -1.0 ), vec3( 1.0 ) ); // some shader writes broken normals (or missing clear?). temporary fix
+		normal = normalize( normal );
+// 	}
 	
 	// calculate the sss thickness from the shadow map if existing
 	#ifdef WITH_SUBSURFACE

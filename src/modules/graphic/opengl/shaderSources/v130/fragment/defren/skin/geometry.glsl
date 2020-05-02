@@ -13,6 +13,13 @@ precision highp int;
 	#define SOLIDITY_MULTIPLIER
 #endif
 
+#if defined TEXTURE_SOLIDITY || WITH_OUTLINE
+	#define WITH_SOLIDITY 1
+#endif
+#if defined TEXTURE_EMISSIVITY || WITH_OUTLINE
+	#define WITH_EMISSIVITY 1
+#endif
+
 
 
 // Uniform Parameters
@@ -42,7 +49,9 @@ NODE_FRAGMENT_UNIFORMS
 	#define TEXTURE(s,tc) texture(s, tc)
 #endif
 
-uniform lowp SAMPLER_2D texColor;
+#ifdef TEXTURE_COLOR
+	uniform lowp SAMPLER_2D texColor;
+#endif
 #ifdef TEXTURE_TRANSPARENCY
 	uniform lowp SAMPLER_2D texTransparency;
 #endif
@@ -371,39 +380,64 @@ void main( void ){
 	
 	
 	// get texture properties from textures
-	#ifdef TEXTURE_TRANSPARENCY
-	vec4 color = vec4( TEXTURE( texColor, tcColor ).rgb, TEXTURE( texTransparency, tcColor ).r );
+	vec4 color;
+	#ifdef TEXTURE_COLOR
+		#ifdef TEXTURE_TRANSPARENCY
+			color = vec4( TEXTURE( texColor, tcColor ).rgb, TEXTURE( texTransparency, tcColor ).r );
+		#else
+			color = TEXTURE( texColor, tcColor );
+		#endif
 	#else
-	vec4 color = TEXTURE( texColor, tcColor );
+		#ifdef TEXTURE_TRANSPARENCY
+			color = vec4( 0.0, 0.0, 0.0, TEXTURE( texTransparency, tcColor ).r );
+		#else
+			#ifdef WITH_OUTLINE
+				color = vec4( pOutlineColor, 1.0 );
+			#else
+				color = vec4( 0.0, 0.0, 0.0, 1.0 );
+			#endif
+		#endif
 	#endif
 	color.a *= pTransparencyMultiplier; // add an #ifdef to avoid this calculation?
+	
+	float solidity;
 	#ifdef TEXTURE_SOLIDITY
-		float solidity = TEXTURE( texSolidity, tcColor ).r;
+		solidity = TEXTURE( texSolidity, tcColor ).r;
 		solidity *= pSolidityMultiplier; // add an #ifdef to avoid this calculation?
+	#elif defined WITH_OUTLINE
+		solidity = pOutlineSolidity;
 	#else
-		float solidity = 1.0;
+		solidity = 1.0;
 	#endif
+	
 	#ifdef TEXTURE_NORMAL
 		vec4 normal = TEXTURE( texNormal, tcNormal );
 		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );
 	#else
 		vec4 normal = vec4( realNormal, 0.0 ); // (0,0,1) => realNormal
 	#endif
+	
+	float ao;
 	#ifdef TEXTURE_AO
-		float ao = TEXTURE( texAO, tcAO ).r;
+		ao = TEXTURE( texAO, tcAO ).r;
 	#else
-		float ao = 1.0;
+		ao = 1.0;
 	#endif
+	
+	vec3 reflectivity;
 	#ifdef TEXTURE_REFLECTIVITY
-		vec3 reflectivity = TEXTURE( texReflectivity, tcReflectivity ).rgb * vec3( pReflectivityMultiplier );
+		reflectivity = TEXTURE( texReflectivity, tcReflectivity ).rgb * vec3( pReflectivityMultiplier );
 	#else
-		vec3 reflectivity = vec3( 0.0 );
+		reflectivity = vec3( 0.0 );
 	#endif
+	
+	float roughness;
 	#ifdef TEXTURE_ROUGHNESS
-		float roughness = TEXTURE( texRoughness, tcReflectivity ).r;
+		roughness = TEXTURE( texRoughness, tcReflectivity ).r;
 	#else
-		float roughness = 1.0;
+		roughness = 1.0;
 	#endif
+	
 	#ifdef TEXTURE_REFRACTION_DISTORT
 		vec2 distort = TEXTURE( texRefractionDistort, tcRefractionDistort ).rg * vec2( 2.0 ) + vec2( -1.0 );
 		//vec2 distort = TEXTURE( texRefractionDistort, tcRefractionDistort ).ra * vec2( 2.0 ) + vec2( -1.0 );
@@ -455,7 +489,7 @@ void main( void ){
 	
 	
 	// color, ambient occlusion and masked solidity
-	#ifndef TEXTURE_EMISSIVITY
+	#ifndef WITH_EMISSIVITY
 		#ifdef MASKED_SOLIDITY
 			if( solidity < 0.35 ) discard;
 			solidity = 1.0;
@@ -521,22 +555,33 @@ void main( void ){
 	// normalize is required for the later passes to work correctly
 	normal.xyz = normalize( normal.xyz );
 	#ifdef OUTPUT_MATERIAL_PROPERTIES
-		#ifdef MATERIAL_NORMAL_INTBASIC
-			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
-		#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-			float f = sqrt( 8.0001 - 7.9999 * normal.z );
-			outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
+		#ifdef WITH_OUTLINE
+			#ifdef MATERIAL_NORMAL_INTBASIC
+				outNormal = /*vec4( 0.5, 0.5, 0.5, color.a ); // */ vec4( 0.5, 0.5, 1.0, color.a );
+			#elif defined( MATERIAL_NORMAL_SPHEREMAP )
+				outNormal = vec4( 0.5, 0.5, 0.0, color.a );
+			#else
+				outNormal = /* vec4( 0.0, 0.0, 0.0, color.a ); // */ vec4( 0.0, 0.0, 1.0, color.a );
+			#endif
 		#else
-			outNormal = vec4( normal.xyz, color.a );
-		#endif
-		#ifdef SOLIDITY_MULTIPLIER
-			outNormal.a *= pNormalSolidityMultiplier;
+			#ifdef MATERIAL_NORMAL_INTBASIC
+				outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
+			#elif defined( MATERIAL_NORMAL_SPHEREMAP )
+				float f = sqrt( 8.0001 - 7.9999 * normal.z );
+				outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
+			#else
+				outNormal = vec4( normal.xyz, color.a );
+			#endif
+			#ifdef SOLIDITY_MULTIPLIER
+				outNormal.a *= pNormalSolidityMultiplier;
+			#endif
 		#endif
 	#endif
 	
 	
 	
 	// reflection and refraction
+	#ifndef WITH_OUTLINE
 	#if defined OUTPUT_MATERIAL_PROPERTIES || defined TEXTURE_ENVMAP
 		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );
 		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );
@@ -588,13 +633,15 @@ void main( void ){
 			envMapReflectivity *= vParticleColor.a;
 		#endif
 	#endif
+	#endif
 	
 	#ifdef TEXTURE_RENDERCOLOR
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			vec4 renderColor = textureLod( texRenderColor, clamp(
+		vec4 renderColor;
+		#if defined TEXTURE_REFRACTION_DISTORT && ! defined WITH_OUTLINE
+			renderColor = textureLod( texRenderColor, clamp(
 				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), 0.0 );
 		#else
-			vec4 renderColor = texelFetch( texRenderColor, tc, 0 );
+			renderColor = texelFetch( texRenderColor, tc, 0 );
 		#endif
 		
 		outColor.rgb = mix( renderColor.rgb, outColor.rgb, color.a );
@@ -607,7 +654,7 @@ void main( void ){
 		// for direct rendering apply normals as pre-baked lighting
 		outColor.rgb *= vec3( 0.25 - clamp( normal.z, -1.0, 0.0 ) * 0.75 );
 		
-		// for direct rendering the transparency and soliditiy has to be premultiplied to
+		// for direct rendering the transparency and solidity has to be premultiplied to
 		// allow emissivity to properly apply. this is due to use of blend mode (1,1-alpha):
 		//   f = d*(1-a) + (s*a + e)*1
 		outColor.rgb *= vec3( outColor.a * solidity );
@@ -615,6 +662,7 @@ void main( void ){
 			// volumetric-mode
 	#endif
 	
+	#ifndef WITH_OUTLINE
 	#ifdef TEXTURE_ENVMAP
 		#ifndef SKIN_REFLECTIONS
 		if( pSkinDoesReflections ){
@@ -645,27 +693,38 @@ void main( void ){
 		}
 		#endif
 	#endif
+	#endif
 	
 	#ifdef OUTPUT_MATERIAL_PROPERTIES
-		outReflectivity = vec4( reflectivity.rgb, color.a );
-		#ifdef SOLIDITY_MULTIPLIER
-			outReflectivity.a *= pReflectivitySolidityMultiplier;
+		#ifdef WITH_OUTLINE
+			outReflectivity = vec4( 0.0, 0.0, 0.0, color.a );
+			outRoughness = vec4( 1.0, 1.0, 1.0, color.a );
+			outAOSolidity = vec4( 1.0, 1.0, solidity, color.a );
+		#else
+			outReflectivity = vec4( reflectivity.rgb, color.a );
+			#ifdef SOLIDITY_MULTIPLIER
+				outReflectivity.a *= pReflectivitySolidityMultiplier;
+			#endif
+			outRoughness = vec4( roughness, 1.0, 1.0, color.a );
+			#ifdef SOLIDITY_MULTIPLIER
+				outRoughness.a *= pRoughnessSolidityMultiplier;
+			#endif
+			
+			outAOSolidity = vec4( ao, 1.0, solidity, color.a );
 		#endif
-		outRoughness = vec4( roughness, 1.0, 1.0, color.a );
-		#ifdef SOLIDITY_MULTIPLIER
-			outRoughness.a *= pRoughnessSolidityMultiplier;
-		#endif
-		
-		outAOSolidity = vec4( ao, 1.0, solidity, color.a );
 	#endif
 	
 	
 	
 	// absorption and sub-surf scattering
 	#ifdef OUTPUT_MATERIAL_PROPERTIES
-		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );
-		#ifdef TEXTURE_ABSORPTION
-			outSubSurface.rgb *= pow( TEXTURE( texAbsorption, tcAbsorption ).rgb, vec3( pColorGamma ) ); // hack, needs pAbsorptionGamma
+		#ifdef WITH_OUTLINE
+			outSubSurface = vec4( 0.0, 0.0, 0.0, color.a );
+		#else
+			outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );
+			#ifdef TEXTURE_ABSORPTION
+				outSubSurface.rgb *= pow( TEXTURE( texAbsorption, tcAbsorption ).rgb, vec3( pColorGamma ) ); // hack, needs pAbsorptionGamma
+			#endif
 		#endif
 	#endif
 	
@@ -679,17 +738,20 @@ void main( void ){
 			#define SCALE_EMISSIVITY pEmissivityIntensity
 		#endif
 		outColor.rgb += pow( TEXTURE( texEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) ) * SCALE_EMISSIVITY;
-	#endif
-	
-	// environment room emissivity
-	#ifdef TEXTURE_ENVROOM_EMISSIVITY
-		#ifdef TEXTURE_ENVROOM_MASK
-			outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
-				* pEnvRoomEmissivityIntensity * vec3( envRoomMask );
-		#else
-			outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
-				* pEnvRoomEmissivityIntensity;
+		
+		// environment room emissivity
+		#ifdef TEXTURE_ENVROOM_EMISSIVITY
+			#ifdef TEXTURE_ENVROOM_MASK
+				outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
+					* pEnvRoomEmissivityIntensity * vec3( envRoomMask );
+			#else
+				outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
+					* pEnvRoomEmissivityIntensity;
+			#endif
 		#endif
+		
+	#elif defined WITH_OUTLINE
+		outColor.rgb += pOutlineEmissivity;
 	#endif
 	
 	/* #ifdef HEIGHT_MAP

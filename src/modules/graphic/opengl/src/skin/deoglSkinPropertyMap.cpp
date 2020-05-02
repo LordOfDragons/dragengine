@@ -241,6 +241,23 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		
 		
 		
+	}else if( strcmp( type, "outline.color" ) == 0 ){
+		return eptOutlineColor;
+		
+	}else if( strcmp( type, "outline.thickness" ) == 0 ){
+		return eptOutlineThickness;
+		
+	}else if( strcmp( type, "outline.solidity" ) == 0 ){
+		return eptOutlineSolidity;
+		
+	}else if( strcmp( type, "outline.emissivity" ) == 0 ){
+		return eptOutlineEmissivity;
+		
+	}else if( strcmp( type, "outline.emissivity.intensity" ) == 0 ){
+		return eptOutlineEmissivityIntensity;
+		
+		
+		
 	}else{
 		return eptUnsupported;
 	}

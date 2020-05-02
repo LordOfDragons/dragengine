@@ -16,6 +16,12 @@ precision highp int;
 	#define REQUIRES_NORMAL 1
 #endif
 
+#if defined TEXTURE_SOLIDITY || WITH_OUTLINE
+	#define WITH_SOLIDITY 1
+#endif
+#if defined TEXTURE_EMISSIVITY || WITH_OUTLINE
+	#define WITH_EMISSIVITY 1
+#endif
 
 
 // Uniform Parameters
@@ -220,28 +226,44 @@ void main( void ){
 	#ifdef OUTPUT_COLOR
 		vec3 color = texture( texColor, tcColor ).rgb;
 	#endif
-	#ifdef TEXTURE_SOLIDITY
-		float solidity = texture( texSolidity, tcColor ).r * pSolidityMultiplier;
+	
+	#ifdef WITH_SOLIDITY
+		float solidity;
+		#ifdef TEXTURE_SOLIDITY
+			solidity = texture( texSolidity, tcColor ).r * pSolidityMultiplier;
+		#elif defined WITH_OUTLINE
+			solidity = pOutlineSolidity;
+		#endif
 	#endif
+	
+	#ifdef WITH_EMISSIVITY
+		vec3 emissivity;
+		#ifdef TEXTURE_EMISSIVITY
+			emissivity = TEXTURE( texEmissivity, tcColor ).rgb;
+		#elif defined WITH_OUTLINE
+			emissivity = pOutlineEmissivity;
+		#endif
+	#endif
+	
 	#ifdef NODE_FRAGMENT_MAIN
 	NODE_FRAGMENT_MAIN
 	#endif
 	
 	// discard fragments using masked solidity
-	#ifdef TEXTURE_SOLIDITY
+	#ifdef WITH_SOLIDITY
 		#ifdef MASKED_SOLIDITY
 		if( solidity < 0.35 )
 		#else
 		if( solidity < 0.001 )
 		#endif
 		{
-			#ifdef TEXTURE_EMISSIVITY
+			#ifdef WITH_EMISSIVITY
 				//vec2 tcReliefMapped = vTCColor;
 				//reliefMapping( tcReliefMapped, realNormal );
 				//#define tcColor tcReliefMapped
 				//#define tcEmissivity tcReliefMapped
 				
-				if( all( lessThan( TEXTURE( texEmissivity, tcColor ).rgb, vec3( 0.001 ) ) ) ){
+				if( all( lessThan( emissivity, vec3( 0.001 ) ) ) ){
 					discard;
 				}
 			#else

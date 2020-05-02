@@ -58,6 +58,11 @@ struct sInstanceParameters{
 	vec2 pSPBInstEnvRoomSize; // environmentroom.size
 	vec2 pSPBInstVariationEnableScale; // variation.u, variation.v
 	
+	vec3 pSPBInstOutlineColor;
+	float pSPBInstOutlineThickness;
+	vec3 pSPBInstOutlineEmissivity;
+	float pSPBInstOutlineSolidity;
+	
 	#ifdef SHARED_SPB_PADDING
 	vec4 _pSPBPadding[ SHARED_SPB_PADDING ];
 	#endif
@@ -201,6 +206,18 @@ UBOLAYOUT uniform InstanceParameters{
 	#endif
 	#ifdef DYNAMIC_REFLECTIVITY_MULTIPLIER
 		float pInstReflectivityMultiplier; // reflectivity.multiplier
+	#endif
+	#ifdef DYNAMIC_OUTLINE_COLOR
+		vec3 pInstOutlineColor;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_THICKNESS
+		float pInstOutlineThickness;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_SOLIDITY
+		float pInstOutlineSolidity;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_EMISSIVITY
+		vec3 pInstOutlineEmissivity;
 	#endif
 };
 

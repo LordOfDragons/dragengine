@@ -236,7 +236,24 @@ namespace deoglSkinPropertyMap{
 		
 		
 		/** \brief Particle beam and ribbon sheet count. */
-		eptParticleSheets
+		eptParticleSheets,
+		
+		
+		
+		/** \brief Outline color. */
+		eptOutlineColor,
+		
+		/** \brief Outline thickness. */
+		eptOutlineThickness,
+		
+		/** \brief Outline solidity. */
+		eptOutlineSolidity,
+		
+		/** \brief Outline emissivity. */
+		eptOutlineEmissivity,
+		
+		/** \brief Outline emissivity intensity. */
+		eptOutlineEmissivityIntensity
 	};
 	
 	/** \brief Type for texture property number. */

@@ -89,6 +89,11 @@ public:
 		empSolidityMultiplier,
 		empVariationU,
 		empVariationV,
+		empOutlineColor,
+		empOutlineThickness,
+		empOutlineSolidity,
+		empOutlineEmissivity,
+		empOutlineEmissivityIntensity,
 		EMP_COUNT
 	};
 	
@@ -174,10 +179,18 @@ public:
 		estParticleBeamDepthReversed,
 		estParticleBeamDepthClipPlaneReversed,
 		estParticleBeamCounter,
-		estParticleBeamCounterClipPlane
+		estParticleBeamCounterClipPlane,
+		
+		estOutlineGeometry,
+		estOutlineDepth,
+		estOutlineDepthClipPlane,
+		estOutlineDepthReversed,
+		estOutlineDepthClipPlaneReversed,
+		estOutlineCounter,
+		estOutlineCounterClipPlane,
 	};
 	
-	static const int ShaderTypeCount = estParticleBeamCounterClipPlane + 1;
+	static const int ShaderTypeCount = estOutlineCounterClipPlane + 1;
 	
 private:
 	deoglRenderThread &pRenderThread;
@@ -258,6 +271,15 @@ private:
 	bool pVariationV;
 	
 	int pParticleSheetCount;
+	
+	decColor pOutlineColor;
+	float pOutlineThickness;
+	float pOutlineSolidity;
+	decColor pOutlineEmissivity;
+	float pOutlineEmissivityIntensity;
+	bool pHasOutline;
+	bool pIsOutlineSolid;
+	bool pIsOutlineEmissive;
 	
 	bool pQuickTransp;
 	
@@ -654,6 +676,47 @@ public:
 	
 	/** \brief Set particle sheets count. */
 	void SetParticleSheetCount( int count );
+	
+	
+	
+	/** \brief Outline color. */
+	inline const decColor &GetOutlineColor() const{ return pOutlineColor; }
+	
+	/** \brief Set outline color. */
+	void SetOutlineColor( const decColor &color );
+	
+	/** \brief Outline thickness. */
+	inline float GetOutlineThickness() const{ return pOutlineThickness; }
+	
+	/** \brief Set outline thickness. */
+	void SetOutlineThickness( float thickness );
+	
+	/** \brief Outline solidity. */
+	inline float GetOutlineSolidity() const{ return pOutlineSolidity; }
+	
+	/** \brief Set outline solidity. */
+	void SetOutlineSolidity( float solidity );
+	
+	/** \brief Outline emissivity. */
+	inline const decColor &GetOutlineEmissivity() const{ return pOutlineEmissivity; }
+	
+	/** \brief Set outline emissivity. */
+	void SetOutlineEmissivity( const decColor &emissivity );
+	
+	/** \brief Outline emissivity intensity. */
+	inline float GetOutlineEmissivityIntensity() const{ return pOutlineEmissivityIntensity; }
+	
+	/** \brief Set outline emissivity intensity. */
+	void SetOutlineEmissivityIntensity( float intensity );
+	
+	/** \brief Has outline. */
+	inline bool GetHasOutline() const{ return pHasOutline; }
+	
+	/** \brief Outline is solid. */
+	inline bool GetIsOutlineSolid() const{ return pIsOutlineSolid; }
+	
+	/** \brief Outline is emissive. */
+	inline bool GetIsOutlineEmissive() const{ return pIsOutlineEmissive; }
 	
 	
 	

@@ -603,10 +603,11 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetFilterHoles( true );
+	
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardGeometry );
@@ -626,8 +627,35 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	renderTask.PrepareForRender( renderThread );
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
+	
 	rengeom.RenderTask( renderTask );
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentRender, true );
+	
+	
+	// outline
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	
+	addToRenderTask.Reset();
+	addToRenderTask.SetOutline( true );
+	addToRenderTask.SetFilterDecal( true );
+	addToRenderTask.SetDecal( false );
+	addToRenderTask.SetSolid( false );
+	addToRenderTask.SetNoRendered( true );
+	
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
+	addToRenderTask.AddComponents( collideList );
+	
+	renderTask.PrepareForRender( renderThread );
+	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
+	
+	if( renderTask.GetShaderCount() > 0 ){
+		SetCullMode( ! plan.GetFlipCulling() );
+		rengeom.RenderTask( renderTask );
+		SetCullMode( plan.GetFlipCulling() );
+		DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentRender, true );
+	}
+	
 	
 	//addToRenderTask.SetFilterHoles( false );
 	//rendecal.RenderDecals( renderParams ); // hm... what about transparent decals on transparent objects?

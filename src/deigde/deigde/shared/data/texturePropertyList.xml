@@ -1171,6 +1171,97 @@
 		</affects>
 	</property>
 	
+	<property name='outline.color'>
+		<description>
+			Defines the outline color. If outline.thickness is larger than 0 an outline is
+			rendered around the component. This is typically used to hilight objects or to
+			use cartoon style effects. Outline color is rendered as fully rough material
+			with no reflectivity. This allows outline to be affected by lighting like other
+			skins which makes outlines fit better.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='outline.thickness'>
+		<description>
+			Defines the outline thickness in meters. If thickness is larger than 0 an outline
+			is rendered around the component. This is typically used to hilight objects or to
+			use cartoon style effects.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='outline.solidity'>
+		<description>
+			Defines the outline solidity. If outline.thickness is larger than 0 an outline is
+			rendered around the component. This is typically used to hilight objects or to
+			use cartoon style effects. The solidity can be used to create transparent outlines.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='outline.emissivity'>
+		<description>
+			Defines the outline emissivity color. If outline.thickness is larger than 0 an
+			outline is rendered around the component. This is typically used to hilight
+			objects or to use cartoon style effects. While outline.color is affected by
+			lighting emissivity is not. This allows to make glowing outlines. If you use
+			this texture property you have to also use outline.emissivity.intensity
+			otherwise you will get no visible emissivity.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='outline.emissivity.intensity'>
+		<description>
+			Defines the outline emissivity intensity. If outline.thickness is larger than 0 an
+			outline is rendered around the component. This is typically used to hilight objects
+			or to use cartoon style effects. This value has the same value range as the
+			intensity parameter of light sources. For a common 100W light bulb this value would
+			be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='bounciness'>
 		<description>
 			Defines the bounciness of a surface. This is used by the physics module to determine

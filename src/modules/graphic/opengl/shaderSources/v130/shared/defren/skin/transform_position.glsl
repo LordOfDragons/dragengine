@@ -15,7 +15,7 @@
 // for convenience this calculations are located in a function. The camera space position
 // is returned in position while the transformed position is stored in gl_Position.
 // gl_Position can be equal to position if tessellation is used.
-void transformPosition( out vec3 position, in int spbIndex ){
+void transformPosition( out vec3 position, in int spbIndex, in vec3 normal ){
 	// prop fiels
 	#ifdef PROP_FIELD
 		// see doc/shader_propfield
@@ -122,6 +122,11 @@ void transformPosition( out vec3 position, in int spbIndex ){
 		
 	#else
 		position = pMatrixModel * vec4( position, 1.0 );
+		
+		// outline
+		#ifdef WITH_OUTLINE
+			position += normal * vec3( pOutlineThickness );
+		#endif
 		
 		// tessellation applies projection during evaluation stage so apply it only if not tessellation
 		#ifdef NO_TRANSFORMATION

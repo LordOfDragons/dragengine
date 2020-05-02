@@ -12,11 +12,12 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-
+#include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #ifdef SHARED_SPB
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 #ifdef NODE_VERTEX_UNIFORMS
 NODE_VERTEX_UNIFORMS
@@ -231,10 +232,6 @@ NODE_VERTEX_OUTPUTS
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
-	// transform position
-	vec3 position;
-	transformPosition( position, spbIndex );
-	
 	// transform the texture coordinates
 	#ifdef HEIGHT_MAP
 		vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
@@ -263,7 +260,12 @@ void main( void ){
 	#endif
 	
 	// normal calculation
-	transformNormal( spbIndex );
+	vec3 normal;
+	transformNormal( spbIndex, normal, vNormal );
+	
+	// transform position
+	vec3 position;
+	transformPosition( position, spbIndex, normal );
 	
 	// reflection directory for environment map reflections
 	#ifdef TEXTURE_ENVMAP
