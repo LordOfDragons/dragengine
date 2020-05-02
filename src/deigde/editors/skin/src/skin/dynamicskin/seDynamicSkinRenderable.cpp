@@ -275,7 +275,7 @@ void seDynamicSkinRenderable::SetValue( float value ){
 }
 
 void seDynamicSkinRenderable::SetSliderLowerRange( float lower ){
-	lower = decMath::max( lower, 0.01f );
+	lower = decMath::max( lower, 0.0f );
 	if( fabs( lower - pSliderValueLower ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
@@ -285,7 +285,7 @@ void seDynamicSkinRenderable::SetSliderLowerRange( float lower ){
 }
 
 void seDynamicSkinRenderable::SetSliderUpperRange( float upper ){
-	upper = decMath::max( upper, 0.01f );
+	upper = decMath::max( upper, 0.0f );
 	if( fabs( upper - pSliderValueUpper ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
