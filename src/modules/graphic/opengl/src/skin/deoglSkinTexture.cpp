@@ -639,10 +639,8 @@ bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) 
 deoglSkinShader *deoglSkinTexture::GetShaderFor( eShaderTypes shaderType ){
 	if( ! pShaders[ shaderType ] ){
 		deoglSkinShaderConfig config;
-		
 		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pRenderThread.GetShader().
-				GetSkinShaderManager().GetShaderWith( config );
+			pShaders[ shaderType ] = pRenderThread.GetShader().GetSkinShaderManager().GetShaderWith( config );
 			pShaders[ shaderType ]->EnsureShaderExists();
 		}
 	}
@@ -820,6 +818,17 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetDynamicVariation(
 				pMaterialProperties[ empVariationU ].IsDynamic()
 				|| pMaterialProperties[ empVariationV ].IsDynamic() );
+			
+			// required to be compatible with outline shaders if used to build parameter block
+			config.SetDynamicOutlineColor(
+				pMaterialProperties[ empOutlineColor ].IsDynamic() );
+			config.SetDynamicOutlineThickness(
+				pMaterialProperties[ empOutlineThickness ].IsDynamic() );
+			config.SetDynamicOutlineSolidity(
+				pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
+			config.SetDynamicOutlineEmissivity(
+				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
+				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
 		}
 		
 		if( config.GetTextureHeight() ){ // temporary
@@ -866,6 +875,14 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			}
 		}
 		
+		// required to be compatible with outline shaders if used to build parameter block
+		config.SetDynamicOutlineThickness(
+			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
+		config.SetDynamicOutlineSolidity(
+			pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
+		config.SetDynamicOutlineEmissivity(
+			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
+			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
 		break;
 		
 	case esctCounter:
@@ -980,12 +997,13 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			pMaterialProperties[ empHeightScale ].IsDynamic()
 			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
 		
-		if( pIsOutlineEmissive ){
-			// emissivity is required to avoid discarding non-solid fragments
-			config.SetDynamicOutlineEmissivity(
-				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		}
+		config.SetDynamicOutlineThickness(
+			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
+		
+		// emissivity is required to avoid discarding non-solid fragments
+		config.SetDynamicOutlineEmissivity(
+			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
+			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
 		break;
 		
 	case esctOutlineCounter:
@@ -994,12 +1012,13 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		config.SetOutputConstant( true );
 		
-		if( pIsOutlineEmissive ){
-			// emissivity is required to avoid discarding non-solid fragments
-			config.SetDynamicOutlineEmissivity(
-				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		}
+		config.SetDynamicOutlineThickness(
+			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
+		
+		// emissivity is required to avoid discarding non-solid fragments
+		config.SetDynamicOutlineEmissivity(
+			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
+			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
 		break;
 		
 	default:
@@ -2268,7 +2287,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			pOutlineThickness = decMath::max( value, 0.0f );
-			pHasOutline = pOutlineThickness != 0.0f && property.GetRenderable().IsEmpty();
+			pHasOutline = pOutlineThickness != 0.0f || ! property.GetRenderable().IsEmpty();
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineSolidity:
@@ -2282,7 +2301,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			pOutlineEmissivityIntensity = decMath::max( value, 0.0f );
-			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f && property.GetRenderable().IsEmpty();
+			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || ! property.GetRenderable().IsEmpty();
 			break;
 			
 		default:

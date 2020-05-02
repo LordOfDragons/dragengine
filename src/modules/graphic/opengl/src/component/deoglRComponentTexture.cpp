@@ -418,6 +418,7 @@ deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eSh
 	switch( shaderType ){
 	case deoglSkinTexture::estComponentGeometry:
 	case deoglSkinTexture::estDecalGeometry:
+	case deoglSkinTexture::estOutlineGeometry:
 		return GetParamBlockGeometry();
 		
 	case deoglSkinTexture::estComponentDepth:
@@ -430,6 +431,12 @@ deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eSh
 	case deoglSkinTexture::estComponentShadowOrthogonal:
 	case deoglSkinTexture::estComponentShadowDistance:
 	case deoglSkinTexture::estComponentShadowDistanceCube:
+	case deoglSkinTexture::estOutlineDepth:
+	case deoglSkinTexture::estOutlineDepthClipPlane:
+	case deoglSkinTexture::estOutlineDepthReversed:
+	case deoglSkinTexture::estOutlineDepthClipPlaneReversed:
+	case deoglSkinTexture::estOutlineCounter:
+	case deoglSkinTexture::estOutlineCounterClipPlane:
 		return GetParamBlockDepth();
 		
 	case deoglSkinTexture::estComponentEnvMap:

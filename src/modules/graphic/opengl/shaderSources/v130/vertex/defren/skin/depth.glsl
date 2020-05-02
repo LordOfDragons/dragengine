@@ -8,7 +8,7 @@ precision highp int;
 #if defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT || defined TEXTURE_EMISSIVITY
 	#define _REQ_TEX_CLR_1 1
 #endif
-#if defined OUTPUT_COLOR || _REQ_TEX_CLR_1
+#if defined OUTPUT_COLOR || defined _REQ_TEX_CLR_1
 	#define REQUIRES_TEX_COLOR 1
 #endif
 

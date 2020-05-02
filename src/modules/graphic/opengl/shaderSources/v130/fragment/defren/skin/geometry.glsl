@@ -13,10 +13,10 @@ precision highp int;
 	#define SOLIDITY_MULTIPLIER
 #endif
 
-#if defined TEXTURE_SOLIDITY || WITH_OUTLINE
+#if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE
 	#define WITH_SOLIDITY 1
 #endif
-#if defined TEXTURE_EMISSIVITY || WITH_OUTLINE
+#if defined TEXTURE_EMISSIVITY || defined WITH_OUTLINE
 	#define WITH_EMISSIVITY 1
 #endif
 
@@ -557,11 +557,11 @@ void main( void ){
 	#ifdef OUTPUT_MATERIAL_PROPERTIES
 		#ifdef WITH_OUTLINE
 			#ifdef MATERIAL_NORMAL_INTBASIC
-				outNormal = /*vec4( 0.5, 0.5, 0.5, color.a ); // */ vec4( 0.5, 0.5, 1.0, color.a );
+				outNormal = vec4( 0.5, 0.5, 0.5, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
 			#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-				outNormal = vec4( 0.5, 0.5, 0.0, color.a );
+				outNormal = vec4( 0.5, 0.5, 0.0, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
 			#else
-				outNormal = /* vec4( 0.0, 0.0, 0.0, color.a ); // */ vec4( 0.0, 0.0, 1.0, color.a );
+				outNormal = vec4( 0.0, 0.0, 0.0, color.a ); // vec4( 0.0, 0.0, -1.0, color.a );
 			#endif
 		#else
 			#ifdef MATERIAL_NORMAL_INTBASIC

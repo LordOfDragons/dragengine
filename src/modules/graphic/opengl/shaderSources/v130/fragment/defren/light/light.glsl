@@ -777,13 +777,13 @@ void main( void ){
 		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
 	#endif
 	
-// 	if( dot( normal, normal ) < 0.0001 ){
-// 		normal = lightDir; // 0-normal means always point towards light source
-// 		
-// 	}else{
+	if( dot( normal, normal ) < 0.0001 ){
+		normal = lightDir; // 0-normal means always point towards light source
+		
+	}else{
 		normal = clamp( normal, vec3( -1.0 ), vec3( 1.0 ) ); // some shader writes broken normals (or missing clear?). temporary fix
 		normal = normalize( normal );
-// 	}
+	}
 	
 	// calculate the sss thickness from the shadow map if existing
 	#ifdef WITH_SUBSURFACE
@@ -821,7 +821,10 @@ void main( void ){
 	#endif
 	
 	// calculate shadow color of required
-	float dotval = dot( normal, lightDir );
+	// NOTE the clamp() call is unfortunately mandatory. small imprecisions in GPU calculation
+	//      can cause dot() to output a value which is slightly outside the range totally
+	//      upsetting the upcoming calculations
+	float dotval = clamp( dot( normal, lightDir ), -1.0, 1.0 );
 	#ifdef WITH_SUBSURFACE
 		float absorptionDot = max( -dotval, 0.0 );
 		
@@ -836,6 +839,7 @@ void main( void ){
 		// avoiding taping the shadow map for pixels it is not required. for this the observation is made
 		// that pixels facing away from the light are always in shadows. in this case there is no need
 		// for taping the shadow map since the result should be 0 in the correct case.
+		float shadow;
 		#ifdef OPTIMIZE_SHADOW_BACKFACE
 		if( dotval <= shadowThreshold ){
 			#ifdef AMBIENT_LIGHTING
@@ -851,9 +855,9 @@ void main( void ){
 			#endif
 			
 		}else{
-			float shadow = clamp( dotval * shadowThresholdInv + 1.0, 0.0, 1.0 );
+			shadow = clamp( dotval * shadowThresholdInv + 1.0, 0.0, 1.0 );
 		#else
-			float shadow = 1.0;
+			shadow = 1.0;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
@@ -1177,8 +1181,16 @@ void main( void ){
 		// the light source). without this the front facing fragements would received additional
 		// lighting which is wrong.
 		
-		vec3 scatDist = vec3( shadowThickness ) / max( absorptionRadius, vec3( 0.0001 ) );
-		outSubSurface.rgb += exp( scatDist * vec3( -5.0 ) ) * vec3( absorptionDot ) * absorptionLightColor;
+		// we have got a little problem with the use of 0 absorptionRadius which disables sss
+		// altogether. due to the division below it has to be clamped to a value larger than 0
+		// to avoid inf value which we can never get rid of anymore. doing so though makes 0
+		// absorptionRadius to evaluate to full lighting being transmitted which is wrong. to
+		// solve this problem the step() function is used which multiplies the sss contribution
+		// by 0 if absorptionRadius is less than 1mm (for each component individually)
+		
+		vec3 scatDist = vec3( shadowThickness ) / max( absorptionRadius, vec3( 0.001 ) );
+		vec3 scatAdd = exp( scatDist * vec3( -5.0 ) ) * vec3( absorptionDot ) * absorptionLightColor;
+		outSubSurface.rgb += scatAdd * step( vec3( 0.001 ), absorptionRadius );
 	#else
 		outColor = vec4( finalColorSubSurface * diffuse.rgb + finalColorSurface, diffuse.a );
 	#endif
