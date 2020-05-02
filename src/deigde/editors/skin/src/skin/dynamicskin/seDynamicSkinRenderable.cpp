@@ -111,11 +111,7 @@ void seDynamicSkinRenderable::SetName( const char *name ){
 	NotifyEngineDynamicSkinChanged();
 }
 
-void seDynamicSkinRenderable::SetRenderableType( int type ){
-	if( type < 0 || type >= ERT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void seDynamicSkinRenderable::SetRenderableType( eRenderableTypes type ){
 	if( type == pRenderableType ){
 		return;
 	}
