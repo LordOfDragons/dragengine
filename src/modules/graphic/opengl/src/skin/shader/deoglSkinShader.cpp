@@ -753,9 +753,9 @@ deoglRDynamicSkin *dynamicSkin ){
 			.GetMaterialPropertyAt( deoglSkinTexture::empColorTint );
 		decColor colorTint( property.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
 		
-		colorTint.r = powf( colorTint.r, 2.2f );
-		colorTint.g = powf( colorTint.g, 2.2f );
-		colorTint.b = powf( colorTint.b, 2.2f );
+		colorTint.r = powf( decMath::max( colorTint.r, 0.0f ), 2.2f );
+		colorTint.g = powf( decMath::max( colorTint.g, 0.0f ), 2.2f );
+		colorTint.b = powf( decMath::max( colorTint.b, 0.0f ), 2.2f );
 		colorTint.a = 1.0f;
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstColorTint ],
@@ -765,11 +765,10 @@ deoglRDynamicSkin *dynamicSkin ){
 	if( pInstanceUniformTargets[ eiutInstColorGamma ] != -1 ){
 		const deoglSkinTextureProperty &property = skinTexture
 			.GetMaterialPropertyAt( deoglSkinTexture::empColorGamma );
-		const float gamma = property.ResolveAsFloat( skinState, dynamicSkin,
-			skinTexture.GetColorGamma() );
+		const float gamma = property.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetColorGamma() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstColorGamma ],
-			element, gamma );
+			element, decMath::max( gamma, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstColorSolidityMultiplier ] != -1 ){
@@ -779,7 +778,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetColorSolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstColorSolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstAOSolidityMultiplier ] != -1 ){
@@ -789,7 +788,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetAmbientOcclusionSolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstAOSolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstTransparencyMultiplier ] != -1 ){
@@ -799,7 +798,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetTransparencyMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstTransparencyMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstSolidityMultiplier ] != -1 ){
@@ -809,7 +808,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetSolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstSolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstHeightRemap ] != -1 ){
@@ -844,7 +843,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetNormalSolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstNormalSolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstRoughnessRemap ] != -1 ){
@@ -852,10 +851,10 @@ deoglRDynamicSkin *dynamicSkin ){
 			.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapLower );
 		const deoglSkinTextureProperty &propertyUpper = skinTexture
 			.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapUpper );
-		const float lower = propertyLower.ResolveAsFloat( skinState, dynamicSkin,
-			skinTexture.GetRoughnessRemapLower() );
-		const float upper = propertyUpper.ResolveAsFloat( skinState, dynamicSkin,
-			skinTexture.GetRoughnessRemapUpper() );
+		const float lower = decMath::clamp( propertyLower.ResolveAsFloat( skinState, dynamicSkin,
+			skinTexture.GetRoughnessRemapLower() ), 0.0f, 1.0f );
+		const float upper = decMath::clamp( propertyUpper.ResolveAsFloat( skinState, dynamicSkin,
+			skinTexture.GetRoughnessRemapUpper() ), 0.0f, 1.0f );
 		
 		paramBlock.SetParameterDataVec2( pInstanceUniformTargets[ eiutInstRoughnessRemap ],
 			element, upper - lower, lower );
@@ -868,7 +867,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetRoughnessGamma() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstRoughnessGamma ],
-			element, gamma );
+			element, decMath::max( gamma, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstRoughnessSolidityMultiplier ] != -1 ){
@@ -878,7 +877,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetRoughnessSolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstRoughnessSolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstRefractionDistortStrength ] != -1 ){
@@ -888,7 +887,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetRefractDistortStrength() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstRefractionDistortStrength ],
-			element, strength );
+			element, decMath::max( strength, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstReflectivitySolidityMultiplier ] != -1 ){
@@ -898,7 +897,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetReflectivitySolidityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstReflectivitySolidityMultiplier ],
-			element, weight );
+			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstEmissivityIntensity ] != -1 ){
@@ -911,19 +910,19 @@ deoglRDynamicSkin *dynamicSkin ){
 		const float intensity = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetEmissivityIntensity() );
 		
-		tint.r = powf( tint.r, 2.2f );
-		tint.g = powf( tint.g, 2.2f );
-		tint.b = powf( tint.b, 2.2f );
+		tint.r = powf( decMath::max( tint.r, 0.0f ), 2.2f );
+		tint.g = powf( decMath::max( tint.g, 0.0f ), 2.2f );
+		tint.b = powf( decMath::max( tint.b, 0.0f ), 2.2f );
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstEmissivityIntensity ],
-			element, tint * intensity );
+			element, tint * decMath::max( intensity, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstEnvRoomSize ] != -1 ){
 		const deoglSkinTextureProperty &property = skinTexture
 			.GetMaterialPropertyAt( deoglSkinTexture::empEnvironmentRoomSize );
 		const decVector2 size = property.ResolveVector2( skinState, dynamicSkin,
-			skinTexture.GetEnvironmentRoomSize() );
+			skinTexture.GetEnvironmentRoomSize() ).Largest( decVector2() );
 		
 		paramBlock.SetParameterDataVec2( pInstanceUniformTargets[ eiutInstEnvRoomSize ],
 			element, 1.0f / size.x, -1.0f / size.y );
@@ -949,12 +948,12 @@ deoglRDynamicSkin *dynamicSkin ){
 		const float intensity = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetEnvironmentRoomEmissivityIntensity() );
 		
-		tint.r = powf( tint.r, 2.2f );
-		tint.g = powf( tint.g, 2.2f );
-		tint.b = powf( tint.b, 2.2f );
+		tint.r = powf( decMath::max( tint.r, 0.0f ), 2.2f );
+		tint.g = powf( decMath::max( tint.g, 0.0f ), 2.2f );
+		tint.b = powf( decMath::max( tint.b, 0.0f ), 2.2f );
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstEnvRoomEmissivityIntensity ],
-			element, tint * intensity );
+			element, tint * decMath::max( intensity, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstVariationEnableScale ] != -1 ){
@@ -978,7 +977,7 @@ deoglRDynamicSkin *dynamicSkin ){
 			skinTexture.GetReflectivityMultiplier() );
 		
 		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstReflectivityMultiplier ],
-			element, multiplier );
+			element, decMath::clamp( multiplier, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineColor ] != -1 ){
@@ -986,9 +985,9 @@ deoglRDynamicSkin *dynamicSkin ){
 			.GetMaterialPropertyAt( deoglSkinTexture::empOutlineColor );
 		decColor color( property.ResolveColor( skinState, dynamicSkin, skinTexture.GetOutlineColor() ) );
 		
-		color.r = powf( color.r, 2.2f );
-		color.g = powf( color.g, 2.2f );
-		color.b = powf( color.b, 2.2f );
+		color.r = powf( decMath::max( color.r, 0.0f ), 2.2f );
+		color.g = powf( decMath::max( color.g, 0.0f ), 2.2f );
+		color.b = powf( decMath::max( color.b, 0.0f ), 2.2f );
 		color.a = 1.0f;
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineColor ], element, color );
@@ -1000,7 +999,8 @@ deoglRDynamicSkin *dynamicSkin ){
 		const float thickness = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineThickness() );
 		
-		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstOutlineThickness ], element, thickness );
+		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstOutlineThickness ],
+			element, decMath::max( thickness, 0.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineSolidity ] != -1 ){
@@ -1009,7 +1009,8 @@ deoglRDynamicSkin *dynamicSkin ){
 		const float solidity = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineSolidity() );
 		
-		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstOutlineSolidity ], element, solidity );
+		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstOutlineSolidity ],
+			element, decMath::clamp( solidity, 0.0f, 1.0f ) );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineEmissivity ] != -1 ){
@@ -1022,11 +1023,12 @@ deoglRDynamicSkin *dynamicSkin ){
 		const float intensity = propertyIntensity.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineEmissivityIntensity() );
 		
-		emissivity.r = powf( emissivity.r, 2.2f ) * intensity;
-		emissivity.g = powf( emissivity.g, 2.2f ) * intensity;
-		emissivity.b = powf( emissivity.b, 2.2f ) * intensity;
+		emissivity.r = powf( decMath::max( emissivity.r, 0.0f ), 2.2f );
+		emissivity.g = powf( decMath::max( emissivity.g, 0.0f ), 2.2f );
+		emissivity.b = powf( decMath::max( emissivity.b, 0.0f ), 2.2f );
 		
-		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineEmissivity ], element, emissivity );
+		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineEmissivity ],
+			element, emissivity * decMath::max( intensity, 0.0f ) );
 	}
 }
 
