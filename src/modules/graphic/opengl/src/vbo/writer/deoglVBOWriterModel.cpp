@@ -64,33 +64,38 @@ void deoglVBOWriterModel::Reset( deoglSharedVBOBlock *vboBlock ){
 
 
 void deoglVBOWriterModel::WritePoint( const decVector &position, const decVector &normal,
-const decVector &tangent, bool negateTangent, const decVector2 &texCoord ){
+const decVector &tangent, bool negateTangent, const decVector2 &texCoord,
+const decVector &realNormal ){
 	if( ! pDataPoints ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	GLfloat * const ptrPosition = ( GLfloat* )pDataPoints;
-	GLshort * const ptrNormal = ( GLshort* )( pDataPoints + 12 );
-	GLshort * const ptrTangent = ( GLshort* )( pDataPoints + 20 );
-	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 28 );
-	
 	ptrPosition[ 0 ] = ( GLfloat )position.x;
 	ptrPosition[ 1 ] = ( GLfloat )position.y;
 	ptrPosition[ 2 ] = ( GLfloat )position.z;
 	
+	GLbyte * const ptrRealNormal = ( GLbyte* )( pDataPoints + 12 );
+	ptrRealNormal[ 0 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.x * 127.0f ), -128, 127 );
+	ptrRealNormal[ 1 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.y * 127.0f ), -128, 127 );
+	ptrRealNormal[ 2 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.z * 127.0f ), -128, 127 );
+	
+	GLshort * const ptrNormal = ( GLshort* )( pDataPoints + 16 );
 	ptrNormal[ 0 ] = ( GLshort )decMath::clamp( ( int )( normal.x * 32767.0f ), -32768, 32767 );
 	ptrNormal[ 1 ] = ( GLshort )decMath::clamp( ( int )( normal.y * 32767.0f ), -32768, 32767 );
 	ptrNormal[ 2 ] = ( GLshort )decMath::clamp( ( int )( normal.z * 32767.0f ), -32768, 32767 );
 	
+	GLshort * const ptrTangent = ( GLshort* )( pDataPoints + 24 );
 	ptrTangent[ 0 ] = ( GLshort )decMath::clamp( ( int )( tangent.x * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 1 ] = ( GLshort )decMath::clamp( ( int )( tangent.y * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 2 ] = ( GLshort )decMath::clamp( ( int )( tangent.z * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 3 ] = ( GLshort )( negateTangent ? -32768 : 32767 );
 	
+	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 32 );
 	ptrTexCoord[ 0 ] = ( GLfloat )texCoord.x;
 	ptrTexCoord[ 1 ] = ( GLfloat )texCoord.y;
 	
-	pDataPoints += 36;
+	pDataPoints += 40;
 }
 
 void deoglVBOWriterModel::WriteTexCoordSetPoint( const decVector &tangent,
@@ -100,13 +105,12 @@ bool negateTangent, const decVector2 &texCoord ){
 	}
 	
 	GLshort * const ptrTangent = ( GLshort* )pDataPoints;
-	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 8 );
-	
 	ptrTangent[ 0 ] = ( GLshort )decMath::clamp( ( int )( tangent.x * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 1 ] = ( GLshort )decMath::clamp( ( int )( tangent.y * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 2 ] = ( GLshort )decMath::clamp( ( int )( tangent.z * 32767.0f ), -32768, 32767 );
 	ptrTangent[ 3 ] = ( GLshort )( negateTangent ? -32768 : 32767 );
 	
+	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 8 );
 	ptrTexCoord[ 0 ] = ( GLfloat )texCoord.x;
 	ptrTexCoord[ 1 ] = ( GLfloat )texCoord.y;
 	
@@ -119,7 +123,6 @@ void deoglVBOWriterModel::WriteWeight( int weight ){
 	}
 	
 	GLint * const ptrWeight = ( GLint* )pDataPoints;
-	
 	ptrWeight[ 0 ] = ( GLint )weight;
 	
 	pDataPoints += 4;

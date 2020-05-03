@@ -2304,9 +2304,10 @@ void deoglSkinShader::InitShaderParameters(){
 		
 	}else{
 		inputList.Add( "inPosition", 0 );
-		inputList.Add( "inNormal", 1 );
-		inputList.Add( "inTangent", 2 );
-		inputList.Add( "inTexCoord", 3 );
+		inputList.Add( "inRealNormal", 1 );
+		inputList.Add( "inNormal", 2 );
+		inputList.Add( "inTangent", 3 );
+		inputList.Add( "inTexCoord", 4 );
 	}
 	
 	// outputs

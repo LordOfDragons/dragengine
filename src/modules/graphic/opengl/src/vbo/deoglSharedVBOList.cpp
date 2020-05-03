@@ -41,31 +41,15 @@
 deoglSharedVBOList::deoglSharedVBOList( deoglRenderThread &renderThread,
 const deoglVBOLayout &layout, GLenum drawType, int maxSize ) :
 pRenderThread( renderThread ),
+pLayout( layout ),
 pDrawType( drawType )
 {
 	if( maxSize < 0 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int count = layout.GetAttributeCount();
-	int i;
-	
 	pMaxSize = maxSize - maxSize % layout.GetStride();
 	pMaxPointCount = pMaxSize / layout.GetStride();
-	
-	pLayout.SetSize( 0 );
-	pLayout.SetStride( layout.GetStride() );
-	pLayout.SetAttributeCount( count );
-	pLayout.SetIndexType( layout.GetIndexType() );
-	
-	for( i=0; i<count; i++ ){
-		const deoglVBOAttribute &attrSrc = layout.GetAttributeAt( i );
-		deoglVBOAttribute &attrDest = pLayout.GetAttributeAt( i );
-		
-		attrDest.SetComponentCount( attrSrc.GetComponentCount() );
-		attrDest.SetDataType( attrSrc.GetDataType() );
-		attrDest.SetOffset( attrSrc.GetOffset() );
-	}
 }
 
 deoglSharedVBOList::~deoglSharedVBOList(){

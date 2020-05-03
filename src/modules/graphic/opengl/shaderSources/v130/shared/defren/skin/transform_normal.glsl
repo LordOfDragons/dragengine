@@ -4,16 +4,16 @@
 	#define NO_TRANSFORMATION 1
 #endif
 
-void transformNormal( in int spbIndex, out vec3 normal, out vec3 normalVn ){
+void transformNormal( in int spbIndex ){
 	#ifdef BILLBOARD
 		#ifdef PROP_FIELD
-			normalVn = normal = normalize( mat3( matRSMV ) * -bbMat[ 2 ] );
+			vNormal = normalize( mat3( matRSMV ) * -bbMat[ 2 ] );
 			#ifdef TEXTURE_NORMAL
 				vTangent = normalize( mat3( matRSMV ) * bbMat[ 0 ] );
-				vBitangent = cross( normal, vTangent );
+				vBitangent = cross( vNormal, vTangent );
 			#endif
 		#else
-			normalVn = normal = vec3( 0.0, 0.0, 1.0 );
+			vNormal = vec3( 0.0, 0.0, 1.0 );
 			#ifdef TEXTURE_NORMAL
 				vTangent = vec3( 1.0, 0.0, 0.0 );
 				vBitangent = vec3( 0.0, 1.0, 0.0 );
@@ -22,19 +22,19 @@ void transformNormal( in int spbIndex, out vec3 normal, out vec3 normalVn ){
 		
 	#else
 		#ifdef HEIGHT_MAP
-			normal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) )
+			vNormal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) )
 				* vec3( 1.9921569 ) + vec3( -0.9921722 ) );
 		#else
-			normal = normalize( inNormal );
+			vNormal = normalize( inNormal );
 		#endif
 		#ifdef TEXTURE_NORMAL
 			#ifdef HEIGHT_MAP
 				vTangent = normalize( vec3( pMatrixTexCoord[0][0], 0.0, pMatrixTexCoord[0][1] ) );
-				vBitangent = cross( normal, vTangent );
+				vBitangent = cross( vNormal, vTangent );
 			#else
 				vTangent = normalize( vec3( inTangent ) );
-				vBitangent = cross( normal, vTangent );
-				vTangent = cross( vBitangent, normal ) * vec3( inTangent.w );
+				vBitangent = cross( vNormal, vTangent );
+				vTangent = cross( vBitangent, vNormal ) * vec3( inTangent.w );
 			#endif
 		#endif
 		
@@ -66,22 +66,13 @@ void transformNormal( in int spbIndex, out vec3 normal, out vec3 normalVn ){
 			matrixNormal = transpose( matBend * pfiRotScale ) * matrixNormal; // ~= inverted( matBend * pMatrixPropField )
 		#endif
 		
-		normal = normalize( normal * matrixNormal );
-		normalVn = normal;
-		
-		#ifdef WITH_OUTLINE
-			normalVn = -normalVn;
-		#endif
-		
 		#ifndef NO_TRANSFORMATION
-			normalVn = normalize( normalVn * pMatrixVn );
+			matrixNormal *= pMatrixVn;
 		#endif
+		
+		vNormal = normalize( vNormal * matrixNormal );
 		
 		#ifdef TEXTURE_NORMAL
-			#ifndef NO_TRANSFORMATION
-				matrixNormal *= pMatrixVn;
-			#endif
-			
 			vTangent = vTangent * matrixNormal;
 			vBitangent = vBitangent * matrixNormal;
 			

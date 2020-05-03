@@ -4,11 +4,13 @@ precision highp int;
 uniform mediump samplerBuffer texWeightMatrices;
 
 in vec3 inPosition;
+in vec3 inRealNormal;
 in vec3 inNormal;
 in vec4 inTangent;
 in int inWeight;
 
 out vec3 outPosition;
+out vec3 outRealNormal;
 out vec3 outNormal;
 out vec4 outTangent;
 
@@ -18,6 +20,7 @@ void main( void ){
 	// if there is no weight write out all positions untransformed
 	if( inWeight == -1 ){
 		outPosition = inPosition;
+		outRealNormal = inRealNormal;
 		outNormal = inNormal;
 		outTangent = inTangent;
 		return;
@@ -33,13 +36,24 @@ void main( void ){
 	outPosition = vec4( inPosition, 1.0 ) * matrix;
 	
 	// transform the normal and tangent. this is not correct and only an approximation
+	// 
 	// NOTE a quick solution is using if(v==vec3(0)) to check for degenerated case. this is though
 	//      dangerous since the normalization is not done in this shader but inside another shader
 	//      using the value written to VBO. This can result in values close to zero to become zero
 	//      after the transformation. Or some calculation in the other shaders can be suspectible
 	//      to values close to zero. Using if(dot(v,v)<0.001) is safer and allows to use a
 	//      threshold value to protect against dangerously small vectors.
-	vec3 normal = inNormal * mat3( matrix );
+	mat3 matrixNormal = mat3( matrix );
+	
+	vec3 realNormal = inRealNormal * matrixNormal;
+	if( dot( realNormal, realNormal ) < 0.00001 ){
+		outRealNormal = vec3( 0.0, 1.0, 0.0 );
+		
+	}else{
+		outRealNormal = realNormal;
+	}
+	
+	vec3 normal = inNormal * matrixNormal;
 	if( dot( normal, normal ) < 0.00001 ){
 		outNormal = vec3( 0.0, 1.0, 0.0 );
 		
@@ -47,7 +61,7 @@ void main( void ){
 		outNormal = normal;
 	}
 	
-	vec3 tangent = vec3( inTangent ) * mat3( matrix );
+	vec3 tangent = vec3( inTangent ) * matrixNormal;
 	if( dot( tangent, tangent ) < 0.00001 ){
 		outTangent = vec4( 1.0, 0.0, 0.0, inTangent.w );
 		

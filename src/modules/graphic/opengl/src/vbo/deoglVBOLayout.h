@@ -28,26 +28,28 @@ class deoglRenderThread;
 
 
 /**
- * @brief OpenGL VBO Layout.
- * Stores the layout of a VBO.
+ * \brief OpenGL VBO Layout.
  */
 class deoglVBOLayout{
 public:
-	/** Index types. */
+	/** \brief Index types. */
 	enum eIndexTypes{
-		/** No indices. */
+		/** \brief No indices. */
 		eitNone,
-		/** Unsigned int indices. */
+		
+		/** \brief Unsigned int indices. */
 		eitUnsignedInt,
-		/** Unsigned short indices. */
+		
+		/** \brief Unsigned short indices. */
 		eitUnsignedShort,
-		/** Unsigned byte indices. */
-		eitUnsignedByte,
-		/** Number of index types. */
-		EIT_COUNT
+		
+		/** \brief Unsigned byte indices. */
+		eitUnsignedByte
 	};
 	
-public:
+	
+	
+private:
 	int pSize;
 	int pStride;
 	deoglVBOAttribute *pAttributes;
@@ -56,69 +58,99 @@ public:
 	int pIndexSize;
 	int pIndexGLType;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new opengl vbo layout. */
+	/** \brief Create vbo layout. */
 	deoglVBOLayout();
-	/** Cleans up the opengl vbo layout. */
+	
+	/** \brief Create vbo layout. */
+	deoglVBOLayout( const deoglVBOLayout &layout );
+	
+	/** \brief Clean up vbo layout. */
 	~deoglVBOLayout();
 	/*@}*/
 	
-	/** @name Management */
+
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the VBO size. */
+	/** \brief VBO size. */
 	inline int GetSize() const{ return pSize; }
-	/** Sets the VBO size. */
+	
+	/** \brief Set VBO size. */
 	void SetSize( int size );
-	/** Retrieves the stride. */
+	
+	/** \brief Stride. */
 	inline int GetStride() const{ return pStride; }
-	/** Sets the stride. */
+	
+	/** \brief Set stride. */
 	void SetStride( int stride );
-	/** Retrieves the index type. */
+	
+	/** \brief Index type. */
 	inline eIndexTypes GetIndexType() const{ return pIndexType; }
-	/** Sets the index type. */
+	
+	/** \brief Set index type. */
 	void SetIndexType( eIndexTypes indexType );
-	/** Retrieves the size in bytes of indices. */
+	
+	/** \brief Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
-	/** Retrieves the opengl type of the indices. */
+	
+	/** \brief Opengl type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
 	/*@}*/
 	
-	/** @name Attributes */
+	
+	
+	/** \name Attributes */
 	/*@{*/
-	/** Retrieves the number of attributes. */
+	/** \brief Number of attributes. */
 	inline int GetAttributeCount() const{ return pAttributeCount; }
-	/** Sets the number of attributes. */
+	
+	/** \brief Set number of attributes. */
 	void SetAttributeCount( int count );
-	/** Retrieves the attribute by index. */
+	
+	/** \brief Attribute by index. */
 	deoglVBOAttribute &GetAttributeAt( int index ) const;
+	
 	/**
-	 * Set VAO attribute for the given target attribute. The VBO is supposed to
-	 * be already selected. The attribute is enabled prior to be set.
+	 * \brief Set VAO attribute.
+	 * 
+	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
 	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target ) const;
+	
 	/**
-	 * Set VAO attribute for the given target attribute. The VBO is supposed to
-	 * be already selected. The attribute is enabled prior to be set.
+	 * \brief Set VAO attribute.
+	 * 
+	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
 	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target, int offset ) const;
 	/*@}*/
 	
-	/** @name Operators */
+	
+	
+	/** \name Operators */
 	/*@{*/
-	/** Determines if this layout matches another one. */
+	/** \brief Set layout. */
+	deoglVBOLayout &operator=( const deoglVBOLayout &layout );
+	
+	/** \brief Layout matches another one. */
 	bool operator==( const deoglVBOLayout &layout ) const;
-	/** Determines if this layout does not match another one. */
+	
+	/** \brief Layout does not match another one. */
 	bool operator!=( const deoglVBOLayout &layout ) const;
 	/*@}*/
 	
-	/** @name Debugging */
+	
+	
+	/** \name Debugging */
 	/*@{*/
-	/** Prints the layout to the console. */
+	/** \brief Print layout to the console. */
 	void PrintToConsole( deoglRenderThread &renderThread, const char *name );
 	/*@}*/
 };
 
-// end of include only once
 #endif

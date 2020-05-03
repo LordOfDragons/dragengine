@@ -59,6 +59,7 @@ NODE_VERTEX_UNIFORMS
 	in float inNormal;
 #else
 	in vec3 inPosition;
+	in vec3 inRealNormal;
 	in vec3 inNormal;
 	in vec4 inTangent;
 	in vec2 inTexCoord;
@@ -188,7 +189,7 @@ NODE_VERTEX_OUTPUTS
 //////////////////
 
 #include "v130/shared/defren/skin/transform_position.glsl"
-#if defined REQUIRES_NORMAL || defined WITH_OUTLINE
+#ifdef REQUIRES_NORMAL
 	#include "v130/shared/defren/skin/transform_normal.glsl"
 #endif
 
@@ -205,20 +206,14 @@ void main( void ){
 		vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
 	#endif
 	
-	// normal calculation
-	vec3 normal;
-	#if defined REQUIRES_NORMAL || defined WITH_OUTLINE
-		#ifndef REQUIRES_NORMAL
-			vec3 vNormal;
-		#endif
-		transformNormal( spbIndex, normal, vNormal );
-	#else
-		normal = vec3( 0.0 );
-	#endif
-	
 	// transform position
 	vec3 position;
-	transformPosition( position, spbIndex, normal );
+	transformPosition( position, spbIndex );
+	
+	// normal calculation
+	#ifdef REQUIRES_NORMAL
+		transformNormal( spbIndex );
+	#endif
 	
 	// non-perspective depth values if required
 	#ifndef HAS_TESSELLATION_SHADER

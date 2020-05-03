@@ -50,6 +50,7 @@ struct oglModelWeight{
 
 struct oglModelPosition{
 	decVector position;
+	decVector normal;
 	int weight;
 };
 

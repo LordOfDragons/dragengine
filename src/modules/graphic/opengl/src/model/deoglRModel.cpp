@@ -60,7 +60,7 @@
 // Cache version in the range from 0 to 255. Increment each time the cache
 // format changed. If reaching 256 wrap around to 0. Important is only the
 // number changes to force discarding old caches
-#define CACHE_VERSION		3
+#define CACHE_VERSION		4
 
 
 

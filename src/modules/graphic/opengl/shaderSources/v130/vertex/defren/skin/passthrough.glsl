@@ -24,6 +24,7 @@ precision highp int;
 	in float inNormal;
 #else
 	in vec3 inPosition;
+	in vec3 inRealNormal;
 	in vec3 inNormal;
 	#ifdef TEXTURE_NORMAL
 		in vec4 inTangent;

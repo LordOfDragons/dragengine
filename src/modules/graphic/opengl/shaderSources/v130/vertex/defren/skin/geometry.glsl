@@ -47,6 +47,7 @@ NODE_VERTEX_UNIFORMS
 	in float inNormal;
 #else
 	in vec3 inPosition;
+	in vec3 inRealNormal;
 	in vec3 inNormal;
 	#ifdef TEXTURE_NORMAL
 		in vec4 inTangent;
@@ -259,13 +260,12 @@ void main( void ){
 		vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
 	#endif
 	
-	// normal calculation
-	vec3 normal;
-	transformNormal( spbIndex, normal, vNormal );
-	
 	// transform position
 	vec3 position;
-	transformPosition( position, spbIndex, normal );
+	transformPosition( position, spbIndex );
+	
+	// normal calculation
+	transformNormal( spbIndex );
 	
 	// reflection directory for environment map reflections
 	#ifdef TEXTURE_ENVMAP

@@ -8,15 +8,19 @@
 	<texture name='texWeightMatrices' target='0'/>
 	
 	<attribute name='inPosition' target='0'/>
-	<attribute name='inNormal' target='1'/>
-	<attribute name='inTangent' target='2'/>
-	<attribute name='inWeight' target='4'/>
+	<attribute name='inRealNormal' target='1'/>
+	<attribute name='inNormal' target='2'/>
+	<attribute name='inTangent' target='3'/>
+	<!-- inTexCoord = 4 -->
+	<attribute name='inWeight' target='5'/>
 	
 	<output name='outPosition' target='0'/>
-	<output name='outNormal' target='1'/>
-	<output name='outTangent' target='2'/>
+	<output name='outRealNormal' target='1'/>
+	<output name='outNormal' target='2'/>
+	<output name='outTangent' target='3'/>
 	
 	<feedback name='outPosition'/>
+	<feedback name='outRealNormal'/>
 	<feedback name='outNormal'/>
 	<feedback name='outTangent'/>
 	

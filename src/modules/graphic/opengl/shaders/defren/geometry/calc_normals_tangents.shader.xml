@@ -9,7 +9,7 @@
 	
 	<parameter name='pTCTransform'/> <!-- 0 -->
 	<parameter name='pOutputWidth'/> <!-- 1 -->
-	<parameter name='pNormalCount'/> <!-- 2 -->
+	<parameter name='pIndexOffset'/> <!-- 2 -->
 	
 	<attribute name='inPositionIndices' target='0'/>
 	<attribute name='inNormalIndices' target='1'/>
