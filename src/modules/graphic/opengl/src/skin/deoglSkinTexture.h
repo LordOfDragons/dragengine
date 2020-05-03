@@ -274,6 +274,7 @@ private:
 	
 	decColor pOutlineColor;
 	float pOutlineThickness;
+	bool pOutlineThicknessScreen;
 	float pOutlineSolidity;
 	decColor pOutlineEmissivity;
 	float pOutlineEmissivityIntensity;
@@ -690,6 +691,12 @@ public:
 	
 	/** \brief Set outline thickness. */
 	void SetOutlineThickness( float thickness );
+	
+	/** \brief Outline thickness is relative to screen width. */
+	inline bool GetOutlineThicknessScreen() const{ return pOutlineThicknessScreen; }
+	
+	/** \brief Set if outline thickness is relative to screen width. */
+	void SetOutlineThicknessScreen( bool enable );
 	
 	/** \brief Outline solidity. */
 	inline float GetOutlineSolidity() const{ return pOutlineSolidity; }

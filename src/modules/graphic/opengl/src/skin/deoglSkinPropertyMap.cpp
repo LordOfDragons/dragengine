@@ -29,236 +29,101 @@
 
 
 deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const char *type ){
-	if( strcmp( type, "color" ) == 0 ){
-		return eptColor;
-		
-	}else if( strcmp( type, "color.gamma" ) == 0 ){
-		return eptColorGamma;
-		
-	}else if( strcmp( type, "color.tint" ) == 0 ){
-		return eptColorTint;
-		
-	}else if( strcmp( type, "color.tint.mask" ) == 0 ){
-		return eptColorTintMask;
-		
-	}else if( strcmp( type, "color.solidity.multiplier" ) == 0 ){
-		return eptColorSolidityMultiplier;
-		
-	}else if( strcmp( type, "color.omnidir" ) == 0 ){
-		return eptColorOmnidir;
-		
-	}else if( strcmp( type, "color.omnidir.equirect" ) == 0 ){
-		return eptColorOmnidirEquirect;
-		
-		
-		
-	}else if( strcmp( type, "ambient.occlusion" ) == 0 ){
-		return eptAmbientOcclusion;
-		
-	}else if( strcmp( type, "ambient.occlusion.solidity.multiplier" ) == 0 ){
-		return eptAmbientOcclusionSolidityMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "normal" ) == 0 ){
-		return eptNormal;
-		
-	}else if( strcmp( type, "normal.strength" ) == 0 ){
-		return eptNormalStrength;
-		
-	}else if( strcmp( type, "normal.solidity.multiplier" ) == 0 ){
-		return eptNormalSolidityMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "height" ) == 0 ){
-		return eptHeight;
-		
-	}else if( strcmp( type, "height.scale" ) == 0 ){
-		return eptHeightScale;
-		
-	}else if( strcmp( type, "height.offset" ) == 0 ){
-		return eptHeightOffset;
-		
-		
-		
-	}else if( strcmp( type, "roughness" ) == 0 ){
-		return eptRoughness;
-		
-	}else if( strcmp( type, "roughness.remap.lower" ) == 0 ){
-		return eptRoughnessRemapLower;
-		
-	}else if( strcmp( type, "roughness.remap.upper" ) == 0 ){
-		return eptRoughnessRemapUpper;
-		
-	}else if( strcmp( type, "roughness.gamma" ) == 0 ){
-		return eptRoughnessGamma;
-		
-	}else if( strcmp( type, "roughness.solidity.multiplier" ) == 0 ){
-		return eptRoughnessSolidityMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "transparency" ) == 0 ){
-		return eptTransparency;
-		
-	}else if( strcmp( type, "transparency.multiplier" ) == 0 ){
-		return eptTransparencyMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "solidity" ) == 0 ){
-		return eptSolidity;
-		
-	}else if( strcmp( type, "solidity.masked" ) == 0 ){
-		return eptSolidityMasked;
-		
-	}else if( strcmp( type, "solidity.multiplier" ) == 0 ){
-		return eptSolidityMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "refraction.distort" ) == 0 ){
-		return eptRefractionDistort;
-		
-	}else if( strcmp( type, "refraction.distort.strength" ) == 0 ){
-		return eptRefractionDistortStrength;
-		
-		
-		
-	}else if( strcmp( type, "reflectivity" ) == 0 ){
-		return eptReflectivity;
-		
-	}else if( strcmp( type, "reflectivity.multiplier" ) == 0 ){
-		return eptReflectivityMultiplier;
-		
-	}else if( strcmp( type, "reflectivity.solidity.multiplier" ) == 0 ){
-		return eptReflectivitySolidityMultiplier;
-		
-		
-		
-	}else if( strcmp( type, "environmentmap" ) == 0 ){
-		return eptEnvironmentMap;
-		
-	}else if( strcmp( type, "reflected" ) == 0 ){
-		return eptReflected;
-		
-	}else if( strcmp( type, "mirror" ) == 0 ){
-		return eptMirror;
-		
-		
-		
-	}else if( strcmp( type, "emissivity" ) == 0 ){
-		return eptEmissivity;
-		
-	}else if( strcmp( type, "emissivity.tint" ) == 0 ){
-		return eptEmissivityTint;
-		
-	}else if( strcmp( type, "emissivity.intensity" ) == 0 ){
-		return eptEmissivityIntensity;
-		
-	}else if( strcmp( type, "environmentroom" ) == 0 ){
-		return eptEnvironmentRoom;
-		
-		
-		
-	}else if( strcmp( type, "environmentroom.size" ) == 0 ){
-		return eptEnvironmentRoomSize;
-		
-	}else if( strcmp( type, "environmentroom.offset" ) == 0 ){
-		return eptEnvironmentRoomOffset;
-		
-	}else if( strcmp( type, "environmentroom.mask" ) == 0 ){
-		return eptEnvironmentRoomMask;
-		
-	}else if( strcmp( type, "environmentroom.emissivity" ) == 0 ){
-		return eptEnvironmentRoomEmissivity;
-		
-	}else if( strcmp( type, "environmentroom.emissivity.tint" ) == 0 ){
-		return eptEnvironmentRoomEmissivityTint;
-		
-	}else if( strcmp( type, "environmentroom.emissivity.intensity" ) == 0 ){
-		return eptEnvironmentRoomEmissivityIntensity;
-		
-		
-		
-	}else if( strcmp( type, "thickness" ) == 0 ){
-		return eptThickness;
-		
-	}else if( strcmp( type, "absorption" ) == 0 ){
-		return eptAbsorption;
-		
-	}else if( strcmp( type, "absorption.range" ) == 0 ){
-		return eptAbsorptionRange;
-		
-	}else if( strcmp( type, "absorption.halfIntensityDistance" ) == 0 ){
-		return eptAbsorptionHalfIntensityDistance;
-		
-		
-		
-	}else if( strcmp( type, "shadeless" ) == 0 ){
-		return eptShadeless;
-		
-	}else if( strcmp( type, "shadow.none" ) == 0 ){
-		return eptShadowNone;
-		
-	}else if( strcmp( type, "shadow.importance" ) == 0 ){
-		return eptShadowImportance;
-		
-	}else if( strcmp( type, "hint.nocompression" ) == 0 ){
-		return eptHintNoCompression;
-		
-	}else if( strcmp( type, "hint.lightblocker" ) == 0 ){
-		return eptHintLightBlocker;
-		
-	}else if( strcmp( type, "texcoord.clamp" ) == 0 ){
-		return eptTexCoordClamp;
-		
-	}else if( strcmp( type, "texcoord.offset" ) == 0 ){
-		return eptTexCoordOffset;
-		
-	}else if( strcmp( type, "texcoord.scale" ) == 0 ){
-		return eptTexCoordScale;
-		
-	}else if( strcmp( type, "texcoord.rotate" ) == 0 ){
-		return eptTexCoordRotate;
-		
-		
-		
-	}else if( strcmp( type, "variation.u" ) == 0 ){
-		return eptVariationU;
-		
-	}else if( strcmp( type, "variation.v" ) == 0 ){
-		return eptVariationV;
-		
-	}else if( strcmp( type, "variation.weight" ) == 0 ){
-		return eptVariationWeight;
-		
-		
-		
-	}else if( strcmp( type, "particle.sheets" ) == 0 ){
-		return eptParticleSheets;
-		
-		
-		
-	}else if( strcmp( type, "outline.color" ) == 0 ){
-		return eptOutlineColor;
-		
-	}else if( strcmp( type, "outline.thickness" ) == 0 ){
-		return eptOutlineThickness;
-		
-	}else if( strcmp( type, "outline.solidity" ) == 0 ){
-		return eptOutlineSolidity;
-		
-	}else if( strcmp( type, "outline.emissivity" ) == 0 ){
-		return eptOutlineEmissivity;
-		
-	}else if( strcmp( type, "outline.emissivity.intensity" ) == 0 ){
-		return eptOutlineEmissivityIntensity;
-		
-		
-		
-	}else{
-		return eptUnsupported;
+	static const int entryCount = 66;
+	static struct sEntry{
+		const char *name;
+		deoglSkinPropertyMap::ePropertyTypes type;
+	} entries[ entryCount ] = {
+		{ "color", eptColor },
+		{ "color.gamma", eptColorGamma },
+		{ "color.tint", eptColorTint },
+		{ "color.tint.mask", eptColorTintMask },
+		{ "color.solidity.multiplier", eptColorSolidityMultiplier },
+		{ "color.omnidir", eptColorOmnidir },
+		{ "color.omnidir.equirect", eptColorOmnidirEquirect },
+		
+		{ "ambient.occlusion", eptAmbientOcclusion },
+		{ "ambient.occlusion.solidity.multiplier", eptAmbientOcclusionSolidityMultiplier },
+		
+		{ "normal", eptNormal },
+		{ "normal.strength",  eptNormalStrength },
+		{ "normal.solidity.multiplier", eptNormalSolidityMultiplier },
+		
+		{ "height", eptHeight },
+		{ "height.scale", eptHeightScale },
+		{ "height.offset", eptHeightOffset },
+		
+		{ "roughness", eptRoughness },
+		{ "roughness.remap.lower", eptRoughnessRemapLower },
+		{ "roughness.remap.upper", eptRoughnessRemapUpper },
+		{ "roughness.gamma", eptRoughnessGamma },
+		{ "roughness.solidity.multiplier", eptRoughnessSolidityMultiplier },
+		
+		{ "transparency", eptTransparency },
+		{ "transparency.multiplier", eptTransparencyMultiplier },
+		
+		{ "solidity", eptSolidity },
+		{ "solidity.masked", eptSolidityMasked },
+		{ "solidity.multiplier", eptSolidityMultiplier },
+		
+		{ "refraction.distort", eptRefractionDistort },
+		{ "refraction.distort.strength", eptRefractionDistortStrength },
+		
+		{ "reflectivity", eptReflectivity },
+		{ "reflectivity.multiplier", eptReflectivityMultiplier },
+		{ "reflectivity.solidity.multiplier", eptReflectivitySolidityMultiplier },
+		
+		{ "environmentmap", eptEnvironmentMap },
+		{ "reflected", eptReflected },
+		{ "mirror", eptMirror },
+		
+		{ "emissivity", eptEmissivity },
+		{ "emissivity.tint", eptEmissivityTint },
+		{ "emissivity.intensity", eptEmissivityIntensity },
+		
+		{ "environmentroom", eptEnvironmentRoom },
+		{ "environmentroom.size", eptEnvironmentRoomSize },
+		{ "environmentroom.offset", eptEnvironmentRoomOffset },
+		{ "environmentroom.mask", eptEnvironmentRoomMask },
+		{ "environmentroom.emissivity", eptEnvironmentRoomEmissivity },
+		{ "environmentroom.emissivity.tint", eptEnvironmentRoomEmissivityTint },
+		{ "environmentroom.emissivity.intensity", eptEnvironmentRoomEmissivityIntensity },
+		
+		{ "thickness", eptThickness },
+		{ "absorption", eptAbsorption },
+		{ "absorption.range", eptAbsorptionRange },
+		{ "absorption.halfIntensityDistance", eptAbsorptionHalfIntensityDistance },
+		
+		{ "shadeless", eptShadeless },
+		{ "shadow.none", eptShadowNone },
+		{ "shadow.importance", eptShadowImportance },
+		{ "hint.nocompression", eptHintNoCompression },
+		{ "hint.lightblocker", eptHintLightBlocker },
+		{ "texcoord.clamp", eptTexCoordClamp },
+		{ "texcoord.offset", eptTexCoordOffset },
+		{ "texcoord.scale", eptTexCoordScale },
+		{ "texcoord.rotate", eptTexCoordRotate },
+		
+		{ "variation.u", eptVariationU },
+		{ "variation.v", eptVariationV },
+		{ "variation.weight", eptVariationWeight },
+		
+		{ "particle.sheets", eptParticleSheets },
+		
+		{ "outline.color", eptOutlineColor },
+		{ "outline.thickness", eptOutlineThickness },
+		{ "outline.thickness.screen", eptOutlineThicknessScreen },
+		{ "outline.solidity", eptOutlineSolidity },
+		{ "outline.emissivity", eptOutlineEmissivity },
+		{ "outline.emissivity.intensity", eptOutlineEmissivityIntensity }
+	};
+	
+	int i;
+	for( i=0; i<entryCount; i++ ){
+		if( strcmp( entries[ i ].name, type ) == 0 ){
+			return entries[ i ].type;
+		}
 	}
+	
+	return eptUnsupported;
 }

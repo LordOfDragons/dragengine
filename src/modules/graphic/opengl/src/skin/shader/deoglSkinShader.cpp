@@ -1743,6 +1743,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetOutline() ){
 		defines.AddDefine( "WITH_OUTLINE", "1" );
 	}
+	if( pConfig.GetOutlineThicknessScreen() ){
+		defines.AddDefine( "WITH_OUTLINE_THICKNESS_SCREEN", "1" );
+	}
 	
 	// dynamic texture property usage definitions
 	if( pConfig.GetDynamicColorTint() ){

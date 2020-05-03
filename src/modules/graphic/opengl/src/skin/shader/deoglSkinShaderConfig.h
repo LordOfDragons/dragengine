@@ -153,6 +153,7 @@ public:
 	int pSharedSPBPadding;
 	int pSPBInstanceArraySize;
 	bool pOutline;
+	bool pOutlineThicknessScreen;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -396,6 +397,12 @@ public:
 	
 	/** \brief Set render outline. */
 	void SetOutline( bool outline );
+	
+	/** \brief Outline thickness relative to screen width. */
+	inline bool GetOutlineThicknessScreen() const{ return pOutlineThicknessScreen; }
+	
+	/** \brief Set if outline thickness is relative to screen width. */
+	void SetOutlineThicknessScreen( bool enable );
 	
 	
 	

@@ -422,6 +422,7 @@ pName( texture.GetName() )
 	
 	pOutlineColor.Set( 0.0f, 0.0f, 0.0f );
 	pOutlineThickness = 0.0f;
+	pOutlineThicknessScreen = false;
 	pOutlineSolidity = 1.0f;
 	pOutlineEmissivity.Set( 0.0f, 0.0f, 0.0f );
 	pOutlineEmissivityIntensity = 0.0f;
@@ -951,6 +952,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 	case esctOutlineGeometry:
 		config.SetOutline( true );
+		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
 		config.SetMaterialNormalMode( deoglSkinShaderConfig::emnmIntBasic );
 		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
@@ -981,6 +983,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 	case esctOutlineDepth:
 		config.SetOutline( true );
+		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
 		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
@@ -1008,6 +1011,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 	case esctOutlineCounter:
 		config.SetOutline( true );
+		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		config.SetOutputConstant( true );
@@ -2288,6 +2292,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			pOutlineThickness = decMath::max( value, 0.0f );
 			pHasOutline = pOutlineThickness != 0.0f || ! property.GetRenderable().IsEmpty();
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineThicknessScreen:
+			pOutlineThicknessScreen = value > 0.5f;
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineSolidity:

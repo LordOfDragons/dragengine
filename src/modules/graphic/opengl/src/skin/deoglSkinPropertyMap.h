@@ -246,6 +246,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Outline thickness. */
 		eptOutlineThickness,
 		
+		/** \brief Outline thickness relative to screen/world switch. */
+		eptOutlineThicknessScreen,
+		
 		/** \brief Outline solidity. */
 		eptOutlineSolidity,
 		
