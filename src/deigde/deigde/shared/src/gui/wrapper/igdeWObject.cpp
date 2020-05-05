@@ -81,6 +81,11 @@
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/skin/deSkinManager.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
+#include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
+#include <dragengine/resources/skin/dynamic/renderables/deDSRenderableValue.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
@@ -173,6 +178,7 @@ pTriggerTable( NULL ),
 pHasBoxExtends( false ),
 pDirtyExtends( false ),
 pDirtyFallbackColliderShape( false ),
+pOutlineColor( 1.0f, 0.0f, 0.0f ),
 pAsyncLoadFinished( NULL ),
 pAsyncLoadCounter( 0 )
 {
@@ -476,6 +482,62 @@ void igdeWObject::OnGameDefinitionChanged(){
 	if( pGDClass ){
 		SetGDClassName( pGDClass->GetName() );
 	}
+}
+
+void igdeWObject::SetOutlineSkin( deSkin *skin ){
+	if( pOutlineSkin == skin ){
+		return;
+	}
+	
+	pOutlineSkin = skin;
+	
+	if( skin && ! pOutlineDynamicSkin ){
+		pOutlineDynamicSkin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->
+			GetDynamicSkinManager()->CreateDynamicSkin() );
+		
+		deDSRenderableColor * const renderableColor = new deDSRenderableColor( "color" );
+		renderableColor->SetColor( pOutlineColor );
+		pOutlineDynamicSkin->AddRenderable( renderableColor );
+		
+		deDSRenderableValue * const renderableThickess = new deDSRenderableValue( "thickness" );
+		renderableThickess->SetValue( 0.005f );
+		pOutlineDynamicSkin->AddRenderable( renderableThickess );
+	}
+	
+	const int count = pSubObjects.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->OutlineSkinChanged();
+	}
+}
+
+void igdeWObject::SetOutlineSkinSharedEditing(){
+	deSkinReference skin;
+	
+	try{
+		skin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->GetSkinManager()->LoadSkin(
+			pEnvironment.GetFileSystemIGDE(), "/data/data/materials/editing/outlined.deskin", "/" ) );
+		
+	}catch( const deException &e ){
+		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+	}
+	
+	SetOutlineSkin( skin );
+}
+
+void igdeWObject::SetOutlineColor( const decColor &color ){
+	if( color.IsEqualTo( pOutlineColor ) ){
+		return;
+	}
+	
+	pOutlineColor = color;
+	
+	if( ! pOutlineDynamicSkin ){
+		return;
+	}
+	
+	( ( deDSRenderableColor* )pOutlineDynamicSkin->GetRenderableAt( 0 ) )->SetColor( color );
+	pOutlineDynamicSkin->NotifyRenderableChanged( 0 );
 }
 
 

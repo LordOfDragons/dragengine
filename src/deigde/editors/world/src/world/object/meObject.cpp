@@ -275,6 +275,7 @@ pWOAsyncFinished( *this )
 		
 		pUpdateDDSColors();
 		pUpdateShapes();
+		pUpdateOutline();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -359,11 +360,14 @@ void meObject::SetWorld( meWorld *world ){
 }
 
 void meObject::SetSelected( bool selected ){
-	if( selected != pSelected ){
-		pSelected = selected;
-		
-		pUpdateDDSColors();
+	if( selected == pSelected ){
+		return;
 	}
+	
+	pSelected = selected;
+	
+	pUpdateDDSColors();
+	pUpdateOutline();
 }
 
 void meObject::SetActive( bool active ){
@@ -375,6 +379,7 @@ void meObject::SetActive( bool active ){
 	
 	pUpdateDDSColors();
 	UpdateDDSObjectShapes();
+	pUpdateOutline();
 	CheckLinks();
 }
 
@@ -388,6 +393,7 @@ void meObject::SetVisible( bool visible ){
 	pWObject->SetVisible( visible );
 	pUpdateComponent();
 	pUpdateDDSColors();
+	pUpdateOutline();
 }
 
 void meObject::SetShowMissingTextures( bool showMissingTextures ){
@@ -930,6 +936,7 @@ void meObject::WOAsyncFinished(){
 			pRange = wosoLightVisitor.range;
 			pUpdateShapeLight();
 			pUpdateDDSColors();
+			pUpdateOutline();
 		}
 	}
 	
@@ -1966,6 +1973,20 @@ void meObject::pRepositionDDSNavSpaces(){
 				ddshape.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
 			}
 		}
+	}
+}
+
+void meObject::pUpdateOutline(){
+	if( pActive ){
+		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineColor( decColor( 1.0f, 0.5f, 0.0f ) );
+		
+	}else if( pSelected ){
+		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineColor( decColor( 1.0f, 0.0f, 0.0f ) );
+		
+	}else{
+		pWObject->SetOutlineSkin( NULL );
 	}
 }
 

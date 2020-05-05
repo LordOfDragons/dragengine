@@ -1198,7 +1198,7 @@
 			value is 0 this value is measured as meters in world space. Otherwise the value is
 			measured relative to the camera field-of-view which makes the thickness to stay at
 			the same visual size no matter what distance it is looked at. For example in the
-			screen move a value of 0.01 for example equals to a thickness of 1% the screen width.
+			screen mode a value of 0.01 for example equals to a thickness of 1% the screen width.
 			If thickness is larger than 0 an outline is rendered around the component. This is
 			typically used to hilight objects or to use cartoon style effects.
 		</description>

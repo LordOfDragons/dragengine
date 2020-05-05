@@ -329,6 +329,7 @@ void igdeWOSOComponent::UpdateParameters(){
 void igdeWOSOComponent::OnAllSubObjectsFinishedLoading(){
 	pUpdateComponent();
 	UpdateVisibility();
+	pUpdateOutlineComponent();
 }
 
 void igdeWOSOComponent::UpdateVisibility(){
@@ -435,6 +436,13 @@ void igdeWOSOComponent::ResetPhysics(){
 
 void igdeWOSOComponent::ResetComponentTextures(){
 	pUpdateTextures();
+}
+
+void igdeWOSOComponent::CameraChanged(){
+}
+
+void igdeWOSOComponent::OutlineSkinChanged(){
+	pUpdateOutlineComponent();
 }
 
 void igdeWOSOComponent::Visit( igdeWOSOVisitor &visitor ){
@@ -917,4 +925,44 @@ bool igdeWOSOComponent::pIsVisible() const{
 	}
 	
 	return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+}
+
+void igdeWOSOComponent::pUpdateOutlineComponent(){
+	if( pOutlineComponent ){
+		if( pCollider ){
+			deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineComponent );
+			if( attachment ){
+				pCollider->RemoveAttachment( attachment );
+			}
+		}
+		
+		if( pOutlineComponent->GetParentWorld() ){
+			pOutlineComponent->GetParentWorld()->RemoveComponent( pOutlineComponent );
+		}
+		
+		pOutlineComponent = NULL;
+	}
+	
+	deSkin * const outlineSkin = GetWrapper().GetOutlineSkin();
+	if( ! outlineSkin || ! pComponent || ! pComponent->GetModel() || ! pCollider || ! GetWrapper().GetWorld() ){
+		return;
+	}
+	
+	pOutlineComponent.TakeOver( GetWrapper().GetEnvironment().GetEngineController()->
+		GetEngine()->GetComponentManager()->CreateComponent( pComponent->GetModel(), outlineSkin ) );
+	pOutlineComponent->SetRig( pComponent->GetRig() );
+	pOutlineComponent->SetDynamicSkin( GetWrapper().GetOutlineDynamicSkin() );
+	
+	const int textureCount = pComponent->GetTextureCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		pOutlineComponent->GetTextureAt( i ).SetSkin( outlineSkin );
+		pOutlineComponent->NotifyTextureChanged( i );
+	}
+	
+	GetWrapper().GetWorld()->AddComponent( pOutlineComponent );
+	
+	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineComponent );
+	attachment->SetAttachType( deColliderAttachment::eatRig );
+	pCollider->AddAttachment( attachment );
 }

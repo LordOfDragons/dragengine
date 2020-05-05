@@ -427,6 +427,7 @@ private:
 	void pUpdateDDSNavSpaces();
 	void pUpdateDDSCoordSysArrowsLength();
 	void pRepositionDDSNavSpaces();
+	void pUpdateOutline();
 	
 	void pUpdateComponent();
 	void pUpdateProperties();

@@ -56,6 +56,7 @@ private:
 	decObjectDictionary pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
+	deComponentReference pOutlineComponent;
 	
 	
 	
@@ -115,6 +116,12 @@ public:
 	/** \brief Reset component textures. */
 	virtual void ResetComponentTextures();
 	
+	/** \brief Camera changed. */
+	virtual void CameraChanged();
+	
+	/** \brief Outline skin changed. */
+	virtual void OutlineSkinChanged();
+	
 	/** \brief Visit. */
 	virtual void Visit( igdeWOSOVisitor &visitor );
 	
@@ -136,6 +143,7 @@ private:
 	void pUpdateTextures();
 	void pDestroyComponent();
 	bool pIsVisible() const;
+	void pUpdateOutlineComponent();
 };
 
 #endif

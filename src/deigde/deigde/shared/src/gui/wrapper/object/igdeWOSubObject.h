@@ -126,6 +126,9 @@ public:
 	/** \brief Camera changed. */
 	virtual void CameraChanged();
 	
+	/** \brief Outline skin changed. */
+	virtual void OutlineSkinChanged();
+	
 	/** \brief All sub components finished loading. */
 	virtual void OnAllSubObjectsFinishedLoading() = 0;
 	
