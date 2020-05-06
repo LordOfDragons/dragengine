@@ -57,6 +57,7 @@ private:
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
 	deComponentReference pOutlineComponent;
+	deColliderReference pOutlineCollider;
 	
 	
 	
