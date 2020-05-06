@@ -75,6 +75,9 @@ private:
 	deoglTexUnitsConfig *pTUCShadow;
 	deoglTexUnitsConfig *pTUCShadowCube;
 	deoglTexUnitsConfig *pTUCEnvMap;
+	deoglTexUnitsConfig *pTUCOutlineDepth;
+	deoglTexUnitsConfig *pTUCOutlineGeometry;
+	deoglTexUnitsConfig *pTUCOutlineCounter;
 	
 	bool pValidParamBlockDepth;
 	bool pValidParamBlockGeometry;
@@ -90,6 +93,9 @@ private:
 	bool pDirtyTUCShadow;
 	bool pDirtyTUCShadowCube;
 	bool pDirtyTUCEnvMap;
+	bool pDirtyTUCOutlineDepth;
+	bool pDirtyTUCOutlineGeometry;
+	bool pDirtyTUCOutlineCounter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -258,6 +264,29 @@ public:
 	 *          - deoglSkinTexture::estEnvMap
 	 */
 	deoglTexUnitsConfig *GetTUCEnvMap();
+	
+	/**
+	 * \brief Texture units configuration for outline geometry type shaders or \em NULL if empty.
+	 * \details This texture units configuration works for the shader types:
+	 *          - deoglSkinTexture::estOutlineGeometry
+	 */
+	deoglTexUnitsConfig *GetTUCOutlineGeometry();
+	
+	/**
+	 * \brief Texture units configuration for outline depth type shaders or \em NULL if empty.
+	 * \details This texture units configuration works for the shader types:
+	 *          - deoglSkinTexture::estOutlineDepth
+	 *          - deoglSkinTexture::estOutlineDepthClipPlane
+	 */
+	deoglTexUnitsConfig *GetTUCOutlineDepth();
+	
+	/**
+	 * \brief Texture units configuration for outline counter type shaders or \em NULL if empty.
+	 * \details This texture units configuration works for the shader types:
+	 *          - deoglSkinTexture::estOutlineCounter
+	 *          - deoglSkinTexture::estOutlineCounterClipPlane
+	 */
+	deoglTexUnitsConfig *GetTUCOutlineCounter();
 	
 	/**
 	 * \brief Obtain texture units configuration for a shader type.

@@ -1849,7 +1849,8 @@ void deoglRenderPlan::pCheckTransparency(){
 	const int componentCount = pCollideList.GetComponentCount();
 	int i;
 	for( i=0; i<componentCount; i++ ){
-		if( ! pCollideList.GetComponentAt( i )->GetComponent()->GetSolid() ){
+		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
+		if( ! component.GetSolid() || ! component.GetOutlineSolid() ){
 			pHasTransparency = true;
 			return;
 		}

@@ -74,6 +74,7 @@ private:
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
+	bool pOutline;
 	
 	bool pFilterHoles;
 	bool pWithHoles;
@@ -151,6 +152,12 @@ public:
 	
 	/** \brief Set if rendered textures are not added. */
 	void SetNoRendered( bool noRendered );
+	
+	/** \brief Outline textures are added. */
+	inline bool GetOutline() const{ return pOutline; }
+	
+	/** \brief Set if outline transparent texture are added. */
+	void SetOutline( bool outline );
 	
 	
 	

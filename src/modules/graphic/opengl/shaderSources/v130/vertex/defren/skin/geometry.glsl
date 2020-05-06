@@ -12,11 +12,12 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-
+#include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #ifdef SHARED_SPB
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 #ifdef NODE_VERTEX_UNIFORMS
 NODE_VERTEX_UNIFORMS
@@ -46,6 +47,7 @@ NODE_VERTEX_UNIFORMS
 	in float inNormal;
 #else
 	in vec3 inPosition;
+	in vec3 inRealNormal;
 	in vec3 inNormal;
 	#ifdef TEXTURE_NORMAL
 		in vec4 inTangent;
@@ -231,10 +233,6 @@ NODE_VERTEX_OUTPUTS
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
-	// transform position
-	vec3 position;
-	transformPosition( position, spbIndex );
-	
 	// transform the texture coordinates
 	#ifdef HEIGHT_MAP
 		vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
@@ -261,6 +259,10 @@ void main( void ){
 	#ifdef TEXTURE_AO
 		vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
 	#endif
+	
+	// transform position
+	vec3 position;
+	transformPosition( position, spbIndex );
 	
 	// normal calculation
 	transformNormal( spbIndex );

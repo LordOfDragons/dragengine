@@ -9,7 +9,7 @@
 	<texture name='texNormalTangent' target='1'/>
 	
 	<parameter name='pTexNorTanWidth'/> <!-- 0 -->
-	<parameter name='pNormalCount'/> <!-- 1 -->
+	<parameter name='pIndexOffset'/> <!-- 1 -->
 	
 	<attribute name='inPositionIndex' target='0'/>
 	<attribute name='inNormalIndex' target='1'/>
@@ -17,10 +17,12 @@
 	<attribute name='inNegateTangent' target='3'/>
 	
 	<output name='outPosition' target='0'/>
-	<output name='outNormal' target='1'/>
-	<output name='outTangent' target='2'/>
+	<output name='outRealNormal' target='1'/>
+	<output name='outNormal' target='2'/>
+	<output name='outTangent' target='3'/>
 	
 	<feedback name='outPosition'/>
+	<feedback name='outRealNormal'/>
 	<feedback name='outNormal'/>
 	<feedback name='outTangent'/>
 	

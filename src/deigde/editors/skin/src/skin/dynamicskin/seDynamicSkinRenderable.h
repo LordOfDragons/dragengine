@@ -64,7 +64,7 @@ private:
 	seDynamicSkin *pDynamicSkin;
 	
 	decString pName;
-	int pRenderableType;
+	eRenderableTypes pRenderableType;
 	
 	bool pActive;
 	bool pDirty;
@@ -110,9 +110,9 @@ public:
 	/** Sets the name. */
 	void SetName( const char *name );
 	/** Retrieves the renderable type. */
-	inline int GetRenderableType() const{ return pRenderableType; }
+	inline eRenderableTypes GetRenderableType() const{ return pRenderableType; }
 	/** Sets the renderable type. */
-	void SetRenderableType( int type );
+	void SetRenderableType( eRenderableTypes type );
 	
 	/** Determines if the renderable is the active one. */
 	inline bool GetActive() const{ return pActive; }

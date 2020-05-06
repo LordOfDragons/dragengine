@@ -22,7 +22,8 @@ void transformNormal( in int spbIndex ){
 		
 	#else
 		#ifdef HEIGHT_MAP
-			vNormal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) ) * vec3( 1.9921569 ) + vec3( -0.9921722 ) );
+			vNormal = normalize( fract( vec3( 1.0, 256.0, 65536.0 ) * vec3( inNormal ) )
+				* vec3( 1.9921569 ) + vec3( -0.9921722 ) );
 		#else
 			vNormal = normalize( inNormal );
 		#endif
@@ -41,11 +42,7 @@ void transformNormal( in int spbIndex ){
 		// "normal" is suddenly no more normalized resulting in render artifacts. there are only two solutions. one is to use
 		// normalize as done here. the other solution is to calculate a normal matrix not containing any scaling. this solution
 		// though is not so easy and has its own problems
-		#ifdef NO_TRANSFORMATION
-			mat3 matrixNormal = pMatrixNormal;
-		#else
-			mat3 matrixNormal = pMatrixNormal * pMatrixVn;
-		#endif
+		mat3 matrixNormal = pMatrixNormal;
 		
 		#ifdef PROP_FIELD
 			// see doc/shader_propfield
@@ -69,22 +66,27 @@ void transformNormal( in int spbIndex ){
 			matrixNormal = transpose( matBend * pfiRotScale ) * matrixNormal; // ~= inverted( matBend * pMatrixPropField )
 		#endif
 		
+		#ifndef NO_TRANSFORMATION
+			matrixNormal *= pMatrixVn;
+		#endif
+		
 		vNormal = normalize( vNormal * matrixNormal );
+		
 		#ifdef TEXTURE_NORMAL
 			vTangent = vTangent * matrixNormal;
 			vBitangent = vBitangent * matrixNormal;
 			
 			#ifndef HEIGHT_MAP
-			// using static or dynamic models it is possible cross(normal,tangent) becomes 0-vector.
-			// doing normalize would result in inf values in the interpolation unit resulting in
-			// all kinds of nasty problems on different gpu drivers. better use a degenerated vector.
-			// this results in wrong lighting calculations but it does not blow up the gpu driver
-			if( dot( vTangent, vTangent ) > 0.00001 ){
-				vTangent = normalize( vTangent );
-			}
-			if( dot( vBitangent, vBitangent ) > 0.00001 ){
-				vBitangent = normalize( vBitangent );
-			}
+				// using static or dynamic models it is possible cross(normal,tangent) becomes 0-vector.
+				// doing normalize would result in inf values in the interpolation unit resulting in
+				// all kinds of nasty problems on different gpu drivers. better use a degenerated vector.
+				// this results in wrong lighting calculations but it does not blow up the gpu driver
+				if( dot( vTangent, vTangent ) > 0.00001 ){
+					vTangent = normalize( vTangent );
+				}
+				if( dot( vBitangent, vBitangent ) > 0.00001 ){
+					vBitangent = normalize( vBitangent );
+				}
 			#endif
 		#endif
 	#endif

@@ -157,7 +157,8 @@ pLLWorldNext( NULL )
 	pDirtyTextureUseSkin = true;
 	pDirtyModelRigMappings = true;
 	
-	pSolid = false;
+	pSolid = true;
+	pOutlineSolid = true;
 	
 	pMarked = false;
 	
@@ -1954,6 +1955,7 @@ void deoglRComponent::pUpdateCullSphere(){
 
 void deoglRComponent::pUpdateSolid(){
 	pSolid = true;
+	pOutlineSolid = true;
 	
 	if( ! pModel ){
 		return;
@@ -1981,10 +1983,13 @@ void deoglRComponent::pUpdateSolid(){
 				}
 			}
 			
-			if( skin && ! skin->GetTextureAt( textureNumber ).GetSolid() ){
-				pSolid = false;
-				return;
+			if( ! skin ){
+				continue;
 			}
+			
+			const deoglSkinTexture &skinTexture = skin->GetTextureAt( textureNumber );
+			pSolid &= skinTexture.GetSolid();
+			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 		}
 		
 	}else{
@@ -1993,10 +1998,13 @@ void deoglRComponent::pUpdateSolid(){
 		for( i =0; i <textureCount; i++ ){
 			deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 			deoglRSkin *skin = texture.GetSkin();
-			if( skin && skin->GetTextureCount() > 0 && ! skin->GetTextureAt( 0 ).GetSolid() ){
-				pSolid = false;
-				return;
+			if( ! skin || skin->GetTextureCount() == 0 ){
+				continue;
 			}
+			
+			const deoglSkinTexture &skinTexture = skin->GetTextureAt( 0 );
+			pSolid &= skinTexture.GetSolid();
+			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 		}
 	}
 }

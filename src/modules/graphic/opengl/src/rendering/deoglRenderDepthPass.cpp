@@ -440,34 +440,34 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	addToRenderTask.AddBillboards( collideList );
 	
 	// prop fields
+	deoglSkinTexture::eShaderTypes propFieldShaderType1, propFieldShaderType2;
+	
 	if( mask && mask->GetUseClipPlane() ){
 		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldDepthClipPlaneReversed );
-			addToRenderTask.AddPropFields( collideList, false );
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterDepthClipPlaneReversed );
-			addToRenderTask.AddPropFields( collideList, true );
+			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlaneReversed;
+			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlaneReversed;
 			
 		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldDepthClipPlane );
-			addToRenderTask.AddPropFields( collideList, false );
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterDepthClipPlane );
-			addToRenderTask.AddPropFields( collideList, true );
+			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlane;
+			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlane;
 		}
 		
 	}else{
 		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldDepthReversed );
-			addToRenderTask.AddPropFields( collideList, false );
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterDepthReversed );
-			addToRenderTask.AddPropFields( collideList, true );
+			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthReversed;
+			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthReversed;
 			
 		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldDepth );
-			addToRenderTask.AddPropFields( collideList, false );
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterDepth );
-			addToRenderTask.AddPropFields( collideList, true );
+			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepth;
+			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepth;
 		}
 	}
+	
+	addToRenderTask.SetSkinShaderType( propFieldShaderType1 );
+	addToRenderTask.AddPropFields( collideList, false );
+	
+	addToRenderTask.SetSkinShaderType( propFieldShaderType2 );
+	addToRenderTask.AddPropFields( collideList, true );
 	
 	// height terrains
 	if( mask && mask->GetUseClipPlane() ){
@@ -587,6 +587,61 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthRender, true );
 		}
 	}
+	
+	
+	// outline
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	
+	addToRenderTask.Reset();
+	addToRenderTask.SetOutline( true );
+	addToRenderTask.SetFilterDecal( true );
+	addToRenderTask.SetDecal( false );
+	addToRenderTask.SetSolid( solid );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	addToRenderTask.SetNoRendered( mask );
+	
+	if( mask && mask->GetUseClipPlane() ){
+		if( reverseDepthTest ){
+			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlaneReversed );
+			
+		}else{
+			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlane );
+		}
+		
+	}else{
+		if( reverseDepthTest ){
+			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthReversed );
+			
+		}else{
+			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepth );
+		}
+	}
+	addToRenderTask.AddComponents( collideList );
+	
+	if( renderTask.GetShaderCount() > 0 ){
+		renderTask.PrepareForRender( renderThread );
+		
+		if( solid ){
+			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthTask, true );
+			
+		}else{
+			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
+		}
+		
+		SetCullMode( ! plan.GetFlipCulling() );
+		rengeom.RenderTask( renderTask );
+		SetCullMode( plan.GetFlipCulling() );
+		
+		if( solid ){
+			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthRender, true );
+			
+		}else{
+			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthRender, true );
+		}
+	}
+	
+	
 	
 	// TODO
 	// optimize render passes later on. each pass has to reconstruct the depth from the depth texture.

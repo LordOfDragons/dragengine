@@ -426,9 +426,11 @@ pRenderThread( renderThread ){
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
 		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )24 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 3 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )36 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )24 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 4 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 4, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )36 ) );
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );

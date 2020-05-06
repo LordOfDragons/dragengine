@@ -84,12 +84,15 @@ public:
 	/** \brief Transform model posititions using component weight matrices using transform feedback. */
 	void TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
 		GLuint vboTransformed, int firstPoint, int pointCount );
+	
 	/** \brief Calculate normals and tangents for a component. */
-	void CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions, deoglFramebuffer *fbo, int outputWidth,
-		int outputHeight, int normalCount, int tangentCount, int firstPoint, int pointCount );
+	void CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions, deoglFramebuffer *fbo,
+		int outputWidth, int outputHeight, int positionCount, int normalCount,
+		int tangentCount, int firstPoint, int pointCount );
+	
 	/** \brief Write skinned vbo using transform feedback. */
 	void WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions, deoglTexture &texNorTan,
-		GLuint vboSkinned, int normalCount, int firstPoint, int pointCount );
+		GLuint vboSkinned, int positionCount, int normalCount, int firstPoint, int pointCount );
 	/**
 	 * \brief Approximately transform model posititions, normals and tangents
 	 *        using component weight matrices using transform feedback.

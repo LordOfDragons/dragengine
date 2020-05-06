@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<value property='solidity'>0</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<color property='outline.color' r='0' g='0' b='0' a='1' renderable='color'/>
+		<value property='outline.thickness' renderable='thickness'>0.005</value>
+		<value property='outline.thickness.screen'>1</value>
+		<color property='outline.emissivity' r='0' g='0' b='0' a='1' renderable='color'/>
+		<value property='outline.emissivity.intensity'>4</value>
+	</texture>
+</skin>

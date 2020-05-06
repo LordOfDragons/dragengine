@@ -80,9 +80,9 @@ public class OuterClass extends ClassExtendImplement
 	end
 	
 	private enum SimpleEnum
-		ENUM_AUTO_1
-		ENUM_FIXED_1 = 8
-		ENUM_AUTO_2 = -isATest(ENUM_AUTO_1 + 3, 10)
+		entry1
+		entry2
+		entry3
 	end
 	
 	private var int pMember1
@@ -94,7 +94,7 @@ public class OuterClass extends ClassExtendImplement
 	end
 	
 	public func new( String arg1, bool arg2 ) super( arg1, arg2 )
-		this.pMember1 = ( arg1 + ENUM_AUTO_1 * ( arg2 cast int )++ ).toInt()
+		this.pMember1 = ( arg1 + SimpleEnum.entry1.order() * ( arg2 cast int )++ ).toInt()
 		pMember2 = null
 		this.callThat().pMember2 = OuterClass.new( this.pMember1 > 8 if "String literal" else this.toString(), null )
 		this.callMe( arg1.toInt() + 2, block int each

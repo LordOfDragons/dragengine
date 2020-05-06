@@ -2334,4 +2334,32 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorOutline'>
+		<description>Renders outline around a component..</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>outline.</defaultInheritPropertyPrefix>
+		<property name='skin'>
+			<description>Skin to use for rendering the outline.</description>
+			<type>path</type>
+			<pathPatternType>skin</pathPatternType>
+			<default>/shareddata/materials/outlined.deskin</default>
+		</property>
+		<property name='color'>
+			<description>Color of the outline. Used on the dynamic skin created by the behavior.</description>
+			<type>color</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='intensity'>
+			<description>Emissivity intensity of the outline. Used on the dynamic skin created by the behavior.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='thickness'>
+			<description>Thickness of the outline in meters or percentage of camera field-of-view depending on mode used by skin.</description>
+			<type>float</type>
+			<default>0.005</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>

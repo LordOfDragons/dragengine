@@ -887,16 +887,19 @@ void deoglRDecal::pCreateMeshComponent(){
 		const decVector &vertex3 = meshBuilder.GetPointAt( face.GetPoint1() );
 		
 		const decVector backProject1( inverseDecalMatrix * vertex1 );
-		writerVBO.WritePoint( vertex1, normal, decalTangent, false, decVector2(
-			0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY ) );
+		writerVBO.WritePoint( vertex1, normal, decalTangent, false,
+			decVector2( 0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY ),
+			normal );
 		
 		const decVector backProject2( inverseDecalMatrix * vertex2 );
-		writerVBO.WritePoint( vertex2, normal, decalTangent, false, decVector2(
-			0.5f - backProject2.x * invHalfSizeX, 0.5f - backProject2.y * intHalfSizeY ) );
+		writerVBO.WritePoint( vertex2, normal, decalTangent, false,
+			decVector2( 0.5f - backProject2.x * invHalfSizeX, 0.5f - backProject2.y * intHalfSizeY ),
+			normal );
 		
 		const decVector backProject3( inverseDecalMatrix * vertex3 );
-		writerVBO.WritePoint( vertex3, normal, decalTangent, false, decVector2(
-			0.5f - backProject3.x * invHalfSizeX, 0.5f - backProject3.y * intHalfSizeY ) );
+		writerVBO.WritePoint( vertex3, normal, decalTangent, false,
+			decVector2( 0.5f - backProject3.x * invHalfSizeX, 0.5f - backProject3.y * intHalfSizeY ),
+			normal );
 	}
 // 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) vbo=%.3fms",
 // 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );

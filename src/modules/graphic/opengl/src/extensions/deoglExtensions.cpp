@@ -830,11 +830,6 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_copy_texture : no opengl version
 	
 	// GL_EXT_texture_object : no opengl version
-	
-	// GL_NV_texture_barrier : no opengl version
-	#ifndef ANDROID
-	pGetRequiredFunction( (void**)&pglTextureBarrier, "glTextureBarrierNV" );
-	#endif
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -1033,6 +1028,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	if( pHasExtension[ ext_ARB_shader_image_load_store ] ){
 		pGetOptionalFunction( (void**)&pglBindImageTexture, "glBindImageTexture", ext_ARB_shader_image_load_store );
 	}
+	
+	// GL_NV_texture_barrier : no opengl version
+	#ifndef ANDROID
+	if( pHasExtension[ ext_NV_texture_barrier ] ){
+		pGetOptionalFunction( (void**)&pglTextureBarrier, "glTextureBarrierNV", ext_NV_texture_barrier );
+	}
+	#endif
 	
 	// OpenGL 4.3 : no extension
 	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){
