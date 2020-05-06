@@ -45,6 +45,11 @@ pin Dragengine.Utils
  * 
  * To this behavior add it and set the class properties. Add listener to be notified if the
  * looked at element changes or query the current state.
+ * 
+ * \par Interaction with ECBehaviorLookedAt
+ * 
+ * If the looked at element has ECBehaviorLookedAt instance it will be updated by adding
+ * and removing the owner element.
  */
 class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -435,11 +440,27 @@ class ECBehaviorLookAt extends DefaultECBehavior
 				return
 			end
 			
+			if this.pLookAtElement != null and this.pLookAtElement castable BehaviorElement
+				var ECBehaviorLookedAt.Instance behavior = \
+					ECBehaviorLookedAt.getInstanceIn( this.pLookAtElement cast BehaviorElement )
+				if behavior != null
+					behavior.removeLookingActor( this.getElement() )
+				end
+			end
+			
 			this.pLookAtElement = element
 			this.pLookAtBone = bone
 			this.pLookAtBoneName = boneName
 			this.pLookAtHitPoint = null
 			this.pLookAtDistance = distance
+			
+			if element != null and element castable BehaviorElement
+				var ECBehaviorLookedAt.Instance behavior = \
+					ECBehaviorLookedAt.getInstanceIn( element cast BehaviorElement )
+				if behavior != null
+					behavior.addLookingActor( this.getElement() )
+				end
+			end
 			
 			this.pListeners.forEach( block Listener each
 				each.lookAtChanged( this )
