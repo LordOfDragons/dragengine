@@ -32,10 +32,12 @@ class deoglSharedVBOBlock;
 
 
 /**
- * @brief Model VBO Writer.
- * Helper class writing data to esvbolStaticModel formatted VBO blocks. Keeps track of the data pointer
- * adding one entry after the other. Call Reset with a vbo block data pointer to start the writing.
- * Each call of WritePoint appends the data and advances the pointer for the next point.
+ * \brief Model VBO Writer.
+ * 
+ * Helper class writing data to esvbolStaticModel formatted VBO blocks. Keeps track of
+ * the data pointer adding one entry after the other. Call Reset with a vbo block data
+ * pointer to start the writing. Each call of WritePoint appends the data and advances
+ * the pointer for the next point.
  */
 class deoglVBOWriterModel{
 public:
@@ -43,29 +45,36 @@ public:
 	char *pDataPoints;
 	GLuint *pDataIndices;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new vbo writer. */
+	/** \brief Create vbo writer. */
 	deoglVBOWriterModel( deoglRenderThread &renderThread );
-	/** Cleans up the vbo writer. */
+	
+	/** \brief Clean up vbo writer. */
 	~deoglVBOWriterModel();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Sets the data pointers to start writing points and indices to. */
+	/** \brief Set data pointers to start writing points and indices to. */
 	void Reset( deoglSharedVBOBlock *vboBlock );
 	
-	/** Writes a point and advances the pointer for the next write. */
+	/** \brief Write point and advances the pointer for the next write. */
 	void WritePoint( const decVector &position, const decVector &normal, const decVector &tangent,
-		bool negateTangent, const decVector2 &texCoord );
-	/** Writes a texture coordinate set point and advance the pointer for the next write. */
+		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal );
+	
+	/** \brief Write texture coordinate set point and advance the pointer for the next write. */
 	void WriteTexCoordSetPoint( const decVector &tangent, bool negateTangent, const decVector2 &texCoord );
+	
 	/** \brief Write weight index. */
 	void WriteWeight( int weight );
 	
-	/** Writes 3 indices and advances the pointer for the next write. */
+	/** \brief Write 3 indices and advances the pointer for the next write. */
 	void WriteIndices( int index1, int index2, int index3 );
 	/*@}*/
 };

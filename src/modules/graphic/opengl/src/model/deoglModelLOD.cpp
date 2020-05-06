@@ -804,18 +804,21 @@ void deoglModelLOD::pCleanUp(){
 }
 
 void deoglModelLOD::pCalcTangents(){
-	decVector normal, tangent, bitangent;
+	decVector faceNormal, tangent, bitangent;
 	bool negateTangent;
 	decVector2 d1, d2;
 	float len;
 	int i, j;
 	
 	// reset tangents
+	for( i=0; i<pPositionCount; i++ ){
+		pPositions[ i ].normal.SetZero();
+	}
 	for( i=0; i<pNormalCount; i++ ){
-		pNormals[ i ].Set( 0.0f, 0.0f, 0.0f );
+		pNormals[ i ].SetZero();
 	}
 	for( i=0; i<pTangentCount; i++ ){
-		pTangents[ i ].Set( 0.0f, 0.0f, 0.0f );
+		pTangents[ i ].SetZero();
 		pNegateTangents[ i ] = false;
 	}
 	for( i=0; i<pTexCoordSetCount; i++ ){
@@ -824,7 +827,7 @@ void deoglModelLOD::pCalcTangents(){
 		const int tcsTangentCount = pTexCoordSets[ i ].GetTangentCount();
 		
 		for( j=0; j<tcsTangentCount; j++ ){
-			tcsTangents[ j ].Set( 0.0f, 0.0f, 0.0f );
+			tcsTangents[ j ].SetZero();
 			tcsNegateTangents[ j ] = false;
 		}
 	}
@@ -843,13 +846,13 @@ void deoglModelLOD::pCalcTangents(){
 		const decVector2 &tc3 = pTexCoords[ v3.texcoord ];
 		
 		// calculate face normal
-		normal = ( p2 - p1 ) % ( p3 - p1 );
-		len = normal.Length();
+		faceNormal = ( p2 - p1 ) % ( p3 - p1 );
+		len = faceNormal.Length();
 		if( len != 0.0f ){
-			normal /= len;
+			faceNormal /= len;
 			
 		}else{
-			normal.Set( 0.0f, 1.0f, 0.0f );
+			faceNormal.Set( 0.0f, 1.0f, 0.0f );
 		}
 		
 		// calculate face tangent
@@ -866,12 +869,15 @@ void deoglModelLOD::pCalcTangents(){
 		}
 		
 		bitangent = ( p3 - p1 ) * d1.x - ( p2 - p1 ) * d2.x;
-		negateTangent = ( ( normal % tangent ) * bitangent < 0.0f );
+		negateTangent = ( ( faceNormal % tangent ) * bitangent < 0.0f );
 		
 		// add face normal and tanget to vertices
-		pNormals[ v1.normal ] += normal;
-		pNormals[ v2.normal ] += normal;
-		pNormals[ v3.normal ] += normal;
+		pPositions[ v1.position ].normal += faceNormal;
+		pPositions[ v2.position ].normal += faceNormal;
+		pPositions[ v3.position ].normal += faceNormal;
+		pNormals[ v1.normal ] += faceNormal;
+		pNormals[ v2.normal ] += faceNormal;
+		pNormals[ v3.normal ] += faceNormal;
 		pTangents[ v1.tangent ] += tangent;
 		pTangents[ v2.tangent ] += tangent;
 		pTangents[ v3.tangent ] += tangent;
@@ -879,7 +885,7 @@ void deoglModelLOD::pCalcTangents(){
 		pNegateTangents[ v2.tangent ] = negateTangent;
 		pNegateTangents[ v3.tangent ] = negateTangent;
 		
-		pFaces[ i ].SetFaceNormal( normal );
+		pFaces[ i ].SetFaceNormal( faceNormal );
 		
 		// process texture coordinate sets if existing
 		for( j=0; j<pTexCoordSetCount; j++ ){
@@ -905,7 +911,7 @@ void deoglModelLOD::pCalcTangents(){
 			}
 			
 			bitangent = ( p3 - p1 ) * d1.x - ( p2 - p1 ) * d2.x;
-			negateTangent = ( ( normal % tangent ) * bitangent < 0.0f );
+			negateTangent = ( ( faceNormal % tangent ) * bitangent < 0.0f );
 			
 			// add face normal and tanget to vertices
 			tcsTangents[ v1.tangent ] += tangent;
@@ -918,6 +924,17 @@ void deoglModelLOD::pCalcTangents(){
 	}
 	
 	// normalize normals and tangents
+	for( i=0; i<pPositionCount; i++ ){
+		len = pPositions[ i ].normal.Length();
+		
+		if( len != 0.0f ){
+			pPositions[ i ].normal /= len;
+			
+		}else{
+			pPositions[ i ].normal.Set( 0.0f, 1.0f, 0.0f );
+		}
+	}
+	
 	for( i=0; i<pNormalCount; i++ ){
 		len = pNormals[ i ].Length();
 		
@@ -1331,7 +1348,8 @@ void deoglModelLOD::pWriteVBOData(){
 		
 		writerVBO.WritePoint( pPositions[ vertex.position ].position,
 			pNormals[ vertex.normal ], pTangents[ vertex.tangent ],
-			pNegateTangents[ vertex.tangent ], pTexCoords[ vertex.texcoord ] );
+			pNegateTangents[ vertex.tangent ], pTexCoords[ vertex.texcoord ],
+			pPositions[ vertex.position ].normal );
 		
 		for( j=0; j<tcsCount; j++ ){
 			const deoglModelLODTexCoordSet &tcs = pTexCoordSets[ j ];
@@ -1439,7 +1457,9 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 		const oglModelVertex &vertex = pVertices[ i ];
 		
 		writerVBO.WritePoint( pPositions[ vertex.position ].position, pNormals[ vertex.normal ],
-			pTangents[ vertex.tangent ], pNegateTangents[ vertex.tangent ], pTexCoords[ vertex.texcoord ] );
+			pTangents[ vertex.tangent ], pNegateTangents[ vertex.tangent ],
+			pTexCoords[ vertex.texcoord ], pPositions[ vertex.position ].normal );
+		
 		writerVBO.WriteWeight( pPositions[ vertex.position ].weight );
 	}
 	

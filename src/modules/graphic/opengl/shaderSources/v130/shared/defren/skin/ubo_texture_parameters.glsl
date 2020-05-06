@@ -39,6 +39,11 @@ UBOLAYOUT uniform TextureParameters{
 	
 	vec2 pTexVariationEnableScale; // variation.u, variation.v
 	int pTexParticleSheetCount; // particle.sheets
+	
+	vec3 pTexOutlineColor;
+	float pTexOutlineThickness;
+	vec3 pTexOutlineEmissivity;
+	float pTexOutlineSolidity;
 };
 
 #ifdef BUG_UBO_DIRECT_LINK_DEAD_LOOP
@@ -80,4 +85,9 @@ UBOLAYOUT uniform TextureParameters{
 	
 	#define pTexVariationEnableScale vec2(pTexVariationEnableScale)
 	#define pTexParticleSheetCount int(pTexParticleSheetCount)
+	
+	#define pTexOutlineColor vec3(pTexOutlineColor)
+	#define pTexOutlineThickness float(pTexOutlineThickness)
+	#define pTexOutlineEmissivity vec3(pTexOutlineEmissivity)
+	#define pTexOutlineSolidity float(pTexOutlineSolidity)
 #endif

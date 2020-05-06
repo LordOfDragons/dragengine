@@ -65,25 +65,25 @@ deoglVAO::~deoglVAO(){
 ///////////////
 
 void deoglVAO::SetIndexType( deoglVBOLayout::eIndexTypes indexType ){
-	if( indexType < 0 || indexType >= deoglVBOLayout::EIT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pIndexType = indexType;
 	
-	if( indexType == deoglVBOLayout::eitUnsignedInt ){
+	switch( indexType ){
+	case deoglVBOLayout::eitUnsignedInt:
 		pIndexSize = 4;
 		pIndexGLType = GL_UNSIGNED_INT;
+		break;
 		
-	}else if( indexType == deoglVBOLayout::eitUnsignedShort ){
+	case deoglVBOLayout::eitUnsignedShort:
 		pIndexSize = 2;
 		pIndexGLType = GL_UNSIGNED_SHORT;
+		break;
 		
-	}else if( indexType == deoglVBOLayout::eitUnsignedByte ){
+	case deoglVBOLayout::eitUnsignedByte:
 		pIndexSize = 1;
 		pIndexGLType = GL_UNSIGNED_BYTE;
+		break;
 		
-	}else{
+	default:
 		// the values here are chosen this way to prevent a crash if by mistake indices are used although
 		// eitNone has been specified in the layout. an index size of 0 causes allocation to fail should
 		// a check be missing for pIndexSize equal to 0. also GL_NONE causes rendering to fail with an

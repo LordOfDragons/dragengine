@@ -142,6 +142,11 @@ public:
 		etutTexVariationEnableScale,
 		etutTexParticleSheetCount,
 		
+		etutTexOutlineColor,
+		etutTexOutlineThickness,
+		etutTexOutlineEmissivity,
+		etutTexOutlineSolidity,
+		
 		ETUT_COUNT
 	};
 	
@@ -191,6 +196,10 @@ public:
 		eiutInstEnvRoomEmissivityIntensity,
 		eiutInstVariationEnableScale,
 		eiutInstReflectivityMultiplier,
+		eiutInstOutlineColor,
+		eiutInstOutlineThickness,
+		eiutInstOutlineEmissivity,
+		eiutInstOutlineSolidity,
 		
 		EIUT_COUNT
 	};

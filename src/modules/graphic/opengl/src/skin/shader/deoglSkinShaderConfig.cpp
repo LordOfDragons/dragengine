@@ -76,6 +76,8 @@ void deoglSkinShaderConfig::Reset(){
 	pSharedSPBArraySize = 0;
 	pSharedSPBPadding = 0;
 	pSPBInstanceArraySize = 0;
+	pOutline = false;
+	pOutlineThicknessScreen = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -101,8 +103,12 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicThickness = false;
 	pDynamicAbsorption = false;
 	pDynamicVariation = false;
+	pDynamicOutlineColor = false;
+	pDynamicOutlineThickness = false;
+	pDynamicOutlineSolidity = false;
+	pDynamicOutlineEmissivity = false;
 	
-	pTextureColorTransparency = false;
+	pTextureColor = false;
 	pTextureColorTintMask = false;
 	pTextureTransparency = false;
 	pTextureSolidity = false;
@@ -234,6 +240,14 @@ void deoglSkinShaderConfig::SetSPBInstanceArraySize( int size ){
 	pSPBInstanceArraySize = size;
 }
 
+void deoglSkinShaderConfig::SetOutline( bool outline ){
+	pOutline = outline;
+}
+
+void deoglSkinShaderConfig::SetOutlineThicknessScreen( bool enable ){
+	pOutlineThicknessScreen = enable;
+}
+
 
 
 void deoglSkinShaderConfig::SetDynamicColorTint( bool dynamic ){
@@ -332,10 +346,26 @@ void deoglSkinShaderConfig::SetDynamicVariation( bool dynamic ){
 	pDynamicVariation = dynamic;
 }
 
+void deoglSkinShaderConfig::SetDynamicOutlineColor( bool dynamic ){
+	pDynamicOutlineColor = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicOutlineThickness( bool dynamic ){
+	pDynamicOutlineThickness = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicOutlineSolidity( bool dynamic ){
+	pDynamicOutlineSolidity = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicOutlineEmissivity( bool dynamic ){
+	pDynamicOutlineEmissivity = dynamic;
+}
 
 
-void deoglSkinShaderConfig::SetTextureColorTransparency( bool textureColorTransparency ){
-	pTextureColorTransparency = textureColorTransparency;
+
+void deoglSkinShaderConfig::SetTextureColor( bool hasTexture ){
+	pTextureColor = hasTexture;
 }
 
 void deoglSkinShaderConfig::SetTextureColorTintMask( bool hasTexture ){
@@ -525,6 +555,12 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pSPBInstanceArraySize != 0 ){
 		string.AppendFormat( " spbInstArrSize=%d", pSPBInstanceArraySize );
 	}
+	if( pOutline ){
+		string.Append( " outline" );
+	}
+	if( pOutlineThicknessScreen ){
+		string.Append( " outlineTS" );
+	}
 	
 	if( pDynamicColorTint ){
 		string.Append( " dynClrTint" );
@@ -598,9 +634,21 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pDynamicVariation ){
 		string.Append( " dynVar" );
 	}
+	if( pDynamicOutlineColor ){
+		string.Append( " dynOutColor" );
+	}
+	if( pDynamicOutlineThickness ){
+		string.Append( " dynOutThick" );
+	}
+	if( pDynamicOutlineSolidity ){
+		string.Append( " dynOutSol" );
+	}
+	if( pDynamicOutlineEmissivity ){
+		string.Append( " dynOutEmis" );
+	}
 	
-	if( pTextureColorTransparency ){
-		string.Append( " texColTran" );
+	if( pTextureColor ){
+		string.Append( " texCol" );
 	}
 	if( pTextureColorTintMask ){
 		string.Append( " texColTintMask" );
@@ -691,6 +739,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pSharedSPBArraySize = config.pSharedSPBArraySize;
 	pSharedSPBPadding = config.pSharedSPBPadding;
 	pSPBInstanceArraySize = config.pSPBInstanceArraySize;
+	pOutline = config.pOutline;
+	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;
@@ -716,8 +766,12 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicThickness = config.pDynamicThickness;
 	pDynamicAbsorption = config.pDynamicAbsorption;
 	pDynamicVariation = config.pDynamicVariation;
+	pDynamicOutlineColor = config.pDynamicOutlineColor;
+	pDynamicOutlineThickness = config.pDynamicOutlineThickness;
+	pDynamicOutlineSolidity = config.pDynamicOutlineSolidity;
+	pDynamicOutlineEmissivity = config.pDynamicOutlineEmissivity;
 	
-	pTextureColorTransparency = config.pTextureColorTransparency;
+	pTextureColor = config.pTextureColor;
 	pTextureColorTintMask = config.pTextureColorTintMask;
 	pTextureTransparency = config.pTextureTransparency;
 	pTextureSolidity = config.pTextureSolidity;
@@ -768,6 +822,8 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pSharedSPBArraySize == config.pSharedSPBArraySize
 		&& pSharedSPBPadding == config.pSharedSPBPadding
 		&& pSPBInstanceArraySize == config.pSPBInstanceArraySize
+		&& pOutline == config.pOutline
+		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen
 		
 		&& pDynamicColorTint == config.pDynamicColorTint
 		&& pDynamicColorGamma == config.pDynamicColorGamma
@@ -793,8 +849,12 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pDynamicThickness == config.pDynamicThickness
 		&& pDynamicAbsorption == config.pDynamicAbsorption
 		&& pDynamicVariation == config.pDynamicVariation
+		&& pDynamicOutlineColor == config.pDynamicOutlineColor
+		&& pDynamicOutlineThickness == config.pDynamicOutlineThickness
+		&& pDynamicOutlineSolidity == config.pDynamicOutlineSolidity
+		&& pDynamicOutlineEmissivity == config.pDynamicOutlineEmissivity
 		
-		&& pTextureColorTransparency == config.pTextureColorTransparency
+		&& pTextureColor == config.pTextureColor
 		&& pTextureColorTintMask == config.pTextureColorTintMask
 		&& pTextureTransparency == config.pTextureTransparency
 		&& pTextureSolidity == config.pTextureSolidity

@@ -37,6 +37,7 @@
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTTexture.h"
@@ -96,6 +97,7 @@ pVBOBlock( NULL ),
 pWeights( NULL ),
 
 pPositions( NULL ),
+pRealNormals( NULL ),
 pNormals( NULL ),
 pTangents( NULL ),
 pFaceNormals( NULL ),
@@ -400,9 +402,10 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 	if( positionCount > 0 ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
+		const int positionCount = modelLOD.GetPositionCount();
 		const int tangentCount = modelLOD.GetTangentCount();
 		const int normalCount = modelLOD.GetNormalCount();
-		const int norTanCount = normalCount + tangentCount;
+		const int norTanCount = positionCount + normalCount + tangentCount;
 		const int faceCount = modelLOD.GetFaceCount();
 		
 		const bool useFP32 = true; // false to use 16FP
@@ -455,7 +458,8 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 		
 		renderThread.GetRenderers().GetGeometry().CalcNormalsTangents( *vboBlock.GetVBO()->GetVAO(),
 			pTBOTransformVertices, pFBOCalcNormalTangent, pTexTransformNormTan->GetWidth(),
-			pTexTransformNormTan->GetHeight(), normalCount, tangentCount, vboBlock.GetOffset(), faceCount );
+			pTexTransformNormTan->GetHeight(), positionCount, normalCount, tangentCount,
+			vboBlock.GetOffset(), faceCount );
 		
 		renderThread.GetFramebuffer().Activate( NULL ); // otherwise we render with an FBO with a texture attached used also to sample
 		
@@ -528,10 +532,12 @@ void deoglRComponentLOD::GPUWriteRenderVBO(){
 		}
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
+		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
 		
-		renderThread.GetRenderers().GetGeometry().WriteSkinnedVBO( *vboBlock.GetVBO()->GetVAO(), pTBOTransformVertices,
-			*pTexTransformNormTan, pVBO, normalCount, vboBlock.GetOffset(), pointCount );
+		renderThread.GetRenderers().GetGeometry().WriteSkinnedVBO( *vboBlock.GetVBO()->GetVAO(),
+			pTBOTransformVertices, *pTexTransformNormTan, pVBO, positionCount, normalCount,
+			vboBlock.GetOffset(), pointCount );
 		
 		// verify
 		/*
@@ -618,7 +624,8 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 		}
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
+		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
 		
 		renderThread.GetRenderers().GetGeometry().ApproxTransformVNT( *vboBlock.GetVBO()->GetVAO(),
 			pTBOWeightMatrices, pVBO, vboBlock.GetOffset(), pointCount );
@@ -767,6 +774,7 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 	PreparePositions();
 	
 	if( pDirtyModelNorTan ){
+		oglVector *realNormals = NULL;
 		oglVector *normals = NULL;
 		oglVector *tangents = NULL;
 		oglVector *faceNormals = NULL;
@@ -774,11 +782,15 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 		if( pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 			
+			const int positionCount = modelLOD.GetPositionCount();
 			const int normalCount = modelLOD.GetNormalCount();
 			const int tangentCount = modelLOD.GetTangentCount();
 			const int faceCount = modelLOD.GetFaceCount();
 			
 			try{
+				if( positionCount > 0 ){
+					realNormals = new oglVector[ positionCount ];
+				}
 				if( normalCount > 0 ){
 					normals = new oglVector[ normalCount ];
 				}
@@ -796,12 +808,20 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 				if( tangents ){
 					delete [] tangents;
 				}
+				if( realNormals ){
+					delete [] realNormals;
+				}
 				if( normals ){
 					delete [] normals;
 				}
 				throw;
 			}
 		}
+		
+		if( pRealNormals ){
+			delete [] pRealNormals;
+		}
+		pRealNormals = realNormals;
 		
 		if( pNormals ){
 			delete [] pNormals;
@@ -822,9 +842,9 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 	}
 	
 	if( pDirtyDataNorTan ){
-		if( pWeights && pPositions && pNormals && pTangents && pFaceNormals && pComponent.GetModel()
-		&& pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
-			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
+		if( pWeights && pPositions && pRealNormals && pNormals && pTangents && pFaceNormals
+		&& pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
+			const deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 			
 			#ifdef SPECIAL_DEBUG_ON
 			specialTimer.Reset();
@@ -914,6 +934,9 @@ void deoglRComponentLOD::pCleanUp(){
 	if( pNormals ){
 		delete [] pNormals;
 	}
+	if( pRealNormals ){
+		delete [] pRealNormals;
+	}
 	if( pPositions ){
 		delete [] pPositions;
 	}
@@ -999,7 +1022,7 @@ void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 	}
 	
 	// write data to buffer
-	if( pPositions && pNormals && pTangents ){
+	if( pPositions && pRealNormals && pNormals && pTangents ){
 		pWriteVBOData( modelLOD );
 	}
 	
@@ -1026,16 +1049,21 @@ void deoglRComponentLOD::pWriteVBOData( const deoglModelLOD &modelLOD ){
 		}
 		
 		const oglModelVertex &point = points[ i ];
-		const oglVector &position = pPositions[ point.position ];
-		const oglVector &normal = pNormals[ point.normal ];
-		const oglVector &tangent = pTangents[ point.tangent ];
 		
 		// position
+		const oglVector &position = pPositions[ point.position ];
 		data->x = position.x;
 		data->y = position.y;
 		data->z = position.z;
 		
+		// real normal
+		const oglVector &realNormal = pRealNormals[ point.position ];
+		data->rnx = realNormal.x;
+		data->rny = realNormal.y;
+		data->rnz = realNormal.z;
+		
 		// normal
+		const oglVector &normal = pNormals[ point.normal ];
 		data->nx = normal.x;
 		data->ny = normal.y;
 		data->nz = normal.z;
@@ -1077,6 +1105,7 @@ void deoglRComponentLOD::pWriteVBOData( const deoglModelLOD &modelLOD ){
 #endif
 		
 		// tangent
+		const oglVector &tangent = pTangents[ point.tangent ];
 		data->tx = tangent.x;
 		data->ty = tangent.y;
 		data->tz = tangent.z;
@@ -1135,19 +1164,20 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	pVBOBlock = modelLOD.GetVBOBlock();
-	const deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
 	const GLuint vboModel = pVBOBlock->GetVBO()->GetVBO();
+	const deoglVBOLayout &vboLayout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
 	
 	pVAO = new deoglVAO( renderThread );
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAO->GetVAO() ) );
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
 	pVBOLayout->SetVAOAttributeAt( renderThread, 0, 0 ); // pos(0) => vao(0)
-	pVBOLayout->SetVAOAttributeAt( renderThread, 1, 1 ); // normal(1) => vao(1)
-	pVBOLayout->SetVAOAttributeAt( renderThread, 2, 2 ); // tangent(2) => vao(2)
+	pVBOLayout->SetVAOAttributeAt( renderThread, 1, 1 ); // realNormal(1) => vao(1)
+	pVBOLayout->SetVAOAttributeAt( renderThread, 2, 2 ); // normal(2) => vao(2)
+	pVBOLayout->SetVAOAttributeAt( renderThread, 3, 3 ); // tangent(3) => vao(3)
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, vboModel ) );
-	vboLayout.SetVAOAttributeAt( renderThread, 3, 3, vboLayout.GetStride() * pVBOBlock->GetOffset() );
+	vboLayout.SetVAOAttributeAt( renderThread, 4, 4, vboLayout.GetStride() * pVBOBlock->GetOffset() );
 		/*renderThread.GetChoices().GetSharedVBOUseBaseVertex()
 		? vboLayout.GetStride() * pVBOBlock->GetOffset() : 0 );*/
 			// texcoord(3) => vao_tc_diffuse(3)
@@ -1313,6 +1343,7 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 	const decVector2 * const texcoords = modelLOD.GetTextureCoordinates();
 	const oglModelVertex * const points = modelLOD.GetVertices();
 	const deoglModelFace * const faces = modelLOD.GetFaces();
+	const int positionCount = modelLOD.GetPositionCount();
 	const int tangentCount = modelLOD.GetTangentCount();
 	const int normalCount = modelLOD.GetNormalCount();
 	const int faceCount = modelLOD.GetFaceCount();
@@ -1323,6 +1354,11 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 	int i;
 	
 	// reset normals and tangents
+	for( i=0; i<positionCount; i++ ){
+		pRealNormals[ i ].x = 0.0f;
+		pRealNormals[ i ].y = 0.0f;
+		pRealNormals[ i ].z = 0.0f;
+	}
 	for( i=0; i<normalCount; i++ ){
 		pNormals[ i ].x = 0.0f;
 		pNormals[ i ].y = 0.0f;
@@ -1374,6 +1410,22 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 			faceNormal.y = 1.0f;
 			faceNormal.z = 0.0f;
 		}
+		
+		// add to real normals
+		oglVector &vrn1 = pRealNormals[ point1.position ];
+		vrn1.x += faceNormal.x;
+		vrn1.y += faceNormal.y;
+		vrn1.z += faceNormal.z;
+		
+		oglVector &vrn2 = pRealNormals[ point2.position ];
+		vrn2.x += faceNormal.x;
+		vrn2.y += faceNormal.y;
+		vrn2.z += faceNormal.z;
+		
+		oglVector &vrn3 = pRealNormals[ point3.position ];
+		vrn3.x += faceNormal.x;
+		vrn3.y += faceNormal.y;
+		vrn3.z += faceNormal.z;
 		
 		// add to normals
 		oglVector &vn1 = pNormals[ point1.normal ];
@@ -1432,6 +1484,14 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 	
 	// shaders do not require normalized normals and tangents but to prevent problems due to
 	// zero length vectors we filter them out now in a fast way
+	for( i=0; i<positionCount; i++ ){
+		if( pRealNormals[ i ].x == 0.0f && pRealNormals[ i ].y == 0.0f && pRealNormals[ i ].z == 0.0f ){
+			pRealNormals[ i ].x = 0.0f;
+			pRealNormals[ i ].y = 1.0f;
+			pRealNormals[ i ].z = 0.0f;
+		}
+	}
+	
 	for( i=0; i<normalCount; i++ ){
 		if( pNormals[ i ].x == 0.0f && pNormals[ i ].y == 0.0f && pNormals[ i ].z == 0.0f ){
 			pNormals[ i ].x = 0.0f;
@@ -1461,18 +1521,19 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 	// into certain categories. this allows to reduce the memory footprint
 	// of VBOs in certain cases
 	pVBOLayout = new deoglVBOLayout;
-	
-	// the layout of attributes is the basic geometry attributes. Here
-	// the data map for the attributes:
-	//
-	// name       | offset | type  | components
-	// -----------+--------+-------+------------
-	// position   |      0 | float | x, y, z
-	// normal     |     12 | float | x, y, z
-	// tangent    |     24 | float | x, y, z, w
-	pVBOLayout->SetAttributeCount( 3 );
-	pVBOLayout->SetStride( 40 ); // best performance with multiple of 32/64?
-	pVBOLayout->SetSize( pVBOLayout->GetStride() * modelLOD.GetVertexCount() );
+ 	
+ 	// the layout of attributes is the basic geometry attributes. Here
+ 	// the data map for the attributes:
+ 	//
+	// name        | offset | type  | components
+	// ------------+--------+-------+------------
+	// position    |      0 | float | x, y, z
+	// real-normal |     12 | float | x, y, z
+	// normal      |     24 | float | x, y, z
+	// tangent     |     36 | float | x, y, z, w
+	pVBOLayout->SetAttributeCount( 4 );
+	pVBOLayout->SetStride( 52 ); // best performance with multiple of 32/64?
+ 	pVBOLayout->SetSize( pVBOLayout->GetStride() * modelLOD.GetVertexCount() );
 	pVBOLayout->SetIndexType( deoglVBOLayout::eitUnsignedInt );
 	
 	deoglVBOAttribute &attrPos = pVBOLayout->GetAttributeAt( 0 );
@@ -1480,13 +1541,18 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 	attrPos.SetDataType( deoglVBOAttribute::edtFloat );
 	attrPos.SetOffset( 0 );
 	
-	deoglVBOAttribute &attrNormal = pVBOLayout->GetAttributeAt( 1 );
+	deoglVBOAttribute &attrRealNormal = pVBOLayout->GetAttributeAt( 1 );
+	attrRealNormal.SetComponentCount( 3 );
+	attrRealNormal.SetDataType( deoglVBOAttribute::edtFloat );
+	attrRealNormal.SetOffset( 12 );
+	
+	deoglVBOAttribute &attrNormal = pVBOLayout->GetAttributeAt( 2 );
 	attrNormal.SetComponentCount( 3 );
 	attrNormal.SetDataType( deoglVBOAttribute::edtFloat );
-	attrNormal.SetOffset( 12 );
+	attrNormal.SetOffset( 24 );
 	
-	deoglVBOAttribute &attrTangent = pVBOLayout->GetAttributeAt( 2 );
+	deoglVBOAttribute &attrTangent = pVBOLayout->GetAttributeAt( 3 );
 	attrTangent.SetComponentCount( 4 );
 	attrTangent.SetDataType( deoglVBOAttribute::edtFloat );
-	attrTangent.SetOffset( 24 );
+	attrTangent.SetOffset( 36 );
 }

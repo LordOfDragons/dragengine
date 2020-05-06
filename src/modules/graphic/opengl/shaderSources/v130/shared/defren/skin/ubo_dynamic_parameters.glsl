@@ -119,3 +119,27 @@
 #endif
 
 #define pParticleSheetCount pTexParticleSheetCount
+
+#ifdef DYNAMIC_OUTLINE_COLOR
+	#define pOutlineColor pInstOutlineColor
+#else
+	#define pOutlineColor pTexOutlineColor
+#endif
+
+#ifdef DYNAMIC_OUTLINE_THICKNESS
+	#define pOutlineThickness pInstOutlineThickness
+#else
+	#define pOutlineThickness pTexOutlineThickness
+#endif
+
+#ifdef DYNAMIC_OUTLINE_SOLIDITY
+	#define pOutlineSolidity pInstOutlineSolidity
+#else
+	#define pOutlineSolidity pTexOutlineSolidity
+#endif
+
+#ifdef DYNAMIC_OUTLINE_EMISSIVITY
+	#define pOutlineEmissivity pInstOutlineEmissivity
+#else
+	#define pOutlineEmissivity pTexOutlineEmissivity
+#endif

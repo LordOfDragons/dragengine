@@ -123,6 +123,16 @@ void transformPosition( out vec3 position, in int spbIndex ){
 	#else
 		position = pMatrixModel * vec4( position, 1.0 );
 		
+		// outline. done after matrix model to avoid scaling affecting the result
+		#ifdef WITH_OUTLINE
+			float outlineThickness = pOutlineThickness;
+			#ifdef WITH_OUTLINE_THICKNESS_SCREEN
+				// we can use pBillboardZScale since this is tan(camera.fov / 2)
+				outlineThickness *= ( pMatrixV * vec4( position, 1.0 ) ).z * pBillboardZScale;
+			#endif
+			position.xyz += normalize( inRealNormal * pMatrixNormal ) * vec3( outlineThickness );
+		#endif
+		
 		// tessellation applies projection during evaluation stage so apply it only if not tessellation
 		#ifdef NO_TRANSFORMATION
 			gl_Position = vec4( position, 1.0 );

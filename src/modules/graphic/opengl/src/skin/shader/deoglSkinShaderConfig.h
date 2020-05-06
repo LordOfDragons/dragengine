@@ -152,6 +152,8 @@ public:
 	int pSharedSPBArraySize;
 	int pSharedSPBPadding;
 	int pSPBInstanceArraySize;
+	bool pOutline;
+	bool pOutlineThicknessScreen;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -177,8 +179,12 @@ public:
 	bool pDynamicThickness;
 	bool pDynamicAbsorption;
 	bool pDynamicVariation;
+	bool pDynamicOutlineColor;
+	bool pDynamicOutlineThickness;
+	bool pDynamicOutlineSolidity;
+	bool pDynamicOutlineEmissivity;
 	
-	bool pTextureColorTransparency;
+	bool pTextureColor;
 	bool pTextureColorTintMask;
 	bool pTextureTransparency;
 	bool pTextureSolidity;
@@ -386,6 +392,18 @@ public:
 	/** \brief Set SPB instance array size. */
 	void SetSPBInstanceArraySize( int arraySize );
 	
+	/** \brief Render outline. */
+	inline bool GetOutline() const{ return pOutline; }
+	
+	/** \brief Set render outline. */
+	void SetOutline( bool outline );
+	
+	/** \brief Outline thickness relative to screen width. */
+	inline bool GetOutlineThicknessScreen() const{ return pOutlineThicknessScreen; }
+	
+	/** \brief Set if outline thickness is relative to screen width. */
+	void SetOutlineThicknessScreen( bool enable );
+	
 	
 	
 	/** \brief Color tint texture property is dynamic. */
@@ -532,13 +550,37 @@ public:
 	/** \brief Set if variation in U or V direction is property is dynamic. */
 	void SetDynamicVariation( bool dynamic );
 	
+	/** \brief Outline color property is dynamic. */
+	inline bool GetDynamicOutlineColor() const{ return pDynamicOutlineColor; }
+	
+	/** \brief Set if outline color property is dynamic. */
+	void SetDynamicOutlineColor( bool dynamic );
+	
+	/** \brief Outline thickness property is dynamic. */
+	inline bool GetDynamicOutlineThickness() const{ return pDynamicOutlineThickness; }
+	
+	/** \brief Set if outline thickness property is dynamic. */
+	void SetDynamicOutlineThickness( bool dynamic );
+	
+	/** \brief Outline solidity property is dynamic. */
+	inline bool GetDynamicOutlineSolidity() const{ return pDynamicOutlineSolidity; }
+	
+	/** \brief Set if outline solidity property is dynamic. */
+	void SetDynamicOutlineSolidity( bool dynamic );
+	
+	/** \brief Outline emissivity property is dynamic. */
+	inline bool GetDynamicOutlineEmissivity() const{ return pDynamicOutlineEmissivity; }
+	
+	/** \brief Set if outline emissivity property is dynamic. */
+	void SetDynamicOutlineEmissivity( bool dynamic );
 	
 	
-	/** \brief Color transparency texture is used. */
-	inline bool GetTextureColorTransparency() const{ return pTextureColorTransparency; }
 	
-	/** \brief Set if color transparency texture is used. */
-	void SetTextureColorTransparency( bool textureColorTransparency );
+	/** \brief Color texture is used. */
+	inline bool GetTextureColor() const{ return pTextureColor; }
+	
+	/** \brief Set if color texture is used. */
+	void SetTextureColor( bool hasTexture );
 	
 	/** \brief Color tint mask texture is used. */
 	inline bool GetTextureColorTintMask() const{ return pTextureColorTintMask; }

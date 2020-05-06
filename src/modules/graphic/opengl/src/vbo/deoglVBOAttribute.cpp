@@ -37,10 +37,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVBOAttribute::deoglVBOAttribute(){
-	pComponentCount = 0;
-	pDataType = edtFloat;
-	pOffset = 0;
+deoglVBOAttribute::deoglVBOAttribute() :
+pComponentCount( 0 ),
+pDataType( edtFloat ),
+pOffset( 0 ){
 }
 
 deoglVBOAttribute::~deoglVBOAttribute(){
@@ -55,15 +55,10 @@ void deoglVBOAttribute::SetComponentCount( int componentCount ){
 	if( componentCount < 0 || componentCount > 4 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pComponentCount = componentCount;
 }
 
 void deoglVBOAttribute::SetDataType( eDataTypes dataType ){
-	if( dataType < 0 || dataType > edtIUInt ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pDataType = dataType;
 }
 
@@ -71,7 +66,6 @@ void deoglVBOAttribute::SetOffset( int offset ){
 	if( offset < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pOffset = offset;
 }
 
@@ -170,14 +164,21 @@ void deoglVBOAttribute::SetVAOAttributeAt( deoglRenderThread &renderThread, int 
 // Operators
 //////////////
 
-bool deoglVBOAttribute::operator==( const deoglVBOAttribute &layout ) const{
-	return pComponentCount == layout.GetComponentCount()
-		&& pDataType == layout.GetDataType()
-		&& pOffset == layout.GetOffset();
+deoglVBOAttribute &deoglVBOAttribute::operator=( const deoglVBOAttribute &attribute ){
+	pComponentCount = attribute.pComponentCount;
+	pDataType = attribute.pDataType;
+	pOffset = attribute.pOffset;
+	return *this;
 }
 
-bool deoglVBOAttribute::operator!=( const deoglVBOAttribute &layout ) const{
-	return pComponentCount != layout.GetComponentCount()
-		|| pDataType != layout.GetDataType()
-		|| pOffset != layout.GetOffset();
+bool deoglVBOAttribute::operator==( const deoglVBOAttribute &attribute ) const{
+	return pComponentCount == attribute.pComponentCount
+		&& pDataType == attribute.pDataType
+		&& pOffset == attribute.pOffset;
+}
+
+bool deoglVBOAttribute::operator!=( const deoglVBOAttribute &attribute ) const{
+	return pComponentCount != attribute.pComponentCount
+		|| pDataType != attribute.pDataType
+		|| pOffset != attribute.pOffset;
 }

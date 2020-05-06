@@ -571,6 +571,7 @@ void seWPDynamicSkin::UpdateRenderable(){
 	
 	if( renderable ){
 		pEditName->SetText( renderable->GetName() );
+		pCBRenderableType->SetSelectionWithData( ( void* )( intptr_t )renderable->GetRenderableType() );
 		
 		const float sliderLower = renderable->GetSliderValueLower();
 		const float sliderUpper = renderable->GetSliderValueUpper();

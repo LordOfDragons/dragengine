@@ -973,9 +973,9 @@ void deoglRenderThread::pInitExtensions(){
 	pExtensions = new deoglExtensions( *this );
 	pExtensions->Initialize();
 	
-	if( configuration.GetDoLogDebug() ){
-		pExtensions->PrintSummary();
-	}
+	//if( configuration.GetDoLogDebug() ){
+		pExtensions->PrintSummary(); // print this always to help debug customer problems
+	//}
 	
 	if( ! pExtensions->VerifyPresence() ){
 		DETHROW( deeInvalidAction );

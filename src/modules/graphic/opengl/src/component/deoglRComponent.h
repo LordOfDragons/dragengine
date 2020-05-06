@@ -130,6 +130,7 @@ public:
 	bool pMarked;
 	
 	bool pSolid;
+	bool pOutlineSolid;
 	
 	eRenderModes pRenderMode;
 	float pSortDistance;
@@ -460,6 +461,9 @@ public:
 	
 	/** \brief Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
+	
+	/** \brief Component has no transparent outline. */
+	inline bool GetOutlineSolid() const{ return pOutlineSolid; }
 	
 	/** \brief Component is render static right now. */
 	inline bool GetRenderStatic() const{ return pRenderStatic; }

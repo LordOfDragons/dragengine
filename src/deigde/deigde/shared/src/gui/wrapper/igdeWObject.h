@@ -31,9 +31,11 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
 #include <dragengine/resources/camera/deCameraReference.h>
+#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
+#include <dragengine/resources/world/deWorldReference.h>
 
 class igdeTriggerTargetList;
 class igdeEnvironment;
@@ -116,6 +118,10 @@ private:
 	bool pHasBoxExtends;
 	bool pDirtyExtends;
 	bool pDirtyFallbackColliderShape;
+	
+	deSkinReference pOutlineSkin;
+	deDynamicSkinReference pOutlineDynamicSkin;
+	decColor pOutlineColor;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;
 	int pAsyncLoadCounter;
@@ -327,6 +333,23 @@ public:
 	
 	
 	
+	/** \brief Outline skin or NULL. */
+	inline deSkin *GetOutlineSkin() const{ return pOutlineSkin; }
+	
+	/** \brief Set outline skin or NULL. */
+	void SetOutlineSkin( deSkin *skin );
+	
+	/** \brief Set outline skin to shared editing outline skin. */
+	void SetOutlineSkinSharedEditing();
+	
+	/** \brief Outline color. */
+	inline const decColor &GetOutlineColor() const{ return pOutlineColor; }
+	
+	/** \brief Set outline color. */
+	void SetOutlineColor( const decColor &color );
+	
+	
+	
 	/** \brief Asynchronous load finished listener or NULL. */
 	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
@@ -383,6 +406,7 @@ public:
 	void SubObjectFinishedLoading( igdeWOSubObject &subObject, bool success );
 	void SubObjectExtendsDirty();
 	void SetInteractCollider( deColliderComponent *collider );
+	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
 	/*@}*/
 	
 	

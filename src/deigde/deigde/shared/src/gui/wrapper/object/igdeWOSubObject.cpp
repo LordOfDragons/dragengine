@@ -125,6 +125,9 @@ void igdeWOSubObject::ResetComponentTextures(){
 void igdeWOSubObject::CameraChanged(){
 }
 
+void igdeWOSubObject::OutlineSkinChanged(){
+}
+
 
 
 // Protected Functions

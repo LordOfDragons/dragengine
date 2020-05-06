@@ -449,8 +449,8 @@ GLuint vboTransformed, int firstPoint, int pointCount ){
 }
 
 void deoglRenderGeometry::CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions,
-deoglFramebuffer *fbo, int outputWidth, int outputHeight, int normalCount, int tangentCount,
-int firstPoint, int pointCount ){
+deoglFramebuffer *fbo, int outputWidth, int outputHeight, int positionCount,
+int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
 	#ifdef ANDROID
 	DETHROW( deeInvalidAction );
 	#endif
@@ -484,7 +484,7 @@ int firstPoint, int pointCount ){
 	shader.SetParameterFloat( 0, 2.0f / ( float )outputWidth, 2.0f / ( float )outputHeight,
 		0.5f / ( float )outputWidth - 1.0f, 0.5f / ( float )outputHeight - 1.0f );
 	shader.SetParameterInt( 1, outputWidth );
-	shader.SetParameterInt( 2, normalCount );
+	shader.SetParameterInt( 2, positionCount, positionCount + normalCount );
 	
 	// bind textures
 	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
@@ -496,7 +496,8 @@ int firstPoint, int pointCount ){
 }
 
 void deoglRenderGeometry::WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions,
-deoglTexture &texNorTan, GLuint vboSkinned, int normalCount, int firstPoint, int pointCount ){
+deoglTexture &texNorTan, GLuint vboSkinned, int positionCount, int normalCount,
+int firstPoint, int pointCount ){
 	#ifdef ANDROID
 	DETHROW( deeInvalidAction );
 	#endif
@@ -509,7 +510,7 @@ deoglTexture &texNorTan, GLuint vboSkinned, int normalCount, int firstPoint, int
 	deoglShaderCompiled &shader = *pShaderWriteSkinnedVBO->GetCompiled();
 	
 	shader.SetParameterInt( 0, texNorTan.GetWidth() );
-	shader.SetParameterInt( 1, normalCount );
+	shader.SetParameterInt( 1, positionCount, positionCount + normalCount );
 	
 	// bind textures
 	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );

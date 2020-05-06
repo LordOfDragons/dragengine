@@ -13,6 +13,9 @@ layout( points, max_vertices=6 ) out;
 
 in vec3 vFaceNormal[ 1 ];
 in vec3 vFaceTangent[ 1 ];
+in vec2 vTCRealNormal1[ 1 ];
+in vec2 vTCRealNormal2[ 1 ];
+in vec2 vTCRealNormal3[ 1 ];
 in vec2 vTCNormal1[ 1 ];
 in vec2 vTCNormal2[ 1 ];
 in vec2 vTCNormal3[ 1 ];
@@ -27,6 +30,30 @@ void main( void ){
 	gl_Layer = 0;
 	
 	gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
+	
+	// emit 3 points covering the 3 corner real normals to update
+	vVector = vFaceNormal[ 0 ];
+	
+	gl_Position.xy = vTCRealNormal1[ 0 ];
+	EmitVertex();
+	#ifdef HACK
+	gl_Position.xy+=o1; EmitVertex(); gl_Position.x+=o2; EmitVertex();
+	#endif
+	EndPrimitive();
+	
+	gl_Position.xy = vTCRealNormal2[ 0 ];
+	EmitVertex();
+	#ifdef HACK
+	gl_Position.xy+=o1; EmitVertex(); gl_Position.x+=o2; EmitVertex();
+	#endif
+	EndPrimitive();
+	
+	gl_Position.xy = vTCRealNormal3[ 0 ];
+	EmitVertex();
+	#ifdef HACK
+	gl_Position.xy+=o1; EmitVertex(); gl_Position.x+=o2; EmitVertex();
+	#endif
+	EndPrimitive();
 	
 	// emit 3 points covering the 3 corner normals to update
 	vVector = vFaceNormal[ 0 ];

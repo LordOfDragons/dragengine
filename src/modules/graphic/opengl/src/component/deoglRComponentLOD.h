@@ -64,6 +64,7 @@ public:
 	oglMatrix3x4 *pWeights;
 	
 	oglVector *pPositions;
+	oglVector *pRealNormals;
 	oglVector *pNormals;
 	oglVector *pTangents;
 	oglVector *pFaceNormals;
@@ -125,6 +126,12 @@ public:
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
 	inline oglVector *GetPositions() const{ return pPositions; }
+	
+	/**
+	 * \brief Retrieves the real normals.
+	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
+	 */
+	inline oglVector *GetRealNormals() const{ return pRealNormals; }
 	
 	/**
 	 * \brief Retrieves the normals.

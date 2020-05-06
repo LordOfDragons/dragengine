@@ -520,13 +520,6 @@ extern GLAPI PFNGLTEXSUBIMAGE2DEXTPROC pglTexSubImage2D;
 
 
 
-// GL_NV_texture_barrier : no opengl version
-//////////////////////////////////////////////
-
-extern GLAPI PFNGLTEXTUREBARRIERNVPROC pglTextureBarrier;
-
-
-
 // Optional Extensions
 ////////////////////////
 
@@ -890,5 +883,12 @@ extern GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC pglInvalidateFramebuffer;
 //////////////////////////////
 
 extern GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v;
+
+
+
+// GL_NV_texture_barrier : no opengl version
+//////////////////////////////////////////////
+
+extern GLAPI PFNGLTEXTUREBARRIERNVPROC pglTextureBarrier;
 
 #endif

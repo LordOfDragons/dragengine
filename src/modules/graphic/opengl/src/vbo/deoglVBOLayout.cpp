@@ -38,14 +38,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVBOLayout::deoglVBOLayout(){
-	pSize = 0;
-	pStride = 0;
-	pAttributes = NULL;
-	pAttributeCount = 0;
-	pIndexType = eitNone;
-	pIndexSize = 0;
-	pIndexGLType = GL_NONE;
+deoglVBOLayout::deoglVBOLayout() :
+pSize( 0 ),
+pStride( 0 ),
+pAttributes( NULL ),
+pAttributeCount( 0 ),
+pIndexType( eitNone ),
+pIndexSize( 0 ),
+pIndexGLType( GL_NONE ){
+}
+
+deoglVBOLayout::deoglVBOLayout( const deoglVBOLayout &layout ) :
+pSize( layout.pSize ),
+pStride( layout.pStride ),
+pAttributes( NULL ),
+pAttributeCount( 0 ),
+pIndexType( layout.pIndexType ),
+pIndexSize( layout.pIndexSize ),
+pIndexGLType( layout.pIndexGLType )
+{
+	SetAttributeCount( layout.pAttributeCount );
+	int i;
+	for( i=0; i<layout.pAttributeCount; i++ ){
+		pAttributes[ i ] = layout.pAttributes[ i ];
+	}
 }
 
 deoglVBOLayout::~deoglVBOLayout(){
@@ -63,7 +79,6 @@ void deoglVBOLayout::SetSize( int size ){
 	if( size < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pSize = size;
 }
 
@@ -71,30 +86,29 @@ void deoglVBOLayout::SetStride( int stride ){
 	if( stride < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pStride = stride;
 }
 
 void deoglVBOLayout::SetIndexType( eIndexTypes indexType ){
-	if( indexType < eitNone || indexType >= EIT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pIndexType = indexType;
 	
-	if( indexType == eitUnsignedInt ){
+	switch( indexType ){
+	case eitUnsignedInt:
 		pIndexSize = 4;
 		pIndexGLType = GL_UNSIGNED_INT;
+		break;
 		
-	}else if( indexType == eitUnsignedShort ){
+	case eitUnsignedShort:
 		pIndexSize = 2;
 		pIndexGLType = GL_UNSIGNED_SHORT;
+		break;
 		
-	}else if( indexType == eitUnsignedByte ){
+	case eitUnsignedByte:
 		pIndexSize = 1;
 		pIndexGLType = GL_UNSIGNED_BYTE;
+		break;
 		
-	}else{
+	default:
 		// the values here are chosen this way to prevent a crash if by mistake indices are used although
 		// eitNone has been specified in the layout. an index size of 0 causes allocation to fail should
 		// a check be missing for pIndexSize equal to 0. also GL_NONE causes rendering to fail with an
@@ -114,25 +128,32 @@ void deoglVBOLayout::SetAttributeCount( int count ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( count != pAttributeCount ){
-		if( pAttributes ){
-			delete [] pAttributes;
-			pAttributes = NULL;
-			pAttributeCount = 0;
+	if( count == pAttributeCount ){
+		return;
+	}
+	
+	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[ count ] : NULL;
+	
+	if( pAttributes ){
+		const int copyCount = decMath::min( pAttributeCount, count );
+		int i;
+		for( i=0; i<copyCount; i++ ){
+			newArray[ i ] = pAttributes[ i ];
 		}
 		
-		if( count > 0 ){
-			pAttributes = new deoglVBOAttribute[ count ];
-			pAttributeCount = count;
-		}
+		delete [] pAttributes;
+		pAttributes = NULL;
+		pAttributeCount = 0;
 	}
+	
+	pAttributes = newArray;
+	pAttributeCount = count;
 }
 
 deoglVBOAttribute& deoglVBOLayout::GetAttributeAt( int index ) const{
 	if( index < 0 || index >= pAttributeCount ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	return pAttributes[ index ];
 }
 
@@ -149,13 +170,28 @@ void deoglVBOLayout::SetVAOAttributeAt( deoglRenderThread &renderThread, int att
 // Operators
 //////////////
 
+deoglVBOLayout &deoglVBOLayout::operator=( const deoglVBOLayout &layout ){
+	pSize = layout.pSize;
+	pStride = layout.pStride;
+	pIndexType = layout.pIndexType;
+	pIndexSize = layout.pIndexSize;
+	pIndexGLType = layout.pIndexGLType;
+	
+	SetAttributeCount( layout.pAttributeCount );
+	int i;
+	for( i=0; i<layout.pAttributeCount; i++ ){
+		pAttributes[ i ] = layout.pAttributes[ i ];
+	}
+	
+	return *this;
+}
+
 bool deoglVBOLayout::operator==( const deoglVBOLayout &layout ) const{
 	if( layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount ){
 		return false;
 	}
 	
 	int i;
-	
 	for( i=0; i<pAttributeCount; i++ ){
 		if( layout.GetAttributeAt( i ) != pAttributes[ i ] ){
 			return false;
@@ -171,7 +207,6 @@ bool deoglVBOLayout::operator!=( const deoglVBOLayout &layout ) const{
 	}
 	
 	int i;
-	
 	for( i=0; i<pAttributeCount; i++ ){
 		if( layout.GetAttributeAt( i ) != pAttributes[ i ] ){
 			return true;

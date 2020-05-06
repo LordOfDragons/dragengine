@@ -140,6 +140,10 @@ void deoglAddToRenderTask::SetNoRendered( bool noRendered ){
 	pNoRendered = noRendered;
 }
 
+void deoglAddToRenderTask::SetOutline( bool outline ){
+	pOutline = outline;
+}
+
 void deoglAddToRenderTask::SetNoShadowNone( bool noShadowNone ){
 	pNoShadowNone = noShadowNone;
 }
@@ -196,6 +200,7 @@ void deoglAddToRenderTask::Reset(){
 	pNoShadowNone = false;
 	pNoNotReflected = false;
 	pNoRendered = false;
+	pOutline = false;
 	
 	pFilterHoles = false;
 	pWithHoles = false;
@@ -288,6 +293,9 @@ void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int te
 int firstFace, int faceCount, int lodLevel ){
 	deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
+	if( ! skinTexture ){
+		return;
+	}
 	
 	if( pFilterReject( skinTexture ) ){
 		return;
@@ -1041,6 +1049,10 @@ void deoglAddToRenderTask::AddParticles( deoglRParticleEmitterInstance &emitter 
 
 void deoglAddToRenderTask::AddParticles( deoglRParticleEmitterInstance &emitter,
 deoglRParticleEmitterInstanceType &type ){
+	if( pOutline ){
+		return;
+	}
+	
 	deoglSkinTexture * const skinTexture = type.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return;
@@ -1144,10 +1156,21 @@ deoglRParticleEmitterInstanceType &type ){
 //////////////////////
 
 bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture *skinTexture ) const{
-	if( pFilterRejectNoSolid( skinTexture ) ){
-		return true;
+	if( pOutline ){
+		if( ! skinTexture->GetHasOutline() ){
+			return true;
+		}
+		if( pSolid != skinTexture->GetIsOutlineSolid() ){
+			return true;
+		}
+		
+	}else{
+		if( pSolid != skinTexture->GetSolid() ){
+			return true;
+		}
 	}
-	if( pSolid != skinTexture->GetSolid() ){
+	
+	if( pFilterRejectNoSolid( skinTexture ) ){
 		return true;
 	}
 	return false;

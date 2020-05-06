@@ -123,13 +123,15 @@ struct oglHTFacePoint{
 
 
 // VBO stuff
-#define VBO_PNTC_POSITION	0
-#define VBO_PNTC_NORMAL		12
-#define VBO_PNTC_TANGENT	24
-#define VBO_PNTC_TEXCOORD	36
-#define VBO_PNTC_STRIDE		44
+#define VBO_PNTC_POSITION		0
+#define VBO_PNTC_REAL_NORMAL	12
+#define VBO_PNTC_NORMAL			24
+#define VBO_PNTC_TANGENT		36
+#define VBO_PNTC_TEXCOORD		48
+#define VBO_PNTC_STRIDE			56
 struct deoglVBOpntc{
 	GLfloat x, y, z; // position
+	GLfloat rnx, rny, rnz; // realNormal
 	GLfloat nx, ny, nz; // normal
 	GLfloat tx, ty, tz; // tangent
 	GLfloat u, v; // tex-pos
@@ -137,6 +139,7 @@ struct deoglVBOpntc{
 
 struct deoglVBOpnt{
 	GLfloat x, y, z; // position
+	GLfloat rnx, rny, rnz; // realNormal
 	GLfloat nx, ny, nz; // normal
 	GLfloat tx, ty, tz, tw; // tangent
 };

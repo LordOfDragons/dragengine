@@ -424,7 +424,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	float tcOffsetU, tcOffsetV, clampU, clampV;
 	const int realHeight = defren.GetHeight();
 	const int realWidth = defren.GetWidth();
-	bool useTextureBarrier = false;
+	bool useTextureBarrier = pglTextureBarrier && false;
 	int lastWidth, lastHeight;
 	int curWidth, curHeight;
 	int pingPongOffset;

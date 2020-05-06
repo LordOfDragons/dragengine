@@ -329,6 +329,7 @@ void igdeWOSOComponent::UpdateParameters(){
 void igdeWOSOComponent::OnAllSubObjectsFinishedLoading(){
 	pUpdateComponent();
 	UpdateVisibility();
+	pUpdateOutlineComponent();
 }
 
 void igdeWOSOComponent::UpdateVisibility(){
@@ -435,6 +436,13 @@ void igdeWOSOComponent::ResetPhysics(){
 
 void igdeWOSOComponent::ResetComponentTextures(){
 	pUpdateTextures();
+}
+
+void igdeWOSOComponent::CameraChanged(){
+}
+
+void igdeWOSOComponent::OutlineSkinChanged(){
+	pUpdateOutlineComponent();
 }
 
 void igdeWOSOComponent::Visit( igdeWOSOVisitor &visitor ){
@@ -917,4 +925,59 @@ bool igdeWOSOComponent::pIsVisible() const{
 	}
 	
 	return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+}
+
+void igdeWOSOComponent::pUpdateOutlineComponent(){
+	// release outline component and collider if present
+	if( pOutlineCollider ){
+		if( pCollider ){
+			deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineCollider );
+			if( attachment ){
+				pCollider->RemoveAttachment( attachment );
+			}
+		}
+		if( pOutlineCollider->GetParentWorld() ){
+			pOutlineCollider->GetParentWorld()->RemoveCollider( pOutlineCollider );
+		}
+		pOutlineCollider = NULL;
+	}
+	if( pOutlineComponent ){
+		if( pOutlineComponent->GetParentWorld() ){
+			pOutlineComponent->GetParentWorld()->RemoveComponent( pOutlineComponent );
+		}
+		pOutlineComponent = NULL;
+	}
+	
+	// get outline skin and check if an outline is required
+	deSkin * const outlineSkin = GetWrapper().GetOutlineSkin();
+	if( ! outlineSkin || ! pComponent || ! pComponent->GetModel() || ! pCollider || ! GetWrapper().GetWorld() ){
+		return;
+	}
+	
+	// create outline component
+	deEngine &engine = *GetWrapper().GetEnvironment().GetEngineController()->GetEngine();
+	
+	pOutlineComponent.TakeOver( engine.GetComponentManager()->CreateComponent( pComponent->GetModel(), outlineSkin ) );
+	pOutlineComponent->SetRig( pComponent->GetRig() );
+	pOutlineComponent->SetDynamicSkin( GetWrapper().GetOutlineDynamicSkin() );
+	
+	const int textureCount = pComponent->GetTextureCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		pOutlineComponent->GetTextureAt( i ).SetSkin( outlineSkin );
+		pOutlineComponent->NotifyTextureChanged( i );
+	}
+	
+	GetWrapper().GetWorld()->AddComponent( pOutlineComponent );
+	
+	// create outline collider and attach it
+	pOutlineCollider.TakeOver( engine.GetColliderManager()->CreateColliderComponent() );
+	pOutlineCollider->SetEnabled( false );
+	( ( deColliderComponent& )( deCollider& )pOutlineCollider ).SetComponent( pOutlineComponent );
+	
+	GetWrapper().GetWorld()->AddCollider( pOutlineCollider );
+	
+	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineCollider );
+	attachment->SetAttachType( deColliderAttachment::eatRig );
+	pCollider->AddAttachment( attachment );
 }
