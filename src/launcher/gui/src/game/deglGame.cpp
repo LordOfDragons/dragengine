@@ -367,20 +367,17 @@ void deglGame::StartGame( const deglGameRunParams &runParams ){
 	
 	// clear the log file. a bit an ugly hack but it works
 	if( ! pLogToConsole ){
-		filePath.SetFromUnix( "/config/user/games" );
-		filePath.AddComponent( pIdentifier.ToHexString( false ) );
-		filePath.AddComponent( "logs" );
-		filePath.AddComponent( "last_run.log" );
+		logfile.Format( "games/%s/logs/last_run.log", pIdentifier.ToHexString( false ).GetString() );
 		
 		// using open file for writing instead of delete file to allow applications
 		// to keep file open in a text viewer on operating systems preventing file
 		// deleting while the file is open in an application (windows for example)
 		{
 		decBaseFileWriterReference writer;
+		filePath.SetFromUnix( "/logs" );
+		filePath.AddUnixPath( logfile );
 		writer.TakeOver( pLauncher.GetFileSystem()->OpenFileForWriting( filePath ) );
 		}
-		
-		logfile.Format( "games/%s/logs/last_run.log", pIdentifier.ToHexString( false ).GetString() );
 	}
 	
 	// start the game
