@@ -101,9 +101,11 @@ if envModule['OSWindows']:
 	# NOTE there is no other solution. to support cross-building path in the sconscripts
 	#      have to be with unix slashes not native path separators. this means we have
 	#      to manually do this thing here otherwise it won't work
-	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data').replace('/', '\\')))
+	replacements.append(('%{PATH_MODULE_SHARED}',
+		'%{{DE_SHARE_PATH}}\\modules\\scripting\\dragonscript\\{}\\data'.format(versionString)))
 else:
-	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data')))
+	replacements.append(('%{PATH_MODULE_SHARED}',
+		'%{{DE_SHARE_PATH}}/modules/scripting/dragonscript/{}/data'.format(versionString)))
 
 for s in igdeGameDefs:
 	node = envModule.File(s)

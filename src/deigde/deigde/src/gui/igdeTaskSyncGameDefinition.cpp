@@ -213,7 +213,7 @@ void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 		gamedef = new igdeGameDefinition( pWindowMain.GetEnvironment() );
 		gamedef->SetFilename( path.GetPathNative() );
 		
-		igdeXMLGameDefinition( pWindowMain.GetLogger() ).Load( *reader, *gamedef );
+		igdeXMLGameDefinition( pWindowMain.GetEnvironment(), pWindowMain.GetLogger() ).Load( *reader, *gamedef );
 		
 		project.SetProjectGameDefinition( gamedef );
 		

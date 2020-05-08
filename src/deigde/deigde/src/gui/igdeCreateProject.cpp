@@ -277,7 +277,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	reader->Read( ( char* )pSharedGameDefContent.GetString(), contentLen );
 	reader->SetPosition( 0 );
 	
-	igdeXMLGameDefinition loadGameDefinition( pWindowMain.GetLogger() );
+	igdeXMLGameDefinition loadGameDefinition( pWindowMain.GetEnvironment(), pWindowMain.GetLogger() );
 	loadGameDefinition.Load( reader, *pGameDef );
 }
 
