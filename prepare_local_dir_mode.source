@@ -1,0 +1,99 @@
+# https://dragondreams.ch/?page_id=152
+# https://github.com/LordOfDragons/dragengine
+# 
+# Source file to prepare running delauncher-gui, delauncher-console or deigde
+# installed in the current directory instead of system wide.
+# 
+# Source this file in bash using
+# 
+#   source prepare_engine.source
+# 
+# or using
+# 
+#   . prepare_engine.source
+# 
+# Once sources the current terminal can be used to run these programs.
+
+
+
+# the base directory. in a system wide installation this would be /usr .
+# you can change this also to be a fixed path depending on your needs
+export BASE_DIRECTORY=`realpath .`
+
+
+
+# Game Engine Redirections (required for launchers and igde usage)
+####################################################################
+
+# add binary directory to path. in a system wide installation this would be /usr/bin
+export PATH="${BASE_DIRECTORY}/bin:$PATH"
+
+# add library path for preloading. in a system wide installation this would be /usr/lib
+export LD_LIBRARY_PATH="${BASE_DIRECTORY}/lib:${LD_LIBRARY_PATH}"
+
+# path to the game engine module libraries. in a system wide installation this would
+# be /usr/lib/dragengine
+export DE_ENGINE_PATH="${BASE_DIRECTORY}/lib/dragengine"
+
+# path to the game engine module shared files. in a system wide installation this
+# would be /usr/share/dragengine
+export DE_SHARE_PATH="${BASE_DIRECTORY}/share/dragengine"
+
+# path to the game engine module configuration files. in a system wide installation
+# this would be /usr/etc/dragengine
+export DE_CONFIG_PATH="${BASE_DIRECTORY}/etc/dragengine"
+
+# path to the user game engine cache directory. in a system wide installation this
+# would be ~/.cache/dragengine . this is an optional redirection. if used configuration
+# is not stored in the user home directory but locally
+export DE_CACHE_PATH="${BASE_DIRECTORY}/user/cache"
+
+
+
+# Launcher Redirections (required for using launchers)
+########################################################
+
+# path to the launcher configuration directory. in a system wide installation this would
+# be /usr/etc/delauncher
+export DELAUNCHER_SYS_CONFIG="${BASE_DIRECTORY}/etc/delauncher"
+
+# path to the user launcher configuration directory. this holds the configuration for
+# all launchers and games every run by the launchers. this is an optional redirection.
+# if used configuration is not stored in the user home directory but locally
+export DELAUNCHER_USER_CONFIG="${BASE_DIRECTORY}/user/config/delauncher"
+
+# path to the launcher shared data directory. in a system wide installation this would
+# be /usr/share/delauncher
+export DELAUNCHER_SHARES="${BASE_DIRECTORY}/share/delauncher"
+
+# path to the games installation directory. in a system wide installation this would be
+# /opt/delauncher/games
+export DELAUNCHER_GAMES="${BASE_DIRECTORY}/games"
+
+
+
+# IGDE Redirections (required for using deigde)
+#################################################
+
+# path to IGDE system configuration. in a system wide installation this would be
+# /etc/deigde
+export DEIGDE_SYS_CONFIG="${BASE_DIRECTORY}/etc/deigde"
+
+# path to IGDE editor libraries. in a system wide installation this would be
+# /usr/lib/deigde
+export DEIGDE_LIB="${BASE_DIRECTORY}/lib/deigde"
+
+# path to IGDE shared data files. in a system wide installation this would be
+# /usr/share/deigde
+export DEIGDE_SHARES="${BASE_DIRECTORY}/share/deigde"
+
+# path to user IGDE configuration. this holds the configuration for the igde.
+# this is an optional redirection. if used configuration is not stored in the
+# user home directory but locally
+export DEIGDE_USER_CONFIG="${BASE_DIRECTORY}/user/config/deigde"
+
+# path to default directory to store new game projects to. in a system wide installation
+# this would be ~/deprojects . this is an optional redirection. if used the default path
+# used in the IGDE upon creating a new project is not inside the user home directory
+# but locally
+export DEIGDE_PROJECTS="${BASE_DIRECTORY}/deprojects"
