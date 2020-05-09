@@ -129,15 +129,27 @@ class ECBehaviorOutline extends DefaultECBehavior
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
 			var BehaviorElement element = this.getElement()
+			var ElementClass eclass = element.getClass()
+			var CodecPropertyString codec = eclass.getSharedCodecPropertyString()
+			
 			var Component component = this.pECBehavior.getComponent().instance( element ).getComponent()
-			var CodecPropertyString codec = element.getClass().getSharedCodecPropertyString()
-			this.pSkin = this.pECBehavior.getSkin().getSkin( stub, element.getClass() )
+			this.pSkin = this.pECBehavior.getSkin().getSkin( stub, eclass )
 			this.pColor = this.pECBehavior.getColor().getColor( stub, codec )
 			this.pIntensity = this.pECBehavior.getIntensity().getValue( stub )
 			this.pThickness = this.pECBehavior.getThickness().getValue( stub )
 			
-			this.pComponent = Component.new( component.getModel(), this.pSkin )
-			this.pComponent.setRig( component.getRig() )
+			var Model model = this.pECBehavior.getModel().getModel( stub, eclass )
+			if model == null
+				model = component.getModel()
+			end
+			
+			var Rig rig = this.pECBehavior.getRig().getRig( stub, eclass )
+			if rig == null
+				rig = component.getRig()
+			end
+			
+			this.pComponent = Component.new( model, this.pSkin )
+			this.pComponent.setRig( rig )
 			this.pComponent.setLayerMask( component.getLayerMask() )
 			this.pComponent.setVisible( this.pVisible )
 			this.pComponent.setPosition( component.getPosition() )
@@ -329,6 +341,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 	private var ECBehaviorComponent pComponent
 	private var ECBehaviorCollider pCollider
 	private var ECPSkin pSkin
+	private var ECPModel pModel
+	private var ECPRig pRig
 	private var ECPColor pColor
 	private var ECPFloat pIntensity
 	private var ECPFloat pThickness
@@ -358,6 +372,12 @@ class ECBehaviorOutline extends DefaultECBehavior
 		
 		this.pSkin = ECPSkin.new( prefix + "skin", "/shareddata/materials/outlined.deskin" )
 		eclass.addProperty( this.pSkin )
+		
+		this.pModel = ECPModel.new( prefix + "model" )
+		eclass.addProperty( this.pModel )
+		
+		this.pRig = ECPRig.new( prefix + "rig" )
+		eclass.addProperty( this.pRig )
 		
 		this.pColor = ECPColor.new( prefix + "color" )
 		eclass.addProperty( this.pColor )
@@ -393,6 +413,16 @@ class ECBehaviorOutline extends DefaultECBehavior
 	/** \brief Skin property. */
 	public func ECPSkin getSkin()
 		return this.pSkin
+	end
+	
+	/** \brief Model property. */
+	public func ECPModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Rig property. */
+	public func ECPRig getRig()
+		return this.pRig
 	end
 	
 	/** \brief Color property. */

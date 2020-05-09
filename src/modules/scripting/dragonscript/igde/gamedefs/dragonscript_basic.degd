@@ -2345,6 +2345,16 @@
 			<pathPatternType>skin</pathPatternType>
 			<default>/shareddata/materials/outlined.deskin</default>
 		</property>
+		<property name='model'>
+			<description>Model to use for rendering the outline. If empty string use model from existing component.</description>
+			<type>path</type>
+			<pathPatternType>model</pathPatternType>
+		</property>
+		<property name='rig'>
+			<description>Rig to use for rendering the outline. If empty string use rig from existing component.</description>
+			<type>path</type>
+			<pathPatternType>rig</pathPatternType>
+		</property>
 		<property name='color'>
 			<description>Color of the outline. Used on the dynamic skin created by the behavior.</description>
 			<type>color</type>
