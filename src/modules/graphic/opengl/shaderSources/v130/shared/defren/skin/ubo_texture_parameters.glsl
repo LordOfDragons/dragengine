@@ -42,8 +42,10 @@ UBOLAYOUT uniform TextureParameters{
 	
 	vec3 pTexOutlineColor;
 	float pTexOutlineThickness;
-	vec3 pTexOutlineEmissivity;
+	vec3 pTexOutlineColorTint;
 	float pTexOutlineSolidity;
+	vec3 pTexOutlineEmissivity;
+	vec3 pTexOutlineEmissivityTint;
 };
 
 #ifdef BUG_UBO_DIRECT_LINK_DEAD_LOOP
@@ -88,6 +90,8 @@ UBOLAYOUT uniform TextureParameters{
 	
 	#define pTexOutlineColor vec3(pTexOutlineColor)
 	#define pTexOutlineThickness float(pTexOutlineThickness)
-	#define pTexOutlineEmissivity vec3(pTexOutlineEmissivity)
+	#define pTexOutlineColorTint vec3(pTexOutlineColorTint)
 	#define pTexOutlineSolidity float(pTexOutlineSolidity)
+	#define pTexOutlineEmissivity vec3(pTexOutlineEmissivity)
+	#define pTexOutlineEmissivityTint vec3(pTexOutlineEmissivityTint)
 #endif

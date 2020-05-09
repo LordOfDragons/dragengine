@@ -421,10 +421,12 @@ pName( texture.GetName() )
 	pParticleSheetCount = 1;
 	
 	pOutlineColor.Set( 0.0f, 0.0f, 0.0f );
+	pOutlineColorTint.Set( 1.0f, 1.0f, 1.0f );
 	pOutlineThickness = 0.0f;
 	pOutlineThicknessScreen = false;
 	pOutlineSolidity = 1.0f;
 	pOutlineEmissivity.Set( 0.0f, 0.0f, 0.0f );
+	pOutlineEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pOutlineEmissivityIntensity = 0.0f;
 	pHasOutline = false;
 	pIsOutlineSolid = true;
@@ -823,6 +825,8 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			// required to be compatible with outline shaders if used to build parameter block
 			config.SetDynamicOutlineColor(
 				pMaterialProperties[ empOutlineColor ].IsDynamic() );
+			config.SetDynamicOutlineColorTint(
+				pMaterialProperties[ empOutlineColorTint ].IsDynamic() );
 			config.SetDynamicOutlineThickness(
 				pMaterialProperties[ empOutlineThickness ].IsDynamic() );
 			config.SetDynamicOutlineSolidity(
@@ -830,6 +834,8 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetDynamicOutlineEmissivity(
 				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
 				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
+			config.SetDynamicOutlineEmissivityTint(
+				pMaterialProperties[ empOutlineEmissivityTint ].IsDynamic() );
 		}
 		
 		if( config.GetTextureHeight() ){ // temporary
@@ -972,6 +978,8 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 		config.SetDynamicOutlineColor(
 			pMaterialProperties[ empOutlineColor ].IsDynamic() );
+		config.SetDynamicOutlineColorTint(
+			pMaterialProperties[ empOutlineColorTint ].IsDynamic() );
 		config.SetDynamicOutlineThickness(
 			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
 		config.SetDynamicOutlineSolidity(
@@ -979,6 +987,8 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetDynamicOutlineEmissivity(
 			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
 			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
+		config.SetDynamicOutlineEmissivityTint(
+			pMaterialProperties[ empOutlineEmissivityTint ].IsDynamic() );
 		break;
 		
 	case esctOutlineDepth:
@@ -1193,6 +1203,12 @@ deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType
 				powf( pOutlineColor.g, 2.2f ), powf( pOutlineColor.b, 2.2f ) );
 		}
 		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineColorTint );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineColorTint.r, 2.2f ),
+				powf( pOutlineColorTint.g, 2.2f ), powf( pOutlineColorTint.b, 2.2f ) );
+		}
+		
 		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineThickness );
 		if( target != -1 ){
 			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pOutlineThickness );
@@ -1209,6 +1225,12 @@ deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType
 				powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
 				powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
 				powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
+		}
+		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineEmissivityTint );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineEmissivityTint.r, 2.2f ),
+				powf( pOutlineEmissivityTint.g, 2.2f ), powf( pOutlineEmissivityTint.b, 2.2f ) );
 		}
 		
 	}catch( const deException & ){
@@ -1452,6 +1474,10 @@ void deoglSkinTexture::SetOutlineColor( const decColor &color ){
 	pOutlineColor = color;
 }
 
+void deoglSkinTexture::SetOutlineColorTint( const decColor &color ){
+	pOutlineColorTint = color;
+}
+
 void deoglSkinTexture::SetOutlineSolidity( float solidity ){
 	pOutlineSolidity = decMath::clamp( solidity, 0.0f, 1.0f );
 }
@@ -1462,6 +1488,10 @@ void deoglSkinTexture::SetOutlineThickness( float thickness ){
 
 void deoglSkinTexture::SetOutlineEmissivity( const decColor &emissivity ){
 	pOutlineEmissivity = emissivity;
+}
+
+void deoglSkinTexture::SetOutlineEmissivityTint( const decColor &emissivity ){
+	pOutlineEmissivityTint = emissivity;
 }
 
 void deoglSkinTexture::SetOutlineEmissivityIntensity( float intensity ){
@@ -2289,6 +2319,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pOutlineColor.Set( value, value, value );
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pOutlineColorTint.Set( value, value, value );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			pOutlineThickness = decMath::max( value, 0.0f );
 			pHasOutline = pOutlineThickness != 0.0f || ! property.GetRenderable().IsEmpty();
@@ -2305,6 +2339,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
 			pOutlineEmissivity.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pOutlineEmissivityTint.Set( value, value, value );
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
@@ -2381,8 +2419,16 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pOutlineColor = color;
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pOutlineColorTint = color;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
 			pOutlineEmissivity = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pOutlineEmissivityTint = color;
 			break;
 			
 		default:
@@ -2585,6 +2631,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			materialProperty = pMaterialProperties + empOutlineColor;
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			materialProperty = pMaterialProperties + empOutlineColorTint;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			materialProperty = pMaterialProperties + empOutlineThickness;
 			pHasOutline = true;
@@ -2597,6 +2647,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
 			materialProperty = pMaterialProperties + empOutlineEmissivity;
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			materialProperty = pMaterialProperties + empOutlineEmissivityTint;
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
@@ -2836,6 +2890,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empOutlineColor ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pMaterialProperties[ empOutlineColorTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineThickness:
 			pMaterialProperties[ empOutlineThickness ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
@@ -2846,6 +2904,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
 			pMaterialProperties[ empOutlineEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pMaterialProperties[ empOutlineEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:

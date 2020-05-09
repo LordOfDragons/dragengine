@@ -243,6 +243,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Outline color. */
 		eptOutlineColor,
 		
+		/** \brief Outline color tint. */
+		eptOutlineColorTint,
+		
 		/** \brief Outline thickness. */
 		eptOutlineThickness,
 		
@@ -254,6 +257,9 @@ namespace deoglSkinPropertyMap{
 		
 		/** \brief Outline emissivity. */
 		eptOutlineEmissivity,
+		
+		/** \brief Outline emissivity tint. */
+		eptOutlineEmissivityTint,
 		
 		/** \brief Outline emissivity intensity. */
 		eptOutlineEmissivityIntensity

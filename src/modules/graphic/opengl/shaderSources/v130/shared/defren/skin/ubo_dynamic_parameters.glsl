@@ -126,6 +126,12 @@
 	#define pOutlineColor pTexOutlineColor
 #endif
 
+#ifdef DYNAMIC_OUTLINE_COLOR_TINT
+	#define pOutlineColorTint pInstOutlineColorTint
+#else
+	#define pOutlineColorTint pTexOutlineColorTint
+#endif
+
 #ifdef DYNAMIC_OUTLINE_THICKNESS
 	#define pOutlineThickness pInstOutlineThickness
 #else
@@ -142,4 +148,10 @@
 	#define pOutlineEmissivity pInstOutlineEmissivity
 #else
 	#define pOutlineEmissivity pTexOutlineEmissivity
+#endif
+
+#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
+	#define pOutlineEmissivityTint pInstOutlineEmissivityTint
+#else
+	#define pOutlineEmissivityTint pTexOutlineEmissivityTint
 #endif

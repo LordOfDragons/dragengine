@@ -60,8 +60,10 @@ struct sInstanceParameters{
 	
 	vec3 pSPBInstOutlineColor;
 	float pSPBInstOutlineThickness;
-	vec3 pSPBInstOutlineEmissivity;
+	vec3 pSPBInstOutlineColorTint;
 	float pSPBInstOutlineSolidity;
+	vec3 pSPBInstOutlineEmissivity;
+	vec3 pSPBInstOutlineEmissivityTint;
 	
 	#ifdef SHARED_SPB_PADDING
 	vec4 _pSPBPadding[ SHARED_SPB_PADDING ];
@@ -210,6 +212,9 @@ UBOLAYOUT uniform InstanceParameters{
 	#ifdef DYNAMIC_OUTLINE_COLOR
 		vec3 pInstOutlineColor;
 	#endif
+	#ifdef DYNAMIC_OUTLINE_COLOR_TINT
+		vec3 pInstOutlineColorTint;
+	#endif
 	#ifdef DYNAMIC_OUTLINE_THICKNESS
 		float pInstOutlineThickness;
 	#endif
@@ -218,6 +223,9 @@ UBOLAYOUT uniform InstanceParameters{
 	#endif
 	#ifdef DYNAMIC_OUTLINE_EMISSIVITY
 		vec3 pInstOutlineEmissivity;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
+		vec3 pInstOutlineEmissivityTint;
 	#endif
 };
 

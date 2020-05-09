@@ -29,7 +29,7 @@
 
 
 deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const char *type ){
-	static const int entryCount = 66;
+	static const int entryCount = 68;
 	static struct sEntry{
 		const char *name;
 		deoglSkinPropertyMap::ePropertyTypes type;
@@ -111,10 +111,12 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "particle.sheets", eptParticleSheets },
 		
 		{ "outline.color", eptOutlineColor },
+		{ "outline.color.tint", eptOutlineColorTint },
 		{ "outline.thickness", eptOutlineThickness },
 		{ "outline.thickness.screen", eptOutlineThicknessScreen },
 		{ "outline.solidity", eptOutlineSolidity },
 		{ "outline.emissivity", eptOutlineEmissivity },
+		{ "outline.emissivity.tint", eptOutlineEmissivityTint },
 		{ "outline.emissivity.intensity", eptOutlineEmissivityIntensity }
 	};
 	

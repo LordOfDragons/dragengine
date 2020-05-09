@@ -43,9 +43,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -62,7 +62,7 @@
 		<type>image</type>
 		<components>1</components>
 		<default>
-			<value>1.0</value>
+			<value>1</value>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -589,7 +589,7 @@
 			creating gamma corrected images setting the usage of a custom gamma correction is
 			required. In this case the gamma required to convert the image data to real values
 			has to be specified. Gamma correction is applied to the roughness property values
-			before remapping is done. The default value is 1.0.
+			before remapping is done. The default value is 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -740,9 +740,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -886,9 +886,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -1191,6 +1191,24 @@
 		</affects>
 	</property>
 	
+	<property name='outline.color.tint'>
+		<description>
+			Defines a color used to tint the outline.color property. This defines an 3-component
+			color that is multiplied component wise with the color property. Typically used to
+			create tinted versions of a texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='outline.thickness'>
 		<description>
 			Defines the outline thickness in meters or percentage of camera field-of-view
@@ -1262,6 +1280,25 @@
 			<red>0</red>
 			<green>0</green>
 			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='outline.emissivity.tint'>
+		<description>
+			Defines a color used to tint the outline.emissivity property. This defines an
+			3-component color that is multiplied component wise with the outline.emissivity
+			property. Typically used to create tinted versions of a texture without creating
+			multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>

@@ -115,11 +115,17 @@
 #ifdef DYNAMIC_OUTLINE_COLOR
 	#define pInstOutlineColor pSharedSPB[ spbIndex ].pSPBInstOutlineColor
 #endif
+#ifdef DYNAMIC_OUTLINE_COLOR_TINT
+	#define pInstOutlineColorTint pSharedSPB[ spbIndex ].pSPBInstOutlineColorTint
+#endif
 #ifdef DYNAMIC_OUTLINE_THICKNESS
 	#define pInstOutlineThickness pSharedSPB[ spbIndex ].pSPBInstOutlineThickness
 #endif
 #ifdef DYNAMIC_OUTLINE_EMISSIVITY
 	#define pInstOutlineEmissivity pSharedSPB[ spbIndex ].pSPBInstOutlineEmissivity
+#endif
+#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
+	#define pInstOutlineEmissivityTint pSharedSPB[ spbIndex ].pSPBInstOutlineEmissivityTint
 #endif
 #ifdef DYNAMIC_OUTLINE_SOLIDITY
 	#define pInstOutlineSolidity pSharedSPB[ spbIndex ].pSPBInstOutlineSolidity

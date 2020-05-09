@@ -144,8 +144,10 @@ public:
 		
 		etutTexOutlineColor,
 		etutTexOutlineThickness,
-		etutTexOutlineEmissivity,
+		etutTexOutlineColorTint,
 		etutTexOutlineSolidity,
+		etutTexOutlineEmissivity,
+		etutTexOutlineEmissivityTint,
 		
 		ETUT_COUNT
 	};
@@ -198,8 +200,10 @@ public:
 		eiutInstReflectivityMultiplier,
 		eiutInstOutlineColor,
 		eiutInstOutlineThickness,
-		eiutInstOutlineEmissivity,
+		eiutInstOutlineColorTint,
 		eiutInstOutlineSolidity,
+		eiutInstOutlineEmissivity,
+		eiutInstOutlineEmissivityTint,
 		
 		EIUT_COUNT
 	};

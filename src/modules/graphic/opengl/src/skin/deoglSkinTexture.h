@@ -90,9 +90,11 @@ public:
 		empVariationU,
 		empVariationV,
 		empOutlineColor,
+		empOutlineColorTint,
 		empOutlineThickness,
 		empOutlineSolidity,
 		empOutlineEmissivity,
+		empOutlineEmissivityTint,
 		empOutlineEmissivityIntensity,
 		EMP_COUNT
 	};
@@ -273,10 +275,12 @@ private:
 	int pParticleSheetCount;
 	
 	decColor pOutlineColor;
+	decColor pOutlineColorTint;
 	float pOutlineThickness;
 	bool pOutlineThicknessScreen;
 	float pOutlineSolidity;
 	decColor pOutlineEmissivity;
+	decColor pOutlineEmissivityTint;
 	float pOutlineEmissivityIntensity;
 	bool pHasOutline;
 	bool pIsOutlineSolid;
@@ -686,6 +690,12 @@ public:
 	/** \brief Set outline color. */
 	void SetOutlineColor( const decColor &color );
 	
+	/** \brief Outline color tint. */
+	inline const decColor &GetOutlineColorTint() const{ return pOutlineColorTint; }
+	
+	/** \brief Set outline color tint. */
+	void SetOutlineColorTint( const decColor &color );
+	
 	/** \brief Outline thickness. */
 	inline float GetOutlineThickness() const{ return pOutlineThickness; }
 	
@@ -709,6 +719,12 @@ public:
 	
 	/** \brief Set outline emissivity. */
 	void SetOutlineEmissivity( const decColor &emissivity );
+	
+	/** \brief Outline emissivity tint. */
+	inline const decColor &GetOutlineEmissivityTint() const{ return pOutlineEmissivityTint; }
+	
+	/** \brief Set outline emissivity tint. */
+	void SetOutlineEmissivityTint( const decColor &emissivity );
 	
 	/** \brief Outline emissivity intensity. */
 	inline float GetOutlineEmissivityIntensity() const{ return pOutlineEmissivityIntensity; }

@@ -104,9 +104,11 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicAbsorption = false;
 	pDynamicVariation = false;
 	pDynamicOutlineColor = false;
+	pDynamicOutlineColorTint = false;
 	pDynamicOutlineThickness = false;
 	pDynamicOutlineSolidity = false;
 	pDynamicOutlineEmissivity = false;
+	pDynamicOutlineEmissivityTint = false;
 	
 	pTextureColor = false;
 	pTextureColorTintMask = false;
@@ -350,6 +352,10 @@ void deoglSkinShaderConfig::SetDynamicOutlineColor( bool dynamic ){
 	pDynamicOutlineColor = dynamic;
 }
 
+void deoglSkinShaderConfig::SetDynamicOutlineColorTint( bool dynamic ){
+	pDynamicOutlineColorTint = dynamic;
+}
+
 void deoglSkinShaderConfig::SetDynamicOutlineThickness( bool dynamic ){
 	pDynamicOutlineThickness = dynamic;
 }
@@ -360,6 +366,10 @@ void deoglSkinShaderConfig::SetDynamicOutlineSolidity( bool dynamic ){
 
 void deoglSkinShaderConfig::SetDynamicOutlineEmissivity( bool dynamic ){
 	pDynamicOutlineEmissivity = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicOutlineEmissivityTint( bool dynamic ){
+	pDynamicOutlineEmissivityTint = dynamic;
 }
 
 
@@ -637,6 +647,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pDynamicOutlineColor ){
 		string.Append( " dynOutColor" );
 	}
+	if( pDynamicOutlineColorTint ){
+		string.Append( " dynOutColorTint" );
+	}
 	if( pDynamicOutlineThickness ){
 		string.Append( " dynOutThick" );
 	}
@@ -645,6 +658,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pDynamicOutlineEmissivity ){
 		string.Append( " dynOutEmis" );
+	}
+	if( pDynamicOutlineEmissivityTint ){
+		string.Append( " dynOutEmisTint" );
 	}
 	
 	if( pTextureColor ){
@@ -767,9 +783,11 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicAbsorption = config.pDynamicAbsorption;
 	pDynamicVariation = config.pDynamicVariation;
 	pDynamicOutlineColor = config.pDynamicOutlineColor;
+	pDynamicOutlineColorTint = config.pDynamicOutlineColorTint;
 	pDynamicOutlineThickness = config.pDynamicOutlineThickness;
 	pDynamicOutlineSolidity = config.pDynamicOutlineSolidity;
 	pDynamicOutlineEmissivity = config.pDynamicOutlineEmissivity;
+	pDynamicOutlineEmissivityTint = config.pDynamicOutlineEmissivityTint;
 	
 	pTextureColor = config.pTextureColor;
 	pTextureColorTintMask = config.pTextureColorTintMask;
@@ -850,9 +868,11 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pDynamicAbsorption == config.pDynamicAbsorption
 		&& pDynamicVariation == config.pDynamicVariation
 		&& pDynamicOutlineColor == config.pDynamicOutlineColor
+		&& pDynamicOutlineColorTint == config.pDynamicOutlineColorTint
 		&& pDynamicOutlineThickness == config.pDynamicOutlineThickness
 		&& pDynamicOutlineSolidity == config.pDynamicOutlineSolidity
 		&& pDynamicOutlineEmissivity == config.pDynamicOutlineEmissivity
+		&& pDynamicOutlineEmissivityTint == config.pDynamicOutlineEmissivityTint
 		
 		&& pTextureColor == config.pTextureColor
 		&& pTextureColorTintMask == config.pTextureColorTintMask

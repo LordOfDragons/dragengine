@@ -127,8 +127,10 @@ static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
 	
 	"pTexOutlineColor", // etutTexOutlineColor
 	"pTexOutlineThickness", // etutTexOutlineThickness
+	"pTexOutlineColorTint", // etutTexOutlineColorTint
 	"pTexOutlineSolidity", // etutTexOutlineSolidity
 	"pTexOutlineEmissivity", // etutTexOutlineEmissivity
+	"pTexOutlineEmissivityTint", // etutTexOutlineEmissivityTint
 };
 
 static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = {
@@ -178,8 +180,10 @@ static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = 
 	"pInstReflectivityMultiplier", // eiutReflectivityMultiplier
 	"pInstOutlineColor", // eiutInstOutlineColor
 	"pInstOutlineThickness", // eiutInstOutlineThickness
+	"pInstOutlineColorTint", // eiutInstOutlineColorTint
 	"pInstOutlineSolidity", // eiutInstOutlineSolidity
 	"pInstOutlineEmissivity", // eiutInstOutlineEmissivity
+	"pInstOutlineEmissivityTint", // eiutInstOutlineEmissivityTint
 };
 
 
@@ -234,8 +238,11 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineColor ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexOutlineThickness ( float )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexOutlineSolidity ( float )
+	
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivityTint ( vec3 )
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIUT_COUNT ] = {
@@ -285,11 +292,13 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstReflectivityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColor ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineThickness ( float )
-	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivity ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineSolidity ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivity ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
-static const int vUBOInstParamMapCount = 38;
+static const int vUBOInstParamMapCount = 40;
 static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInstParamMapCount ] = {
 	deoglSkinShader::eiutMatrixModel, // eiutMatrixModel ( mat4x3 )
 	deoglSkinShader::eiutMatrixNormal, // eiutMatrixNormal ( mat3 )
@@ -350,8 +359,10 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	
 	deoglSkinShader::eiutInstOutlineColor, // eiutInstOutlineColor ( vec3 )
 	deoglSkinShader::eiutInstOutlineThickness, // eiutInstOutlineThickness ( float )
+	deoglSkinShader::eiutInstOutlineColorTint, // eiutInstOutlineColorTint ( vec3 )
+	deoglSkinShader::eiutInstOutlineSolidity, // eiutInstOutlineSolidity ( float )
 	deoglSkinShader::eiutInstOutlineEmissivity, // eiutInstOutlineEmissivity ( vec3 )
-	deoglSkinShader::eiutInstOutlineSolidity // eiutInstOutlineSolidity ( float )
+	deoglSkinShader::eiutInstOutlineEmissivityTint, // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
 
@@ -981,8 +992,8 @@ deoglRDynamicSkin *dynamicSkin ){
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineColor ] != -1 ){
-		const deoglSkinTextureProperty &property = skinTexture
-			.GetMaterialPropertyAt( deoglSkinTexture::empOutlineColor );
+		const deoglSkinTextureProperty &property = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineColor );
 		decColor color( property.ResolveColor( skinState, dynamicSkin, skinTexture.GetOutlineColor() ) );
 		
 		color.r = powf( decMath::max( color.r, 0.0f ), 2.2f );
@@ -993,9 +1004,22 @@ deoglRDynamicSkin *dynamicSkin ){
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineColor ], element, color );
 	}
 	
+	if( pInstanceUniformTargets[ eiutInstOutlineColorTint ] != -1 ){
+		const deoglSkinTextureProperty &property = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineColorTint );
+		decColor color( property.ResolveColor( skinState, dynamicSkin, skinTexture.GetOutlineColorTint() ) );
+		
+		color.r = powf( decMath::max( color.r, 0.0f ), 2.2f );
+		color.g = powf( decMath::max( color.g, 0.0f ), 2.2f );
+		color.b = powf( decMath::max( color.b, 0.0f ), 2.2f );
+		color.a = 1.0f;
+		
+		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineColorTint ], element, color );
+	}
+	
 	if( pInstanceUniformTargets[ eiutInstOutlineThickness ] != -1 ){
-		const deoglSkinTextureProperty &property =
-			skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empOutlineThickness );
+		const deoglSkinTextureProperty &property = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineThickness );
 		const float thickness = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineThickness() );
 		
@@ -1004,8 +1028,8 @@ deoglRDynamicSkin *dynamicSkin ){
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineSolidity ] != -1 ){
-		const deoglSkinTextureProperty &property =
-			skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empOutlineSolidity );
+		const deoglSkinTextureProperty &property = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineSolidity );
 		const float solidity = property.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineSolidity() );
 		
@@ -1014,12 +1038,12 @@ deoglRDynamicSkin *dynamicSkin ){
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstOutlineEmissivity ] != -1 ){
-		const deoglSkinTextureProperty &propertyColor =
-			skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empOutlineEmissivity );
+		const deoglSkinTextureProperty &propertyColor = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineEmissivity );
 		decColor emissivity( propertyColor.ResolveColor( skinState, dynamicSkin,
 			skinTexture.GetOutlineEmissivity() ) );
-		const deoglSkinTextureProperty &propertyIntensity =
-			skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empOutlineEmissivityIntensity );
+		const deoglSkinTextureProperty &propertyIntensity = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineEmissivityIntensity );
 		const float intensity = propertyIntensity.ResolveAsFloat( skinState, dynamicSkin,
 			skinTexture.GetOutlineEmissivityIntensity() );
 		
@@ -1029,6 +1053,19 @@ deoglRDynamicSkin *dynamicSkin ){
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineEmissivity ],
 			element, emissivity * decMath::max( intensity, 0.0f ) );
+	}
+	
+	if( pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ] != -1 ){
+		const deoglSkinTextureProperty &property = skinTexture.
+			GetMaterialPropertyAt( deoglSkinTexture::empOutlineEmissivityTint );
+		decColor tint( property.ResolveColor( skinState, dynamicSkin,
+			skinTexture.GetOutlineEmissivityTint() ) );
+		
+		tint.r = powf( decMath::max( tint.r, 0.0f ), 2.2f );
+		tint.g = powf( decMath::max( tint.g, 0.0f ), 2.2f );
+		tint.b = powf( decMath::max( tint.b, 0.0f ), 2.2f );
+		
+		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ], element, tint );
 	}
 }
 
@@ -1811,6 +1848,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetDynamicOutlineColor() ){
 		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR", "1" );
 	}
+	if( pConfig.GetDynamicOutlineColorTint() ){
+		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR_TINT", "1" );
+	}
 	if( pConfig.GetDynamicOutlineThickness() ){
 		defines.AddDefine( "DYNAMIC_OUTLINE_THICKNESS", "1" );
 	}
@@ -1819,6 +1859,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetDynamicOutlineEmissivity() ){
 		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY", "1" );
+	}
+	if( pConfig.GetDynamicOutlineEmissivityTint() ){
+		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", "1" );
 	}
 	
 	
@@ -2206,6 +2249,9 @@ void deoglSkinShader::UpdateUniformTargets(){
 		if( pConfig.GetDynamicOutlineColor() ){
 			pInstanceUniformTargets[ eiutInstOutlineColor ] = pUsedInstanceUniformTargetCount++;
 		}
+		if( pConfig.GetDynamicOutlineColorTint() ){
+			pInstanceUniformTargets[ eiutInstOutlineColorTint ] = pUsedInstanceUniformTargetCount++;
+		}
 		if( pConfig.GetDynamicOutlineThickness() ){
 			pInstanceUniformTargets[ eiutInstOutlineThickness ] = pUsedInstanceUniformTargetCount++;
 		}
@@ -2214,6 +2260,9 @@ void deoglSkinShader::UpdateUniformTargets(){
 		}
 		if( pConfig.GetDynamicOutlineEmissivity() ){
 			pInstanceUniformTargets[ eiutInstOutlineEmissivity ] = pUsedInstanceUniformTargetCount++;
+		}
+		if( pConfig.GetDynamicOutlineEmissivityTint() ){
+			pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ] = pUsedInstanceUniformTargetCount++;
 		}
 	}
 	

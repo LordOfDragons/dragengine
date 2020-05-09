@@ -180,9 +180,11 @@ public:
 	bool pDynamicAbsorption;
 	bool pDynamicVariation;
 	bool pDynamicOutlineColor;
+	bool pDynamicOutlineColorTint;
 	bool pDynamicOutlineThickness;
 	bool pDynamicOutlineSolidity;
 	bool pDynamicOutlineEmissivity;
+	bool pDynamicOutlineEmissivityTint;
 	
 	bool pTextureColor;
 	bool pTextureColorTintMask;
@@ -556,6 +558,12 @@ public:
 	/** \brief Set if outline color property is dynamic. */
 	void SetDynamicOutlineColor( bool dynamic );
 	
+	/** \brief Outline color tint property is dynamic. */
+	inline bool GetDynamicOutlineColorTint() const{ return pDynamicOutlineColorTint; }
+	
+	/** \brief Set if outline color tint property is dynamic. */
+	void SetDynamicOutlineColorTint( bool dynamic );
+	
 	/** \brief Outline thickness property is dynamic. */
 	inline bool GetDynamicOutlineThickness() const{ return pDynamicOutlineThickness; }
 	
@@ -573,6 +581,12 @@ public:
 	
 	/** \brief Set if outline emissivity property is dynamic. */
 	void SetDynamicOutlineEmissivity( bool dynamic );
+	
+	/** \brief Outline emissivity tint property is dynamic. */
+	inline bool GetDynamicOutlineEmissivityTint() const{ return pDynamicOutlineEmissivityTint; }
+	
+	/** \brief Set if outline emissivity tint property is dynamic. */
+	void SetDynamicOutlineEmissivityTint( bool dynamic );
 	
 	
 	

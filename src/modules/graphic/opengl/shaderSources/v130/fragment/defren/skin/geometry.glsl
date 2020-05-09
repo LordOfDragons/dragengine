@@ -392,7 +392,7 @@ void main( void ){
 			color = vec4( 0.0, 0.0, 0.0, TEXTURE( texTransparency, tcColor ).r );
 		#else
 			#ifdef WITH_OUTLINE
-				color = vec4( pOutlineColor, 1.0 );
+				color = vec4( pOutlineColor * pOutlineColorTint, 1.0 );
 			#else
 				color = vec4( 0.0, 0.0, 0.0, 1.0 );
 			#endif
@@ -751,7 +751,7 @@ void main( void ){
 		#endif
 		
 	#elif defined WITH_OUTLINE
-		outColor.rgb += pOutlineEmissivity;
+		outColor.rgb += pOutlineEmissivity * pOutlineEmissivityTint;
 	#endif
 	
 	/* #ifdef HEIGHT_MAP
