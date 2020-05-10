@@ -1,0 +1,258 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display InteractPromptEntry instance.
+ * 
+ * The panel can be styled using selector these designer selectors:
+ * - "InteractPromptEntry": The prompt entry panel
+ * - "Image.InteractPromptEntry": Interact image
+ * - "Video.InteractPromptEntry": Interact video
+ * - "Label.InteractPromptEntry.Verb": Verb label
+ * - "Label.InteractPromptEntry.Description": Description label
+ * - "Panel.InteractPromptEntry.Bindings": Bindings panel
+ */
+class DisplayInteractPromptEntry extends Panel
+	private var BindingManager pBindingManager
+	private var int pBindingIconHeight
+	
+	private var DisplayImage pDisplayImage
+	private var DisplayVideo pDisplayVideo
+	private var Label pLabelVerb
+	private var Label pLabelDescription
+	private var Panel pPanelBindings
+	
+	
+	
+	/** \brief Create widget. */
+	public func new() this( null, 1 )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight )
+		this.pBindingManager = bindingManager
+		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
+		
+		this.runWhileBlockingLayout( block
+			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 0.0 ) )
+			
+			this.addWidget( Panel.new( StackLayout.new(), block Panel p
+				p.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p2
+					this.pDisplayImage = DisplayImage.new()
+					this.pDisplayImage.setVisible( false )
+					p2.addWidget( this.pDisplayImage )
+				end ) )
+				
+				p.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p2
+					this.pDisplayVideo = DisplayVideo.new()
+					this.pDisplayVideo.setVisible( false )
+					p2.addWidget( this.pDisplayVideo )
+				end ) )
+			end ) )
+			
+			this.pLabelVerb = Label.new( "" )
+			this.pLabelVerb.setVisible( false )
+			this.addWidget( this.pLabelVerb )
+			
+			this.pLabelDescription = Label.new( "" )
+			this.pLabelDescription.setVisible( false )
+			this.addWidget( this.pLabelDescription )
+			
+			this.pPanelBindings = Panel.new()
+			this.pPanelBindings.setLayout( FlowLayout.new( LayoutAxis.y ) )
+			this.addWidget( this.pPanelBindings )
+			
+			this.setDesignerSelector( "InteractPromptEntry" )
+		end )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pDisplayImage = null
+		this.pDisplayVideo = null
+		this.pLabelVerb = null
+		this.pLabelDescription = null
+		this.pPanelBindings = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Binding manager or null to show no bindings. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Binding icon height. */
+	public func int getBindingIconHeight()
+		return this.pBindingIconHeight
+	end
+	
+	
+	
+	/** \brief Display image widget. */
+	protected func DisplayImage getDisplayImage()
+		return this.pDisplayImage
+	end
+	
+	/** \brief Display video widget. */
+	protected func DisplayVideo getDisplayVideo()
+		return this.pDisplayVideo
+	end
+	
+	/** \brief Verb label. */
+	protected func Label getLabelVerb()
+		return this.pLabelVerb
+	end
+	
+	/** \brief Description label. */
+	protected func Label getLabelDescription()
+		return this.pLabelDescription
+	end
+	
+	/** \brief Bindings panel. */
+	protected func Panel getPanelBindings()
+		return this.pPanelBindings
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Updates the designer selector of all widgets.
+	 */
+	public func void onDesignerSelectorChanged()
+		this.runWhileBlockingLayout( block
+			var String selector = this.getDesignerSelector()
+			this.pDisplayImage.setDesignerSelector( "Image." + selector )
+			this.pDisplayVideo.setDesignerSelector( "Video." + selector )
+			this.pLabelVerb.setDesignerSelector( "Label." + selector + ".Verb" )
+			this.pLabelDescription.setDesignerSelector( "Label." + selector + ".Description" )
+			this.pPanelBindings.setDesignerSelector( "Panel." + selector + ".Bindings" )
+		end )
+		
+		this.doLayout()
+	end
+	
+	
+	
+	/**
+	 * \brief Update from entry.
+	 * 
+	 * Entry can be null to clear.
+	 */
+	public func void updateFromEntry( InteractPromptEntry entry )
+		this.runWhileBlockingLayout( block
+			this.pPanelBindings.removeAllWidgets()
+			
+			if entry == null
+				this.pDisplayImage.setImage( null )
+				this.pDisplayImage.setVisible( false )
+				
+				this.pDisplayVideo.setVideo( null )
+				this.pDisplayVideo.setVisible( false )
+				
+				this.pLabelVerb.setText( null )
+				this.pLabelVerb.setVisible( false )
+				
+				this.pLabelDescription.setText( null )
+				this.pLabelDescription.setVisible( false )
+				
+				this.pPanelBindings.setVisible( false )
+				return null
+			end
+			
+			this.pDisplayImage.setImage( entry.getImage() )
+			this.pDisplayImage.setVisible( entry.getImage() != null )
+			
+			this.pDisplayVideo.setVideo( entry.getVideo() )
+			this.pDisplayVideo.setVisible( entry.getVideo() != null )
+			
+			this.pLabelVerb.setText( entry.getVerb().toUTF8() )
+			this.pLabelVerb.setVisible( not this.pLabelVerb.getText().empty() )
+			
+			this.pLabelDescription.setText( entry.getDescription().toUTF8() )
+			this.pLabelDescription.setVisible( not this.pLabelDescription.getText().empty() )
+			
+			if this.pBindingManager != null
+				this.addBindingsForCommand( entry )
+			end
+			this.pPanelBindings.setVisible( this.pPanelBindings.getWidgetCount() > 0 )
+		end )
+		this.doLayout()
+	end
+	
+	/** \brief Find bindings for command adding them to bindings panel. */
+	protected func void addBindingsForCommand( InteractPromptEntry entry )
+		var Command command = entry.getCommand()
+		if command == null
+			return
+		end
+		
+		this.pPanelBindings.runWhileBlockingLayout( block
+			this.pBindingManager.forEachButtonBinding( block Binding each
+				if each.getCommand() == command and each.getDeviceIndex() != -1 \
+				and each.getSourceIndex() != -1
+					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
+					var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
+					this.pPanelBindings.addWidget( this.createBindingWidget( device, button ) )
+				end
+			end )
+			
+			this.pBindingManager.forEachAxisBinding( block Binding each
+				if each.getCommand() == command and each.getDeviceIndex() != -1 \
+				and each.getSourceIndex() != -1
+					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
+					var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
+					this.pPanelBindings.addWidget( this.createBindingWidget( device, axis ) )
+				end
+			end )
+		end )
+	end
+	
+	/**
+	 * \brief Create widget representing binding.
+	 * 
+	 * Default implementation creates instance of DisplayInputSource.
+	 */
+	protected func Widget createBindingWidget( InputDevice device, InputDeviceButton button )
+		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight, null, button )
+		dpi.setDesignerSelector( "DisplayInputSource." + this.getDesignerSelector() + ".Binding" )
+		return dpi
+	end
+	
+	protected func Widget createBindingWidget( InputDevice device, InputDeviceAxis axis )
+		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight, null, axis )
+		dpi.setDesignerSelector( "DisplayInputSource." + this.getDesignerSelector() + ".Binding" )
+		return dpi
+	end
+end

@@ -2335,7 +2335,7 @@
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorOutline'>
-		<description>Renders outline around a component..</description>
+		<description>Renders outline around a component.</description>
 		<ghost>true</ghost>
 		<canInstanciate>false</canInstanciate>
 		<defaultInheritPropertyPrefix>outline.</defaultInheritPropertyPrefix>
@@ -2369,6 +2369,52 @@
 			<description>Thickness of the outline in meters or percentage of camera field-of-view depending on mode used by skin.</description>
 			<type>float</type>
 			<default>0.005</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorInteractPrompt'>
+		<description>Adds support to elements to show interact prompt to player.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>interactPrompt.</defaultInheritPropertyPrefix>
+		<property name='image'>
+			<description>Image to show in the prompt.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
+		</property>
+		<property name='video'>
+			<description>Video to show in the prompt.</description>
+			<type>path</type>
+			<pathPatternType>video</pathPatternType>
+		</property>
+		<property name='style'>
+			<description>Style to use for the verb, description and image/video tint. The meaning of the style value depends on the prompt display widget used. A typical use of style is to be used as suffix for the widget designer selector.</description>
+			<type>string</type>
+		</property>
+		<property name='verb'>
+			<description>Verb to display in the prompt.</description>
+			<type>string</type>
+		</property>
+		<property name='description'>
+			<description>Optional description to display along the prompt.</description>
+			<type>string</type>
+		</property>
+		<property name='enabled'>
+			<description>Prompt is enabled.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorPlayerLookAtInteractPrompt'>
+		<description>Adds look-at interact prompt support to player actor.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerLookAtInteractPrompt.</defaultInheritPropertyPrefix>
+		<property name='bindingIconHeight'>
+			<description>Height if binding icons.</description>
+			<type>integer</type>
+			<default>32</default>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

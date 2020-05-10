@@ -400,6 +400,27 @@
 	    Value label in cycle value panel
 	-->
 	
+	
+	<!--
+	PanelInteractPrompt.
+	- 'InteractPrompt': The prompt panel
+	- 'InteractPromptEntry': The prompt entry panel
+	- 'Image.InteractPromptEntry': Interact image
+	- 'Video.InteractPromptEntry': Interact video
+	- 'Label.InteractPromptEntry.Verb': Verb label
+	- 'Label.InteractPromptEntry.Description': Description label
+	- 'Panel.InteractPromptEntry.Bindings': Bindings panel
+	-->
+	<designer name='InteractPrompt' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0' g='0' b='0' a='0.5'/>
+			</colorMatrix>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='10'/>
+	</designer>
+	
+	
 	<!--
 	Logo window. These designer can be defined:
 	- WindowLogo: Window itself

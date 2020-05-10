@@ -1,0 +1,131 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+/**
+ * \brief Interact prompt entry.
+ * 
+ * Contains the prompt information to show for use in an InteractPrompt widget. The entry
+ * contains a bunch of information which can be displayed in a prompt. View widgets
+ * decide what information to show.
+ */
+class InteractPromptEntry
+	private var Image pImage
+	private var Video pVideo
+	private var UnicodeString pVerb
+	private var UnicodeString pDescription
+	private var String pStyle
+	private var Command pCommand
+	
+	
+	
+	/** \brief Create interact prompt entry. */
+	public func new()
+		this.pVerb = UnicodeString.new()
+		this.pDescription = UnicodeString.new()
+		this.pStyle = ""
+	end
+	
+	
+	
+	/** \brief Image or null. */
+	public func Image getImage()
+		return this.pImage
+	end
+	
+	/** \brief Set image or null. */
+	public func void setImage( Image image )
+		this.pImage = image
+	end
+	
+	/** \brief Video or null. */
+	public func Video getVideo()
+		return this.pVideo
+	end
+	
+	/** \brief Set video or null. */
+	public func void setVideo( Video video )
+		this.pVideo = video
+	end
+	
+	/** \brief Style or empty string if not used. */
+	public func String getStyle()
+		return this.pStyle
+	end
+	
+	/** \brief Set style or empty string if not used. */
+	public func void setStyle( String style )
+		if style == null
+			throw ENullPointer.new( "style" )
+		end
+		this.pStyle = style
+	end
+	
+	/** \brief Verb. */
+	public func UnicodeString getVerb()
+		return this.pVerb
+	end
+	
+	/** \brief Set verb. */
+	public func void setVerb( UnicodeString verb )
+		if verb == null
+			throw ENullPointer.new( "verb" )
+		end
+		this.pVerb = verb
+	end
+	
+	/** \brief Description. */
+	public func UnicodeString getDescription()
+		return this.pDescription
+	end
+	
+	/** \brief Set description. */
+	public func void setDescription( UnicodeString description )
+		if description == null
+			throw ENullPointer.new( "description" )
+		end
+		this.pDescription = description
+	end
+	
+	/** \brief Command or null if not used. */
+	public func Command getCommand()
+		return this.pCommand
+	end
+	
+	/** \brief Set command or null if not used. */
+	public func void setCommand( Command command )
+		this.pCommand = command
+	end
+	
+	
+	
+	/** \brief String representation. */
+	public func String toString()
+		return this.pVerb.toUTF8()
+	end
+end
