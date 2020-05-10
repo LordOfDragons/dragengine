@@ -33,16 +33,17 @@ pin Dragengine.Utils
  * \brief Display InteractPromptEntry instance.
  * 
  * The panel can be styled using selector these designer selectors:
- * - "InteractPromptEntry": The prompt entry panel
- * - "Image.InteractPromptEntry": Interact image
- * - "Video.InteractPromptEntry": Interact video
- * - "Label.InteractPromptEntry.Verb": Verb label
- * - "Label.InteractPromptEntry.Description": Description label
- * - "Panel.InteractPromptEntry.Bindings": Bindings panel
+ * - "InteractPromptEntry{.style}": The prompt entry panel
+ * - "Image.InteractPromptEntry{.style}": Interact image
+ * - "Video.InteractPromptEntry{.style}": Interact video
+ * - "Label.InteractPromptEntry{.style}.Verb": Verb label
+ * - "Label.InteractPromptEntry{.style}.Description": Description label
+ * - "Panel.InteractPromptEntry{.style}.Bindings": Bindings panel
  */
 class DisplayInteractPromptEntry extends Panel
 	private var BindingManager pBindingManager
 	private var int pBindingIconHeight
+	private var String pBaseSelectorName
 	
 	private var DisplayImage pDisplayImage
 	private var DisplayVideo pDisplayVideo
@@ -59,6 +60,7 @@ class DisplayInteractPromptEntry extends Panel
 	public func new( BindingManager bindingManager, int bindingIconHeight )
 		this.pBindingManager = bindingManager
 		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
+		this.pBaseSelectorName = "InteractPromptEntry"
 		
 		this.runWhileBlockingLayout( block
 			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 0.0 ) )
@@ -89,7 +91,7 @@ class DisplayInteractPromptEntry extends Panel
 			this.pPanelBindings.setLayout( FlowLayout.new( LayoutAxis.y ) )
 			this.addWidget( this.pPanelBindings )
 			
-			this.setDesignerSelector( "InteractPromptEntry" )
+			this.setDesignerSelector( this.pBaseSelectorName )
 		end )
 	end
 	
@@ -114,6 +116,23 @@ class DisplayInteractPromptEntry extends Panel
 	/** \brief Binding icon height. */
 	public func int getBindingIconHeight()
 		return this.pBindingIconHeight
+	end
+	
+	/** \brief Base selector name. */
+	public func String getBaseSelectorName()
+		return this.pBaseSelectorName
+	end
+	
+	/** \brief Set base selector name. */
+	public func void setBaseSelectorName( String name )
+		if this.pBaseSelectorName.equals( name )
+			return
+		end
+		
+		this.updateFromEntry( null )
+		
+		this.pBaseSelectorName = name
+		this.setDesignerSelector( this.pBaseSelectorName )
 	end
 	
 	
@@ -188,6 +207,8 @@ class DisplayInteractPromptEntry extends Panel
 				this.pLabelDescription.setVisible( false )
 				
 				this.pPanelBindings.setVisible( false )
+				
+				this.setDesignerSelector( this.pBaseSelectorName )
 				return null
 			end
 			
@@ -207,7 +228,10 @@ class DisplayInteractPromptEntry extends Panel
 				this.addBindingsForCommand( entry )
 			end
 			this.pPanelBindings.setVisible( this.pPanelBindings.getWidgetCount() > 0 )
+			
+			this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
 		end )
+		
 		this.doLayout()
 	end
 	

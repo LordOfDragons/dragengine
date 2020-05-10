@@ -2416,6 +2416,12 @@
 			<type>integer</type>
 			<default>32</default>
 		</property>
+		<property name='transparency'>
+			<description>Transparency of prompt window.</description>
+			<type>range</type>
+			<range min='0' max='1'/>
+			<default>0.5</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 </gameDefinition>

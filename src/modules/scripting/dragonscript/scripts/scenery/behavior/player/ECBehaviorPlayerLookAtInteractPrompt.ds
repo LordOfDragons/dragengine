@@ -89,6 +89,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		private var ECBehaviorPlayerControllable.Instance pPlayerControllable
 		private var ECBehaviorLookAt.Instance pLookAt
 		private var int pBindingIconHeight
+		private var float pTransparency
 		private var Container pUIContainer
 		private var Panel pPanelPrompt
 		private var Widget pWidgetPrompt
@@ -124,6 +125,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
 			this.pBindingIconHeight = this.pECBehavior.getBindingIconHeight().getValue( stub )
+			this.pTransparency = this.pECBehavior.getTransparency().getValue( stub )
 			this.pPlayerControllable.addListener( PlayerTakesControl.new( this ) )
 			this.pLookAt.addListener( LookAtChanged.new( this ) )
 		end
@@ -148,6 +150,25 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		/** \brief Binding icon height. */
 		public func int getBindingIconHeight()
 			return this.pBindingIconHeight
+		end
+		
+		/** \brief Transparency. */
+		public func float getTransparency()
+			return this.pTransparency
+		end
+		
+		/** \brief Set transparency. */
+		public func void setTransparency( float transparency )
+			transparency = DEMath.clamp( transparency, 0.0, 1.0 )
+			if DEMath.fabs( transparency - this.pTransparency ) < 0.001
+				return
+			end
+			
+			this.pTransparency = transparency
+			
+			if this.pPanelPrompt != null
+				this.pPanelPrompt.setTransparency( transparency )
+			end
 		end
 		
 		/** \brief UI Container to add panel to. */
@@ -239,6 +260,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pPanelPrompt.setVisible( false )
 			
 			this.pWidgetPrompt = this.createWidgetPrompt()
+			this.pWidgetPrompt.setTransparency( this.pTransparency )
 			
 			this.pPanelPrompt.addWidget( this.pWidgetPrompt )
 			this.pUIContainer.addWidget( this.pPanelPrompt )
@@ -299,6 +321,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	private var CommandManager pCommandManager
 	private var BindingManager pBindingManager
 	private var ECPInteger pBindingIconHeight
+	private var ECPFloat pTransparency
 	
 	
 	
@@ -356,6 +379,9 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		this.pBindingIconHeight = ECPInteger.new( prefix + ".bindingIconHeight", 32, 1 )
 		eclass.addProperty( this.pBindingIconHeight )
 		
+		this.pTransparency = ECPFloat.new( prefix + ".transparency", 1, 0, 1 )
+		eclass.addProperty( this.pTransparency )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -409,6 +435,11 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	/** \brief Binding icon height. */
 	public func ECPInteger getBindingIconHeight()
 		return this.pBindingIconHeight
+	end
+	
+	/** \brief Transparency. */
+	public func ECPFloat getTransparency()
+		return this.pTransparency
 	end
 	
 	
