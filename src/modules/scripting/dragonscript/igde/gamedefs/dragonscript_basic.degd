@@ -2420,7 +2420,7 @@
 			<description>Transparency of prompt window.</description>
 			<type>range</type>
 			<range min='0' max='1'/>
-			<default>0.5</default>
+			<default>1</default>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
