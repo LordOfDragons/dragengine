@@ -2531,20 +2531,27 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				}
 				
 				deResource &attachedResource = *attachment.GetResource();
-				if( attachedResource.GetResourceManager()->GetResourceType() != deResourceManager::ertCollider ){
+				const deResourceManager::eResourceType attResType = ( deResourceManager::eResourceType )
+					attachedResource.GetResourceManager()->GetResourceType();
+				const bool isAttCollider = attResType == deResourceManager::ertCollider;
+				const bool isAttComponent = attResType == deResourceManager::ertComponent;
+				
+				if( ! isAttCollider && ! isAttComponent ){
 					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
 					break;
 				}
 				
-				deCollider &attachedCollider = ( deCollider& )attachedResource;
+				deCollider * const attachedCollider = isAttCollider ? ( deCollider* )&attachedResource : NULL;
 				deColliderVisitorIdentify visitor;
 				bool changed = false;
 				
-				attachedCollider.Visit( visitor );
+				if( attachedCollider ){
+					attachedCollider->Visit( visitor );
+				}
 				
-				if( visitor.IsComponent() ){
-					deColliderComponent &attachedColComp = visitor.CastToComponent();
-					deComponent * const attachedComponent = attachedColComp.GetComponent();
+				if( isAttComponent || visitor.IsComponent() ){
+					deComponent * const attachedComponent = isAttCollider
+						? visitor.CastToComponent().GetComponent() : ( deComponent* )&attachedResource;
 					
 					if( ! attachedComponent ){
 						bpAttachment.Reposition( posMatrix, ! pPreventAttNotify ); // fall back to static
@@ -2572,8 +2579,14 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 						bpAttachment.SetDirtyMappings( false );
 					}
 					
-					attachedCollider.SetGeometry( pColliderComponent.GetPosition(),
-						pColliderComponent.GetOrientation() );
+					if( isAttCollider ){
+						attachedCollider->SetGeometry( pColliderComponent.GetPosition(),
+							pColliderComponent.GetOrientation() );
+						
+					}else{
+						attachedComponent->SetPosition( pColliderComponent.GetPosition() );
+						attachedComponent->SetOrientation( pColliderComponent.GetOrientation() );
+					}
 					
 					for( j=0; j<boneCount; j++ ){
 						const int boneIndex = bpAttachment.GetBoneMappingAt( j );
@@ -2610,8 +2623,8 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				}
 				
 				// notify attachments if not prevented
-				if( changed ){
-					debpCollider &bpCollider = *( ( debpCollider* )attachedCollider.GetPeerPhysics() );
+				if( changed && isAttCollider ){
+					debpCollider &bpCollider = *( ( debpCollider* )attachedCollider->GetPeerPhysics() );
 					
 					if( pPreventAttNotify ){
 						// notification is prevented. register collider for finish detection.
@@ -2619,7 +2632,7 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 						bpCollider.RegisterColDetFinish();
 						
 					}else{
-						attachedCollider.GetPeerScripting()->ColliderChanged( &attachedCollider );
+						attachedCollider->GetPeerScripting()->ColliderChanged( attachedCollider );
 						bpCollider.ClearRequiresUpdate();
 					}
 				}

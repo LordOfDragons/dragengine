@@ -100,21 +100,21 @@ void deClassColliderRig::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myse
 // management
 ///////////////
 
-// public func void attachRig( ColliderRig collider )
+// public func void attachRig( Object resource )
 deClassColliderRig::nfAttachRig::nfAttachRig( const sInitData &init ) : dsFunction( init.clsColRig,
 "attachRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColRig ); // collider
+	p_AddParameter( init.clsObj ); // resource
 }
 void deClassColliderRig::nfAttachRig::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deColliderRig &collider = *( ( ( sColRigNatDat* )p_GetNativeData( myself ) )->collider );
-	deClassColliderRig &clsColRig = *( ( deClassColliderRig* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = ( ( deClassColliderRig* )GetOwnerClass() )->GetDS();
 	
-	deColliderRig * const attachCollider = clsColRig.GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	if( ! attachCollider ){
+	deResource * const resource = ds.GetClassCollider()->GetResource( *rt->GetValue( 0 ) );
+	if( ! resource ){
 		DSTHROW( dueNullPointer );
 	}
 	
-	clsColRig.GetDS().GetClassCollider()->AttachRig( collider, attachCollider );
+	ds.GetClassCollider()->AttachRig( collider, resource );
 }
 
 // public func void attachBone( Object resource, String targetBone )

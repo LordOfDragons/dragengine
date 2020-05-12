@@ -109,7 +109,6 @@ class ECBehaviorOutline extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorOutline pECBehavior
 		private var Component pComponent
-		private var ColliderComponent pCollider
 		private var DynamicSkin pDynamicSkin
 		private var Skin pSkin
 		private var Color pColor
@@ -156,13 +155,6 @@ class ECBehaviorOutline extends DefaultECBehavior
 			this.pComponent.setOrientation( component.getOrientation() )
 			this.pComponent.setScaling( component.getScaling() )
 			
-			this.pCollider = ColliderComponent.new()
-			this.pCollider.setResponseType( CollisionResponse.kinematic )
-			this.pCollider.setComponent( this.pComponent )
-			this.pCollider.setEnabled( false )
-			this.pCollider.setUseLocalGravity( true )
-			this.pCollider.setGeometry( component.getPosition(), component.getOrientation(), component.getScaling() )
-			
 			this.pDynamicSkin = DynamicSkin.new()
 			this.pDynamicSkin.addRenderable( "color", DynamicSkinRenderableType.color )
 			this.pDynamicSkin.setColorAt( 0, this.pColor )
@@ -182,10 +174,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 				var Collider collider = this.pECBehavior.getCollider().instance( element ).getCollider()
 				if collider != null
 					if collider castable ColliderRig
-						( collider cast ColliderRig ).attachRig( this.pCollider )
+						( collider cast ColliderRig ).attachRig( this.pComponent )
 						
 					else
-						collider.attachStatic( this.pCollider, Vector.new(), Quaternion.new() )
+						collider.attachStatic( this.pComponent, Vector.new(), Quaternion.new() )
 					end
 				end
 			end
@@ -201,11 +193,6 @@ class ECBehaviorOutline extends DefaultECBehavior
 		/** \brief Outline component. */
 		public func Component getComponent()
 			return this.pComponent
-		end
-		
-		/** \brief Outline collider. */
-		public func Collider getCollider()
-			return this.pCollider
 		end
 		
 		/** \brief Dynamic skin. */
@@ -290,16 +277,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 			if this.pComponent != null
 				this.getElement().getGameWorld().getWorld().addComponent( this.pComponent )
 			end
-			if this.pCollider != null
-				this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
-			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pCollider != null
-				this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
-			end
 			if this.pComponent != null
 				this.getElement().getGameWorld().getWorld().removeComponent( this.pComponent )
 			end

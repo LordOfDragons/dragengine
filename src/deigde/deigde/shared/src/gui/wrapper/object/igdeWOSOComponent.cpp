@@ -928,20 +928,14 @@ bool igdeWOSOComponent::pIsVisible() const{
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){
-	// release outline component and collider if present
-	if( pOutlineCollider ){
+	// release outline component if present
+	if( pOutlineComponent ){
 		if( pCollider ){
-			deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineCollider );
+			deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineComponent );
 			if( attachment ){
 				pCollider->RemoveAttachment( attachment );
 			}
 		}
-		if( pOutlineCollider->GetParentWorld() ){
-			pOutlineCollider->GetParentWorld()->RemoveCollider( pOutlineCollider );
-		}
-		pOutlineCollider = NULL;
-	}
-	if( pOutlineComponent ){
 		if( pOutlineComponent->GetParentWorld() ){
 			pOutlineComponent->GetParentWorld()->RemoveComponent( pOutlineComponent );
 		}
@@ -970,14 +964,8 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	
 	GetWrapper().GetWorld()->AddComponent( pOutlineComponent );
 	
-	// create outline collider and attach it
-	pOutlineCollider.TakeOver( engine.GetColliderManager()->CreateColliderComponent() );
-	pOutlineCollider->SetEnabled( false );
-	( ( deColliderComponent& )( deCollider& )pOutlineCollider ).SetComponent( pOutlineComponent );
-	
-	GetWrapper().GetWorld()->AddCollider( pOutlineCollider );
-	
-	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineCollider );
+	// attach outline component
+	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineComponent );
 	attachment->SetAttachType( deColliderAttachment::eatRig );
 	pCollider->AddAttachment( attachment );
 }
