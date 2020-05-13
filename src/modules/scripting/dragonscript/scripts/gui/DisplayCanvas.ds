@@ -30,11 +30,9 @@ pin Dragengine.Scenery
  * \brief Display canvas in the widget.
  */
 class DisplayCanvas extends Widget
-	/** \brief Canvas canvas. */
 	private var CanvasCanvasView pCanvasCanvas
-	
-	/** \brief Repeat mode. */
 	private var RepeatMode pRepeatMode
+	private var CanvasView pCanvasView
 	
 	
 	
@@ -55,6 +53,7 @@ class DisplayCanvas extends Widget
 	 */
 	public func new( CanvasView canvasView, RepeatMode repeatMode )
 		this.pRepeatMode = RepeatMode.once
+		this.pCanvasView = canvasView
 		
 		this.pCanvasCanvas = CanvasCanvasView.new()
 		this.getCanvasContent().addCanvas( this.pCanvasCanvas )
@@ -67,7 +66,7 @@ class DisplayCanvas extends Widget
 	
 	/** Canvas to display or null if not set. */
 	public func CanvasView getCanvas()
-		return this.pCanvasCanvas.getCanvasView()
+		return this.pCanvasView
 	end
 	
 	/**
@@ -75,10 +74,11 @@ class DisplayCanvas extends Widget
 	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
 	 */
 	public func void setCanvas( CanvasView canvasView )
-		if canvasView == this.pCanvasCanvas.getCanvasView()
+		if this.pCanvasView == canvasView
 			return
 		end
 		
+		this.pCanvasView = canvasView
 		this.pCanvasCanvas.setCanvasView( canvasView )
 		
 		this.layoutParent()
@@ -108,20 +108,19 @@ class DisplayCanvas extends Widget
 	
 	/** \brief Minimal size of widget. */
 	public func Point getMinimumSize()
-		var Canvas canvas = this.pCanvasCanvas.getCanvasView()
-		if canvas == null or this.isMinimumSizeSet()
+		if this.pCanvasView == null or this.isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
 		select this.pRepeatMode
 		case RepeatMode.once
-			return canvas.getSize()
+			return this.pCanvasView.getSize()
 			
 		case RepeatMode.tileX
-			return Point.new( this.getWidth(), canvas.getSize().getY() )
+			return Point.new( this.getWidth(), this.pCanvasView.getSize().getY() )
 			
 		case RepeatMode.tileY
-			return Point.new( canvas.getSize().getX(), this.getHeight() )
+			return Point.new( this.pCanvasView.getSize().getX(), this.getHeight() )
 			
 		case RepeatMode.stretch, RepeatMode.tile
 			return super.getMinimumSize()
@@ -135,12 +134,11 @@ class DisplayCanvas extends Widget
 	
 	/** \brief Update canvas canvas. */
 	public func void updateCanvasCanvas()
-		var Canvas canvas = this.pCanvasCanvas.getCanvasView()
-		if canvas == null
+		if this.pCanvasView == null
 			return
 		end
 		
-		var Point canvasSize = canvas.getSize()
+		var Point canvasSize = this.pCanvasView.getSize()
 		var Point contentSize = this.getCanvasContent().getSize()
 		var int repeatX, repeatY
 		
@@ -148,7 +146,7 @@ class DisplayCanvas extends Widget
 		case RepeatMode.once
 			this.pCanvasCanvas.setRepeatX( 1 )
 			this.pCanvasCanvas.setRepeatY( 1 )
-			this.pCanvasCanvas.setSize( canvas.getSize() )
+			this.pCanvasCanvas.setSize( this.pCanvasView.getSize() )
 			
 		case RepeatMode.stretch
 			this.pCanvasCanvas.setRepeatX( 1 )

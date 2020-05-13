@@ -43,7 +43,7 @@ class DisplayRotatingImage extends Widget
 	private var Vector2 pRotationCenter
 	private var Vector2 pImageOffset
 	private var float pScale
-	
+	private var Image pImage
 	
 	
 	/** \brief Create display rotating image widget. */
@@ -52,6 +52,7 @@ class DisplayRotatingImage extends Widget
 	
 	/** \brief Create display rotating image widget. */
 	public func new( Image image )
+		this.pImage = image
 		this.pRotation = 0
 		this.pRotationCenter = Vector2.new( 0.5, 0.5 )
 		this.pImageOffset = Vector2.new()
@@ -67,15 +68,16 @@ class DisplayRotatingImage extends Widget
 	
 	/** \brief Image to display or \em null if not set. */
 	public func Image getImage()
-		return this.pCanvasImage.getImage()
+		return this.pImage
 	end
 	
 	/** \brief Set image to display or \em null if not set. */
 	public func void setImage( Image image )
-		if image == this.pCanvasImage.getImage()
+		if this.pImage == image
 			return
 		end
 		
+		this.pImage = image
 		this.pCanvasImage.setImage( image )
 		
 		this.layoutParent()
@@ -156,12 +158,11 @@ class DisplayRotatingImage extends Widget
 			return super.getMinimumSize()
 		end
 		
-		var Image image = this.pCanvasImage.getImage()
-		if image == null
+		if this.pImage == null
 			return super.getMinimumSize()
 		end
 		
-		return image.getSize()
+		return this.pImage.getSize()
 	end
 	
 	
@@ -179,12 +180,12 @@ class DisplayRotatingImage extends Widget
 	
 	/** \brief Update canvas image. */
 	public func void updateCanvasImage()
-		if this.pCanvasImage.getImage() == null
+		if this.pImage == null
 			return
 		end
 		
 		var Vector2 contentSize = Vector2.new( this.getCanvasContent().getSize() )
-		var Vector2 imageSize = Vector2.new( this.pCanvasImage.getImage().getSize() )
+		var Vector2 imageSize = Vector2.new( this.pImage.getSize() )
 		var float centerX = this.pRotationCenter.getX() * contentSize.getX()
 		var float centerY = this.pRotationCenter.getY() * contentSize.getY()
 		this.pCanvasImage.setTransform( \
@@ -204,9 +205,8 @@ class DisplayRotatingImage extends Widget
 	
 	/** \brief Resize canvas image. */
 	public func void resizeCanvasImage()
-		var Image image = this.pCanvasImage.getImage()
-		if image != null
-			this.pCanvasImage.setSize( image.getSize() )
+		if this.pImage != null
+			this.pCanvasImage.setSize( this.pImage.getSize() )
 		end
 	end
 	
