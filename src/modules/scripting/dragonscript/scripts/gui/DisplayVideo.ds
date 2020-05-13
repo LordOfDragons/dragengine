@@ -37,17 +37,11 @@ pin Dragengine.Utils
  * By default no audio is played if the video has audio. To play audio assign a Speaker.
  */
 class DisplayVideo extends Widget
-	/** \brief Canvas video. */
 	private var CanvasVideoPlayer pCanvasVideo
-	
-	/** \brief Repeat mode. */
 	private var RepeatMode pRepeatMode
-	
-	/** \brief Video player. */
 	private var VideoPlayer pVideoPlayer
-	
-	/** \brief Speaker or null. */
 	private var Speaker pSpeaker
+	private var Video pVideo
 	
 	
 	
@@ -70,6 +64,7 @@ class DisplayVideo extends Widget
 	/** Create display video widget. */
 	public func new( Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker )
 		this.pRepeatMode = RepeatMode.once
+		this.pVideo = video
 		this.pVideoPlayer = VideoPlayer.new()
 		this.pVideoPlayer.setLooping( true )
 		
@@ -97,12 +92,12 @@ class DisplayVideo extends Widget
 	
 	/** Video to display or null if not set. */
 	public func Video getVideo()
-		return this.pVideoPlayer.getVideo()
+		return this.pVideo
 	end
 	
 	/** Set video to display. */
 	public func void setVideo( Video video )
-		if video == this.pVideoPlayer.getVideo()
+		if this.pVideo == video
 			return
 		end
 		
@@ -158,11 +153,10 @@ class DisplayVideo extends Widget
 	
 	/** Minimal size of widget. */
 	public func Point getMinimumSize()
-		var Video video = this.pVideoPlayer.getVideo()
-		if video == null or this.isMinimumSizeSet()
+		if this.pVideo == null or this.isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
-		return this.getPadding().getSize() + video.getSize()
+		return this.getPadding().getSize() + this.pVideo.getSize()
 	end
 	
 	
@@ -277,8 +271,7 @@ class DisplayVideo extends Widget
 	
 	/** Update canvas video. */
 	public func void updateCanvasVideo()
-		var Video video = this.pVideoPlayer.getVideo()
-		if video == null
+		if this.pVideo == null
 			return
 		end
 		
@@ -291,7 +284,7 @@ class DisplayVideo extends Widget
 			this.pCanvasVideo.setRepeatX( 1 )
 			this.pCanvasVideo.setRepeatY( 1 )
 			this.pCanvasVideo.setPosition( position )
-			this.pCanvasVideo.setSize( video.getSize() )
+			this.pCanvasVideo.setSize( this.pVideo.getSize() )
 			
 		case RepeatMode.stretch
 			this.pCanvasVideo.setRepeatX( 1 )
@@ -300,8 +293,8 @@ class DisplayVideo extends Widget
 			this.pCanvasVideo.setSize( size )
 			
 		case RepeatMode.tileX
-			var int videoWidth = video.getWidth()
-			var int videoHeight = video.getHeight()
+			var int videoWidth = this.pVideo.getWidth()
+			var int videoHeight = this.pVideo.getHeight()
 			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
 			this.pCanvasVideo.setRepeatX( repeatX )
 			this.pCanvasVideo.setRepeatY( 1 )
@@ -309,8 +302,8 @@ class DisplayVideo extends Widget
 			this.pCanvasVideo.setSize( Point.new( videoWidth * repeatX, videoHeight ) )
 			
 		case RepeatMode.tileY
-			var int videoWidth = video.getWidth()
-			var int videoHeight = video.getHeight()
+			var int videoWidth = this.pVideo.getWidth()
+			var int videoHeight = this.pVideo.getHeight()
 			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
 			this.pCanvasVideo.setRepeatX( 1 )
 			this.pCanvasVideo.setRepeatY( repeatY )
@@ -318,8 +311,8 @@ class DisplayVideo extends Widget
 			this.pCanvasVideo.setSize( Point.new( videoWidth, videoHeight * repeatY ) )
 			
 		case RepeatMode.tile
-			var int videoWidth = video.getWidth()
-			var int videoHeight = video.getHeight()
+			var int videoWidth = this.pVideo.getWidth()
+			var int videoHeight = this.pVideo.getHeight()
 			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / videoWidth + 1
 			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / videoHeight + 1
 			this.pCanvasVideo.setRepeatX( repeatX )

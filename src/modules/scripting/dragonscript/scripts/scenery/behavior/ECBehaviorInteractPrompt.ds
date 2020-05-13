@@ -59,6 +59,12 @@ pin Dragengine.Utils
  * by the player interact prompt display. If found the bindings used to trigger this
  * command are shown or the command name whever the prompt display decides to use.
  * 
+ * Prompts are typically used with collision testing for example ECBehaviorLookAt and
+ * likewise. In this situation it can be useful to assign prompts to individual areas
+ * of a collider for example using hit bone name as produced by collision tests. For this
+ * use case the bones parameter can be used. If this parameter is an not an empty list
+ * this prompt shall only be considered if the hit bone is included in the list.
+ * 
  * This behavior can be used multiple times on an element to add different interaction
  * prompts. Use the behavior identifier to tell them apart.
  * 
@@ -72,6 +78,7 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.description": ECPUnicodeString
  * - "interactPrompt{(id)}.command": ECPString
  * - "interactPrompt{(id)}.enabled": ECPBoolean
+ * - "interactPrompt{(id)}.bones": ECPStringList
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Behavior instance. */
@@ -84,6 +91,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		private var UnicodeString pDescription
 		private var String pCommand
 		private var bool pEnabled
+		private var Array pBones
 		
 		
 		
@@ -97,6 +105,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
 			var ElementClass eclass = this.getElement().getClass()
+			var CodecPropertyString codec = eclass.getCodecPropertyString()
+			
 			this.pImage = this.pECBehavior.getImage().getImage( stub, eclass )
 			this.pVideo = this.pECBehavior.getVideo().getVideo( stub, eclass )
 			this.pStyle = this.pECBehavior.getStyle().getValue( stub )
@@ -104,6 +114,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 			this.pDescription = this.pECBehavior.getDescription().getValue( stub )
 			this.pCommand = this.pECBehavior.getCommand().getValue( stub )
 			this.pEnabled = this.pECBehavior.getEnabled().getValue( stub )
+			this.pBones = this.pECBehavior.getBones().getList( stub, codec )
 		end
 		
 		
@@ -194,6 +205,37 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		public func void setEnabled( bool enabled )
 			this.pEnabled = enabled
 		end
+		
+		
+		
+		/** \brief Count of bones this prompt is limited to. */
+		public func int getBoneCount()
+			return this.pBones.getCount()
+		end
+		
+		/** \brief Bone at index this prompt is limited to. */
+		public func String getBoneAt( int index )
+			return this.pBones.getAt( index ) cast String
+		end
+		
+		/** \brief Bone is included in list of bones this prompt is limited to. */
+		public func bool hasBone( String bone )
+			return this.pBones.has( bone )
+		end
+		
+		/**
+		 * \brief Visit bones bones this prompt is limited to using block.
+		 * 
+		 * Block receives as argument "String bone".
+		 */
+		public func void forEachBone( Block ablock )
+			this.pBones.forEach( ablock )
+		end
+		
+		/** \brief Set list of bones this prompt is limited to as Array of String. */
+		protected func void setBones( Array bones )
+			this.pBones = bones
+		end
 	end
 	
 	
@@ -205,6 +247,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	private var ECPUnicodeString pDescription
 	private var ECPString pCommand
 	private var ECPBoolean pEnabled
+	private var ECPStringList pBones
 	
 	
 	
@@ -244,6 +287,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
 		eclass.addProperty( this.pEnabled )
 		
+		this.pBones = ECPStringList.new( prefix + "bones" )
+		eclass.addProperty( this.pBones )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -282,6 +328,11 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/** \brief Prompt is enabled. */
 	public func ECPBoolean getEnabled()
 		return this.pEnabled
+	end
+	
+	/** \brief List of bones to restrict the prompt to. */
+	public func ECPStringList getBones()
+		return this.pBones
 	end
 	
 	

@@ -154,6 +154,10 @@ class DisplayInputSource extends Panel
 	
 	/** \brief Clear. */
 	public func void clear()
+		if this.pInputDevice == null and this.pInputButton == null and this.pInputAxis == null
+			return
+		end
+		
 		this.pInputDevice = null
 		this.pInputButton = null
 		this.pInputAxis = null
@@ -163,6 +167,10 @@ class DisplayInputSource extends Panel
 	
 	/** \brief Set input device. */
 	public func void set( InputDevice device )
+		if this.pInputDevice == device and this.pInputButton == null and this.pInputAxis == null
+			return
+		end
+		
 		this.pInputDevice = device
 		this.pInputButton = null
 		this.pInputAxis = null
@@ -178,6 +186,9 @@ class DisplayInputSource extends Panel
 	public func void set( InputDevice device, InputDeviceButton button )
 		if button == null
 			throw ENullPointer.new( "button" )
+		end
+		if this.pInputDevice == device and this.pInputButton == button and this.pInputAxis == null
+			return
 		end
 		
 		this.pInputDevice = device
@@ -195,6 +206,9 @@ class DisplayInputSource extends Panel
 	public func void set( InputDevice device, InputDeviceAxis axis )
 		if axis == null
 			throw ENullPointer.new( "axis" )
+		end
+		if this.pInputDevice == device and this.pInputButton == null and this.pInputAxis == axis
+			return
 		end
 		
 		this.pInputDevice = device
@@ -216,6 +230,10 @@ class DisplayInputSource extends Panel
 	 * - Source label: Label.<selector>
 	 */
 	public func void setDesignerSelector( String selector )
+		if selector.equals( this.getDesignerSelector() )
+			return
+		end
+		
 		super.setDesignerSelector( selector )
 		
 		this.pDisplayImageDevice.setDesignerSelector( "Image." + selector )
@@ -227,12 +245,9 @@ class DisplayInputSource extends Panel
 	
 	/** \brief Update widgets. */
 	protected func void updateWidgets()
-		var Image image
-		var String text
-		
 		this.runWhileBlockingLayout( block
 			if this.pInputDevice != null
-				image = this.pInputDevice.getLargestDisplayIconY( this.pIconHeight )
+				var Image image = this.pInputDevice.getLargestDisplayIconY( this.pIconHeight )
 				if image != null
 					this.pDisplayImageDevice.setImage( image )
 					this.pDisplayImageDevice.setMinimumSize( null )
@@ -242,7 +257,7 @@ class DisplayInputSource extends Panel
 					this.pDisplayImageDevice.setMinimumSize( Point.new( this.pIconHeight, this.pIconHeight ) )
 				end
 				
-				text = this.pInputDevice.getDisplayText()
+				var String text = this.pInputDevice.getDisplayText()
 				if text.empty()
 					text = " "
 				end
@@ -256,7 +271,7 @@ class DisplayInputSource extends Panel
 			end
 			
 			if this.pInputButton != null
-				image = this.pInputButton.getLargestDisplayIconY( this.pIconHeight )
+				var Image image = this.pInputButton.getLargestDisplayIconY( this.pIconHeight )
 				if image != null
 					this.pDisplayImageSource.setImage( image )
 					this.pDisplayImageSource.setMinimumSize( null )
@@ -267,7 +282,7 @@ class DisplayInputSource extends Panel
 				end
 				this.pDisplayImageSource.setVisible( true )
 				
-				text = this.pInputButton.getDisplayText()
+				var String text = this.pInputButton.getDisplayText()
 				if text.empty()
 					text = " "
 				end
@@ -278,7 +293,7 @@ class DisplayInputSource extends Panel
 				this.pLabelDevice.setVisible( this.pInputDevice != null )
 				
 			elif this.pInputAxis != null
-				image = this.pInputAxis.getLargestDisplayIconY( this.pIconHeight )
+				var Image image = this.pInputAxis.getLargestDisplayIconY( this.pIconHeight )
 				if image != null
 					this.pDisplayImageSource.setImage( image )
 					this.pDisplayImageSource.setMinimumSize( null )
@@ -289,7 +304,7 @@ class DisplayInputSource extends Panel
 				end
 				this.pDisplayImageSource.setVisible( true )
 				
-				text = this.pInputAxis.getDisplayText()
+				var String text = this.pInputAxis.getDisplayText()
 				if text.empty()
 					text = " "
 				end

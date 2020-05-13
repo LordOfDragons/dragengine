@@ -76,6 +76,7 @@ private:
 	DEF_NATFUNC(nfGetSize);
 	DEF_NATFUNC(nfSaveToFile);
 	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
 	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };

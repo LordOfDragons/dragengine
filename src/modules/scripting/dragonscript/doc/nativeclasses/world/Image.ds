@@ -47,30 +47,37 @@ fixed class Image
 	/*@{*/
 	/** \brief Normalized filename the image has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Width in pixels. */
 	public func int getWidth()
+		return 0
 	end
 	
 	/** \brief Height in pixels. */
 	public func int getHeight()
+		return 0
 	end
 	
 	/** \brief Width and height in pixels. */
 	public func Point getSize()
+		return null
 	end
 	
 	/** \brief Depth in layers. */
 	public func int getDepth()
+		return 0
 	end
 	
 	/** \brief Component count in the range from 1 to 4. */
 	public func int getComponentCount()
+		return 0
 	end
 	
 	/** \brief Bit count which is 8, 16 or 32. */
 	public func int getBitCount()
+		return 0
 	end
 	
 	/** \brief Save image to file. */
@@ -79,6 +86,7 @@ fixed class Image
 	
 	/** \brief Drop alpha component. */
 	public func Image dropAlpha()
+		return null
 	end
 	
 	
@@ -90,6 +98,16 @@ fixed class Image
 	 *          image resource.
 	 */
 	public func bool equals( Object other )
+		return false
+	end
+	
+	/**
+	 * \brief Images are equal.
+	 * 
+	 * In contrary to equals(Object) this is safe to be called with null values.
+	 */
+	static public func bool equals( Image image1, Image image2 )
+		return false
 	end
 	
 	/**
@@ -97,6 +115,7 @@ fixed class Image
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

@@ -43,6 +43,11 @@ pin Dragengine.Utils
  * The widget is shown inside a container Panel created by the behavior. The default layout
  * of the panel is CentrizedBoxLayout. Change the layout instance to use your own.
  * 
+ * While player is the active actor this behavior polls every frame update for changes in
+ * prompts and updates the prompt display. This ensures dynamic changes on prompts can be
+ * detected. While the player is not the active actor this behavior disables per-frame
+ * updates to not waste performance.
+ * 
  * This behavior is used for player actors only.
  * 
  * Uses property prefix "playerLookAtInteractPrompt."
@@ -64,23 +69,6 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			
 			public func void playerReleasesControl( ECBehaviorPlayerControllable.Instance instance )
 				this.pInstance.playerReleasesControl()
-			end
-		end
-		
-		/** \brief Players looks at element listener. */
-		class LookAtChanged extends ECBehaviorLookAt.DefaultListener
-			private var Instance pInstance
-			
-			public func new( Instance instance )
-				this.pInstance = instance
-			end
-			
-			public func void enabledChanged( ECBehaviorLookAt.Instance instance )
-				this.pInstance.lookAtChanged()
-			end
-			
-			public func void lookAtChanged( ECBehaviorLookAt.Instance instance )
-				this.pInstance.lookAtChanged()
 			end
 		end
 		
@@ -127,7 +115,6 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pBindingIconHeight = this.pECBehavior.getBindingIconHeight().getValue( stub )
 			this.pTransparency = this.pECBehavior.getTransparency().getValue( stub )
 			this.pPlayerControllable.addListener( PlayerTakesControl.new( this ) )
-			this.pLookAt.addListener( LookAtChanged.new( this ) )
 		end
 		
 		
@@ -264,6 +251,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			
 			this.pPanelPrompt.addWidget( this.pWidgetPrompt )
 			this.pUIContainer.addWidget( this.pPanelPrompt )
+			
+			this.setRequiresThink( true )
 		end
 		
 		/**
@@ -272,6 +261,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		 * Destroys prompt widget if created removing it from the UI container.
 		 */
 		public func void playerReleasesControl()
+			this.setRequiresThink( false )
+			
 			if this.pPanelPrompt != null
 				this.pPanelPrompt.dispose()
 				this.pPanelPrompt = null
@@ -280,17 +271,27 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Look at element changed.
+		 * \brief Get prompts to shows as Array of ECBehaviorInteractPrompt.Instance.
 		 * 
-		 * If prompt widget is present and looking at an element collects all
-		 * ECBehaviorInteractPrompt instances, calls updateWidgetPrompt() and shows widget.
-		 * Otherwise clears prompt and hides widget.
+		 * Default implementation gets all enabled instances. If look-at bone name is
+		 * also present ignores instances having bones defined where the look-at bone
+		 * is not part of the bones list.
 		 */
-		public func void lookAtChanged()
-			if this.pWidgetPrompt == null
-				return
+		public func Array getPromptsFrom( BehaviorElement element )
+			var Array prompts = ECBehaviorInteractPrompt.getAllEnabledInstancesIn( element )
+			
+			var String bone = this.pLookAt.getLookAtBoneName()
+			if bone != null
+				prompts = prompts.collect( block ECBehaviorInteractPrompt.Instance each
+					return each.getBoneCount() == 0 or each.hasBone( bone )
+				end )
 			end
 			
+			return prompts
+		end
+		
+		/** \brief Update prompts. */
+		public func void updatePrompts()
 			var Element element = this.pLookAt.getLookAtElement()
 			var Array prompts = Array.new()
 			
@@ -303,13 +304,11 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pPanelPrompt.setVisible( prompts.getCount() > 0 )
 		end
 		
-		/**
-		 * \brief Get prompts to shows as Array of ECBehaviorInteractPrompt.Instance.
-		 * 
-		 * Default implementation gets all enabled instances.
-		 */
-		public func Array getPromptsFrom( BehaviorElement element )
-			return ECBehaviorInteractPrompt.getAllEnabledInstancesIn( element )
+		/** \brief Update prompts if player is active actor. */
+		public func void think( float elapsed )
+			if this.pWidgetPrompt != null
+				this.updatePrompts()
+			end
 		end
 	end
 	

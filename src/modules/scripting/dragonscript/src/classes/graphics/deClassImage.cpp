@@ -219,6 +219,21 @@ void deClassImage::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	}
 }
 
+// static public func bool equals( Image image1, Image image2 )
+deClassImage::nfEquals2::nfEquals2( const sInitData &init ) :
+dsFunction( init.clsImg, "equals", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsImg ); // image1
+	p_AddParameter( init.clsImg ); // image2
+}
+void deClassImage::nfEquals2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassImage &clsImage = *( ( deClassImage* )GetOwnerClass() );
+	const deImage * const image1 = clsImage.GetImage( rt->GetValue( 0 )->GetRealObject() );
+	const deImage * const image2 = clsImage.GetImage( rt->GetValue( 1 )->GetRealObject() );
+	
+	rt->PushBool( image1 == image2 );
+}
+
 
 
 // class deClassImage
@@ -264,6 +279,7 @@ void deClassImage::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSize(init));
 	AddFunction(new nfSaveToFile(init));
 	AddFunction(new nfEquals(init));
+	AddFunction(new nfEquals2(init));
 	AddFunction(new nfHashCode(init));
 	// calculate member offsets
 	CalcMemberOffsets();

@@ -109,24 +109,42 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 		this.pModel = model
 		this.pModel.addListener( this )
 		
-		this.rebuildWidgets()
+		this.updateWidgets()
 	end
 	
 	
 	
 	/**
-	 * \brief Rebuild all widgets representing the entries.
+	 * \brief Update widgets representing the entries.
 	 * 
-	 * Call if entries have been added, removed. If only entries changed calling
-	 * updateWidgets() is enough.
+	 * Call if entries changed. Tries to update existing widgets first creating new ones if
+	 * required. All unused widgets beyond the required count of widgets are hidden to reduce
+	 * widget creation to a minimum.
 	 */
-	public func void rebuildWidgets()
+	public func void updateWidgets()
 		this.runWhileBlockingLayout( block
-			this.removeAllWidgets()
-			
 			var int i, count = this.pModel.getCount()
+			var int widgetCount = this.getWidgetCount()
+			var InteractPromptEntry entry
+			var Widget widget
+			
 			for i = 0 to count
-				this.addWidget( this.createWidget( this.pModel.getAt( i ) cast InteractPromptEntry ) )
+				entry = this.pModel.getAt( i ) cast InteractPromptEntry
+				
+				if i < widgetCount
+					widget = this.getWidget( i )
+					widget.setVisible( true )
+					
+				else
+					widget = this.createWidget( entry )
+					this.addWidget( widget )
+				end
+				
+				this.updateWidget( widget, entry )
+			end
+			
+			for i = count to widgetCount
+				this.getWidget( i ).setVisible( false )
 			end
 		end )
 		
@@ -139,27 +157,33 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	 * Default implementation creates instance of DisplayInteractPromptEntry.
 	 */
 	protected func Widget createWidget( InteractPromptEntry entry )
-		var DisplayInteractPromptEntry dipe = DisplayInteractPromptEntry.new( \
-			this.pBindingManager, this.pBindingIconHeight )
-		dipe.updateFromEntry( entry )
-		return dipe
+		return DisplayInteractPromptEntry.new( this.pBindingManager, this.pBindingIconHeight )
+	end
+	
+	/**
+	 * \brief Update widget with entry.
+	 * 
+	 * Default implementation operates on instances of type DisplayInteractPromptEntry.
+	 */
+	protected func void updateWidget( Widget widget, InteractPromptEntry entry )
+		( widget cast DisplayInteractPromptEntry ).updateFromEntry( entry )
 	end
 	
 	
 	
 	/** \brief Elements added. */
 	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
-		this.rebuildWidgets()
+		this.updateWidgets()
 	end
 	
 	/** \brief Elements removed. */
 	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
-		this.rebuildWidgets()
+		this.updateWidgets()
 	end
 	
 	/** \brief Content of the model changed. */
 	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
-		this.rebuildWidgets()
+		this.updateWidgets()
 	end
 	
 	/** \brief Selection in the model changed. */

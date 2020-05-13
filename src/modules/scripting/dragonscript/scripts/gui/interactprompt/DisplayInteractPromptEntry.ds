@@ -50,6 +50,7 @@ class DisplayInteractPromptEntry extends Panel
 	private var Label pLabelVerb
 	private var Label pLabelDescription
 	private var Panel pPanelBindings
+	private var Command pCommand
 	
 	
 	
@@ -191,9 +192,29 @@ class DisplayInteractPromptEntry extends Panel
 	 */
 	public func void updateFromEntry( InteractPromptEntry entry )
 		this.runWhileBlockingLayout( block
-			this.pPanelBindings.removeAllWidgets()
-			
-			if entry == null
+			if entry != null
+				this.pDisplayImage.setImage( entry.getImage() )
+				this.pDisplayImage.setVisible( entry.getImage() != null )
+				
+				this.pDisplayVideo.setVideo( entry.getVideo() )
+				this.pDisplayVideo.setVisible( entry.getVideo() != null )
+				
+				this.pLabelVerb.setText( entry.getVerb().toUTF8() )
+				this.pLabelVerb.setVisible( not this.pLabelVerb.getText().empty() )
+				
+				this.pLabelDescription.setText( entry.getDescription().toUTF8() )
+				this.pLabelDescription.setVisible( not this.pLabelDescription.getText().empty() )
+				
+				if this.pBindingManager != null
+					this.setCommand( entry.getCommand() )
+					
+				else
+					this.setCommand( null )
+				end
+				
+				this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
+				
+			else
 				this.pDisplayImage.setImage( null )
 				this.pDisplayImage.setVisible( false )
 				
@@ -209,57 +230,89 @@ class DisplayInteractPromptEntry extends Panel
 				this.pPanelBindings.setVisible( false )
 				
 				this.setDesignerSelector( this.pBaseSelectorName )
-				return null
 			end
-			
-			this.pDisplayImage.setImage( entry.getImage() )
-			this.pDisplayImage.setVisible( entry.getImage() != null )
-			
-			this.pDisplayVideo.setVideo( entry.getVideo() )
-			this.pDisplayVideo.setVisible( entry.getVideo() != null )
-			
-			this.pLabelVerb.setText( entry.getVerb().toUTF8() )
-			this.pLabelVerb.setVisible( not this.pLabelVerb.getText().empty() )
-			
-			this.pLabelDescription.setText( entry.getDescription().toUTF8() )
-			this.pLabelDescription.setVisible( not this.pLabelDescription.getText().empty() )
-			
-			if this.pBindingManager != null
-				this.addBindingsForCommand( entry )
-			end
-			this.pPanelBindings.setVisible( this.pPanelBindings.getWidgetCount() > 0 )
-			
-			this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
 		end )
 		
 		this.doLayout()
 	end
 	
-	/** \brief Find bindings for command adding them to bindings panel. */
-	protected func void addBindingsForCommand( InteractPromptEntry entry )
-		var Command command = entry.getCommand()
-		if command == null
+	/** \brief Set command updating widgets if required. */
+	protected func void setCommand( Command command )
+		if this.pCommand == command
 			return
 		end
 		
+		this.pCommand = command
+		this.updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Update binding widgets.
+	 * 
+	 * Tries to update existing widgets first creating new ones if required. All unused
+	 * widgets beyond the required count of widgets are hidden to reduce widget creation
+	 * to a minimum.
+	 */
+	protected func void updateBindingWidgets()
 		this.pPanelBindings.runWhileBlockingLayout( block
+			if this.pCommand == null
+				this.pPanelBindings.forEachWidget( block Widget each
+					each.setVisible( false )
+				end )
+				return null
+			end
+			
+			var int widgetCount = this.pPanelBindings.getWidgetCount()
+			var ObjectReference refIndex = ObjectReference.new( 0 )
+			var Widget widget
+			var int index
+			
 			this.pBindingManager.forEachButtonBinding( block Binding each
-				if each.getCommand() == command and each.getDeviceIndex() != -1 \
-				and each.getSourceIndex() != -1
+				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
+					index = refIndex.get() cast int
+					refIndex.set( index + 1 )
+					
+					if index < widgetCount
+						widget = this.pPanelBindings.getWidget( index )
+						widget.setVisible( true )
+						
+					else
+						widget = this.createBindingWidget()
+						this.pPanelBindings.addWidget( widget )
+					end
+					
 					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
 					var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
-					this.pPanelBindings.addWidget( this.createBindingWidget( device, button ) )
+					this.updateBindingWidget( widget, device, button )
 				end
 			end )
 			
 			this.pBindingManager.forEachAxisBinding( block Binding each
-				if each.getCommand() == command and each.getDeviceIndex() != -1 \
-				and each.getSourceIndex() != -1
+				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
+					index = refIndex.get() cast int
+					refIndex.set( index + 1 )
+					
+					if index < widgetCount
+						widget = this.pPanelBindings.getWidget( index )
+						widget.setVisible( true )
+						
+					else
+						widget = this.createBindingWidget()
+						this.pPanelBindings.addWidget( widget )
+					end
+					
 					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
 					var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
-					this.pPanelBindings.addWidget( this.createBindingWidget( device, axis ) )
+					this.updateBindingWidget( widget, device, axis )
 				end
 			end )
+			
+			var int usedCount = refIndex.get() cast int
+			this.pPanelBindings.setVisible( usedCount > 0 )
+			
+			for index = usedCount to widgetCount
+				this.pPanelBindings.getWidget( index ).setVisible( false )
+			end
 		end )
 	end
 	
@@ -268,15 +321,22 @@ class DisplayInteractPromptEntry extends Panel
 	 * 
 	 * Default implementation creates instance of DisplayInputSource.
 	 */
-	protected func Widget createBindingWidget( InputDevice device, InputDeviceButton button )
-		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight, null, button )
+	protected func Widget createBindingWidget()
+		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight )
 		dpi.setDesignerSelector( "DisplayInputSource." + this.getDesignerSelector() + ".Binding" )
 		return dpi
 	end
 	
-	protected func Widget createBindingWidget( InputDevice device, InputDeviceAxis axis )
-		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight, null, axis )
-		dpi.setDesignerSelector( "DisplayInputSource." + this.getDesignerSelector() + ".Binding" )
-		return dpi
+	/**
+	 * \brief Update widget representing binding.
+	 * 
+	 * Default implementation operates on instance of DisplayInputSource.
+	 */
+	protected func void updateBindingWidget( Widget widget, InputDevice device, InputDeviceButton button )
+		( widget cast DisplayInputSource ).set( null, button )
+	end
+	
+	protected func void updateBindingWidget( Widget widget, InputDevice device, InputDeviceAxis axis )
+		( widget cast DisplayInputSource ).set( null, axis )
 	end
 end

@@ -2404,6 +2404,10 @@
 			<type>boolean</type>
 			<default>1</default>
 		</property>
+		<property name='bones'>
+			<description>List of bones this prompt is limited to.</description>
+			<type>list</type>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorPlayerLookAtInteractPrompt'>
