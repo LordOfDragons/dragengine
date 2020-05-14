@@ -327,7 +327,7 @@ class DisplayInputSource extends Panel
 			end
 		end )
 		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	

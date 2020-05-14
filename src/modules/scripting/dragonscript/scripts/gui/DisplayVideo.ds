@@ -63,17 +63,17 @@ class DisplayVideo extends Widget
 	
 	/** Create display video widget. */
 	public func new( Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker )
-		this.pRepeatMode = RepeatMode.once
+		this.pRepeatMode = repeatMode
 		this.pVideo = video
 		this.pVideoPlayer = VideoPlayer.new()
+		this.pVideoPlayer.setVideo( video )
 		this.pVideoPlayer.setLooping( true )
 		
 		this.pCanvasVideo = CanvasVideoPlayer.new()
 		this.pCanvasVideo.setVideoPlayer( this.pVideoPlayer )
 		this.getCanvasContent().addCanvas( this.pCanvasVideo )
+		this.updateCanvasVideo()
 		
-		this.setVideo( video )
-		this.setRepeatMode( repeatMode )
 		this.setSpeaker( speaker )
 		
 		if autoPlay

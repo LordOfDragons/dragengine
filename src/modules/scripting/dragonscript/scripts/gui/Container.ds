@@ -33,28 +33,14 @@ pin Dragengine.Scenery
  * \brief Groups child widgets arranged by a layout instance.
  */
 class Container extends Widget
-	/** layout used for arranging child widgets */
 	private var Layout pLayout
-	
-	/** list of child widgets */
 	private var Array pChildren
-	
-	/** Block layout calls. Used to prevent deadloops and performance problems with layoutParent/doLayout calls. */
 	private var bool pBlockLayout
-	
-	/** Cached minimum size or null if not known. */
+	private var bool pHasBlockedDoLayout
 	private var Point pCachedMinSize
-	
-	/** Cached minimum size for width size or null if not known. */
 	private var Point pCachedMinSizeForWidthSize
-	
-	/** Cached minimum size for width width or null if not known. */
 	private var int pCachedMinSizeForWidthWidth
-	
-	/** Cached minimum size for height size or null if not known. */
 	private var Point pCachedMinSizeForHeightSize
-	
-	/** Cached minimum size for height height or null if not known. */
 	private var int pCachedMinSizeForHeightHeight
 	
 	
@@ -73,6 +59,7 @@ class Container extends Widget
 		this.pChildren = Array.new()
 		this.pLayout = BoxLayout.new( LayoutAxis.y, 0 )
 		this.pBlockLayout = false
+		this.pHasBlockedDoLayout = false
 	end
 	
 	/** \brief Create container with layout. */
@@ -83,6 +70,7 @@ class Container extends Widget
 		this.pChildren = Array.new()
 		this.pLayout = layout
 		this.pBlockLayout = false
+		this.pHasBlockedDoLayout = false
 	end
 	
 	/**
@@ -97,7 +85,7 @@ class Container extends Widget
 			this.runWhileBlockingLayout( block
 				blockAddContent.run( this )
 			end )
-			this.doLayout()
+			this.doLayoutIfBlocked()
 			
 		catch Exception e
 			this.dispose()
@@ -224,9 +212,10 @@ class Container extends Widget
 	
 	/**
 	 * \brief Block layout calls.
-	 * \details Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
-	 *          Be careful to disable blocking even in case of exceptions. Also make sure to restore
-	 *          the block layout call in place before changing it by yourself to not break chains.
+	 * 
+	 * Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
+	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
+	 * the block layout call in place before changing it by yourself to not break chains.
 	 */
 	public func bool getBlockLayout()
 		return this.pBlockLayout
@@ -234,9 +223,10 @@ class Container extends Widget
 	
 	/**
 	 * \brief Set block layout calls.
-	 * \details Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
-	 *          Be careful to disable blocking even in case of exceptions. Also make sure to restore
-	 *          the block layout call in place before changing it by yourself to not break chains.
+	 * 
+	 * Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
+	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
+	 * the block layout call in place before changing it by yourself to not break chains.
 	 */
 	public func void setBlockLayout( bool blockLayout )
 		this.pBlockLayout = blockLayout
@@ -244,11 +234,12 @@ class Container extends Widget
 	
 	/**
 	 * \brief Run block while layouting is blocked.
-	 * \details This method is useful when you have to add or remove multiple widgets avoiding layout
-	 *          calls to be done for each modification except once to avoid performance loss. The
-	 *          method ensures the blocking state is restored to the value present before even in
-	 *          case of exceptions. You still have to call doLayout() to trigger an update after
-	 *          returning from the method call. This method call can be nested safely.
+	 * 
+	 * This method is useful when you have to add or remove multiple widgets avoiding layout
+	 * calls to be done for each modification except once to avoid performance loss. The
+	 * method ensures the blocking state is restored to the value present before even in
+	 * case of exceptions. You still have to call doLayout() to trigger an update after
+	 * returning from the method call. This method call can be nested safely.
 	 */
 	public func void runWhileBlockingLayout( Block ablock )
 		if this.pBlockLayout
@@ -266,6 +257,16 @@ class Container extends Widget
 			this.pBlockLayout = false
 			throw
 		end
+	end
+	
+	/** \brief doLayout calls happened during runWhileBlockingLayout. */
+	public func bool getHasBlockedDoLayout()
+		return this.pHasBlockedDoLayout
+	end
+	
+	/** \brief Set if doLayout calls happened during runWhileBlockingLayout. */
+	public func void setHasBlockedDoLayout( bool hasBlockedDoLayout )
+		this.pHasBlockedDoLayout = hasBlockedDoLayout
 	end
 	
 	/** Retrieve number of child widgets. */
@@ -600,6 +601,7 @@ class Container extends Widget
 	 */
 	public func void doLayout()
 		if this.pBlockLayout
+			this.pHasBlockedDoLayout = true
 			return
 		end
 		
@@ -612,6 +614,8 @@ class Container extends Widget
 				this.pLayout.doLayout( this )
 			end )
 		end
+		
+		this.pHasBlockedDoLayout = false
 		
 		// reset the cached size so we can check the new values
 		this.pCachedMinSize = null
@@ -630,6 +634,19 @@ class Container extends Widget
 			this.layoutParent()
 		end
 		//end
+	end
+	
+	/**
+	 * \brief Calls doLayout if getHasBlockedDoLayout() is true.
+	 * 
+	 * Call this instead of calling doLayout() directly to improve performance by not calling
+	 * doLayout() if not required. This method is typically called after calling
+	 * runWhileBlockingLayout().
+	 */
+	public func void doLayoutIfBlocked()
+		if this.pHasBlockedDoLayout
+			this.doLayout()
+		end
 	end
 	
 	
@@ -745,7 +762,7 @@ class Container extends Widget
 		this.runWhileBlockingLayout( block
 			this.notifyChildrenParentStateChanged()
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	/**
@@ -761,7 +778,7 @@ class Container extends Widget
 			super.onParentStateChanged()
 			this.notifyChildrenParentStateChanged()
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	/** \brief Notify children about parent state change. */

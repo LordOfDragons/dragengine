@@ -179,8 +179,7 @@ class DisplayInteractPromptEntry extends Panel
 			this.pLabelDescription.setDesignerSelector( "Label." + selector + ".Description" )
 			this.pPanelBindings.setDesignerSelector( "Panel." + selector + ".Bindings" )
 		end )
-		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	
@@ -232,8 +231,7 @@ class DisplayInteractPromptEntry extends Panel
 				this.setDesignerSelector( this.pBaseSelectorName )
 			end
 		end )
-		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	/** \brief Set command updating widgets if required. */

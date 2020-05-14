@@ -459,7 +459,7 @@ class EMPSystem extends Panel
 				this.pPanelParameters.addWidget( this.createEditWidget( each ) )
 			end )
 		end )
-		this.pPanelParameters.doLayout()
+		this.pPanelParameters.doLayoutIfBlocked()
 	end
 	
 	/** \brief Reset parameter changes. */

@@ -147,8 +147,7 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 				this.getWidget( i ).setVisible( false )
 			end
 		end )
-		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	/**

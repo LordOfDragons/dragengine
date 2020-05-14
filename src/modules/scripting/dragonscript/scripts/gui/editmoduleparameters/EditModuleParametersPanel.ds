@@ -139,7 +139,7 @@ class EditModuleParametersPanel extends Panel
 				each.rebuildParametersList( this.pAdvanced )
 			end )
 		end )
-		this.pPanelSystems.doLayout()
+		this.pPanelSystems.doLayoutIfBlocked()
 	end
 	
 	
