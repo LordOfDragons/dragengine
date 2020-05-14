@@ -51,6 +51,16 @@ class InteractPromptEntry
 		this.pStyle = ""
 	end
 	
+	/** \brief Create copy of interact prompt entry. */
+	public func new( InteractPromptEntry copy )
+		this.pImage = copy.pImage
+		this.pVideo = copy.pVideo
+		this.pVerb = copy.pVerb
+		this.pDescription = copy.pDescription
+		this.pStyle = copy.pStyle
+		this.pCommand = copy.pCommand
+	end
+	
 	
 	
 	/** \brief Image or null. */
@@ -127,5 +137,20 @@ class InteractPromptEntry
 	/** \brief String representation. */
 	public func String toString()
 		return this.pVerb.toUTF8()
+	end
+	
+	/** \brief Prompts are equal. */
+	public func bool equals( Object other )
+		if not other castable InteractPromptEntry
+			return false
+		end
+		
+		var InteractPromptEntry ipe = other cast InteractPromptEntry
+		return this.pImage == ipe.pImage \
+			and this.pVideo == ipe.pVideo \
+			and this.pCommand == ipe.pCommand \
+			and this.pVerb.equals( ipe.pVerb ) \
+			and this.pDescription.equals( ipe.pDescription ) \
+			and this.pStyle.equals( ipe.pStyle )
 	end
 end
