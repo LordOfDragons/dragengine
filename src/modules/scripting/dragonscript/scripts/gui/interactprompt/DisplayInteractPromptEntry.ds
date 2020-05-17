@@ -89,7 +89,7 @@ class DisplayInteractPromptEntry extends Panel
 			this.addWidget( this.pLabelDescription )
 			
 			this.pPanelBindings = Panel.new()
-			this.pPanelBindings.setLayout( FlowLayout.new( LayoutAxis.y ) )
+			this.pPanelBindings.setLayout( FlowLayout.new( LayoutAxis.y, 5 ) )
 			this.addWidget( this.pPanelBindings )
 			
 			this.setDesignerSelector( this.pBaseSelectorName )
