@@ -530,23 +530,35 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			end
 			
 			// find the velocity to check. we can not use the locomotion moving orientation
-			// for this since this includes our deviation angle. doing so would cause the
-			// test to find no collision and the deviating is cancelled although still
-			// required to be used. the solution is to include the deviation angle in the
-			// velocity for the test to be useful
-			var Locomotion locomotion = this.pActorMover.getLocomotion().getLocomotion()
-			var float testOrientation = locomotion.getMovingOrientation()
-			if this.pDeviationTime > 0
-				testOrientation -= this.pDeviationAngle
+			// for this since this has been modified by our deviation angle. doing so would
+			// cause the test to find no collision and the deviating is cancelled although
+			// still required to be used. we could store the relative deviation angle and
+			// test again but it is simpler to use the next path point of the actor mover.
+			// this avoids storing the relative deviation angle and gives us the correct
+			// orientation
+			var DVector nextPathPoint = this.pActorMover.getWorldNextPathPoint()
+			if nextPathPoint == null
+				// this should never happen but better safe than sorry
+				this.clearAvoiding()
+				return
 			end
 			
-			var Vector velocity = Matrix.newRotationY( testOrientation ).getViewVector() * this.pActorMover.getSpeed()
+			var DVector actorPosition = this.pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
+			var DVector targetDirection = nextPathPoint - actorPosition
+			if targetDirection.getLength() < 0.1
+				// we are nearly at the target. no sense in trying to deviate now
+				this.clearAvoiding()
+				return
+			end
+			
+			var Vector velocity = targetDirection.normalize().toVector() * this.pActorMover.getSpeed()
 			
 			// calculate the test direction. by default the actor would look ahead 2 or 3 seconds.
 			// if the mover navigation path has a path point closer than this time frame the time
 			// frame is reduced. if this is not done actors would try to avoid obstacles although
 			// their direction changes before the obstacle would be a problem resulting in actors
 			// getting stuck for no obvious reason
+			var Locomotion locomotion = this.pActorMover.getLocomotion().getLocomotion()
 			var float frameMovementDistance = locomotion.getAbsMovingSpeed() * elapsed
 				// actor moves during the frame before collision tests are done
 			var Vector direction = velocity * 2
