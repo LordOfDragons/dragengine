@@ -22,6 +22,7 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.ConversationSystem
 pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Scenery
@@ -692,31 +693,30 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// moving orientation
 			var float movingOrientation = this.pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
 			
-			// find border point pairs for testing. rotation is counter clock wise so
-			// left side is the largest angle
-			var Array borderPoints = this.calculateBorderPoints( behavior, collider )
+			// find border point pairs for testing. first point has smaller rotation angle in
+			// world space than second point.
+			var Pair borderPoints = this.getPointsBorder( \
+				this.getShapeCorners( behavior, collider.getMatrix() ), actorPosition )
 			
 			// test pairs. results in the distance to the tangent position and the absolute
 			// deviation angle for passing by the left and right side
 			var float avoidDistance = this.pRadius + behavior.getRadius()
 			
-			var DVector colliderLeft = borderPoints.getAt( 2 ) cast DVector
-			var DVector actorLeft = borderPoints.getAt( 3 ) cast DVector
-			var DVector leftVector = colliderLeft - actorLeft
+			var DVector colliderLeft = borderPoints.getSecond() cast DVector
+			var DVector leftVector = colliderLeft - actorPosition
 			var float leftDist = leftVector.getLength()
 			var float leftAngle = DEMath.atan2( -leftVector.getX(), leftVector.getZ() )
 			leftAngle += avoidDistance < leftDist - 0.001 if DEMath.asin( avoidDistance / leftDist ) else 90
 			leftAngle = DEMath.normalize( leftAngle - movingOrientation + 360, -180.0, 180.0 )
-			leftAngle = DEMath.clamp( leftAngle, 0.0, 80.0 )
+// 			leftAngle = DEMath.clamp( leftAngle, 0.0, 80.0 )
 			
-			var DVector colliderRight = borderPoints.getAt( 0 ) cast DVector
-			var DVector actorRight = borderPoints.getAt( 1 ) cast DVector
-			var DVector rightVector = colliderRight - actorRight
+			var DVector colliderRight = borderPoints.getFirst() cast DVector
+			var DVector rightVector = colliderRight - actorPosition
 			var float rightDist = rightVector.getLength()
 			var float rightAngle = DEMath.atan2( -rightVector.getX(), rightVector.getZ() )
 			rightAngle -= avoidDistance < rightDist if DEMath.asin( avoidDistance / rightDist ) else 90
 			rightAngle = DEMath.normalize( movingOrientation - rightAngle + 360, -180.0, 180.0 )
-			rightAngle = DEMath.clamp( rightAngle, 0.0, 80.0 )
+// 			rightAngle = DEMath.clamp( rightAngle, 0.0, 80.0 )
 			
 			// choose the side to evade to. use the side with the smaller absolute deviation angle.
 			// use navigation space to rule out sides if impassable. then use left and right check
@@ -753,12 +753,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				
 			case 0 // both possible
 				if canEvadeLeft and canEvadeRight
-					if this.pDeviationTime > 0
-						useLeftSide = this.pDeviationTime > 0
-						
-					else
-						useLeftSide = leftAngle < rightAngle
-					end
+					useLeftSide = leftAngle < rightAngle
 					
 				else
 					useLeftSide = canEvadeLeft
@@ -785,31 +780,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// apply deviation
 			this.pDeviationAngle = movingOrientation + deviationAngle
 			this.pDeviationTime = DEMath.max( distance / this.pActorMover.getSpeed(), 1.0 )
-		end
-		
-		/**
-		 * \brief Calculate left and right point pair for testing.
-		 * 
-		 * For the collider avoid shape the two points with the smallest and highest rotation angle
-		 * compared to the actor shape origin are calculated. Using the left collider point as origin
-		 * the smallest actor point is found. Likewise for the right collider point. The found points
-		 * are returned as array: <collider.left, actor.right, collider.right, actor.left>. The side
-		 * indication is noted relative to the connection axis from actor to collider shape. If a
-		 * shape has zero size the two points equal the origin. The points are in world coordinates.
-		 */
-		protected func Array calculateBorderPoints( ECBehaviorAvoidedByActor.Instance behavior, Collider collider )
-			var DMatrix actorMatrix = this.pActorMover.getLocomotion().getColliderAI().getCollider().getMatrix()
-			var DMatrix colliderMatrix = collider.getMatrix()
-			var Array pointsActor = this.getShapeCorners( behavior, actorMatrix )
-			var Array pointsCollider = this.getShapeCorners( behavior, colliderMatrix )
-			
-			var DVector center = ( actorMatrix * DVector.new( behavior.getOrigin() ) \
-				+ colliderMatrix * DVector.new( behavior.getOrigin() ) ) * 0.5
-			var Pair colliderBorder = this.getPointsBorder( pointsCollider, center )
-			var Pair actorBorder = this.getPointsBorder( pointsActor, center )
-			
-			return Array.newWith( colliderBorder.getFirst(), actorBorder.getFirst(), \
-				colliderBorder.getSecond(), actorBorder.getSecond() )
 		end
 		
 		/**
@@ -1101,6 +1071,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			locomotion.setLookHorizontalGoal( turnAngle )
 			locomotion.setTurnHorizontal( turnAngle )
 			locomotion.setAnalogMovingHorizontalGoal( turnAngle )
+			
+			// if conversation actor head look-at is running clear it since conversation
+			// look-at overrides deviation handling potentially causing troubles. we can
+			// accept this if the turn angle is not too large though
+			if DEMath.fabs( turnAngle ) > 20
+				var ECBehaviorConversationActor.Instance convoActor = this.pActorMover.getConversationActor()
+				if convoActor != null
+					var ConversationLookAtPlayback hlap = convoActor.getConversationActor().getHeadLookAtPlayback()
+					if hlap != null
+						hlap.clearLookAtState()
+					end
+				end
+			end
 		end
 		
 		
