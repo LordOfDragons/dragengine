@@ -202,12 +202,30 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Add prompt panel to UI container.
+		 * 
+		 * Default implementation calls addWidget(Widget).
+		 */
+		protected func void addPanelToUIContainer()
+			this.pUIContainer.addWidget( this.pPanelPrompt )
+		end
+		
+		/**
 		 * \brief Create prompt widget.
 		 * 
 		 * Default implementation creates instance of PanelInteractPrompt.
 		 */
 		protected func Widget createWidgetPrompt()
 			return PanelInteractPrompt.new( this.pECBehavior.getBindingManager(), this.pBindingIconHeight )
+		end
+		
+		/**
+		 * \brief Add prompt widget to prompt panel.
+		 * 
+		 * Default implementation uses addWidget(Widget).
+		 */
+		protected func void addWidgetPromptToPanel()
+			this.pPanelPrompt.addWidget( this.pWidgetPrompt )
 		end
 		
 		/**
@@ -249,8 +267,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pWidgetPrompt = this.createWidgetPrompt()
 			this.pWidgetPrompt.setTransparency( this.pTransparency )
 			
-			this.pPanelPrompt.addWidget( this.pWidgetPrompt )
-			this.pUIContainer.addWidget( this.pPanelPrompt )
+			this.addWidgetPromptToPanel()
+			this.addPanelToUIContainer()
 			
 			this.setRequiresThink( true )
 		end
