@@ -42,6 +42,7 @@ class DisplayVideo extends Widget
 	private var VideoPlayer pVideoPlayer
 	private var Speaker pSpeaker
 	private var Video pVideo
+	private var bool pProtectVideoColorTransform
 	
 	
 	
@@ -49,21 +50,18 @@ class DisplayVideo extends Widget
 	public func new() this( null, RepeatMode.once, true, null )
 	end
 	
-	/** \brief Create display video widget. */
 	public func new( Video video ) this( video, RepeatMode.once, true, null )
 	end
 	
-	/** Create display video widget. */
 	public func new( Video video, RepeatMode repeatMode ) this( video, RepeatMode.once, true, null )
 	end
 	
-	/** Create display video widget. */
 	public func new( Video video, RepeatMode repeatMode, bool autoPlay ) this( video, repeatMode, autoPlay, null )
 	end
 	
-	/** Create display video widget. */
 	public func new( Video video, RepeatMode repeatMode, bool autoPlay, Speaker speaker )
 		this.pRepeatMode = repeatMode
+		this.pProtectVideoColorTransform = false
 		this.pVideo = video
 		this.pVideoPlayer = VideoPlayer.new()
 		this.pVideoPlayer.setVideo( video )
@@ -76,9 +74,15 @@ class DisplayVideo extends Widget
 		
 		this.setSpeaker( speaker )
 		
+		this.setDesignerSelector( "Video" )
+		
 		if autoPlay
 			this.play()
 		end
+	end
+	
+	public func new( Video video, String designerSelector ) this( video )
+		this.setDesignerSelector( designerSelector )
 	end
 	
 	/** \brief Dispose of widget. */
@@ -121,6 +125,26 @@ class DisplayVideo extends Widget
 		this.pRepeatMode = repeatMode
 		
 		this.updateCanvasVideo()
+	end
+	
+	/** \brief Video color transform. */
+	public func ColorMatrix getVideoColorTransform()
+		return this.pCanvasVideo.getColorTransform()
+	end
+	
+	/** \brief Set color transformation. */
+	public func void setVideoColorTransform( ColorMatrix transform )
+		this.pCanvasVideo.setColorTransform( transform )
+	end
+	
+	/** \brief Protect custom set video color transform. */
+	public func bool getProtectVideoColorTransform()
+		return this.pProtectVideoColorTransform
+	end
+	
+	/** \brief Set protect custom set video color transform. */
+	public func void setProtectVideoColorTransform( bool protect )
+		this.pProtectVideoColorTransform = protect
 	end
 	
 	/** \brief Speaker or null. */

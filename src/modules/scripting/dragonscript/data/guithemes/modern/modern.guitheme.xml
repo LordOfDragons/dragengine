@@ -69,6 +69,15 @@
 		<color parameter='disabled.textColor' r='0.5' g='0.5' b='0.5'/>
 	</designer>
 	
+	<designer name='Image' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'/>
+		<colorMatrix parameter='disabled.imageColorTransform'>
+			<saturation r='0' g='0' b='0'/>
+			<contrast r='0.5' g='0.5' b='0.5'/>
+			<brightness r='0.15' g='0.15' b='0.15' a='0'/>
+		</colorMatrix>
+	</designer>
+	
 	<designer name='Button' type='Button'>
 		<canvasCreator parameter='normal.canvas' extend='button/normal.ccreator.xml'/>
 		<canvasCreator parameter='pressed.canvas' extend='button/pressed.ccreator.xml'/>

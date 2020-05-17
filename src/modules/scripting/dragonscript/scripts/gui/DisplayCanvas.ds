@@ -52,14 +52,15 @@ class DisplayCanvas extends Widget
 	 * \throws EInvalidParam \em canvasView is not of type Canvas.VIEW.
 	 */
 	public func new( CanvasView canvasView, RepeatMode repeatMode )
-		this.pRepeatMode = RepeatMode.once
+		this.pRepeatMode = repeatMode
 		this.pCanvasView = canvasView
 		
 		this.pCanvasCanvas = CanvasCanvasView.new()
+		this.pCanvasCanvas.setCanvasView( canvasView )
 		this.getCanvasContent().addCanvas( this.pCanvasCanvas )
 		
-		this.setCanvas( canvasView )
-		this.setRepeatMode( repeatMode )
+		this.layoutParent()
+		this.updateCanvasCanvas()
 	end
 	
 	

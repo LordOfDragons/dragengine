@@ -76,6 +76,7 @@ class WidgetDesigners
 		this.add( "CheckBox", DefaultCheckBoxDesigner.new() )
 		this.add( "ComboBox", DefaultComboBoxDesigner.new() )
 		this.add( "Desktop", DefaultWidgetDesigner.new() )
+		this.add( "Image", DefaultImageDesigner.new() )
 		this.add( "Label", DefaultLabelDesigner.new() )
 		this.add( "ListBox", DefaultWidgetDesigner.new() )
 		this.add( "OptionBox", DefaultOptionBoxDesigner.new() )
@@ -85,6 +86,7 @@ class WidgetDesigners
 		this.add( "SpinButton", DefaultSpinButtonDesigner.new() )
 		this.add( "TextArea", DefaultWidgetDesigner.new() )
 		this.add( "TextField", DefaultWidgetDesigner.new() )
+		this.add( "Video", DefaultVideoDesigner.new() )
 		this.add( "Widget", DefaultWidgetDesigner.new() )
 		this.add( "Window", DefaultWindowDesigner.new() )
 	end

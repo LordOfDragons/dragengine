@@ -33,6 +33,7 @@ class DisplayImage extends Widget
 	private var CanvasImage pCanvasImage
 	private var RepeatMode pRepeatMode
 	private var Image pImage
+	private var bool pProtectImageColorTransform
 	
 	
 	
@@ -40,20 +41,25 @@ class DisplayImage extends Widget
 	public func new() this( null, RepeatMode.once )
 	end
 	
-	/** \brief Create display image widget. */
 	public func new( Image image ) this( image, RepeatMode.once )
 	end
 	
-	/** \brief Create display image widget. */
 	public func new( Image image, RepeatMode repeatMode )
 		this.pRepeatMode = repeatMode
 		this.pImage = image
+		this.pProtectImageColorTransform = false
 		
 		this.pCanvasImage = CanvasImage.new()
 		this.pCanvasImage.setImage( image )
 		this.getCanvasContent().addCanvas( this.pCanvasImage )
 		
 		this.updateCanvasImage()
+		
+		this.setDesignerSelector( "Image" )
+	end
+	
+	public func new( Image image, String designerSelector ) this( image )
+		this.setDesignerSelector( designerSelector )
 	end
 	
 	
@@ -120,6 +126,26 @@ class DisplayImage extends Widget
 		this.updateCanvasImage()
 	end
 	
+	/** \brief Image color transform. */
+	public func ColorMatrix getImageColorTransform()
+		return this.pCanvasImage.getColorTransform()
+	end
+	
+	/** \brief Set color transformation. */
+	public func void setImageColorTransform( ColorMatrix transform )
+		this.pCanvasImage.setColorTransform( transform )
+	end
+	
+	/** \brief Protect custom set image color transform. */
+	public func bool getProtectImageColorTransform()
+		return this.pProtectImageColorTransform
+	end
+	
+	/** \brief Set protect custom set image color transform. */
+	public func void setProtectImageColorTransform( bool protect )
+		this.pProtectImageColorTransform = protect
+	end
+	
 	
 	
 	/** \brief Minimal size of widget. */
@@ -131,6 +157,13 @@ class DisplayImage extends Widget
 			return Point.new()
 		end*/
 		return this.getPadding().getSize() + this.pImage.getSize()
+	end
+	
+	
+	
+	/** \brief Image canvas. */
+	protected func CanvasImage getCanvasImage()
+		return this.pCanvasImage
 	end
 	
 	
@@ -201,14 +234,6 @@ class DisplayImage extends Widget
 			this.pCanvasImage.setRepeatY( repeatY )
 			this.pCanvasImage.setPosition( position )
 			this.pCanvasImage.setSize( Point.new( imageWidth * repeatX, imageHeight * repeatY ) )
-		end
-		
-		if this.getEnabled()
-			this.pCanvasImage.setColorTransform( ColorMatrix.new() )
-			
-		else
-			this.pCanvasImage.setColorTransform( ColorMatrix.newSaturation( 0.0 ) * \
-				ColorMatrix.newContrast( 0.5 ) * ColorMatrix.newBrightness( 0.25 ) )
 		end
 	end
 	
