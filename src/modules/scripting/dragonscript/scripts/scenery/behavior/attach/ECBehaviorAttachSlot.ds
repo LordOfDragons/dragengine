@@ -261,6 +261,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			attachableElement.setParent( this.getElement() )
 			attachable.setAttachSlot( this )
 			
+			attachableElement.getStub().setAttachTo( null ) // clear attach-to info in stub
+			
 			this.pAttachable = attachable
 			this.pAttachablePosition = position
 			this.pAttachableOrientation = orientation

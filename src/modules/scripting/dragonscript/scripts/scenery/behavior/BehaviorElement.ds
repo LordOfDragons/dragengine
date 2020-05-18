@@ -258,7 +258,8 @@ class BehaviorElement extends Element
 		var StubElement stub = this.getStub()
 		var UniqueID attachTo = stub.getAttachTo()
 		if attachTo != null
-			stub.setAttachTo( null )
+			// we do not call stub.setAttachTo(null) because behaviors are responsible to
+			// clear the stub attach-to if they handle it themselves
 			
 			var Element element = this.getGameWorld().getElementWithID( attachTo )
 			if element == null
