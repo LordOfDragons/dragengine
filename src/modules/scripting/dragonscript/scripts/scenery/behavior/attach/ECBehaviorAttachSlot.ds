@@ -94,9 +94,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			this.pPosition = ecbehavior.getPosition().getVector()
 			this.pOrientation = Quaternion.newFromEuler( ecbehavior.getOrientation().getVector() )
 			this.pListeners = Array.new()
-			this.pElementResolver = ElementResolver.new()
-			
-			this.setRequiresEnterFrame( true )
 		end
 		
 		/** \brief Dispose of composeable instance. */
@@ -413,7 +410,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			end
 		end
 		
 		
@@ -471,9 +470,12 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				var Vector position = Vector.readFromFile( reader )
 				var Quaternion orientation = Quaternion.readFromFile( reader )
 				
+				this.pElementResolver = ElementResolver.new()
 				this.pElementResolver.addBehavior( reader, block ECBehaviorAttachable.Instance attachable
 					this.attach( attachable, position, orientation )
 				end )
+				
+				this.setRequiresEnterFrame( true )
 				
 			else
 				throw EInvalidParam.new( "unsupported version" )
@@ -489,7 +491,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				return
 			end
 			
-			writer.writeString16( this.pAttachable.getECBehavior().getID() )
 			this.pAttachablePosition.writeToFile( writer )
 			this.pAttachableOrientation.writeToFile( writer )
 			ElementResolver.writeToFileBehavior( writer, this.pAttachable )

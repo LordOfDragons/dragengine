@@ -603,12 +603,14 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+				var PersistencyFlags flags = PersistencyFlags.new( 7, reader )
 				this.pIsAtTarget = flags.getAt( 3 )
 				this.pAlignFinished = flags.getAt( 4 )
-				this.pSucceeded = flags.getAt( 5 )
+				this.pSucceeded = flags.getAt( 6 )
 				
-				this.pTargetPosition = DVector.readFromFile( reader )
+				if flags.getAt( 5 )
+					this.pTargetPosition = DVector.readFromFile( reader )
+				end
 				this.pTargetOrientation = reader.readFloat()
 				this.pTargetLookVertical = reader.readFloat()
 				if flags.getAt( 0 )
@@ -633,16 +635,19 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 			writer.writeByte( 0 ) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 6 )
+			var PersistencyFlags flags = PersistencyFlags.new( 7 )
 			flags.setAt( 0, this.pRelativeTargetMatrix != null )
 			flags.setAt( 1, this.pRelativeTargetElement != null )
 			flags.setAt( 2, this.pLookAt != null )
 			flags.setAt( 3, this.pIsAtTarget )
 			flags.setAt( 4, this.pAlignFinished )
+			flags.setAt( 5, this.pTargetPosition != null )
 			flags.setAt( 6, this.pSucceeded )
 			flags.writeToFile( writer )
 			
-			this.pTargetPosition.writeToFile( writer )
+			if this.pTargetPosition != null
+				this.pTargetPosition.writeToFile( writer )
+			end
 			writer.writeFloat( this.pTargetOrientation )
 			writer.writeFloat( this.pTargetLookVertical )
 			
