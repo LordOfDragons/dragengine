@@ -292,7 +292,11 @@ class PersistencyEnvironment
 		var Persistable persistable
 		var String name = reader.readString8()
 		if not name.empty()
-			persistable = this.pPersistency.getFactoryNamed( name ).readObjectFromFile( this, reader )
+			var PersistencyFactory factory = this.pPersistency.getFactoryNamed( name )
+			if factory == null
+				throw EInvalidParam.new( "no factory for '" + name + "'" )
+			end
+			persistable = factory.readObjectFromFile( this, reader )
 		end
 		
 		if this.pPersistency.getDebugEnableCanaryValue()
