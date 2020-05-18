@@ -101,12 +101,18 @@ class CActionPlayerChoiceOption
 	static public func CActionPlayerChoiceOption readFromFile( PersistencyEnvironment env, FileReader reader )
 		var CActionPlayerChoiceOption option = CActionPlayerChoiceOption.new()
 		
-		option.pText = UnicodeString.newFromUTF8( reader.readString16() )
-		option.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
-		
-		var int i, count = reader.readUShort()
-		for i = 0 to count
-			option.pActions.add( env.readObject( reader ) )
+		select reader.readByte() // version
+		case 0
+			option.pText = UnicodeString.newFromUTF8( reader.readString16() )
+			option.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+			
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				option.pActions.add( env.readObject( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 		
 		return option
@@ -114,6 +120,8 @@ class CActionPlayerChoiceOption
 	
 	/** \brief Write to file writer. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString16( this.pText.toString() )
 		env.writeObjectOrNull( writer, this.pCondition )
 		

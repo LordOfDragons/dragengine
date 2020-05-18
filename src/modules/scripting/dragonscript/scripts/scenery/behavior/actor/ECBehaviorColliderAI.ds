@@ -375,14 +375,22 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.geometryChanged()
-			
-			this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
-			this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+			select reader.readByte() // version
+			case 0
+				this.geometryChanged()
+				
+				this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
+				this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			this.pCollider.getLinearVelocity().writeToFile( writer )
 			this.pCollider.getAngularVelocity().writeToFile( writer )
 		end

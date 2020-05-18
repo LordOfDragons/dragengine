@@ -302,32 +302,41 @@ class StubElement extends StubWithProperties
 			return null
 		end
 		
-		//BaseGameApp.getApp().getConsole().addMessage( "reading element '" + classname + "'" )
-		
-		var UniqueID id = UniqueID.readFromFile( reader )
-		var StubElement stub = StubElement.new( ElementClassList.getNamed( classname ), id )
-		stub.pPosition = DVector.readFromFile( reader )
-		stub.pRotation = Vector.readFromFile( reader )
-		stub.pScaling = Vector.readFromFile( reader )
-		
-		stub.readPropertiesFromFile( reader )
-		
-		var int textureCount = reader.readUShort()
-		var int i
-		for i = 0 to textureCount
-			stub.pTextures.add( StubElementTexture.readFromFile( reader ) )
+		select reader.readByte() // version
+		case 0
+			//BaseGameApp.getApp().getConsole().addMessage( "reading element '" + classname + "'" )
+			
+			var UniqueID id = UniqueID.readFromFile( reader )
+			var StubElement stub = StubElement.new( ElementClassList.getNamed( classname ), id )
+			stub.pPosition = DVector.readFromFile( reader )
+			stub.pRotation = Vector.readFromFile( reader )
+			stub.pScaling = Vector.readFromFile( reader )
+			
+			stub.readPropertiesFromFile( reader )
+			
+			var int textureCount = reader.readUShort()
+			var int i
+			for i = 0 to textureCount
+				stub.pTextures.add( StubElementTexture.readFromFile( reader ) )
+			end
+			
+			if reader.readByte() == 1
+				stub.pAttachTo = UniqueID.readFromFile( reader )
+			end
+			
+			return stub
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		if reader.readByte() == 1
-			stub.pAttachTo = UniqueID.readFromFile( reader )
-		end
-		
-		return stub
 	end
 	
 	/** \brief Write stub to file. */
 	public func void writeToFile( FileWriter writer )
 		writer.writeString8( this.pClass.getClassname() )
+		
+		writer.writeByte( 0 ) // version
+		
 		this.pID.writeToFile( writer )
 		this.pPosition.writeToFile( writer )
 		this.pRotation.writeToFile( writer )

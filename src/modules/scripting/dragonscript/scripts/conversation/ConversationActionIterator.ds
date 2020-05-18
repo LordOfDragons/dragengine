@@ -99,18 +99,26 @@ class ConversationActionIterator
 	
 	/** \brief Read layer from file. */
 	public static func ConversationActionIterator readFromFile( PersistencyEnvironment env, FileReader reader )
-		var Array actions = Array.new()
-		var int i, count = reader.readUShort()
-		for i = 0 to count
-			actions.add( env.readObject( reader ) )
+		select reader.readByte() // version
+		case 0
+			var Array actions = Array.new()
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				actions.add( env.readObject( reader ) )
+			end
+			var int position = reader.readUShort()
+			
+			return ConversationActionIterator.new( actions, position )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		var int position = reader.readUShort()
-		
-		return ConversationActionIterator.new( actions, position )
 	end
 	
 	/** \brief Write layer to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeUShort( this.pActions.getCount() )
 		this.pActions.forEach( block ConversationAction each
 			env.writeObject( writer, each )

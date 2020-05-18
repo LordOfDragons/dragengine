@@ -857,14 +857,22 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pSubtitleSelectorId = reader.readString8()
-			if this.pConversationActor != null
-				this.pConversationActor.readFromFile( env, reader )
+			select reader.readByte() // version
+			case 0
+				this.pSubtitleSelectorId = reader.readString8()
+				if this.pConversationActor != null
+					this.pConversationActor.readFromFile( env, reader )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeString8( this.pSubtitleSelectorId )
 			if this.pConversationActor != null
 				this.pConversationActor.writeToFile( env, writer )

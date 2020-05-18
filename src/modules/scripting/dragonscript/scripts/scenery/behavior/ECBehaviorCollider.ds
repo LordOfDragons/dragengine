@@ -361,18 +361,26 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var DVector position = DVector.readFromFile( reader )
-			var Quaternion orientation = Quaternion.readFromFile( reader )
-			var Vector scaling = Vector.readFromFile( reader )
-			
-			this.getElement().setGeometry( position, orientation, scaling )
-			
-			this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
-			this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+			select reader.readByte() // version
+			case 0
+				var DVector position = DVector.readFromFile( reader )
+				var Quaternion orientation = Quaternion.readFromFile( reader )
+				var Vector scaling = Vector.readFromFile( reader )
+				
+				this.getElement().setGeometry( position, orientation, scaling )
+				
+				this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
+				this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var BehaviorElement element = this.getElement()
 			element.getPosition().writeToFile( writer )
 			element.getOrientation().writeToFile( writer )

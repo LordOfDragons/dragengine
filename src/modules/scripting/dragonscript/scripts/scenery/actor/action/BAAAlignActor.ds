@@ -120,26 +120,32 @@ class BAAAlignActor extends BaseActorAction
 	
 	/** \brief Create align actor action from persisted state. */
 	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-		this.pCallAIFinished = flags.getAt( 0 )
-		
-		this.pTargetPosition = DVector.readFromFile( reader )
-		this.pTargetOrientation = reader.readFloat()
-		this.pTargetLookVertical = reader.readFloat()
-		
-		if flags.getAt( 1 )
-			this.pElementResolver = ElementResolver.new()
-			this.pElementResolver.add( reader, block Element element
-				this.pRelativeTargetElement = element
-			end )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+			this.pCallAIFinished = flags.getAt( 0 )
+			
+			this.pTargetPosition = DVector.readFromFile( reader )
+			this.pTargetOrientation = reader.readFloat()
+			this.pTargetLookVertical = reader.readFloat()
+			
+			if flags.getAt( 1 )
+				this.pElementResolver = ElementResolver.new()
+				this.pElementResolver.add( reader, block Element element
+					this.pRelativeTargetElement = element
+				end )
+			end
+			
+			if flags.getAt( 2 )
+				this.pLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+			end
+			
+			this.pActionSucceeded = env.readObjectOrNull( reader ) cast BaseActorAction
+			this.pActionFailed = env.readObjectOrNull( reader ) cast BaseActorAction
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		if flags.getAt( 2 )
-			this.pLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
-		end
-		
-		this.pActionSucceeded = env.readObjectOrNull( reader ) cast BaseActorAction
-		this.pActionFailed = env.readObjectOrNull( reader ) cast BaseActorAction
 	end
 	
 	
@@ -413,6 +419,8 @@ class BAAAlignActor extends BaseActorAction
 	
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
 		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 3 )
 		flags.setAt( 0, this.pCallAIFinished )

@@ -96,7 +96,13 @@ class BAACutscene extends BaseActorAction
 	
 	/** \brief Create align actor action from persisted state. */
 	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
-		this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+		select reader.readByte() // version
+		case 0
+			this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -270,6 +276,9 @@ class BAACutscene extends BaseActorAction
 	
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
 		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
+		
 		env.writeObjectOrNull( writer, this.pAction )
 	end
 end

@@ -67,8 +67,14 @@ class CConditionGameCommand extends ConversationCondition
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pCommand = reader.readString16()
-		this.pNegate = env.readBool( reader )
+		select reader.readByte() // version
+		case 0
+			this.pCommand = reader.readString16()
+			this.pNegate = env.readBool( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -123,6 +129,8 @@ class CConditionGameCommand extends ConversationCondition
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString16( this.pCommand )
 		env.writeBool( writer, this.pNegate )
 	end

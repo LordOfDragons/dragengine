@@ -968,86 +968,92 @@ void deClassShapeList::nfReadFromFile::RunFunction( dsRunTime *rt, dsValue* ){
 	deClassShapeList &clsShapeList = *( ( deClassShapeList* )GetOwnerClass() );
 	const deClassFileReader &clsFileReader = *clsShapeList.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader( rt->GetValue( 0 )->GetRealObject() );
-	
 	if( ! reader ){
 		DSTHROW( dueNullPointer );
 	}
 	
-	const int count = reader->ReadUShort();
-	decShapeList shapeList;
-	decShape *shape = NULL;
-	int i;
-	
-	try{
-		for( i=0; i<count; i++ ){
-			switch( reader->ReadByte() ){
-			case VisitorWriteShapes::typeShere:{
-				const decVector position( reader->ReadVector() );
-				const float radius = reader->ReadFloat();
-				const decVector2 axisScaling( reader->ReadVector2() );
-				shape = new decShapeSphere( radius, axisScaling, position );
-				}break;
-				
-			case VisitorWriteShapes::typeBox:{
-				const decVector position( reader->ReadVector() );
-				const decQuaternion orientation( reader->ReadQuaternion() );
-				const decVector halfExtends( reader->ReadVector() );
-				const decVector2 tapering( reader->ReadVector2() );
-				shape = new decShapeBox( halfExtends, tapering, position, orientation );
-				}break;
-				
-			case VisitorWriteShapes::typeCylinder:{
-				const decVector position( reader->ReadVector() );
-				const decQuaternion orientation( reader->ReadQuaternion() );
-				const float topRadius = reader->ReadFloat();
-				const float bottomRadius = reader->ReadFloat();
-				const float halfHeight = reader->ReadFloat();
-				const decVector2 topAxisScaling( reader->ReadVector2() );
-				const decVector2 bottomAxisScaling( reader->ReadVector2() );
-				shape = new decShapeCylinder( halfHeight, topRadius, bottomRadius,
-					topAxisScaling, bottomAxisScaling, position, orientation );
-				}break;
-				
-			case VisitorWriteShapes::typeCapsule:{
-				const decVector position( reader->ReadVector() );
-				const decQuaternion orientation( reader->ReadQuaternion() );
-				const float topRadius = reader->ReadFloat();
-				const float bottomRadius = reader->ReadFloat();
-				const float halfHeight = reader->ReadFloat();
-				const decVector2 topAxisScaling( reader->ReadVector2() );
-				const decVector2 bottomAxisScaling( reader->ReadVector2() );
-				shape = new decShapeCapsule( halfHeight, topRadius, bottomRadius,
-					topAxisScaling, bottomAxisScaling, position, orientation );
-				}break;
-				
-			case VisitorWriteShapes::typeHull:{
-				const decVector position( reader->ReadVector() );
-				const decQuaternion orientation( reader->ReadQuaternion() );
-				decShapeHull * const shapeHull = new decShapeHull( position, orientation );
-				shape = shapeHull;
-				const int pointCount = reader->ReadUShort();
-				shapeHull->SetPointCount( pointCount );
-				int i;
-				for( i=0; i<pointCount; i++ ){
-					shapeHull->SetPointAt( i, reader->ReadVector() );
+	switch( reader->ReadByte() ){ // version
+	case 0:{
+		const int count = reader->ReadUShort();
+		decShapeList shapeList;
+		decShape *shape = NULL;
+		int i;
+		
+		try{
+			for( i=0; i<count; i++ ){
+				switch( reader->ReadByte() ){
+				case VisitorWriteShapes::typeShere:{
+					const decVector position( reader->ReadVector() );
+					const float radius = reader->ReadFloat();
+					const decVector2 axisScaling( reader->ReadVector2() );
+					shape = new decShapeSphere( radius, axisScaling, position );
+					}break;
+					
+				case VisitorWriteShapes::typeBox:{
+					const decVector position( reader->ReadVector() );
+					const decQuaternion orientation( reader->ReadQuaternion() );
+					const decVector halfExtends( reader->ReadVector() );
+					const decVector2 tapering( reader->ReadVector2() );
+					shape = new decShapeBox( halfExtends, tapering, position, orientation );
+					}break;
+					
+				case VisitorWriteShapes::typeCylinder:{
+					const decVector position( reader->ReadVector() );
+					const decQuaternion orientation( reader->ReadQuaternion() );
+					const float topRadius = reader->ReadFloat();
+					const float bottomRadius = reader->ReadFloat();
+					const float halfHeight = reader->ReadFloat();
+					const decVector2 topAxisScaling( reader->ReadVector2() );
+					const decVector2 bottomAxisScaling( reader->ReadVector2() );
+					shape = new decShapeCylinder( halfHeight, topRadius, bottomRadius,
+						topAxisScaling, bottomAxisScaling, position, orientation );
+					}break;
+					
+				case VisitorWriteShapes::typeCapsule:{
+					const decVector position( reader->ReadVector() );
+					const decQuaternion orientation( reader->ReadQuaternion() );
+					const float topRadius = reader->ReadFloat();
+					const float bottomRadius = reader->ReadFloat();
+					const float halfHeight = reader->ReadFloat();
+					const decVector2 topAxisScaling( reader->ReadVector2() );
+					const decVector2 bottomAxisScaling( reader->ReadVector2() );
+					shape = new decShapeCapsule( halfHeight, topRadius, bottomRadius,
+						topAxisScaling, bottomAxisScaling, position, orientation );
+					}break;
+					
+				case VisitorWriteShapes::typeHull:{
+					const decVector position( reader->ReadVector() );
+					const decQuaternion orientation( reader->ReadQuaternion() );
+					decShapeHull * const shapeHull = new decShapeHull( position, orientation );
+					shape = shapeHull;
+					const int pointCount = reader->ReadUShort();
+					shapeHull->SetPointCount( pointCount );
+					int i;
+					for( i=0; i<pointCount; i++ ){
+						shapeHull->SetPointAt( i, reader->ReadVector() );
+					}
+					}break;
 				}
-				}break;
+				
+				if( shape ){
+					shapeList.Add( shape );
+					shape = NULL;
+				}
 			}
 			
+		}catch( ... ){
 			if( shape ){
-				shapeList.Add( shape );
-				shape = NULL;
+				delete shape;
 			}
+			throw;
 		}
 		
-	}catch( ... ){
-		if( shape ){
-			delete shape;
-		}
-		throw;
+		clsShapeList.PushShapeList( rt, shapeList );
+		}break;
+		
+	default:
+		DSTHROW_INFO( dueInvalidParam, "unsupported version" );
 	}
-	
-	clsShapeList.PushShapeList( rt, shapeList );
 }
 
 // public func void writeToFile( FileWriter writer )
@@ -1069,6 +1075,7 @@ void deClassShapeList::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *mysel
 	VisitorWriteShapes visitor( *writer );
 	int i;
 	
+	writer->WriteByte( 0 ); // version
 	writer->WriteUShort( ( unsigned short )count );
 	for( i=0; i<count; i++ ){
 		shapeList.GetAt( i )->Visit( visitor );

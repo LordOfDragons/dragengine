@@ -133,12 +133,18 @@ class BAAIBehaviorTree extends BaseActorAI
 	
 	/** \brief Create actor ai restoring from file reader. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		var bool hasContext = flags.getAt( 0 )
-		this.pRunning = flags.getAt( 1 )
-		
-		if hasContext and this.pContext != null
-			this.pContext.readFromFile( env, reader )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			var bool hasContext = flags.getAt( 0 )
+			this.pRunning = flags.getAt( 1 )
+			
+			if hasContext and this.pContext != null
+				this.pContext.readFromFile( env, reader )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
@@ -230,6 +236,8 @@ class BAAIBehaviorTree extends BaseActorAI
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
 		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 2 )
 		flags.setAt( 0, this.pContext != null )

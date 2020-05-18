@@ -1140,32 +1140,38 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
-			this.pPause = flags.getAt( 0 )
-			this.pEnableLimitTurnAngle = flags.getAt( 1 )
-			
-			if flags.getAt( 2 )
-				this.pGoalPosition = DVector.readFromFile( reader )
-			end
-			this.pGoalDistance = reader.readFloat()
-			
-			if flags.getAt( 4 )
-				this.pPath = NavigatorPath.readFromFile( reader )
-			end
-			this.pNextPathPoint = reader.readUShort()
-			
-			if flags.getAt( 3 )
-				this.pNextPlaneNormal = DVector.readFromFile( reader )
-			end
-			this.pRemainingDistance = reader.readFloat()
-			
-			this.pLimitTurnAngle = reader.readFloat()
-			this.pSpeed = reader.readFloat()
-			
-			if flags.getAt( 5 )
-				this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
-					this.pRidable = behavior
-				end )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+				this.pPause = flags.getAt( 0 )
+				this.pEnableLimitTurnAngle = flags.getAt( 1 )
+				
+				if flags.getAt( 2 )
+					this.pGoalPosition = DVector.readFromFile( reader )
+				end
+				this.pGoalDistance = reader.readFloat()
+				
+				if flags.getAt( 4 )
+					this.pPath = NavigatorPath.readFromFile( reader )
+				end
+				this.pNextPathPoint = reader.readUShort()
+				
+				if flags.getAt( 3 )
+					this.pNextPlaneNormal = DVector.readFromFile( reader )
+				end
+				this.pRemainingDistance = reader.readFloat()
+				
+				this.pLimitTurnAngle = reader.readFloat()
+				this.pSpeed = reader.readFloat()
+				
+				if flags.getAt( 5 )
+					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
+						this.pRidable = behavior
+					end )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
@@ -1177,6 +1183,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * responsible to restore the relative collider. This has to be done any.
 		 */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 6 )
 			flags.setAt( 0, this.pPause )
 			flags.setAt( 1, this.pEnableLimitTurnAngle )

@@ -76,12 +76,18 @@ class CConditionLogic extends ConversationCondition
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pOperator = Operator.withOrder( reader.readByte() )
-		
-		var int i, count = reader.readUShort()
-		this.pConditions = Array.new()
-		for i = 0 to count
-			this.pConditions.add( env.readObject( reader ) )
+		select reader.readByte() // version
+		case 0
+			this.pOperator = Operator.withOrder( reader.readByte() )
+			
+			var int i, count = reader.readUShort()
+			this.pConditions = Array.new()
+			for i = 0 to count
+				this.pConditions.add( env.readObject( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
@@ -153,6 +159,8 @@ class CConditionLogic extends ConversationCondition
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeByte( this.pOperator.order() )
 		
 		writer.writeUShort( this.pConditions.getCount() )

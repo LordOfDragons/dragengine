@@ -116,48 +116,54 @@ abstract class ConversationPlayback implements Persistable
 	 * the above mentioned.
 	 */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		var int i, count
-		var String path
-		var StringID id
-		
-		path = env.readString16OrNullIfEmpty( reader )
-		if path != null
-			var LoadConversation loadConversation = env.getVariable( \
-				PersistencyEnvironment.varLoadConversation ) cast LoadConversation
-			this.pConversation = loadConversation.loadFromFile( path )
+		select reader.readByte() // version
+		case 0
+			var int i, count
+			var String path
+			var StringID id
+			
+			path = env.readString16OrNullIfEmpty( reader )
+			if path != null
+				var LoadConversation loadConversation = env.getVariable( \
+					PersistencyEnvironment.varLoadConversation ) cast LoadConversation
+				this.pConversation = loadConversation.loadFromFile( path )
+			end
+			
+			id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pTopicGroup = this.pConversation.getTopicGroupWithID( id )
+			end
+			
+			id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pTopic = this.pTopicGroup.getTopicWithID( id )
+			end
+			
+			var String variableName
+			var int variableValue
+			count = reader.readUShort()
+			for i = 0 to count
+				variableName = reader.readString8()
+				variableValue = reader.readInt()
+				this.pVariables.setAt( variableName, variableValue )
+			end
+			
+			count = reader.readUShort()
+			for i = 0 to count
+				this.pLayers.add( ConversationPlaybackLayer.readFromFile( env, reader ) )
+			end
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
+			this.pActionWaiting = flags.getAt( 0 )
+			this.pRunning = flags.getAt( 1 )
+			this.pPaused = flags.getAt( 2 )
+			this.pEnableFastForwardSpeaking = flags.getAt( 3 )
+			
+			this.pActionTime = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pTopicGroup = this.pConversation.getTopicGroupWithID( id )
-		end
-		
-		id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pTopic = this.pTopicGroup.getTopicWithID( id )
-		end
-		
-		var String variableName
-		var int variableValue
-		count = reader.readUShort()
-		for i = 0 to count
-			variableName = reader.readString8()
-			variableValue = reader.readInt()
-			this.pVariables.setAt( variableName, variableValue )
-		end
-		
-		count = reader.readUShort()
-		for i = 0 to count
-			this.pLayers.add( ConversationPlaybackLayer.readFromFile( env, reader ) )
-		end
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
-		this.pActionWaiting = flags.getAt( 0 )
-		this.pRunning = flags.getAt( 1 )
-		this.pPaused = flags.getAt( 2 )
-		this.pEnableFastForwardSpeaking = flags.getAt( 3 )
-		
-		this.pActionTime = reader.readFloat()
 	end
 	
 	/**
@@ -167,27 +173,33 @@ abstract class ConversationPlayback implements Persistable
 	 * require to overwrite this method.
 	 */
 	public func void readDelayedFromFile( PersistencyEnvironment env, FileReader reader )
-		var int i, count = reader.readUShort()
-		for i = 0 to count
-			this.addActor( this.loadConversationActor( StringID.new( reader.readString8() ) ) )
+		select reader.readByte() // version
+		case 0
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				this.addActor( this.loadConversationActor( StringID.new( reader.readString8() ) ) )
+			end
+			
+			var ConversationCoordSystem coordSystem
+			count = reader.readUShort()
+			for i = 0 to count
+				coordSystem = this.createConversationCoordSystem( StringID.new( reader.readString8() ) )
+				coordSystem.readFromFile( env, reader )
+				this.addCoordSystem( coordSystem )
+			end
+			
+			// restore object links that can only be restored once the parent playback is present
+			this.pActors.forEach( block ConversationActor each
+				each.playbackRestoreObjectLinks()
+			end )
+			
+			// ConversationCameraDirector pCameraDirector
+			// ConversationPlaybackSubTitle pSubTitle
+			// ConversationPlaybackPlayerChoice pPlayerChoice
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		var ConversationCoordSystem coordSystem
-		count = reader.readUShort()
-		for i = 0 to count
-			coordSystem = this.createConversationCoordSystem( StringID.new( reader.readString8() ) )
-			coordSystem.readFromFile( env, reader )
-			this.addCoordSystem( coordSystem )
-		end
-		
-		// restore object links that can only be restored once the parent playback is present
-		this.pActors.forEach( block ConversationActor each
-			each.playbackRestoreObjectLinks()
-		end )
-		
-		// ConversationCameraDirector pCameraDirector
-		// ConversationPlaybackSubTitle pSubTitle
-		// ConversationPlaybackPlayerChoice pPlayerChoice
 	end
 	
 	
@@ -909,6 +921,8 @@ abstract class ConversationPlayback implements Persistable
 	 * Subclass usually does not required to overwrite this method.
 	 */
 	public func void writeObjectConstructToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString16( this.pConversation != null if this.pConversation.getPathFile() else "" )
 		writer.writeString8( this.pTopicGroup != null if this.pTopicGroup.getID().toString() else "" )
 		writer.writeString8( this.pTopic != null if this.pTopic.getID().toString() else "" )
@@ -944,6 +958,8 @@ abstract class ConversationPlayback implements Persistable
 	 * Subclass usually does not required to overwrite this method.
 	 */
 	public func void writeObjectDelayedToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeUShort( this.pActors.getCount() )
 		this.pActors.forEach( block ConversationActor each
 			writer.writeString8( each.getID().toString() )

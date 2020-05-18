@@ -113,8 +113,15 @@ class ConversationCoordSystem
 	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 		// ID has been read by ConversationPlayback
-		this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
-		this.pLocalMatrix.readFromFile( reader )
+		
+		select reader.readByte() // version
+		case 0
+			this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
+			this.pLocalMatrix.readFromFile( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/**
@@ -123,6 +130,9 @@ class ConversationCoordSystem
 	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 		writer.writeString8( this.pID.toString() )
+		
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pAliasID )
 		this.pLocalMatrix.writeToFile( writer )
 	end

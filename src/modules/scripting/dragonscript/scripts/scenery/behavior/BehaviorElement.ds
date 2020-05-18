@@ -343,14 +343,24 @@ class BehaviorElement extends Element
 	/** \brief Read element from file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 		super.readFromFile( env, reader )
-		this.pInstances.forEach( block ECBehaviorInstance each
-			each.readFromFile( env, reader )
-		end )
+		
+		select reader.readByte() // version
+		case 0
+			this.pInstances.forEach( block ECBehaviorInstance each
+				each.readFromFile( env, reader )
+			end )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write element to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 		super.writeToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
+		
 		this.pInstances.forEach( block ECBehaviorInstance each
 			each.writeToFile( env, writer )
 		end )

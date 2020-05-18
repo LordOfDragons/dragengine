@@ -40,6 +40,7 @@ class StubGameWorld extends StubWithProperties
 	private var Array pNavSpaces
 	private var PreloadCounter pCounter
 	private var UniqueID pNextObjectID
+	private var UniqueIDRemapper.RemapEntry pNewElementsRange
 	
 	
 	
@@ -402,6 +403,16 @@ class StubGameWorld extends StubWithProperties
 				each.setAttachTo( remapper.remap( each.getAttachTo() ) )
 			end
 		end )
+	end
+	
+	/** \brief Range of new elements added since the last saving or null. */
+	public func  UniqueIDRemapper.RemapEntry getNewElementsRange()
+		return this.pNewElementsRange
+	end
+	
+	/** \brief Set range of new elements added since the last saving or null. */
+	public func void setNewElementsRange( UniqueIDRemapper.RemapEntry range )
+		this.pNewElementsRange = range
 	end
 	
 	

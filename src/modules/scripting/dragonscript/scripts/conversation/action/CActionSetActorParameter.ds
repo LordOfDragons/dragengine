@@ -83,11 +83,17 @@ class CActionSetActorParameter extends ConversationAction
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pActorID = env.readStringIDOrNullIfEmpty( reader )
-		this.pName = env.readString8OrNullIfEmpty( reader )
-		this.pOperator = Operator.withOrder( reader.readByte() )
-		this.pValue = reader.readInt()
-		this.pValueVariable = env.readString8OrNullIfEmpty( reader )
+		select reader.readByte() // version
+		case 0
+			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			this.pName = env.readString8OrNullIfEmpty( reader )
+			this.pOperator = Operator.withOrder( reader.readByte() )
+			this.pValue = reader.readInt()
+			this.pValueVariable = env.readString8OrNullIfEmpty( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -193,6 +199,8 @@ class CActionSetActorParameter extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
 		env.writeString8OrEmptyIfNull( writer, this.pName )
 		writer.writeByte( this.pOperator.order() )

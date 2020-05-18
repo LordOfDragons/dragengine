@@ -344,12 +344,20 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
-			this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+			select reader.readByte() // version
+			case 0
+				this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
+				this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeObjectOrNull( writer, this.pAI )
 			env.writeObjectOrNull( writer, this.pAction )
 		end

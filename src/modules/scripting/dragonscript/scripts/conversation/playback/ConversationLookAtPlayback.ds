@@ -55,19 +55,27 @@ class ConversationLookAtPlayback
 		
 		/** \brief Read from file. */
 		static public func LookAt readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-			
-			var ConversationPlaybackLookAt lookat
-			if flags.getAt( 0 )
-				lookat = ConversationPlaybackLookAt.readFromFile( env, reader )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+				
+				var ConversationPlaybackLookAt lookat
+				if flags.getAt( 0 )
+					lookat = ConversationPlaybackLookAt.readFromFile( env, reader )
+				end
+				var ConversationStrip strip = ConversationStrip.readFromFile( reader )
+				
+				return LookAt.new( lookat, strip )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
-			
-			return LookAt.new( lookat, strip )
 		end
 		
 		/** \brief Write to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 1 )
 			flags.setAt( 0, this.pLookAt != null )
 			flags.writeToFile( writer )
@@ -305,45 +313,53 @@ class ConversationLookAtPlayback
 	
 	/** \brief Read element from a file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
-		
-		this.pRunning = flags.getAt( 0 )
-		
-		var int i, count = reader.readUShort()
-		for i = 0 to count
-			this.pLookAts.add( LookAt.readFromFile( env, reader ) )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
+			
+			this.pRunning = flags.getAt( 0 )
+			
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				this.pLookAts.add( LookAt.readFromFile( env, reader ) )
+			end
+			
+			this.pPosition = reader.readUShort()
+			this.pElapsed = reader.readFloat()
+			
+			if flags.getAt( 1 )
+				this.pLastLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+			end
+			if flags.getAt( 2 )
+				this.pLastLookAtPosition = DVector.readFromFile( reader )
+			end
+			if flags.getAt( 3 )
+				this.pCurLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
+			end
+			if flags.getAt( 4 )
+				this.pCurLookAtPosition = DVector.readFromFile( reader )
+			end
+			
+			/*
+			BaseGameApp.getApp().getConsole().addMessage( "CLAP: strips=" + this.pLookAts.getCount() + " pos=" + this.pPosition \
+				+ " elapsed=" + this.pElapsed + " lla=" + this.pLastLookAt + " llap=" \
+				+ this.pLastLookAtPosition + " cla=" + this.pCurLookAt + " clap=" + this.pCurLookAtPosition )
+			this.pLookAts.forEach( block LookAt each
+				BaseGameApp.getApp().getConsole().addMessage( "- lookat=" + each.getLookAt() + " strip=(" + each.getStrip().getID() \
+					+ ", " + each.getStrip().getPause() + ", " + each.getStrip().getDuration() + ")" )
+			end )
+			//this.pLookAts.removeAll()
+			*/
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		this.pPosition = reader.readUShort()
-		this.pElapsed = reader.readFloat()
-		
-		if flags.getAt( 1 )
-			this.pLastLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
-		end
-		if flags.getAt( 2 )
-			this.pLastLookAtPosition = DVector.readFromFile( reader )
-		end
-		if flags.getAt( 3 )
-			this.pCurLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
-		end
-		if flags.getAt( 4 )
-			this.pCurLookAtPosition = DVector.readFromFile( reader )
-		end
-		
-		/*
-		BaseGameApp.getApp().getConsole().addMessage( "CLAP: strips=" + this.pLookAts.getCount() + " pos=" + this.pPosition \
-			+ " elapsed=" + this.pElapsed + " lla=" + this.pLastLookAt + " llap=" \
-			+ this.pLastLookAtPosition + " cla=" + this.pCurLookAt + " clap=" + this.pCurLookAtPosition )
-		this.pLookAts.forEach( block LookAt each
-			BaseGameApp.getApp().getConsole().addMessage( "- lookat=" + each.getLookAt() + " strip=(" + each.getStrip().getID() \
-				 + ", " + each.getStrip().getPause() + ", " + each.getStrip().getDuration() + ")" )
-		end )
-		//this.pLookAts.removeAll()
-		*/
 	end
 	
 	/** \brief Writes to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		var PersistencyFlags flags = PersistencyFlags.new( 5 )
 		flags.setAt( 0, this.pRunning )
 		flags.setAt( 1, this.pLastLookAt != null )

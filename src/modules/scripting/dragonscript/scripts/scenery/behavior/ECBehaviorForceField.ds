@@ -360,11 +360,19 @@ class ECBehaviorForceField extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setEnabled( env.readBool( reader ) )
+			select reader.readByte() // version
+			case 0
+				this.setEnabled( env.readBool( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** Writes the element to a file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeBool( writer, this.pEnabled )
 		end
 	end

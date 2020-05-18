@@ -510,57 +510,65 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-			
-			this.pState = State.withOrder( reader.readByte() )
-			
-			if flags.getAt( 0 )
-				this.setAnimator( reader.readString8() )
-				this.pController.setValue( reader.readFloat() )
-			end
-			
-			if flags.getAt( 1 )
-				var SynthesizerInstance synthinst = SynthesizerInstance.new()
-				this.pPathSynthesizer = reader.readString8()
-				synthinst.setSynthesizer( this.pECBehavior.getLoaders().getSynthesizer() \
-					.loadFromFile( this.pPathSynthesizer ) )
-				synthinst.getControllerNamed( this.pControllerName ).setCurveTime()
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
 				
-				this.pSpeakerSynth = Speaker.new()
-				this.pSpeakerSynth.setLooping( flags.getAt( 2 ) )
-				this.pSpeakerSynth.setVolume( reader.readFloat() )
-				this.pSpeakerSynth.setRange( reader.readFloat() )
-				this.pSpeakerSynth.setRollOff( reader.readFloat() )
-				this.pSpeakerSynth.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+				this.pState = State.withOrder( reader.readByte() )
 				
-				this.pSpeakerBone = env.readString8OrNullIfEmpty( reader )
-				this.pSpeakerPosition = Vector.readFromFile( reader )
-				
-				if this.pSpeakerBone != null
-					( this.pCollider.getCollider() cast ColliderRig ).attachBone( \
-						this.pSpeakerSynth, this.pSpeakerBone, this.pSpeakerPosition, Quaternion.new() )
-					
-				else
-					this.pCollider.getCollider().attachStatic( \
-						this.pSpeakerSynth, this.pSpeakerPosition, Quaternion.new() )
+				if flags.getAt( 0 )
+					this.setAnimator( reader.readString8() )
+					this.pController.setValue( reader.readFloat() )
 				end
 				
-				this.pSpeakerSynth.setSynthesizer( synthinst )
-				this.getElement().getGameWorld().getWorld().addSpeaker( this.pSpeakerSynth )
-				this.pSpeakerSynth.setPlayPosition( reader.readInt(), this.pSpeakerSynth.getPlayTo() )
-				this.pSpeakerSynth.play()
+				if flags.getAt( 1 )
+					var SynthesizerInstance synthinst = SynthesizerInstance.new()
+					this.pPathSynthesizer = reader.readString8()
+					synthinst.setSynthesizer( this.pECBehavior.getLoaders().getSynthesizer() \
+						.loadFromFile( this.pPathSynthesizer ) )
+					synthinst.getControllerNamed( this.pControllerName ).setCurveTime()
+					
+					this.pSpeakerSynth = Speaker.new()
+					this.pSpeakerSynth.setLooping( flags.getAt( 2 ) )
+					this.pSpeakerSynth.setVolume( reader.readFloat() )
+					this.pSpeakerSynth.setRange( reader.readFloat() )
+					this.pSpeakerSynth.setRollOff( reader.readFloat() )
+					this.pSpeakerSynth.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+					
+					this.pSpeakerBone = env.readString8OrNullIfEmpty( reader )
+					this.pSpeakerPosition = Vector.readFromFile( reader )
+					
+					if this.pSpeakerBone != null
+						( this.pCollider.getCollider() cast ColliderRig ).attachBone( \
+							this.pSpeakerSynth, this.pSpeakerBone, this.pSpeakerPosition, Quaternion.new() )
+						
+					else
+						this.pCollider.getCollider().attachStatic( \
+							this.pSpeakerSynth, this.pSpeakerPosition, Quaternion.new() )
+					end
+					
+					this.pSpeakerSynth.setSynthesizer( synthinst )
+					this.getElement().getGameWorld().getWorld().addSpeaker( this.pSpeakerSynth )
+					this.pSpeakerSynth.setPlayPosition( reader.readInt(), this.pSpeakerSynth.getPlayTo() )
+					this.pSpeakerSynth.play()
+				end
+				
+				var int i, count = reader.readByte()
+				for i = 0 to count
+					this.pBreakPoints.add( reader.readFloat() )
+				end
+				
+				this.pNextBreakPoint = reader.readByte()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			
-			var int i, count = reader.readByte()
-			for i = 0 to count
-				this.pBreakPoints.add( reader.readFloat() )
-			end
-			
-			this.pNextBreakPoint = reader.readByte()
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 3 )
 			flags.setAt( 0, this.pAnimator != null )
 			flags.setAt( 1, this.pSpeakerSynth != null and this.pSpeakerSynth.getPlaying() )

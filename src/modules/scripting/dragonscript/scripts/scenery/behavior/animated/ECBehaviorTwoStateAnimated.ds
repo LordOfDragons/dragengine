@@ -863,37 +863,45 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * other than those controlled by this behavior change them before super calling method.
 		 */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pState = State.withOrder( reader.readByte() )
-			
-			var float value = reader.readFloat()
-			if this.pControllerDeactivated != null
-				this.pControllerDeactivated.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerActivate != null
-				this.pControllerActivate.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerDeactivate != null
-				this.pControllerDeactivate.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerActivated != null
-				this.pControllerActivated.setValue( value )
-			end
-			
-			this.updateRequiresThink()
-			
-			if this.pAnimatorInstance != null
-				this.pAnimatorInstance.apply()
+			select reader.readByte() // version
+			case 0
+				this.pState = State.withOrder( reader.readByte() )
+				
+				var float value = reader.readFloat()
+				if this.pControllerDeactivated != null
+					this.pControllerDeactivated.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerActivate != null
+					this.pControllerActivate.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerDeactivate != null
+					this.pControllerDeactivate.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerActivated != null
+					this.pControllerActivated.setValue( value )
+				end
+				
+				this.updateRequiresThink()
+				
+				if this.pAnimatorInstance != null
+					this.pAnimatorInstance.apply()
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeByte( this.pState.order() )
 			writer.writeFloat( this.pControllerDeactivated != null \
 				if this.pControllerDeactivated.getValue() else 0 )

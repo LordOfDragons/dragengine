@@ -262,16 +262,24 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var DVector position = DVector.readFromFile( reader )
-			var Quaternion orientation = Quaternion.readFromFile( reader )
-			this.pCollider.getCollider().setGeometry( position, orientation )
-			
-			this.pMover.readFromFile( env, reader )
-			this.setRequiresThink( this.pMover.isMoving() )
+			select reader.readByte() // version
+			case 0
+				var DVector position = DVector.readFromFile( reader )
+				var Quaternion orientation = Quaternion.readFromFile( reader )
+				this.pCollider.getCollider().setGeometry( position, orientation )
+				
+				this.pMover.readFromFile( env, reader )
+				this.setRequiresThink( this.pMover.isMoving() )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var Collider collider = this.pCollider.getCollider()
 			collider.getPosition().writeToFile( writer )
 			collider.getOrientation().writeToFile( writer )

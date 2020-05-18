@@ -354,14 +354,22 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		/** \brief Read behavior instance from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pApplyStartActivated = false
-			
-			this.pRemainingTime = reader.readFloat()
-			this.pTimerRunning = env.readBool( reader )
+			select reader.readByte() // version
+			case 0
+				this.pApplyStartActivated = false
+				
+				this.pRemainingTime = reader.readFloat()
+				this.pTimerRunning = env.readBool( reader )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior instance to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pRemainingTime )
 			env.writeBool( writer, this.pTimerRunning )
 		end

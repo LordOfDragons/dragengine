@@ -90,10 +90,16 @@ class CConditionVariable extends ConversationCondition
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pOperator = Operator.withOrder( reader.readByte() )
-		this.pVariable = env.readString8OrNullIfEmpty( reader )
-		this.pTestValue = reader.readInt()
-		this.pTestVariable = env.readString8OrNullIfEmpty( reader )
+		select reader.readByte() // version
+		case 0
+			this.pOperator = Operator.withOrder( reader.readByte() )
+			this.pVariable = env.readString8OrNullIfEmpty( reader )
+			this.pTestValue = reader.readInt()
+			this.pTestVariable = env.readString8OrNullIfEmpty( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -194,6 +200,8 @@ class CConditionVariable extends ConversationCondition
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeByte( this.pOperator.order() )
 		env.writeString8OrEmptyIfNull( writer, this.pVariable )
 		writer.writeInt( this.pTestValue )

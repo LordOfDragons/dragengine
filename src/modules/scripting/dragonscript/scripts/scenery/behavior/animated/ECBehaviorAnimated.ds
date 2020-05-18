@@ -411,12 +411,20 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pPlayback.readFromFile( env, reader )
-			this.setRequiresThink( this.pPlayback.getPlaying() )
+			select reader.readByte() // version
+			case 0
+				this.pPlayback.readFromFile( env, reader )
+				this.setRequiresThink( this.pPlayback.getPlaying() )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			this.pPlayback.writeToFile( env, writer )
 		end
 	end

@@ -462,20 +462,28 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			if not env.readBool( reader )
-				return
+			select reader.readByte() // version
+			case 0
+				if not env.readBool( reader )
+					return
+				end
+				
+				var Vector position = Vector.readFromFile( reader )
+				var Quaternion orientation = Quaternion.readFromFile( reader )
+				
+				this.pElementResolver.addBehavior( reader, block ECBehaviorAttachable.Instance attachable
+					this.attach( attachable, position, orientation )
+				end )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			
-			var Vector position = Vector.readFromFile( reader )
-			var Quaternion orientation = Quaternion.readFromFile( reader )
-			
-			this.pElementResolver.addBehavior( reader, block ECBehaviorAttachable.Instance attachable
-				this.attach( attachable, position, orientation )
-			end )
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeBool( writer, this.pAttachable != null )
 			if this.pAttachable == null
 				return

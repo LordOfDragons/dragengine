@@ -317,7 +317,13 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pLocomotion.readFromFile( reader )
+			select reader.readByte() // version
+			case 0
+				this.pLocomotion.readFromFile( reader )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 			
 			// restore parameters
 			this.getElement().setOrientation( this.pLocomotion.getOrientationQuaternion() )
@@ -330,6 +336,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			this.pLocomotion.writeToFile( writer )
 		end
 	end

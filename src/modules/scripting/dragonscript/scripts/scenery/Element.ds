@@ -464,23 +464,25 @@ class Element
 	/**
 	 * \brief Read element from file reader.
 	 * 
-	 * Default implementation does nothing.
+	 * The default implementation reads a single byte expecting value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
 	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		if reader.readByte() !=  0 // version
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/**
 	 * \brief Write element to file writer.
 	 * 
-	 * Default implementation does nothing.
-	 * 
-	 * \note
-	 * Updating save file format can be done by adding to the StubElement a property
-	 * with the save file version used, for example "@saveVersion" or similar. Since
-	 * the stub element is read and stored during init while loading this information
-	 * is present when readFromFile() is called.
+	 * The default implementation writes a single byte of value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
 	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
 	end
 	
 	/**

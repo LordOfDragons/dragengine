@@ -127,14 +127,22 @@ class UniqueIDRemapper
 		
 		/** \brief Read from file. */
 		public static func RemapEntry readFromFile( FileReader reader )
-			var UniqueID firstID = UniqueID.readFromFile( reader )
-			var UniqueID lastID = UniqueID.readFromFile( reader )
-			var UniqueID offset = UniqueID.readFromFile( reader )
-			return RemapEntry.new( firstID, lastID, offset )
+			select reader.readByte() // version
+			case 0
+				var UniqueID firstID = UniqueID.readFromFile( reader )
+				var UniqueID lastID = UniqueID.readFromFile( reader )
+				var UniqueID offset = UniqueID.readFromFile( reader )
+				return RemapEntry.new( firstID, lastID, offset )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write to file. */
 		public func void writeToFile( FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			this.pFirstID.writeToFile( writer )
 			this.pLastID.writeToFile( writer )
 			this.pOffset.writeToFile( writer )

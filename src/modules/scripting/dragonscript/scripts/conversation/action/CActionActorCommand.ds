@@ -70,8 +70,14 @@ class CActionActorCommand extends ConversationAction
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pActorID = env.readStringIDOrNullIfEmpty( reader )
-		this.pCommand = reader.readString16()
+		select reader.readByte() // version
+		case 0
+			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			this.pCommand = reader.readString16()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -127,6 +133,8 @@ class CActionActorCommand extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
 		writer.writeString16( this.pCommand )
 	end

@@ -266,15 +266,23 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pFullBrightIntensity = reader.readFloat()
-			this.pElapsedTime = reader.readFloat()
-			this.pState = State.withOrder( reader.readByte() )
-			
-			this.setRequiresThink( this.pState == State.raise or this.pState == State.lower )
+			select reader.readByte() // version
+			case 0
+				this.pFullBrightIntensity = reader.readFloat()
+				this.pElapsedTime = reader.readFloat()
+				this.pState = State.withOrder( reader.readByte() )
+				
+				this.setRequiresThink( this.pState == State.raise or this.pState == State.lower )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pFullBrightIntensity )
 			writer.writeFloat( this.pElapsedTime )
 			writer.writeByte( this.pState.order() )

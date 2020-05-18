@@ -485,16 +485,24 @@ class BTContext
 	
 	/** \brief Read state from file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		this.pActionFirstRun = flags.getAt( 1 )
-		
-		if flags.getAt( 0 )
-			this.pCurrentRule = this.pBehaviorTree.getRuleWithID( reader.readString8() )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			this.pActionFirstRun = flags.getAt( 1 )
+			
+			if flags.getAt( 0 )
+				this.pCurrentRule = this.pBehaviorTree.getRuleWithID( reader.readString8() )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
 	/** \brief Write state to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		var PersistencyFlags flags = PersistencyFlags.new( 2 )
 		flags.setAt( 0, this.pCurrentRule != null )
 		flags.setAt( 1, this.pActionFirstRun )

@@ -326,20 +326,28 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			this.pLocked = flags.getAt( 0 )
-			
-			if flags.getAt( 1 )
-				this.pElementResolver = ElementResolver.new()
-				this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance ridable
-					this.setRidable( ridable )
-				end )
-				this.setRequiresEnterFrame( true )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+				this.pLocked = flags.getAt( 0 )
+				
+				if flags.getAt( 1 )
+					this.pElementResolver = ElementResolver.new()
+					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance ridable
+						this.setRidable( ridable )
+					end )
+					this.setRequiresEnterFrame( true )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 2 )
 			flags.setAt( 0, this.pLocked )
 			flags.setAt( 1, this.pRidable != null )

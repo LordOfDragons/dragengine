@@ -157,26 +157,34 @@ class StubElementTexture extends StubWithProperties implements ResourceListener
 	
 	/** \brief Read stub from file. */
 	public static func StubElementTexture readFromFile( FileReader reader )
-		var StubElementTexture stub = StubElementTexture.new( reader.readString8() )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-		if flags.getAt( 0 )
-			stub.pPathSkin = reader.readString16()
+		select reader.readByte() // version
+		case 0
+			var StubElementTexture stub = StubElementTexture.new( reader.readString8() )
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+			if flags.getAt( 0 )
+				stub.pPathSkin = reader.readString16()
+			end
+			if flags.getAt( 1 )
+				stub.pTransform = TexMatrix2.readFromFile( reader )
+			end
+			if flags.getAt( 2 )
+				stub.pColorTint = Color.readFromFile( reader )
+			end
+			
+			stub.readPropertiesFromFile( reader )
+			
+			return stub
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		if flags.getAt( 1 )
-			stub.pTransform = TexMatrix2.readFromFile( reader )
-		end
-		if flags.getAt( 2 )
-			stub.pColorTint = Color.readFromFile( reader )
-		end
-		
-		stub.readPropertiesFromFile( reader )
-		
-		return stub
 	end
 	
 	/** \brief Write stub to file. */
 	public func void writeToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString8( this.pTextureName )
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 3 )

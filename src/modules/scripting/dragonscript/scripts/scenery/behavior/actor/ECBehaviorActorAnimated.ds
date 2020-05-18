@@ -265,16 +265,24 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setActiveAnimatorID( reader.readString8() )
-			
-			var int i, count = reader.readByte()
-			for i = 0 to count
-				this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
+			select reader.readByte() // version
+			case 0
+				this.setActiveAnimatorID( reader.readString8() )
+				
+				var int i, count = reader.readByte()
+				for i = 0 to count
+					this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeString8( this.pActiveAnimatorID )
 			
 			var int i, count = this.pAnimatorInstance.getControllerCount()

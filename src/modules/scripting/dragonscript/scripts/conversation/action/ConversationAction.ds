@@ -49,9 +49,15 @@ abstract class ConversationAction implements Persistable
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pWaitForActor = env.readBool( reader )
-		this.pWaitForActorID = env.readString8OrNullIfEmpty( reader )
-		this.pDelay = reader.readFloat()
+		select reader.readByte() // version
+		case 0
+			this.pWaitForActor = env.readBool( reader )
+			this.pWaitForActorID = env.readString8OrNullIfEmpty( reader )
+			this.pDelay = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -95,6 +101,8 @@ abstract class ConversationAction implements Persistable
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeBool( writer, this.pWaitForActor )
 		env.writeString8OrEmptyIfNull( writer, this.pWaitForActorID )
 		writer.writeFloat( this.pDelay )

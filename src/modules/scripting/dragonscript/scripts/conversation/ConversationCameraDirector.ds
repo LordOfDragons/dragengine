@@ -453,54 +453,62 @@ class ConversationCameraDirector extends CameraDirector
 	
 	/** \brief Read from file. */
 	public func void readFromFile( ConversationPlayback playback, PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
-		this.pLooping = flags.getAt( 1 )
-		
-		if flags.getAt( 0 )
-			this.pCameraShot = ConversationCameraShot.readFromFile( reader )
-		end
-		
-		this.pElapsed = reader.readFloat()
-		this.pDuration = reader.readFloat()
-		this.pCoordSys = DMatrix.readFromFile( reader )
-		
-		if flags.getAt( 2 )
-			this.pCameraTarget = ConversationTarget.readFromFile( env, reader )
-		end
-		if flags.getAt( 3 )
-			this.pLookAtTarget = ConversationTarget.readFromFile( env, reader )
-		end
-		
-		var StringID id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pCameraActor = playback.getActorMatching( id )
-		end
-		
-		id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pLookAtActor = playback.getActorMatching( id )
-		end
-		
-		id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pCameraCoordSystem = playback.getCoordSystemByID( id )
-		end
-		
-		id = env.readStringIDOrNullIfEmpty( reader )
-		if id != null
-			this.pLookAtCoordSystem = playback.getCoordSystemByID( id )
-		end
-		
-		if flags.getAt( 4 )
-			this.pLockedCameraMatrix = DMatrix.readFromFile( reader )
-		end
-		if flags.getAt( 5 )
-			this.pLockedLookAtMatrix = DMatrix.readFromFile( reader )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+			this.pLooping = flags.getAt( 1 )
+			
+			if flags.getAt( 0 )
+				this.pCameraShot = ConversationCameraShot.readFromFile( reader )
+			end
+			
+			this.pElapsed = reader.readFloat()
+			this.pDuration = reader.readFloat()
+			this.pCoordSys = DMatrix.readFromFile( reader )
+			
+			if flags.getAt( 2 )
+				this.pCameraTarget = ConversationTarget.readFromFile( env, reader )
+			end
+			if flags.getAt( 3 )
+				this.pLookAtTarget = ConversationTarget.readFromFile( env, reader )
+			end
+			
+			var StringID id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pCameraActor = playback.getActorMatching( id )
+			end
+			
+			id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pLookAtActor = playback.getActorMatching( id )
+			end
+			
+			id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pCameraCoordSystem = playback.getCoordSystemByID( id )
+			end
+			
+			id = env.readStringIDOrNullIfEmpty( reader )
+			if id != null
+				this.pLookAtCoordSystem = playback.getCoordSystemByID( id )
+			end
+			
+			if flags.getAt( 4 )
+				this.pLockedCameraMatrix = DMatrix.readFromFile( reader )
+			end
+			if flags.getAt( 5 )
+				this.pLockedLookAtMatrix = DMatrix.readFromFile( reader )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
 	/** \brief Write to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		var PersistencyFlags flags = PersistencyFlags.new( 6 )
 		flags.setAt( 0, this.pCameraShot != null )
 		flags.setAt( 1, this.pLooping )

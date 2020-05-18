@@ -148,19 +148,27 @@ class StubWithProperties
 	
 	/** \brief Read properties from file. */
 	public func void readPropertiesFromFile( FileReader reader )
-		var int count = reader.readUShort()
-		var String key, value
-		var int i
-		
-		for i = 0 to count
-			key = reader.readString8()
-			value = reader.readString16()
-			this.pProperties.setAt( key, value )
+		select reader.readByte() // version
+		case 0
+			var int count = reader.readUShort()
+			var String key, value
+			var int i
+			
+			for i = 0 to count
+				key = reader.readString8()
+				value = reader.readString16()
+				this.pProperties.setAt( key, value )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
 	/** \brief Write properties to file. */
 	public func void writePropertiesToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeUShort( this.pProperties.getCount() )
 		this.pProperties.forEach( block String key, String value
 			writer.writeString8( key )

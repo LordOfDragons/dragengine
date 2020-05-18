@@ -145,11 +145,19 @@ class ECBehaviorSky extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setPlaybackTime( reader.readFloat() )
+			select reader.readByte() // version
+			case 0
+				this.setPlaybackTime( reader.readFloat() )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.getPlaybackTime() )
 		end
 	end

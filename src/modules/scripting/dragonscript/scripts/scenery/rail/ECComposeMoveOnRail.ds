@@ -279,10 +279,16 @@ class ECComposeMoveOnRail
 		 * - remaining distance
 		 */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setCurrentVelocity( reader.readFloat() )
-			this.pCurrentCorner = reader.readShort()
-			this.pTargetCorner = reader.readShort()
-			this.pRemainingDistance = reader.readFloat()
+			select reader.readByte() // version
+			case 0
+				this.setCurrentVelocity( reader.readFloat() )
+				this.pCurrentCorner = reader.readShort()
+				this.pTargetCorner = reader.readShort()
+				this.pRemainingDistance = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/**
@@ -295,6 +301,8 @@ class ECComposeMoveOnRail
 		 * - remaining distance
 		 */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pCurrentVelocity )
 			writer.writeShort( this.pCurrentCorner )
 			writer.writeShort( this.pTargetCorner )

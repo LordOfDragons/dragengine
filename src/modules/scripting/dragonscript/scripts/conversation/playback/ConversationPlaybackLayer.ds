@@ -163,20 +163,29 @@ class ConversationPlaybackLayer
 	
 	/** \brief Read layer from file. */
 	public static func ConversationPlaybackLayer readFromFile( PersistencyEnvironment env, FileReader reader )
-		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( ConversationActionIterator.readFromFile( env, reader ) )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		layer.pLooping = flags.getAt( 0 )
-		layer.pTopicTopLevel = flags.getAt( 1 )
-		
-		layer.pLoopCondition = env.readObjectOrNull( reader ) cast ConversationCondition
-		layer.pLoopEvalConditionInterval = reader.readFloat()
-		
-		return layer
+		select reader.readByte() // version
+		case 0
+			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( \
+				ConversationActionIterator.readFromFile( env, reader ) )
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			layer.pLooping = flags.getAt( 0 )
+			layer.pTopicTopLevel = flags.getAt( 1 )
+			
+			layer.pLoopCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+			layer.pLoopEvalConditionInterval = reader.readFloat()
+			
+			return layer
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write layer to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		this.pActionIterator.writeToFile( env, writer )
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 2 )

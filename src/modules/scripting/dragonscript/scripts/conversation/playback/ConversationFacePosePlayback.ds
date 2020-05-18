@@ -58,13 +58,21 @@ class ConversationFacePosePlayback
 		
 		/** \brief Read from file. */
 		static public func FacePoseController readFromFile( FileReader reader )
-			var int controller = reader.readUShort() - 1
-			var float influence = reader.readFloat()
-			return FacePoseController.new( controller, influence )
+			select reader.readByte() // version
+			case 0
+				var int controller = reader.readUShort() - 1
+				var float influence = reader.readFloat()
+				return FacePoseController.new( controller, influence )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write to file. */
 		public func void writeToFile( FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeUShort( this.pController + 1 )
 			writer.writeFloat( this.pInfluence )
 		end
@@ -96,9 +104,15 @@ class ConversationFacePosePlayback
 		
 		/** \brief Read from file. */
 		static public func FacePose readFromFile( FileReader reader )
-			var Array controllers = readControllersFromFile( reader )
-			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
-			return FacePose.new( controllers, strip )
+			select reader.readByte() // version
+			case 0
+				var Array controllers = readControllersFromFile( reader )
+				var ConversationStrip strip = ConversationStrip.readFromFile( reader )
+				return FacePose.new( controllers, strip )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Read controllers from file. */
@@ -113,6 +127,8 @@ class ConversationFacePosePlayback
 		
 		/** \brief Write to file. */
 		public func void writeToFile( FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writeControllersToFile( writer, this.pControllers )
 			this.pStrip.writeToFile( writer )
 		end
@@ -327,29 +343,35 @@ class ConversationFacePosePlayback
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-		this.pRunning = flags.getAt( 0 )
-		
-		var int i, count = reader.readUShort()
-		this.pPoses.removeAll()
-		for i = 0 to count
-			this.pPoses.add( FacePose.readFromFile( reader ) )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
+			this.pRunning = flags.getAt( 0 )
+			
+			var int i, count = reader.readUShort()
+			this.pPoses.removeAll()
+			for i = 0 to count
+				this.pPoses.add( FacePose.readFromFile( reader ) )
+			end
+			
+			this.pPosition = reader.readUShort()
+			this.pElapsed = reader.readFloat()
+			
+			if flags.getAt( 1 )
+				this.pLastPose = FacePose.readControllersFromFile( reader )
+			end
+			if flags.getAt( 2 )
+				this.pCurPose = FacePose.readControllersFromFile( reader )
+			end
+			
+			this.pBlinkIntervalMin = reader.readFloat()
+			this.pBlinkIntervalMax = reader.readFloat()
+			this.pBlinkNext = reader.readFloat()
+			this.pBlinkElapsed = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		this.pPosition = reader.readUShort()
-		this.pElapsed = reader.readFloat()
-		
-		if flags.getAt( 1 )
-			this.pLastPose = FacePose.readControllersFromFile( reader )
-		end
-		if flags.getAt( 2 )
-			this.pCurPose = FacePose.readControllersFromFile( reader )
-		end
-		
-		this.pBlinkIntervalMin = reader.readFloat()
-		this.pBlinkIntervalMax = reader.readFloat()
-		this.pBlinkNext = reader.readFloat()
-		this.pBlinkElapsed = reader.readFloat()
 	end
 	
 	/**
@@ -358,6 +380,8 @@ class ConversationFacePosePlayback
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		var PersistencyFlags flags = PersistencyFlags.new( 3 )
 		flags.setAt( 0, this.pRunning )
 		flags.setAt( 1, this.pLastPose != null )

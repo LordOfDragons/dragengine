@@ -352,11 +352,19 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setListening( env.readBool( reader ) )
+			select reader.readByte() // version
+			case 0
+				this.setListening( env.readBool( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeBool( writer, this.getListening() )
 		end
 	end

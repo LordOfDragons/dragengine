@@ -267,20 +267,28 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var int i, count = reader.readUShort()
-			if count > 0
-				this.pElementResolver = ElementResolver.new()
-				for i = 0 to count
-					this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
-						this.add( behavior )
-					end )
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readUShort()
+				if count > 0
+					this.pElementResolver = ElementResolver.new()
+					for i = 0 to count
+						this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
+							this.add( behavior )
+						end )
+					end
+					this.setRequiresEnterFrame( true )
 				end
-				this.setRequiresEnterFrame( true )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeUShort( this.pStashables.getCount() )
 			this.pStashables.forEach( block ECBehaviorStashable.Instance each
 				ElementResolver.writeToFileBehavior( writer, each )

@@ -265,19 +265,27 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			this.pRun = flags.getAt( 0 )
-			this.pFailed = flags.getAt( 1 )
-			
-			if this.pRun
-				this.pContext.readFromFile( env, reader )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+				this.pRun = flags.getAt( 0 )
+				this.pFailed = flags.getAt( 1 )
+				
+				if this.pRun
+					this.pContext.readFromFile( env, reader )
+				end
+				
+				this.setRequiresThink( this.pRun and not this.pFailed )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			
-			this.setRequiresThink( this.pRun and not this.pFailed )
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 2 )
 			flags.setAt( 0, this.pRun )
 			flags.setAt( 1, this.pFailed )

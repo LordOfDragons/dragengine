@@ -707,25 +707,33 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			this.pCanMove = flags.getAt( 0 )
-			this.pRun = flags.getAt( 1 )
-			
-			this.pLocomotionType = LocomotionType.withOrder( reader.readByte() )
-			this.pSpeedWalk = reader.readFloat()
-			this.pSpeedFactorWalkForward = reader.readFloat()
-			this.pSpeedFactorWalkBackward = reader.readFloat()
-			this.pSpeedFactorWalkLeft = reader.readFloat()
-			this.pSpeedFactorWalkRight = reader.readFloat()
-			this.pSpeedRun = reader.readFloat()
-			this.pSpeedFactorRunForward = reader.readFloat()
-			this.pSpeedFactorRunBackward = reader.readFloat()
-			this.pSpeedFactorRunLeft = reader.readFloat()
-			this.pSpeedFactorRunRight = reader.readFloat()
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+				this.pCanMove = flags.getAt( 0 )
+				this.pRun = flags.getAt( 1 )
+				
+				this.pLocomotionType = LocomotionType.withOrder( reader.readByte() )
+				this.pSpeedWalk = reader.readFloat()
+				this.pSpeedFactorWalkForward = reader.readFloat()
+				this.pSpeedFactorWalkBackward = reader.readFloat()
+				this.pSpeedFactorWalkLeft = reader.readFloat()
+				this.pSpeedFactorWalkRight = reader.readFloat()
+				this.pSpeedRun = reader.readFloat()
+				this.pSpeedFactorRunForward = reader.readFloat()
+				this.pSpeedFactorRunBackward = reader.readFloat()
+				this.pSpeedFactorRunLeft = reader.readFloat()
+				this.pSpeedFactorRunRight = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 2 )
 			flags.setAt( 0, this.pCanMove )
 			flags.setAt( 1, this.pRun )

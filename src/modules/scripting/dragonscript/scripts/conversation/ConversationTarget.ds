@@ -127,21 +127,26 @@ class ConversationTarget
 	
 	/** \brief Read from file. */
 	public static func ConversationTarget readFromFile( PersistencyEnvironment env, FileReader reader )
-		var ConversationTarget target = ConversationTarget.new( StringID.new( reader.readString8() ) )
-		
-		target.pActorID = env.readStringIDOrNullIfEmpty( reader )
-		target.pCoordSystemID = env.readStringIDOrNullIfEmpty( reader )
-		target.pBone = env.readString8OrNullIfEmpty( reader )
-		target.pPosition = Vector.readFromFile( reader )
-		target.pOrientation = Quaternion.readFromFile( reader )
-		
-		return target
+		select reader.readByte() // version
+		case 0
+			var ConversationTarget target = ConversationTarget.new( StringID.new( reader.readString8() ) )
+			target.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			target.pCoordSystemID = env.readStringIDOrNullIfEmpty( reader )
+			target.pBone = env.readString8OrNullIfEmpty( reader )
+			target.pPosition = Vector.readFromFile( reader )
+			target.pOrientation = Quaternion.readFromFile( reader )
+			return target
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeString8( this.pName.toString() )
+		writer.writeByte( 0 ) // version
 		
+		writer.writeString8( this.pName.toString() )
 		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
 		env.writeStringIDOrEmptyIfNull( writer, this.pCoordSystemID )
 		env.writeString8OrEmptyIfNull( writer, this.pBone )

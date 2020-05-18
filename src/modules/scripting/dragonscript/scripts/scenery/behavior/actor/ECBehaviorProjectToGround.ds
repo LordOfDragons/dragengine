@@ -484,20 +484,28 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
-			this.pTouchesGround = flags.getAt( 0 )
-			this.pApplyToActor = flags.getAt( 1 )
-			this.setEnabled( flags.getAt( 2 ) )
-			this.pTest.setLocalDirection( flags.getAt( 3 ) )
-			
-			this.pTest.setOrigin( Vector.readFromFile( reader ) )
-			this.pTest.setDirection( Vector.readFromFile( reader ) )
-			this.pNormTestDirection = DVector.new( this.pTest.getDirection() ).normalize()
-			this.pGroundedPosition = DVector.readFromFile( reader )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 4, reader )
+				this.pTouchesGround = flags.getAt( 0 )
+				this.pApplyToActor = flags.getAt( 1 )
+				this.setEnabled( flags.getAt( 2 ) )
+				this.pTest.setLocalDirection( flags.getAt( 3 ) )
+				
+				this.pTest.setOrigin( Vector.readFromFile( reader ) )
+				this.pTest.setDirection( Vector.readFromFile( reader ) )
+				this.pNormTestDirection = DVector.new( this.pTest.getDirection() ).normalize()
+				this.pGroundedPosition = DVector.readFromFile( reader )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 4 )
 			flags.setAt( 0, this.pTouchesGround )
 			flags.setAt( 1, this.pApplyToActor )

@@ -64,10 +64,16 @@ class CActionCameraShot extends ConversationAction
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pName = env.readStringIDOrNullIfEmpty( reader )
-		this.pDuration = reader.readFloat()
-		this.pCameraTarget = env.readStringIDOrNullIfEmpty( reader )
-		this.pLookAtTarget = env.readStringIDOrNullIfEmpty( reader )
+		select reader.readByte() // version
+		case 0
+			this.pName = env.readStringIDOrNullIfEmpty( reader )
+			this.pDuration = reader.readFloat()
+			this.pCameraTarget = env.readStringIDOrNullIfEmpty( reader )
+			this.pLookAtTarget = env.readStringIDOrNullIfEmpty( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -236,6 +242,8 @@ class CActionCameraShot extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pName )
 		writer.writeFloat( this.pDuration )
 		env.writeStringIDOrEmptyIfNull( writer, this.pCameraTarget )
