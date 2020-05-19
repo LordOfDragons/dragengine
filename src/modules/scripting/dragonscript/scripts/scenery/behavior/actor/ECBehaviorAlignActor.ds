@@ -119,14 +119,12 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		public func new( ECBehaviorAlignActor ecbehavior, BehaviorElement element ) super( element )
 			this.pECBehavior = ecbehavior
 			this.pListeners = Array.new()
-			this.pElementResolver = ElementResolver.new()
 			this.pIsAtTarget = false
 			this.pAlignFinished = true
 			this.pSucceeded = true
 			
 			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
 			
-			this.setRequiresEnterFrame( true )
 			this.setRequiresThink( true )
 		end
 		
@@ -594,7 +592,10 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
 		end
 		
 		
@@ -618,9 +619,11 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 				end
 				this.pInitialDistance = reader.readFloat()
 				if flags.getAt( 1 )
-					this.pElementResolver.add( UniqueID.readFromFile( reader ), block Element element
+					this.pElementResolver = ElementResolver.new()
+					this.pElementResolver.add( reader, block Element element
 						this.pRelativeTargetElement = element
 					end )
+					this.setRequiresEnterFrame( true )
 				end
 				if flags.getAt( 2 )
 					this.pLookAt = ConversationPlaybackLookAt.readFromFile( env, reader )
@@ -658,7 +661,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			writer.writeFloat( this.pInitialDistance )
 			
 			if this.pRelativeTargetElement != null
-				this.pRelativeTargetElement.getID().writeToFile( writer )
+				ElementResolver.writeToFile( writer, this.pRelativeTargetElement )
 			end
 			
 			if this.pLookAt != null

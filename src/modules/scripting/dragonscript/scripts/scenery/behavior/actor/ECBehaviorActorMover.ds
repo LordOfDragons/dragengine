@@ -405,12 +405,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			this.pEnableLimitTurnAngle = false
 			this.pLimitTurnAngle = 89
 			this.pListeners = Array.new()
-			this.pElementResolver = ElementResolver.new()
 			
 			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
 			this.pNavigator = ecbehavior.getNavigator().instance( element )
 			
-			this.setRequiresEnterFrame( true )
 			this.setRequiresThink( true )
 		end
 		
@@ -1118,7 +1116,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
 		end
 		
 		/** \brief Think about what to do for the next frame update. */
@@ -1165,9 +1166,11 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				this.pSpeed = reader.readFloat()
 				
 				if flags.getAt( 5 )
+					this.pElementResolver = ElementResolver.new()
 					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
 						this.pRidable = behavior
 					end )
+					this.setRequiresEnterFrame( true )
 				end
 				
 			else
@@ -1213,7 +1216,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			writer.writeFloat( this.pSpeed )
 			
 			if this.pRidable != null
-				this.pElementResolver.writeToFileBehavior( writer, this.pRidable )
+				ElementResolver.writeToFileBehavior( writer, this.pRidable )
 			end
 		end
 	end

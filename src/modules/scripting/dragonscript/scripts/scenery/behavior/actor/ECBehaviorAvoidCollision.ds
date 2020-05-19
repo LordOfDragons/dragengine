@@ -137,7 +137,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			this.pDeviationAngle = 0
 			this.pDeviationTime = 0
 			
-			this.pElementResolver = ElementResolver.new()
 			
 			// to calculate the check interval a detection distance of 3m is assumed with a
 			// walking speed of 1.25m. we want to get a check at least every 1/4 to 1/3 detection
@@ -148,7 +147,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			this.pActorMover = ecbehavior.getActorMover().instance( element )
 			
-			this.setRequiresEnterFrame( true )
 			this.setRequiresThink( true )
 		end
 		
@@ -1114,7 +1112,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
 		end
 		
 		/** \brief Add element to game world. */
@@ -1140,9 +1141,11 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				this.pDeviationTime = reader.readFloat()
 				
 				if flags.getAt( 2 )
+					this.pElementResolver = ElementResolver.new()
 					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
 						this.pRidable = behavior
 					end )
+					this.setRequiresEnterFrame( true )
 				end
 				
 			else
@@ -1171,7 +1174,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			writer.writeFloat( this.pDeviationTime )
 			
 			if this.pRidable != null
-				this.pElementResolver.writeToFileBehavior( writer, this.pRidable )
+				ElementResolver.writeToFileBehavior( writer, this.pRidable )
 			end
 		end
 	end

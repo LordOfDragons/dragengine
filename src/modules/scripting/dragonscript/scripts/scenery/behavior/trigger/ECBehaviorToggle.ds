@@ -200,7 +200,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			super.readFromFile( env, reader )
+			super.readFromFile( env, reader ) // do not remove unless persisting states!
 			this.pApplyStartActivated = false
 		end
 	end

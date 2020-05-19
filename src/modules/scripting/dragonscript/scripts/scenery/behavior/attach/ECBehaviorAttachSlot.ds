@@ -414,6 +414,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		public func void enterFrame()
 			if this.pElementResolver != null
 				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
 			end
 		end
 		
@@ -476,7 +477,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				this.pElementResolver.addBehavior( reader, block ECBehaviorAttachable.Instance attachable
 					this.attach( attachable, position, orientation )
 				end )
-				
 				this.setRequiresEnterFrame( true )
 				
 			else
