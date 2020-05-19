@@ -181,9 +181,11 @@ abstract class ConversationPlayback implements Persistable
 	public func void readDelayedFromFile( PersistencyEnvironment env, FileReader reader )
 		select reader.readByte() // version
 		case 0
+			var ConversationActor actor
 			var int i, count = reader.readUShort()
 			for i = 0 to count
-				this.addActor( this.loadConversationActor( StringID.new( reader.readString8() ) ) )
+				actor = this.loadConversationActor( StringID.new( reader.readString8() ) )
+				this.addActor( actor, actor.getAliasID() )
 			end
 			
 			var ConversationCoordSystem coordSystem
@@ -191,7 +193,7 @@ abstract class ConversationPlayback implements Persistable
 			for i = 0 to count
 				coordSystem = this.createConversationCoordSystem( StringID.new( reader.readString8() ) )
 				coordSystem.readFromFile( env, reader )
-				this.addCoordSystem( coordSystem )
+				this.addCoordSystem( coordSystem, coordSystem.getAliasID() )
 			end
 			
 			// restore object links that can only be restored once the parent playback is present
