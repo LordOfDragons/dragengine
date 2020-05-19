@@ -81,7 +81,7 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
 		select reader.readByte() // version
 		case 0
 			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
@@ -687,6 +687,8 @@ class CActionActorSpeak extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
 		writer.writeByte( 0 ) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 1 )

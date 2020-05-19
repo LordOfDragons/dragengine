@@ -284,7 +284,8 @@ class PersistencyEnvironment
 		if this.pPersistency.getDebugEnableCanaryValue()
 			if not reader.readString( Persistency.debugCanaryValue_BEGIN.getLength() ).equals( Persistency.debugCanaryValue_BEGIN )
 				this.pPersistency.getConsole().addMessage( \
-					"readObjectOrNull(): Start canary value invalid at reader position " + reader.getPosition() )
+					"readObjectOrNull(): Start canary value invalid at reader position " \
+					+ ( reader.getPosition() - Persistency.debugCanaryValue_BEGIN.getLength() ) )
 				throw EInvalidParam.new()
 			end
 		end
@@ -302,7 +303,8 @@ class PersistencyEnvironment
 		if this.pPersistency.getDebugEnableCanaryValue()
 			if not reader.readString( Persistency.debugCanaryValue_END.getLength() ).equals( Persistency.debugCanaryValue_END )
 				this.pPersistency.getConsole().addMessage( "readObjectOrNull(): " + name \
-					+ ": End canary value invalid at reader position " + reader.getPosition() )
+					+ ": End canary value invalid at reader position " \
+					+ ( reader.getPosition() - Persistency.debugCanaryValue_END.getLength() ) )
 				throw EInvalidParam.new()
 			end
 		end

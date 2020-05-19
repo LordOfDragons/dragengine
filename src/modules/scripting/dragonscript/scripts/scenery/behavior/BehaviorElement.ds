@@ -343,8 +343,6 @@ class BehaviorElement extends Element
 	
 	/** \brief Read element from file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		super.readFromFile( env, reader )
-		
 		select reader.readByte() // version
 		case 0
 			this.pInstances.forEach( block ECBehaviorInstance each
@@ -358,8 +356,6 @@ class BehaviorElement extends Element
 	
 	/** \brief Write element to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeToFile( env, writer )
-		
 		writer.writeByte( 0 ) // version
 		
 		this.pInstances.forEach( block ECBehaviorInstance each

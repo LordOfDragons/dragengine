@@ -40,7 +40,7 @@ class CActionStopConversation extends ConversationAction
 		end
 		
 		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionStopConversation.new()
+			return CActionStopConversation.new( env, reader )
 		end
 		
 		public static func void registerFactory( Persistency persistency )
@@ -52,6 +52,16 @@ class CActionStopConversation extends ConversationAction
 	
 	/** \brief Create conversation action. */
 	public func new()
+	end
+	
+	/** \brief Read from file. */
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+		select reader.readByte() // version
+		case 0
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -75,5 +85,12 @@ class CActionStopConversation extends ConversationAction
 	 */
 	public func String persistencyFactoryName()
 		return Factory.NAME
+	end
+	
+	/** \brief Write object to file writer. */
+	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
 	end
 end

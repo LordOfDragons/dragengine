@@ -119,7 +119,7 @@ class BAAAlignActor extends BaseActorAction
 	end
 	
 	/** \brief Create align actor action from persisted state. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	public func new( PersistencyEnvironment env, FileReader reader )
 		select reader.readByte() // version
 		case 0
 			var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
@@ -418,8 +418,6 @@ class BAAAlignActor extends BaseActorAction
 	end
 	
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
-		
 		writer.writeByte( 0 ) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 3 )

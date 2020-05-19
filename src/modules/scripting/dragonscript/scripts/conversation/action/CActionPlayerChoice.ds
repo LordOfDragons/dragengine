@@ -64,7 +64,7 @@ class CActionPlayerChoice extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
 		select reader.readByte() // version
 		case 0
 			this.pVariable = env.readString8OrNullIfEmpty( reader )
@@ -202,6 +202,8 @@ class CActionPlayerChoice extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
 		writer.writeByte( 0 ) // version
 		
 		env.writeString8OrEmptyIfNull( writer, this.pVariable )

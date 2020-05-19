@@ -44,6 +44,7 @@ class SpawnPointClass extends ElementClass
 	public func new( String className ) super( className )
 		this.pName = ECPString.new( "name", null )
 		this.addProperty( this.pName )
+		this.setPersistable( false )
 	end
 	
 	

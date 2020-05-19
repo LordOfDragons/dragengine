@@ -116,6 +116,10 @@ abstract class ConversationPlayback implements Persistable
 	 * the above mentioned.
 	 */
 	public func new( PersistencyEnvironment env, FileReader reader )
+		this.pActors = Array.new()
+		this.pCoordSystems = Array.new()
+		this.pListeners = Array.new()
+		
 		select reader.readByte() // version
 		case 0
 			var int i, count
@@ -142,6 +146,7 @@ abstract class ConversationPlayback implements Persistable
 			var String variableName
 			var int variableValue
 			count = reader.readUShort()
+			this.pVariables = Dictionary.new()
 			for i = 0 to count
 				variableName = reader.readString8()
 				variableValue = reader.readInt()
@@ -149,6 +154,7 @@ abstract class ConversationPlayback implements Persistable
 			end
 			
 			count = reader.readUShort()
+			this.pLayers = Array.new()
 			for i = 0 to count
 				this.pLayers.add( ConversationPlaybackLayer.readFromFile( env, reader ) )
 			end
