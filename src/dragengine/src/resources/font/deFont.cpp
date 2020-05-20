@@ -291,6 +291,12 @@ void deFont::pFreeGlyphMap(){
 		pGlyphGroups = NULL;
 		pGlyphGroupCount = 0;
 	}
+	
+	if( pGlyphs ){
+		delete [] pGlyphs;
+		pGlyphs = NULL;
+		pGlyphCount = 0;
+	}
 }
 
 void deFont::pCreateGlyphMap(){
