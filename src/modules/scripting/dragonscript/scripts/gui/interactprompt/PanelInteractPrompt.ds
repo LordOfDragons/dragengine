@@ -44,6 +44,7 @@ pin Dragengine.Utils
 class PanelInteractPrompt extends Panel implements ListModelListener
 	private var BindingManager pBindingManager
 	private var int pBindingIconHeight
+	private var DisplayInteractPromptEntry.Placement pPlacement
 	private var ListModel pModel
 	
 	
@@ -52,9 +53,15 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	public func new() this( null, 1 )
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight )
+	public func new( BindingManager bindingManager, int bindingIconHeight ) \
+	this( bindingManager, bindingIconHeight, DisplayInteractPromptEntry.Placement.top )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement )
 		this.pBindingManager = bindingManager
 		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
+		this.pPlacement = placement
 		this.pModel = DefaultListModel.new()
 		this.pModel.addListener( this )
 		
@@ -62,12 +69,17 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 		this.setDesignerSelector( "InteractPrompt" )
 	end
 	
-	public func new( ListModel model ) this( null, 1 )
+	public func new( ListModel model ) this()
 		this.setModel( model )
 	end
 	
 	public func new( BindingManager bindingManager, int bindingIconHeight, ListModel model ) \
 	this( bindingManager, bindingIconHeight )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement, ListModel model ) \
+	this( bindingManager, bindingIconHeight, placement )
 		this.setModel( model )
 	end
 	
@@ -88,6 +100,11 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	/** \brief Binding icon height. */
 	public func int getBindingIconHeight()
 		return this.pBindingIconHeight
+	end
+	
+	/** \brief Placement to use for newly created widgets. */
+	public func DisplayInteractPromptEntry.Placement getPlacement()
+		return this.pPlacement
 	end
 	
 	/** \brief List model. */
@@ -156,7 +173,7 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	 * Default implementation creates instance of DisplayInteractPromptEntry.
 	 */
 	protected func Widget createWidget( InteractPromptEntry entry )
-		return DisplayInteractPromptEntry.new( this.pBindingManager, this.pBindingIconHeight )
+		return DisplayInteractPromptEntry.new( this.pBindingManager, this.pBindingIconHeight, this.pPlacement )
 	end
 	
 	/**

@@ -41,9 +41,27 @@ pin Dragengine.Utils
  * - "Panel.InteractPromptEntry{.style}.Bindings": Bindings panel
  */
 class DisplayInteractPromptEntry extends Panel
+	/** \brief Placement of image, verb and bindings. */
+	enum Placement
+		/** From top to bottom: image, verb then bindings. */
+		top
+		
+		/** From top to bottom: bindings, image, verb. */
+		bottom
+		
+		/** Left image above verb, right bindings. */
+		left
+		
+		/** Right image above verb, left bindings. */
+		right
+	end
+	
+	
+	
 	private var BindingManager pBindingManager
 	private var int pBindingIconHeight
 	private var String pBaseSelectorName
+	private var Placement pPlacement
 	
 	private var DisplayImage pDisplayImage
 	private var DisplayVideo pDisplayVideo
@@ -55,18 +73,31 @@ class DisplayInteractPromptEntry extends Panel
 	
 	
 	/** \brief Create widget. */
-	public func new() this( null, 1 )
+	public func new() this( null, 1, Placement.top )
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight )
+	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement )
 		this.pBindingManager = bindingManager
 		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
 		this.pBaseSelectorName = "InteractPromptEntry"
+		this.pPlacement = placement
 		
 		this.runWhileBlockingLayout( block
-			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 0.0 ) )
+			select placement
+			case Placement.top
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 0 ) )
+				
+			case Placement.bottom
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 1 ) )
+				
+			case Placement.left
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 0, 0, 0.5 ) )
+				
+			case Placement.right
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 0, 1, 0.5 ) )
+			end
 			
-			this.addWidget( Panel.new( StackLayout.new(), block Panel p
+			var Panel panelImage = Panel.new( StackLayout.new(), block Panel p
 				p.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p2
 					this.pDisplayImage = DisplayImage.new()
 					this.pDisplayImage.setVisible( false )
@@ -78,19 +109,47 @@ class DisplayInteractPromptEntry extends Panel
 					this.pDisplayVideo.setVisible( false )
 					p2.addWidget( this.pDisplayVideo )
 				end ) )
-			end ) )
+			end )
 			
 			this.pLabelVerb = Label.new( "" )
 			this.pLabelVerb.setVisible( false )
-			this.addWidget( this.pLabelVerb )
 			
 			this.pLabelDescription = Label.new( "" )
 			this.pLabelDescription.setVisible( false )
-			this.addWidget( this.pLabelDescription )
 			
-			this.pPanelBindings = Panel.new()
-			this.pPanelBindings.setLayout( FlowLayout.new( LayoutAxis.y, 5 ) )
-			this.addWidget( this.pPanelBindings )
+			select placement
+			case Placement.top
+				this.addWidget( panelImage )
+				this.addWidget( this.pLabelVerb )
+				this.addWidget( this.pLabelDescription )
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 5, 0.5, 0 ) )
+				this.addWidget( this.pPanelBindings )
+				
+			case Placement.bottom
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 5, 0.5, 1 ) )
+				this.addWidget( this.pPanelBindings )
+				this.addWidget( panelImage )
+				this.addWidget( this.pLabelVerb )
+				this.addWidget( this.pLabelDescription )
+				
+			case Placement.left
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel p
+					p.addWidget( panelImage )
+					p.addWidget( this.pLabelVerb )
+					p.addWidget( this.pLabelDescription )
+				end ) )
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 0, 0.5 ) )
+				this.addWidget( this.pPanelBindings )
+				
+			case Placement.right
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 1, 0.5 ) )
+				this.addWidget( this.pPanelBindings )
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel p
+					p.addWidget( panelImage )
+					p.addWidget( this.pLabelVerb )
+					p.addWidget( this.pLabelDescription )
+				end ) )
+			end
 			
 			this.setDesignerSelector( this.pBaseSelectorName )
 		end )
@@ -134,6 +193,11 @@ class DisplayInteractPromptEntry extends Panel
 		
 		this.pBaseSelectorName = name
 		this.setDesignerSelector( this.pBaseSelectorName )
+	end
+	
+	/** \brief Placement. */
+	public func Placement getPlacement()
+		return this.pPlacement
 	end
 	
 	
