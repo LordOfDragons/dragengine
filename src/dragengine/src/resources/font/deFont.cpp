@@ -65,6 +65,12 @@ deFont::~deFont(){
 	}
 	
 	pFreeGlyphMap();
+	
+	if( pGlyphs ){
+		delete [] pGlyphs;
+		pGlyphs = NULL;
+		pGlyphCount = 0;
+	}
 }
 
 
@@ -136,6 +142,12 @@ void deFont::SetGlyphCount( int count ){
 	}
 	
 	pFreeGlyphMap();
+	
+	if( pGlyphs ){
+		delete [] pGlyphs;
+		pGlyphs = NULL;
+		pGlyphCount = 0;
+	}
 	
 	if( count > 0 ){
 		pGlyphs = new deFontGlyph[ count ];
@@ -290,12 +302,6 @@ void deFont::pFreeGlyphMap(){
 		delete [] pGlyphGroups;
 		pGlyphGroups = NULL;
 		pGlyphGroupCount = 0;
-	}
-	
-	if( pGlyphs ){
-		delete [] pGlyphs;
-		pGlyphs = NULL;
-		pGlyphCount = 0;
 	}
 }
 
