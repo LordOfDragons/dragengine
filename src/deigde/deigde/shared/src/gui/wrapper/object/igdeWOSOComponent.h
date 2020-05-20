@@ -144,6 +144,7 @@ private:
 	void pDestroyComponent();
 	bool pIsVisible() const;
 	void pUpdateOutlineComponent();
+	void pReleaseOutlineComponent();
 };
 
 #endif
