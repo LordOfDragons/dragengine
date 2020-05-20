@@ -104,7 +104,7 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	//         Using temporary strings causes segfaults!
 	
 	pFoxArgCount = arguments.GetCount();
-	pFoxArgs = new char*[ pFoxArgCount ];
+	pFoxArgs = new char*[ pFoxArgCount + 1 ]; // workaround: fox seems to write past the buffer
 	
 	int i;
 	for( i=0; i<pFoxArgCount; i++ ){
