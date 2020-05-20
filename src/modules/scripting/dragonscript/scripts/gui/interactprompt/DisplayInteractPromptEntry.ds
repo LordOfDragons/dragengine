@@ -211,7 +211,12 @@ class DisplayInteractPromptEntry extends Panel
 					this.setCommand( null )
 				end
 				
-				this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
+				if entry.getStyle().empty()
+					this.setDesignerSelector( this.pBaseSelectorName )
+					
+				else
+					this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
+				end
 				
 			else
 				this.pDisplayImage.setImage( null )

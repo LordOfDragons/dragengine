@@ -91,7 +91,7 @@ class InteractPromptEntry
 	/** \brief Set style or empty string if not used. */
 	public func void setStyle( String style )
 		if style == null
-			throw ENullPointer.new( "style" )
+			throw ENullPointer.new()
 		end
 		this.pStyle = style
 	end
@@ -104,7 +104,7 @@ class InteractPromptEntry
 	/** \brief Set verb. */
 	public func void setVerb( UnicodeString verb )
 		if verb == null
-			throw ENullPointer.new( "verb" )
+			throw ENullPointer.new()
 		end
 		this.pVerb = verb
 	end
@@ -117,7 +117,7 @@ class InteractPromptEntry
 	/** \brief Set description. */
 	public func void setDescription( UnicodeString description )
 		if description == null
-			throw ENullPointer.new( "description" )
+			throw ENullPointer.new()
 		end
 		this.pDescription = description
 	end
