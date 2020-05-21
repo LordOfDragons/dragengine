@@ -32,7 +32,7 @@ pin Dragengine.Utils
 /**
  * \brief Display list of InteractPromptEntry.
  * 
- * Uses ListModel to store the list of InteractPromptEntry to display. Changing the
+ * Uses DefaultListModel to store the list of InteractPromptEntry to display. Changing the
  * content of the list model updates the PanelInteractPrompt. For each model entry
  * a view widget is created and added to the panel.
  * 
@@ -45,7 +45,7 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	private var BindingManager pBindingManager
 	private var int pBindingIconHeight
 	private var DisplayInteractPromptEntry.Placement pPlacement
-	private var ListModel pModel
+	private var DefaultListModel pModel
 	
 	
 	
@@ -67,20 +67,6 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 		
 		this.setLayout( BoxLayout.new( LayoutAxis.x ) )
 		this.setDesignerSelector( "InteractPrompt" )
-	end
-	
-	public func new( ListModel model ) this()
-		this.setModel( model )
-	end
-	
-	public func new( BindingManager bindingManager, int bindingIconHeight, ListModel model ) \
-	this( bindingManager, bindingIconHeight )
-	end
-	
-	public func new( BindingManager bindingManager, int bindingIconHeight, \
-	DisplayInteractPromptEntry.Placement placement, ListModel model ) \
-	this( bindingManager, bindingIconHeight, placement )
-		this.setModel( model )
 	end
 	
 	/** \brief Dispose of widget. */
@@ -108,12 +94,12 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	end
 	
 	/** \brief List model. */
-	public func ListModel getModel()
+	public func DefaultListModel getModel()
 		return this.pModel
 	end
 	
 	/** \brief Set list model. */
-	public func void setModel( ListModel model )
+	public func void setModel( DefaultListModel model )
 		if model == null
 			throw ENullPointer.new( "model" )
 		end
@@ -127,6 +113,13 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 		this.pModel.addListener( this )
 		
 		this.updateWidgets()
+	end
+	
+	
+	
+	/** \brief Set prompts from array of instances of InteractPromptEntry. */
+	public func void setPrompts( Array prompts )
+		this.pModel.setContent( prompts )
 	end
 	
 	
