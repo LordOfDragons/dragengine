@@ -48,6 +48,12 @@ pin Dragengine.Utils
  * detected. While the player is not the active actor this behavior disables per-frame
  * updates to not waste performance.
  * 
+ * If the look-at behavior is disabled this behavior is showing no interact prompts. If is
+ * though possible to temporarily disabled this behavior no matter if the look-at behavior
+ * is enabled or disabled. This allows to hide interact prompts for example if the player
+ * is performing an action where he is not able to interact with anything, for example
+ * being in a conversation or playing a cutscene.
+ * 
  * This behavior is used for player actors only.
  * 
  * Uses property prefix "playerLookAtInteractPrompt."
@@ -131,6 +137,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		private var float pTransparency
 		private var Container pUIContainer
 		private var PromptController pPromptController
+		private var bool pEnabled
 		private var Array pListeners
 		
 		
@@ -138,6 +145,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		/** \brief Create instance. */
 		public func new( ECBehaviorPlayerLookAtInteractPrompt ecbehavior, BehaviorElement element ) super( element )
 			this.pECBehavior = ecbehavior
+			this.pEnabled = true
 			
 			this.pUIContainer = ecbehavior.getUIContainer()
 			
@@ -234,6 +242,16 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pUIContainer = container
 		end
 		
+		/** \brief Behavior is enabled showing interact prompts if an element is looked at. */
+		public func bool getEnabled()
+			return this.pEnabled
+		end
+		
+		/** \brief Set if behavior is enabled showing interact prompts if an element is looked at. */
+		public func void setEnabled( bool enabled )
+			this.pEnabled = enabled
+		end
+		
 		
 		
 		/** \brief Prompt controller or null if not created. */
@@ -313,6 +331,12 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		/** \brief Update prompts. */
 		public func void updatePrompts()
 			if this.pPromptController == null
+				return
+			end
+			
+			if not this.pEnabled
+				this.setPromptsFromBehaviors( Array.new() )
+				this.pPromptController.setPromptVisible( false )
 				return
 			end
 			
