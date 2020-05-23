@@ -145,6 +145,13 @@ void igdeCreateProject::CreateProject(){
 	pProject->SetPathCache( pPathCache );
 	pProject->SetScriptModule( pScriptModule );
 	
+	const deLoadableModule * const scriptModule =
+		pWindowMain.GetEngine()->GetModuleSystem()->GetModuleNamed( pScriptModule );
+	if( ! scriptModule ){
+		DETHROW_INFO( deeInvalidParam, "Script module not found" );
+	}
+	pProject->SetScriptModuleVersion( scriptModule->GetVersion() );
+	
 	pCreateGameAliasId();
 	pCreateDirectories();
 	pCopyDefaultFiles();

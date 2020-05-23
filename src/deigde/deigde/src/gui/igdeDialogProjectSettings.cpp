@@ -254,6 +254,8 @@ pBaseGameDefsChanged( false )
 		new igdeDialogProjectSettings_ComboScriptModule( *this ) );
 	pCBScriptModule->SetDefaultSorter();
 	
+	helper.EditString( content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, NULL );
+	
 	
 	igdeContainerReference buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
@@ -280,6 +282,7 @@ pBaseGameDefsChanged( false )
 	}
 	
 	pCBScriptModule->SetText( project.GetScriptModule() );
+	pEditScriptModuleVersion->SetText( project.GetScriptModuleVersion() );
 }
 
 igdeDialogProjectSettings::~igdeDialogProjectSettings(){
@@ -313,6 +316,7 @@ bool igdeDialogProjectSettings::Accept(){
 		project.SetPathData( pEditPathData->GetText() );
 		project.SetPathCache( pEditPathCache->GetText() );
 		project.SetScriptModule( pCBScriptModule->GetText() );
+		project.SetScriptModuleVersion( pEditScriptModuleVersion->GetText() );
 		
 		project.GetBaseGameDefinitionIDList().RemoveAll();
 		project.GetBaseGameDefinitionList().RemoveAll();
