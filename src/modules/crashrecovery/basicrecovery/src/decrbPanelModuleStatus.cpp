@@ -371,10 +371,12 @@ void decrbPanelModuleStatus::UpdateModulesList(){
 	deModuleSystem *modSys = engine->GetModuleSystem();
 	int i, count = modSys->GetModuleCount();
 	deLoadableModule *loadedModule;
+	FXString text;
 	
 	for( i=0; i<count; i++ ){
 		loadedModule = modSys->GetModuleAt( i );
-		pCBModule->appendItem( loadedModule->GetName().GetString(), loadedModule );
+		text.format( "%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString() );
+		pCBModule->appendItem( text, loadedModule );
 	}
 	pCBModule->sortItems();
 }
