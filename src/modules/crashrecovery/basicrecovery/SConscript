@@ -78,7 +78,8 @@ for l in library:
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'version', 'version': '1.0', 'keyword': 'VERSION'}]
 
 if not envModule['OSPosix']:
 	# this is a huge drama. getting duplicate FOX libraries would work with the ldloader

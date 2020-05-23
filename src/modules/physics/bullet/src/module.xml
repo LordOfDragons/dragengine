@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>Bullet</name>
 	<description>Provides physical simulation using the free-software Bullet physics library.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Physics</type>
 	<homepage>http://www.continuousphysics.com/Bullet/</homepage>
 	<library>

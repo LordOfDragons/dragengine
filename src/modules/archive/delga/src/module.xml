@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>DELGA</name>
 	<description>Handles archive in the DELGA format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Archive</type>
 	<pattern>.delga</pattern>
 	<library>

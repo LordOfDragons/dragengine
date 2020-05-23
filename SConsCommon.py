@@ -173,6 +173,10 @@ def UpdateModuleManifest(env, target, source):
 			
 		elif action == 'preloadLibrary':
 			manifest = manifest.replace('</library>', '\t<preloadLibrary>{}</preloadLibrary>\n\t</library>'.format(update['path']))
+			
+		elif action == 'version':
+			manifest = manifest.replace(update['keyword'],
+				'999.9' if env['with_nightly'] else update['version'])
 	
 	with open(target[0].abspath, 'w') as f:
 		f.write(manifest)

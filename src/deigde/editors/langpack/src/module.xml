@@ -3,7 +3,7 @@
 	<name>Language Pack Editor</name>
 	<description>Edit language packs.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<iconSmall>icons/editorIconSmall.png</iconSmall>
 	<iconLarge>icons/editorIconLarge.png</iconLarge>
 	<library>

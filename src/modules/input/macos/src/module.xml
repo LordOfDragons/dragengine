@@ -1,11 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>MacOSInput</name>
 	<description>Processes input on MacOS Operating Systems.
 		Supports Mouse and Keyboard for the time beeing.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Input</type>
 	<library>
 		<file>FILENAME</file>
