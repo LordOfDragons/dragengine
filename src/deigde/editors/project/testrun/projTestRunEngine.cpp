@@ -262,6 +262,7 @@ const char *name, const char *version ){
 	}
 	
 	if( ! module ){
+		pProcess.GetLogger()->LogErrorFormat( LOGSOURCE, "Module '%s' with version '%s' not found", name, version );
 		DETHROW( deeInvalidAction );
 	}
 	
