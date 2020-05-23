@@ -55,22 +55,31 @@ public:
 		ID_BTN_PROF_RENAME,
 		
 		ID_CB_MOD_GRA,
+		ID_CB_MOD_GRA_VERSION,
 		ID_BTN_GRAMODINFO,
 		ID_CB_MOD_INP,
+		ID_CB_MOD_INP_VERSION,
 		ID_BTN_INPMODINFO,
 		ID_CB_MOD_PHY,
+		ID_CB_MOD_PHY_VERSION,
 		ID_BTN_PHYMODINFO,
 		ID_CB_MOD_AMR,
+		ID_CB_MOD_AMR_VERSION,
 		ID_BTN_AMRMODINFO,
 		ID_CB_MOD_AI,
+		ID_CB_MOD_AI_VERSION,
 		ID_BTN_AIMODINFO,
 		ID_CB_MOD_CR,
+		ID_CB_MOD_CR_VERSION,
 		ID_BTN_CRMODINFO,
 		ID_CB_MOD_AUD,
+		ID_CB_MOD_AUD_VERSION,
 		ID_BTN_AUDMODINFO,
 		ID_CB_MOD_NET,
+		ID_CB_MOD_NET_VERSION,
 		ID_BTN_NETMODINFO,
 		ID_CB_MOD_SYN,
+		ID_CB_MOD_SYN_VERSION,
 		ID_BTN_SYNMODINFO,
 		
 		ID_LIST_MP_MODULES,
@@ -122,6 +131,7 @@ private:
 		FXLabel *label;
 		FXLabel *icon;
 		FXComboBox *combobox;
+		FXComboBox *comboboxVersion;
 		FXButton *modinfo;
 		FXLabel *problem;
 		int type;
@@ -205,9 +215,12 @@ public:
 	/** Update the selected profile if any. */
 	void UpdateProfile();
 	/** Update a system. */
-	void UpdateSystem( sSystem &system, const char *moduleName );
+	void UpdateSystem( sSystem &system, const char *moduleName, const char *moduleVersion );
 	/** Disable a system. */
 	void DisableSystem( sSystem &system );
+	
+	/** \brief Update module versions. */
+	void UpdateModuleVersions( sSystem &system, const char *moduleName, const char *moduleVersion );
 	
 	/** Get selected module name. */
 	bool GetSelectedMPModuleName( FXString &name );
@@ -238,22 +251,31 @@ public:
 	long updateBtnProfRename( FXObject *sender, FXSelector selector, void *data );
 	
 	long onCBModGraChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModGraVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnGraModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModInpChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModInpVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnInpModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModPhyChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModPhyVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnPhyModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModAmrChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModAmrVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnAmrModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModAIChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModAIVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnAIModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModCRChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModCRVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnCRModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModAudChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModAudVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnAudModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModNetChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModNetVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnNetModInfo( FXObject *sender, FXSelector selector, void *data );
 	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModSynVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnSynModInfo( FXObject *sender, FXSelector selector, void *data );
 	
 	long onListMPModulesChanged( FXObject *sender, FXSelector selector, void *data );
@@ -284,8 +306,9 @@ public:
 	/*@}*/
 	
 private:
-	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText, int comboBoxSelector,
-		int buttonSelector, FXComposite *container );
+	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText,
+		int comboBoxSelector, int comboBoxVersionSelector, int buttonSelector,
+		FXComposite *container );
 	void pUpdateMPParamVisiblity();
 	cEditProfile *pGetSelectedProfile() const;
 	void pSetSelectedProfile( deglGameProfile *profile );
