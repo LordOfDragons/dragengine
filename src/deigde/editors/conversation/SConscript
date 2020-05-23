@@ -18,8 +18,8 @@ envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
 versionString = '1.0'
-if envEditor['force_module_versions']:
-	versionString = envEditor['force_module_versions']
+if envEditor['force_version']:
+	versionString = envEditor['force_version']
 
 # setup the builders
 sources = []

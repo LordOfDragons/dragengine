@@ -22,8 +22,8 @@ if not buildModule:
 
 # fetch values in expanded form for later use
 versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/synthesizer/desynthesizer/{}'.format(
 	envModule.subst( envModule[ 'path_de_config' ] ), versionString )

@@ -80,9 +80,9 @@ if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
 
 # fetch values in expanded form for later use
-versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+versionString = '1.1'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_data']), versionString)

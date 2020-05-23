@@ -119,7 +119,7 @@ params.Add( BoolVariable( 'with_warnerrors', 'Treat warnings as errors ( dev-bui
 params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
-params.Add(StringVariable('force_module_versions', 'Force module and editor versions (empty to disable)', ''))
+params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 
 params.Add( TernaryVariable( 'with_system_zlib', 'Use System Zlib' ) )
 params.Add( TernaryVariable( 'with_system_libpng', 'Use System libpng' ) )

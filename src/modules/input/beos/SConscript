@@ -15,8 +15,8 @@ if not buildModule:
 	Return()
 
 versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_data']), versionString)

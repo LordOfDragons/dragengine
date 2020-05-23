@@ -32,6 +32,10 @@ pathShare = envIGDELib.subst(envIGDELib['path_igde_share'])
 if envIGDELib['OSWindows']:
 	pathSysLib = envIGDELib.subst(envIGDELib['systemroot'])
 
+versionString = '1.1'
+if envIGDELib['force_version']:
+	versionString = envModule['force_version']
+
 # update the compile flags
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
 envIGDELib.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
@@ -133,9 +137,10 @@ for h in sharedHeaders:
 
 if envIGDELib['OSPosix']:
 	lnamebase = buildLibrary[0].name
-	lname = os.path.join(pathLib, '{}.1.0.0'.format(lnamebase))
+	lname = os.path.join(pathLib, '{}.{}.0'.format(lnamebase, versionString))
 	installLib.append(envIGDELib.InstallAs(lname, lnamebase))
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, '{}.1'.format(lnamebase)),
+	installLib.append(envIGDELib.Command(os.path.join(pathLib,
+		'{}.{}'.format(lnamebase, versionString.split('.')[0])),
 		lname, Action(SymLinkLibrary)))
 	installLib.append(envIGDELib.Command(os.path.join(pathLib, lnamebase),
 		lname, Action(SymLinkLibrary)))

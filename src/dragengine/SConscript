@@ -125,6 +125,10 @@ if envDragengine['OSWindows']:
 	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
 	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
 
+versionString = '1.1'
+if envDragengine['force_version']:
+	versionString = envModule['force_version']
+
 # update the compile flags
 # envDragengine.Append(CXXFLAGS=' -D__DEBUG__')
 # envDragengine.Append(CXXFLAGS=' -D_TESTING_')
@@ -210,10 +214,13 @@ archiveEngine = {}
 
 if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
 	for l in library:
-		lname = '%s/%s.1.0.0' % (pathLib, l.name)
+		lname = '{}/{}.{}.0'.format(pathLib, l.name, versionString)
 		install.append(envDragengine.InstallAs(lname, l))
-		install.append(envDragengine.Command('%s/%s.1' % (pathLib, l), lname, Action(SymLinkLibrary)))
-		install.append(envDragengine.Command('%s/%s' % (pathLib, l), lname, Action(SymLinkLibrary)))
+		install.append(envDragengine.Command(
+			'{}/{}.{}'.format(pathLib, l, versionString.split('.')[0]),
+			lname, Action(SymLinkLibrary)))
+		install.append(envDragengine.Command(
+			'{}/{}'.format(pathLib, l), lname, Action(SymLinkLibrary)))
 		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
 	
 elif envDragengine['OSWindows']:

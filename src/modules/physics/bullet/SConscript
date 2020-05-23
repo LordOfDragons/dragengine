@@ -21,9 +21,9 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+versionString = '1.1'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathSConscript = Dir( "." ).srcnode().abspath
 

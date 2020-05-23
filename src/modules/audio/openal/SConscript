@@ -26,9 +26,9 @@ envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
 # fetch values in expanded form for later use
-versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+versionString = '1.1'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/audio/openal/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/audio/openal/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )

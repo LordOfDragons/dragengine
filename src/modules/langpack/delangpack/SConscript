@@ -8,8 +8,8 @@ envModule = parent_env.Clone()
 
 # fetch values in expanded form for later use
 versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/langpack/delangpack/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/langpack/delangpack/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )

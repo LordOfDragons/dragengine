@@ -16,9 +16,9 @@ appendLibrary(envEditor, parent_targets['lib_zlib'], libs)
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-versionString = '1.0'
-if envEditor['force_module_versions']:
-	versionString = envEditor['force_module_versions']
+versionString = '1.1'
+if envEditor['force_version']:
+	versionString = envEditor['force_version']
 
 # fetch values in expanded form for later use
 pathConfig = '{}/modules/project'.format( envEditor.subst( envEditor[ 'path_igde_config' ] ) )

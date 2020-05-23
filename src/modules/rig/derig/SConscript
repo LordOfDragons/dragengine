@@ -7,9 +7,9 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 # fetch values in expanded form for later use
-versionString = '1.0'
-if envModule['force_module_versions']:
-	versionString = envModule['force_module_versions']
+versionString = '1.1'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/rig/derig/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/rig/derig/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
