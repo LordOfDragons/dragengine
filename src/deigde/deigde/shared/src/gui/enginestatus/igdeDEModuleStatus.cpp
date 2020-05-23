@@ -335,11 +335,13 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 void igdeDEModuleStatus::UpdateModulesList(){
 	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
 	const int count = moduleSystem.GetModuleCount();
+	decString text;
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		deLoadableModule * const loadedModule = moduleSystem.GetModuleAt( i );
-		pCBModule->AddItem( loadedModule->GetName(), NULL, loadedModule );
+		text.Format( "%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString() );
+		pCBModule->AddItem( text.GetString(), NULL, loadedModule );
 	}
 	pCBModule->SortItems();
 }
