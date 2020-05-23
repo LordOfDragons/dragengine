@@ -17,6 +17,10 @@ pathShared = '{}/modules/langpack'.format( envEditor.subst( envEditor[ 'path_igd
 envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
+versionString = '1.0'
+if envEditor['force_module_versions']:
+	versionString = envEditor['force_module_versions']
+
 # determine the source files
 sources = []
 headers = []
@@ -48,7 +52,7 @@ manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
 	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'version', 'version': '1.0', 'keyword': 'VERSION'}]
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envEditor.File( 'src/module.xml' )
 updateManifest = envEditor.Command( manifest, manifest.srcnode(),

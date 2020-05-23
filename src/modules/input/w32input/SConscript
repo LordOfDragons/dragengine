@@ -21,9 +21,9 @@ if not buildModule:
 	Return()
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.0'
+if envModule['force_module_versions']:
+	versionString = envModule['force_module_versions']
 
 pathConfig = '{}/modules/input/w32/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/input/w32/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
@@ -61,7 +61,7 @@ manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
 	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'version', 'version': '1.0', 'keyword': 'VERSION'}]
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
