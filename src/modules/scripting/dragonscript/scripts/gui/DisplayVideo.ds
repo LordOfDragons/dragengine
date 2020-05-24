@@ -105,6 +105,7 @@ class DisplayVideo extends Widget
 			return
 		end
 		
+		this.pVideo = video
 		this.pVideoPlayer.setVideo( video )
 		
 		this.layoutParent()
