@@ -360,7 +360,7 @@ class ECBehaviorOutline extends DefaultECBehavior
 		this.pRig = ECPRig.new( prefix + "rig" )
 		eclass.addProperty( this.pRig )
 		
-		this.pColor = ECPColor.new( prefix + "color" )
+		this.pColor = ECPColor.new( prefix + "color", Color.black )
 		eclass.addProperty( this.pColor )
 		
 		this.pIntensity = ECPFloat.new( prefix + "intensity", 0, 0 )
