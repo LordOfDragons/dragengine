@@ -24,11 +24,14 @@ with_system_libtheora ='yes'
 with_system_libhidapi = 'yes'
 with_system_libopenhmd = 'yes'
 with_opengl = 'yes'
-with_python = 'no'
-with_npapisdk = 'no'
 with_dl = 'yes'
 with_pthread = 'yes'
 with_x = 'yes'
+
+# these are not used since python and npapisdk are disabled. set to in-tree
+# to not upset the build system although they will never be build at all
+with_python = 'no'
+with_npapisdk = 'no'
 
 # these packages cause troubles on debian and are build in-tree
 
@@ -58,7 +61,7 @@ with_system_libltdl = 'no'
 with_system_libsigsegv = 'no'
 with_system_smalltalk = 'no'
 
-# this package is not used right now but might be later on my the openal module.
+# this package is not used right now but might be later on by the openal module.
 # as with the smalltalk case above this package is set to in-tree building
 # although it will never be build at all
 with_system_fftw = 'no'
