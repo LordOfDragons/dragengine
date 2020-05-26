@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+if ! [ $(getent group games ) ]
+then
+	groupadd games
+fi
+
+if ! [ -d /opt/delauncher/games ]
+then
+	mkdir -p /opt/delauncher/games
+	chgrp games /opt/delauncher /opt/delauncher/games
+	chmod 775 /opt/delauncher /opt/delauncher/games
+fi
+
+exit 0

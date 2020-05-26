@@ -1,0 +1,32 @@
+Source: dragengine
+Section: x11
+Priority: optional
+Maintainer: Roland Plüss <roland@dragondreams.ch>
+Build-Depends: debhelper (>= 11)
+Standards-Version: 4.1.3
+Homepage: https://dragondreams.ch
+
+Package: dragengine
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Game Engine
+ Required to play games (*.delga) or developing games.
+ Run delauncher-gui or delauncher-console.
+
+Package: dragengine-dev
+Architecture: any
+Depends: dragengine (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Game Engine Development
+ Required to create Drag[en]gine Modules. Not required to create games.
+
+Package: deigde
+Architecture: any
+Depends: dragengine (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Game Development Environment
+ Required to developing games using the Drag[en]gine Game Engine. Run deigde.
+
+Package: deigde-dev
+Architecture: any
+Depends: deigde (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine IGDE Development
+ Required to create Drag[en]gine IGDE Editors. Not required to create games.
