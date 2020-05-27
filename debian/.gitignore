@@ -1,0 +1,6 @@
+.debhelper
+*.substvars
+deigde-dev
+deigde
+dragengine-dev
+dragengine

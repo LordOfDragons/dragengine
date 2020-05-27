@@ -24,7 +24,7 @@ build:
 binary:
 	dh_testroot
 	dh_prep
-	dh_installdirs
+	dh_installdirs	
 	
 	scons -j 8 archive
 	mkdir -p debian/dragengine
@@ -36,8 +36,40 @@ binary:
 	mkdir -p debian/deigde-dev
 	tar -xvjf archive/build/deigde-dev-linux.tar.bz2 -C debian/deigde-dev
 	
+	dh_install
+	dh_installdocs
+	dh_installchangelogs
+	dh_installexamples
+	dh_installman
+	dh_installcatalogs
+	dh_installcron
+	dh_installdebconf
+	dh_installemacsen
+	dh_installifupdown
+	dh_installinfo
+	dh_installinit
+	dh_installmenu
+	dh_installmime
+	dh_installmodules
+	dh_installlogcheck
+	dh_installlogrotate
+	dh_installpam
+	dh_installppp
+	dh_installudev
+	dh_installwm
+	dh_installxfonts
+	dh_bugfiles
+	dh_lintian
+	dh_gconf
+	dh_icons
+	dh_perl
+	dh_usrlocal
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_strip
 	dh_makeshlibs
-	 dh_shlibdeps -Xlibscrdscript -Xdsinstall
+	dh_shlibdeps -Xlibscrdscript -Xdsinstall
 	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
 	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
 	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
@@ -46,3 +78,9 @@ binary:
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
+
+binary-arch:
+	# NOTE required by lintian
+
+binary-indep:
+	# NOTE required by lintian
