@@ -145,14 +145,12 @@ if envIGDELib['OSPosix']:
 	archiveLib['{}/{}'.format(pathLib, l.name)] = l
 	
 	lname = '.'.join(lname.split('.')[0:-2])
-	slfile = envIGDELib.File(lname)
-	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), slfile))
-	archiveLib['{}/{}'.format(pathLib, lname)] = slfile
+	installLib.append(envIGDELib.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
+	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 	lname = '.'.join(lname.split('.')[0:-1])
-	slfile = envIGDELib.File(lname)
-	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), slfile))
-	archiveLib['{}/{}'.format(pathLib, lname)] = slfile
+	installLib.append(envIGDELib.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
+	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 elif envIGDELib['OSWindows']:
 	installLib.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))

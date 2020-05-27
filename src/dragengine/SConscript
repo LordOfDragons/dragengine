@@ -222,14 +222,12 @@ if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
 		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
 		
 		lname = '.'.join(lname.split('.')[0:-2])
-		slfile = envDragengine.File(lname)
-		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), slfile))
-		archiveEngine['{}/{}'.format(pathLib, lname)] = slfile
+		install.append(envDragengine.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
+		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
 		
 		lname = '.'.join(lname.split('.')[0:-1])
-		slfile = envDragengine.File(lname)
-		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), slfile))
-		archiveEngine['{}/{}'.format(pathLib, lname)] = slfile
+		install.append(envDragengine.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
+		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
 	
 elif envDragengine['OSWindows']:
 	install.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
