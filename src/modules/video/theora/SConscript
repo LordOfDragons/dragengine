@@ -34,7 +34,7 @@ globFiles( envModule, 'src', '*.h', headers )
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='vidtheora', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='vidtheora', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'vid_theora_build', library )
 
 install = []

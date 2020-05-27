@@ -34,7 +34,7 @@ globFiles( envModule, 'src', '*.h', headers )
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='imgpng', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='imgpng', source=objects, LIBS=libs )
 targetBuild = parent_env.Alias( 'img_png_build', library )
 
 install = []

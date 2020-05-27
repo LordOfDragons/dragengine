@@ -47,7 +47,7 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
 libs.append( [ 'kernel32', 'user32', 'gdi32', 'winmm', 'wsock32' ] )
 
-library = envModule.SharedLibrary( target='inpw32', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='inpw32', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'inp_w32_build', library )
 
 install = []

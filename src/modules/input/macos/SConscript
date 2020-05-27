@@ -43,7 +43,7 @@ libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs)
 envModule.Append(LIBS = libs)
 
-library = envModule.SharedLibrary(target='inpmacos', source=objects)
+library = envModule.LoadableModule(target='inpmacos', source=objects)
 targetBuild = envModule.Alias('inp_macos_build', library)
 
 install = []

@@ -40,7 +40,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='inpconsole', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='inpconsole', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'inp_console_build', library )
 
 install = []

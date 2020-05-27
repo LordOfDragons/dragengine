@@ -33,7 +33,7 @@ globFiles( envModule, 'src', '*.h', headers )
 
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='imgpng3d', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='imgpng3d', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'img_png3d_build', library )
 
 install = []

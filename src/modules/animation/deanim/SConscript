@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='animdeanim', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='animdeanim', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'anim_deanim_build', library )
 
 install = []

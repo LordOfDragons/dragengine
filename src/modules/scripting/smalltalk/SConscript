@@ -42,7 +42,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='scrsmalltalk', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='scrsmalltalk', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'scr_smalltalk_build', library )
 
 install = []

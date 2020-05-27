@@ -36,7 +36,7 @@ appendLibrary( envEditor, parent_targets[ 'deigde_shared' ], libs )
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-library = envEditor.SharedLibrary( target='skin', source=objects, LIBS=libs )
+library = envEditor.LoadableModule( target='skin', source=objects, LIBS=libs )
 targetBuild = envEditor.Alias( 'editor_skin_build', library )
 
 install = []

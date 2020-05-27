@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='audnull', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='audnull', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'aud_null_build', library )
 
 install = []

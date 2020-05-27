@@ -65,7 +65,7 @@ if envModule['OSWindows']:
 	elif False:
 		envModule.Append(CPPFLAGS = ['-DNO_CATCH_CRASH'])
 
-library = envModule.SharedLibrary( target='crbasicrecovery', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='crbasicrecovery', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'cr_basic_build', library )
 
 install = []

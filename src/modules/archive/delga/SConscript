@@ -42,7 +42,7 @@ objects = [envModule.SharedObject(s) for s in sources]
 objects.append(envMiniZip.SharedObject('minizip/unzip.c'))
 objects.append(envMiniZip.SharedObject('minizip/ioapi.c'))
 
-library = envModule.SharedLibrary(target='arcdelga', source=objects, LIBS=libs)
+library = envModule.LoadableModule(target='arcdelga', source=objects, LIBS=libs)
 targetBuild = envModule.Alias('arc_delga_build', library)
 
 install = []
