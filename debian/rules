@@ -36,6 +36,11 @@ binary:
 	mkdir -p debian/deigde-dev
 	tar -xvjf archive/build/deigde-dev-linux.tar.bz2 -C debian/deigde-dev
 	
+	# lintian has troubles if temporary debug files are around which SCons does
+	# not remove on cleaning. remove them here to avoid troubles
+	rm -rf .scon*
+	find -type d -name "build" | xargs -- rm -rf
+	
 	dh_install
 	dh_installdocs
 	dh_installchangelogs

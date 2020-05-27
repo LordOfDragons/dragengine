@@ -1,6 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: dragengine
 Source: https://github.com/LordOfDragons/dragengine
+Upstream-Contact: roland@rptd.ch
 
 Files: *
 Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
