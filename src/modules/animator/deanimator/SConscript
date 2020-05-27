@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='anideanimator', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='anideanimator', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'ani_deanimator_build', library )
 
 install = []

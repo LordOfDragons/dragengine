@@ -33,7 +33,7 @@ globFiles( envModule, 'src', '*.h', headers )
 
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='imgjpeg', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='imgjpeg', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'img_jpeg_build', library )
 
 install = []

@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='granull', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='granull', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'gra_null_build', library )
 
 install = []

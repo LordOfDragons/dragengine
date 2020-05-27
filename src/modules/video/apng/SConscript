@@ -33,7 +33,7 @@ globFiles( envModule, 'src', '*.h', headers )
 
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='vidapng', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='vidapng', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'vid_apng_build', library )
 
 install = []

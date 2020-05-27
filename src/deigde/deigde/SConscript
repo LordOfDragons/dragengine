@@ -36,6 +36,8 @@ versionString = '1.1'
 if envIGDELib['force_version']:
 	versionString = envModule['force_version']
 
+libVersionString = '{}.0'.format(versionString)
+
 # update the compile flags
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
 envIGDELib.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
@@ -116,7 +118,8 @@ elif envIGDELib['OSBeOS']:
 envIGDELib.Append(CPPFLAGS = envIGDELib['SANITIZE_FLAGS'])
 envIGDELib.Append(LINKFLAGS = envIGDELib['SANITIZE_FLAGS'])
 
-buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
+buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects,
+	LIBS=libsLib, SHLIBVERSION=libVersionString)
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
 copySharedHeaders = []
@@ -136,16 +139,20 @@ for h in sharedHeaders:
 	archiveLibDevelop[filename] = envIGDELib.File(h).srcnode()
 
 if envIGDELib['OSPosix']:
-	lnamebase = buildLibrary[0].name
-	lname = os.path.join(pathLib, '{}.{}.0'.format(lnamebase, versionString))
-	installLib.append(envIGDELib.InstallAs(lname, lnamebase))
-	installLib.append(envIGDELib.Command(os.path.join(pathLib,
-		'{}.{}'.format(lnamebase, versionString.split('.')[0])),
-		lname, Action(SymLinkLibrary)))
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, lnamebase),
-		lname, Action(SymLinkLibrary)))
+	l = buildLibrary[0]
+	lname = l.name
+	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), l))
+	archiveLib['{}/{}'.format(pathLib, l.name)] = l
 	
-	archiveLib[os.path.join(pathLib, lnamebase)] = buildLibrary[0]
+	lname = '.'.join(lname.split('.')[0:-2])
+	slfile = envIGDELib.File(lname)
+	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), slfile))
+	archiveLib['{}/{}'.format(pathLib, lname)] = slfile
+	
+	lname = '.'.join(lname.split('.')[0:-1])
+	slfile = envIGDELib.File(lname)
+	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), slfile))
+	archiveLib['{}/{}'.format(pathLib, lname)] = slfile
 	
 elif envIGDELib['OSWindows']:
 	installLib.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))

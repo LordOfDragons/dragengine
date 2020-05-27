@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='mdldemodel', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='mdldemodel', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'mdl_demodel_build', library )
 
 install = []

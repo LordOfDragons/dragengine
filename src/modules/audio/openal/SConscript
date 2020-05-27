@@ -50,7 +50,7 @@ globFiles( envModule, 'src', '*.h', headers )
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='audopenal', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='audopenal', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'aud_openal_build', library )
 
 install = []

@@ -54,7 +54,7 @@ objects.append(envMiniZip.SharedObject('minizip/zip.c'))
 objects.append(envMiniZip.SharedObject('minizip/unzip.c'))
 objects.append(envMiniZip.SharedObject('minizip/ioapi.c'))
 
-library = envEditor.SharedLibrary( target='project', source=objects, LIBS=libs )
+library = envEditor.LoadableModule( target='project', source=objects, LIBS=libs )
 
 # test runner binary
 envTestRun = envEditor.Clone()

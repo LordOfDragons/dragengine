@@ -148,7 +148,7 @@ else:
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='phybullet', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='phybullet', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'phy_bullet_build', library )
 
 install = []

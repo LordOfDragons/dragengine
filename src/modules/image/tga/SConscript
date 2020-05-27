@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='imgtga', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='imgtga', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'img_tga_build', library )
 
 install = []

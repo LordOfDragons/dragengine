@@ -79,7 +79,7 @@ else:
 
 #appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='synthdesynthesizer', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='synthdesynthesizer', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'synth_desynthesizer_build', library )
 
 install = []

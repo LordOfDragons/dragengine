@@ -75,7 +75,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='scrpython', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='scrpython', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'scr_python_build', library )
 
 install = []

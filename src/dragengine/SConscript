@@ -129,6 +129,8 @@ versionString = '1.1'
 if envDragengine['force_version']:
 	versionString = envModule['force_version']
 
+libVersionString = '{}.0'.format(versionString)
+
 # update the compile flags
 # envDragengine.Append(CXXFLAGS=' -D__DEBUG__')
 # envDragengine.Append(CXXFLAGS=' -D_TESTING_')
@@ -194,7 +196,8 @@ libs.extend(parent_targets['lib_zlib']['libs'])
 envDragengine.Append(CPPPATH = parent_targets['lib_zlib']['cpppath'])
 envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
 
-library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
+library = envDragengine.SharedLibrary(target='dragengine', source=objects,
+	LIBS=libs, SHLIBVERSION=libVersionString)
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
 copyHeaders = []
@@ -214,14 +217,19 @@ archiveEngine = {}
 
 if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
 	for l in library:
-		lname = '{}/{}.{}.0'.format(pathLib, l.name, versionString)
-		install.append(envDragengine.InstallAs(lname, l))
-		install.append(envDragengine.Command(
-			'{}/{}.{}'.format(pathLib, l, versionString.split('.')[0]),
-			lname, Action(SymLinkLibrary)))
-		install.append(envDragengine.Command(
-			'{}/{}'.format(pathLib, l), lname, Action(SymLinkLibrary)))
+		lname = l.name
+		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), l))
 		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
+		
+		lname = '.'.join(lname.split('.')[0:-2])
+		slfile = envDragengine.File(lname)
+		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), slfile))
+		archiveEngine['{}/{}'.format(pathLib, lname)] = slfile
+		
+		lname = '.'.join(lname.split('.')[0:-1])
+		slfile = envDragengine.File(lname)
+		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), slfile))
+		archiveEngine['{}/{}'.format(pathLib, lname)] = slfile
 	
 elif envDragengine['OSWindows']:
 	install.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))

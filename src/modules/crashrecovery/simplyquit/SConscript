@@ -35,7 +35,7 @@ if envModule['OSWindows']:
 	#objects.append('drmingw-0.9.2-win64/lib/libmgwhelp.a')
 	#envModule.Append(CPPPATH = ['drmingw-0.9.2-win64/include'])
 
-library = envModule.SharedLibrary( target='crsimplyquit', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='crsimplyquit', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'cr_simplyquit_build', library )
 
 install = []

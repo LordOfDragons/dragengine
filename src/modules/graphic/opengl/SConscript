@@ -111,7 +111,7 @@ objects = [envModule.SharedObject(s) for s in sources]
 
 appendLibrary(envModule, parent_targets['dragengine'], libs)
 
-library = envModule.SharedLibrary(target='graopengl', source=objects, LIBS=libs)
+library = envModule.LoadableModule(target='graopengl', source=objects, LIBS=libs)
 targetBuild = envModule.Alias('gra_opengl_build', library)
 
 install = []

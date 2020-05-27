@@ -37,7 +37,7 @@ appendLibrary( envEditor, parent_targets[ 'deigde_shared' ], libs )
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-library = envEditor.SharedLibrary( target='animator', source=objects, LIBS=libs )
+library = envEditor.LoadableModule( target='animator', source=objects, LIBS=libs )
 targetBuild = envEditor.Alias( 'editor_animator_build', library )
 
 install = []

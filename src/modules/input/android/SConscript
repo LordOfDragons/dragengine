@@ -47,7 +47,7 @@ libs.extend( envModule[ 'ANDROID_LIBS' ] )
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='inpandroid', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='inpandroid', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'inp_android_build', library )
 
 install = []

@@ -37,7 +37,7 @@ globFiles( envModule, 'src', '*.h', headers )
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='sndoggvorbis', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='sndoggvorbis', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'snd_ogg_build', library )
 
 install = []
