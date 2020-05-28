@@ -35,7 +35,7 @@ hasSystemEvdev = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libevdev'] != TernaryVariableNo:
 	hasSystemEvdev = conf.CheckLibWithHeader(
-		libLinkName, 'evdev.h', 'c++', 'libevdev_has_event_type(0,0);')
+		libLinkName, 'libevdev.h', 'c++', 'libevdev_has_event_type(0,0);')
 conf.Finish()
 
 if not hasSystemEvdev and envLibrary['with_system_libevdev'] == TernaryVariableYes:
