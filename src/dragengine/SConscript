@@ -196,8 +196,10 @@ libs.extend(parent_targets['lib_zlib']['libs'])
 envDragengine.Append(CPPPATH = parent_targets['lib_zlib']['cpppath'])
 envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
 
-library = envDragengine.SharedLibrary(target='dragengine', source=objects,
-	LIBS=libs, SHLIBVERSION=libVersionString)
+if envDragengine['OSPosix']:
+	envDragengine.Replace(SHLIBVERSION = libVersionString)
+
+library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
 copyHeaders = []
