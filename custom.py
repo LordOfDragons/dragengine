@@ -23,6 +23,7 @@ with_system_libvorbis ='yes'
 with_system_libtheora ='yes'
 with_system_libhidapi = 'yes'
 with_system_libopenhmd = 'yes'
+with_system_libevdev = 'yes'
 with_opengl = 'yes'
 with_dl = 'yes'
 with_pthread = 'yes'
@@ -44,13 +45,8 @@ with_system_fox ='no'
 # right now though it is only used by the game engine so build in-tree
 with_system_dragonscript = 'no'
 
-# libevdev is a newer version than the one required. for some reason
-# though the debian libevdev package is not working correctly. the
-# configure check detecting libevdev is failing which is strange since
-# the missing function is in my opinion a bug. so build in-tree for now
-with_system_libevdev = 'yes'
-
-# libusb is 0.1 in debian but 1.0 is required
+# libusb is required by libhidapi which is system compiled so it is not required.
+# set to 'no' to avoid build system trying to find it in system
 with_system_libusb = 'no'
 
 # these are only required for the smalltalk module which is currently not build.
