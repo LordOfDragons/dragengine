@@ -118,8 +118,10 @@ elif envIGDELib['OSBeOS']:
 envIGDELib.Append(CPPFLAGS = envIGDELib['SANITIZE_FLAGS'])
 envIGDELib.Append(LINKFLAGS = envIGDELib['SANITIZE_FLAGS'])
 
-buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects,
-	LIBS=libsLib, SHLIBVERSION=libVersionString)
+if envIGDELib['OSPosix']:
+	envIGDELib.Replace(SHLIBVERSION = libVersionString)
+
+buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
 copySharedHeaders = []
