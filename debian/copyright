@@ -11,6 +11,22 @@ Files: debian/*
 Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
 License: LGPL-3.0+
 
+Files: extern/dragonscript/libdscript-*.tar.bz2
+Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
+License: LGPL-3.0+
+
+Files: extern/fox/fox-*.tar.bz2
+Copyright: 2016 Jeroen van der Zijp <jeroen@fox-toolkit.com>
+License: LGPL-3.0+
+
+Files: extern/libevdev/libevdev-*.tar.bz2
+Copyright: 2013 David Herrmann <dh.herrmann@gmail.com>
+License: X11
+
+Files: extern/libusb/libusb-*.tar.bz2
+Copyright: LGPL-2.1+
+License: LGPL-2.1+
+
 License: LGPL-3.0+
  This package is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -28,3 +44,48 @@ License: LGPL-3.0+
  On Debian systems, the complete text of the GNU Lesser General
  Public License can be found in "/usr/share/common-licenses/LGPL-3".
 
+License: LGPL-2.1+
+ This package is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public
+ License along with this package; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the complete text of the GNU Lesser General
+ Public License can be found in `/usr/share/common-licenses/LGPL-2.1'.
+
+License: X11
+ Permission to use, copy, modify, distribute, and sell this software and its
+ documentation for any purpose is hereby granted without fee, provided that
+ the above copyright notice appear in all copies and that both that copyright
+ notice and this permission notice appear in supporting documentation, and
+ that the name of the copyright holders not be used in advertising or
+ publicity pertaining to distribution of the software without specific,
+ written prior permission.  The copyright holders make no representations
+ about the suitability of this software for any purpose.  It is provided "as
+ is" without express or implied warranty.
+ .
+ THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ OF THIS SOFTWARE.
+ .
+ The following license is from a Linux kernel header file and there is no GPL
+ code this package links to.
+ .
+ Copyright (c) 1999-2002 Vojtech Pavlik
+ .
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License version 2 as published by
+ the Free Software Foundation.
