@@ -9,6 +9,11 @@
 
 clean:
 	scons -j 8 archive -c
+	rm -rf .scon*
+	find -type d -name "build" | xargs -- rm -rf
+	find -type d -name "__pycache__" | xargs -- rm -rf
+	find -type f -name "*.pyc" | xargs -- rm -rf
+	rm -f build.log config.log
 
 build:
 	scons -j 8 archive
@@ -36,10 +41,28 @@ binary:
 	mkdir -p debian/deigde-dev
 	tar -xvjf archive/build/deigde-dev-linux.tar.bz2 -C debian/deigde-dev
 	
-	# lintian has troubles if temporary debug files are around which SCons does
-	# not remove on cleaning. remove them here to avoid troubles
 	rm -rf .scon*
 	find -type d -name "build" | xargs -- rm -rf
+	find -type d -name "__pycache__" | xargs -- rm -rf
+	find -type f -name "*.pyc" | xargs -- rm -rf
+	rm -f build.log config.log
+	
+	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
+	mkdir -p debian/dragengine-dev/usr/lib
+	mv debian/dragengine/usr/lib/libdragengine.so debian/dragengine-dev/usr/lib/libdragengine.so
+	mkdir -p debian/deigde-dev/usr/lib
+	mv debian/deigde/usr/lib/libdeigdeshared.so debian/deigde-dev/usr/lib/libdeigdeshared.so
+	
+	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
+	# loadable packages. we can solve this on debian only using a bit of
+	# symlink magic
+	cd debian/dragengine ; \
+	for f in `find usr/share/dragengine/modules/scripting/dragonscript/*/dsinstall -name "*.so"`; do \
+		f2=`echo $$f | sed -e "s@usr/share@usr/lib@"`; \
+		mkdir -p `dirname $$f2`; \
+		mv $$f $$f2; \
+		ln -sf "/$$f2" $$f; \
+	done
 	
 	dh_install
 	dh_installdocs
