@@ -3,6 +3,13 @@ from SConsPlatformAndroid import androidUpdateEnv
 
 # create environment
 tools = ARGUMENTS.get( 'tools', '' )
+
+applyEnvVars = []
+applyEnvVars.append('CFLAGS')
+applyEnvVars.append('CPPFLAGS')
+applyEnvVars.append('CXXFLAGS')
+applyEnvVars.append('LDFLAGS')
+
 if tools:
 	if tools == 'mingw64':
 		parent_env = Environment( CPPPATH='.', LIBPATH='.', tools=['mingw'] )
@@ -66,9 +73,12 @@ elif sys.platform == 'win32':
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
 
 else:
-	parent_env = Environment( CPPPATH='.', LIBPATH='.' )
+	parent_env = Environment(CPPPATH='.', LIBPATH='.')
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+	
+	applyEnvVars.append('CC')
+	applyEnvVars.append('CXX')
 
 parent_env.Tool('logStdOut')
 parent_env.Tool('runIsolated')
@@ -84,11 +94,9 @@ InitCommon( parent_env )
 parent_env.Replace( MODULE_CPPFLAGS = [] )
 parent_env.Replace( MODULE_LINKFLAGS = [] )
 
-if 'CPPFLAGS' in os.environ:
-	parent_env.Append( CPPFLAGS = os.environ[ 'CPPFLAGS' ] )
-
-if 'LDFLAGS' in os.environ:
-	parent_env.Append( LINKFLAGS = os.environ[ 'LDFLAGS' ] )
+for x in applyEnvVars:
+	if x in os.environ:
+		parent_env.Append(x = os.environ[x])
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )

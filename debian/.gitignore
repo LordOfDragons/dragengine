@@ -4,3 +4,5 @@ deigde-dev
 deigde
 dragengine-dev
 dragengine
+*.log
+debhelper-build-stamp
