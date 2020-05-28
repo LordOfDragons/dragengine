@@ -48,7 +48,7 @@ with_system_dragonscript = 'no'
 # though the debian libevdev package is not working correctly. the
 # configure check detecting libevdev is failing which is strange since
 # the missing function is in my opinion a bug. so build in-tree for now
-with_system_libevdev = 'no'
+with_system_libevdev = 'yes'
 
 # libusb is 0.1 in debian but 1.0 is required
 with_system_libusb = 'no'
