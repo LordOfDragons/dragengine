@@ -1,7 +1,0 @@
-deigde-dbgsym_1.1_amd64.deb debug optional automatic=yes
-deigde-dev_1.1_amd64.deb x11 optional
-deigde_1.1_amd64.deb x11 optional
-dragengine-dbgsym_1.1_amd64.deb debug optional automatic=yes
-dragengine-dev_1.1_amd64.deb x11 optional
-dragengine_1.1_amd64.buildinfo x11 optional
-dragengine_1.1_amd64.deb x11 optional

@@ -6,3 +6,4 @@ dragengine-dev
 dragengine
 *.log
 debhelper-build-stamp
+files
