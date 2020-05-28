@@ -15,6 +15,7 @@ override_dh_auto_clean:
 	find -type d -name "__pycache__" | xargs -- rm -rf
 	find -type f -name "*.pyc" | xargs -- rm -rf
 	rm -f build.log config.log
+	rm -f debian/files
 
 override_dh_auto_configure:
 	
