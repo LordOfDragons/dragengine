@@ -16,11 +16,17 @@ override_dh_auto_clean:
 	find -type f -name "*.pyc" | xargs -- rm -rf
 	rm -f build.log config.log
 	rm -f debian/files
+	rm -f src/deigde/deigde/shared/src/deigde_configuration.h
+	rm -f src/dragengine/src/dragengine_configuration.h
+	rm -f src/launcher/gui/src/glconfig.h
 
 override_dh_auto_configure:
 	
 override_dh_auto_build:
 	scons -j 8 archive
+	rm -f src/deigde/deigde/shared/src/deigde_configuration.h
+	rm -f src/dragengine/src/dragengine_configuration.h
+	rm -f src/launcher/gui/src/glconfig.h
 
 override_dh_auto_test:
 	
