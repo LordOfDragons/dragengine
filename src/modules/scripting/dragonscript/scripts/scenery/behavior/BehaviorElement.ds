@@ -49,6 +49,7 @@ class BehaviorElement extends Element
 	private var Array pThinkingInstances
 	private var bool pRequiresEnterFrame
 	private var bool pRequiresThink
+	private var bool pRequiresAttachToParent
 	
 	
 	
@@ -57,6 +58,7 @@ class BehaviorElement extends Element
 		this.pInstances = Array.new()
 		this.pRequiresEnterFrame = false
 		this.pRequiresThink = false
+		this.pRequiresAttachToParent = true
 		
 		eclass.forEachBehavior( block ECBehavior each
 			this.pInstances.add( each.createInstance( this ) )
@@ -148,6 +150,11 @@ class BehaviorElement extends Element
 	/** \brief Set if sub-class requires think() to be called. */
 	protected func void setRequiresThink( bool requiresThink )
 		this.pRequiresThink = requiresThink
+	end
+	
+	/** \brief Attach to parent has not been processed yet. */
+	public func bool getRequiresAttachToParent()
+		return this.pRequiresAttachToParent
 	end
 	
 	
@@ -257,9 +264,14 @@ class BehaviorElement extends Element
 		
 		var StubElement stub = this.getStub()
 		var UniqueID attachTo = stub.getAttachTo()
-		if attachTo != null
+		if attachTo != null and this.pRequiresAttachToParent
 			// we do not call stub.setAttachTo(null) because behaviors are responsible to
 			// clear the stub attach-to if they handle it themselves
+			
+			// it is possible an element is moved between game worlds. in this case enterFrame()
+			// is called each time the element enters a game world. if we have attached the
+			// element already trying to attach against throws an exception
+			this.pRequiresAttachToParent = false
 			
 			var Element element = this.getGameWorld().getElementWithID( attachTo )
 			if element == null
