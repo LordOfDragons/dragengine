@@ -46,16 +46,16 @@ override_dh_auto_install:
 	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
-	#mkdir -p debian/dragengine-dev/usr/lib
-	#mv debian/dragengine/usr/lib/libdragengine.so debian/dragengine-dev/usr/lib/libdragengine.so
-	#mkdir -p debian/deigde-dev/usr/lib
-	#mv debian/deigde/usr/lib/libdeigdeshared.so debian/deigde-dev/usr/lib/libdeigdeshared.so
+	#mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
+	#mv "$(DESTDIR_ENGINE)"/usr/lib/libdragengine.so "$(DESTDIR_ENGINE_DEV)"/usr/lib/libdragengine.so
+	#mkdir -p "$(DESTDIR_ENGINE_IGDE)"/usr/lib
+	#mv "$(DESTDIR_IGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_IGDE_DEV)"/usr/lib/libdeigdeshared.so
 	
 	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
 	# loadable packages. we can solve this on debian only using a bit of
 	# symlink magic
 	cd debian/dragengine ; \
-	for f in `find usr/share/dragengine/modules/scripting/dragonscript/*/dsinstall -name "*.so"`; do \
+	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules/scripting/dragonscript/*/dsinstall -name "*.so"`; do \
 		f2=`echo $$f | sed -e "s@usr/share@usr/lib@"`; \
 		mkdir -p `dirname $$f2`; \
 		mv $$f $$f2; \
