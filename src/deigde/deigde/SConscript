@@ -138,33 +138,29 @@ for h in sharedHeaders:
 		h, Copy('$TARGET', '$SOURCE')))
 envIGDELib.Depends(buildLibrary, copySharedHeaders)
 
-installLib = []
-archiveLibDevelop = {}
-archiveLib = {}
+installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in sharedHeaders]
 
-for h in sharedHeaders:
-	filename = os.path.join(pathInclude, refDir.rel_path(h))
-	installLib.append(envIGDELib.InstallAs(filename, h))
-	archiveLibDevelop[filename] = h
+installLibRuntime = []
+
+archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in sharedHeaders}
+archiveLib = {}
 
 if envIGDELib['OSPosix']:
 	l = buildLibrary[0]
 	lname = l.name
-	installLib.append(envIGDELib.InstallAs(os.path.join(pathLib, lname), l))
+	installLibRuntime.append(envIGDELib.InstallVersionedLib(pathLib, l))
 	archiveLib['{}/{}'.format(pathLib, l.name)] = l
 	
 	lname = '.'.join(lname.split('.')[0:-2])
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
 	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 	lname = '.'.join(lname.split('.')[0:-1])
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
 	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 elif envIGDELib['OSWindows']:
-	installLib.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))
-	installLib.append(envIGDELib.Install(pathLib, 'deigdeshared.lib'))
-	installLib.append(envIGDELib.Install(pathLib, 'deigdeshared.def'))
+	installLibRuntime.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))
+	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.lib'))
+	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.def'))
 	
 	archiveLib[os.path.join(pathBin, 'deigdeshared.dll')] = envIGDELib.File('deigdeshared.dll')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.lib')] = envIGDELib.File('deigdeshared.lib')
@@ -176,17 +172,19 @@ globFiles(envIGDEApp, 'shared/data', '*', dataFiles)
 for f in dataFiles:
 	path = f.split('/')
 	filename = os.path.join(pathShare, *path[2:])
-	installLib.append(envIGDELib.InstallAs(filename, f))
+	installLibRuntime.append(envIGDELib.InstallAs(filename, f))
 	archiveLib[filename] = envIGDELib.File(f).srcnode()
 
 for l in reversed(parent_targets['lib_fox']['runtimelibs']):
 	key = '{}/{}'.format(foxRuntimePath, l)
 	if not key in parent_targets['lib_fox']['globalInstallTracker']:
 		parent_targets['lib_fox']['globalInstallTracker'].append(key)
-		envIGDELib.Depends(installLib, envIGDELib.Install(foxRuntimePath, l))
+		envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
 		archiveLib[os.path.join(foxRuntimePath, l.name)] = l
 
-targetInstallLib = envIGDELib.Alias('deigde_shared', installLib)
+targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
+targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
+targetInstallLib = envIGDELib.Alias('deigde_shared', [targetInstallLibRuntime, targetInstallLibDevelop])
 
 cpppath = [envIGDELib.Dir('include')]
 cpppath.extend(parent_targets['dragengine']['cpppath'])
@@ -212,6 +210,7 @@ parent_targets['deigde_shared'] = {
 	'libs' : linklibs,
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
+	'install-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
@@ -260,7 +259,7 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
-envIGDEApp.Depends(installApp, targetInstallLib)
+envIGDEApp.Depends(installApp, targetInstallLibRuntime)
 
 
 if envIGDEApp['OSPosix']:

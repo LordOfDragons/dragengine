@@ -753,6 +753,7 @@ SConscript(dirs='installer', variant_dir='installer/build',
 # add aliases
 buildAll = []
 installAll = []
+installAllRuntime = []
 doxygenAll = []
 clocAll = []
 clocReports = []
@@ -763,6 +764,10 @@ for key in parent_targets:
 	
 	if 'install' in parent_targets[ key ]:
 		installAll.append( parent_targets[ key ][ 'install' ] )
+		if 'install-runtime' in parent_targets[ key ]:
+			installAllRuntime.append( parent_targets[ key ][ 'install-runtime' ] )
+		else:
+			installAllRuntime.append( parent_targets[ key ][ 'install' ] )
 	
 	if 'doxygen' in parent_targets[ key ]:
 		doxygenAll.append( parent_targets[ key ][ 'doxygen' ] )
@@ -780,6 +785,11 @@ targetInstallAll = parent_env.Alias( 'install', installAll )
 parent_targets[ 'install' ] = {
 	'name' : 'Install Everything',
 	'target' : targetInstallAll }
+
+targetInstallAllRuntime = parent_env.Alias( 'install-runtime', installAllRuntime )
+parent_targets[ 'install-runtime' ] = {
+	'name' : 'Install Everything except development files',
+	'target' : targetInstallAllRuntime }
 
 targetDoxygenAll = parent_env.Alias( 'doxygen', doxygenAll )
 parent_targets[ 'doxygen' ] = {
