@@ -38,15 +38,6 @@ elif envLauncher['OSWindows']:
 if not envLauncher['with_debug']:
 	envLauncher.Append(LINKFLAGS = ['-s'])  # strip unneded
 
-# write the configuration file required by a few source files
-configFilePath = '{}/src/glconfig.h'.format(Dir('.').srcnode().abspath)
-configFileDefines = {}
-configFileDefines['OS_UNIX'] = envLauncher['OSPosix']
-configFileDefines['OS_W32'] = envLauncher['OSWindows']
-
-if WriteConfigFile(configFilePath, configFileDefines, envLauncher):
-	Exit('Writing configuration file failed')
-
 # create environment for the progam
 envLauncher.Append(CXXFLAGS = ['-I{}'.format(envLauncher.Dir('shared/src').srcnode().abspath)])
 

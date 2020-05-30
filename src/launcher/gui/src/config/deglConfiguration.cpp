@@ -31,7 +31,6 @@
 #include "deglConfigXML.h"
 #include "deglConfiguration.h"
 #include "../deglLauncher.h"
-#include "../glconfig.h"
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
