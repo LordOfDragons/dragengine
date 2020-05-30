@@ -1,44 +1,52 @@
 #!/usr/bin/make -f
 
-# NOTE debian expects to install things into a specific directory. the scons build
-#      system expects though to install into the directory set by custom.py which
-#      is the same path hard-coded into the library. to fix this problem the archive
-#      build is used. this creates the correct directory structure as if the build
-#      is installed into a live system. then in an additional step the archive is
-#      unpacked into the desired location. this is the safe way to do it
+DESTDIR_ENGINE := $(shell realpath debian/dragengine)
+DESTDIR_ENGINE_DEV := $(shell realpath debian/dragengine-dev)
+DESTDIR_IGDE := $(shell realpath debian/deigde)
+DESTDIR_IGDE_DEV := $(shell realpath debian/deigde-dev)
+
+SANDBOX_ENGINE := --install-sandbox="$(DESTDIR_ENGINE)"
+SANDBOX_ENGINE_DEV := --install-sandbox="$(DESTDIR_ENGINE_DEV)"
+SANDBOX_IGDE := --install-sandbox="$(DESTDIR_IGDE)"
+SANDBOX_IGDE_DEV := --install-sandbox="$(DESTDIR_IGDE_DEV)"
+
+SCONS_OPTIONS := --logstdout=off
 
 %:
 	dh $@
 
 override_dh_auto_clean:
-	scons archive -c
-	rm -rf .scon*
+	scons $(SCONS_OPTIONS) --config=force build -c
 	find -type d -name "__pycache__" | xargs -- rm -rf
-	find -type f -name "*.pyc" | xargs -- rm -rf
-	rm -f build.log config.log
+	rm -f config.log
 
 override_dh_auto_configure:
 	
 override_dh_auto_build:
-	scons archive
+	scons $(SCONS_OPTIONS) --config=force build
 
 override_dh_auto_test:
 	
 override_dh_auto_install:
-	mkdir -p debian/dragengine
-	tar -xvjf archive/build/dragengine-linux.tar.bz2 -C debian/dragengine
-	mkdir -p debian/dragengine-dev
-	tar -xvjf archive/build/dragengine-dev-linux.tar.bz2 -C debian/dragengine-dev
-	mkdir -p debian/deigde
-	tar -xvjf archive/build/deigde-linux.tar.bz2 -C debian/deigde
-	mkdir -p debian/deigde-dev
-	tar -xvjf archive/build/deigde-dev-linux.tar.bz2 -C debian/deigde-dev
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_ENGINE) install_engine_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_ENGINE_DEV) dragengine_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_igde_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DEV) deigde_shared_develop
+	
+	# under debian the games group is known at package build time. we can create
+	# the required directories. this is not done in scons since the generic build
+	# is made for systems where the games group potentially does not exist and
+	# thus it is not possible to create this directory at package time
+	mkdir $(SANDBOX_ENGINE)/usr/share/games/delauncher/games
+	chgrp games /usr/share/games/delauncher /usr/share/games/delauncher/games
+	chmod 750 /usr/share/games/delauncher
+	chmod 770 /usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
-	mkdir -p debian/dragengine-dev/usr/lib
-	mv debian/dragengine/usr/lib/libdragengine.so debian/dragengine-dev/usr/lib/libdragengine.so
-	mkdir -p debian/deigde-dev/usr/lib
-	mv debian/deigde/usr/lib/libdeigdeshared.so debian/deigde-dev/usr/lib/libdeigdeshared.so
+	#mkdir -p debian/dragengine-dev/usr/lib
+	#mv debian/dragengine/usr/lib/libdragengine.so debian/dragengine-dev/usr/lib/libdragengine.so
+	#mkdir -p debian/deigde-dev/usr/lib
+	#mv debian/deigde/usr/lib/libdeigdeshared.so debian/deigde-dev/usr/lib/libdeigdeshared.so
 	
 	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
 	# loadable packages. we can solve this on debian only using a bit of
@@ -52,6 +60,7 @@ override_dh_auto_install:
 	done
 
 override_dh_shlibdeps:
+	# debian build package has a problem with the DragonScript packages
 	dh_shlibdeps -Xlibscrdscript -Xdsinstall
 	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
 	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
