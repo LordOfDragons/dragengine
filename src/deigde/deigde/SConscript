@@ -13,13 +13,18 @@ if envIGDELib['OSPosix']:
 	envIGDELib.Append(CXXFLAGS = ['-DHAS_LIB_DL'])
 
 # write the configuration file required by a few source files
-configFilePath = '%s/shared/src/deigde_configuration.h' % str(Dir('.').srcnode())
-configFileDefines = {}
-configFileDefines['OS_UNIX'] = envIGDELib['OSPosix']
-configFileDefines['OS_W32'] = envIGDELib['OSWindows']
+def buildWriteConfig(source, target, env):
+	configFilePath = target[0].abspath
+	configFileDefines = {}
+	configFileDefines['OS_UNIX'] = env['OSPosix']
+	configFileDefines['OS_W32'] = env['OSWindows']
+	
+	if WriteConfigFile(configFilePath, configFileDefines, env):
+		Exit('Writing configuration file failed')
 
-if WriteConfigFile(configFilePath, configFileDefines, envIGDELib):
-	Exit('Writing configuration file failed')
+targetConfig = envIGDELib.Command(
+	envIGDELib.File('shared/src/deigde_configuration.h').srcnode(),
+	'SConscript', buildWriteConfig)
 
 # fetch values in expanded form for later use
 pathBin = envIGDELib.subst(envIGDELib['path_igde_bin'])
@@ -82,7 +87,8 @@ sharedHeaders = []
 globFiles(envIGDELib, 'shared/src', '*.cpp', sharedSources)
 globFiles(envIGDELib, 'shared/src', '*.h', sharedHeaders)
 
-sharedHeaders = [h for h in sharedHeaders if not 'native' in h.split(os.path.sep)]
+sharedHeaders = [envIGDELib.File(h).srcnode() for h in sharedHeaders if not 'native' in h.split(os.path.sep)]
+sharedHeaders.extend(targetConfig)
 
 objects = [envIGDELib.SharedObject(s) for s in sharedSources]
 
@@ -125,9 +131,10 @@ buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, L
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
 copySharedHeaders = []
+refDir = envIGDELib.Dir('shared/src').srcnode()
 for h in sharedHeaders:
 	copySharedHeaders.append(envIGDELib.Command(
-		os.path.join('include', 'deigde', *(h.split(os.sep)[2:])),
+		os.path.join('include', 'deigde', refDir.rel_path(h)),
 		h, Copy('$TARGET', '$SOURCE')))
 envIGDELib.Depends(buildLibrary, copySharedHeaders)
 
@@ -136,9 +143,9 @@ archiveLibDevelop = {}
 archiveLib = {}
 
 for h in sharedHeaders:
-	filename = os.path.join(pathInclude, *(h.split(os.sep)[2:]))
+	filename = os.path.join(pathInclude, refDir.rel_path(h))
 	installLib.append(envIGDELib.InstallAs(filename, h))
-	archiveLibDevelop[filename] = envIGDELib.File(h).srcnode()
+	archiveLibDevelop[filename] = h
 
 if envIGDELib['OSPosix']:
 	l = buildLibrary[0]

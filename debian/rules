@@ -9,24 +9,18 @@
 
 %:
 	dh $@
+
 override_dh_auto_clean:
+	scons archive -c
 	rm -rf .scon*
-	find -type d -name "build" | xargs -- rm -rf
 	find -type d -name "__pycache__" | xargs -- rm -rf
 	find -type f -name "*.pyc" | xargs -- rm -rf
 	rm -f build.log config.log
-	rm -f debian/files
-	rm -f src/deigde/deigde/shared/src/deigde_configuration.h
-	rm -f src/dragengine/src/dragengine_configuration.h
-	rm -f src/launcher/gui/src/glconfig.h
 
 override_dh_auto_configure:
 	
 override_dh_auto_build:
-	scons -j 8 archive
-	rm -f src/deigde/deigde/shared/src/deigde_configuration.h
-	rm -f src/dragengine/src/dragengine_configuration.h
-	rm -f src/launcher/gui/src/glconfig.h
+	scons archive
 
 override_dh_auto_test:
 	

@@ -95,23 +95,28 @@ if envDragengine['OSPosix']:
 conf.Finish()
 
 # write the configuration file required by a few source files
-configFilePath = envDragengine.File('src/dragengine_configuration.h').srcnode().abspath
-configFileDefines = {}
-configFileDefines['OS_UNIX'] = envDragengine['OSPosix']
-configFileDefines['OS_W32'] = envDragengine['OSWindows']
-configFileDefines['OS_BEOS'] = envDragengine['OSBeOS']
-configFileDefines['OS_MACOS'] = envDragengine['OSMacOS']
-configFileDefines['OS_ANDROID'] = (envDragengine['platform_android'] != 'no')
-if envDragengine['OSPosix']:
-	configFileDefines['HAS_LIB_X11'] = hasX11
-	configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
-	configFileDefines['HAS_LIB_DL'] = hasDL
-	# android specific problems
-	#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
-	configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+def buildWriteConfig(source, target, env):
+	configFilePath = target[0].abspath
+	configFileDefines = {}
+	configFileDefines['OS_UNIX'] = env['OSPosix']
+	configFileDefines['OS_W32'] = env['OSWindows']
+	configFileDefines['OS_BEOS'] = env['OSBeOS']
+	configFileDefines['OS_MACOS'] = env['OSMacOS']
+	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
+	if env['OSPosix']:
+		configFileDefines['HAS_LIB_X11'] = hasX11
+		configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
+		configFileDefines['HAS_LIB_DL'] = hasDL
+		# android specific problems
+		#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
+		configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+	
+	if WriteConfigFile(configFilePath, configFileDefines, env):
+		raise Exception('Writing configuration file failed')
 
-if WriteConfigFile(configFilePath, configFileDefines, envDragengine):
-	Exit('Writing configuration file failed')
+targetConfig = envDragengine.Command(
+	envDragengine.File('src/dragengine_configuration.h').srcnode(),
+	'SConscript', buildWriteConfig)
 
 # fetch values in expanded form for later use
 pathLib = envDragengine.subst(envDragengine['path_de_lib'])
@@ -182,7 +187,8 @@ if envDragengine['OSMacOS']:
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
 
-headers = [h for h in headers if not h in ignoreHeaders]
+headers = [envDragengine.File(h).srcnode() for h in headers if not h in ignoreHeaders]
+headers.extend(targetConfig)
 
 objects = [envDragengine.SharedObject(s) for s in sources]
 
@@ -199,22 +205,21 @@ envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
 if envDragengine['OSPosix']:
 	envDragengine.Replace(SHLIBVERSION = libVersionString)
 
+envDragengine.Depends(sources, targetConfig)
 library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
 copyHeaders = []
+refDir = envDragengine.Dir('src').srcnode()
 for h in headers:
 	copyHeaders.append(envDragengine.Command(
-		os.path.join('include', 'dragengine', *(h.split(os.sep)[1:])),
+		os.path.join('include', 'dragengine', refDir.rel_path(h)),
 		h, Copy('$TARGET', '$SOURCE')))
 envDragengine.Depends(library, copyHeaders)
 
-install = [envDragengine.InstallAs(
-	os.path.join(pathInclude, *(h.split(os.sep)[1:])), h)
-		for h in headers]
-archiveDevelop = {
-	os.path.join(pathInclude, *(h.split(os.sep)[1:])):
-		envDragengine.File(h).srcnode() for h in headers}
+install = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
+install.append(envDragengine.Install(pathInclude, targetConfig))
+archiveDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveEngine = {}
 
 if envDragengine['OSPosix'] or envDragengine['OSBeOS']:

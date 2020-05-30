@@ -22,7 +22,7 @@
 #ifndef _FOXTOOLKIT_H_
 #define _FOXTOOLKIT_H_
 
-#include "../glconfig.h"
+#include <dragengine/dragengine_configuration.h>
 
 #ifdef PI
 #define FIX_FOX_BROKEN_PI
