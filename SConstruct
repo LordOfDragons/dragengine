@@ -762,6 +762,8 @@ SConscript(dirs='installer', variant_dir='installer/build',
 buildAll = []
 installAll = []
 installAllRuntime = []
+installEngineRuntime = []
+installIgdeRuntime = []
 doxygenAll = []
 clocAll = []
 clocReports = []
@@ -776,6 +778,12 @@ for key in parent_targets:
 			installAllRuntime.append( parent_targets[ key ][ 'install-runtime' ] )
 		else:
 			installAllRuntime.append( parent_targets[ key ][ 'install' ] )
+	
+	if 'install-engine-runtime' in parent_targets[key]:
+		installEngineRuntime.append(parent_targets[key]['install-engine-runtime'])
+	
+	if 'install-igde-runtime' in parent_targets[key]:
+		installIgdeRuntime.append(parent_targets[key]['install-igde-runtime'])
 	
 	if 'doxygen' in parent_targets[ key ]:
 		doxygenAll.append( parent_targets[ key ][ 'doxygen' ] )
@@ -796,8 +804,18 @@ parent_targets[ 'install' ] = {
 
 targetInstallAllRuntime = parent_env.Alias( 'install-runtime', installAllRuntime )
 parent_targets[ 'install-runtime' ] = {
-	'name' : 'Install Everything except development files',
+	'name' : 'Install Everything Runtime (no development files)',
 	'target' : targetInstallAllRuntime }
+
+targetInstallEngineRuntime = parent_env.Alias('install-engine-runtime', installEngineRuntime)
+parent_targets['install-engine-runtime'] = {
+	'name' : 'Install Engine Runtime (no development files)',
+	'target' : targetInstallEngineRuntime }
+
+targetInstallIgdeRuntime = parent_env.Alias('install-igde-runtime', installIgdeRuntime)
+parent_targets['install-igde-runtime'] = {
+	'name' : 'Install IGDE Runtime (no development files)',
+	'target' : targetInstallIgdeRuntime }
 
 targetDoxygenAll = parent_env.Alias( 'doxygen', doxygenAll )
 parent_targets[ 'doxygen' ] = {

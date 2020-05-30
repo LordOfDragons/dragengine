@@ -116,6 +116,7 @@ parent_targets[ 'cr_basic' ] = {
 	'name' : 'Basic Crash-Recovery Module ( FOX-Toolkit )',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

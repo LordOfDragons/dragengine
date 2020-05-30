@@ -101,6 +101,7 @@ parent_targets[ 'scr_smalltalk' ] = {
 	'name' : 'Smalltalk Script Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

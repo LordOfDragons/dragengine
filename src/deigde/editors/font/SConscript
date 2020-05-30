@@ -81,6 +81,7 @@ parent_targets[ 'editor_font' ] = {
 	'name' : 'IGDE Font Editor',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

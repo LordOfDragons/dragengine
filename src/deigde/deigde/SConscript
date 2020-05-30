@@ -211,6 +211,7 @@ parent_targets['deigde_shared'] = {
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
+	'install-igde-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
@@ -314,6 +315,7 @@ parent_targets['deigde'] = {
 	'name' : 'Drag[en]gine IGDE',
 	'build' : targetBuildApp,
 	'install' : targetInstallApp,
+	'install-igde-runtime' : targetInstallApp,
 	'archive-igde' : archiveApp,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

@@ -119,6 +119,7 @@ parent_targets[ 'synth_desynthesizer' ] = {
 	'name' : 'Drag[en]gine Synthesizer Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

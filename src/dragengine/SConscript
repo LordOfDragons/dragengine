@@ -304,6 +304,7 @@ parent_targets['dragengine'] = {
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-runtime' : targetInstallRuntime,
+	'install-engine-runtime' : targetInstallRuntime,
 	'library' : library,
 	'archive-engine' : archiveEngine,
 	'archive-engine-develop' : archiveDevelop,

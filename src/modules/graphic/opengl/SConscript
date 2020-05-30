@@ -159,6 +159,7 @@ parent_targets['gra_opengl'] =  {
 	'name' : 'OpenGL Graphic Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

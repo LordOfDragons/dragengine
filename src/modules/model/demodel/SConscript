@@ -68,6 +68,7 @@ parent_targets[ 'mdl_demodel' ] = {
 	'name' : 'Drag[en]gine binary Model Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }
