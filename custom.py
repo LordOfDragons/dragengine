@@ -8,6 +8,25 @@ with_warnerrors = 'no'
 with_debug = 'no'
 with_verbose = 'no'
 
+prefix = '/usr'
+libdir = '${prefix}/lib'
+includedir = '${prefix}/include'
+datadir = '${prefix}/share'
+sysconfdir = '/etc'
+execdir = '${prefix}/games'
+sysvardir = '/var'
+cachedir = '${sysvardir}/cache'
+
+path_de_data = '${libdir}/games/dragengine'
+path_de_share = '${datadir}/games/dragengine'
+
+path_igde_data = '${libdir}/games/deigde'
+path_igde_share = '${datadir}/games/deigde'
+
+path_launcher_data = '${libdir}/games/delauncher'
+path_launcher_share = '${datadir}/games/delauncher'
+path_launcher_games = '${datadir}/games/delauncher/games'
+
 # external library configuration
 ##################################
 # debian expects to not use in-tree versions. as far as possible this is
