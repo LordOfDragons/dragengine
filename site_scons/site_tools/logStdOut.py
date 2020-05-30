@@ -20,6 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 import sys, re
+from SCons.Script import AddOption
 
 # Log output of std-out to a log file.
 # 
@@ -71,7 +72,12 @@ class _LogStdOutStream():
 
 # SCons Tools required this method to be present. It is called if exists() returns true
 def generate(env):
-	sys.stdout = _LogStdOutStream(env)
+	AddOption('--logstdout', dest='logstdout', type='string', nargs=1,
+		action='store', metavar='DIR', default='on',
+		help='StdOutLog: log file handling (on, off)')
+	env['LogStdOut_Enabled'] = env.GetOption('logstdout') == 'on'
+	if env['LogStdOut_Enabled']:
+		sys.stdout = _LogStdOutStream(env)
 
 # SCons Tools required this method to be present. Checks if tool is applicable
 def exists(env):
