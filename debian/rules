@@ -37,10 +37,12 @@ override_dh_auto_install:
 	# the required directories. this is not done in scons since the generic build
 	# is made for systems where the games group potentially does not exist and
 	# thus it is not possible to create this directory at package time
-	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher \
-	            "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	
+	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
