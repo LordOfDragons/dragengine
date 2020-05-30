@@ -217,29 +217,29 @@ for h in headers:
 		h, Copy('$TARGET', '$SOURCE')))
 envDragengine.Depends(library, copyHeaders)
 
-install = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
-install.append(envDragengine.Install(pathInclude, targetConfig))
+installDevelop = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
+
+installRuntime = []
+
 archiveDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveEngine = {}
 
 if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
 	for l in library:
 		lname = l.name
-		install.append(envDragengine.InstallAs(os.path.join(pathLib, lname), l))
+		installRuntime.append(envDragengine.InstallVersionedLib(pathLib, l))
 		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
 		
 		lname = '.'.join(lname.split('.')[0:-2])
-		install.append(envDragengine.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
 		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
 		
 		lname = '.'.join(lname.split('.')[0:-1])
-		install.append(envDragengine.Command(os.path.join(pathLib, lname), l.name, Action(SymLinkLibrary)))
 		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
-	
+
 elif envDragengine['OSWindows']:
-	install.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
-	install.append(envDragengine.Install(pathLib, 'dragengine.lib'))
-	install.append(envDragengine.Install(pathLib, 'dragengine.def'))
+	installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
+	installDevelop.append(envDragengine.Install(pathLib, 'dragengine.lib'))
+	installDevelop.append(envDragengine.Install(pathLib, 'dragengine.def'))
 	archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
 	archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
 	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
@@ -252,22 +252,24 @@ if envDragengine['OSPosix']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
 			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-delga.png')
 		source = 'data/mime-dragengine-delga{}.png'.format(s)
-		install.append(envDragengine.InstallAs(target, source))
+		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 		
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
 			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-game.png')
 		source = 'data/mime-dragengine-game{}.png'.format(s)
-		install.append(envDragengine.InstallAs(target, source))
+		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 	
 	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-dragengine.xml')
 	source = 'data/mimetypes.xml'
-	install.append(envDragengine.InstallAs(target, source))
+	installRuntime.append(envDragengine.InstallAs(target, source))
 	archiveEngine[target] = envDragengine.File(source).srcnode()
 
 
-targetInstall = envDragengine.Alias('dragengine', install)
+targetInstallDevelop = envDragengine.Alias('dragengine_develop', installDevelop)
+targetInstallRuntime = envDragengine.Alias('dragengine_runtime', installRuntime)
+targetInstall = envDragengine.Alias('dragengine', [targetInstallRuntime, targetInstallDevelop])
 
 # source directory required for special commands
 srcdir = Dir('src').srcnode().abspath
@@ -301,6 +303,7 @@ parent_targets['dragengine'] = {
 	'libs' : linklibs,
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-runtime' : targetInstallRuntime,
 	'library' : library,
 	'archive-engine' : archiveEngine,
 	'archive-engine-develop' : archiveDevelop,
