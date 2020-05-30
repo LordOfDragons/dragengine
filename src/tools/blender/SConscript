@@ -16,7 +16,6 @@ archiveFiles = {f:envAddon.File(f) for f in files}
 def archiveZip(env, target, source):
 	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
 		for path, node in archiveFiles.items():
-			print('CHECK "{}" "{}"'.format(node.abspath, path))
 			arcfile.write(node.srcnode().abspath, path)
 
 targetBuild = envAddon.Command('blender-addon.zip', files,
