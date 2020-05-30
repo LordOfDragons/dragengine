@@ -1,5 +1,5 @@
 Source: dragengine
-Section: games
+Section: x11
 Priority: optional
 Maintainer: Roland Plüss <roland@rptd.ch>
 Build-Depends: debhelper (>= 11), scons, cmake, autoconf, libtool, nasm, libx11-dev, libxrandr-dev, libgl-dev, libxi-dev, libpulse-dev, libasound2-dev, portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev, libogg-dev, libvorbis-dev, libtheora-dev, libhidapi-dev, libopenhmd-dev, patchelf, libevdev-dev
