@@ -68,6 +68,7 @@ parent_targets[ 'gra_null' ] = {
 	'name' : 'Null Graphic Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

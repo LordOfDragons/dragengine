@@ -83,6 +83,7 @@ parent_targets[ 'snd_ogg' ] = {
 	'name' : 'Ogg Vorbis Sound Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

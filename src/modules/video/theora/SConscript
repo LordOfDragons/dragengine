@@ -80,6 +80,7 @@ parent_targets[ 'vid_theora' ] = {
 	'name' : 'Theora Video Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

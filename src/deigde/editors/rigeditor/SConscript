@@ -82,6 +82,7 @@ parent_targets[ 'editor_rig' ] = {
 	'name' : 'IGDE Rig Editor',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

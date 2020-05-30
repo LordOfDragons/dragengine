@@ -88,6 +88,7 @@ parent_targets['arc_delga'] = {
 	'name' : 'DELGA Archive Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

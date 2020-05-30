@@ -34,4 +34,5 @@ parent_targets['blender-addon'] = {
 	'name' : 'Drag[en]gine Blender AddOn',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archiveDevelop}

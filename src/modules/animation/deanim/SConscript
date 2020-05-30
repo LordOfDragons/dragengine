@@ -68,6 +68,7 @@ parent_targets[ 'anim_deanim' ] = {
 	'name' : 'Drag[en]gine binary Animation Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

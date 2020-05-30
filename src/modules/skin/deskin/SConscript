@@ -68,6 +68,7 @@ parent_targets[ 'skin_deskin' ] = {
 	'name' : 'Drag[en]gine XML Skin Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

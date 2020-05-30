@@ -79,6 +79,7 @@ parent_targets[ 'vid_apng' ] = {
 	'name' : 'Animated PNG Video Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

@@ -68,6 +68,7 @@ parent_targets[ 'occm_deocclusionmesh' ] = {
 	'name' : 'Drag[en]gine Occlusion Mesh Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

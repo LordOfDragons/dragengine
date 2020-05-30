@@ -97,6 +97,7 @@ parent_targets[ 'aud_openal' ] = {
 	'name' : 'OpenAL Audio Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

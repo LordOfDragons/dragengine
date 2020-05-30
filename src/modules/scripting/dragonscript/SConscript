@@ -170,6 +170,7 @@ parent_targets[ 'scr_dragonscript' ] = {
 	'name' : 'DragonScript Script Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'archive-igde' : archiveIGDE,
 	'doxygen' : buildDoxygen,
