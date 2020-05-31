@@ -110,6 +110,12 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Player takes control listener. */
@@ -176,6 +182,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			this.pBindingIconHeight = this.pECBehavior.getBindingIconHeight().getValue( stub )
 			this.pTransparency = this.pECBehavior.getTransparency().getValue( stub )
 			this.pPlayerControllable.addListener( PlayerTakesControl.new( this ) )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -399,6 +407,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	private var BindingManager pBindingManager
 	private var ECPInteger pBindingIconHeight
 	private var ECPFloat pTransparency
+	private var Array pListenerFactories
 	
 	
 	
@@ -460,6 +469,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		this.pUIContainerAddSettings = uiContainerAddSettings
 		this.pCommandManager = commandManager
 		this.pBindingManager = bindingManager
+		this.pListenerFactories = Array.new()
 		
 		this.pBindingIconHeight = ECPInteger.new( prefix + ".bindingIconHeight", 32, 1 )
 		eclass.addProperty( this.pBindingIconHeight )
@@ -478,6 +488,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		this.pLookAt = null
 		this.pPromptControllerFactory = null
 		this.pUIContainer = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -557,6 +568,26 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	/** \brief Transparency. */
 	public func ECPFloat getTransparency()
 		return this.pTransparency
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

@@ -118,6 +118,12 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements ColliderListener
 		private var ECBehaviorColliderAI pECBehavior
@@ -167,6 +173,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 				this.pCollider.addIgnoreCollider( baseCollider )
 				baseCollider.addIgnoreCollider( this.pCollider )
 			end
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/**
@@ -400,6 +408,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	private var ECBehaviorCollider pBaseCollider
 	private var ECComposeCollisionFilter pCollisionFilter
+	private var Array pListenerFactories
 	
 	
 	
@@ -418,6 +427,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		this.pBaseCollider = baseCollider
+		this.pListenerFactories = Array.new()
 		
 		var ECComposeCollider ccollider = this.pBaseCollider.getCollider()
 		ccollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
@@ -440,6 +450,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pBaseCollider = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -453,6 +464,26 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	/** \brief Collision filter for AI collider. */
 	public func ECComposeCollisionFilter getCollisionFilter()
 		return this.pCollisionFilter
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

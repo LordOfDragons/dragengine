@@ -71,6 +71,12 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
@@ -154,6 +160,8 @@ class ECBehaviorTimer extends DefaultECBehavior
 			this.pCancelOnReset = this.pECBehavior.getCancelOnReset().getValue( stub )
 			
 			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -386,6 +394,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	private var ECPBoolean pPulse
 	private var ECPBoolean pCancelOnReset
 	private var TSTriggerTable pTriggerTable
+	private var Array pListenerFactories
 	
 	
 	
@@ -413,6 +422,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, \
 	String id, String subID, String prefix ) super( eclass, id )
 		this.pTriggerTable = triggerTable
+		this.pListenerFactories = Array.new()
 		
 		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
 		
@@ -438,6 +448,12 @@ class ECBehaviorTimer extends DefaultECBehavior
 		eclass.addProperty( this.pCancelOnReset )
 		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -497,6 +513,26 @@ class ECBehaviorTimer extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	protected func void setTriggerTable( TSTriggerTable triggerTable )
 		this.pTriggerTable = triggerTable
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

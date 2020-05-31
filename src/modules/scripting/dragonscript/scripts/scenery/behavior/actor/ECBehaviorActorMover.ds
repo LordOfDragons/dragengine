@@ -95,6 +95,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/**
 	 * \brief Conversation condition.
 	 * 
@@ -447,6 +453,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				this.pConversationActor.addCondition( "actorMover", ConvoCondition.new( this ) )
 				this.pConversationActor.addCommand( "actorMover", ConvoCommand.new( this ) )
 			end
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -1228,6 +1236,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	private var ECBehaviorRideOn pRideOn
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECPFloat pSpeed
+	private var Array pListenerFactories
 	
 	
 	
@@ -1253,6 +1262,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		this.pLocomotion = locomotion
 		this.pNavigator = navigator
 		this.pRideOn = rideOn
+		this.pListenerFactories = Array.new()
 		
 		this.pSpeed = ECPFloat.new( prefix + "speed", 1.25, 0 )
 		eclass.addProperty( this.pSpeed )
@@ -1266,6 +1276,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		this.pNavigator = null
 		this.pLocomotion = null
 		this.pConversationActor = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -1303,6 +1314,26 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Movement speed. */
 	public func ECPFloat getSpeed()
 		return this.pSpeed
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	
