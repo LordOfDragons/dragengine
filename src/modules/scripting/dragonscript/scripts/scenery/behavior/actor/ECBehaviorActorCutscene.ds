@@ -247,7 +247,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			this.pListeners = Array.new()
 			
 			this.pCollider = ecbehavior.getCollider().instance( element )
-			this.pConversationActor = ecbehavior.getActorAnimated().instance( element )
+			this.pConversationActor = ecbehavior.getConversationActor().instance( element )
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -286,8 +286,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			return this.pCollider
 		end
 		
-		/** \brief Actor animated behavior. */
-		public func ECBehaviorConversationActor.Instance getActorAnimated()
+		/** \brief Conversation actor behavior. */
+		public func ECBehaviorConversationActor.Instance getConversationActor()
 			return this.pConversationActor
 		end
 		
@@ -670,8 +670,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		return this.pCollider
 	end
 	
-	/** \brief Actor animated behavior. */
-	public func ECBehaviorConversationActor getActorAnimated()
+	/** \brief Conversation actor behavior. */
+	public func ECBehaviorConversationActor getConversationActor()
 		return this.pConversationActor
 	end
 	
