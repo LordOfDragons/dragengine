@@ -33,7 +33,7 @@ pin Dragengine.Utils
  */
 class BaseActorAI implements Persistable
 	/** \brief Factory for loading actor ai. */
-	public class Factory implements PersistencyFactory
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.AIFactory
 		public static fixed var String NAME = "BaseActorAI"
 		
 		public func new()
@@ -45,6 +45,10 @@ class BaseActorAI implements Persistable
 		
 		public static func void registerFactory( Persistency persistency )
 			persistency.addFactory( NAME, Factory.new() )
+		end
+		
+		public func BaseActorAI createAI( ECBehaviorActorAIAction.Instance instance )
+			return BaseActorAI.new()
 		end
 	end
 	

@@ -59,7 +59,7 @@ pin Dragengine.Utils
  */
 class BAAVehicle extends BaseActorAction implements BAAMovement
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
 		public static fixed var String NAME = "BAAVehicle"
 		
 		public func new()
@@ -71,6 +71,10 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 		
 		public static func void registerFactory( Persistency persistency )
 			persistency.addFactory( NAME, Factory.new() )
+		end
+		
+		public func BaseActorAction createAction( ECBehaviorActorAIAction.Instance instance )
+			return BAAVehicle.new()
 		end
 	end
 	

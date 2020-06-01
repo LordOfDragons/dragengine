@@ -41,7 +41,7 @@ class BAAIBehaviorTree extends BaseActorAI
 	/**
 	 * \brief Factory for loading actor ai.
 	 */
-	public class Factory implements PersistencyFactory
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.AIFactory
 		public static fixed var String NAME = "BAAIBehaviorTree"
 		
 		public func new()
@@ -53,6 +53,10 @@ class BAAIBehaviorTree extends BaseActorAI
 		
 		public static func void registerFactory( Persistency persistency )
 			persistency.addFactory( NAME, Factory.new() )
+		end
+		
+		public func BaseActorAI createAI( ECBehaviorActorAIAction.Instance instance )
+			return BAAIBehaviorTree.new()
 		end
 	end
 	
