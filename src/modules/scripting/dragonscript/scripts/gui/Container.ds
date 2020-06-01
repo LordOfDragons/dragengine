@@ -365,7 +365,6 @@ class Container extends Widget
 				this.pLayout.removeWidget( widget )
 				this.pChildren.removeFrom( index )
 				
-				//widget.setParent( null ) // is this really necessary?
 				widget.dispose()
 			end
 		end )
