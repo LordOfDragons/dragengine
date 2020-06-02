@@ -33,6 +33,7 @@
 #include "../meWorldGuiParameters.h"
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
+#include "../../collisions/meCLReattachDecals.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -474,6 +475,9 @@ void meObject::SetPosition( const decDVector &position ){
 		return;
 	}
 	
+	meCLReattachDecals::Helper reattachDecals( pWorld );
+	reattachDecals.Collect( *pWObject );
+	
 	pPosition = position;
 	
 	pDebugDrawer->SetPosition( position );
@@ -490,6 +494,9 @@ void meObject::SetPosition( const decDVector &position ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
+	reattachDecals.Collect( *pWObject );
+	reattachDecals.ReattachDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
@@ -497,6 +504,9 @@ void meObject::SetSize( const decVector &size ){
 	if( size.IsEqualTo( pSize ) ){
 		return;
 	}
+	
+	meCLReattachDecals::Helper reattachDecals( pWorld );
+	reattachDecals.Collect( *pWObject );
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -511,6 +521,9 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
+	reattachDecals.Collect( *pWObject );
+	reattachDecals.ReattachDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
@@ -518,6 +531,9 @@ void meObject::SetScaling( const decVector &scaling ){
 	if( scaling.IsEqualTo( pScaling ) ){
 		return;
 	}
+	
+	meCLReattachDecals::Helper reattachDecals( pWorld );
+	reattachDecals.Collect( *pWObject );
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -533,31 +549,42 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
+	reattachDecals.Collect( *pWObject );
+	reattachDecals.ReattachDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
 void meObject::SetRotation( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pRotation ) ){
-		const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
-		
-		pRotation = rotation;
-		
-		if( pWorld ) pWorld->SetChanged( true );
-		
-		pDebugDrawer->SetOrientation( orientation );
-		pWObject->SetOrientation( orientation );
-		if( pEngComponentBroken ){
-			pEngComponentBroken->SetOrientation( orientation );
-		}
-		if( pColDetCollider ){
-			pColDetCollider->SetOrientation( orientation );
-		}
-		
-		pRepositionCamera();
-		UpdateNavPathTest();
-		
-		pNotifyDecalsAboutChange();
+	if( rotation.IsEqualTo( pRotation ) ){
+		return;
 	}
+	
+	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
+	
+	meCLReattachDecals::Helper reattachDecals( pWorld );
+	reattachDecals.Collect( *pWObject );
+	
+	pRotation = rotation;
+	
+	if( pWorld ) pWorld->SetChanged( true );
+	
+	pDebugDrawer->SetOrientation( orientation );
+	pWObject->SetOrientation( orientation );
+	if( pEngComponentBroken ){
+		pEngComponentBroken->SetOrientation( orientation );
+	}
+	if( pColDetCollider ){
+		pColDetCollider->SetOrientation( orientation );
+	}
+	
+	pRepositionCamera();
+	UpdateNavPathTest();
+	
+	reattachDecals.Collect( *pWObject );
+	reattachDecals.ReattachDecals();
+	
+	pNotifyDecalsAboutChange();
 }
 
 void meObject::SetID( const decUniqueID &id ){
@@ -942,6 +969,12 @@ void meObject::WOAsyncFinished(){
 	
 	// comes last to ensure all visibilities are correct
 	ShowStateChanged();
+	
+	if( pWorld ){
+		meCLReattachDecals reattachDecals( pWorld );
+		reattachDecals.Collect( *pWObject );
+		reattachDecals.ReattachDecals();
+	}
 }
 
 

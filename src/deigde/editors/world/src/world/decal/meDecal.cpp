@@ -562,6 +562,16 @@ void meDecal::ShowStateChanged(){
 	}
 }
 
+void meDecal::ReattachDecals(){
+	pDetachDecals();
+	pAttachDecals();
+}
+
+void meDecal::OnGameDefinitionChanged(){
+	ReattachDecals();
+}
+
+
 
 
 // Properties
@@ -728,10 +738,9 @@ void meDecal::pDetachDecals(){
 }
 
 void meDecal::pAttachDecals(){
-	meWorld *world = NULL;
-	
 	pDetachDecals();
 	
+	meWorld *world = NULL;
 	if( pWorld ){
 		world = pWorld;
 	}
@@ -757,27 +766,22 @@ void meDecal::pAttachDecals(){
 		
 		const meCLHitList &hitlist = collect.GetCollectedElements();
 		int e, entryCount = hitlist.GetEntryCount();
-		meObject *object;
 		
 		if( entryCount > 0 ){
 			pAttachedDecals = new meAttachedDecal*[ entryCount ];
-			if( ! pAttachedDecals ) DETHROW( deeOutOfMemory );
-			
 			pAttachedDecalCount = 0;
 			
 			for( e=0; e<entryCount; e++ ){
-				const meCLHitListEntry &entry = *hitlist.GetEntryAt( e );
-				
-				object = entry.GetObject();
-				
-				if( object ){
-					deEngine * const engine = pEnvironment->GetEngineController()->GetEngine();
-					
-					pAttachedDecals[ pAttachedDecalCount ] = new meAttachedDecal( engine, this );
-					meAttachedDecal &attachedDecal = *pAttachedDecals[ pAttachedDecalCount++ ];
-					attachedDecal.SetParentObject( object );
-					attachedDecal.AttachToParent();
+				meObject * const object = hitlist.GetEntryAt( e )->GetObject();
+				if( ! object ){
+					continue;
 				}
+				
+				pAttachedDecals[ pAttachedDecalCount ] = new meAttachedDecal(
+					pEnvironment->GetEngineController()->GetEngine(), this );
+				meAttachedDecal &attachedDecal = *pAttachedDecals[ pAttachedDecalCount++ ];
+				attachedDecal.SetParentObject( object );
+				attachedDecal.AttachToParent();
 			}
 		}
 	}

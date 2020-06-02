@@ -256,8 +256,8 @@ void meWorld::InitDelegates(){
 // Collision Detection
 ////////////////////////
 
-void meWorld::CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
-deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
+void meWorld::CollisionTestBox( const decDVector &position, const decQuaternion &orientation,
+const decVector &halfExtends, deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
 	decShapeBox *box = NULL;
 	decShapeList shapeList;
 	
@@ -281,6 +281,12 @@ deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
 	pEngColCollider->SetShapes( shapeList );
 	
 	pDEWorld->ColliderHits( pEngColCollider, listener );
+}
+
+void meWorld::CollisionTestBox( const decDVector &position,const decVector &minExtend, const decVector &maxExtend,
+const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
+	CollisionTestBox( decDMatrix::CreateWorld( position, orientation ) * ( ( minExtend + maxExtend ) * 0.5f ),
+		orientation, ( maxExtend - minExtend ) * 0.5f, listener, filter );
 }
 
 
@@ -731,11 +737,16 @@ void meWorld::UpdateSensors(){
 }
 
 void meWorld::GameDefChanged(){
-	const int objectCount = pObjects.GetCount();
 	int i;
 	
+	const int objectCount = pObjects.GetCount();
 	for( i=0; i<objectCount; i++ ){
 		pObjects.GetAt( i )->OnGameDefinitionChanged();
+	}
+	
+	const int decalCount = pDecals.GetCount();
+	for( i=0; i<decalCount; i++ ){
+		pDecals.GetAt( i )->OnGameDefinitionChanged();
 	}
 }
 

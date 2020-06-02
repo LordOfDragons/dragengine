@@ -264,6 +264,9 @@ public:
 	/** Tests for collisions of a box. */
 	void CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
 		deBaseScriptingCollider *listener, const decCollisionFilter &filter );
+	
+	void CollisionTestBox( const decDVector &position, const decVector &minExtend, const decVector &maxExtend,
+		const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter );
 	/*@}*/
 	
 	/** @name Editing */
