@@ -657,6 +657,7 @@ void meObject::SetAttachedTo( meObject *object ){
 		pAttachedTo->FreeReference();
 	}
 	
+	meObject * const oldObject = pAttachedTo;
 	pAttachedTo = object;
 	
 	if( object ){
@@ -668,6 +669,9 @@ void meObject::SetAttachedTo( meObject *object ){
 		pWorld->SetChanged( true );
 	}
 	
+	if( oldObject ){
+		oldObject->CheckLinks();
+	}
 	if( object ){
 		object->CheckLinks();
 	}
