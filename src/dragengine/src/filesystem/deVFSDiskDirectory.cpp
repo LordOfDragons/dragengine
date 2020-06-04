@@ -259,13 +259,39 @@ void deVFSDiskDirectory::DeleteFile( const decPath &path ){
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( ( pDiskPath + path ).GetPathNative(), widePath, MAX_PATH );
-	if( _wunlink( widePath ) != 0 )
-#else
-	if( unlink( ( pDiskPath + path ).GetPathNative() ) != 0 )
-#endif
-	{
-		DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+	
+	WIN32_FILE_ATTRIBUTE_DATA fa;
+	if( ! GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
+		DETHROW_INFO( deeFileNotFound, ( pDiskPath + path ).GetPathNative() );
 	}
+	
+	if( ( fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
+		if( _wrmdir( widePath ) != 0 ){
+			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		}
+		
+	}else{
+		if( _wunlink( widePath ) != 0 ){
+			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		}
+	}
+#else
+	struct stat st;
+	if( stat( ( pDiskPath + path ).GetPathNative(), &st ) ){
+		DETHROW_INFO( deeFileNotFound, ( pDiskPath + path ).GetPathNative() );
+	}
+	
+	if( S_ISDIR( st.st_mode ) ){
+		if( rmdir( ( pDiskPath + path ).GetPathNative() ) != 0 ){
+			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		}
+		
+	}else{
+		if( unlink( ( pDiskPath + path ).GetPathNative() ) != 0 ){
+			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		}
+	}
+#endif
 }
 
 void deVFSDiskDirectory::TouchFile( const decPath &path ){
