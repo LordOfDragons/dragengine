@@ -1,0 +1,142 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Image pixels.
+ * 
+ * Allows obtaining pixels from image resources.
+ * 
+ * Image resources can consume a lot of CPU memory. This amount of memory is usually
+ * wasted since Graphic Modules tend to process and store the image data in GPU resources.
+ * Once stored the original image data is not required to be present in CPU memory and
+ * will be released.
+ * 
+ * This class retains the image data in memory to allow accessing the pixels data
+ * from script classes. Once the instance is destroyed the retained data is released
+ * again. For this reason when creating an instance of this class it is likely the data
+ * has to be loaded into memory. It is thus recommended to create the class instance
+ * during loading time and to keep the reference stored for as long as you need to work
+ * with the image data.
+ * 
+ * Pixels retrieved from the image are converted to full colors like this:
+ * <ul>
+ * <li>1 component: Color.new( value, value, value, 1 )</li>
+ * <li>2 components: Color.new( value, value, value, alpha )</li>
+ * <li>3 components: Color.new( red, green, blue, 1 )</li>
+ * <li>4 components: Color.new( red, green, blue, alpha )</li>
+ * </ul>
+ * 
+ * This is a native class.
+ */
+class ImagePixels
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create ImagePixels instance to access pixel data.
+	 * 
+	 * Potentially causes loading image data into memory. Upon destruction image data
+	 * is released from memory.
+	 */
+	public func new( Image image )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Image resource. */
+	public func Image getImage()
+		return null
+	end
+	
+	/** \brief Width in pixels. */
+	public func int getWidth()
+		return 0
+	end
+	
+	/** \brief Height in pixels. */
+	public func int getHeight()
+		return 0
+	end
+	
+	/** \brief Depth in layers. */
+	public func int getDepth()
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 */
+	public func Color getAt( int x, int y )
+		return null
+	end
+	
+	/**
+	 * \brief Color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam z >= image.getDepth().
+	 */
+	public func Color getAt( int x, int y, int z )
+		return null
+	end
+	
+	/**
+	 * \brief Range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height". Content of \em pixels will
+	 * be replaced with Color instances of the pixels in the desired range. The index of
+	 * each pixel is "height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam pixels.getCount != width * height.
+	 */
+	public func void getRange( Array pixels, int x, int y, int width, int height )
+	end
+	
+	/**
+	 * \brief Range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height * depth". Content of \em pixels
+	 * will be replaced with Color instances of the pixels in the desired range. The index of
+	 * each pixel is "width * height * z + height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam depth < 0.
+	 * \throws EInvalidParam z + depth > image.getDepth().
+	 * \throws EInvalidParam pixels.getCount != width * height * depth.
+	 */
+	public func void getRange( Array pixels, int x, int y, int z, int width, int height, int depth )
+	end
+	/*@}*/
+end
