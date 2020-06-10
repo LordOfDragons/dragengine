@@ -92,6 +92,7 @@ private:
 	DEF_NATFUNC( nfGetRange );
 	DEF_NATFUNC( nfGetRange2 );
 	
+	DEF_NATFUNC( nfClear );
 	DEF_NATFUNC( nfSetAt );
 	DEF_NATFUNC( nfSetAt2 );
 	DEF_NATFUNC( nfSetRange );

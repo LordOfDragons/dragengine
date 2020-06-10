@@ -342,8 +342,8 @@ void deClassEditableImage::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	nd.image = ds.GetGameEngine()->GetImageManager()->
 		CreateImage( width, height, depth, componentCount, bitCount );
 	
-	nd.strideZ = nd.image->GetWidth() * nd.image->GetHeight();
-	nd.strideY = nd.image->GetWidth();
+	nd.strideZ = width * height;
+	nd.strideY = width;
 	
 	// create mutator
 	switch( nd.image->GetComponentCount() ){
@@ -725,6 +725,25 @@ void deClassEditableImage::nfGetRange2::RunFunction( dsRunTime *rt, dsValue *mys
 
 
 
+// public func void clear( Color color )
+deClassEditableImage::nfClear::nfClear( const sInitData &init ) :
+dsFunction( init.clsEditableImage, "clear", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsColor ); // color
+}
+void deClassEditableImage::nfClear::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sImgPixNatDat &nd = *( ( sImgPixNatDat* )p_GetNativeData( myself ) );
+	const deScriptingDragonScript &ds = ( ( deClassEditableImage* )GetOwnerClass() )->GetDS();
+	
+	const decColor &color = ds.GetClassColor()->GetColor( rt->GetValue( 0 )->GetRealObject() );
+	const int count = nd.image->GetWidth() * nd.image->GetHeight() * nd.image->GetDepth();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		nd.mutator->SetAt( i, color );
+	}
+}
+
 // public func void setAt( int x, int y, Color color )
 deClassEditableImage::nfSetAt::nfSetAt( const sInitData &init ) :
 dsFunction( init.clsEditableImage, "setAt", DSFT_FUNCTION,
@@ -1019,6 +1038,7 @@ void deClassEditableImage::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetRange( init ) );
 	AddFunction( new nfGetRange2( init ) );
 	
+	AddFunction( new nfClear( init ) );
 	AddFunction( new nfSetAt( init ) );
 	AddFunction( new nfSetAt2( init ) );
 	AddFunction( new nfSetRange( init ) );

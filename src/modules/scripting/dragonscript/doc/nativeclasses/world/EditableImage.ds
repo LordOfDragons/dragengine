@@ -161,6 +161,12 @@ class EditableImage
 	
 	
 	/**
+	 * \brief Clear image to color.
+	 */
+	public func void clear( Color color )
+	end
+	
+	/**
 	 * \brief Set color of pixel at coordinate.
 	 * \throws EInvalidParam x < 0.
 	 * \throws EInvalidParam x >= image.getWidth().
