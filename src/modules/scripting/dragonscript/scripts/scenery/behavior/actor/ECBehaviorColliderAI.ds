@@ -439,6 +439,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		var LayerMask cfFilter = LayerMask.new()
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.trigger )
 		

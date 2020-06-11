@@ -543,10 +543,11 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		this.pTestBone = ECPString.new( prefix + "bone", null )
 		eclass.addProperty( this.pTestBone )
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic )
 		
 		var LayerMask cfFilter = LayerMask.new()
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
 		
 		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )

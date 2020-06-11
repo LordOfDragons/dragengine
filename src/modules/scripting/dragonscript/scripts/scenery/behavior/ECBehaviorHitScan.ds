@@ -552,10 +552,11 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		this.pCollider = collider
 		this.pComponent = component
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic )
 		
 		var LayerMask cfFilter = LayerMask.new()
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
 		
 		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
