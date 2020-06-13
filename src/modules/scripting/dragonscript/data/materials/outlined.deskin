@@ -2,6 +2,7 @@
 <skin>
 	<texture name='material'>
 		<value property='solidity'>0</value>
+		<value property='solidity.masked'>1</value>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>

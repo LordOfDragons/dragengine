@@ -599,6 +599,9 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 				const deoglRComponent &component = *clistDynamic.GetComponentAt( i )->GetComponent();
 				
 				if( ! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow() ){
+					renderThread.GetLogger().LogInfoFormat("component is transparent: (%g,%g,%g) %s",
+						component.GetMatrix().GetPosition().x, component.GetMatrix().GetPosition().y,
+						component.GetMatrix().GetPosition().z, component.GetSkin()->GetFilename().GetString());
 					transparentDynamicShadow = true;
 					break;
 				}
@@ -692,7 +695,7 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 				deoglTexture *&depth = transparentStaticShadow ? texTranspDepth2 : texTranspDepth1;
 				deoglTexture *&color = transparentStaticShadow ? texTranspColor2 : texTranspColor1;
 				
-				if( sctransp.GetDynamicShadowCubeMap() ){
+				if( sctransp.GetDynamicShadowMap() ){
 					depth = sctransp.GetDynamicShadowMap()->GetTexture();
 					color = sctransp.GetDynamicColorMap()->GetTexture();
 					
