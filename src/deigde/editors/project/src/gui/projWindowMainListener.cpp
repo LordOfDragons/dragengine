@@ -51,28 +51,30 @@ projWindowMainListener::~projWindowMainListener(){
 // Notifications
 //////////////////
 
-void projWindowMainListener::StateChanged( projProject *project ){
+void projWindowMainListener::StateChanged( projProject* ){
 }
 
-void projWindowMainListener::UndoChanged( projProject *project ){
+void projWindowMainListener::UndoChanged( projProject* ){
 	pWindow.GetActionEditUndo()->Update();
 	pWindow.GetActionEditRedo()->Update();
 }
 
-void projWindowMainListener::ProjectChanged( projProject *project ){
+void projWindowMainListener::ProjectChanged( projProject* ){
 	pWindow.GetActionDistSave()->Update();
+	pWindow.UpdateShowActionPath();
 }
 
-void projWindowMainListener::ProfileStructureChanged( projProject *project ){
+void projWindowMainListener::ProfileStructureChanged( projProject* ){
 	pWindow.GetActionProfileRemove()->Update();
 	pWindow.GetActionProfileDuplicate()->Update();
 	pWindow.GetActionProfileDistribute()->Update();
 	pWindow.GetActionProfileTestRun()->Update();
 }
 
-void projWindowMainListener::ActiveProfileChanged( projProject *project ){
+void projWindowMainListener::ActiveProfileChanged( projProject* ){
 	pWindow.GetActionProfileRemove()->Update();
 	pWindow.GetActionProfileDuplicate()->Update();
 	pWindow.GetActionProfileDistribute()->Update();
 	pWindow.GetActionProfileTestRun()->Update();
+	pWindow.UpdateShowActionPath();
 }
