@@ -87,6 +87,7 @@ void saeConfiguration::LoadConfiguration(){
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/speechAnimationEditor.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		

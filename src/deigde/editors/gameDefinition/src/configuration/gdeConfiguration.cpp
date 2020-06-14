@@ -89,6 +89,7 @@ void gdeConfiguration::LoadConfiguration(){
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		

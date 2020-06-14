@@ -87,6 +87,7 @@ void seConfiguration::LoadConfiguration(){
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/synthesizerEditor.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		

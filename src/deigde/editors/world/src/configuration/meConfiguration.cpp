@@ -187,6 +187,7 @@ void meConfiguration::LoadConfiguration(){
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/worldEditor.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		

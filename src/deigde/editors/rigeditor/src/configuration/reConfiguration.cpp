@@ -105,6 +105,7 @@ void reConfiguration::LoadConfiguration(){
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/rigEditor.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		

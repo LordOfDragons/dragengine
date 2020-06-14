@@ -84,9 +84,11 @@ void igdeConfigurationLocal::LoadConfiguration(){
 		pReset();
 		pRecentEditorFiles.RemoveAllFiles();
 		pWindowMain.GetModuleManager().ResetRecentUsedPosition();
+		pWindowMain.GetModuleManager().ActivateProjectManager();
 		
 		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/igde.xml" ) );
 		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
 			return;
 		}
 		
