@@ -276,6 +276,17 @@ void igdeEditorModuleManager::ChangeModuleRecentUsedPosition( igdeEditorModuleDe
 #endif
 }
 
+void igdeEditorModuleManager::ResetRecentUsedPosition(){
+	const int count = pModules.GetCount();
+	int i;
+	
+	pRecentlyUsed.RemoveAll();
+	
+	for( i=0; i<count; i++ ){
+		pRecentlyUsed.Add( pModules.GetAt( i ) );
+	}
+}
+
 
 
 // Private Functions

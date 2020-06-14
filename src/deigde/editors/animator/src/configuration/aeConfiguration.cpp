@@ -59,13 +59,9 @@
 
 aeConfiguration::aeConfiguration( aeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pLocoKeyForward( deInputEvent::ekcW ),
-pLocoKeyBackwards( deInputEvent::ekcS ),
-pLocoKeyLeft( deInputEvent::ekcA ),
-pLocoKeyRight( deInputEvent::ekcD ),
-pLocoKeyCrouch( deInputEvent::ekcQ ),
-pLocoKeyRun( deInputEvent::ekcE ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 aeConfiguration::~aeConfiguration(){
@@ -110,16 +106,19 @@ void aeConfiguration::SetPreventSaving( bool preventSaving ){
 
 
 void aeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/animatorEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/animatorEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		aeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -158,4 +157,13 @@ void aeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void aeConfiguration::pCleanUp(){
+}
+
+void aeConfiguration::pReset(){
+	pLocoKeyForward = deInputEvent::ekcW;
+	pLocoKeyBackwards = deInputEvent::ekcS;
+	pLocoKeyLeft = deInputEvent::ekcA;
+	pLocoKeyRight = deInputEvent::ekcD;
+	pLocoKeyCrouch = deInputEvent::ekcQ;
+	pLocoKeyRun = deInputEvent::ekcE;
 }

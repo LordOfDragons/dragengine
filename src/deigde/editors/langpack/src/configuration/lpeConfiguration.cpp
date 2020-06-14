@@ -60,7 +60,9 @@
 
 lpeConfiguration::lpeConfiguration( lpeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 lpeConfiguration::~lpeConfiguration(){
@@ -77,16 +79,19 @@ void lpeConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void lpeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/languagePackEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/languagePackEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		lpeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -125,4 +130,7 @@ void lpeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void lpeConfiguration::pCleanUp(){
+}
+
+void lpeConfiguration::pReset(){
 }

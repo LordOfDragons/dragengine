@@ -59,7 +59,9 @@
 
 seConfiguration::seConfiguration( seWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 seConfiguration::~seConfiguration(){
@@ -76,16 +78,19 @@ void seConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void seConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/skinEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/skinEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		seConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -124,4 +129,7 @@ void seConfiguration::SaveConfiguration(){
 //////////////////////
 
 void seConfiguration::pCleanUp(){
+}
+
+void seConfiguration::pReset(){
 }

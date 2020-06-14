@@ -61,44 +61,9 @@
 
 gdeConfiguration::gdeConfiguration( gdeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-
-pColorBoundingBox( 0.75f, 0.25f, 0.25f, COLOR_ALPHA ),
-
-pColorCamera( 0.0f, 0.0f, 1.0f, COLOR_ALPHA ),
-pColorCameraActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorEnvMapProbe( 0.5f, 0.5f, 0.5f, COLOR_ALPHA ),
-pColorEnvMapProbeReflection( 0.65f, 0.35f, 0.35f, COLOR_ALPHA ),
-pColorEnvMapProbeInfluence( 0.35f, 0.65f, 0.35f, COLOR_ALPHA ),
-pColorEnvMapProbeMask( 0.35f, 0.35f, 0.65f, COLOR_ALPHA ),
-pColorEnvMapProbeActive( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveReflection( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveInfluence( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveMask( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE ),
-
-pColorLight( 1.0f, 1.0f, 0.0f, COLOR_ALPHA ),
-pColorLightActive( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE ),
-
-pColorNavigationSpace( 0.0f, 0.25f, 1.0f, COLOR_ALPHA ),
-pColorNavigationSpaceActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorNavigationBlocker( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
-pColorNavigationBlockerActive( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE ),
-
-pColorParticleEmitter( 0.5f, 0.0f, 0.25f, COLOR_ALPHA ),
-pColorParticleEmitterActive( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE ),
-
-pColorForceField( 0.5f, 0.25f, 0.25f, COLOR_ALPHA ),
-pColorForceFieldActive( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE ),
-
-pColorSnapPoint( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
-pColorSnapPointActive( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorSpeaker( 0.5f, 0.0f, 0.0f, COLOR_ALPHA ),
-pColorSpeakerActive( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE ),
-
 pPreventSaving( false )
 {
+	pReset();
 }
 
 gdeConfiguration::~gdeConfiguration(){
@@ -115,16 +80,19 @@ void gdeConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void gdeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -163,4 +131,41 @@ void gdeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void gdeConfiguration::pCleanUp(){
+}
+
+void gdeConfiguration::pReset(){
+	pColorBoundingBox.Set( 0.75f, 0.25f, 0.25f, COLOR_ALPHA );
+	
+	pColorCamera.Set( 0.0f, 0.0f, 1.0f, COLOR_ALPHA );
+	pColorCameraActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorEnvMapProbe.Set( 0.5f, 0.5f, 0.5f, COLOR_ALPHA );
+	pColorEnvMapProbeReflection.Set( 0.65f, 0.35f, 0.35f, COLOR_ALPHA );
+	pColorEnvMapProbeInfluence.Set( 0.35f, 0.65f, 0.35f, COLOR_ALPHA );
+	pColorEnvMapProbeMask.Set( 0.35f, 0.35f, 0.65f, COLOR_ALPHA );
+	pColorEnvMapProbeActive.Set( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveReflection.Set( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveInfluence.Set( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveMask.Set( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE );
+	
+	pColorLight.Set( 1.0f, 1.0f, 0.0f, COLOR_ALPHA );
+	pColorLightActive.Set( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE );
+	
+	pColorNavigationSpace.Set( 0.0f, 0.25f, 1.0f, COLOR_ALPHA );
+	pColorNavigationSpaceActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorNavigationBlocker.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
+	pColorNavigationBlockerActive.Set( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE );
+	
+	pColorParticleEmitter.Set( 0.5f, 0.0f, 0.25f, COLOR_ALPHA );
+	pColorParticleEmitterActive.Set( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE );
+	
+	pColorForceField.Set( 0.5f, 0.25f, 0.25f, COLOR_ALPHA );
+	pColorForceFieldActive.Set( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE );
+	
+	pColorSnapPoint.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
+	pColorSnapPointActive.Set( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorSpeaker.Set( 0.5f, 0.0f, 0.0f, COLOR_ALPHA );
+	pColorSpeakerActive.Set( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE );
 }

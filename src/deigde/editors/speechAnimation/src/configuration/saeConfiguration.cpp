@@ -59,7 +59,9 @@
 
 saeConfiguration::saeConfiguration( saeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 saeConfiguration::~saeConfiguration(){
@@ -76,16 +78,19 @@ void saeConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void saeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/speechAnimationEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/speechAnimationEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		saeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -124,4 +129,7 @@ void saeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void saeConfiguration::pCleanUp(){
+}
+
+void saeConfiguration::pReset(){
 }

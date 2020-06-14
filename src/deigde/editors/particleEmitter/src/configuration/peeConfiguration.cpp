@@ -59,7 +59,9 @@
 
 peeConfiguration::peeConfiguration( peeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 peeConfiguration::~peeConfiguration(){
@@ -76,16 +78,19 @@ void peeConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void peeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/particleEmitterEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/particleEmitterEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		peeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -124,4 +129,7 @@ void peeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void peeConfiguration::pCleanUp(){
+}
+
+void peeConfiguration::pReset(){
 }
