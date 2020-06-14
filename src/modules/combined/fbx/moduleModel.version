@@ -1,0 +1,4 @@
+FBXMODEL {
+  global: FBXModelCreateModule;
+  local: *;
+};

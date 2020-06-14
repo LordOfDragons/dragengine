@@ -690,6 +690,8 @@ scdirs.append( 'src/modules/video/apng' )
 
 scdirs.append( 'src/modules/archive/delga' )
 
+scdirs.append( 'src/modules/combined/fbx' )
+
 # launchers
 scdirs.append( 'src/launcher/console' )
 scdirs.append( 'src/launcher/gui' )

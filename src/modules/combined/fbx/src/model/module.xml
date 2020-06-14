@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>FBXModel</name>
+	<description>Handles models in the binary FBX model format.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>VERSION</version>
+	<type>Model</type>
+	<pattern>.fbx</pattern>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>FBXModelCreateModule</entrypoint>
+	</library>
+</module>
