@@ -599,9 +599,6 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 				const deoglRComponent &component = *clistDynamic.GetComponentAt( i )->GetComponent();
 				
 				if( ! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow() ){
-					renderThread.GetLogger().LogInfoFormat("component is transparent: (%g,%g,%g) %s",
-						component.GetMatrix().GetPosition().x, component.GetMatrix().GetPosition().y,
-						component.GetMatrix().GetPosition().z, component.GetSkin()->GetFilename().GetString());
 					transparentDynamicShadow = true;
 					break;
 				}
