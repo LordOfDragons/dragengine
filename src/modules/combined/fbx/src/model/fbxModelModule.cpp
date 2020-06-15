@@ -86,6 +86,18 @@ deBaseModelModule( loadableModule ),
 pCacheTCSorter( NULL )
 {
 	//pCacheTCSorter = new deCacheHelper( &GetVFS(), decPath::CreatePathUnix( "/cache/local/tcsorter" ) );
+	
+	//
+	// TODO
+	// 
+	// - load model bones
+	// - load vertex weights
+	// - face normal and tangent indices. right now the same indices as for vertices are used.
+	//   fbx stored layer normals and layer tangents. in IndexToDirect mode the index can be
+	//   directly stored for normals and tangents. in Direct mode we have to figure out the
+	//   indices ourself most probably grouping by (vertex.position, face.normal). just grouping
+	//   by normals is not going to work since different vertices can have similar normal.
+	//   so both vertex position and normal have to be unique to assign a new index to it.
 }
 
 fbxModelModule::~fbxModelModule(){
@@ -154,6 +166,9 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 		DETHROW_INFO( deeInvalidParam, "missing  connected 'Model'('Mesh') node" );
 	}
 	
+	// calculate transformation matrix
+	const decMatrix transformation( nodeModel->CalcTransformMatrix() * scene.GetTransformation() );
+	
 	// load textures
 	pLoadModelTextures( model, scene, *nodeModel );
 	model.GetTextureCoordinatesSetList().Add( "default" );
@@ -163,7 +178,7 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 	
 	try{
 		modelLod = new deModelLOD;
-		pLoadModelLod( model, *modelLod, scene, nodeGeometry );
+		pLoadModelLod( model, *modelLod, scene, nodeGeometry, transformation );
 		model.AddLOD( modelLod );
 		
 	}catch( const deException & ){
@@ -179,13 +194,6 @@ void fbxModelModule::pLoadModelTextures( deModel &model, const fbxScene &scene, 
 	const int64_t idModel = nodeModel.GetPropertyAt( 0 )->GetValueAsLong();
 	decPointerList consModel;
 	scene.FindConnections( idModel, consModel );
-	/*{
-		const int count = consModel.GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			( ( fbxConnection* )consModel.GetAt( i ) )->DebugPrintStructure( *this, "ConModel: " );
-		}
-	}*/
 	
 	// add material nodes connected to model node
 	const int conModelCount = consModel.GetCount();
@@ -224,13 +232,13 @@ void fbxModelModule::pLoadModelTexture( deModel &model, const fbxScene &scene, c
 }
 
 void fbxModelModule::pLoadModelLod( deModel &model, deModelLOD &lod,
-const fbxScene &scene, const fbxNode &nodeGeometry ){
-	pLoadModelVertices( model, lod, scene, nodeGeometry );
+const fbxScene &scene, const fbxNode &nodeGeometry, const decMatrix &transformation ){
+	pLoadModelVertices( model, lod, scene, nodeGeometry, transformation );
 	pLoadModelFaces( model, lod, scene, nodeGeometry );
 }
 
 void fbxModelModule::pLoadModelVertices( deModel &model, deModelLOD &lod,
-const fbxScene &scene, const fbxNode &nodeGeometry ){
+const fbxScene &scene, const fbxNode &nodeGeometry, const decMatrix &transformation ){
 	const fbxProperty &propVertices = *nodeGeometry.FirstNodeNamed( "Vertices" )->GetPropertyAt( 0 );
 	
 	const float scale = 1.0f; //scene.GetScaleFactor() * scene.GetUnitScaleFactor();
@@ -243,7 +251,7 @@ const fbxScene &scene, const fbxNode &nodeGeometry ){
 	int i, j;
 	
 	for( i=0, j=0; i<count; i++, j+=3 ){
-		vertices[ i ].SetPosition( decVector(
+		vertices[ i ].SetPosition( transformation * decVector(
 			propVertices.GetValueAtAsFloat( j ),
 			propVertices.GetValueAtAsFloat( j + 1 ),
 			propVertices.GetValueAtAsFloat( j + 2 ) ) * scale );

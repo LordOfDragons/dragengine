@@ -94,6 +94,7 @@ public:
 	bool GetPropertyFloat( const char *name, float &value ) const;
 	bool GetPropertyDouble( const char *name, double &value ) const;
 	bool GetPropertyString( const char *name, decString &value ) const;
+	bool GetPropertyVector( const char *name, decVector &value ) const;
 	
 	bool GetPropertyBool( const char *name ) const;
 	int GetPropertyInt( const char *name ) const;
@@ -101,6 +102,7 @@ public:
 	float GetPropertyFloat( const char *name ) const;
 	double GetPropertyDouble( const char *name ) const;
 	const decString &GetPropertyString( const char *name ) const;
+	decVector GetPropertyVector( const char *name ) const;
 	
 	bool GetPropertyBool( const char *name, bool defaultValue ) const;
 	int GetPropertyInt( const char *name, int defaultValue ) const;
@@ -108,6 +110,10 @@ public:
 	float GetPropertyFloat( const char *name, float defaultValue ) const;
 	double GetPropertyDouble( const char *name, double defaultValue ) const;
 	const decString &GetPropertyString( const char *name, const decString &defaultValue ) const;
+	decVector GetPropertyVector( const char *name, const decVector &defaultValue ) const;
+	
+	/** \brief Calculate transformation matrix for this object node. */
+	decMatrix CalcTransformMatrix() const;
 	
 	
 	

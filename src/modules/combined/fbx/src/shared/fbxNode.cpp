@@ -24,6 +24,7 @@
 #include <string.h>
 #include <inttypes.h>
 
+#include "fbxScene.h"
 #include "fbxNode.h"
 #include "fbxProperty.h"
 #include "property/fbxPropertyBool.h"
@@ -157,6 +158,19 @@ bool fbxNode::GetPropertyString( const char *name, decString &value ) const{
 	}
 }
 
+bool fbxNode::GetPropertyVector( const char *name, decVector &value ) const{
+	const fbxNode * const node = pProp70Named( name );
+	if( node ){
+		value.x = node->GetPropertyAt( 4 )->GetValueAsFloat();
+		value.y = node->GetPropertyAt( 5 )->GetValueAsFloat();
+		value.z = node->GetPropertyAt( 6 )->GetValueAsFloat();
+		return true;
+		
+	}else{
+		return false;
+	}
+}
+
 
 
 bool fbxNode::GetPropertyBool( const char *name ) const{
@@ -207,6 +221,16 @@ const decString &fbxNode::GetPropertyString( const char *name ) const{
 	return node->GetPropertyAt( 4 )->CastString().GetValue();
 }
 
+decVector fbxNode::GetPropertyVector( const char *name ) const{
+	const fbxNode * const node = pProp70Named( name );
+	if( ! node ){
+		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+	}
+	return decVector( node->GetPropertyAt( 4 )->GetValueAsFloat(),
+		node->GetPropertyAt( 5 )->GetValueAsFloat(),
+		node->GetPropertyAt( 6 )->GetValueAsFloat() );
+}
+
 
 
 bool fbxNode::GetPropertyBool( const char *name, bool defaultValue ) const{
@@ -237,6 +261,92 @@ double fbxNode::GetPropertyDouble( const char *name, double defaultValue ) const
 const decString &fbxNode::GetPropertyString( const char *name, const decString &defaultValue ) const{
 	const fbxNode * const node = pProp70Named( name );
 	return node ? node->GetPropertyAt( 4 )->CastString().GetValue() : defaultValue;
+}
+
+decVector fbxNode::GetPropertyVector( const char *name, const decVector &defaultValue ) const{
+	const fbxNode * const node = pProp70Named( name );
+	return node ? decVector( node->GetPropertyAt( 4 )->GetValueAsFloat(),
+		node->GetPropertyAt( 5 )->GetValueAsFloat(),
+		node->GetPropertyAt( 6 )->GetValueAsFloat() ) : defaultValue;
+}
+
+
+
+decMatrix fbxNode::CalcTransformMatrix() const{
+	/*
+	WorldTransform = ParentWorldTransform * T * Roff * Rp * Rpre * R * Rpost -1 * Rp -1 * Soff * Sp * S * Sp -1
+	
+	Where the term:      | Is a 4 x 4 matrix that contains
+	---------------------+------------------------------------------
+	WorldTransform       | Transformation matrix of the node
+	ParentWorldTransform | Transformation matrix of the parent node
+	T                    | Translation
+	Roff                 | Rotation offset
+	Rp                   | Rotation pivot
+	Rpre                 | Pre-rotation
+	R                    | Rotation
+	Rpost -1             | Inverse of the post-rotation
+	Rp -1                | Inverse of the rotation pivot
+	Soff                 | Scaling offset
+	Sp                   | Scaling pivot
+	S                    | Scaling
+	Sp -1                | Inverse of the scaling pivot
+	*/
+	
+	// RotationOrder, enum, 0 (XYZ?)
+	const fbxScene::eRotationOrder rotationOrder =
+		fbxScene::ConvRotationOrder( GetPropertyInt( "RotationOrder", 0 ) );
+	
+	const decVector zeroVector;
+	const decVector oneVector( 1.0f, 1.0f, 1.0f );
+	
+	const decVector rotationOffset( GetPropertyVector( "RotationOffset", zeroVector ) );
+	const decVector rotationPivot( GetPropertyVector( "RotationPivot", zeroVector ) );
+	const decVector scalingOffset( GetPropertyVector( "ScalingOffset", zeroVector ) );
+	const decVector scalingPivot( GetPropertyVector( "ScalingPivot", zeroVector ) );
+	const decVector preRotation( GetPropertyVector( "PreRotation", zeroVector ) * DEG2RAD );
+	const decVector postRotation( GetPropertyVector( "PostRotation", zeroVector ) * DEG2RAD );
+	const decVector lclTranslaction( GetPropertyVector( "Lcl Translation", zeroVector ) );
+	const decVector lclRotation( GetPropertyVector( "Lcl Rotation", zeroVector ) * DEG2RAD );
+	const decVector lclScaling( GetPropertyVector( "Lcl Scaling", oneVector ) );
+	
+	decMatrix matrix;
+	
+	if( ! scalingPivot.IsZero() ){ // Inverse of the scaling pivot
+		matrix *= decMatrix::CreateTranslation( -scalingPivot );
+	}
+	if( ! lclScaling.IsEqualTo( oneVector ) ){ // Scaling
+		matrix *= decMatrix::CreateScale( lclScaling );
+	}
+	if( ! scalingPivot.IsZero() ){ // Scaling pivot
+		matrix *= decMatrix::CreateTranslation( scalingPivot );
+	}
+	if( ! scalingOffset.IsZero() ){ // Scaling offset
+		matrix *= decMatrix::CreateTranslation( scalingOffset );
+	}
+	if( ! rotationPivot.IsZero() ){ // Inverse of the rotation pivot
+		matrix *= decMatrix::CreateTranslation( -rotationPivot );
+	}
+	if( ! postRotation.IsZero() ){ // Inverse of the post-rotation
+		matrix *= fbxScene::CreateRotationMatrix( postRotation, rotationOrder ).QuickInvert();
+	}
+	if( ! lclRotation.IsZero() ){ // Rotation
+		matrix *= fbxScene::CreateRotationMatrix( lclRotation, rotationOrder );
+	}
+	if( ! preRotation.IsZero() ){ // Pre-rotation
+		matrix *= fbxScene::CreateRotationMatrix( preRotation, rotationOrder );
+	}
+	if( ! rotationPivot.IsZero() ){ // Rotation pivot
+		matrix *= decMatrix::CreateTranslation( rotationPivot );
+	}
+	if( ! rotationOffset.IsZero() ){ // Rotation offset
+		matrix *= decMatrix::CreateTranslation( rotationOffset );
+	}
+	if( ! lclTranslaction.IsZero() ){ // Translation
+		matrix *= decMatrix::CreateTranslation( lclTranslaction );
+	}
+	
+	return matrix;
 }
 
 

@@ -22,6 +22,7 @@
 #ifndef _FBXMODELMODULE_H_
 #define _FBXMODELMODULE_H_
 
+#include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/model/deBaseModelModule.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -75,10 +76,10 @@ private:
 	void pLoadModelTexture( deModel &model, const fbxScene &scene, const fbxNode &nodeMaterial );
 	
 	void pLoadModelLod( deModel &model, deModelLOD &lod, const fbxScene &scene,
-		const fbxNode &nodeGeometry );
+		const fbxNode &nodeGeometry, const decMatrix &transformation );
 	
 	void pLoadModelVertices( deModel &model, deModelLOD &lod, const fbxScene &scene,
-		const fbxNode &nodeGeometry );
+		const fbxNode &nodeGeometry, const decMatrix &transformation );
 	
 	void pLoadModelFaces( deModel &model, deModelLOD &lod, const fbxScene &scene,
 		const fbxNode &nodeGeometry );

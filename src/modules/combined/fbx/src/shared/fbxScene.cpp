@@ -170,6 +170,80 @@ fbxScene::eReferenceInformationType fbxScene::ConvReferenceInformationType( cons
 	}
 }
 
+fbxScene::eRotationOrder fbxScene::ConvRotationOrder( int value ){
+	switch( value ){
+	case 0:
+		return eroXYZ;
+		
+	case 1:
+		return eroXZY;
+		
+	case 2:
+		return eroYZX;
+		
+	case 3:
+		return eroYXZ;
+		
+	case 4:
+		return eroZXY;
+		
+	case 5:
+		return eroZYX;
+		
+	case 6:
+		return eroSphericXYZ;
+		
+	default:
+		decString message( "unsupported rotation order: " );
+		message.AppendValue( value );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+}
+
+decMatrix fbxScene::CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder ){
+	// according to FBX SDK doc: right handed system
+	
+	switch( rotationOrder ){
+	case eroXYZ:
+		return decMatrix::CreateRotationX( -rotation.x )
+			* decMatrix::CreateRotationY( -rotation.y )
+			* decMatrix::CreateRotationZ( rotation.z );
+		
+	case eroXZY:
+		return decMatrix::CreateRotationX( -rotation.x )
+			* decMatrix::CreateRotationY( rotation.z )
+			* decMatrix::CreateRotationZ( -rotation.y );
+		
+	case eroYZX:
+		return decMatrix::CreateRotationX( -rotation.y )
+			* decMatrix::CreateRotationY( rotation.z )
+			* decMatrix::CreateRotationZ( -rotation.x );
+		
+	case eroYXZ:
+		return decMatrix::CreateRotationX( -rotation.y )
+			* decMatrix::CreateRotationY( -rotation.x )
+			* decMatrix::CreateRotationZ( rotation.z );
+		
+	case eroZXY:
+		return decMatrix::CreateRotationX( rotation.z )
+			* decMatrix::CreateRotationY( -rotation.x )
+			* decMatrix::CreateRotationZ( -rotation.y );
+		
+	case eroZYX:
+		return decMatrix::CreateRotationX( rotation.z )
+			* decMatrix::CreateRotationY( -rotation.y )
+			* decMatrix::CreateRotationZ( -rotation.x );
+		
+	case eroSphericXYZ:
+		return decMatrix::CreateRotationX( -rotation.x )
+			* decMatrix::CreateRotationY( -rotation.y )
+			* decMatrix::CreateRotationZ( rotation.z );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
 
 
 void fbxScene::Prepare( deBaseModule &module ){
@@ -177,12 +251,65 @@ void fbxScene::Prepare( deBaseModule &module ){
 	
 	const fbxNode * const settings = pNode->FirstNodeNamedOrNull( "GlobalSettings" );
 	if( settings ){
-		pUpAxis = pGetAxis( settings->GetPropertyInt( "UpAxis", 2 ), settings->GetPropertyInt( "UpAxisSign", 1 ) );
-		pFrontAxis = pGetAxis( settings->GetPropertyInt( "FrontAxis", 1 ), settings->GetPropertyInt( "FrontAxisSign", 1 ) );
-		pCoordAxis = pGetAxis( settings->GetPropertyInt( "CoordAxis", 0 ), settings->GetPropertyInt( "CoordAxisSign", 1 ) );
+		const int upAxis = settings->GetPropertyInt( "UpAxis", 2 );
+		const int frontAxis = settings->GetPropertyInt( "FrontAxis", 1 );
+		const int coordAxis = settings->GetPropertyInt( "CoordAxis", 0 );
+		const int upAxisSign = settings->GetPropertyInt( "UpAxisSign", 1 );
+		const int frontAxisSign = settings->GetPropertyInt( "FrontAxisSign", 1 );
+		const int coordAxisSign = settings->GetPropertyInt( "CoordAxisSign", 1 );
+		
+		pUpAxis = pGetAxis( upAxis, upAxisSign );
+		pFrontAxis = pGetAxis( frontAxis, frontAxisSign );
+		pCoordAxis = pGetAxis( coordAxis, coordAxisSign );
 		pUnitScaleFactor = settings->GetPropertyFloat( "UnitScaleFactor", 1.0f );
-		printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
+		//printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
+		
+		switch( upAxis ){
+		case 0:
+			pTransformation.a12 = upAxisSign; pTransformation.a22 = 0.0f; pTransformation.a32 = 0.0f;
+			break;
+			
+		case 1:
+			pTransformation.a12 = 0.0f; pTransformation.a22 = upAxisSign; pTransformation.a32 = 0.0f;
+			break;
+			
+		case 2:
+			pTransformation.a12 = 0.0f; pTransformation.a22 = 0.0f; pTransformation.a32 = upAxisSign;
+			break;
+		}
+		
+		switch( frontAxis ){
+		case 0:
+			pTransformation.a13 = frontAxisSign; pTransformation.a23 = 0.0f; pTransformation.a33 = 0.0f;
+			break;
+			
+		case 1:
+			pTransformation.a13 = 0.0f; pTransformation.a23 = frontAxisSign; pTransformation.a33 = 0.0f;
+			break;
+			
+		case 2:
+			pTransformation.a13 = 0.0f; pTransformation.a23 = 0.0f; pTransformation.a33 = frontAxisSign;
+			break;
+		}
+		
+		switch( coordAxis ){
+		case 0:
+			pTransformation.a11 = coordAxisSign; pTransformation.a21 = 0.0f; pTransformation.a31 = 0.0f;
+			break;
+			
+		case 1:
+			pTransformation.a11 = 0.0f; pTransformation.a21 = coordAxisSign; pTransformation.a31 = 0.0f;
+			break;
+			
+		case 2:
+			pTransformation.a11 = 0.0f; pTransformation.a21 = 0.0f; pTransformation.a31 = coordAxisSign;
+			break;
+		}
 	}
+	
+	// FBX unit = 1cm according to docs. but it looks like majority of people use 1 unit = 1m.
+	const float fbxUnitScale = pUnitScaleFactor * 1.0f; // 0.01f;
+	pTransformation *= decMatrix::CreateScale( fbxUnitScale, fbxUnitScale, fbxUnitScale );
 	
 	pNodeObjects = pNode->FirstNodeNamed( "Objects" );
 	

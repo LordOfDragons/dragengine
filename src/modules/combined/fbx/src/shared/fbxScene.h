@@ -63,6 +63,17 @@ public:
 		eritIndexToDirect
 	};
 	
+	/** \brief Rotation order. */
+	enum eRotationOrder{
+		eroXYZ,
+		eroXZY,
+		eroYZX,
+		eroYXZ,
+		eroZXY,
+		eroZYX,
+		eroSphericXYZ
+	};
+	
 	
 	
 private:
@@ -79,6 +90,8 @@ private:
 	fbxNode *pNodeObjects;
 	fbxNode *pNodeConnections;
 	decObjectOrderedSet pConnections;
+	
+	decMatrix pTransformation;
 	
 	
 	
@@ -116,6 +129,9 @@ public:
 	/** \brief Unit scale factor. */
 	inline float GetUnitScaleFactor() const{ return pUnitScaleFactor; }
 	
+	/** \brief Scene transformation. */
+	inline const decMatrix &GetTransformation() const{ return pTransformation; }
+	
 	
 	
 	/** \brief All connections containing ID either as source or target. */
@@ -137,6 +153,12 @@ public:
 	
 	/** \brief Convert refernece information type. */
 	static eReferenceInformationType ConvReferenceInformationType( const fbxNode &node );
+	
+	/** \brief Convert rotation order. */
+	static eRotationOrder ConvRotationOrder( int value );
+	
+	/** \brief Create rotation matrix. */
+	static decMatrix CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder );
 	
 	
 	
