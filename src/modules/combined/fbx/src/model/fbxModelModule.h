@@ -26,6 +26,10 @@
 #include <dragengine/threading/deMutex.h>
 
 class deCacheHelper;
+class fbxScene;
+class fbxNode;
+class fbxProperty;
+class deModelLOD;
 
 
 /**
@@ -62,6 +66,15 @@ public:
 	
 	
 private:
+	void pLoadModelLod( const fbxScene &scene, const fbxNode &geometry,
+		deModel &model, deModelLOD &lod );
+	
+	void pLoadModelVertices( const fbxScene &scene, const fbxNode &geometry,
+		fbxProperty &property, deModel &model, deModelLOD &lod );
+	
+	void pLoadModelFaces( const fbxScene &scene, const fbxNode &geometry,
+		fbxProperty &propertyPolygonFaceIndex, fbxProperty &propertyLayerElementMaterial,
+		deModel &model, deModelLOD &lod );
 };
 
 #endif
