@@ -23,8 +23,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fbxScene.h"
+#include "fbxConnection.h"
 #include "fbxNode.h"
+#include "fbxScene.h"
+#include "fbxProperty.h"
+#include "property/fbxPropertyString.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -102,16 +105,112 @@ void fbxScene::SetVersion( int version ){
 
 
 
+void fbxScene::FindConnections( int64_t id, decPointerList &list ) const{
+	const int count = pConnections.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		fbxConnection * const connection = ( fbxConnection* )pConnections.GetAt( i );
+		if( connection->GetSource() == id || connection->GetTarget() == id ){
+			list.Add( connection );
+		}
+	}
+}
+
+fbxNode *fbxScene::NodeWithID( int64_t id ) const{
+	if( ! pNodeObjects ){
+		DETHROW_INFO( deeInvalidParam, "missing node 'Objects'" );
+	}
+	return pNodeObjects->NodeWithID( id );
+}
+
+fbxNode *fbxScene::NodeWithIDOrNull( int64_t id ) const{
+	return pNodeObjects ? pNodeObjects->NodeWithIDOrNull( id ) : NULL;
+}
+
+
+
+decVector2 fbxScene::ConvUVFbxToDe( const decVector2 &uv ){
+	return decVector2( uv.x, 1.0f - uv.y );
+}
+
+fbxScene::eMappingInformationType fbxScene::ConvMappingInformationType( const fbxNode &node ){
+	const decString &string = node.FirstNodeNamed( "MappingInformationType" )->
+		GetPropertyAt( 0 )->CastString().GetValue();
+	
+	if( string == "AllSame" ){
+		return emitAllSame;
+		
+	}else if( string == "ByPolygon" ){
+		return emitByPolygon;
+		
+	}else if( string == "ByVertice" ){
+		return emitByVertex;
+		
+	}else if( string == "ByPolygonVertex" ){
+		return emitByPolygonVertex;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, decString( "unsupported MappingInformationType: " ) + string );
+	}
+}
+
+fbxScene::eReferenceInformationType fbxScene::ConvReferenceInformationType( const fbxNode &node ){
+	const decString &string = node.FirstNodeNamed( "ReferenceInformationType" )->
+		GetPropertyAt( 0 )->CastString().GetValue();
+	
+	if( string == "Direct" ){
+		return eritDirect;
+		
+	}else if( string == "IndexToDirect" ){
+		return eritIndexToDirect;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, decString( "unsupported ReferenceInformationType: " ) + string );
+	}
+}
+
+
+
 void fbxScene::Prepare( deBaseModule &module ){
 	pNode->Prepare( module );
 	
-	const fbxNode * const settings = pNode->FirstNodeNamed( "GlobalSettings" );
+	const fbxNode * const settings = pNode->FirstNodeNamedOrNull( "GlobalSettings" );
 	if( settings ){
 		pUpAxis = pGetAxis( settings->GetPropertyInt( "UpAxis", 2 ), settings->GetPropertyInt( "UpAxisSign", 1 ) );
 		pFrontAxis = pGetAxis( settings->GetPropertyInt( "FrontAxis", 1 ), settings->GetPropertyInt( "FrontAxisSign", 1 ) );
 		pCoordAxis = pGetAxis( settings->GetPropertyInt( "CoordAxis", 0 ), settings->GetPropertyInt( "CoordAxisSign", 1 ) );
 		pUnitScaleFactor = settings->GetPropertyFloat( "UnitScaleFactor", 1.0f );
 		printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
+	}
+	
+	pNodeObjects = pNode->FirstNodeNamed( "Objects" );
+	
+	pNodeConnections = pNode->FirstNodeNamed( "Connections" );
+	const int count = pNodeConnections->GetNodeCount();
+	deObjectReference connection;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		fbxNode &nodeConnection = *pNodeConnections->GetNodeAt( i );
+		if( nodeConnection.GetName() != "C" ){
+			DETHROW_INFO( deeInvalidFileFormat, "node inside 'Connections' is not named 'C'" );
+		}
+		
+		const decString &type = nodeConnection.GetPropertyAt( 0 )->CastString().GetValue();
+		if( type == "OO" ){
+			connection.TakeOver( new fbxConnection(
+				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
+				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong() ) );
+			pConnections.Add( connection );
+			
+		}else if( type == "OP" ){
+			connection.TakeOver( new fbxConnection(
+				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
+				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong(),
+				nodeConnection.GetPropertyAt( 3 )->CastString().GetValue() ) );
+			pConnections.Add( connection );
+		}
 	}
 }
 

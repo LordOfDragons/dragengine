@@ -106,23 +106,23 @@ fbxPropertyArrayInteger &fbxPropertyArrayInteger::CastArrayInteger(){
 	return *this;
 }
 
-int fbxPropertyArrayInteger::GetValueCount(){
+int fbxPropertyArrayInteger::GetValueCount() const{
 	return GetCount();
 }
 
-bool fbxPropertyArrayInteger::GetValueAtAsBool( int index ){
+bool fbxPropertyArrayInteger::GetValueAtAsBool( int index ) const{
 	return GetValueAt( index );
 }
 
-int fbxPropertyArrayInteger::GetValueAtAsInt( int index ){
+int fbxPropertyArrayInteger::GetValueAtAsInt( int index ) const{
 	return GetValueAt( index );
 }
 
-float fbxPropertyArrayInteger::GetValueAtAsFloat( int index ){
+float fbxPropertyArrayInteger::GetValueAtAsFloat( int index ) const{
 	return GetValueAt( index );
 }
 
-double fbxPropertyArrayInteger::GetValueAtAsDouble( int index ){
+double fbxPropertyArrayInteger::GetValueAtAsDouble( int index ) const{
 	return GetValueAt( index );
 }
 

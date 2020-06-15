@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "fbxNode.h"
 #include "fbxProperty.h"
@@ -112,6 +113,17 @@ bool fbxNode::GetPropertyInt( const char *name, int &value ) const{
 	}
 }
 
+bool fbxNode::GetPropertyLong( const char *name, int64_t &value ) const{
+	const fbxNode * const node = pProp70Named( name );
+	if( node ){
+		value = node->GetPropertyAt( 4 )->GetValueAsLong();
+		return true;
+		
+	}else{
+		return false;
+	}
+}
+
 bool fbxNode::GetPropertyFloat( const char *name, float &value ) const{
 	const fbxNode * const node = pProp70Named( name );
 	if( node ){
@@ -163,6 +175,14 @@ int fbxNode::GetPropertyInt( const char *name ) const{
 	return node->GetPropertyAt( 4 )->GetValueAsInt();
 }
 
+int64_t fbxNode::GetPropertyLong( const char *name ) const{
+	const fbxNode * const node = pProp70Named( name );
+	if( ! node ){
+		DETHROW_INFO( deeInvalidParam, decString( "named property not found: " ) + name );
+	}
+	return node->GetPropertyAt( 4 )->GetValueAsLong();
+}
+
 float fbxNode::GetPropertyFloat( const char *name ) const{
 	const fbxNode * const node = pProp70Named( name );
 	if( ! node ){
@@ -199,6 +219,11 @@ int fbxNode::GetPropertyInt( const char *name, int defaultValue ) const{
 	return node ? node->GetPropertyAt( 4 )->GetValueAsInt() : defaultValue;
 }
 
+int64_t fbxNode::GetPropertyLong( const char *name, int64_t defaultValue ) const{
+	const fbxNode * const node = pProp70Named( name );
+	return node ? node->GetPropertyAt( 4 )->GetValueAsLong() : defaultValue;
+}
+
 float fbxNode::GetPropertyFloat( const char *name, float defaultValue ) const{
 	const fbxNode * const node = pProp70Named( name );
 	return node ? node->GetPropertyAt( 4 )->GetValueAsFloat() : defaultValue;
@@ -228,7 +253,18 @@ void fbxNode::AddNode( fbxNode *node ){
 	pNodes.Add( node );
 }
 
-fbxNode *fbxNode::FirstNodeNamed( const char* name ) const{
+fbxNode *fbxNode::FirstNodeNamed( const char *name ) const{
+	fbxNode * const node = FirstNodeNamedOrNull( name );
+	if( node ){
+		return node;
+	}
+	
+	decString message;
+	message.Format( "missing node '%s'", name );
+	DETHROW_INFO( deeInvalidParam, message );
+}
+
+fbxNode *fbxNode::FirstNodeNamedOrNull( const char* name ) const{
 	const int count = pNodes.GetCount();
 	int i;
 	
@@ -263,6 +299,31 @@ void fbxNode::GetNodeNames( decStringSet &list ) const{
 	}
 }
 
+fbxNode *fbxNode::NodeWithID( int64_t id ) const{
+	fbxNode * const node = NodeWithIDOrNull( id );
+	if( node ){
+		return node;
+	}
+	
+	decString message;
+	message.Format( "missing node with ID %" PRId64, id );
+	DETHROW_INFO( deeInvalidParam, message );
+}
+
+fbxNode *fbxNode::NodeWithIDOrNull( int64_t id ) const{
+	const int count = pNodes.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		fbxNode * const node = ( fbxNode* )pNodes.GetAt( i );
+		if( node->GetPropertyCount() > 0 && node->GetPropertyAt( 0 )->GetValueAsLong() == id ){
+			return node;
+		}
+	}
+	
+	return NULL;
+}
+
 
 
 void fbxNode::Prepare( deBaseModule &module ){
@@ -273,7 +334,7 @@ void fbxNode::Prepare( deBaseModule &module ){
 		GetNodeAt( i )->Prepare( module );
 	}
 	
-	pNodeProperties70 = FirstNodeNamed( "Properties70" );
+	pNodeProperties70 = FirstNodeNamedOrNull( "Properties70" );
 	if( pNodeProperties70 ){
 		const int count = pNodeProperties70->GetNodeCount();
 		int i;

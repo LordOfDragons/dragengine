@@ -66,10 +66,11 @@ public:
 	virtual fbxPropertyLong &CastLong();
 	
 	/** \brief Get values as specific type if possible. */
-	virtual bool GetValueAsBool();
-	virtual int GetValueAsInt();
-	virtual float GetValueAsFloat();
-	virtual double GetValueAsDouble();
+	virtual bool GetValueAsBool() const;
+	virtual int GetValueAsInt() const;
+	virtual int64_t GetValueAsLong() const;
+	virtual float GetValueAsFloat() const;
+	virtual double GetValueAsDouble() const;
 	
 	
 	

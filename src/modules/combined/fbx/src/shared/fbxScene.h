@@ -23,6 +23,11 @@
 #define _FBXSCENE_H_
 
 
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+
+
 class decBaseFileReader;
 class decBaseFileWriter;
 class deBaseModule;
@@ -44,6 +49,20 @@ public:
 		eaZNeg
 	};
 	
+	/** \brief Mapping information type. */
+	enum eMappingInformationType{
+		emitAllSame,
+		emitByPolygon,
+		emitByVertex,
+		emitByPolygonVertex
+	};
+	
+	/** \brief Reference information type. */
+	enum eReferenceInformationType{
+		eritDirect,
+		eritIndexToDirect
+	};
+	
 	
 	
 private:
@@ -56,6 +75,10 @@ private:
 	eAxis pCoordAxis;
 	float pUnitScaleFactor;
 	float pScaleFactor;
+	
+	fbxNode *pNodeObjects;
+	fbxNode *pNodeConnections;
+	decObjectOrderedSet pConnections;
 	
 	
 	
@@ -92,6 +115,28 @@ public:
 	
 	/** \brief Unit scale factor. */
 	inline float GetUnitScaleFactor() const{ return pUnitScaleFactor; }
+	
+	
+	
+	/** \brief All connections containing ID either as source or target. */
+	void FindConnections( int64_t id, decPointerList &list ) const;
+	
+	/** \brief Object with ID. */
+	fbxNode *NodeWithID( int64_t id ) const;
+	
+	/** \brief Object with ID or NULL if absent. */
+	fbxNode *NodeWithIDOrNull( int64_t id ) const;
+	
+	
+	
+	/** \brief Convert UV. */
+	static decVector2 ConvUVFbxToDe( const decVector2 &uv );
+	
+	/** \brief Convert mapping information type. */
+	static eMappingInformationType ConvMappingInformationType( const fbxNode &node );
+	
+	/** \brief Convert refernece information type. */
+	static eReferenceInformationType ConvReferenceInformationType( const fbxNode &node );
 	
 	
 	

@@ -19,34 +19,39 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _FBXPROPERTYBOOL_H_
-#define _FBXPROPERTYBOOL_H_
+#ifndef _FBXCONNECTION_H_
+#define _FBXCONNECTION_H_
 
 
-#include "../fbxProperty.h"
+#include <stdint.h>
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/string/decString.h>
+
+
+class deBaseModule;
 
 
 /**
- * \brief FBX property bool.
+ * \brief FBX connection.
  */
-class fbxPropertyBool : public fbxProperty{
+class fbxConnection : public deObject{
 private:
-	bool pValue;
+	int64_t pSource;
+	int64_t pTarget;
+	decString pProperty;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create property. */
-	fbxPropertyBool();
-	
-	/** \brief Load property. */
-	fbxPropertyBool( decBaseFileReader &reader );
+	/** \brief Create connection. */
+	fbxConnection( int64_t source, int64_t target, const char *property = "" );
 	
 protected:
-	/** \brief Clean up property. */
-	virtual ~fbxPropertyBool();
+	/** \brief Clean up connection. */
+	virtual ~fbxConnection();
 	/*@}*/
 	
 	
@@ -54,29 +59,20 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Value. */
-	inline bool GetValue() const{ return pValue; }
+	/** \brief Source ID. */
+	inline int64_t GetSource() const{ return pSource; }
 	
-	/** \brief Set value. */
-	void SetValue( bool value );
+	/** \brief Target ID. */
+	inline int64_t GetTarget() const{ return pTarget; }
 	
-	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyBool &CastBool();
+	/** \brief Other ID. */
+	int64_t OtherID( int64_t id ) const;
 	
-	/** \brief Get values as specific type if possible. */
-	virtual bool GetValueAsBool() const;
-	virtual int GetValueAsInt() const;
-	virtual int64_t GetValueAsLong() const;
-	virtual float GetValueAsFloat() const;
-	virtual double GetValueAsDouble() const;
-	
-	
-	
-	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	/** \brief Property or empty string. */
+	inline const decString &GetProperty() const{ return pProperty; }
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	void DebugPrintStructure( deBaseModule &module, const decString &prefix ) const;
 	/*@}*/
 };
 

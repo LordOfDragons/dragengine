@@ -25,11 +25,13 @@
 #include <dragengine/systems/modules/model/deBaseModelModule.h>
 #include <dragengine/threading/deMutex.h>
 
-class deCacheHelper;
 class fbxScene;
 class fbxNode;
 class fbxProperty;
+
+class deCacheHelper;
 class deModelLOD;
+class decPointerList;
 
 
 /**
@@ -66,15 +68,20 @@ public:
 	
 	
 private:
-	void pLoadModelLod( const fbxScene &scene, const fbxNode &geometry,
-		deModel &model, deModelLOD &lod );
+	void pLoadModel( deModel &model, const fbxScene &scene, const fbxNode &nodeGeometry );
 	
-	void pLoadModelVertices( const fbxScene &scene, const fbxNode &geometry,
-		fbxProperty &property, deModel &model, deModelLOD &lod );
+	void pLoadModelTextures( deModel &model, const fbxScene &scene, const fbxNode &nodeModel );
 	
-	void pLoadModelFaces( const fbxScene &scene, const fbxNode &geometry,
-		fbxProperty &propertyPolygonFaceIndex, fbxProperty &propertyLayerElementMaterial,
-		deModel &model, deModelLOD &lod );
+	void pLoadModelTexture( deModel &model, const fbxScene &scene, const fbxNode &nodeMaterial );
+	
+	void pLoadModelLod( deModel &model, deModelLOD &lod, const fbxScene &scene,
+		const fbxNode &nodeGeometry );
+	
+	void pLoadModelVertices( deModel &model, deModelLOD &lod, const fbxScene &scene,
+		const fbxNode &nodeGeometry );
+	
+	void pLoadModelFaces( deModel &model, deModelLOD &lod, const fbxScene &scene,
+		const fbxNode &nodeGeometry );
 };
 
 #endif

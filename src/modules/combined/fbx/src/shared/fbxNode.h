@@ -90,18 +90,21 @@ public:
 	/** \brief Get named object property value. */
 	bool GetPropertyBool( const char *name, bool &value ) const;
 	bool GetPropertyInt( const char *name, int &value ) const;
+	bool GetPropertyLong( const char *name, int64_t &value ) const;
 	bool GetPropertyFloat( const char *name, float &value ) const;
 	bool GetPropertyDouble( const char *name, double &value ) const;
 	bool GetPropertyString( const char *name, decString &value ) const;
 	
 	bool GetPropertyBool( const char *name ) const;
 	int GetPropertyInt( const char *name ) const;
+	int64_t GetPropertyLong( const char *name ) const;
 	float GetPropertyFloat( const char *name ) const;
 	double GetPropertyDouble( const char *name ) const;
 	const decString &GetPropertyString( const char *name ) const;
 	
 	bool GetPropertyBool( const char *name, bool defaultValue ) const;
 	int GetPropertyInt( const char *name, int defaultValue ) const;
+	int64_t GetPropertyLong( const char *name, int64_t defaultValue ) const;
 	float GetPropertyFloat( const char *name, float defaultValue ) const;
 	double GetPropertyDouble( const char *name, double defaultValue ) const;
 	const decString &GetPropertyString( const char *name, const decString &defaultValue ) const;
@@ -109,7 +112,7 @@ public:
 	
 	
 	/** \brief Count of nodes. */
-	inline int GetNodeCount() const;
+	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
 	fbxNode *GetNodeAt( int index ) const;
@@ -120,11 +123,20 @@ public:
 	/** \brief First node matching name or NULL if absent. */
 	fbxNode *FirstNodeNamed( const char *name ) const;
 	
+	/** \brief First node matching name or NULL if absent. */
+	fbxNode *FirstNodeNamedOrNull( const char *name ) const;
+	
 	/** \brief Find all nodes matching name. */
 	void FindNodesNamed( decPointerList &list, const char *name ) const;
 	
 	/** \brief Names of all nodes. */
 	void GetNodeNames( decStringSet &list ) const;
+	
+	/** \brief Node with ID property. */
+	fbxNode *NodeWithID( int64_t id ) const;
+	
+	/** \brief Node with ID property or NULL if absent. */
+	fbxNode *NodeWithIDOrNull( int64_t id ) const;
 	
 	
 	
@@ -137,7 +149,7 @@ public:
 	void Save( decBaseFileWriter &writer );
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &logger, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
 	/*@}*/
 	
 	

@@ -68,11 +68,15 @@ public:
 	virtual fbxPropertyArrayFloat &CastArrayFloat();
 	
 	/** \brief Get values as specific type if possible. */
-	virtual int GetValueCount();
-	virtual bool GetValueAtAsBool( int index );
-	virtual int GetValueAtAsInt( int index );
-	virtual float GetValueAtAsFloat( int index );
-	virtual double GetValueAtAsDouble( int index );
+	virtual int GetValueCount() const;
+	virtual bool GetValueAtAsBool( int index ) const;
+	virtual int GetValueAtAsInt( int index ) const;
+	virtual float GetValueAtAsFloat( int index ) const;
+	virtual double GetValueAtAsDouble( int index ) const;
+	
+	/** \brief Read sequence of values as composed type. */
+	virtual decVector2 GetValueAtAsVector2( int index ) const;
+	virtual decVector GetValueAtAsVector( int index ) const;
 	
 	
 	

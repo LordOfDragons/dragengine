@@ -114,41 +114,55 @@ fbxPropertyBinary &fbxProperty::CastBinary(){
 
 
 
-bool fbxProperty::GetValueAsBool(){
+bool fbxProperty::GetValueAsBool() const{
 	DETHROW( deeInvalidAction );
 }
 
-int fbxProperty::GetValueAsInt(){
+int fbxProperty::GetValueAsInt() const{
 	DETHROW( deeInvalidAction );
 }
 
-float fbxProperty::GetValueAsFloat(){
+int64_t fbxProperty::GetValueAsLong() const{
 	DETHROW( deeInvalidAction );
 }
 
-double fbxProperty::GetValueAsDouble(){
+float fbxProperty::GetValueAsFloat() const{
+	DETHROW( deeInvalidAction );
+}
+
+double fbxProperty::GetValueAsDouble() const{
 	DETHROW( deeInvalidAction );
 }
 
 
 
-int fbxProperty::GetValueCount(){
+int fbxProperty::GetValueCount() const{
 	DETHROW( deeInvalidAction );
 }
 
-bool fbxProperty::GetValueAtAsBool( int ){
+bool fbxProperty::GetValueAtAsBool( int ) const{
 	DETHROW( deeInvalidAction );
 }
 
-int fbxProperty::GetValueAtAsInt( int ){
+int fbxProperty::GetValueAtAsInt( int ) const{
 	DETHROW( deeInvalidAction );
 }
 
-float fbxProperty::GetValueAtAsFloat( int ){
+float fbxProperty::GetValueAtAsFloat( int ) const{
 	DETHROW( deeInvalidAction );
 }
 
-double fbxProperty::GetValueAtAsDouble( int ){
+double fbxProperty::GetValueAtAsDouble( int ) const{
+	DETHROW( deeInvalidAction );
+}
+
+
+
+decVector2 fbxProperty::GetValueAtAsVector2( int index ) const{
+	DETHROW( deeInvalidAction );
+}
+
+decVector fbxProperty::GetValueAtAsVector( int index ) const{
 	DETHROW( deeInvalidAction );
 }
 

@@ -66,19 +66,23 @@ fbxPropertyDouble &fbxPropertyDouble::CastDouble(){
 	return *this;
 }
 
-bool fbxPropertyDouble::GetValueAsBool(){
+bool fbxPropertyDouble::GetValueAsBool() const{
 	return pValue;
 }
 
-int fbxPropertyDouble::GetValueAsInt(){
+int fbxPropertyDouble::GetValueAsInt() const{
 	return pValue;
 }
 
-float fbxPropertyDouble::GetValueAsFloat(){
+int64_t fbxPropertyDouble::GetValueAsLong() const{
 	return pValue;
 }
 
-double fbxPropertyDouble::GetValueAsDouble(){
+float fbxPropertyDouble::GetValueAsFloat() const{
+	return pValue;
+}
+
+double fbxPropertyDouble::GetValueAsDouble() const{
 	return pValue;
 }
 

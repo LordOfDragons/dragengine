@@ -106,24 +106,40 @@ fbxPropertyArrayFloat &fbxPropertyArrayFloat::CastArrayFloat(){
 	return *this;
 }
 
-int fbxPropertyArrayFloat::GetValueCount(){
+int fbxPropertyArrayFloat::GetValueCount() const{
 	return GetCount();
 }
 
-bool fbxPropertyArrayFloat::GetValueAtAsBool( int index ){
+bool fbxPropertyArrayFloat::GetValueAtAsBool( int index ) const{
 	return GetValueAt( index );
 }
 
-int fbxPropertyArrayFloat::GetValueAtAsInt( int index ){
+int fbxPropertyArrayFloat::GetValueAtAsInt( int index ) const{
 	return GetValueAt( index );
 }
 
-float fbxPropertyArrayFloat::GetValueAtAsFloat( int index ){
+float fbxPropertyArrayFloat::GetValueAtAsFloat( int index ) const{
 	return GetValueAt( index );
 }
 
-double fbxPropertyArrayFloat::GetValueAtAsDouble( int index ){
+double fbxPropertyArrayFloat::GetValueAtAsDouble( int index ) const{
 	return GetValueAt( index );
+}
+
+decVector2 fbxPropertyArrayFloat::GetValueAtAsVector2( int index ) const{
+	const int begin = index * 2;
+	if( begin < 0 || begin + 1 >= pCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return decVector2( pValues[ begin ], pValues[ begin + 1 ] );
+}
+
+decVector fbxPropertyArrayFloat::GetValueAtAsVector( int index ) const{
+	const int begin = index * 3;
+	if( begin < 0 || begin + 2 >= pCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return decVector( pValues[ begin ], pValues[ begin + 1 ], pValues[ begin + 2 ] );
 }
 
 

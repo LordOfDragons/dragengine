@@ -66,19 +66,23 @@ fbxPropertyShort &fbxPropertyShort::CastShort(){
 	return *this;
 }
 
-bool fbxPropertyShort::GetValueAsBool(){
+bool fbxPropertyShort::GetValueAsBool() const{
 	return pValue;
 }
 
-int fbxPropertyShort::GetValueAsInt(){
+int fbxPropertyShort::GetValueAsInt() const{
 	return pValue;
 }
 
-float fbxPropertyShort::GetValueAsFloat(){
+int64_t fbxPropertyShort::GetValueAsLong() const{
 	return pValue;
 }
 
-double fbxPropertyShort::GetValueAsDouble(){
+float fbxPropertyShort::GetValueAsFloat() const{
+	return pValue;
+}
+
+double fbxPropertyShort::GetValueAsDouble() const{
 	return pValue;
 }
 
