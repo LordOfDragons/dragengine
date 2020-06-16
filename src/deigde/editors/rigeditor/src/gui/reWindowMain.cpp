@@ -411,7 +411,8 @@ public:
 		deInputEvent::ekcN, igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcN ) ), pWindow( window ){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
+		if( ! pWindow.GetRig() || ! pWindow.GetRig()->GetChanged()
+		|| igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
 		"Creating a new rig discarding the current one is that ok?" ) == igdeCommonDialogs::ebYes ){
 			pWindow.CreateNewRig();
 		}
