@@ -29,6 +29,8 @@
 #include "../shared/fbxNode.h"
 #include "../shared/fbxProperty.h"
 #include "../shared/fbxScene.h"
+#include "../shared/managed/fbxRig.h"
+#include "../shared/managed/fbxRigBone.h"
 #include "../shared/property/fbxPropertyArrayDouble.h"
 #include "../shared/property/fbxPropertyArrayFloat.h"
 #include "../shared/property/fbxPropertyString.h"
@@ -117,11 +119,7 @@ void fbxModelModule::LoadModel( decBaseFileReader &reader, deModel &model ){
 		scene.Prepare( *this );
 		//scene.DebugPrintStructure( *this, true );
 		
-		// find model. we pick the first one we find
-		const fbxNode &nodeObjects = *scene.GetNode()->FirstNodeNamed( "Objects" );
-		const fbxNode &nodeGeometry = *nodeObjects.FirstNodeNamed( "Geometry" );
-		
-		pLoadModel( model, scene, nodeGeometry );
+		pLoadModel( model, scene );
 		
 	}catch( const deException & ){
 		LogErrorFormat( "Failed reading file '%s' at file position %d",
@@ -139,7 +137,9 @@ void fbxModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
 // Private Functions
 //////////////////////
 
-void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fbxNode &nodeGeometry ){
+void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
+	const fbxNode &nodeGeometry = *scene.FirstNodeNamed( "Geometry" );
+	
 	// find connections involving geometry node
 	const int64_t idGeometry = nodeGeometry.GetPropertyAt( 0 )->GetValueAsLong();
 	decPointerList consGeometry;
@@ -147,7 +147,8 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 	
 	// examine connections involving geometry node
 	const int conGeomCount = consGeometry.GetCount();
-	fbxNode *nodeModel = NULL;
+	const fbxNode *nodeModel = NULL;
+	fbxNode *nodeDeformer = NULL;
 	int i;
 	
 	for( i=0; i<conGeomCount; i++ ){
@@ -159,11 +160,25 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 			&& node->GetPropertyAt( 2 )->CastString().GetValue() == "Mesh" ){
 				nodeModel = node;
 			}
+			
+		}else if( node->GetName() == "Deformer" ){
+			if( ! nodeDeformer && connection.GetTarget() == idGeometry
+			&& node->GetPropertyAt( 2 )->CastString().GetValue() == "Skin" ){
+				nodeDeformer = node;
+			}
 		}
 	}
 	
 	if( ! nodeModel ){
 		DETHROW_INFO( deeInvalidParam, "missing  connected 'Model'('Mesh') node" );
+	}
+	
+	// create managed rig if pose is present
+	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
+	deObjectReference rig;
+	if( nodePose ){
+		rig.TakeOver( new fbxRig( scene, *nodePose, nodeDeformer ) );
+		( ( fbxRig& )( deObject& )rig ).DebugPrintStructure( *this, "", true );
 	}
 	
 	// calculate transformation matrix
@@ -172,6 +187,11 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 	// load textures
 	pLoadModelTextures( model, scene, *nodeModel );
 	model.GetTextureCoordinatesSetList().Add( "default" );
+	
+	// load bones
+	if( nodeDeformer ){
+		pLoadModelBones( model, scene, *nodeDeformer );
+	}
 	
 	// create and add lod
 	deModelLOD *modelLod = NULL;
@@ -189,18 +209,77 @@ void fbxModelModule::pLoadModel( deModel &model, const fbxScene &scene, const fb
 	}
 }
 
+void fbxModelModule::pLoadModelBones( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer ){
+	// find connections involving deformer node
+	const int64_t idDeformer = nodeDeformer.GetPropertyAt( 0 )->GetValueAsLong();
+	decPointerList cons;
+	scene.FindConnections( idDeformer, cons );
+	
+	// collect bone nodes connected to deformer node
+	const int conCount = cons.GetCount();
+	decPointerList bones;
+	int i;
+	
+	for( i=0; i<conCount; i++ ){
+		const fbxConnection &connection = *( ( fbxConnection* )cons.GetAt( i ) );
+		if( connection.GetTarget() != idDeformer ){
+			continue;
+		}
+		
+		fbxNode &node = *scene.NodeWithID( connection.OtherID( idDeformer ) );
+		if( node.GetName() == "Deformer" && node.GetPropertyAt( 2 )->CastString().GetValue() == "Cluster" ){
+			bones.Add( &node );
+		}
+	}
+	
+	// add bones
+	const int boneCount = bones.GetCount();
+	for( i=0; i<boneCount; i++ ){
+		const fbxNode &node = *( ( fbxNode* )bones.GetAt( i ) );
+		pLoadModelBone( model, scene, node, bones );
+	}
+}
+
+void fbxModelModule::pLoadModelBone( deModel &model, const fbxScene &scene,
+const fbxNode &nodeDeformer, const decPointerList &bones ){
+	const decString &name = nodeDeformer.GetPropertyAt( 1 )->CastString().GetValue();
+	const decMatrix matrix( nodeDeformer.FirstNodeNamed( "TransformLink" )->GetPropertyAt( 0 )->GetValueAtAsMatrix( 0 ) );
+	const decVector position( matrix.GetPosition() );
+	const decVector rotation( matrix.GetEulerAngles() * RAD2DEG );
+	
+	printf( "loadBone name='%s' pos=(%g,%g,%g) rot=(%g,%g,%g)\n", name.GetString(),
+		position.x, position.y, position.z, rotation.x, rotation.y, rotation.z );
+	
+	// 'Indexes': int[] => index of vertices to affect
+	// 'Weights': double[] => weight of influence on vertices referenced by Indexes
+	
+	deModelBone *bone = NULL;
+	try{
+		bone = new deModelBone( name );
+		bone->SetPosition( position );
+		bone->SetOrientation( matrix.ToQuaternion() );
+		model.AddBone( bone );
+		
+	}catch( const deException & ){
+		if( bone ){
+			delete bone;
+		}
+		throw;
+	}
+}
+
 void fbxModelModule::pLoadModelTextures( deModel &model, const fbxScene &scene, const fbxNode &nodeModel ){
 	// find connections involving model node
 	const int64_t idModel = nodeModel.GetPropertyAt( 0 )->GetValueAsLong();
-	decPointerList consModel;
-	scene.FindConnections( idModel, consModel );
+	decPointerList cons;
+	scene.FindConnections( idModel, cons );
 	
 	// add material nodes connected to model node
-	const int conModelCount = consModel.GetCount();
+	const int conCount = cons.GetCount();
 	int i;
 	
-	for( i=0; i<conModelCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )consModel.GetAt( i ) );
+	for( i=0; i<conCount; i++ ){
+		const fbxConnection &connection = *( ( fbxConnection* )cons.GetAt( i ) );
 		if( connection.GetTarget() != idModel ){
 			continue;
 		}

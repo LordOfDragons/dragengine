@@ -166,6 +166,10 @@ decVector fbxProperty::GetValueAtAsVector( int index ) const{
 	DETHROW( deeInvalidAction );
 }
 
+decMatrix fbxProperty::GetValueAtAsMatrix( int index ) const{
+	DETHROW( deeInvalidAction );
+}
+
 
 
 fbxProperty *fbxProperty::Read( decBaseFileReader &reader ){

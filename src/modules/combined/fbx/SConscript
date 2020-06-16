@@ -90,7 +90,58 @@ parent_targets['mdl_fbx'] = {
 
 
 # rig module
-##############
+################
+
+pathModule = os.path.join(pathModules, 'rig', 'fbxrig', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/rig', '*.cpp', sources)
+globFiles(envModule, 'src/rig', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+objects.extend(objshared)
+
+library = envModule.LoadableModule('rigfbx', objects)
+targetBuild = envModule.Alias('rig_fbx_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+manifest = envModule.File('src/rig/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('rig_fbx', install)
+
+parent_targets['rig_fbx'] = {
+	'name': 'Drag[en]gine binary Rig Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive}
+
+
+
+# animation module
+####################
 
 
 

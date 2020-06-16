@@ -105,6 +105,19 @@ void fbxScene::SetVersion( int version ){
 
 
 
+fbxNode *fbxScene::FirstNodeNamed( const char *name ) const{
+	if( ! pNodeObjects ){
+		DETHROW_INFO( deeInvalidParam, "missing node 'Objects'" );
+	}
+	return pNodeObjects->FirstNodeNamed( name );
+}
+
+fbxNode *fbxScene::FirstNodeNamedOrNull( const char *name ) const{
+	return pNodeObjects ? pNodeObjects->FirstNodeNamedOrNull( name ) : NULL;
+}
+
+
+
 void fbxScene::FindConnections( int64_t id, decPointerList &list ) const{
 	const int count = pConnections.GetCount();
 	int i;
@@ -202,42 +215,43 @@ fbxScene::eRotationOrder fbxScene::ConvRotationOrder( int value ){
 
 decMatrix fbxScene::CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder ){
 	// according to FBX SDK doc: right handed system
+	const decVector rot( -rotation.x, -rotation.y, -rotation.z );
 	
 	switch( rotationOrder ){
 	case eroXYZ:
-		return decMatrix::CreateRotationX( -rotation.x )
-			* decMatrix::CreateRotationY( -rotation.y )
-			* decMatrix::CreateRotationZ( rotation.z );
+		return decMatrix::CreateRotationX( rot.x )
+			* decMatrix::CreateRotationY( rot.y )
+			* decMatrix::CreateRotationZ( rot.z );
 		
 	case eroXZY:
-		return decMatrix::CreateRotationX( -rotation.x )
-			* decMatrix::CreateRotationY( rotation.z )
-			* decMatrix::CreateRotationZ( -rotation.y );
+		return decMatrix::CreateRotationX( rot.x )
+			* decMatrix::CreateRotationY( rot.z )
+			* decMatrix::CreateRotationZ( rot.y );
 		
 	case eroYZX:
-		return decMatrix::CreateRotationX( -rotation.y )
-			* decMatrix::CreateRotationY( rotation.z )
-			* decMatrix::CreateRotationZ( -rotation.x );
+		return decMatrix::CreateRotationX( rot.y )
+			* decMatrix::CreateRotationY( rot.z )
+			* decMatrix::CreateRotationZ( rot.x );
 		
 	case eroYXZ:
-		return decMatrix::CreateRotationX( -rotation.y )
-			* decMatrix::CreateRotationY( -rotation.x )
-			* decMatrix::CreateRotationZ( rotation.z );
+		return decMatrix::CreateRotationX( rot.y )
+			* decMatrix::CreateRotationY( rot.x )
+			* decMatrix::CreateRotationZ( rot.z );
 		
 	case eroZXY:
-		return decMatrix::CreateRotationX( rotation.z )
-			* decMatrix::CreateRotationY( -rotation.x )
-			* decMatrix::CreateRotationZ( -rotation.y );
+		return decMatrix::CreateRotationX( rot.z )
+			* decMatrix::CreateRotationY( rot.x )
+			* decMatrix::CreateRotationZ( rot.y );
 		
 	case eroZYX:
-		return decMatrix::CreateRotationX( rotation.z )
-			* decMatrix::CreateRotationY( -rotation.y )
-			* decMatrix::CreateRotationZ( -rotation.x );
+		return decMatrix::CreateRotationX( rot.z )
+			* decMatrix::CreateRotationY( rot.y )
+			* decMatrix::CreateRotationZ( rot.x );
 		
 	case eroSphericXYZ:
-		return decMatrix::CreateRotationX( -rotation.x )
-			* decMatrix::CreateRotationY( -rotation.y )
-			* decMatrix::CreateRotationZ( rotation.z );
+		return decMatrix::CreateRotationX( rot.x )
+			* decMatrix::CreateRotationY( rot.y )
+			* decMatrix::CreateRotationZ( rot.z );
 		
 	default:
 		DETHROW( deeInvalidParam );

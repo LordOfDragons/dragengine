@@ -142,6 +142,32 @@ decVector fbxPropertyArrayFloat::GetValueAtAsVector( int index ) const{
 	return decVector( pValues[ begin ], pValues[ begin + 1 ], pValues[ begin + 2 ] );
 }
 
+decMatrix fbxPropertyArrayFloat::GetValueAtAsMatrix( int index ) const{
+	const int begin = index * 16;
+	if( begin < 0 || begin + 15 >= pCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decMatrix matrix;
+	matrix.a11 = pValues[ begin ];
+	matrix.a12 = pValues[ begin + 4 ];
+	matrix.a13 = pValues[ begin + 8 ];
+	matrix.a14 = pValues[ begin + 12 ];
+	matrix.a21 = pValues[ begin + 1 ];
+	matrix.a22 = pValues[ begin + 5 ];
+	matrix.a23 = pValues[ begin + 9 ];
+	matrix.a24 = pValues[ begin + 13 ];
+	matrix.a31 = pValues[ begin + 2 ];
+	matrix.a32 = pValues[ begin + 6 ];
+	matrix.a33 = pValues[ begin + 10 ];
+	matrix.a34 = pValues[ begin + 14 ];
+	matrix.a41 = pValues[ begin + 3 ];
+	matrix.a42 = pValues[ begin + 7 ];
+	matrix.a43 = pValues[ begin + 11 ];
+	matrix.a44 = pValues[ begin + 15 ];
+	return matrix;
+}
+
 
 
 void fbxPropertyArrayFloat::Save(decBaseFileWriter &writer ){

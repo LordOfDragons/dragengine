@@ -134,6 +134,14 @@ public:
 	
 	
 	
+	/** \brief First node matching name or NULL if absent. */
+	fbxNode *FirstNodeNamed( const char *name ) const;
+	
+	/** \brief First node matching name or NULL if absent. */
+	fbxNode *FirstNodeNamedOrNull( const char *name ) const;
+	
+	
+	
 	/** \brief All connections containing ID either as source or target. */
 	void FindConnections( int64_t id, decPointerList &list ) const;
 	

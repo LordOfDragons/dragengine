@@ -128,9 +128,11 @@ public:
 	/** \brief Read sequence of values as composed type. */
 	virtual decVector2 GetValueAtAsVector2( int index ) const;
 	virtual decVector GetValueAtAsVector( int index ) const;
+	virtual decMatrix GetValueAtAsMatrix( int index ) const;
 	
 	inline decVector2 GetValueAsVector2() const{ return GetValueAtAsVector2( 0 ); }
 	inline decVector GetValueAsVector() const{ return GetValueAtAsVector( 0 ); }
+	inline decMatrix GetValueAsMatrix() const{ return GetValueAtAsMatrix( 0 ); }
 	
 	
 	

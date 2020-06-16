@@ -77,6 +77,7 @@ public:
 	/** \brief Read sequence of values as composed type. */
 	virtual decVector2 GetValueAtAsVector2( int index ) const;
 	virtual decVector GetValueAtAsVector( int index ) const;
+	virtual decMatrix GetValueAtAsMatrix( int index ) const;
 	
 	
 	

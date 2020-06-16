@@ -29,6 +29,7 @@
 class fbxScene;
 class fbxNode;
 class fbxProperty;
+class fbxRig;
 
 class deCacheHelper;
 class deModelLOD;
@@ -69,7 +70,12 @@ public:
 	
 	
 private:
-	void pLoadModel( deModel &model, const fbxScene &scene, const fbxNode &nodeGeometry );
+	void pLoadModel( deModel &model, fbxScene &scene );
+	
+	void pLoadModelBones( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer );
+	
+	void pLoadModelBone( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer,
+		const decPointerList &bones );
 	
 	void pLoadModelTextures( deModel &model, const fbxScene &scene, const fbxNode &nodeModel );
 	
