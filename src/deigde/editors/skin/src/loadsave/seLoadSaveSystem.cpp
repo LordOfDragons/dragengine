@@ -104,7 +104,6 @@ bool seLoadSaveSystem::HasLSSkin( seLoadSaveSkin *lsSkin ) const{
 }
 
 int seLoadSaveSystem::IndexOfLSSkinMatching( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
 	const decString testFilename( filename );
 	int i;
 	

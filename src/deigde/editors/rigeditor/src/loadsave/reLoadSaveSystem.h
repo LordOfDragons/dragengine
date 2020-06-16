@@ -45,10 +45,6 @@ private:
 	int pLSRigCount;
 	int pLSRigSize;
 	
-	char *pFDPattern;
-	
-	igdeFilePatternList *pFilePatternList;
-	
 public:
 	// constructor, destructor
 	reLoadSaveSystem( reWindowMain &windowMain );
@@ -82,15 +78,8 @@ public:
 	/** Saves the rig to file if possible. */
 	void SaveRig( reRig *rig, const char *filename );
 	
-	/** Retrieves the fiel dialog pattern string. */
-	inline const char *GetFileDialogPattern() const{ return ( const char * )pFDPattern; }
-	/** Retrieves the file pattern list. */
-	inline igdeFilePatternList *GetFilePatternList() const{ return pFilePatternList; }
-	
 private:
 	void pCleanUp();
-	bool pPatternMatches( const char *pattern, const char *filename ) const;
-	void pRebuildFDPattern();
 };
 
 // end of include only once

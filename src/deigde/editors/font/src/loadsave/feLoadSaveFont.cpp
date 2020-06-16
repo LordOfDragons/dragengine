@@ -56,19 +56,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-feLoadSaveFont::feLoadSaveFont( deBaseFontModule *module ){
-	if( ! module ) DETHROW( deeInvalidParam );
+feLoadSaveFont::feLoadSaveFont( deBaseFontModule *module ) :
+pModule( module )
+{
+	if( ! module ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	const decStringList &patternList = loadableModule.GetPatternList();
+	const int patternCount = patternList.GetCount();
+	int i;
 	
-	pModule = module;
-	
-	try{
-		SetName( loadableModule.GetName() );
-		SetPattern( loadableModule.GetPatternList().GetAt( 0 ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	pName = loadableModule.GetName();
+	for( i=0; i<patternCount; i++ ){
+		if( i > 0 ){
+			pPattern.AppendCharacter( ',' );
+		}
+		pPattern.AppendCharacter( '*' );
+		pPattern.Append( patternList.GetAt( i ) );
 	}
 }
 
@@ -82,14 +88,10 @@ feLoadSaveFont::~feLoadSaveFont(){
 ///////////////
 
 void feLoadSaveFont::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
 	pName = name;
 }
 
 void feLoadSaveFont::SetPattern( const char *pattern ){
-	if( ! pattern ) DETHROW( deeInvalidParam );
-	
 	pPattern = pattern;
 }
 

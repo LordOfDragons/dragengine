@@ -47,10 +47,6 @@ private:
 	int pLSFontCount;
 	int pLSFontSize;
 	
-	char *pFDPattern;
-	
-	igdeFilePatternList *pFPListFont;
-	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
@@ -88,17 +84,10 @@ public:
 	feFont *LoadFont( const char *filename, igdeGameDefinition *gameDefinition );
 	/** Saves the font to file if possible. */
 	void SaveFont( feFont *font, const char *filename );
-	
-	/** Retrieves the file dialog pattern string. */
-	inline const char *GetFileDialogPattern() const{ return ( const char * )pFDPattern; }
-	/** Retrieves the file pattern list. */
-	inline igdeFilePatternList *GetFontFPList() const{ return pFPListFont; }
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	bool pPatternMatches( const char *pattern, const char *filename ) const;
-	void pRebuildFDPattern();
 };
 
 // end of include only once
