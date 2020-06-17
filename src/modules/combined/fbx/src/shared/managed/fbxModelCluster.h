@@ -19,35 +19,36 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _FBXRIG_H_
-#define _FBXRIG_H_
+#ifndef _FBXMODELCLUSTER_H_
+#define _FBXMODELCLUSTER_H_
 
 
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
+class fbxModel;
 class fbxNode;
 class fbxScene;
-class fbxRigBone;
 
 class deBaseModule;
+class fbxRigBone;
 
 
 /**
- * \brief FBX managed rig.
+ * \brief FBX managed model cluster.
  */
-class fbxRig : public deObject{
+class fbxModelCluster : public deObject{
 private:
-	fbxScene &pScene;
-	fbxNode &pNodePose;
-	decObjectOrderedSet pBones;
-	decMatrix pMatrix;
-	decMatrix pMatrixInverse;
+	fbxModel &pModel;
+	fbxNode &pNodeCluster;
+	
+	decString pName;
+	fbxRigBone *pRigBone;
 	
 	
 	
@@ -55,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode &nodePose );
+	fbxModelCluster( fbxModel &model, fbxNode &nodeCluser );
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxRig();
+	virtual ~fbxModelCluster();
 	/*@}*/
 	
 	
@@ -67,35 +68,28 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Scene. */
-	inline fbxScene &GetScene() const{ return pScene; }
+	/** \brief Model. */
+	inline fbxModel &GetModel() const{ return pModel; }
 	
-	/** \brief Pose node. */
-	inline fbxNode &GetNodePose() const{ return pNodePose; }
+	/** \brief Cluster node. */
+	inline fbxNode &GetNodeCluster() const{ return pNodeCluster; }
 	
+	/** \brief Bone name. */
+	inline const decString &GetName() const{ return pName; }
 	
+	/** \brief Set bone name. */
+	void SetName( const char *name );
 	
-	/** \brief Count of bones. */
-	int GetBoneCount() const;
+	/** \brief Rig bone or NULL. */
+	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
 	
-	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
-	
-	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
-	
-	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	/** \brief Set rig bone or NULL. */
+	void SetRigBone( fbxRigBone *rigBone );
 	
 	
 	
-	/** \brief Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
-	
-	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
-	
-	
+	/** \brief Prepare. */
+	void Prepare();
 	
 	/** \brief Debug print node structure. */
 	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;

@@ -43,12 +43,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxRig::fbxRig( fbxScene &scene, fbxNode &nodePose, fbxNode *nodeDeformer ) :
+fbxRig::fbxRig( fbxScene &scene, fbxNode &nodePose ) :
 pScene( scene ),
 pNodePose( nodePose ),
-pNodeDeformer( nodeDeformer ),
-pWorldMatrix( nodePose.CalcTransformMatrix() * scene.GetTransformation() ),
-pWorldMatrixInverse( pWorldMatrix.QuickInvert() )
+pMatrix( nodePose.CalcTransformMatrix() * scene.GetTransformation() ),
+pMatrixInverse( pMatrix.QuickInvert() )
 {
 	const int childCount = nodePose.GetNodeCount();
 	deObjectReference refBone;

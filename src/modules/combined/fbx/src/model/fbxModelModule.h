@@ -30,6 +30,8 @@ class fbxScene;
 class fbxNode;
 class fbxProperty;
 class fbxRig;
+class fbxRigBone;
+class fbxModel;
 
 class deCacheHelper;
 class deModelLOD;
@@ -72,23 +74,22 @@ public:
 private:
 	void pLoadModel( deModel &model, fbxScene &scene );
 	
-	void pLoadModelBones( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer );
+	void pLoadModelBones( deModel &model, const fbxRig &rig );
 	
-	void pLoadModelBone( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer,
-		const decPointerList &bones );
+	void pLoadModelBone( deModel &model, const fbxRigBone &rigBone );
 	
-	void pLoadModelTextures( deModel &model, const fbxScene &scene, const fbxNode &nodeModel );
+	void pLoadModelTextures( deModel &model, const fbxModel &loadModel );
 	
-	void pLoadModelTexture( deModel &model, const fbxScene &scene, const fbxNode &nodeMaterial );
+	void pLoadModelTexture( deModel &model, const fbxNode &nodeMaterial );
 	
-	void pLoadModelLod( deModel &model, deModelLOD &lod, const fbxScene &scene,
-		const fbxNode &nodeGeometry, const decMatrix &transformation );
+	void pLoadModelLod( deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig );
 	
-	void pLoadModelVertices( deModel &model, deModelLOD &lod, const fbxScene &scene,
-		const fbxNode &nodeGeometry, const decMatrix &transformation );
+	void pLoadModelVertices( deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig );
 	
-	void pLoadModelFaces( deModel &model, deModelLOD &lod, const fbxScene &scene,
-		const fbxNode &nodeGeometry );
+	void pLoadModelFaces( deModel &model, deModelLOD &lod,
+		const fbxModel &loadModel, const fbxRig *loadRig );
 };
 
 #endif

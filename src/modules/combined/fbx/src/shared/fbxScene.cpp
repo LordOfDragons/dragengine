@@ -39,6 +39,14 @@
 
 
 
+// Definitions
+////////////////
+
+// FBX scale "1 unit = 1cm". but people seem to use it like "1 unit = 1m"... dilemma!
+// #define FBX_UNIT_SCALE 0.01f
+#define FBX_UNIT_SCALE 1.0f
+
+
 // Class fbxScene
 ///////////////////
 
@@ -51,9 +59,7 @@ pNode( new fbxNode ),
 pUpAxis( eaYPos ),
 pFrontAxis( eaZNeg ),
 pCoordAxis( eaXPos ),
-pUnitScaleFactor( 1.0f ),
-pScaleFactor( 100.0f )
-{
+pUnitScaleFactor( 1.0f ){
 }
 
 fbxScene::fbxScene( decBaseFileReader &reader ) :
@@ -62,8 +68,7 @@ pNode( new fbxNode ),
 pUpAxis( eaYPos ),
 pFrontAxis( eaZNeg ),
 pCoordAxis( eaXPos ),
-pUnitScaleFactor( 1.0f ),
-pScaleFactor( 100.0f )
+pUnitScaleFactor( 1.0f )
 {
 	// header
 	char signature[ 21 ]; // 0-terminator at index 20 included !
@@ -213,6 +218,17 @@ fbxScene::eRotationOrder fbxScene::ConvRotationOrder( int value ){
 	}
 }
 
+fbxScene::eWeightMode fbxScene::ConvWeightMode( const fbxNode &node ){
+	const decString &string = node.FirstNodeNamed( "Mode" )->GetPropertyAt( 0 )->CastString().GetValue();
+	
+	if( string == "Total1" ){
+		return ewmTotal1;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, decString( "unsupported Mode: " ) + string );
+	}
+}
+
 decMatrix fbxScene::CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder ){
 	// according to FBX SDK doc: right handed system
 	const decVector rot( -rotation.x, -rotation.y, -rotation.z );
@@ -276,7 +292,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 		pFrontAxis = pGetAxis( frontAxis, frontAxisSign );
 		pCoordAxis = pGetAxis( coordAxis, coordAxisSign );
 		pUnitScaleFactor = settings->GetPropertyFloat( "UnitScaleFactor", 1.0f );
-		//printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
+		printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
 		
 		switch( upAxis ){
 		case 0:
@@ -321,9 +337,8 @@ void fbxScene::Prepare( deBaseModule &module ){
 		}
 	}
 	
-	// FBX unit = 1cm according to docs. but it looks like majority of people use 1 unit = 1m.
-	const float fbxUnitScale = pUnitScaleFactor * 1.0f; // 0.01f;
-	pTransformation *= decMatrix::CreateScale( fbxUnitScale, fbxUnitScale, fbxUnitScale );
+	const float scale = pUnitScaleFactor * FBX_UNIT_SCALE;
+	pTransformation *= decMatrix::CreateScale( scale, scale, scale );
 	
 	pNodeObjects = pNode->FirstNodeNamed( "Objects" );
 	

@@ -113,7 +113,7 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 	fbxNode &nodePose = *scene.FirstNodeNamed( "Pose" );
 	deObjectReference refLoadRig;
-	refLoadRig.TakeOver( new fbxRig( scene, nodePose, NULL ) );
+	refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
 	
 	const fbxRig &loadRig = ( ( fbxRig& )( deObject& )refLoadRig );
 	
@@ -126,8 +126,8 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 			const fbxRigBone &loadBone = *loadRig.GetBoneAt( i );
 			rigBone = new deRigBone( loadBone.GetName() );
 			
-			rigBone->SetPosition( loadBone.GetRigMatrix().GetPosition() );
-			rigBone->SetRotation( loadBone.GetRigMatrix().GetEulerAngles() );
+			rigBone->SetPosition( loadBone.GetMatrix().GetPosition() );
+			rigBone->SetRotation( loadBone.GetMatrix().GetEulerAngles() );
 			if( loadBone.GetParent() ){
 				rigBone->SetParent( loadBone.GetParent()->GetIndex() );
 			}

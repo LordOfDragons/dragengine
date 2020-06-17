@@ -50,9 +50,8 @@ pNodeModelID( nodeModel.GetPropertyAt( 0 )->GetValueAsLong() ),
 pIndex( 0 ),
 pName( nodeModel.GetPropertyAt( 1 )->CastString().GetValue() ),
 pParent( NULL ),
-pWorldMatrix( nodeModel.CalcTransformMatrix() * rig.GetScene().GetTransformation() ),
-pWorldMatrixInverse( pWorldMatrix.QuickInvert() ),
-pRigMatrix( pWorldMatrix ){
+pMatrix( nodeModel.CalcTransformMatrix() * rig.GetScene().GetTransformation() ),
+pMatrixInverse( pMatrix.QuickInvert() ){
 }
 
 fbxRigBone::~fbxRigBone(){
@@ -97,8 +96,8 @@ void fbxRigBone::Prepare(){
 
 
 void fbxRigBone::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	const decVector pos( pRigMatrix.GetPosition() );
-	const decVector rot( pRigMatrix.GetEulerAngles() * RAD2DEG );
+	const decVector pos( pMatrix.GetPosition() );
+	const decVector rot( pMatrix.GetEulerAngles() * RAD2DEG );
 	module.LogInfoFormat( "%sBone %d '%s': pos=(%g,%g,%g) rot=(%g,%g,%g) parent=(%s)",
 		prefix.GetString(), pIndex, pName.GetString(), pos.x, pos.y, pos.z, rot.x, rot.y, rot.z,
 		pParent ? pParent->GetName().GetString() : "<null>" );

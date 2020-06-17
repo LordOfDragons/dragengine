@@ -31,6 +31,8 @@
 #include "../shared/fbxScene.h"
 #include "../shared/managed/fbxRig.h"
 #include "../shared/managed/fbxRigBone.h"
+#include "../shared/managed/fbxModel.h"
+#include "../shared/managed/fbxModelCluster.h"
 #include "../shared/property/fbxPropertyArrayDouble.h"
 #include "../shared/property/fbxPropertyArrayFloat.h"
 #include "../shared/property/fbxPropertyString.h"
@@ -92,7 +94,6 @@ pCacheTCSorter( NULL )
 	//
 	// TODO
 	// 
-	// - load model bones
 	// - load vertex weights
 	// - face normal and tangent indices. right now the same indices as for vertices are used.
 	//   fbx stored layer normals and layer tangents. in IndexToDirect mode the index can be
@@ -128,7 +129,7 @@ void fbxModelModule::LoadModel( decBaseFileReader &reader, deModel &model ){
 	}
 }
 
-void fbxModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
+void fbxModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model ){
 	// nothing yet
 }
 
@@ -138,59 +139,31 @@ void fbxModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
 //////////////////////
 
 void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
-	const fbxNode &nodeGeometry = *scene.FirstNodeNamed( "Geometry" );
-	
-	// find connections involving geometry node
-	const int64_t idGeometry = nodeGeometry.GetPropertyAt( 0 )->GetValueAsLong();
-	decPointerList consGeometry;
-	scene.FindConnections( idGeometry, consGeometry );
-	
-	// examine connections involving geometry node
-	const int conGeomCount = consGeometry.GetCount();
-	const fbxNode *nodeModel = NULL;
-	fbxNode *nodeDeformer = NULL;
-	int i;
-	
-	for( i=0; i<conGeomCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )consGeometry.GetAt( i ) );
-		fbxNode * const node = scene.NodeWithID( connection.OtherID( idGeometry ) );
-		
-		if( node->GetName() == "Model" ){
-			if( ! nodeModel && connection.GetSource() == idGeometry
-			&& node->GetPropertyAt( 2 )->CastString().GetValue() == "Mesh" ){
-				nodeModel = node;
-			}
-			
-		}else if( node->GetName() == "Deformer" ){
-			if( ! nodeDeformer && connection.GetTarget() == idGeometry
-			&& node->GetPropertyAt( 2 )->CastString().GetValue() == "Skin" ){
-				nodeDeformer = node;
-			}
-		}
-	}
-	
-	if( ! nodeModel ){
-		DETHROW_INFO( deeInvalidParam, "missing  connected 'Model'('Mesh') node" );
-	}
-	
-	// create managed rig if pose is present
+	fbxNode &nodeGeometry = *scene.FirstNodeNamed( "Geometry" );
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
-	deObjectReference rig;
+	
+	deObjectReference refLoadModel;
+	refLoadModel.TakeOver( new fbxModel( scene, nodeGeometry ) );
+	fbxModel &loadModel = ( fbxModel& )( deObject& )refLoadModel;
+	
+	deObjectReference refLoadRig;
+	fbxRig *loadRig = NULL;
 	if( nodePose ){
-		rig.TakeOver( new fbxRig( scene, *nodePose, nodeDeformer ) );
-		( ( fbxRig& )( deObject& )rig ).DebugPrintStructure( *this, "", true );
+		refLoadRig.TakeOver( new fbxRig( scene, *nodePose ) );
+		loadRig = ( fbxRig* )( deObject* )refLoadRig;
+		loadModel.MatchClusters( *loadRig );
+		loadModel.BuildWeights();
 	}
 	
-	// calculate transformation matrix
-	const decMatrix transformation( nodeModel->CalcTransformMatrix() * scene.GetTransformation() );
+	loadModel.DebugPrintStructure( *this, "LoadModel ", true );
 	
 	// load textures
-	pLoadModelTextures( model, scene, *nodeModel );
+	pLoadModelTextures( model, loadModel );
 	model.GetTextureCoordinatesSetList().Add( "default" );
 	
 	// load bones
-	if( nodeDeformer ){
-		pLoadModelBones( model, scene, *nodeDeformer );
+	if( loadRig ){
+		pLoadModelBones( model, *loadRig );
 	}
 	
 	// create and add lod
@@ -198,7 +171,7 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	
 	try{
 		modelLod = new deModelLOD;
-		pLoadModelLod( model, *modelLod, scene, nodeGeometry, transformation );
+		pLoadModelLod( model, *modelLod, loadModel, loadRig );
 		model.AddLOD( modelLod );
 		
 	}catch( const deException & ){
@@ -209,55 +182,28 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	}
 }
 
-void fbxModelModule::pLoadModelBones( deModel &model, const fbxScene &scene, const fbxNode &nodeDeformer ){
-	// find connections involving deformer node
-	const int64_t idDeformer = nodeDeformer.GetPropertyAt( 0 )->GetValueAsLong();
-	decPointerList cons;
-	scene.FindConnections( idDeformer, cons );
-	
-	// collect bone nodes connected to deformer node
-	const int conCount = cons.GetCount();
-	decPointerList bones;
+void fbxModelModule::pLoadModelBones( deModel &model, const fbxRig &rig ){
+	const int boneCount = rig.GetBoneCount();
 	int i;
 	
-	for( i=0; i<conCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )cons.GetAt( i ) );
-		if( connection.GetTarget() != idDeformer ){
-			continue;
-		}
-		
-		fbxNode &node = *scene.NodeWithID( connection.OtherID( idDeformer ) );
-		if( node.GetName() == "Deformer" && node.GetPropertyAt( 2 )->CastString().GetValue() == "Cluster" ){
-			bones.Add( &node );
-		}
-	}
-	
-	// add bones
-	const int boneCount = bones.GetCount();
 	for( i=0; i<boneCount; i++ ){
-		const fbxNode &node = *( ( fbxNode* )bones.GetAt( i ) );
-		pLoadModelBone( model, scene, node, bones );
+		pLoadModelBone( model, *rig.GetBoneAt( i ) );
 	}
 }
 
-void fbxModelModule::pLoadModelBone( deModel &model, const fbxScene &scene,
-const fbxNode &nodeDeformer, const decPointerList &bones ){
-	const decString &name = nodeDeformer.GetPropertyAt( 1 )->CastString().GetValue();
-	const decMatrix matrix( nodeDeformer.FirstNodeNamed( "TransformLink" )->GetPropertyAt( 0 )->GetValueAtAsMatrix( 0 ) );
+void fbxModelModule::pLoadModelBone( deModel &model, const fbxRigBone &rigBone ){
+	const decString &name = rigBone.GetName();
+	const decMatrix &matrix = rigBone.GetMatrix();
 	const decVector position( matrix.GetPosition() );
-	const decVector rotation( matrix.GetEulerAngles() * RAD2DEG );
-	
-	printf( "loadBone name='%s' pos=(%g,%g,%g) rot=(%g,%g,%g)\n", name.GetString(),
-		position.x, position.y, position.z, rotation.x, rotation.y, rotation.z );
-	
-	// 'Indexes': int[] => index of vertices to affect
-	// 'Weights': double[] => weight of influence on vertices referenced by Indexes
 	
 	deModelBone *bone = NULL;
 	try{
 		bone = new deModelBone( name );
 		bone->SetPosition( position );
 		bone->SetOrientation( matrix.ToQuaternion() );
+		if( rigBone.GetParent() ){
+			bone->SetParent( rigBone.GetParent()->GetIndex() );
+		}
 		model.AddBone( bone );
 		
 	}catch( const deException & ){
@@ -268,11 +214,11 @@ const fbxNode &nodeDeformer, const decPointerList &bones ){
 	}
 }
 
-void fbxModelModule::pLoadModelTextures( deModel &model, const fbxScene &scene, const fbxNode &nodeModel ){
+void fbxModelModule::pLoadModelTextures( deModel &model, const fbxModel &loadModel ){
 	// find connections involving model node
-	const int64_t idModel = nodeModel.GetPropertyAt( 0 )->GetValueAsLong();
+	const int64_t idModel = loadModel.GetModelID();
 	decPointerList cons;
-	scene.FindConnections( idModel, cons );
+	loadModel.GetScene().FindConnections( idModel, cons );
 	
 	// add material nodes connected to model node
 	const int conCount = cons.GetCount();
@@ -284,14 +230,14 @@ void fbxModelModule::pLoadModelTextures( deModel &model, const fbxScene &scene, 
 			continue;
 		}
 		
-		const fbxNode &node = *scene.NodeWithID( connection.OtherID( idModel ) );
+		const fbxNode &node = *loadModel.GetScene().NodeWithID( connection.OtherID( idModel ) );
 		if( node.GetName() == "Material" ){
-			pLoadModelTexture( model, scene, node );
+			pLoadModelTexture( model, node );
 		}
 	}
 }
 
-void fbxModelModule::pLoadModelTexture( deModel &model, const fbxScene &scene, const fbxNode &nodeMaterial ){
+void fbxModelModule::pLoadModelTexture( deModel &model, const fbxNode &nodeMaterial ){
 	const decString &name = nodeMaterial.GetPropertyAt( 1 )->CastString().GetValue();
 	const int width = 1024;
 	const int height = 1024;
@@ -311,36 +257,33 @@ void fbxModelModule::pLoadModelTexture( deModel &model, const fbxScene &scene, c
 }
 
 void fbxModelModule::pLoadModelLod( deModel &model, deModelLOD &lod,
-const fbxScene &scene, const fbxNode &nodeGeometry, const decMatrix &transformation ){
-	pLoadModelVertices( model, lod, scene, nodeGeometry, transformation );
-	pLoadModelFaces( model, lod, scene, nodeGeometry );
+const fbxModel &loadModel, const fbxRig *loadRig ){
+	pLoadModelVertices( model, lod, loadModel, loadRig );
+	pLoadModelFaces( model, lod, loadModel, loadRig );
 }
 
 void fbxModelModule::pLoadModelVertices( deModel &model, deModelLOD &lod,
-const fbxScene &scene, const fbxNode &nodeGeometry, const decMatrix &transformation ){
-	const fbxProperty &propVertices = *nodeGeometry.FirstNodeNamed( "Vertices" )->GetPropertyAt( 0 );
+const fbxModel &loadModel, const fbxRig *loadRig ){
+	const int count = loadModel.GetVertexCount();
 	
-	const float scale = 1.0f; //scene.GetScaleFactor() * scene.GetUnitScaleFactor();
-	const int count = propVertices.GetValueCount() / 3;
 	lod.SetVertexCount( count );
 	lod.SetNormalCount( count );
 	lod.SetTangentCount( count );
 	
-	deModelVertex * const vertices = lod.GetVertices();
-	int i, j;
+	deModelVertex * const vertices = lod.GetVertices(); // only valid after SetVertexCount()
+	int i;
 	
-	for( i=0, j=0; i<count; i++, j+=3 ){
-		vertices[ i ].SetPosition( transformation * decVector(
-			propVertices.GetValueAtAsFloat( j ),
-			propVertices.GetValueAtAsFloat( j + 1 ),
-			propVertices.GetValueAtAsFloat( j + 2 ) ) * scale );
+	for( i=0; i<count; i++ ){
+		vertices[ i ].SetWeightSet( loadModel.GetVertexWeightSetAt( i ) );
+		vertices[ i ].SetPosition( loadModel.GetVertexPositionAt( i ) );
 	}
 }
 
-void fbxModelModule::pLoadModelFaces( deModel &model, deModelLOD &lod, const fbxScene &scene,
-const fbxNode &nodeGeometry ){
-	const fbxProperty &propPolygonVertexIndex = *nodeGeometry.FirstNodeNamed( "PolygonVertexIndex" )
-		->GetPropertyAt( 0 );
+void fbxModelModule::pLoadModelFaces( deModel &model, deModelLOD &lod,
+const fbxModel &loadModel, const fbxRig *loadRig ){
+	const fbxNode &nodeGeometry = loadModel.GetNodeGeometry();
+	const fbxProperty &propPolygonVertexIndex =
+		*nodeGeometry.FirstNodeNamed( "PolygonVertexIndex" )->GetPropertyAt( 0 );
 	
 	const fbxNode * const nodeLayerMaterials = nodeGeometry.FirstNodeNamedOrNull( "LayerElementMaterial" );
 	const fbxProperty * const propMaterials = nodeLayerMaterials ?

@@ -51,9 +51,8 @@ private:
 	int pIndex;
 	decString pName;
 	fbxRigBone *pParent;
-	decMatrix pWorldMatrix;
-	decMatrix pWorldMatrixInverse;
-	decMatrix pRigMatrix;
+	decMatrix pMatrix;
+	decMatrix pMatrixInverse;
 	
 	
 	
@@ -97,14 +96,11 @@ public:
 	/** \brief Parent or NULL. */
 	inline fbxRigBone *GetParent() const{ return pParent; }
 	
-	/** \brief World matrix. */
-	inline const decMatrix &GetWorldMatrix() const{ return pWorldMatrix; }
+	/** \brief Matrix. */
+	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Inverse world matrix. */
-	inline const decMatrix &GetWorldMatrixInverse() const{ return pWorldMatrixInverse; }
-	
-	/** \brief Rig matrix. */
-	inline const decMatrix &GetRigMatrix() const{ return pRigMatrix; }
+	/** \brief Inverse matrix. */
+	inline const decMatrix &GetMatrixInverse() const{ return pMatrixInverse; }
 	
 	
 	

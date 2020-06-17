@@ -74,6 +74,11 @@ public:
 		eroSphericXYZ
 	};
 	
+	/** \brief Weight mode. */
+	enum eWeightMode{
+		ewmTotal1
+	};
+	
 	
 	
 private:
@@ -85,7 +90,6 @@ private:
 	eAxis pFrontAxis;
 	eAxis pCoordAxis;
 	float pUnitScaleFactor;
-	float pScaleFactor;
 	
 	fbxNode *pNodeObjects;
 	fbxNode *pNodeConnections;
@@ -123,12 +127,6 @@ public:
 	/** \brief Root node. */
 	inline fbxNode *GetNode() const{ return pNode; }
 	
-	/** \brief Scale factor. */
-	inline float GetScaleFactor() const{ return pScaleFactor; }
-	
-	/** \brief Unit scale factor. */
-	inline float GetUnitScaleFactor() const{ return pUnitScaleFactor; }
-	
 	/** \brief Scene transformation. */
 	inline const decMatrix &GetTransformation() const{ return pTransformation; }
 	
@@ -164,6 +162,9 @@ public:
 	
 	/** \brief Convert rotation order. */
 	static eRotationOrder ConvRotationOrder( int value );
+	
+	/** \brief Convert weight mode. */
+	static eWeightMode ConvWeightMode( const fbxNode &node );
 	
 	/** \brief Create rotation matrix. */
 	static decMatrix CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder );
