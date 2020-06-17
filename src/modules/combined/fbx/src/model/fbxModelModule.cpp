@@ -150,7 +150,7 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	if( nodePose ){
 		refLoadRig.TakeOver( new fbxRig( scene, *nodePose ) );
 		loadRig = ( fbxRig* )( deObject* )refLoadRig;
-		loadRig->DebugPrintStructure( *this, "LoadModel ", true );
+		//loadRig->DebugPrintStructure( *this, "LoadModel ", true );
 		loadModel.MatchClusters( *loadRig );
 		loadModel.BuildWeights();
 	}

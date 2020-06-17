@@ -63,6 +63,10 @@ private:
 	decObjectOrderedSet pClusters;
 	decMatrix pMatrix;
 	
+	deModelWeight *pVertexWeights;
+	int pVertexWeightCount;
+	int pVertexWeightSize;
+	
 	deModelWeight *pWeights;
 	int pWeightCount;
 	int pWeightSize;
@@ -165,6 +169,7 @@ public:
 	
 	
 private:
+	int pAddVertexWeight( int bone, float weight );
 	int pAddWeight( int bone, float weight );
 	int pAddWeightSet( const decIntList &weights );
 };
