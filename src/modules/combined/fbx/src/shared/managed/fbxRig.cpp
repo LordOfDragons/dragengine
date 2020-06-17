@@ -47,7 +47,8 @@ fbxRig::fbxRig( fbxScene &scene, fbxNode &nodePose ) :
 pScene( scene ),
 pNodePose( nodePose ),
 pMatrix( nodePose.CalcTransformMatrix() * scene.GetTransformation() ),
-pMatrixInverse( pMatrix.QuickInvert() )
+pMatrixInverse( pMatrix.QuickInvert() ),
+pBoneMatrix( decMatrix::CreateScale( pMatrix.GetScale() ) )
 {
 	const int childCount = nodePose.GetNodeCount();
 	deObjectReference refBone;

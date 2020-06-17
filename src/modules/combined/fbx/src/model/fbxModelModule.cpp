@@ -94,7 +94,6 @@ pCacheTCSorter( NULL )
 	//
 	// TODO
 	// 
-	// - load vertex weights
 	// - face normal and tangent indices. right now the same indices as for vertices are used.
 	//   fbx stored layer normals and layer tangents. in IndexToDirect mode the index can be
 	//   directly stored for normals and tangents. in Direct mode we have to figure out the
@@ -151,11 +150,12 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	if( nodePose ){
 		refLoadRig.TakeOver( new fbxRig( scene, *nodePose ) );
 		loadRig = ( fbxRig* )( deObject* )refLoadRig;
+		loadRig->DebugPrintStructure( *this, "LoadModel ", true );
 		loadModel.MatchClusters( *loadRig );
 		loadModel.BuildWeights();
 	}
 	
-	loadModel.DebugPrintStructure( *this, "LoadModel ", true );
+	//loadModel.DebugPrintStructure( *this, "LoadModel ", true );
 	
 	// load textures
 	pLoadModelTextures( model, loadModel );
@@ -264,6 +264,38 @@ const fbxModel &loadModel, const fbxRig *loadRig ){
 
 void fbxModelModule::pLoadModelVertices( deModel &model, deModelLOD &lod,
 const fbxModel &loadModel, const fbxRig *loadRig ){
+	// weight sets
+	const decIntList &wsWeights = loadModel.GetWeightSetWeights();
+	const decIntList &wsFirstWeight = loadModel.GetWeightSetsFirstWeight();
+	const decIntList &wgSetCount = loadModel.GetWeightGroupsSetCount();
+	const int wgCount = wgSetCount.GetCount();
+	int wsNextWeight = 0;
+	int wsSetIndex = 0;
+	int i, j, k;
+	
+	lod.SetWeightCount( wsWeights.GetCount() );
+	deModelWeight * const weights = lod.GetWeights();
+	
+	lod.SetWeightGroupCount( wgCount );
+	
+	for( i=0; i<wgCount; i++ ){
+		const int setCount = wgSetCount.GetAt( i );
+		const int wgWeightCount = i + 1;
+		
+		lod.SetWeightGroupAt( i, setCount );
+		
+		for( j=0; j<setCount; j++ ){
+			const int firstWeight = wsFirstWeight.GetAt( wsSetIndex++ );
+			for( k=0; k<wgWeightCount; k++ ){
+				const deModelWeight &inWeight = loadModel.GetWeightAt( wsWeights.GetAt( firstWeight + k ) );
+				deModelWeight &outWeight = weights[ wsNextWeight++ ];
+				outWeight.SetBone( inWeight.GetBone() );
+				outWeight.SetWeight( inWeight.GetWeight() );
+			}
+		}
+	}
+	
+	// vertices
 	const int count = loadModel.GetVertexCount();
 	
 	lod.SetVertexCount( count );
@@ -271,7 +303,6 @@ const fbxModel &loadModel, const fbxRig *loadRig ){
 	lod.SetTangentCount( count );
 	
 	deModelVertex * const vertices = lod.GetVertices(); // only valid after SetVertexCount()
-	int i;
 	
 	for( i=0; i<count; i++ ){
 		vertices[ i ].SetWeightSet( loadModel.GetVertexWeightSetAt( i ) );

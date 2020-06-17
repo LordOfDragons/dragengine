@@ -53,7 +53,6 @@ private:
 	};
 	
 	
-	
 	fbxScene &pScene;
 	fbxNode &pNodeGeomtry;
 	fbxNode *pNodeModel;
@@ -67,6 +66,12 @@ private:
 	deModelWeight *pWeights;
 	int pWeightCount;
 	int pWeightSize;
+	
+	decIntList pWeightSetWeights;
+	decIntList pWeightSetsFirstWeight;
+	decIntList pWeightSetsWeightsCount;
+	decIntList pWeightGroupsSetCount;
+	
 	float pWeightMatchThreshold;
 	
 	sVertex *pVertices;
@@ -137,6 +142,15 @@ public:
 	/** \brief Vertex weight set. */
 	inline int GetVertexWeightSetAt( int index ) const{ return pVertices[ index ].weightSet; }
 	
+	/** \brief Get weight. */
+	const deModelWeight &GetWeightAt( int index ) const;
+	
+	/** \brief Weight sets. */
+	inline const decIntList &GetWeightSetWeights() const{ return pWeightSetWeights; }
+	inline const decIntList &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
+	inline const decIntList &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
+	inline const decIntList &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
+	
 	
 	
 	/** \brief Matrix. */
@@ -152,6 +166,7 @@ public:
 	
 private:
 	int pAddWeight( int bone, float weight );
+	int pAddWeightSet( const decIntList &weights );
 };
 
 #endif

@@ -48,10 +48,11 @@ pNodeCluster( nodeCluster ),
 pName( nodeCluster.GetPropertyAt( 1 )->CastString().GetValue() ),
 pRigBone( NULL )
 {
-	if( pName.GetRight( 7 ) != "Cluster" ){
-		DETHROW_INFO( deeInvalidParam, "cluster name does not end with 'Cluster'" );
+	// no idea where this is coming from but some test FBX files seem to append "Cluster"
+	// to the end of the bone name. without removing it matching does not work
+	if( pName.GetRight( 7 ) == "Cluster" ){
+		pName = pName.GetMiddle( 0, -7 );
 	}
-	pName = pName.GetMiddle( 0, -7 );
 }
 
 fbxModelCluster::~fbxModelCluster(){

@@ -126,8 +126,8 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 			const fbxRigBone &loadBone = *loadRig.GetBoneAt( i );
 			rigBone = new deRigBone( loadBone.GetName() );
 			
-			rigBone->SetPosition( loadBone.GetMatrix().GetPosition() );
-			rigBone->SetRotation( loadBone.GetMatrix().GetEulerAngles() );
+			rigBone->SetPosition( loadBone.GetPosition() );
+			rigBone->SetRotation( loadBone.GetOrientation().GetEulerAngles() );
 			if( loadBone.GetParent() ){
 				rigBone->SetParent( loadBone.GetParent()->GetIndex() );
 			}

@@ -43,8 +43,8 @@
 ////////////////
 
 // FBX scale "1 unit = 1cm". but people seem to use it like "1 unit = 1m"... dilemma!
-// #define FBX_UNIT_SCALE 0.01f
-#define FBX_UNIT_SCALE 1.0f
+#define FBX_UNIT_SCALE 0.01f
+// #define FBX_UNIT_SCALE 1.0f
 
 
 // Class fbxScene

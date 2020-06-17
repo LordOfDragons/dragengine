@@ -97,7 +97,11 @@ pVertexCount( 0 )
 		DETHROW_INFO( deeInvalidParam, "model not found" );
 	}
 	
-	pMatrix = pNodeModel->CalcTransformMatrix() * scene.GetTransformation();
+	pMatrix = pNodeModel->CalcTransformMatrix();
+	if( pNodeDeformer ){
+		pMatrix *= pNodeDeformer->CalcTransformMatrix();
+	}
+	pMatrix *= scene.GetTransformation();
 	
 	if( pNodeDeformer ){
 		deObjectReference refCluster;
@@ -201,8 +205,14 @@ void fbxModel::BuildWeights(){
 		
 		//const fbxScene::eWeightMode weightMode = fbxScene::ConvWeightMode( cluster.GetNodeCluster() );
 		
-		const fbxProperty &propIndex = *cluster.GetNodeCluster().FirstNodeNamed( "Indexes" )->GetPropertyAt( 0 );
-		const fbxProperty &propWeight = *cluster.GetNodeCluster().FirstNodeNamed( "Weights" )->GetPropertyAt( 0 );
+		const fbxNode * const nodeIndex = cluster.GetNodeCluster().FirstNodeNamedOrNull( "Indexes" );
+		const fbxNode * const nodeWeight = cluster.GetNodeCluster().FirstNodeNamedOrNull( "Weights" );
+		if( ! nodeIndex || ! nodeWeight ){
+			continue; // rig affects nobody
+		}
+		
+		const fbxProperty &propIndex = *nodeIndex->GetPropertyAt( 0 );
+		const fbxProperty &propWeight = *nodeWeight->GetPropertyAt( 0 );
 		const int entryCount = propIndex.GetValueCount();
 		const int bone = cluster.GetRigBone()->GetIndex();
 		
@@ -212,6 +222,31 @@ void fbxModel::BuildWeights(){
 			pVertices[ index ].weights.Add( pAddWeight( bone, weight ) );
 		}
 	}
+	
+	int maxWGWeightCount = 0;
+	for( i=0; i<pVertexCount; i++ ){
+		maxWGWeightCount = decMath::max( maxWGWeightCount, pVertices[ i ].weights.GetCount() );
+	}
+	
+	for( i=0; i<maxWGWeightCount; i++ ){
+		const int firstWeightSet = pWeightSetsFirstWeight.GetCount();
+		const int wgWeightCount = i + 1;
+		
+		for( j=0; j<pVertexCount; j++ ){
+			if( wgWeightCount == pVertices[ j ].weights.GetCount() ){
+				pVertices[ j ].weightSet = pAddWeightSet( pVertices[ j ].weights );
+			}
+		}
+		
+		pWeightGroupsSetCount.Add( pWeightSetsFirstWeight.GetCount() - firstWeightSet );
+	}
+}
+
+const deModelWeight &fbxModel::GetWeightAt( int index ) const{
+	if( index < 0 || index >= pWeightCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pWeights[ index ];
 }
 
 
@@ -234,6 +269,16 @@ void fbxModel::DebugPrintStructure( deBaseModule &module, const decString &prefi
 //////////////////////
 
 int fbxModel::pAddWeight( int bone, float weight ){
+	// find matching weight
+	int i;
+	for( i=0; i<pWeightCount; i++ ){
+		if( pWeights[ i ].GetBone() == bone
+		&& fabsf( pWeights[ i ].GetWeight() - weight ) <= pWeightMatchThreshold ){
+			return i;
+		}
+	}
+	
+	// add weight
 	if( pWeightCount == pWeightSize ){
 		const int newSize = pWeightSize * 3 / 2 + 1;
 		deModelWeight * const newArray = new deModelWeight[ newSize ];
@@ -249,4 +294,37 @@ int fbxModel::pAddWeight( int bone, float weight ){
 	pWeights[ index ].SetBone( bone );
 	pWeights[ index ].SetWeight( weight );
 	return index;
+}
+
+int fbxModel::pAddWeightSet( const decIntList &weights ){
+	// find matching weight set
+	const int count = pWeightSetsFirstWeight.GetCount();
+	const int weightCount = weights.GetCount();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		if( weightCount != pWeightSetsWeightsCount.GetAt( i ) ){
+			continue;
+		}
+		
+		const int setFirstWeight = pWeightSetsFirstWeight.GetAt( i );
+		for( j=0; j<weightCount; j++ ){
+			if( ! weights.Has( pWeightSetWeights.GetAt( setFirstWeight + j ) ) ){
+				break;
+			}
+		}
+		
+		if( j == weightCount ){
+			return i;
+		}
+	}
+	
+	// add weight set
+	const int firstWeight = pWeightSetWeights.GetCount();
+	for( i=0; i<weightCount; i++ ){
+		pWeightSetWeights.Add( weights.GetAt( i ) );
+	}
+	pWeightSetsFirstWeight.Add( firstWeight );
+	pWeightSetsWeightsCount.Add( weightCount );
+	return count;
 }

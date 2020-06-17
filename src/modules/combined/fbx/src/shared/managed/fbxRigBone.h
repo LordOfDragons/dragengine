@@ -46,6 +46,7 @@ private:
 	fbxRig &pRig;
 	fbxNode &pNodePoseBone;
 	fbxNode &pNodeModel;
+	fbxNode *pNodeArmature;
 	int64_t pNodeModelID;
 	
 	int pIndex;
@@ -53,6 +54,10 @@ private:
 	fbxRigBone *pParent;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
+	decMatrix pBoneMatrix;
+	decVector pPosition;
+	decQuaternion pOrientation;
+	bool pDirty;
 	
 	
 	
@@ -101,6 +106,15 @@ public:
 	
 	/** \brief Inverse matrix. */
 	inline const decMatrix &GetMatrixInverse() const{ return pMatrixInverse; }
+	
+	/** \brief Bone matrix. */
+	inline const decMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
+	
+	/** \brief Position. */
+	inline const decVector &GetPosition() const{ return pPosition; }
+	
+	/** \brief Orientation. */
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	
 	

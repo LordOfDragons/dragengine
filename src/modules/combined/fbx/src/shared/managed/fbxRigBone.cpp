@@ -46,12 +46,12 @@ fbxRigBone::fbxRigBone( fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel )
 pRig( rig ),
 pNodePoseBone( nodePoseBone ),
 pNodeModel( nodeModel ),
+pNodeArmature( NULL ),
 pNodeModelID( nodeModel.GetPropertyAt( 0 )->GetValueAsLong() ),
 pIndex( 0 ),
 pName( nodeModel.GetPropertyAt( 1 )->CastString().GetValue() ),
 pParent( NULL ),
-pMatrix( nodeModel.CalcTransformMatrix() * rig.GetScene().GetTransformation() ),
-pMatrixInverse( pMatrix.QuickInvert() ){
+pDirty( true ){
 }
 
 fbxRigBone::~fbxRigBone(){
@@ -73,6 +73,10 @@ void fbxRigBone::SetName( const char *name ){
 
 
 void fbxRigBone::Prepare(){
+	if( ! pDirty ){
+		return;
+	}
+	
 	decPointerList connections;
 	pRig.GetScene().FindConnections( pNodeModelID, connections );
 	const int conCount = connections.GetCount();
@@ -84,21 +88,53 @@ void fbxRigBone::Prepare(){
 			continue;
 		}
 		
-		pParent = pRig.GetBoneWithModelID( connection.GetTarget() );
-		if( ! pParent ){
-			DETHROW( deeInvalidParam );
+		fbxRigBone * const bone = pRig.GetBoneWithModelID( connection.GetTarget() );
+		if( bone ){
+			pParent = bone;
+			break;
 		}
 		
+		// not a PoseBone which means it has to be the armature node
+		pNodeArmature = pRig.GetScene().NodeWithID( connection.GetTarget() );
 		break;
 	}
+	
+	const decMatrix modelMatrix( pNodeModel.CalcTransformMatrix() );
+	
+	if( pParent ){
+		pParent->Prepare();
+		pMatrix = modelMatrix * pParent->GetBoneMatrix();
+		pBoneMatrix = decMatrix::CreateScale( modelMatrix.GetScale() ) * pParent->GetBoneMatrix();
+		
+	}else if( pNodeArmature ){
+		pMatrix = modelMatrix * pNodeArmature->CalcTransformMatrix() * pRig.GetScene().GetTransformation();
+		pBoneMatrix.SetScale( pMatrix.GetScale() );
+		
+	}else{
+		pMatrix = modelMatrix * pRig.GetScene().GetTransformation();
+		pBoneMatrix.SetScale( pMatrix.GetScale() );
+	}
+	
+	pMatrixInverse = pMatrix.QuickInvert();
+	pPosition = pMatrix.GetPosition();
+	
+	decVector scale( pMatrix.GetScale() );
+	if( fabsf( scale.x ) > 0.001f && fabsf( scale.y ) > 0.001f && fabsf( scale.z ) > 0.001f ){
+		scale.x = 1.0f / scale.x;
+		scale.y = 1.0f / scale.y;
+		scale.z = 1.0f / scale.z;
+		pOrientation = ( pMatrix * decMatrix::CreateScale( scale ) ).ToQuaternion();
+	}
+	
+	pDirty = false;
 }
 
 
 
 void fbxRigBone::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	const decVector pos( pMatrix.GetPosition() );
-	const decVector rot( pMatrix.GetEulerAngles() * RAD2DEG );
-	module.LogInfoFormat( "%sBone %d '%s': pos=(%g,%g,%g) rot=(%g,%g,%g) parent=(%s)",
-		prefix.GetString(), pIndex, pName.GetString(), pos.x, pos.y, pos.z, rot.x, rot.y, rot.z,
-		pParent ? pParent->GetName().GetString() : "<null>" );
+	const decVector rotation( pOrientation.GetEulerAngles() * RAD2DEG );
+	module.LogInfoFormat( "%sBone %d '%s': pos=(%g,%g,%g) rot=(%g,%g,%g) parent=(%s) scale=(%g,%g)",
+		prefix.GetString(), pIndex, pName.GetString(), pPosition.x, pPosition.y, pPosition.z,
+		rotation.x, rotation.y, rotation.z, pParent ? pParent->GetName().GetString() : "<null>",
+		pMatrix.GetScale().x, pBoneMatrix.GetScale().x );
 }
