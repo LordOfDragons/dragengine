@@ -60,8 +60,7 @@ pBoneMatrix( decMatrix::CreateScale( pMatrix.GetScale() ) )
 			continue;
 		}
 		
-		fbxNode &nodeModel = *scene.NodeWithID( nodePoseBone.FirstNodeNamed( "Node" )
-			->GetPropertyAt( 0 )->GetValueAsLong() );
+		fbxNode &nodeModel = *scene.NodeWithID( nodePoseBone.FirstNodeNamed( "Node" )->GetID() );
 		if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() != "LimbNode" ){
 			continue;
 		}

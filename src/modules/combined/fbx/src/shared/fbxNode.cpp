@@ -53,19 +53,24 @@
 ////////////////////////////
 
 fbxNode::fbxNode() :
-pNodeProperties70( NULL ){
+pNodeProperties70( NULL ),
+pID( 0 ){
 }
 
 fbxNode::fbxNode( decBaseFileReader &reader ) :
-pNodeProperties70( NULL )
+pNodeProperties70( NULL ),
+pID( 0 )
 {
 	pRead( reader, reader.ReadUInt() );
+	pInitID();
 }
 
 fbxNode::fbxNode( decBaseFileReader &reader, int endOffset ) :
-pNodeProperties70( NULL )
+pNodeProperties70( NULL ),
+pID( 0 )
 {
 	pRead( reader, endOffset );
+	pInitID();
 }
 
 fbxNode::~fbxNode(){
@@ -351,6 +356,12 @@ decMatrix fbxNode::CalcTransformMatrix() const{
 
 
 
+void fbxNode::SetID( int64_t id ){
+	pID = id;
+}
+
+
+
 int fbxNode::GetNodeCount() const{
 	return pNodes.GetCount();
 }
@@ -407,31 +418,6 @@ void fbxNode::GetNodeNames( decStringSet &list ) const{
 	for( i=0; i<count; i++ ){
 		list.Add( ( ( fbxNode* )pNodes.GetAt( i ) )->GetName() );
 	}
-}
-
-fbxNode *fbxNode::NodeWithID( int64_t id ) const{
-	fbxNode * const node = NodeWithIDOrNull( id );
-	if( node ){
-		return node;
-	}
-	
-	decString message;
-	message.Format( "missing node with ID %" PRId64, id );
-	DETHROW_INFO( deeInvalidParam, message );
-}
-
-fbxNode *fbxNode::NodeWithIDOrNull( int64_t id ) const{
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		fbxNode * const node = ( fbxNode* )pNodes.GetAt( i );
-		if( node->GetPropertyCount() > 0 && node->GetPropertyAt( 0 )->GetValueAsLong() == id ){
-			return node;
-		}
-	}
-	
-	return NULL;
 }
 
 
@@ -568,4 +554,19 @@ fbxNode *fbxNode::pProp70Named( const char* name ) const{
 	}
 	
 	return NULL;
+}
+
+void fbxNode::pInitID(){
+	pID = 0;
+	
+	if( pProperties.GetCount() == 0 ){
+		return;
+	}
+	
+	const fbxProperty &property = *( ( fbxProperty* )pProperties.GetAt( 0 ) );
+	if( property.GetType() != fbxProperty::etLong ){
+		return;
+	}
+	
+	pID = property.GetValueAsLong();
 }

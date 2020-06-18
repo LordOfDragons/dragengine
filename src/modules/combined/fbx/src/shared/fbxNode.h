@@ -23,6 +23,8 @@
 #define _FBXNODE_H_
 
 
+#include <stdint.h>
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decPointerList.h>
 
@@ -48,6 +50,7 @@ private:
 	decObjectOrderedSet pProperties;
 	decObjectOrderedSet pNodes;
 	fbxNode *pNodeProperties70;
+	int64_t pID;
 	
 	
 	
@@ -115,6 +118,12 @@ public:
 	/** \brief Calculate transformation matrix for this object node. */
 	decMatrix CalcTransformMatrix() const;
 	
+	/** \brief Object ID or 0 if this is not an object node. */
+	inline int64_t GetID() const{ return pID; }
+	
+	/** \brief Set object ID or 0 if this is not an object node. */
+	void SetID( int64_t id );
+	
 	
 	
 	/** \brief Count of nodes. */
@@ -138,12 +147,6 @@ public:
 	/** \brief Names of all nodes. */
 	void GetNodeNames( decStringSet &list ) const;
 	
-	/** \brief Node with ID property. */
-	fbxNode *NodeWithID( int64_t id ) const;
-	
-	/** \brief Node with ID property or NULL if absent. */
-	fbxNode *NodeWithIDOrNull( int64_t id ) const;
-	
 	
 	
 	/** \brief Prepare after reading. */
@@ -163,6 +166,7 @@ public:
 private:
 	void pRead( decBaseFileReader &reader, int endOffset );
 	fbxNode *pProp70Named( const char *name ) const;
+	void pInitID();
 };
 
 #endif

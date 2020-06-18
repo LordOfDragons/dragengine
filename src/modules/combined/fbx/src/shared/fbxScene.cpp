@@ -22,11 +22,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "fbxConnection.h"
 #include "fbxNode.h"
 #include "fbxScene.h"
 #include "fbxProperty.h"
+#include "fbxObjectMap.h"
+#include "fbxConnectionMap.h"
 #include "property/fbxPropertyString.h"
 
 #include <dragengine/deEngine.h>
@@ -59,7 +62,11 @@ pNode( new fbxNode ),
 pUpAxis( eaYPos ),
 pFrontAxis( eaZNeg ),
 pCoordAxis( eaXPos ),
-pUnitScaleFactor( 1.0f ){
+pUnitScaleFactor( 1.0f ),
+pNodeObjects( NULL ),
+pNodeConnections( NULL ),
+pObjectMap( NULL ),
+pConnectionMap( NULL ){
 }
 
 fbxScene::fbxScene( decBaseFileReader &reader ) :
@@ -68,7 +75,11 @@ pNode( new fbxNode ),
 pUpAxis( eaYPos ),
 pFrontAxis( eaZNeg ),
 pCoordAxis( eaXPos ),
-pUnitScaleFactor( 1.0f )
+pUnitScaleFactor( 1.0f ),
+pNodeObjects( NULL ),
+pNodeConnections( NULL ),
+pObjectMap( NULL ),
+pConnectionMap( NULL )
 {
 	// header
 	char signature[ 21 ]; // 0-terminator at index 20 included !
@@ -97,6 +108,12 @@ pUnitScaleFactor( 1.0f )
 }
 
 fbxScene::~fbxScene(){
+	if( pConnectionMap ){
+		delete pConnectionMap;
+	}
+	if( pObjectMap ){
+		delete pObjectMap;
+	}
 }
 
 
@@ -121,29 +138,33 @@ fbxNode *fbxScene::FirstNodeNamedOrNull( const char *name ) const{
 	return pNodeObjects ? pNodeObjects->FirstNodeNamedOrNull( name ) : NULL;
 }
 
+void fbxScene::FindNodesNamed( decPointerList &list, const char *name ) const{
+	if( pNodeObjects ){
+		pNodeObjects->FindNodesNamed( list, name );
+	}
+}
+
 
 
 void fbxScene::FindConnections( int64_t id, decPointerList &list ) const{
-	const int count = pConnections.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		fbxConnection * const connection = ( fbxConnection* )pConnections.GetAt( i );
-		if( connection->GetSource() == id || connection->GetTarget() == id ){
-			list.Add( connection );
-		}
+	if( pConnectionMap ){
+		pConnectionMap->Get( id, list );
 	}
 }
 
 fbxNode *fbxScene::NodeWithID( int64_t id ) const{
-	if( ! pNodeObjects ){
-		DETHROW_INFO( deeInvalidParam, "missing node 'Objects'" );
+	fbxNode * const node = NodeWithIDOrNull( id );
+	if( node ){
+		return node;
 	}
-	return pNodeObjects->NodeWithID( id );
+	
+	decString message;
+	message.Format( "object not found with id %" PRId64, id );
+	DETHROW_INFO( deeInvalidParam, message );
 }
 
 fbxNode *fbxScene::NodeWithIDOrNull( int64_t id ) const{
-	return pNodeObjects ? pNodeObjects->NodeWithIDOrNull( id ) : NULL;
+	return pObjectMap ? pObjectMap->GetAt( id ) : NULL;
 }
 
 
@@ -341,11 +362,24 @@ void fbxScene::Prepare( deBaseModule &module ){
 	pTransformation *= decMatrix::CreateScale( scale, scale, scale );
 	
 	pNodeObjects = pNode->FirstNodeNamed( "Objects" );
+	if( pNodeObjects ){
+		const int count = pNodeObjects->GetNodeCount();
+		if( count > 0 ){
+			pObjectMap = new fbxObjectMap( count );
+			
+			int i;
+			for( i=0; i<count; i++ ){
+				pObjectMap->Add( pNodeObjects->GetNodeAt( i ) );
+			}
+		}
+	}
 	
 	pNodeConnections = pNode->FirstNodeNamed( "Connections" );
 	const int count = pNodeConnections->GetNodeCount();
 	deObjectReference connection;
 	int i;
+	
+	pConnectionMap = new fbxConnectionMap( count );
 	
 	for( i=0; i<count; i++ ){
 		fbxNode &nodeConnection = *pNodeConnections->GetNodeAt( i );
@@ -359,6 +393,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
 				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong() ) );
 			pConnections.Add( connection );
+			pConnectionMap->Add( ( fbxConnection* )( deObject* )connection );
 			
 		}else if( type == "OP" ){
 			connection.TakeOver( new fbxConnection(
@@ -366,6 +401,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong(),
 				nodeConnection.GetPropertyAt( 3 )->CastString().GetValue() ) );
 			pConnections.Add( connection );
+			pConnectionMap->Add( ( fbxConnection* )( deObject* )connection );
 		}
 	}
 }

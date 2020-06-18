@@ -32,6 +32,8 @@ class decBaseFileReader;
 class decBaseFileWriter;
 class deBaseModule;
 class fbxNode;
+class fbxObjectMap;
+class fbxConnectionMap;
 
 
 /**
@@ -93,7 +95,9 @@ private:
 	
 	fbxNode *pNodeObjects;
 	fbxNode *pNodeConnections;
+	fbxObjectMap *pObjectMap;
 	decObjectOrderedSet pConnections;
+	fbxConnectionMap *pConnectionMap;
 	
 	decMatrix pTransformation;
 	
@@ -137,6 +141,9 @@ public:
 	
 	/** \brief First node matching name or NULL if absent. */
 	fbxNode *FirstNodeNamedOrNull( const char *name ) const;
+	
+	/** \brief Find all nodes matching name. */
+	void FindNodesNamed( decPointerList &list, const char *name ) const;
 	
 	
 	
