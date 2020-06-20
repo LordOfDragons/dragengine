@@ -902,6 +902,34 @@ decDMatrix decDMatrix::GetRotationMatrix() const{
 	return m;
 }
 
+void decDMatrix::Normalize(){
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0, 0.0, 1.0 );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0, 1.0, 0.0 );
+	}
+	
+	SetWorld( GetPosition(), view, up );
+}
+
+decDMatrix decDMatrix::Normalized() const{
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0, 0.0, 1.0 );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0, 1.0, 0.0 );
+	}
+	
+	return CreateWorld( GetPosition(), view, up );
+}
+
 bool decDMatrix::IsEqualTo( const decDMatrix &matrix, double threshold ) const{
 	return fabs( a11 - matrix.a11 ) < threshold
 		&& fabs( a12 - matrix.a12 ) < threshold
