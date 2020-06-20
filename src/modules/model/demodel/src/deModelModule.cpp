@@ -148,7 +148,7 @@ void deModelModule::LoadModel( decBaseFileReader &reader, deModel &model ){
 }
 
 void deModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
-	// nothing yet
+	pSaveModel( writer, model );
 }
 
 
@@ -1898,4 +1898,235 @@ void deModelModule::pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &inf
 #ifdef OS_ANDROID
 	LogInfoFormat( "TCSorting.WriteCache '%s' in %dms", infos.filename, ( int )( timer.GetElapsedTime() * 1e3f ) );
 #endif
+}
+
+
+
+void deModelModule::pSaveModel( decBaseFileWriter &writer, const deModel &model ){
+	writer.Write( "Drag[en]gine Model", 18 );
+	writer.WriteUShort( 5 ); // version
+	writer.WriteUShort( 0 ); // flags
+	writer.WriteUShort( model.GetBoneCount() );
+	writer.WriteUShort( model.GetTextureCount() );
+	writer.WriteUShort( model.GetTextureCoordinatesSetList().GetCount() );
+	writer.WriteUShort( model.GetLODCount() );
+	
+	pSaveBones( writer, model );
+	pSaveTextures( writer, model );
+	pSaveTexCoordSets( writer, model );
+	pSaveLods( writer, model );
+}
+
+void deModelModule::pSaveBones( decBaseFileWriter &writer, const deModel &model ){
+	const int count = model.GetBoneCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModelBone &bone = *model.GetBoneAt( i );
+		writer.WriteString8( bone.GetName() );
+		writer.WriteVector( bone.GetPosition() );
+		writer.WriteVector( bone.GetOrientation().GetEulerAngles() * RAD2DEG );
+		writer.WriteUShort( bone.GetParent() + 1 );
+	}
+}
+
+void deModelModule::pSaveTextures( decBaseFileWriter &writer, const deModel &model ){
+	const int count = model.GetTextureCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModelTexture &texture = *model.GetTextureAt( i );
+		writer.WriteString8( texture.GetName() );
+		writer.WriteUShort( texture.GetWidth() );
+		writer.WriteUShort( texture.GetHeight() );
+		
+		int flags = 0;
+		if( texture.GetDoubleSided() ){
+			flags |= FLAG_TEX_DOUBLE_SIDED;
+		}
+		if( texture.GetDecal() ){
+			flags |= FLAG_TEX_DECAL;
+		}
+		
+		writer.WriteUShort( flags );
+		
+		if( texture.GetDecal() ){
+			writer.WriteByte( texture.GetDecalOffset() );
+		}
+	}
+}
+
+void deModelModule::pSaveTexCoordSets( decBaseFileWriter &writer, const deModel &model ){
+	const int count = model.GetTextureCoordinatesSetList().GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		writer.WriteString8( model.GetTextureCoordinatesSetList().GetAt( i ) );
+	}
+}
+
+void deModelModule::pSaveLods( decBaseFileWriter &writer, const deModel &model ){
+	const int count = model.GetLODCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModelLOD &lod = *model.GetLODAt( i );
+		
+		const bool largeModel = lod.GetNormalCount() > 65000
+			|| lod.GetTangentCount() > 65000
+			|| lod.GetWeightCount() > 65000
+			|| lod.GetVertexCount() > 65000
+			|| lod.GetFaceCount() > 65000;
+		
+		int flags = 0;
+		if( largeModel ){
+			flags |= FLAG_LARGE_MODEL;
+		}
+		if( lod.GetHasLodError() ){
+			flags |= FLAG_HAS_LOD_ERROR;
+		}
+		writer.WriteByte( flags );
+		
+		if( lod.GetHasLodError() ){
+			writer.WriteFloat( lod.GetLodError() );
+		}
+		
+		if( largeModel ){
+			writer.WriteInt( lod.GetNormalCount() );
+			writer.WriteInt( lod.GetTangentCount() );
+			writer.WriteInt( lod.GetWeightCount() );
+			writer.WriteInt( lod.GetVertexCount() );
+			writer.WriteInt( lod.GetFaceCount() );
+			writer.WriteInt( 0 ); // quad count
+			
+		}else{
+			writer.WriteUShort( ( uint16_t )lod.GetNormalCount() );
+			writer.WriteUShort( ( uint16_t )lod.GetTangentCount() );
+			writer.WriteUShort( ( uint16_t )lod.GetWeightCount() );
+			writer.WriteUShort( ( uint16_t )lod.GetVertexCount() );
+			writer.WriteUShort( ( uint16_t )lod.GetFaceCount() );
+			writer.WriteUShort( 0 ); // quad count
+		}
+		
+		pSaveWeights( writer, model, lod );
+		pSaveVertices( writer, model, lod, largeModel );
+		pSaveTexCoords( writer, lod, largeModel );
+		pSaveTriangles( writer, lod, largeModel );
+	}
+}
+
+void deModelModule::pSaveWeights( decBaseFileWriter &writer, const deModel &model, const deModelLOD &lodMesh ){
+	const int wgcount = lodMesh.GetWeightGroupCount();
+	int weightIndex = 0;
+	int i, j, k;
+	
+	for( i=0; i<wgcount; i++ ){
+		const int weightsCount = lodMesh.GetWeightGroupAt( i );
+		const int boneCount = i + 1;
+		
+		for( j=0; j<weightsCount; j++ ){
+			writer.WriteByte( boneCount );
+			
+			for( k=0; k<boneCount; k++ ){
+				const deModelWeight &weight = lodMesh.GetWeightAt( weightIndex++ );
+				writer.WriteUShort( weight.GetBone() );
+				writer.WriteUShort( ( int )( weight.GetWeight() * 1000.0f ) );
+			}
+		}
+	}
+}
+
+void deModelModule::pSaveVertices( decBaseFileWriter &writer, const deModel &model,
+const deModelLOD &lodMesh, bool largeModel ){
+	const deModelVertex * const vertices = lodMesh.GetVertices();
+	const int count = lodMesh.GetVertexCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModelVertex &vertex = vertices[ i ];
+		
+		if( largeModel ){
+			writer.WriteInt( vertex.GetWeightSet() + 1 );
+			
+		}else{
+			writer.WriteUShort( ( uint16_t )( vertex.GetWeightSet() + 1 ) );
+		}
+		
+		writer.WriteVector( vertex.GetPosition() );
+	}
+}
+
+void deModelModule::pSaveTexCoords( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
+	const deModelTextureCoordinatesSet * const tcsets = lodMesh.GetTextureCoordinatesSets();
+	const int count = lodMesh.GetTextureCoordinatesSetCount();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deModelTextureCoordinatesSet &tcset = tcsets[ i ];
+		const decVector2 * const texCoords = tcset.GetTextureCoordinates();
+		const int texCoordCount = tcset.GetTextureCoordinatesCount();
+		
+		if( largeModel ){
+			writer.WriteInt( texCoordCount );
+			
+		}else{
+			writer.WriteUShort( ( uint16_t )texCoordCount );
+		}
+		
+		for( j=0; j<texCoordCount; j++ ){
+			writer.WriteVector2( texCoords[ j ] );
+		}
+	}
+}
+
+void deModelModule::pSaveTriangles( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel ){
+	const int tcsetCount = lodMesh.GetTextureCoordinatesSetCount();
+	const deModelFace * const faces = lodMesh.GetFaces();
+	const int count = lodMesh.GetFaceCount();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deModelFace &face = faces[ i ];
+		
+		writer.WriteUShort( face.GetTexture() );
+		
+		if( largeModel ){
+			writer.WriteInt( face.GetVertex1() );
+			writer.WriteInt( face.GetVertex2() );
+			writer.WriteInt( face.GetVertex3() );
+			
+			writer.WriteInt( face.GetNormal1() );
+			writer.WriteInt( face.GetNormal2() );
+			writer.WriteInt( face.GetNormal3() );
+			
+			writer.WriteInt( face.GetTangent1() );
+			writer.WriteInt( face.GetTangent2() );
+			writer.WriteInt( face.GetTangent3() );
+			
+			for( j=0; j<tcsetCount; j++ ){
+				writer.WriteInt( face.GetTextureCoordinates1() );
+				writer.WriteInt( face.GetTextureCoordinates2() );
+				writer.WriteInt( face.GetTextureCoordinates3() );
+			}
+			
+		}else{
+			writer.WriteUShort( ( uint16_t )face.GetVertex1() );
+			writer.WriteUShort( ( uint16_t )face.GetVertex2() );
+			writer.WriteUShort( ( uint16_t )face.GetVertex3() );
+			
+			writer.WriteUShort( ( uint16_t )face.GetNormal1() );
+			writer.WriteUShort( ( uint16_t )face.GetNormal2() );
+			writer.WriteUShort( ( uint16_t )face.GetNormal3() );
+			
+			writer.WriteUShort( ( uint16_t )face.GetTangent1() );
+			writer.WriteUShort( ( uint16_t )face.GetTangent2() );
+			writer.WriteUShort( ( uint16_t )face.GetTangent3() );
+			
+			for( j=0; j<tcsetCount; j++ ){
+				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates1() );
+				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates2() );
+				writer.WriteUShort( ( uint16_t )face.GetTextureCoordinates3() );
+			}
+		}
+	}
 }

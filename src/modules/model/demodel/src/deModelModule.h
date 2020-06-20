@@ -92,12 +92,22 @@ private:
 	void pLoadTexCoordSets( decBaseFileReader &reader, deModel &model, sModelInfos &infos );
 	void pLoadWeights( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
 	void pLoadVertices( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
-	void pLoadTexCoords(decBaseFileReader& reader, sModelInfos& infos, deModelLOD& lodMesh);
+	void pLoadTexCoords(decBaseFileReader &reader, sModelInfos& infos, deModelLOD& lodMesh );
 	void pLoadTrianglesOld( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
 	void pLoadQuadsOld( decBaseFileReader &reader, deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
 	void pLoadTriangles( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
 	void pLoadQuads( decBaseFileReader &reader, sModelInfos &infos, deModelLOD &lodMesh );
 	void pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &infos, deModelLOD &lodMesh );
+	
+	void pSaveModel( decBaseFileWriter &writer, const deModel &model );
+	void pSaveBones( decBaseFileWriter &writer, const deModel &model );
+	void pSaveTextures( decBaseFileWriter &writer, const deModel &model );
+	void pSaveTexCoordSets( decBaseFileWriter &writer, const deModel &model );
+	void pSaveLods( decBaseFileWriter &writer, const deModel &model );
+	void pSaveWeights( decBaseFileWriter &writer, const deModel &model, const deModelLOD &lodMesh );
+	void pSaveVertices( decBaseFileWriter &writer, const deModel &model, const deModelLOD &lodMesh, bool largeModel );
+	void pSaveTexCoords(decBaseFileWriter &writer, const deModelLOD& lodMesh, bool largeModel );
+	void pSaveTriangles( decBaseFileWriter &writer, const deModelLOD &lodMesh, bool largeModel );
 };
 
 #endif
