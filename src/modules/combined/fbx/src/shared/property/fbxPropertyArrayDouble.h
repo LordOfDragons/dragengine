@@ -71,6 +71,7 @@ public:
 	virtual int GetValueCount() const;
 	virtual bool GetValueAtAsBool( int index ) const;
 	virtual int GetValueAtAsInt( int index ) const;
+	virtual int64_t GetValueAtAsLong( int index ) const;
 	virtual float GetValueAtAsFloat( int index ) const;
 	virtual double GetValueAtAsDouble( int index ) const;
 	

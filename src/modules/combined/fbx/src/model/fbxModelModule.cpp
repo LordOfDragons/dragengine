@@ -192,15 +192,11 @@ void fbxModelModule::pLoadModelBones( deModel &model, const fbxRig &rig ){
 }
 
 void fbxModelModule::pLoadModelBone( deModel &model, const fbxRigBone &rigBone ){
-	const decString &name = rigBone.GetName();
-	const decMatrix &matrix = rigBone.GetMatrix();
-	const decVector position( matrix.GetPosition() );
-	
 	deModelBone *bone = NULL;
 	try{
-		bone = new deModelBone( name );
-		bone->SetPosition( position );
-		bone->SetOrientation( matrix.ToQuaternion() );
+		bone = new deModelBone( rigBone.GetName() );
+		bone->SetPosition( rigBone.GetPosition() );
+		bone->SetOrientation( rigBone.GetOrientation() );
 		if( rigBone.GetParent() ){
 			bone->SetParent( rigBone.GetParent()->GetIndex() );
 		}
@@ -443,39 +439,40 @@ const fbxModel &loadModel, const fbxRig *loadRig ){
 			polygonIndex++;
 		}
 		
-		// continue polygon. each new vertex forms a new face with base and last vertex
+		// continue polygon. each new vertex forms a new face with base and last vertex.
+		// right handed so flip direction
 		deModelFace &face = lod.GetFaceAt( indexFace++ );
 		
-		face.SetVertex1( faceIndex0 );
+		face.SetVertex1( index );
 		face.SetVertex2( faceIndexLast );
-		face.SetVertex3( index );
+		face.SetVertex3( faceIndex0 );
 		
 		(void)propNormals;
-		face.SetNormal1( faceIndex0 );
+		face.SetNormal1( index );
 		face.SetNormal2( faceIndexLast );
-		face.SetNormal3( index );
+		face.SetNormal3( faceIndex0 );
 		
 		(void)propTangents;
-		face.SetTangent1( faceIndex0 );
+		face.SetTangent1( index );
 		face.SetTangent2( faceIndexLast );
-		face.SetTangent3( index );
+		face.SetTangent3( faceIndex0 );
 		
 		face.SetTexture( texture );
 		
 		if( propUV ){
 			if( uvMit == fbxScene::emitByPolygonVertex && uvRit == fbxScene::eritDirect ){
-				tcs.SetTextureCoordinatesAt( texCoordIndex, faceUV0 );
+				tcs.SetTextureCoordinatesAt( texCoordIndex, uv );
 				face.SetTextureCoordinates1( texCoordIndex++ );
 				tcs.SetTextureCoordinatesAt( texCoordIndex, faceUVLast );
 				face.SetTextureCoordinates2( texCoordIndex++ );
-				tcs.SetTextureCoordinatesAt( texCoordIndex, uv );
+				tcs.SetTextureCoordinatesAt( texCoordIndex, faceUV0 );
 				face.SetTextureCoordinates3( texCoordIndex++ );
 				faceUVLast = uv;
 				
 			}else{
-				face.SetTextureCoordinates1( faceUVIndex0 );
+				face.SetTextureCoordinates1( uvIndex );
 				face.SetTextureCoordinates2( faceUVIndexLast );
-				face.SetTextureCoordinates3( uvIndex );
+				face.SetTextureCoordinates3( faceUVIndex0 );
 			}
 			
 		}else{

@@ -22,6 +22,7 @@
 #ifndef _FBXRIGBONE_H_
 #define _FBXRIGBONE_H_
 
+#include "../fbxScene.h"
 
 #include <stdint.h>
 
@@ -52,12 +53,15 @@ private:
 	int pIndex;
 	decString pName;
 	fbxRigBone *pParent;
-	decMatrix pMatrix;
-	decMatrix pMatrixInverse;
+	decMatrix pFbxMatrix;
 	decMatrix pBoneMatrix;
+	decMatrix pMatrixInverse;
+	decMatrix pMatrix;
+	decMatrix pAnimMatrix;
 	decVector pPosition;
 	decQuaternion pOrientation;
 	bool pDirty;
+	fbxScene::eRotationOrder pRotationOrder;
 	
 	
 	
@@ -83,6 +87,9 @@ public:
 	/** \brief Pose bone node. */
 	inline fbxNode &GetNodePoseBone() const{ return pNodePoseBone; }
 	
+	/** \brief Model node. */
+	inline fbxNode &GetNodeModel() const{ return pNodeModel; }
+	
 	/** \brief Bone name. */
 	inline const decString &GetName() const{ return pName; }
 	
@@ -101,20 +108,29 @@ public:
 	/** \brief Parent or NULL. */
 	inline fbxRigBone *GetParent() const{ return pParent; }
 	
-	/** \brief Matrix. */
+	/** \brief Fbx matrix. */
+	inline const decMatrix &GetFbxMatrix() const{ return pFbxMatrix; }
+	
+	/** \brief World matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** \brief Inverse matrix. */
 	inline const decMatrix &GetMatrixInverse() const{ return pMatrixInverse; }
 	
-	/** \brief Bone matrix. */
+	/** \brief Bone matrix relative to parent. */
 	inline const decMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
+	
+	/** \brief Animation calculation matrix. */
+	inline const decMatrix &GetAnimMatrix() const{ return pAnimMatrix; }
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	
+	/** \brief Rotation order. */
+	inline fbxScene::eRotationOrder GetRotationOrder() const{ return pRotationOrder; }
 	
 	
 	

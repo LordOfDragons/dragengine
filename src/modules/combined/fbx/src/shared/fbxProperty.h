@@ -22,6 +22,7 @@
 #ifndef _FBXPROPERTY_H_
 #define _FBXPROPERTY_H_
 
+#include <stdint.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/file/decBaseFileReaderReference.h>
@@ -122,6 +123,7 @@ public:
 	virtual int GetValueCount() const;
 	virtual bool GetValueAtAsBool( int index ) const;
 	virtual int GetValueAtAsInt( int index ) const;
+	virtual int64_t GetValueAtAsLong( int index ) const;
 	virtual float GetValueAtAsFloat( int index ) const;
 	virtual double GetValueAtAsDouble( int index ) const;
 	

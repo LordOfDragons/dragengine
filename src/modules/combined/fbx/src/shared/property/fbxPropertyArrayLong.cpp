@@ -118,6 +118,10 @@ int fbxPropertyArrayLong::GetValueAtAsInt( int index ) const{
 	return GetValueAt( index );
 }
 
+int64_t fbxPropertyArrayLong::GetValueAtAsLong( int index ) const{
+	return GetValueAt( index );
+}
+
 float fbxPropertyArrayLong::GetValueAtAsFloat( int index ) const{
 	return GetValueAt( index );
 }

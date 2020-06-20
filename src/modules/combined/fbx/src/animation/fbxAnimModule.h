@@ -27,6 +27,13 @@
 
 class fbxScene;
 class fbxRig;
+class fbxAnimation;
+class fbxAnimationMove;
+class fbxAnimationCurve;
+class fbxNode;
+
+class deAnimationMove;
+class decIntList;
 
 
 /**
@@ -58,6 +65,10 @@ public:
 	
 private:
 	void pLoadAnimation( deAnimation &animation, fbxScene &scene );
+	
+	void pLoadMoves( deAnimation &animation, const fbxAnimation &loadAnimation );
+	
+	void pLoadMove( deAnimation &animation, deAnimationMove &move, const fbxAnimationMove &loadMove );
 };
 
 #endif

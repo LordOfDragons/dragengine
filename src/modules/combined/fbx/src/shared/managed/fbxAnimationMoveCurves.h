@@ -26,6 +26,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -35,6 +36,7 @@ class fbxAnimationMove;
 class fbxNode;
 class fbxScene;
 class fbxRigBone;
+class fbxAnimationCurve;
 
 class deBaseModule;
 
@@ -43,16 +45,30 @@ class deBaseModule;
  * \brief FBX managed model cluster.
  */
 class fbxAnimationMoveCurves : public deObject{
+public:
+	/** \brief Target property. */
+	enum eTargetProperty{
+		etpPosition,
+		etpRotation,
+		etpScale,
+		etpUnsupported
+	};
+	
+	
+	
 private:
 	fbxAnimationMove &pMove;
 	fbxNode &pNodeCurves;
 	int64_t pNodeCurvesID;
 	fbxNode *pNodeModel;
 	int64_t pNodeModelID;
-	decObjectOrderedSet pNodesCurve;
+	deObjectReference pCurveX;
+	deObjectReference pCurveY;
+	deObjectReference pCurveZ;
+	decVector pDefaultValue;
 	
 	decString pBoneName;
-	decString pChannelName;
+	eTargetProperty pTargetProperty;
 	fbxRigBone *pRigBone;
 	
 	
@@ -88,11 +104,11 @@ public:
 	/** \brief Model node ID. */
 	inline int64_t GetNodeModelID() const{ return pNodeModelID; }
 	
-	/** \brief Channel name. */
-	inline const decString &GetChannelName() const{ return pChannelName; }
+	/** \brief Target property. */
+	inline eTargetProperty GetTargetProperty() const{ return pTargetProperty; }
 	
-	/** \brief Set channel name. */
-	void SetChannelName( const char *name );
+	/** \brief Set target property. */
+	void SetTargetProperty( eTargetProperty targetProperty );
 	
 	/** \brief Bone name. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
@@ -105,6 +121,17 @@ public:
 	
 	/** \brief Set rig bone or NULL. */
 	void SetRigBone( fbxRigBone *bone );
+	
+	/** \brief Curves or NULL. */
+	inline fbxAnimationCurve *GetCurveX() const{ return ( fbxAnimationCurve* )( deObject* )pCurveX; }
+	inline fbxAnimationCurve *GetCurveY() const{ return ( fbxAnimationCurve* )( deObject* )pCurveY; }
+	inline fbxAnimationCurve *GetCurveZ() const{ return ( fbxAnimationCurve* )( deObject* )pCurveZ; }
+	
+	/** \brief Default value. */
+	inline const decVector &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** \brief Set default value. */
+	void SetDefaultValue( const decVector &defaultValue );
 	
 	
 	

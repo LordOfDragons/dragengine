@@ -52,6 +52,7 @@ private:
 	decObjectOrderedSet pCurveNodes;
 	
 	decString pName;
+	int pFrameRate;
 	
 	
 	
@@ -102,6 +103,21 @@ public:
 	
 	/** \brief Match curves against rig. */
 	void MatchRig( const fbxRig &rig );
+	
+	/** \brief Frame rate. */
+	inline int GetFrameRate() const{ return pFrameRate; }
+	
+	/** \brief Set frame rate. */
+	void SetFrameRate( int frameRate );
+	
+	/** \brief Convert time to frame number. */
+	int TimeToFrame( float time ) const;
+	
+	/** \brief Convert frame number to time. */
+	float FrameToTime( int frame ) const;
+	
+	/** \brief Quantize time. */
+	float QuantizeTime( float time ) const;
 	
 	
 	

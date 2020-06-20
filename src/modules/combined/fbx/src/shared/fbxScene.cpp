@@ -127,6 +127,52 @@ void fbxScene::SetVersion( int version ){
 
 
 
+decMatrix fbxScene::TransformMatrix( const decMatrix &matrix ) const{
+	/*
+	// epsylonAxisX = fbxAxisX
+	// epsylonAxisY = fbxAxisY
+	// epsylonAxisZ = -fbxAxisZ
+	
+	bax = ( matrix[0][0], matrix[1][0], matrix[2][0] )
+	bay = ( matrix[0][1], matrix[1][1], matrix[2][1] )
+	baz = ( -matrix[0][2], -matrix[1][2], -matrix[2][2] )
+	bpos = ( matrix[0][3], matrix[1][3], matrix[2][3] )
+	eax = ( bax[0], bax[1], -bax[2] )
+	eay = ( bay[0], bay[1], -bay[2] )
+	eaz = ( baz[0], baz[1], -baz[2] )
+	epos = ( bpos[0], bpos[1], -bpos[2] )
+	row1 = ( eax[0], eay[0], eaz[0], epos[0] )
+	row2 = ( eax[1], eay[1], eaz[1], epos[1] )
+	row3 = ( eax[2], eay[2], eaz[2], epos[2] )
+	row4 = (    0.0,    0.0,    0.0,     1.0 )
+	*/
+	
+	const float scale = pUnitScaleFactor * FBX_UNIT_SCALE;
+	decMatrix m;
+	
+	// row1 = (  matrix[0][0],  matrix[0][1], -matrix[0][2],  matrix[0][3] )
+	m.a11 = matrix.a11 * scale;
+	m.a12 = matrix.a12 * scale;
+	m.a13 = -matrix.a13 * scale;
+	m.a14 = matrix.a14 * scale;
+	
+	// row2 = (  matrix[1][0],  matrix[1][1], -matrix[1][2],  matrix[1][3] )
+	m.a21 = matrix.a21 * scale;
+	m.a22 = matrix.a22 * scale;
+	m.a23 = -matrix.a23 * scale;
+	m.a24 = matrix.a24 * scale;
+	
+	// row3 = ( -matrix[2][0], -matrix[2][1],  matrix[2][2], -matrix[2][3] )
+	m.a31 = -matrix.a31 * scale;
+	m.a32 = -matrix.a32 * scale;
+	m.a33 = matrix.a33 * scale;
+	m.a34 = -matrix.a34 * scale;
+	
+	return m;
+}
+
+
+
 fbxNode *fbxScene::FirstNodeNamed( const char *name ) const{
 	if( ! pNodeObjects ){
 		DETHROW_INFO( deeInvalidParam, "missing node 'Objects'" );
@@ -251,7 +297,6 @@ fbxScene::eWeightMode fbxScene::ConvWeightMode( const fbxNode &node ){
 }
 
 decMatrix fbxScene::CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder ){
-	// according to FBX SDK doc: right handed system
 	const decVector rot( -rotation.x, -rotation.y, -rotation.z );
 	
 	switch( rotationOrder ){
@@ -295,6 +340,11 @@ decMatrix fbxScene::CreateRotationMatrix( const decVector &rotation, eRotationOr
 	}
 }
 
+decVector fbxScene::ConvRotation( const decVector &rotation ){
+	// according to FBX SDK doc: right handed system
+	return decVector( -rotation.x, -rotation.y, -rotation.z );
+}
+
 
 
 void fbxScene::Prepare( deBaseModule &module ){
@@ -313,7 +363,6 @@ void fbxScene::Prepare( deBaseModule &module ){
 		pFrontAxis = pGetAxis( frontAxis, frontAxisSign );
 		pCoordAxis = pGetAxis( coordAxis, coordAxisSign );
 		pUnitScaleFactor = settings->GetPropertyFloat( "UnitScaleFactor", 1.0f );
-		printf("upAxis=%d frontAxis=%d coordAxis=%d unitScale=%g\n", pUpAxis, pFrontAxis, pCoordAxis, pUnitScaleFactor);
 		
 		switch( upAxis ){
 		case 0:
@@ -359,7 +408,12 @@ void fbxScene::Prepare( deBaseModule &module ){
 	}
 	
 	const float scale = pUnitScaleFactor * FBX_UNIT_SCALE;
-	pTransformation *= decMatrix::CreateScale( scale, scale, scale );
+	pTransformation = pTransformation * decMatrix::CreateScale( scale, scale, scale );
+	
+	pAxisTransformation.a11 = -1.0f; pAxisTransformation.a21 = 0.0f; pAxisTransformation.a31 = 0.0f;
+	pAxisTransformation.a12 =  0.0f; pAxisTransformation.a22 = 1.0f; pAxisTransformation.a32 = 0.0f;
+	pAxisTransformation.a13 =  0.0f; pAxisTransformation.a23 = 0.0f; pAxisTransformation.a33 = 1.0f;
+	pTransformation = pTransformation.QuickMultiply( pAxisTransformation );
 	
 	pNodeObjects = pNode->FirstNodeNamed( "Objects" );
 	if( pNodeObjects ){

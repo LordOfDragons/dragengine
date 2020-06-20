@@ -100,11 +100,11 @@ pVertexCount( 0 )
 		DETHROW_INFO( deeInvalidParam, "model not found" );
 	}
 	
-	pMatrix = pNodeModel->CalcTransformMatrix();
+	pMatrix = pNodeModel->GetTransformation();
 	if( pNodeDeformer ){
-		pMatrix *= pNodeDeformer->CalcTransformMatrix();
+		pMatrix = pMatrix.QuickMultiply( pNodeDeformer->GetTransformation() );
 	}
-	pMatrix *= scene.GetTransformation();
+	pMatrix = pMatrix.QuickMultiply( scene.GetTransformation() );
 	
 	if( pNodeDeformer ){
 		deObjectReference refCluster;

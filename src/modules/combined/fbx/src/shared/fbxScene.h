@@ -100,6 +100,7 @@ private:
 	fbxConnectionMap *pConnectionMap;
 	
 	decMatrix pTransformation;
+	decMatrix pAxisTransformation;
 	
 	
 	
@@ -133,6 +134,12 @@ public:
 	
 	/** \brief Scene transformation. */
 	inline const decMatrix &GetTransformation() const{ return pTransformation; }
+	
+	/** \brief Scene axis transformation. */
+	inline const decMatrix &GetAxisTransformation() const{ return pAxisTransformation; }
+	
+	/** \brief Transform matrix. */
+	decMatrix TransformMatrix( const decMatrix &matrix ) const;
 	
 	
 	
@@ -175,6 +182,9 @@ public:
 	
 	/** \brief Create rotation matrix. */
 	static decMatrix CreateRotationMatrix( const decVector &rotation, eRotationOrder rotationOrder );
+	
+	/** \brief Convert rotation. */
+	static decVector ConvRotation( const decVector &rotation );
 	
 	
 	

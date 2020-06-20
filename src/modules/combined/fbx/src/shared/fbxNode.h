@@ -52,6 +52,13 @@ private:
 	fbxNode *pNodeProperties70;
 	int64_t pID;
 	
+	decVector pLocalTranslation;
+	decVector pLocalRotation;
+	decVector pLocalScaling;
+	decMatrix pTransformation;
+	decMatrix pInverseTransformation;
+	bool pDirtyTransformation;
+	
 	
 	
 public:
@@ -115,8 +122,12 @@ public:
 	const decString &GetPropertyString( const char *name, const decString &defaultValue ) const;
 	decVector GetPropertyVector( const char *name, const decVector &defaultValue ) const;
 	
-	/** \brief Calculate transformation matrix for this object node. */
-	decMatrix CalcTransformMatrix() const;
+	/** \brief Transformation. */
+	const decVector &GetLocalTranslation();
+	const decVector &GetLocalRotation();
+	const decVector &GetLocalScaling();
+	const decMatrix &GetTransformation();
+	const decMatrix &GetInverseTransformation();
 	
 	/** \brief Object ID or 0 if this is not an object node. */
 	inline int64_t GetID() const{ return pID; }
@@ -167,6 +178,7 @@ private:
 	void pRead( decBaseFileReader &reader, int endOffset );
 	fbxNode *pProp70Named( const char *name ) const;
 	void pInitID();
+	void pPrepareTransformation();
 };
 
 #endif

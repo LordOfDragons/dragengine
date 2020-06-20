@@ -48,7 +48,6 @@ private:
 	decObjectOrderedSet pBones;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
-	decMatrix pBoneMatrix;
 	
 	
 	
@@ -95,9 +94,6 @@ public:
 	
 	/** \brief Inverse matrix. */
 	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
-	
-	/** \brief Bone matrix. */
-	inline const decMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
 	
 	
 	

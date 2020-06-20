@@ -103,6 +103,11 @@ void fbxAnimation::MatchRig( const fbxRig &rig ){
 	}
 }
 
+float fbxAnimation::ConvTime( int64_t time ){
+	// time unit in FBX (FbxTime) is 1/46186158000 of one second
+	return ( float )( ( double )time / 46186158000.0 );
+}
+
 
 
 void fbxAnimation::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose ) const{

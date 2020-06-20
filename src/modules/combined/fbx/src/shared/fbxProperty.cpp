@@ -148,6 +148,10 @@ int fbxProperty::GetValueAtAsInt( int ) const{
 	DETHROW( deeInvalidAction );
 }
 
+int64_t fbxProperty::GetValueAtAsLong( int ) const{
+	DETHROW( deeInvalidAction );
+}
+
 float fbxProperty::GetValueAtAsFloat( int ) const{
 	DETHROW( deeInvalidAction );
 }

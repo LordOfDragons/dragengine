@@ -50,7 +50,8 @@ pNodeStack( nodeStack ),
 pNodeStackID( nodeStack.GetID() ),
 pNodeLayer( NULL ),
 pNodeLayerID( 0 ),
-pName( nodeStack.GetPropertyAt( 1 )->CastString().GetValue() )
+pName( nodeStack.GetPropertyAt( 1 )->CastString().GetValue() ),
+pFrameRate( 25 )
 {
 	// find layer
 	decPointerList connections;
@@ -122,9 +123,31 @@ void fbxAnimationMove::MatchRig( const fbxRig &rig ){
 	}
 }
 
+void fbxAnimationMove::SetFrameRate( int frameRate ){
+	pFrameRate = frameRate;
+}
+
+int fbxAnimationMove::TimeToFrame( float time ) const{
+	return ( int )( ( time * pFrameRate ) + 0.5f );
+}
+
+float fbxAnimationMove::FrameToTime( int frame ) const{
+	return ( float )frame / ( float )pFrameRate;
+}
+
+float fbxAnimationMove::QuantizeTime( float time ) const{
+	return floorf( ( time * pFrameRate ) + 0.5f ) / ( float )pFrameRate;
+}
+
 
 
 void fbxAnimationMove::Prepare(){
+	const int count = pCurveNodes.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		GetCurvesAt( i )->Prepare();
+	}
 }
 
 

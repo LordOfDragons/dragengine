@@ -54,12 +54,14 @@
 
 fbxNode::fbxNode() :
 pNodeProperties70( NULL ),
-pID( 0 ){
+pID( 0 ),
+pDirtyTransformation( true ){
 }
 
 fbxNode::fbxNode( decBaseFileReader &reader ) :
 pNodeProperties70( NULL ),
-pID( 0 )
+pID( 0 ),
+pDirtyTransformation( true )
 {
 	pRead( reader, reader.ReadUInt() );
 	pInitID();
@@ -67,7 +69,8 @@ pID( 0 )
 
 fbxNode::fbxNode( decBaseFileReader &reader, int endOffset ) :
 pNodeProperties70( NULL ),
-pID( 0 )
+pID( 0 ),
+pDirtyTransformation( true )
 {
 	pRead( reader, endOffset );
 	pInitID();
@@ -277,81 +280,29 @@ decVector fbxNode::GetPropertyVector( const char *name, const decVector &default
 
 
 
-decMatrix fbxNode::CalcTransformMatrix() const{
-	/*
-	WorldTransform = ParentWorldTransform * T * Roff * Rp * Rpre * R * Rpost -1 * Rp -1 * Soff * Sp * S * Sp -1
-	
-	Where the term:      | Is a 4 x 4 matrix that contains
-	---------------------+------------------------------------------
-	WorldTransform       | Transformation matrix of the node
-	ParentWorldTransform | Transformation matrix of the parent node
-	T                    | Translation
-	Roff                 | Rotation offset
-	Rp                   | Rotation pivot
-	Rpre                 | Pre-rotation
-	R                    | Rotation
-	Rpost -1             | Inverse of the post-rotation
-	Rp -1                | Inverse of the rotation pivot
-	Soff                 | Scaling offset
-	Sp                   | Scaling pivot
-	S                    | Scaling
-	Sp -1                | Inverse of the scaling pivot
-	*/
-	
-	// RotationOrder, enum, 0 (XYZ?)
-	const fbxScene::eRotationOrder rotationOrder =
-		fbxScene::ConvRotationOrder( GetPropertyInt( "RotationOrder", 0 ) );
-	
-	const decVector zeroVector;
-	const decVector oneVector( 1.0f, 1.0f, 1.0f );
-	
-	const decVector rotationOffset( GetPropertyVector( "RotationOffset", zeroVector ) );
-	const decVector rotationPivot( GetPropertyVector( "RotationPivot", zeroVector ) );
-	const decVector scalingOffset( GetPropertyVector( "ScalingOffset", zeroVector ) );
-	const decVector scalingPivot( GetPropertyVector( "ScalingPivot", zeroVector ) );
-	const decVector preRotation( GetPropertyVector( "PreRotation", zeroVector ) * DEG2RAD );
-	const decVector postRotation( GetPropertyVector( "PostRotation", zeroVector ) * DEG2RAD );
-	const decVector lclTranslaction( GetPropertyVector( "Lcl Translation", zeroVector ) );
-	const decVector lclRotation( GetPropertyVector( "Lcl Rotation", zeroVector ) * DEG2RAD );
-	const decVector lclScaling( GetPropertyVector( "Lcl Scaling", oneVector ) );
-	
-	decMatrix matrix;
-	
-	if( ! scalingPivot.IsZero() ){ // Inverse of the scaling pivot
-		matrix *= decMatrix::CreateTranslation( -scalingPivot );
-	}
-	if( ! lclScaling.IsEqualTo( oneVector ) ){ // Scaling
-		matrix *= decMatrix::CreateScale( lclScaling );
-	}
-	if( ! scalingPivot.IsZero() ){ // Scaling pivot
-		matrix *= decMatrix::CreateTranslation( scalingPivot );
-	}
-	if( ! scalingOffset.IsZero() ){ // Scaling offset
-		matrix *= decMatrix::CreateTranslation( scalingOffset );
-	}
-	if( ! rotationPivot.IsZero() ){ // Inverse of the rotation pivot
-		matrix *= decMatrix::CreateTranslation( -rotationPivot );
-	}
-	if( ! postRotation.IsZero() ){ // Inverse of the post-rotation
-		matrix *= fbxScene::CreateRotationMatrix( postRotation, rotationOrder ).QuickInvert();
-	}
-	if( ! lclRotation.IsZero() ){ // Rotation
-		matrix *= fbxScene::CreateRotationMatrix( lclRotation, rotationOrder );
-	}
-	if( ! preRotation.IsZero() ){ // Pre-rotation
-		matrix *= fbxScene::CreateRotationMatrix( preRotation, rotationOrder );
-	}
-	if( ! rotationPivot.IsZero() ){ // Rotation pivot
-		matrix *= decMatrix::CreateTranslation( rotationPivot );
-	}
-	if( ! rotationOffset.IsZero() ){ // Rotation offset
-		matrix *= decMatrix::CreateTranslation( rotationOffset );
-	}
-	if( ! lclTranslaction.IsZero() ){ // Translation
-		matrix *= decMatrix::CreateTranslation( lclTranslaction );
-	}
-	
-	return matrix;
+const decVector &fbxNode::GetLocalTranslation(){
+	pPrepareTransformation();
+	return pLocalTranslation;
+}
+
+const decVector &fbxNode::GetLocalRotation(){
+	pPrepareTransformation();
+	return pLocalRotation;
+}
+
+const decVector &fbxNode::GetLocalScaling(){
+	pPrepareTransformation();
+	return pLocalScaling;
+}
+
+const decMatrix &fbxNode::GetTransformation(){
+	pPrepareTransformation();
+	return pTransformation;
+}
+
+const decMatrix &fbxNode::GetInverseTransformation(){
+	pPrepareTransformation();
+	return pInverseTransformation;
 }
 
 
@@ -569,4 +520,96 @@ void fbxNode::pInitID(){
 	}
 	
 	pID = property.GetValueAsLong();
+}
+
+void fbxNode::pPrepareTransformation(){
+	if( ! pDirtyTransformation ){
+		return;
+	}
+	
+	/*
+	WorldTransform = ParentWorldTransform * T * Roff * Rp * Rpre * R * Rpost -1 * Rp -1 * Soff * Sp * S * Sp -1
+	
+	Where the term:      | Is a 4 x 4 matrix that contains
+	---------------------+------------------------------------------
+	WorldTransform       | Transformation matrix of the node
+	ParentWorldTransform | Transformation matrix of the parent node
+	T                    | Translation
+	Roff                 | Rotation offset
+	Rp                   | Rotation pivot
+	Rpre                 | Pre-rotation
+	R                    | Rotation
+	Rpost -1             | Inverse of the post-rotation
+	Rp -1                | Inverse of the rotation pivot
+	Soff                 | Scaling offset
+	Sp                   | Scaling pivot
+	S                    | Scaling
+	Sp -1                | Inverse of the scaling pivot
+	*/
+	
+	// RotationOrder, enum, 0 (XYZ?)
+	const fbxScene::eRotationOrder rotationOrder =
+		fbxScene::ConvRotationOrder( GetPropertyInt( "RotationOrder", 0 ) );
+	
+	const decVector zeroVector;
+	const decVector oneVector( 1.0f, 1.0f, 1.0f );
+	
+	const decVector rotationOffset( GetPropertyVector( "RotationOffset", zeroVector ) );
+	const decVector rotationPivot( GetPropertyVector( "RotationPivot", zeroVector ) );
+	const decVector scalingOffset( GetPropertyVector( "ScalingOffset", zeroVector ) );
+	const decVector scalingPivot( GetPropertyVector( "ScalingPivot", zeroVector ) );
+	const decVector preRotation( GetPropertyVector( "PreRotation", zeroVector ) * DEG2RAD );
+	const decVector postRotation( GetPropertyVector( "PostRotation", zeroVector ) * DEG2RAD );
+	pLocalTranslation = GetPropertyVector( "Lcl Translation", zeroVector );
+	pLocalRotation = GetPropertyVector( "Lcl Rotation", zeroVector );
+	pLocalScaling = GetPropertyVector( "Lcl Scaling", oneVector );
+	
+	if( ! scalingPivot.IsZero() ){ // Inverse of the scaling pivot
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( -scalingPivot ) );
+	}
+	if( ! pLocalScaling.IsEqualTo( oneVector ) ){ // Scaling
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateScale( pLocalScaling ) );
+	}
+	if( ! scalingPivot.IsZero() ){ // Scaling pivot
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( scalingPivot ) );
+	}
+	if( ! scalingOffset.IsZero() ){ // Scaling offset
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( scalingOffset ) );
+	}
+	if( ! rotationPivot.IsZero() ){ // Inverse of the rotation pivot
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( -rotationPivot ) );
+	}
+	if( ! postRotation.IsZero() ){ // Inverse of the post-rotation
+		pTransformation = pTransformation.QuickMultiply(
+			fbxScene::CreateRotationMatrix( postRotation, rotationOrder ).QuickInvert() );
+	}
+	if( ! pLocalRotation.IsZero() ){ // Rotation
+		pTransformation = pTransformation.QuickMultiply(
+			fbxScene::CreateRotationMatrix( pLocalRotation * DEG2RAD, rotationOrder ) );
+	}
+	if( ! preRotation.IsZero() ){ // Pre-rotation
+		pTransformation = pTransformation.QuickMultiply(
+			fbxScene::CreateRotationMatrix( preRotation, rotationOrder ) );
+	}
+	if( ! rotationPivot.IsZero() ){ // Rotation pivot
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( rotationPivot ) );
+	}
+	if( ! rotationOffset.IsZero() ){ // Rotation offset
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( rotationOffset ) );
+	}
+	if( ! pLocalTranslation.IsZero() ){ // Translation
+		pTransformation = pTransformation.QuickMultiply(
+			decMatrix::CreateTranslation( pLocalTranslation ) );
+	}
+	
+	pInverseTransformation = pTransformation.QuickInvert();
+	
+	pDirtyTransformation = false;
 }
