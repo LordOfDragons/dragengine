@@ -34,21 +34,64 @@ pin Dragengine.Utils
  * \brief PanelInteractPrompt controller.
  * 
  * Panel holding an instance of PanelInteractPrompt implementing
- * ECBehaviorPlayerLookAtInteractPrompt.PromptController to manipulate it. This separation
- * allows to place  
+ * ECBehaviorPlayerLookAtInteractPrompt.PromptController and
+ * ECBehaviorPlayerInteractPrompt.PromptController to manipulate it.
  */
-class PanelInteractPromptController extends Panel implements ECBehaviorPlayerLookAtInteractPrompt.PromptController
+class PanelInteractPromptController extends Panel implements \
+ECBehaviorPlayerLookAtInteractPrompt.PromptController, \
+ECBehaviorPlayerInteractPrompt.PromptController
 	/** \brief Factory creating instance of PanelInteractPromptController. */
-	class ControllerFactory implements ECBehaviorPlayerLookAtInteractPrompt.PromptControllerFactory
+	class ControllerFactory implements \
+	ECBehaviorPlayerLookAtInteractPrompt.PromptControllerFactory, \
+	ECBehaviorPlayerInteractPrompt.PromptControllerFactory
+		private var DisplayInteractPromptEntry.Placement pPlacement
+		private var String pDesignerSelector
+		private var String pEntryBaseSelectorName
+		
 		/** \brief Create factory. */
-		public func new()
+		public func new() this( DisplayInteractPromptEntry.Placement.top )
 		end
+		
+		/** \brief Create factory. */
+		public func new( DisplayInteractPromptEntry.Placement placement ) \
+		this( placement, "InteractPrompt", "InteractPromptEntry" )
+		end
+		
+		/** \brief Create factory. */
+		public func new( DisplayInteractPromptEntry.Placement placement, \
+		String designerSelector, String entryBaseSelectorName )
+			if placement == null
+				throw ENullPointer.new()
+			end
+			if designerSelector == null
+				throw ENullPointer.new( "designerSelector" )
+			end
+			if entryBaseSelectorName == null
+				throw ENullPointer.new( "entryBaseSelectorName" )
+			end
+			
+			this.pPlacement = placement
+			this.pDesignerSelector = designerSelector
+			this.pEntryBaseSelectorName = entryBaseSelectorName
+		end
+		
 		
 		/** \brief Create instance of PromptController. */
 		public func ECBehaviorPlayerLookAtInteractPrompt.PromptController \
 		createPromptController( ECBehaviorPlayerLookAtInteractPrompt.Instance instance )
 			return PanelInteractPromptController.new( \
-				instance.getECBehavior().getBindingManager(), instance.getBindingIconHeight() )
+				instance.getECBehavior().getBindingManager(), \
+				instance.getBindingIconHeight(), this.pPlacement, \
+				this.pDesignerSelector, this.pEntryBaseSelectorName )
+		end
+		
+		/** \brief Create instance of PromptController. */
+		public func ECBehaviorPlayerInteractPrompt.PromptController \
+		createPromptController( ECBehaviorPlayerInteractPrompt.Instance instance )
+			return PanelInteractPromptController.new( \
+				instance.getECBehavior().getBindingManager(), \
+				instance.getBindingIconHeight(), this.pPlacement, \
+				this.pDesignerSelector, this.pEntryBaseSelectorName )
 		end
 	end
 	
@@ -69,6 +112,14 @@ class PanelInteractPromptController extends Panel implements ECBehaviorPlayerLoo
 	public func new( BindingManager bindingManager, int bindingIconHeight, \
 	DisplayInteractPromptEntry.Placement placement )
 		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, bindingIconHeight, placement )
+		this.createContent( this.pPanelInteractPrompt )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement, String designerSelector, \
+	String entryBaseSelectorName )
+		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, \
+			bindingIconHeight, placement, designerSelector, entryBaseSelectorName )
 		this.createContent( this.pPanelInteractPrompt )
 	end
 	

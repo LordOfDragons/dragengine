@@ -76,10 +76,19 @@ class DisplayInteractPromptEntry extends Panel
 	public func new() this( null, 1, Placement.top )
 	end
 	
-	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement )
+	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement ) \
+	this( bindingManager, bindingIconHeight, placement, "InteractPromptEntry" )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement, \
+	String baseSelectorName )
+		if baseSelectorName == null
+			throw ENullPointer.new( "baseSelectorName" )
+		end
+		
 		this.pBindingManager = bindingManager
 		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
-		this.pBaseSelectorName = "InteractPromptEntry"
+		this.pBaseSelectorName = baseSelectorName
 		this.pPlacement = placement
 		
 		this.runWhileBlockingLayout( block
