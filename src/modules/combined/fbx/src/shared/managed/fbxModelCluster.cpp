@@ -45,14 +45,8 @@
 fbxModelCluster::fbxModelCluster( fbxModel &model, fbxNode &nodeCluster ) :
 pModel( model ),
 pNodeCluster( nodeCluster ),
-pName( nodeCluster.GetPropertyAt( 1 )->CastString().GetValue() ),
-pRigBone( NULL )
-{
-	// no idea where this is coming from but some test FBX files seem to append "Cluster"
-	// to the end of the bone name. without removing it matching does not work
-	if( pName.GetRight( 7 ) == "Cluster" ){
-		pName = pName.GetMiddle( 0, -7 );
-	}
+pNodeClusterID( nodeCluster.GetID() ),
+pRigBone( NULL ){
 }
 
 fbxModelCluster::~fbxModelCluster(){
@@ -62,10 +56,6 @@ fbxModelCluster::~fbxModelCluster(){
 
 // Management
 ///////////////
-
-void fbxModelCluster::SetName( const char *name ){
-	pName = name;
-}
 
 void fbxModelCluster::SetRigBone( fbxRigBone *rigBone ){
 	pRigBone = rigBone;
@@ -79,5 +69,6 @@ void fbxModelCluster::Prepare(){
 
 
 void fbxModelCluster::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	module.LogInfoFormat( "%sCluster '%s'", prefix.GetString(), pName.GetString() );
+	module.LogInfoFormat( "%sCluster '%s'", prefix.GetString(),
+		pNodeCluster.GetPropertyAt( 1 )->CastString().GetValue().GetString() );
 }

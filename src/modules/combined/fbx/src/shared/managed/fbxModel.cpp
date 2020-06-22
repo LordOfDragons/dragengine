@@ -181,7 +181,7 @@ fbxModelCluster *fbxModel::GetClusterNamed( const char *name ) const{
 	int i;
 	for( i=0; i<count; i++ ){
 		fbxModelCluster * const cluster = ( fbxModelCluster* )pClusters.GetAt( i );
-		if( cluster->GetName() == name ){
+		if( cluster->GetRigBone() && cluster->GetRigBone()->GetName() == name ){
 			return cluster;
 		}
 	}
@@ -190,11 +190,29 @@ fbxModelCluster *fbxModel::GetClusterNamed( const char *name ) const{
 
 void fbxModel::MatchClusters( const fbxRig &rig ){
 	const int count = pClusters.GetCount();
+	decPointerList connections;
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		fbxModelCluster &cluster = *( ( fbxModelCluster* )( deObject* )pClusters.GetAt( i ) );
-		cluster.SetRigBone( rig.GetBoneNamed( cluster.GetName() ) );
+		
+		connections.RemoveAll();
+		
+		pScene.FindConnections( cluster.GetNodeClusterID(), connections );
+		const int conCount = connections.GetCount();
+		int i;
+		
+		for( i=0; i<conCount; i++ ){
+			const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );
+			if( connection.GetTarget() != cluster.GetNodeClusterID() || connection.GetSource() == 0 ){
+				continue;
+			}
+			
+			cluster.SetRigBone( rig.GetBoneWithModelID( connection.GetSource() ) );
+			if( cluster.GetRigBone() ){
+				break;
+			}
+		}
 	}
 }
 

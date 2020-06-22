@@ -46,8 +46,7 @@ class fbxModelCluster : public deObject{
 private:
 	fbxModel &pModel;
 	fbxNode &pNodeCluster;
-	
-	decString pName;
+	int64_t pNodeClusterID;
 	fbxRigBone *pRigBone;
 	
 	
@@ -74,11 +73,8 @@ public:
 	/** \brief Cluster node. */
 	inline fbxNode &GetNodeCluster() const{ return pNodeCluster; }
 	
-	/** \brief Bone name. */
-	inline const decString &GetName() const{ return pName; }
-	
-	/** \brief Set bone name. */
-	void SetName( const char *name );
+	/** \brief Cluster node ID. */
+	inline int64_t GetNodeClusterID() const{ return pNodeClusterID; }
 	
 	/** \brief Rig bone or NULL. */
 	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
