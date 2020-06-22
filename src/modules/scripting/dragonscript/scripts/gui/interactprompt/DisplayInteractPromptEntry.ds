@@ -49,10 +49,10 @@ class DisplayInteractPromptEntry extends Panel
 		/** From top to bottom: bindings, image, verb. */
 		bottom
 		
-		/** Left image above verb, right bindings. */
+		/** Left image, right verb above bindings. */
 		left
 		
-		/** Right image above verb, left bindings. */
+		/** Right image, left verb above bindings. */
 		right
 	end
 	
@@ -142,22 +142,26 @@ class DisplayInteractPromptEntry extends Panel
 				this.addWidget( this.pLabelDescription )
 				
 			case Placement.left
-				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel p
-					p.addWidget( panelImage )
-					p.addWidget( this.pLabelVerb )
-					p.addWidget( this.pLabelDescription )
+				this.addWidget( panelImage )
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0, 0.5 ), block Panel p
+					p.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y ), block Panel p2
+						p2.addWidget( this.pLabelVerb )
+						p2.addWidget( this.pLabelDescription )
+						this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 0, 0.5 ) )
+						p2.addWidget( this.pPanelBindings )
+					end ) )
 				end ) )
-				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 0, 0.5 ) )
-				this.addWidget( this.pPanelBindings )
 				
 			case Placement.right
-				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 1, 0.5 ) )
-				this.addWidget( this.pPanelBindings )
-				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel p
-					p.addWidget( panelImage )
-					p.addWidget( this.pLabelVerb )
-					p.addWidget( this.pLabelDescription )
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0, 1, 0.5 ), block Panel p
+					p.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y ), block Panel p2
+						p2.addWidget( this.pLabelVerb )
+						p2.addWidget( this.pLabelDescription )
+						this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 1, 0.5 ) )
+						p2.addWidget( this.pPanelBindings )
+					end ) )
 				end ) )
+				this.addWidget( panelImage )
 			end
 			
 			this.setDesignerSelector( this.pBaseSelectorName )
