@@ -90,6 +90,8 @@ private:
 	
 	void pLoadModelFaces( deModel &model, deModelLOD &lod,
 		const fbxModel &loadModel, const fbxRig *loadRig );
+	
+	void pEnsureTextureIndex( deModel &model, int count );
 };
 
 #endif

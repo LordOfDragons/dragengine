@@ -414,6 +414,10 @@ const fbxModel &loadModel, const fbxRig *loadRig ){
 	for( i=2; i<polyVertIndexCount; i++ ){
 		int texture = allSameMaterial ? 0 : propMaterials->GetValueAtAsInt( polygonIndex );
 		
+		// some FBX define no materials or not enough materials which is bad.
+		// fix this by adding default textures until the index is valid
+		pEnsureTextureIndex( model, texture );
+		
 		int index = propPolygonVertexIndex.GetValueAtAsInt( i );
 		
 		if( propUV ){
@@ -515,4 +519,28 @@ const fbxModel &loadModel, const fbxRig *loadRig ){
 	
 // 	lod.SetNormalCount( count );
 // 	lod.SetTangentCount( count );
+}
+
+void fbxModelModule::pEnsureTextureIndex( deModel &model, int count ){
+	while( count >= model.GetTextureCount() ){
+		deModelTexture *texture = NULL;
+		decString baseName( "material" );
+		decString name( baseName );
+		int number = 1;
+		
+		while( model.HasTextureNamed( name ) ){
+			name.Format( "%s%02d", baseName.GetString(), number++ );
+		}
+		
+		try{
+			texture = new deModelTexture( name, 1024, 1024 );
+			model.AddTexture( texture );
+			
+		}catch( const deException & ){
+			if( texture ){
+				delete texture;
+			}
+			throw;
+		}
+	}
 }
