@@ -204,8 +204,10 @@ fbxNode *fbxScene::NodeWithID( int64_t id ) const{
 		return node;
 	}
 	
-#if defined OS_W32 && ! defined PRId64
-	// mingw bug: PRId64 not defined
+#if defined __MINGW32__ || defined __MINGW64__
+	#ifdef PRId64
+		#undef PRId64
+	#endif
 	#define PRId64 "I64u"
 #endif
 	decString message;

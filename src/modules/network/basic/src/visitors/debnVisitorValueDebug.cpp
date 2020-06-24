@@ -74,8 +74,10 @@ void debnVisitorValueDebug::VisitValue( deNetworkValue* ){
 
 
 void debnVisitorValueDebug::VisitInteger( deNetworkValueInteger *value ){
-#if defined OS_W32 && ! defined PRId64
-	// mingw bug: PRId64 not defined
+#if defined __MINGW32__ || defined __MINGW64__
+	#ifdef PRId64
+		#undef PRId64
+	#endif
 	#define PRId64 "I64u"
 #endif
 	pModule->LogInfoFormat( "- Integer: %" PRId64, value->GetInt() );

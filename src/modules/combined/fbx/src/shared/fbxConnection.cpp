@@ -65,8 +65,10 @@ int64_t fbxConnection::OtherID( int64_t id ) const{
 
 
 void fbxConnection::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-#if defined OS_W32 && ! defined PRId64
-	// mingw bug: PRId64 not defined
+#if defined __MINGW32__ || defined __MINGW64__
+	#ifdef PRId64
+		#undef PRId64
+	#endif
 	#define PRId64 "I64u"
 #endif
 	if( pProperty.IsEmpty() ){
