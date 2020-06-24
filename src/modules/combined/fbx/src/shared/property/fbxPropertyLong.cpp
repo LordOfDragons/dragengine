@@ -93,5 +93,9 @@ void fbxPropertyLong::Save(decBaseFileWriter &writer ){
 }
 
 void fbxPropertyLong::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
+#if defined OS_W32 && ! defined PRId16
+	// mingw bug: PRId64 not defined
+	#define PRId16 "I64u"
+#endif
 	module.LogInfoFormat( "%sProperty Long: %" PRId64, prefix.GetString(), pValue );
 }

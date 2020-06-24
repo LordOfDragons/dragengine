@@ -74,12 +74,11 @@ void debnVisitorValueDebug::VisitValue( deNetworkValue* ){
 
 
 void debnVisitorValueDebug::VisitInteger( deNetworkValueInteger *value ){
-	#ifdef OS_W32
-	// mingw bug: PRId64 not working. when the **** will they fix this mess once and for all !!!!
-	pModule->LogInfoFormat( "- Integer: %I64u", value->GetInt() );
-	#else
+#if defined OS_W32 && ! defined PRId16
+	// mingw bug: PRId64 not defined
+	#define PRId16 "I64u"
+#endif
 	pModule->LogInfoFormat( "- Integer: %" PRId64, value->GetInt() );
-	#endif
 }
 
 void debnVisitorValueDebug::VisitFloat( deNetworkValueFloat *value ){
