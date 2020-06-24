@@ -1,0 +1,14 @@
+FBXMODEL {
+  global: FBXModelCreateModule;
+  local: *;
+};
+
+FBXRIG {
+  global: FBXRigCreateModule;
+  local: *;
+};
+
+FBXANIM {
+  global: FBXAnimCreateModule;
+  local: *;
+};
