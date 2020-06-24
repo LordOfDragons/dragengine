@@ -204,9 +204,9 @@ fbxNode *fbxScene::NodeWithID( int64_t id ) const{
 		return node;
 	}
 	
-#if defined OS_W32 && ! defined PRId16
+#if defined OS_W32 && ! defined PRId64
 	// mingw bug: PRId64 not defined
-	#define PRId16 "I64u"
+	#define PRId64 "I64u"
 #endif
 	decString message;
 	message.Format( "object not found with id %" PRId64, id );
