@@ -34,8 +34,6 @@
 #elif defined OS_UNIX
 #	include <errno.h>
 #	include <fnmatch.h>
-#elif defined OS_W32
-#	include "../app/include_windows.h"
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>

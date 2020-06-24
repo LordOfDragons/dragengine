@@ -26,6 +26,8 @@
 
 #ifdef OS_W32
 
+#include <wchar.h>
+
 #include "include_windows.h"
 #include "deOS.h"
 #include "../common/string/decString.h"
