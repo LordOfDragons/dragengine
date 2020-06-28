@@ -316,6 +316,7 @@ class BaseGameApp extends Game
 	private var ScreenshotCreator pScreenshotCreator
 	private var WindowConsole pWindowConsole
 	private var WindowGameWorld pWindowGameWorld
+	private var PanelHud pPanelHud
 	private var WindowSubTitle pWindowSubTitle
 	private var WindowPlayerChoice pWindowPlayerChoice
 	private var GameWorldLoader pGameWorldLoader
@@ -374,6 +375,7 @@ class BaseGameApp extends Game
 	 * - initLanguages()
 	 * - registerPersistencyFactories()
 	 * - createWindowGameWorld()
+	 * - createPanelHud()
 	 * - createWindowConsole()
 	 * - createTriggerTable()
 	 * - createSkinAnnotations()
@@ -408,6 +410,11 @@ class BaseGameApp extends Game
 		this.pWindowGameWorld = this.createWindowGameWorld()
 		if this.pWindowGameWorld != null
 			this.pDesktop.addWindow( this.pWindowGameWorld )
+			
+			this.pPanelHud = this.createPanelHud()
+			if this.pPanelHud != null
+				this.pWindowGameWorld.addWidget( this.pPanelHud )
+			end
 		end
 		
 		this.pWindowSubTitle = this.createWindowSubTitle()
@@ -481,6 +488,7 @@ class BaseGameApp extends Game
 		this.pWindowPlayerChoice = null
 		this.pWindowConsole = null
 		this.pWindowGameWorld = null
+		this.pPanelHud = null
 		
 		this.pBindingManager = null
 		
@@ -731,6 +739,11 @@ class BaseGameApp extends Game
 		return this.pWindowGameWorld
 	end
 	
+	/** \brief Game world HUD panel or \em null. */
+	public func PanelHud getPanelHud()
+		return this.pPanelHud
+	end
+	
 	
 	
 	/** \brief Input Processor. */
@@ -869,6 +882,16 @@ class BaseGameApp extends Game
 	 */
 	protected func WindowGameWorld createWindowGameWorld()
 		return WindowGameWorld.new()
+	end
+	
+	/**
+	 * \brief Create game world hud panel.
+	 * 
+	 * Default implementation creates an instance of PanelHud. Subclass can return \em null
+	 * to not use a game world hud panel or changing parameters.
+	 */
+	protected func PanelHud createPanelHud()
+		return PanelHud.new()
 	end
 	
 	/**

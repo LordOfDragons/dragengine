@@ -20,7 +20,8 @@
  */
 
 
-namespace Dragengine
+namespace \
+    Dragengine: namespace Testing
 namespace Dragengine.Elements.  Front.Back  /* ccc */.  Both   .Last
   namespace Dragengine.Elements  /* aaa */  // end of line
 
@@ -29,11 +30,11 @@ namespace Dragengine.Elements.  Front.Back  /* ccc */.  Both   .Last
 /**
  * \brief documentation comment
  */
-pin Dragengine.Elements
+pin Dragengine.Elements  /* allowed */  // allowed
 pin Dragengine.Gui.Events
 pin Dragengine.Scenery
 
-requires "Math"
+requires "Math"  /* allowed */  // allowed
 
   public  abstract/* blanks */static  class EmptyClass
 end
@@ -87,7 +88,7 @@ public class OuterClass extends ClassExtendImplement
 	
 	private var int pMember1
 	private var OuterClass pMember2
-	public static fixed var int CONSTANT = 8
+	public static fixed var int CONSTANT = 8 + h2a + b1001 + 'a'
 	
 	static public func int isATest( int value1, int value2 )
 		return value1 + value2
@@ -103,7 +104,7 @@ public class OuterClass extends ClassExtendImplement
 		end )
 	end
 	
-	public func new() this( "Something", true )
+	public func new() this( "Something \u1234.", true )
 	end
 	
 	func destructor(): end
