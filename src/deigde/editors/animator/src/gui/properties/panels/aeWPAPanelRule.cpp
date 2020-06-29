@@ -39,6 +39,7 @@
 #include "../../../undosys/rule/aeURuleMirrorBones.h"
 #include "../../../undosys/rule/aeURuleTargetAddLink.h"
 #include "../../../undosys/rule/aeURuleTargetRemoveLink.h"
+#include "../../../undosys/rule/aeURuleTargetRemoveAllLinks.h"
 #include "../../../undosys/rule/aeUSetRuleAddBone.h"
 #include "../../../undosys/rule/aeUSetRuleBlendFactor.h"
 #include "../../../undosys/rule/aeUSetRuleBlendMode.h"
@@ -335,11 +336,11 @@ class cListBones : public igdeListBoxListener{
 public:
 	cListBones( aeWPAPanelRule &panel ) : pPanel( panel ){ }
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
 		if( pPanel.GetRule() && listBox->GetSelectedItem() ){
 			pPanel.SetCBBoneText( listBox->GetSelectedItem()->GetText() );
 		}
-	}
+	}*/
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
 		if( ! pPanel.GetRule() ){
@@ -397,15 +398,41 @@ public:
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		aeControllerTarget * const target = pPanel.GetTarget();
-		aeLink * const link = pPanel.GetCBLinkSelection();
+		aeLink * const link = pPanel.GetListLinkSelection();
 		return target && link && target->HasLink( link )
 			? new aeURuleTargetRemoveLink( rule, target, link ) : NULL;
 	}
 	
 	virtual void Update( const aeAnimator &, const aeRule & ){
 		const aeControllerTarget * const target = pPanel.GetTarget();
-		aeLink * const link = pPanel.GetCBLinkSelection();
+		aeLink * const link = pPanel.GetListLinkSelection();
 		SetEnabled( target && link && target->HasLink( link ) );
+	}
+};
+
+class cActionLinkRemoveAll : public cBaseAction{
+public:
+	cActionLinkRemoveAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all links" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		aeControllerTarget * const target = pPanel.GetTarget();
+		if( ! target || target->GetLinkCount() == 0 ){
+			return NULL;
+		}
+		
+		const int count = target->GetLinkCount();
+		aeLinkList list;
+		int i;
+		for( i=0; i<count; i++ ){
+			list.Add( target->GetLinkAt( i ) );
+		}
+		return new aeURuleTargetRemoveAllLinks( rule, target, list );
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule & ){
+		const aeControllerTarget * const target = pPanel.GetTarget();
+		SetEnabled( target && target->GetLinkCount() > 0 );
 	}
 };
 
@@ -416,11 +443,11 @@ class cListLinks : public igdeListBoxListener{
 public:
 	cListLinks( aeWPAPanelRule &panel ) : pPanel( panel ){ }
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
 		if( listBox->GetSelectedItem() ){
 			pPanel.SetCBLinkSelection( ( aeLink* )listBox->GetSelectedItem()->GetData() );
 		}
-	}
+	}*/
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
 		if( ! pPanel.GetRule() ){
@@ -431,6 +458,7 @@ public:
 		
 		helper.MenuCommand( menu, new cActionLinkAdd( pPanel ), true );
 		helper.MenuCommand( menu, new cActionLinkRemove( pPanel ), true );
+		helper.MenuCommand( menu, new cActionLinkRemoveAll( pPanel ), true );
 	}
 };
 
@@ -686,6 +714,14 @@ aeLink *aeWPAPanelRule::GetCBLinkSelection() const{
 
 void aeWPAPanelRule::SetCBLinkSelection( aeLink *selection ){
 	pCBLinks->SetSelectionWithData( selection );
+}
+
+aeLink *aeWPAPanelRule::GetListLinkSelection() const{
+	return pListLinks->GetSelectedItem() ? ( aeLink* )pListLinks->GetSelectedItem()->GetData() : NULL;
+}
+
+void aeWPAPanelRule::SetListLinkSelection( aeLink *selection ){
+	pListLinks->SetSelectionWithData( selection );
 }
 
 

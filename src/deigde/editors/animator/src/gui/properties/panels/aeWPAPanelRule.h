@@ -148,6 +148,12 @@ public:
 	/** \brief Set link combo box selection. */
 	void SetCBLinkSelection( aeLink *selection );
 	
+	/** \brief Link list selection. */
+	aeLink *GetListLinkSelection() const;
+	
+	/** \brief Set link list selection. */
+	void SetListLinkSelection( aeLink *selection );
+	
 	
 	
 	/** \brief Remove all targets. */
