@@ -116,6 +116,8 @@
 #include "classes/graphics/deClassEnvMapProbe.h"
 #include "classes/graphics/deClassFont.h"
 #include "classes/graphics/deClassImage.h"
+#include "classes/graphics/deClassImagePixels.h"
+#include "classes/graphics/deClassEditableImage.h"
 #include "classes/graphics/deClassLight.h"
 #include "classes/graphics/deClassLumimeter.h"
 #include "classes/graphics/deClassOcclusionMesh.h"
@@ -391,6 +393,8 @@ deBaseScriptingModule( loadableModule ){
 	pClsGraSys = NULL;
 	pClsHT = NULL;
 	pClsImg = NULL;
+	pClsImagePixels = NULL;
+	pClsEditableImage = NULL;
 	pClsInpDev = NULL;
 	pClsInpDevAxis = NULL;
 	pClsInpDevBtn = NULL;
@@ -1164,6 +1168,8 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsSkinBuilder = new deClassSkinBuilder( *this ) );
 		package->AddHostClass( pClsDSkin = new deClassDynamicSkin( this ) );
 		package->AddHostClass( pClsImg = new deClassImage( engine, this ) );
+		package->AddHostClass( pClsImagePixels = new deClassImagePixels( *this ) );
+		package->AddHostClass( pClsEditableImage = new deClassEditableImage( *this ) );
 		package->AddHostClass( pClsComp = new deClassComponent( engine, this ) );
 		package->AddHostClass( pClsCol = new deClassCollider( *this ) );
 		package->AddHostClass( pClsColVol = new deClassColliderVolume( *this ) );

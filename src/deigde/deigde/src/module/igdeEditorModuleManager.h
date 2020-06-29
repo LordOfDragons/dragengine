@@ -106,6 +106,9 @@ public:
 	
 	/** \brief Change recent used position of module. */
 	void ChangeModuleRecentUsedPosition( igdeEditorModuleDefinition *module, int position );
+	
+	/** \brief Reset recently used position of modules. */
+	void ResetRecentUsedPosition();
 	/*@}*/
 	
 	

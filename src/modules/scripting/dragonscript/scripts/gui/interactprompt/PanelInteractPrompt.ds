@@ -46,6 +46,7 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	private var int pBindingIconHeight
 	private var DisplayInteractPromptEntry.Placement pPlacement
 	private var DefaultListModel pModel
+	private var String pEntryBaseSelectorName
 	
 	
 	
@@ -58,15 +59,29 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	end
 	
 	public func new( BindingManager bindingManager, int bindingIconHeight, \
-	DisplayInteractPromptEntry.Placement placement )
+	DisplayInteractPromptEntry.Placement placement ) \
+	this( bindingManager, bindingIconHeight, placement, "InteractPrompt", "InteractPromptEntry" )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement, String designerSelector, \
+	String entryBaseSelectorName )
+		if designerSelector == null
+			throw ENullPointer.new( "designerSelector" )
+		end
+		if entryBaseSelectorName == null
+			throw ENullPointer.new( "entryBaseSelectorName" )
+		end
+		
 		this.pBindingManager = bindingManager
 		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
 		this.pPlacement = placement
+		this.pEntryBaseSelectorName = entryBaseSelectorName
 		this.pModel = DefaultListModel.new()
 		this.pModel.addListener( this )
 		
 		this.setLayout( BoxLayout.new( LayoutAxis.x ) )
-		this.setDesignerSelector( "InteractPrompt" )
+		this.setDesignerSelector( designerSelector )
 	end
 	
 	/** \brief Dispose of widget. */
@@ -91,6 +106,11 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	/** \brief Placement to use for newly created widgets. */
 	public func DisplayInteractPromptEntry.Placement getPlacement()
 		return this.pPlacement
+	end
+	
+	/** \brief Base selector name used for created entries. */
+	public func String getEntryBaseSelectorName()
+		return this.pEntryBaseSelectorName
 	end
 	
 	/** \brief List model. */
@@ -166,7 +186,8 @@ class PanelInteractPrompt extends Panel implements ListModelListener
 	 * Default implementation creates instance of DisplayInteractPromptEntry.
 	 */
 	protected func Widget createWidget( InteractPromptEntry entry )
-		return DisplayInteractPromptEntry.new( this.pBindingManager, this.pBindingIconHeight, this.pPlacement )
+		return DisplayInteractPromptEntry.new( this.pBindingManager, \
+			this.pBindingIconHeight, this.pPlacement, this.pEntryBaseSelectorName )
 	end
 	
 	/**

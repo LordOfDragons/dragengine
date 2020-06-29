@@ -1,0 +1,242 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Editable image.
+ * 
+ * Allows modifying pixels in an image.
+ * 
+ * Image resources can consume a lot of CPU memory. This amount of memory is usually
+ * wasted since Graphic Modules tend to process and store the image data in GPU resources.
+ * Once stored the original image data is not required to be present in CPU memory and
+ * will be released.
+ * 
+ * This class creates an in-memory image resouce with retained image data to allow modifying
+ * pixels data from script classes. Once the instance is destroyed the retained data is
+ * released.
+ * 
+ * The image resource contained inside an editable image can be used like an image
+ * resource loaded from file with the exception that once you change the image pixels
+ * you have to call contentChanged() to make Graphic Module update GPU side resources.
+ * Without calling contentChanged() the old content typically stays visible.
+ * 
+ * A typical use case for editable images are dynamic height terrains. For this create
+ * an EditableImage with 1 component count and 32 bit count and assign the image as
+ * height terrain height image. You can now change the heights of individual pixels
+ * and call contentChanged() to make the changes visible.
+ * 
+ * Another use case is creating dynamic images you have to modify pixel precise. Usually
+ * using CanvasView and capturing the image inside is the better solution but if many
+ * updates on pixel basis are done an EditableImage is the better choice.
+ * 
+ * Pixels retrieved from the image are converted to full colors like this:
+ * <ul>
+ * <li>1 component: Color.new( value, value, value, 1 )</li>
+ * <li>2 components: Color.new( value, value, value, alpha )</li>
+ * <li>3 components: Color.new( red, green, blue, 1 )</li>
+ * <li>4 components: Color.new( red, green, blue, alpha )</li>
+ * </ul>
+ * 
+ * Pixels assigned to the image are converted from full colors like this:
+ * <ul>
+ * <li>1 component: color.getRed()</li>
+ * <li>2 components: color.getRed(), color.getAlpha()</li>
+ * <li>3 components: color.getRed(), color.getGreen(), color.getBlue()</li>
+ * <li>4 components: color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()</li>
+ * </ul>
+ * 
+ * This is a native class.
+ */
+class EditableImage
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create EditableImage instance to access pixel data.
+	 * 
+	 * Potentially causes loading image data into memory. Upon destruction image data
+	 * is released from memory.
+	 */
+	public func new( int width, int height, int depth, int componentCount, int bitCount )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Image resource. */
+	public func Image getImage()
+		return null
+	end
+	
+	/** \brief Width in pixels. */
+	public func int getWidth()
+		return 0
+	end
+	
+	/** \brief Height in pixels. */
+	public func int getHeight()
+		return 0
+	end
+	
+	/** \brief Depth in layers. */
+	public func int getDepth()
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 */
+	public func Color getAt( int x, int y )
+		return null
+	end
+	
+	/**
+	 * \brief Color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam z >= image.getDepth().
+	 */
+	public func Color getAt( int x, int y, int z )
+		return null
+	end
+	
+	/**
+	 * \brief Range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height". Content of \em pixels will
+	 * be replaced with Color instances of the pixels in the desired range. The index of
+	 * each pixel is "height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam pixels.getCount != width * height.
+	 */
+	public func void getRange( Array pixels, int x, int y, int width, int height )
+	end
+	
+	/**
+	 * \brief Range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height * depth". Content of \em pixels
+	 * will be replaced with Color instances of the pixels in the desired range. The index of
+	 * each pixel is "width * height * z + height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam depth < 0.
+	 * \throws EInvalidParam z + depth > image.getDepth().
+	 * \throws EInvalidParam pixels.getCount != width * height * depth.
+	 */
+	public func void getRange( Array pixels, int x, int y, int z, int width, int height, int depth )
+	end
+	
+	
+	
+	/**
+	 * \brief Clear image to color.
+	 */
+	public func void clear( Color color )
+	end
+	
+	/**
+	 * \brief Set color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 */
+	public func void setAt( int x, int y, Color color )
+	end
+	
+	/**
+	 * \brief Set color of pixel at coordinate.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam x >= image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam y >= image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam z >= image.getDepth().
+	 */
+	public func void setAt( int x, int y, int z, Color color )
+	end
+	
+	/**
+	 * \brief Set range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height". Content of \em pixels has
+	 * to be instances of Color of the pixels in the desired range. The index of each
+	 * pixel is "height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidCast element in \em pixels is not of type Color.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam pixels.getCount != width * height.
+	 */
+	public func void setRange( int x, int y, int width, int height, Array pixels )
+	end
+	
+	/**
+	 * \brief Set range of pixels.
+	 * 
+	 * \em pixels is required to be of size "width * height * depth". Content of \em pixels
+	 * has to be instance of Color of the pixels in the desired range. The index of each
+	 * pixel is "width * height * z + height * y + x".
+	 * 
+	 * \throws ENullPointer pixels is null.
+	 * \throws EInvalidCast element in \em pixels is not of type Color.
+	 * \throws EInvalidParam x < 0.
+	 * \throws EInvalidParam width < 0.
+	 * \throws EInvalidParam x + width > image.getWidth().
+	 * \throws EInvalidParam y < 0.
+	 * \throws EInvalidParam height < 0.
+	 * \throws EInvalidParam y + height > image.getHeight().
+	 * \throws EInvalidParam z < 0.
+	 * \throws EInvalidParam depth < 0.
+	 * \throws EInvalidParam z + depth > image.getDepth().
+	 * \throws EInvalidParam pixels.getCount != width * height * depth.
+	 */
+	public func void setRange( int x, int y, int z, int width, int height, int depth, Array pixels )
+	end
+	
+	/**
+	 * \brief Notify module content of image changed.
+	 * 
+	 * Always call this method after changing pixels.
+	 */
+	public func void contentChanged()
+	end
+	/*@}*/
+end

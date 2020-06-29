@@ -358,7 +358,7 @@ public:
 		decString filename( pWindow.GetFont()->GetFilePath() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Font",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetFontFPList(), filename ) ){
+		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			return;
 		}
 		
@@ -390,7 +390,7 @@ public:
 		decString filename( pWindow.GetFont()->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Font",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetFontFPList(), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltFont ), filename ) ){
 			pWindow.SaveFont( filename );
 		}
 	}

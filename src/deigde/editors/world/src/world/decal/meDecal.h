@@ -194,6 +194,12 @@ public:
 	
 	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
+	
+	/** \brief Reattach decals. */
+	void ReattachDecals();
+	
+	/** \brief Game definition changed. */
+	void OnGameDefinitionChanged();
 	/*@}*/
 	
 	

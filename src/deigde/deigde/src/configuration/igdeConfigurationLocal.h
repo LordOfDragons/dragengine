@@ -78,6 +78,11 @@ public:
 	/** \brief Save configuration. */
 	void SaveConfiguration();
 	/*@}*/
+	
+	
+	
+private:
+	void pReset();
 };
 
 #endif

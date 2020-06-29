@@ -31,6 +31,7 @@
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/event/igdeActionExternOpenReference.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIconReference.h>
 
@@ -65,6 +66,17 @@ private:
 	igdeActionReference pActionProfileDuplicate;
 	igdeActionReference pActionProfileDistribute;
 	igdeActionReference pActionProfileTestRun;
+	
+	igdeActionExternOpenReference pActionShowDelga;
+	igdeActionExternOpenReference pActionShowContent;
+	igdeActionExternOpenReference pActionShowConfig;
+	igdeActionExternOpenReference pActionShowOverlay;
+	igdeActionExternOpenReference pActionShowLogs;
+	
+	igdeIconReference pIconStart;
+	igdeIconReference pIconStop;
+	igdeIconReference pIconKill;
+	igdeIconReference pIconDelga;
 	
 	igdeToolBarReference pTBDistribute;
 	igdeToolBarReference pTBEdit;
@@ -110,6 +122,17 @@ public:
 	inline igdeAction *GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
 	inline igdeAction *GetActionProfileDistribute() const{ return pActionProfileDistribute; }
 	inline igdeAction *GetActionProfileTestRun() const{ return pActionProfileTestRun; }
+	
+	inline igdeActionExternOpen *GetActionShowDistribute() const{ return pActionShowDelga; }
+	inline igdeActionExternOpen *GetActionShowContent() const{ return pActionShowContent; }
+	inline igdeActionExternOpen *GetActionShowConfig() const{ return pActionShowConfig; }
+	inline igdeActionExternOpen *GetActionShowOverlay() const{ return pActionShowOverlay; }
+	inline igdeActionExternOpen *GetActionShowLogs() const{ return pActionShowLogs; }
+	
+	inline igdeIcon *GetIconStart() const{ return pIconStart; }
+	inline igdeIcon *GetIconStop() const{ return pIconStop; }
+	inline igdeIcon *GetIconKill() const{ return pIconKill; }
+	inline igdeIcon *GetIconDelga() const{ return pIconDelga; }
 	
 	
 	
@@ -167,6 +190,9 @@ public:
 	
 	/** \brief The game project has changed. */
 	void OnGameProjectChanged();
+	
+	/** \brief Update show action path. */
+	void UpdateShowActionPath();
 	/*@}*/
 	
 	

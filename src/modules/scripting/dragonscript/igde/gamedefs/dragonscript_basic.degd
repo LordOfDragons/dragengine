@@ -2428,4 +2428,22 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorPlayerInteractPrompt'>
+		<description>Adds interact prompt support to player actor. In contrary to ECBehaviorPlayerLookAtInteractPrompt this uses ECBehaviorInteractPrompt present in the owner player actor itself.</description>
+		<ghost>true</ghost>
+		<canInstanciate>false</canInstanciate>
+		<defaultInheritPropertyPrefix>playerInteractPrompt.</defaultInheritPropertyPrefix>
+		<property name='bindingIconHeight'>
+			<description>Height if binding icons.</description>
+			<type>integer</type>
+			<default>32</default>
+		</property>
+		<property name='transparency'>
+			<description>Transparency of prompt window.</description>
+			<type>range</type>
+			<range min='0' max='1'/>
+			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>

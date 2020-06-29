@@ -1,0 +1,202 @@
+from SConsCommon import *
+import os
+
+Import('parent_env parent_targets parent_report')
+
+
+
+# shared
+##########
+
+envModule = parent_env.Clone()
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# fetch values in expanded form for later use
+versionString = '1.0'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
+pathModules = os.path.join(envModule.subst(envModule['path_de_data']), 'modules')
+
+sources = []
+headers = []
+globFiles(envModule, 'src/shared', '*.cpp', sources)
+globFiles(envModule, 'src/shared', '*.h', headers)
+
+objshared = [envModule.SharedObject(s) for s in sources]
+
+libs = []
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+
+envModule.Replace(LIBS = libs)
+
+clocDepends = []
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+
+
+# model module
+################
+
+pathModule = os.path.join(pathModules, 'model', 'fbxmodel', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/model', '*.cpp', sources)
+globFiles(envModule, 'src/model', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+objects.extend(objshared)
+
+library = envModule.LoadableModule('mdlfbx', objects)
+targetBuild = envModule.Alias('mdl_fbx_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+manifest = envModule.File('src/model/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('mdl_fbx', install)
+
+parent_targets['mdl_fbx'] = {
+	'name': 'FBX Model Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive}
+
+
+
+# rig module
+##############
+
+pathModule = os.path.join(pathModules, 'rig', 'fbxrig', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/rig', '*.cpp', sources)
+globFiles(envModule, 'src/rig', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+objects.extend(objshared)
+
+library = envModule.LoadableModule('rigfbx', objects)
+targetBuild = envModule.Alias('rig_fbx_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+manifest = envModule.File('src/rig/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('rig_fbx', install)
+
+parent_targets['rig_fbx'] = {
+	'name': 'FBX Rig Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive}
+
+
+
+# animation module
+####################
+
+pathModule = os.path.join(pathModules, 'animation', 'fbxanim', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/animation', '*.cpp', sources)
+globFiles(envModule, 'src/animation', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+objects.extend(objshared)
+
+library = envModule.LoadableModule('animfbx', objects)
+targetBuild = envModule.Alias('anim_fbx_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+manifest = envModule.File('src/animation/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('anim_fbx', install)
+
+parent_targets['anim_fbx'] = {
+	'name': 'FBX Animation Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive}
+
+
+
+# cloc. to not duplicate the values it is assigned only to the model module
+srcdir = Dir('.').srcnode()
+
+buildClocBare = BuildCLOC(envModule, [srcdir.Dir('src').abspath], srcdir.File('clocreport.csv'), ['doc'])
+Depends(buildClocBare, clocDepends)
+buildCloc = envModule.Alias('mdl_fbx_cloc', buildClocBare)
+
+parent_targets['mdl_fbx']['cloc'] = buildCloc
+parent_targets['mdl_fbx']['clocReport'] = srcdir.File('clocreport.csv')

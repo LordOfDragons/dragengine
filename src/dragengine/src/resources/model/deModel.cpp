@@ -63,9 +63,9 @@ pLODs( NULL ),
 pLODCount( 0 ),
 pLODSize( 0 ),
 
-    pPeerGraphic ( NULL ),
-    pPeerPhysics ( NULL ),
-    pPeerAudio ( NULL ){
+pPeerGraphic ( NULL ),
+pPeerPhysics ( NULL ),
+pPeerAudio ( NULL ){
 }
 
 deModel::~deModel(){

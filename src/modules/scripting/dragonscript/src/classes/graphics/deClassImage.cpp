@@ -177,7 +177,7 @@ void deClassImage::nfSaveToFile::RunFunction(dsRunTime *RT, dsValue *This){
 	
 	// save image
 	const char *filename = RT->GetValue(0)->GetString();
-	ds.LogInfoFormat( "Image: saving %s", filename );
+	//ds.LogInfoFormat( "Image: saving %s", filename );
 	try{
 		imgMgr->SaveImage(nd->image, filename);
 		

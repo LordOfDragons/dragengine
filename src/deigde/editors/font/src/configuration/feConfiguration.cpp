@@ -77,16 +77,20 @@ void feConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void feConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/fontEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/fontEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		feConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -125,4 +129,7 @@ void feConfiguration::SaveConfiguration(){
 //////////////////////
 
 void feConfiguration::pCleanUp(){
+}
+
+void feConfiguration::pReset(){
 }

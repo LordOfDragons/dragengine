@@ -36,6 +36,9 @@ class LoadHeightTerrain extends BaseXmlLoader
 	/** \brief Height terrain navspace loader. */
 	private var LoadHeightTerrainNavSpace pLoadHTNavSpace
 	
+	/** \brief Collision filter to assign to terrain. */
+	private var CollisionFilter pCollisionFilter
+	
 	
 	
 	/** Creates a new loader. */
@@ -46,6 +49,31 @@ class LoadHeightTerrain extends BaseXmlLoader
 	/** Creates a new loader. */
 	public func new( Console console, String name, LoadHeightTerrainNavSpace loadHTNavSpace ) super( console, name )
 		this.pLoadHTNavSpace = loadHTNavSpace
+		
+		var LayerMask cfcategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		
+		var LayerMask cffilter = LayerMask.new()
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.actor )
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		
+		this.pCollisionFilter = CollisionFilter.new( cfcategory, cffilter )
+	end
+	
+	
+	
+	/** \brief Collision filter to assign to terrain. */
+	public func CollisionFilter getCollisionFilter()
+		return this.pCollisionFilter
+	end
+	
+	/** \brief Set collision filter to assign to terrain. */
+	public func void setCollisionFilter( CollisionFilter collisionFilter )
+		if collisionFilter == null
+			throw ENullPointer.new()
+		end
+		this.pCollisionFilter = collisionFilter
 	end
 	
 	
@@ -69,6 +97,8 @@ class LoadHeightTerrain extends BaseXmlLoader
 		var HeightTerrain heightTerrain = HeightTerrain.new( \
 			root.getAttributeFloatNamed( "sectorSize" ), \
 			root.getAttributeIntNamed( "sectorResolution" ) )
+		heightTerrain.setCollisionFilter( pCollisionFilter )
+		
 		world.getWorld().setHeightTerrain( heightTerrain )
 		
 		world.setCachedVegetation( this.createCachedVegetation( heightTerrain ) )

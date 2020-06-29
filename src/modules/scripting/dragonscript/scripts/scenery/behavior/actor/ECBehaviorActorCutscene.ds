@@ -91,6 +91,12 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief States. */
 	public enum State
 		/** \brief Cutscene is stopped. */
@@ -241,7 +247,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			this.pListeners = Array.new()
 			
 			this.pCollider = ecbehavior.getCollider().instance( element )
-			this.pConversationActor = ecbehavior.getActorAnimated().instance( element )
+			this.pConversationActor = ecbehavior.getConversationActor().instance( element )
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -264,6 +270,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			var ConversationController convoController = ConversationController.new( this )
 			this.pConversationActor.addCondition( "cutscene", convoController )
 			this.pConversationActor.addCommand( "cutscene", convoController )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -278,8 +286,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			return this.pCollider
 		end
 		
-		/** \brief Actor animated behavior. */
-		public func ECBehaviorConversationActor.Instance getActorAnimated()
+		/** \brief Conversation actor behavior. */
+		public func ECBehaviorConversationActor.Instance getConversationActor()
 			return this.pConversationActor
 		end
 		
@@ -606,6 +614,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	private var ECBehaviorCollider pCollider
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECPString pControllerName
+	private var Array pListenerFactories
 	
 	
 	
@@ -632,6 +641,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		this.pCollider = collider
 		this.pConversationActor = conversationActor
 		this.pLoaders = loaders
+		this.pListenerFactories = Array.new()
 		
 		this.pControllerName = ECPString.new( prefix + "controllerName", "cutscene" )
 		eclass.addProperty( this.pControllerName )
@@ -644,6 +654,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		this.pCollider = null
 		this.pConversationActor = null
 		this.pLoaders = null
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -658,14 +670,34 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		return this.pCollider
 	end
 	
-	/** \brief Actor animated behavior. */
-	public func ECBehaviorConversationActor getActorAnimated()
+	/** \brief Conversation actor behavior. */
+	public func ECBehaviorConversationActor getConversationActor()
 		return this.pConversationActor
 	end
 	
 	/** \brief Name of playback controller (default "cutscene"). */
 	public func ECPString getControllerName()
 		return this.pControllerName
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

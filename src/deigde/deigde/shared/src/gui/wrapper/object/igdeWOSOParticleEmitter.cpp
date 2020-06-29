@@ -146,26 +146,30 @@ void igdeWOSOParticleEmitter::UpdateTriggers(){
 		return;
 	}
 	
+	bool enableCasting = false;
+	
 	if( GetWrapper().GetVisible() ){
 		if( pTriggerCasting ){
 			pTriggerCasting->Evaluate();
-			pParticleEmitter->SetEnableCasting( pTriggerCasting->GetResult() );
+			enableCasting = pTriggerCasting->GetResult();
 			
 		}else{
-			pParticleEmitter->SetEnableCasting( GetBoolProperty(
+			enableCasting = GetBoolProperty(
 				pGDParticleEmitter.GetPropertyName( igdeGDCParticleEmitter::epCasting ),
-				pGDParticleEmitter.GetCasting() ) );
+				pGDParticleEmitter.GetCasting() );
 		}
-		
-	}else{
-		pParticleEmitter->SetEnableCasting( false );
+	}
+	
+	if( enableCasting != pParticleEmitter->GetEnableCasting() ){
+		if( enableCasting ){
+			pParticleEmitter->ResetBurst();
+		}
+		pParticleEmitter->SetEnableCasting( enableCasting );
 	}
 }
 
 void igdeWOSOParticleEmitter::UpdateVisibility(){
-	if( pParticleEmitter ){
-		pParticleEmitter->SetEnableCasting( GetWrapper().GetVisible() );
-	}
+	UpdateTriggers();
 }
 
 void igdeWOSOParticleEmitter::UpdateLayerMasks(){
@@ -223,6 +227,8 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 		
 		UpdateLayerMasks();
 		UpdateCollisionFilter();
+		
+		InitTriggers(); // this has to come first or UpdateVisibility can trigger casting
 		UpdateVisibility();
 	}
 	

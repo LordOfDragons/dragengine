@@ -60,21 +60,6 @@ feLoadSaveSystem::feLoadSaveSystem( feWindowMain *wndMain ){
 	pLSFonts = NULL;
 	pLSFontCount = 0;
 	pLSFontSize = 0;
-	
-	pFDPattern = NULL;
-	
-	pFPListFont = NULL;
-	
-	try{
-		pFPListFont = new igdeFilePatternList();
-		if( ! pFPListFont ) DETHROW( deeOutOfMemory );
-		
-		pRebuildFDPattern();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
 }
 
 feLoadSaveSystem::~feLoadSaveSystem(){
@@ -119,11 +104,11 @@ bool feLoadSaveSystem::HasLSFont( feLoadSaveFont *lsFont ) const{
 }
 
 int feLoadSaveSystem::IndexOfLSFontMatching( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+	const decString testFilename( filename );
 	int i;
 	
 	for( i=0; i<pLSFontCount; i++ ){
-		if( pPatternMatches( pLSFonts[ i ]->GetPattern(), filename ) ){
+		if( testFilename.MatchesPattern( pLSFonts[ i ]->GetPattern() ) ){
 			return i;
 		}
 	}
@@ -148,8 +133,6 @@ void feLoadSaveSystem::AddLSFont( feLoadSaveFont *lsFont ){
 	
 	pLSFonts[ pLSFontCount ] = lsFont;
 	pLSFontCount++;
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::RemoveLSFont( feLoadSaveFont *lsFont ){
@@ -162,8 +145,6 @@ void feLoadSaveSystem::RemoveLSFont( feLoadSaveFont *lsFont ){
 	pLSFontCount--;
 	
 	delete lsFont;
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::RemoveAllLSFonts(){
@@ -171,8 +152,6 @@ void feLoadSaveSystem::RemoveAllLSFonts(){
 		pLSFontCount--;
 		delete pLSFonts[ pLSFontCount ];
 	}
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::UpdateLSFonts(){
@@ -280,78 +259,4 @@ void feLoadSaveSystem::SaveFont( feFont *font, const char *filename ){
 void feLoadSaveSystem::pCleanUp(){
 	RemoveAllLSFonts();
 	if( pLSFonts ) delete [] pLSFonts;
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	
-	if( pFPListFont ) delete pFPListFont;
-}
-
-bool feLoadSaveSystem::pPatternMatches( const char *pattern, const char *filename ) const{
-	// TODO
-	return true;
-}
-
-void feLoadSaveSystem::pRebuildFDPattern(){
-	char *newPattern = NULL;
-	const char *lsPattern;
-	int lenFDPattern = 0;
-	const char *lsName;
-	int lenLSPattern;
-	decString pattern;
-	int lenLSName;
-	int newLen;
-	int i;
-	
-	igdeFilePattern *filePattern = NULL;
-	
-	pFPListFont->RemoveAllFilePatterns();
-	
-	try{
-		for( i=0; i<pLSFontCount; i++ ){
-			pattern.Format( "*%s", pLSFonts[ i ]->GetPattern().GetString() );
-			
-			filePattern = new igdeFilePattern( pLSFonts[ i ]->GetName(), pattern,
-				pLSFonts[ i ]->GetPattern() );
-			
-			pFPListFont->AddFilePattern( filePattern );
-			filePattern = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( filePattern ) delete filePattern;
-		throw;
-	}
-	
-	
-	
-	newPattern = new char[ 1 ];
-	if( ! newPattern ) DETHROW( deeOutOfMemory );
-	newPattern[ 0 ] = '\0';
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	pFDPattern = newPattern;
-	
-	for( i=0; i<pLSFontCount; i++ ){
-		lsName = pLSFonts[ i ]->GetName();
-		lenLSName = strlen( lsName );
-		lsPattern = pLSFonts[ i ]->GetPattern();
-		lenLSPattern = strlen( lsPattern ) + 1;
-		
-		newLen = lenFDPattern + lenLSName + lenLSPattern + 3;
-		if( i > 0 ) newLen++;
-		
-		newPattern = new char[ newLen + 1 ];
-		if( ! newPattern ) DETHROW( deeOutOfMemory );
-		
-		if( i > 0 ){
-			sprintf( newPattern, "\n%s (*%s)", lsName, lsPattern );
-			
-		}else{
-			sprintf( newPattern, "%s (*%s)", lsName, lsPattern );
-		}
-		
-		if( pFDPattern ) delete [] pFDPattern;
-		pFDPattern = newPattern;
-		lenFDPattern = newLen;
-	}
 }

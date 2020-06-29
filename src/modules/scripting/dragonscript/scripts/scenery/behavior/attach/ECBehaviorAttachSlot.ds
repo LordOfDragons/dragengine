@@ -69,6 +69,12 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorAttachSlot pECBehavior
@@ -131,6 +137,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			if not value.empty()
 				this.pOrientation = Quaternion.newFromEuler( codec.decodeVector( value ) )
 			end
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -505,6 +513,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	private var ECPString pBone
 	private var ECPVector pPosition
 	private var ECPVector pOrientation
+	private var Array pListenerFactories
 	
 	
 	
@@ -524,6 +533,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	String id, String prefix ) super( eclass, id )
 		this.pCollider = collider
+		this.pListenerFactories = Array.new()
 		
 		this.pBone = ECPString.new( prefix + "bone", "" )
 		eclass.addProperty( this.pBone )
@@ -540,6 +550,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pCollider = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -563,6 +574,26 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Orientation to attach to. */
 	public func ECPVector getOrientation()
 		return this.pOrientation
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

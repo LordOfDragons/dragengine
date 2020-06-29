@@ -64,6 +64,12 @@ class ECBehaviorTouching extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
@@ -127,6 +133,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 			
 			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
 			this.pPulse = this.pECBehavior.getPulse().getValue( stub )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -218,6 +226,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	private var ECPString pTarget
 	private var ECPBoolean pPulse
 	private var TSTriggerTable pTouchSensorTable
+	private var Array pListenerFactories
 	
 	
 	
@@ -251,6 +260,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
 		this.pTouchSensorTable = triggerTable
+		this.pListenerFactories = Array.new()
 		
 		this.pTouchSensor = ECBehaviorTouchSensor.new( eclass, collider, subID, prefix + "touchSensor." )
 		
@@ -261,6 +271,12 @@ class ECBehaviorTouching extends DefaultECBehavior
 		eclass.addProperty( this.pPulse )
 		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -288,6 +304,26 @@ class ECBehaviorTouching extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	protected func void setTriggerTable( TSTriggerTable triggerTable )
 		this.pTouchSensorTable = triggerTable
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

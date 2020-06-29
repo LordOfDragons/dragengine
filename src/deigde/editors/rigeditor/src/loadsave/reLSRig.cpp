@@ -57,16 +57,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reLSRig::reLSRig( deBaseRigModule *module ){
+reLSRig::reLSRig( deBaseRigModule *module ) :
+pModule( module )
+{
 	if( ! module ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pModule = module;
-	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	const decStringList &patternList = loadableModule.GetPatternList();
+	const int patternCount = patternList.GetCount();
+	int i;
+	
 	pName = loadableModule.GetName();
-	pPattern = loadableModule.GetPatternList().GetAt( 0 );
+	for( i=0; i<patternCount; i++ ){
+		if( i > 0 ){
+			pPattern.AppendCharacter( ',' );
+		}
+		pPattern.AppendCharacter( '*' );
+		pPattern.Append( patternList.GetAt( i ) );
+	}
 }
 
 reLSRig::~reLSRig(){

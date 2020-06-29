@@ -65,6 +65,12 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorLookedAt pECBehavior
@@ -87,6 +93,13 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 			this.pLookingActors = null
 			this.pElementResolver = null
 			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -262,13 +275,47 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	
 	
 	
+	private var Array pListenerFactories
+	
+	
+	
 	/** \brief Create behavior element class. */
 	public func new( BehaviorElementClass eclass ) super( eclass )
 		if this.getBehaviorIn( eclass ) != null
 			throw BEMultipleInstanceException.new( eclass, this )
 		end
 		
+		this.pListenerFactories = Array.new()
+		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

@@ -1,199 +1,334 @@
-"""
-Notes
-
-Most parameters in here are tri-state and accept the values 'auto', 'yes' and 'no'.
-"""
+# 
+# Example build configuration.
+# 
+# To use rename to "custom.py" and uncomment the desired parameters.
+# 
+# Most parameters in here are tri-state and accept the values 'auto', 'yes' and 'no'.
+# Since this is a python file after all you can also use the values True and False
+# instead of 'yes' and 'no' as well as all kinds of code you can use in python for
+# example to adjust configuration on external parameters.
+#
 
 
 # General configuration
 #########################
 
-with_tests = 'no'
-with_warnerrors = 'no'
-with_debug = 'no'
-with_verbose = 'no'
-
-
-
-# External Library Configuration
-##################################
-
-# Use libraries installed on the system instead of compiling from yours. For all
-# options under this category the following values can be used:
+# Build engine tests. Builds "detests" binary.
 # 
-# auto (default)
-#   Use the library installed on the system if found. Otherwise build from internal sources.
+# Possible values: 'yes', 'no'
 # 
-# yes
-#   Force using the library installed on the system. Building from internal sources is not
-#   allowed. If the library is not installed on the system the build will be aborted.
+# with_tests = 'no'
+
+# Build with debug symbols for GDB usage.
 # 
-# no
-#   The library installed on the system is not used if found. The library is always build
-#   from the internal sources. This is best used for cross-compiling and building
-#   distribution archives for foreign system where installed libraries can not be predicted.
+# Possible values: 'yes', 'no'
+# 
+# with_debug = 'no'
 
-# zLib Compression Library
-with_system_zlib = 'auto'
+# Treat warnings as errors. Used only if with_debug is 'yes'.
+# 
+# Possible values: 'yes', 'no'
+# 
+# with_warnerrors = 'no'
 
-# libPNG Graphic Library
-with_system_libpng = 'auto'
+# Enable sanitizing building. Used only if with_debug is 'yes'. Requires a GCC or LLVM
+# compiler supporting sanitizing as described in
+# https://github.com/google/sanitizers/wiki/AddressSanitizer .
+# 
+# Possible values: 'yes', 'no'
+# 
+# with_sanitize = 'no'
 
-# libPNG Graphic Library patched with Animated-PNG support. This is usually not installed
-# on systems and should be best build from sources (no option)
-with_system_libapng ='auto'
+# Enable thread sanitizing. Used only if with_debug is 'yes'. Requires a GCC or LLVM
+# compiler supporting sanitizing as described in
+# https://github.com/google/sanitizers/wiki/AddressSanitizer .
+# Can not be used together with with_sanitize as they conflict.
+# 
+# Possible values: 'yes', 'no'
+# 
+# with_sanitize_thread = 'no'
 
-# libJPEG Graphic Library
-with_system_libjpeg ='auto'
+# Verbose compilation showing command lines.
+# 
+# Possible values: 'yes', 'no'
+# 
+# with_verbose = 'no'
 
-# OpenAL Audio Library.
-with_system_openal = 'auto'
-
-# OGG Sound Library
-with_system_libogg ='auto'
-
-# OGG Vorbis Sound Library. Depends on OGG.
-with_system_libvorbis ='auto'
-
-# Theora Video Library. Depends on OGG Vorbis and OGG.
-with_system_libtheora ='auto'
-
-# FOX-ToolKit Library. Depends on libPNG, libJPEG and zLib.
-with_system_fox ='auto'
-
-# DragonScript Programming Language.
-with_system_dragonscript = 'auto'
-
-# libFFI Library.
-with_system_libffi = 'auto'
-
-# libLTDL Library.
-with_system_libltdl = 'auto'
-
-# libSegV Library.
-with_system_libsigsegv = 'auto'
-
-# SmallTalk Programming Language. Depends on libFFI and libSegV
-with_system_smalltalk = 'auto'
-
-# OpenGL Graphic Library. This library can not be compiled from sources.
-with_opengl = 'auto'
-
-# Python Programming Language.
-with_python = 'auto'
-
-# NPAPI SDK. This library can not be compiled from sources.
-with_npapisdk = 'auto'
-
-# DL Library. This library can not be compiled. Found on Linux type systems.
-with_dl = 'auto'
-
-# POSIX Thread Library. This library can not be compiled. Found on Linux type systems.
-with_pthread = 'auto'
-
-# X-System Library. This library can not be compiled. Found on Linux type systems.
-with_x = 'auto'
-
-# Use system libevdev
-with_system_libevdev = 'auto'
-
-# Use system libusb
-with_system_libusb = 'auto'
-
-# Use system libhidapi
-with_system_libhidapi = 'auto'
-
-# Use system libopenhmd
-with_system_libopenhmd = 'auto'
-
-# Use system libfftw
-with_system_fftw = 'auto'
+# Force version. Empty to disable. Used only for nightly builds.
+# If you are not "Jenkins" this option is not for you.
+# 
+# Value type: string
+# 
+# force_version = ''
 
 
 
-# Modules Configuration
-#########################
+# Controlling In-Tree Building of External Software
+#####################################################
+# 
+# Various parts in the game engine and modules require external libraries to be present
+# to build and run. If the required libraries are not present on the host system they
+# can be build automatically from in-tree copies of the library source code. This is
+# the default mode and is activated if the parameter value is 'auto'.
+# 
+# For self-sustained builds all external libraries have to be build from in-tree sources
+# to ensure maximum compatibility. To force building from in-tree source code set the
+# desired parameters to 'no'.
+# 
+# For creating Linux Distro builds with maximum re-use of code no in-tree sources should
+# be used. To force never using in-tree source code set the desired parameters to 'yes'.
+# 
+# Possible values:
+#   'auto'
+#      Use the library installed on the system if found. Otherwise build from internal sources.
+#   
+#   'yes'
+#      Force using the library installed on the system. Building from internal sources is not
+#      allowed. If the library is not installed on the system the build will be aborted.
+#   
+#   'no'
+#      The library installed on the system is not used if found. The library is always build
+#      from the internal sources. This is best used for cross-compiling and building
+#      distribution archives for foreign system where installed libraries can not be predicted.
+# 
+# Default value for all parameters in this section: 'auto'
 
-build_audio_openal = 'auto'
-build_cr_basic = 'auto'
-build_graphics_opengl = 'auto'
-build_image_png = 'auto'
-build_image_png3d = 'auto'
-build_image_jpeg = 'auto'
-build_input_x = 'auto'
-build_input_w32 = 'auto'
-build_input_android = 'auto'
-build_input_beos = 'auto'
-build_input_macos = 'auto'
-build_physics_bullet = 'auto'
-build_script_ds = 'auto'
-build_script_python = 'auto'
-build_script_smalltalk = 'auto'
-build_sound_ogg = 'auto'
-build_video_theora = 'auto'
-build_video_apng = 'auto'
-build_igde = 'auto'
-build_guilauncher = 'auto'
-build_plugin_npapi = 'auto'
-build_launcher_android = 'auto'
+# with_system_zlib = 'auto'
+#   Use System Zlib
+# 
+# with_system_libpng = 'auto'
+#   Use System libpng
+# 
+# with_system_sndio = 'auto'
+#   Use System sndio
+# 
+# with_system_libapng = 'auto'
+#   Use System libapng
+# 
+# with_system_libjpeg = 'auto'
+#   Use System JPEG
+# 
+# with_system_openal = 'auto'
+#   Use System OpenAL
+# 
+# with_system_libogg = 'auto'
+#   Use System libogg
+# 
+# with_system_libvorbis = 'auto'
+#   Use System libvorbis
+# 
+# with_system_libtheora = 'auto'
+#   Use System libtheora
+# 
+# with_system_fox = 'auto'
+#   Use System FOX Toolkit
+# 
+# with_system_dragonscript = 'auto'
+#   Use System DragonScript
+# 
+# with_system_libffi = 'auto'
+#   Use System libffi
+# 
+# with_system_libltdl = 'auto'
+#   Use System libltdl
+# 
+# with_system_libsigsegv = 'auto'
+#   Use System libsigsegv
+# 
+# with_system_smalltalk = 'auto'
+#   Use System Smalltalk
+# 
+# with_system_libevdev = 'auto'
+#   Use System libevdev
+# 
+# with_system_libusb = 'auto'
+#   Use System libusb
+# 
+# with_system_libhidapi = 'auto'
+#   Use System libhidapi
+# 
+# with_system_libopenhmd = 'auto'
+#   Use System libopenhmd
+# 
+# with_system_fftw = 'auto'
+#   Use System fftw
 
-# Archiving
-#############
-archive_format = 'tarbz2'
-archive_name_engine = 'dragengine'
-archive_name_engine_dev = 'dragengine-dev'
-archive_name_igde = 'igde'
-archive_name_igde_dev = 'igde-dev'
-archive_name_special = 'special'
+# When compiling OpenAL what backends are required.
+# 
+# Possible values: list of: 'alsa', 'pulseaudio', 'portaudio', 'oss'
+# 
+# with_openal_backends = ['alsa', 'pulseaudio', 'portaudio', 'oss']
 
-# Installing
-##############
-installer_name_engine = 'install-dragengine'
-installer_name_engine_dev = 'install-dragengine-dev'
-installer_name_igde = 'install-igde'
-installer_name_igde_dev = 'install-igde-dev'
+# Path to DragonScript include files or empty to use system default
+# 
+# Value type: string with directory path
+# 
+# with_dragonscript_inc = ''
+
+# Path to DragonScript library files or empty to use system default
+# 
+# Value type: string with directory path
+# 
+# with_dragonscript_lib = ''
 
 
 
-# Windows Platform
-####################
-#
-# Special path indicators can be used. Only one special path indicator can be used
-# and it has to be the first component in the path. The following special path
-# indicators are supported:
-#
-# @ProgramFiles
-#   The Program Files folder. A typical path is C:\Program Files.
-#
-# @System
-#   The Windows System folder. A typical path is C:\Windows\System32.
-#
-# @RoamingAppData
-#   The file system directory that serves as a common repository for
-#   application-specific data. A typical path is C:\Documents and
-#   Settings\username\Application Data.
-#
-# @ProgramData
-#   The file system directory that contains application data for all users.
-#   A typical path is C:\Documents and Settings\All Users\Application Data.
-#   This folder is used for application data that is not user specific. For
-#   example, an application can store a spell-check dictionary, a database
-#   of clip art, or a log file in the $ProgramData folder. This information
-#   will not roam and is available to anyone using the computer.
-#
-# @PublicDocuments
-#   The file system directory that contains documents that are common to all
-#   users. A typical path is C:\Documents and Settings\All Users\Documents.
-#
-# @LocalAppData
-#   The file system directory that serves as a data repository for local
-#   (nonroaming) applications. A typical path is C:\Documents and
-#   Settings\username\Local Settings\Application Data.
-#
-# @Documents
-#   The virtual folder that represents the My Documents desktop item. A typical
-#   path is C:\Documents and Settings\username\My Documents.</td>
-#
-# @Windows
-#   The Windows directory or $System. This corresponds to the %windir% or
-#   %SYSTEMROOT% environment variables. A typical path is C:\Windows.
+# Module Configuration
+########################
+# 
+# Determines which parts of the game engine are build.
+# 
+# Possible values: 'yes', 'no', 'auto'
+
+# build_audio_openal = 'auto'
+#   Build OpenAL Audio Module
+# 
+# build_cr_basic = 'auto'
+#   Build Basic Crash-Recovery Module'
+# 
+# build_graphics_opengl = 'auto'
+#   Build OpenGL Graphics Module
+# 
+# build_image_png = 'auto'
+#   Build PNG Image Module
+# 
+# build_image_png3d = 'auto'
+#   Build PNG-3D Image Module
+# 
+# build_image_jpeg = 'auto'
+#   Build JPEG Image Module
+# 
+# build_input_x = 'auto'
+#   Build X Input Module
+# 
+# build_input_w32 = 'auto'
+#   Build Windows Input Module
+# 
+# build_input_beos = 'auto'
+#   Build BeOS Input Module
+# 
+# build_input_macos = 'auto'
+#   Build MacOS Input Module
+# 
+# build_input_android = 'auto'
+#   Build Android Input Module
+# 
+# build_physics_bullet = 'auto'
+#   Build Bullet Physics Module
+# 
+# build_script_ds = 'auto'
+#   Build DragonScript Script Module
+# 
+# build_script_python = 'auto'
+#   Build Python Script Module
+# 
+# build_script_smalltalk = 'auto'
+#   Build Smalltalk Script Module
+# 
+# build_sound_ogg = 'auto'
+#   Build OGG Vorbis Sound Module
+# 
+# build_video_theora = 'auto'
+#   Build Theora Video Module
+# 
+# build_video_apng = 'auto'
+#   Build Animated PNG Video Module
+# 
+# build_igde = 'auto'
+#   Build IGDE
+# 
+# build_guilauncher = 'auto'
+#   Build GUI Launcher
+# 
+# build_launcher_android = 'auto'
+#   Build Android Launcher
+# 
+# build_archive_delga = 'auto'
+#   Build DELGA Archive Module
+
+
+
+# Archiving and Installing
+############################
+
+# Archive file format.
+# 
+# Possible values: 'tarbz2', 'zip'
+# 
+# archive_format = 'tarbz2'
+
+# Archive file name without extension for Drag[en]gine archive.
+# 
+# Value type: string
+# 
+# archive_name_engine = 'dragengine'
+
+# Archive file name without extension for Drag[en]gine Development archive
+# 
+# Value type: string
+# 
+# archive_name_engine_dev = 'dragengine-dev'
+
+# Archive file name without extension for IGDE archive
+# 
+# Value type: string
+# 
+# archive_name_igde = 'deigde'
+
+# Archive file name without extension for IGDE Development archive
+# 
+# Value type: string
+# 
+# archive_name_igde_dev = 'deigde_dev'
+
+# Archive file name without extension for Special archive
+# 
+# Value type: string
+# 
+# archive_name_special = 'despecial'
+
+# Installer file name without extension for Drag[en]gine installer
+# 
+# Value type: string
+# 
+# installer_name_engine = 'install-dragengine'
+
+# Installer file name without extension for Drag[en]gine Development installer
+# 
+# Value type: string
+# 
+# installer_name_engine_dev = 'install-dragengine-dev'
+
+# Installer file name without extension for IGDE installer
+# 
+# Value type: string
+# 
+# installer_name_igde = 'install-deigde'
+
+# Installer file name without extension for IGDE Development installer
+# 
+# Value type: string
+# 
+# installer_name_igde_dev = 'install-deigde-dev'
+
+
+
+# Operating System Specific
+#############################
+# 
+# See the operating system specific dist.custom.* files
+# 
+# dist.posix.custom.py
+#   for POSIX platforms
+# 
+# dist.windows.custom.py
+#   for Windows platforms
+# 
+# dist.beos.custom.py
+#   for BeOS platforms
+# 
+# dist.macos.custom.py
+#   for MacOS platforms
+# 
+# dist.android.custom.py
+#   for Android platforms

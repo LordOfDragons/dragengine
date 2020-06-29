@@ -576,6 +576,38 @@ public:
 	decDMatrix GetRotationMatrix() const;
 	
 	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Modifies matrix with scaling removed. Only normalized matrices are safe to be used
+	 * with the GetEulerAngles() and ToQuaternion() calls since scaling interferes with
+	 * the calculation.
+	 * 
+	 * This calls the same as this code
+	 * \code{.cpp}
+	 * SetWorld(GetPosition(), TransformView(), TransformUp())
+	 * \endcode
+	 * 
+	 * but is safe against 0-scaling. In such a case a 0-rotation matrix is set.
+	 */
+	void Normalize();
+	
+	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Returns matrix with scaling removed. Only normalized matrices are safe to be used
+	 * with the GetEulerAngles() and ToQuaternion() calls since scaling interferes with
+	 * the calculation.
+	 * 
+	 * This calls the same as this code
+	 * \code{.cpp}
+	 * decDMatrix::CreateWorld(m.GetPosition(), m.TransformView(), m.TransformUp())
+	 * \endcode
+	 * 
+	 * but is safe against 0-scaling. In such a case a 0-rotation matrix is created.
+	 */
+	decDMatrix Normalized() const;
+	
+	/**
 	 * \brief Matrix is cell wise equal to anither one in respect to a threshold.
 	 */
 	bool IsEqualTo( const decDMatrix &matrix, double threshold = DVECTOR_THRESHOLD ) const;

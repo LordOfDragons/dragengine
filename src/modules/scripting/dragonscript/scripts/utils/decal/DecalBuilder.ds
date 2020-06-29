@@ -107,10 +107,13 @@ class DecalBuilder implements ColliderListener
 		this.pMatrix = DMatrix.new()
 		this.pSize = Vector.new()
 		this.pTransform = TexMatrix2.new()
-		this.pCollisionFilter = CollisionFilter.new( LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry ) )
 		this.pProperties = Dictionary.new()
 		this.pVisible = true
 		this.pVisitor = AddDecalVisitor.new( this )
+		
+		var LayerMask cfcategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic )
+		var LayerMask cffilter = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		this.pCollisionFilter = CollisionFilter.new( cfcategory, cffilter )
 	end
 	
 	/** \brief Dispose of decal builder to break reference loops. */
@@ -235,7 +238,7 @@ class DecalBuilder implements ColliderListener
 		collider.setCollisionFilter( this.pCollisionFilter )
 		
 		var ShapeList shape = ShapeList.new()
-		shape.addBox( Vector.new( 0.0, 0.0, -halfSize.getZ() ), halfSize )
+		shape.addBox( Vector.new( 0, 0, -halfSize.getZ() ), halfSize )
 		collider.setShape( shape )
 		
 		this.pCreatedDecals = collectDecals

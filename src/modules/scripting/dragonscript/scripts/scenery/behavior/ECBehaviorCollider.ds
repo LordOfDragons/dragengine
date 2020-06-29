@@ -167,6 +167,12 @@ class ECBehaviorCollider extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements ColliderListener
 		private var ECBehaviorCollider pECBehavior
@@ -219,6 +225,8 @@ class ECBehaviorCollider extends DefaultECBehavior
 			and this.pCollider castable ColliderComponent
 				( this.pCollider cast ColliderComponent ).copyStatesFromComponent()
 			end
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/**
@@ -394,6 +402,7 @@ class ECBehaviorCollider extends DefaultECBehavior
 	
 	private var ECComposeCollider pCollider
 	private var ECBehaviorComponent pComponent
+	private var Array pListenerFactories
 	
 	
 	
@@ -413,13 +422,14 @@ class ECBehaviorCollider extends DefaultECBehavior
 		end
 		
 		this.pComponent = component
+		this.pListenerFactories = Array.new()
 		
 		this.pCollider = ECComposeCollider.new( eclass, prefix )
 		
 		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
 		
 		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
@@ -432,6 +442,7 @@ class ECBehaviorCollider extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pComponent = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -461,6 +472,26 @@ class ECBehaviorCollider extends DefaultECBehavior
 	/** \brief Component behavior. */
 	public func ECBehaviorComponent getComponent()
 		return this.pComponent
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

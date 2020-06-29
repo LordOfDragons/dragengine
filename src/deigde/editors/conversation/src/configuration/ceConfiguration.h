@@ -76,6 +76,11 @@ public:
 	 */
 	void SaveConfiguration();
 	/*@}*/
+	
+	
+	
+private:
+	void pReset();
 };
 
 #endif

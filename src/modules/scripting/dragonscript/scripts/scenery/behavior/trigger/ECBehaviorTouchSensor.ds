@@ -102,6 +102,12 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
 		private var ECBehaviorTouchSensor pECBehavior
@@ -147,6 +153,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			end
 			
 			this.pTouchSensor.setListener( this )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/**
@@ -373,6 +381,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	private var ECPShapeList pShape
 	private var ECPBoolean pShapeFromSize
 	private var ECComposeAttachResource pAttach
+	private var Array pListenerFactories
 	
 	
 	
@@ -392,6 +401,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	String id, String prefix ) super( eclass, id )
 		this.pCollider = collider
+		this.pListenerFactories = Array.new()
 		
 		this.pShape = ECPShapeList.new( prefix + "shape", eclass.getCodecPropertyString() )
 		eclass.addProperty( this.pShape )
@@ -412,6 +422,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pCollider = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -440,6 +451,26 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	/** \brief Use stub element scaling as touch sensor shape. */
 	public func ECPBoolean getShapeFromSize()
 		return this.pShapeFromSize
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

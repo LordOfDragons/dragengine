@@ -692,7 +692,7 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 				deoglTexture *&depth = transparentStaticShadow ? texTranspDepth2 : texTranspDepth1;
 				deoglTexture *&color = transparentStaticShadow ? texTranspColor2 : texTranspColor1;
 				
-				if( sctransp.GetDynamicShadowCubeMap() ){
+				if( sctransp.GetDynamicShadowMap() ){
 					depth = sctransp.GetDynamicShadowMap()->GetTexture();
 					color = sctransp.GetDynamicColorMap()->GetTexture();
 					

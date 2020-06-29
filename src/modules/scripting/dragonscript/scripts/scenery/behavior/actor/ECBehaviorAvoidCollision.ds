@@ -1213,6 +1213,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		var LayerMask cfFilter = LayerMask.new()
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
 		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
 		
 		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )

@@ -115,6 +115,7 @@ bool meTaskSyncGameDefinition::Step(){
 			const int decalCount = object.GetDecalCount();
 			for( i=0; i<decalCount; i++ ){
 				meDecal &decal = *object.GetDecalAt( i );
+				decal.OnGameDefinitionChanged();
 				decal.LoadSkin();
 			}
 		}
@@ -139,6 +140,7 @@ bool meTaskSyncGameDefinition::Step(){
 		
 		for( ; pDecalIndex<lastIndex; pDecalIndex++ ){
 			meDecal &decal = *decals.GetAt( pDecalIndex );
+			decal.OnGameDefinitionChanged();
 			decal.LoadSkin();
 		}
 		

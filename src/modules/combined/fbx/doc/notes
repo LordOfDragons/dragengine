@@ -1,0 +1,52 @@
+FBX is proprietary and undocumented. Information used comes from:
+- https://code.blender.org/2013/08/fbx-binary-file-format-specification/
+- http://help.autodesk.com/view/FBX/2017/ENU/?guid=__files_GUID_105ED19A_9A5A_425E_BFD7_C1BBADA67AAB_htm
+
+
+Coordinate System
+=================
+
+right handed, Y-Up axis system meaning "X right, Y up, Z towards camera". Units are "cm".
+
+
+Node Transformation
+===================
+
+WorldTransform = ParentWorldTransform * T * Roff * Rp * Rpre * R * Rpost -1 * Rp -1 * Soff * Sp * S * Sp -1
+
+Where the term:      | Is a 4 x 4 matrix that contains
+---------------------+------------------------------------------
+WorldTransform       | Transformation matrix of the node
+ParentWorldTransform | Transformation matrix of the parent node
+T                    | Translation
+Roff                 | Rotation offset
+Rp                   | Rotation pivot
+Rpre                 | Pre-rotation
+R                    | Rotation
+Rpost -1             | Inverse of the post-rotation
+Rp -1                | Inverse of the rotation pivot
+Soff                 | Scaling offset
+Sp                   | Scaling pivot
+S                    | Scaling
+Sp -1                | Inverse of the scaling pivot
+
+The R matrix takes into account the rotation order. Because of the mathematical properties
+of the matrices, R is the result of one of the possible combinations of Rx, Ry, and Rz
+(each being matrices). For example, for the default rotation order of XYZ, R = Rz * Ry * Rx.
+
+
+Property70
+==========
+
+These nodes contain a property list in a specific format:
+
+  Node (Properties70):
+    Node (P):
+      Property String: 'UpAxis'    // name of property
+      Property String: 'int'       // C style data type
+      Property String: 'Integer'   // Application data type (like UI widget I guess)
+      Property String: ''          // seems to be always empty string
+      Property Integer: 1          // property value. can be any number of properties.
+                                   // for example a color has three double properties
+                                   // for R, G and B.
+    Node (P) ...

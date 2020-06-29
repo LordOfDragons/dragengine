@@ -44,6 +44,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -63,8 +64,8 @@ namespace {
 class cActionStart : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionStart( projPanelTestRun &panel ) :
-	igdeAction( "Start", "Test-Run project using selected Launcher Profile" ),
+	cActionStart( projPanelTestRun &panel ) : igdeAction( "Start",
+		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -79,8 +80,8 @@ public:
 class cActionQuit : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionQuit( projPanelTestRun &panel ) :
-	igdeAction( "Quit", "Stop Test-Run project" ),
+	cActionQuit( projPanelTestRun &panel ) : igdeAction( "Stop",
+		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -95,8 +96,8 @@ public:
 class cActionKill : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionKill( projPanelTestRun &panel ) :
-	igdeAction( "Kill", "Kill Test-Run project" ),
+	cActionKill( projPanelTestRun &panel ) : igdeAction( "Kill",
+		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -219,6 +220,11 @@ pMaxLines( 500 )
 	helper.Button( sidePanel, pBtnStart, pActionStart );
 	helper.Button( sidePanel, pBtnQuit, pActionQuit );
 	helper.Button( sidePanel, pBtnKill, pActionKill );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Logs / Debug:" );
+	helper.Button( groupBox, windowMain.GetActionShowLogs() );
+	helper.Button( groupBox, windowMain.GetActionShowConfig() );
+	helper.Button( groupBox, windowMain.GetActionShowOverlay() );
 	
 	
 	// logs widget

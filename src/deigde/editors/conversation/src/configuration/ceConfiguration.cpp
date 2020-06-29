@@ -60,7 +60,9 @@
 
 ceConfiguration::ceConfiguration( ceWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 ceConfiguration::~ceConfiguration(){
@@ -76,16 +78,20 @@ void ceConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void ceConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/conversationEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/conversationEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		ceConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -116,4 +122,12 @@ void ceConfiguration::SaveConfiguration(){
 	}catch( const deException &e ){
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void ceConfiguration::pReset(){
 }

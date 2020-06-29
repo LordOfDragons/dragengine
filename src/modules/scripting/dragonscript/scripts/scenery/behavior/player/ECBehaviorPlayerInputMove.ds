@@ -529,6 +529,10 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		
 		/** \brief Calculate moving speed. */
 		public func float calculateMovingSpeed()
+			if not this.pCanMove
+				return 0
+			end
+			
 			// analog movement
 			var float analogFB = this.pAnalogMoveForwardBackward + this.pAnalogMoveForwardBackwardSticky
 			var float analogLR = this.pAnalogMoveLeftRight + this.pAnalogMoveLeftRightSticky

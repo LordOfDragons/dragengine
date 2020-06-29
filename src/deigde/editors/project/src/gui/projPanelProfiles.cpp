@@ -63,6 +63,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
@@ -637,8 +638,17 @@ pListener( NULL )
 	helper.Button( sidePanel, windowMain.GetActionProfileAdd() );
 	helper.Button( sidePanel, windowMain.GetActionProfileRemove() );
 	helper.Button( sidePanel, windowMain.GetActionProfileDuplicate() );
-	helper.Button( sidePanel, windowMain.GetActionProfileDistribute() );
-	helper.Button( sidePanel, windowMain.GetActionProfileTestRun() );
+	
+	igdeContainerReference groupBox;
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Content:" );
+	helper.Button( groupBox, windowMain.GetActionShowContent() );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Test-Run:" );
+	helper.Button( groupBox, windowMain.GetActionProfileTestRun() );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Distribution:" );
+	helper.Button( groupBox, windowMain.GetActionProfileDistribute() );
+	helper.Button( groupBox, windowMain.GetActionShowDistribute() );
 	
 	
 	
@@ -647,7 +657,7 @@ pListener( NULL )
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaCenter );
 	
-	igdeContainerReference groupBox, frameLine;
+	igdeContainerReference frameLine;
 	const char *description;
 	
 	groupBox.TakeOver( new igdeContainerForm( env ) );

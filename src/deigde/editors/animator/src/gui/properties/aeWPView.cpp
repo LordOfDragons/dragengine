@@ -287,7 +287,7 @@ public:
 	virtual void OnVectorChanged( igdeEditVector *editVector ){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if( animator ){
-			animator->GetCamera()->SetPosition( editVector->GetVector() );
+			animator->GetCamera()->SetRelativePosition( editVector->GetVector() );
 		}
 	}
 };
