@@ -61,6 +61,9 @@ override_dh_auto_install:
 		mv $$f $$f2; \
 		ln -sf "/$$f2" $$f; \
 	done
+	
+	# ubuntu seems to dislike it if build files are still around after this point in time
+	scons $(SCONS_OPTIONS) --config=cache build -c
 
 override_dh_shlibdeps:
 	# debian build package has a problem with the DragonScript packages
