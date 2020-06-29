@@ -109,7 +109,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		
 		/** \brief Set if player can change crouch. */
 		public func void setCanCrouch( bool canChangeCrouch )
-			this.pCanCrouch = canChangeStance
+			this.pCanCrouch = canChangeCrouch
 		end
 		
 		/** \brief Toggle can change crouch. */
