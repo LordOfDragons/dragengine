@@ -37,21 +37,30 @@ private:
 	aeRule *pRule;
 	decStringSet pBones;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	aeUSetRuleRemoveBone( aeRule *rule, const char *pattern );
+	
 protected:
 	/** \brief Clean up undo. */
 	virtual ~aeUSetRuleRemoveBone();
 	/*@}*/
 	
+	
+	
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Has bones. */
+	bool HasBones() const;
+	
 	/** \brief Undo action. */
 	virtual void Undo();
+	
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
