@@ -92,13 +92,19 @@ ceUCAPChoiceActionPaste::~ceUCAPChoiceActionPaste(){
 ///////////////
 
 void ceUCAPChoiceActionPaste::Undo(){
+	ceConversationAction *activateAction = NULL;
+	
 	if( pOption ){
+		activateAction = ActivateActionAfterRemove( pOption->GetActions() );
 		pRemoveActions( pOption->GetActions() );
 		
 	}else{
+		activateAction = ActivateActionAfterRemove( pPlayerChoice->GetActions() );
 		pRemoveActions( pPlayerChoice->GetActions() );
 	}
 	GetTopic().NotifyActionStructureChanged( pPlayerChoice );
+	
+	GetTopic().SetActiveAction( activateAction ? activateAction : pPlayerChoice );
 }
 
 void ceUCAPChoiceActionPaste::Redo(){
@@ -109,4 +115,5 @@ void ceUCAPChoiceActionPaste::Redo(){
 		pInsertActions( pPlayerChoice->GetActions() );
 	}
 	GetTopic().NotifyActionStructureChanged( pPlayerChoice );
+	pSelectInserted();
 }

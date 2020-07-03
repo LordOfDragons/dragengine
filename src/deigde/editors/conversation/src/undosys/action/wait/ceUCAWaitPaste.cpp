@@ -75,11 +75,17 @@ ceUCAWaitPaste::~ceUCAWaitPaste(){
 ///////////////
 
 void ceUCAWaitPaste::Undo(){
+	ceConversationAction * const activateAction = ActivateActionAfterRemove( pWait->GetActions() );
+	
 	pRemoveActions( pWait->GetActions() );
 	GetTopic().NotifyActionStructureChanged( pWait );
+	
+	GetTopic().SetActiveAction( activateAction ? activateAction : pWait );
 }
 
 void ceUCAWaitPaste::Redo(){
 	pInsertActions( pWait->GetActions() );
 	GetTopic().NotifyActionStructureChanged( pWait );
+	
+	pSelectInserted();
 }

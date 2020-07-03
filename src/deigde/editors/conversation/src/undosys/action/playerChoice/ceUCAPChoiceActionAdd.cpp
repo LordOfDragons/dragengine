@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAPChoiceActionAdd.h"
+#include "../ceUndoHelpers.h"
 #include "../../../conversation/action/ceCAPlayerChoice.h"
 #include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 #include "../../../conversation/action/ceConversationAction.h"
@@ -100,14 +101,20 @@ ceUCAPChoiceActionAdd::~ceUCAPChoiceActionAdd(){
 ///////////////
 
 void ceUCAPChoiceActionAdd::Undo(){
+	ceConversationAction *activateAction = NULL;
+	
 	if( pOption ){
+		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pOption->GetActions(), pAction );
 		pOption->GetActions().Remove( pAction );
 		
 	}else{
+		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pPlayerChoice->GetActions(), pAction );
 		pPlayerChoice->GetActions().Remove( pAction );
 	}
 	
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	
+	pTopic->SetActiveAction( activateAction ? activateAction : pPlayerChoice );
 }
 
 void ceUCAPChoiceActionAdd::Redo(){
@@ -119,4 +126,5 @@ void ceUCAPChoiceActionAdd::Redo(){
 	}
 	
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pTopic->SetActiveAction( pAction );
 }

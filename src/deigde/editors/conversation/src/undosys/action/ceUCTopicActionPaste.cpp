@@ -52,11 +52,19 @@ ceUCActionPaste( topic, actions, index )
 ///////////////
 
 void ceUCTopicActionPaste::Undo(){
+	ceConversationAction * const activateAction = ActivateActionAfterRemove( GetTopic().GetActionList() );
+	
 	pRemoveActions( GetTopic().GetActionList() );
 	GetTopic().NotifyActionStructureChanged( NULL );
+	
+	if( activateAction ){
+		GetTopic().SetActiveAction( activateAction );
+	}
 }
 
 void ceUCTopicActionPaste::Redo(){
 	pInsertActions( GetTopic().GetActionList() );
 	GetTopic().NotifyActionStructureChanged( NULL );
+	
+	pSelectInserted();
 }

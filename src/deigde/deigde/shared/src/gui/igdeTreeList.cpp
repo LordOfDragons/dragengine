@@ -258,14 +258,26 @@ void igdeTreeList::RemoveItem( igdeTreeItem *item ){
 	}
 	
 	const igdeTreeItemReference guard( item );
-	pRemoveItem( item );
 	
 	bool selectionChanged = false;
 	if( pSelection ){
 		igdeTreeItem *check = pSelection;
 		while( check ){
 			if( check == item ){
-				pSelection = NULL;
+				// there are two possible solutions for handling this. the first is to clear
+				// the selection. the second is to move the selection to the next child if
+				// there are any children or the parent which can be NULL. most of the time
+				// the second behavior is the more desired behavior
+				//pSelection = NULL;
+				if( item->GetNext() ){
+					pSelection = item->GetNext();
+					
+				}else if( item->GetPrevious() ){
+					pSelection = item->GetPrevious();
+					
+				}else{
+					pSelection = item->GetParent();
+				}
 				selectionChanged = true;
 				break;
 			}
@@ -273,6 +285,8 @@ void igdeTreeList::RemoveItem( igdeTreeItem *item ){
 		}
 	}
 	
+	pRemoveItem( item );
+	item->SetParent( NULL );
 	OnItemRemoved( item );
 	
 	if( selectionChanged ){
@@ -726,7 +740,7 @@ bool igdeTreeList::pHasItem( igdeTreeItem *parent, void *data ) const{
 }
 
 void igdeTreeList::pRemoveItem( igdeTreeItem *item ){
-	item->AddReference();  // guard
+	const deObjectReference guard( item );
 	
 	if( item->GetPrevious() ){
 		item->GetPrevious()->SetNext( item->GetNext() );
@@ -744,8 +758,6 @@ void igdeTreeList::pRemoveItem( igdeTreeItem *item ){
 	
 	item->SetPrevious( NULL );
 	item->SetNext( NULL );
-	
-	item->FreeReference();
 }
 
 void igdeTreeList::pAppendItem( igdeTreeItem *parent, igdeTreeItem *item ){

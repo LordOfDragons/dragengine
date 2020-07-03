@@ -88,13 +88,21 @@ ceUCActionPaste::~ceUCActionPaste(){
 ///////////////
 
 void ceUCActionPaste::Undo(){
+	ceConversationAction * const activateAction = ActivateActionAfterRemove( pTopic->GetActionList() );
+	
 	pRemoveActions( pTopic->GetActionList() );
 	pTopic->NotifyActionStructureChanged( NULL );
+	
+	if( activateAction ){
+		pTopic->SetActiveAction( activateAction );
+	}
 }
 
 void ceUCActionPaste::Redo(){
 	pInsertActions( pTopic->GetActionList() );
 	pTopic->NotifyActionStructureChanged( NULL );
+	
+	pSelectInserted();
 }
 
 
@@ -117,5 +125,38 @@ void ceUCActionPaste::pRemoveActions( ceConversationActionList &list ){
 	
 	for( i=0; i<count; i++ ){
 		list.Remove( pActions.GetAt( i ) );
+	}
+}
+
+void ceUCActionPaste::pSelectInserted(){
+	if( pActions.GetCount() > 0 ){
+		pTopic->SetActiveAction( pActions.GetAt( 0 ) );
+	}
+}
+
+ceConversationAction *ceUCActionPaste::ActivateActionAfterRemove(
+const ceConversationActionList &list ) const{
+	if( pActions.GetCount() == 0 ){
+		return NULL;
+	}
+	
+	int index = list.IndexOf( pActions.GetAt( pActions.GetCount() - 1 ) );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( index < list.GetCount() - 1 ){
+		return list.GetAt( index + 1 );
+	}
+	
+	index = list.IndexOf( pActions.GetAt( 0 ) );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( index > 0 ){
+		return list.GetAt( index - 1 );
+		
+	}else{
+		return NULL;
 	}
 }

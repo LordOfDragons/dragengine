@@ -122,6 +122,10 @@ public:
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
+	/** \brief Active action changed. */
+	virtual void ActiveActionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic );
+	
 	
 	
 	/** \brief Actor count or order changed. */

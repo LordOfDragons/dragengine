@@ -28,7 +28,7 @@
 #include "../action/ceConversationActionList.h"
 
 class ceConversationFile;
-
+class ceConversationCondition;
 
 
 /**
@@ -41,6 +41,7 @@ private:
 	decString pID;
 	ceConversationActionList pActions;
 	ceConversationAction *pActiveAction;
+	ceConversationCondition *pActiveCondition;
 	
 	
 	
@@ -84,6 +85,12 @@ public:
 	
 	/** \brief Set active action or \em NULL if none is active. */
 	void SetActiveAction( ceConversationAction *action );
+	
+	/** \brief Active condition or \em NULL if none is active. */
+	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	
+	/** \brief Set active condition or \em NULL if none is active. */
+	void SetActiveCondition( ceConversationCondition *condition );
 	
 	
 	

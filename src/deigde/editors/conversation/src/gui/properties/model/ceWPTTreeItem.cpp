@@ -142,12 +142,6 @@ void ceWPTTreeItem::RemoveAllItems(){
 		item->SetModel( NULL );
 		item = ( ceWPTTreeItem* )item->GetNext();
 	}
-	
-	if( item ){
-		while( item->GetNext() ){
-			pTreeList->RemoveItem( item->GetNext() );
-		}
-	}
 }
 
 void ceWPTTreeItem::SortItems(){

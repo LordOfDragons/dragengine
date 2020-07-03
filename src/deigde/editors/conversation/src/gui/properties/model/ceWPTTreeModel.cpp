@@ -59,6 +59,20 @@
 
 
 
+// ceWPTTreeModel::PreventUpdateGuard
+///////////////////////////////////////
+
+ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard( bool &preventUpdate ) :
+pPreventUpdate( preventUpdate ), pPrevPreventUpdate( preventUpdate ){
+	preventUpdate = true;
+}
+
+ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
+	pPreventUpdate = pPrevPreventUpdate;
+}
+
+
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -66,8 +80,8 @@ ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conver
 pWindowMain( windowMain ),
 pConversation( NULL ),
 pListener( NULL ),
-
-pTreeList( NULL )
+pTreeList( NULL ),
+pPreventUpdate( false )
 {
 	if( ! conversation ){
 		DETHROW( deeInvalidParam );
@@ -171,7 +185,7 @@ void ceWPTTreeModel::RemoveChild( ceWPTTreeItemModel *child ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! child || child->GetParent() || child->GetTree() != this ){
+	if( ! child || child->GetTree() != this ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -241,7 +255,6 @@ void ceWPTTreeModel::MoveChild( int from, int to ){
 	pChildren.Move( child, to );
 	
 	igdeTreeItem *otherItem = NULL;
-	
 	if( otherChild ){
 		otherItem = otherChild->GetTreeItem();
 	}
@@ -271,6 +284,8 @@ void ceWPTTreeModel::UpdateActions(){
 	if( ! pTreeList ){
 		return;
 	}
+	
+	const PreventUpdateGuard preventUpdate( pPreventUpdate );
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
 	if( ! file ){
@@ -489,7 +504,7 @@ void ceWPTTreeModel::SelectActiveAction(){
 	
 	if( modelAction ){
 		modelAction->SetAsCurrentItem();
-		pWindowMain.GetWindowProperties().GetPanelTopic().SelectActiveAction();
+		pWindowMain.GetWindowProperties().GetPanelTopic().SelectActiveActionPanel();
 	}
 }
 

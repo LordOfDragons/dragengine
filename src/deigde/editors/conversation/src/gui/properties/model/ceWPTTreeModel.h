@@ -52,6 +52,7 @@ private:
 	decObjectOrderedSet pChildren;
 	
 	igdeTreeList *pTreeList; // weak reference
+	bool pPreventUpdate;
 	
 	
 	
@@ -146,11 +147,23 @@ public:
 	
 	/** \brief Select active action in tree list. */
 	void SelectActiveAction();
+	
+	/** \brief Prevent update. */
+	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
 	/*@}*/
 	
 	
 	
 private:
+	class PreventUpdateGuard{
+		bool &pPreventUpdate;
+		bool pPrevPreventUpdate;
+		
+	public:
+		PreventUpdateGuard( bool &preventUpdate );
+		~PreventUpdateGuard();
+	};
+	
 	void pCleanUp();
 };
 

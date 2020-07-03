@@ -183,8 +183,11 @@ public:
 	/** \brief Active condition. */
 	ceConversationCondition *GetCondition() const;
 	
-	/** \brief Selected active action. */
+	/** \brief Selected active action and panel and update. */
 	void SelectActiveAction();
+	
+	/** \brief Selected active action panel. */
+	void SelectActiveActionPanel();
 	
 	/** \brief Update active action. */
 	void UpdateAction();
