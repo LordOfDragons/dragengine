@@ -62,10 +62,10 @@ igdeTimer::~igdeTimer(){
 // Management
 ///////////////
 
-void igdeTimer::Start( int timeout, bool repeating ){
+void igdeTimer::Start( int timeoutMS, bool repeating ){
 	Stop();
 	
-	pTimeout = decMath::max( timeout, 0 );
+	pTimeout = decMath::max( timeoutMS, 0 );
 	pRepeating = repeating;
 	pRunning = true;
 	

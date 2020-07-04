@@ -79,9 +79,20 @@ void igdeNativeFoxTimer::StopTimer(){
 ///////////
 
 long igdeNativeFoxTimer::onTimeout( FXObject*, FXSelector, void* ){
-	if( pOwner->GetRunning() && pOwner->GetRepeating() ){
-		StartTimer();
+	if( ! pOwner->GetRunning() ){
+		// just in case FOX manages to send an event although the user stopped the timer
+		return 1;
 	}
+	
+	if( pOwner->GetRepeating() ){
+		// FOX timers run only once
+		StartTimer();
+		
+	}else{
+		// this does call StopTimer() but this is not a problem
+		pOwner->Stop();
+	}
+	
 	pOwner->OnTimeout();
 	return 1;
 }
