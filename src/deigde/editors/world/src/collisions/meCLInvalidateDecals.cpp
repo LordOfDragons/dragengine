@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "meCLReattachDecals.h"
+#include "meCLInvalidateDecals.h"
 #include "meCLHitListEntry.h"
 #include "../world/meWorld.h"
 #include "../world/decal/meDecal.h"
@@ -36,52 +36,52 @@
 
 
 
-// Class meCLReattachDecals::Helper
+// Class meCLInvalidateDecals::Helper
 /////////////////////////////////////
 
-meCLReattachDecals::Helper::Helper( meWorld *world ) :
-pVisitor( world ? new meCLReattachDecals( world ) : NULL ){
+meCLInvalidateDecals::Helper::Helper( meWorld *world ) :
+pVisitor( world ? new meCLInvalidateDecals( world ) : NULL ){
 }
 
-meCLReattachDecals::Helper::~Helper(){
+meCLInvalidateDecals::Helper::~Helper(){
 	if( pVisitor ){
 		delete pVisitor;
 	}
 }
 
-void meCLReattachDecals::Helper::Collect( const decDVector &position, const decVector &minExtend,
+void meCLInvalidateDecals::Helper::Collect( const decDVector &position, const decVector &minExtend,
 const decVector &maxExtend, const decQuaternion &orientation ){
 	if( pVisitor ){
 		pVisitor->Collect( position, minExtend, maxExtend, orientation );
 	}
 }
 
-void meCLReattachDecals::Helper::Collect( igdeWObject &wobject ){
+void meCLInvalidateDecals::Helper::Collect( igdeWObject &wobject ){
 	if( pVisitor ){
 		pVisitor->Collect( wobject );
 	}
 }
 
-void meCLReattachDecals::Helper::ReattachDecals(){
+void meCLInvalidateDecals::Helper::InvalidateDecals(){
 	if( pVisitor ){
-		pVisitor->ReattachDecals();
+		pVisitor->InvalidateDecals();
 	}
 }
 
 
 
-// Class meCLReattachDecals
+// Class meCLInvalidateDecals
 /////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meCLReattachDecals::meCLReattachDecals( meWorld *world ) : meCLCollect( world ){
+meCLInvalidateDecals::meCLInvalidateDecals( meWorld *world ) : meCLCollect( world ){
 	SetCollectObjects( false );
 	SetCollectDecals( true );
 }
 
-meCLReattachDecals::~meCLReattachDecals(){
+meCLInvalidateDecals::~meCLInvalidateDecals(){
 }
 
 
@@ -89,7 +89,7 @@ meCLReattachDecals::~meCLReattachDecals(){
 // Management
 ///////////////
 
-void meCLReattachDecals::ReattachDecals(){
+void meCLInvalidateDecals::InvalidateDecals(){
 	decPointerSet set;
 	int i, count = GetCollectedElements().GetEntryCount();
 	for( i=0; i<count; i++ ){
@@ -98,11 +98,11 @@ void meCLReattachDecals::ReattachDecals(){
 	
 	count = set.GetCount();
 	for( i=0; i<count; i++ ){
-		( ( meDecal* )set.GetAt( i ) )->ReattachDecals();
+		( ( meDecal* )set.GetAt( i ) )->InvalidateDecals();
 	}
 }
 
-void meCLReattachDecals::Collect( const decDVector &position, const decVector &minExtend,
+void meCLInvalidateDecals::Collect( const decDVector &position, const decVector &minExtend,
 const decVector &maxExtend, const decQuaternion &orientation ){
 	decLayerMask collisionCategory;
 	collisionCategory.SetBit( meWorld::eclmEditing );
@@ -114,7 +114,7 @@ const decVector &maxExtend, const decQuaternion &orientation ){
 		this, decCollisionFilter( collisionCategory, collisionFilter ) );
 }
 
-void meCLReattachDecals::Collect( igdeWObject &wobject ){
+void meCLInvalidateDecals::Collect( igdeWObject &wobject ){
 	Collect( wobject.GetPosition(), wobject.GetBoxMinExtend(),
 		wobject.GetBoxMaxExtend(), wobject.GetOrientation() );
 }
