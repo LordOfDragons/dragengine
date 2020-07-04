@@ -80,10 +80,10 @@ ceUCCAParamSetParameter::~ceUCCAParamSetParameter(){
 
 void ceUCCAParamSetParameter::Undo(){
 	pCondition->SetParameter( pOldParameter );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCAParamSetParameter::Redo(){
 	pCondition->SetParameter( pNewParameter );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

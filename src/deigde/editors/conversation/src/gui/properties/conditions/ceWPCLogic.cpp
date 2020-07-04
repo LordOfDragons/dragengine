@@ -64,7 +64,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionLogic * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
 			return;
@@ -110,7 +110,7 @@ ceWPCLogic::~ceWPCLogic(){
 ///////////////
 
 ceCConditionLogic *ceWPCLogic::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectLogic ){
 		return ( ceCConditionLogic* )condition;

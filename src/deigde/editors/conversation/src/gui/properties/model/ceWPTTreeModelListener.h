@@ -122,8 +122,16 @@ public:
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Active action changed. */
-	virtual void ActiveActionChanged( ceConversation *conversation, ceConversationFile *file,
+	/** \brief Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
+	
+	/** \brief Active changed. */
+	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic );
 	
 	

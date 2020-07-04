@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAIfElseAdd.h"
-#include "../ceUndoHelpers.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAIfElse.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/action/ceCAIfElseCase.h"
@@ -104,17 +104,17 @@ void ceUCAIfElseAdd::Undo(){
 	ceConversationAction *activateAction = NULL;
 	
 	if( pCase ){
-		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pCase->GetActions(), pAction );
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pCase->GetActions(), pAction );
 		pCase->GetActions().Remove( pAction );
 		
 	}else{
-		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pIfElse->GetElseActions(), pAction );
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pIfElse->GetElseActions(), pAction );
 		pIfElse->GetElseActions().Remove( pAction );
 	}
 	
 	pTopic->NotifyActionStructureChanged( pIfElse );
 	
-	pTopic->SetActiveAction( activateAction ? activateAction : pIfElse );
+	pTopic->SetActive( activateAction ? activateAction : pIfElse, NULL );
 }
 
 void ceUCAIfElseAdd::Redo(){
@@ -127,5 +127,5 @@ void ceUCAIfElseAdd::Redo(){
 	
 	pTopic->NotifyActionStructureChanged( pIfElse );
 	
-	pTopic->SetActiveAction( pAction );
+	pTopic->SetActive( pAction, NULL );
 }

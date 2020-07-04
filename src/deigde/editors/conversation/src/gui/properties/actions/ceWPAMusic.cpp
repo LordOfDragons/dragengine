@@ -106,7 +106,7 @@ ceWPAMusic::~ceWPAMusic(){
 ///////////////
 
 ceCAMusic *ceWPAMusic::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatMusic ){
 		return ( ceCAMusic* )action;

@@ -99,5 +99,5 @@ void ceWPTMAPChoiceOptionAdd::OnAction(){
 	}
 	
 	modelOption->SetAsCurrentItem();
-	wptopic.SelectActiveAction();
+	wptopic.SelectActivePanel();
 }

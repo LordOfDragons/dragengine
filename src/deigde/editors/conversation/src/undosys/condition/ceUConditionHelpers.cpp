@@ -23,56 +23,35 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "ceUCActionRemoveAll.h"
-#include "ceUActionHelpers.h"
-#include "../../conversation/action/ceConversationAction.h"
-#include "../../conversation/topic/ceConversationTopic.h"
+#include "ceUConditionHelpers.h"
+#include "../../conversation/condition/ceConversationCondition.h"
+#include "../../conversation/condition/ceConversationConditionList.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class ceUCActionRemoveAll
+// Class ceUConditionHelpers
 //////////////////////////////
 
-// Constructor, destructor
-////////////////////////////
-
-ceUCActionRemoveAll::ceUCActionRemoveAll( ceConversationTopic *topic ){
-	if( ! topic ){
+ceConversationCondition *ceUConditionHelpers::ActivateConditionAfterRemove(
+const ceConversationConditionList& list, ceConversationCondition *removedCondition ){
+	if( ! removedCondition ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pTopic = NULL;
-	pActionList = topic->GetActionList();
-	
-	SetShortInfo( "Remove All Actions" );
-	
-	pTopic = topic;
-	topic->AddReference();
-}
-
-ceUCActionRemoveAll::~ceUCActionRemoveAll(){
-	if( pTopic ){
-		pTopic->FreeReference();
+	const int index = list.IndexOf( removedCondition );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
 	}
-}
-
-
-
-// Management
-///////////////
-
-void ceUCActionRemoveAll::Undo(){
-	pTopic->GetActionList() = pActionList;
-	pTopic->NotifyActionStructureChanged( NULL );
 	
-	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	if( index < list.GetCount() - 1 ){
+		return list.GetAt( index + 1 );
+		
+	}else if( index > 0 ){
+		return list.GetAt( index - 1 );
+		
+	}else{
+		return NULL;
 	}
-}
-
-void ceUCActionRemoveAll::Redo(){
-	pTopic->GetActionList().RemoveAll();
-	pTopic->NotifyActionStructureChanged( NULL );
 }

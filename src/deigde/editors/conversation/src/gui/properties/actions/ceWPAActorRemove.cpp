@@ -108,7 +108,7 @@ ceWPAActorRemove::~ceWPAActorRemove(){
 ///////////////
 
 ceCAActorRemove *ceWPAActorRemove::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatActorRemove ){
 		return ( ceCAActorRemove* )action;

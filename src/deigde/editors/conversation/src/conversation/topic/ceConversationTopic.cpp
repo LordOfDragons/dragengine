@@ -41,37 +41,32 @@
 ceConversationTopic::ceConversationTopic( const char *id ) :
 pFile( NULL ),
 pID( id ),
-pActiveAction( NULL ){
+pActiveCondition( NULL ){
 }
 
 ceConversationTopic::ceConversationTopic( const ceConversationTopic &topic ) :
 pFile( NULL ),
 pID( topic.pID ),
-pActiveAction( NULL )
+pActiveCondition( NULL )
 {
 	const int count = topic.pActions.GetCount();
-	ceConversationAction *action = NULL;
+	ceConversationActionReference action;
 	int i;
 	
 	try{
 		for( i=0; i<count; i++ ){
-			action = topic.pActions.GetAt( i )->CreateCopy();
+			action.TakeOver( topic.pActions.GetAt( i )->CreateCopy() );
 			pActions.Add( action );
-			action->FreeReference();
-			action = NULL;
 		}
 		
 	}catch( const deException & ){
-		if( action ){
-			action->FreeReference();
-		}
 		pActions.RemoveAll();
 		throw;
 	}
 }
 
 ceConversationTopic::~ceConversationTopic(){
-	SetActiveAction( NULL );
+	SetActive( NULL, NULL );
 	pActions.RemoveAll();
 }
 
@@ -85,16 +80,18 @@ void ceConversationTopic::SetFile( ceConversationFile *file ){
 }
 
 void ceConversationTopic::SetID( const char *id ){
-	if( ! id ) DETHROW( deeInvalidParam );
+	if( pID == id ){
+		return;
+	}
 	
-	if( ! pID.Equals( id ) ){
-		if( pFile && pFile->GetTopicList().HasWithID( id ) ) DETHROW( deeInvalidParam );
-		
-		pID = id;
-		
-		if( pFile && pFile->GetConversation() ){
-			pFile->GetConversation()->NotifyTopicChanged( pFile, this );
-		}
+	if( pFile && pFile->GetTopicList().HasWithID( id ) ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pID = id;
+	
+	if( pFile && pFile->GetConversation() ){
+		pFile->GetConversation()->NotifyTopicChanged( pFile, this );
 	}
 }
 
@@ -110,22 +107,28 @@ void ceConversationTopic::NotifyActionChanged( ceConversationAction *action ){
 	}
 }
 
-void ceConversationTopic::SetActiveAction( ceConversationAction *action ){
-	if( action == pActiveAction ){
+void ceConversationTopic::SetActive( ceConversationAction *action, ceConversationCondition *condition ){
+	if( pActiveAction == action && pActiveCondition == condition ){
 		return;
 	}
 	
-	if( pActiveAction ){
-		pActiveAction->FreeReference();
-	}
-	
 	pActiveAction = action;
-	
-	if( action ){
-		action->AddReference();
-	}
+	pActiveCondition = condition;
 	
 	if( pFile && pFile->GetConversation() ){
-		pFile->GetConversation()->NotifyActiveActionChanged( pFile, this );
+		pFile->GetConversation()->NotifyActiveChanged( pFile, this );
+	}
+}
+
+void ceConversationTopic::NotifyConditionChanged( ceConversationAction *action,
+ceConversationCondition *condition ){
+	if( pFile && pFile->GetConversation() ){
+		pFile->GetConversation()->NotifyConditionChanged( pFile, this, action, condition );
+	}
+}
+
+void ceConversationTopic::NotifyConditionStructureChanged( ceConversationAction *action ){
+	if( pFile && pFile->GetConversation() ){
+		pFile->GetConversation()->NotifyConditionStructureChanged( pFile, this, action );
 	}
 }

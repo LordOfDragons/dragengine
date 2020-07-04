@@ -81,10 +81,10 @@ ceUCCTriggerSetTestMode::~ceUCCTriggerSetTestMode(){
 
 void ceUCCTriggerSetTestMode::Undo(){
 	pCondition->SetTestMode( pOldTestMode );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCTriggerSetTestMode::Redo(){
 	pCondition->SetTestMode( pNewTestMode );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

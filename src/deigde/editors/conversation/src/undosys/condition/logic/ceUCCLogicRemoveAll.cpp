@@ -82,10 +82,12 @@ ceUCCLogicRemoveAll::~ceUCCLogicRemoveAll(){
 
 void ceUCCLogicRemoveAll::Undo(){
 	pLogic->GetConditions() = pConditions;
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
+	
+	pTopic->SetActive( pAction, pConditions.GetCount() > 0 ? pConditions.GetAt( 0 ) : NULL );
 }
 
 void ceUCCLogicRemoveAll::Redo(){
 	pLogic->GetConditions().RemoveAll();
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
 }

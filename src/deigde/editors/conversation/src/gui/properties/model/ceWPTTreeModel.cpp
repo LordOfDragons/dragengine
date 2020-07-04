@@ -62,13 +62,13 @@
 // ceWPTTreeModel::PreventUpdateGuard
 ///////////////////////////////////////
 
-ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard( bool &preventUpdate ) :
-pPreventUpdate( preventUpdate ), pPrevPreventUpdate( preventUpdate ){
-	preventUpdate = true;
+ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard( ceWPTTreeModel &model ) :
+pModel( model ), pPrevPreventUpdate( model.pPreventUpdate ){
+	model.pPreventUpdate = true;
 }
 
 ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
-	pPreventUpdate = pPrevPreventUpdate;
+	pModel.pPreventUpdate = pPrevPreventUpdate;
 }
 
 
@@ -122,7 +122,7 @@ void ceWPTTreeModel::SetTreeList( igdeTreeList *treeList ){
 	
 	if( treeList ){
 		UpdateActions();
-		SelectActiveAction();
+		      SelectTopicActive();
 	}
 }
 
@@ -285,7 +285,7 @@ void ceWPTTreeModel::UpdateActions(){
 		return;
 	}
 	
-	const PreventUpdateGuard preventUpdate( pPreventUpdate );
+	const PreventUpdateGuard preventUpdate( *this );
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
 	if( ! file ){
@@ -485,26 +485,38 @@ ceWPTTIMCondition *ceWPTTreeModel::DeepFindCondition( ceConversationCondition *c
 	return NULL;
 }
 
-void ceWPTTreeModel::SelectActiveAction(){
+void ceWPTTreeModel::SelectTopicActive(){
 	if( ! pTreeList ){
 		return;
 	}
 	
-	ceWPTTIMAction *modelAction = NULL;
-	ceConversationFile * const file = pConversation->GetActiveFile();
-	if( file ){
-		ceConversationTopic * const topic = file->GetActiveTopic();
-		if( topic ){
-			ceConversationAction * const action = topic->GetActiveAction();
-			if( action ){
-				modelAction = DeepFindAction( action );
-			}
+	const ceConversationFile * const file = pConversation->GetActiveFile();
+	if( ! file ){
+		return;
+	}
+	
+	const ceConversationTopic * const topic = file->GetActiveTopic();
+	if( ! topic ){
+		return;
+	}
+	
+	ceConversationCondition * const condition = topic->GetActiveCondition();
+	if( condition ){
+		ceWPTTIMCondition * const model = DeepFindCondition( condition );
+		if( model ){
+			model->SetAsCurrentItem();
+			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+			return;
 		}
 	}
 	
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-		pWindowMain.GetWindowProperties().GetPanelTopic().SelectActiveActionPanel();
+	ceConversationAction * const action = topic->GetActiveAction();
+	if( action ){
+		ceWPTTIMAction * const model = DeepFindAction( action );
+		if( model ){
+			model->SetAsCurrentItem();
+			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+		}
 	}
 }
 

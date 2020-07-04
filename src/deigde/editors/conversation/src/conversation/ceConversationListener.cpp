@@ -162,7 +162,15 @@ void ceConversationListener::ActionChanged( ceConversation *conversation, ceConv
 ceConversationTopic *topic, ceConversationAction *action ){
 }
 
-void ceConversationListener::ActiveActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic ){
+void ceConversationListener::ConditionStructureChanged( ceConversation*,
+ceConversationFile*, ceConversationTopic*, ceConversationAction* ){
+}
+
+void ceConversationListener::ConditionChanged( ceConversation*, ceConversationFile*,
+ceConversationTopic*, ceConversationAction*, ceConversationCondition* ){
+}
+
+void ceConversationListener::ActiveChanged( ceConversation*, ceConversationFile*, ceConversationTopic* ){
 }
 
 

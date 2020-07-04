@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAWaitAdd.h"
-#include "../ceUndoHelpers.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAWait.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
@@ -83,17 +83,17 @@ ceUCAWaitAdd::~ceUCAWaitAdd(){
 
 void ceUCAWaitAdd::Undo(){
 	ceConversationAction * const activateAction =
-		ceUndoHelpers::ActivateActionAfterRemove( pWait->GetActions(), pAction );
+		ceUActionHelpers::ActivateActionAfterRemove( pWait->GetActions(), pAction );
 	
 	pWait->GetActions().Remove( pAction );
 	pTopic->NotifyActionStructureChanged( pWait );
 	
-	pTopic->SetActiveAction( activateAction ? activateAction : pWait );
+	pTopic->SetActive( activateAction ? activateAction : pWait, NULL );
 }
 
 void ceUCAWaitAdd::Redo(){
 	pWait->GetActions().InsertAt( pAction, pIndex );
 	pTopic->NotifyActionStructureChanged( pWait );
 	
-	pTopic->SetActiveAction( pAction );
+	pTopic->SetActive( pAction, NULL );
 }

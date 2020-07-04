@@ -80,10 +80,10 @@ ceUCCLogicSetOperator::~ceUCCLogicSetOperator(){
 
 void ceUCCLogicSetOperator::Undo(){
 	pLogic->SetOperator( pOldOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pLogic );
 }
 
 void ceUCCLogicSetOperator::Redo(){
 	pLogic->SetOperator( pNewOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pLogic );
 }

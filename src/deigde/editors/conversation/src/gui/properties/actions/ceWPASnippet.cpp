@@ -159,7 +159,7 @@ ceWPASnippet::~ceWPASnippet(){
 ///////////////
 
 ceCASnippet *ceWPASnippet::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatSnippet ){
 		return ( ceCASnippet* )action;

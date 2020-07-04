@@ -98,5 +98,5 @@ void ceWPTMAIfElseCaseAdd::OnAction(){
 	}
 	
 	modelIfCase->SetAsCurrentItem();
-	wptopic.SelectActiveAction();
+	wptopic.SelectActivePanel();
 }

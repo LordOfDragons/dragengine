@@ -27,6 +27,7 @@
 #include "ceWPTTreeModel.h"
 #include "ceWPTTreeModelListener.h"
 #include "action/ceWPTTIMAction.h"
+#include "condition/ceWPTTIMCondition.h"
 #include "../ceWPTopic.h"
 #include "../ceWindowProperties.h"
 #include "../../ceWindowMain.h"
@@ -112,7 +113,7 @@ void ceWPTTreeModelListener::ActiveFileChanged( ceConversation *conversation ){
 	}
 	
 	pModel.UpdateActions();
-	pModel.SelectActiveAction();
+	pModel.SelectTopicActive();
 }
 
 
@@ -129,7 +130,7 @@ void ceWPTTreeModelListener::ActiveTopicChanged( ceConversation *conversation, c
 	}
 	
 	pModel.UpdateActions();
-	pModel.SelectActiveAction();
+	pModel.SelectTopicActive();
 }
 
 
@@ -145,7 +146,6 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
 		if( model ){
 			model->Update();
-			//model->UpdateActionLists();
 		}
 		
 	}else{
@@ -156,7 +156,7 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActiveActionPanel();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
 }
 
 void ceWPTTreeModelListener::ActionChanged( ceConversation *conversation,
@@ -172,37 +172,67 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	}
 }
 
-void ceWPTTreeModelListener::ActiveActionChanged( ceConversation *conversation,
+void ceWPTTreeModelListener::ConditionStructureChanged( ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action ){
+	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	if( action ){
+		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
+		if( model ){
+			model->Update();
+		}
+		
+	}else{
+		pModel.UpdateActions();
+	}
+	
+	// the problem here is that listeners are run in any order. when we add items to the
+	// tree the listener of the WPTopic is called but no model is yet assigned. this will
+	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
+	// the WPTopic properly updates
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+}
+
+void ceWPTTreeModelListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition *condition ){
+	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	ceWPTTIMCondition * const model = pModel.DeepFindCondition( condition );
+	if( model ){
+		model->Update();
+	}
+}
+
+void ceWPTTreeModelListener::ActiveChanged( ceConversation *conversation,
 ceConversationFile *file, ceConversationTopic *topic ){
 	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
 	|| topic != file->GetActiveTopic() || ! pModel.GetTreeList() || pModel.GetPreventUpdate() ){
 		return;
 	}
 	
-	// we have to be careful with this update here. the tree list contains items which are
-	// not linked to an action. blindly updating the tree selection breaks the tree. what
-	// we do here is checking if the tree selection belongs to the same action that is
-	// selected in the topic. if this is the case do nothing
-	igdeTreeItem * const selection = pModel.GetTreeList()->GetSelection();
-	ceConversationAction *action = NULL;
-	
-	if( selection ){
-		const ceWPTTreeItem &item = *( ( ceWPTTreeItem* )selection );
-		if( ! item.GetModel() ){
+	if( topic->GetActiveCondition() ){
+		ceWPTTIMCondition * const condition = pModel.DeepFindCondition( topic->GetActiveCondition() );
+		if( condition ){
+			condition->SetAsCurrentItem();
 			return;
 		}
-		action = item.GetModel()->GetOwnerAction();
 	}
 	
-	ceConversationAction * const topicAction = topic->GetActiveAction();
-	if( topicAction == action ){
-		return;
+	if( topic->GetActiveAction() ){
+		ceWPTTIMAction * const action = pModel.DeepFindAction( topic->GetActiveAction() );
+		if( action ){
+			action->SetAsCurrentItem();
+			return;
+		}
 	}
 	
-	ceWPTTIMAction * const selectAction = pModel.DeepFindAction( topicAction );
-	if( selectAction ){
-		selectAction->SetAsCurrentItem();
-	}
+	pModel.GetTreeList()->SetSelection( NULL );
 }
 
 

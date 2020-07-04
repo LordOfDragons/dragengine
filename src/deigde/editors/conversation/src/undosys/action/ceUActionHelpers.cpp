@@ -19,26 +19,39 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _CEUNDOHELPERS_H_
-#define _CEUNDOHELPERS_H_
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#include <dragengine/deObject.h>
+#include "ceUActionHelpers.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/action/ceConversationActionList.h"
 
-class ceConversationAction;
-class ceConversationActionList;
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * \brief Undo Conversation Action Helpers.
- */
-class ceUndoHelpers{
-public:
-	/** \name Management */
-	/*@{*/
-	/** \brief Action to set active after action is removed. */
-	static ceConversationAction *ActivateActionAfterRemove(
-		const ceConversationActionList &list, ceConversationAction *removedAction );
-	/*@}*/
-};
 
-#endif
+// Class ceUActionHelpers
+////////////////////////
+
+ceConversationAction *ceUActionHelpers::ActivateActionAfterRemove(
+const ceConversationActionList& list, ceConversationAction *removedAction ){
+	if( ! removedAction ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int index = list.IndexOf( removedAction );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( index < list.GetCount() - 1 ){
+		return list.GetAt( index + 1 );
+		
+	}else if( index > 0 ){
+		return list.GetAt( index - 1 );
+		
+	}else{
+		return NULL;
+	}
+}

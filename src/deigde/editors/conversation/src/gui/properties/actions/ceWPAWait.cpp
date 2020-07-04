@@ -111,7 +111,7 @@ ceWPAWait::~ceWPAWait(){
 ///////////////
 
 ceCAWait *ceWPAWait::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatWait ){
 		return ( ceCAWait* )action;

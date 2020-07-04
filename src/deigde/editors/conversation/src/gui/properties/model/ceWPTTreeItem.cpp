@@ -181,12 +181,14 @@ void ceWPTTreeItem::OnContextMenu( igdeMenuCascade &contextMenu ){
 
 void ceWPTTreeItem::OnExpanded(){
 	if( pModel ){
+		pModel->SetExpanded( true );
 		pModel->OnExpandedChanged();
 	}
 }
 
 void ceWPTTreeItem::OnCollapsed(){
 	if( pModel ){
+		pModel->SetExpanded( false );
 		pModel->OnExpandedChanged();
 	}
 }

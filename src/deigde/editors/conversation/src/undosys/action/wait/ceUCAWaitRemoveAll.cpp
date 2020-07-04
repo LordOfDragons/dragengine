@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAWaitRemoveAll.h"
-#include "../ceUndoHelpers.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAWait.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
@@ -76,7 +76,7 @@ void ceUCAWaitRemoveAll::Undo(){
 	pTopic->NotifyActionStructureChanged( pWait );
 	
 	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActiveAction( pActionList.GetAt( 0 ) );
+		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
 	}
 }
 
@@ -84,5 +84,5 @@ void ceUCAWaitRemoveAll::Redo(){
 	pWait->GetActions().RemoveAll();
 	pTopic->NotifyActionStructureChanged( pWait );
 	
-	pTopic->SetActiveAction( pWait );
+	pTopic->SetActive( pWait, NULL );
 }

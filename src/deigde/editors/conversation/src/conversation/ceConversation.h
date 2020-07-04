@@ -41,6 +41,7 @@
 
 class ceConversationTopic;
 class ceConversationAction;
+class ceConversationCondition;
 class ceConversationInfoBox;
 class ceConversationListener;
 class ceActorPose;
@@ -477,8 +478,17 @@ public:
 	void NotifyActionStructureChanged( ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
 	/** \brief Notifies all that an action changed. */
 	void NotifyActionChanged( ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
-	/** \brief Notifies all that the active action changed. */
-	void NotifyActiveActionChanged( ceConversationFile *file, ceConversationTopic *topic );
+	
+	/** \brief Notifies all that the condition structure changed. */
+	void NotifyConditionStructureChanged( ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Notifies all that an condition changed. */
+	void NotifyConditionChanged( ceConversationFile *file, ceConversationTopic *topic,
+		ceConversationAction *action, ceConversationCondition *condition );
+	
+	/** \brief Notifies all that the active element changed. */
+	void NotifyActiveChanged( ceConversationFile *file, ceConversationTopic *topic );
 	
 	
 	

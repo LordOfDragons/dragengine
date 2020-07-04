@@ -104,7 +104,7 @@ void ceUCAPChoiceActionPaste::Undo(){
 	}
 	GetTopic().NotifyActionStructureChanged( pPlayerChoice );
 	
-	GetTopic().SetActiveAction( activateAction ? activateAction : pPlayerChoice );
+	GetTopic().SetActive( activateAction ? activateAction : pPlayerChoice, NULL );
 }
 
 void ceUCAPChoiceActionPaste::Redo(){

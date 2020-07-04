@@ -19,39 +19,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#ifndef _CEUCONDITIONHELPERS_H_
+#define _CEUCONDITIONHELPERS_H_
 
-#include "ceUndoHelpers.h"
-#include "../../conversation/action/ceConversationAction.h"
-#include "../../conversation/action/ceConversationActionList.h"
+#include <dragengine/deObject.h>
 
-#include <dragengine/common/exceptions.h>
+class ceConversationCondition;
+class ceConversationConditionList;
 
 
+/**
+ * \brief Undo Conversation Condition Helpers.
+ */
+class ceUConditionHelpers{
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Condition to set active after condition is removed. */
+	static ceConversationCondition *ActivateConditionAfterRemove(
+		const ceConversationConditionList &list, ceConversationCondition *removedCondition );
+	/*@}*/
+};
 
-// Class ceUndoHelpers
-////////////////////////
-
-ceConversationAction *ceUndoHelpers::ActivateActionAfterRemove(
-const ceConversationActionList& list, ceConversationAction *removedAction ){
-	if( ! removedAction ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int index = list.IndexOf( removedAction );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( index < list.GetCount() - 1 ){
-		return list.GetAt( index + 1 );
-		
-	}else if( index > 0 ){
-		return list.GetAt( index - 1 );
-		
-	}else{
-		return NULL;
-	}
-}
+#endif

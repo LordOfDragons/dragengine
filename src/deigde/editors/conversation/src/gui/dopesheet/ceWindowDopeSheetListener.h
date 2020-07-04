@@ -79,8 +79,8 @@ public:
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Active action changed. */
-	virtual void ActiveActionChanged( ceConversation *conversation, ceConversationFile *file,
+	/** \brief Active element changed. */
+	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic );
 	
 	

@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAIfElseRemoveAll.h"
-#include "../ceUndoHelpers.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAIfElse.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/action/ceCAIfElseCase.h"
@@ -98,7 +98,7 @@ void ceUCAIfElseRemoveAll::Undo(){
 	pTopic->NotifyActionStructureChanged( pIfElse );
 	
 	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActiveAction( pActionList.GetAt( 0 ) );
+		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
 	}
 }
 
@@ -112,5 +112,5 @@ void ceUCAIfElseRemoveAll::Redo(){
 	
 	pTopic->NotifyActionStructureChanged( pIfElse );
 	
-	pTopic->SetActiveAction( pIfElse );
+	pTopic->SetActive( pIfElse, NULL );
 }

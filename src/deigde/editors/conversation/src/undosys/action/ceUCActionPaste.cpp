@@ -94,7 +94,7 @@ void ceUCActionPaste::Undo(){
 	pTopic->NotifyActionStructureChanged( NULL );
 	
 	if( activateAction ){
-		pTopic->SetActiveAction( activateAction );
+		pTopic->SetActive( activateAction, NULL );
 	}
 }
 
@@ -130,7 +130,7 @@ void ceUCActionPaste::pRemoveActions( ceConversationActionList &list ){
 
 void ceUCActionPaste::pSelectInserted(){
 	if( pActions.GetCount() > 0 ){
-		pTopic->SetActiveAction( pActions.GetAt( 0 ) );
+		pTopic->SetActive( pActions.GetAt( 0 ), NULL );
 	}
 }
 

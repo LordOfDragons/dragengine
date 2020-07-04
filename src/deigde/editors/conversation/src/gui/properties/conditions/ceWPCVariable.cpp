@@ -70,7 +70,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
 			return;
@@ -96,7 +96,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || condition->GetVariable() == textField->GetText() ){
 			return;
@@ -116,7 +116,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -141,7 +141,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionVariable * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || condition->GetTestVariable() == textField->GetText() ){
 			return;
@@ -194,7 +194,7 @@ ceWPCVariable::~ceWPCVariable(){
 ///////////////
 
 ceCConditionVariable *ceWPCVariable::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectVariable ){
 		return ( ceCConditionVariable* )condition;

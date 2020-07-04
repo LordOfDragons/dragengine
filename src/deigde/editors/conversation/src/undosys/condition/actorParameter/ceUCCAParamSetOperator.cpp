@@ -80,10 +80,10 @@ ceUCCAParamSetOperator::~ceUCCAParamSetOperator(){
 
 void ceUCCAParamSetOperator::Undo(){
 	pCondition->SetOperator( pOldOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCAParamSetOperator::Redo(){
 	pCondition->SetOperator( pNewOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

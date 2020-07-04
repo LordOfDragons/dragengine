@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCCLogicRemove.h"
+#include "../ceUConditionHelpers.h"
 #include "../../../conversation/ceConversation.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/condition/ceCConditionLogic.h"
@@ -89,10 +90,17 @@ ceUCCLogicRemove::~ceUCCLogicRemove(){
 
 void ceUCCLogicRemove::Undo(){
 	pLogic->GetConditions().InsertAt( pCondition, pIndex );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
+	
+	pTopic->SetActive( pAction, pCondition );
 }
 
 void ceUCCLogicRemove::Redo(){
+	ceConversationCondition * const activateCondition =
+		ceUConditionHelpers::ActivateConditionAfterRemove( pLogic->GetConditions(), pCondition );
+	
 	pLogic->GetConditions().Remove( pCondition );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
+	
+	pTopic->SetActive( pAction, activateCondition ? activateCondition : pLogic );
 }

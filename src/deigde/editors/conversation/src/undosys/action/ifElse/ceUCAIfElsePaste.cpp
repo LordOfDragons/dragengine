@@ -104,7 +104,7 @@ void ceUCAIfElsePaste::Undo(){
 	}
 	GetTopic().NotifyActionStructureChanged( pIfElse );
 	
-	GetTopic().SetActiveAction( activateAction ? activateAction : pIfElse );
+	GetTopic().SetActive( activateAction ? activateAction : pIfElse, NULL );
 }
 
 void ceUCAIfElsePaste::Redo(){

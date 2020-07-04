@@ -68,7 +68,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
 			return;
@@ -94,7 +94,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || condition->GetTrigger() == textField->GetText() ){
 			return;
@@ -138,7 +138,7 @@ ceWPCTrigger::~ceWPCTrigger(){
 ///////////////
 
 ceCConditionTrigger *ceWPCTrigger::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectTrigger ){
 		return ( ceCConditionTrigger* )condition;

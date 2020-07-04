@@ -68,17 +68,4 @@ void ceWPTMAPChoiceOptionClearCondition::OnAction(){
 	igdeUndoReference undo;
 	undo.TakeOver( new ceUCAPChoiceOptionSetCondition( pTopic, pPlayerChoice, pOption, NULL ) );
 	GetConversation().GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAction * const modelAction = model.DeepFindAction( pPlayerChoice );
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }

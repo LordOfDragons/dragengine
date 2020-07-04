@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAPChoiceActionAdd.h"
-#include "../ceUndoHelpers.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAPlayerChoice.h"
 #include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 #include "../../../conversation/action/ceConversationAction.h"
@@ -104,17 +104,17 @@ void ceUCAPChoiceActionAdd::Undo(){
 	ceConversationAction *activateAction = NULL;
 	
 	if( pOption ){
-		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pOption->GetActions(), pAction );
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pOption->GetActions(), pAction );
 		pOption->GetActions().Remove( pAction );
 		
 	}else{
-		activateAction = ceUndoHelpers::ActivateActionAfterRemove( pPlayerChoice->GetActions(), pAction );
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pPlayerChoice->GetActions(), pAction );
 		pPlayerChoice->GetActions().Remove( pAction );
 	}
 	
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
 	
-	pTopic->SetActiveAction( activateAction ? activateAction : pPlayerChoice );
+	pTopic->SetActive( activateAction ? activateAction : pPlayerChoice, NULL );
 }
 
 void ceUCAPChoiceActionAdd::Redo(){
@@ -126,5 +126,5 @@ void ceUCAPChoiceActionAdd::Redo(){
 	}
 	
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
-	pTopic->SetActiveAction( pAction );
+	pTopic->SetActive( pAction, NULL );
 }

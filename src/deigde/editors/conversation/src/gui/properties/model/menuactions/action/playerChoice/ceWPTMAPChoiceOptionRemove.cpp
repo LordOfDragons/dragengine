@@ -84,5 +84,5 @@ void ceWPTMAPChoiceOptionRemove::OnAction(){
 	}
 	
 	modelPlayerChoice->SetAsCurrentItem();
-	wptopic.SelectActiveAction();
+	wptopic.SelectActivePanel();
 }

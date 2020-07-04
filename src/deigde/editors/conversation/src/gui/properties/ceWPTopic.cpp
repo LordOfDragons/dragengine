@@ -59,6 +59,7 @@
 #include "model/ceWPTTreeItem.h"
 #include "model/ceWPTTreeItemModel.h"
 #include "model/action/ceWPTTIMAction.h"
+#include "model/condition/ceWPTTIMCondition.h"
 #include "../ceWindowMain.h"
 #include "../../clipboard/ceClipboardDataTopic.h"
 #include "../../clipboard/ceClipboardDataFile.h"
@@ -764,16 +765,9 @@ public:
 		
 		ceWPTTreeItem * const item = ( ceWPTTreeItem* )treeList->GetSelection();
 		if( item ){
-			if( ! item->GetModel() ){
-				return; // during inserting no model exists yet
-			}
-			
 			item->OnSelected();
-			pPanel.SelectActiveAction();
-			
-		}else{
-			pPanel.SelectActiveActionPanel();
 		}
+		pPanel.SyncTopicActive();
 	}
 	
 	virtual void OnItemExpanded( igdeTreeList*, igdeTreeItem *item ){
@@ -1084,7 +1078,7 @@ void ceWPTopic::UpdateTopic(){
 
 
 
-ceConversationAction *ceWPTopic::GetAction() const{
+ceConversationAction *ceWPTopic::GetTreeAction() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1094,7 +1088,7 @@ ceConversationAction *ceWPTopic::GetAction() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerAction() : NULL;
 }
 
-ceConversationCondition *ceWPTopic::GetCondition() const{
+ceConversationCondition *ceWPTopic::GetTreeCondition() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1104,18 +1098,21 @@ ceConversationCondition *ceWPTopic::GetCondition() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerCondition() : NULL;
 }
 
-void ceWPTopic::SelectActiveAction(){
-	ceConversationTopic * const topic = GetTopic();
-	if( topic ){
-		topic->SetActiveAction( GetAction() );
+void ceWPTopic::SyncTopicActive(){
+	if( pModelTreeActions ){
+		ceConversationTopic * const topic = GetTopic();
+		if( topic ){
+			const ceWPTTreeModel::PreventUpdateGuard preventUpdate( *pModelTreeActions );
+			topic->SetActive( GetTreeAction(), GetTreeCondition() );
+		}
 	}
 	
-	SelectActiveActionPanel();
+	SelectActivePanel();
 }
 
-void ceWPTopic::SelectActiveActionPanel(){
-	ceConversationAction * const action = GetAction();
-	ceConversationCondition * const condition = GetCondition();
+void ceWPTopic::SelectActivePanel(){
+	const ceConversationCondition * const condition = GetTreeCondition();
+	const ceConversationAction * const action = GetTreeAction();
 	
 	if( condition ){
 		switch( condition->GetType() ){
@@ -1149,10 +1146,6 @@ void ceWPTopic::SelectActiveActionPanel(){
 			
 		case ceConversationCondition::ectTrigger:
 			pSwitcher->SetCurrent( epCTrigger );
-			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 			break;
 		}
 		
@@ -1233,20 +1226,17 @@ void ceWPTopic::SelectActiveActionPanel(){
 		case ceConversationAction::eatComment:
 			pSwitcher->SetCurrent( epAComment );
 			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 		}
 		
 	}else{
 		pSwitcher->SetCurrent( epEmpty );
 	}
 	
-	UpdateAction();
+	UpdateActive();
 }
 
-void ceWPTopic::UpdateAction(){
-	switch( pSwitcher->GetCurrent() ){
+void ceWPTopic::UpdateActive(){
+	switch( ( ePanels )pSwitcher->GetCurrent() ){
 	case epACameraShot:
 		pPanelACameraShot->UpdateAction();
 		break;
@@ -1343,7 +1333,19 @@ void ceWPTopic::UpdateAction(){
 		pPanelCAParam->UpdateCondition();
 		break;
 		
-	default:
+	case epCActorCommand:
+		pPanelCActorCommand->UpdateCondition();
+		break;
+		
+	case epCGameCommand:
+		pPanelCGameCommand->UpdateCondition();
+		break;
+		
+	case epCTrigger:
+		pPanelCTrigger->UpdateCondition();
+		break;
+		
+	case epEmpty:
 		break;
 	}
 }
@@ -1416,7 +1418,7 @@ void ceWPTopic::LocateAction( ceConversationAction *action ){
 	}
 	
 	item->SetAsCurrentItem();
-	SelectActiveAction();
+	SyncTopicActive();
 }
 
 void ceWPTopic::PlayActionFromHere(){

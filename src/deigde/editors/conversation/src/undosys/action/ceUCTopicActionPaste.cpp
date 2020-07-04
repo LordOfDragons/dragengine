@@ -58,7 +58,7 @@ void ceUCTopicActionPaste::Undo(){
 	GetTopic().NotifyActionStructureChanged( NULL );
 	
 	if( activateAction ){
-		GetTopic().SetActiveAction( activateAction );
+		GetTopic().SetActive( activateAction, NULL );
 	}
 }
 

@@ -80,7 +80,7 @@ void ceUCAWaitPaste::Undo(){
 	pRemoveActions( pWait->GetActions() );
 	GetTopic().NotifyActionStructureChanged( pWait );
 	
-	GetTopic().SetActiveAction( activateAction ? activateAction : pWait );
+	GetTopic().SetActive( activateAction ? activateAction : pWait, NULL );
 }
 
 void ceUCAWaitPaste::Redo(){

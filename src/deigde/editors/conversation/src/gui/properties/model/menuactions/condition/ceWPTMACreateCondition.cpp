@@ -71,19 +71,6 @@ void ceWPTMACreateCondition::OnAction(){
 	igdeUndoReference undo;
 	undo.TakeOver( CreateUndo( condition ) );
 	GetConversation().GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMCondition * const modelCondition = model.DeepFindCondition( condition );
-	if( modelCondition ){
-		modelCondition->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }
 
 igdeUndo *ceWPTMACreateCondition::CreateUndo( ceConversationCondition *condition ){

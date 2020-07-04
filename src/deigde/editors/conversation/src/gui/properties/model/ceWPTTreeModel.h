@@ -44,6 +44,20 @@ class igdeMenuCascade;
  * Tree model is responsible to update the visual state and content of assigned tree list.
  */
 class ceWPTTreeModel{
+public:
+	class PreventUpdateGuard{
+		ceWPTTreeModel &pModel;
+		bool pPrevPreventUpdate;
+		
+	public:
+		PreventUpdateGuard( ceWPTTreeModel &model );
+		~PreventUpdateGuard();
+	};
+	
+	friend PreventUpdateGuard;
+	
+	
+	
 private:
 	ceWindowMain &pWindowMain;
 	ceConversation *pConversation;
@@ -145,8 +159,8 @@ public:
 	/** \brief Deep find condition. */
 	ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition ) const;
 	
-	/** \brief Select active action in tree list. */
-	void SelectActiveAction();
+	/** \brief Select topic active element. */
+	void SelectTopicActive();
 	
 	/** \brief Prevent update. */
 	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
@@ -155,15 +169,6 @@ public:
 	
 	
 private:
-	class PreventUpdateGuard{
-		bool &pPreventUpdate;
-		bool pPrevPreventUpdate;
-		
-	public:
-		PreventUpdateGuard( bool &preventUpdate );
-		~PreventUpdateGuard();
-	};
-	
 	void pCleanUp();
 };
 

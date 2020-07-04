@@ -32,6 +32,7 @@ class ceConversationActor;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
+class ceConversationCondition;
 class ceCameraShot;
 class ceLookAt;
 class cePose;
@@ -133,8 +134,17 @@ public:
 	virtual void ActionStructureChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
 	/** \brief Action changed. */
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
-	/** \brief Active action changed. */
-	virtual void ActiveActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
+	
+	/** \brief Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
+	
+	/** \brief Active element changed. */
+	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
 	
 	
 	
