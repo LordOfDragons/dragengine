@@ -129,19 +129,31 @@ class ConsoleInputField extends TextField
 	
 	
 	
-	/** \brief History of previous commands. */
+	/** \brief History of previous commands as Array of String. */
 	public func Array getHistory()
 		return this.pHistory
 	end
 	
-	/** \brief Selection in the history. */
+	/** \brief Selection in the history or history count if edited. */
 	public func int getHistorySelection()
 		return this.pHistorySelection
 	end
 	
-	/** \brief Set selection in the history. */
+	/** \brief Set selection in the history or history count if edited. */
 	public func void setHistorySelection( int selection )
+		if selection < 0
+			throw EInvalidParam.new( "selection < 0" )
+		end
+		if selection > this.pHistory.getCount()
+			throw EInvalidParam.new( "selection > history.count(" + this.pHistory.getCount() + ")" )
+		end
+		
 		this.pHistorySelection = selection
+	end
+	
+	/** \brief Set selection to history count, for example due to editing. */
+	public func void clearHistorySelection()
+		this.pHistorySelection = this.pHistory.getCount()
 	end
 	
 	
@@ -152,7 +164,7 @@ class ConsoleInputField extends TextField
 		
 		select event.getKeyCode()
 		case InputEventKey.arrowUp
-			if this.pHistorySelection <= 0
+			if this.pHistorySelection == 0
 				break
 			end
 			
@@ -162,19 +174,12 @@ class ConsoleInputField extends TextField
 			this.ensureCursorVisible()
 			
 		case InputEventKey.arrowDown
-			if this.pHistorySelection >= this.pHistory.getCount()
+			if this.pHistorySelection >= this.pHistory.getCount() - 1
 				break
 			end
 			
 			this.pHistorySelection++
-			
-			if this.pHistorySelection < this.pHistory.getCount()
-				this.getModel().setText( this.pHistory.getAt( this.pHistorySelection ) cast String )
-				
-			else
-				this.getModel().setText( "" )
-			end
-			
+			this.getModel().setText( this.pHistory.getAt( this.pHistorySelection ) cast String )
 			this.setCursorPosition( this.getModel().getText().getLength() )
 			this.ensureCursorVisible()
 			
@@ -199,23 +204,30 @@ class ConsoleInputField extends TextField
 	public func void onKeyType( KeyEvent event )
 		select event.getKeyCode()
 		case InputEventKey.enter
-			var String command = this.getModel().getText()
+			var String command = this.getModel().getText().trimBoth()
 			this.getModel().setText( "" )
 			
-			if this.pHistory.getCount() == 0 or not this.pHistory.getAt( this.pHistory.getCount() - 1 ).equals( command )
+			if command.empty()
+				break
+			end
+			
+			if this.pHistory.getCount() == 0 or not this.pHistory.getAt( -1 ).equals( command )
 				if this.pHistory.getCount() == 50
 					this.pHistory.removeFrom( 0 )
 				end
 				this.pHistory.add( command )
+				this.clearHistorySelection()
 			end
 			
 			this.runCommand( command )
 			
+		case InputEventKey.delete
+			this.getModel().setText( "" )
+			
 		else
+			this.clearHistorySelection()
 			super.onKeyType( event )
 		end
-		
-		this.pHistorySelection = this.pHistory.getCount()
 	end
 	
 	

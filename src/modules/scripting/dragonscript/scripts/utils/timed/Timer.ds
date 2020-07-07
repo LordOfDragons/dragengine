@@ -34,16 +34,9 @@ namespace Dragengine.Utils
  * static timer manager.
  */
 abstract class Timer
-	/** \brief Timer manager this timer is registered at. */
 	private var TimerManager pTimerManager
-	
-	/** \brief Amount of seconds to wait until triggering. */
 	private var float pTriggerTime
-	
-	/** \brief Amount of seconds already elapsed. */
 	private var float pElapsedTime
-	
-	/** \brief Timer is triggered periodically. */
 	private var bool pIsPeriodic
 	
 	
@@ -149,7 +142,7 @@ abstract class Timer
 	 * time directly.
 	 */
 	public func void advance( float elapsed )
-		if elapsed <= 0.0
+		if elapsed <= 0
 			return
 		end
 		
@@ -160,7 +153,7 @@ abstract class Timer
 		
 		if this.pIsPeriodic
 			//this.pElapsedTime = DEMath.normalize( this.pElapsedTime, this.pTriggerTime )
-			this.pElapsedTime = 0.0
+			this.pElapsedTime = 0
 			
 		else
 			this.giveUp()
