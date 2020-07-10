@@ -64,6 +64,7 @@ appendLibrary(envTestRun, parent_targets['dragengine'], libsTestRun)
 libsTestRun.extend(parent_targets['dragengine']['binlibs'])
 if envEditor['OSWindows']:
 	libsTestRun.extend(['kernel32', 'user32'])
+	envEditor.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
 sourcesTestRun = []
 globFiles(envTestRun, 'testrun', '*.cpp', sourcesTestRun)
