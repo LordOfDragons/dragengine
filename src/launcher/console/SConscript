@@ -79,10 +79,10 @@ if 'lib_mingw_runtime' in parent_targets:
 		archive[os.path.join(pathBin, l.name)] = l
 
 if envLauncher['OSPosix']:
-	d = os.path.join(pathMan1, 'delauncher-console.1')
-	s = envLauncher.File('man/delauncher-console.1')
-	install.append(envLauncher.InstallAs(d, s))
-	archive[d] = s
+	target = os.path.join(pathMan1, 'delauncher-console.1')
+	source = 'man/delauncher-console.1'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
 
 targetInstall = envLauncher.Alias('launcher_console', install)
 

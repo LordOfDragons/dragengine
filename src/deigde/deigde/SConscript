@@ -293,6 +293,11 @@ if envIGDEApp['OSPosix']:
 	source = 'data/mimetypes.xml'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'man', 'man1', 'deigde.1')
+	source = 'man/deigde.1'
+	installApp.append(envIGDEApp.InstallAs(target, source))
+	archiveApp[target] = envIGDEApp.File(source).srcnode()
 
 
 targetInstallApp = envIGDEApp.Alias('deigde', installApp)

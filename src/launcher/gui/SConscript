@@ -136,6 +136,11 @@ if envLauncher['OSPosix']:
 	source = 'data/delauncher-gui-install.desktop'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'man', 'man1', 'delauncher-gui.1')
+	source = 'man/delauncher-gui.1'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
 
 targetInstall = parent_env.Alias('launcher_gui', install)
 
