@@ -636,6 +636,9 @@ const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
 		
 	case ectAbsorption:
 		return "Absorption";
+		
+	case ectRimEmissivity:
+		return "RimEmissivity";
 	}
 	
 	return "?";
@@ -715,6 +718,10 @@ deoglSkinChannel::eChannelTypes& channelType ){
 		
 	case deoglSkinPropertyMap::eptAbsorption:
 		channelType = ectAbsorption;
+		return true;
+		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		channelType = ectRimEmissivity;
 		return true;
 		
 	default:
@@ -803,6 +810,10 @@ void deoglSkinChannel::pInitUniformColor(){
 		break;
 		
 	case ectAbsorption:
+		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		break;
+		
+	case ectRimEmissivity:
 		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
 		break;
 		
@@ -1011,6 +1022,7 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		
 	case deoglSkinPropertyMap::eptEmissivity:
 	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		pUniformColor.r = value;
 		pUniformColor.g = value;
 		pUniformColor.b = value;
@@ -1078,6 +1090,7 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		
 	case deoglSkinPropertyMap::eptEmissivity:
 	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		pUniformColor.r = color.r;
 		pUniformColor.g = color.g;
 		pUniformColor.b = color.b;
@@ -1143,6 +1156,7 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptAmbientOcclusion:
 	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
 	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		if( image->GetComponentCount() == 1 ){
 			pClearUniformMasks( 0, 100, 100, 100 );
 			pClearUniformMasks( 1, 100, 100, 100 );
@@ -1186,6 +1200,7 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 		break;
 		
 	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		texture.SetHasEmissivity( true );
 		break;
 		
@@ -1361,6 +1376,13 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 		targetRed = 0;
 		targetGreen = 1;
 		targetBlue = 2;
+		break;
+		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		targetRed = 0;
+		targetGreen = 1;
+		targetBlue = 2;
+		texture.SetHasEmissivity( true );
 		break;
 		
 	default:
@@ -1741,6 +1763,7 @@ void deoglSkinChannel::pBuildCacheID(){
 		case ectRoughness:
 		case ectRefractDistort:
 		case ectSolidity:
+		case ectRimEmissivity:
 			pCacheID.AppendCharacter( 'b' );
 			break;
 			
@@ -1909,6 +1932,7 @@ const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptAmbientOcclusion:
 	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
 	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		if( image->GetComponentCount() == 1 ){
 			pWriteImageToPixelBuffer( *image, 0, 100, 100, 100 );
 			pWriteImageToPixelBuffer( *image, 1, 100, 100, 100 );
@@ -2048,6 +2072,12 @@ const deSkinPropertyConstructed &property ){
 		break;
 		
 	case deoglSkinPropertyMap::eptAbsorption:
+		targetRed = 0;
+		targetGreen = 1;
+		targetBlue = 2;
+		break;
+		
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		targetRed = 0;
 		targetGreen = 1;
 		targetBlue = 2;

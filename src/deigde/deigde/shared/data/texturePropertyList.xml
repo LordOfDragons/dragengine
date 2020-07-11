@@ -1323,6 +1323,112 @@
 		</affects>
 	</property>
 	
+	<property name='rim.emissivity'>
+		<description>
+			Defines the component wise rim light emission of a surface. Rim light intensity
+			is multiplied by the angle difference between the camera view plane and the
+			surface normal. This allows to create ghost like effects where objects glow
+			along their rim while not glowing seen face on.<br/>
+			<br/>
+			A value of 0 equals to no light being emitted whereas 1 equals to full bright
+			light being emitted. In the lighting model used by this game engine there exists
+			no maximum strength of light since the light intensity is only limited towards
+			the bottom. For this reason the additional property "rim.emissivity.intensity"
+			indicates the maximum intensity for all color components. The real intensity
+			equals to the emissivity value multiplied by the "rim.emissivity.intensity"
+			value.<br/>
+			<br/>
+			Usually this property is an 24-bit color image. The default is black.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.tint'>
+		<description>
+			Defines a color used to tint the rim emissivity property. This defines
+			a 3-component color that is multiplied component wise with the
+			rim.emissivity property. Typically used to create tinted versions of a
+			texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.intensity'>
+		<description>
+			Defines the intensity of rim light emission. This value has the same value
+			range as the intensity parameter of light sources. For a common 100W light
+			bulb this value would be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.angle'>
+		<description>
+			Defines the maximum angle difference between the camera view plane and the
+			surface normal for rim light emissivity to become 0. Surface normals
+			located in the camera view plane (parallel to this plane) have maximum
+			intensity. The intensity is faded until reaching rim.angle deviation from
+			the camera view plane. The rim.exponent defines the shape of the fading curve.<br/>
+			<br/>
+			The angle value is defined as mapping between no deviation (0 degrees) at
+			value 0 to full deviation (90 degrees) at value 1. The default value is 0
+			which disables the effect.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.exponent'>
+		<description>
+			Defines the shape of the fading curve for rim light. The value is used
+			as exponent for the curve. Hence a value of 1 produces a linear blend
+			along the angle (constant intensity change per degree change).
+			A value of 2 produces a squared shape with intensity changing stronger
+			near the camera view plane and less near the rim.angle angle.
+			A value of 0.5 produces a similar squared shape but flipped with
+			intensity changing stronger near rim.angle . The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='bounciness'>
 		<description>
 			Defines the bounciness of a surface. This is used by the physics module to determine

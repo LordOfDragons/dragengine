@@ -432,6 +432,12 @@ pName( texture.GetName() )
 	pIsOutlineSolid = true;
 	pIsOutlineEmissive = false;
 	
+	pRimEmissivity.Set( 0.0f, 0.0f, 0.0f );
+	pRimEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pRimEmissivityIntensity = 0.0f;
+	pRimAngle = 0.0f;
+	pRimExponent = 1.0f;
+	
 	pMirror = false;
 	pRendered = false;
 	pReflects = false;
@@ -743,6 +749,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetTextureRoughness( hasChanTex[ deoglSkinChannel::ectRoughness ] );
 		config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
 		config.SetTextureAO( hasChanTex[ deoglSkinChannel::ectAO ] );
+		config.SetTextureRimEmissivity( hasChanTex[ deoglSkinChannel::ectRimEmissivity ] );
 		
 		if( deoglSkinShader::REFLECTION_TEST_MODE == 0 ){
 			config.SetTextureEnvMap( pReflects || ( isParticle && ! realTranspParticle ) );
@@ -821,6 +828,14 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetDynamicVariation(
 				pMaterialProperties[ empVariationU ].IsDynamic()
 				|| pMaterialProperties[ empVariationV ].IsDynamic() );
+			config.SetDynamicRimEmissivityTint(
+				pMaterialProperties[ empRimEmissivityTint ].IsDynamic() );
+			config.SetDynamicRimEmissivityIntensity(
+				pMaterialProperties[ empRimEmissivityIntensity ].IsDynamic() );
+			config.SetDynamicRimAngle(
+				pMaterialProperties[ empRimAngle ].IsDynamic() );
+			config.SetDynamicRimExponent(
+				pMaterialProperties[ empRimExponent ].IsDynamic() );
 			
 			// required to be compatible with outline shaders if used to build parameter block
 			config.SetDynamicOutlineColor(
@@ -874,11 +889,14 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			
 			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
 			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
+			config.SetTextureRimEmissivity( hasChanTex[ deoglSkinChannel::ectRimEmissivity ] );
 			if( ! isParticle ){
 				config.SetDynamicEmissivityIntensity(
 					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
 				config.SetDynamicEnvRoomEmissivityIntensity(
 					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicRimEmissivityIntensity(
+					pMaterialProperties[ empRimEmissivityIntensity ].IsDynamic() );
 			}
 		}
 		
@@ -905,11 +923,14 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			
 			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
 			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
+			config.SetTextureRimEmissivity( hasChanTex[ deoglSkinChannel::ectRimEmissivity ] );
 			if( ! isParticle ){
 				config.SetDynamicEmissivityIntensity(
 					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
 				config.SetDynamicEnvRoomEmissivityIntensity(
 					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicRimEmissivityIntensity(
+					pMaterialProperties[ empRimEmissivityIntensity ].IsDynamic() );
 			}
 		}
 		
@@ -1197,6 +1218,25 @@ deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType
 				decMath::clamp( pParticleSheetCount, 1, 8 ) );
 		}
 		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimEmissivityIntensity );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
+				powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
+				powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
+				powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
+		}
+		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimAngle );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataFloat( target,
+				pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
+		}
+		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimExponent );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, decMath::max( pRimExponent, 0.001f ) );
+		}
+		
 		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineColor );
 		if( target != -1 ){
 			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineColor.r, 2.2f ),
@@ -1401,6 +1441,26 @@ void deoglSkinTexture::SetAbsorptionRange( float range ){
 
 void deoglSkinTexture::SetAbsorptionHalfIntensityDistance( float distance ){
 	pAbsorptionHalfIntensityDistance = distance;
+}
+
+void deoglSkinTexture::SetRimEmissivity( const decColor &emissivity ){
+	pRimEmissivity = emissivity;
+}
+
+void deoglSkinTexture::SetRimEmissivityTint( const decColor &tint ){
+	pRimEmissivityTint = tint;
+}
+
+void deoglSkinTexture::SetRimEmissivityIntensity( float intensity ){
+	pRimEmissivityIntensity = decMath::max( intensity, 0.0f );
+}
+
+void deoglSkinTexture::SetRimAngle( float angle ){
+	pRimAngle = decMath::clamp( angle, 0.0f, 1.0f );
+}
+
+void deoglSkinTexture::SetRimExponent( float exponent ){
+	pRimExponent = decMath::max( exponent, 0.0f );
 }
 
 
@@ -1847,6 +1907,7 @@ void deoglSkinTexture::pCreateMipMaps(){
 		case deoglSkinChannel::ectEnvironmentRoomMask:
 		case deoglSkinChannel::ectEnvironmentRoomEmissivity:
 		case deoglSkinChannel::ectAbsorption:
+		case deoglSkinChannel::ectRimEmissivity:
 			pbMipMap->CreateMipMaps();
 			break;
 			
@@ -2091,7 +2152,6 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
 		deoglSkinPropertyMap::GetTypeFor( property.GetType().GetString() );
 	deSkinPropertyVisitorIdentify identify;
-	decColor color;
 	float value;
 	
 	property.Visit( identify );
@@ -2223,8 +2283,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivity:
-			color.Set( value, value, value );
-			pEmissivity = color;
+			pEmissivity.Set( value, value, value );
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityTint:
@@ -2315,6 +2374,26 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pParticleSheetCount = decMath::max( ( int )( value + 0.5f ), 1 );
 			break;
 			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pEmissivity.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pRimEmissivityTint.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			pRimEmissivityIntensity = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			pRimAngle = decMath::clamp( value, 0.0f, 1.0f );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			pRimExponent = decMath::max( value, 0.0f );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineColor:
 			pOutlineColor.Set( value, value, value );
 			break;
@@ -2355,7 +2434,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if( identify.IsColor() ){
-		color = identify.CastToColor().GetColor();
+		const decColor &color = identify.CastToColor().GetColor();
 		
 		switch( propertyType ){
 		case deoglSkinPropertyMap::eptAbsorption:
@@ -2413,6 +2492,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
 			pTexCoordScale.Set( color.r, color.g );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pRimEmissivity = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pRimEmissivityTint = color;
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColor:
@@ -2625,6 +2712,27 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptVariationV:
 			materialProperty = pMaterialProperties + empVariationV;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			materialProperty = pMaterialProperties + empRimEmissivity;
+			requiresTexture = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			materialProperty = pMaterialProperties + empRimEmissivityTint;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			materialProperty = pMaterialProperties + empRimEmissivityIntensity;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			materialProperty = pMaterialProperties + empRimAngle;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			materialProperty = pMaterialProperties + empRimExponent;
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColor:
@@ -2884,6 +2992,28 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptVariationV:
 			pMaterialProperties[ empVariationV ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pMaterialProperties[ empRimEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empRimEmissivity ].GetRenderable() )
+				.SetRequiresTexture( true );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pMaterialProperties[ empRimEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			pMaterialProperties[ empRimEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			pMaterialProperties[ empRimAngle ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			pMaterialProperties[ empRimExponent ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineColor:

@@ -185,6 +185,10 @@ public:
 	bool pDynamicOutlineSolidity;
 	bool pDynamicOutlineEmissivity;
 	bool pDynamicOutlineEmissivityTint;
+	bool pDynamicRimEmissivityTint;
+	bool pDynamicRimEmissivityIntensity;
+	bool pDynamicRimAngle;
+	bool pDynamicRimExponent;
 	
 	bool pTextureColor;
 	bool pTextureColorTintMask;
@@ -206,6 +210,7 @@ public:
 	bool pTextureEnvRoom;
 	bool pTextureEnvRoomMask;
 	bool pTextureEnvRoomEmissivity;
+	bool pTextureRimEmissivity;
 	
 	
 	
@@ -588,6 +593,30 @@ public:
 	/** \brief Set if outline emissivity tint property is dynamic. */
 	void SetDynamicOutlineEmissivityTint( bool dynamic );
 	
+	/** \brief Rim emissivity tint property is dynamic. */
+	inline bool GetDynamicRimEmissivityTint() const{ return pDynamicRimEmissivityTint; }
+	
+	/** \brief Set if rim emissivity tint property is dynamic. */
+	void SetDynamicRimEmissivityTint( bool dynamic );
+	
+	/** \brief Rim emissivity intensity property is dynamic. */
+	inline bool GetDynamicRimEmissivityIntensity() const{ return pDynamicRimEmissivityIntensity; }
+	
+	/** \brief Set if rim emissivity intensity property is dynamic. */
+	void SetDynamicRimEmissivityIntensity( bool dynamic );
+	
+	/** \brief Rim angle property is dynamic. */
+	inline bool GetDynamicRimAngle() const{ return pDynamicRimAngle; }
+	
+	/** \brief Set if rim angle property is dynamic. */
+	void SetDynamicRimAngle( bool dynamic );
+	
+	/** \brief Rim exponent property is dynamic. */
+	inline bool GetDynamicRimExponent() const{ return pDynamicRimExponent; }
+	
+	/** \brief Set if rim exponent property is dynamic. */
+	void SetDynamicRimExponent( bool dynamic );
+	
 	
 	
 	/** \brief Color texture is used. */
@@ -697,6 +726,12 @@ public:
 	
 	/** \brief Set if environment room emissivity texture is used. */
 	void SetTextureEnvRoomEmissivity( bool textureEnvRoomEmissivity );
+	
+	/** \brief Rim emissivity texture is used. */
+	inline bool GetTextureRimEmissivity() const{ return pTextureRimEmissivity; }
+	
+	/** \brief Set if rim emissivity texture is used. */
+	void SetTextureRimEmissivity( bool useTexture );
 	/*@}*/
 	
 	

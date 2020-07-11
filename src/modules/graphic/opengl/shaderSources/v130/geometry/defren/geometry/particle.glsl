@@ -9,6 +9,11 @@ uniform mat4 pMatrixProj;
 in vec3 vParticle0[ 1 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 1 ]; // red, green, blue, transparency
 
+// some helper definitions to make the code easier to read
+#if defined WITH_REFLECTION || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 out vec2 vTCDiffuse;
 out vec2 vTCNormal;
 #ifdef HAS_MAP_EMISSIVE
@@ -18,7 +23,7 @@ out vec2 vTCAO;
 out vec3 vNormal;
 out vec3 vTangent;
 out vec3 vBitangent;
-#ifdef WITH_REFLECTION
+#ifdef WITH_REFLECT_DIR
 out vec3 vReflectDir;
 #endif
 out vec4 vColor;
@@ -63,7 +68,7 @@ void main( void ){
 	vTCEmissive = tc1;
 #endif
 	vTCAO = tc1;
-#ifdef WITH_REFLECTION
+#ifdef WITH_REFLECT_DIR
 	vReflectDir = position;
 #endif
 	EmitVertex();
@@ -76,7 +81,7 @@ void main( void ){
 	vTCEmissive = tc2;
 #endif
 	vTCAO = tc2;
-#ifdef WITH_REFLECTION
+#ifdef WITH_REFLECT_DIR
 	vReflectDir = position;
 #endif
 	EmitVertex();
@@ -89,7 +94,7 @@ void main( void ){
 	vTCEmissive = tc3;
 #endif
 	vTCAO = tc3;
-#ifdef WITH_REFLECTION
+#ifdef WITH_REFLECT_DIR
 	vReflectDir = position;
 #endif
 	EmitVertex();
@@ -102,7 +107,7 @@ void main( void ){
 	vTCEmissive = tc4;
 #endif
 	vTCAO = tc4;
-#ifdef WITH_REFLECTION
+#ifdef WITH_REFLECT_DIR
 	vReflectDir = position;
 #endif
 	EmitVertex();

@@ -39,6 +39,10 @@ UBOLAYOUT uniform TextureParameters{
 	
 	vec2 pTexVariationEnableScale; // variation.u, variation.v
 	int pTexParticleSheetCount; // particle.sheets
+	float pTexRimAngle; // rim.angle
+	
+	vec3 pTexRimEmissivityIntensity; // rim.emissivity.intensity
+	float pTexRimExponent; // rim.exponent
 	
 	vec3 pTexOutlineColor;
 	float pTexOutlineThickness;
@@ -87,6 +91,10 @@ UBOLAYOUT uniform TextureParameters{
 	
 	#define pTexVariationEnableScale vec2(pTexVariationEnableScale)
 	#define pTexParticleSheetCount int(pTexParticleSheetCount)
+	#define pTexRimAngle float(pTexRimAngle)
+	
+	#define pTexRimEmissivityIntensity vec3(pTexRimEmissivityIntensity)
+	#define pTexRimExponent float(pTexRimExponent)
 	
 	#define pTexOutlineColor vec3(pTexOutlineColor)
 	#define pTexOutlineThickness float(pTexOutlineThickness)

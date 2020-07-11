@@ -4,6 +4,14 @@ precision highp float;
 precision highp int;
 #endif
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Uniform Parameters
@@ -79,7 +87,7 @@ NODE_VERTEX_INPUTS
 		out vec2 vTCSTCReflectivity;
 		#define vTCReflectivity vTCSTCReflectivity
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		out vec2 vTCSTCEmissivity;
 		#define vTCEmissivity vTCSTCEmissivity
 	#endif
@@ -100,7 +108,7 @@ NODE_VERTEX_INPUTS
 		out vec3 vTCSBitangent;
 		#define vBitangent vTCSBitangent
 	#endif
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		out vec3 vTCSReflectDir;
 		#define vReflectDir vTCSReflectDir
 	#endif
@@ -127,7 +135,7 @@ NODE_VERTEX_INPUTS
 		out vec2 vGSTCReflectivity;
 		#define vTCReflectivity vGSTCReflectivity
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		out vec2 vGSTCEmissivity;
 		#define vTCEmissivity vGSTCEmissivity
 	#endif
@@ -148,7 +156,7 @@ NODE_VERTEX_INPUTS
 		out vec3 vGSBitangent;
 		#define vBitangent vGSBitangent
 	#endif
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		out vec3 vGSReflectDir;
 		#define vReflectDir vGSReflectDir
 	#endif
@@ -184,7 +192,7 @@ NODE_VERTEX_INPUTS
 	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
 		out vec2 vTCReflectivity;
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		out vec2 vTCEmissivity;
 	#endif
 	#ifdef TEXTURE_REFRACTION_DISTORT
@@ -199,7 +207,7 @@ NODE_VERTEX_INPUTS
 		out vec3 vTangent;
 		out vec3 vBitangent;
 	#endif
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		out vec3 vReflectDir;
 	#endif
 	#ifdef HEIGHT_MAP
@@ -250,7 +258,7 @@ void main( void ){
 	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
 		vTCReflectivity = tc; // * pTCTransformReflectivity.xy + pTCTransformReflectivity.zw;
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		vTCEmissivity = tc; // * pTCTransformEmissivity.xy + pTCTransformEmissivity.zw;
 	#endif
 	#ifdef TEXTURE_REFRACTION_DISTORT
@@ -268,7 +276,7 @@ void main( void ){
 	transformNormal( spbIndex );
 	
 	// reflection directory for environment map reflections
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		#ifdef HAS_TESSELLATION_SHADER
 			vReflectDir = position;
 		#else

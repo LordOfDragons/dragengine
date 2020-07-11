@@ -5,21 +5,24 @@ precision highp int;
 #endif
 
 // some helper definitions to make the code easier to read
-#if defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT || defined TEXTURE_EMISSIVITY
+#if defined OUTPUT_COLOR || defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT
 	#define _REQ_TEX_CLR_1 1
 #endif
-#if defined OUTPUT_COLOR || defined _REQ_TEX_CLR_1
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define _REQ_TEX_CLR_2 1
+#endif
+#if defined _REQ_TEX_CLR_1 || defined _REQ_TEX_CLR_2
 	#define REQUIRES_TEX_COLOR 1
 #endif
 
-#ifdef TEXTURE_HEIGHT
+#if defined TEXTURE_HEIGHT || defined TEXTURE_RIM_EMISSIVITY
 	#define REQUIRES_NORMAL 1
 #endif
 
 #if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE
 	#define WITH_SOLIDITY 1
 #endif
-#if defined TEXTURE_EMISSIVITY || defined WITH_OUTLINE
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY || defined WITH_OUTLINE
 	#define WITH_EMISSIVITY 1
 #endif
 
@@ -57,11 +60,14 @@ NODE_FRAGMENT_UNIFORMS
 #ifdef TEXTURE_SOLIDITY
 	uniform lowp sampler2D texSolidity;
 #endif
+#if defined REQUIRES_NORMAL && defined TEXTURE_NORMAL
+	uniform lowp SAMPLER_2D texNormal;
+#endif
 #ifdef TEXTURE_EMISSIVITY
 	uniform mediump SAMPLER_2D texEmissivity;
 #endif
-#ifdef TEXTURE_ENVROOM_EMISSIVITY
-	uniform mediump samplerCube texEnvRoomEmissivity;
+#ifdef TEXTURE_RIM_EMISSIVITY
+	uniform mediump SAMPLER_2D texRimEmissivity;
 #endif
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2D texDepthTest;
@@ -78,6 +84,14 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vTCColor;
 	#define tcColor vTCColor
+#endif
+#ifdef TEXTURE_NORMAL
+	in vec2 vTCNormal;
+	#define tcNormal vTCNormal
+#endif
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	in vec2 vTCEmissivity;
+	#define tcEmissivity vTCEmissivity
 #endif
 // #if defined PARTICLE && defined TEXTURE_EMISSIVITY
 // 	in float vParticleEmissivity; // from curve property
@@ -100,6 +114,9 @@ NODE_FRAGMENT_SAMPLERS
 		in vec3 vTangent;
 		in vec3 vBitangent;
 	#endif
+#endif
+#ifdef TEXTURE_RIM_EMISSIVITY
+	in vec3 vReflectDir;
 #endif
 #ifdef FADEOUT_RANGE
 	in float vFadeZ;
@@ -146,22 +163,25 @@ NODE_FRAGMENT_OUTPUTS
 
 
 
+// Includes requiring inputs to be defined
+////////////////////////////////////////////
+
+#if defined REQUIRES_NORMAL && ! defined HAS_TESSELLATION_SHADER
+	#include "v130/shared/defren/skin/relief_mapping.glsl"
+#endif
+
+/*
 #if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
-//	#include "v130/shared/defren/skin/environment_room.glsl"
+#include "v130/shared/defren/skin/environment_room.glsl"
 // this is not going to work since vReflectDir is not defined and without normal map
 // vTanget is also not defined
 #endif
+*/
 
 
 
 // Main Function
 //////////////////
-
-/*
-#ifndef HAS_TESSELLATION_SHADER
-#include "v130/shared/defren/skin/relief_mapping.glsl"
-#endif
-*/
 
 void main( void ){
 	// discard fragments beyond render range
@@ -205,22 +225,59 @@ void main( void ){
 	
 	
 	
-	// determine the correct normal. for back facing fragments the normal has to be flipped. care
-	// has to be taken if the rendering is mirrored. in this case the front facing is exactly the
-	// opposite of what we are really looking for. The xor operator does exactly this
-	/*
-	#if defined REQUIRES_NORMAL && defined REQUIRES_TEX_COLOR && ! defined HAS_TESSELLATION_SHADER
+	#ifdef REQUIRES_NORMAL
+		// determine the correct normal. for back facing fragments the normal has to be flipped. care
+		// has to be taken if the rendering is mirrored. in this case the front facing is exactly the
+		// opposite of what we are really looking for. The xor operator does exactly this
 		vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); // mix( if-false, if-true, condition )
 		
-		// relief mapping
-		vec2 tcReliefMapped = vTCColor;
-		reliefMapping( tcReliefMapped, realNormal );
+		// relief mapping. definition of macros has to be delied until here since undefine
+		// symbols can lead to tricky situations resulting in compilers failing
+		#ifndef HAS_TESSELLATION_SHADER
+			vec2 tcReliefMapped = vTCColor;
+			reliefMapping( tcReliefMapped, realNormal );
+			
+			#undef tcColor
+			#define tcColor tcReliefMapped
+			#ifdef TEXTURE_NORMAL
+				#undef tcNormal
+				#define tcNormal tcReliefMapped
+			#endif
+			#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+				#undef tcEmissivity
+				#define tcEmissivity tcReliefMapped
+			#endif
+		#endif
 		
-		#undef tcColor
-		#define tcColor tcReliefMapped
+		#ifdef TEXTURE_NORMAL
+			vec3 normal = TEXTURE( texNormal, tcNormal ).rgb;
+			normal = normal * vec3( 1.9921569 ) + vec3( -0.9921722 );
+		#else
+			vec3 normal = realNormal; // (0,0,1) => realNormal
+		#endif
+		
+		// normal and normal variance
+		#ifdef TEXTURE_NORMAL
+			normal = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );
+		#endif
+		
+		#ifdef TP_NORMAL_STRENGTH
+			// mix() is not an option since the texture property can be negative or larger than 1 for special effects
+			normal = ( normal - realNormal ) * vec3( pNormalStrength ) + realNormal;
+		#endif
+		
+		// various hacks that should go away later on
+		if( dot( normal, normal ) < 1e-6 ){
+			normal = vec3( 0.0, 0.0, 1.0 );
+		}
+		
+		// normalize is required for the later passes to work correctly
+		normal = normalize( normal );
 	#endif
-	*/
 	
+	#ifdef TEXTURE_RIM_EMISSIVITY
+		vec3 fragmentDirection = normalize( vReflectDir );
+	#endif
 	
 	// get texture properties from textures
 	#ifdef OUTPUT_COLOR
@@ -237,11 +294,26 @@ void main( void ){
 	#endif
 	
 	#ifdef WITH_EMISSIVITY
-		vec3 emissivity;
-		#ifdef TEXTURE_EMISSIVITY
-			emissivity = TEXTURE( texEmissivity, tcColor ).rgb;
-		#elif defined WITH_OUTLINE
-			emissivity = pOutlineEmissivity;
+		#ifdef WITH_OUTLINE
+			vec3 emissivity = pOutlineEmissivity;
+		#else
+			vec3 emissivity = vec3( 0.0 );
+			#ifdef TEXTURE_EMISSIVITY
+				emissivity += TEXTURE( texEmissivity, tcColor ).rgb;
+			#endif
+			#ifdef TEXTURE_RIM_EMISSIVITY
+				if( pRimAngle > 0.5 ){
+					// deoglSkinTexture: pRimAngle = angle > 0.001 ? 1 / ( angle * pi/2 ) : 0
+					// for "angle = 0.001 .. 1" we have "pRimAngle = 0.637 .. 636.62". hence 0.5 as threshold
+					// 
+					// using "normal" is not giving the results one expects especially if close up.
+					// instead the normal is dotted with the normalized fragment direction.
+					emissivity += pow( TEXTURE( texRimEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) )
+						* pRimEmissivityIntensity
+						* vec3( max( 1.0 - pow( asin( abs( dot( fragmentDirection, normal ) ) )
+							* pRimAngle, pRimExponent ), 0.0 ) );
+				}
+			#endif
 		#endif
 	#endif
 	

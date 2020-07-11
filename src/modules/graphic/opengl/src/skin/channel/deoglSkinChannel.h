@@ -124,11 +124,14 @@ public:
 		ectEnvironmentRoomEmissivity,
 		
 		/** \brief Absorption. */
-		ectAbsorption
+		ectAbsorption,
+		
+		/** \brief Rim emission channel. */
+		ectRimEmissivity,
 	};
 	
 	/** \brief Number of channels. */
-	static const int CHANNEL_COUNT = ectAbsorption + 1;
+	static const int CHANNEL_COUNT = ectRimEmissivity + 1;
 	
 	
 	

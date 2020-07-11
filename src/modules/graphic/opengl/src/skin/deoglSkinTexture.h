@@ -96,6 +96,11 @@ public:
 		empOutlineEmissivity,
 		empOutlineEmissivityTint,
 		empOutlineEmissivityIntensity,
+		empRimEmissivity,
+		empRimEmissivityTint,
+		empRimEmissivityIntensity,
+		empRimAngle,
+		empRimExponent,
 		EMP_COUNT
 	};
 	
@@ -285,6 +290,12 @@ private:
 	bool pHasOutline;
 	bool pIsOutlineSolid;
 	bool pIsOutlineEmissive;
+	
+	decColor pRimEmissivity;
+	decColor pRimEmissivityTint;
+	float pRimEmissivityIntensity;
+	float pRimAngle;
+	float pRimExponent;
 	
 	bool pQuickTransp;
 	
@@ -613,6 +624,36 @@ public:
 	inline float GetAbsorptionHalfIntensityDistance() const{ return pAbsorptionHalfIntensityDistance; }
 	/** Sets the absorption half intensity distance. */
 	void SetAbsorptionHalfIntensityDistance( float distance );
+	
+	/** \brief Rim emissivity. */
+	inline const decColor &GetRimEmissivity() const{ return pRimEmissivity; }
+	
+	/** \brief Set rim emissivity. */
+	void SetRimEmissivity( const decColor &emissivity );
+	
+	/** \brief Rim emissivity tint. */
+	inline const decColor &GetRimEmissivityTint() const{ return pRimEmissivityTint; }
+	
+	/** \brief Set rim emissivity tint. */
+	void SetRimEmissivityTint( const decColor &emissivity );
+	
+	/** \brief Rim emissivity intensity. */
+	inline float GetRimEmissivityIntensity() const{ return pRimEmissivityIntensity; }
+	
+	/** \brief Set rim emissivity intensity. */
+	void SetRimEmissivityIntensity( float intensity );
+	
+	/** \brief Rim angle. */
+	inline float GetRimAngle() const{ return pRimAngle; }
+	
+	/** \brief Set rim angle. */
+	void SetRimAngle( float angle );
+	
+	/** \brief Rim exponent. */
+	inline float GetRimExponent() const{ return pRimExponent; }
+	
+	/** \brief Set rim exponent. */
+	void SetRimExponent( float exponent );
 	
 	/** Determines if the texture is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }

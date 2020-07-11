@@ -120,6 +120,24 @@
 
 #define pParticleSheetCount pTexParticleSheetCount
 
+#ifdef DYNAMIC_RIM_EMISSIVITY_INTENSITY
+	#define pRimEmissivityIntensity pInstRimEmissivityIntensity
+#else
+	#define pRimEmissivityIntensity pTexRimEmissivityIntensity
+#endif
+
+#ifdef DYNAMIC_RIM_ANGLE
+	#define pRimAngle pInstRimAngle
+#else
+	#define pRimAngle pTexRimAngle
+#endif
+
+#ifdef DYNAMIC_RIM_EXPONENT
+	#define pRimExponent pInstRimExponent
+#else
+	#define pRimExponent pTexRimExponent
+#endif
+
 #ifdef DYNAMIC_OUTLINE_COLOR
 	#define pOutlineColor pInstOutlineColor
 #else

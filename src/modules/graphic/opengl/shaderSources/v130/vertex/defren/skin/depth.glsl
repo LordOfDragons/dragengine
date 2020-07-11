@@ -5,15 +5,21 @@ precision highp int;
 #endif
 
 // some helper definitions to make the code easier to read
-#if defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT || defined TEXTURE_EMISSIVITY
+#if defined OUTPUT_COLOR || defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT
 	#define _REQ_TEX_CLR_1 1
 #endif
-#if defined OUTPUT_COLOR || defined _REQ_TEX_CLR_1
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define _REQ_TEX_CLR_2 1
+#endif
+#if defined _REQ_TEX_CLR_1 || defined _REQ_TEX_CLR_2
 	#define REQUIRES_TEX_COLOR 1
 #endif
 
-#ifdef TEXTURE_HEIGHT
+#if defined TEXTURE_HEIGHT || defined TEXTURE_RIM_EMISSIVITY
 	#define REQUIRES_NORMAL 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
 #endif
 
 
@@ -104,6 +110,10 @@ NODE_VERTEX_INPUTS
 			#define vBitangent vTCSBitangent
 		#endif
 	#endif
+	#ifdef WITH_REFLECT_DIR
+		out vec3 vTCSReflectDir;
+		#define vReflectDir vTCSReflectDir
+	#endif
 	
 #elif defined GS_RENDER_CUBE
 	#ifdef REQUIRES_TEX_COLOR
@@ -131,6 +141,10 @@ NODE_VERTEX_INPUTS
 			out vec3 vGSBitangent;
 			#define vBitangent vGSBitangent
 		#endif
+	#endif
+	#ifdef WITH_REFLECT_DIR
+		out vec3 vGSReflectDir;
+		#define vReflectDir vGSReflectDir
 	#endif
 	
 	#ifdef SHARED_SPB
@@ -164,6 +178,9 @@ NODE_VERTEX_INPUTS
 			out vec3 vTangent;
 			out vec3 vBitangent;
 		#endif
+	#endif
+	#ifdef WITH_REFLECT_DIR
+		out vec3 vReflectDir;
 	#endif
 	#ifdef FADEOUT_RANGE
 		out float vFadeZ;
@@ -213,6 +230,19 @@ void main( void ){
 	// normal calculation
 	#ifdef REQUIRES_NORMAL
 		transformNormal( spbIndex );
+	#endif
+	
+	// reflection directory for environment map reflections
+	#ifdef WITH_REFLECT_DIR
+		#ifdef HAS_TESSELLATION_SHADER
+			vReflectDir = position;
+		#else
+			#ifdef BILLBOARD
+				vReflectDir = position;
+			#else
+				vReflectDir = pMatrixV * vec4( position, 1.0 );
+			#endif
+		#endif
 	#endif
 	
 	// non-perspective depth values if required

@@ -315,6 +315,9 @@ bool deoglVSDetermineChannelFormat::pChannelMatches( const deoglSkinPropertyMap:
 	case deoglSkinPropertyMap::eptAbsorption:
 		return pOglChanType == deoglSkinChannel::ectAbsorption;
 		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		return pOglChanType == deoglSkinChannel::ectRimEmissivity;
+		
 	default:
 		return false;
 	}
@@ -704,6 +707,23 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 		}
 		break;
 		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		if( SetRequiredSize( imageSize ) ){
+			SetSharedImage( rimage );
+			pIsDefined = true;
+			
+			if( pRequiredComponentCount < componentCount ){
+				pRequiredComponentCount = componentCount;
+			}
+			if( requiresFloat && ! pRequiresFloat ){
+				pRequiresFloat = true;
+			}
+			
+		}else{
+			WarnImageIncompatibleSize( property );
+		}
+		break;
+		
 	default:
 		break;
 	}
@@ -833,6 +853,12 @@ void deoglVSDetermineChannelFormat::pProcessPropertyColorVideo( const deoglSkinP
 		}
 		break;
 		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		pSharedImage = NULL;
+		pIsDefined = true;
+		pRequiredComponentCount = 3;
+		break;
+		
 	default:
 		break;
 	}
@@ -958,6 +984,12 @@ void deoglVSDetermineChannelFormat::pProcessPropertyValue( const deoglSkinProper
 		pSharedImage = NULL;
 		pIsDefined = true;
 		pRequiredComponentCount = 3;
+		break;
+		
+	case deoglSkinPropertyMap::eptRimEmissivity:
+		pSharedImage = NULL;
+		pIsDefined = true;
+		pRequiredComponentCount = 1;
 		break;
 		
 	default:
@@ -1216,6 +1248,17 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 		break;
 		
 	case deoglSkinPropertyMap::eptAbsorption:
+		if( SetRequiredSize( size ) ){
+			pSharedImage = NULL;
+			pIsDefined = true;
+			pRequiredComponentCount = 3;
+			
+		}else{
+			WarnImageIncompatibleSize( property );
+		}
+		break;
+		
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		if( SetRequiredSize( size ) ){
 			pSharedImage = NULL;
 			pIsDefined = true;

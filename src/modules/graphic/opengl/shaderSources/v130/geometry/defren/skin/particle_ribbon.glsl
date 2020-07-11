@@ -25,6 +25,14 @@ layout( lines_adjacency ) in;
 	layout( triangle_strip, max_vertices=4 ) out;
 #endif
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Uniform Parameters
@@ -79,7 +87,7 @@ out vec2 vTCColor;
 #ifdef TEXTURE_REFLECTIVITY
 	out vec2 vTCReflectivity;
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	out vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -95,7 +103,7 @@ out vec3 vNormal;
 	out vec3 vBitangent;
 #endif
 
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	out vec3 vReflectDir;
 #endif
 #ifdef FADEOUT_RANGE
@@ -103,7 +111,7 @@ out vec3 vNormal;
 #endif
 
 out vec4 vParticleColor; // from curve property
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	out float vParticleEmissivity; // from curve property
 #endif
 
@@ -235,7 +243,7 @@ void main( void ){
 		position.xyz -= ribbonAxis1;
 		gl_Position = pMatrixP * position;
 		vParticleColor = vParticle1[ 1 ];
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vParticleEmissivity = vParticle0[ 1 ].y;
 		#endif
 		vTCColor = tc1;
@@ -248,7 +256,7 @@ void main( void ){
 		#ifdef TEXTURE_REFLECTIVITY
 			vTCReflectivity = tc1;
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = tc1;
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -257,7 +265,7 @@ void main( void ){
 		#ifdef TEXTURE_AO
 			vTCAO = tc1;
 		#endif
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = position.xyz;
 		#endif
 		#ifdef FADEOUT_RANGE
@@ -268,7 +276,7 @@ void main( void ){
 		position.xyz = vec3( gl_in[ 2 ].gl_Position ) - ribbonAxis2;
 		gl_Position = pMatrixP * position;
 		vParticleColor = vParticle1[ 2 ];
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vParticleEmissivity = vParticle0[ 2 ].y;
 		#endif
 		vTCColor = tc2;
@@ -281,7 +289,7 @@ void main( void ){
 		#ifdef TEXTURE_REFLECTIVITY
 			vTCReflectivity = tc2;
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = tc2;
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -290,7 +298,7 @@ void main( void ){
 		#ifdef TEXTURE_AO
 			vTCAO = tc2;
 		#endif
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = position.xyz;
 		#endif
 		#ifdef FADEOUT_RANGE
@@ -301,7 +309,7 @@ void main( void ){
 		position.xyz = vec3( gl_in[ 1 ].gl_Position ) + ribbonAxis1;
 		gl_Position = pMatrixP * position;
 		vParticleColor = vParticle1[ 1 ];
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vParticleEmissivity = vParticle0[ 1 ].y;
 		#endif
 		vTCColor = tc3;
@@ -314,7 +322,7 @@ void main( void ){
 		#ifdef TEXTURE_REFLECTIVITY
 			vTCReflectivity = tc3;
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = tc3;
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -323,7 +331,7 @@ void main( void ){
 		#ifdef TEXTURE_AO
 			vTCAO = tc3;
 		#endif
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = position.xyz;
 		#endif
 		#ifdef FADEOUT_RANGE
@@ -334,7 +342,7 @@ void main( void ){
 		position.xyz = vec3( gl_in[ 2 ].gl_Position ) + ribbonAxis2;
 		gl_Position = pMatrixP * position;
 		vParticleColor = vParticle1[ 2 ];
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vParticleEmissivity = vParticle0[ 2 ].y;
 		#endif
 		vTCColor = tc4;
@@ -347,7 +355,7 @@ void main( void ){
 		#ifdef TEXTURE_REFLECTIVITY
 			vTCReflectivity = tc4;
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = tc4;
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -356,7 +364,7 @@ void main( void ){
 		#ifdef TEXTURE_AO
 			vTCAO = tc4;
 		#endif
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = position.xyz;
 		#endif
 		#ifdef FADEOUT_RANGE
