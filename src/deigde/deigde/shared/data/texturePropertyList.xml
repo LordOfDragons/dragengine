@@ -1415,9 +1415,9 @@
 			as exponent for the curve. Hence a value of 1 produces a linear blend
 			along the angle (constant intensity change per degree change).
 			A value of 2 produces a squared shape with intensity changing stronger
-			near the camera view plane and less near the rim.angle angle.
-			A value of 0.5 produces a similar squared shape but flipped with
-			intensity changing stronger near rim.angle . The default value is 1.
+			near rim.angle and less near 0 angle. A value of 0.5 produces a similar
+			squared shape but flipped with intensity changing stronger near 0 angle
+			and less near rim.angle . The default value is 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
