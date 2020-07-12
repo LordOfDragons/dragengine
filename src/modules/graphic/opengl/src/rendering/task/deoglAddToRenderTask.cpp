@@ -724,7 +724,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	
 	deoglHTSTexture &httexture = sector.GetTextureAt( texture );
 	deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-	if( pFilterReject( skinTexture ) ){
+	if( ! skinTexture || pFilterReject( skinTexture ) ){
 		return;
 	}
 	
