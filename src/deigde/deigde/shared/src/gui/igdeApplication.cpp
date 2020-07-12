@@ -26,7 +26,6 @@
 #include "igdeApplication.h"
 #include "igdeMainWindow.h"
 #include "native/toolkit.h"
-#include "native/fox/igdeNativeFoxApplication.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -62,12 +61,12 @@ pNativeApplication( NULL )
 	
 	pApp = this;
 	
-	pNativeApplication = new igdeNativeFoxApplication( *this );
+	pNativeApplication = igdeNativeApplication::CreateNativeApplication( *this );
 }
 
 igdeApplication::~igdeApplication(){
 	if( pNativeApplication ){
-		delete ( igdeNativeFoxApplication* )pNativeApplication;
+		( ( igdeNativeApplication* )pNativeApplication )->DestroyNativeApplication();
 	}
 	
 	if( pApp == this ){
@@ -86,23 +85,14 @@ igdeMainWindow *igdeApplication::GetMainWindow() const{
 
 #ifdef OS_UNIX
 void igdeApplication::Run( int argCount, char **args ){
-	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
 	decUnicodeStringList arguments;
-	int i;
-	for( i=0; i<argCount; i++ ){
-		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
-	}
+	igdeNativeApplication::GetOSStartUpArguments( arguments, argCount, args );
 	
 	pSharedRun( arguments );
 }
 
 #elif defined OS_W32
 void igdeApplication::Run(){
-// 	printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
-	
-// 	try{
-	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
-	// 
 	// quick note on why we use GetCommandLineW() here and not the value from wWinMain.
 	// MinGW does not support wWinMain so it has to be faked by implementing WinMain which
 	// calls GetCommandLineW(). This can be unfortunatly not fed directly to wWinMain
@@ -110,22 +100,13 @@ void igdeApplication::Run(){
 	// CRT calls wWinMain without the executable name as first argument. This incompatibility
 	// makes it hard to do this properly. Instead this class simply ignores the wWinMain
 	// provided command line value and fetches GetCommandLineW. ugly but it works
-	decUnicodeArgumentList parseArguments;
-	parseArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
+	decUnicodeArgumentList windowsArguments;
+	windowsArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
 	
-	const int count = parseArguments.GetArgumentCount();
 	decUnicodeStringList arguments;
-	int i;
-	for( i=0; i<count; i++ ){
-		arguments.Add( *parseArguments.GetArgumentAt( i ) );
-	}
+	igdeNativeApplication::GetOSStartUpArguments( arguments, windowsArguments );
 	
 	pSharedRun( arguments );
-// 	}catch(...){
-// 		printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
-// 		throw;
-// 	}
-// 	printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
 }
 
 #else
@@ -136,14 +117,14 @@ decColor igdeApplication::GetSystemColor( igdeEnvironment::eSystemColors color )
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	return ( ( igdeNativeFoxApplication* )pNativeApplication )->GetSystemColor( color );
+	return ( ( igdeNativeApplication* )pNativeApplication )->GetSystemColor( color );
 }
 
 void igdeApplication::GetAppFontConfig( igdeFont::sConfiguration &config ){
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	( ( igdeNativeFoxApplication* )pNativeApplication )->GetAppFontConfig( config );
+	( ( igdeNativeApplication* )pNativeApplication )->GetAppFontConfig( config );
 }
 
 igdeApplication &igdeApplication::app(){
@@ -157,7 +138,7 @@ void igdeApplication::RunModalWhileShown( igdeWindow &window ){
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	( ( igdeNativeFoxApplication* )pNativeApplication )->RunModalWhileShown( window );
+	( ( igdeNativeApplication* )pNativeApplication )->RunModalWhileShown( window );
 }
 
 
@@ -183,16 +164,16 @@ void igdeApplication::CleanUp(){
 //////////////////////
 
 void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
-	( ( igdeNativeFoxApplication* )pNativeApplication )->Initialize( arguments );
+	( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
 	
 	try{
 		if( Initialize( arguments ) ){
-			( ( igdeNativeFoxApplication* )pNativeApplication )->Run();
+			( ( igdeNativeApplication* )pNativeApplication )->Run();
 		}
 		
 	}catch( const deException &e ){
 		e.PrintError();
-		( ( igdeNativeFoxApplication* )pNativeApplication )->ShowError( e );
+		( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
 		
 		try{
 			CleanUp();
@@ -200,15 +181,15 @@ void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
 			
 		}catch( const deException &e ){
 			e.PrintError();
-			( ( igdeNativeFoxApplication* )pNativeApplication )->ShowError( e );
+			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
 		}
 		
-		( ( igdeNativeFoxApplication* )pNativeApplication )->Quit();
+		( ( igdeNativeApplication* )pNativeApplication )->Quit();
 		throw;
 	}
 	
 	CleanUp();
 	pMainWindow = NULL;
 	
-	( ( igdeNativeFoxApplication* )pNativeApplication )->Quit();
+	( ( igdeNativeApplication* )pNativeApplication )->Quit();
 }

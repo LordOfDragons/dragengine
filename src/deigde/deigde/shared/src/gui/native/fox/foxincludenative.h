@@ -19,12 +19,23 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _FOXINCLUDENATIVE_H_
+#define _FOXINCLUDENATIVE_H_
 
-#include "../../deigde_configuration.h"
+#include "../../../deigde_configuration.h"
 
-#include "fox/foxtoolkit.h"
-#include "fox/foxincludenative.h"
+#include "igdeNativeFoxApplication.h"
+#include "igdeNativeFoxButton.h"
+#include "igdeNativeFoxCheckBox.h"
+#include "igdeNativeFoxColorBox.h"
+#include "igdeNativeFoxComboBox.h"
+#include "igdeNativeFoxComboBoxFilter.h"
+#include "igdeNativeFoxGroupBox.h"
+#include "igdeNativeFoxIconListBox.h"
+#include "igdeNativeFoxViewCurveBezier.h"
+#include "dialog/igdeNativeFoxDialog.h"
+#include "nodeview/igdeNativeFoxNVBoard.h"
+#include "nodeview/igdeNativeFoxNVSlot.h"
+#include "nodeview/igdeNativeFoxNVNode.h"
 
 #endif

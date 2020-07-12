@@ -47,12 +47,26 @@ public:
 	
 	/** \brief Clean up application. */
 	~igdeNativeFoxApplication();
+	
+	/** \brief Create native application. */
+	static igdeNativeFoxApplication* CreateNativeApplication( igdeApplication &application );
+	
+	/** \brief Destroy native application. */
+	virtual void DestroyNativeApplication();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Get arguments from OS specific startup routine. */
+	#ifdef OS_UNIX
+	static void GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args );
+	#elif defined OS_W32
+	static void GetOSStartUpArguments( decUnicodeStringList &arguments,
+		const decUnicodeStringList &windowsArguments );
+	#endif
+	
 	/** \brief Initialize application. */
 	void Initialize( decUnicodeStringList &arguments );
 	
@@ -92,5 +106,7 @@ private:
 	char **pFoxArgs;
 	int pFoxArgCount;
 };
+
+typedef igdeNativeFoxApplication igdeNativeApplication;
 
 #endif

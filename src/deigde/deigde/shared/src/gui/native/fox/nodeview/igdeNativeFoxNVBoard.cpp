@@ -81,6 +81,30 @@ igdeNativeFoxNVBoard::~igdeNativeFoxNVBoard(){
 	}
 }
 
+igdeNativeFoxNVBoard *igdeNativeFoxNVBoard::CreateNativeWidget( igdeNVBoard &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVBoard( owner, parent, *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVBoard::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVBoard::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -115,6 +139,10 @@ void igdeNativeFoxNVBoard::UpdateLinks(){
 
 void igdeNativeFoxNVBoard::UpdateOffset(){
 	update();
+}
+
+decPoint igdeNativeFoxNVBoard::GetSize(){
+	return decPoint( getWidth(), getWidth() );
 }
 
 

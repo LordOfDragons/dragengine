@@ -74,10 +74,39 @@ igdeNativeFoxApplication::~igdeNativeFoxApplication(){
 	}
 }
 
+igdeNativeFoxApplication *igdeNativeFoxApplication::CreateNativeApplication( igdeApplication &application ){
+	return new igdeNativeFoxApplication( application );
+}
+
+void igdeNativeFoxApplication::DestroyNativeApplication(){
+	delete this;
+}
+
 
 
 // Management
 ///////////////
+
+#ifdef OS_UNIX
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	int i;
+	for( i=0; i<argCount; i++ ){
+		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
+	}
+}
+
+#elif defined OS_W32
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments,
+const decUnicodeStringList &windowsArguments ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	const int count = windowsArguments.GetArgumentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		arguments.Add( *windowsArguments.GetArgumentAt( i ) );
+	}
+}
+#endif
 
 	/*
 void igdeNativeFoxApplication::Initialize(){

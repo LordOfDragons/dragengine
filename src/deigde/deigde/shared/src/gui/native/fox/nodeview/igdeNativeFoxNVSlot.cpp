@@ -99,6 +99,31 @@ pIsDnd( false )
 igdeNativeFoxNVSlot::~igdeNativeFoxNVSlot(){
 }
 
+igdeNativeFoxNVSlot *igdeNativeFoxNVSlot::CreateNativeWidget( igdeNVSlot &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVSlot( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVSlot::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVSlot::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management

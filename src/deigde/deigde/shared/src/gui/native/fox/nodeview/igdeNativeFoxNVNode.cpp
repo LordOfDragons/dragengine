@@ -111,6 +111,30 @@ pDragControl( false )
 igdeNativeFoxNVNode::~igdeNativeFoxNVNode(){
 }
 
+igdeNativeFoxNVNode *igdeNativeFoxNVNode::CreateNativeWidget( igdeNVNode &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVNode( owner, parent, *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVNode::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVNode::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -179,6 +203,10 @@ void igdeNativeFoxNVNode::FitSizeToContent(){
 	const int height = FXVerticalFrame::getDefaultHeight();
 	resize( width, height );
 	recalc();
+}
+
+decPoint igdeNativeFoxNVNode::GetSize(){
+	return decPoint( getWidth(), getWidth() );
 }
 
 

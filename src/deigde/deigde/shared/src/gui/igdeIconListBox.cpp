@@ -34,7 +34,6 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
-#include "native/fox/igdeNativeFoxIconListBox.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -118,7 +117,7 @@ void igdeIconListBox::SetViewMode( eViewMode mode ){
 
 void igdeIconListBox::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->Focus();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -567,7 +566,7 @@ void igdeIconListBox::EnsureItemVisible( int index ){
 		return;
 	}
 	
-	( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->GetListBox()->makeItemVisible( index );
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->MakeItemVisible( index );
 }
 
 void igdeIconListBox::EnsureSelectedItemVisible(){
@@ -639,21 +638,9 @@ void igdeIconListBox::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxIconListBox * const native = new igdeNativeFoxIconListBox( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeIconListBox * const native = igdeNativeIconListBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeIconListBox::DestroyNativeWidget(){
@@ -661,7 +648,7 @@ void igdeIconListBox::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxIconListBox* )GetNativeWidget();
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -669,14 +656,14 @@ void igdeIconListBox::DestroyNativeWidget(){
 
 void igdeIconListBox::OnItemAdded( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->InsertItem(
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->InsertItem(
 			index, *( ( igdeListItem* )pItems.GetAt( index ) ) );
 	}
 }
 
 void igdeIconListBox::OnItemRemoved( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->RemoveItem( index );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveItem( index );
 	}
 }
 
@@ -685,60 +672,59 @@ void igdeIconListBox::OnAllItemsRemoved(){
 		return;
 	}
 	
-	igdeNativeFoxIconListBox &listBox = *( ( igdeNativeFoxIconListBox* )GetNativeWidget() );
-	listBox.GetListBox()->clearItems();
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveAllItems();
 }
 
 void igdeIconListBox::OnItemChanged( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateItem( index );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateItem( index );
 	}
 }
 
 void igdeIconListBox::OnItemMoved( int fromIndex, int toIndex ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
 	}
 }
 
 void igdeIconListBox::OnItemsSorted(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->BuildList();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->BuildList();
 	}
 }
 
 void igdeIconListBox::OnSelectionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateSelection();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateSelection();
 	}
 }
 
 void igdeIconListBox::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeIconListBox::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeIconListBox::OnViewModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnSelectionModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnHeaderChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateHeader();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateHeader();
 	}
 }

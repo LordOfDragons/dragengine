@@ -1254,6 +1254,32 @@ pResizer( NULL )
 igdeNativeFoxViewCurveBezier::~igdeNativeFoxViewCurveBezier(){
 }
 
+igdeNativeFoxViewCurveBezier *igdeNativeFoxViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const nativeParent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! nativeParent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxViewCurveBezier( owner, nativeParent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxViewCurveBezier::PostCreateNativeWidget(){
+	const FXComposite &nativeParent = *( ( FXComposite* )pView->GetOwner().GetParent()->GetNativeContainer() );
+	if( nativeParent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxViewCurveBezier::DestroyNativeWidget(){
+	delete this;
+}
+
+
 
 long igdeNativeFoxViewCurveBezier::onResizerDrag( FXObject*, FXSelector, void *data ){
 	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( data );
