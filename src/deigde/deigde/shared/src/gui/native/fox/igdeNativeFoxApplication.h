@@ -29,6 +29,9 @@
 class deException;
 class igdeApplication;
 class decUnicodeStringList;
+#ifdef OS_W32
+class decUnicodeArgumentList;
+#endif
 
 
 /**
@@ -64,7 +67,7 @@ public:
 	static void GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args );
 	#elif defined OS_W32
 	static void GetOSStartUpArguments( decUnicodeStringList &arguments,
-		const decUnicodeStringList &windowsArguments );
+		const decUnicodeArgumentList &windowsArguments );
 	#endif
 	
 	/** \brief Initialize application. */

@@ -98,7 +98,7 @@ void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &argu
 
 #elif defined OS_W32
 void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments,
-const decUnicodeStringList &windowsArguments ){
+const decUnicodeArgumentList &windowsArguments ){
 	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
 	const int count = windowsArguments.GetArgumentCount();
 	int i;
