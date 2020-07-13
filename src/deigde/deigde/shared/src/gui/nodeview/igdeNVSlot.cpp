@@ -235,15 +235,6 @@ void igdeNVSlot::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	igdeNativeNVSlot * const native = igdeNativeNVSlot::CreateNativeWidget( *this );
 	SetNativeWidget( native );
 	native->PostCreateNativeWidget();

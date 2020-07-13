@@ -183,6 +183,67 @@ long igdeNativeFoxMenuCascadeTitle::updateMenuAction( FXObject*, FXSelector, voi
 	return 0;
 }
 
+
+class igdeNativeFoxMenuCascade_PopupWindow : public igdeWindow{
+private:
+	igdeMenuCascade &pMenu;
+	
+public:
+	igdeNativeFoxMenuCascade_PopupWindow( igdeMenuCascade &menu );
+	
+protected:
+	virtual ~igdeNativeFoxMenuCascade_PopupWindow();
+	
+public:
+	virtual void Popup( const decPoint &position );
+	
+	virtual void CreateNativeWidget();
+	virtual void DestroyNativeWidget();
+	
+protected:
+	virtual void OnTitleChanged();
+	virtual void OnSizeChanged();
+	virtual void OnPositionChanged();
+	virtual void OnVisibleChanged();
+	virtual void OnEnabledChanged();
+};
+
+
+igdeNativeFoxMenuCascade_PopupWindow::igdeNativeFoxMenuCascade_PopupWindow( igdeMenuCascade &menu ) :
+igdeWindow( menu.GetEnvironment(), "", NULL, false ),
+pMenu( menu ){
+}
+
+igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){}
+
+
+void igdeNativeFoxMenuCascade_PopupWindow::Popup( const decPoint &position ){
+	if( ! pMenu.GetNativeWidget() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXMenuPane * const native = ( FXMenuPane* )pMenu.GetNativeWidget();
+	SetNativeWidget( native );
+	native->popup( NULL, position.x, position.y );
+	
+	GetEnvironment().RunModalWhileShown( *this );
+}
+
+
+void igdeNativeFoxMenuCascade_PopupWindow::CreateNativeWidget(){
+	DETHROW( deeInvalidParam );
+}
+
+void igdeNativeFoxMenuCascade_PopupWindow::DestroyNativeWidget(){
+	DropNativeWidget();
+}
+
+void igdeNativeFoxMenuCascade_PopupWindow::OnTitleChanged(){}
+void igdeNativeFoxMenuCascade_PopupWindow::OnSizeChanged(){}
+void igdeNativeFoxMenuCascade_PopupWindow::OnPositionChanged(){}
+void igdeNativeFoxMenuCascade_PopupWindow::OnVisibleChanged(){}
+void igdeNativeFoxMenuCascade_PopupWindow::OnEnabledChanged(){}
+
 }
 
 
@@ -327,6 +388,13 @@ void *igdeNativeFoxMenuCascade::CreateNativePopup( igdeMenuCascade &owner, igdeW
 
 void igdeNativeFoxMenuCascade::PostCreateNativePopup( igdeMenuCascade &owner, void *native ){
 	( ( FXMenuPane* )native )->create();
+}
+
+void igdeNativeFoxMenuCascade::ShowPopupWindow( igdeMenuCascade &owner,
+igdeWidget &widgetOwner, const decPoint &position ){
+	igdeWidgetReference window;
+	window.TakeOver( new igdeNativeFoxMenuCascade_PopupWindow( owner ) );
+	( ( igdeNativeFoxMenuCascade_PopupWindow& )( igdeWidget& )window ).Popup( position );
 }
 
 void igdeNativeFoxMenuCascade::DestroyNativePopup( igdeMenuCascade &owner, void *native ){

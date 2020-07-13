@@ -25,6 +25,7 @@
 #include "../foxtoolkit.h"
 
 class igdeMenuCascade;
+class igdeWindow;
 
 
 /**
@@ -63,6 +64,9 @@ public:
 	
 	/** \brief Create native popup widget. */
 	static void PostCreateNativePopup( igdeMenuCascade &owner, void *native );
+	
+	/** \brief Show popup window with menu. */
+	static void ShowPopupWindow( igdeMenuCascade &owner, igdeWidget &widgetOwner, const decPoint &position );
 	
 	/** \brief Destroy native popup widget. */
 	static void DestroyNativePopup( igdeMenuCascade &owner, void *native );

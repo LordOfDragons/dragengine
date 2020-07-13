@@ -38,74 +38,6 @@
 #include <dragengine/logger/deLogger.h>
 
 
-// Popup window
-/////////////////
-
-namespace {
-
-class igdeMenuCascade_Popup : public igdeWindow{
-private:
-	igdeMenuCascade &pMenu;
-	
-public:
-	igdeMenuCascade_Popup( igdeMenuCascade &menu );
-	
-protected:
-	virtual ~igdeMenuCascade_Popup();
-	
-public:
-	virtual void Popup( const decPoint &position );
-	
-	virtual void CreateNativeWidget();
-	virtual void DestroyNativeWidget();
-	
-protected:
-	virtual void OnTitleChanged();
-	virtual void OnSizeChanged();
-	virtual void OnPositionChanged();
-	virtual void OnVisibleChanged();
-	virtual void OnEnabledChanged();
-};
-
-
-igdeMenuCascade_Popup::igdeMenuCascade_Popup( igdeMenuCascade &menu ) :
-igdeWindow( menu.GetEnvironment(), "", NULL, false ),
-pMenu( menu ){
-}
-
-igdeMenuCascade_Popup::~igdeMenuCascade_Popup(){}
-
-
-void igdeMenuCascade_Popup::Popup( const decPoint &position ){
-	if( ! pMenu.GetNativeWidget() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXMenuPane * const native = ( FXMenuPane* )pMenu.GetNativeWidget();
-	SetNativeWidget( native );
-	native->popup( NULL, position.x, position.y );
-	
-	GetEnvironment().RunModalWhileShown( *this );
-}
-
-
-void igdeMenuCascade_Popup::CreateNativeWidget(){
-	DETHROW( deeInvalidParam );
-}
-
-void igdeMenuCascade_Popup::DestroyNativeWidget(){
-	DropNativeWidget();
-}
-
-void igdeMenuCascade_Popup::OnTitleChanged(){}
-void igdeMenuCascade_Popup::OnSizeChanged(){}
-void igdeMenuCascade_Popup::OnPositionChanged(){}
-void igdeMenuCascade_Popup::OnVisibleChanged(){}
-void igdeMenuCascade_Popup::OnEnabledChanged(){}
-
-}
-
-
 // Class igdeMenuCascade
 //////////////////////////
 
@@ -251,16 +183,8 @@ void igdeMenuCascade::SetEnabled( bool enabled ){
 
 
 void igdeMenuCascade::Popup( igdeWidget &owner ){
-	if( ! owner.GetNativeWidget() ){
-		return;
-	}
-	
-	FXWindow &window = *( ( FXWindow* )owner.GetNativeWidget() );
-	FXint x, y;
-	FXuint buttons;
-	
-	if( window.getCursorPosition( x, y, buttons) ){
-		PopupAt( owner, decPoint( x, y ) );
+	if( owner.GetNativeWidget() ){
+		PopupAt( owner, igdeNativeWidget::GetCursorPosition( owner ) );
 	}
 }
 
@@ -273,9 +197,7 @@ void igdeMenuCascade::PopupBottom( igdeWidget &owner ){
 		return;
 	}
 	
-	FXWindow &window = *( ( FXWindow* )owner.GetNativeWidget() );
-	
-	PopupAt( owner, owner.WidgetToScreen( decPoint( 0, window.getHeight() ) ) );
+	PopupAt( owner, owner.WidgetToScreen( decPoint( 0, igdeNativeWidget::GetSize( owner ).y ) ) );
 }
 
 
@@ -364,9 +286,7 @@ void igdeMenuCascade::PopupAt( igdeWidget &owner, const decPoint &position ){
 		CreateChildWidgetNativeWidgets();
 		igdeNativeMenuCascade::PostCreateNativePopup( *this, nativePopup );
 		
-		igdeWidgetReference popup;
-		popup.TakeOver( new igdeMenuCascade_Popup( *this ) );
-		( ( igdeMenuCascade_Popup& )( igdeWidget& )popup ).Popup( position );
+		igdeNativeMenuCascade::ShowPopupWindow( *this, owner, position );
 		
 		DropNativeWidget();
 		igdeNativeMenuCascade::DestroyNativePopup( *this, nativePopup );
