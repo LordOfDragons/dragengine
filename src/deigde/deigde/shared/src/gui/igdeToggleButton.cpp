@@ -123,7 +123,7 @@ void igdeToggleButton::OnStyleChanged(){
 
 void igdeToggleButton::OnTextChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxToggleButton* )GetNativeWidget() )->UpdateText();
+		( ( igdeNativeToggleButton* )GetNativeWidget() )->UpdateText();
 	}
 }
 

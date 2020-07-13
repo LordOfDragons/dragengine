@@ -25,10 +25,10 @@
 
 #include "igdeMenuCommand.h"
 #include "../igdeContainer.h"
-#include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeWidgetReference.h"
 #include "../event/igdeAction.h"
+#include "../native/toolkit.h"
 #include "../resources/igdeIcon.h"
 #include "../../engine/igdeEngineController.h"
 #include "../../environment/igdeEnvironment.h"
@@ -36,100 +36,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeMenuCommand : public FXMenuCommand{
-	FXDECLARE( cNativeIgdeMenuCommand )
-	
-protected:
-	cNativeIgdeMenuCommand();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXMenuCommand::ID_LAST,
-	};
-	
-private:
-	igdeMenuCommand *pOwner;
-	
-public:
-	cNativeIgdeMenuCommand( igdeMenuCommand &owner, FXComposite *parent );
-	virtual ~cNativeIgdeMenuCommand();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onUpdate( FXObject *sender, FXSelector selector, void *data );
-	
-	static FXString BuildConstrText( igdeMenuCommand &owner );
-};
-
-
-FXDEFMAP( cNativeIgdeMenuCommand ) cNativeIgdeMenuCommandMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeMenuCommand::ID_SELF, cNativeIgdeMenuCommand::onCommand ),
-	FXMAPFUNC( SEL_UPDATE, cNativeIgdeMenuCommand::ID_SELF, cNativeIgdeMenuCommand::onUpdate )
-};
-
-
-FXIMPLEMENT( cNativeIgdeMenuCommand, FXMenuCommand, cNativeIgdeMenuCommandMap, ARRAYNUMBER( cNativeIgdeMenuCommandMap ) )
-
-cNativeIgdeMenuCommand::cNativeIgdeMenuCommand(){ }
-
-cNativeIgdeMenuCommand::cNativeIgdeMenuCommand( igdeMenuCommand &owner, FXComposite *parent ) :
-FXMenuCommand( parent, BuildConstrText( owner ), owner.GetIcon()
-	? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF ),
-pOwner( &owner )
-{
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-}
-
-cNativeIgdeMenuCommand::~cNativeIgdeMenuCommand(){
-}
-
-
-long cNativeIgdeMenuCommand::onCommand( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->OnAction();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeMenuCommand::onUpdate( FXObject *sender, FXSelector selector, void *data ){
-	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
-		return 0;
-	}
-	
-	try{
-		action->Update();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-	}
-	
-	return 0;
-}
-
-FXString cNativeIgdeMenuCommand::BuildConstrText( igdeMenuCommand &owner ){
-	return igdeUIFoxHelper::MnemonizeString( owner.GetText(), owner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( owner.GetHotKey() )
-		+ "\t" + owner.GetDescription().GetString();
-}
-
 
 
 // Class igdeMenuCommand
@@ -262,20 +168,9 @@ void igdeMenuCommand::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeIgdeMenuCommand * const foxWidget = new cNativeIgdeMenuCommand( *this, foxParent );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeMenuCommand::DestroyNativeWidget(){
@@ -283,68 +178,44 @@ void igdeMenuCommand::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeMenuCommand* )GetNativeWidget();
+	( ( igdeNativeMenuCommand* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuCommand::OnTextChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateText();
 	}
-	
-	( ( FXMenuCommand* )GetNativeWidget() )->setText( pText.GetString() );
 }
 
 void igdeMenuCommand::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	FXMenuCommand &command = *( ( FXMenuCommand* )GetNativeWidget() );
-	command.setTipText( pText.GetString() );
-	command.setHelpText( pText.GetString() );
 }
 
 void igdeMenuCommand::OnHotKeyChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateHotKey();
 	}
-	
-	( ( FXMenuCommand* )GetNativeWidget() )->setAccelText( igdeUIFoxHelper::AccelString( pHotKey ), true );
 }
 
 void igdeMenuCommand::OnMnemonicChanged(){
 	if( ! GetNativeWidget() ){
 		return;
 	}
-	
-	//( ( FXMenuCommand* )GetNativeWidget() )->setKey( igdeUIFoxHelper::MnemonicKey( pMnemonic ) );
 }
 
 void igdeMenuCommand::OnIconChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateIcon();
 	}
-	
-	FXIcon *icon = NULL;
-	if( pIcon ){
-		icon = ( FXIcon* )pIcon->GetNativeIcon();
-	}
-	
-	( ( FXMenuCommand* )GetNativeWidget() )->setIcon( icon );
 }
 
 void igdeMenuCommand::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	if( pEnabled ){
-		( ( FXMenuCommand* )GetNativeWidget() )->enable();
-		
-	}else{
-		( ( FXMenuCommand* )GetNativeWidget() )->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateEnabled();
 	}
 }

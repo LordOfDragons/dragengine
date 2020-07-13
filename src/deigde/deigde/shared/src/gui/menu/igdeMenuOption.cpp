@@ -25,9 +25,9 @@
 
 #include "igdeMenuOption.h"
 #include "igdeMenuCascade.h"
-#include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../event/igdeAction.h"
+#include "../native/toolkit.h"
 #include "../resources/igdeIcon.h"
 #include "../../engine/igdeEngineController.h"
 #include "../../environment/igdeEnvironment.h"
@@ -35,103 +35,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeMenuOption : public FXMenuRadio{
-	FXDECLARE( cNativeIgdeMenuOption )
-	
-protected:
-	cNativeIgdeMenuOption();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXMenuRadio::ID_LAST,
-	};
-	
-private:
-	igdeMenuOption *pOwner;
-	
-public:
-	cNativeIgdeMenuOption( igdeMenuOption &owner, FXComposite *parent );
-	virtual ~cNativeIgdeMenuOption();
-	
-	long onMenuAction( FXObject *sender, FXSelector selector, void *data );
-	long updateMenuAction( FXObject *sender, FXSelector selector, void *data );
-	
-	static FXString BuildConstrText( igdeMenuCommand &owner );
-};
-
-
-FXDEFMAP( cNativeIgdeMenuOption ) cNativeIgdeMenuOptionMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeMenuOption::ID_SELF, cNativeIgdeMenuOption::onMenuAction ),
-	FXMAPFUNC( SEL_UPDATE, cNativeIgdeMenuOption::ID_SELF, cNativeIgdeMenuOption::updateMenuAction )
-};
-
-
-FXIMPLEMENT( cNativeIgdeMenuOption, FXMenuRadio, cNativeIgdeMenuOptionMap, ARRAYNUMBER( cNativeIgdeMenuOptionMap ) )
-
-cNativeIgdeMenuOption::cNativeIgdeMenuOption(){ }
-
-cNativeIgdeMenuOption::cNativeIgdeMenuOption( igdeMenuOption &owner, FXComposite *parent ) :
-FXMenuRadio( parent, BuildConstrText( owner ), this, ID_SELF ),
-pOwner( &owner )
-{
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-	
-	setCheck( owner.GetSelected() );
-}
-
-cNativeIgdeMenuOption::~cNativeIgdeMenuOption(){
-}
-
-long cNativeIgdeMenuOption::onMenuAction( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	pOwner->SetSelected( true );
-	// TODO set others in group unselected
-	
-	try{
-		pOwner->OnAction();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeMenuOption::updateMenuAction( FXObject *sender, FXSelector selector, void *data ){
-	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
-		return 0;
-	}
-	
-	try{
-		action->Update();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-	}
-	
-	return 0;
-}
-
-FXString cNativeIgdeMenuOption::BuildConstrText( igdeMenuCommand &owner ){
-	return igdeUIFoxHelper::MnemonizeString( owner.GetText(), owner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( owner.GetHotKey() )
-		+ "\t" + owner.GetDescription().GetString();
-}
-
 
 
 // Class igdeMenuOption
@@ -183,20 +86,9 @@ void igdeMenuOption::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeIgdeMenuOption * const native = new cNativeIgdeMenuOption( *this, foxParent );
+	igdeNativeMenuOption * const native = igdeNativeMenuOption::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeMenuOption::DestroyNativeWidget(){
@@ -204,17 +96,14 @@ void igdeMenuOption::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeMenuOption* )GetNativeWidget();
+	( ( igdeNativeMenuOption* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuOption::OnSelectedChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuOption* )GetNativeWidget() )->UpdateSelected();
 	}
-	
-	FXMenuRadio &native = *( ( FXMenuRadio* )GetNativeWidget() );
-	native.setCheck( pSelected );
 }

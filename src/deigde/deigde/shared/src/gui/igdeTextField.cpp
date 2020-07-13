@@ -25,9 +25,9 @@
 
 #include "igdeTextField.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeTextFieldListener.h"
+#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
@@ -263,22 +263,9 @@ void igdeTextField::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	igdeNativeFoxTextField * const foxWidget = new igdeNativeFoxTextField(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeTextField * const native = igdeNativeTextField::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeTextField::DestroyNativeWidget(){
@@ -286,36 +273,36 @@ void igdeTextField::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxTextField* )GetNativeWidget();
+	( ( igdeNativeTextField* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeTextField::OnTextChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextField* )GetNativeWidget() )->UpdateText();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateText();
 	}
 }
 
 void igdeTextField::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextField* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeTextField::OnEditableChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextField* )GetNativeWidget() )->UpdateEditable();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEditable();
 	}
 }
 
 void igdeTextField::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextField* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeTextField::OnInvalidValueChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextField* )GetNativeWidget() )->OnInvalidValueChanged();
+		( ( igdeNativeTextField* )GetNativeWidget() )->OnInvalidValueChanged();
 	}
 }

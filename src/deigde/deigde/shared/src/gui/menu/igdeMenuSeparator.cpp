@@ -24,8 +24,8 @@
 #include <string.h>
 
 #include "igdeMenuSeparator.h"
-#include "../native/toolkit.h"
 #include "../igdeContainer.h"
+#include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -55,20 +55,9 @@ void igdeMenuSeparator::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXMenuSeparator * const foxWidget = new FXMenuSeparator( foxParent );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeMenuSeparator * const native = igdeNativeMenuSeparator::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeMenuSeparator::DestroyNativeWidget(){
@@ -76,6 +65,6 @@ void igdeMenuSeparator::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( FXMenuSeparator* )GetNativeWidget();
+	( ( igdeNativeMenuSeparator* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }

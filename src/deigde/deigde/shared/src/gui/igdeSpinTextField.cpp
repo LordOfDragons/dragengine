@@ -89,7 +89,7 @@ void igdeSpinTextField::SetDescription( const char *description ){
 
 void igdeSpinTextField::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxSpinTextField* )GetNativeWidget() )->Focus();
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->Focus();
 	}
 }
 
