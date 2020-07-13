@@ -49,8 +49,13 @@ pChecked( false ){
 }
 
 igdeMenuCheck::igdeMenuCheck( igdeEnvironment &environment, igdeAction *action ) :
-igdeMenuCommand( environment, action ),
-pChecked( false ){
+igdeMenuCommand( environment ),
+pChecked( false )
+{
+	// WARNING we have to use SetAction not the base class constructor otherwise
+	//         OnParameterChanged is called before pSelected is constructed
+	//         and initialized causing wrong state to be stored
+	SetAction( action );
 }
 
 igdeMenuCheck::~igdeMenuCheck(){

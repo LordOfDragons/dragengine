@@ -49,8 +49,13 @@ pSelected( false ){
 }
 
 igdeMenuOption::igdeMenuOption( igdeEnvironment &environment, igdeAction *action ) :
-igdeMenuCommand( environment, action ),
-pSelected( false ){
+igdeMenuCommand( environment ),
+pSelected( false )
+{
+	// WARNING we have to use SetAction not the base class constructor otherwise
+	//         OnParameterChanged is called before pSelected is constructed
+	//         and initialized causing wrong state to be stored
+	SetAction( action );
 }
 
 igdeMenuOption::~igdeMenuOption(){
