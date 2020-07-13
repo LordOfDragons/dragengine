@@ -34,6 +34,10 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
+#ifdef OS_W32
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#endif
+
 
 
 // Event map
