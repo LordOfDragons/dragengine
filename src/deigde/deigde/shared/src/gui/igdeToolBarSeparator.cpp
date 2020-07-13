@@ -55,20 +55,9 @@ void igdeToolBarSeparator::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXSeparator * const foxWidget = new FXSeparator( foxParent, SEPARATOR_GROOVE );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeToolBarSeparator * const native = igdeNativeToolBarSeparator::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeToolBarSeparator::DestroyNativeWidget(){
@@ -76,6 +65,6 @@ void igdeToolBarSeparator::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( FXSeparator* )GetNativeWidget();
+	( ( igdeNativeToolBarSeparator* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
