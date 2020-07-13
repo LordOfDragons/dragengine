@@ -48,6 +48,20 @@ public:
 	/** \brief Clean up container. */
 	virtual ~igdeNativeFoxMainWindow();
 	
+	/** \brief Create native widget. */
+	static igdeNativeFoxMainWindow* CreateNativeWidget( igdeMainWindow &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
 	virtual void create();
 	virtual void destroy();
 	
@@ -65,6 +79,12 @@ public:
 	
 	/** \brief Update icon. */
 	virtual void UpdateIcon();
+	
+	/** \brief Update window title. */
+	virtual void UpdateTitle();
+	
+	/** \brief Update size. */
+	virtual void UpdateSize();
 	
 	/** \brief Set window state to owner. */
 	void SetWindowState();
@@ -89,5 +109,7 @@ public:
 private:
 	igdeMainWindow *pOwner;
 };
+
+typedef igdeNativeFoxMainWindow igdeNativeMainWindow;
 
 #endif

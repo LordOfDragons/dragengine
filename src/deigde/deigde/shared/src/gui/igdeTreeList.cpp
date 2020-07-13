@@ -32,8 +32,7 @@
 #include "model/igdeTreeItem.h"
 #include "model/igdeTreeItemReference.h"
 #include "model/igdeTreeItemSorter.h"
-#include "native/fox/igdeNativeFoxTreeItem.h"
-#include "native/fox/igdeNativeFoxTreeList.h"
+#include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -106,7 +105,7 @@ void igdeTreeList::SetDescription( const char *description ){
 
 void igdeTreeList::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTreeList* )GetNativeWidget() )->Focus();
+		( ( igdeNativeTreeList* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -465,12 +464,9 @@ void igdeTreeList::SetSelectionWithData( void *data ){
 }
 
 void igdeTreeList::MakeItemVisible( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->MakeItemVisible( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.MakeItemVisible( item );
 }
 
 void igdeTreeList::MakeSelectionVisible(){
@@ -558,21 +554,9 @@ void igdeTreeList::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxTreeList * const foxWidget = new igdeNativeFoxTreeList( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeTreeList * const native = igdeNativeTreeList::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeTreeList::DestroyNativeWidget(){
@@ -580,107 +564,70 @@ void igdeTreeList::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxTreeList* )GetNativeWidget();
+	( ( igdeNativeTreeList* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeTreeList::OnItemAdded( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->CreateAndInsertItem( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.CreateAndInsertItem( item );
 }
 
 void igdeTreeList::OnItemRemoved( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->RemoveItem( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.RemoveItem( item );
 }
 
 void igdeTreeList::OnAllItemsRemoved( igdeTreeItem *parent ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->RemoveAllItems( parent );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.RemoveAllItems( parent );
 }
 
 void igdeTreeList::OnItemChanged( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->UpdateItem( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.UpdateItem( item );
 }
 
 void igdeTreeList::OnItemMoved( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->ItemMoved( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.ItemMoved( item );
 }
 
 void igdeTreeList::OnItemsSorted( igdeTreeItem *item ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->ItemsSortedIn( item );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.ItemsSortedIn( item );
 }
 
 void igdeTreeList::OnSelectionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->SelectItem( pSelection );
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.SelectItem( pSelection );
 }
 
 void igdeTreeList::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	
-	if( pEnabled ){
-		native.GetTreeList()->enable();
-		
-	}else{
-		native.GetTreeList()->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeTreeList::OnRowsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->UpdateRows();
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	native.GetTreeList()->setNumVisible( pRows );
 }
 
 void igdeTreeList::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTreeList* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	igdeNativeFoxTreeList &native = *( ( igdeNativeFoxTreeList* )GetNativeWidget() );
-	//native.GetTreeList()->setTipText( pDescription.GetString() ); // not supported
-	native.GetTreeList()->setHelpText( pDescription.GetString() );
 }
 
 igdeTreeItem *igdeTreeList::pGetItemWithData( igdeTreeItem *parent, void *data ) const{

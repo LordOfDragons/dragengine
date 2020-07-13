@@ -25,6 +25,8 @@
 #include <stdint.h>
 
 #include "igdeNativeFoxSpacer.h"
+#include "../../igdeContainer.h"
+#include "../../igdeSpacer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -48,14 +50,45 @@ FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, igdeNativeFoxSpacerMap, ARRAYNUMBER( 
 igdeNativeFoxSpacer::igdeNativeFoxSpacer(){
 }
 
-igdeNativeFoxSpacer::igdeNativeFoxSpacer( FXComposite *parent, int width, int height, int childFlags ) :
-FXFrame( parent, LayoutFlags( childFlags ), 0, 0, width, height ),
+igdeNativeFoxSpacer::igdeNativeFoxSpacer( igdeSpacer &owner, FXComposite *parent, int childFlags ) :
+FXFrame( parent, LayoutFlags( childFlags ), 0, 0, owner.GetSize().x, owner.GetSize().y ),
+pOwner( &owner ),
 pWidth( width ),
 pHeight( height ){
 }
 
 igdeNativeFoxSpacer::~igdeNativeFoxSpacer(){
+	pOwner = NULL;
 }
+
+igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget( igdeSpacer &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxSpacer( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+}
+
+void igdeNativeFoxSpacer::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxSpacer::DestroyNativeWidget(){
+	delete this;
+}
+
+
+
+// Management
+///////////////
 
 void igdeNativeFoxSpacer::SetSize( int width, int height ){
 	pWidth = width;

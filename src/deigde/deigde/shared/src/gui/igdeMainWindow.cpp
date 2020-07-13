@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "igdeMainWindow.h"
-#include "native/fox/igdeNativeFoxMainWindow.h"
+#include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../engine/igdeNullScriptModule.h"
 #include "../engine/igdeNullInputModule.h"
@@ -163,20 +163,10 @@ void igdeMainWindow::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeNativeFoxMainWindow * const native = new igdeNativeFoxMainWindow( *this );
+	igdeNativeMainWindow * const native = igdeNativeMainWindow::CreateNativeWidget( *this );
 	SetNativeWidget( native );
 	CreateChildWidgetNativeWidgets();
-	
-	// NOTE we need to fix the maximize problem during showing the window using PLACEMENT_* .
-	//      if we try to maximize(true) here things become the opposite. no idea how FOX
-	//      manages to mess up so hard. calling maximize at the end does work albeit looking
-	//      ugly while doing so. fixing this when main window is converted to new UI system
-	native->create();
-	
-	// here maximize seems to work
-	native->maximize( true );
-	
-	native->raise();
+	native->PostCreateNativeWidget();
 }
 
 void igdeMainWindow::DropNativeWidget(){
@@ -192,36 +182,34 @@ void igdeMainWindow::DestroyNativeWidget(){
 		return;
 	}
 	
-	// we use close() on purpose instead of delete because fox requires this
-	//delete ( igdeNativeFoxMainWindow* )GetNativeWidget();
-	igdeNativeFoxMainWindow * const native = ( igdeNativeFoxMainWindow* )GetNativeWidget();
+	igdeNativeMainWindow &native = *( ( igdeNativeMainWindow* )GetNativeWidget() );
 	DropNativeWidget();
-	native->close( false );
+	native.DestroyNativeWidget();
 }
 
 
 
 void igdeMainWindow::OnTitleChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->setTitle( GetTitle().GetString() );
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateTitle();
 	}
 }
 
 void igdeMainWindow::OnIconChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->UpdateIcon();
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateIcon();
 	}
 }
 
 void igdeMainWindow::OnSizeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->resize( GetSize().x, GetSize().y );
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateSize();
 	}
 }
 
 void igdeMainWindow::OnPositionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->UpdatePosition();
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdatePosition();
 	}
 }
 
@@ -231,12 +219,12 @@ void igdeMainWindow::OnVisibleChanged(){
 
 void igdeMainWindow::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeMainWindow::OnWindowStateChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxMainWindow* )GetNativeWidget() )->UpdateWindowState();
+		( ( igdeNativeMainWindow* )GetNativeWidget() )->UpdateWindowState();
 	}
 }

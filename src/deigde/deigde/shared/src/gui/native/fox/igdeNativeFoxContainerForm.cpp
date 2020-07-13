@@ -68,11 +68,49 @@ pOwner( &owner )
 igdeNativeFoxContainerForm::~igdeNativeFoxContainerForm(){
 }
 
+igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget( igdeContainerForm &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxContainerForm( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+}
+
+void igdeNativeFoxContainerForm::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxContainerForm::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
 ///////////////
 
+void igdeNativeFoxContainerForm::ChildRemoved(){
+	if( pOwner->GetStretching() != igdeContainerForm::esLast ){
+		return;
+	}
+	
+	const int count = pOwner->GetChildCount();
+	const int index = count - ( count % 2 );
+	igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index ) );
+	if( index + 1 < count ){
+		igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index + 1 ) );
+	}
+	
+	recalc();
+}
 
 
 

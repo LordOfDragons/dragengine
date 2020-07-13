@@ -62,6 +62,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxListBox();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxListBox* CreateNativeWidget( igdeListBox &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -76,11 +85,19 @@ public:
 	
 	
 	
-	void BuildList();
-	void UpdateItem( int index );
+	virtual void BuildList();
+	virtual void UpdateItem( int index );
 	virtual void UpdateStyles();
 	virtual void UpdateSelection();
 	virtual void Focus();
+	virtual void MakeItemVisible( int index );
+	virtual void InsertItem( int index );
+	virtual void RemoveItem( int index );
+	virtual void RemoveAllItems();
+	virtual void MoveItem( int fromIndex, int toIndex );
+	virtual void UpdateEnabled();
+	virtual void UpdateRowCount();
+	virtual void UpdateDescription();
 	
 	static int ListBoxFlags( const igdeListBox &owner );
 	static igdeFont *ListBoxFont( const igdeListBox &owner, const igdeGuiTheme &guitheme );
@@ -105,5 +122,7 @@ public:
 	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxListBox igdeNativeListBox;
 
 #endif

@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 #include "igdeNativeFoxProgressBar.h"
+#include "../../igdeContainer.h"
 #include "../../igdeProgressBar.h"
 #include "../../resources/igdeFont.h"
 #include "../../theme/igdeGuiTheme.h"
@@ -72,6 +73,31 @@ pOwner( &owner )
 }
 
 igdeNativeFoxProgressBar::~igdeNativeFoxProgressBar(){
+}
+
+igdeNativeFoxProgressBar *igdeNativeFoxProgressBar::CreateNativeWidget( igdeProgressBar &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxProgressBar( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxProgressBar::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxProgressBar::DestroyNativeWidget(){
+	delete this;
 }
 
 

@@ -64,6 +64,15 @@ public:
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxTextArea();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxTextArea* CreateNativeWidget( igdeTextArea &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -83,6 +92,19 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEditable();
 	virtual void Focus();
+	virtual int GetCursorPosition() const;
+	virtual void SetCursorPosition( int position );
+	virtual int GetCursorColumn() const;
+	virtual int GetCursorRow() const;
+	virtual void SetCursorColumn( int column );
+	virtual void SetCursorRow( int row );
+	virtual int GetTopLine() const;
+	virtual void SetTopLine( int line );
+	virtual int GetBottomLine() const;
+	virtual void SetBottomLine( int line );
+	virtual int GetLineCount() const;
+	virtual void UpdateColumns();
+	virtual void UpdateRows();
 	
 	static int TextAreaFlagsBorder( const igdeTextArea &owner );
 	static int TextAreaFlags( const igdeTextArea &owner );
@@ -110,5 +132,7 @@ public:
 private:
 	void pBuildStylesArray();
 };
+
+typedef igdeNativeFoxTextArea igdeNativeTextArea;
 
 #endif

@@ -60,6 +60,14 @@ pOwner( &owner ){
 igdeNativeFoxTimer::~igdeNativeFoxTimer(){
 }
 
+igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer( igdeTimer &owner ){
+	return new igdeNativeFoxTimer( owner, FXApp::instance() );
+}
+
+void igdeNativeFoxTimer::DestroyNativeTimer(){
+	delete this;
+}
+
 
 
 // Management

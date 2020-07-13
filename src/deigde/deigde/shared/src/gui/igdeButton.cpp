@@ -236,7 +236,7 @@ void igdeButton::OnIconChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxButton* )GetNativeWidget() )->UpdateIcon();
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateIcon();
 }
 
 void igdeButton::OnEnabledChanged(){

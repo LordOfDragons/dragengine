@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 #include "igdeNativeFoxStatusBar.h"
+#include "../../igdeContainer.h"
 #include "../../igdeStatusBar.h"
 #include "../../resources/igdeFont.h"
 #include "../../theme/igdeGuiTheme.h"
@@ -72,6 +73,31 @@ pOwner( &owner )
 }
 
 igdeNativeFoxStatusBar::~igdeNativeFoxStatusBar(){
+}
+
+igdeNativeFoxStatusBar *igdeNativeFoxStatusBar::CreateNativeWidget( igdeStatusBar &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxStatusBar( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxStatusBar::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxStatusBar::DestroyNativeWidget(){
+	delete this;
 }
 
 

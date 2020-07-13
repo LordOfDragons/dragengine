@@ -72,6 +72,15 @@ public:
 	
 	/** \brief Clean up widget. */
 	virtual ~igdeNativeFoxRenderView();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -86,6 +95,10 @@ public:
 	
 	virtual void DropNativeWindow();
 	virtual bool IsReallyVisible() const;
+	virtual bool IsShown() const;
+	virtual decPoint GetSize() const;
+	virtual void OnFrameUpdate();
+	
 	
 	/**
 	 * \brief Attach render window if present.
@@ -141,5 +154,7 @@ private:
 	void pProcessMap();
 	void pSyncSizes();
 };
+
+typedef igdeNativeFoxRenderView igdeNativeRenderView;
 
 #endif

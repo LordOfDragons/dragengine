@@ -25,7 +25,6 @@
 
 #include "native/toolkit.h"
 #include "igdeTabBook.h"
-#include "native/fox/igdeNativeFoxAutoScroller.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -41,6 +40,8 @@
 
 // Native Widget
 //////////////////
+
+#include "native/fox/igdeNativeFoxAutoScroller.h"
 
 class cNativeIgdeTabBookHeader : public FXToggleButton{
 	FXDECLARE( cNativeIgdeTabBookHeader )

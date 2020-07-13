@@ -27,7 +27,7 @@
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
-#include "native/fox/igdeNativeFoxProgressBar.h"
+#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
@@ -99,21 +99,9 @@ void igdeProgressBar::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxProgressBar * const foxWidget = new igdeNativeFoxProgressBar(
-		*this, nativeParent, igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( nativeParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeProgressBar * const native = igdeNativeProgressBar::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeProgressBar::DestroyNativeWidget(){
@@ -121,24 +109,24 @@ void igdeProgressBar::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxProgressBar* )GetNativeWidget();
+	( ( igdeNativeProgressBar* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeProgressBar::OnRangeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxProgressBar* )GetNativeWidget() )->UpdateRange();
+		( ( igdeNativeProgressBar* )GetNativeWidget() )->UpdateRange();
 	}
 }
 
 void igdeProgressBar::OnValueChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxProgressBar* )GetNativeWidget() )->UpdateValue();
+		( ( igdeNativeProgressBar* )GetNativeWidget() )->UpdateValue();
 	}
 }
 
 void igdeProgressBar::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxProgressBar* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeProgressBar* )GetNativeWidget() )->UpdateDescription();
 	}
 }

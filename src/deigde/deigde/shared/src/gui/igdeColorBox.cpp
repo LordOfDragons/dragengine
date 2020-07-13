@@ -99,11 +99,12 @@ void igdeColorBox::cActionPasteHex::OnAction(){
 	// TODO... access system clipboard
 	
 	/*
-	if( igdeNativeFoxColorBox::vCopyColor.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color( ( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardGetColor() );
+	if( color.IsEqualTo( pColorBox.GetColor() ) ){
 		return;
 	}
 	
-	pColorBox.SetColor( igdeNativeFoxColorBox::vCopyColor );
+	pColorBox.SetColor( color );
 	pColorBox.NotifyColorChanged();
 	*/
 }
@@ -294,7 +295,7 @@ void igdeColorBox::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeNativeColorBox * const native = igdeNativeFoxColorBox::CreateNativeWidget( *this );
+	igdeNativeColorBox * const native = igdeNativeColorBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
 	native->PostCreateNativeWidget();
 }

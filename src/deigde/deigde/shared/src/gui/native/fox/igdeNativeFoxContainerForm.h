@@ -48,12 +48,22 @@ public:
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeFoxContainerForm();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxContainerForm* CreateNativeWidget( igdeContainerForm &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	virtual void ChildRemoved();
 	/*@}*/
 	
 	
@@ -64,5 +74,7 @@ public:
 	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxContainerForm igdeNativeContainerForm;
 
 #endif
