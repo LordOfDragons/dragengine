@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxContainerFlow.h"
 #include "../../../layout/igdeContainerFlow.h"
 
@@ -304,3 +306,5 @@ void *igdeNativeFoxContainerFlow::GetNativeContainer( const igdeContainerFlow &o
 		DETHROW( deeInvalidParam );
 	}
 }
+
+#endif

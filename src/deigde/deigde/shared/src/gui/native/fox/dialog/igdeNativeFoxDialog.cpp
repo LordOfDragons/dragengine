@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxDialog.h"
 #include "../foxIcons.h"
 #include "../../../dialog/igdeDialog.h"
@@ -199,3 +201,5 @@ long igdeNativeFoxDialog::onFrameUpdate( FXObject*, FXSelector, void* ){
 	pOwner->OnFrameUpdate();
 	return 1;
 }
+
+#endif

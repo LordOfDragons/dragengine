@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,3 +112,5 @@ int igdeNativeFoxSpacer::LayoutFlags( int childFlags ){
 	childFlags |= LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT;
 	return childFlags;
 }
+
+#endif

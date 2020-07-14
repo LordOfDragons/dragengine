@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxSpinTextField.h"
 #include "foxIcons.h"
 #include "../../igdeSpinTextField.h"
@@ -205,3 +207,5 @@ long igdeNativeFoxSpinTextField::onCommand( FXObject *sender, FXSelector selecto
 	
 	return 1;
 }
+
+#endif

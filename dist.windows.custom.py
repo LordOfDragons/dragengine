@@ -12,6 +12,15 @@
 #
 
 
+# ToolKit used to build IGDE. 
+# 
+# Value enumeration: one from:
+# - 'fox': Use FOX ToolKit
+# - 'null': Use no ToolKit. Only special command lines supported.
+# 
+# igde_toolkit = 'fox'
+
+
 #
 # Special path indicators can be used. Only one special path indicator can be used
 # and it has to be the first component in the path. The following special path

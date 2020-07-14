@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxIcon.h"
 #include "../../../resources/igdeIcon.h"
 #include "../../../../engine/igdeEngineController.h"
@@ -241,3 +243,5 @@ void igdeNativeFoxIcon::CopyPixelData( deImage &image, FXColor *foxData ){
 		DETHROW( deeInvalidParam );
 	}
 }
+
+#endif

@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxCheckBox.h"
 #include "foxIcons.h"
 #include "../../igdeCheckBox.h"
@@ -256,3 +258,5 @@ long igdeNativeFoxCheckBox::onUpdate( FXObject *sender, FXSelector selector, voi
 	
 	return 0;
 }
+
+#endif

@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxComboBoxFilter.h"
 #include "foxIcons.h"
 #include "../../igdeComboBoxFilter.h"
@@ -360,3 +362,5 @@ long igdeNativeFoxComboBoxFilter::onEditFilterChanged( FXObject*, FXSelector, vo
 	
 	return 1;
 }
+
+#endif

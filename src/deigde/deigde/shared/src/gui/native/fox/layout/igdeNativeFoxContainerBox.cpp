@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxContainerBox.h"
 #include "../../../layout/igdeContainerBox.h"
 
@@ -163,3 +165,5 @@ void igdeNativeFoxContainerBox::PostCreateNativeWidget( igdeContainerBox &owner,
 void igdeNativeFoxContainerBox::DestroyNativeWidget( igdeContainerBox &owner, void *native ){
 	delete ( FXPacker* )native;
 }
+
+#endif

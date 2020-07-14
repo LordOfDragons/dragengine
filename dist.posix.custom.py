@@ -12,6 +12,15 @@
 #
 
 
+# ToolKit used to build IGDE. 
+# 
+# Value enumeration: one from:
+# - 'fox': Use FOX ToolKit
+# - 'null': Use no ToolKit. Only special command lines supported.
+# 
+# igde_toolkit = 'fox'
+
+
 # System path
 # 
 # Value type: string with directory path

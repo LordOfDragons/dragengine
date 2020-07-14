@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxAutoScroller.h"
 #include "igdeNativeFoxTabBook.h"
 #include "foxIcons.h"
@@ -314,3 +316,5 @@ long igdeNativeFoxTabBook::onChildLayoutFlags( FXObject *sender, FXSelector sele
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }
+
+#endif

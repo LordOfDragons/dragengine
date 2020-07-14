@@ -12,6 +12,14 @@
 #
 
 
+# ToolKit used to build IGDE. 
+# 
+# Value enumeration: one from:
+# - 'null': Use no ToolKit. Only special command lines supported.
+# 
+# igde_toolkit = 'null'
+
+
 # System path
 # 
 # Value type: string with directory path

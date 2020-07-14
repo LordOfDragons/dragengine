@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxContainerFixed.h"
 #include "../../../layout/igdeContainerFixed.h"
 
@@ -92,3 +94,5 @@ long igdeNativeFoxContainerFixed::onChildLayoutFlags( FXObject *sender, FXSelect
 	clflags.canResizeVertical = true;
 	return 1;
 }
+
+#endif

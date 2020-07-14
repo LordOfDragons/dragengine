@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxContainerScroll.h"
 #include "../../../layout/igdeContainerScroll.h"
 
@@ -111,3 +113,5 @@ long igdeNativeFoxContainerScroll::onChildLayoutFlags( FXObject*, FXSelector, vo
 	
 	return 1;
 }
+
+#endif

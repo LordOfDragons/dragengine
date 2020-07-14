@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -365,3 +367,5 @@ const char *title, igdeFont::sConfiguration &config ){
 	config.italic = newFDesc.slant == FXFont::Italic;
 	return true;
 }
+
+#endif

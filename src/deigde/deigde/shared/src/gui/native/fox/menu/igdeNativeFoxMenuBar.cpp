@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxMenuBar.h"
 #include "../../../igdeContainer.h"
 #include "../../../menu/igdeMenuBar.h"
@@ -89,3 +91,5 @@ long igdeNativeFoxMenuBar::onChildLayoutFlags( FXObject *sender, FXSelector sele
 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
 	return 1;
 }
+
+#endif

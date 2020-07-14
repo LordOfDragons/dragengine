@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxToolBarDock.h"
 #include "foxIcons.h"
 #include "../../igdeToolBarDock.h"
@@ -145,3 +147,5 @@ long igdeNativeFoxToolBarDock::onChildLayoutFlags( FXObject *sender, FXSelector 
 // 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
 	return 1;
 }
+
+#endif

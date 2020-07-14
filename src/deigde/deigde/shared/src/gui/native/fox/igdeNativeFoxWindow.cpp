@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxWindow.h"
 #include "foxIcons.h"
 #include "../../igdeWindow.h"
@@ -185,3 +187,5 @@ long igdeNativeFoxWindow::onChildLayoutFlags( FXObject*, FXSelector, void *data 
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }
+
+#endif

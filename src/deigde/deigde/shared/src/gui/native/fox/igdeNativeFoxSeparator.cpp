@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxSeparator.h"
 #include "foxIcons.h"
 #include "../../igdeSeparator.h"
@@ -69,3 +71,5 @@ void igdeNativeFoxSeparator::PostCreateNativeWidget( igdeSeparator &owner, void 
 void igdeNativeFoxSeparator::DestroyNativeWidget( igdeSeparator &owner, void *native ){
 	delete ( FXSeparator* )native;
 }
+
+#endif

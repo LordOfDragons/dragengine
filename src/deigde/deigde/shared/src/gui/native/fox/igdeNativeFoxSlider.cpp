@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxSlider.h"
 #include "foxIcons.h"
 #include "../../igdeSlider.h"
@@ -209,3 +211,5 @@ long igdeNativeFoxSlider::onChanged( FXObject*, FXSelector, void* ){
 	
 	return 1;
 }
+
+#endif

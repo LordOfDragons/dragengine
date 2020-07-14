@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxButton.h"
 #include "foxIcons.h"
 #include "../../igdeButton.h"
@@ -264,3 +266,5 @@ long igdeNativeFoxButton::onUpdate( FXObject*, FXSelector, void* ){
 	
 	return 0;
 }
+
+#endif

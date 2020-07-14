@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxGroupBox.h"
 #include "foxIcons.h"
 #include "../../igdeGroupBox.h"
@@ -253,3 +255,5 @@ long igdeNativeFoxGroupBox::onChildLayoutFlags( FXObject *sender, FXSelector sel
 	
 	return 1;
 }
+
+#endif

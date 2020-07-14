@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -291,3 +293,5 @@ long igdeNativeFoxMainWindow::onMaximized( FXObject*, FXSelector, void* ){
 	SetWindowState();
 	return 0;
 }
+
+#endif

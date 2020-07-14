@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxMenuOption.h"
 #include "../../../igdeContainer.h"
 #include "../../../igdeCommonDialogs.h"
@@ -145,3 +147,5 @@ long igdeNativeFoxMenuOption::updateMenuAction( FXObject *sender, FXSelector sel
 	
 	return 0;
 }
+
+#endif

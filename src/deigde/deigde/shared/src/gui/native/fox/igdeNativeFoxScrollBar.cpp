@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxScrollBar.h"
 #include "foxIcons.h"
 #include "../../igdeScrollBar.h"
@@ -159,3 +161,5 @@ long igdeNativeFoxScrollBar::onCommand( FXObject *sender, FXSelector selector, v
 	
 	return 1;
 }
+
+#endif

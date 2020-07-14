@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxMenuCascade.h"
 #include "../../../igdeContainer.h"
 #include "../../../igdeWidgetReference.h"
@@ -400,3 +402,5 @@ igdeWidget &widgetOwner, const decPoint &position ){
 void igdeNativeFoxMenuCascade::DestroyNativePopup( igdeMenuCascade &owner, void *native ){
 	delete ( FXMenuPane* )native;
 }
+
+#endif

@@ -24,7 +24,12 @@
 
 #include "../../deigde_configuration.h"
 
-#include "fox/foxtoolkit.h"
-#include "fox/foxincludenative.h"
+#ifdef IGDE_TOOLKIT_FOX
+#	include "fox/foxtoolkit.h"
+#	include "fox/foxincludenative.h"
+
+#elif defined IGDE_TOOLKIT_NULL
+
+#endif
 
 #endif

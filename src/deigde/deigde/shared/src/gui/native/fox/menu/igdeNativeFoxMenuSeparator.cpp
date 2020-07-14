@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxMenuSeparator.h"
 #include "../../../igdeContainer.h"
 #include "../../../menu/igdeMenuSeparator.h"
@@ -76,3 +78,5 @@ void igdeNativeFoxMenuSeparator::PostCreateNativeWidget(){
 void igdeNativeFoxMenuSeparator::DestroyNativeWidget(){
 	delete this;
 }
+
+#endif

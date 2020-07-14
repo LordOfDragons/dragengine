@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxTextField.h"
 #include "foxIcons.h"
 #include "../../igdeTextField.h"
@@ -263,3 +265,5 @@ long igdeNativeFoxTextField::onKeyPress( FXObject *sender, FXSelector selector, 
 	
 	return result;
 }
+
+#endif

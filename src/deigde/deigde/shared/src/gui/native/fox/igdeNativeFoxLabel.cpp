@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxLabel.h"
 #include "foxIcons.h"
 #include "../../igdeLabel.h"
@@ -179,3 +181,5 @@ igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &owner, const igdeGuiTh
 	
 	return owner.GetEnvironment().GetSharedFont( configuration );
 }
+
+#endif

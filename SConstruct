@@ -203,7 +203,9 @@ if parent_env['OSMacOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
-
+	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/usr', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/include', PathVariable.PathAccept ) )
@@ -259,7 +261,9 @@ elif parent_env['OSBeOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
-
+	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/boot/system', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/develop/include', PathVariable.PathAccept ) )
@@ -316,6 +320,8 @@ elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
 	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/usr', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/include', PathVariable.PathAccept ) )
@@ -367,6 +373,8 @@ elif parent_env['OSPosix']:
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
 	
 elif parent_env['OSWindows']:
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
+	
 	params.Add( PathVariable( 'programfiles', 'Window program files directory',
 		'@ProgramFiles', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'systemroot', 'Window system root directory',

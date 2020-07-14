@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -186,3 +188,5 @@ int igdeNativeFoxProgressBar::ProgressBarPadTop( const igdeGuiTheme &guitheme ){
 int igdeNativeFoxProgressBar::ProgressBarPadBottom( const igdeGuiTheme &guitheme ){
 	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingBottom, DEFAULT_PAD );
 }
+
+#endif

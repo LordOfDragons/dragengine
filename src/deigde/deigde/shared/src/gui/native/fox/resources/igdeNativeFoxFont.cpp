@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxFont.h"
 #include "../../../resources/igdeFont.h"
 #include "../../../../engine/igdeEngineController.h"
@@ -490,3 +492,5 @@ decPoint igdeNativeFoxFont::TextSize( const char *text ) const{
 	const int len = strlen( text );
 	return decPoint( getTextWidth( text, len ), getTextHeight( text, len ) );
 }
+
+#endif

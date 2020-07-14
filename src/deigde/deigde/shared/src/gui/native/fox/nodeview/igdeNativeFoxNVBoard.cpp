@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -590,3 +592,5 @@ const decVector2 &bp2, const decVector2 &bp3, const decVector2 &bp4 ) const{
 			PointBezierDistance( bp, nbp6, nbp5, nbp3, bp4 ) );
 	}
 }
+
+#endif

@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxToggleButton.h"
 #include "foxIcons.h"
 #include "../../igdeToggleButton.h"
@@ -299,3 +301,5 @@ long igdeNativeFoxToggleButton::onUpdate( FXObject *sender, FXSelector selector,
 	
 	return 0;
 }
+
+#endif

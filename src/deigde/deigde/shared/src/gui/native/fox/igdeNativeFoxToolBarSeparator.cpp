@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxToolBarSeparator.h"
 #include "foxIcons.h"
 #include "../../igdeToolBarSeparator.h"
@@ -80,3 +82,5 @@ void igdeNativeFoxToolBarSeparator::PostCreateNativeWidget(){
 void igdeNativeFoxToolBarSeparator::DestroyNativeWidget(){
 	delete this;
 }
+
+#endif

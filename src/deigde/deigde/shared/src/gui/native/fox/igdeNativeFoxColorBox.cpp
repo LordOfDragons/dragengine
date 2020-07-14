@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxColorBox.h"
 #include "foxIcons.h"
 #include "../../igdeColorBox.h"
@@ -253,3 +255,5 @@ long igdeNativeFoxColorBox::onRClicked( FXObject*, FXSelector, void *data ){
 	pOwner->ShowContextMenu( decPoint( event.win_x, event.win_y ) );
 	return 1;
 }
+
+#endif
