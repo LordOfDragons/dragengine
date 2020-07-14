@@ -41,6 +41,7 @@
 #include <dragengine/resources/rig/deRigReference.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
+#include <libdscript/packages/default/dsClassArray.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
 
 
@@ -245,22 +246,36 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	}
 }
 
-// protected func void addBoneShapeProperty( int index, String property )
-deClassRigBuilder::nfAddBoneShapeProperty::nfAddBoneShapeProperty( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "addBoneShapeProperty", DSFT_FUNCTION,
+// protected func void setBoneShapeProperties( int index, Array properties )
+deClassRigBuilder::nfSetBoneShapeProperties::nfSetBoneShapeProperties( const sInitData &init ) :
+dsFunction( init.clsRigBuilder, "setBoneShapeProperties", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // index
-	p_AddParameter( init.clsString ); // property
+	p_AddParameter( init.clsArray ); // properties
 }
-void deClassRigBuilder::nfAddBoneShapeProperty::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassRigBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
 	if( ! builder || ! builder->GetRig() ){
 		DSTHROW( dueInvalidAction );
 	}
 	
 	deRigBone &bone = builder->GetRig()->GetBoneAt( rt->GetValue( 0 )->GetInt() );
-	decStringList properties( bone.GetShapeProperties() );
-	properties.Add( rt->GetValue( 1 )->GetString() );
+	
+	const deScriptingDragonScript &ds = ( ( deClassRigBuilder* )GetOwnerClass() )->GetDS();
+	dsClassArray &clsArray = *( ( dsClassArray* )ds.GetScriptEngine()->GetClassArray() );
+	dsRealObject * const objProperties = rt->GetValue( 1 )->GetRealObject();
+	const int count = clsArray.GetObjectCount( rt, objProperties );
+	if( count != bone.GetShapeProperties().GetCount() ){
+		DSTHROW_INFO( dueInvalidParam, "properties.getCount() != bone.shapeCount" );
+	}
+	
+	decStringList properties;
+	int i;
+	for( i=0; i<count; i++ ){
+		dsValue * const value = clsArray.GetObjectAt( rt, objProperties, i );
+		rt->RunFunction( value, "toString", 0 );
+		properties.Add( rt->GetReturnString() );
+	}
 	bone.SetShapeProperties( properties );
 }
 
@@ -383,20 +398,33 @@ void deClassRigBuilder::nfSetShapes::RunFunction( dsRunTime *rt, dsValue *myself
 	builder->GetRig()->SetShapes( ds.GetClassShapeList()->GetShapeList( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
-// protected func void addShapeProperty( String property )
-deClassRigBuilder::nfAddShapeProperty::nfAddShapeProperty( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "addShapeProperty", DSFT_FUNCTION,
+// protected func void setShapeProperties( Array properties )
+deClassRigBuilder::nfSetShapeProperties::nfSetShapeProperties( const sInitData &init ) :
+dsFunction( init.clsRigBuilder, "setShapeProperties", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // property
+	p_AddParameter( init.clsArray ); // properties
 }
-void deClassRigBuilder::nfAddShapeProperty::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRigBuilder::nfSetShapeProperties::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassRigBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
 	if( ! builder || ! builder->GetRig() ){
 		DSTHROW( dueInvalidAction );
 	}
 	
-	decStringList properties( builder->GetRig()->GetShapeProperties() );
-	properties.Add( rt->GetValue( 0 )->GetString() );
+	const deScriptingDragonScript &ds = ( ( deClassRigBuilder* )GetOwnerClass() )->GetDS();
+	dsClassArray &clsArray = *( ( dsClassArray* )ds.GetScriptEngine()->GetClassArray() );
+	dsRealObject * const objProperties = rt->GetValue( 0 )->GetRealObject();
+	const int count = clsArray.GetObjectCount( rt, objProperties );
+	if( count != builder->GetRig()->GetShapeProperties().GetCount() ){
+		DSTHROW_INFO( dueInvalidParam, "properties.getCount() != rig.shapeCount" );
+	}
+	
+	decStringList properties;
+	int i;
+	for( i=0; i<count; i++ ){
+		dsValue * const value = clsArray.GetObjectAt( rt, objProperties, i );
+		rt->RunFunction( value, "toString", 0 );
+		properties.Add( rt->GetReturnString() );
+	}
 	builder->GetRig()->SetShapeProperties( properties );
 }
 
@@ -442,6 +470,7 @@ void deClassRigBuilder::CreateClassMembers( dsEngine *engine ){
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsShapeList = pDS.GetClassShapeList();
 	init.clsColliderConstraintDof = pClsColliderConstraintDof;
+	init.clsArray = engine->GetClassArray();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
@@ -451,10 +480,10 @@ void deClassRigBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetCentralMassPoint( init ) );
 	AddFunction( new nfSetModelCollision( init ) );
 	AddFunction( new nfAddBone( init ) );
-	AddFunction( new nfAddBoneShapeProperty( init ) );
+	AddFunction( new nfSetBoneShapeProperties( init ) );
 	AddFunction( new nfAddBoneConstraint( init ) );
 	AddFunction( new nfSetBoneConstraintDof( init ) );
 	AddFunction( new nfSetRootBone( init ) );
 	AddFunction( new nfSetShapes( init ) );
-	AddFunction( new nfAddShapeProperty( init ) );
+	AddFunction( new nfSetShapeProperties( init ) );
 }

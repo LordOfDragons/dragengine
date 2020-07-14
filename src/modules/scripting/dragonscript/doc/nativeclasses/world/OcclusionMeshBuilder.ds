@@ -28,7 +28,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class OcclusionMesh
+abstract class OcclusionMeshBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**
