@@ -22,7 +22,20 @@
 #ifndef _IGDENATIVEFOXWIDGET_H_
 #define _IGDENATIVEFOXWIDGET_H_
 
+#include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/math/decMath.h>
+
+#if defined OS_UNIX && defined HAS_LIB_X11
+#include <X11/Xlib.h>
+#endif
+
+#ifdef OS_W32
+#include <dragengine/app/include_windows.h>
+#endif
+
+#ifdef OS_BEOS
+	class BWindow;
+#endif
 
 class igdeWidget;
 
@@ -45,6 +58,33 @@ public:
 	
 	/** \brief Update visibility. */
 	static void UpdateVisible( const igdeWidget &widget );
+	
+	/** \brief Window has native parent. */
+	static bool HasNativeParent( const igdeWidget &widget );
+	
+	/** \brief Get OS specific native widget handle. */
+	#ifdef OS_UNIX
+	static Window NativeWidgetID( const igdeWidget &widget );
+	#endif
+	#ifdef OS_W32
+	static HWND NativeWidgetID( const igdeWidget &widget );
+	#endif
+	
+	/** \brief Get OS specific native parent widget handle. */
+	#ifdef OS_UNIX
+	static Window NativeWidgetParentID( const igdeWidget &widget );
+	#endif
+	#ifdef OS_W32
+	static HWND NativeWidgetParentID( const igdeWidget &widget );
+	#endif
+	
+	/** \brief Detach native window. */
+	static void DetachNativeWindow( const igdeWidget &widget );
+	
+	/** \brief Get display connection. */
+	#ifdef OS_UNIX
+	static Display *GetDisplayConnection();
+	#endif
 	/*@}*/
 };
 

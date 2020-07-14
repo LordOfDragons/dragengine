@@ -101,3 +101,59 @@ void igdeNativeFoxWidget::UpdateVisible( const igdeWidget &widget ){
 	
 	native->recalc();
 }
+
+bool igdeNativeFoxWidget::HasNativeParent( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	return native && native->getParent() != NULL;
+}
+
+#ifdef OS_UNIX
+Window igdeNativeFoxWidget::NativeWidgetID( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	if( ! native ){
+		return 0;
+	}
+	return ( Window )native->id();
+}
+#endif
+#ifdef OS_W32
+HWND igdeNativeFoxWidget::NativeWidgetID( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	if( ! native ){
+		return INVALID_HANDLE_VALUE;
+	}
+	return ( HWND )native->id();
+}
+#endif
+
+#ifdef OS_UNIX
+Window igdeNativeFoxWidget::NativeWidgetParentID( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	if( ! native || ! native->getParent() ){
+		return 0;
+	}
+	return ( Window )native->getParent()->id();
+}
+#endif
+#ifdef OS_W32
+HWND igdeNativeFoxWidget::NativeWidgetParentID( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	if( ! native || ! native->getParent() ){
+		return INVALID_HANDLE_VALUE;
+	}
+	return ( HWND )native->getParent()->id();
+}
+#endif
+
+void igdeNativeFoxWidget::DetachNativeWindow( const igdeWidget &widget ){
+	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
+	if( native ){
+		native->detach();
+	}
+}
+
+#ifdef OS_UNIX
+Display *igdeNativeFoxWidget::GetDisplayConnection(){
+	return ( Display* )FXApp::instance()->getDisplay();
+}
+#endif
