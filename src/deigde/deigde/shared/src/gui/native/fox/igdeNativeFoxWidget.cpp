@@ -122,7 +122,7 @@ Window igdeNativeFoxWidget::NativeWidgetID( const igdeWidget &widget ){
 HWND igdeNativeFoxWidget::NativeWidgetID( const igdeWidget &widget ){
 	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
 	if( ! native ){
-		return INVALID_HANDLE_VALUE;
+		return NULL;
 	}
 	return ( HWND )native->id();
 }
@@ -141,7 +141,7 @@ Window igdeNativeFoxWidget::NativeWidgetParentID( const igdeWidget &widget ){
 HWND igdeNativeFoxWidget::NativeWidgetParentID( const igdeWidget &widget ){
 	FXWindow * const native = ( FXWindow* )widget.GetNativeWidget();
 	if( ! native || ! native->getParent() ){
-		return INVALID_HANDLE_VALUE;
+		return NULL;
 	}
 	return ( HWND )native->getParent()->id();
 }
