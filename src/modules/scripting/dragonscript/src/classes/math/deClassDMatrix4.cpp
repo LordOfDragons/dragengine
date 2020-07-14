@@ -710,6 +710,17 @@ void deClassDMatrix4::nfGetInverse::RunFunction( dsRunTime *rt, dsValue *myself 
 	clsDMatrix.PushDMatrix4( rt, matrix.QuickInvert() );
 }
 
+// public func DMatrix4 normalize()
+deClassDMatrix4::nfNormalize::nfNormalize( const sInitData &init ) :
+dsFunction( init.clsDMatrix4, "normalize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix4 ){
+}
+void deClassDMatrix4::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	deClassDMatrix4 &clsDMatrix4 = *( ( deClassDMatrix4* )GetOwnerClass() );
+	clsDMatrix4.PushDMatrix4( rt, matrix.Normalized() );
+}
+
 // public func Quaternion toQuaternion()
 deClassDMatrix4::nfToQuaternion::nfToQuaternion( const sInitData &init ) : dsFunction( init.clsDMatrix4,
 "toQuaternion", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
@@ -1070,6 +1081,7 @@ void deClassDMatrix4::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
 	AddFunction( new nfGetInverse( init ) );
+	AddFunction( new nfNormalize( init ) );
 	AddFunction( new nfToQuaternion( init ) );
 	AddFunction( new nfToDMatrix( init ) );
 	AddFunction( new nfToMatrix4( init ) );

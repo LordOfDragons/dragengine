@@ -168,7 +168,7 @@ void deClassRigBuilder::nfSetCentralMassPoint::RunFunction( dsRunTime *rt, dsVal
 
 // protected func void setModelCollision( bool modelCollision )
 deClassRigBuilder::nfSetModelCollision::nfSetModelCollision( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "setRigCollision", DSFT_FUNCTION,
+dsFunction( init.clsRigBuilder, "setModelCollision", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsBoolean ); // modelCollision
 }
@@ -384,7 +384,7 @@ void deClassRigBuilder::nfSetRootBone::RunFunction( dsRunTime *rt, dsValue *myse
 
 // protected func void setShapes( ShapeList shapes )
 deClassRigBuilder::nfSetShapes::nfSetShapes( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "setRootBone", DSFT_FUNCTION,
+dsFunction( init.clsRigBuilder, "setShapes", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsShapeList ); // shapes
 }
