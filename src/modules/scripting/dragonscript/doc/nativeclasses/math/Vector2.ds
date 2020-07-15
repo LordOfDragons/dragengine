@@ -60,6 +60,10 @@ fixed class Vector2
 	public func Vector2 normalize()
 	end
 	
+	/** \brief Vector with absolute of all components. */
+	public func Vector2 absolute()
+	end
+	
 	/** \brief Vector with all components set to the smallest value of two vectors. */
 	public func Vector2 smallest( Vector2 v )
 	end

@@ -208,6 +208,16 @@ void deClassDVector::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsDVector->PushDVector( rt, vector / len );
 }
 
+// public func DVector absolute()
+deClassDVector::nfAbsolute::nfAbsolute( const sInitData &init ) : dsFunction( init.clsDVec,
+"absolute", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+}
+void deClassDVector::nfAbsolute::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassDVector *clsDVector = ( deClassDVector* )GetOwnerClass();
+	clsDVector->PushDVector( rt, vector.Absolute() );
+}
+
 // public func DVector compMultiply( DVector v )
 deClassDVector::nfCompMultiply::nfCompMultiply( const sInitData &init ) : dsFunction( init.clsDVec,
 "compMultiply", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
@@ -710,6 +720,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetLength( init ) );
 	AddFunction( new nfGetLengthSquared( init ) );
 	AddFunction( new nfNormalize( init ) );
+	AddFunction( new nfAbsolute( init ) );
 	AddFunction( new nfCompMultiply( init ) );
 	AddFunction( new nfCompDivide( init ) );
 	AddFunction( new nfCompSelect( init ) );
