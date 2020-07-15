@@ -188,7 +188,7 @@ class ECComposeCollider
 		collider.setResponseType( this.pPhysicsType.getEnumeration() cast CollisionResponse )
 		collider.setCollisionFilter( this.pCollisionFilter )
 		collider.setEnabled( this.pEnabled.getValue() )
-		collider.setMass( this.pWeight.getValue() )
+		collider.setMass( this.pWeight.getValue( stub ) )
 		
 		collider.setGeometry( element.getPosition(), element.getOrientation() )
 		//collider.setScaling( stub.getScaling() ) // not supported yet

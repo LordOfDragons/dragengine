@@ -51,6 +51,19 @@
 		</inherit>
 		<category>Dragengine</category>
 	</class>
+	<class name='PhysicsElement'>
+		<description>Basic class for elements  affected by physical simulation containing a single component and collider.</description>
+		<inherit name='ECBehaviorComponent'>
+			<propertyPrefix>component.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorCollider'>
+			<propertyPrefix>collider.</propertyPrefix>
+		</inherit>
+		<inherit name='ECBehaviorAttachToParent'>
+			<propertyPrefix>attachToParent.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
 	<class name='GhostElement'>
 		<description>Low cost class for decorative elements containing only a component not interacting with the game world.</description>
 		<inherit name='ECBehaviorComponent'>
@@ -698,6 +711,11 @@
 		<ghost>true</ghost>
 		<canInstanciate>false</canInstanciate>
 		<defaultInheritPropertyPrefix>collider.</defaultInheritPropertyPrefix>
+		<property name='weight'>
+			<description>Weight of the collider in kg. Used only for dynamic colliders.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorColliderAI'>
