@@ -716,6 +716,15 @@
 			<type>float</type>
 			<default>1</default>
 		</property>
+		<property name='shape'>
+			<description>Shape of collider. Used only if behavior is not using ECBehaviorComponent and rig property is not used.</description>
+			<type>shapeList</type>
+		</property>
+		<property name='rig'>
+			<description>Rig to use for the collider. Used only if behavior is not using ECBehaviorComponent.</description>
+			<type>path</type>
+			<pathPatternType>rig</pathPatternType>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorColliderAI'>
