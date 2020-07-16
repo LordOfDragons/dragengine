@@ -160,8 +160,6 @@ class ConsoleInputField extends TextField
 	
 	/** \brief Key on keyboard has been pressed. */
 	public func void onKeyPress( KeyEvent event )
-		this.stopRepeatEventTimer()
-		
 		select event.getKeyCode()
 		case InputEventKey.arrowUp
 			if this.pHistorySelection == 0
