@@ -2,7 +2,7 @@ Source: dragengine
 Section: games
 Priority: optional
 Maintainer: Roland Plüss <roland@rptd.ch>
-Build-Depends: debhelper-compat (>= 12), scons, cmake, autoconf, libtool, nasm, libx11-dev, libxrandr-dev, libgl-dev, libxi-dev, libpulse-dev, libasound2-dev, portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev, libogg-dev, libvorbis-dev, libtheora-dev, libhidapi-dev, libopenhmd-dev, patchelf, libevdev-dev
+Build-Depends: debhelper-compat (= 12), scons, cmake, autoconf, libtool, nasm, libx11-dev, libxrandr-dev, libgl-dev, libxi-dev, libpulse-dev, libasound2-dev, portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev, libogg-dev, libvorbis-dev, libtheora-dev, libhidapi-dev, libopenhmd-dev, patchelf, libevdev-dev
 Standards-Version: 4.1.3
 Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
