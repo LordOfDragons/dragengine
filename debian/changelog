@@ -1,5 +1,5 @@
-dragengine (1.1-0-ubuntu1) focal; urgency=medium
+dragengine (1.2-0-ubuntu1) focal; urgency=medium
 
   * Initial debianization.
 
- -- Roland Plüss <roland@rptd.ch>  Tue, 26 May 2020 15:08:50 +0000
+ -- Roland Plüss <roland@rptd.ch>  Tue, 18 Jul 2020 18:07:20 +0000

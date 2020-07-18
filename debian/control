@@ -15,18 +15,18 @@ Description: Drag[en]gine Game Engine
 
 Package: dragengine-dev
 Architecture: any
-Depends: dragengine (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Depends: dragengine (>= 1.2), ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Engine Development
  Required to create Drag[en]gine Modules. Not required to create games.
 
 Package: deigde
 Architecture: any
-Depends: dragengine (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Depends: dragengine (>= 1.2), ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Development Environment
  Required to developing games using the Drag[en]gine Game Engine. Run deigde.
 
 Package: deigde-dev
 Architecture: any
-Depends: deigde (>= 1.1), ${shlibs:Depends}, ${misc:Depends}
+Depends: deigde (>= 1.2), ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine IGDE Development
  Required to create Drag[en]gine IGDE Editors. Not required to create games.
