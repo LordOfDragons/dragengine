@@ -15,7 +15,7 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_dragonscript' ], libs )
 
 # fetch values in expanded form for later use
-versionString = '1.1'
+versionString = '1.2'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -82,6 +82,7 @@ manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 Depends( updateManifest, parent_targets[ 'lib_dragonscript' ][ 'runtimelibs' ] )
 
 install.append( envModule.Install( pathModule, updateManifest ) )

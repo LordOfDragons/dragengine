@@ -23,55 +23,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "native/toolkit.h"
 #include "igdeSwitcher.h"
+#include "native/toolkit.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-
-
-
-// Native Widget
-//////////////////
-
-namespace {
-
-class cNativeWidget : public FXSwitcher{
-	FXDECLARE( cNativeWidget )
-	
-protected:
-	cNativeWidget();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXSwitcher::ID_LAST,
-	};
-	
-private:
-	igdeSwitcher *pOwner;
-	
-public:
-	cNativeWidget( igdeSwitcher &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeWidget();
-};
-
-
-FXDEFMAP( cNativeWidget ) cNativeWidgetMap[] = { };
-
-FXIMPLEMENT( cNativeWidget, FXSwitcher, cNativeWidgetMap, ARRAYNUMBER( cNativeWidgetMap ) )
-
-cNativeWidget::cNativeWidget(){ }
-
-cNativeWidget::cNativeWidget( igdeSwitcher &owner, FXComposite *parent, int layoutFlags ) :
-FXSwitcher( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ){
-}
-
-cNativeWidget::~cNativeWidget(){
-}
-
-}
-
 
 
 // Class igdeSwitcher
@@ -150,26 +106,13 @@ void igdeSwitcher::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeWidget * const native = new cNativeWidget( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlags( this ) );
+	igdeNativeSwitcher * const native = igdeNativeSwitcher::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 	
-	native->setCurrent( pCurrent );
+	native->UpdateCurrent();
 }
 
 void igdeSwitcher::DestroyNativeWidget(){
@@ -177,7 +120,7 @@ void igdeSwitcher::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeWidget* )GetNativeWidget();
+	( ( igdeNativeSwitcher* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -187,10 +130,7 @@ void igdeSwitcher::DestroyNativeWidget(){
 ////////////////////////
 
 void igdeSwitcher::OnCurrentChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSwitcher* )GetNativeWidget() )->UpdateCurrent();
 	}
-	
-	cNativeWidget &native = *( ( cNativeWidget* )GetNativeWidget() );
-	native.setCurrent( pCurrent );
 }

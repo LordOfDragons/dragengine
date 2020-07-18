@@ -58,7 +58,7 @@ class SDEffectStretch extends SDEffect
 	
 	
 	
-	/** \brief Minium time. */
+	/** \brief Minimum time. */
 	public func float getMinTime()
 		return this.pMinTime
 	end
@@ -78,7 +78,7 @@ class SDEffectStretch extends SDEffect
 		this.pMaxTime = time
 	end
 	
-	/** \brief Minium pitch. */
+	/** \brief Minimum pitch. */
 	public func float getMinPitch()
 		return this.pMinPitch
 	end

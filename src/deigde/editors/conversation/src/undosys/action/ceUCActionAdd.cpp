@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCActionAdd.h"
+#include "ceUActionHelpers.h"
 #include "../../conversation/action/ceConversationAction.h"
 #include "../../conversation/topic/ceConversationTopic.h"
 
@@ -73,11 +74,20 @@ ceUCActionAdd::~ceUCActionAdd(){
 ///////////////
 
 void ceUCActionAdd::Undo(){
+	ceConversationAction * const activateAction =
+		ceUActionHelpers::ActivateActionAfterRemove( pTopic->GetActionList(), pAction );
+	
 	pTopic->GetActionList().Remove( pAction );
 	pTopic->NotifyActionStructureChanged( NULL );
+	
+	if( activateAction ){
+		pTopic->SetActive( activateAction, NULL );
+	}
 }
 
 void ceUCActionAdd::Redo(){
 	pTopic->GetActionList().InsertAt( pAction, pIndex );
 	pTopic->NotifyActionStructureChanged( NULL );
+	
+	pTopic->SetActive( pAction, NULL );
 }

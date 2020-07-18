@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "foxIcons.h"
 
 namespace FoxIcons {
@@ -1371,3 +1373,5 @@ const unsigned char winrestore[]={
   };
 
 }
+
+#endif

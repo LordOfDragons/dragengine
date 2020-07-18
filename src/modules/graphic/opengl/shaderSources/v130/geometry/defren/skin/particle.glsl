@@ -8,6 +8,14 @@ precision highp int;
 layout( points ) in;
 layout( triangle_strip, max_vertices=4 ) out;
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Uniform Parameters
@@ -60,7 +68,7 @@ out vec2 vTCColor;
 #ifdef TEXTURE_REFLECTIVITY
 	out vec2 vTCReflectivity;
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	out vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -75,7 +83,7 @@ out vec3 vNormal;
 	out vec3 vTangent;
 	out vec3 vBitangent;
 #endif
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	out vec3 vReflectDir;
 #endif
 #ifdef FADEOUT_RANGE
@@ -83,7 +91,7 @@ out vec3 vNormal;
 #endif
 
 out vec4 vParticleColor; // from curve property
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	out float vParticleEmissivity; // from curve property
 #endif
 
@@ -113,7 +121,7 @@ void main( void ){
 	
 	// this is the same for all points
 	vParticleColor = vParticle1[ 0 ];
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		vParticleEmissivity = vParticle0[ 0 ].y;
 	#endif
 	
@@ -155,7 +163,7 @@ void main( void ){
 		#ifdef TEXTURE_REFLECTIVITY
 			vTCReflectivity = tc[i];
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = tc[i];
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -165,7 +173,7 @@ void main( void ){
 			vTCAO = tc[i];
 		#endif
 		
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = position.xyz;
 		#endif
 		#ifdef FADEOUT_RANGE

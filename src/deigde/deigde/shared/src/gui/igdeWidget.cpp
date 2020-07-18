@@ -23,10 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "native/toolkit.h"
 #include "igdeWidget.h"
 #include "igdeContainer.h"
-
+#include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 #include "../gameproject/igdeGameProject.h"
@@ -132,42 +131,13 @@ void igdeWidget::OnResize(){
 
 
 decPoint igdeWidget::WidgetToScreen( const decPoint &position ) const{
-	/*
-	// FOX bug prevents this from working. the code below does work. enought right now
-	const FXWindow * widget = ( const FXWindow * )pNativeWidget;
-	decPoint p( position );
-	
-	while( widget ){
-		p.x += widget->getX();
-		p.y += widget->getY();
-		widget = widget->getParent();
-	}
-	
-	return p;
-	*/
-	
-	const FXWindow &widget = *( ( const FXWindow * )pNativeWidget );
-	FXint tox, toy;
-	widget.translateCoordinatesTo( tox, toy, widget.getRoot(), position.x, position.y );
-	return decPoint( tox, toy );
+	return igdeNativeWidget::WidgetToScreen( *this, position );
 }
 
 
 
 void igdeWidget::OnVisibleChanged(){
-	FXWindow * const window = ( FXWindow* )pNativeWidget;
-	if( ! window ){
-		return;
-	}
-	
-	if( pVisible ){
-		window->show();
-		
-	}else{
-		window->hide();
-	}
-	
-	window->recalc();
+	igdeNativeWidget::UpdateVisible( *this );
 }
 
 void igdeWidget::OnGuiThemeChanged(){

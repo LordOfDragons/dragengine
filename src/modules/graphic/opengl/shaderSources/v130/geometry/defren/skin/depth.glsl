@@ -9,14 +9,17 @@ precision highp int;
 #endif
 
 // some helper definitions to make the code easier to read
-#if defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT || defined TEXTURE_EMISSIVITY
+#if defined OUTPUT_COLOR || defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT
 	#define _REQ_TEX_CLR_1 1
 #endif
-#if defined OUTPUT_COLOR || _REQ_TEX_CLR_1
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define _REQ_TEX_CLR_2 1
+#endif
+#if defined _REQ_TEX_CLR_1 || defined _REQ_TEX_CLR_2
 	#define REQUIRES_TEX_COLOR 1
 #endif
 
-#ifdef TEXTURE_HEIGHT
+#if defined TEXTURE_HEIGHT || defined TEXTURE_RIM_EMISSIVITY
 	#define REQUIRES_NORMAL 1
 #endif
 

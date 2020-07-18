@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -111,6 +113,30 @@ pDragControl( false )
 igdeNativeFoxNVNode::~igdeNativeFoxNVNode(){
 }
 
+igdeNativeFoxNVNode *igdeNativeFoxNVNode::CreateNativeWidget( igdeNVNode &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVNode( owner, parent, *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVNode::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVNode::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -179,6 +205,10 @@ void igdeNativeFoxNVNode::FitSizeToContent(){
 	const int height = FXVerticalFrame::getDefaultHeight();
 	resize( width, height );
 	recalc();
+}
+
+decPoint igdeNativeFoxNVNode::GetSize(){
+	return decPoint( getWidth(), getWidth() );
 }
 
 
@@ -444,3 +474,5 @@ long meWVNode::onPaint( FXObject *sender, FXSelector selector, void *data ){
 	return 1;
 }
 */
+
+#endif

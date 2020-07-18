@@ -43,7 +43,7 @@
  * refer to the sides of the frustum surrounding it. Near and
  * far refer to the capped pinacle and the base of the frustum.
  * @warning This class is partially implemented. See collision
- *          functions for more informations.
+ *          functions for more information.
  * @todo
  * - Implementing CylinderHitsFrustum
  * - Implementing CapsuleHitsFrustum

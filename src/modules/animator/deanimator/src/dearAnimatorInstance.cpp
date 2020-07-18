@@ -85,6 +85,7 @@ pDirtyRules( true ),
 
 pCaptureComponentState( false ),
 
+pUseParallelTask( true ),
 pActiveTaskApplyRule( NULL )
 {
 	try{
@@ -142,27 +143,6 @@ void dearAnimatorInstance::AddLink( dearLink *link ){
 
 
 
-void dearAnimatorInstance::UpdateControllerStates(){
-	const int stateCount = pControllerStates.GetStateCount();
-	int i;
-	
-	for( i=0; i<stateCount; i++ ){
-		const deAnimatorController &controller = pAnimatorInstance.GetControllerAt( i );
-		
-		const float minValue = controller.GetMinimumValue();
-		const float range = controller.GetMaximumValue() - minValue;
-		
-		if( range > 1e-5f ){
-			pControllerStates.SetStateAt( i, ( controller.GetCurrentValue() - minValue ) / range, controller.GetVector() );
-			
-		}else{
-			pControllerStates.ResetStateAt( i );
-		}
-	}
-}
-
-
-
 void dearAnimatorInstance::SetCaptureComponentState(){
 	if( pCaptureComponentState ){
 		return;
@@ -175,36 +155,6 @@ void dearAnimatorInstance::ApplyRules(){
 	int i;
 	for( i=0; i<pRuleCount; i++ ){
 		pRules[ i ]->Apply( pBoneStateList );
-	}
-}
-
-void dearAnimatorInstance::ApplyStateToComponent() const{
-	if( ! pAnimator || ! pComponent ){
-		return;
-	}
-	
-	deComponent &component = pComponent->GetComponent();
-	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
-	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
-	const deRig * const destRig = component.GetRig();
-	float blendFactor = 1.0f;
-	
-	if( pUseBlending ){
-		blendFactor = pAnimatorInstance.GetBlendFactor();
-	}
-	
-	if( sourceRig == destRig ){
-		if( pUseBlending ){
-			pBoneStateList.ApplyToComponent( &component, blendMode, blendFactor );
-DEBUG_PRINT_TIMER( "ApplyStateToComponent with blending" );
-			
-		}else{
-			pBoneStateList.ApplyToComponent( &component );
-DEBUG_PRINT_TIMER( "ApplyStateToComponent directly" );
-		}
-		
-	}else{
-		// TODO retarget
 	}
 }
 
@@ -233,17 +183,12 @@ DEBUG_PRINT_TIMER( "ApplyStateToArComponent directly" );
 	}
 }
 
-
-
-void dearAnimatorInstance::StartTaskApplyRules(){
+void dearAnimatorInstance::pStartTaskApplyRules(){
 	if( ! pComponent ){
 		return;
 	}
 	
-	const bool useParallelTask = true;
-	
-	if( useParallelTask ){
-		CancelTaskApplyRules();
+	if( pUseParallelTask ){
 		dearTaskApplyRules * const task = pNewTaskApplyRules();
 		
 		// if we are the first task on the component update the arcomponent. if not set
@@ -281,29 +226,9 @@ void dearAnimatorInstance::StartTaskApplyRules(){
 		ApplyRules();
 		DEBUG_PRINT_TIMER( "ApplyRules" );
 		
-		ApplyStateToComponent();
+		pApplyStateToComponent();
 		DEBUG_PRINT_TIMER( "ApplyStateToComponent" );
 	}
-}
-
-void dearAnimatorInstance::CancelTaskApplyRules(){
-	if( ! pActiveTaskApplyRule ){
-		return;
-	}
-	
-	if( pModule.GetGameEngine()->GetParallelProcessing().GetOutputDebugMessages() ){
-		pModule.LogInfoFormat( "Cancel task %p (instance=%p component=%p list=%d)",
-			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount() );
-	}
-	pActiveTaskApplyRule->Cancel();
-	
-	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
-	if( ! parallelProcessing.GetPaused() ){
-		// parallel processing is paused if the engine is in progress of being stopped. in this
-		// case all tasks have been waited for already and no tasks are running
-		parallelProcessing.WaitForTask( pActiveTaskApplyRule );
-	}
-	pActiveTaskApplyRule = NULL;
 }
 
 void dearAnimatorInstance::StopTaskApplyRules(){
@@ -334,6 +259,12 @@ void dearAnimatorInstance::Apply( bool direct ){
 		return;
 	}
 	
+	// it is important to ensure a potentially running parallel task is finished beyond here.
+	// the calll to StartTaskApplyRules() does wait for the task but until then the code below
+	// applies changes which potentially cause segfaults. wait has to be called no matter if
+	// direct or indirect application is requested
+	pWaitTaskApplyRules();
+	
 	DEBUG_RESET_TIMERS;
 	
 	pCheckAnimatorChanged(); // this has to be first since changes to animator invalidates rules
@@ -351,7 +282,7 @@ void dearAnimatorInstance::Apply( bool direct ){
 	pUpdateRuleParams();
 	DEBUG_PRINT_TIMER( "UpdateRules" );
 	
-	UpdateControllerStates();
+	pUpdateControllerStates();
 	DEBUG_PRINT_TIMER( "UpdateControllerStates" );
 	
 	pUpdateFakeRootBones();
@@ -370,10 +301,10 @@ void dearAnimatorInstance::Apply( bool direct ){
 			pComponent->UpdateFromComponent(); // does also UpdateMatrixFromComponent()
 			//pComponent->UpdateMatrixFromComponent(); // required for track to rule
 			ApplyRules();
-			ApplyStateToComponent();
+			pApplyStateToComponent();
 			
 		}else{
-			StartTaskApplyRules();
+			pStartTaskApplyRules();
 		}
 	}
 	DEBUG_PRINT_TIMER_TOTAL( "Apply" );
@@ -382,13 +313,10 @@ void dearAnimatorInstance::Apply( bool direct ){
 void dearAnimatorInstance::CaptureStateInto( int identifier ){
 	// if there is a bound component and it has an animator task assigned we have to wait first for
 	// the task to finish before we can capture the correct state
-	if( pComponent ){
-		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
-		
-		if( task ){
-			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
-		}
-	}
+	pWaitAnimTaskFinished();
+	
+	// better safe than sorry. ensure no parallel task is running beyond this point
+	pWaitTaskApplyRules();
 	
 	// ensure rules are ready to capture state
 	pCheckAnimatorChanged(); // this has to be first since changes to animator invalidates rules
@@ -406,17 +334,12 @@ void dearAnimatorInstance::CaptureStateInto( int identifier ){
 }
 
 void dearAnimatorInstance::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
-	// if there is a bound component and it has an animator task assigned wait first. in theory
-	// the state can be captured while a task is running but it produces management overhead.
-	// this situation can happen though only during specific game situations and is not worth
-	// implementing overhead management just for this
-	if( pComponent ){
-		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
-		
-		if( task ){
-			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
-		}
-	}
+	// if there is a bound component and it has an animator task assigned we have to wait first for
+	// the task to finish before we can capture the correct state
+	pWaitAnimTaskFinished();
+	
+	// better safe than sorry. ensure no parallel task is running beyond this point
+	pWaitTaskApplyRules();
 	
 	// ensure rules are ready to capture state
 	pCheckAnimatorChanged(); // this has to be first since changes to animator invalidates rules
@@ -439,6 +362,7 @@ void dearAnimatorInstance::StoreFrameInto( int identifier, const char *moveName,
 //////////////////
 
 void dearAnimatorInstance::AnimatorChanged(){
+	// this is safe with parallel tasks since animator is only accessed to create local copies
 	deAnimator * const engAnimator = pAnimatorInstance.GetAnimator();
 	
 	if( engAnimator ){
@@ -453,7 +377,8 @@ void dearAnimatorInstance::AnimatorChanged(){
 }
 
 void dearAnimatorInstance::ComponentChanged(){
-	CancelTaskApplyRules();
+	// parallel task rules can access the component. we have to wait to not segfault
+	pWaitTaskApplyRules();
 	
 	deComponent * const component = pAnimatorInstance.GetComponent();
 	dearComponent *arcomponent = NULL;
@@ -477,6 +402,8 @@ void dearAnimatorInstance::ComponentChanged(){
 }
 
 void dearAnimatorInstance::BlendFactorChanged(){
+	// this is safe with parallel tasks since blend factor is only accessed only during
+	// pApplyStateToComponent.
 	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
 	const float blendFactor = pAnimatorInstance.GetBlendFactor();
 	
@@ -494,6 +421,7 @@ void dearAnimatorInstance::BlendFactorChanged(){
 }
 
 void dearAnimatorInstance::AnimationChanged(){
+	// this is safe with parallel tasks since animation is only accessed during prepare
 	deAnimation *animation = pAnimatorInstance.GetAnimation();
 	if( ! animation && pAnimator ){
 		animation = pAnimator->GetAnimator().GetAnimation();
@@ -528,7 +456,7 @@ void dearAnimatorInstance::ControllerChanged( int ){
 //////////////////////
 
 void dearAnimatorInstance::pCleanUp(){
-	CancelTaskApplyRules();
+	pCancelTaskApplyRules();
 	pTaskApplyRules.RemoveAll();
 	
 	pDropRules();
@@ -805,6 +733,58 @@ void dearAnimatorInstance::pUpdateRuleParams(){
 }
 
 
+
+void dearAnimatorInstance::pUpdateControllerStates(){
+	const int stateCount = pControllerStates.GetStateCount();
+	int i;
+	
+	for( i=0; i<stateCount; i++ ){
+		const deAnimatorController &controller = pAnimatorInstance.GetControllerAt( i );
+		
+		const float minValue = controller.GetMinimumValue();
+		const float range = controller.GetMaximumValue() - minValue;
+		
+		if( range > 1e-5f ){
+			pControllerStates.SetStateAt( i,
+				( controller.GetCurrentValue() - minValue ) / range, controller.GetVector() );
+			
+		}else{
+			pControllerStates.ResetStateAt( i );
+		}
+	}
+}
+
+void dearAnimatorInstance::pApplyStateToComponent() const{
+	if( ! pAnimator || ! pComponent ){
+		return;
+	}
+	
+	deComponent &component = pComponent->GetComponent();
+	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
+	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
+	const deRig * const destRig = component.GetRig();
+	float blendFactor = 1.0f;
+	
+	if( pUseBlending ){
+		blendFactor = pAnimatorInstance.GetBlendFactor();
+	}
+	
+	if( sourceRig == destRig ){
+		if( pUseBlending ){
+			pBoneStateList.ApplyToComponent( &component, blendMode, blendFactor );
+DEBUG_PRINT_TIMER( "ApplyStateToComponent with blending" );
+			
+		}else{
+			pBoneStateList.ApplyToComponent( &component );
+DEBUG_PRINT_TIMER( "ApplyStateToComponent directly" );
+		}
+		
+	}else{
+		// TODO retarget
+	}
+}
+
+
 dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	// find task to reuse. only tasks that are finished and not depended on by any other task
 	// can be reused. just checking the finished state is not enough since tasks can be fully
@@ -827,4 +807,41 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	task.TakeOver( new dearTaskApplyRules( *this ) );
 	pTaskApplyRules.Add( task );
 	return ( dearTaskApplyRules* )( deThreadSafeObject* )task;
+}
+
+void dearAnimatorInstance::pCancelTaskApplyRules(){
+	if( ! pActiveTaskApplyRule ){
+		return;
+	}
+	
+	if( pModule.GetGameEngine()->GetParallelProcessing().GetOutputDebugMessages() ){
+		pModule.LogInfoFormat( "Cancel task %p (instance=%p component=%p list=%d)",
+			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount() );
+	}
+	pActiveTaskApplyRule->Cancel();
+	
+	pWaitTaskApplyRules();
+}
+
+void dearAnimatorInstance::pWaitTaskApplyRules(){
+	if( ! pActiveTaskApplyRule ){
+		return;
+	}
+	
+	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
+	if( ! parallelProcessing.GetPaused() ){
+		// parallel processing is paused if the engine is in progress of being stopped.
+		// in this case all tasks have been waited for already and no tasks are running
+		parallelProcessing.WaitForTask( pActiveTaskApplyRule );
+	}
+	pActiveTaskApplyRule = NULL;
+}
+
+void dearAnimatorInstance::pWaitAnimTaskFinished(){
+	if( pComponent ){
+		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
+		if( task ){
+			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
+		}
+	}
 }

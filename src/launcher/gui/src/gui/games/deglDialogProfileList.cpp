@@ -1765,7 +1765,7 @@ int buttonSelector, FXComposite *container ){
 	system.combobox->setSortFunc( deglGuiBuilder::SortListItemByName );
 	system.comboboxVersion = guiBuilder.CreateComboBox( frameLine, this, comboBoxVersionSelector, toolText, false, 10, 5, true );
 	system.comboboxVersion->setSortFunc( fSortListItemByVersion );
-	system.modinfo = guiBuilder.CreateButton( frameLine, "", pWindowMain->GetIconButtonInfo(), this, buttonSelector, "Show module informations" );
+	system.modinfo = guiBuilder.CreateButton( frameLine, "", pWindowMain->GetIconButtonInfo(), this, buttonSelector, "Show module information" );
 	system.modinfo->setLayoutHints( system.modinfo->getLayoutHints() | LAYOUT_FILL_Y );
 	
 	system.problem = new FXLabel( frameRight, "This label contains a short problem description.", NULL, LABEL_NORMAL | LAYOUT_FILL_X );

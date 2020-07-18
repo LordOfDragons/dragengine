@@ -68,7 +68,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if( ! topic || ! action ){
 			return;
 		}
@@ -94,7 +94,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if( ! topic || ! action ){
 			return;
 		}
@@ -105,7 +105,7 @@ public:
 	}
 	
 	virtual void Update(){
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		SetEnabled( action );
 		SetSelected( action && action->GetWaitForActor() );
 	}
@@ -119,7 +119,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if( ! topic || ! action || comboBox->GetText() == action->GetWaitForActorID() ){
 			return;
 		}
@@ -170,7 +170,7 @@ void ceWPAction::UpdateCommonParams(){
 		return;
 	}
 	
-	const ceConversationAction * const action = pParentPanel.GetAction();
+	const ceConversationAction * const action = pParentPanel.GetTreeAction();
 	
 	if( action ){
 		pEditDelay->SetFloat( action->GetDelay() );

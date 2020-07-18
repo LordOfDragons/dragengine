@@ -33,108 +33,6 @@
 #include <dragengine/logger/deLogger.h>
 
 
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeScrollBar : public FXScrollBar{
-	FXDECLARE( cNativeIgdeScrollBar )
-	
-protected:
-	cNativeIgdeScrollBar();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXScrollBar::ID_LAST,
-	};
-	
-private:
-	igdeScrollBar *pOwner;
-	
-public:
-	cNativeIgdeScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeIgdeScrollBar();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	virtual FXbool canFocus() const;
-	
-	static int ScrollBarFlags( const igdeScrollBar &owner );
-	void UpdateRange();
-	void UpdateValue();
-};
-
-
-FXDEFMAP( cNativeIgdeScrollBar ) cNativeIgdeScrollBarMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeScrollBar::ID_SELF, cNativeIgdeScrollBar::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, cNativeIgdeScrollBar::ID_SELF, cNativeIgdeScrollBar::onCommand )
-};
-
-
-FXIMPLEMENT( cNativeIgdeScrollBar, FXScrollBar, cNativeIgdeScrollBarMap, ARRAYNUMBER( cNativeIgdeScrollBarMap ) )
-
-cNativeIgdeScrollBar::cNativeIgdeScrollBar(){ }
-
-cNativeIgdeScrollBar::cNativeIgdeScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags ) :
-FXScrollBar( parent, this, ID_SELF, layoutFlags | ScrollBarFlags( owner ) ),
-pOwner( &owner )
-{
-	UpdateRange();
-	UpdateValue();
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-}
-
-cNativeIgdeScrollBar::~cNativeIgdeScrollBar(){
-}
-
-long cNativeIgdeScrollBar::onCommand( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetValue( pOwner->GetLower() + getPosition() );
-		pOwner->NotifyValueChanged();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-FXbool cNativeIgdeScrollBar::canFocus() const{
-	return false;
-	//return FXScrollBar::canFocus();
-}
-
-int cNativeIgdeScrollBar::ScrollBarFlags( const igdeScrollBar &owner ){
-	switch( owner.GetOrientation() ){
-	case igdeScrollBar::eoHorizontal:
-		return SCROLLBAR_HORIZONTAL | SCROLLBAR_WHEELJUMP;
-		
-	case igdeScrollBar::eoVertical:
-		return SCROLLBAR_VERTICAL | SCROLLBAR_WHEELJUMP;
-		
-	default:
-		return 0;
-	}
-}
-
-void cNativeIgdeScrollBar::UpdateRange(){
-	setRange( decMath::max( pOwner->GetUpper() - pOwner->GetLower(), 0 ) );
-	setPage( pOwner->GetPageSize() );
-}
-
-void cNativeIgdeScrollBar::UpdateValue(){
-	setPosition( decMath::clamp( pOwner->GetValue() - pOwner->GetLower(), 0, getRange() ) );
-}
-
-
-
 // Class igdeScrollBar
 ////////////////////////
 
@@ -250,21 +148,9 @@ void igdeScrollBar::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeScrollBar * const foxWidget = new cNativeIgdeScrollBar( *this, foxParent, layoutFlags );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeScrollBar * const native = igdeNativeScrollBar::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeScrollBar::DestroyNativeWidget(){
@@ -272,37 +158,26 @@ void igdeScrollBar::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeScrollBar* )GetNativeWidget();
+	( ( igdeNativeScrollBar* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeScrollBar::OnRangeChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateRange();
 	}
-	
-	( ( cNativeIgdeScrollBar* )GetNativeWidget() )->UpdateRange();
 }
 
 void igdeScrollBar::OnValueChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateValue();
 	}
-	
-	( ( cNativeIgdeScrollBar* )GetNativeWidget() )->UpdateValue();
 }
 
 void igdeScrollBar::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	if( pEnabled ){
-		( ( cNativeIgdeScrollBar* )GetNativeWidget() )->enable();
-		
-	}else{
-		( ( cNativeIgdeScrollBar* )GetNativeWidget() )->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateEnabled();
 	}
 }

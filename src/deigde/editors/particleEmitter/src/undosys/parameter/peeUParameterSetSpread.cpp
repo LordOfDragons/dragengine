@@ -45,7 +45,7 @@ peeUParameterSetSpread::peeUParameterSetSpread( peeType *type, peeParameter *par
 	pType = NULL;
 	pParameter = parameter;
 	
-	SetShortInfo( "Set Paramater Spread" );
+	SetShortInfo( "Set Parameter Spread" );
 	
 	pOldSpread = parameter->GetSpread();
 	pNewSpread = newSpread;

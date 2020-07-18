@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -27,6 +29,7 @@
 #include "igdeNativeFoxListBox.h"
 #include "igdeNativeFoxResizer.h"
 #include "../../igdeListBox.h"
+#include "../../igdeContainer.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../model/igdeListItem.h"
 #include "../../resources/igdeIcon.h"
@@ -115,6 +118,31 @@ pResizer( NULL )
 igdeNativeFoxListBox::~igdeNativeFoxListBox(){
 }
 
+igdeNativeFoxListBox *igdeNativeFoxListBox::CreateNativeWidget( igdeListBox &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxListBox( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxListBox::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxListBox::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -188,6 +216,47 @@ void igdeNativeFoxListBox::UpdateSelection(){
 
 void igdeNativeFoxListBox::Focus(){
 	pListBox->setFocus();
+}
+
+void igdeNativeFoxListBox::MakeItemVisible( int index ){
+	pListBox->makeItemVisible( index );
+}
+
+void igdeNativeFoxListBox::InsertItem( int index ){
+	const igdeListItem &item = *pOwner->GetItemAt( index );
+	pListBox->insertItem( index, item.GetText().GetString(),
+		item.GetIcon() ? ( FXIcon* )item.GetIcon()->GetNativeIcon() : NULL );
+}
+
+void igdeNativeFoxListBox::RemoveItem( int index ){
+	pListBox->removeItem( index );
+}
+
+void igdeNativeFoxListBox::RemoveAllItems(){
+	pListBox->clearItems();
+}
+
+void igdeNativeFoxListBox::MoveItem( int fromIndex, int toIndex ){
+	pListBox->moveItem( toIndex, fromIndex );
+}
+
+void igdeNativeFoxListBox::UpdateEnabled(){
+	if( pOwner->GetEnabled() ){
+		pListBox->enable();
+		
+	}else{
+		pListBox->disable();
+	}
+}
+
+void igdeNativeFoxListBox::UpdateRowCount(){
+	pListBox->setNumVisible( pOwner->GetRows() );
+}
+
+void igdeNativeFoxListBox::UpdateDescription(){
+	const char * const description = pOwner->GetDescription();
+	//pListBox->setTipText( description ); // not supported
+	pListBox->setHelpText( description );
 }
 
 
@@ -360,3 +429,5 @@ long igdeNativeFoxListBox::onResizerDrag( FXObject*, FXSelector, void *data ){
 	
 	return 0;
 }
+
+#endif

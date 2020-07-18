@@ -30,71 +30,6 @@
 #include <dragengine/common/exceptions.h>
 
 
-
-// Native Widget
-//////////////////
-
-namespace {
-
-class cNativeWidget : public FXScrollWindow{
-	FXDECLARE( cNativeWidget )
-	
-protected:
-	cNativeWidget();
-	
-private:
-	igdeContainerScroll *pOwner;
-	
-public:
-	cNativeWidget( igdeContainerScroll &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeWidget();
-	
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-};
-
-
-FXDEFMAP( cNativeWidget ) cNativeWidgetMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, cNativeWidget::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeWidget::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( cNativeWidget, FXScrollWindow, cNativeWidgetMap, ARRAYNUMBER( cNativeWidgetMap ) )
-
-cNativeWidget::cNativeWidget(){ }
-
-cNativeWidget::cNativeWidget( igdeContainerScroll &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXScrollWindow( parent, layoutFlags, 0, 0, 0, 0 ),
-pOwner( &owner ){
-}
-
-cNativeWidget::~cNativeWidget(){
-}
-
-long cNativeWidget::onResize( FXObject*, FXSelector, void* ){
-	pOwner->OnResize();
-	return 1;
-}
-
-long cNativeWidget::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	clflags.flags = LAYOUT_SIDE_TOP;
-	
-	//if( ! pOwner->GetCanScrollX() ){
-		clflags.flags |= LAYOUT_FILL_X;
-	//}
-	//if( ! pOwner->GetCanScrollY() ){
-		clflags.flags |= LAYOUT_FILL_Y;
-	//}
-	
-	return 1;
-}
-
-}
-
-
-
 // Class igdeContainerScroll
 //////////////////////////////
 
@@ -131,30 +66,9 @@ void igdeContainerScroll::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this ) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
-	if( ! pCanScrollX ){
-		layoutFlags |= HSCROLLING_OFF;
-	}
-	if( ! pCanScrollY ){
-		layoutFlags |= VSCROLLING_OFF;
-	}
-	
-	cNativeWidget * const container = new cNativeWidget( *this, foxParent, layoutFlags );
-	
-	SetNativeWidget( container );
-	if( foxParent->id() ){
-		container->create();
-	}
+	igdeNativeContainerScroll * const native = igdeNativeContainerScroll::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -164,7 +78,7 @@ void igdeContainerScroll::DestroyNativeWidget(){
 		return;
 	}
 	
-	cNativeWidget * const native = ( cNativeWidget* )GetNativeWidget();
+	igdeNativeContainerScroll * const native = ( igdeNativeContainerScroll* )GetNativeWidget();
 	DropNativeWidget();
-	delete native;
+	native->DestroyNativeWidget();
 }

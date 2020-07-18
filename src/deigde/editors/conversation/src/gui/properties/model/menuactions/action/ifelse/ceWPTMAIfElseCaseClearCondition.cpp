@@ -67,17 +67,4 @@ void ceWPTMAIfElseCaseClearCondition::OnAction(){
 	igdeUndoReference undo;
 	undo.TakeOver( new ceUCAIfElseCaseSetCondition( pTopic, pIfElse, pIfCase, NULL ) );
 	GetConversation().GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAction * const modelAction = model.DeepFindAction( pIfElse );
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }

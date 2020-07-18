@@ -26,7 +26,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class Rig
+abstract class RigBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**
@@ -82,6 +82,8 @@ abstract class Rig
 	
 	/**
 	 * \brief Add bone.
+	 * 
+	 * Resets all bone shape properties to empty string.
 	 */
 	protected func void addBone( String name, int parent, Vector position, Vector rotation, \
 	Vector centralMassPoint, bool dynamic, float mass, Vector ikLimitsLower, Vector ikLimitsUpper, \
@@ -89,9 +91,14 @@ abstract class Rig
 	end
 	
 	/**
-	 * \brief Add shape property to bone.
+	 * \brief Set shape properties to bone.
+	 * 
+	 * Properties array has to contain the same number of objects as the bone has shapes.
+	 * The first array object is assigned to the first bone shape and so forth. The array
+	 * should contain strings but any object supporting an appropriate toString()
+	 * implementation is valid too.
 	 */
-	protected func void addBoneShapeProperty( int index, String property )
+	protected func void setBoneShapeProperties( int index, Array properties )
 	end
 	
 	/**
@@ -117,14 +124,21 @@ abstract class Rig
 	
 	/**
 	 * \brief Set shapes.
+	 * 
+	 * Resets all shape properties to empty string.
 	 */
 	protected func void setShapes( ShapeList shapes )
 	end
 	
 	/**
-	 * \brief Add shape property.
+	 * \brief Set shape properties.
+	 * 
+	 * Properties array has to contain the same number of objects as the rig has shapes.
+	 * The first array object is assigned to the first rig shape and so forth. The array
+	 * should contain strings but any object supporting an appropriate toString()
+	 * implementation is valid too.
 	 */
-	protected func void addShapeProperty( String property )
+	protected func void setShapeProperties( Array properties )
 	end
 	/*@}*/
 end

@@ -80,10 +80,10 @@ ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
 
 void ceUCCHasActorSetActor::Undo(){
 	pHasActor->SetActor( pOldID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pHasActor );
 }
 
 void ceUCCHasActorSetActor::Redo(){
 	pHasActor->SetActor( pNewID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pHasActor );
 }

@@ -33,6 +33,7 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeTimer.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/deEngine.h>
@@ -61,6 +62,24 @@
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
+
+
+
+// Reattach declas timer
+//////////////////////////
+
+class meDecalTimerReattachDecals : public igdeTimer {
+private:
+	meDecal &pDecal;
+	
+public:
+	meDecalTimerReattachDecals( meDecal &decal ) : igdeTimer( *decal.GetEnvironment() ), pDecal( decal ){
+	}
+	
+	virtual void OnTimeout(){
+		pDecal.AttachDecals();
+	}
+};
 
 
 
@@ -109,6 +128,8 @@ pColliderOwner( this )
 	deEngine &engine = *environment->GetEngineController()->GetEngine();
 	
 	try{
+		pTimerReattachDecals.TakeOver( new meDecalTimerReattachDecals( *this ) );
+		
 		pCollider = engine.GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled( true );
 		pCollider->SetResponseType( deCollider::ertKinematic );
@@ -238,7 +259,7 @@ meDecal::~meDecal(){
 ///////////////
 
 void meDecal::SetWorld( meWorld *world ){
-	pDetachDecals();
+	DetachDecals();
 	
 	if( pWorld ){
 		pWorld->GetEngineWorld()->RemoveCollider( pCollider );
@@ -252,8 +273,8 @@ void meDecal::SetWorld( meWorld *world ){
 		world->GetEngineWorld()->AddCollider( pCollider );
 	}
 	
-	pAttachDecals();
 	ShowStateChanged();
+	InvalidateDecals();
 }
 
 void meDecal::SetParentObject( meObject *object ){
@@ -361,9 +382,7 @@ void meDecal::SetPosition( const decDVector &position ){
 	
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetRotation( const decVector &rotation ){
@@ -380,9 +399,7 @@ void meDecal::SetRotation( const decVector &rotation ){
 	
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetSize( const decVector &size ){
@@ -399,9 +416,7 @@ void meDecal::SetSize( const decVector &size ){
 	}
 	
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetTexCoordOffset( const decVector2 &offset ){
@@ -545,9 +560,7 @@ void meDecal::SetActive( bool active ){
 void meDecal::NotifyParentChanged(){
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 
@@ -562,13 +575,13 @@ void meDecal::ShowStateChanged(){
 	}
 }
 
-void meDecal::ReattachDecals(){
-	pDetachDecals();
-	pAttachDecals();
+void meDecal::InvalidateDecals(){
+	DetachDecals();
+	pTimerReattachDecals->Start( 250, false );
 }
 
 void meDecal::OnGameDefinitionChanged(){
-	ReattachDecals();
+	InvalidateDecals();
 }
 
 
@@ -704,7 +717,7 @@ void meDecal::pCleanUp(){
 		pCollider->FreeReference();
 	}
 	
-	pDetachDecals();
+	DetachDecals();
 	
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
@@ -723,7 +736,7 @@ void meDecal::pCleanUp(){
 
 
 
-void meDecal::pDetachDecals(){
+void meDecal::DetachDecals(){
 	if( ! pAttachedDecals ){
 		return;
 	}
@@ -737,8 +750,8 @@ void meDecal::pDetachDecals(){
 	pAttachedDecals = NULL;
 }
 
-void meDecal::pAttachDecals(){
-	pDetachDecals();
+void meDecal::AttachDecals(){
+	DetachDecals();
 	
 	meWorld *world = NULL;
 	if( pWorld ){

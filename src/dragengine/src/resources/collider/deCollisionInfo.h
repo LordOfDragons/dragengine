@@ -34,7 +34,7 @@ class deHeightTerrainSector;
 /**
  * \brief Collision Information.
  * 
- * Stores informations about a collision between a collider and a height terrain or another
+ * Stores information about a collision between a collider and a height terrain or another
  * collider. This object is reference counted because it does keep references to the
  * collision objects.
  */
@@ -121,7 +121,7 @@ public:
 	 * \brief Bone index or -1 if none is hit.
 	 * 
 	 * The bone is set if a collider is hit and the collider has bone
-	 * informations. In all other cases this is -1.
+	 * information. In all other cases this is -1.
 	 */
 	inline int GetBone() const{ return pBone; }
 	
@@ -202,7 +202,7 @@ public:
 	 * \brief Percentage distance or remaining step time.
 	 * 
 	 * For explicite collision tests with a displacement vector the distance is
-	 * the percentage of the displacement travelled before the collision occured.
+	 * the percentage of the displacement travelled before the collision occurred.
 	 * For physical collision detection as carried out by the physics module this
 	 * is the remaining movement time after the collision point.
 	 */
@@ -212,7 +212,7 @@ public:
 	 * \brief Set percentage distance or remaining step time.
 	 * 
 	 * For explicite collision tests with a displacement vector the distance is the
-	 * percentage of the displacement travelled before the collision occured. For
+	 * percentage of the displacement travelled before the collision occurred. For
 	 * physical collision detection as carried out by the physics module this is the
 	 * remaining movement time after the collision point.
 	 */

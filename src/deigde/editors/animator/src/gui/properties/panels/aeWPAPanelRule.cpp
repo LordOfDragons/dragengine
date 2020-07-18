@@ -39,6 +39,7 @@
 #include "../../../undosys/rule/aeURuleMirrorBones.h"
 #include "../../../undosys/rule/aeURuleTargetAddLink.h"
 #include "../../../undosys/rule/aeURuleTargetRemoveLink.h"
+#include "../../../undosys/rule/aeURuleTargetRemoveAllLinks.h"
 #include "../../../undosys/rule/aeUSetRuleAddBone.h"
 #include "../../../undosys/rule/aeUSetRuleBlendFactor.h"
 #include "../../../undosys/rule/aeUSetRuleBlendMode.h"
@@ -246,26 +247,34 @@ public:
 	}
 };
 
-class cActionBoneRemove : public cBaseAction{
+class cActionBoneRemoves : public cBaseAction{
 public:
-	cActionBoneRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove bone" ){}
+	cActionBoneRemoves( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		const decString &name = pPanel.GetCBBoneText();
-		return ! name.IsEmpty() && rule->GetListBones().Has( name )
-			? new aeUSetRuleRemoveBone( rule, name ) : NULL;
+		if( name.IsEmpty() ){
+			return NULL;
+		}
+		aeUSetRuleRemoveBone * const undo = new aeUSetRuleRemoveBone( rule, name );
+		if( undo->HasBones() ){
+			return undo;
+			
+		}else{
+			undo->FreeReference();
+			return NULL;
+		}
 	}
 	
 	virtual void Update( const aeAnimator &, const aeRule &rule ){
-		const decString &name = pPanel.GetCBBoneText();
-		SetEnabled( ! name.IsEmpty() && rule.GetListBones().Has( name ) );
+		SetEnabled( ! pPanel.GetCBBoneText().IsEmpty() );
 	}
 };
 
-class cActionBoneRemoveAll : public cBaseAction{
+class cActionBoneRemovesAll : public cBaseAction{
 public:
-	cActionBoneRemoveAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
+	cActionBoneRemovesAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
@@ -275,6 +284,21 @@ public:
 	
 	virtual void Update( const aeAnimator &, const aeRule &rule ){
 		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	}
+};
+
+class cActionBoneSelectedRemove : public cBaseAction{
+public:
+	cActionBoneSelectedRemove( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove selected bone" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const char * const name = pPanel.GetListBoneSelection();
+		return name ? new aeUSetRuleRemoveBone( rule, name ) : NULL;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( pPanel.GetListBoneSelection() );
 	}
 };
 
@@ -335,11 +359,11 @@ class cListBones : public igdeListBoxListener{
 public:
 	cListBones( aeWPAPanelRule &panel ) : pPanel( panel ){ }
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
 		if( pPanel.GetRule() && listBox->GetSelectedItem() ){
 			pPanel.SetCBBoneText( listBox->GetSelectedItem()->GetText() );
 		}
-	}
+	}*/
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
 		if( ! pPanel.GetRule() ){
@@ -349,8 +373,8 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand( menu, new cActionBoneAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionBoneRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionBoneRemoveAll( pPanel ), true );
+		helper.MenuCommand( menu, new cActionBoneSelectedRemove( pPanel ), true );
+		helper.MenuCommand( menu, new cActionBoneRemovesAll( pPanel ), true );
 		helper.MenuCommand( menu, new cActionMirrorRigBones( pPanel ), true );
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, new cActionCopyBones( pPanel ), true );
@@ -397,15 +421,41 @@ public:
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		aeControllerTarget * const target = pPanel.GetTarget();
-		aeLink * const link = pPanel.GetCBLinkSelection();
+		aeLink * const link = pPanel.GetListLinkSelection();
 		return target && link && target->HasLink( link )
 			? new aeURuleTargetRemoveLink( rule, target, link ) : NULL;
 	}
 	
 	virtual void Update( const aeAnimator &, const aeRule & ){
 		const aeControllerTarget * const target = pPanel.GetTarget();
-		aeLink * const link = pPanel.GetCBLinkSelection();
+		aeLink * const link = pPanel.GetListLinkSelection();
 		SetEnabled( target && link && target->HasLink( link ) );
+	}
+};
+
+class cActionLinkRemoveAll : public cBaseAction{
+public:
+	cActionLinkRemoveAll( aeWPAPanelRule &panel ) : cBaseAction( panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all links" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		aeControllerTarget * const target = pPanel.GetTarget();
+		if( ! target || target->GetLinkCount() == 0 ){
+			return NULL;
+		}
+		
+		const int count = target->GetLinkCount();
+		aeLinkList list;
+		int i;
+		for( i=0; i<count; i++ ){
+			list.Add( target->GetLinkAt( i ) );
+		}
+		return new aeURuleTargetRemoveAllLinks( rule, target, list );
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule & ){
+		const aeControllerTarget * const target = pPanel.GetTarget();
+		SetEnabled( target && target->GetLinkCount() > 0 );
 	}
 };
 
@@ -416,11 +466,11 @@ class cListLinks : public igdeListBoxListener{
 public:
 	cListLinks( aeWPAPanelRule &panel ) : pPanel( panel ){ }
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	/*virtual void OnSelectionChanged( igdeListBox *listBox ){
 		if( listBox->GetSelectedItem() ){
 			pPanel.SetCBLinkSelection( ( aeLink* )listBox->GetSelectedItem()->GetData() );
 		}
-	}
+	}*/
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
 		if( ! pPanel.GetRule() ){
@@ -431,6 +481,7 @@ public:
 		
 		helper.MenuCommand( menu, new cActionLinkAdd( pPanel ), true );
 		helper.MenuCommand( menu, new cActionLinkRemove( pPanel ), true );
+		helper.MenuCommand( menu, new cActionLinkRemoveAll( pPanel ), true );
 	}
 };
 
@@ -479,7 +530,7 @@ pTarget( NULL )
 	helper.ComboBoxFilter( formLine, true, "Bones", pCBBones, NULL );
 	pCBBones->SetDefaultSorter();
 	helper.Button( formLine, pBtnBoneAdd, new cActionBoneAdd( *this ), true );
-	helper.Button( formLine, pBtnBoneDel, new cActionBoneRemove( *this ), true );
+	helper.Button( formLine, pBtnBoneDel, new cActionBoneRemoves( *this ), true );
 	
 	helper.ListBox( groupBox, 4, "Bones affected by rule", pListBones, new cListBones( *this ) );
 	pListBones->SetDefaultSorter();
@@ -680,12 +731,24 @@ void aeWPAPanelRule::SetCBBoneText( const char *text ){
 	pCBBones->SetText( text );
 }
 
+const char *aeWPAPanelRule::GetListBoneSelection() const{
+	return pListBones->GetSelectedItem() ? pListBones->GetSelectedItem()->GetText().GetString() : NULL;
+}
+
 aeLink *aeWPAPanelRule::GetCBLinkSelection() const{
 	return pCBLinks->GetSelectedItem() ? ( aeLink* )pCBLinks->GetSelectedItem()->GetData() : NULL;
 }
 
 void aeWPAPanelRule::SetCBLinkSelection( aeLink *selection ){
 	pCBLinks->SetSelectionWithData( selection );
+}
+
+aeLink *aeWPAPanelRule::GetListLinkSelection() const{
+	return pListLinks->GetSelectedItem() ? ( aeLink* )pListLinks->GetSelectedItem()->GetData() : NULL;
+}
+
+void aeWPAPanelRule::SetListLinkSelection( aeLink *selection ){
+	pListLinks->SetSelectionWithData( selection );
 }
 
 

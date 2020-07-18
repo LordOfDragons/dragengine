@@ -57,7 +57,7 @@ pName( name ),
 pScaleMode( esmFixed ),
 
 pIsGhost( false ),
-pCanInstanciate( true ){
+pCanInstantiate( true ){
 }
 
 gdeObjectClass::gdeObjectClass( const gdeObjectClass &objectClass ) :
@@ -73,7 +73,7 @@ pHideTags( objectClass.pHideTags ),
 pPartialHideTags( objectClass.pPartialHideTags ),
 
 pIsGhost( objectClass.pIsGhost ),
-pCanInstanciate( objectClass.pCanInstanciate )
+pCanInstantiate( objectClass.pCanInstantiate )
 {
 	deObjectReference objRef;
 	int i, count;
@@ -506,12 +506,12 @@ void gdeObjectClass::SetIsGhost( bool isGhost ){
 	}
 }
 
-void gdeObjectClass::SetCanInstanciate( bool canInstanciate ){
-	if( pCanInstanciate == canInstanciate ){
+void gdeObjectClass::SetCanInstantiate( bool canInstantiate ){
+	if( pCanInstantiate == canInstantiate ){
 		return;
 	}
 	
-	pCanInstanciate = canInstanciate;
+	pCanInstantiate = canInstantiate;
 	
 	if( pGameDefinition ){
 		pGameDefinition->NotifyObjectClassChanged( this );

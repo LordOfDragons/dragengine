@@ -31,7 +31,7 @@ class deLogger;
  * \brief Error Trace.
  *
  * An Error Trace object contains a list of Error Trace Point objects.
- * describing the path of an error that occured in the engine.
+ * describing the path of an error that occurred in the engine.
  */
 class deErrorTrace{
 private:
@@ -101,7 +101,7 @@ public:
 	deErrorTracePoint *AddAndSetIfEmpty( const char *error, deLoadableModule *sourceModule,
 		const char *sourceFunc, int sourceLine );
 	
-	/** \brief Add new trace point with the given informations. */
+	/** \brief Add new trace point with the given information. */
 	deErrorTracePoint *AddPoint( deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine );
 	
 	/**

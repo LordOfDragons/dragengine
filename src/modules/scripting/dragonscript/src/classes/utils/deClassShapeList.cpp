@@ -34,6 +34,7 @@
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassArray.h>
+#include <libdscript/packages/default/dsClassEnumeration.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -45,6 +46,7 @@
 #include <dragengine/common/shape/decShapeCapsule.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/shape/decShapeVisitorIdentify.h>
 
 
 struct sShaListNatDat{
@@ -138,6 +140,223 @@ deClassShapeList::nfRemoveAllShapes::nfRemoveAllShapes( const sInitData &init ) 
 void deClassShapeList::nfRemoveAllShapes::RunFunction( dsRunTime*, dsValue *myself ){
 	decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
 	shapeList.RemoveAll();
+}
+
+
+
+// public func ShapeType getTypeAt( int index )
+deClassShapeList::nfGetTypeAt::nfGetTypeAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getTypeAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeType ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetTypeAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	rt->PushValue( ( ( deClassShapeList* )GetOwnerClass() )->GetClassShapeType()
+		->GetVariable( identify.GetType() - 1 )->GetStaticValue() );
+}
+
+// public func Vector getPositionAt( int index )
+deClassShapeList::nfGetPositionAt::nfGetPositionAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getPositionAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetPositionAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	ds.GetClassVector()->PushVector( rt, shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->GetPosition() );
+}
+
+// public func Quaternion getOrientationAt( int index )
+deClassShapeList::nfGetOrientationAt::nfGetOrientationAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getOrientationAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetOrientationAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	ds.GetClassQuaternion()->PushQuaternion( rt, shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->GetOrientation() );
+}
+
+// public func float getRadiusAt( int index )
+deClassShapeList::nfGetRadiusAt::nfGetRadiusAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getRadiusAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetRadiusAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	rt->PushFloat( identify.CastToSphere().GetRadius() );
+}
+
+// public func Vector getHalfExtendsAt( int index )
+deClassShapeList::nfGetHalfExtendsAt::nfGetHalfExtendsAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getHalfExtendsAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetHalfExtendsAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	ds.GetClassVector()->PushVector( rt, identify.CastToBox().GetHalfExtends() );
+}
+
+// public func float getHalfHeightAt( int index )
+deClassShapeList::nfGetHalfHeightAt::nfGetHalfHeightAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getHalfHeightAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetHalfHeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	switch( identify.GetType() ){
+	case decShapeVisitorIdentify::estCylinder:
+		rt->PushFloat( identify.CastToCylinder().GetHalfHeight() );
+		break;
+		
+	case decShapeVisitorIdentify::estCapsule:
+		rt->PushFloat( identify.CastToCapsule().GetHalfHeight() );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func float getTopRadiusAt( int index )
+deClassShapeList::nfGetTopRadiusAt::nfGetTopRadiusAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getTopRadiusAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetTopRadiusAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	switch( identify.GetType() ){
+	case decShapeVisitorIdentify::estCylinder:
+		rt->PushFloat( identify.CastToCylinder().GetTopRadius() );
+		break;
+		
+	case decShapeVisitorIdentify::estCapsule:
+		rt->PushFloat( identify.CastToCapsule().GetTopRadius() );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func float getBottomRadiusAt( int index )
+deClassShapeList::nfGetBottomRadiusAt::nfGetBottomRadiusAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getBottomRadiusAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetBottomRadiusAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	switch( identify.GetType() ){
+	case decShapeVisitorIdentify::estCylinder:
+		rt->PushFloat( identify.CastToCylinder().GetBottomRadius() );
+		break;
+		
+	case decShapeVisitorIdentify::estCapsule:
+		rt->PushFloat( identify.CastToCapsule().GetBottomRadius() );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func Vector2 getTopAxisScalingAt( int index )
+deClassShapeList::nfGetTopAxisScalingAt::nfGetTopAxisScalingAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getTopAxisScalingAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetTopAxisScalingAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	switch( identify.GetType() ){
+	case decShapeVisitorIdentify::estCylinder:
+		ds.GetClassVector2()->PushVector2( rt, identify.CastToCylinder().GetTopAxisScaling() );
+		break;
+		
+	case decShapeVisitorIdentify::estCapsule:
+		ds.GetClassVector2()->PushVector2( rt, identify.CastToCapsule().GetTopAxisScaling() );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func Vector2 getBottomAxisScalingAt( int index )
+deClassShapeList::nfGetBottomAxisScalingAt::nfGetBottomAxisScalingAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getBottomAxisScalingAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetBottomAxisScalingAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	switch( identify.GetType() ){
+	case decShapeVisitorIdentify::estCylinder:
+		ds.GetClassVector2()->PushVector2( rt, identify.CastToCylinder().GetBottomAxisScaling() );
+		break;
+		
+	case decShapeVisitorIdentify::estCapsule:
+		ds.GetClassVector2()->PushVector2( rt, identify.CastToCapsule().GetBottomAxisScaling() );
+		break;
+		
+	default:
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func int getPointCountAt( int index )
+deClassShapeList::nfGetPointCountAt::nfGetPointCountAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getPointCountAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassShapeList::nfGetPointCountAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	rt->PushInt( identify.CastToHull().GetPointCount() );
+}
+
+// public func Vector getPointAt( int shape, int point )
+deClassShapeList::nfGetPointAt::nfGetPointAt( const sInitData &init ) :
+dsFunction( init.clsShaList, "getPointAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsInt ); // point
+}
+void deClassShapeList::nfGetPointAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	decShapeVisitorIdentify identify;
+	shapeList.GetAt( rt->GetValue( 0 )->GetInt() )->Visit( identify );
+	ds.GetClassVector()->PushVector( rt, identify.CastToHull().GetPointAt( rt->GetValue( 1 )->GetInt() ) );
 }
 
 
@@ -1151,6 +1370,8 @@ void deClassShapeList::CreateClassMembers( dsEngine *engine ){
 	sInitData init;
 	
 	// store classes
+	pClsShapeType = engine->GetClass( "Dragengine.Scenery.ShapeType" );
+	
 	init.clsShaList = this;
 	init.clsVoid = engine->GetClassVoid();
 	init.clsInt = engine->GetClassInt();
@@ -1164,6 +1385,7 @@ void deClassShapeList::CreateClassMembers( dsEngine *engine ){
 	init.clsArray = engine->GetClassArray();
 	init.clsFileReader = pDS->GetClassFileReader();
 	init.clsFileWriter = pDS->GetClassFileWriter();
+	init.clsShapeType = pClsShapeType;
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -1174,6 +1396,19 @@ void deClassShapeList::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEmpty( init ) );
 	AddFunction( new nfNotEmpty( init ) );
 	AddFunction( new nfRemoveAllShapes( init ) );
+	
+	AddFunction( new nfGetTypeAt( init ) );
+	AddFunction( new nfGetPositionAt( init ) );
+	AddFunction( new nfGetRadiusAt( init ) );
+	AddFunction( new nfGetHalfExtendsAt( init ) );
+	AddFunction( new nfGetOrientationAt( init ) );
+	AddFunction( new nfGetHalfHeightAt( init ) );
+	AddFunction( new nfGetTopRadiusAt( init ) );
+	AddFunction( new nfGetBottomRadiusAt( init ) );
+	AddFunction( new nfGetTopAxisScalingAt( init ) );
+	AddFunction( new nfGetBottomAxisScalingAt( init ) );
+	AddFunction( new nfGetPointCountAt( init ) );
+	AddFunction( new nfGetPointAt( init ) );
 	
 	AddFunction( new nfAddSphere( init ) );
 	

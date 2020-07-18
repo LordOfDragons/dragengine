@@ -88,31 +88,33 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		
 		/** \brief Set if player is crouching. */
 		public func void setCrouch( bool crouch )
-			this.pCrouch = crouch
-			this.updateStance()
+			if this.pCanCrouch
+				this.pCrouch = crouch
+				this.updateStance()
+			end
 		end
 		
 		/** \brief Toggle crouching. */
 		public func void toggleCrouch()
-			this.pCrouch = not this.pCrouch
-			this.updateStance()
+			if this.pCanCrouch
+				this.pCrouch = not this.pCrouch
+				this.updateStance()
+			end
 		end
 		
-		/** \brief Player can crouch. */
+		/** \brief Player can change crouch. */
 		public func bool getCanCrouch()
 			return this.pCanCrouch
 		end
 		
-		/** \brief Set if player can crouch. */
-		public func void setCanCrouch( bool canChangeStance )
-			this.pCanCrouch = canChangeStance
-			this.updateStance()
+		/** \brief Set if player can change crouch. */
+		public func void setCanCrouch( bool canChangeCrouch )
+			this.pCanCrouch = canChangeCrouch
 		end
 		
-		/** \brief Toggle can crouch. */
+		/** \brief Toggle can change crouch. */
 		public func void toggleCanCrouch()
 			this.pCanCrouch = not this.pCanCrouch
-			this.updateStance()
 		end
 		
 		
@@ -137,14 +139,11 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		
 		/** \brief Update locomotion stance. */
 		public func void updateStance()
-			if not this.pCanCrouch
-				return
-			end
-			
-			this.pStance = 0
-			
 			if this.pCrouch
 				this.pStance = 1
+				
+			else
+				this.pStance = 0
 			end
 		end
 		

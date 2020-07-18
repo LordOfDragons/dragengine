@@ -138,7 +138,7 @@ public:
 	/** Updates the height extends. */
 	void UpdateHeightExtends( float minHeight, float maxHeight );
 	
-	/** Print out some debuging informations. */
+	/** Print out some debuging information. */
 	void DebugPrint();
 	
 	/** Retrieves the vbo point offset. */

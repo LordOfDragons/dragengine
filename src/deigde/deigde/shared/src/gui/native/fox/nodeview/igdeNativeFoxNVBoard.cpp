@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -81,6 +83,30 @@ igdeNativeFoxNVBoard::~igdeNativeFoxNVBoard(){
 	}
 }
 
+igdeNativeFoxNVBoard *igdeNativeFoxNVBoard::CreateNativeWidget( igdeNVBoard &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVBoard( owner, parent, *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVBoard::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVBoard::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -115,6 +141,10 @@ void igdeNativeFoxNVBoard::UpdateLinks(){
 
 void igdeNativeFoxNVBoard::UpdateOffset(){
 	update();
+}
+
+decPoint igdeNativeFoxNVBoard::GetSize(){
+	return decPoint( getWidth(), getWidth() );
 }
 
 
@@ -562,3 +592,5 @@ const decVector2 &bp2, const decVector2 &bp3, const decVector2 &bp4 ) const{
 			PointBezierDistance( bp, nbp6, nbp5, nbp3, bp4 ) );
 	}
 }
+
+#endif

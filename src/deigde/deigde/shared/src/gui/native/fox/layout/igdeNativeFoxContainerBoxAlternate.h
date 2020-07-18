@@ -1,5 +1,5 @@
 /* 
- * Drag[en]gine IGDE Game Definition Editor
+ * Drag[en]gine IGDE
  *
  * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
  * 
@@ -19,49 +19,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef _IGDENATIVEFOXCONTAINERBOXALTERNATE_H_
+#define _IGDENATIVEFOXCONTAINERBOXALTERNATE_H_
 
-#ifndef _GDEUOCTOGGLECANINSTANCIATE_H_
-#define _GDEUOCTOGGLECANINSTANCIATE_H_
+#include "../foxtoolkit.h"
 
-#include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/common/math/decMath.h>
-
-class gdeObjectClass;
-
+class igdeContainerBoxAlternate;
 
 
 /**
- * \brief Undo action object class toggle can instanciate.
+ * FOX Native button.
  */
-class gdeUOCToggleCanInstanciate : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	
-	
-	
+class igdeNativeFoxContainerBoxAlternate{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
-	gdeUOCToggleCanInstanciate( gdeObjectClass *objectClass );
+	/** \brief Create native widget. */
+	static void* CreateNativeWidget( igdeContainerBoxAlternate &owner );
 	
-protected:
-	/** \brief Clean up undo action. */
-	virtual ~gdeUOCToggleCanInstanciate();
-	/*@}*/
+	/** \brief Post create native widget. */
+	static void PostCreateNativeWidget( igdeContainerBoxAlternate &owner, void *native );
 	
-	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** \brief Undo. */
-	virtual void Undo();
-	
-	/** \brief Redo. */
-	virtual void Redo();
+	/** \brief Destroy native widget. */
+	static void DestroyNativeWidget( igdeContainerBoxAlternate &owner, void *native );
 	/*@}*/
 };
+
+typedef igdeNativeFoxContainerBoxAlternate igdeNativeContainerBoxAlternate;
 
 #endif

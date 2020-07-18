@@ -80,10 +80,10 @@ ceUCCVarSetOperator::~ceUCCVarSetOperator(){
 
 void ceUCCVarSetOperator::Undo(){
 	pCondition->SetOperator( pOldOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCVarSetOperator::Redo(){
 	pCondition->SetOperator( pNewOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

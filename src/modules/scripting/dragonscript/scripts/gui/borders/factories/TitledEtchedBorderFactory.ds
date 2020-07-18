@@ -42,7 +42,7 @@ public class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
 		var TitledEtchedBorder border = TitledEtchedBorder.new()
 		
 		border.setRaised( this.getRaised() )
-		border.setColorHilight( this.getColorHilight() )
+		border.setColorHighlight( this.getColorHighlight() )
 		border.setColorShadow( this.getColorShadow() )
 		border.setText( this.getText() )
 		

@@ -47,7 +47,7 @@
 #include "../../../undosys/objectClass/gdeUOCSetPropertyValues.h"
 #include "../../../undosys/objectClass/gdeUOCPropertyValuesFromSubObjects.h"
 #include "../../../undosys/objectClass/gdeUOCToggleIsGhost.h"
-#include "../../../undosys/objectClass/gdeUOCToggleCanInstanciate.h"
+#include "../../../undosys/objectClass/gdeUOCToggleCanInstantiate.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyAdd.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyRemove.h"
 #include "../../../undosys/objectClass/property/gdeUOCPSetName.h"
@@ -264,13 +264,13 @@ public:
 	virtual void Update(){ /* empty on purpose! */ }
 };
 
-class cActionCanInstanciate : public cBaseAction {
+class cActionCanInstantiate : public cBaseAction {
 public:
-	cActionCanInstanciate( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Can Instanciate", NULL,
+	cActionCanInstantiate( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Can Instantiate", NULL,
 		"Object can be instantiated (visible in browser and usable). Disable for classes only inherited from." ){ }
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
-		return new gdeUOCToggleCanInstanciate( objectClass );
+		return new gdeUOCToggleCanInstantiate( objectClass );
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
@@ -800,7 +800,7 @@ pGameDefinition( NULL )
 		pEditDefaultInheritPropertyPrefix, new cTextDefaultInheritPropertyPrefix( *this ) );
 	
 	helper.CheckBox( groupBox, pChkIsGhost, new cActionIsGhost( *this ), true );
-	helper.CheckBox( groupBox, pChkCanInstanciate, new cActionCanInstanciate( *this ), true );
+	helper.CheckBox( groupBox, pChkCanInstantiate, new cActionCanInstantiate( *this ), true );
 	
 	helper.FormLineStretchFirst( groupBox, "Category: ", "Category", frameLine );
 	helper.ComboBoxFilter( frameLine, true, "Category", pCBCategory, new cComboCategory( *this ) );
@@ -1038,7 +1038,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pEditDefaultInheritPropertyPrefix->SetText( objectClass->GetDefaultInheritPropertyPrefix() );
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )objectClass->GetScaleMode() );
 		pChkIsGhost->SetChecked( objectClass->GetIsGhost() );
-		pChkCanInstanciate->SetChecked( objectClass->GetCanInstanciate() );
+		pChkCanInstantiate->SetChecked( objectClass->GetCanInstantiate() );
 		pCBCategory->SetText( objectClass->GetCategory() );
 		pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty()
 			&& ! pCBCategory->GetSelectedItem() );
@@ -1053,7 +1053,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pEditDefaultInheritPropertyPrefix->ClearText();
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )gdeObjectClass::esmFixed );
 		pChkIsGhost->SetChecked( false );
-		pChkCanInstanciate->SetChecked( true );
+		pChkCanInstantiate->SetChecked( true );
 		pCBCategory->ClearText();
 		pCBCategory->SetInvalidValue( false );
 		properties.SetPropertyList( NULL );
@@ -1068,7 +1068,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pEditDefaultInheritPropertyPrefix->SetEnabled( enabled );
 	pCBScaleMode->SetEnabled( enabled );
 	pChkIsGhost->SetEnabled( enabled );
-	pChkCanInstanciate->SetEnabled( enabled );
+	pChkCanInstantiate->SetEnabled( enabled );
 	pCBCategory->SetEnabled( enabled );
 	pActionInheritMenu->Update();
 	pActionPropertyValueSet->Update();

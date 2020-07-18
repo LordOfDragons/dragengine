@@ -277,7 +277,7 @@ ceWPAActorSpeak::~ceWPAActorSpeak(){
 ///////////////
 
 ceCAActorSpeak *ceWPAActorSpeak::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatActorSpeak ){
 		return ( ceCAActorSpeak* )action;

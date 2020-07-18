@@ -179,7 +179,7 @@ class StubDecal implements ResourceListener
 		this.pCounter.increase()
 	end
 	
-	/** Creates decal from the stub informations. */
+	/** Creates decal from the stub information. */
 	public func Decal createDecal()
 		var Decal decal = Decal.new()
 		

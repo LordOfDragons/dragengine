@@ -206,7 +206,7 @@ void meWVNodeClosestProp::UpdateClassLists(){
 	
 	for( i=0; i<count; i++ ){
 		const igdeGDClass &objectClass = *classes.GetAt( i );
-		if( objectClass.GetCanInstanciate() ){
+		if( objectClass.GetCanInstantiate() ){
 			pCBPropClass->AddItem( objectClass.GetName() );
 		}
 	}

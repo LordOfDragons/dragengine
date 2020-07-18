@@ -18,3 +18,11 @@
 # Possible values: 'no', 'armv7', 'x86'
 # 
 # platform_android = 'no'
+
+
+# ToolKit used to build IGDE. 
+# 
+# Value enumeration: one from:
+# - 'null': Use no ToolKit. Only special command lines supported.
+# 
+# igde_toolkit = 'null'

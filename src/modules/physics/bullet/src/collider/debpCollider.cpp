@@ -609,8 +609,8 @@ void debpCollider::UpdateDebugDrawer(){
 		decColor colorFill( pDDSShape->GetFillColor() );
 		decColor colorEdge( pDDSShape->GetEdgeColor() );
 		
-		if( devmode.GetHilightResponseType() != -1 ){
-			if( pCollider.GetResponseType() == ( deCollider::eResponseType )devmode.GetHilightResponseType() ){
+		if( devmode.GetHighlightResponseType() != -1 ){
+			if( pCollider.GetResponseType() == ( deCollider::eResponseType )devmode.GetHighlightResponseType() ){
 				colorFill = debpDebugDrawerColors::colliderFill;
 				colorEdge = debpDebugDrawerColors::colliderEdge;
 				

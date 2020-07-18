@@ -817,7 +817,7 @@ pClipboard( NULL )
 	form.TakeOver( new igdeContainerForm( env ) );
 	pSwiParameters->AddChild( form );
 	
-	helper.EditFloat( form, "Minimum:", "Minium value for range type property",
+	helper.EditFloat( form, "Minimum:", "Minimum value for range type property",
 		pEditMinimum, new cEditMinimum( *this ) );
 	helper.EditFloat( form, "Maximum:", "Maximum value for range type property",
 		pEditMaximum, new cEditMaximum( *this ) );

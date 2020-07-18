@@ -24,10 +24,12 @@
 
 #include "../meColliderOwner.h"
 
+#include <deigde/gui/igdeTimerReference.h>
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
-#include <dragengine/deObject.h>
 
 class meObject;
 class meWorld;
@@ -55,6 +57,7 @@ private:
 	
 	meAttachedDecal **pAttachedDecals;
 	int pAttachedDecalCount;
+	igdeTimerReference pTimerReattachDecals;
 	
 	meWorld *pWorld;
 	
@@ -195,8 +198,8 @@ public:
 	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
 	
-	/** \brief Reattach decals. */
-	void ReattachDecals();
+	/** \brief Invalidate decals scheduling an update in the near future. */
+	void InvalidateDecals();
 	
 	/** \brief Game definition changed. */
 	void OnGameDefinitionChanged();
@@ -238,11 +241,16 @@ public:
 	
 	
 	
+	/** \name For internal use only! */
+	/*@{*/
+	void DetachDecals();
+	void AttachDecals();
+	/*@}*/
+	
+	
+	
 private:
 	void pCleanUp();
-	
-	void pDetachDecals();
-	void pAttachDecals();
 	
 	void pRepositionShapes();
 	void pUpdateShapes();

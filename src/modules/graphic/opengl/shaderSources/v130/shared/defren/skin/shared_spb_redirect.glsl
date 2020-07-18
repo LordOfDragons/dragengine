@@ -112,6 +112,15 @@
 #ifdef DYNAMIC_REFLECTIVITY_MULTIPLIER
 	#define pInstReflectivityMultiplier pSharedSPB[ spbIndex ].pSPBInstReflectivityMultiplier
 #endif
+#ifdef DYNAMIC_RIM_EMISSIVITY_INTENSITY
+	#define pInstRimEmissivityIntensity pSharedSPB[ spbIndex ].pSPBInstRimEmissivityIntensity
+#endif
+#ifdef DYNAMIC_RIM_ANGLE
+	#define pInstRimAngle pSharedSPB[ spbIndex ].pSPBInstRimAngle
+#endif
+#ifdef DYNAMIC_RIM_EXPONENT
+	#define pInstRimExponent pSharedSPB[ spbIndex ].pSPBInstRimExponent
+#endif
 #ifdef DYNAMIC_OUTLINE_COLOR
 	#define pInstOutlineColor pSharedSPB[ spbIndex ].pSPBInstOutlineColor
 #endif

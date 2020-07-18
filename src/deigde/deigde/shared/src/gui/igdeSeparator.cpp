@@ -56,35 +56,9 @@ void igdeSeparator::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	FXWindow *foxWidget = NULL;
-	
-	switch( pOrientation ){
-	case eoHorizontal:
-		foxWidget = new FXHorizontalSeparator( foxParent, SEPARATOR_GROOVE | layoutFlags );
-		break;
-		
-	case eoVertical:
-		foxWidget = new FXVerticalSeparator( foxParent, SEPARATOR_GROOVE | layoutFlags );
-		break;
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-	
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	void * const native = igdeNativeSeparator::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	igdeNativeSeparator::PostCreateNativeWidget( *this, native );
 }
 
 void igdeSeparator::DestroyNativeWidget(){
@@ -92,6 +66,6 @@ void igdeSeparator::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( FXWindow* )GetNativeWidget();
+	igdeNativeSeparator::DestroyNativeWidget( *this, GetNativeWidget() );
 	DropNativeWidget();
 }

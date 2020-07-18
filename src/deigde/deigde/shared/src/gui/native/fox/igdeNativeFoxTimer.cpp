@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +62,14 @@ pOwner( &owner ){
 igdeNativeFoxTimer::~igdeNativeFoxTimer(){
 }
 
+igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer( igdeTimer &owner ){
+	return new igdeNativeFoxTimer( owner, FXApp::instance() );
+}
+
+void igdeNativeFoxTimer::DestroyNativeTimer(){
+	delete this;
+}
+
 
 
 // Management
@@ -79,9 +89,22 @@ void igdeNativeFoxTimer::StopTimer(){
 ///////////
 
 long igdeNativeFoxTimer::onTimeout( FXObject*, FXSelector, void* ){
-	if( pOwner->GetRunning() && pOwner->GetRepeating() ){
-		StartTimer();
+	if( ! pOwner->GetRunning() ){
+		// just in case FOX manages to send an event although the user stopped the timer
+		return 1;
 	}
+	
+	if( pOwner->GetRepeating() ){
+		// FOX timers run only once
+		StartTimer();
+		
+	}else{
+		// this does call StopTimer() but this is not a problem
+		pOwner->Stop();
+	}
+	
 	pOwner->OnTimeout();
 	return 1;
 }
+
+#endif

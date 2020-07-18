@@ -26,7 +26,7 @@
 #include "igdeContainer.h"
 #include "igdeViewRenderWindow.h"
 #include "event/igdeMouseKeyListener.h"
-#include "native/fox/igdeNativeFoxRenderView.h"
+#include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 
@@ -65,19 +65,19 @@ void igdeViewRenderWindow::SetEnableRendering( bool enable ){
 	pEnableRendering = enable;
 	
 	if( pRenderWindow ){
-		igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
-		pRenderWindow->SetPaint( enable && native && native->shown() );
+		igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
+		pRenderWindow->SetPaint( enable && native && native->IsShown() );
 	}
 }
 
 bool igdeViewRenderWindow::GetCanRender() const{
-	const igdeNativeFoxRenderView * const native = ( const igdeNativeFoxRenderView* )GetNativeWidget();
+	const igdeNativeRenderView * const native = ( const igdeNativeRenderView* )GetNativeWidget();
 	return native && native->GetCanRender();
 }
 
 decPoint igdeViewRenderWindow::GetRenderAreaSize() const{
-	const igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
-	return native ? decPoint( native->getWidth(), native->getHeight() ) : decPoint();
+	const igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
+	return native ? native->GetSize() : decPoint();
 }
 
 
@@ -89,7 +89,7 @@ void igdeViewRenderWindow::ClearErrorRenderWindow(){
 
 
 void igdeViewRenderWindow::OnAfterEngineStart(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->AttachRenderWindow();
 	}
@@ -97,7 +97,7 @@ void igdeViewRenderWindow::OnAfterEngineStart(){
 }
 
 void igdeViewRenderWindow::OnBeforeEngineStop(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->DetachRenderWindow();
 	}
@@ -109,18 +109,11 @@ void igdeViewRenderWindow::OnFrameUpdate( float ){
 		return;
 	}
 	
-	// window updates are rendered to the window by the graphic module. FOX does not notice
-	// this update so we have to tell it outself. for this we need to check if the window is
-	// visible on screen. this check is required since there is no way to figure out otherwise
-	// if the window is actually visible on screen or hidden (either itself or a parent
-	// somewhere up the chain). disabling rendering here is important since otherwise strange
-	// UI artifacts can happen
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	pRenderWindow->SetPaint( pEnableRendering && native && native->IsReallyVisible() );
 	
-	// update only if painting is enabled
-	if( pRenderWindow->GetPaint() ){
-		native->update();
+	if( native ){
+		native->OnFrameUpdate();
 	}
 }
 
@@ -187,14 +180,14 @@ void igdeViewRenderWindow::CreateCanvas(){
 }
 
 void igdeViewRenderWindow::GrabInput(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->GrabInput();
 	}
 }
 
 void igdeViewRenderWindow::ReleaseInput(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->ReleaseInput();
 	}
@@ -293,29 +286,14 @@ void igdeViewRenderWindow::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxRenderView * const native = new igdeNativeFoxRenderView(
-		*this, nativeParent, igdeUIFoxHelper::GetChildLayoutFlags( this ) );
+	igdeNativeRenderView * const native = igdeNativeRenderView::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	
-	if( ! nativeParent->id() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	native->create();
+	native->PostCreateNativeWidget();
 }
 
 void igdeViewRenderWindow::DropNativeWidget(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxRenderView* )GetNativeWidget() )->DropNativeWindow();
+		( ( igdeNativeRenderView* )GetNativeWidget() )->DropNativeWindow();
 	}
 	
 	igdeWidget::DropNativeWidget();
@@ -326,7 +304,7 @@ void igdeViewRenderWindow::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxRenderView* )GetNativeWidget();
+	( ( igdeNativeRenderView* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -342,6 +320,6 @@ void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
 	}
 	
 	if( pEngineRunning ){
-		( ( igdeNativeFoxRenderView* )GetNativeWidget() )->AttachRenderWindow();
+		( ( igdeNativeRenderView* )GetNativeWidget() )->AttachRenderWindow();
 	}
 }

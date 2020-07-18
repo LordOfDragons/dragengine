@@ -40,7 +40,7 @@
 		<!--<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' all='1'/>
 			<canvasCreator parameter='active.canvas' type='Bevel'>
-				<color parameter='colorHilight' r='1' g='1' b='1'/>
+				<color parameter='colorHighlight' r='1' g='1' b='1'/>
 				<color parameter='colorShadow' r='0.6' g='0.6' b='0.6'/>
 			</canvasCreator>
 		</decoration>-->

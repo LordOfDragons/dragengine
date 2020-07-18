@@ -27,9 +27,9 @@
 
 
 /**
- * \brief Image Module Image Informations.
+ * \brief Image Module Image Information.
  *
- * Provides informations for an image to loading afterwards. Can be used
+ * Provides information for an image to loading afterwards. Can be used
  * by the image module to store additional data structures needed for loading
  * in a subclasses object.
  */

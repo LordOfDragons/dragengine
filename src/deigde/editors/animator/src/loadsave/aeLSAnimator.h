@@ -129,6 +129,9 @@ private:
 	bool pLoadRuleCommon( decXmlElementTag *root, aeAnimator *animator, aeRule *rule );
 	void pLoadControllerTarget( decXmlElementTag *root, aeAnimator *animator, aeControllerTarget &target );
 	void pLoadVector( decXmlElementTag *root, decVector &vector );
+	
+	void pLoadSubAnimators( aeAnimator &animator );
+	void pLoadSubAnimators( aeAnimator &animator, const aeRuleGroup &group );
 };
 
 // end of include only once

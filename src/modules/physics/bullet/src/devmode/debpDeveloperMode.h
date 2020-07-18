@@ -51,7 +51,7 @@ private:
 	
 	bool pTakeSnapshot;
 	decLayerMask pShowCategory;
-	int pHilightResponseType;
+	int pHighlightResponseType;
 	
 	
 	
@@ -81,8 +81,8 @@ public:
 	/** \brief Show category layer mask. */
 	inline const decLayerMask &GetShowCategory() const{ return pShowCategory; }
 	
-	/** \brief Hilight response type or -1 if disabled. */
-	inline int GetHilightResponseType() const{ return pHilightResponseType; }
+	/** \brief Highlight response type or -1 if disabled. */
+	inline int GetHighlightResponseType() const{ return pHighlightResponseType; }
 	
 	/**
 	 * \brief Take snapshot of world if required.
@@ -100,7 +100,7 @@ private:
 	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdTakeSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowCategory( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHilightResponseType( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHighlightResponseType( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
 };
 

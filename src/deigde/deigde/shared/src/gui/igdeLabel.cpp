@@ -38,114 +38,6 @@
 
 
 
-// Native Widget
-//////////////////
-
-class cNativeIgdeLabel : public FXLabel{
-	FXDECLARE( cNativeIgdeLabel )
-	
-protected:
-	cNativeIgdeLabel();
-	
-private:
-	igdeLabel *pOwner;
-	igdeFontReference pFont;
-	
-public:
-	cNativeIgdeLabel( igdeLabel &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
-	virtual ~cNativeIgdeLabel();
-	
-	static FXIcon *LabelIcon( const igdeLabel &owner );
-	static int LabelFlags( const igdeLabel &owner );
-	static igdeFont *LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeIgdeLabel ) cNativeIgdeLabelMap[] = { };
-
-FXIMPLEMENT( cNativeIgdeLabel, FXLabel, cNativeIgdeLabelMap, ARRAYNUMBER( cNativeIgdeLabelMap ) )
-
-cNativeIgdeLabel::cNativeIgdeLabel(){ }
-
-cNativeIgdeLabel::cNativeIgdeLabel( igdeLabel &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXLabel( parent, owner.GetText().GetString(), LabelIcon( owner ),
-	layoutFlags | LabelFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( LabelFont( owner, guitheme ) )
-{
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
-}
-
-cNativeIgdeLabel::~cNativeIgdeLabel(){
-}
-
-FXIcon *cNativeIgdeLabel::LabelIcon( const igdeLabel &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
-		
-	}else{
-		return NULL;
-	}
-}
-
-int cNativeIgdeLabel::LabelFlags( const igdeLabel &owner ){
-	const int alignment = owner.GetAlignment();
-	int flags = ICON_BEFORE_TEXT;
-	
-	if( ( alignment & igdeLabel::eaLeft ) == igdeLabel::eaLeft ){
-		flags |= JUSTIFY_LEFT;
-		
-	}else if( ( alignment & igdeLabel::eaRight ) == igdeLabel::eaRight ){
-		flags |= JUSTIFY_RIGHT;
-		
-	}else{
-		flags |=  JUSTIFY_CENTER_X;
-	}
-	
-	if( ( alignment & igdeLabel::eaTop ) == igdeLabel::eaTop ){
-		flags |= JUSTIFY_TOP;
-		
-	}else if( ( alignment & igdeLabel::eaBottom ) == igdeLabel::eaBottom ){
-		flags |= JUSTIFY_BOTTOM;
-		
-	}else{
-		flags |=  JUSTIFY_CENTER_Y;
-	}
-	
-	return flags;
-}
-
-igdeFont *cNativeIgdeLabel::LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme ){
-	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
-	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::labelFontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::labelFontSize, 1.0f );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
-	}
-	
-	return owner.GetEnvironment().GetSharedFont( configuration );
-}
-
-
-
 // Class igdeLabel
 /////////////////////
 
@@ -235,22 +127,9 @@ void igdeLabel::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeLabel * const foxWidget = new cNativeIgdeLabel(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeLabel * const native = igdeNativeLabel::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeLabel::DestroyNativeWidget(){
@@ -258,46 +137,32 @@ void igdeLabel::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeLabel* )GetNativeWidget();
+	( ( igdeNativeLabel* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeLabel::OnTextChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateText();
 	}
-	
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setText( pText.GetString() );
 }
 
 void igdeLabel::OnAlignmentChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateAlignment();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setFrameStyle( cNativeIgdeLabel::LabelFlags( *this ) );
 }
 
 void igdeLabel::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setTipText( pDescription.GetString() );
-	label.setHelpText( pDescription.GetString() );
 }
 
 void igdeLabel::OnIconChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateIcon();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setIcon( cNativeIgdeLabel::LabelIcon( *this ) );
 }

@@ -24,6 +24,8 @@
 
 #include "foxtoolkit.h"
 
+class igdeSpacer;
+
 
 /**
  * \brief FOX toolkit Native Spacer.
@@ -37,11 +39,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxSpacer( FXComposite *parent, int width, int height, int childFlags );
+	igdeNativeFoxSpacer( igdeSpacer &owner, FXComposite *parent, int childFlags );
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeFoxSpacer();
 	
+	/** \brief Create native widget. */
+	static igdeNativeFoxSpacer* CreateNativeWidget( igdeSpacer &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
+	/*@}*/
+	
+	
+	
+	/** \name Constructors and Destructors */
+	/*@{*/
 	/** \brief Set size. */
 	virtual void SetSize( int width, int height );
 	
@@ -53,8 +69,11 @@ public:
 	/*@}*/
 	
 private:
+	igdeSpacer *pOwner;
 	int pWidth;
 	int pHeight;
 };
+
+typedef igdeNativeFoxSpacer igdeNativeSpacer;
 
 #endif

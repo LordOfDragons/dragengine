@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +28,7 @@
 #include "igdeNativeFoxTreeList.h"
 #include "igdeNativeFoxTreeItem.h"
 #include "igdeNativeFoxResizer.h"
+#include "../../igdeContainer.h"
 #include "../../igdeTreeList.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../model/igdeTreeItem.h"
@@ -116,6 +119,31 @@ pResizer( NULL )
 igdeNativeFoxTreeList::~igdeNativeFoxTreeList(){
 	// drop native widget of all tree items
 	pDropItemsNativeWidget( NULL );
+}
+
+igdeNativeFoxTreeList *igdeNativeFoxTreeList::CreateNativeWidget( igdeTreeList &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxTreeList( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxTreeList::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxTreeList::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -358,6 +386,25 @@ void igdeNativeFoxTreeList::Focus(){
 	pTreeList->setFocus();
 }
 
+void igdeNativeFoxTreeList::UpdateEnabled(){
+	if( pOwner->GetEnabled() ){
+		pTreeList->enable();
+		
+	}else{
+		pTreeList->disable();
+	}
+}
+
+void igdeNativeFoxTreeList::UpdateRows(){
+	pTreeList->setNumVisible( pOwner->GetRows() );
+}
+
+void igdeNativeFoxTreeList::UpdateDescription(){
+	const char * const description = pOwner->GetDescription();
+	//pTreeList->setTipText( description ); // not supported
+	pTreeList->setHelpText( description );
+}
+
 
 
 int igdeNativeFoxTreeList::TreeListFlags( const igdeTreeList & ){
@@ -531,3 +578,5 @@ void igdeNativeFoxTreeList::pDropItemsNativeWidget( igdeTreeItem *parent ){
 		child = child->GetNext();
 	}
 }
+
+#endif

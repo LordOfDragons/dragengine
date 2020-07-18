@@ -24,9 +24,10 @@
 #include <stdlib.h>
 
 #include "aeURuleGroupPasteRule.h"
-#include "../../../animator/rule/aeRuleGroup.h"
 #include "../../../animator/aeAnimator.h"
+#include "../../../animator/controller/aeController.h"
 #include "../../../animator/link/aeLink.h"
+#include "../../../animator/rule/aeRuleGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -117,7 +118,9 @@ void aeURuleGroupPasteRule::Redo(){
 	for( i=0; i<ruleCount; i++ ){
 		aeRule * const rule = pRuleList.GetAt( i );
 		
-		// check if links exist in the animator. if not add them and mark them to remove during undo
+		// check if links exist in the animator. if not add them and mark them to remove
+		// during undo. the same for controllers but with a difference. controllers are
+		// named so if a controller with the same name exists already reuse it
 		if( animator ){
 			aeLinkList linkList;
 			rule->ListLinks( linkList );
@@ -127,7 +130,7 @@ void aeURuleGroupPasteRule::Redo(){
 				aeLink * const link = linkList.GetAt( j );
 				if( ! animator->GetLinks().Has( link ) ){
 					aeController * const controller = link->GetController();
-					if( controller && ! animator->GetControllers().Has( controller ) ){
+					if( controller && ! animator->GetControllers().HasNamed( controller->GetName() ) ){
 						pRemoveControllerList.Add( controller );
 						animator->AddController( controller );
 					}

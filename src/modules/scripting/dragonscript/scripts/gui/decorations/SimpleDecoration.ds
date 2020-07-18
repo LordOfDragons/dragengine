@@ -178,7 +178,7 @@ class SimpleDecoration extends DefaultDecoration
 			decoCanvas.addCanvas( canvasText )
 		end
 		
-		// hilight part
+		// highlight part
 		canvas = CanvasPaint.new()
 		canvas.setShapeType( CanvasPaintShape.lines )
 		canvas.setFillColor( Color.transparent )

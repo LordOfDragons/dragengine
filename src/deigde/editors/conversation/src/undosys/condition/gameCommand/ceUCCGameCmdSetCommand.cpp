@@ -82,10 +82,10 @@ ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
 
 void ceUCCGameCmdSetCommand::Undo(){
 	pCondition->SetCommand( pOldCommand );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCGameCmdSetCommand::Redo(){
 	pCondition->SetCommand( pNewCommand );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

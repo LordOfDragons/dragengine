@@ -241,7 +241,7 @@ bool debpColliderBones::UpdateFromBody(){
 	bool anyBoneChanged = false;
 	int i;
 	
-	// fetch the informations from all bones and apply them to
+	// fetch the information from all bones and apply them to
 	// either the collider if the root bone or the bone otherwise.
 	for( i=0; i<pBonePhysicsCount; i++ ){
 		debpPhysicsBody &phyBody = *pBonesPhysics[ i ]->GetPhysicsBody();
@@ -310,7 +310,7 @@ bool debpColliderBones::UpdateFromBody(){
 		const decDMatrix &invMatrix = pCollider.GetInverseMatrix();
 		deRig * const rig = GetRig();
 		
-		// fetch the informations for all non-root bones and
+		// fetch the information for all non-root bones and
 		// apply them to the component bones.
 		for( i=0; i<pBoneCount; i++ ){
 			if( i != pRootBone && pBones[ i ] && pBones[ i ]->GetColBoneDynamic() ){
@@ -769,13 +769,13 @@ void debpColliderBones::UpdateDebugDrawers(){
 		ddrawer->SetPosition( colbone.GetPosition() - matrix * pBonesPhysics[ i ]->GetOffset() );
 		ddrawer->SetOrientation( colbone.GetOrientation() );
 		
-		const int hilightResponseType = pCollider.GetBullet()->GetDeveloperMode().GetHilightResponseType();
+		const int highlightResponseType = pCollider.GetBullet()->GetDeveloperMode().GetHighlightResponseType();
 		deDebugDrawerShape &ddshape = *pBonesPhysics[ i ]->GetDDSShape();
 		decColor colorFill( ddshape.GetFillColor() );
 		decColor colorEdge( ddshape.GetEdgeColor() );
 		
-		if( hilightResponseType != -1 ){
-			if( pEngColliderRig->GetResponseType() == ( deCollider::eResponseType )hilightResponseType ){
+		if( highlightResponseType != -1 ){
+			if( pEngColliderRig->GetResponseType() == ( deCollider::eResponseType )highlightResponseType ){
 				colorFill = debpDebugDrawerColors::colliderBoneFill;
 				colorEdge = debpDebugDrawerColors::colliderBoneEdge;
 				

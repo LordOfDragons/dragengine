@@ -64,7 +64,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor() ){
 			return;
@@ -85,7 +85,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -126,7 +126,7 @@ ceWPCActorInConversation::~ceWPCActorInConversation(){
 ///////////////
 
 ceCConditionActorInConversation *ceWPCActorInConversation::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectActorInConversation ){
 		return ( ceCConditionActorInConversation* )condition;

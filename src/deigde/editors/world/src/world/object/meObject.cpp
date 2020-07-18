@@ -33,7 +33,7 @@
 #include "../meWorldGuiParameters.h"
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
-#include "../../collisions/meCLReattachDecals.h"
+#include "../../collisions/meCLInvalidateDecals.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -475,8 +475,8 @@ void meObject::SetPosition( const decDVector &position ){
 		return;
 	}
 	
-	meCLReattachDecals::Helper reattachDecals( pWorld );
-	reattachDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
 	
 	pPosition = position;
 	
@@ -494,8 +494,8 @@ void meObject::SetPosition( const decDVector &position ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	reattachDecals.Collect( *pWObject );
-	reattachDecals.ReattachDecals();
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -505,8 +505,8 @@ void meObject::SetSize( const decVector &size ){
 		return;
 	}
 	
-	meCLReattachDecals::Helper reattachDecals( pWorld );
-	reattachDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -521,8 +521,8 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	reattachDecals.Collect( *pWObject );
-	reattachDecals.ReattachDecals();
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -532,8 +532,8 @@ void meObject::SetScaling( const decVector &scaling ){
 		return;
 	}
 	
-	meCLReattachDecals::Helper reattachDecals( pWorld );
-	reattachDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -549,8 +549,8 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	reattachDecals.Collect( *pWObject );
-	reattachDecals.ReattachDecals();
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -562,8 +562,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	
 	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
 	
-	meCLReattachDecals::Helper reattachDecals( pWorld );
-	reattachDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
 	
 	pRotation = rotation;
 	
@@ -581,8 +581,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	reattachDecals.Collect( *pWObject );
-	reattachDecals.ReattachDecals();
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -975,9 +975,9 @@ void meObject::WOAsyncFinished(){
 	ShowStateChanged();
 	
 	if( pWorld ){
-		meCLReattachDecals reattachDecals( pWorld );
-		reattachDecals.Collect( *pWObject );
-		reattachDecals.ReattachDecals();
+		meCLInvalidateDecals InvalidateDecals( pWorld );
+		InvalidateDecals.Collect( *pWObject );
+		InvalidateDecals.InvalidateDecals();
 	}
 }
 

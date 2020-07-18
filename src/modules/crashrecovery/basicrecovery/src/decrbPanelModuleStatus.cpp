@@ -77,8 +77,8 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pCBModule->setNumVisible( 10 );
 	pCBModule->setSortFunc( fSortClasses );
 	
-	// module informations
-	FXGroupBox *groupBox = new FXGroupBox( this, "Informations:",
+	// module information
+	FXGroupBox *groupBox = new FXGroupBox( this, "Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
 		padding, padding, padding, padding );
 	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
@@ -106,8 +106,8 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	new FXLabel( frameLine, "Author:" );
 	pEditAuthor = new FXTextField( frameLine, 30, NULL, 0, FRAME_SUNKEN | TEXTFIELD_READONLY );
 	
-	// file handling informations
-	groupBox = new FXGroupBox( this, "File Handling Informations:",
+	// file handling information
+	groupBox = new FXGroupBox( this, "File Handling Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
 		padding, padding, padding, padding );
 	frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
@@ -126,8 +126,8 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
 	
-	// library module informations
-	groupBox = new FXGroupBox( this, "Library Module Informations:",
+	// library module information
+	groupBox = new FXGroupBox( this, "Library Module Information:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
 		padding, padding, padding, padding );
 	frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,

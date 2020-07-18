@@ -63,7 +63,7 @@
 
 /*
 
-informations about sphere layer calculations
+information about sphere layer calculations
 ============================================
 
 n = texture normal

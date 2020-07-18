@@ -83,10 +83,10 @@ ceUCCVarSetTestVariable::~ceUCCVarSetTestVariable(){
 
 void ceUCCVarSetTestVariable::Undo(){
 	pCondition->SetTestVariable( pOldVariable );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCVarSetTestVariable::Redo(){
 	pCondition->SetTestVariable( pNewVariable );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

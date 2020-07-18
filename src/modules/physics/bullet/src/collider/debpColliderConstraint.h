@@ -37,7 +37,7 @@ class dePhysicsBullet;
 
 /**
  * 
- * Stores informations about an collider constraint.
+ * Stores information about an collider constraint.
  */
 class debpColliderConstraint{
 public:

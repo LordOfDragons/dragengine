@@ -37,7 +37,7 @@ class reRigConstraintList;
  * \brief Undo Mirror Bone.
  *
  * Undo action to mirror bones. This includes the physics parameters,
- * shapes and constraints but not the geometry informations like the
+ * shapes and constraints but not the geometry information like the
  * position or rotation since these usually have to stay the same.
  * Bones have to be end with .l or .r for right respective left. For
  * each bone to mirror the opposite bone is looked for and the

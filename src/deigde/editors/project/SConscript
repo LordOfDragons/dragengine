@@ -62,20 +62,16 @@ envTestRun = envEditor.Clone()
 libsTestRun = []
 appendLibrary(envTestRun, parent_targets['dragengine'], libsTestRun)
 libsTestRun.extend(parent_targets['dragengine']['binlibs'])
-if envEditor['OSWindows']:
+if envTestRun['OSWindows']:
 	libsTestRun.extend(['kernel32', 'user32'])
+	envTestRun.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
 sourcesTestRun = []
 globFiles(envTestRun, 'testrun', '*.cpp', sourcesTestRun)
 
 objectsTestRun = [envTestRun.StaticObject(s) for s in sourcesTestRun]
 
-if envTestRun['OSWindows']:
-	nameProgramTestRun = 'DEIGDEProjectTestRun'
-else:
-	nameProgramTestRun = 'deigde_project_testrun'
-
-programTestRun = envTestRun.Program(target=nameProgramTestRun, source=objectsTestRun, LIBS=libsTestRun)
+programTestRun = envTestRun.Program(target='testrunner', source=objectsTestRun, LIBS=libsTestRun)
 
 # install and package
 targetBuild = envEditor.Alias('editor_project_build', [library, programTestRun])
@@ -88,9 +84,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 pathBin = envEditor.subst(envEditor['path_igde_bin'])
-install.append(envTestRun.Install(pathBin, programTestRun))
+install.append(envTestRun.Install(pathModule, programTestRun))
 for p in programTestRun:
-	archive[os.path.join(pathBin, p.name)] = p
+	archive[os.path.join(pathModule, p.name)] = p
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

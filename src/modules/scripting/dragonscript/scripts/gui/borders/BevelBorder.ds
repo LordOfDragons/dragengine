@@ -34,7 +34,7 @@ class BevelBorder extends TwoColorBorder
 	end
 	
 	/** Creates a new raised etched border with the given colors. */
-	public func new( Color colorHilight, Color colorShadow ) super( colorHilight, colorShadow )
+	public func new( Color colorHighlight, Color colorShadow ) super( colorHighlight, colorShadow )
 	end
 	
 	/** Creates a new etched border. */
@@ -42,7 +42,7 @@ class BevelBorder extends TwoColorBorder
 	end
 	
 	/** Creates a new etched border with the given colors. */
-	public func new( bool raised, Color colorHilight, Color colorShadow ) super( raised, colorHilight, colorShadow )
+	public func new( bool raised, Color colorHighlight, Color colorShadow ) super( raised, colorHighlight, colorShadow )
 	end
 	
 	
@@ -67,12 +67,12 @@ class BevelBorder extends TwoColorBorder
 		var CanvasPaint canvas
 		
 		if this.getRaised()
-			color1 = this.getColorHilight()
+			color1 = this.getColorHighlight()
 			color2 = this.getColorShadow()
 			
 		else
 			color1 = this.getColorShadow()
-			color2 = this.getColorHilight()
+			color2 = this.getColorHighlight()
 		end
 		
 		borderCanvas.removeAllCanvas()

@@ -23,33 +23,33 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "gdeUOCToggleCanInstanciate.h"
+#include "gdeUOCToggleCanInstantiate.h"
 #include "../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class gdeUOCToggleCanInstanciate
+// Class gdeUOCToggleCanInstantiate
 /////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleCanInstanciate::gdeUOCToggleCanInstanciate( gdeObjectClass *objectClass ) :
+gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate( gdeObjectClass *objectClass ) :
 pObjectClass( NULL )
 {
 	if( ! objectClass ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetShortInfo( "Object class toggle can instanciate" );
+	SetShortInfo( "Object class toggle can instantiate" );
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
 }
 
-gdeUOCToggleCanInstanciate::~gdeUOCToggleCanInstanciate(){
+gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
 	if( pObjectClass ){
 		pObjectClass->FreeReference();
 	}
@@ -60,10 +60,10 @@ gdeUOCToggleCanInstanciate::~gdeUOCToggleCanInstanciate(){
 // Management
 ///////////////
 
-void gdeUOCToggleCanInstanciate::Undo(){
-	pObjectClass->SetCanInstanciate( ! pObjectClass->GetCanInstanciate() );
+void gdeUOCToggleCanInstantiate::Undo(){
+	pObjectClass->SetCanInstantiate( ! pObjectClass->GetCanInstantiate() );
 }
 
-void gdeUOCToggleCanInstanciate::Redo(){
+void gdeUOCToggleCanInstantiate::Redo(){
 	Undo();
 }

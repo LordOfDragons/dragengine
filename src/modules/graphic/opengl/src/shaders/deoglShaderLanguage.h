@@ -42,7 +42,7 @@ class deoglShaderBindingList;
 /**
  * @brief Shader Language.
  *
- * A shader language object is responsible for storing all informations required
+ * A shader language object is responsible for storing all information required
  * for compiling shaders using a specific language as well as handling activation
  * of shaders.
  */

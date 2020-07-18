@@ -368,8 +368,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		}else if( tagName == "ghost" ){
 			gdClass->SetIsGhost( GetCDataBool( *tag ) );
 			
-		}else if( tagName == "canInstanciate" ){
-			gdClass->SetCanInstanciate( GetCDataBool( *tag ) );
+		}else if( tagName == "canInstantiate"
+		/* backwards compatibility */ || tagName == "canInstanciate" ){
+			gdClass->SetCanInstantiate( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "inherit" ){
 			pParseClassInherit( *tag, gdClass );

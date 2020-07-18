@@ -72,9 +72,7 @@ public:
 		/** \brief Removes a coordinate system from the conversation. */
 		eatCoordSystemRemove,
 		/** \brief Comment. */
-		eatComment,
-		/** \brief Number of action types. */
-		EAT_COUNT
+		eatComment
 	};
 	
 private:

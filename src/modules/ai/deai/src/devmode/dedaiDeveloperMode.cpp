@@ -46,7 +46,7 @@ pEnabled( false ),
 
 pShowSpaces( false ),
 pShowSpaceLinks( false ),
-pSpaceHilightCostType( -1 ),
+pSpaceHighlightCostType( -1 ),
 pShowBlockers( false ),
 pShowPath( false ),
 pShowPathFaces( false ),
@@ -57,7 +57,7 @@ pUpdateTracker( 0 ){
 	// debug
 // 	pEnabled = true;
 // 	pShowNavSpaces = true;
-// 	pNavSpaceHilightCostType = 0;
+// 	pNavSpaceHighlightCostType = 0;
 // 	pShowNavPathFaces = true;
 }
 
@@ -87,8 +87,8 @@ bool dedaiDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 			pCmdShowSpaceLinks( command, answer );
 			return true;
 			
-		}else if( command.MatchesArgumentAt( 0, "dm_space_hilight_cost_type" ) ){
-			pCmdSpaceHilightCostType( command, answer );
+		}else if( command.MatchesArgumentAt( 0, "dm_space_highlight_cost_type" ) ){
+			pCmdSpaceHighlightCostType( command, answer );
 			return true;
 			
 		}else if( command.MatchesArgumentAt( 0, "dm_show_blockers" ) ){
@@ -127,7 +127,7 @@ void dedaiDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_show_spaces [1|0] => Displays navigation spaces.\n" );
 	answer.AppendFromUTF8( "dm_show_space_links [1|0] => Displays navigation space links.\n" );
-	answer.AppendFromUTF8( "dm_space_hilight_cost_type [costType] => Hilight navigation space element of a certain cost type.\n" );
+	answer.AppendFromUTF8( "dm_space_highlight_cost_type [costType] => Highlight navigation space element of a certain cost type.\n" );
 	answer.AppendFromUTF8( "dm_show_blockers [1|0] => Displays navigation blockers.\n" );
 	answer.AppendFromUTF8( "dm_show_path [1|0] => Dispaly navigator path.\n" );
 	answer.AppendFromUTF8( "dm_show_path_faces [1|0] => Dispaly navigator path faces.\n" );
@@ -172,17 +172,17 @@ void dedaiDeveloperMode::pCmdShowSpaceLinks( const decUnicodeArgumentList &comma
 	answer.AppendFromUTF8( text );
 }
 
-void dedaiDeveloperMode::pCmdSpaceHilightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void dedaiDeveloperMode::pCmdSpaceHighlightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	if( command.GetArgumentCount() == 2 ){
 		const int newValue = command.GetArgumentAt( 1 )->ToInt();
-		if( newValue != pSpaceHilightCostType ){
+		if( newValue != pSpaceHighlightCostType ){
 			TouchUpdateTracker();
 		}
-		pSpaceHilightCostType = newValue;
+		pSpaceHighlightCostType = newValue;
 	}
 	
 	decString text;
-	text.Format( "dm_space_hilight_cost_type = %i\n", pSpaceHilightCostType );
+	text.Format( "dm_space_highlight_cost_type = %i\n", pSpaceHighlightCostType );
 	answer.AppendFromUTF8( text );
 }
 

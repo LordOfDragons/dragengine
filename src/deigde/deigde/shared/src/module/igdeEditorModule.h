@@ -45,6 +45,7 @@ private:
 	igdeEnvironment &pEnvironment;
 	decString pLoggingName;
 	decString pEditorDirectory;
+	decString pEditorPathLib;
 	igdeEditorWindow *pEditorWindow;
 	
 	
@@ -78,6 +79,16 @@ public:
 	 * To be used only by IGDE. Do not call from editor modules.
 	 */
 	void SetEditorDirectory( const char *directory );
+	
+	/** \brief Editor module libraries directory path. */
+	inline const decString &GetEditorPathLib() const{ return pEditorPathLib; }
+	
+	/**
+	 * \brief Set editor module libraries directory path.
+	 * 
+	 * To be used only by IGDE. Do not call from editor modules.
+	 */
+	void SetEditorPathLib( const char *path );
 	
 	/** \brief Editor window used by module. */
 	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }

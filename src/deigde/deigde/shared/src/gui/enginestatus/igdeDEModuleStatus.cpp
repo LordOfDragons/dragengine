@@ -100,7 +100,7 @@ pDialogEngine( dialogEngine )
 	
 	
 	// file handling information
-	helper.GroupBoxStatic( *this, groupBox, "File Handling Informations:" );
+	helper.GroupBoxStatic( *this, groupBox, "File Handling Information:" );
 	
 	helper.EditString( groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, NULL );
 	pEditPattern->SetEditable( false );
@@ -113,7 +113,7 @@ pDialogEngine( dialogEngine )
 	
 	
 	// library information
-	helper.GroupBoxStatic( *this, groupBox, "Library Module Informations:" );
+	helper.GroupBoxStatic( *this, groupBox, "Library Module Information:" );
 	
 	helper.EditString( groupBox, "Library Filename:", "Library Filename", pEditLibName, NULL );
 	pEditLibName->SetEditable( false );

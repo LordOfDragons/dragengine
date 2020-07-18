@@ -183,7 +183,7 @@ ceWPACameraShot::~ceWPACameraShot(){
 ///////////////
 
 ceCACameraShot *ceWPACameraShot::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatCameraShot ){
 		return ( ceCACameraShot* )action;

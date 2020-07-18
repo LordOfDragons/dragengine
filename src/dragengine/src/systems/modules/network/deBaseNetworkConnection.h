@@ -49,7 +49,7 @@ public:
 	 * \brief Connect to connection object on host at address.
 	 * 
 	 * Returns true if the connection request has been send or false if an
-	 * error occured. Connection success or failure is reported through the
+	 * error occurred. Connection success or failure is reported through the
 	 * scripting peer. The format of the address is specific to the network
 	 * module.
 	 */
@@ -82,7 +82,7 @@ public:
 	/**
 	 * \brief Link network state to remote network state.
 	 * 
-	 * The message contains informations for the remote system to know what state to link to.
+	 * The message contains information for the remote system to know what state to link to.
 	 * The request is queued and carried out as soon as possible. The local state
 	 * is considered the master state and the remote state the slave state.
 	 * By default only the master state can apply changes.

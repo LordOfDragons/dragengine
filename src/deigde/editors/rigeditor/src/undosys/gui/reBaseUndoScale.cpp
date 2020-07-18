@@ -79,7 +79,7 @@ void reBaseUndoScale::Update(){
 		* decMatrix::CreateTranslation( p_center );
 	*/
 	
-	// set informations
+	// set information
 	decString info;
 	
 	info.Format( "factors(%g,%g,%g) center(%g,%g,%g)", pFactors.x, pFactors.y, pFactors.z, pCenter.x, pCenter.y, pCenter.z );

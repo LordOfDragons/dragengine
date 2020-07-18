@@ -29,8 +29,6 @@ pin Dragengine.Utils
 /**
  * \brief Base actor action.
  * 
- * This class defines the events used by CommandBaseActor* classes to use.
- * 
  * Action supports the Persistable interface an can be read from and writen to file writers.
  */
 class BaseActorAction implements Persistable

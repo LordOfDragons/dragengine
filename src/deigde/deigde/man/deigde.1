@@ -1,0 +1,158 @@
+.TH DEIGDE 1
+
+.SH NAME
+deigde \- edit game projects based on the Drag[en]gine Game Engine.
+
+.SH SYNOPSIS
+.B deigde
+\fIproject\-file\fR
+.RE
+
+.SH DESCRIPTION
+.B deigde
+edit game projects based on the Drag[en]gine Game Engine.
+If no game project file is provided the IGDE shows the start-up dialog
+to create new projects or open existing game projects.
+
+.SH OPTIONS
+
+.TP 4
+.I project\-file
+Open *.degp game project file for editing.
+.LP
+
+.SH "EXIT STATUS"
+.B deigde
+exits with status 0 if the specified action succeeded or 1 if errors occured.
+
+.SH "ENVIRONMENT VARIABLES"
+
+.TP 4
+.B DELAUNCHER_SYS_CONFIG
+Overrides compiled in system wide launcher configuration directory.
+
+.TP 4
+.B HOME
+User directory used to store user specific configuration, game saves and captures.
+
+.TP 4
+.B USER
+If the environment variable \fIHOME\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B LOGUSER
+If the environment variable \fIUSER\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B DEIGDE_SYS_CONFIG
+Overrides system wide configuration directory.
+
+.TP 4
+.B DEIGDE_USER_CONFIG
+Overrides user specific configuration directory. If not set \fBdeigde\fR uses the path:
+.br
+.IR "~/.config/deigde"
+
+.TP 4
+.B DEIGDE_PROJECTS
+Overrides compiled in path to the default directory used to store newly created game projects in.
+
+.TP 4
+.B DEIGDE_SHARES
+Overrides compiled in path to IGDE shares directory. Inside this directory
+shared files of the IGDE itself and all installed editors are located.
+
+.TP 4
+.B DEIGDE_LIB
+Overrides compiled in path to IGDE library directory. Inside this directory
+libraries and internal binaries of installed editors are located.
+
+.TP 4
+.B DEIGDE_LOGS
+Overrides compiled in path to IGDE logging directory.
+
+.TP 4
+.B DISPLAY
+Display to run the launcher GUI and games on.
+
+.TP 4
+.B DE_ENGINE_PATH
+Overrides compiled in path to game engine module libraries path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_SHARE_PATH
+Overrides compiled in path to game engine module shared path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_CONFIG_PATH
+Overrides user specific game engine configuration directory.
+If not set the game engine uses the path:
+.br
+.IR "~/.config/dragengine"
+
+.TP 5
+.B DE_CACHE_PATH
+Overrides compiled in path to game engine cache path. The IGDE counts as a
+game from the point of view of the game engine. It has though an own
+game identifier (4e25ac01\-0b95\-406f\-8234\-d921a32ae832).
+Caches of the edited game project are stored inside the game project directory.
+For IGDE produced cache content see
+.br
+\fI~/.cache/dragengine/local/4e25ac01\-0b95\-406f\-8234\-d921a32ae832\fR.
+
+.TP 5
+.B DE_CAPTURE_PATH
+Overrides compiled in path to game engine capture path.
+See \fI"~/.cache/dragengine/capture"\fR.
+
+.SH FILES
+
+.TP 4
+.B "~/.config/delauncher/launcher.xml"
+User specific configuration settings for all Drag[en]gine capable launchers.
+Used by Project Editor to test run games using game profiles already
+known to launchers.
+
+.TP 4
+.B "~/.config/deigde/deigde.xml"
+User specific configuration settings for \fBdeigde\fR.
+
+.TP 4
+.B "~/.config/deigde/logs/deigde.log"
+Log file storing logs produced by \fBdeigde\fR.
+In case of IGDE problems and bug tracking provide
+the content of this file to bug tickets.
+
+.TP 4
+.B "~/.config/deigde/editors"
+User specific configuration of IGDE editors. Each editor has an own sub directory.
+
+.TP 4
+.B "~/.cache/dragengine/local/4e25ac01\-0b95\-406f\-8234\-d921a32ae832"
+User specific cache directory for IGDE. The directory contains sub directories
+for each engine module storing caches for the IGDE. The sub directories as well
+as the IGDE cache directory itself can be safely deleted to reclaim disk space.
+
+.TP 4
+.B "~/.cache/dragengine/capture"
+User specific capture directory for game engine modules. Used for developing
+and debugging engine modules. The directory can be safely deleted to reclaim
+disk space.
+.LP
+
+.SH EXAMPLES
+
+.TP 4
+.nf
+.B "deigde ~/deexamples/exampleApp/ExampleApp.degp"
+
+.fi
+Load Example Application game project downloaded from
+\fIhttps://github.com/LordOfDragons/deexamples/releases\fR.
+.LP

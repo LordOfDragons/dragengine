@@ -171,8 +171,8 @@ public:
 		/** \brief Widget foreground color. */
 		escWidgetForeground,
 		
-		/** \brief Widget hilight color. */
-		escWidgetHilight,
+		/** \brief Widget highlight color. */
+		escWidgetHighlight,
 		
 		/** \brief Widget shadow color. */
 		escWidgetShadow,

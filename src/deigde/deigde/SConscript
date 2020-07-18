@@ -114,12 +114,21 @@ else:
 	print(envIGDELib.subst('$LINKFLAGS'), libsLib)
 """
 appendLibrary(envIGDELib, parent_targets['dragengine'], libsLib)
-appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
+
+if envIGDELib['igde_toolkit'] == 'fox':
+	appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
 
 if envIGDELib['OSWindows']:
 	libsLib.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32'])
 elif envIGDELib['OSBeOS']:
 	libsLib.append(['root', 'be'])
+
+if envIGDELib['igde_toolkit'] == 'fox':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_FOX=1'])
+elif envIGDELib['igde_toolkit'] == 'null':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_NULL=1'])
+else:
+	raise Exception('Unsupported igde_toolkit value "{}"'.format(envIGDELib['igde_toolkit']))
 
 envIGDELib.Append(CPPFLAGS = envIGDELib['SANITIZE_FLAGS'])
 envIGDELib.Append(LINKFLAGS = envIGDELib['SANITIZE_FLAGS'])
@@ -175,12 +184,13 @@ for f in dataFiles:
 	installLibRuntime.append(envIGDELib.InstallAs(filename, f))
 	archiveLib[filename] = envIGDELib.File(f).srcnode()
 
-for l in reversed(parent_targets['lib_fox']['runtimelibs']):
-	key = '{}/{}'.format(foxRuntimePath, l)
-	if not key in parent_targets['lib_fox']['globalInstallTracker']:
-		parent_targets['lib_fox']['globalInstallTracker'].append(key)
-		envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
-		archiveLib[os.path.join(foxRuntimePath, l.name)] = l
+if envIGDELib['igde_toolkit'] == 'fox':
+	for l in reversed(parent_targets['lib_fox']['runtimelibs']):
+		key = '{}/{}'.format(foxRuntimePath, l)
+		if not key in parent_targets['lib_fox']['globalInstallTracker']:
+			parent_targets['lib_fox']['globalInstallTracker'].append(key)
+			envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
+			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
 targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
@@ -236,7 +246,9 @@ libsApp = []
 
 appendLibrary(envIGDEApp, parent_targets['deigde_shared'], libsApp)
 #appendLibrary(envIGDEApp, parent_targets['dragengine'], libsApp)
-appendLibrary(envIGDEApp, parent_targets['lib_fox'], libsApp)
+
+if envIGDELib['igde_toolkit'] == 'fox':
+	appendLibrary(envIGDEApp, parent_targets['lib_fox'], libsApp)
 
 libsApp.extend(parent_targets['dragengine']['binlibs']) # ?????
 
@@ -291,6 +303,11 @@ if envIGDEApp['OSPosix']:
 	
 	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-deigde.xml')
 	source = 'data/mimetypes.xml'
+	installApp.append(envIGDEApp.InstallAs(target, source))
+	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'man', 'man1', 'deigde.1')
+	source = 'man/deigde.1'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 

@@ -58,6 +58,15 @@ public:
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxStatusBar();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxStatusBar* CreateNativeWidget( igdeStatusBar &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -78,5 +87,7 @@ public:
 	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxStatusBar igdeNativeStatusBar;
 
 #endif

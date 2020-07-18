@@ -50,7 +50,7 @@ class decBaseFileReader;
  * \brief Loadable Module.
  * 
  * Wraps an engine module loadable from a library file. Retrieves the
- * informations from an XML module definition file. Supports loading
+ * information from an XML module definition file. Supports loading
  * of modules from libraries on unix and windows systems.
  */
 class deLibraryModule : public deLoadableModule{

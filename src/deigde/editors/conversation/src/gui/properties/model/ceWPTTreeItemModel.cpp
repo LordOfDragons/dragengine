@@ -59,13 +59,9 @@ ceWPTTreeItemModel::~ceWPTTreeItemModel(){
 ///////////////
 
 void ceWPTTreeItemModel::SetText( const char *text ){
-	if( pText == text ){
-		return;
-	}
-	
 	pText = text;
 	
-	if( pTreeItem ){
+	if( pTreeItem && pTreeItem->GetText() != text ){
 		pTreeItem->SetText( text );
 		
 		if( pTree && pTree->GetTreeList() ){
@@ -75,13 +71,9 @@ void ceWPTTreeItemModel::SetText( const char *text ){
 }
 
 void ceWPTTreeItemModel::SetIcon( igdeIcon *icon ){
-	if( pIcon == icon ){
-		return;
-	}
-	
 	pIcon = icon;
 	
-	if( pTreeItem ){
+	if( pTreeItem && pTreeItem->GetIcon() != icon ){
 		pTreeItem->SetIcon( icon );
 		
 		if( pTree && pTree->GetTreeList() ){
@@ -91,13 +83,9 @@ void ceWPTTreeItemModel::SetIcon( igdeIcon *icon ){
 }
 
 void ceWPTTreeItemModel::SetExpanded( bool expanded ){
-	if( expanded == pExpanded ){
-		return;
-	}
-	
 	pExpanded = expanded;
 	
-	if( pTreeItem ){
+	if( pTreeItem && pTreeItem->GetExpanded() != expanded ){
 		pTreeItem->SetExpanded( expanded );
 		
 		if( pTree && pTree->GetTreeList() ){

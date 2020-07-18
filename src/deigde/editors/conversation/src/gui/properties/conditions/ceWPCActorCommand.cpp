@@ -69,7 +69,7 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || comboBox->GetText() == condition->GetActor() ){
 			return;
@@ -90,7 +90,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || textField->GetText() == condition->GetCommand() ){
 			return;
@@ -112,7 +112,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -139,7 +139,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -183,7 +183,7 @@ ceWPCActorCommand::~ceWPCActorCommand(){
 ///////////////
 
 ceCConditionActorCommand *ceWPCActorCommand::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectActorCommand ){
 		return ( ceCConditionActorCommand* )condition;

@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +35,10 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
+
+#ifdef OS_W32
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#endif
 
 
 
@@ -74,10 +80,39 @@ igdeNativeFoxApplication::~igdeNativeFoxApplication(){
 	}
 }
 
+igdeNativeFoxApplication *igdeNativeFoxApplication::CreateNativeApplication( igdeApplication &application ){
+	return new igdeNativeFoxApplication( application );
+}
+
+void igdeNativeFoxApplication::DestroyNativeApplication(){
+	delete this;
+}
+
 
 
 // Management
 ///////////////
+
+#ifdef OS_UNIX
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	int i;
+	for( i=0; i<argCount; i++ ){
+		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
+	}
+}
+
+#elif defined OS_W32
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments,
+const decUnicodeArgumentList &windowsArguments ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	const int count = windowsArguments.GetArgumentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		arguments.Add( *windowsArguments.GetArgumentAt( i ) );
+	}
+}
+#endif
 
 	/*
 void igdeNativeFoxApplication::Initialize(){
@@ -188,7 +223,7 @@ decColor igdeNativeFoxApplication::GetSystemColor( igdeEnvironment::eSystemColor
 	case igdeEnvironment::escWidgetForeground:
 		return igdeUIFoxHelper::ConvertColor( getForeColor() );
 		
-	case igdeEnvironment::escWidgetHilight:
+	case igdeEnvironment::escWidgetHighlight:
 		return igdeUIFoxHelper::ConvertColor( getHiliteColor() );
 		
 	case igdeEnvironment::escWidgetShadow:
@@ -238,3 +273,5 @@ void igdeNativeFoxApplication::RunModalWhileShown( igdeWindow &window ){
 		native->handle( native, FXSEL( SEL_IGDE_FRAME_UPDATE, 0 ), 0 );
 	}
 }
+
+#endif

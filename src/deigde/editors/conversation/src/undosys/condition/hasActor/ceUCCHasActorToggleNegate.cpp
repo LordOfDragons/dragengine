@@ -77,10 +77,10 @@ ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
 
 void ceUCCHasActorToggleNegate::Undo(){
 	pHasActor->SetNegate( ! pHasActor->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pHasActor );
 }
 
 void ceUCCHasActorToggleNegate::Redo(){
 	pHasActor->SetNegate( ! pHasActor->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pHasActor );
 }

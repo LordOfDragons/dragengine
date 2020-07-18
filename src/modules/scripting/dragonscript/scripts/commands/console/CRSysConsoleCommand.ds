@@ -26,7 +26,7 @@ pin Dragengine.Utils
 
 
 /**
- * \brief Displays or sets paramaters of the crash recovery system
+ * \brief Displays or sets parameters of the crash recovery system
  */
 class CRSysConsoleCommand extends SystemConsoleCommand
 	/** \brief Create console command. */

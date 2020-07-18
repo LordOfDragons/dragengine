@@ -292,7 +292,7 @@ class Label extends Widget implements TextModelListener
 		
 		// NOTE a possible optimization is the following. if getMinimumSize().getX()
 		//      is less then width then using getMinimumSize() is good enough since
-		//      the size never can be larger. uses the optimized minium version as
+		//      the size never can be larger. uses the optimized minimum version as
 		//      long as the width is not smaller potentially forcing different height.
 		var TextLayout textLayout = TextLayout.new( this.pModel.getText(), font )
 		

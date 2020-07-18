@@ -70,6 +70,8 @@ public:
 protected:
 	void pInsertActions( ceConversationActionList &list );
 	void pRemoveActions( ceConversationActionList &list );
+	void pSelectInserted();
+	ceConversationAction *ActivateActionAfterRemove( const ceConversationActionList &list ) const;
 };
 
 #endif

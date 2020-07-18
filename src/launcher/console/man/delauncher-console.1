@@ -1,0 +1,421 @@
+.TH DELAUNCHER-CONSOLE 1
+
+.SH NAME
+delauncher\-console \- run and manage games based on the
+Drag[en]gine Game Engine from the console.
+
+.SH SYNOPSIS
+.\" general syntax
+.B delauncher\-console
+[\fIaction\fR] [\fIoptions...\fR]
+
+.\" show help
+.B "delauncher\-console help"
+
+.\" run games
+.B "delauncher\-console run"
+[\fB\-c\fR | \fB\-\-console\fR]
+[\fB\-d\fR | \fB\-\-debug\fR]
+.RS 4
+.br
+[ { \fB\-p\fR | \fB\-\-profile\fR } \fIprofile\-name\fR ]
+.br
+[ { \fB\-P\fR | \fB\-\-patch\fR } { \fIpath\-identifier\fR | \fIpatch\-alias\fR } ]
+.br
+[\fB\-\-mparam\fR \fImodule\fR:\fIparam\fR=\fIvalue\fR]
+.br
+{ \fIgame\-identifier\fR | \fIgame\-alias\fR | { \fB\-f\fR | \fB\-\-file\fB } \fIdelga\-file\fR }
+.br
+[\fIgame\-options...\fR]
+.RE
+
+.\" list delga content
+.B "delauncher\-console delga content"
+.I filename
+
+.\" install delga
+.B "delauncher\-console delga install"
+.I filename
+
+.\" list installed games
+.B "delauncher\-console games"
+
+.\" check if game is installed
+.B "delauncher\-console games installed"
+{ \fIgame\-identifier\fR | \fIgame\-alias\fR )
+
+.\" uninstall game
+.B "delauncher\-console games uninstall"
+{ \fIgame\-identifier\fR | \fIgame\-alias\fR )
+
+.\" list user defined profiles
+.B "delauncher\-console profiles"
+
+.\" list installed patches
+.B "delauncher\-console patches"
+
+.\" check if patch is installed
+.B "delauncher\-console patches installed"
+{ \fIpatch\-identifier\fR | \fIpatch\-alias\fR )
+
+.\" uninstall patch
+.B "delauncher\-console patches uninstall"
+{ \fIpatch\-identifier\fR | \fIpatch\-alias\fR )
+
+.SH DESCRIPTION
+.B delauncher\-console
+runs, installs and uninstalls *.delga files from the console. This is useful for
+game servers or users prefering to run and manage Drag[en]gine based games from
+using a command line interface. Depending on the \fIaction\fR used the launcher
+operates in different modes.
+
+.TP 4
+.B "Display Help"
+Using no \fIaction\fR or using the \fBhelp\fR action the supported actions are
+printed out on the console. THis prints out similar output as SYNOPSIS.
+
+.TP 4
+.B "Run Games"
+Using the \fBrun\fR action runs installed games or any *.delga file (installed or not).
+
+.RS 4
+.TP 8
+.I game\-identifier
+Run installed game using its unique identifier. Each game has a unique identifier
+in the form of a standard random UUID (for example "73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9").
+Since remembering such an identifier is cumbersome the \fIgame\-alias\fR can be used instead.
+To find the game identifier and game alias of installed games see the "List Installed Games" section.
+
+.TP 8
+.I game\-alias
+Run installed game using its alias name. Each game has an human readable alias name
+which is short and easy to remember. The alias is not guaranteed to be unique.
+If more than one installed game shares the same alias you have to use the
+\fIgame\-identifier\fR instead.
+To find the game identifier and game alias of installed games see the "List Installed Games" section.
+
+.TP 8
+{\fB\-f\fR | \fB\-\-file\fR } \fIdelga\-file\fR
+Run *.delga file. This can be any installed or not installed *.delga file.
+
+.TP 8
+[\fB\-c\fR | \fB\-\-console\fR]
+Use console instead of graphic system. In this mode console a console graphic module and
+input module is used. This mode is intended for game servers which do not have a user
+directly playing on the computer.
+
+.TP 8
+[\fB\-d\fR | \fB\-\-debug\fR]
+Display all debug informations in the console not just the log file.
+
+.TP 8
+[ { \fB\-p\fR | \fB\-\-profile\fR } \fIprofile\-name\fR ]
+Use game profile named \fIprofile\-name\fR instead of game profile assigned
+to the game. To ceate game profiles use \fBdelauncher\-gui\fR or add them
+manually to \fI~/.config/delauncher/launcher.xml\fR.
+Using \fBdelauncher\-gui\fR is recommended.
+
+.TP 8
+[ { \fB\-P\fR | \fB\-\-patch\fR } { \fIpath\-identifier\fR | \fIpatch\-alias\fR } ]
+Use patch with identifier or alias instead of latest possible patch.
+Use empty string to run game unpatched.
+
+Patches can be specified using either the \fIpath\-identifier\fR or the \fIpatch\-alias\fR.
+Each patch has a unique identifier in the form of a standard random UUID
+(for example "73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9").
+Since remembering such an identifier is cumbersome the \fIpatch\-alias\fR can be used instead.
+To find the patch identifier and patch alias of installed patches see the
+"List Installed Patches" section.
+
+.TP 8
+[\fB\-\-mparam\fR \fImodule\fR:\fIparam\fR=\fIvalue\fR]
+Sets module parameter before running the game. Sets parameter with name
+\fIparam\fR in module with identifier \fImodule\fR to string value \fIvalue\fR.
+Module identifier \fImodule\fR and parameter name \fIparam\fR are case sensitive.
+If module does not understand the parameter it is ignored.
+This command line option can be used multiple times to set multiple parameters
+of one or more modules.
+
+.TP 8
+[\fIgame\-options...\fR]
+Game specific options appended to the run arguments defined in the game.
+.RE
+
+.TP 4
+.B "List DELGA Content"
+Using the \fBdelga content\fR action the games and patches stored in a *.delga file
+are printed to the console.
+
+.TP 4
+.B "Install DELGA"
+Using the \fBdelga install\fR action the *.delga file is installed to the launcher
+games directory. All games and patches located inside the DELGA file are installed
+alongside. It is not possible to only install some content of the DELGA file.
+Installing a DELGA file installs all content always. If content is already
+installed the DELGA fails to install
+
+\fBReturn code 0\fR: DELGA installed successfully
+.br
+\fBReturn code 1\fR: Installing DELGA failed
+
+DELGAs are not uninstalled directly but using either \fBgames uninstall\fR
+or \fBpatches uninstall\fR. Uninstalling a DELGA uninstalls all content it provides.
+Selectively uninstalling is not supported.
+
+.TP 4
+.B "List Installed Games"
+Using the \fBdelga games\fR action all installed games are listed in the form:
+
+\- game\-alias (game\-identifier) => game-title
+
+Each game has a unique identifier in the form of a standard random UUID
+(for example "73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9"). For convenience each
+game also has a human readable \fIgame\-alias\fR. The game identifier is
+unique while the game alias is potentially not unique.
+
+.TP 4
+.B "Check Game Is Installed"
+Using the \fBgames installed\fR action the user can check if a game is installed.
+You can use either the \fIgame\-identifier\fR or the \fIgame\-alias\fR to specify
+the game to check. Using the \fIgame\-identifier\fR is recommended.
+
+\fBReturn code 0\fR: Game is installed
+.br
+\fBReturn code 1\fR: Game is not installed
+
+.TP 4
+.B "Uninstall Game"
+Using the \fBgames uninstall\fR action a game can be uninstalled. Uninstalling
+a game removes the DELGA file containing the game. All content also contained
+in the DELGA file is uninstalled too. For this reason the user is shown the
+list of games and patches to be uninstalled and is asked to confirm the removal.
+
+You can use either the \fIgame\-identifier\fR or the \fIgame\-alias\fR to specify
+the game to uninstall. Using the \fIgame\-identifier\fR is recommended.
+
+If game is not installed or multiple games match the call fails.
+
+Game patches are not uninstalled unless located in the same DELGA file.
+
+Local files like saves or caches are not uninstalled.
+
+\fBReturn code 0\fR: Game uninstalled successfully
+.br
+\fBReturn code 1\fR: Uninstalling game failed
+
+.TP 4
+.B "List Game Profiles"
+Using the \fBprofiles\fR action all available game profiles are listed.
+
+.TP 4
+.B "List Installed Patches"
+Using the \fBdelga patches\fR action all installed patches are listed in the form:
+
+\- patch\-name (game\-alias) => patch\-identifier (game\-identifier)
+
+Each patch has a unique identifier in the form of a standard random UUID
+(for example "73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9"). For convenience each
+patch also has a human readable \fIpatch\-name\fR. The patch identifier is
+unique while the patch name is potentially not unique.
+
+.TP 4
+.B "Check Patch Is Installed"
+Using the \fBpatches installed\fR action the user can check if a patch is installed.
+You can use either the \fIpatch\-identifier\fR or the \fIpatch\-name\fR to specify
+the patch to check. Using the \fIpatch\-identifier\fR is recommended.
+
+\fBReturn code 0\fR: Patch is installed
+.br
+\fBReturn code 1\fR: Patch is not installed
+
+.TP 4
+.B "Uninstall Patch"
+Using the \fBpatches uninstall\fR action a patch can be uninstalled. Uninstalling
+a patch removes the DELGA file containing the patch. All content also contained
+in the DELGA file is uninstalled too. For this reason the user is shown the
+list of games and patches to be uninstalled and is asked to confirm the removal.
+
+You can use either the \fIpatch\-identifier\fR or the \fIpatch\-name\fR to specify
+the patch to uninstall. Using the \fIpatch\-identifier\fR is recommended.
+
+If patch is not installed or multiple patches match the call fails.
+
+Patch game is not uninstalled unless located in the same DELGA file.
+
+\fBReturn code 0\fR: Patch uninstalled successfully
+.br
+\fBReturn code 1\fR: Uninstalling patch failed
+.LP
+
+.SH "EXIT STATUS"
+.B delauncher\-console
+exits with status 0 if the specified action succeeded or 1 if errors occured.
+
+.SH "ENVIRONMENT VARIABLES"
+
+.TP 4
+.B DELAUNCHER_SYS_CONFIG
+Overrides compiled in system wide launcher configuration directory.
+
+.TP 4
+.B HOME
+User directory used to store user specific configuration, game saves and captures.
+
+.TP 4
+.B USER
+If the environment variable \fIHOME\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B LOGUSER
+If the environment variable \fIUSER\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B DELAUNCHER_USER_CONFIG
+Overrides user specific configuration directory. If not set
+\fBdelauncher\-console\fR uses the path:
+.br
+.IR "~/.config/delauncher"
+
+.TP 4
+.B DELAUNCHER_GAMES
+Overrides compiled in path to directory where DELGA files are installed to.
+
+.TP 4
+.B DELAUNCHER_SHARES
+Overrides compiled in path to launcher shares directory.
+
+.TP 4
+.B DELAUNCHER_LOGS
+Overrides compiled in path to launcher logging directory.
+
+.TP 4
+.B DISPLAY
+Display to run the game on. Used only if \fI\-c\fR and \fI\-\-console\fR is not used.
+
+.TP 4
+.B DE_ENGINE_PATH
+Overrides compiled in path to game engine module libraries path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_SHARE_PATH
+Overrides compiled in path to game engine module shared path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_CONFIG_PATH
+Overrides user specific game engine configuration directory.
+If not set the game engine uses the path:
+.br
+.IR "~/.config/dragengine"
+
+.TP 5
+.B DE_CACHE_PATH
+Overrides compiled in path to game engine cache path.
+See \fI~/.cache/dragengine/local/{game\-identifier}\fR.
+
+.TP 5
+.B DE_CAPTURE_PATH
+Overrides compiled in path to game engine capture path.
+See \fI"~/.cache/dragengine/capture"\fR.
+
+.SH FILES
+
+.TP 4
+.B "~/.config/delauncher/launcher.xml"
+User specific configuration settings for all Drag[en]gine capable launchers.
+
+.TP 4
+.B "~/.config/delauncher/delauncherconsole.xml"
+User specific configuration settings for \fBdelauncher\-console\fR.
+
+.TP 4
+.B "~/.config/delauncher/logs/delauncher\-console.log"
+Log file storing logs produced by \fBdelauncher\-console\fR.
+In case of console launcher problems and bug tracking provide
+the content of this file to bug tickets.
+
+.TP 4
+.B "~/.config/delauncher/games/{game\-identifier}"
+User specific configuration, saves and capture directory for game with
+identifier \fIgame\-identifier\fR. This directory contains these files:
+.RS 4
+
+.TP 4
+.B launcher.xml
+Game specific launcher settings for all Drag[en]gine capable launchers.
+
+.TP 4
+.B config
+Game configuration which is usually game settings and save states.
+
+.TP 4
+.B capture
+Game captures created by the user which are usually screenshots, recored
+videos and other game content made available to the user.
+
+.TP 4
+.B logs
+Game specific launcher logs. In case of game problems and bug tracking
+provide the content of this directory to bug tickets
+.RE
+
+.TP 4
+.B "~/.cache/dragengine/local/{game\-identifier}"
+User specific cache directory for game with identifier \fIgame\-identifier\fR.
+The directory contains sub directories for each engine module storing caches
+for the game. The sub directories as well as the game cache directory itself
+can be safely deleted to reclaim disk space.
+
+.TP 4
+.B "~/.cache/dragengine/capture"
+User specific capture directory for game engine modules. Used for developing
+and debugging engine modules. The directory can be safely deleted to reclaim
+disk space.
+.LP
+
+.SH EXAMPLES
+
+.TP 4
+.nf
+.B "delauncher\-console delga install ~/download/DEExampleApp.delga"
+
+.fi
+Install Drag[en]gine Example App DELGA downloaded from
+\fIhttps://github.com/LordOfDragons/deexamples/releases\fR.
+
+.TP 4
+.nf
+.B "delauncher\-console run deexampleapp"
+
+.fi
+Run Drag[en]gine Example App using game alias "deexampleapp".
+In most situations using the alias is enough but if multiple installed
+games share the same alias the user has to use the game-identifier instead.
+
+.TP 4
+.nf
+.B "delauncher\-console run 73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9"
+
+.fi
+Run Drag[en]gine Example App using game identifier
+"73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9". This identifier is unique for
+the game and is the same for all computers it is run on. Using the
+game identifier is thus recommended for scripts especially those distributed
+over the internet to operate on the correct game.
+
+.TP 4
+.nf
+.B "delauncher\-console run -f ~/download/DEExampleApp.delga"
+
+.fi
+Run Drag[en]gine Example App directly from the downloaded DELGA file.
+This allows to run games without installing them. Game configurations,
+save states and captures still work as if the game is installed. So if
+you wish to keep playing the game you can install it any time later an
+keep your game configurations, saves and captures.
+.LP

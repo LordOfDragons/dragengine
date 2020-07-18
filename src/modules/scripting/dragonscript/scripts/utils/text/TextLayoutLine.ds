@@ -27,7 +27,7 @@ pin Dragengine.Scenery
 
 
 /**
- * Line of text in a TextLayout object. All needed informations are stored in
+ * Line of text in a TextLayout object. All needed information are stored in
  * the text line object. Can add a text canvas representing the line to a
  * view canvas.
  */

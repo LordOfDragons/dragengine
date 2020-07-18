@@ -26,7 +26,6 @@
 #include "igdeContainerForm.h"
 #include "../native/toolkit.h"
 #include "../igdeWidget.h"
-#include "../native/fox/igdeNativeFoxContainerForm.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,14 +49,7 @@ void igdeContainerForm::RemoveChild( igdeWidget *child ){
 		return;
 	}
 	
-	if( pStretching == esLast ){
-		const int index = count - ( count % 2 );
-		igdeUIFoxHelper::UpdateLayoutFlags( GetChildAt( index ) );
-		if( index + 1 < count ){
-			igdeUIFoxHelper::UpdateLayoutFlags( GetChildAt( index + 1 ) );
-		}
-		( ( igdeNativeFoxContainerForm* )GetNativeContainer() )->recalc();
-	}
+	( ( igdeNativeContainerForm* )GetNativeContainer() )->ChildRemoved();
 }
 
 
@@ -87,23 +79,9 @@ void igdeContainerForm::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	FXPacker * const native = new igdeNativeFoxContainerForm( *this, nativeParent, layoutFlags );
-	
+	igdeNativeContainerForm * const native = igdeNativeContainerForm::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -113,7 +91,7 @@ void igdeContainerForm::DestroyNativeWidget(){
 		return;
 	}
 	
-	igdeNativeFoxContainerForm * const native = ( igdeNativeFoxContainerForm* )GetNativeWidget();
+	igdeNativeContainerForm * const native = ( igdeNativeContainerForm* )GetNativeWidget();
 	DropNativeWidget();
-	delete native;
+	native->DestroyNativeWidget();
 }

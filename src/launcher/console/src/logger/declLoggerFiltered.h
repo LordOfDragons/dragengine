@@ -47,9 +47,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the logger to pass informations to or NULL to ignore them. */
+	/** Retrieves the logger to pass information to or NULL to ignore them. */
 	inline deLogger *GetLoggerInfo() const{ return pLoggerInfo; }
-	/** Sets the logger to pass informations to or NULL to ignore them. */
+	/** Sets the logger to pass information to or NULL to ignore them. */
 	void SetLoggerInfo( deLogger *logger );
 	/** Retrieves the logger to pass warnings to or NULL to ignore them. */
 	inline deLogger *GetLoggerWarning() const{ return pLoggerWarn; }

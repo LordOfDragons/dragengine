@@ -40,7 +40,7 @@
 deoalPAurealizationMode::deoalPAurealizationMode( deAudioOpenAL &oal ) : deoalParameter( oal )
 {
 	SetName( "aurealizationMode" );
-	SetDescription( "Aurealization mode influeces how sound is calculate for the listener." );
+	SetDescription( "Aurealization mode influences how sound is calculate for the listener." );
 	SetType( deModuleParameter::eptSelection );
 	
 	const deModuleParameter::SelectionEntry entries[ 3 ] = {

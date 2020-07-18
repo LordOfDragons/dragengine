@@ -422,18 +422,12 @@ deRenderWindow *igdeEngineController::CreateRenderWindow(){
 }
 
 deRenderWindow *igdeEngineController::CreateRenderWindow( igdeWidget &hostWindow ){
-	FXWindow * const native = ( FXWindow* )hostWindow.GetNativeWidget();
-	if( ! native->getParent() ){
+	if( ! igdeNativeWidget::HasNativeParent( hostWindow ) ){
 		DETHROW( deeNullPointer );
 	}
 	
-	#ifdef OS_UNIX
-	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside( ( Window )native->getParent()->id() );
-	#endif
-	
-	#ifdef OS_W32
-	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside( ( HWND )native->getParent()->id() );
-	#endif
+	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
+		igdeNativeWidget::NativeWidgetParentID( hostWindow ) );
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
@@ -447,11 +441,10 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	// if the window is still existing or not but not these calls here
 	#ifdef OS_UNIX
 	if( pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget() ){
-		FXWindow &native = *( ( FXWindow* )pMainWindow.GetNativeWidget() );
-		Display * const display = ( Display* )( native.getApp()->getDisplay() );
+		Display * const display = igdeNativeWidget::GetDisplayConnection();
 		Window window = pMainRenderWindow->GetWindow();
 		
-		native.detach();
+		igdeNativeWidget::DetachNativeWindow( pMainWindow );
 		
 		XUnmapWindow( display, window );
 		XReparentWindow( display, window, XDefaultRootWindow( display ), 0, 0 );
@@ -725,19 +718,12 @@ void igdeEngineController::pCreateMainRenderWindow(){
 		return;
 	}
 	
-	FXWindow * const nativeMainWindow = ( FXWindow* )pMainWindow.GetNativeWidget();
-	if( ! nativeMainWindow || ! nativeMainWindow->getParent() ){
+	if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
 		DETHROW( deeNullPointer );
 	}
 	
-	#ifdef OS_UNIX
 	pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-		( Window )nativeMainWindow->id() );
-	#endif
-	#ifdef OS_W32
-	pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-		( HWND )nativeMainWindow->id() );
-	#endif
+		igdeNativeWidget::NativeWidgetID( pMainWindow ) );
 	
 	pMainRenderWindow->SetSize( 0, 0 );
 	pMainRenderWindow->SetPaint( false ); // disable painting since this is only a dummy window

@@ -100,7 +100,7 @@ bool meFilterObjectsByClass::AcceptObject( meObject *object ) const{
 	// reject if this is a ghost object
 	if( pRejectGhosts ){
 		const igdeGDClass *gdclass = object->GetGDClass();
-		if( gdclass && ( gdclass->GetIsGhost() || ! gdclass->GetCanInstanciate() ) ){
+		if( gdclass && ( gdclass->GetIsGhost() || ! gdclass->GetCanInstantiate() ) ){
 			return false;
 		}
 	}

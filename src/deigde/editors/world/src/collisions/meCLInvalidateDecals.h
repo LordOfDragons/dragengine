@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _MECLREATTACHDECALS_H_
-#define _MECLREATTACHDECALS_H_
+#ifndef _MECLINVALIDATEDECALS_H_
+#define _MECLINVALIDATEDECALS_H_
 
 #include "meCLCollect.h"
 
@@ -30,20 +30,20 @@ class igdeWObject;
 /**
  * \brief Rettach decals.
  */
-class meCLReattachDecals : public meCLCollect{
+class meCLInvalidateDecals : public meCLCollect{
 public:
 	/**
 	 * \brief Helper class for potential NULL world.
 	 */
 	class Helper{
 	private:
-		meCLReattachDecals *pVisitor;
+		meCLInvalidateDecals *pVisitor;
 		
 	public:
 		Helper( meWorld *world );
 		~Helper();
 		
-		void ReattachDecals();
+		void InvalidateDecals();
 		
 		void Collect( const decDVector &position, const decVector &minExtend,
 			const decVector &maxExtend, const decQuaternion &orientation );
@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	meCLReattachDecals( meWorld *world );
+	meCLInvalidateDecals( meWorld *world );
 	
 	/** \brief Clean visitor. */
-	virtual ~meCLReattachDecals();
+	virtual ~meCLInvalidateDecals();
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Reattach collected decals. */
-	void ReattachDecals();
+	void InvalidateDecals();
 	
 	/** \brief Collect decals. */
 	void Collect( const decDVector &position, const decVector &minExtend,

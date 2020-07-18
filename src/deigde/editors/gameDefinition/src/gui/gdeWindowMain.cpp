@@ -303,7 +303,7 @@ void gdeWindowMain::LoadGameProject( bool silentErrors ){
 	SetActiveGameDefinition( gameDefinition );
 	gameDefinition->FreeReference();
 	
-	// store informations
+	// store information
 	gameDefinition->SetFilePath( path.GetPathNative() );
 	gameDefinition->SetChanged( false );
 	gameDefinition->SetSaved( true );
@@ -471,7 +471,7 @@ public:
 		pWindow.SetActiveGameDefinition( gameDefinition );
 		gameDefinition->FreeReference();
 		
-		// store informations
+		// store information
 		gameDefinition->SetFilePath( filename );
 		gameDefinition->SetChanged( false );
 		gameDefinition->SetSaved( true );

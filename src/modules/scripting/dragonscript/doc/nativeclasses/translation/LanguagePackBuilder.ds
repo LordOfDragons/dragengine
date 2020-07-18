@@ -29,7 +29,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class LanguagePack
+abstract class LanguagePackBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**

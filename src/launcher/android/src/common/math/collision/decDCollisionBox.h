@@ -34,7 +34,7 @@
  * and an optional orientation. A box without a rotation is called axis
  * aligned box whereas a box with a rotation is called an oriented box.
  * @warning This class is partially implemented. See the collision
- *          functions for more informations.
+ *          functions for more information.
  * @todo
  * - Implementing CylinderHitsBox
  */

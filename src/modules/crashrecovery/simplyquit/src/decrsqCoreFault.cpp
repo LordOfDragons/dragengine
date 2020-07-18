@@ -316,7 +316,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		}
 		
 	}else{
-		printf( "No global core fault found. Can not gather crash informations!\n" );
+		printf( "No global core fault found. Can not gather crash information!\n" );
 	}
 	
 	if( module ){
@@ -435,7 +435,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 		coreFault->HandleAbort( ptrContext );
 		
 	}else{
-		printf( "No global core fault found. Can not gather crash informations!\n" );
+		printf( "No global core fault found. Can not gather crash information!\n" );
 	}
 	
 	if( module ){
@@ -544,7 +544,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 		}
 		
 	}else{
-		printf( "No global core fault found. Can not gather crash informations!\n" );
+		printf( "No global core fault found. Can not gather crash information!\n" );
 	}
 	
 	if( module ){

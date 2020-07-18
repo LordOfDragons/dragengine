@@ -1400,12 +1400,38 @@ void ceConversation::NotifyActionChanged( ceConversationFile *file, ceConversati
 	SetChanged( true );
 }
 
-void ceConversation::NotifyActiveActionChanged( ceConversationFile *file, ceConversationTopic *topic ){
+void ceConversation::NotifyConditionStructureChanged( ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction *action ){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
 	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActiveActionChanged( this, file, topic );
+		( ( ceConversationListener* )pListeners.GetAt( l ) )->
+			ConditionStructureChanged( this, file, topic, action );
+	}
+	
+	SetChanged( true );
+}
+
+void ceConversation::NotifyConditionChanged( ceConversationFile *file, ceConversationTopic *topic,
+ceConversationAction *action, ceConversationCondition *condition ){
+	const int listenerCount = pListeners.GetCount();
+	int l;
+	
+	for( l=0; l<listenerCount; l++ ){
+		( ( ceConversationListener* )pListeners.GetAt( l ) )->
+			ConditionChanged( this, file, topic, action, condition );
+	}
+	
+	SetChanged( true );
+}
+
+void ceConversation::NotifyActiveChanged( ceConversationFile *file, ceConversationTopic *topic ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( ceConversationListener* )pListeners.GetAt( i ) )->ActiveChanged( this, file, topic );
 	}
 }
 

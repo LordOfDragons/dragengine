@@ -33,7 +33,7 @@
  * triangle is defined by the three corner points. The points
  * should be oriented in counter clockwise order.
  * @warning This class is partially implemented. See the collision
- *          functions for more informations.
+ *          functions for more information.
  * @todo
  * - Implementing CylinderHitsTriangle
  * - Implementing TriangleHitsTriangle

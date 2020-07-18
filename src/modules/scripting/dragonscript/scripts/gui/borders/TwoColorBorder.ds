@@ -24,7 +24,7 @@ namespace Dragengine.Gui.Borders
 
 
 /**
- * Base class for borders drawn using a hilight and a shadow color which
+ * Base class for borders drawn using a highlight and a shadow color which
  * can be raised or lowered.
  */
 class TwoColorBorder extends DefaultBorder
@@ -32,7 +32,7 @@ class TwoColorBorder extends DefaultBorder
 	private var bool pRaised
 	
 	/** Highlight color or null to use the widget gui theme highlight color. */
-	private var Color pColorHilight
+	private var Color pColorHighlight
 	
 	/** Shadow color or null to use the widget gui theme shadow color. */
 	private var Color pColorShadow
@@ -45,9 +45,9 @@ class TwoColorBorder extends DefaultBorder
 	end
 	
 	/** Creates a new raised etched border with the given colors. */
-	public func new( Color colorHilight, Color colorShadow )
+	public func new( Color colorHighlight, Color colorShadow )
 		this.pRaised = true
-		this.pColorHilight = colorHilight
+		this.pColorHighlight = colorHighlight
 		this.pColorShadow = colorShadow
 	end
 	
@@ -57,9 +57,9 @@ class TwoColorBorder extends DefaultBorder
 	end
 	
 	/** Creates a new etched border with the given colors. */
-	public func new( bool raised, Color colorHilight, Color colorShadow )
+	public func new( bool raised, Color colorHighlight, Color colorShadow )
 		this.pRaised = raised
-		this.pColorHilight = colorHilight
+		this.pColorHighlight = colorHighlight
 		this.pColorShadow = colorShadow
 	end
 	
@@ -80,18 +80,18 @@ class TwoColorBorder extends DefaultBorder
 		this.updateCanvas()
 	end
 	
-	/** Retrieves the hilight color. If null the widget gui theme hilight color is returned. */
-	public func Color getColorHilight()
-		return this.pColorHilight
+	/** Retrieves the highlight color. If null the widget gui theme highlight color is returned. */
+	public func Color getColorHighlight()
+		return this.pColorHighlight
 	end
 	
-	/** Sets the hilight color or null to use the widget gui theme hilight color. */
-	public func void setColorHilight( Color color )
-		if color == this.pColorHilight
+	/** Sets the highlight color or null to use the widget gui theme highlight color. */
+	public func void setColorHighlight( Color color )
+		if color == this.pColorHighlight
 			return
 		end
 		
-		this.pColorHilight = color
+		this.pColorHighlight = color
 		this.updateCanvas()
 	end
 	
@@ -108,5 +108,18 @@ class TwoColorBorder extends DefaultBorder
 		
 		this.pColorShadow = color
 		this.updateCanvas()
+	end
+	
+	
+	
+	
+	/** \deprecated Use getColorHighlight(). */
+	public func Color getColorHilight()
+		return this.getColorHighlight()
+	end
+	
+	/** \deprecated Use setColorHighlight(Color). */
+	public func void setColorHilight( Color color )
+		this.setColorHighlight( color )
 	end
 end

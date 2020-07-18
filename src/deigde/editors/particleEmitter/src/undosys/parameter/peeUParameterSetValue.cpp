@@ -45,7 +45,7 @@ peeUParameterSetValue::peeUParameterSetValue( peeType *type, peeParameter *param
 	pType = NULL;
 	pParameter = parameter;
 	
-	SetShortInfo( "Set Paramater Value" );
+	SetShortInfo( "Set Parameter Value" );
 	
 	pOldValue = parameter->GetValue();
 	pNewValue = newValue;

@@ -22,6 +22,9 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 
+if envLauncher['OSPosix']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['datadir']), 'man', 'man1')
+
 # update the compile flags
 envLauncher.Append(CXXFLAGS = [
 	cmdlineDefinePath(envLauncher, 'LAUNCHER_SHARE_PATH', pathShare),
@@ -74,6 +77,12 @@ else:
 if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archive[os.path.join(pathBin, l.name)] = l
+
+if envLauncher['OSPosix']:
+	target = os.path.join(pathMan1, 'delauncher-console.1')
+	source = 'man/delauncher-console.1'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
 
 targetInstall = envLauncher.Alias('launcher_console', install)
 

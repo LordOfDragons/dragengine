@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxFileDialog.h"
 #include "igdeNativeFoxVFSDirectoryBox.h"
 #include "igdeNativeFoxVFSList.h"
@@ -608,3 +610,5 @@ void igdeNativeFoxFileDialog::pSetFilenameAndAppendExtension( const char *filena
 	
 	pEditFilename->setText( finalFilename.text() );
 }
+
+#endif

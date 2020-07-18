@@ -206,7 +206,7 @@ void aeLSAnimator::pSaveDisplay( decXmlWriter &writer, aeAnimator *animator ){
 	bool saveExplainingComments = false;
 	
 	if( saveExplainingComments ){
-		writer.WriteComment( "Contains optional display informations only relevant to the animator editor." );
+		writer.WriteComment( "Contains optional display information only relevant to the animator editor." );
 	}
 	writer.WriteOpeningTag( "display" );
 	
@@ -525,8 +525,12 @@ void aeLSAnimator::pSaveRule( decXmlWriter &writer, aeAnimator *animator, aeRule
 }
 
 void aeLSAnimator::pSaveControllerTarget( decXmlWriter &writer, aeAnimator *animator, const aeControllerTarget &target, const char *name ){
-	int l, linkCount = target.GetLinkCount();
-	int linkIndex;
+	const int linkCount = target.GetLinkCount();
+	if( linkCount == 0 ){
+		return;
+	}
+	
+	int l, linkIndex;
 	aeLink *link;
 	
 	writer.WriteOpeningTagStart( "target" );
@@ -1277,11 +1281,6 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator )
 					animator->AddRule( rule );
 					rule->FreeReference();
 					
-					// post trigger
-					if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertSubAnimator ){
-						( ( aeRuleSubAnimator* )rule )->LoadSubAnimator();
-					}
-					
 				}else{
 					logger.LogWarnFormat( LOGSOURCE, "animator(%i:%i): Unknown Tag %s, ignoring",
 						tag->GetLineNumber(), tag->GetPositionNumber(),
@@ -1290,6 +1289,8 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator )
 			}
 		}
 	}
+	
+	pLoadSubAnimators( *animator );
 }
 
 void aeLSAnimator::pLoadDisplay( decXmlElementTag *root, aeAnimator *animator ){
@@ -2505,11 +2506,6 @@ aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator *animat
 					rule->AddRule( srule );
 					srule->FreeReference();
 					
-					// post trigger
-					if( srule->GetType() == deAnimatorRuleVisitorIdentify::ertSubAnimator ){
-						( ( aeRuleSubAnimator* )srule )->LoadSubAnimator();
-					}
-					
 				}else{
 					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
 						root->GetName().GetString(), tag->GetLineNumber(),
@@ -3020,6 +3016,50 @@ void aeLSAnimator::pLoadVector( decXmlElementTag *root, decVector &vector ){
 						tag->GetPositionNumber(), tag->GetName().GetString() );
 				}
 			}
+		}
+	}
+}
+
+void aeLSAnimator::pLoadSubAnimators( aeAnimator &animator ){
+	const int count = animator.GetRules().GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		aeRule &rule = *animator.GetRules().GetAt( i );
+		
+		switch( rule.GetType() ){
+		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
+			( ( aeRuleSubAnimator& )rule ).LoadSubAnimator();
+			break;
+			
+		case deAnimatorRuleVisitorIdentify::ertGroup:
+			pLoadSubAnimators( animator, ( aeRuleGroup& )rule );
+			break;
+			
+		default:
+			break;
+		}
+	}
+}
+
+void aeLSAnimator::pLoadSubAnimators( aeAnimator &animator, const aeRuleGroup &group ){
+	const int count = group.GetRules().GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		aeRule &rule = *group.GetRules().GetAt( i );
+		
+		switch( rule.GetType() ){
+		case deAnimatorRuleVisitorIdentify::ertSubAnimator:
+			( ( aeRuleSubAnimator& )rule ).LoadSubAnimator();
+			break;
+			
+		case deAnimatorRuleVisitorIdentify::ertGroup:
+			pLoadSubAnimators( animator, ( aeRuleGroup& )rule );
+			break;
+			
+		default:
+			break;
 		}
 	}
 }

@@ -38,6 +38,7 @@ class ECComposeCollider
 	private var ECPFloat pWeight
 	private var ECPBoolean pEnabled
 	private var ECPShapeList pShape
+	private var ECPRig pRig
 	private var CollisionFilter pCollisionFilter
 	
 	
@@ -67,6 +68,9 @@ class ECComposeCollider
 		
 		this.pShape = ECPShapeList.new( prefix + "shape", ownerClass.getCodecPropertyString() )
 		ownerClass.addProperty( this.pShape )
+		
+		this.pRig = ECPRig.new( prefix + "rig" )
+		ownerClass.addProperty( this.pRig )
 		
 		// collision filter
 		var LayerMask lmCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
@@ -176,11 +180,22 @@ class ECComposeCollider
 	 * \em element is set as owner of collider if a collider is created.
 	 */
 	public func Collider createCollider( Element element, StubElement stub )
-		// create collider volume
-		var ColliderVolume collider = ColliderVolume.new()
-		this.initCollider( collider, element, stub )
-		collider.setShape( this.pShape.getShapeList() )
-		return collider
+		var Rig rig = this.pRig.getRig( stub, element.getClass() )
+		
+		if rig != null
+			// create collider rig
+			var ColliderRig collider = ColliderRig.new()
+			this.initCollider( collider, element, stub )
+			collider.setRig( rig )
+			return collider
+			
+		else
+			// create collider volume
+			var ColliderVolume collider = ColliderVolume.new()
+			this.initCollider( collider, element, stub )
+			collider.setShape( this.pShape.getShapeList( stub ) )
+			return collider
+		end
 	end
 	
 	/** \brief Init collider from stub. */
@@ -188,7 +203,7 @@ class ECComposeCollider
 		collider.setResponseType( this.pPhysicsType.getEnumeration() cast CollisionResponse )
 		collider.setCollisionFilter( this.pCollisionFilter )
 		collider.setEnabled( this.pEnabled.getValue() )
-		collider.setMass( this.pWeight.getValue() )
+		collider.setMass( this.pWeight.getValue( stub ) )
 		
 		collider.setGeometry( element.getPosition(), element.getOrientation() )
 		//collider.setScaling( stub.getScaling() ) // not supported yet

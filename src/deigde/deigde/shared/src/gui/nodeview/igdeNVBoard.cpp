@@ -36,7 +36,6 @@
 #include "../event/igdeAction.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascadeReference.h"
-#include "../native/fox/nodeview/igdeNativeFoxNVBoard.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
 #include "../resources/igdeFontReference.h"
@@ -140,8 +139,7 @@ decPoint igdeNVBoard::GetSize() const{
 		return decPoint();
 	}
 	
-	igdeNativeFoxNVBoard &native = *( ( igdeNativeFoxNVBoard* )GetNativeWidget() );
-	return decPoint( native.getWidth(), native.getHeight() );
+	return ( ( igdeNativeNVBoard* )GetNativeWidget() )->GetSize();
 }
 
 void igdeNVBoard::SetOffset( const decPoint &offset ){
@@ -371,8 +369,7 @@ igdeNVLink *igdeNVBoard::ClosestLinkNear( const decPoint &position, float range 
 		return NULL;
 	}
 	
-	const igdeNativeFoxNVBoard &native = *( ( igdeNativeFoxNVBoard* )GetNativeWidget() );
-	return native.ClosestLinkNear( position, range );
+	return ( ( igdeNativeNVBoard* )GetNativeWidget() )->ClosestLinkNear( position, range );
 }
 
 void igdeNVBoard::ShowContextMenu( const decPoint &position ){
@@ -380,7 +377,7 @@ void igdeNVBoard::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	const igdeNativeFoxNVBoard &native = *( ( igdeNativeFoxNVBoard* )GetNativeWidget() );
+	const igdeNativeNVBoard &native = *( ( igdeNativeNVBoard* )GetNativeWidget() );
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	igdeMenuCascadeReference menu;
 	menu.TakeOver( new igdeMenuCascade( helper.GetEnvironment() ) );
@@ -474,20 +471,9 @@ void igdeNVBoard::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxNVBoard * const nativeWidget = new igdeNativeFoxNVBoard( *this, nativeParent, *GetGuiTheme() );
-	SetNativeWidget( nativeWidget );
-	if( nativeParent->id() ){
-		nativeWidget->create();
-	}
+	igdeNativeNVBoard * const native = igdeNativeNVBoard::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -497,7 +483,7 @@ void igdeNVBoard::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxNVBoard* )GetNativeWidget();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -516,7 +502,7 @@ void igdeNVBoard::OnColorsChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVBoard* )GetNativeWidget() )->UpdateColors();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateColors();
 }
 
 void igdeNVBoard::OnEnabledChanged(){
@@ -524,7 +510,7 @@ void igdeNVBoard::OnEnabledChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVBoard* )GetNativeWidget() )->UpdateEnabled();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateEnabled();
 }
 
 void igdeNVBoard::OnOffsetChanged(){
@@ -532,7 +518,7 @@ void igdeNVBoard::OnOffsetChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVBoard* )GetNativeWidget() )->UpdateOffset();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateOffset();
 }
 
 void igdeNVBoard::OnNodesChanged(){
@@ -540,7 +526,7 @@ void igdeNVBoard::OnNodesChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVBoard* )GetNativeWidget() )->UpdateNodes();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateNodes();
 }
 
 
@@ -549,5 +535,5 @@ void igdeNVBoard::OnLinksChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVBoard* )GetNativeWidget() )->UpdateLinks();
+	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateLinks();
 }

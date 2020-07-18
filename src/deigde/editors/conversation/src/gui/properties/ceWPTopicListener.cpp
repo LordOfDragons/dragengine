@@ -200,7 +200,7 @@ ceConversationTopic *topic, ceConversationAction* ){
 		return;
 	}
 	
-	pPanel.UpdateAction();
+	pPanel.UpdateActive();
 }
 
 void ceWPTopicListener::ActionChanged( ceConversation *conversation, ceConversationFile *file,
@@ -210,7 +210,7 @@ ceConversationTopic *topic, ceConversationAction* ){
 		return;
 	}
 	
-	pPanel.UpdateAction();
+	pPanel.UpdateActive();
 }
 
 

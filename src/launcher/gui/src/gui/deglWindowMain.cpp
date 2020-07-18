@@ -142,7 +142,7 @@ FXMainWindow( app, "Drag[en]gine Launcher", NULL, NULL, DECOR_ALL, 10, 50, 800, 
 	new FXMenuTitle( pMenuBar, "&View", NULL, menuView );
 	
 	new FXMenuCommand( menuView, "&Games\t\tShow Games", NULL, this, ID_VIEW_GAMES );
-	new FXMenuCommand( menuView, "&Engine\t\tShow Engine informations", NULL, this, ID_VIEW_ENGINE );
+	new FXMenuCommand( menuView, "&Engine\t\tShow Engine information", NULL, this, ID_VIEW_ENGINE );
 	new FXMenuCommand( menuView, "&Logging\t\tShow Logging", NULL, this, ID_VIEW_LOGGING );
 	
 	FXMenuPane *menuSettings = new FXMenuPane( this );
@@ -230,7 +230,7 @@ void deglWindowMain::DisplayException( const deException &exception ){
 	caption.SetFromUTF8( "Application Error" );
 	foxCaption = caption.ToUTF8();
 	
-	message.SetFromUTF8( "An exception occured. File='" );
+	message.SetFromUTF8( "An exception occurred. File='" );
 	message.AppendFromUTF8( exception.GetFile() );
 	message.AppendFromUTF8( "', Line='" );
 	message.AppendValue( exception.GetLine() );

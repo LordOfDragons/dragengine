@@ -32,9 +32,9 @@ class deeInvalidParam : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeInvalidParam( const char *file, int line, const char *description = NULL );
 };
@@ -46,9 +46,9 @@ class deeOutOfMemory : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeOutOfMemory( const char *file, int line );
 };
@@ -60,9 +60,9 @@ class deeOutOfBoundary : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeOutOfBoundary( const char *file, int line );
 };
@@ -74,9 +74,9 @@ class deeStackEmpty : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeStackEmpty( const char *file, int line );
 };
@@ -88,9 +88,9 @@ class deeStackOverflow : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeStackOverflow( const char *file, int line );
 };
@@ -102,9 +102,9 @@ class deeDivisionByZero : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeDivisionByZero( const char *file, int line );
 };
@@ -116,9 +116,9 @@ class deeNullPointer : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeNullPointer( const char *file, int line, const char *description = NULL );
 };
@@ -130,9 +130,9 @@ class deeInvalidAction : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeInvalidAction( const char *file, int line, const char *description = NULL );
 };
@@ -144,9 +144,9 @@ class deeInvalidFormat : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeInvalidFormat( const char *file, int line );
 };
@@ -158,9 +158,9 @@ class deeFileNotFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeFileNotFound( const char *file, int line, const char *path = NULL );
 	
@@ -175,9 +175,9 @@ class deeFileExists : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeFileExists( const char *file, int line, const char *path = NULL );
 	
@@ -192,9 +192,9 @@ class deeOpenFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeOpenFile( const char *file, int line, const char *path = NULL );
 	
@@ -209,9 +209,9 @@ class deeReadFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeReadFile( const char *file, int line, const char *path = NULL );
 	
@@ -226,9 +226,9 @@ class deeWriteFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeWriteFile( const char *file, int line, const char *path = NULL );
 	
@@ -243,9 +243,9 @@ class deeInvalidFileFormat : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeInvalidFileFormat( const char *file, int line, const char *path = NULL );
 	
@@ -260,9 +260,9 @@ class deeDirectoryNotFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeDirectoryNotFound( const char *file, int line );
 };
@@ -274,9 +274,9 @@ class deeDirectoryRead : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeDirectoryRead( const char *file, int line );
 };
@@ -288,9 +288,9 @@ class deeInvalidSyntax : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeInvalidSyntax( const char *file, int line );
 };
@@ -302,9 +302,9 @@ class deeScriptError : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeScriptError( const char *file, int line );
 };
@@ -316,9 +316,9 @@ class deeNoModuleFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeNoModuleFound( const char *file, int line );
 };
@@ -330,9 +330,9 @@ class deeTestFailed : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeTestFailed( const char *file, int line, const char *description = NULL );
 };
@@ -344,9 +344,9 @@ class deeAssertion : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
-	 * \param[in] info Additional informations helpfull to track the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] info Additional information helpfull to track the reason for the exception. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deeAssertion( const char *file, int line, const char *description = NULL );
 };
@@ -356,7 +356,7 @@ public:
  * \brief Throw an exception of the given type.
  * 
  * The type specified has to be an exception class subclassing deException. The file
- * and line informations are obtained from the location the macro is expanded.
+ * and line information are obtained from the location the macro is expanded.
  * 
  * \param cls Class name of the exception to throw
  */
@@ -366,21 +366,21 @@ public:
  * \brief Throw an exception of the given type with additional construction parameters.
  * 
  * The type specified has to be an exception class subclassing deException. The file
- * and line informations are obtained from the location the macro is expanded.
+ * and line information are obtained from the location the macro is expanded.
  * 
  * \param cls Class name of the exception to throw
  */
 #define DETHROWX( cls, ... ) throw cls( __FILE__, __LINE__, __VA_ARGS__ )
 
 /**
- * \brief Throw an exception of the given type with additional informations.
+ * \brief Throw an exception of the given type with additional information.
  * 
  * The type specified has to be an exception class subclassing deException. The file and line
- * informations are obtained from the location the macro is expanded. In additiona the
+ * information are obtained from the location the macro is expanded. In additiona the
  * information field of the exception is assigned the constant string 'info'.
  * 
  * \param cls Class name of the exception to throw
- * \param info Constant string to assign to the exception object as additional informations
+ * \param info Constant string to assign to the exception object as additional information
  */
 #define DETHROW_INFO( cls, info ) throw cls( __FILE__, __LINE__, info )
 

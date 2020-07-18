@@ -38,7 +38,7 @@ class deglEngineInstance;
 
 /**
  * @brief Game Engine.
- * Stores all informations about the game engine. The library path stores
+ * Stores all information about the game engine. The library path stores
  * where the game engine libraries are found. This is usually the system
  * library path. The data path stores where the game engine data directory
  * is located. This is usually under the system data directory. Modules

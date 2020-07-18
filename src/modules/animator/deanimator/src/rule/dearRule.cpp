@@ -109,7 +109,7 @@ void dearRule::CaptureStateInto( int ){
 void dearRule::StoreFrameInto( int, const char *, float ){
 }
 
-bool dearRule::RebuildInstance(){
+bool dearRule::RebuildInstance() const{
 	return false;
 }
 

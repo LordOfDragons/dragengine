@@ -8,6 +8,17 @@ precision highp int;
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+	#define WITH_REFLECTIVITY 1
+#endif
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Inputs
@@ -20,10 +31,10 @@ in vec2 vGSTCColor[ 3 ];
 #ifdef TEXTURE_NORMAL
 	in vec2 vGSTCNormal[ 3 ];
 #endif
-#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+#ifdef WITH_REFLECTIVITY
 	in vec2 vGSTCReflectivity[ 3 ];
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	in vec2 vGSTCEmissivity[ 3 ];
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -38,7 +49,7 @@ in vec3 vGSNormal[ 3 ];
 	in vec3 vGSTangent[ 3 ];
 	in vec3 vGSBitangent[ 3 ];
 #endif
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	in vec3 vGSReflectDir[ 3 ];
 #endif
 #ifdef HEIGHT_MAP
@@ -74,10 +85,10 @@ in vec2 vTCColor;
 #ifdef TEXTURE_NORMAL
 	in vec2 vTCNormal;
 #endif
-#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+#ifdef WITH_REFLECTIVITY
 	in vec2 vTCReflectivity;
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	in vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -92,7 +103,7 @@ out vec3 vNormal;
 	out vec3 vTangent;
 	out vec3 vBitangent;
 #endif
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	out vec3 vReflectDir;
 #endif
 #ifdef HEIGHT_MAP
@@ -136,10 +147,10 @@ void main( void ){
 		#ifdef TEXTURE_NORMAL
 			vTCNormal = vGSTCNormal[ i ];
 		#endif
-		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
+		#ifdef WITH_REFLECTIVITY
 			vTCReflectivity = vGSTCReflectivity[ i ];
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#ifdef WITH_EMISSIVITY
 			vTCEmissivity = vGSTCEmissivity[ i ];
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -154,7 +165,7 @@ void main( void ){
 			vTangent = vGSTangent[ i ];
 			vBitangent = vGSBitangent[ i ];
 		#endif
-		#ifdef TEXTURE_ENVMAP
+		#ifdef WITH_REFLECT_DIR
 			vReflectDir = vGSReflectDir[ i ];
 		#endif
 		#ifdef HEIGHT_MAP

@@ -211,7 +211,7 @@ pShowLightRooms( false ),
 pShowLightVisualInfo( -1 ),
 
 pShowTranspLevelCount( false ),
-pHilightTransparentObjects( false ),
+pHighlightTransparentObjects( false ),
 
 pDebugRenderPlan( false ),
 pShowMemoryInfo( false ),
@@ -401,8 +401,8 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				pCmdShowTranspLayerCount( command, answer );
 				result = true;
 				
-			}else if( command.MatchesArgumentAt( 0, "dm_hilight_transparent_objects" ) ){
-				pCmdHilightTransparentObjects( command, answer );
+			}else if( command.MatchesArgumentAt( 0, "dm_highlight_transparent_objects" ) ){
+				pCmdHighlightTransparentObjects( command, answer );
 				result = true;
 				
 			}else if( command.MatchesArgumentAt( 0, "dm_debug_renderplan" ) ){
@@ -480,8 +480,8 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_enable_envmap_fresnel [1|0] => Enable environment map fresnel.\n" );
 	answer.AppendFromUTF8( "dm_generate_shader [pathSkin [type]] => Generate skin shader and output source code.\n" );
 	answer.AppendFromUTF8( "dm_height_terrain => Show LOD levels and bounding boxes of the height terrain.\n" );
-	answer.AppendFromUTF8( "dm_hilight_transparent_objects [1|0] => Hilight transparent objects.\n" );
-	answer.AppendFromUTF8( "dm_meminfo => Displays memory informations.\n" );
+	answer.AppendFromUTF8( "dm_highlight_transparent_objects [1|0] => Highlight transparent objects.\n" );
+	answer.AppendFromUTF8( "dm_meminfo => Displays memory information.\n" );
 	answer.AppendFromUTF8( "dm_opengl_caps => Display OpenGL capabilities.\n" );
 	answer.AppendFromUTF8( "dm_show_component_lod_levels [1|0] => Displays the component lod levels.\n" );
 	answer.AppendFromUTF8( "dm_show_envmaps [1|0] => Show environment maps.\n" );
@@ -1050,13 +1050,13 @@ void deoglDeveloperMode::pCmdShowTranspLayerCount( const decUnicodeArgumentList 
 	answer.AppendFromUTF8( text.GetString() );
 }
 
-void deoglDeveloperMode::pCmdHilightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	if( command.GetArgumentCount() == 2 ){
-		pHilightTransparentObjects = command.GetArgumentAt( 1 )->ToInt() != 0;
+		pHighlightTransparentObjects = command.GetArgumentAt( 1 )->ToInt() != 0;
 	}
 	
 	decString text;
-	text.Format( "dm_hilight_transparent_objects = %i\n", pHilightTransparentObjects ? 1 : 0 );
+	text.Format( "dm_highlight_transparent_objects = %i\n", pHighlightTransparentObjects ? 1 : 0 );
 	answer.AppendFromUTF8( text.GetString() );
 }
 

@@ -24,7 +24,7 @@ namespace Dragengine.Gui.Borders
 
 
 /**
- * Base class for titled borders drawn using a hilight and a shadow color which
+ * Base class for titled borders drawn using a highlight and a shadow color which
  * can be raised or lowered.
  */
 class TitledTwoColorBorder extends TwoColorBorder

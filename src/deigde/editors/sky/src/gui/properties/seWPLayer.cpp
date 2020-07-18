@@ -490,7 +490,7 @@ public:
 class cActionMulBySkyLight : public cBaseActionLayer{
 public:
 	cActionMulBySkyLight( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Light",
-		"Determins if the layer intensity is multiplied by the sky light intensity" ){ }
+		"Determines if the layer intensity is multiplied by the sky light intensity" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerToggleMulBySkyLight( layer );
@@ -500,7 +500,7 @@ public:
 class cActionMulBySkyColor : public cBaseActionLayer{
 public:
 	cActionMulBySkyColor( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Color",
-		"Determins if the layer color is multiplied by the sky light color" ){ }
+		"Determines if the layer color is multiplied by the sky light color" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerToggleMulBySkyColor( layer );

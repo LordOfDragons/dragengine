@@ -31,7 +31,7 @@ class deLoadableModule;
  * \brief Error Trace Point.
  *
  * An Error Trace object contains a list of Error Trace Point objects.
- * describing the path of an error that occured in the engine.
+ * describing the path of an error that occurred in the engine.
  */
 class deErrorTracePoint{
 private:
@@ -60,7 +60,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Source module or NULL if the error occured in the engine itself. */
+	/** \brief Source module or NULL if the error occurred in the engine itself. */
 	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
 	
 	/** \brief Source function. */
@@ -95,16 +95,16 @@ public:
 	
 	/** \name Convenience Functions */
 	/*@{*/
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddValue( const char *name, const char *value );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddValueInt( const char *name, int value );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddValueFloat( const char *name, float );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddValueBool( const char *name, bool value );
 	/*@}*/
 };

@@ -194,7 +194,7 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 	}
 	/*reserved = */reader.ReadShort();
 	
-	// model informations
+	// model information
 	reader.ReadString16();
 	reader.ReadUShort(); // dummy: property list
 	

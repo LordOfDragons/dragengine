@@ -31,7 +31,7 @@ class meNavigationSpace;
 /**
  * \brief Object data for undo actions.
  * 
- * Stores informations about an navigation space suitable for undo actions. The
+ * Stores information about an navigation space suitable for undo actions. The
  * navigation space is stored as a pointer which is either owned or not. If the
  * navigation space is owned it will be freed once this navigation space is freed.
  * If not owned the navigation space is just a pointer which will not be freed.

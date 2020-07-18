@@ -122,7 +122,7 @@ deBaseSoundDecoder( file ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		// store informations
+		// store information
 		pBytesPerSample = 2;
 		pSampleRate = fileInfos->rate;
 		pChannelCount = fileInfos->channels;

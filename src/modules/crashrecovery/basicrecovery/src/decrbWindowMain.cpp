@@ -129,13 +129,13 @@ const char *decrbWindowMain::GetTextForError( const char *error ){
 	if( strcmp( error, "NullPointer" ) == 0 ){
 		return "Invalid operation on a NULL pointer";
 	}else if( strcmp( error, "AssertionException" ) == 0 ){
-		return "Assertion exception has occured";
+		return "Assertion exception has occurred";
 	}else if( strcmp( error, "DivisionByZero" ) == 0 ){
 		return "Division By Zero";
 	}else if( strcmp( error, "IllegalInstruction" ) == 0 ){
-		return "An illegal instruction occured";
+		return "An illegal instruction occurred";
 	}else if( strcmp( error, "SegmentationFault" ) == 0 ){
-		return "An invalid read or write operation occured on non-acquired memory";
+		return "An invalid read or write operation occurred on non-acquired memory";
 	}else{
 		return "Unknown error";
 	}

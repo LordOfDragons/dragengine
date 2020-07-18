@@ -37,12 +37,12 @@ class deOcclusionMesh;
 /**
  * \brief Debug drawer shape wrapper.
  * 
- * Manages a debug drawer shape for displaying editing informations in the world.
+ * Manages a debug drawer shape for displaying editing information in the world.
  * Debug drawer shapes can be tricky to handle directly since they are direct
  * allocated with reference counting. This class stores the definition of a debug
  * drawer shape and creates, updates and destroys the engine debug drawer shape
  * according to this definition. This class is designed to greatly assist in
- * rendering editing informations in the world without having to deal with the
+ * rendering editing information in the world without having to deal with the
  * low level tasks involved. The debug drawer shape is placed in the provided
  * debug drawer. If no debug drawer is set this equals to the debug drawer shape
  * being invisible. This class does not hold a reference to the provided debug

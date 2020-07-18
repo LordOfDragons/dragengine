@@ -247,7 +247,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	refSkin.TakeOver( pLoadSaveSystem->LoadSkin( filename, GetGameDefinition() ) );
 	seSkin * const skin = ( seSkin* )( deObject* )refSkin;
 	
-	// store informations
+	// store information
 	skin->SetFilePath( filename );
 	skin->SetChanged( false );
 	skin->SetSaved( true );

@@ -69,7 +69,7 @@ private:
 	igdeTextAreaReference pEditDescription;
 	igdeComboBoxReference pCBScaleMode;
 	igdeCheckBoxReference pChkIsGhost;
-	igdeCheckBoxReference pChkCanInstanciate;
+	igdeCheckBoxReference pChkCanInstantiate;
 	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
 	
 	igdeWidgetReference pEditProperties;

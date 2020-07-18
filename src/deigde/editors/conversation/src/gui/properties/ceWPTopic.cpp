@@ -59,6 +59,7 @@
 #include "model/ceWPTTreeItem.h"
 #include "model/ceWPTTreeItemModel.h"
 #include "model/action/ceWPTTIMAction.h"
+#include "model/condition/ceWPTTIMCondition.h"
 #include "../ceWindowMain.h"
 #include "../../clipboard/ceClipboardDataTopic.h"
 #include "../../clipboard/ceClipboardDataFile.h"
@@ -321,8 +322,8 @@ class cActionGroupPaste : public igdeAction{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupPaste( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic group" ),
+	cActionGroupPaste( ceWPTopic &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic group" ),
 		pPanel( panel ){}
 	
 	virtual void OnAction(){
@@ -661,8 +662,8 @@ class cActionTopicPaste : public igdeAction{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicPaste( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic" ),
+	cActionTopicPaste( ceWPTopic &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic" ),
 		pPanel( panel ){}
 	
 	virtual void OnAction(){
@@ -758,7 +759,7 @@ public:
 	
 	virtual void OnSelectionChanged( igdeTreeList *treeList ){
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! topic ){
+		if( ! topic || pPanel.GetActionTreeModel()->GetPreventUpdate() ){
 			return;
 		}
 		
@@ -766,19 +767,15 @@ public:
 		if( item ){
 			item->OnSelected();
 		}
-		pPanel.SelectActiveAction();
+		pPanel.SyncTopicActive();
 	}
 	
 	virtual void OnItemExpanded( igdeTreeList*, igdeTreeItem *item ){
-		if( item->GetData() ){
-			( ( ceWPTTreeItem* )item->GetData() )->OnExpanded();
-		}
+		( ( ceWPTTreeItem* )item )->OnExpanded();
 	}
 	
 	virtual void OnItemCollapsed( igdeTreeList*, igdeTreeItem *item ){
-		if( item->GetData() ){
-			( ( ceWPTTreeItem* )item->GetData() )->OnCollapsed();
-		}
+		( ( ceWPTTreeItem* )item )->OnCollapsed();
 	}
 	
 	virtual void AddContextMenuEntries( igdeTreeList *treeList, igdeMenuCascade &menu ){
@@ -1081,7 +1078,7 @@ void ceWPTopic::UpdateTopic(){
 
 
 
-ceConversationAction *ceWPTopic::GetAction() const{
+ceConversationAction *ceWPTopic::GetTreeAction() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1091,7 +1088,7 @@ ceConversationAction *ceWPTopic::GetAction() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerAction() : NULL;
 }
 
-ceConversationCondition *ceWPTopic::GetCondition() const{
+ceConversationCondition *ceWPTopic::GetTreeCondition() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1101,59 +1098,54 @@ ceConversationCondition *ceWPTopic::GetCondition() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerCondition() : NULL;
 }
 
-void ceWPTopic::SelectActiveAction(){
-	ceConversationTopic * const topic = GetTopic();
-	ceConversationAction * const action = GetAction();
-	ceConversationCondition * const condition = GetCondition();
-	
-	if( topic ){
-		topic->SetActiveAction( action );
+void ceWPTopic::SyncTopicActive(){
+	if( pModelTreeActions ){
+		ceConversationTopic * const topic = GetTopic();
+		if( topic ){
+			const ceWPTTreeModel::PreventUpdateGuard preventUpdate( *pModelTreeActions );
+			topic->SetActive( GetTreeAction(), GetTreeCondition() );
+		}
 	}
+	
+	SelectActivePanel();
+}
+
+void ceWPTopic::SelectActivePanel(){
+	const ceConversationCondition * const condition = GetTreeCondition();
+	const ceConversationAction * const action = GetTreeAction();
 	
 	if( condition ){
 		switch( condition->GetType() ){
 		case ceConversationCondition::ectLogic:
 			pSwitcher->SetCurrent( epCLogic );
-			pPanelCLogic->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectHasActor:
 			pSwitcher->SetCurrent( epCHasActor );
-			pPanelCHasActor->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorInConversation:
 			pSwitcher->SetCurrent( epCActorInConversation );
-			pPanelCActorInConversation->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectVariable:
 			pSwitcher->SetCurrent( epCVariable );
-			pPanelCVariable->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorParameter:
 			pSwitcher->SetCurrent( epCAParam );
-			pPanelCAParam->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorCommand:
 			pSwitcher->SetCurrent( epCActorCommand );
-			pPanelCActorCommand->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectGameCommand:
 			pSwitcher->SetCurrent( epCGameCommand );
-			pPanelCGameCommand->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectTrigger:
 			pSwitcher->SetCurrent( epCTrigger );
-			pPanelCTrigger->UpdateCondition();
-			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 			break;
 		}
 		
@@ -1161,112 +1153,90 @@ void ceWPTopic::SelectActiveAction(){
 		switch( action->GetType() ){
 		case ceConversationAction::eatCameraShot:
 			pSwitcher->SetCurrent( epACameraShot );
-			pPanelACameraShot->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatMusic:
 			pSwitcher->SetCurrent( epAMusic );
-			pPanelAMusic->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorSpeak:
 			pSwitcher->SetCurrent( epAActorSpeak );
-			pPanelAActorSpeak->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatIfElse:
 			pSwitcher->SetCurrent( epAIfElse );
-			pPanelAIfElse->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatPlayerChoice:
 			pSwitcher->SetCurrent( epAPlayerChoice );
-			pPanelAPlayerChoice->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatStopConversation:
 			pSwitcher->SetCurrent( epAStopConversation );
-			pPanelAStopConversation->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatStopTopic:
 			pSwitcher->SetCurrent( epAStopTopic );
-			pPanelAStopTopic->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSnippet:
 			pSwitcher->SetCurrent( epASnippet );
-			pPanelASnippet->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSetVariable:
 			pSwitcher->SetCurrent( epASetVariable );
-			pPanelASetVariable->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSetActorParameter:
 			pSwitcher->SetCurrent( epASetAParam );
-			pPanelASetAParam->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorCommand:
 			pSwitcher->SetCurrent( epAActorCmd );
-			pPanelAActorCmd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatGameCommand:
 			pSwitcher->SetCurrent( epAGameCommand );
-			pPanelAGameCommand->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatWait:
 			pSwitcher->SetCurrent( epAWait );
-			pPanelAWait->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatTrigger:
 			pSwitcher->SetCurrent( epATrigger );
-			pPanelATrigger->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorAdd:
 			pSwitcher->SetCurrent( epAActorAdd );
-			pPanelAActorAdd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorRemove:
 			pSwitcher->SetCurrent( epAActorRemove );
-			pPanelAActorRemove->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatCoordSystemAdd:
 			pSwitcher->SetCurrent( epACoordSystemAdd );
-			pPanelACoordSystemAdd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatCoordSystemRemove:
 			pSwitcher->SetCurrent( epACoordSystemRemove );
-			pPanelACoordSystemRemove->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatComment:
 			pSwitcher->SetCurrent( epAComment );
-			pPanelAComment->UpdateAction();
 			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 		}
 		
 	}else{
 		pSwitcher->SetCurrent( epEmpty );
 	}
 	
-	UpdateAction();
+	UpdateActive();
 }
 
-void ceWPTopic::UpdateAction(){
-	switch( pSwitcher->GetCurrent() ){
+void ceWPTopic::UpdateActive(){
+	switch( ( ePanels )pSwitcher->GetCurrent() ){
 	case epACameraShot:
 		pPanelACameraShot->UpdateAction();
 		break;
@@ -1363,7 +1333,19 @@ void ceWPTopic::UpdateAction(){
 		pPanelCAParam->UpdateCondition();
 		break;
 		
-	default:
+	case epCActorCommand:
+		pPanelCActorCommand->UpdateCondition();
+		break;
+		
+	case epCGameCommand:
+		pPanelCGameCommand->UpdateCondition();
+		break;
+		
+	case epCTrigger:
+		pPanelCTrigger->UpdateCondition();
+		break;
+		
+	case epEmpty:
 		break;
 	}
 }
@@ -1436,7 +1418,7 @@ void ceWPTopic::LocateAction( ceConversationAction *action ){
 	}
 	
 	item->SetAsCurrentItem();
-	SelectActiveAction();
+	SyncTopicActive();
 }
 
 void ceWPTopic::PlayActionFromHere(){

@@ -13,7 +13,7 @@ namespace Introspection
  * 
  * Use \code{.ds} requires Introspection \endcode in your script files to load the introspection package.
  * 
- * This is a native class. This class is for static use only and can not be subclassed nor instanciated.
+ * This is a native class. This class is for static use only and can not be subclassed nor instantiated.
  */
 fixed class DS
 	/** \name Management */

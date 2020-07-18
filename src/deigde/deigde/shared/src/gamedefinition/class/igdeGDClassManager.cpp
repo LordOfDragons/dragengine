@@ -296,7 +296,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				gdClass->SetDescription( firstInheritClass->GetDescription() );
 				gdClass->SetHasCamera( firstInheritClass->GetHasCamera() );
 				gdClass->SetIsGhost( firstInheritClass->GetIsGhost() );
-				gdClass->SetCanInstanciate( firstInheritClass->GetCanInstanciate() );
+				gdClass->SetCanInstantiate( firstInheritClass->GetCanInstantiate() );
 				gdClass->SetScaleMode( firstInheritClass->GetScaleMode() );
 				
 				gdClass->SetCategory( firstInheritClass->GetCategory() );

@@ -83,10 +83,10 @@ ceUCCAInConvoSetActor::~ceUCCAInConvoSetActor(){
 
 void ceUCCAInConvoSetActor::Undo(){
 	pCondition->SetActor( pOldID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCAInConvoSetActor::Redo(){
 	pCondition->SetActor( pNewID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

@@ -38,7 +38,7 @@ class deoglRComponent;
  * Stores a masked render plan. A masked render plan is used to render
  * views into an world render call using a mask to limit the touched
  * pixels. A render plan masked consists of a render plan itself as
- * well as informations on how to obtain the mask.
+ * well as information on how to obtain the mask.
  */
 class deoglRenderPlanMasked{
 private:

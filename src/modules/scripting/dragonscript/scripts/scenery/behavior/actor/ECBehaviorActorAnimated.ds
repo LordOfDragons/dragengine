@@ -276,14 +276,30 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			select reader.readByte() // version
 			case 0
 				this.setActiveAnimatorID( reader.readString8() )
-				
-				var int i, count = reader.readByte()
-				for i = 0 to count
-					this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
-				end
+				this.readControllersFromFile( reader )
 				
 			else
 				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/**
+		 * \brief Read controller values from file reader.
+		 * 
+		 * Reads first byte controller count (max 255) then each controller value as float.
+		 * Assigns value only to existing controllers to be safe against problems.
+		 */
+		public func void readControllersFromFile( FileReader reader )
+			var int i, controllerCount = this.pAnimatorInstance.getControllerCount()
+			
+			var int readCount = reader.readByte()
+			
+			var int endIndex = DEMath.min( readCount, controllerCount )
+			for i = 0 to endIndex
+				this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
+			end
+			for i = endIndex to readCount
+				reader.readFloat()
 			end
 		end
 		
@@ -292,8 +308,16 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			writer.writeByte( 0 ) // version
 			
 			writer.writeString8( this.pActiveAnimatorID )
-			
-			var int i, count = this.pAnimatorInstance.getControllerCount()
+			this.writeControllersToFile( writer )
+		end
+		
+		/**
+		 * \brief Write animator controller values to file.
+		 * 
+		 * Writes first byte controller count (max 255) then each controller value as float.
+		 */
+		public func void writeControllersToFile( FileWriter writer )
+			var int i, count = DEMath.min( this.pAnimatorInstance.getControllerCount(), 255 )
 			writer.writeByte( count )
 			for i = 0 to count
 				writer.writeFloat( this.pAnimatorInstance.getControllerAt( i ).getValue() )

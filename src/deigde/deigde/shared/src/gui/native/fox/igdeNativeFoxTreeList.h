@@ -63,6 +63,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxTreeList();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxTreeList* CreateNativeWidget( igdeTreeList &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -77,17 +86,20 @@ public:
 	
 	
 	
-	void BuildTree();
-	void UpdateItem( igdeTreeItem *item );
-	void MakeItemVisible( igdeTreeItem *item );
-	void CreateAndInsertItem( igdeTreeItem *item );
-	void CreateAndAppendItem( igdeTreeItem *item );
-	void RemoveItem( igdeTreeItem *item );
-	void RemoveAllItems( igdeTreeItem *parent );
-	void ItemMoved( igdeTreeItem *item );
-	void SelectItem( igdeTreeItem *item );
-	void ItemsSortedIn( igdeTreeItem *item );
+	virtual void BuildTree();
+	virtual void UpdateItem( igdeTreeItem *item );
+	virtual void MakeItemVisible( igdeTreeItem *item );
+	virtual void CreateAndInsertItem( igdeTreeItem *item );
+	virtual void CreateAndAppendItem( igdeTreeItem *item );
+	virtual void RemoveItem( igdeTreeItem *item );
+	virtual void RemoveAllItems( igdeTreeItem *parent );
+	virtual void ItemMoved( igdeTreeItem *item );
+	virtual void SelectItem( igdeTreeItem *item );
+	virtual void ItemsSortedIn( igdeTreeItem *item );
 	virtual void Focus();
+	virtual void UpdateEnabled();
+	virtual void UpdateRows();
+	virtual void UpdateDescription();
 	
 	static int TreeListFlags( const igdeTreeList &owner );
 	static igdeFont *TreeListFont( const igdeTreeList &owner, const igdeGuiTheme &guitheme );
@@ -118,5 +130,7 @@ public:
 private:
 	void pDropItemsNativeWidget( igdeTreeItem *parent );
 };
+
+typedef igdeNativeFoxTreeList igdeNativeTreeList;
 
 #endif

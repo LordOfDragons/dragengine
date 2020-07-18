@@ -46,8 +46,8 @@ public:
 	 * \brief Create a new exception object.
 	 * \param[in] name Unique name to identify the exception. If NULL set to a default string.
 	 * \param[in] description Description of the reason for the exception. If NULL set to a default string.
-	 * \param[in] file Name of the source file where the exception occured. If NULL set to a default string.
-	 * \param[in] line Line number in file where the exception occured. If NULL set to a default string.
+	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
+	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
 	deException( const char *name, const char *description, const char *file, int line );
 	
@@ -67,10 +67,10 @@ public:
 	/** \brief Description of the reason for the exception. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
-	/** \brief Name of the source file where the exception occured. */
+	/** \brief Name of the source file where the exception occurred. */
 	inline const decString &GetFile() const{ return pFile; }
 	
-	/** \brief Line number in file where the exception occured. */
+	/** \brief Line number in file where the exception occurred. */
 	inline int GetLine() const{ return pLine; }
 	
 	/** \brief Backtrace. */
@@ -110,7 +110,7 @@ public:
 	decStringList FormatOutput() const;
 	
 	/**
-	 * \brief Display a formated output of the stored informations.
+	 * \brief Display a formated output of the stored information.
 	 * 
 	 * Print each line obtained by FormatOutput to stdout.
 	 */

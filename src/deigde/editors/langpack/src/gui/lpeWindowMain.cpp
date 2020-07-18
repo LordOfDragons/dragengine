@@ -315,7 +315,7 @@ public:
 		pWindow.SetLangPack( langpack );
 		langpack->FreeReference();
 		
-		// store informations
+		// store information
 		langpack->SetFilePath( filename );
 		langpack->SetChanged( false );
 		langpack->SetSaved( true );

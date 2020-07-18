@@ -32,7 +32,7 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
-#include "native/fox/igdeNativeFoxListBox.h"
+#include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -106,7 +106,7 @@ void igdeListBox::SetDescription( const char *description ){
 
 void igdeListBox::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxListBox* )GetNativeWidget() )->Focus();
+		( ( igdeNativeListBox* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -477,12 +477,9 @@ void igdeListBox::DeselectAllItems(){
 }
 
 void igdeListBox::MakeItemVisible( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->MakeItemVisible( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->makeItemVisible( index );
 }
 
 void igdeListBox::MakeSelectionVisible(){
@@ -574,21 +571,9 @@ void igdeListBox::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxListBox * const native = new igdeNativeFoxListBox( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeListBox * const native = igdeNativeListBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeListBox::DestroyNativeWidget(){
@@ -596,113 +581,74 @@ void igdeListBox::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxListBox* )GetNativeWidget();
+	( ( igdeNativeListBox* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeListBox::OnItemAdded( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->InsertItem( index );
 	}
-	
-	const igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( index ) );
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->insertItem( index, item.GetText().GetString(),
-		item.GetIcon() ? ( FXIcon* )item.GetIcon()->GetNativeIcon() : NULL );
 }
 
 void igdeListBox::OnItemRemoved( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->RemoveItem( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->removeItem( index );
 }
 
 void igdeListBox::OnAllItemsRemoved(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->RemoveAllItems();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->clearItems();
 }
 
 void igdeListBox::OnItemChanged( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateItem( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.UpdateItem( index );
 }
 
 void igdeListBox::OnItemMoved( int fromIndex, int toIndex ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->moveItem( toIndex, fromIndex );
 }
 
 void igdeListBox::OnItemsSorted(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->BuildList();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.BuildList();
 }
 
 void igdeListBox::OnSelectionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateSelection();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.UpdateSelection();
 }
 
 void igdeListBox::OnSelectionModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeListBox::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	
-	if( pEnabled ){
-		native.GetListBox()->enable();
-		
-	}else{
-		native.GetListBox()->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeListBox::OnRowsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateRowCount();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->setNumVisible( pRows );
 }
 
 void igdeListBox::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	//native.GetListBox()->setTipText( pDescription.GetString() ); // not supported
-	native.GetListBox()->setHelpText( pDescription.GetString() );
 }

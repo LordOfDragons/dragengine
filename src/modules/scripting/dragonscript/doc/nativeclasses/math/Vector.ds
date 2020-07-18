@@ -64,6 +64,10 @@ fixed class Vector
 	public func Vector normalize()
 	end
 	
+	/** \brief Vector with absolute value of each component. */
+	public func Vector absolute()
+	end
+	
 	/** \brief Component wise multiplication. */
 	public func Vector compMultiply( Vector v )
 	end

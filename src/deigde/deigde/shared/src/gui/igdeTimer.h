@@ -81,10 +81,18 @@ public:
 	
 	
 	
-	/** \brief Start timer in milliseconds. */
-	void Start( int timeout, bool repeating );
+	/**
+	 * \brief Start timer in milliseconds.
+	 * 
+	 * If timer is running it is restarted.
+	 */
+	void Start( int timeoutMS, bool repeating );
 	
-	/** \brief Start timer in seconds. */
+	/**
+	 * \brief Start timer in seconds.
+	 * 
+	 * If timer is running it is restarted.
+	 */
 	void Start( double timeout, bool repeating );
 	
 	/** \brief Stop timer. */

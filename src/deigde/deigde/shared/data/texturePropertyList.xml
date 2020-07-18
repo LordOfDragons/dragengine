@@ -1174,7 +1174,7 @@
 	<property name='outline.color'>
 		<description>
 			Defines the outline color. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. Outline color is rendered as fully rough material
 			with no reflectivity. This allows outline to be affected by lighting like other
 			skins which makes outlines fit better.
@@ -1218,7 +1218,7 @@
 			the same visual size no matter what distance it is looked at. For example in the
 			screen mode a value of 0.01 for example equals to a thickness of 1% the screen width.
 			If thickness is larger than 0 an outline is rendered around the component. This is
-			typically used to hilight objects or to use cartoon style effects.
+			typically used to highlight objects or to use cartoon style effects.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -1252,7 +1252,7 @@
 	<property name='outline.solidity'>
 		<description>
 			Defines the outline solidity. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. The solidity can be used to create transparent outlines.
 		</description>
 		<type>value</type>
@@ -1268,7 +1268,7 @@
 	<property name='outline.emissivity'>
 		<description>
 			Defines the outline emissivity color. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight
+			outline is rendered around the component. This is typically used to highlight
 			objects or to use cartoon style effects. While outline.color is affected by
 			lighting emissivity is not. This allows to make glowing outlines. If you use
 			this texture property you have to also use outline.emissivity.intensity
@@ -1308,7 +1308,7 @@
 	<property name='outline.emissivity.intensity'>
 		<description>
 			Defines the outline emissivity intensity. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight objects
+			outline is rendered around the component. This is typically used to highlight objects
 			or to use cartoon style effects. This value has the same value range as the
 			intensity parameter of light sources. For a common 100W light bulb this value would
 			be around 1. This value has to be a single value.
@@ -1317,6 +1317,112 @@
 		<components>1</components>
 		<default>
 			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity'>
+		<description>
+			Defines the component wise rim light emission of a surface. Rim light intensity
+			is multiplied by the angle difference between the camera view plane and the
+			surface normal. This allows to create ghost like effects where objects glow
+			along their rim while not glowing seen face on.<br/>
+			<br/>
+			A value of 0 equals to no light being emitted whereas 1 equals to full bright
+			light being emitted. In the lighting model used by this game engine there exists
+			no maximum strength of light since the light intensity is only limited towards
+			the bottom. For this reason the additional property "rim.emissivity.intensity"
+			indicates the maximum intensity for all color components. The real intensity
+			equals to the emissivity value multiplied by the "rim.emissivity.intensity"
+			value.<br/>
+			<br/>
+			Usually this property is an 24-bit color image. The default is black.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.tint'>
+		<description>
+			Defines a color used to tint the rim emissivity property. This defines
+			a 3-component color that is multiplied component wise with the
+			rim.emissivity property. Typically used to create tinted versions of a
+			texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.intensity'>
+		<description>
+			Defines the intensity of rim light emission. This value has the same value
+			range as the intensity parameter of light sources. For a common 100W light
+			bulb this value would be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.angle'>
+		<description>
+			Defines the maximum angle difference between the camera view plane and the
+			surface normal for rim light emissivity to become 0. Surface normals
+			located in the camera view plane (parallel to this plane) have maximum
+			intensity. The intensity is faded until reaching rim.angle deviation from
+			the camera view plane. The rim.exponent defines the shape of the fading curve.<br/>
+			<br/>
+			The angle value is defined as mapping between no deviation (0 degrees) at
+			value 0 to full deviation (90 degrees) at value 1. The default value is 0
+			which disables the effect.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.exponent'>
+		<description>
+			Defines the shape of the fading curve for rim light. The value is used
+			as exponent for the curve. Hence a value of 1 produces a linear blend
+			along the angle (constant intensity change per degree change).
+			A value of 2 produces a squared shape with intensity changing stronger
+			near rim.angle and less near 0 angle. A value of 0.5 produces a similar
+			squared shape but flipped with intensity changing stronger near 0 angle
+			and less near rim.angle . The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
 		</default>
 		<affects>
 			<module>graphic</module>

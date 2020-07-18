@@ -186,7 +186,7 @@ ceWPASetVariable::~ceWPASetVariable(){
 ///////////////
 
 ceCASetVariable *ceWPASetVariable::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatSetVariable ){
 		return ( ceCASetVariable* )action;

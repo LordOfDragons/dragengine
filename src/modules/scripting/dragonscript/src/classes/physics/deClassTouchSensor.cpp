@@ -743,7 +743,7 @@ dsClass( "TouchSensor", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
 	// prepare
 	pGameEngine = gameEngine;
 	pDS = scrMgr;
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	// do the rest

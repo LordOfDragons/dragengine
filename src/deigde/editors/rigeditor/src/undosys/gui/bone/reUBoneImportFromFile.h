@@ -37,7 +37,7 @@ class reRigConstraintList;
  * \brief Undo Import Bones From File.
  *
  * Undo action to import bones from file. This includes the physics  parameters, shapes and
- * constraints but not the geometry informations like the position or rotation.
+ * constraints but not the geometry information like the position or rotation.
  * Existing shapes and constraints are replaced with the imported ones.
  */
 class reUBoneImportFromFile : public igdeUndo{

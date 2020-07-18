@@ -21,7 +21,7 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionString = '1.1'
+versionString = '1.2'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -168,6 +168,7 @@ manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]

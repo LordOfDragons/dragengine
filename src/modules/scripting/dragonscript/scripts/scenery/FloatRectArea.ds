@@ -31,16 +31,9 @@ namespace Dragengine.Scenery
  * area guaranteed to be correctly oriented.
  */
 fixed class FloatRectArea
-	/** \brief X1-Coordinate of rectangular area. */
 	private var float pX1
-	
-	/** \brief Y1-Coordinate of rectangular area. */
 	private var float pY1
-	
-	/** \brief X2-Coordinate of rectangular area. */
 	private var float pX2
-	
-	/** \brief Y2-Coordinate of rectangular area. */
 	private var float pY2
 	
 	
@@ -49,10 +42,10 @@ fixed class FloatRectArea
 	/*@{*/
 	/** \brief Create rectangular area with all coordinates set to 0. */
 	public func new()
-		this.pX1 = 0.0
-		this.pY1 = 0.0
-		this.pX2 = 0.0
-		this.pY2 = 0.0
+		this.pX1 = 0
+		this.pY1 = 0
+		this.pX2 = 0
+		this.pY2 = 0
 	end
 	
 	/** \brief Create rectangular area with initial coordinates. */
@@ -226,7 +219,7 @@ fixed class FloatRectArea
 	
 	/** \brief Vector2 is inside rectangular area. */
 	public func bool isInside( float x, float y )
-		return x >= this.pX1 and x < this.pX2 and y >= this.pY1 and y < this.pY2
+		return x >= this.pX1 and x <= this.pX2 and y >= this.pY1 and y <= this.pY2
 	end
 	
 	/** \brief Vector2 is inside rectangular area. */

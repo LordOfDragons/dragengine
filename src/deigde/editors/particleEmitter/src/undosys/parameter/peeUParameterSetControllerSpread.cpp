@@ -48,7 +48,7 @@ peeUParameterSetControllerSpread::peeUParameterSetControllerSpread( peeType *typ
 	pOldController = NULL;
 	pNewController = NULL;
 	
-	SetShortInfo( "Set Paramater Spread Curve Controller" );
+	SetShortInfo( "Set Parameter Spread Curve Controller" );
 	
 	pOldController = parameter->GetControllerSpread();
 	if( pOldController ){

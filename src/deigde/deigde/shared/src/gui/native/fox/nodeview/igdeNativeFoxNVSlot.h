@@ -66,6 +66,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVSlot();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxNVSlot* CreateNativeWidget( igdeNVSlot &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -142,5 +151,7 @@ public:
 	long onSocketDndMotion( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxNVSlot igdeNativeNVSlot;
 
 #endif

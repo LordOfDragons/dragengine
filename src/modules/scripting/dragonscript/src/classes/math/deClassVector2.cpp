@@ -175,6 +175,16 @@ void deClassVector2::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
 	}
 }
 
+// public func Vector2 absolute()
+deClassVector2::nfAbsolute::nfAbsolute( const sInitData &init ) : dsFunction( init.clsVec2,
+"absolute", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+}
+void deClassVector2::nfAbsolute::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decVector2 &vector = ( ( sVec2NatDat* )p_GetNativeData( myself ) )->vector;
+	deClassVector2 *clsVector2 = ( deClassVector2* )GetOwnerClass();
+	clsVector2->PushVector2( rt, vector.Absolute() );
+}
+
 // public func Vector2 smallest( Vector2 v )
 deClassVector2::nfSmallest::nfSmallest( const sInitData &init ) : dsFunction( init.clsVec2,
 "smallest", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
@@ -580,6 +590,7 @@ void deClassVector2::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetComponentAt( init ) );
 	AddFunction( new nfGetLength( init ) );
 	AddFunction( new nfNormalize( init ) );
+	AddFunction( new nfAbsolute( init ) );
 	AddFunction( new nfSmallest( init ) );
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
