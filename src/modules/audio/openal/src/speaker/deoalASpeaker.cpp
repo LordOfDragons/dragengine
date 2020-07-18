@@ -1353,7 +1353,7 @@ void deoalASpeaker::pUpdateSourceImportance(){
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
-	if( pMuted ){
+	if( pMuted || ! pAudioThread.GetActiveMicrophone() ){
 		pAttenuatedGain = 0.0f;
 		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, 0.0f ) );
 		return;
