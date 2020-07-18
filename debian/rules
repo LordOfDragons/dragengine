@@ -38,11 +38,11 @@ override_dh_auto_install:
 	# is made for systems where the games group potentially does not exist and
 	# thus it is not possible to create this directory at package time
 	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	$(DEB_GAIN_ROOT_CMD) chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	
 	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	$(DEB_GAIN_ROOT_CMD) chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
