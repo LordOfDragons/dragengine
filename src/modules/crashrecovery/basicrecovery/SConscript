@@ -14,7 +14,7 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_fox' ], libs )
 
 # fetch values in expanded form for later use
-versionString = '1.1'
+versionString = '1.2'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
