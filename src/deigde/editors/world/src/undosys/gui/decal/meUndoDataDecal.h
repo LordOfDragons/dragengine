@@ -34,7 +34,7 @@ class meObject;
 
 /**
  * \brief Decal data for undo actions.
- * Stores informations about a decal suitable for undo actions.
+ * Stores information about a decal suitable for undo actions.
  */
 class meUndoDataDecal{
 private:

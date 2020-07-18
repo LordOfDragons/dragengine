@@ -1174,7 +1174,7 @@
 	<property name='outline.color'>
 		<description>
 			Defines the outline color. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. Outline color is rendered as fully rough material
 			with no reflectivity. This allows outline to be affected by lighting like other
 			skins which makes outlines fit better.
@@ -1218,7 +1218,7 @@
 			the same visual size no matter what distance it is looked at. For example in the
 			screen mode a value of 0.01 for example equals to a thickness of 1% the screen width.
 			If thickness is larger than 0 an outline is rendered around the component. This is
-			typically used to hilight objects or to use cartoon style effects.
+			typically used to highlight objects or to use cartoon style effects.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -1252,7 +1252,7 @@
 	<property name='outline.solidity'>
 		<description>
 			Defines the outline solidity. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. The solidity can be used to create transparent outlines.
 		</description>
 		<type>value</type>
@@ -1268,7 +1268,7 @@
 	<property name='outline.emissivity'>
 		<description>
 			Defines the outline emissivity color. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight
+			outline is rendered around the component. This is typically used to highlight
 			objects or to use cartoon style effects. While outline.color is affected by
 			lighting emissivity is not. This allows to make glowing outlines. If you use
 			this texture property you have to also use outline.emissivity.intensity
@@ -1308,7 +1308,7 @@
 	<property name='outline.emissivity.intensity'>
 		<description>
 			Defines the outline emissivity intensity. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight objects
+			outline is rendered around the component. This is typically used to highlight objects
 			or to use cartoon style effects. This value has the same value range as the
 			intensity parameter of light sources. For a common 100W light bulb this value would
 			be around 1. This value has to be a single value.

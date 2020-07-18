@@ -35,7 +35,7 @@
  * function to create the module in question. Store afterwards the module with
  * SetModule and set the error code with SetErrorCode. This is required as
  * modules are created upon loading and freed upon unloading. The subclass also
- * is responsible to set the module informations upon creation time best done
+ * is responsible to set the module information upon creation time best done
  * inside the constructor but at last before the module is added to the system.
  */
 class deInternalModule : public deLoadableModule{

@@ -64,7 +64,7 @@ class SDSourceWave extends SDSource
 		this.pType = type
 	end
 	
-	/** \brief Minium frequency. */
+	/** \brief Minimum frequency. */
 	public func float getMinFrequency()
 		return this.pMinFrequency
 	end

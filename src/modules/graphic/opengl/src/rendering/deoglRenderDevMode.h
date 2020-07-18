@@ -32,7 +32,7 @@ class deoglDebugInformation;
 
 /**
  * @brief OpenGL Developer Mode Renderer.
- * Renders developer mode informations.
+ * Renders developer mode information.
  */
 class deoglRenderDevMode : public deoglRenderBase{
 private:
@@ -57,7 +57,7 @@ public:
 	
 	/** @name Rendering */
 	/*@{*/
-	/** Renders the developer mode informations. */
+	/** Renders the developer mode information. */
 	void RenderDevMode( deoglRenderPlan &plan );
 	
 	/** Renders the visiblity of components in the view. */
@@ -66,8 +66,8 @@ public:
 	void RenderVisLight( deoglRenderPlan &plan );
 	/** Renders the component lod levels. */
 	void RenderComponentLodLevels( deoglRenderPlan &plan );
-	/** Hilight transparent objects. */
-	void RenderHilightTransparentObjects( deoglRenderPlan& plan );
+	/** Highlight transparent objects. */
+	void RenderHighlightTransparentObjects( deoglRenderPlan& plan );
 	
 	/** Renders the height terrain boxes. */
 	void RenderHeightTerrainBoxes( deoglRenderPlan &plan );
@@ -80,7 +80,7 @@ public:
 	/** \brief Render environment map information. */
 	void RenderEnvMapInfo( deoglRenderPlan &plan );
 	
-	/** Display overlay informations stacked from top to bottom. */
+	/** Display overlay information stacked from top to bottom. */
 	void RenderOverlayInfos( deoglRenderPlan &plan );
 	/** Display occlusion map level. */
 	void RenderOccMapLevel( deoglRenderPlan &plan );

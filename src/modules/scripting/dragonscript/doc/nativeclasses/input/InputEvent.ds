@@ -110,7 +110,7 @@ class InputEvent
 	public func float getValue()
 	end
 	
-	/** \brief Time the event occured. */
+	/** \brief Time the event occurred. */
 	public func int getTime()
 	end
 	/*@}*/

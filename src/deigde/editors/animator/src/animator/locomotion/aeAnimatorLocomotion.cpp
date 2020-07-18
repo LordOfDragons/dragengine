@@ -243,7 +243,7 @@ pTurnIP( 0.0f )
 			pLegs[ pLegCount ]->SetShapesVisible( pLegCount < 2 );
 		}
 		
-		// update the leg pair informations
+		// update the leg pair information
 		SetUseLegPairCount( 1 );
 		
 	}catch( const deException & ){

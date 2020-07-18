@@ -64,7 +64,7 @@ fixed class ColorMatrix
 	public static func ColorMatrix newBrightness( Color brightness )
 	end
 	
-	/** \brief Create contrast color matrix with same constrast value for each color component. */
+	/** \brief Create contrast color matrix with same contrast value for each color component. */
 	public static func ColorMatrix newContrast( float contrast )
 	end
 	

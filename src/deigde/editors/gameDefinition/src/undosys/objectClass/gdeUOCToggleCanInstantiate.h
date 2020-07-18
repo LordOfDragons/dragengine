@@ -32,9 +32,9 @@ class gdeObjectClass;
 
 
 /**
- * \brief Undo action object class toggle can instanciate.
+ * \brief Undo action object class toggle can instantiate.
  */
-class gdeUOCToggleCanInstanciate : public igdeUndo{
+class gdeUOCToggleCanInstantiate : public igdeUndo{
 private:
 	gdeObjectClass *pObjectClass;
 	
@@ -44,11 +44,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCToggleCanInstanciate( gdeObjectClass *objectClass );
+	gdeUOCToggleCanInstantiate( gdeObjectClass *objectClass );
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCToggleCanInstanciate();
+	virtual ~gdeUOCToggleCanInstantiate();
 	/*@}*/
 	
 	

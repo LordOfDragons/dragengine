@@ -53,7 +53,7 @@ class igdeWDebugDrawerShape;
 /**
  * \brief Height Terrain Sector.
  *
- * Defines the height terrain related informations inside a world sector.
+ * Defines the height terrain related information inside a world sector.
  */
 class meHeightTerrainSector : public deObject{
 public:

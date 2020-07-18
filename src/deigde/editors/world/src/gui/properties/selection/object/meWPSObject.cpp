@@ -1321,7 +1321,7 @@ void meWPSObject::UpdateClassList(){
 	
 	for( i=0; i<count; i++ ){
 		const igdeGDClass &objectClass = *classManager.GetAt( i );
-		if( objectClass.GetCanInstanciate() ){
+		if( objectClass.GetCanInstantiate() ){
 			pCBClass->AddItem( objectClass.GetName() );
 		}
 	}

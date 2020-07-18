@@ -477,8 +477,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		}else if( tagName == "ghost" ){
 			objectClass.SetIsGhost( GetCDataBool( *tag ) );
 			
-		}else if( tagName == "canInstanciate" ){
-			objectClass.SetCanInstanciate( GetCDataBool( *tag ) );
+		}else if( tagName == "canInstantiate"
+		/* backwards compatibility */ || "canInstanciate" ){
+			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "inherit" ){
 			pReadObjectClassInherit( *tag, objectClass );
@@ -2173,8 +2174,8 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	if( objectClass.GetIsGhost() ){
 		writer.WriteDataTagBool( "ghost", objectClass.GetIsGhost() );
 	}
-	if( ! objectClass.GetCanInstanciate() ){
-		writer.WriteDataTagBool( "canInstanciate", objectClass.GetCanInstanciate() );
+	if( ! objectClass.GetCanInstantiate() ){
+		writer.WriteDataTagBool( "canInstantiate", objectClass.GetCanInstantiate() );
 	}
 	
 	if( ! objectClass.GetDefaultInheritPropertyPrefix().IsEmpty() ){

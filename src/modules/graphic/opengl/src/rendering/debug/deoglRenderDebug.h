@@ -84,7 +84,7 @@ public:
 	
 	
 	
-	/** \brief Render component static informations as colored boxes. */
+	/** \brief Render component static information as colored boxes. */
 	void RenderComponentsStatic( sRenderParameters &params );
 	
 	/** \brief Render component using a colored box using the component extends. */

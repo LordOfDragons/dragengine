@@ -35,7 +35,7 @@ class deCRSimplyQuit;
  * possible before jumping the knife. For this an additional process
  * is spawned which idles waiting for a problem. If a core fault happens
  * the other process is still in a sane state and takes over while this
- * process tries to gather informations until it exits or gets killed
+ * process tries to gather information until it exits or gets killed
  * otherwise. Communication between the processes is done using files.
  */
 class decrsqCoreFault{

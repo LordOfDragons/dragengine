@@ -53,7 +53,7 @@ public:
 	 * This is usually a header check and is used to detect
 	 * with what image module a file could be possibly loaded if
 	 * it does not match any patterns. If the image can be loaded
-	 * store the necessary informations into an ImageInfo object and
+	 * store the necessary information into an ImageInfo object and
 	 * return it. Otherwise return NULL. The returned ImageInfo object
 	 * is used to create the image and as parameter to LoadImage.
 	 * You can be sure that the file pointer is located at the

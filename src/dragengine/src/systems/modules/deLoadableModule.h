@@ -37,9 +37,9 @@ class deBaseModule;
  * \brief Loadable Module Support.
  * 
  * Loadable modules are a wrapper around an engine module. They are used
- * to hold informations about an engine module that is loadable from a
+ * to hold information about an engine module that is loadable from a
  * particular source. Loadable module objects can hold modules which have
- * loaded successfully or with an error. If an error occured the reason
+ * loaded successfully or with an error. If an error occurred the reason
  * is stored for easy resolution finding. Modules can also be locked to
  * avoid unloading them while they are in use by some lengthy process.
  * Provided are two ways to work with subclasses one being a visitor and

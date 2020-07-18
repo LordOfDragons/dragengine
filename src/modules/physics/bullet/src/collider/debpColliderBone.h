@@ -43,7 +43,7 @@ class deRigBone;
 /**
  * \brief Bullet Collider Bone.
  * 
- * Stores informations about a bone in a collider. Besides the physics object a couple of
+ * Stores information about a bone in a collider. Besides the physics object a couple of
  * matrices are stored which are required for proper tracking component bones with the collider
  * bones.The following matrices are stored:
  * 

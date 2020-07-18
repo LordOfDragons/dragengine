@@ -31,7 +31,7 @@
 /**
  * \brief Game Skin.
  * 
- * Contains informations about a game skin file. The path is the unique
+ * Contains information about a game skin file. The path is the unique
  * identifier of a game skin. The name is an optional name used to display
  * the skin in listings. The description is an optional too giving some
  * more in depth description of the skin if required. Every skin has a

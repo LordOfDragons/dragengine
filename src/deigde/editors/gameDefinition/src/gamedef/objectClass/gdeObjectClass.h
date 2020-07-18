@@ -85,7 +85,7 @@ private:
 	decString pDefaultInheritPropertyPrefix;
 	
 	bool pIsGhost;
-	bool pCanInstanciate;
+	bool pCanInstantiate;
 	
 	gdeOCBillboardList pBillboards;
 	gdeOCCameraList pCameras;
@@ -376,10 +376,10 @@ public:
 	void SetIsGhost( bool isGhost );
 	
 	/** \brief Object can be instantiated. */
-	inline bool GetCanInstanciate() const{ return pCanInstanciate; }
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** \brief Set if object can be instantiated. */
-	void SetCanInstanciate( bool canInstanciate );
+	void SetCanInstantiate( bool canInstantiate );
 	
 	
 	

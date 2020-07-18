@@ -40,7 +40,7 @@ class reRigConstraintList;
  *
  * Undo action to copy bone parameters. This includes the physics
  * parameters, shapes and constraints but not the geometry
- * informations like the position or rotation since these usually
+ * information like the position or rotation since these usually
  * have to stay the same.
  */
 class reUBoneCopy : public igdeUndo{

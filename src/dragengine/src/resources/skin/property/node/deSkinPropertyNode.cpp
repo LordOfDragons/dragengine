@@ -41,7 +41,7 @@ pRotation( 0.0f ),
 pShear( 0.0f ),
 
 pBrightness( 0.0f ),
-pConstrast( 1.0f ),
+pContrast( 1.0f ),
 pGamma( 1.0f ),
 pColorize( 1.0f, 1.0f, 1.0f ),
 
@@ -84,7 +84,7 @@ void deSkinPropertyNode::SetBrightness( float brightness ){
 }
 
 void deSkinPropertyNode::SetContrast( float contrast ){
-	pConstrast = contrast;
+	pContrast = contrast;
 }
 
 void deSkinPropertyNode::SetGamma( float gamma ){

@@ -132,7 +132,7 @@ decColor igdeNativeFoxMainWindow::GetSystemColor( igdeEnvironment::eSystemColors
 	case igdeEnvironment::escWidgetForeground:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getForeColor() );
 		
-	case igdeEnvironment::escWidgetHilight:
+	case igdeEnvironment::escWidgetHighlight:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getHiliteColor() );
 		
 	case igdeEnvironment::escWidgetShadow:

@@ -619,9 +619,9 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 	deDebugDrawerShape * const ddsCorners = pSpace.GetDDSCorners();
 	deDebugDrawerShape * const ddsNormals = pSpace.GetDDSNormals();
 	deDebugDrawerShape * const ddsMismatching = pSpace.GetDDSMismatching();
-	deDebugDrawerShape * const ddsHilightCostType = pSpace.GetDDSHilightCostType();
+	deDebugDrawerShape * const ddsHighlightCostType = pSpace.GetDDSHighlightCostType();
 	deDebugDrawerShapeFace *ddsFace = NULL;
-	unsigned short hilightCostType = ~0;
+	unsigned short highlightCostType = ~0;
 	const float normalLength = 0.1f;
 	const float cornerCrossLength = 0.025f;
 	const decVector cornerCross1( -cornerCrossLength, 0.0f, cornerCrossLength );
@@ -646,14 +646,14 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 		ddsMismatching->RemoveAllFaces();
 		ddsMismatching->GetShapeList().RemoveAll();
 	}
-	if( ddsHilightCostType ){
-		ddsHilightCostType->RemoveAllFaces();
-		ddsHilightCostType->GetShapeList().RemoveAll();
+	if( ddsHighlightCostType ){
+		ddsHighlightCostType->RemoveAllFaces();
+		ddsHighlightCostType->GetShapeList().RemoveAll();
 		
-		const int costType = pSpace.GetDEAI().GetDeveloperMode().GetSpaceHilightCostType();
+		const int costType = pSpace.GetDEAI().GetDeveloperMode().GetSpaceHighlightCostType();
 		if( costType != -1 ){
 			if( pSpace.GetLayer() ){
-				hilightCostType = ( unsigned short )pSpace.GetLayer()->GetCostTable().GetTypeWith( costType, hilightCostType );
+				highlightCostType = ( unsigned short )pSpace.GetLayer()->GetCostTable().GetTypeWith( costType, highlightCostType );
 			}
 		}
 	}
@@ -710,15 +710,15 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 					ddsFace = NULL;
 				}
 				
-				// hilight if required
-				if( ddsHilightCostType ){
-					if( hilightCostType != ( unsigned short )~0 && pFaces[ f ].GetTypeNumber() == hilightCostType ){
+				// highlight if required
+				if( ddsHighlightCostType ){
+					if( highlightCostType != ( unsigned short )~0 && pFaces[ f ].GetTypeNumber() == highlightCostType ){
 						ddsFace = new deDebugDrawerShapeFace;
 						for( c=0; c<cornerCount; c++ ){
 							ddsFace->AddVertex( pVertices[ pCorners[ firstCorner + c ].GetVertex() ] );
 						}
 						ddsFace->SetNormal( pFaces[ f ].GetNormal() );
-						ddsHilightCostType->AddFace( ddsFace );
+						ddsHighlightCostType->AddFace( ddsFace );
 						ddsFace = NULL;
 					}
 				}
@@ -1534,7 +1534,7 @@ void dedaiSpaceMesh::pLinkToMesh( dedaiSpaceMesh *mesh, float snapDistance, floa
 		
 		// retrieve the position of the vertices in this navigation mesh transformed into the
 		// coordinate system of the navigation mesh to link to
-		const short localFaceIndex = localEdge.GetFace1(); // splitting the edge potentially invalides the reference
+		const short localFaceIndex = localEdge.GetFace1(); // splitting the edge potentially invalids the reference
 		
 		const decVector &localVertex1 = pVertices[ localEdge.GetVertex1() ];
 		const decVector &localVertex2 = pVertices[ localEdge.GetVertex2() ];

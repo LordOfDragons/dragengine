@@ -82,7 +82,7 @@ public:
 	// constructor, destructor
 	debpColliderVolume( dePhysicsBullet *bullet, deColliderVolume &collider );
 	~debpColliderVolume();
-	// informations
+	// information
 	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
 	inline const decVector &GetPredictedRotation() const{ return pPredictRot; }
 	// physics management

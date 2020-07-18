@@ -37,7 +37,7 @@ class Exception
 	/**
 	 * \brief Print exception trace on the standard output.
 	 * \details If you want to modify this behaviour use the trace functions
-	 *          to obtain the trace informations.
+	 *          to obtain the trace information.
 	 */
 	public func void printTrace()
 	end

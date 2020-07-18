@@ -93,7 +93,7 @@ class deLogger;
 
 /**
  * @brief World Wrapper.
- * Stores informations about a loaded world as well as wrapping the
+ * Stores information about a loaded world as well as wrapping the
  * engine side resources required for rendering. This class also
  * provides helper functions to deal with positions across sector
  * boundaries.

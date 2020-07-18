@@ -428,7 +428,7 @@ void deOSUnix::SetWindow( Window wnd ){
 	if( pCurWindow > 255 ){
 		XMapWindow( pDisplay, pCurWindow );
 		XFlush( pDisplay );
-		// fetch geometry informations
+		// fetch geometry information
 //		XGetWindowAttributes( pDisplay, pCurWindow, &xwa );
 //		pCurWindowWidth = xwa.width;
 //		pCurWindowHeight = xwa.height;

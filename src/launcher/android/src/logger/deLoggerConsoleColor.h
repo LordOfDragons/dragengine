@@ -31,7 +31,7 @@
  * \brief Logs to the standard output stream (aka the console in most cases) using colors.
  * 
  * In contrary to \ref LogConsole this class supports using text attributes and
- * text color codes to hilight info, warning and error log entries better. The
+ * text color codes to highlight info, warning and error log entries better. The
  * used coloring can be adjusted.
  * 
  * \note Logger color console is thread safe.

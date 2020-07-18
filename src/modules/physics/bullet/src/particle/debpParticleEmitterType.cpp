@@ -134,7 +134,7 @@ void debpParticleEmitterType::UpdateParameters(){
 	const deParticleEmitterType &type = pEmitter->GetTypeAt( pType );
 	
 	// create array if not existing yet. the array contain the sample values for
-	// 11 paramater curves sampled at 256 positions. this is enough since the
+	// 11 parameter curves sampled at 256 positions. this is enough since the
 	// particles do not life for long so precise sampling does not yield much
 	// more accuracy than this pre-sampling does
 	if( ! pParameterValueSamples ){
@@ -147,7 +147,7 @@ void debpParticleEmitterType::UpdateParameters(){
 		pParameterProgressSamples = new float[ ESC_COUNT_PROGRESS * 256 ]; // 13 curves: 3328 entries = 13312 bytes
 	}
 	
-	// sample the paramater curves into the array
+	// sample the parameter curves into the array
 	pSampleParameters( escParticleCount, type.GetParameter( deParticleEmitterType::epParticleCount ) );
 	pSampleParameters( escMass, type.GetParameter( deParticleEmitterType::epMass ) );
 	pSampleParameters( escRotation, type.GetParameter( deParticleEmitterType::epRotation ) );

@@ -237,7 +237,7 @@ const char *inputFile, bool resetState ){
 	if( *pInputNext ){
 		// not at end of string. this should never happen
 		pRenderThread.GetLogger().LogErrorFormat(
-			"Shader Preprocessor: Not at end of string (Invalide character '%c' at %s:%d",
+			"Shader Preprocessor: Not at end of string (Invalid character '%c' at %s:%d",
 			*pInputNext, pInputFile != NULL ? pInputFile : "?", pInputLine );
 		DETHROW( deeInvalidParam );
 	}
@@ -1465,7 +1465,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken( const sToken &token, const cha
 	#ifdef OS_BEOS
 	// compiler bug protection
 	if( ! token.begin ){
-		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #%s: Invalide token <COMPILER-BUG> at %s:%d",
+		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #%s: Invalid token <COMPILER-BUG> at %s:%d",
 			directive, pInputFile != NULL ? pInputFile : "?", token.line );
 		DETHROW( deeInvalidParam );
 	}
@@ -1473,7 +1473,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken( const sToken &token, const cha
 	*/
 	
 	pRenderThread.GetLogger().LogErrorFormat(
-		"Shader Preprocessor: #%s: Invalide token '%s' at %s:%d", directive,
+		"Shader Preprocessor: #%s: Invalid token '%s' at %s:%d", directive,
 		pDirectiveTokenString( token ).GetString(),
 		pInputFile != NULL ? pInputFile : "?", token.line );
 	

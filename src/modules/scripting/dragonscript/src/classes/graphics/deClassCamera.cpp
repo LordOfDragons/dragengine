@@ -551,7 +551,7 @@ dsClass( "Camera", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	

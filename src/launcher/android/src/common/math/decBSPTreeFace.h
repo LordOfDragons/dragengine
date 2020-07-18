@@ -33,7 +33,7 @@
  *
  * Stores a bsp tree face. The face has to be convex and can contain
  * more than 3 vertices. An optional user data parameter allows to
- * link external informations to a face.
+ * link external information to a face.
  */
 class decBSPTreeFace{
 private:

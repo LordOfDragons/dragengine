@@ -38,7 +38,7 @@ private:
 	
 	bool pShowSpaces;
 	bool pShowSpaceLinks;
-	int pSpaceHilightCostType;
+	int pSpaceHighlightCostType;
 	bool pShowBlockers;
 	bool pShowPath;
 	bool pShowPathFaces;
@@ -78,7 +78,7 @@ public:
 	inline bool GetShowSpaceLinks() const{ return pShowSpaceLinks; }
 	
 	/** \brief Set space type to highlight on navigation spaces or -1 to disable. */
-	inline int GetSpaceHilightCostType() const{ return pSpaceHilightCostType; }
+	inline int GetSpaceHighlightCostType() const{ return pSpaceHighlightCostType; }
 	
 	/** \brief Show navigation blockers. */
 	inline bool GetShowBlockers() const{ return pShowBlockers; }
@@ -122,7 +122,7 @@ private:
 	
 	void pCmdShowSpaces( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowSpaceLinks( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdSpaceHilightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdSpaceHighlightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowBlockers( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowPath( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowPathFaces( const decUnicodeArgumentList &command, decUnicodeString &answer );

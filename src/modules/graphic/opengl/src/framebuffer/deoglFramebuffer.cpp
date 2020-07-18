@@ -209,7 +209,7 @@ void deoglFramebuffer::Verify(){
 			
 		}else{
 // 			tracePoint.AddValueInt( "error", status );
-// 			tracePoint.AddValue( "description", "An unknown error has occured that is not listed in the OpenGL specifications ( broken driver ? )" );
+// 			tracePoint.AddValue( "description", "An unknown error has occurred that is not listed in the OpenGL specifications ( broken driver ? )" );
 			pRenderThread.GetLogger().LogErrorFormat( "FBO: Unknown Error Code %d!", status );
 		}
 		

@@ -38,7 +38,7 @@ class SystemConsoleCommand extends ConsoleCommand
 		this.setDescription( "Displays " + readableName + " Parameters." )
 		this.setSyntax( name + " [action]\n" + \
 			"   list {basic|advanced|expert} => displays list of all available parameters\n" + \
-			"   help <parameter> => displays informations about named parameter\n" + \
+			"   help <parameter> => displays information about named parameter\n" + \
 			"   get <parameter> => displays value of named parameter\n" + \
 			"   set <parameter> <value> => sets the value of parameter to the given number\n" + \
 			"   send <command> => send command to the active module\n" )

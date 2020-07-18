@@ -92,7 +92,7 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pCBParameter->setNumVisible( 10 );
 	pCBParameter->setSortFunc( fSortClasses );
 	
-	// parameter informations
+	// parameter information
 	FXGroupBox *groupBox = new FXGroupBox( this, "Parameter:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0,
 		padding, padding, padding, padding );

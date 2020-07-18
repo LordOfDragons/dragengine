@@ -147,7 +147,7 @@ void deClassGraphicSystem::nfGetParameterInfo::RunFunction(dsRunTime *RT, dsValu
 	int index = RT->GetValue(0)->GetInt();
 	// check
 	if(index < 0 || index >= module->GetParameterCount()) DSTHROW(dueInvalidParam);
-	// retrieve informations
+	// retrieve information
 	clsGraSys->GetDS().GetClassModuleParameter()->PushParameter(RT, module, index);
 }
 

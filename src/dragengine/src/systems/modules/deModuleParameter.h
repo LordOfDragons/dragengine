@@ -29,7 +29,7 @@
 /**
  * \brief Module parameter.
  *
- * Contains informations about a module parameter. This informations is designed
+ * Contains information about a module parameter. This information is designed
  * to help scripters to generate GUI widgets for the parameters matching the type
  * of the parameter to make it easier for the user to set the correct values.
  * The parameter can be of one of the four types boolean, numeric, ranged and

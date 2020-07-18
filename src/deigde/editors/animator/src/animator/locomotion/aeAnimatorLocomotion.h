@@ -48,7 +48,7 @@ class deLogger;
 /**
  * @brief Animator Locomotion.
  *
- * Stores informations about locomotion testing of an animator.
+ * Stores information about locomotion testing of an animator.
  */
 class aeAnimatorLocomotion{
 public:

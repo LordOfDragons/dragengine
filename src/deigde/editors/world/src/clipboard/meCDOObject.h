@@ -35,7 +35,7 @@ class meObject;
 /**
  * \brief Object data for clipboard clips.
  * 
- * Stores informations about an object suitable for clipboard clips.
+ * Stores information about an object suitable for clipboard clips.
  */
 class meCDOObject{
 private:

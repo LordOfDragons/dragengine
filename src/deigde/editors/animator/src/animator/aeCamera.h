@@ -40,7 +40,7 @@ class aeAnimator;
  * some simple unproject methods to determine a ray shot into the world
  * as seen by this camera. The camera is managed in a lazy way. Hence
  * the engine is not create or updated until it is acquired by the user.
- * This subclass contains attachment specific informations.
+ * This subclass contains attachment specific information.
  */
 class aeCamera : public igdeCamera{
 private:

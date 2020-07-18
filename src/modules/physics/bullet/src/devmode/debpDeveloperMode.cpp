@@ -55,7 +55,7 @@ debpDeveloperMode::debpDeveloperMode( dePhysicsBullet &bullet ) :
 pBullet( bullet ),
 pEnabled( false ),
 pTakeSnapshot( false ),
-pHilightResponseType( -1 )
+pHighlightResponseType( -1 )
 {
 	(void)pBullet; // for future use
 }
@@ -90,8 +90,8 @@ bool debpDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, d
 		pCmdShowCategory( command, answer );
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_hilight_response_type" ) ){
-		pCmdHilightResponseType( command, answer );
+	}else if( command.MatchesArgumentAt( 0, "dm_highlight_response_type" ) ){
+		pCmdHighlightResponseType( command, answer );
 		return true;
 		
 	}else if( command.MatchesArgumentAt( 0, "dm_debug" ) ){
@@ -140,7 +140,7 @@ void debpDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUnic
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_take_snapshot => Snapshot next world into a COLLADA file.\n" );
 	answer.AppendFromUTF8( "dm_show_category => Show collision objects with collision category (comma-separated list of bit-numbers or 'off').\n" );
-	answer.AppendFromUTF8( "dm_hilight_response_type => Hilight response type if dm_show_category is used.\n" );
+	answer.AppendFromUTF8( "dm_highlight_response_type => Highlight response type if dm_show_category is used.\n" );
 	answer.AppendFromUTF8( "dm_debug {enable | disable} => Enable performance debugging.\n" );
 }
 
@@ -192,44 +192,44 @@ void debpDeveloperMode::pCmdShowCategory( const decUnicodeArgumentList &command,
 	answer.AppendFromUTF8( text );
 }
 
-void debpDeveloperMode::pCmdHilightResponseType( const decUnicodeArgumentList &command,
+void debpDeveloperMode::pCmdHighlightResponseType( const decUnicodeArgumentList &command,
 decUnicodeString &answer ){
 	if( command.GetArgumentCount() == 2 ){
 		const decString newValue( command.GetArgumentAt( 1 )->ToUTF8() );
 		
 		if( newValue == "static" || newValue == "s" ){
-			pHilightResponseType = deCollider::ertStatic;
+			pHighlightResponseType = deCollider::ertStatic;
 			
 		}else if( newValue == "kinematic" || newValue == "k" ){
-			pHilightResponseType = deCollider::ertKinematic;
+			pHighlightResponseType = deCollider::ertKinematic;
 			
 		}else if( newValue == "dynamic" || newValue == "d" ){
-			pHilightResponseType = deCollider::ertDynamic;
+			pHighlightResponseType = deCollider::ertDynamic;
 			
 		}else if( newValue == "off" ){
-			pHilightResponseType = -1;
+			pHighlightResponseType = -1;
 			
 		}else{
-			answer.AppendFromUTF8( "dm_hilight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}" );
+			answer.AppendFromUTF8( "dm_highlight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}" );
 			return;
 		}
 	}
 	
-	switch( pHilightResponseType ){
+	switch( pHighlightResponseType ){
 	case deCollider::ertStatic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = static" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = static" );
 		break;
 		
 	case deCollider::ertKinematic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = kinematic" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = kinematic" );
 		break;
 		
 	case deCollider::ertDynamic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = dynamic" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = dynamic" );
 		break;
 		
 	default:
-		answer.AppendFromUTF8( "dm_hilight_response_type = off" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = off" );
 		break;
 	}
 }

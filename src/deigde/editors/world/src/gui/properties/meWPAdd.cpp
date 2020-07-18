@@ -285,7 +285,7 @@ void meWPAdd::OnGameDefinitionChanged(){
 		
 		for( i=0; i<count; i++ ){
 			const igdeGDClass &objectClass = *classes.GetAt( i );
-			if( objectClass.GetCanInstanciate() ){
+			if( objectClass.GetCanInstantiate() ){
 				pComboObjClass->AddItem( objectClass.GetName() );
 			}
 		}

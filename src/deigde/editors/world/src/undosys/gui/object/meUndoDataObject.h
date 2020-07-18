@@ -31,7 +31,7 @@ class meObject;
 /**
  * \brief Object data for undo actions.
  * 
- * Stores informations about an object suitable for undo actions. The object
+ * Stores information about an object suitable for undo actions. The object
  * is stored as a pointer which is either owned or not. If the object is owned
  * it will be freed once this object is freed. If not owned the object is just
  * a pointer which will not be freed. By default the object is not owned.

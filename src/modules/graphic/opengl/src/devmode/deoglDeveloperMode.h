@@ -70,7 +70,7 @@ private:
 	int pShowLightVisualInfo;
 	
 	bool pShowTranspLevelCount;
-	bool pHilightTransparentObjects;
+	bool pHighlightTransparentObjects;
 	
 	bool pDebugRenderPlan;
 	bool pShowMemoryInfo;
@@ -117,7 +117,7 @@ public:
 	/** Determines if the component lod levels are shown. */
 	inline bool GetShowComponentLODLevels() const{ return pShowComponentLODLevels; }
 	
-	/** Determines if height terrain informations are shown. */
+	/** Determines if height terrain information are shown. */
 	inline bool GetShowHeightTerrain() const{ return pShowHeightTerrain; }
 	/** Determines if prop field boundaries are shown as boxes. */
 	inline bool GetShowPropFieldBox() const{ return pShowPropFieldBox; }
@@ -138,7 +138,7 @@ public:
 	/** Determines if the number of transparency levels are shown. */
 	inline bool GetShowTranspLevelCount() const{ return pShowTranspLevelCount; }
 	/** Determines if transparent objects are highlighted. */
-	inline bool GetHilightTransparentObjects() const{ return pHilightTransparentObjects; }
+	inline bool GetHighlightTransparentObjects() const{ return pHighlightTransparentObjects; }
 	
 	/** Determines if the render plan debug mode is enabled. */
 	inline bool GetDebugRenderPlan() const{ return pDebugRenderPlan; }
@@ -220,7 +220,7 @@ private:
 	void pCmdShowLightVisualInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowTranspLayerCount( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHilightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdTests( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	

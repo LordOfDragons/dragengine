@@ -42,7 +42,7 @@
 
 
 // TODO the points array is temporary. since the height map contains all the
-// informations the reading of values can be moved straight into the bullet
+// information the reading of values can be moved straight into the bullet
 // height terrain shape. saves us a lot of memory we can use for better things
 
 

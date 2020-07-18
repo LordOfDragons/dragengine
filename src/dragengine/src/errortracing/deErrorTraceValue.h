@@ -26,7 +26,7 @@
 /**
  * \brief Error Trace Value.
  *
- * Error Trace Value objects contain additional informations about the values in
+ * Error Trace Value objects contain additional information about the values in
  * use by the failing function.
  */
 class deErrorTraceValue{
@@ -90,16 +90,16 @@ public:
 	
 	/** \name Convenience Functions */
 	/*@{*/
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddSubValue( const char *name, const char *value );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddSubValueInt( const char *name, int value );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddSubValueFloat( const char *name, float );
 	
-	/** \brief Adds a new trace value with the given informations. */
+	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddSubValueBool( const char *name, bool value );
 	/*@}*/
 	

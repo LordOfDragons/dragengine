@@ -201,8 +201,8 @@ void deoglRenderDevMode::RenderDevMode( deoglRenderPlan &plan ){
 		RenderComponentLodLevels( plan );
 	}
 	
-	if( devMode.GetHilightTransparentObjects() ){
-		RenderHilightTransparentObjects( plan );
+	if( devMode.GetHighlightTransparentObjects() ){
+		RenderHighlightTransparentObjects( plan );
 	}
 	
 	if( devMode.GetShowEnvMaps() || devMode.GetShowEnvMapHull() ){
@@ -367,7 +367,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	pglBindVertexArray( 0 );
 }
 
-void deoglRenderDevMode::RenderHilightTransparentObjects( deoglRenderPlan &plan ){
+void deoglRenderDevMode::RenderHighlightTransparentObjects( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglCollideList &collideList = plan.GetCollideList();
 	const deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
@@ -897,7 +897,7 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	bool hasOverlay = false;
 	const int vgap = 5;
 	
-	// determine first if we have any overlay informations to show
+	// determine first if we have any overlay information to show
 	if( devMode.GetShowHeightTerrain() ){
 		hasOverlay = true;
 	}
@@ -920,12 +920,12 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 		hasOverlay = true;
 	}
 	
-	// if there are no overlay informations leave now
+	// if there are no overlay information leave now
 	if( ! hasOverlay ){
 		return;
 	}
 	
-	// overwise prepare for rendering the overlay informations
+	// overwise prepare for rendering the overlay information
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	

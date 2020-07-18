@@ -30,7 +30,7 @@ public class TwoColorBorderFactory implements BorderFactory
 	/** Raised or lowered edge. */
 	private var bool pRaised
 	/** Highlight color or null to use the widget gui theme highlight color. */
-	private var Color pColorHilight
+	private var Color pColorHighlight
 	/** Shadow color or null to use the widget gui theme shadow color. */
 	private var Color pColorShadow
 	
@@ -44,7 +44,7 @@ public class TwoColorBorderFactory implements BorderFactory
 	/** \brief Create copy of border factory. */
 	public func new( TwoColorBorderFactory factory )
 		this.pRaised = factory.pRaised
-		this.pColorHilight = factory.pColorHilight
+		this.pColorHighlight = factory.pColorHighlight
 		this.pColorShadow = factory.pColorShadow
 	end
 	
@@ -60,14 +60,14 @@ public class TwoColorBorderFactory implements BorderFactory
 		this.pRaised = raised
 	end
 	
-	/** Retrieves the hilight color or null to use the widget gui theme hilight color. */
-	public func Color getColorHilight()
-		return this.pColorHilight
+	/** Retrieves the highlight color or null to use the widget gui theme highlight color. */
+	public func Color getColorHighlight()
+		return this.pColorHighlight
 	end
 	
-	/** Sets the hilight color or null to use the widget gui theme hilight color. */
-	public func void setColorHilight( Color color )
-		this.pColorHilight = color
+	/** Sets the highlight color or null to use the widget gui theme highlight color. */
+	public func void setColorHighlight( Color color )
+		this.pColorHighlight = color
 	end
 	
 	/** Retrieves the shadow color or null to use the widget gui theme shadow color. */
@@ -87,7 +87,7 @@ public class TwoColorBorderFactory implements BorderFactory
 		var TwoColorBorder border = TwoColorBorder.new()
 		
 		border.setRaised( this.pRaised )
-		border.setColorHilight( this.pColorHilight )
+		border.setColorHighlight( this.pColorHighlight )
 		border.setColorShadow( this.pColorShadow )
 		
 		return border
@@ -103,8 +103,9 @@ public class TwoColorBorderFactory implements BorderFactory
 		if name.equals( "raised" )
 			this.setRaised( value cast bool )
 			
-		elif name.equals( "colorHilight" )
-			this.setColorHilight( value cast Color )
+		elif name.equals( "colorHighlight" ) \
+		/* backwards compatibility */ or name.equals( "colorHilight" )
+			this.setColorHighlight( value cast Color )
 			
 		elif name.equals( "colorShadow" )
 			this.setColorShadow( value cast Color )
@@ -112,5 +113,18 @@ public class TwoColorBorderFactory implements BorderFactory
 		else
 			throw EInvalidParam.new()
 		end
+	end
+	
+	
+	
+	
+	/** \deprecated Use getColorHighlight(). */
+	public func Color getColorHilight()
+		return this.getColorHighlight()
+	end
+	
+	/** \deprecated Use setColorHighlight(Color). */
+	public func void setColorHilight( Color color )
+		this.setColorHighlight( color )
 	end
 end

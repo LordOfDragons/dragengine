@@ -39,7 +39,7 @@ class decPath;
  * 
  * Manages a list of game skins found in the game directory or elsewhere.
  * Game skins only contain the path of skin file and some classification
- * informations useful searching for the right skin to use.
+ * information useful searching for the right skin to use.
  */
 class igdeGDSkinManager{
 private:

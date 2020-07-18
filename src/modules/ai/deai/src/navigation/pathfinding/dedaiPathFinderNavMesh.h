@@ -106,7 +106,7 @@ public:
 	/** Removes all path points. */
 	void RemoveAllPathPoints();
 	
-	/** \brief Update a debug drawer with hilighting the faces along the path. */
+	/** \brief Update a debug drawer with highlighting the faces along the path. */
 	void UpdateDDSShapeFaces( deDebugDrawerShape &dds );
 	
 	/** \brief Sets the debug drawer shape to use to visualize the opened list or NULL to disable. */

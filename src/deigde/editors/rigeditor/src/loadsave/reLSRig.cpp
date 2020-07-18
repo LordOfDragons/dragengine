@@ -129,7 +129,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		
 		pModule->LoadRig( *file, *engRig );
 		
-		// now it's time to copy the informations over
+		// now it's time to copy the information over
 		boneCount = engRig->GetBoneCount();
 		for( b=0; b<boneCount; b++ ){
 			deRigBone &engRigBone = engRig->GetBoneAt( b );

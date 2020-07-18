@@ -110,7 +110,7 @@ class decTimer;
  *
  * To launch successfully a game with this engine create
  * first one instance of this class. Then set your game
- * specific informations to the shared data directory
+ * specific information to the shared data directory
  * of the engine and your game data directory. You are
  * now ready to launch the game by calling the run
  * function. You need to specify the script directory
@@ -453,7 +453,7 @@ public:
 	 * Calling this function the control is handed over to the game engine. The scripts in the
 	 * specified directory ( relative to the data directory ) are parsed and executed. This
 	 * function returns control to you after a quit-request has been issued or an unrecoverable
-	 * error has occured. The return value indicates if the game engine exited under normal
+	 * error has occurred. The return value indicates if the game engine exited under normal
 	 * circumstances or due to a severe error. This function already handles exceptions so there
 	 * is no need to enclose it in a try-catch block.
 	 *
@@ -461,7 +461,7 @@ public:
 	 * \param gameObject Initial game object to create. Script module specific value.
 	 *                   Usually a class or function name to use to create the game object
 	 * \returns true if the game engine exited under normal circumstances or false if an
-	 *          unrecoverable error occured
+	 *          unrecoverable error occurred
 	 */
 	bool Run( const char *scriptDirectory, const char *gameObject );
 	

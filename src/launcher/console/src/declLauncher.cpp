@@ -118,7 +118,7 @@ void declLauncher::Init(){
 	// created as the log file is obtained from there
 	pInitLogger();
 	
-	// now we can log the informations we found so far
+	// now we can log the information we found so far
 	pConfiguration->LogImportantValues();
 	
 	// load configuration

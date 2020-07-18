@@ -133,7 +133,7 @@ void deBaseSystem::Stop(){
 		return;
 	}
 	
-	LogInfoFormat( "Stoping %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat( "Stopping %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();

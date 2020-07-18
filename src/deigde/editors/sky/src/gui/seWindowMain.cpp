@@ -368,7 +368,7 @@ public:
 		pWindow.SetSky( sky );
 		sky->FreeReference();
 		
-		// store informations
+		// store information
 		sky->SetFilePath( filename );
 		sky->SetChanged( false );
 		sky->SetSaved( true );

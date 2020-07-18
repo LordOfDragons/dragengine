@@ -206,7 +206,7 @@ void aeLSAnimator::pSaveDisplay( decXmlWriter &writer, aeAnimator *animator ){
 	bool saveExplainingComments = false;
 	
 	if( saveExplainingComments ){
-		writer.WriteComment( "Contains optional display informations only relevant to the animator editor." );
+		writer.WriteComment( "Contains optional display information only relevant to the animator editor." );
 	}
 	writer.WriteOpeningTag( "display" );
 	

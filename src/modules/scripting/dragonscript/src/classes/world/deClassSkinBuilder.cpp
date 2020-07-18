@@ -579,7 +579,7 @@ void deClassSkinBuilder::nfConstructedOpenContent::RunFunction( dsRunTime *rt, d
 }
 
 // protected func void addNodeImage( Point3 position, Point3 size, float rotation, float shear,
-// float brightness, float constrast, float gamma, Color colorize, float transparency,
+// float brightness, float contrast, float gamma, Color colorize, float transparency,
 // SkinPropertyNodeCombineMode combineMode,
 // String path, Image image, Point repeat )
 deClassSkinBuilder::nfAddNodeImage::nfAddNodeImage( const sInitData &init ) :
@@ -590,7 +590,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFloat ); // rotation
 	p_AddParameter( init.clsFloat ); // shear
 	p_AddParameter( init.clsFloat ); // brightness
-	p_AddParameter( init.clsFloat ); // constrast
+	p_AddParameter( init.clsFloat ); // contrast
 	p_AddParameter( init.clsFloat ); // gamma
 	p_AddParameter( init.clsColor ); // colorize
 	p_AddParameter( init.clsFloat ); // transparency
@@ -653,7 +653,7 @@ void deClassSkinBuilder::nfAddNodeImage::RunFunction( dsRunTime *rt, dsValue *my
 }
 
 // protected func void addNodeText( Point3 position, Point3 size, float rotation, float shear,
-// float brightness, float constrast, float gamma, Color colorize, float transparency,
+// float brightness, float contrast, float gamma, Color colorize, float transparency,
 // SkinPropertyNodeCombineMode combineMode,
 // String path, Font font, float fontSize, String text, Color color )
 deClassSkinBuilder::nfAddNodeText::nfAddNodeText( const sInitData &init ) :
@@ -664,7 +664,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFloat ); // rotation
 	p_AddParameter( init.clsFloat ); // shear
 	p_AddParameter( init.clsFloat ); // brightness
-	p_AddParameter( init.clsFloat ); // constrast
+	p_AddParameter( init.clsFloat ); // contrast
 	p_AddParameter( init.clsFloat ); // gamma
 	p_AddParameter( init.clsColor ); // colorize
 	p_AddParameter( init.clsFloat ); // transparency
@@ -733,7 +733,7 @@ void deClassSkinBuilder::nfAddNodeText::RunFunction( dsRunTime *rt, dsValue *mys
 }
 
 // protected func void addNodeShape( Point3 position, Point3 size, float rotation, float shear,
-// float brightness, float constrast, float gamma, Color colorize, float transparency,
+// float brightness, float contrast, float gamma, Color colorize, float transparency,
 // SkinPropertyNodeCombineMode combineMode,
 // int shapeType, Color fillColor, Color lineColor, float thickness )
 deClassSkinBuilder::nfAddNodeShape::nfAddNodeShape( const sInitData &init ) :
@@ -744,7 +744,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFloat ); // rotation
 	p_AddParameter( init.clsFloat ); // shear
 	p_AddParameter( init.clsFloat ); // brightness
-	p_AddParameter( init.clsFloat ); // constrast
+	p_AddParameter( init.clsFloat ); // contrast
 	p_AddParameter( init.clsFloat ); // gamma
 	p_AddParameter( init.clsColor ); // colorize
 	p_AddParameter( init.clsFloat ); // transparency
@@ -811,7 +811,7 @@ void deClassSkinBuilder::nfAddNodeShape::RunFunction( dsRunTime *rt, dsValue *my
 }
 
 // protected func void addNodeGroup( Point3 position, Point3 size, float rotation, float shear,
-// float brightness, float constrast, float gamma, Color colorize, float transparency,
+// float brightness, float contrast, float gamma, Color colorize, float transparency,
 // SkinPropertyNodeCombineMode combineMode )
 deClassSkinBuilder::nfAddNodeGroup::nfAddNodeGroup( const sInitData &init ) :
 dsFunction( init.clsSkinBuilder, "addNodeGroup", DSFT_FUNCTION,
@@ -821,7 +821,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFloat ); // rotation
 	p_AddParameter( init.clsFloat ); // shear
 	p_AddParameter( init.clsFloat ); // brightness
-	p_AddParameter( init.clsFloat ); // constrast
+	p_AddParameter( init.clsFloat ); // contrast
 	p_AddParameter( init.clsFloat ); // gamma
 	p_AddParameter( init.clsColor ); // colorize
 	p_AddParameter( init.clsFloat ); // transparency

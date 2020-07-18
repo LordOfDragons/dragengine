@@ -18,7 +18,7 @@ namespace Dragengine
  * 
  * Furthermore adds some additional methods useful for game development.
  * 
- * This is a native class. This class is for static use only and can not instanciated but subclassed.
+ * This is a native class. This class is for static use only and can not instantiated but subclassed.
  */
 class DEMath extends Math
 	/** \name Degrees based replacements for methods from Math. */

@@ -38,12 +38,12 @@
 
 deoglPContrast::deoglPContrast( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
 	SetName( "contrast" );
-	SetDescription( "Constrast correction." );
+	SetDescription( "Contrast correction." );
 	SetType( deModuleParameter::eptRanged );
 	SetMinimumValue( 0.5f );
 	SetMaximumValue( 1.5f );
 	SetValueStepSize( 0.05f );
-	SetDisplayName( "Constrast" );
+	SetDisplayName( "Contrast" );
 }
 
 deoglPContrast::~deoglPContrast(){

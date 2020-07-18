@@ -55,23 +55,23 @@ class CollisionInfo
 	public func int getFace()
 	end
 	
-	/** \brief Collision has occured. */
+	/** \brief Collision has occurred. */
 	public func bool hasCollision()
 	end
 	
-	/** \brief Collision with collider occured, */
+	/** \brief Collision with collider occurred, */
 	public func bool isCollider()
 	end
 	
-	/** \brief Collision with collider bone occured. */
+	/** \brief Collision with collider bone occurred. */
 	public func bool hasBone()
 	end
 	
-	/** \brief Collision with collider rig (bone) shape occured. */
+	/** \brief Collision with collider rig (bone) shape occurred. */
 	public func bool hasShape()
 	end
 	
-	/** \brief Collision with collider face occured. */
+	/** \brief Collision with collider face occurred. */
 	public func bool hasFace()
 	end
 	

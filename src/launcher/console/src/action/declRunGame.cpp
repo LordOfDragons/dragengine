@@ -143,7 +143,7 @@ void declRunGame::PrintSyntax(){
 	printf( "   <options> can be one or more of the following:\n" );
 	printf( "      -c, --console           Use console and no graphic system.\n" );
 	printf( "      -p, --profile <name>    Use named game profile instead of the default one.\n" );
-	printf( "      -d, --debug             Display all debug informations in the console not just the log file.\n" );
+	printf( "      -d, --debug             Display all debug information in the console not just the log file.\n" );
 	printf( "      -P, --patch <id|alias>  Use patch with identifier instead of latest. Use empty string to run unpatched.\n" );
 	printf( "      --mparam module:param=value     Set module parameter before running the game.\n" );
 	printf( "   <game>                Identifier of the game to run.\n" );

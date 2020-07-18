@@ -371,7 +371,7 @@ public:
 		pWindow.SetFont( font );
 		font->FreeReference();
 		
-		// store informations
+		// store information
 		font->SetFilePath( filename );
 		font->SetChanged( false );
 		font->SetSaved( true );

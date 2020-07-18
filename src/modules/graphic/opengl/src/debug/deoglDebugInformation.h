@@ -35,10 +35,10 @@
  * 
  * Stores an elapsed time in seconds and a counter value. A name is used to display
  * the information on screen. The font and background color can be set to help identify
- * the information on screen quickly. Debug informations can be disabled in which case
- * the font is half-way faded to the background and the values set to dashes. Informations
- * can be groups containing child informations. If child informations exist and an elapsed
- * time is present the child informations calculate a ratio of their elapsed time compared
+ * the information on screen quickly. Debug information can be disabled in which case
+ * the font is half-way faded to the background and the values set to dashes. Information
+ * can be groups containing child information. If child information exist and an elapsed
+ * time is present the child information calculate a ratio of their elapsed time compared
  * to this elapsed time to find better bottle necks.
  * 
  * Debug information be be set invisible in which case they are not drawn. Avoids the

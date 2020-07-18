@@ -64,7 +64,7 @@ igdeGDClass::igdeGDClass( const char *name ){
 	pCamera = NULL;
 	pHasCamera = false;
 	pIsGhost = false;
-	pCanInstanciate = true;
+	pCanInstantiate = true;
 	
 	pPreviewImage = NULL;
 	
@@ -96,7 +96,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		}
 		pHasCamera = gdclass.pHasCamera;
 		pIsGhost = gdclass.pIsGhost;
-		pCanInstanciate = gdclass.pCanInstanciate;
+		pCanInstantiate = gdclass.pCanInstantiate;
 		
 		pCategory = gdclass.pCategory;
 		
@@ -173,8 +173,8 @@ void igdeGDClass::SetIsGhost( bool isGhost ){
 	pIsGhost = isGhost;
 }
 
-void igdeGDClass::SetCanInstanciate( bool canInstanciate ){
-	pCanInstanciate = canInstanciate;
+void igdeGDClass::SetCanInstantiate( bool canInstantiate ){
+	pCanInstantiate = canInstantiate;
 }
 
 void igdeGDClass::SetCategory( const char *category ){
