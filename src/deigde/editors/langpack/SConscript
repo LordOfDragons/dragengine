@@ -83,7 +83,7 @@ parent_targets[ 'editor_langpack' ] = {
 	'name' : 'IGDE Language Pack Editor',
 	'build' : targetBuild,
 	'install' : targetInstall,
-	'install-engine-runtime' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }
