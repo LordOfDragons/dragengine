@@ -166,7 +166,7 @@ deBaseImageInfo *deJpegModule::InitLoadImage( decBaseFileReader &file ){
 // 		info->GetSourceMgr().resync_to_restart = dejpegResyncToRestart;
 		info->GetSourceMgr().term_source = dejpegTermSource;
 		
-		jpeg_read_header( info->GetDecompressPtr(), true );
+		jpeg_read_header( info->GetDecompressPtr(), TRUE );
 		
 	}catch( const deException & ){
 		if( info ){
