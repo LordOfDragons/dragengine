@@ -69,6 +69,16 @@ override_dh_auto_install:
 	rm -f src/launcher/android/DELauncher/gradle/wrapper/gradle-wrapper.jar
 
 override_dh_shlibdeps:
+	# debian seems to modify *.so files after being installed override_dh_auto_install.
+	# this is very bad since during building and installing module file manifests are
+	# updated with modification detection values. due to the modifications of debian
+	# the game engine rejects all modules as non-genuine. to solve this we have to
+	# fix all module manifests. since it is unknown what step causes these problems
+	# the fix is placed here until better knowing
+	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules -name "*.so"`; do \
+		/usr/bin/python3 debianFixManifests.py "$$f" \
+	done
+	
 	# debian build package has a problem with the DragonScript packages
 	dh_shlibdeps -Xlibscrdscript -Xdsinstall
 	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
