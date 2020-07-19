@@ -1,35 +1,42 @@
 name	dragengine
-version	1.0-1
+version	1.2-1
 architecture	x86
 summary	"Drag[en]gine Game Engine"
 description	"Provides the game engine and launchers required to run games and other projects based on the Drag[en]gine Game Engine. Games do not compile directly against the game engine. Instead there is one shared installation on the system relying on a launcher to handle all the initialization and maintenance work.
 
 This package provides two launchers.
 
-'delaunch' is a console based launcher. It is the most basic launcher just able to run the game without providing any additional tools. It can be used to run games without overhead or in headless mode for server operation.
+'delauncher-console' is a console based launcher. It is the most basic launcher just able to run the game without providing any additional tools. It can be used to run games without overhead or in headless mode for server operation.
 
 'delauncher-gui' is a graphical launcher. It supports additional features to manage the engine installation and games installed on the system. It is the the recommended launcher."
-packager	"Drag[en]gine Team <info@dragengine.rptd.ch>"
-vendor	"Drag[en]gine Team"
+packager	"Dragon Dreams <info@dragondreams.ch>"
+vendor	"Dragon Dreams"
 licenses {
 	"GNU GPL v3"
 	"GNU LGPL v3"
 }
 copyrights {
-	"Copyright (C) by Drag[en]gine Team <info@dragengine.rptd.ch>"
+	"Copyright (C) by Dragon Dreams <info@dragondreams.ch>"
 }
 provides {
-	dragengine = 1.0-1
-	lib:libdragengine = 1.0-1
-	cmd:delaunch = 1.0-1
-	app:delauncher_gui = 1.0-1
+	dragengine = 1.2-1
+	lib:libdragengine = 1.2-1
+	cmd:delauncher-console = 1.2-1
+	app:delauncher-gui = 1.2-1
 }
-requires {
-	haiku >= r1~alpha4_pm_hrev51474-1
+requires {
+	haiku >= r1~beta2_hrev54441-1
+	mesa >= 17.1.10-6
+	jpeg >= 9c-3
+	libpng16 >= 1.6.37-1
+	openal >= 1.19.1-1
+	libogg >= 1.3.4-1
+	libvorbis => 1.3.6-1
+	libtheora >= 1.1.1-7
+	zlib >= 1.2.114
 }
 urls {
-	"https://dragengine.rptd.ch"
-	"http://indiedb.com/engines/dragengine"
+	"https://dragondreams.ch"
 }
 global-writable-files {
 	"settings/dragengine" directory keep-old
