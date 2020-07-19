@@ -186,4 +186,4 @@
 # 
 # Value type: string with directory path
 # 
-# path_launcher_games = '/boot/system/delauncher/games'
+# path_launcher_games = '${sysconfdir)/delauncher/games'
