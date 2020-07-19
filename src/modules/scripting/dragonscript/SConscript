@@ -15,9 +15,9 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_dragonscript' ], libs )
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.2'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/scripting/dragonscript/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/scripting/dragonscript/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
@@ -53,7 +53,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='scrdscript', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='scrdscript', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'scr_dragonscript_build', library )
 
 
@@ -70,7 +70,8 @@ for l in library:
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 for l in reversed( parent_targets[ 'lib_dragonscript' ][ 'runtimelibs' ] ):
 	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
@@ -81,6 +82,7 @@ manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 Depends( updateManifest, parent_targets[ 'lib_dragonscript' ][ 'runtimelibs' ] )
 
 install.append( envModule.Install( pathModule, updateManifest ) )
@@ -101,9 +103,11 @@ if envModule['OSWindows']:
 	# NOTE there is no other solution. to support cross-building path in the sconscripts
 	#      have to be with unix slashes not native path separators. this means we have
 	#      to manually do this thing here otherwise it won't work
-	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data').replace('/', '\\')))
+	replacements.append(('%{PATH_MODULE_SHARED}',
+		'%{{DE_SHARE_PATH}}\\modules\\scripting\\dragonscript\\{}\\data'.format(versionString)))
 else:
-	replacements.append(('%{PATH_MODULE_SHARED}', os.path.join(pathShared, 'data')))
+	replacements.append(('%{PATH_MODULE_SHARED}',
+		'%{{DE_SHARE_PATH}}/modules/scripting/dragonscript/{}/data'.format(versionString)))
 
 for s in igdeGameDefs:
 	node = envModule.File(s)
@@ -167,6 +171,7 @@ parent_targets[ 'scr_dragonscript' ] = {
 	'name' : 'DragonScript Script Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'archive-igde' : archiveIGDE,
 	'doxygen' : buildDoxygen,

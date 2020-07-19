@@ -310,7 +310,7 @@ void dePng3DTarball::Load3DImage( dePng3DImageInfo &infos, decBaseFileReader &fi
 						rows[ r ] = ( png_bytep )( sliceImageData + strideLine * r );
 					}
 					
-					// now we can load the image using these informations
+					// now we can load the image using these information
 					Load2DImage( infos, file, rows );
 					
 				}else{

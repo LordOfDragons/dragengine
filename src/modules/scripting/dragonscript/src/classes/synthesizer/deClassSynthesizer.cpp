@@ -460,7 +460,7 @@ deClassSynthesizer::deClassSynthesizer( deScriptingDragonScript &ds ) :
 dsClass( "Synthesizer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
 pDS( ds )
 {
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	

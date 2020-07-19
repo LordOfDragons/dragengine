@@ -29,7 +29,7 @@ pin Dragengine.Utils
 /**
  * \brief Debug element class information printer.
  * 
- * Prints informations about all element classes in an an ElementClassList to the Console
+ * Prints information about all element classes in an an ElementClassList to the Console
  * or a FileWriter. This can be used to store a snapshot of all properties and behaviors
  * supported by element classes. By storing this to a file this can be used as reference
  * documentation.

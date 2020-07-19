@@ -24,57 +24,11 @@
 #include <string.h>
 
 #include "igdeMenuBar.h"
-#include "../native/toolkit.h"
 #include "../igdeWidget.h"
+#include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeMenuBar : public FXMenuBar{
-	FXDECLARE( cNativeIgdeMenuBar )
-	
-protected:
-	cNativeIgdeMenuBar();
-	
-private:
-	igdeMenuBar *pOwner;
-	
-public:
-	cNativeIgdeMenuBar( igdeMenuBar &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeIgdeMenuBar();
-	
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-};
-
-
-FXDEFMAP( cNativeIgdeMenuBar ) cNativeIgdeMenuBarMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeIgdeMenuBar::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( cNativeIgdeMenuBar, FXMenuBar,
-	cNativeIgdeMenuBarMap, ARRAYNUMBER( cNativeIgdeMenuBarMap ) )
-
-cNativeIgdeMenuBar::cNativeIgdeMenuBar(){ }
-
-cNativeIgdeMenuBar::cNativeIgdeMenuBar( igdeMenuBar &owner, FXComposite *parent, int layoutFlags ) :
-FXMenuBar( parent, layoutFlags ),
-pOwner( &owner ){
-}
-
-cNativeIgdeMenuBar::~cNativeIgdeMenuBar(){
-}
-
-long cNativeIgdeMenuBar::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
-	return 1;
-}
-
 
 
 // Class igdeMenuBar
@@ -100,25 +54,9 @@ void igdeMenuBar::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeMenuBar *foxWidget;
-	
-	foxWidget = new cNativeIgdeMenuBar( *this, foxParent, layoutFlags );
-	
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeMenuBar * const native = igdeNativeMenuBar::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -128,6 +66,6 @@ void igdeMenuBar::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeMenuBar* )GetNativeWidget();
+	( ( igdeNativeMenuBar* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }

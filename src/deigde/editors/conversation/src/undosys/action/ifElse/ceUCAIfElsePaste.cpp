@@ -92,13 +92,19 @@ ceUCAIfElsePaste::~ceUCAIfElsePaste(){
 ///////////////
 
 void ceUCAIfElsePaste::Undo(){
+	ceConversationAction *activateAction = NULL;
+	
 	if( pCase ){
+		activateAction = ActivateActionAfterRemove( pCase->GetActions() );
 		pRemoveActions( pCase->GetActions() );
 		
 	}else{
+		activateAction = ActivateActionAfterRemove( pIfElse->GetElseActions() );
 		pRemoveActions( pIfElse->GetElseActions() );
 	}
 	GetTopic().NotifyActionStructureChanged( pIfElse );
+	
+	GetTopic().SetActive( activateAction ? activateAction : pIfElse, NULL );
 }
 
 void ceUCAIfElsePaste::Redo(){
@@ -109,4 +115,6 @@ void ceUCAIfElsePaste::Redo(){
 		pInsertActions( pIfElse->GetElseActions() );
 	}
 	GetTopic().NotifyActionStructureChanged( pIfElse );
+	
+	pSelectInserted();
 }

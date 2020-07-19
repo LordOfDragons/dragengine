@@ -329,10 +329,10 @@ public:
 	/** \brief Set value if axis event. */
 	void SetValue( float value );
 	
-	/** \brief Time the event occured. */
+	/** \brief Time the event occurred. */
 	inline const timeval &GetTime() const{ return pTime; }
 	
-	/** \brief Set time the event occured. */
+	/** \brief Set time the event occurred. */
 	void SetTime( const timeval &eventTime );
 	
 	/** \brief Copies properties of another event to this event. */

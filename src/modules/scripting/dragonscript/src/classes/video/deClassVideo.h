@@ -85,6 +85,7 @@ private:
 	DEF_NATFUNC( nfGetPlayTime );
 	
 	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC( nfEquals2 );
 	DEF_NATFUNC( nfHashCode );
 #undef DEF_NATFUNC
 };

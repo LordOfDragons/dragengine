@@ -616,7 +616,7 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 		var RectArea nodeMargins = nodeStyle.getMargins()
 		var STDStyle.Align alignment = nodeStyle.getAlignment()
 		
-		if this.pPageInProgress == null
+		if this.pPageInProgress == null or this.pCurPIPPosY + image.getHeight() > this.pMaxPIPPosY
 			this.beginNewPage()
 		end
 		

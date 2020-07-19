@@ -80,6 +80,12 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	
 	
 	/** \brief Behavior instance. */
@@ -136,6 +142,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			
 			this.pAnimatorInstance = AnimatorInstance.new()
 			this.pAnimatorInstance.setComponent( this.pComponent.getComponent() )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -265,19 +273,51 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setActiveAnimatorID( reader.readString8() )
+			select reader.readByte() // version
+			case 0
+				this.setActiveAnimatorID( reader.readString8() )
+				this.readControllersFromFile( reader )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/**
+		 * \brief Read controller values from file reader.
+		 * 
+		 * Reads first byte controller count (max 255) then each controller value as float.
+		 * Assigns value only to existing controllers to be safe against problems.
+		 */
+		public func void readControllersFromFile( FileReader reader )
+			var int i, controllerCount = this.pAnimatorInstance.getControllerCount()
 			
-			var int i, count = reader.readByte()
-			for i = 0 to count
+			var int readCount = reader.readByte()
+			
+			var int endIndex = DEMath.min( readCount, controllerCount )
+			for i = 0 to endIndex
 				this.pAnimatorInstance.getControllerAt( i ).setValue( reader.readFloat() )
+			end
+			for i = endIndex to readCount
+				reader.readFloat()
 			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeString8( this.pActiveAnimatorID )
+			writer.writeByte( 0 ) // version
 			
-			var int i, count = this.pAnimatorInstance.getControllerCount()
+			writer.writeString8( this.pActiveAnimatorID )
+			this.writeControllersToFile( writer )
+		end
+		
+		/**
+		 * \brief Write animator controller values to file.
+		 * 
+		 * Writes first byte controller count (max 255) then each controller value as float.
+		 */
+		public func void writeControllersToFile( FileWriter writer )
+			var int i, count = DEMath.min( this.pAnimatorInstance.getControllerCount(), 255 )
 			writer.writeByte( count )
 			for i = 0 to count
 				writer.writeFloat( this.pAnimatorInstance.getControllerAt( i ).getValue() )
@@ -291,6 +331,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	private var ECBehaviorComponent pComponent
 	private var ECBehaviorLocomotion pLocomotion
 	private var Dictionary pControllerMappings
+	private var Array pListenerFactories
 	
 	
 	
@@ -340,6 +381,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		this.pComponent = component
 		this.pLocomotion = locomotion
 		this.pControllerMappings = Dictionary.new()
+		this.pListenerFactories = Array.new()
 		
 		this.pAnimators = ECPAnimatorMap.new( prefix + "animators", loaders.getAnimator() )
 		eclass.addProperty( this.pAnimators )
@@ -351,6 +393,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	public func void dispose()
 		this.pComponent = null
 		this.pLocomotion = null
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -407,6 +451,26 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		this.pControllerMappings.setAt( "tilt.horizontal", LocomotionAttribute.tiltHorizontal )
 		this.pControllerMappings.setAt( "tilt.offset", LocomotionAttribute.tiltOffset )
 		this.pControllerMappings.setAt( "interaction", LocomotionAttribute.elapsedTime )
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

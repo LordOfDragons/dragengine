@@ -148,6 +148,12 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief State. */
@@ -253,6 +259,8 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			this.pTargetDeactivating.setName( this.pECBehavior.getTargetDeactivating().getValue( stub ) )
 			
 			this.updateRequiresThink()
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/**
@@ -863,37 +871,45 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * other than those controlled by this behavior change them before super calling method.
 		 */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pState = State.withOrder( reader.readByte() )
-			
-			var float value = reader.readFloat()
-			if this.pControllerDeactivated != null
-				this.pControllerDeactivated.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerActivate != null
-				this.pControllerActivate.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerDeactivate != null
-				this.pControllerDeactivate.setValue( value )
-			end
-			
-			value = reader.readFloat()
-			if this.pControllerActivated != null
-				this.pControllerActivated.setValue( value )
-			end
-			
-			this.updateRequiresThink()
-			
-			if this.pAnimatorInstance != null
-				this.pAnimatorInstance.apply()
+			select reader.readByte() // version
+			case 0
+				this.pState = State.withOrder( reader.readByte() )
+				
+				var float value = reader.readFloat()
+				if this.pControllerDeactivated != null
+					this.pControllerDeactivated.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerActivate != null
+					this.pControllerActivate.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerDeactivate != null
+					this.pControllerDeactivate.setValue( value )
+				end
+				
+				value = reader.readFloat()
+				if this.pControllerActivated != null
+					this.pControllerActivated.setValue( value )
+				end
+				
+				this.updateRequiresThink()
+				
+				if this.pAnimatorInstance != null
+					this.pAnimatorInstance.apply()
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeByte( this.pState.order() )
 			writer.writeFloat( this.pControllerDeactivated != null \
 				if this.pControllerDeactivated.getValue() else 0 )
@@ -941,6 +957,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	private var String pControllerNameActivated
 	private var String pControllerNameActivating
 	private var String pControllerNameDeactivating
+	private var Array pListenerFactories
 	
 	
 	
@@ -982,6 +999,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		this.pControllerNameActivated = "activated"
 		this.pControllerNameActivating = "activating"
 		this.pControllerNameDeactivating = "deactivating"
+		this.pListenerFactories = Array.new()
 		
 		this.pAnimator = ECPAnimator.new( prefix + "animator", loaders.getAnimator() )
 		eclass.addProperty( this.pAnimator )
@@ -1009,6 +1027,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pComponent = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -1111,6 +1130,26 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		this.pControllerNameActivated = activated
 		this.pControllerNameActivating = activating
 		this.pControllerNameDeactivating = deactivating
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

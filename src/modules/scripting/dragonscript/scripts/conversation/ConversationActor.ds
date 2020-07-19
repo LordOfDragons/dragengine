@@ -487,48 +487,56 @@ class ConversationActor
 	
 	/** \brief Read from file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
-		
-		this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
-		
-		if flags.getAt( 0 )
-			this.pSpeechAnimationPlayback.readFromFile( env, reader )
-		end
-		if flags.getAt( 1 )
-			this.pGesturePlayback.readFromFile( env, reader )
-		end
-		if flags.getAt( 2 )
-			this.pFacePosePlayback.readFromFile( env, reader )
-		end
-		if flags.getAt( 3 )
-			this.pHeadLookAtPlayback.readFromFile( env, reader )
-		end
-		if flags.getAt( 4 )
-			this.pEyesLookAtPlayback.readFromFile( env, reader )
-		end
-		
-		this.pSubTitleText = env.readObjectOrNull( reader ) cast SubTitleBoxText
-		if this.pSubTitleText != null
-			this.pPlayback.getSubTitle().addSubTitleText( this.pSubTitleText.subtitleWidget() )
-		end
-		
-		if flags.getAt( 5 )
-			this.pVoiceSpeaker.setSound( Sound.new( reader.readString16() ) )
-			var int playFrom = reader.readInt()
-			var int playTo = reader.readInt()
-			this.pVoiceSpeaker.setPlayPosition( playFrom, playTo )
-			reader.readInt() //getPlayPosition not working yet
-			this.pVoiceSpeaker.setPlaySpeed( reader.readFloat() )
-			this.pVoiceSpeaker.setVolume( reader.readFloat() )
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
 			
-			this.pVoiceSpeaker.play()
+			this.pAliasID = env.readStringIDOrNullIfEmpty( reader )
+			
+			if flags.getAt( 0 )
+				this.pSpeechAnimationPlayback.readFromFile( env, reader )
+			end
+			if flags.getAt( 1 )
+				this.pGesturePlayback.readFromFile( env, reader )
+			end
+			if flags.getAt( 2 )
+				this.pFacePosePlayback.readFromFile( env, reader )
+			end
+			if flags.getAt( 3 )
+				this.pHeadLookAtPlayback.readFromFile( env, reader )
+			end
+			if flags.getAt( 4 )
+				this.pEyesLookAtPlayback.readFromFile( env, reader )
+			end
+			
+			this.pSubTitleText = env.readObjectOrNull( reader ) cast SubTitleBoxText
+			if this.pSubTitleText != null
+				this.pPlayback.getSubTitle().addSubTitleText( this.pSubTitleText.subtitleWidget() )
+			end
+			
+			if flags.getAt( 5 )
+				this.pVoiceSpeaker.setSound( Sound.new( reader.readString16() ) )
+				var int playFrom = reader.readInt()
+				var int playTo = reader.readInt()
+				this.pVoiceSpeaker.setPlayPosition( playFrom, playTo )
+				reader.readInt() //getPlayPosition not working yet
+				this.pVoiceSpeaker.setPlaySpeed( reader.readFloat() )
+				this.pVoiceSpeaker.setVolume( reader.readFloat() )
+				
+				this.pVoiceSpeaker.play()
+			end
+			
+			this.pRemainingSpeechTime = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		this.pRemainingSpeechTime = reader.readFloat()
 	end
 	
 	/** \brief Write to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		var PersistencyFlags flags = PersistencyFlags.new( 6 )
 		flags.setAt( 0, this.pSpeechAnimationPlayback != null )
 		flags.setAt( 1, this.pGesturePlayback != null )

@@ -37,7 +37,6 @@
 #include "../theme/igdeGuiTheme.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascadeReference.h"
-#include "../native/fox/nodeview/igdeNativeFoxNVNode.h"
 #include "../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -163,8 +162,7 @@ decPoint igdeNVNode::GetSize() const{
 		return decPoint();
 	}
 	
-	igdeNativeFoxNVNode &native = *( ( igdeNativeFoxNVNode* )GetNativeWidget() );
-	return decPoint( native.getWidth(), native.getWidth() );
+	return ( ( igdeNativeNVNode* )GetNativeWidget() )->GetSize();
 }
 
 void igdeNVNode::SetOwnerBoard( igdeNVBoard *board ){
@@ -329,24 +327,13 @@ void igdeNVNode::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxNVNode * const nativeWidget = new igdeNativeFoxNVNode( *this, nativeParent, *GetGuiTheme() );
-	SetNativeWidget( nativeWidget );
-	if( nativeParent->id() ){
-		nativeWidget->create();
-	}
+	igdeNativeNVNode * const native = igdeNativeNVNode::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->create();
 	
 	CreateChildWidgetNativeWidgets();
 	
-	nativeWidget->FitSizeToContent();
+	native->FitSizeToContent();
 }
 
 void igdeNVNode::DestroyNativeWidget(){
@@ -354,7 +341,7 @@ void igdeNVNode::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxNVNode* )GetNativeWidget();
+	( ( igdeNativeNVNode* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -362,42 +349,42 @@ void igdeNVNode::DestroyNativeWidget(){
 
 void igdeNVNode::OnTitleChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdateTitle();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdateTitle();
 	}
 }
 
 void igdeNVNode::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeNVNode::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeNVNode::OnActiveChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdateActive();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdateActive();
 	}
 }
 
 void igdeNVNode::OnColorsChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdateColors();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdateColors();
 	}
 }
 
 void igdeNVNode::OnSlotsChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->FitSizeToContent();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->FitSizeToContent();
 	}
 }
 
 void igdeNVNode::OnPositionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxNVNode* )GetNativeWidget() )->UpdatePosition();
+		( ( igdeNativeNVNode* )GetNativeWidget() )->UpdatePosition();
 	}
 }

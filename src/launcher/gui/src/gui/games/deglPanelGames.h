@@ -69,6 +69,7 @@ public:
 		ID_PU_GAME_RUNWITH,
 		ID_PU_GAME_KILL,
 		ID_PU_GAME_UNINSTALL,
+		ID_PU_GAME_SHOWLOGS,
 		ID_LAST
 	};
 	
@@ -137,6 +138,8 @@ public:
 	long updatePUGameKill( FXObject *sender, FXSelector selector, void *data );
 	long onPUGameUninstall( FXObject *sender, FXSelector selector, void *data );
 	long updatePUGameUninstall( FXObject *sender, FXSelector selector, void *data );
+	long onPUGameShowLogs( FXObject *sender, FXSelector selector, void *data );
+	long updatePUGameShowLogs( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
 

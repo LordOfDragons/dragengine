@@ -83,7 +83,7 @@ public:
 	 * \details If not existing the render target is created. If dirty the render
 	 *          target texture is rendered. After this call returns GetRenderTarget()
 	 *          returns a render target with a valid texture object suitable for
-	 *          rendering unless an error occured.
+	 *          rendering unless an error occurred.
 	 */
 	void PrepareRenderTarget();
 	

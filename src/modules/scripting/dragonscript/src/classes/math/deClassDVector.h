@@ -79,6 +79,7 @@ private:
 	DEF_NATFUNC( nfGetLength );
 	DEF_NATFUNC( nfGetLengthSquared );
 	DEF_NATFUNC( nfNormalize );
+	DEF_NATFUNC( nfAbsolute );
 	DEF_NATFUNC( nfCompMultiply );
 	DEF_NATFUNC( nfCompDivide );
 	DEF_NATFUNC( nfCompSelect );

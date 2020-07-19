@@ -84,11 +84,11 @@ FXDialogBox( owner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	
 	
 	
-	// informations
+	// information
 	pTabPanels = new FXTabBook( frameGroup, NULL, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	if( ! pTabPanels ) DETHROW( deeOutOfMemory );
 	
-	new FXTabItem( pTabPanels, "Informations", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Information", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
 	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	if( ! frameTab ) DETHROW( deeOutOfMemory );

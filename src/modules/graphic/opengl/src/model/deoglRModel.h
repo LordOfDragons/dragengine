@@ -136,7 +136,7 @@ public:
 	/** \brief Prepare octrees if not existing. */
 	void PrepareOctrees();
 	
-	/** \brief Print debug informations. */
+	/** \brief Print debug information. */
 	void PrintDebugInfo();
 	
 	/** \brief Debug VCOptimize. */

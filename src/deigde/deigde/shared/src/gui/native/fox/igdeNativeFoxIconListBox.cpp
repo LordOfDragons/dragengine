@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -29,6 +31,7 @@
 #include "../../igdeIconListBox.h"
 #include "../../igdeIconListBox.h"
 #include "../../igdeCommonDialogs.h"
+#include "../../igdeContainer.h"
 #include "../../model/igdeListItem.h"
 #include "../../model/igdeListHeader.h"
 #include "../../resources/igdeIcon.h"
@@ -192,6 +195,31 @@ pResizer( NULL )
 igdeNativeFoxIconListBox::~igdeNativeFoxIconListBox(){
 }
 
+igdeNativeFoxIconListBox *igdeNativeFoxIconListBox::CreateNativeWidget( igdeIconListBox &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxIconListBox( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxIconListBox::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxIconListBox::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -313,6 +341,14 @@ void igdeNativeFoxIconListBox::UpdateEnabled(){
 
 void igdeNativeFoxIconListBox::Focus(){
 	pListBox->setFocus();
+}
+
+void igdeNativeFoxIconListBox::MakeItemVisible( int index ){
+	pListBox->makeItemVisible( index );
+}
+
+void igdeNativeFoxIconListBox::RemoveAllItems(){
+	pListBox->clearItems();
 }
 
 
@@ -513,3 +549,5 @@ long igdeNativeFoxIconListBox::onResizerDrag( FXObject*, FXSelector, void *data 
 	recalc();
 	return 0;
 }
+
+#endif

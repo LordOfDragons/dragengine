@@ -64,17 +64,23 @@ class CActionIfElse extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		var int i, count = reader.readUShort()
-		this.pCases = Array.new()
-		for i = 0 to count
-			this.pCases.add( CActionIfElseCase.readFromFile( env, reader ) )
-		end
-		
-		count = reader.readUShort()
-		this.pElseActions = Array.new()
-		for i = 0 to count
-			this.pElseActions.add( env.readObject( reader ) )
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+		select reader.readByte() // version
+		case 0
+			var int i, count = reader.readUShort()
+			this.pCases = Array.new()
+			for i = 0 to count
+				this.pCases.add( CActionIfElseCase.readFromFile( env, reader ) )
+			end
+			
+			count = reader.readUShort()
+			this.pElseActions = Array.new()
+			for i = 0 to count
+				this.pElseActions.add( env.readObject( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
@@ -158,6 +164,10 @@ class CActionIfElse extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
+		
 		writer.writeUShort( this.pCases.getCount() )
 		this.pCases.forEach( block CActionIfElseCase each
 			each.writeToFile( env, writer )

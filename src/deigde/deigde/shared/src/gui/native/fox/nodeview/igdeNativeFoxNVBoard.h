@@ -70,6 +70,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVBoard();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxNVBoard* CreateNativeWidget( igdeNVBoard &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -99,6 +108,9 @@ public:
 	
 	/** \brief Update offset from owner. */
 	void UpdateOffset();
+	
+	/** \brief Get Size. */
+	virtual decPoint GetSize();
 	
 	
 	
@@ -170,5 +182,7 @@ public:
 		const decVector2 &bp3, const decVector2 &bp4 ) const;
 	/*@}*/
 };
+
+typedef igdeNativeFoxNVBoard igdeNativeNVBoard;
 
 #endif

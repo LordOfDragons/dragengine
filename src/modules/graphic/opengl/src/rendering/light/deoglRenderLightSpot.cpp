@@ -151,7 +151,7 @@ enum eSPBoxBoundary{
 == NOTES ==
 ===========
 
-specular hilights should be hidden by shadows but otherwise they can be seen
+specular highlights should be hidden by shadows but otherwise they can be seen
 outside the light cone as they are reflections of the shining surface which
 with spot lights is usually a kind of flat circular surface. this can though
 not be implemented using 2-dimensional shadow maps as they can not cover up
@@ -160,7 +160,7 @@ shadow casting is important. one solution would be the allow shadows up to
 180 degree and cutting it off. this though neglects the shadow map and allows
 specular highlights in hidden places.
 
-currently the specular hilights are dimmed using the shadow map and cancelled
+currently the specular highlights are dimmed using the shadow map and cancelled
 outside the light cone. fastest solution without too much inaccuracy.
 */
 
@@ -692,7 +692,7 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 				deoglTexture *&depth = transparentStaticShadow ? texTranspDepth2 : texTranspDepth1;
 				deoglTexture *&color = transparentStaticShadow ? texTranspColor2 : texTranspColor1;
 				
-				if( sctransp.GetDynamicShadowCubeMap() ){
+				if( sctransp.GetDynamicShadowMap() ){
 					depth = sctransp.GetDynamicShadowMap()->GetTexture();
 					color = sctransp.GetDynamicColorMap()->GetTexture();
 					

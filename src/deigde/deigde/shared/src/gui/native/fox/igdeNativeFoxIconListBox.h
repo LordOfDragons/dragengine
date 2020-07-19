@@ -68,6 +68,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxIconListBox();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxIconListBox* CreateNativeWidget( igdeIconListBox &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -94,6 +103,8 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEnabled();
 	virtual void Focus();
+	virtual void MakeItemVisible( int index );
+	virtual void RemoveAllItems();
 	
 	static int IconListBoxFlagsBorder( const igdeIconListBox &owner );
 	static int IconListBoxFlags( const igdeIconListBox &owner );
@@ -124,5 +135,7 @@ public:
 	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxIconListBox igdeNativeIconListBox;
 
 #endif

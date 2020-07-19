@@ -9,6 +9,14 @@ precision highp int;
 //layout( quads, equal_spacing, cw ) in;
 layout( triangles, equal_spacing, ccw ) in;
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Uniform Parameters
@@ -41,7 +49,7 @@ in vec2 vTESTCColor[];
 #ifdef TEXTURE_REFLECTIVITY
 	in vec2 vTESTCReflectivity[];
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	in vec2 vTESTCEmissivity[];
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -57,7 +65,7 @@ in vec3 vTESNormal[];
 	in vec3 vTESBitangent[];
 #endif
 
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	in vec3 vTESReflectDir[];
 #endif
 
@@ -85,7 +93,7 @@ in vec3 vTESNormal[];
 		out vec2 vGSTCReflectivity;
 		#define vTCReflectivity vGSTCReflectivity
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		out vec2 vGSTCEmissivity;
 		#define vTCEmissivity vGSTCEmissivity
 	#endif
@@ -107,7 +115,7 @@ in vec3 vTESNormal[];
 		#define vBitangent vGSBitangent
 	#endif
 	
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		out vec3 vGSReflectDir;
 		#define vReflectDir vGSReflectDir
 	#endif
@@ -129,7 +137,7 @@ in vec3 vTESNormal[];
 	#ifdef TEXTURE_REFLECTIVITY
 		out vec2 vTCReflectivity;
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		out vec2 vTCEmissivity;
 	#endif
 	#ifdef TEXTURE_REFRACTION_DISTORT
@@ -145,7 +153,7 @@ in vec3 vTESNormal[];
 		out vec3 vBitangent;
 	#endif
 	
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		out vec3 vReflectDir;
 	#endif
 	
@@ -171,7 +179,7 @@ void main(){
 	#ifdef TEXTURE_REFLECTIVITY
 		TESS_VAR_LINEAR_TRI( vTCReflectivity, vTESTCReflectivity );
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		TESS_VAR_LINEAR_TRI( vTCEmissivity, vTESTCEmissivity );
 	#endif
 	#ifdef TEXTURE_REFRACTION_DISTORT
@@ -187,7 +195,7 @@ void main(){
 		TESS_VAR_LINEAR_TRI( vBitangent, vTESBitangent );
 	#endif
 	
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		TESS_VAR_LINEAR_TRI( vReflectDir, vTESReflectDir );
 	#endif
 	
@@ -213,7 +221,7 @@ void main(){
 		gl_Position = pMatrixVP * gl_Position;
 	#endif
 	
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		#ifndef BILLBOARD
 			vReflectDir = pMatrixV * vec4( vReflectDir, 1.0 );
 		#endif

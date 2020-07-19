@@ -187,36 +187,44 @@ class ParameterTableEntry
 	
 	/** \brief Read parameter table entry from file. */
 	static public func ParameterTableEntry readFromFile( PersistencyEnvironment env, FileReader reader )
-		var ParameterTableEntry entry = ParameterTableEntry.new( reader.readString8() )
-		
-		select reader.readByte()
+		select reader.readByte() // version
 		case 0
-			// value is null
+			var ParameterTableEntry entry = ParameterTableEntry.new( reader.readString8() )
 			
-		case 1
-			entry.pValue = env.readBool( reader )
+			select reader.readByte()
+			case 0
+				// value is null
+				
+			case 1
+				entry.pValue = env.readBool( reader )
+				
+			case 2
+				entry.pValue = reader.readInt()
+				
+			case 3
+				entry.pValue = reader.readFloat()
+				
+			case 4
+				entry.pValue = reader.readString16()
+				
+			case 5
+				entry.pValue = env.readObject( reader )
+				
+			else
+				throw EInvalidParam.new()
+			end
 			
-		case 2
-			entry.pValue = reader.readInt()
-			
-		case 3
-			entry.pValue = reader.readFloat()
-			
-		case 4
-			entry.pValue = reader.readString16()
-			
-		case 5
-			entry.pValue = env.readObject( reader )
+			return entry
 			
 		else
-			throw EInvalidParam.new()
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		return entry
 	end
 	
 	/** \brief Write parameter table entry target to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString8( this.pName )
 		
 		if this.pValue == null

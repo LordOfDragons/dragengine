@@ -20,7 +20,7 @@
  */
 
 
-// Texture Format informations
+// Texture Format information
 ////////////////////////////////
 
 enum eTestTextureFormats{

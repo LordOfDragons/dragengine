@@ -77,6 +77,7 @@ private:
 		dsClass *clsQuaternion;
 		dsClass *clsShapeList;
 		dsClass *clsColliderConstraintDof;
+		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -92,12 +93,12 @@ private:
 	DEF_NATFUNC( nfSetCentralMassPoint );
 	DEF_NATFUNC( nfSetModelCollision );
 	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfAddBoneShapeProperty );
+	DEF_NATFUNC( nfSetBoneShapeProperties );
 	DEF_NATFUNC( nfAddBoneConstraint );
 	DEF_NATFUNC( nfSetBoneConstraintDof );
 	DEF_NATFUNC( nfSetRootBone );
 	DEF_NATFUNC( nfSetShapes );
-	DEF_NATFUNC( nfAddShapeProperty );
+	DEF_NATFUNC( nfSetShapeProperties );
 #undef DEF_NATFUNC
 };
 

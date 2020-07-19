@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCAIfElseRemove.h"
+#include "../ceUActionHelpers.h"
 #include "../../../conversation/action/ceCAIfElse.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/action/ceCAIfElseCase.h"
@@ -108,15 +109,22 @@ void ceUCAIfElseRemove::Undo(){
 	}
 	
 	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->SetActive( pAction, NULL );
 }
 
 void ceUCAIfElseRemove::Redo(){
+	ceConversationAction *activateAction = NULL;
+	
 	if( pCase ){
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pCase->GetActions(), pAction );
 		pCase->GetActions().Remove( pAction );
 		
 	}else{
+		activateAction = ceUActionHelpers::ActivateActionAfterRemove( pIfElse->GetElseActions(), pAction );
 		pIfElse->GetElseActions().Remove( pAction );
 	}
 	
 	pTopic->NotifyActionStructureChanged( pIfElse );
+	
+	pTopic->SetActive( activateAction ? activateAction : pIfElse, NULL );
 }

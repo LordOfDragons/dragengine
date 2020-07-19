@@ -56,6 +56,18 @@ pin Dragengine.Utils
  * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
  */
 class ECBehaviorActorAIAction extends DefaultECBehavior
+	/** \brief Factory for creating action. */
+	interface ActionFactory
+		/** \brief Create action for behavior instance. */
+		func BaseActorAction createAction( Instance instance )
+	end
+	
+	/** \brief Factory for creating AI. */
+	interface AIFactory
+		/** \brief Create AI for behavior instance. */
+		func BaseActorAI createAI( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Collider AI listener forwarding to Action/AI. */
@@ -202,6 +214,9 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			if this.pPlayerControllable != null
 				this.pPlayerControllable.addListener( PlayerTakeControlListener.new( this ) )
 			end
+			
+			this.setAction( this.pECBehavior.getActionFactory().createAction( this ) )
+			this.setAI( this.pECBehavior.getAIFactory().createAI( this ) )
 		end
 		
 		
@@ -344,12 +359,20 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
-			this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+			select reader.readByte() // version
+			case 0
+				this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
+				this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeObjectOrNull( writer, this.pAI )
 			env.writeObjectOrNull( writer, this.pAction )
 		end
@@ -360,6 +383,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	private var ECBehaviorColliderAI pColliderAI
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECBehaviorPlayerControllable pPlayerControllable
+	private var ActionFactory pActionFactory
+	private var AIFactory pAIFactory
 	
 	
 	
@@ -368,6 +393,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em colliderAI, \em conversationActor,
 	 * \em playerControllable.
+	 * 
+	 * The default Action and AI factory are BAAFirstPerson and BAAIBehaviorTree.
 	 */
 	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable ) \
@@ -380,6 +407,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		this.pColliderAI = colliderAI
 		this.pConversationActor = conversationActor
 		this.pPlayerControllable = playerControllable
+		this.pActionFactory = BAAFirstPerson.Factory.new()
+		this.pAIFactory = BAAIBehaviorTree.Factory.new()
 		
 		eclass.addBehavior( this )
 	end
@@ -389,6 +418,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		this.pColliderAI = null
 		this.pConversationActor = null
 		this.pPlayerControllable = null
+		this.pActionFactory = null
+		this.pAIFactory = null
 		super.dispose()
 	end
 	
@@ -426,6 +457,32 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	/** \brief Set player controllable behavior or null. */
 	public func void setPlayerControllable( ECBehaviorPlayerControllable playerControllable )
 		this.pPlayerControllable = playerControllable
+	end
+	
+	/** \brief Action factory. */
+	public func ActionFactory getActionFactory()
+		return this.pActionFactory
+	end
+	
+	/** \brief Set action factory. */
+	public func void setActionFactory( ActionFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pActionFactory = factory
+	end
+	
+	/** \brief AI factory. */
+	public func AIFactory getAIFactory()
+		return this.pAIFactory
+	end
+	
+	/** \brief Set AI factory. */
+	public func void setAIFactory( AIFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pAIFactory = factory
 	end
 	
 	

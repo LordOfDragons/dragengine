@@ -64,6 +64,9 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
+	
+protected:
+	ceConversationCondition *ActivateConditionAfterRemove() const;
 };
 
 #endif

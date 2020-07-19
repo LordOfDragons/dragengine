@@ -31,6 +31,7 @@
 #include "../deglWindowMain.h"
 #include "../deglUninstall.h"
 #include "../../deglLauncher.h"
+#include "../../config/deglConfiguration.h"
 #include "../../engine/deglEngine.h"
 #include "../../engine/deglEngineInstance.h"
 #include "../../game/deglGame.h"
@@ -40,6 +41,17 @@
 #include "../../game/profile/deglGameProfile.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/filesystem/deVFSContainerReference.h>
+
+#ifdef OS_UNIX
+#include <errno.h>
+#endif
+
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
 
 
 
@@ -65,6 +77,8 @@ FXDEFMAP( deglPanelGames ) deglPanelGamesMap[] = {
 	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_KILL, deglPanelGames::updatePUGameKill ),
 	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::onPUGameUninstall ),
 	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_UNINSTALL, deglPanelGames::updatePUGameUninstall ),
+	FXMAPFUNC( SEL_COMMAND, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::onPUGameShowLogs ),
+	FXMAPFUNC( SEL_UPDATE, deglPanelGames::ID_PU_GAME_SHOWLOGS, deglPanelGames::updatePUGameShowLogs ),
 };
 
 FXDEFMAP( deglPanelGames::ExtIconList ) deglPanelGamesExtIconListMap[] = {
@@ -287,6 +301,8 @@ long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *data ){
 			}
 			
 			menuCommand = new FXMenuCommand( popup, "Kill Game", NULL, this, ID_PU_GAME_KILL );
+			
+			menuCommand = new FXMenuCommand( popup, "Show Logs", NULL, this, ID_PU_GAME_SHOWLOGS );
 			
 			new FXSeparator( popup );
 			menuCommand = new FXMenuCommand( popup, "Uninstall Game", NULL, this, ID_PU_GAME_UNINSTALL );
@@ -625,4 +641,47 @@ long deglPanelGames::updatePUGameUninstall( FXObject *sender, FXSelector, void* 
 	}
 	sender->tryHandle( sender, FXSEL( SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE ), NULL );
 	return 1;
+}
+
+long deglPanelGames::onPUGameShowLogs( FXObject*, FXSelector, void* ){
+	deglGame * const game = GetSelectedGame();
+	if( ! game ){
+		return 1;
+	}
+	
+	decPath path;
+	path.SetFromNative( pWindowMain->GetLauncher()->GetConfiguration()->GetPathLogs() );
+	path.AddComponent( "games" );
+	path.AddComponent( game->GetIdentifier().ToHexString( false ) );
+	
+	deVFSContainerReference container;
+	container.TakeOver( new deVFSDiskDirectory( path ) );
+	if( ! container->ExistsFile( decPath::CreatePathUnix( "/logs" ) ) ){
+		FXMessageBox::information( this, MBOX_OK, "Show Logs",
+			"There are no logs for this game. Logs will be present after running the game" );
+		return 1;
+	}
+	
+	path.AddComponent( "logs" );
+	
+	#ifdef OS_W32
+	wchar_t widePath[ MAX_PATH ];
+	deOSWindows::Utf8ToWide( path.GetPathNative(), widePath, MAX_PATH );
+	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
+		
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, path.GetPathNative().GetString(), NULL );
+		printf( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
+	return 1;
+}
+
+long deglPanelGames::updatePUGameShowLogs( FXObject *sender, FXSelector, void* ){
+	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, ID_ENABLE ), NULL );
 }

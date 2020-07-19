@@ -60,13 +60,9 @@
 
 reConfiguration::reConfiguration( reWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-
-pGridSize( 0.01f ),
-pSnapToGrid( true ),
-pRotSnap( 5.0f ),
-pSensitivity( 0.1f ),
-
-pPreventSaving( false ){
+pPreventSaving( false )
+{
+	pReset();
 }
 
 reConfiguration::~reConfiguration(){
@@ -100,16 +96,20 @@ void reConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void reConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/rigEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/rigEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		reConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -140,4 +140,16 @@ void reConfiguration::SaveConfiguration(){
 	}catch( const deException &e ){
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void reConfiguration::pReset(){
+	pGridSize = 0.01f;
+	pSnapToGrid = true;
+	pRotSnap = 5.0f;
+	pSensitivity = 0.1f;
 }

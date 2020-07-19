@@ -189,15 +189,23 @@ class ConversationHeadLookAtPlayback extends ConversationLookAtPlayback
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 		super.readFromFile( env, reader )
 		
-		this.pCapturedHorizontal = reader.readFloat()
-		this.pCapturedVertical = reader.readFloat()
-		this.pCaptureState = env.readBool( reader )
-		this.pRotatorMatrix = DMatrix.readFromFile( reader )
+		select reader.readByte() // version
+		case 0
+			this.pCapturedHorizontal = reader.readFloat()
+			this.pCapturedVertical = reader.readFloat()
+			this.pCaptureState = env.readBool( reader )
+			this.pRotatorMatrix = DMatrix.readFromFile( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write element to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 		super.writeToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
 		
 		writer.writeFloat( this.pCapturedHorizontal )
 		writer.writeFloat( this.pCapturedVertical )

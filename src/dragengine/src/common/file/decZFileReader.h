@@ -66,11 +66,32 @@ public:
 	 * \brief Create z-compressed file reader object for another file reader.
 	 * 
 	 * The file reader is taken over and deleted once the z-reader is deleted.
-	 * The file pointer has to be set to the starting position of the z-compressed data.
+	 * The file pointer has to be set to the starting position of the compressed data.
+	 * 
+	 * \note To ensure future feature compatibility this class reads private data
+	 *       stored in front of the actual compress data. To read a pure z compressed
+	 *       stream use \ref decZFileReader(decBaseFileReader*,bool,int) .
 	 * 
 	 * \throws deeInvalidParam \em reader is NULL.
 	 */
 	decZFileReader( decBaseFileReader *reader );
+	
+	/**
+	 * \brief Create z-compressed file reader object for another file reader.
+	 * 
+	 * The file reader is taken over and deleted once the z-reader is deleted.
+	 * The file pointer has to be set to the starting position of the compressed data.
+	 * 
+	 * \param[in] pureMode If true does not read private compression data. Use this mode
+	 *                     if you want to read pure z compressed data. If false behaves
+	 *                     identical to \ref decZFileReader(decBaseFileReader*) .
+	 * \param[in] pureLength If \em pureMode is true defines the length of the compressed data.
+	 *                       The caller is responsible to obtain the correct length.
+	 *                       
+	 * 
+	 * \throws deeInvalidParam \em reader is NULL.
+	 */
+	decZFileReader( decBaseFileReader *reader, bool pureMode, int pureLength );
 	
 protected:
 	/**
@@ -120,12 +141,9 @@ public:
 	
 	
 private:
-	/** \brief Set content position ensuring the content is decompressed up to this point. */
+	void pInit( decBaseFileReader *reader, bool pureMode, int pureLength );
 	void pSetContentPosition( int position );
-	
-	/** \brief Decompress the entire image. Required for seek-end to work. */
 	void pDecompressAll();
-	/*@}*/
 };
 
 #endif

@@ -86,6 +86,12 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements SoundLevelMeterListener
 		private var ECBehaviorHearSounds pECBehavior
@@ -135,6 +141,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			end
 			
 			this.pSoundLevelMeter.setListener( this )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/**
@@ -352,11 +360,19 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setListening( env.readBool( reader ) )
+			select reader.readByte() // version
+			case 0
+				this.setListening( env.readBool( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeBool( writer, this.getListening() )
 		end
 	end
@@ -368,6 +384,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	private var ECPFloat pAudibleDistance
 	private var ECPFloat pVolumeThreshold
 	private var LayerMask pLayerMask
+	private var Array pListenerFactories
 	
 	
 	
@@ -387,6 +404,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		end
 		
 		this.pCollider = collider
+		this.pListenerFactories = Array.new()
 		
 		this.pAudibleDistance = ECPFloat.new( prefix + "audibleDistance", 100, 1 )
 		eclass.addProperty( this.pAudibleDistance )
@@ -402,6 +420,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		this.pCollider = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -435,6 +454,26 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	/** \brief Set layer mask. */
 	public func void setLayerMask( LayerMask layerMask )
 		this.pLayerMask = layerMask
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

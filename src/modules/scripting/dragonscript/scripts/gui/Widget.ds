@@ -37,10 +37,7 @@ pin Dragengine.Utils
 class Widget
 	/** \brief Repeat key event timer. */
 	class RepeatKeyEventTimer extends Timer
-		/** \brief Widget to send event to. */
 		private var Widget pWidget
-		
-		/** \brief Key event to repeat. */
 		private var KeyEvent pEvent
 		
 		/** \brief Create time. */
@@ -1247,7 +1244,9 @@ class Widget
 	public func void sendEvent( Event event )
 		select event.getIdentifier()
 		case KeyEvent.idKeyPressed
-			this.startRepeatKey( event cast KeyEvent )
+			if this.pHasFocus and event.getSource() == this
+				this.startRepeatKey( event cast KeyEvent )
+			end
 			this.onKeyPress( event cast KeyEvent )
 			
 		case KeyEvent.idKeyReleased

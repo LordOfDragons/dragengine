@@ -60,6 +60,12 @@ class ECBehaviorInventory extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorInventory pECBehavior
@@ -101,6 +107,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -267,26 +274,38 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var int i, count = reader.readUShort()
-			if count > 0
-				this.pElementResolver = ElementResolver.new()
-				for i = 0 to count
-					this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
-						this.add( behavior )
-					end )
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readUShort()
+				if count > 0
+					this.pElementResolver = ElementResolver.new()
+					for i = 0 to count
+						this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
+							this.add( behavior )
+						end )
+					end
+					this.setRequiresEnterFrame( true )
 				end
-				this.setRequiresEnterFrame( true )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeUShort( this.pStashables.getCount() )
 			this.pStashables.forEach( block ECBehaviorStashable.Instance each
 				ElementResolver.writeToFileBehavior( writer, each )
 			end )
 		end
 	end
+	
+	
+	
+	private var Array pListenerFactories
 	
 	
 	
@@ -300,7 +319,15 @@ class ECBehaviorInventory extends DefaultECBehavior
 	end
 	
 	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
+		this.pListenerFactories = Array.new()
+		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -308,6 +335,28 @@ class ECBehaviorInventory extends DefaultECBehavior
 	/** \brief Get instance in element from owner element class. */
 	public func Instance instance( BehaviorElement element )
 		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

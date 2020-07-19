@@ -42,7 +42,7 @@ class meWorld;
  *
  * Provides an environment for evaluating height terrain vegetation
  * rules. Such an environment composes of the height terrain sector
- * in which the rules are evaluated as well as informations about
+ * in which the rules are evaluated as well as information about
  * the instance to be evaluated. The position and normal are the
  * position and normal of the instance to be evaluated. The HT
  * coordinates are the coordinates of the instance on the height

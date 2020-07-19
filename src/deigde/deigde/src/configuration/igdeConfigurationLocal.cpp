@@ -27,6 +27,8 @@
 #include "igdeConfigurationLocal.h"
 #include "igdeConfigurationLocalXML.h"
 #include "../gui/igdeWindowMain.h"
+#include "../module/igdeEditorModuleDefinition.h"
+#include "../module/igdeEditorModuleManager.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -75,16 +77,22 @@ void igdeConfigurationLocal::SetPreventSaving( bool preventSaving ){
 }
 
 void igdeConfigurationLocal::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/igde.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pRecentEditorFiles.RemoveAllFiles();
+		pWindowMain.GetModuleManager().ResetRecentUsedPosition();
+		pWindowMain.GetModuleManager().ActivateProjectManager();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/igde.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		igdeConfigurationLocalXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -115,4 +123,12 @@ void igdeConfigurationLocal::SaveConfiguration(){
 	}catch( const deException &e ){
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void igdeConfigurationLocal::pReset(){
 }

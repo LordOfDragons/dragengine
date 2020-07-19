@@ -13,13 +13,18 @@ if envIGDELib['OSPosix']:
 	envIGDELib.Append(CXXFLAGS = ['-DHAS_LIB_DL'])
 
 # write the configuration file required by a few source files
-configFilePath = '%s/shared/src/deigde_configuration.h' % str(Dir('.').srcnode())
-configFileDefines = {}
-configFileDefines['OS_UNIX'] = envIGDELib['OSPosix']
-configFileDefines['OS_W32'] = envIGDELib['OSWindows']
+def buildWriteConfig(source, target, env):
+	configFilePath = target[0].abspath
+	configFileDefines = {}
+	configFileDefines['OS_UNIX'] = env['OSPosix']
+	configFileDefines['OS_W32'] = env['OSWindows']
+	
+	if WriteConfigFile(configFilePath, configFileDefines, env):
+		Exit('Writing configuration file failed')
 
-if WriteConfigFile(configFilePath, configFileDefines, envIGDELib):
-	Exit('Writing configuration file failed')
+targetConfig = envIGDELib.Command(
+	envIGDELib.File('shared/src/deigde_configuration.h').srcnode(),
+	'SConscript', buildWriteConfig)
 
 # fetch values in expanded form for later use
 pathBin = envIGDELib.subst(envIGDELib['path_igde_bin'])
@@ -31,6 +36,12 @@ pathShare = envIGDELib.subst(envIGDELib['path_igde_share'])
 
 if envIGDELib['OSWindows']:
 	pathSysLib = envIGDELib.subst(envIGDELib['systemroot'])
+
+versionString = '1.1'
+if envIGDELib['force_version']:
+	versionString = envModule['force_version']
+
+libVersionString = '{}.0'.format(versionString)
 
 # update the compile flags
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
@@ -76,7 +87,8 @@ sharedHeaders = []
 globFiles(envIGDELib, 'shared/src', '*.cpp', sharedSources)
 globFiles(envIGDELib, 'shared/src', '*.h', sharedHeaders)
 
-sharedHeaders = [h for h in sharedHeaders if not 'native' in h.split(os.path.sep)]
+sharedHeaders = [envIGDELib.File(h).srcnode() for h in sharedHeaders if not 'native' in h.split(os.path.sep)]
+sharedHeaders.extend(targetConfig)
 
 objects = [envIGDELib.SharedObject(s) for s in sharedSources]
 
@@ -102,50 +114,62 @@ else:
 	print(envIGDELib.subst('$LINKFLAGS'), libsLib)
 """
 appendLibrary(envIGDELib, parent_targets['dragengine'], libsLib)
-appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
+
+if envIGDELib['igde_toolkit'] == 'fox':
+	appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
 
 if envIGDELib['OSWindows']:
 	libsLib.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32'])
 elif envIGDELib['OSBeOS']:
 	libsLib.append(['root', 'be'])
 
+if envIGDELib['igde_toolkit'] == 'fox':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_FOX=1'])
+elif envIGDELib['igde_toolkit'] == 'null':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_NULL=1'])
+else:
+	raise Exception('Unsupported igde_toolkit value "{}"'.format(envIGDELib['igde_toolkit']))
+
 envIGDELib.Append(CPPFLAGS = envIGDELib['SANITIZE_FLAGS'])
 envIGDELib.Append(LINKFLAGS = envIGDELib['SANITIZE_FLAGS'])
+
+if envIGDELib['OSPosix']:
+	envIGDELib.Replace(SHLIBVERSION = libVersionString)
 
 buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
 copySharedHeaders = []
+refDir = envIGDELib.Dir('shared/src').srcnode()
 for h in sharedHeaders:
 	copySharedHeaders.append(envIGDELib.Command(
-		os.path.join('include', 'deigde', *(h.split(os.sep)[2:])),
+		os.path.join('include', 'deigde', refDir.rel_path(h)),
 		h, Copy('$TARGET', '$SOURCE')))
 envIGDELib.Depends(buildLibrary, copySharedHeaders)
 
-installLib = []
-archiveLibDevelop = {}
+installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in sharedHeaders]
+
+installLibRuntime = []
+
+archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in sharedHeaders}
 archiveLib = {}
 
-for h in sharedHeaders:
-	filename = os.path.join(pathInclude, *(h.split(os.sep)[2:]))
-	installLib.append(envIGDELib.InstallAs(filename, h))
-	archiveLibDevelop[filename] = envIGDELib.File(h).srcnode()
-
 if envIGDELib['OSPosix']:
-	lnamebase = buildLibrary[0].name
-	lname = os.path.join(pathLib, '{}.1.0.0'.format(lnamebase))
-	installLib.append(envIGDELib.InstallAs(lname, lnamebase))
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, '{}.1'.format(lnamebase)),
-		lname, Action(SymLinkLibrary)))
-	installLib.append(envIGDELib.Command(os.path.join(pathLib, lnamebase),
-		lname, Action(SymLinkLibrary)))
+	l = buildLibrary[0]
+	lname = l.name
+	installLibRuntime.append(envIGDELib.InstallVersionedLib(pathLib, l))
+	archiveLib['{}/{}'.format(pathLib, l.name)] = l
 	
-	archiveLib[os.path.join(pathLib, lnamebase)] = buildLibrary[0]
+	lname = '.'.join(lname.split('.')[0:-2])
+	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
+	
+	lname = '.'.join(lname.split('.')[0:-1])
+	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 elif envIGDELib['OSWindows']:
-	installLib.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))
-	installLib.append(envIGDELib.Install(pathLib, 'deigdeshared.lib'))
-	installLib.append(envIGDELib.Install(pathLib, 'deigdeshared.def'))
+	installLibRuntime.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))
+	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.lib'))
+	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.def'))
 	
 	archiveLib[os.path.join(pathBin, 'deigdeshared.dll')] = envIGDELib.File('deigdeshared.dll')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.lib')] = envIGDELib.File('deigdeshared.lib')
@@ -157,17 +181,20 @@ globFiles(envIGDEApp, 'shared/data', '*', dataFiles)
 for f in dataFiles:
 	path = f.split('/')
 	filename = os.path.join(pathShare, *path[2:])
-	installLib.append(envIGDELib.InstallAs(filename, f))
+	installLibRuntime.append(envIGDELib.InstallAs(filename, f))
 	archiveLib[filename] = envIGDELib.File(f).srcnode()
 
-for l in reversed(parent_targets['lib_fox']['runtimelibs']):
-	key = '{}/{}'.format(foxRuntimePath, l)
-	if not key in parent_targets['lib_fox']['globalInstallTracker']:
-		parent_targets['lib_fox']['globalInstallTracker'].append(key)
-		envIGDELib.Depends(installLib, envIGDELib.Install(foxRuntimePath, l))
-		archiveLib[os.path.join(foxRuntimePath, l.name)] = l
+if envIGDELib['igde_toolkit'] == 'fox':
+	for l in reversed(parent_targets['lib_fox']['runtimelibs']):
+		key = '{}/{}'.format(foxRuntimePath, l)
+		if not key in parent_targets['lib_fox']['globalInstallTracker']:
+			parent_targets['lib_fox']['globalInstallTracker'].append(key)
+			envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
+			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
 
-targetInstallLib = envIGDELib.Alias('deigde_shared', installLib)
+targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
+targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
+targetInstallLib = envIGDELib.Alias('deigde_shared', [targetInstallLibRuntime, targetInstallLibDevelop])
 
 cpppath = [envIGDELib.Dir('include')]
 cpppath.extend(parent_targets['dragengine']['cpppath'])
@@ -193,6 +220,8 @@ parent_targets['deigde_shared'] = {
 	'libs' : linklibs,
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
+	'install-runtime' : targetInstallLibRuntime,
+	'install-igde-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
@@ -217,7 +246,9 @@ libsApp = []
 
 appendLibrary(envIGDEApp, parent_targets['deigde_shared'], libsApp)
 #appendLibrary(envIGDEApp, parent_targets['dragengine'], libsApp)
-appendLibrary(envIGDEApp, parent_targets['lib_fox'], libsApp)
+
+if envIGDELib['igde_toolkit'] == 'fox':
+	appendLibrary(envIGDEApp, parent_targets['lib_fox'], libsApp)
 
 libsApp.extend(parent_targets['dragengine']['binlibs']) # ?????
 
@@ -241,7 +272,7 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
-envIGDEApp.Depends(installApp, targetInstallLib)
+envIGDEApp.Depends(installApp, targetInstallLibRuntime)
 
 
 if envIGDEApp['OSPosix']:
@@ -274,6 +305,11 @@ if envIGDEApp['OSPosix']:
 	source = 'data/mimetypes.xml'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'man', 'man1', 'deigde.1')
+	source = 'man/deigde.1'
+	installApp.append(envIGDEApp.InstallAs(target, source))
+	archiveApp[target] = envIGDEApp.File(source).srcnode()
 
 
 targetInstallApp = envIGDEApp.Alias('deigde', installApp)
@@ -296,6 +332,7 @@ parent_targets['deigde'] = {
 	'name' : 'Drag[en]gine IGDE',
 	'build' : targetBuildApp,
 	'install' : targetInstallApp,
+	'install-igde-runtime' : targetInstallApp,
 	'archive-igde' : archiveApp,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

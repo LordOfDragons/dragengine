@@ -95,6 +95,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/**
 	 * \brief Conversation condition.
 	 * 
@@ -405,12 +411,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			this.pEnableLimitTurnAngle = false
 			this.pLimitTurnAngle = 89
 			this.pListeners = Array.new()
-			this.pElementResolver = ElementResolver.new()
 			
 			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
 			this.pNavigator = ecbehavior.getNavigator().instance( element )
 			
-			this.setRequiresEnterFrame( true )
 			this.setRequiresThink( true )
 		end
 		
@@ -449,6 +453,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				this.pConversationActor.addCondition( "actorMover", ConvoCondition.new( this ) )
 				this.pConversationActor.addCommand( "actorMover", ConvoCommand.new( this ) )
 			end
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -1118,7 +1124,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			this.pElementResolver.resolve( this.getElement().getGameWorld() )
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
 		end
 		
 		/** \brief Think about what to do for the next frame update. */
@@ -1140,32 +1149,40 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
-			this.pPause = flags.getAt( 0 )
-			this.pEnableLimitTurnAngle = flags.getAt( 1 )
-			
-			if flags.getAt( 2 )
-				this.pGoalPosition = DVector.readFromFile( reader )
-			end
-			this.pGoalDistance = reader.readFloat()
-			
-			if flags.getAt( 4 )
-				this.pPath = NavigatorPath.readFromFile( reader )
-			end
-			this.pNextPathPoint = reader.readUShort()
-			
-			if flags.getAt( 3 )
-				this.pNextPlaneNormal = DVector.readFromFile( reader )
-			end
-			this.pRemainingDistance = reader.readFloat()
-			
-			this.pLimitTurnAngle = reader.readFloat()
-			this.pSpeed = reader.readFloat()
-			
-			if flags.getAt( 5 )
-				this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
-					this.pRidable = behavior
-				end )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 6, reader )
+				this.pPause = flags.getAt( 0 )
+				this.pEnableLimitTurnAngle = flags.getAt( 1 )
+				
+				if flags.getAt( 2 )
+					this.pGoalPosition = DVector.readFromFile( reader )
+				end
+				this.pGoalDistance = reader.readFloat()
+				
+				if flags.getAt( 4 )
+					this.pPath = NavigatorPath.readFromFile( reader )
+				end
+				this.pNextPathPoint = reader.readUShort()
+				
+				if flags.getAt( 3 )
+					this.pNextPlaneNormal = DVector.readFromFile( reader )
+				end
+				this.pRemainingDistance = reader.readFloat()
+				
+				this.pLimitTurnAngle = reader.readFloat()
+				this.pSpeed = reader.readFloat()
+				
+				if flags.getAt( 5 )
+					this.pElementResolver = ElementResolver.new()
+					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
+						this.pRidable = behavior
+					end )
+					this.setRequiresEnterFrame( true )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
@@ -1177,6 +1194,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * responsible to restore the relative collider. This has to be done any.
 		 */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 6 )
 			flags.setAt( 0, this.pPause )
 			flags.setAt( 1, this.pEnableLimitTurnAngle )
@@ -1205,7 +1224,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			writer.writeFloat( this.pSpeed )
 			
 			if this.pRidable != null
-				this.pElementResolver.writeToFileBehavior( writer, this.pRidable )
+				ElementResolver.writeToFileBehavior( writer, this.pRidable )
 			end
 		end
 	end
@@ -1217,6 +1236,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	private var ECBehaviorRideOn pRideOn
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECPFloat pSpeed
+	private var Array pListenerFactories
 	
 	
 	
@@ -1242,6 +1262,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		this.pLocomotion = locomotion
 		this.pNavigator = navigator
 		this.pRideOn = rideOn
+		this.pListenerFactories = Array.new()
 		
 		this.pSpeed = ECPFloat.new( prefix + "speed", 1.25, 0 )
 		eclass.addProperty( this.pSpeed )
@@ -1255,6 +1276,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		this.pNavigator = null
 		this.pLocomotion = null
 		this.pConversationActor = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -1292,6 +1314,26 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Movement speed. */
 	public func ECPFloat getSpeed()
 		return this.pSpeed
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

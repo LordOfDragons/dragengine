@@ -58,10 +58,16 @@ struct sInstanceParameters{
 	vec2 pSPBInstEnvRoomSize; // environmentroom.size
 	vec2 pSPBInstVariationEnableScale; // variation.u, variation.v
 	
+	vec3 pSPBInstRimEmissivityIntensity; // rim.emissivity.intensity
+	float pSPBInstRimAngle; // rim.angle
+	float pSPBInstRimExponent; // rim.exponent
+	
 	vec3 pSPBInstOutlineColor;
 	float pSPBInstOutlineThickness;
-	vec3 pSPBInstOutlineEmissivity;
+	vec3 pSPBInstOutlineColorTint;
 	float pSPBInstOutlineSolidity;
+	vec3 pSPBInstOutlineEmissivity;
+	vec3 pSPBInstOutlineEmissivityTint;
 	
 	#ifdef SHARED_SPB_PADDING
 	vec4 _pSPBPadding[ SHARED_SPB_PADDING ];
@@ -207,8 +213,20 @@ UBOLAYOUT uniform InstanceParameters{
 	#ifdef DYNAMIC_REFLECTIVITY_MULTIPLIER
 		float pInstReflectivityMultiplier; // reflectivity.multiplier
 	#endif
+	#ifdef DYNAMIC_RIM_EMISSIVITY_INTENSITY
+		vec3 pInstRimEmissivityIntensity; // rim.emissivity.intensity
+	#endif
+	#ifdef DYNAMIC_RIM_ANGLE
+		vec3 pInstRimAngle; // rim.angle
+	#endif
+	#ifdef DYNAMIC_RIM_EXPONENT
+		vec3 pInstRimExponent; // rim.exponent
+	#endif
 	#ifdef DYNAMIC_OUTLINE_COLOR
 		vec3 pInstOutlineColor;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_COLOR_TINT
+		vec3 pInstOutlineColorTint;
 	#endif
 	#ifdef DYNAMIC_OUTLINE_THICKNESS
 		float pInstOutlineThickness;
@@ -218,6 +236,9 @@ UBOLAYOUT uniform InstanceParameters{
 	#endif
 	#ifdef DYNAMIC_OUTLINE_EMISSIVITY
 		vec3 pInstOutlineEmissivity;
+	#endif
+	#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
+		vec3 pInstOutlineEmissivityTint;
 	#endif
 };
 

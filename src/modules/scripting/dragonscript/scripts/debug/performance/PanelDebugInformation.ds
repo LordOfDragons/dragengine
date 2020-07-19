@@ -169,7 +169,7 @@ class PanelDebugInformation extends Panel
 			end
 		end )
 		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 end
 

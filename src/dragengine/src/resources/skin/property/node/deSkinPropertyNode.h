@@ -72,7 +72,7 @@ private:
 	float pShear;
 	
 	float pBrightness;
-	float pConstrast;
+	float pContrast;
 	float pGamma;
 	decColor pColorize;
 	
@@ -129,7 +129,7 @@ public:
 	void SetBrightness( float brightness );
 	
 	/** \brief Contrast. */
-	inline float GetContrast() const{ return pConstrast; }
+	inline float GetContrast() const{ return pContrast; }
 	
 	/** \brief Set contrast. */
 	void SetContrast( float contrast );

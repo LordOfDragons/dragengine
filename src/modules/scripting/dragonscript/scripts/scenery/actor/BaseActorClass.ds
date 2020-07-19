@@ -81,10 +81,15 @@ class BaseActorClass extends BehaviorElementClass
 		this.pCollider = ECBehaviorCollider.new( this, this.pComponent )
 		
 		var ECComposeCollider collider = this.pCollider.getCollider()
-		collider.setCollisionFilter( CollisionFilter.new( \
-			LayerMask.newWith( BaseGameApp.CollisionFilterBit.actor ), \
-			LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry, \
-				BaseGameApp.CollisionFilterBit.particle ) ) )
+		
+		var LayerMask cfcategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.actor )
+		
+		var LayerMask cffilter = LayerMask.new()
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
+		cffilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		
+		collider.setCollisionFilter( CollisionFilter.new( cfcategory, cffilter ) )
 		collider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
 		collider.getLocalGravity().setVector( Vector.new() )
 		

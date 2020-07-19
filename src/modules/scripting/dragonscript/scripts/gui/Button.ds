@@ -187,7 +187,7 @@ class Button extends Container
 			this.notifyChildrenParentStateChanged()
 			this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	
@@ -338,7 +338,7 @@ class Button extends Container
 			super.onMouseEnter( event )
 			this.updateWidgetImage()
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	/**
@@ -352,7 +352,7 @@ class Button extends Container
 			super.onMouseLeave( event )
 			this.updateWidgetImage()
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	

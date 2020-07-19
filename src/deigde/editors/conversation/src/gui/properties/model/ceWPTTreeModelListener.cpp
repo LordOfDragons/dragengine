@@ -23,9 +23,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ceWPTTreeItem.h"
 #include "ceWPTTreeModel.h"
 #include "ceWPTTreeModelListener.h"
 #include "action/ceWPTTIMAction.h"
+#include "condition/ceWPTTIMCondition.h"
 #include "../ceWPTopic.h"
 #include "../ceWindowProperties.h"
 #include "../../ceWindowMain.h"
@@ -33,6 +35,9 @@
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/file/ceConversationFile.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
+
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -108,7 +113,7 @@ void ceWPTTreeModelListener::ActiveFileChanged( ceConversation *conversation ){
 	}
 	
 	pModel.UpdateActions();
-	pModel.SelectActiveAction();
+	pModel.SelectTopicActive();
 }
 
 
@@ -125,7 +130,7 @@ void ceWPTTreeModelListener::ActiveTopicChanged( ceConversation *conversation, c
 	}
 	
 	pModel.UpdateActions();
-	pModel.SelectActiveAction();
+	pModel.SelectTopicActive();
 }
 
 
@@ -141,7 +146,6 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
 		if( model ){
 			model->Update();
-			//model->UpdateActionLists();
 		}
 		
 	}else{
@@ -152,7 +156,7 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActiveAction();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
 }
 
 void ceWPTTreeModelListener::ActionChanged( ceConversation *conversation,
@@ -166,6 +170,69 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	if( model ){
 		model->Update();
 	}
+}
+
+void ceWPTTreeModelListener::ConditionStructureChanged( ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action ){
+	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	if( action ){
+		ceWPTTIMAction * const model = pModel.DeepFindAction( action );
+		if( model ){
+			model->Update();
+		}
+		
+	}else{
+		pModel.UpdateActions();
+	}
+	
+	// the problem here is that listeners are run in any order. when we add items to the
+	// tree the listener of the WPTopic is called but no model is yet assigned. this will
+	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
+	// the WPTopic properly updates
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+}
+
+void ceWPTTreeModelListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition *condition ){
+	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	ceWPTTIMCondition * const model = pModel.DeepFindCondition( condition );
+	if( model ){
+		model->Update();
+	}
+}
+
+void ceWPTTreeModelListener::ActiveChanged( ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic ){
+	if( conversation != pModel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() || ! pModel.GetTreeList() || pModel.GetPreventUpdate() ){
+		return;
+	}
+	
+	if( topic->GetActiveCondition() ){
+		ceWPTTIMCondition * const condition = pModel.DeepFindCondition( topic->GetActiveCondition() );
+		if( condition ){
+			condition->SetAsCurrentItem();
+			return;
+		}
+	}
+	
+	if( topic->GetActiveAction() ){
+		ceWPTTIMAction * const action = pModel.DeepFindAction( topic->GetActiveAction() );
+		if( action ){
+			action->SetAsCurrentItem();
+			return;
+		}
+	}
+	
+	pModel.GetTreeList()->SetSelection( NULL );
 }
 
 

@@ -58,6 +58,7 @@
 #include "../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
@@ -92,7 +93,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeXMLGameDefinition::igdeXMLGameDefinition( deLogger *logger ) : igdeBaseXML( logger, LOGGING_NAME ){
+igdeXMLGameDefinition::igdeXMLGameDefinition( igdeEnvironment &environment, deLogger *logger ) :
+igdeBaseXML( logger, LOGGING_NAME ),
+pEnvironment( environment ){
 }
 
 igdeXMLGameDefinition::~igdeXMLGameDefinition(){
@@ -156,7 +159,12 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 			gamedef.SetDescription( ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "basePath" ){
-			gamedef.SetBasePath( GetCDataString( *tag ) );
+			decString filename( GetCDataString( *tag ) );
+			
+			filename.ReplaceString( "%{DE_SHARE_PATH}", pEnvironment.GetEngineController()
+				->GetEngine()->GetOS()->GetPathShare().GetString() );
+			
+			gamedef.SetBasePath( filename );
 			
 		}else if( tagName == "vfsPath" ){
 			gamedef.SetVFSPath( GetCDataString( *tag ) );
@@ -360,8 +368,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		}else if( tagName == "ghost" ){
 			gdClass->SetIsGhost( GetCDataBool( *tag ) );
 			
-		}else if( tagName == "canInstanciate" ){
-			gdClass->SetCanInstanciate( GetCDataBool( *tag ) );
+		}else if( tagName == "canInstantiate"
+		/* backwards compatibility */ || tagName == "canInstanciate" ){
+			gdClass->SetCanInstantiate( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "inherit" ){
 			pParseClassInherit( *tag, gdClass );

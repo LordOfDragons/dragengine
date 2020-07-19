@@ -121,7 +121,9 @@ void decrbPanelConsole::UpdateModulesList(){
 	
 	for( i=0; i<count; i++ ){
 		loadableModule = modSys->GetModuleAt( i );
-		pCBModule->appendItem( loadableModule->GetName().GetString(), loadableModule );
+		if( pCBModule->findItem( loadableModule->GetName().GetString() ) == -1 ){
+			pCBModule->appendItem( loadableModule->GetName().GetString() );
+		}
 	}
 	pCBModule->sortItems();
 }
@@ -171,7 +173,8 @@ long decrbPanelConsole::onEditSendCommand( FXObject *sender, FXSelector selector
 		return 1;
 	}
 	
-	loadableModule = ( deLoadableModule* )pCBModule->getItemData( selection );
+	loadableModule = pWndMain->GetEngine()->GetModuleSystem()->
+		GetModuleNamed( pCBModule->getItemText( selection ).text() );
 	module = loadableModule->GetModule();
 	
 	if( ! module ){

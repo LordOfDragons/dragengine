@@ -69,6 +69,7 @@ public:
 		ettEnvRoomMask,
 		ettEnvRoomEmissivity,
 		ettAbsorption,
+		ettRimEmissivity,
 		ettDepth,
 		ettDepthTest,
 		ettSamples,
@@ -141,11 +142,17 @@ public:
 		
 		etutTexVariationEnableScale,
 		etutTexParticleSheetCount,
+		etutTexRimAngle,
+		
+		etutTexRimEmissivityIntensity,
+		etutTexRimExponent,
 		
 		etutTexOutlineColor,
 		etutTexOutlineThickness,
-		etutTexOutlineEmissivity,
+		etutTexOutlineColorTint,
 		etutTexOutlineSolidity,
+		etutTexOutlineEmissivity,
+		etutTexOutlineEmissivityTint,
 		
 		ETUT_COUNT
 	};
@@ -196,10 +203,15 @@ public:
 		eiutInstEnvRoomEmissivityIntensity,
 		eiutInstVariationEnableScale,
 		eiutInstReflectivityMultiplier,
+		eiutInstRimEmissivityIntensity,
+		eiutInstRimAngle,
+		eiutInstRimExponent,
 		eiutInstOutlineColor,
 		eiutInstOutlineThickness,
-		eiutInstOutlineEmissivity,
+		eiutInstOutlineColorTint,
 		eiutInstOutlineSolidity,
+		eiutInstOutlineEmissivity,
+		eiutInstOutlineEmissivityTint,
 		
 		EIUT_COUNT
 	};

@@ -142,13 +142,19 @@ class QuickUseManager
 	 * to restore the correct slot number before calling readFromFile() yourself.
 	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader, ElementResolver elementResolver )
-		var int i, count = this.pSlots.getCount()
-		for i = 0 to count
-			if env.readBool( reader )
-				elementResolver.add( UniqueID.readFromFile( reader ), block Element element
-					this.pSlots.setAt( i, element )
-				end )
+		select reader.readByte() // version
+		case 0
+			var int i, count = this.pSlots.getCount()
+			for i = 0 to count
+				if env.readBool( reader )
+					elementResolver.add( UniqueID.readFromFile( reader ), block Element element
+						this.pSlots.setAt( i, element )
+					end )
+				end
 			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
@@ -159,6 +165,8 @@ class QuickUseManager
 	 * to restore the correct slot number before calling readFromFile() yourself.
 	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		this.pSlots.forEach( block Element each
 			env.writeBool( writer, each != null )
 			if each != null

@@ -93,7 +93,7 @@ void meBaseUndoScale::Update(){
 		* decMatrix::CreateTranslation( p_center );
 	*/
 	
-	// set informations
+	// set information
 	char info[ 150 ];
 	sprintf( ( char* )&info, "factors(%g,%g,%g;%g) pivot(%g,%g,%g)",
 		pFactors.x, pFactors.y, pFactors.z, pUniformFactor, pPivot.x, pPivot.y, pPivot.z );

@@ -138,6 +138,12 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
 	/** \brief Conversation command. */
 	interface ConversationCommand
 		/**
@@ -366,23 +372,23 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			this.pRegisterConversationActor = this.pECBehavior.getRegisterConversationActor().getValue( stub )
 			
 			var StringID id = this.pECBehavior.getActorId().getValue( stub )
-			if id == null
-				return
+			if id != null
+				this.pConversationActor = this.createConversationActor( id, stub )
+				this.initConversationActor( stub )
+				this.initTagResolver( stub )
+				
+				if this.pActorAnimated != null
+					this.pActorAnimated.addListener( ActorAnimatedListener.new( this ) )
+				end
+				if this.pAnimated != null
+					this.pAnimated.addListener( AnimatedListener.new( this ) )
+				end
+				if this.pTwoStateAnimated != null
+					this.pTwoStateAnimated.addListener( TwoStateAnimatedListener.new( this ) )
+				end
 			end
 			
-			this.pConversationActor = this.createConversationActor( id, stub )
-			this.initConversationActor( stub )
-			this.initTagResolver( stub )
-			
-			if this.pActorAnimated != null
-				this.pActorAnimated.addListener( ActorAnimatedListener.new( this ) )
-			end
-			if this.pAnimated != null
-				this.pAnimated.addListener( AnimatedListener.new( this ) )
-			end
-			if this.pTwoStateAnimated != null
-				this.pTwoStateAnimated.addListener( TwoStateAnimatedListener.new( this ) )
-			end
+			this.pECBehavior.createListeners( this )
 		end
 		
 		/** \brief Create conversation actor. */
@@ -857,14 +863,22 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pSubtitleSelectorId = reader.readString8()
-			if this.pConversationActor != null
-				this.pConversationActor.readFromFile( env, reader )
+			select reader.readByte() // version
+			case 0
+				this.pSubtitleSelectorId = reader.readString8()
+				if this.pConversationActor != null
+					this.pConversationActor.readFromFile( env, reader )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeString8( this.pSubtitleSelectorId )
 			if this.pConversationActor != null
 				this.pConversationActor.writeToFile( env, writer )
@@ -886,6 +900,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	private var ECBehaviorLocomotion pLocomotion
 	private var ECBehaviorParameterTable pParameterTable
 	private var GuiTheme pSubtitleTheme
+	private var Array pListenerFactories
 	
 	
 	
@@ -902,6 +917,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		if app != null
 			this.pSubtitleTheme = app.getWindowSubTitle().getGuiTheme()
 		end
+		
+		this.pListenerFactories = Array.new()
 		
 		this.pActorId = ECPStringID.new( prefix + "id", null )
 		eclass.addProperty( this.pActorId )
@@ -931,6 +948,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		this.pTwoStateAnimated = null
 		this.pLocomotion = null
 		this.pParameterTable = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -1024,6 +1042,26 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Set gui theme to use for sub title box creation. */
 	public func void setSubtitleTheme( GuiTheme guiTheme )
 		this.pSubtitleTheme = guiTheme
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
 	end
 	
 	

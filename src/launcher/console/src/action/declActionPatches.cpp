@@ -88,14 +88,9 @@ void declActionPatches::PrintSyntax(){
 	printf( "   Return code 0: Patch is installed\n" );
 	printf( "   Return code 1: Patch is not installed\n" );
 	printf( "\n" );
-	printf( "delauncher-console patches install <file.delga>\n" );
-	printf( "   Install patch. If patch is already installed the call fails.\n" );
-	printf( "   Return code 0: Patch installed successfully\n" );
-	printf( "   Return code 1: Installing patch failed\n" );
-	printf( "\n" );
 	printf( "delauncher-console patches uninstall (<identifier> | <alias>)\n" );
 	printf( "   Uninstall patch. If patch is not installed or multiple patches match the call fails.\n" );
-	printf( "   Patch patches and local files (like saves or caches) are not uninstalled.\n" );
+	printf( "   Patch game is not uninstalled.\n" );
 	printf( "   Return code 0: Patch uninstalled successfully\n" );
 	printf( "   Return code 1: Uninstalling patch failed\n" );
 }
@@ -150,7 +145,7 @@ int declActionPatches::pListPatches(){
 	const int count = patches.GetCount();
 	int i;
 	
-	printf( "Available Patches (name (patch alias) => identifier (patch identifier)\n" );
+	printf( "Available Patches (patch-name (game-alias) => patch-identifier (game-identifier)\n" );
 	
 	for( i=0; i<count; i++ ){
 		const declPatch &patch = *patches.GetAt( i );

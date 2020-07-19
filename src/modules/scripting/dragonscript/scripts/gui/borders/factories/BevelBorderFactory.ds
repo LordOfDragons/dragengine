@@ -39,7 +39,7 @@ public class BevelBorderFactory extends TwoColorBorderFactory
 	
 	/** Create border. */
 	public func Border createBorder()
-		return BevelBorder.new( this.getRaised(), this.getColorHilight(), this.getColorShadow() )
+		return BevelBorder.new( this.getRaised(), this.getColorHighlight(), this.getColorShadow() )
 	end
 	
 	/** \brief Create factory copy. */

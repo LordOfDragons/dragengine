@@ -23,9 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "native/toolkit.h"
 #include "igdeTimer.h"
-#include "native/fox/igdeNativeFoxTimer.h"
+#include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -46,14 +45,14 @@ pTimeout( 0 ),
 pRepeating( false ),
 pRunning( false )
 {
-	pNativeTimer = new igdeNativeFoxTimer( *this, FXApp::instance() );
+	pNativeTimer = igdeNativeTimer::CreateNativeTimer( *this );
 }
 
 igdeTimer::~igdeTimer(){
 	Stop();
 	
 	if( pNativeTimer ){
-		delete ( igdeNativeFoxTimer* )pNativeTimer;
+		( ( igdeNativeTimer* )pNativeTimer )->DestroyNativeTimer();
 	}
 }
 
@@ -62,14 +61,14 @@ igdeTimer::~igdeTimer(){
 // Management
 ///////////////
 
-void igdeTimer::Start( int timeout, bool repeating ){
+void igdeTimer::Start( int timeoutMS, bool repeating ){
 	Stop();
 	
-	pTimeout = decMath::max( timeout, 0 );
+	pTimeout = decMath::max( timeoutMS, 0 );
 	pRepeating = repeating;
 	pRunning = true;
 	
-	( ( igdeNativeFoxTimer* )pNativeTimer )->StartTimer();
+	( ( igdeNativeTimer* )pNativeTimer )->StartTimer();
 }
 
 void igdeTimer::Start( double timeout, bool repeating ){
@@ -78,7 +77,7 @@ void igdeTimer::Start( double timeout, bool repeating ){
 
 void igdeTimer::Stop(){
 	if( pRunning ){
-		( ( igdeNativeFoxTimer* )pNativeTimer )->StopTimer();
+		( ( igdeNativeTimer* )pNativeTimer )->StopTimer();
 		pRunning = false;
 	}
 }

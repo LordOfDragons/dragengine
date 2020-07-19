@@ -209,7 +209,7 @@ public:
 	/**
 	 * \brief Get information about parameter.
 	 * \param[in] index Index of the parameter
-	 * \param[in] parameter Object to fill with informations about the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
 	 */
 	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
 	

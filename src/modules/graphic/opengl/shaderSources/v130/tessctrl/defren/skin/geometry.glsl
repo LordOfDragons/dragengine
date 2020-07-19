@@ -8,6 +8,15 @@ precision highp int;
 
 layout( vertices=3 ) out;
 
+// some helper definitions to make the code easier to read
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_EMISSIVITY 1
+#endif
+
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
+	#define WITH_REFLECT_DIR 1
+#endif
+
 
 
 // Inputs
@@ -20,7 +29,7 @@ in vec2 vTCSTCColor[];
 #ifdef TEXTURE_REFLECTIVITY
 	in vec2 vTCSTCReflectivity[];
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	in vec2 vTCSTCEmissivity[];
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -36,7 +45,7 @@ in vec3 vTCSNormal[];
 	in vec3 vTCSBitangent[];
 #endif
 
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	in vec3 vTCSReflectDir[];
 #endif
 
@@ -58,7 +67,7 @@ out vec2 vTESTCColor[];
 #ifdef TEXTURE_REFLECTIVITY
 	out vec2 vTESTCReflectivity[];
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#ifdef WITH_EMISSIVITY
 	out vec2 vTESTCEmissivity[];
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -74,7 +83,7 @@ out vec3 vTESNormal[];
 	out vec3 vTESBitangent[];
 #endif
 
-#ifdef TEXTURE_ENVMAP
+#ifdef WITH_REFLECT_DIR
 	out vec3 vTESReflectDir[];
 #endif
 
@@ -117,7 +126,7 @@ void main(void){
 	#ifdef TEXTURE_REFLECTIVITY
 		vTESTCReflectivity[ gl_InvocationID ] = vTCSTCReflectivity[ gl_InvocationID ];
 	#endif
-	#ifdef TEXTURE_EMISSIVITY
+	#ifdef WITH_EMISSIVITY
 		vTESTCEmissivity[ gl_InvocationID ] = vTCSTCEmissivity[ gl_InvocationID ];
 	#endif
 	#ifdef TEXTURE_REFRACTION_DISTORT
@@ -133,7 +142,7 @@ void main(void){
 		vTESBitangent[ gl_InvocationID ] = vTCSBitangent[ gl_InvocationID ];
 	#endif
 
-	#ifdef TEXTURE_ENVMAP
+	#ifdef WITH_REFLECT_DIR
 		vTESReflectDir[ gl_InvocationID ] = vTCSReflectDir[ gl_InvocationID ];
 	#endif
 

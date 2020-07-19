@@ -89,9 +89,9 @@ pDDSSpace( NULL ),
 pDDSCorners( NULL ),
 pDDSNormals( NULL ),
 pDDSMismatching( NULL ),
-pDDSHilightCostType( NULL ),
+pDDSHighlightCostType( NULL ),
 
-pDebugLastHilightCostType( -1 ){
+pDebugLastHighlightCostType( -1 ){
 }
 
 dedaiSpace::~dedaiSpace(){
@@ -465,18 +465,18 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if( ! pDDSHilightCostType ){
-			pDDSHilightCostType = new deDebugDrawerShape;
-			pDDSHilightCostType->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
-			pDDSHilightCostType->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSHilightCostType );
+		if( ! pDDSHighlightCostType ){
+			pDDSHighlightCostType = new deDebugDrawerShape;
+			pDDSHighlightCostType->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
+			pDDSHighlightCostType->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
+			pDebugDrawer->AddShape( pDDSHighlightCostType );
 			updateShapes = true;
 		}
 		
 		// update the shapes if required
-		if( devmode.GetSpaceHilightCostType() != pDebugLastHilightCostType ){
+		if( devmode.GetSpaceHighlightCostType() != pDebugLastHighlightCostType ){
 			updateShapes = true;
-			pDebugLastHilightCostType = devmode.GetSpaceHilightCostType();
+			pDebugLastHighlightCostType = devmode.GetSpaceHighlightCostType();
 		}
 		
 		if( updateShapes ){
@@ -495,7 +495,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			pDDSCorners = NULL;
 			pDDSNormals = NULL;
 			pDDSMismatching = NULL;
-			pDDSHilightCostType = NULL;
+			pDDSHighlightCostType = NULL;
 			
 			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
@@ -876,7 +876,7 @@ void dedaiSpace::pUpdateSpace(){
 		break;
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHilightCostType ){
+	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
 		UpdateDDSSpaceShape();
 	}
 }
@@ -891,7 +891,7 @@ void dedaiSpace::pUpdateBlocking(){
 	}else{
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHilightCostType ){
+	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
 		UpdateDDSSpaceShape();
 	}
 }

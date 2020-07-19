@@ -173,6 +173,9 @@ def UpdateModuleManifest(env, target, source):
 			
 		elif action == 'preloadLibrary':
 			manifest = manifest.replace('</library>', '\t<preloadLibrary>{}</preloadLibrary>\n\t</library>'.format(update['path']))
+			
+		elif action == 'text':
+			manifest = manifest.replace(update['keyword'], update['value'])
 	
 	with open(target[0].abspath, 'w') as f:
 		f.write(manifest)

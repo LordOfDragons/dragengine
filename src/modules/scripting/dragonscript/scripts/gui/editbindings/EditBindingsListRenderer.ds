@@ -149,7 +149,7 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 				end )
 			end )
 			
-			bindingPanel.doLayout()
+			bindingPanel.doLayoutIfBlocked()
 		end )
 	end
 	

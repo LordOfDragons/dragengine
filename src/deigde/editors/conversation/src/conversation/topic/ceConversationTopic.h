@@ -26,9 +26,11 @@
 #include <dragengine/common/string/decString.h>
 
 #include "../action/ceConversationActionList.h"
+#include "../action/ceConversationActionReference.h"
+#include "../condition/ceConversationConditionReference.h"
 
 class ceConversationFile;
-
+class ceConversationCondition;
 
 
 /**
@@ -40,7 +42,8 @@ private:
 	
 	decString pID;
 	ceConversationActionList pActions;
-	ceConversationAction *pActiveAction;
+	ceConversationActionReference pActiveAction;
+	ceConversationConditionReference pActiveCondition;
 	
 	
 	
@@ -82,8 +85,11 @@ public:
 	/** \brief Active action or \em NULL if none is active. */
 	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
 	
-	/** \brief Set active action or \em NULL if none is active. */
-	void SetActiveAction( ceConversationAction *action );
+	/** \brief Active condition or \em NULL if none is active. */
+	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	
+	/** \brief Set active element. */
+	void SetActive( ceConversationAction *action, ceConversationCondition *condition );
 	
 	
 	
@@ -92,6 +98,12 @@ public:
 	
 	/** \brief Notify listeners action changed. */
 	void NotifyActionChanged( ceConversationAction *action );
+	
+	/** \brief Notify listeners condition structure changed. */
+	void NotifyConditionStructureChanged( ceConversationAction *action );
+	
+	/** \brief Notify listeners condition changed. */
+	void NotifyConditionChanged( ceConversationAction *action, ceConversationCondition *condition );
 	/*@}*/
 };
 

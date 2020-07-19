@@ -129,35 +129,41 @@ void aeCamera::Update(){
 	
 	if( pDirty || pAttachToBone || locomotion.GetEnabled() ){
 		if( pAttachToBone ){
-			decMatrix matrix = decMatrix::CreateRT( pRelOrientation * DEG2RAD, pRelPosition );
+			decMatrix matrix( decMatrix::CreateRT( pRelOrientation * DEG2RAD, pRelPosition ) );
 			deComponent *engComponent = pAnimator->GetEngineComponent();
 			
 			if( engComponent ){
+				decMatrix compMat;
+				
 				engComponent->PrepareBones();
 				
 				if( ! pBone.IsEmpty() && engComponent->GetRig() ){
 					const int index = engComponent->GetRig()->IndexOfBoneNamed( pBone );
 					if( index != -1 ){
-						matrix *= engComponent->GetBoneAt( index ).GetMatrix();
+						compMat = engComponent->GetBoneAt( index ).GetMatrix();
 					}
 				}
 				
-				matrix *= engComponent->GetMatrix();
+				compMat = compMat.QuickMultiply( engComponent->GetMatrix() );
+				
+				matrix = matrix.QuickMultiply( compMat.Normalized() );
 			}
 			
 			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles() / DEG2RAD );
+			SetOrientation( matrix.GetEulerAngles() * RAD2DEG );
 			SetDistance( 0.0f );
 			
 			pDirty = false;
 			
 		}else if( locomotion.GetEnabled() ){
-			decDMatrix matrix = decDMatrix::CreateRT( decDVector( pFreeOrientation * DEG2RAD ), pFreePosition )
-				* decDMatrix::CreateRotationY( ( double )( ( locomotion.GetOrientation().GetValue() + locomotion.GetLookLeftRight().GetValue() ) * DEG2RAD ) )
-				* decDMatrix::CreateTranslation( locomotion.GetPosition() );
+			const float orientation = locomotion.GetOrientation().GetValue();
+			const float lookLeftRight = locomotion.GetLookLeftRight().GetValue();
+			decDMatrix matrix( decDMatrix::CreateRT( decDVector( pFreeOrientation * DEG2RAD ), pFreePosition )
+				.QuickMultiply( decDMatrix::CreateRotationY( ( orientation + lookLeftRight ) * DEG2RAD ) )
+				.QuickMultiply( decDMatrix::CreateTranslation( locomotion.GetPosition() ) ) );
 			
 			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles().ToVector() / DEG2RAD );
+			SetOrientation( matrix.GetEulerAngles().ToVector() * RAD2DEG );
 			SetDistance( pFreeDistance );
 			
 			pDirty = true; // so that when we stop the testing an update is done to recover

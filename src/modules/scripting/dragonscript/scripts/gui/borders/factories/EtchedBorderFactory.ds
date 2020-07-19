@@ -42,7 +42,7 @@ public class EtchedBorderFactory extends TwoColorBorderFactory
 		var EtchedBorder border = EtchedBorder.new()
 		
 		border.setRaised( this.getRaised() )
-		border.setColorHilight( this.getColorHilight() )
+		border.setColorHighlight( this.getColorHighlight() )
 		border.setColorShadow( this.getColorShadow() )
 		
 		return border

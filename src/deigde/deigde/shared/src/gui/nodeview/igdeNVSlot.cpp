@@ -35,8 +35,6 @@
 #include "../resources/igdeFont.h"
 #include "../resources/igdeFontReference.h"
 #include "../theme/igdeGuiTheme.h"
-#include "../native/fox/nodeview/igdeNativeFoxNVBoard.h"
-#include "../native/fox/nodeview/igdeNativeFoxNVSlot.h"
 #include "../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -187,8 +185,7 @@ decPoint igdeNVSlot::GetCenter() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetCenter();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenter();
 }
 
 decPoint igdeNVSlot::GetCenterNode() const{
@@ -196,8 +193,7 @@ decPoint igdeNVSlot::GetCenterNode() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetCenterNode();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenterNode();
 }
 
 decPoint igdeNVSlot::GetCenterBoard() const{
@@ -205,8 +201,7 @@ decPoint igdeNVSlot::GetCenterBoard() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetCenterBoard();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetCenterBoard();
 }
 
 decPoint igdeNVSlot::GetConnector() const{
@@ -214,8 +209,7 @@ decPoint igdeNVSlot::GetConnector() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetConnector();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnector();
 }
 
 decPoint igdeNVSlot::GetConnectorNode() const{
@@ -223,8 +217,7 @@ decPoint igdeNVSlot::GetConnectorNode() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetConnectorNode();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnectorNode();
 }
 
 decPoint igdeNVSlot::GetConnectorBoard() const{
@@ -232,8 +225,7 @@ decPoint igdeNVSlot::GetConnectorBoard() const{
 		return decPoint();
 	}
 	
-	const igdeNativeFoxNVSlot &native = *( ( igdeNativeFoxNVSlot* )GetNativeWidget() );
-	return native.GetConnectorBoard();
+	return ( ( igdeNativeNVSlot* )GetNativeWidget() )->GetConnectorBoard();
 }
 
 
@@ -243,21 +235,9 @@ void igdeNVSlot::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxNVSlot * const native = new igdeNativeFoxNVSlot( *this, nativeParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeNVSlot * const native = igdeNativeNVSlot::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -267,7 +247,7 @@ void igdeNVSlot::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxNVSlot* )GetNativeWidget();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -278,7 +258,7 @@ void igdeNVSlot::OnTextChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVSlot* )GetNativeWidget() )->UpdateText();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateText();
 }
 
 void igdeNVSlot::OnDescriptionChanged(){
@@ -286,7 +266,7 @@ void igdeNVSlot::OnDescriptionChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVSlot* )GetNativeWidget() )->UpdateDescription();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateDescription();
 }
 
 void igdeNVSlot::OnEnabledChanged(){
@@ -294,7 +274,7 @@ void igdeNVSlot::OnEnabledChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVSlot* )GetNativeWidget() )->UpdateEnabled();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateEnabled();
 }
 
 void igdeNVSlot::OnColorChanged(){
@@ -302,7 +282,7 @@ void igdeNVSlot::OnColorChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVSlot* )GetNativeWidget() )->UpdateColor();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateColor();
 }
 
 void igdeNVSlot::OnLinksChanged(){
@@ -310,5 +290,5 @@ void igdeNVSlot::OnLinksChanged(){
 		return;
 	}
 	
-	( ( igdeNativeFoxNVSlot* )GetNativeWidget() )->UpdateLinkedState();
+	( ( igdeNativeNVSlot* )GetNativeWidget() )->UpdateLinkedState();
 }

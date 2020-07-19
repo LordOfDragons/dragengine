@@ -82,7 +82,7 @@ class Connection
 	 * Typically only the server sends out link request to clients. All these states are
 	 * read only except those states belonging to the client which he has to be able to modify.
 	 * 
-	 * \param message Contains informations for the remote system to know what state to link to.
+	 * \param message Contains information for the remote system to know what state to link to.
 	 * \param state State to link with remote system.
 	 * \param readOnly If true remote state is not allowed to change.
 	 */

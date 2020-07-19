@@ -31,7 +31,7 @@ class deSkinVisitor;
 /**
  * \brief Skin Texture.
  *
- * Stores informations about a skin texture. Each texture contains properties
+ * Stores information about a skin texture. Each texture contains properties
  * defining the material properties for rendering. Furthermore audio related
  * properties are stored as well as physics properties.
  */

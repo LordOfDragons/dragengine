@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include "igdeNativeFoxVFSListItem.h"
 
 #include <dragengine/filesystem/dePathList.h>
@@ -265,3 +267,5 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeDesc( const FXIconItem *item1, const
 		}
 	}
 }
+
+#endif

@@ -59,6 +59,10 @@ void igdeEditorModule::SetEditorDirectory( const char *directory ){
 	pEditorDirectory = directory;
 }
 
+void igdeEditorModule::SetEditorPathLib( const char *path ){
+	pEditorPathLib = path;
+}
+
 void igdeEditorModule::SetEditorWindow( igdeEditorWindow *editorWindow ){
 	if( editorWindow && editorWindow->GetParent() ){
 		DETHROW( deeInvalidParam );

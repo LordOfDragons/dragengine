@@ -1,0 +1,222 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display list of InteractPromptEntry.
+ * 
+ * Uses DefaultListModel to store the list of InteractPromptEntry to display. Changing the
+ * content of the list model updates the PanelInteractPrompt. For each model entry
+ * a view widget is created and added to the panel.
+ * 
+ * This widget is non-interactive and best suited for showing a small number of prompts.
+ * 
+ * The panel can be styled using selector these designer selectors:
+ * - "InteractPrompt": The prompt panel.
+ */
+class PanelInteractPrompt extends Panel implements ListModelListener
+	private var BindingManager pBindingManager
+	private var int pBindingIconHeight
+	private var DisplayInteractPromptEntry.Placement pPlacement
+	private var DefaultListModel pModel
+	private var String pEntryBaseSelectorName
+	
+	
+	
+	/** \brief Create interact prompt panel. */
+	public func new() this( null, 1 )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight ) \
+	this( bindingManager, bindingIconHeight, DisplayInteractPromptEntry.Placement.top )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement ) \
+	this( bindingManager, bindingIconHeight, placement, "InteractPrompt", "InteractPromptEntry" )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement, String designerSelector, \
+	String entryBaseSelectorName )
+		if designerSelector == null
+			throw ENullPointer.new( "designerSelector" )
+		end
+		if entryBaseSelectorName == null
+			throw ENullPointer.new( "entryBaseSelectorName" )
+		end
+		
+		this.pBindingManager = bindingManager
+		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
+		this.pPlacement = placement
+		this.pEntryBaseSelectorName = entryBaseSelectorName
+		this.pModel = DefaultListModel.new()
+		this.pModel.addListener( this )
+		
+		this.setLayout( BoxLayout.new( LayoutAxis.x ) )
+		this.setDesignerSelector( designerSelector )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pModel = null
+		this.pBindingManager = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Binding manager. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Binding icon height. */
+	public func int getBindingIconHeight()
+		return this.pBindingIconHeight
+	end
+	
+	/** \brief Placement to use for newly created widgets. */
+	public func DisplayInteractPromptEntry.Placement getPlacement()
+		return this.pPlacement
+	end
+	
+	/** \brief Base selector name used for created entries. */
+	public func String getEntryBaseSelectorName()
+		return this.pEntryBaseSelectorName
+	end
+	
+	/** \brief List model. */
+	public func DefaultListModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Set list model. */
+	public func void setModel( DefaultListModel model )
+		if model == null
+			throw ENullPointer.new( "model" )
+		end
+		
+		if model == this.pModel
+			return
+		end
+		
+		this.pModel.removeListener( this )
+		this.pModel = model
+		this.pModel.addListener( this )
+		
+		this.updateWidgets()
+	end
+	
+	
+	
+	/** \brief Set prompts from array of instances of InteractPromptEntry. */
+	public func void setPrompts( Array prompts )
+		this.pModel.setContent( prompts )
+	end
+	
+	
+	
+	/**
+	 * \brief Update widgets representing the entries.
+	 * 
+	 * Call if entries changed. Tries to update existing widgets first creating new ones if
+	 * required. All unused widgets beyond the required count of widgets are hidden to reduce
+	 * widget creation to a minimum.
+	 */
+	public func void updateWidgets()
+		this.runWhileBlockingLayout( block
+			var int i, count = this.pModel.getCount()
+			var int widgetCount = this.getWidgetCount()
+			var InteractPromptEntry entry
+			var Widget widget
+			
+			for i = 0 to count
+				entry = this.pModel.getAt( i ) cast InteractPromptEntry
+				
+				if i < widgetCount
+					widget = this.getWidget( i )
+					widget.setVisible( true )
+					
+				else
+					widget = this.createWidget( entry )
+					this.addWidget( widget )
+				end
+				
+				this.updateWidget( widget, entry )
+			end
+			
+			for i = count to widgetCount
+				this.getWidget( i ).setVisible( false )
+			end
+		end )
+		this.doLayoutIfBlocked()
+	end
+	
+	/**
+	 * \brief Create widget for entry.
+	 * 
+	 * Default implementation creates instance of DisplayInteractPromptEntry.
+	 */
+	protected func Widget createWidget( InteractPromptEntry entry )
+		return DisplayInteractPromptEntry.new( this.pBindingManager, \
+			this.pBindingIconHeight, this.pPlacement, this.pEntryBaseSelectorName )
+	end
+	
+	/**
+	 * \brief Update widget with entry.
+	 * 
+	 * Default implementation operates on instances of type DisplayInteractPromptEntry.
+	 */
+	protected func void updateWidget( Widget widget, InteractPromptEntry entry )
+		( widget cast DisplayInteractPromptEntry ).updateFromEntry( entry )
+	end
+	
+	
+	
+	/** \brief Elements added. */
+	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
+		this.updateWidgets()
+	end
+	
+	/** \brief Elements removed. */
+	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
+		this.updateWidgets()
+	end
+	
+	/** \brief Content of the model changed. */
+	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+		this.updateWidgets()
+	end
+	
+	/** \brief Selection in the model changed. */
+	public func void selectionChanged( ListModel listModel )
+	end
+end

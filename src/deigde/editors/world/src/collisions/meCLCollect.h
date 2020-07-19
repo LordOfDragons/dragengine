@@ -59,6 +59,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
+	/** \brief World. */
+	inline meWorld *GetWorld() const{ return pWorld; }
+	
 	/** Sets if objects are collected. */
 	void SetCollectObjects( bool collect );
 	/** Sets if decals are collected. */

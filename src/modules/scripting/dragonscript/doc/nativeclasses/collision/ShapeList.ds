@@ -42,18 +42,129 @@ class ShapeList
 	/*@{*/
 	/** \brief Number of shapes. */
 	public func int getCount()
+		return 0
 	end
 	
 	/** \brief Has no shapes. */
 	public func bool empty()
+		return false
 	end
 	
 	/** \brief Has shapes. */
 	public func bool notEmpty()
+		return false
 	end
 	
 	/** \brief Remove all shapes. */
 	public func void removeAllShapes()
+	end
+	
+	
+	
+	/**
+	 * \brief Type of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	public func ShapeType getTypeAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Position of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	public func Vector getPositionAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Orientation of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	public func Quaternion getOrientationAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.sphere .
+	 */
+	public func float getRadiusAt( int index )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Half extends of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.box .
+	 */
+	public func Vector getHalfExtendsAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Half height of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	public func float getHalfHeightAt( int index )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Top radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	public func float getTopRadiusAt( int index )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Bottom radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	public func float getBottomRadiusAt( int index )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Top axis scaling of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	public func Vector2 getTopAxisScalingAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Bottom axis scaling of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	public func Vector2 getBottomAxisScalingAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Count of points of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.hull .
+	 */
+	public func int getPointCountAt( int index )
+		return 0
+	end
+	
+	/**
+	 * \brief Point at index of shape at index.
+	 * \throws EInvalidParam \em shape is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam \em point is less than 0 or grater than or equal to getPointCountAt(shape).
+	 * \throws EInvalidParam Shape is not of type ShapeType.hull .
+	 */
+	public func Vector getPointAt( int shape, int point )
+		return null
 	end
 	/*@}*/
 	

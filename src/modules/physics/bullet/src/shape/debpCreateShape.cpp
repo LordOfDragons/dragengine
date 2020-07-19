@@ -76,7 +76,7 @@ void debpCreateShape::VisitShapeSphere( decShapeSphere &sphere ){
 }
 
 void debpCreateShape::VisitShapeBox( decShapeBox &box ){
-	pShape = new debpShapeBox( &box );
+	pShape.TakeOver( new debpShapeBox( &box ) );
 }
 
 #include "debpShapeHackBox.h"

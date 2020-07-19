@@ -76,8 +76,10 @@ if sys.platform == 'haiku1':
 	parent_env['ENV']['PATH'] = os.environ['PATH']
 
 parent_env.Tool('logStdOut')
+if parent_env['LogStdOut_Enabled']:
+	parent_env['LOG_STD_OUT_FILE'] = open('build.log', 'w')
+
 parent_env.Tool('runIsolated')
-parent_env['LOG_STD_OUT_FILE'] = open('build.log', 'w')
 
 parent_env.Tool('macos_bundle')
 
@@ -128,6 +130,7 @@ params.Add( BoolVariable( 'with_warnerrors', 'Treat warnings as errors ( dev-bui
 params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
+params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 
 params.Add( TernaryVariable( 'with_system_zlib', 'Use System Zlib' ) )
 params.Add( TernaryVariable( 'with_system_libpng', 'Use System libpng' ) )
@@ -209,7 +212,9 @@ if parent_env['OSMacOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
-
+	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/usr', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/include', PathVariable.PathAccept ) )
@@ -265,7 +270,9 @@ elif parent_env['OSBeOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
-
+	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/boot/system', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/develop/include', PathVariable.PathAccept ) )
@@ -322,6 +329,8 @@ elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_pthread', 'Use pthread' ) )
 	params.Add( TernaryVariable( 'with_x', 'Use the X Window System' ) )
 	
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
+	
 	params.Add( PathVariable( 'prefix', 'System path', '/usr', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'includedir', 'System includes', '${prefix}/include', PathVariable.PathAccept ) )
@@ -373,6 +382,8 @@ elif parent_env['OSPosix']:
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
 	
 elif parent_env['OSWindows']:
+	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
+	
 	params.Add( PathVariable( 'programfiles', 'Window program files directory',
 		'@ProgramFiles', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'systemroot', 'Window system root directory',
@@ -696,6 +707,8 @@ scdirs.append( 'src/modules/video/apng' )
 
 scdirs.append( 'src/modules/archive/delga' )
 
+scdirs.append( 'src/modules/combined/fbx' )
+
 # launchers
 scdirs.append( 'src/launcher/console' )
 scdirs.append( 'src/launcher/gui' )
@@ -761,6 +774,9 @@ SConscript(dirs='installer', variant_dir='installer/build',
 # add aliases
 buildAll = []
 installAll = []
+installAllRuntime = []
+installEngineRuntime = []
+installIgdeRuntime = []
 doxygenAll = []
 clocAll = []
 clocReports = []
@@ -771,6 +787,16 @@ for key in parent_targets:
 	
 	if 'install' in parent_targets[ key ]:
 		installAll.append( parent_targets[ key ][ 'install' ] )
+		if 'install-runtime' in parent_targets[ key ]:
+			installAllRuntime.append( parent_targets[ key ][ 'install-runtime' ] )
+		else:
+			installAllRuntime.append( parent_targets[ key ][ 'install' ] )
+	
+	if 'install-engine-runtime' in parent_targets[key]:
+		installEngineRuntime.append(parent_targets[key]['install-engine-runtime'])
+	
+	if 'install-igde-runtime' in parent_targets[key]:
+		installIgdeRuntime.append(parent_targets[key]['install-igde-runtime'])
 	
 	if 'doxygen' in parent_targets[ key ]:
 		doxygenAll.append( parent_targets[ key ][ 'doxygen' ] )
@@ -788,6 +814,21 @@ targetInstallAll = parent_env.Alias( 'install', installAll )
 parent_targets[ 'install' ] = {
 	'name' : 'Install Everything',
 	'target' : targetInstallAll }
+
+targetInstallAllRuntime = parent_env.Alias( 'install_runtime', installAllRuntime )
+parent_targets[ 'install_runtime' ] = {
+	'name' : 'Install Everything Runtime (no development files)',
+	'target' : targetInstallAllRuntime }
+
+targetInstallEngineRuntime = parent_env.Alias('install_engine_runtime', installEngineRuntime)
+parent_targets['install_engine_runtime'] = {
+	'name' : 'Install Engine Runtime (no development files)',
+	'target' : targetInstallEngineRuntime }
+
+targetInstallIgdeRuntime = parent_env.Alias('install_igde_runtime', installIgdeRuntime)
+parent_targets['install_igde_runtime'] = {
+	'name' : 'Install IGDE Runtime (no development files)',
+	'target' : targetInstallIgdeRuntime }
 
 targetDoxygenAll = parent_env.Alias( 'doxygen', doxygenAll )
 parent_targets[ 'doxygen' ] = {

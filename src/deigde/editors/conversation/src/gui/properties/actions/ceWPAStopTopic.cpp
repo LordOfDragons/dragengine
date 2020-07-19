@@ -72,7 +72,7 @@ ceWPAStopTopic::~ceWPAStopTopic(){
 ///////////////
 
 ceCAStopTopic *ceWPAStopTopic::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatStopTopic ){
 		return ( ceCAStopTopic* )action;

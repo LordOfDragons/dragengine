@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +28,7 @@
 
 #include "igdeNativeFoxTextArea.h"
 #include "igdeNativeFoxResizer.h"
+#include "../../igdeContainer.h"
 #include "../../igdeTextArea.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../event/igdeAction.h"
@@ -124,6 +127,31 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 	}
 }
 
+igdeNativeFoxTextArea *igdeNativeFoxTextArea::CreateNativeWidget( igdeTextArea &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxTextArea( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxTextArea::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxTextArea::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -201,6 +229,74 @@ void igdeNativeFoxTextArea::UpdateEditable(){
 
 void igdeNativeFoxTextArea::Focus(){
 	pTextArea->setFocus();
+}
+
+int igdeNativeFoxTextArea::GetCursorPosition() const{
+	return pTextArea->getCursorPos();
+}
+
+void igdeNativeFoxTextArea::SetCursorPosition( int position ){
+	pTextArea->setCursorPos( position );
+}
+
+int igdeNativeFoxTextArea::GetCursorColumn() const{
+	return pTextArea->getCursorColumn();
+}
+
+int igdeNativeFoxTextArea::GetCursorRow() const{
+	return pTextArea->getCursorRow();
+}
+
+void igdeNativeFoxTextArea::SetCursorColumn( int column ){
+	pTextArea->setCursorColumn( column );
+}
+
+void igdeNativeFoxTextArea::SetCursorRow( int row ){
+	pTextArea->setCursorRow( row );
+}
+
+int igdeNativeFoxTextArea::GetTopLine() const{
+	int offset = pTextArea->getTopLine();
+	int line = 0;
+	
+	while( offset > 0 ){
+		line++;
+		offset = pTextArea->prevLine( offset );
+	}
+	
+	return line;
+}
+
+void igdeNativeFoxTextArea::SetTopLine( int line ){
+	pTextArea->setTopLine( pTextArea->nextLine( 0, line ) );
+}
+
+int igdeNativeFoxTextArea::GetBottomLine() const{
+	int offset = pTextArea->getBottomLine();
+	int line = 0;
+	
+	while( offset > 0 ){
+		line++;
+		offset = pTextArea->prevLine( offset );
+	}
+	
+	return line;
+}
+
+void igdeNativeFoxTextArea::SetBottomLine( int line ){
+	pTextArea->setBottomLine( pTextArea->nextLine( 0, line ) );
+}
+
+int igdeNativeFoxTextArea::GetLineCount() const{
+	return pTextArea->countLines( 0, pOwner->GetText().GetLength() ) + 1;
+}
+
+void igdeNativeFoxTextArea::UpdateColumns(){
+	pTextArea->setVisibleColumns( pOwner->GetColumns() );
+}
+
+void igdeNativeFoxTextArea::UpdateRows(){
+	pTextArea->setVisibleRows( pOwner->GetRows() );
 }
 
 
@@ -414,3 +510,5 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 		}
 	}
 }
+
+#endif

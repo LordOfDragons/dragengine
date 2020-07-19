@@ -128,7 +128,7 @@ class LoadSkinAnnotations extends BaseXmlLoader
 	public func void loadFromFiles( SkinAnnotations skinAnnotations, String directory, \
 	String pattern, bool recursive )
 		FileSystem.searchFiles( directory, recursive, block String each, FileType type
-			if type == FileType.file and FileSystem.pathMatchesPattern( each, pattern )
+			if type == FileType.file and FileSystem.pathMatchesPattern( File.new( each ).getName(), pattern )
 				this.loadFromFile( each, skinAnnotations )
 			end
 			return true

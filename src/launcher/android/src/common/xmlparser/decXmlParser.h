@@ -111,16 +111,16 @@ public:
 	/**
 	 * \brief The end of the XML file has been reached although not allowed yet.
 	 * 
-	 * \param line Line number where the error occured
-	 * \param pos Position from the beginning of the line where the error occured.
+	 * \param line Line number where the error occurred
+	 * \param pos Position from the beginning of the line where the error occurred.
 	 */
 	virtual void UnexpectedEOF( int line, int pos );
 	
 	/**
 	 * \brief A token has been parse that is not expected at this place.
 	 * 
-	 * \param line Line number where the error occured
-	 * \param pos Position from the beginning of the line where the error occured.
+	 * \param line Line number where the error occurred
+	 * \param pos Position from the beginning of the line where the error occurred.
 	 * \param token The unexpected token in unparsed form
 	 */
 	virtual void UnexpectedToken( int line, int pos, const char *token );

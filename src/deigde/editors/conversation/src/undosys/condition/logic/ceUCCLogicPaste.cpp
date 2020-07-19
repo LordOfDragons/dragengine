@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCCLogicPaste.h"
+#include "../ceUConditionHelpers.h"
 #include "../../../conversation/ceConversation.h"
 #include "../../../conversation/action/ceConversationAction.h"
 #include "../../../conversation/condition/ceCConditionLogic.h"
@@ -103,22 +104,60 @@ ceUCCLogicPaste::~ceUCCLogicPaste(){
 
 void ceUCCLogicPaste::Undo(){
 	const int count = pConditions.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	ceConversationCondition * const activateCondition = ActivateConditionAfterRemove();
+	
+	int i;
 	for( i=0; i<count; i++ ){
 		pLogic->GetConditions().Remove( pConditions.GetAt( i ) );
 	}
 	
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
+	
+	pTopic->SetActive( pAction, activateCondition ? activateCondition : pLogic );
 }
 
 void ceUCCLogicPaste::Redo(){
 	const int count = pConditions.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	int i;
 	for( i=0; i<count; i++ ){
 		pLogic->GetConditions().Add( pConditions.GetAt( i ) );
 	}
 	
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionStructureChanged( pAction );
+	
+	pTopic->SetActive( pAction, pConditions.GetAt( 0 ) );
+}
+
+ceConversationCondition *ceUCCLogicPaste::ActivateConditionAfterRemove() const{
+	if( pConditions.GetCount() == 0 ){
+		return NULL;
+	}
+	
+	int index = pLogic->GetConditions().IndexOf( pConditions.GetAt( pConditions.GetCount() - 1 ) );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( index < pLogic->GetConditions().GetCount() - 1 ){
+		return pLogic->GetConditions().GetAt( index + 1 );
+	}
+	
+	index = pLogic->GetConditions().IndexOf( pConditions.GetAt( 0 ) );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( index > 0 ){
+		return pLogic->GetConditions().GetAt( index - 1 );
+		
+	}else{
+		return NULL;
+	}
 }

@@ -99,9 +99,13 @@ ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){
 void ceUCAPChoiceOptionSetCondition::Undo(){
 	pOption->SetCondition( pOldCondition );
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	
+	pTopic->SetActive( pPlayerChoice, pOldCondition );
 }
 
 void ceUCAPChoiceOptionSetCondition::Redo(){
 	pOption->SetCondition( pNewCondition );
 	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	
+	pTopic->SetActive( pPlayerChoice, pNewCondition );
 }

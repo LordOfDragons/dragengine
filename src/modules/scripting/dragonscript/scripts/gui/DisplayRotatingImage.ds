@@ -29,59 +29,43 @@ pin Dragengine.Scenery
 /**
  * \brief Display rotating image in widget.
  * 
- * Display an image rotatable around a custom rotation center relative to
- * the image. The default rotation center is at (0.5,0.5) rotating the
- * image about the exact center of the widget.
+ * Display an image rotatable around a custom rotation center relative to the image.
+ * The default rotation center is at (0.5,0.5) rotating the image about the exact
+ * center of the widget.
  * 
- * Rotating images are useful to create various kinds of gauge displays
- * in a simple way. Once created adjust the rotation value to display
- * the appropriate amount.
+ * Rotating images are useful to create various kinds of gauge displays in a simple way.
+ * Once created adjust the rotation value to display the appropriate amount.
+ * 
+ * An optional offset can be set shifting the image relative to the center. A positive
+ * X coordinate shift value moves the image to the right of the center. Likewise a
+ * positive Y coordinate shift value moves the image upwards.
  */
-class DisplayRotatingImage extends Widget
-	private var CanvasImage pCanvasImage
+class DisplayRotatingImage extends DisplayImage
 	private var float pRotation
 	private var Vector2 pRotationCenter
 	private var Vector2 pImageOffset
 	private var float pScale
 	
 	
-	
 	/** \brief Create display rotating image widget. */
-	public func new() this( null )
+	public func new() this( null, RepeatMode.once )
 	end
 	
-	/** \brief Create display rotating image widget. */
-	public func new( Image image )
+	public func new( Image image ) this( image, RepeatMode.once )
+	end
+	
+	public func new( Image image, RepeatMode repeatMode ) super( image, repeatMode )
 		this.pRotation = 0
 		this.pRotationCenter = Vector2.new( 0.5, 0.5 )
 		this.pImageOffset = Vector2.new()
 		this.pScale = 1
-		
-		this.pCanvasImage = CanvasImage.new()
-		this.getCanvasContent().addCanvas( this.pCanvasImage )
-		
-		this.setImage( image )
+	end
+	
+	public func new( Image image, String designerSelector ) this( image )
+		this.setDesignerSelector( designerSelector )
 	end
 	
 	
-	
-	/** \brief Image to display or \em null if not set. */
-	public func Image getImage()
-		return this.pCanvasImage.getImage()
-	end
-	
-	/** \brief Set image to display or \em null if not set. */
-	public func void setImage( Image image )
-		if image == this.pCanvasImage.getImage()
-			return
-		end
-		
-		this.pCanvasImage.setImage( image )
-		
-		this.layoutParent()
-		this.resizeCanvasImage()
-		this.updateCanvasImage()
-	end
 	
 	/** \brief Rotation angle in degrees. */
 	public func float getRotation()
@@ -115,12 +99,12 @@ class DisplayRotatingImage extends Widget
 		this.updateCanvasImage()
 	end
 	
-	/** \brief Offset in pixels of image relative to rotation center. */
+	/** \brief Offset relative to full image size relative to rotation center. */
 	public func Vector2 getImageOffset()
 		return this.pImageOffset
 	end
 	
-	/** \brief Set offset in pixels of image relative to rotation center. */
+	/** \brief Set offset relative to full image size relative to rotation center. */
 	public func void setImageOffset( Vector2 offset )
 		if offset.equals( this.pImageOffset )
 			return
@@ -144,34 +128,6 @@ class DisplayRotatingImage extends Widget
 		
 		this.pScale = scale
 		
-		this.resizeCanvasImage()
-		this.updateCanvasImage()
-	end
-	
-	
-	
-	/** \brief Minimal size of widget. */
-	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
-			return super.getMinimumSize()
-		end
-		
-		var Image image = this.pCanvasImage.getImage()
-		if image == null
-			return super.getMinimumSize()
-		end
-		
-		return image.getSize()
-	end
-	
-	
-	
-	/**
-	 * \brief State changed.
-	 * \details Sends event to listeners.
-	 */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
 		this.updateCanvasImage()
 	end
 	
@@ -179,42 +135,34 @@ class DisplayRotatingImage extends Widget
 	
 	/** \brief Update canvas image. */
 	public func void updateCanvasImage()
-		if this.pCanvasImage.getImage() == null
+		super.updateCanvasImage()
+		
+		if this.getImage() == null or this.pRotationCenter == null
+			// pRotationCenter is null during construction time
 			return
 		end
 		
-		var Vector2 contentSize = Vector2.new( this.getCanvasContent().getSize() )
-		var Vector2 imageSize = Vector2.new( this.pCanvasImage.getImage().getSize() )
-		var float centerX = this.pRotationCenter.getX() * contentSize.getX()
-		var float centerY = this.pRotationCenter.getY() * contentSize.getY()
-		this.pCanvasImage.setTransform( \
-			TexMatrix2.newTranslation( imageSize * -0.5 - Vector2.new( this.pImageOffset ) ) \
+		var Point contentSize = this.getCanvasContent().getSize()
+		var Point center = Vector2.new( \
+			this.pRotationCenter.getX() * contentSize.getX(), \
+			this.pRotationCenter.getY() * contentSize.getY() ).round()
+		var CanvasImage canvasImage = this.getCanvasImage()
+		var Point imageSize = canvasImage.getSize()
+		var Point offset = Vector2.new( \
+			this.pImageOffset.getX() * imageSize.getX(), \
+			this.pImageOffset.getY() * imageSize.getY() ).round()
+		
+		canvasImage.setPosition( center - imageSize / 2 + offset )
+		
+		// tc-offset: -(size/2) + size*offset
+		var Vector2 shift = Vector2.new( \
+			imageSize.getX() * ( this.pImageOffset.getX() - 0.5 ), \
+			imageSize.getY() * ( this.pImageOffset.getY() - 0.5 ) )
+		
+		canvasImage.setTransform( \
+			TexMatrix2.newTranslation( shift ) \
 			* TexMatrix2.newScaling( this.pScale, this.pScale ) \
 			* TexMatrix2.newRotation( this.pRotation ) \
-			* TexMatrix2.newTranslation( centerX, centerY ) )
-		
-		if this.getEnabled()
-			this.pCanvasImage.setColorTransform( ColorMatrix.new() )
-			
-		else
-			this.pCanvasImage.setColorTransform( ColorMatrix.newSaturation( 0 ) * \
-				ColorMatrix.newContrast( 0.5 ) * ColorMatrix.newBrightness( 0.25 ) )
-		end
-	end
-	
-	/** \brief Resize canvas image. */
-	public func void resizeCanvasImage()
-		var Image image = this.pCanvasImage.getImage()
-		if image != null
-			this.pCanvasImage.setSize( image.getSize() )
-		end
-	end
-	
-	
-	
-	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasImage()
+			* TexMatrix2.newTranslation( -shift ) )
 	end
 end

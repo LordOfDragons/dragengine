@@ -85,22 +85,9 @@ void ceWPTMACreateAction::OnAction(){
 	igdeUndoReference undo;
 	undo.TakeOver( CreateUndo( action ) );
 	GetConversation().GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAction * const modelAction = model.DeepFindAction( action );
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }
 
-igdeUndo *ceWPTMACreateAction::CreateUndo( ceConversationAction *action ){
+igdeUndo *ceWPTMACreateAction::CreateUndo( ceConversationAction* ){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW( deeInvalidParam );

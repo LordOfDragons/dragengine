@@ -56,6 +56,12 @@ public:
 	
 	/** \brief Clean up timer. */
 	virtual ~igdeNativeFoxTimer();
+	
+	/** \brief Create native timer. */
+	static igdeNativeFoxTimer* CreateNativeTimer( igdeTimer &owner );
+	
+	/** \brief Destroy native timer. */
+	virtual void DestroyNativeTimer();
 	/*@}*/
 	
 	
@@ -76,5 +82,7 @@ public:
 	long onTimeout( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxTimer igdeNativeTimer;
 
 #endif

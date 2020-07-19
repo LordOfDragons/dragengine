@@ -36,13 +36,15 @@
 #include "../../resourceloader/dedsResourceLoader.h"
 
 #include <dragengine/deEngine.h>
-#include <libdscript/exceptions.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRigConstraint.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/rig/deBaseRigModule.h>
 
 // native structure
 struct sRigNatDat{
@@ -425,6 +427,31 @@ void deClassRig::nfShapeGetProperty::RunFunction( dsRunTime *rt, dsValue *myself
 
 
 
+// public func void save( String filename )
+deClassRig::nfSave::nfSave( const sInitData &init ) : dsFunction( init.clsRig,
+"save", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // filename
+}
+void deClassRig::nfSave::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	const deEngine &engine = *ds.GetGameEngine();
+	
+	deBaseRigModule * const module = ( deBaseRigModule* )engine.GetModuleSystem()->
+		GetModuleAbleToLoad( deModuleSystem::emtRig, filename );
+	if( ! module ){
+		DSTHROW_INFO( dueInvalidParam, "no module found to handle filename" );
+	}
+	
+	decBaseFileWriterReference writer;
+	writer.TakeOver( engine.GetRigManager()->OpenFileForWriting(
+		*engine.GetVirtualFileSystem(), filename ) );
+	module->SaveRig( writer, rig );
+}
+
+
+
 // public func int hashCode()
 deClassRig::nfHashCode::nfHashCode( const sInitData &init ) :
 dsFunction( init.clsRig, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -532,6 +559,8 @@ void deClassRig::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetShapes( init ) );
 	AddFunction( new nfShapeGetProperty( init ) );
+	
+	AddFunction( new nfSave( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

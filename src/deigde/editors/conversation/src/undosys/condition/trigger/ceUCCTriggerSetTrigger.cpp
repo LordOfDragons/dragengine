@@ -82,10 +82,10 @@ ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
 
 void ceUCCTriggerSetTrigger::Undo(){
 	pCondition->SetTrigger( pOldTrigger );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCTriggerSetTrigger::Redo(){
 	pCondition->SetTrigger( pNewTrigger );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

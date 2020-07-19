@@ -52,6 +52,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -187,6 +188,8 @@ void projWindowMain::SetProject( projProject *project ){
 	pPanelProfiles->SetProject( project );
 	pPanelTestRun->SetProject( project );
 	pPanelUndoHistory->SetProject( project );
+	
+	UpdateShowActionPath();
 }
 
 void projWindowMain::LoadProject(){
@@ -317,6 +320,40 @@ bool projWindowMain::SaveDocument( const char *filename ){
 
 void projWindowMain::OnGameProjectChanged(){
 	LoadProject();
+}
+
+void projWindowMain::UpdateShowActionPath(){
+	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
+	
+	decPath path;
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( gameProject.GetPathData() );
+	pActionShowContent->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/config" );
+	pActionShowConfig->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/overlay" );
+	pActionShowOverlay->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddComponent( "testRun.log" );
+	pActionShowLogs->SetPath( path.GetPathNative() );
+	
+	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : NULL;
+	if( profile ){
+		path.SetFromNative( gameProject.GetDirectoryPath() );
+		path.AddUnixPath( profile->GetDelgaPath() );
+		path.RemoveLastComponent();
+		pActionShowDelga->SetPath( path.GetPathNative() );
+		pActionShowDelga->SetEnabled( true );
+		
+	}else{
+		pActionShowDelga->SetPath( "" );
+		pActionShowDelga->SetEnabled( false );
+	}
 }
 
 
@@ -624,9 +661,8 @@ public:
 
 class cActionProfileDistribute : public cActionBase{
 public:
-	cActionProfileDistribute( projWindowMain &window ) : cActionBase( window,
-		"Distribute...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-		"Distribute selected profile", deInputEvent::ekcD ){}
+	cActionProfileDistribute( projWindowMain &window ) : cActionBase( window, "Build DELGA...",
+		window.GetIconDelga(), "Build DELGA file using selected profile", deInputEvent::ekcD ){}
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
@@ -658,8 +694,7 @@ public:
 class cActionProfileTestRun : public cActionBase{
 public:
 	cActionProfileTestRun( projWindowMain &window ) : cActionBase( window,
-		"Test-Run...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiQuit ),
-		"Test-Run selected profile", deInputEvent::ekcR ){}
+		"Test-Run...", window.GetIconStart(), "Test-Run selected profile", deInputEvent::ekcR ){}
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
@@ -689,12 +724,18 @@ public:
 //////////////////////
 
 void projWindowMain::pLoadIcons(){
+	pIconStart.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/start.png" ) );
+	pIconStop.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/stop.png" ) );
+	pIconKill.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/kill.png" ) );
+	pIconDelga.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/delga.png" ) );
 }
 
 void projWindowMain::pCreateActions(){
+	igdeEnvironment &env = GetEnvironment();
+	
 	pActionDistSave.TakeOver( new cActionDistSave( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
+	pActionEditUndo.TakeOver( new igdeActionUndo( env ) );
+	pActionEditRedo.TakeOver( new igdeActionRedo( env ) );
 	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
 	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
 	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
@@ -703,6 +744,26 @@ void projWindowMain::pCreateActions(){
 	pActionProfileDuplicate.TakeOver( new cActionProfileDuplicate( *this ) );
 	pActionProfileDistribute.TakeOver( new cActionProfileDistribute( *this ) );
 	pActionProfileTestRun.TakeOver( new cActionProfileTestRun( *this ) );
+	
+	pActionShowDelga.TakeOver( new igdeActionExternOpen( env,
+		"Browse DELGA", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open DELGA Directory in File Manager" ) );
+	
+	pActionShowContent.TakeOver( new igdeActionExternOpen( env,
+		"Browse Content", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Content directory in File Manager" ) );
+	
+	pActionShowConfig.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Config", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Configuration Directory in File Manager" ) );
+	
+	pActionShowOverlay.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Overlay", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time OverlayDirectory in File Manager" ) );
+	
+	pActionShowLogs.TakeOver( new igdeActionExternOpen( env,
+		"Open Run Logs", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Log File in External Application" ) );
 }
 
 void projWindowMain::pCreateToolBarDistribute(){
@@ -752,6 +813,9 @@ void projWindowMain::pCreateMenuDistribute( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand( menu, pActionDistSave );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionShowContent );
 }
 
 void projWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
@@ -774,5 +838,11 @@ void projWindowMain::pCreateMenuProfile( igdeMenuCascade &menu ){
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionProfileDistribute );
+	helper.MenuCommand( menu, pActionShowDelga );
+	
+	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionProfileTestRun );
+	helper.MenuCommand( menu, pActionShowLogs );
+	helper.MenuCommand( menu, pActionShowConfig );
+	helper.MenuCommand( menu, pActionShowOverlay );
 }

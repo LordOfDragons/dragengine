@@ -90,10 +90,17 @@ public:
 		empVariationU,
 		empVariationV,
 		empOutlineColor,
+		empOutlineColorTint,
 		empOutlineThickness,
 		empOutlineSolidity,
 		empOutlineEmissivity,
+		empOutlineEmissivityTint,
 		empOutlineEmissivityIntensity,
+		empRimEmissivity,
+		empRimEmissivityTint,
+		empRimEmissivityIntensity,
+		empRimAngle,
+		empRimExponent,
 		EMP_COUNT
 	};
 	
@@ -273,14 +280,22 @@ private:
 	int pParticleSheetCount;
 	
 	decColor pOutlineColor;
+	decColor pOutlineColorTint;
 	float pOutlineThickness;
 	bool pOutlineThicknessScreen;
 	float pOutlineSolidity;
 	decColor pOutlineEmissivity;
+	decColor pOutlineEmissivityTint;
 	float pOutlineEmissivityIntensity;
 	bool pHasOutline;
 	bool pIsOutlineSolid;
 	bool pIsOutlineEmissive;
+	
+	decColor pRimEmissivity;
+	decColor pRimEmissivityTint;
+	float pRimEmissivityIntensity;
+	float pRimAngle;
+	float pRimExponent;
 	
 	bool pQuickTransp;
 	
@@ -610,6 +625,36 @@ public:
 	/** Sets the absorption half intensity distance. */
 	void SetAbsorptionHalfIntensityDistance( float distance );
 	
+	/** \brief Rim emissivity. */
+	inline const decColor &GetRimEmissivity() const{ return pRimEmissivity; }
+	
+	/** \brief Set rim emissivity. */
+	void SetRimEmissivity( const decColor &emissivity );
+	
+	/** \brief Rim emissivity tint. */
+	inline const decColor &GetRimEmissivityTint() const{ return pRimEmissivityTint; }
+	
+	/** \brief Set rim emissivity tint. */
+	void SetRimEmissivityTint( const decColor &emissivity );
+	
+	/** \brief Rim emissivity intensity. */
+	inline float GetRimEmissivityIntensity() const{ return pRimEmissivityIntensity; }
+	
+	/** \brief Set rim emissivity intensity. */
+	void SetRimEmissivityIntensity( float intensity );
+	
+	/** \brief Rim angle. */
+	inline float GetRimAngle() const{ return pRimAngle; }
+	
+	/** \brief Set rim angle. */
+	void SetRimAngle( float angle );
+	
+	/** \brief Rim exponent. */
+	inline float GetRimExponent() const{ return pRimExponent; }
+	
+	/** \brief Set rim exponent. */
+	void SetRimExponent( float exponent );
+	
 	/** Determines if the texture is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }
 	/** Sets if the texture is shadeless. */
@@ -686,6 +731,12 @@ public:
 	/** \brief Set outline color. */
 	void SetOutlineColor( const decColor &color );
 	
+	/** \brief Outline color tint. */
+	inline const decColor &GetOutlineColorTint() const{ return pOutlineColorTint; }
+	
+	/** \brief Set outline color tint. */
+	void SetOutlineColorTint( const decColor &color );
+	
 	/** \brief Outline thickness. */
 	inline float GetOutlineThickness() const{ return pOutlineThickness; }
 	
@@ -709,6 +760,12 @@ public:
 	
 	/** \brief Set outline emissivity. */
 	void SetOutlineEmissivity( const decColor &emissivity );
+	
+	/** \brief Outline emissivity tint. */
+	inline const decColor &GetOutlineEmissivityTint() const{ return pOutlineEmissivityTint; }
+	
+	/** \brief Set outline emissivity tint. */
+	void SetOutlineEmissivityTint( const decColor &emissivity );
 	
 	/** \brief Outline emissivity intensity. */
 	inline float GetOutlineEmissivityIntensity() const{ return pOutlineEmissivityIntensity; }

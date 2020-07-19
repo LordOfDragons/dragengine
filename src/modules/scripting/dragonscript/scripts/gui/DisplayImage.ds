@@ -30,11 +30,10 @@ pin Dragengine.Scenery
  * \brief Display image.
  */
 class DisplayImage extends Widget
-	/** \brief Canvas image. */
 	private var CanvasImage pCanvasImage
-	
-	/** \brief Repeat mode. */
 	private var RepeatMode pRepeatMode
+	private var Image pImage
+	private var bool pProtectImageColorTransform
 	
 	
 	
@@ -42,34 +41,42 @@ class DisplayImage extends Widget
 	public func new() this( null, RepeatMode.once )
 	end
 	
-	/** \brief Create display image widget. */
 	public func new( Image image ) this( image, RepeatMode.once )
 	end
 	
-	/** \brief Create display image widget. */
 	public func new( Image image, RepeatMode repeatMode )
 		this.pRepeatMode = repeatMode
+		this.pImage = image
+		this.pProtectImageColorTransform = false
 		
 		this.pCanvasImage = CanvasImage.new()
 		this.pCanvasImage.setImage( image )
 		this.getCanvasContent().addCanvas( this.pCanvasImage )
 		
 		this.updateCanvasImage()
+		
+		this.setDesignerSelector( "Image" )
+	end
+	
+	public func new( Image image, String designerSelector ) this( image )
+		this.setDesignerSelector( designerSelector )
 	end
 	
 	
 	
 	/** \brief Image to display or \em null if not set. */
 	public func Image getImage()
-		return this.pCanvasImage.getImage()
+		return this.pImage
 	end
 	
 	/** \brief Set image to display. */
 	public func void setImage( Image image )
-		var Image oldImage = this.pCanvasImage.getImage()
-		if image == oldImage
+		if this.pImage == image
 			return
 		end
+		
+		var Image oldImage = this.pImage
+		this.pImage = image
 		
 		if this.isMinimumSizeSet()
 			// if the minimum size is set no layout is required since the result is the same
@@ -119,18 +126,44 @@ class DisplayImage extends Widget
 		this.updateCanvasImage()
 	end
 	
+	/** \brief Image color transform. */
+	public func ColorMatrix getImageColorTransform()
+		return this.pCanvasImage.getColorTransform()
+	end
+	
+	/** \brief Set color transformation. */
+	public func void setImageColorTransform( ColorMatrix transform )
+		this.pCanvasImage.setColorTransform( transform )
+	end
+	
+	/** \brief Protect custom set image color transform. */
+	public func bool getProtectImageColorTransform()
+		return this.pProtectImageColorTransform
+	end
+	
+	/** \brief Set protect custom set image color transform. */
+	public func void setProtectImageColorTransform( bool protect )
+		this.pProtectImageColorTransform = protect
+	end
+	
 	
 	
 	/** \brief Minimal size of widget. */
 	public func Point getMinimumSize()
-		var Image image = this.pCanvasImage.getImage()
-		if image == null or this.isMinimumSizeSet()
+		if this.pImage == null or this.isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		/*if this.pRepeatMode == RepeatMode.stretch
 			return Point.new()
 		end*/
-		return this.getPadding().getSize() + image.getSize()
+		return this.getPadding().getSize() + this.pImage.getSize()
+	end
+	
+	
+	
+	/** \brief Image canvas. */
+	protected func CanvasImage getCanvasImage()
+		return this.pCanvasImage
 	end
 	
 	
@@ -153,8 +186,7 @@ class DisplayImage extends Widget
 	
 	/** Update canvas image. */
 	public func void updateCanvasImage()
-		var Image image = this.pCanvasImage.getImage()
-		if image == null
+		if this.pImage == null
 			return
 		end
 		
@@ -167,7 +199,7 @@ class DisplayImage extends Widget
 			this.pCanvasImage.setRepeatX( 1 )
 			this.pCanvasImage.setRepeatY( 1 )
 			this.pCanvasImage.setPosition( position )
-			this.pCanvasImage.setSize( image.getSize() )
+			this.pCanvasImage.setSize( this.pImage.getSize() )
 			
 		case RepeatMode.stretch
 			this.pCanvasImage.setRepeatX( 1 )
@@ -176,8 +208,8 @@ class DisplayImage extends Widget
 			this.pCanvasImage.setSize( size )
 			
 		case RepeatMode.tileX
-			var int imageWidth = image.getWidth()
-			var int imageHeight = image.getHeight()
+			var int imageWidth = this.pImage.getWidth()
+			var int imageHeight = this.pImage.getHeight()
 			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / imageWidth + 1
 			this.pCanvasImage.setRepeatX( repeatX )
 			this.pCanvasImage.setRepeatY( 1 )
@@ -185,8 +217,8 @@ class DisplayImage extends Widget
 			this.pCanvasImage.setSize( Point.new( imageWidth * repeatX, imageHeight ) )
 			
 		case RepeatMode.tileY
-			var int imageWidth = image.getWidth()
-			var int imageHeight = image.getHeight()
+			var int imageWidth = this.pImage.getWidth()
+			var int imageHeight = this.pImage.getHeight()
 			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / imageHeight + 1
 			this.pCanvasImage.setRepeatX( 1 )
 			this.pCanvasImage.setRepeatY( repeatY )
@@ -194,22 +226,14 @@ class DisplayImage extends Widget
 			this.pCanvasImage.setSize( Point.new( imageWidth, imageHeight * repeatY ) )
 			
 		case RepeatMode.tile
-			var int imageWidth = image.getWidth()
-			var int imageHeight = image.getHeight()
+			var int imageWidth = this.pImage.getWidth()
+			var int imageHeight = this.pImage.getHeight()
 			var int repeatX = DEMath.max( size.getX() - 1, 0 ) / imageWidth + 1
 			var int repeatY = DEMath.max( size.getY() - 1, 0 ) / imageHeight + 1
 			this.pCanvasImage.setRepeatX( repeatX )
 			this.pCanvasImage.setRepeatY( repeatY )
 			this.pCanvasImage.setPosition( position )
 			this.pCanvasImage.setSize( Point.new( imageWidth * repeatX, imageHeight * repeatY ) )
-		end
-		
-		if this.getEnabled()
-			this.pCanvasImage.setColorTransform( ColorMatrix.new() )
-			
-		else
-			this.pCanvasImage.setColorTransform( ColorMatrix.newSaturation( 0.0 ) * \
-				ColorMatrix.newContrast( 0.5 ) * ColorMatrix.newBrightness( 0.25 ) )
 		end
 	end
 	

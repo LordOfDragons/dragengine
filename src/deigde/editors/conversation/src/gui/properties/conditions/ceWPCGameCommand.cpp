@@ -69,7 +69,7 @@ public:
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition || textField->GetText() == condition->GetCommand() ){
 			return;
@@ -91,7 +91,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -118,7 +118,7 @@ public:
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
-		ceConversationAction * const action = pPanel.GetParentPanel().GetAction();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
 		if( ! topic || ! action || ! condition ){
 			return;
@@ -159,7 +159,7 @@ ceWPCGameCommand::~ceWPCGameCommand(){
 ///////////////
 
 ceCConditionGameCommand *ceWPCGameCommand::GetCondition() const{
-	ceConversationCondition * const condition = pParentPanel.GetCondition();
+	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
 	if( condition && condition->GetType() == ceConversationCondition::ectGameCommand ){
 		return ( ceCConditionGameCommand* )condition;

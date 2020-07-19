@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1254,6 +1256,32 @@ pResizer( NULL )
 igdeNativeFoxViewCurveBezier::~igdeNativeFoxViewCurveBezier(){
 }
 
+igdeNativeFoxViewCurveBezier *igdeNativeFoxViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const nativeParent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! nativeParent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxViewCurveBezier( owner, nativeParent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxViewCurveBezier::PostCreateNativeWidget(){
+	const FXComposite &nativeParent = *( ( FXComposite* )pView->GetOwner().GetParent()->GetNativeContainer() );
+	if( nativeParent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxViewCurveBezier::DestroyNativeWidget(){
+	delete this;
+}
+
+
 
 long igdeNativeFoxViewCurveBezier::onResizerDrag( FXObject*, FXSelector, void *data ){
 	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( data );
@@ -1263,3 +1291,5 @@ long igdeNativeFoxViewCurveBezier::onResizerDrag( FXObject*, FXSelector, void *d
 	owner.SetDefaultSize( defaultSize );
 	return 0;
 }
+
+#endif

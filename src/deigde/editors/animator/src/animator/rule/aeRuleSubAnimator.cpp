@@ -103,9 +103,20 @@ void aeRuleSubAnimator::SetPathSubAnimator( const char *path ){
 }
 
 void aeRuleSubAnimator::LoadSubAnimator(){
-	// release the sub animator
-	pConnections.RemoveAll();
+	// clear connections only if not manually set
+	int i, count = pConnections.GetCount();
+	for( i=0; i<count; i++ ){
+		if( pConnections.GetAt( i ) ){
+			break;
+		}
+	}
 	
+	const bool autoConnections = i == count;
+	if( autoConnections ){
+		pConnections.RemoveAll();
+	}
+	
+	// release the sub animator
 	if( pSubAnimator ){
 		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
@@ -216,18 +227,18 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		}
 	}
 	
+	if( pSubAnimator && autoConnections ){
+		while( pConnections.GetCount() < pSubAnimator->GetControllerCount() ){
+			pConnections.Add( NULL );
+		}
+	}
+	
 	// if the engine rule exists assign sub animator
 	if( ! rule ){
 		return;
 	}
 	
 	rule->SetSubAnimator( pSubAnimator );
-	
-	if( pSubAnimator ){
-		while( pConnections.GetCount() < pSubAnimator->GetControllerCount() ){
-			pConnections.Add( NULL );
-		}
-	}
 	
 	pUpdateConnections( *rule );
 	NotifyRuleChanged();

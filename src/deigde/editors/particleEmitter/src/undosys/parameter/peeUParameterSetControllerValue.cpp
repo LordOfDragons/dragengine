@@ -48,7 +48,7 @@ peeUParameterSetControllerValue::peeUParameterSetControllerValue( peeType *type,
 	pOldController = NULL;
 	pNewController = NULL;
 	
-	SetShortInfo( "Set Paramater Value Curve Controller" );
+	SetShortInfo( "Set Parameter Value Curve Controller" );
 	
 	pOldController = parameter->GetControllerValue();
 	if( pOldController ){

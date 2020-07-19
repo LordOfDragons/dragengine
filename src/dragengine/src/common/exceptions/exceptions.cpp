@@ -183,5 +183,5 @@ deException( "TestCaseFailed", description ? description : "Test Case failed", f
 }
 
 deeAssertion::deeAssertion( const char *file, int line, const char *description ) :
-deException( "AssertionException", description ? description : "Assertion exception has occured", file, line ){
+deException( "AssertionException", description ? description : "Assertion exception has occurred", file, line ){
 }

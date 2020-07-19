@@ -64,14 +64,22 @@ class ConversationStrip
 	
 	/** Reads the strip from a file. */
 	static public func ConversationStrip readFromFile( FileReader reader )
-		var StringID id = StringID.new( reader.readString8() )
-		var float pause = reader.readFloat()
-		var float duration = reader.readFloat()
-		return ConversationStrip.new( id, pause, duration )
+		select reader.readByte() // version
+		case 0
+			var StringID id = StringID.new( reader.readString8() )
+			var float pause = reader.readFloat()
+			var float duration = reader.readFloat()
+			return ConversationStrip.new( id, pause, duration )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** Save game state. */
 	public func void writeToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString8( this.pID.toString() )
 		writer.writeFloat( this.pPause )
 		writer.writeFloat( this.pDuration )

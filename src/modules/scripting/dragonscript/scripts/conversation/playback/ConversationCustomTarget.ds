@@ -71,7 +71,13 @@ class ConversationCustomTarget implements Persistable
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pLocalMatrix = DMatrix.readFromFile( reader )
+		select reader.readByte() // version
+		case 0
+			this.pLocalMatrix = DMatrix.readFromFile( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Dispose of custom conversation target breaking cyclic references. */
@@ -123,6 +129,8 @@ class ConversationCustomTarget implements Persistable
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		this.pLocalMatrix.writeToFile( writer )
 	end
 end

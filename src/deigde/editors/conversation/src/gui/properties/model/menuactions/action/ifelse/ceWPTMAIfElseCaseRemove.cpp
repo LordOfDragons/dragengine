@@ -84,5 +84,5 @@ void ceWPTMAIfElseCaseRemove::OnAction(){
 	}
 	
 	modelIfElse->SetAsCurrentItem();
-	wptopic.SelectActiveAction();
+	wptopic.SelectActivePanel();
 }

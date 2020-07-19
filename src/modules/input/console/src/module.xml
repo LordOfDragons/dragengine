@@ -1,11 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>ConsoleInput</name>
 	<description>Processes input from a console. Supports only
 		keyboard input.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Input</type>
 	<fallback/>
 	<library>

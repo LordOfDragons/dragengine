@@ -64,42 +64,29 @@ pContentPosition( 0 )
 	if( ! reader ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	const int options = reader->ReadByte();
-	( void )options;
-	
-	pBufferIn = NULL;
-	pBufferInPosition = 0;
-	pBufferInSize = 0;
-	pContent = NULL;
-	pContentSize = 0;
-	pContentCapacity = 0;
-	pContentPosition = 0;
-	
-	z_stream * const zstream = new z_stream;
-	zstream->zalloc = NULL;
-	zstream->zfree = NULL;
-	zstream->opaque = NULL;
-	if( inflateInit( zstream ) != Z_OK ){
-		delete zstream;
-		DETHROW( deeOutOfMemory );
+	pInit( reader, false, 0 );
+}
+
+decZFileReader::decZFileReader( decBaseFileReader *reader, bool pureMode, int pureLength ) :
+pReader( NULL ),
+pFilePosition( 0 ),
+pFileLength( 0 ),
+
+pZStream( NULL ),
+
+pBufferIn( NULL ),
+pBufferInSize( 0 ),
+pBufferInPosition( 0 ),
+
+pContent( NULL ),
+pContentSize( 0 ),
+pContentCapacity( 0 ),
+pContentPosition( 0 )
+{
+	if( ! reader ){
+		DETHROW( deeInvalidParam );
 	}
-	
-	pBufferIn = new Bytef[ BUFFER_SIZE ];
-	pBufferInSize = BUFFER_SIZE;
-	pContent = malloc( BUFFER_SIZE );
-	pContentCapacity = BUFFER_SIZE;
-	
-	zstream->next_in = ( Bytef* )pBufferIn;
-	zstream->avail_in = 0;
-	zstream->next_out = ( Bytef* )pContent;
-	zstream->avail_out = pContentCapacity;
-	pZStream = zstream;
-	
-	pReader = reader;
-	pReader->AddReference();
-	pFileLength = reader->GetLength();
-	pFilePosition = 1; // one option byte read
+	pInit( reader, pureMode, pureLength );
 }
 
 decZFileReader::~decZFileReader(){
@@ -182,6 +169,54 @@ void decZFileReader::Read( void *buffer, int size ){
 }
 
 
+
+// Private Functions
+//////////////////////
+
+void decZFileReader::pInit( decBaseFileReader *reader, bool pureMode, int pureLength ){
+	const int options = pureMode ? 0 : reader->ReadByte();
+	( void )options;
+	
+	pBufferIn = NULL;
+	pBufferInPosition = 0;
+	pBufferInSize = 0;
+	pContent = NULL;
+	pContentSize = 0;
+	pContentCapacity = 0;
+	pContentPosition = 0;
+	
+	z_stream * const zstream = new z_stream;
+	zstream->zalloc = NULL;
+	zstream->zfree = NULL;
+	zstream->opaque = NULL;
+	if( inflateInit( zstream ) != Z_OK ){
+		delete zstream;
+		DETHROW( deeOutOfMemory );
+	}
+	
+	pBufferIn = new Bytef[ BUFFER_SIZE ];
+	pBufferInSize = BUFFER_SIZE;
+	pContent = malloc( BUFFER_SIZE );
+	pContentCapacity = BUFFER_SIZE;
+	
+	zstream->next_in = ( Bytef* )pBufferIn;
+	zstream->avail_in = 0;
+	zstream->next_out = ( Bytef* )pContent;
+	zstream->avail_out = pContentCapacity;
+	pZStream = zstream;
+	
+	pReader = reader;
+	pReader->AddReference();
+	
+	if( pureMode ){
+		pFileLength = pureLength;
+		pFilePosition = 0;
+		
+	}else{
+		pFileLength = reader->GetLength();
+		pFilePosition = 1; // one option byte read
+	}
+}
 
 void decZFileReader::pSetContentPosition( int position ){
 	if( position < 0 ){

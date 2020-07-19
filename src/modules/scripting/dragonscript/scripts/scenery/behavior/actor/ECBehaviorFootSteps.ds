@@ -680,17 +680,25 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var String id = reader.readString16()
-			if not id.empty()
-				this.setActiveConfigurationWithID( id, false )
+			select reader.readByte() // version
+			case 0
+				var String id = reader.readString16()
+				if not id.empty()
+					this.setActiveConfigurationWithID( id, false )
+				end
+				
+				this.pElapsed = reader.readFloat()
+				this.pNextEvent = reader.readInt()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			
-			this.pElapsed = reader.readFloat()
-			this.pNextEvent = reader.readInt()
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeString16( this.pActiveConfiguration != null if this.pActiveConfiguration.getID() else "" )
 			writer.writeFloat( this.pElapsed )
 			writer.writeInt( this.pNextEvent )

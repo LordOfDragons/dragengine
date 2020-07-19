@@ -56,19 +56,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-feLoadSaveFont::feLoadSaveFont( deBaseFontModule *module ){
-	if( ! module ) DETHROW( deeInvalidParam );
+feLoadSaveFont::feLoadSaveFont( deBaseFontModule *module ) :
+pModule( module )
+{
+	if( ! module ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	const decStringList &patternList = loadableModule.GetPatternList();
+	const int patternCount = patternList.GetCount();
+	int i;
 	
-	pModule = module;
-	
-	try{
-		SetName( loadableModule.GetName() );
-		SetPattern( loadableModule.GetPatternList().GetAt( 0 ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	pName = loadableModule.GetName();
+	for( i=0; i<patternCount; i++ ){
+		if( i > 0 ){
+			pPattern.AppendCharacter( ',' );
+		}
+		pPattern.AppendCharacter( '*' );
+		pPattern.Append( patternList.GetAt( i ) );
 	}
 }
 
@@ -82,14 +88,10 @@ feLoadSaveFont::~feLoadSaveFont(){
 ///////////////
 
 void feLoadSaveFont::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
 	pName = name;
 }
 
 void feLoadSaveFont::SetPattern( const char *pattern ){
-	if( ! pattern ) DETHROW( deeInvalidParam );
-	
 	pPattern = pattern;
 }
 
@@ -154,15 +156,15 @@ void feLoadSaveFont::LoadFont( const char *virtualPath, feFont *font, decBaseFil
 		// try to load the font
 		engFont = engine->GetFontManager()->CreateFont( "", directFontLoader );
 		
-		// store font informations
+		// store font information
 		font->SetFilePath( virtualPath );
 		font->SetLineHeight( engFont->GetLineHeight() );
 		font->SetColorFont( engFont->GetIsColorFont() );
 		
-		// store font image informations
+		// store font image information
 		fontImage.SetFilename( engFont->GetImagePath(), true );
 		
-		// store glyph informations
+		// store glyph information
 		const int glyphCount = engFont->GetGlyphCount();
 		int i;
 		

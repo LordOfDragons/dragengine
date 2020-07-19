@@ -1651,7 +1651,7 @@ void ceLoadSaveConversation::pReadTopic( const decXmlElementTag &root, ceConvers
 				if( strcmp( tag->GetName(), "actions" ) == 0 ){
 					pReadActionList( *tag, conversation, topic->GetActionList() );
 					if( topic->GetActionList().GetCount() > 0 ){
-						topic->SetActiveAction( topic->GetActionList().GetAt( 0 ) );
+						topic->SetActive( topic->GetActionList().GetAt( 0 ), NULL );
 					}
 					
 				}else{

@@ -279,12 +279,20 @@ class ECBehaviorComposed extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-			this.pChildrenCreated = flags.getAt( 0 )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+				this.pChildrenCreated = flags.getAt( 0 )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** Writes the element to a file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			var PersistencyFlags flags = PersistencyFlags.new( 1 )
 			flags.setAt( 0, this.pChildrenCreated )
 			flags.writeToFile( writer )

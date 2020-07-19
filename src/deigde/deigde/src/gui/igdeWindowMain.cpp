@@ -878,7 +878,7 @@ igdeGameDefinition *igdeWindowMain::CreateNewGameDefinition(){
 		path.AddComponent( "newproject" );
 		gamedef->SetBasePath( path.GetPathNative() );
 		
-		igdeXMLGameDefinition( GetLogger() ).Load( reader, *gamedef );
+		igdeXMLGameDefinition( pEnvironmentIGDE, GetLogger() ).Load( reader, *gamedef );
 		
 	}catch( const deException & ){
 		if( gamedef ){
@@ -1821,7 +1821,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	pIGDEGameDefinition->SetFilename( path.GetPathNative() );
 	pIGDEGameDefinition->SetBasePath( pConfiguration.GetPathShares() );
 	
-	igdeXMLGameDefinition( GetLogger() ).Load( reader, *pIGDEGameDefinition );
+	igdeXMLGameDefinition( pEnvironmentIGDE, GetLogger() ).Load( reader, *pIGDEGameDefinition );
 	
 	GetLogger()->LogInfoFormat( "IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString() );
@@ -1969,7 +1969,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collectFiles );
 	
 	const dePathList &pathList = collectFiles.GetFiles();
-	igdeXMLGameDefinition loadGameDef( &logger );
+	igdeXMLGameDefinition loadGameDef( pEnvironmentIGDE, &logger );
 	const int count = pathList.GetCount();
 	decBaseFileReaderReference reader;
 	int i;

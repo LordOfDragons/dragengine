@@ -88,9 +88,13 @@ ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){
 void ceUCAWaitSetCondition::Undo(){
 	pWait->SetCondition( pOldCondition );
 	pTopic->NotifyActionStructureChanged( pWait );
+	
+	pTopic->SetActive( pWait, pOldCondition );
 }
 
 void ceUCAWaitSetCondition::Redo(){
 	pWait->SetCondition( pNewCondition );
 	pTopic->NotifyActionStructureChanged( pWait );
+	
+	pTopic->SetActive( pWait, pNewCondition );
 }

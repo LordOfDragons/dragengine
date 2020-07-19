@@ -110,6 +110,8 @@ class deClassGame;
 class deClassGraphicSystem;
 class deClassHeightTerrain;
 class deClassImage;
+class deClassImagePixels;
+class deClassEditableImage;
 class deClassInputDevice;
 class deClassInputDeviceAxis;
 class deClassInputDeviceButton;
@@ -313,6 +315,8 @@ private:
 	deClassGraphicSystem *pClsGraSys;
 	deClassHeightTerrain *pClsHT;
 	deClassImage *pClsImg;
+	deClassImagePixels *pClsImagePixels;
+	deClassEditableImage *pClsEditableImage;
 	deClassInputEvent *pClsInpEvent;
 	deClassInputDevice *pClsInpDev;
 	deClassInputDeviceAxis *pClsInpDevAxis;
@@ -607,6 +611,8 @@ public:
 	inline deClassGraphicSystem *GetClassGraphicSystem() const{ return pClsGraSys; }
 	inline deClassHeightTerrain *GetClassHeightTerrain() const{ return pClsHT; }
 	inline deClassImage *GetClassImage() const{ return pClsImg; }
+	inline deClassImagePixels *GetClassImagePixels() const{ return pClsImagePixels; }
+	inline deClassEditableImage *GetClassEditableImage() const{ return pClsEditableImage; }
 	inline deClassInputDevice *GetClassInputDevice() const{ return pClsInpDev; }
 	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{ return pClsInpDevAxis; }
 	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{ return pClsInpDevBtn; }

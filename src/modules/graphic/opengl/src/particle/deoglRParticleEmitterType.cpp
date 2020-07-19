@@ -163,14 +163,14 @@ void deoglRParticleEmitterType::UpdateParameterSamples( const deParticleEmitterT
 	pParamFactorAngVelo = type.GetMaxAngularVelocity() / 127.0f;
 	
 	// create array if not existing yet. the array contain the sample values for
-	// 6 paramater curves sampled at 256 positions. this is enough since the particle
+	// 6 parameter curves sampled at 256 positions. this is enough since the particle
 	// data given to us is contained in byte values so precise sampling does not
 	// yield more data than this pre-sampling can yield
 	if( ! pParameterSamples ){
 		pParameterSamples = new float[ ESC_COUNT * 256 ]; // 3'072 entries = 12'288 bytes
 	}
 	
-	// sample the paramater curves into the array
+	// sample the parameter curves into the array
 	SampleParameters( escSizeProgress, escSizeBeam, type.GetParameter( deParticleEmitterType::epSize ) );
 	SampleParameters( escRedProgress, escRedBeam, type.GetParameter( deParticleEmitterType::epRed ) );
 	SampleParameters( escGreenProgress, escGreenBeam, type.GetParameter( deParticleEmitterType::epGreen ) );

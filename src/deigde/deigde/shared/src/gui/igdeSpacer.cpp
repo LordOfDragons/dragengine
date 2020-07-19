@@ -26,7 +26,7 @@
 #include "igdeSpacer.h"
 #include "native/toolkit.h"
 #include "igdeContainer.h"
-#include "native/fox/igdeNativeFoxSpacer.h"
+#include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -78,21 +78,9 @@ void igdeSpacer::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxSpacer * const native = new igdeNativeFoxSpacer( nativeParent,
-		pSize.x, pSize.y, igdeUIFoxHelper::GetChildLayoutFlags( this ) );
+	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeSpacer::DestroyNativeWidget(){
@@ -100,7 +88,7 @@ void igdeSpacer::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxSpacer* )GetNativeWidget();
+	( ( igdeNativeSpacer* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -108,6 +96,6 @@ void igdeSpacer::DestroyNativeWidget(){
 
 void igdeSpacer::OnSizeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxSpacer* )GetNativeWidget() )->SetSize( pSize.x, pSize.y );
+		( ( igdeNativeSpacer* )GetNativeWidget() )->SetSize( pSize.x, pSize.y );
 	}
 }

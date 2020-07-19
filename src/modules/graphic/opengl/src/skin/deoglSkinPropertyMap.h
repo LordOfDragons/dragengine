@@ -243,6 +243,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Outline color. */
 		eptOutlineColor,
 		
+		/** \brief Outline color tint. */
+		eptOutlineColorTint,
+		
 		/** \brief Outline thickness. */
 		eptOutlineThickness,
 		
@@ -255,8 +258,28 @@ namespace deoglSkinPropertyMap{
 		/** \brief Outline emissivity. */
 		eptOutlineEmissivity,
 		
+		/** \brief Outline emissivity tint. */
+		eptOutlineEmissivityTint,
+		
 		/** \brief Outline emissivity intensity. */
-		eptOutlineEmissivityIntensity
+		eptOutlineEmissivityIntensity,
+		
+		
+		
+		/** \brief Rim emissivity. */
+		eptRimEmissivity,
+		
+		/** \brief Rim emissivity tint. */
+		eptRimEmissivityTint,
+		
+		/** \brief Rim emissivity intensity. */
+		eptRimEmissivityIntensity,
+		
+		/** \brief Rim angle. */
+		eptRimAngle,
+		
+		/** \brief Rim exponent. */
+		eptRimExponent
 	};
 	
 	/** \brief Type for texture property number. */

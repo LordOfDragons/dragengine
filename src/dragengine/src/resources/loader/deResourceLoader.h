@@ -42,7 +42,7 @@ class deVirtualFileSystem;
  * 
  * Requests for the same resource are grouped together and placed in the retrieval queue only
  * once. The scripting module is responsible to track multiple requests for the same resource.
- * A resource is uniquely identified by the path and resource type. This informations are also
+ * A resource is uniquely identified by the path and resource type. This information are also
  * returned in retrieval queries and can be used to match up with one or more requests made by
  * the game scripts.
  * 

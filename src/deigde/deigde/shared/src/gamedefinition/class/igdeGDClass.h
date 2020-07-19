@@ -80,7 +80,7 @@ private:
 	igdeGDCamera *pCamera;
 	bool pHasCamera;
 	bool pIsGhost;
-	bool pCanInstanciate;
+	bool pCanInstantiate;
 	decString pCategory;
 	igdeGDPropertyList pListProperties;
 	decStringDictionary pPropertyValues;
@@ -165,10 +165,10 @@ public:
 	void SetIsGhost( bool isGhost );
 	
 	/** \brief Object can be instantiated. */
-	inline bool GetCanInstanciate() const{ return pCanInstanciate; }
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** \brief Set if object can be instantiated. */
-	void SetCanInstanciate( bool canInstanciate );
+	void SetCanInstantiate( bool canInstantiate );
 	
 	/** \brief Hide tags. */
 	inline igdeTagManager &GetHideTags(){ return pHideTags; }

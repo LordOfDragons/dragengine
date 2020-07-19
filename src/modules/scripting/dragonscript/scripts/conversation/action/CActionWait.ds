@@ -63,14 +63,20 @@ class CActionWait extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
-		this.pInterval = reader.readFloat()
-		
-		var int i, count = reader.readUShort()
-		this.pActions = Array.new()
-		for i = 0 to count
-			this.pActions.add( env.readObject( reader ) )
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+		select reader.readByte() // version
+		case 0
+			this.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+			this.pInterval = reader.readFloat()
+			
+			var int i, count = reader.readUShort()
+			this.pActions = Array.new()
+			for i = 0 to count
+				this.pActions.add( env.readObject( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
@@ -151,6 +157,10 @@ class CActionWait extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
+		
 		env.writeObjectOrNull( writer, this.pCondition )
 		writer.writeFloat( this.pInterval )
 		

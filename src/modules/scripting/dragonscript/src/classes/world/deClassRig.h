@@ -98,6 +98,8 @@ private:
 	DEF_NATFUNC( nfGetShapes );
 	DEF_NATFUNC( nfShapeGetProperty );
 	
+	DEF_NATFUNC( nfSave );
+	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );
 #undef DEF_NATFUNC

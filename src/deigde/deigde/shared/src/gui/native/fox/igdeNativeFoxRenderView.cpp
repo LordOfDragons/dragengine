@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -142,6 +144,34 @@ igdeNativeFoxRenderView::~igdeNativeFoxRenderView(){
 	getApp()->removeTimeout( this, ID_TIMEOUT_RETRY_MAP );
 }
 
+igdeNativeFoxRenderView *igdeNativeFoxRenderView::CreateNativeWidget( igdeViewRenderWindow &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxRenderView( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+}
+
+void igdeNativeFoxRenderView::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	
+	if( ! parent.id() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	create();
+}
+
+void igdeNativeFoxRenderView::DestroyNativeWidget(){
+	delete this;
+}
+
+
 
 // Management
 ///////////////
@@ -170,6 +200,28 @@ bool igdeNativeFoxRenderView::IsReallyVisible() const{
 	}
 	
 	return true;
+}
+
+bool igdeNativeFoxRenderView::IsShown() const{
+	return shown();
+}
+
+decPoint igdeNativeFoxRenderView::GetSize() const{
+	return decPoint( getWidth(), getHeight() );
+}
+
+void igdeNativeFoxRenderView::OnFrameUpdate(){
+	// window updates are rendered to the window by the graphic module. FOX does not notice
+	// this update so we have to tell it outself. for this we need to check if the window is
+	// visible on screen. this check is required since there is no way to figure out otherwise
+	// if the window is actually visible on screen or hidden (either itself or a parent
+	// somewhere up the chain). disabling rendering here is important since otherwise strange
+	// UI artifacts can happen
+	
+	// update only if painting is enabled
+	if( pOwner->GetRenderWindow()->GetPaint() ){
+		update();
+	}
 }
 
 
@@ -727,3 +779,5 @@ void igdeNativeFoxRenderView::pSyncSizes(){
 		canvasBackground->SetSize( decPoint( width, height ) );
 	}
 }
+
+#endif

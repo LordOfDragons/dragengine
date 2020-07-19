@@ -109,7 +109,6 @@ class ECBehaviorOutline extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorOutline pECBehavior
 		private var Component pComponent
-		private var ColliderComponent pCollider
 		private var DynamicSkin pDynamicSkin
 		private var Skin pSkin
 		private var Color pColor
@@ -129,27 +128,32 @@ class ECBehaviorOutline extends DefaultECBehavior
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
 			var BehaviorElement element = this.getElement()
+			var ElementClass eclass = element.getClass()
+			var CodecPropertyString codec = eclass.getSharedCodecPropertyString()
+			
 			var Component component = this.pECBehavior.getComponent().instance( element ).getComponent()
-			var CodecPropertyString codec = element.getClass().getSharedCodecPropertyString()
-			this.pSkin = this.pECBehavior.getSkin().getSkin( stub, element.getClass() )
+			this.pSkin = this.pECBehavior.getSkin().getSkin( stub, eclass )
 			this.pColor = this.pECBehavior.getColor().getColor( stub, codec )
 			this.pIntensity = this.pECBehavior.getIntensity().getValue( stub )
 			this.pThickness = this.pECBehavior.getThickness().getValue( stub )
 			
-			this.pComponent = Component.new( component.getModel(), this.pSkin )
-			this.pComponent.setRig( component.getRig() )
+			var Model model = this.pECBehavior.getModel().getModel( stub, eclass )
+			if model == null
+				model = component.getModel()
+			end
+			
+			var Rig rig = this.pECBehavior.getRig().getRig( stub, eclass )
+			if rig == null
+				rig = component.getRig()
+			end
+			
+			this.pComponent = Component.new( model, this.pSkin )
+			this.pComponent.setRig( rig )
 			this.pComponent.setLayerMask( component.getLayerMask() )
 			this.pComponent.setVisible( this.pVisible )
 			this.pComponent.setPosition( component.getPosition() )
 			this.pComponent.setOrientation( component.getOrientation() )
 			this.pComponent.setScaling( component.getScaling() )
-			
-			this.pCollider = ColliderComponent.new()
-			this.pCollider.setResponseType( CollisionResponse.kinematic )
-			this.pCollider.setComponent( this.pComponent )
-			this.pCollider.setEnabled( false )
-			this.pCollider.setUseLocalGravity( true )
-			this.pCollider.setGeometry( component.getPosition(), component.getOrientation(), component.getScaling() )
 			
 			this.pDynamicSkin = DynamicSkin.new()
 			this.pDynamicSkin.addRenderable( "color", DynamicSkinRenderableType.color )
@@ -170,10 +174,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 				var Collider collider = this.pECBehavior.getCollider().instance( element ).getCollider()
 				if collider != null
 					if collider castable ColliderRig
-						( collider cast ColliderRig ).attachRig( this.pCollider )
+						( collider cast ColliderRig ).attachRig( this.pComponent )
 						
 					else
-						collider.attachStatic( this.pCollider, Vector.new(), Quaternion.new() )
+						collider.attachStatic( this.pComponent, Vector.new(), Quaternion.new() )
 					end
 				end
 			end
@@ -189,11 +193,6 @@ class ECBehaviorOutline extends DefaultECBehavior
 		/** \brief Outline component. */
 		public func Component getComponent()
 			return this.pComponent
-		end
-		
-		/** \brief Outline collider. */
-		public func Collider getCollider()
-			return this.pCollider
 		end
 		
 		/** \brief Dynamic skin. */
@@ -278,16 +277,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 			if this.pComponent != null
 				this.getElement().getGameWorld().getWorld().addComponent( this.pComponent )
 			end
-			if this.pCollider != null
-				this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
-			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pCollider != null
-				this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
-			end
 			if this.pComponent != null
 				this.getElement().getGameWorld().getWorld().removeComponent( this.pComponent )
 			end
@@ -329,6 +322,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 	private var ECBehaviorComponent pComponent
 	private var ECBehaviorCollider pCollider
 	private var ECPSkin pSkin
+	private var ECPModel pModel
+	private var ECPRig pRig
 	private var ECPColor pColor
 	private var ECPFloat pIntensity
 	private var ECPFloat pThickness
@@ -359,7 +354,13 @@ class ECBehaviorOutline extends DefaultECBehavior
 		this.pSkin = ECPSkin.new( prefix + "skin", "/shareddata/materials/outlined.deskin" )
 		eclass.addProperty( this.pSkin )
 		
-		this.pColor = ECPColor.new( prefix + "color" )
+		this.pModel = ECPModel.new( prefix + "model" )
+		eclass.addProperty( this.pModel )
+		
+		this.pRig = ECPRig.new( prefix + "rig" )
+		eclass.addProperty( this.pRig )
+		
+		this.pColor = ECPColor.new( prefix + "color", Color.black )
 		eclass.addProperty( this.pColor )
 		
 		this.pIntensity = ECPFloat.new( prefix + "intensity", 0, 0 )
@@ -393,6 +394,16 @@ class ECBehaviorOutline extends DefaultECBehavior
 	/** \brief Skin property. */
 	public func ECPSkin getSkin()
 		return this.pSkin
+	end
+	
+	/** \brief Model property. */
+	public func ECPModel getModel()
+		return this.pModel
+	end
+	
+	/** \brief Rig property. */
+	public func ECPRig getRig()
+		return this.pRig
 	end
 	
 	/** \brief Color property. */

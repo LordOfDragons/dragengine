@@ -45,6 +45,9 @@
 
 #include "../../testrun/projTestRunConstants.h"
 
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/module/igdeEditorModule.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -63,8 +66,6 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/deSynthesizerSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
-
-#include <deigde/gameproject/igdeGameProject.h>
 
 
 
@@ -251,7 +252,14 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 		HANDLE pipesOutRead = INVALID_HANDLE_VALUE;
 		HANDLE pipesOutWrite = INVALID_HANDLE_VALUE;
 		SECURITY_ATTRIBUTES secattr;
-		TCHAR cmdline[] = TEXT( "DEIGDEProjectTestRun" );
+		
+		decPath pathTestRunner( decPath::CreatePathNative( pWindowMain.GetEditorModule().GetEditorPathLib() ) );
+		pathTestRunner.AddComponent( "testrunner.exe" );
+		const decString strPathTestRunner( pathTestRunner.GetPathNative() );
+		
+		wchar_t widePath[ MAX_PATH ];
+		deOSWindows::Utf8ToWide( strPathTestRunner, widePath, MAX_PATH );
+		
 		PROCESS_INFORMATION procInfo;
 		STARTUPINFO startInfo;
 		DWORD bytesWritten = 0;
@@ -295,7 +303,7 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if( ! CreateProcess( NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo ) ){
+			if( ! CreateProcess( NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo ) ){
 				DETHROW( deeInvalidAction );
 			}
 			
@@ -395,7 +403,10 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 			}
 			*/
 			
-			execlp( "deigde_project_testrun", "deigde_project_testrun", arg1, arg2, NULL );
+			decPath pathTestRunner( decPath::CreatePathNative( pWindowMain.GetEditorModule().GetEditorPathLib() ) );
+			pathTestRunner.AddComponent( "testrunner" );
+			const decString strPathTestRunner( pathTestRunner.GetPathNative() );
+			execlp( strPathTestRunner.GetString(), "testrunner", arg1, arg2, NULL );
 			// we should never get here or something went wrong
 			exit( 0 );
 		}

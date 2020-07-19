@@ -256,13 +256,16 @@ void igdeDEParameters::UpdateModulesList(){
 	pCBModule->RemoveAllItems();
 	for( i=0; i<count; i++ ){
 		deLoadableModule * const loadableModule = moduleSystem.GetModuleAt( i );
-		pCBModule->AddItem( loadableModule->GetName(), NULL, loadableModule );
+		if( ! pCBModule->HasItem( loadableModule->GetName() ) ){
+			pCBModule->AddItem( loadableModule->GetName() );
+		}
 	}
 	pCBModule->SortItems();
 }
 
 deLoadableModule *igdeDEParameters::GetSelectedModule() const{
-	return pCBModule->GetSelectedItem() ? ( deLoadableModule* )pCBModule->GetSelectedItem()->GetData() : NULL;
+	return pCBModule->GetSelectedItem() ? GetEngine()->GetModuleSystem()->
+		GetModuleNamed( pCBModule->GetSelectedItem()->GetText() ) : NULL;
 }
 
 const decString &igdeDEParameters::GetSelectedParameter() const{

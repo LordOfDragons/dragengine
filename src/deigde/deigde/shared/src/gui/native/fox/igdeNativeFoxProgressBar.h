@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _IGDENATIVEFOXTEXTAREA_H_
-#define _IGDENATIVEFOXTEXTAREA_H_
+#ifndef _IGDENATIVEFOXPROGRESSBAR_H_
+#define _IGDENATIVEFOXPROGRESSBAR_H_
 
 #include "foxtoolkit.h"
 
@@ -59,6 +59,15 @@ public:
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxProgressBar();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxProgressBar* CreateNativeWidget( igdeProgressBar &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -78,5 +87,7 @@ public:
 	static int ProgressBarPadBottom( const igdeGuiTheme &guitheme );
 	/*@}*/
 };
+
+typedef igdeNativeFoxProgressBar igdeNativeProgressBar;
 
 #endif

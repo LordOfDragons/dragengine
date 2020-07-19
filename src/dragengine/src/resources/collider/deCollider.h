@@ -66,7 +66,7 @@ class deWorld;
  * ertPhysics causes a physical response to be calculated by the
  * Physics Module. The Scripting Module is notified using its peer
  * about the collision. You are responsible there to provide
- * informations about the surfaces getting in contact to allow the
+ * information about the surfaces getting in contact to allow the
  * Physics Module to calculate a proper physical reaction to the
  * collision.
  *

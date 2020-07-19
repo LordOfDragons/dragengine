@@ -120,7 +120,7 @@ public:
 	/** Sets the linked component or NULL to clear the link. */
 	void SetLinkedComponent( debpComponent *component );
 	
-	// informations
+	// information
 	/** Retrieves the predicted displacement. */
 	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
 	/** Retrieves the predicted rotation. */

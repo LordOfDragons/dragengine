@@ -111,7 +111,7 @@ public:
 	/**
 	 * \brief Check if a full rebuild of the animator instance is required.
 	 */
-	virtual bool RebuildInstance();
+	virtual bool RebuildInstance() const;
 	
 	/** \brief Apply to animator. */
 	virtual void Apply( dearBoneStateList &stalist ) = 0;

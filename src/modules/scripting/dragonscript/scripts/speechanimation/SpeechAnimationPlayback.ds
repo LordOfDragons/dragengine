@@ -270,26 +270,34 @@ class SpeechAnimationPlayback
 	
 	/** Reads the element from a file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var int controller
-		var float duration
-		
-		this.pSpeaking = env.readBool( reader )
-		
-		var int i, count = reader.readUShort()
-		this.pPhonemes.removeAll()
-		for i = 0 to count
-			controller = reader.readUShort() - 1
-			duration = reader.readFloat()
-			this.pPhonemes.add( Phoneme.new( controller, duration ) )
+		select reader.readByte() // version
+		case 0
+			var int controller
+			var float duration
+			
+			this.pSpeaking = env.readBool( reader )
+			
+			var int i, count = reader.readUShort()
+			this.pPhonemes.removeAll()
+			for i = 0 to count
+				controller = reader.readUShort() - 1
+				duration = reader.readFloat()
+				this.pPhonemes.add( Phoneme.new( controller, duration ) )
+			end
+			
+			this.pDuration = reader.readFloat()
+			this.pPosition = reader.readShort()
+			this.pElapsed = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		this.pDuration = reader.readFloat()
-		this.pPosition = reader.readShort()
-		this.pElapsed = reader.readFloat()
 	end
 	
 	/** Writes the element to a file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeBool( writer, this.pSpeaking )
 		
 		writer.writeUShort( this.pPhonemes.getCount() )

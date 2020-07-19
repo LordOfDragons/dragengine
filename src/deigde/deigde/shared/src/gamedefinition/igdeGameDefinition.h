@@ -42,7 +42,7 @@ class deVirtualFileSystem;
 /**
  * \brief Base Game Definition Class.
  * 
- * Stores informations about a game including the available object classes,
+ * Stores information about a game including the available object classes,
  * world properties, sector properties and default engine objects for the
  * case of broken links.
  */

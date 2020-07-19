@@ -81,9 +81,9 @@ private:
 	deDebugDrawerShape *pDDSCorners;
 	deDebugDrawerShape *pDDSNormals;
 	deDebugDrawerShape *pDDSMismatching;
-	deDebugDrawerShape *pDDSHilightCostType;
+	deDebugDrawerShape *pDDSHighlightCostType;
 	
-	int pDebugLastHilightCostType;
+	int pDebugLastHighlightCostType;
 	
 	
 	
@@ -252,8 +252,8 @@ public:
 	/** \brief Debug drawer shape for mismatches or \em NULL. */
 	inline deDebugDrawerShape *GetDDSMismatching() const{ return pDDSMismatching; }
 	
-	/** \brief Debug drawer shape for hilighting cost types or \em NULL. */
-	inline deDebugDrawerShape *GetDDSHilightCostType() const{ return pDDSHilightCostType; }
+	/** \brief Debug drawer shape for highlighting cost types or \em NULL. */
+	inline deDebugDrawerShape *GetDDSHighlightCostType() const{ return pDDSHighlightCostType; }
 	
 	
 	

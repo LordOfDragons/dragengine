@@ -73,6 +73,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pReset();
 };
 
 #endif

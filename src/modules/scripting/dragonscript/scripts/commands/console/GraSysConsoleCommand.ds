@@ -54,7 +54,7 @@ class GraSysConsoleCommand extends SystemConsoleCommand
 		
 		if params.getAt( 0 ).equals( "setWindowGeometry" )
 			if params.getCount() < 4 
-				console.addMessage( "invalid paramaters" )
+				console.addMessage( "invalid parameters" )
 				return
 			end
 			
@@ -71,7 +71,7 @@ class GraSysConsoleCommand extends SystemConsoleCommand
 			
 		elif params.getAt( 0 ).equals( "setWindowTitle" )
 			if params.getCount() < 2
-				console.addMessage( "invalid paramaters" )
+				console.addMessage( "invalid parameters" )
 				return
 			end
 			

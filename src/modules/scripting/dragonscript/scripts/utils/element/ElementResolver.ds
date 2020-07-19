@@ -257,12 +257,21 @@ class ElementResolver
 		end
 		
 		var Element element
+		var int index
+		
 		this.pRequests.forEach( block Request each
 			element = gameWorld.getElementWithID( each.getID() )
 			if element == null
 				throw ResolveException.new( each.getID() )
 			end
-			each.getBlock().run( element )
+			
+			index = each.getBehaviorInstanceIndex()
+			if index != -1
+				each.getBlock().run( ( element cast BehaviorElement ).getInstanceAt( index ) )
+				
+			else
+				each.getBlock().run( element )
+			end
 		end )
 		
 		this.pRequests.removeAll()

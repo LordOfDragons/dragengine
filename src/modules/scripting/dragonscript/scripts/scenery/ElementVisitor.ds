@@ -47,6 +47,11 @@ class ElementVisitor
 		this.visitBehaviorElement( element )
 	end
 	
+	/** \brief Visit physics element. */
+	public func void visitPhysicsElement( PhysicsElement element )
+		this.visitBehaviorElement( element )
+	end
+	
 	/** \brief Visit ghost element. */
 	public func void visitGhostElement( GhostElement element )
 		this.visitBehaviorElement( element )

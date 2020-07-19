@@ -394,7 +394,7 @@ public:
 	 * The calculated angles are not unique and different rotation
 	 * vectors lead usually to the same matrix. The calculated rotation
 	 * vector is garanteed to produce the matrix it has been calculated
-	 * from. Furthermore there exist ambigious situations where the
+	 * from. Furthermore there exist ambiguous situations where the
 	 * calculated rotation vector is undefined. You should avoid using
 	 * this function if you can.
 	 */

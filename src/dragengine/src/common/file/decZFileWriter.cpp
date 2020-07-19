@@ -58,40 +58,25 @@ pBufferOutSize( 0 )
 	if( ! writer ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	writer->WriteByte( 0 ); // options in case we want to expand on functionality internally
-	
-	pBufferIn = NULL;
-	pBufferInPosition = 0;
-	pBufferInSize = 0;
-	pBufferOut = NULL;
-	pBufferOutSize = 0;
-	
-	z_stream * const zstream = new z_stream;
-	memset( zstream, 0, sizeof( z_stream ) );
-	zstream->zalloc = NULL;
-	zstream->zfree = NULL;
-	zstream->opaque = NULL;
-	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
-	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
-	if( deflateInit( zstream, Z_DEFAULT_COMPRESSION ) != Z_OK ){
-		delete zstream;
-		DETHROW( deeOutOfMemory );
+	pInit( writer, false );
+}
+
+decZFileWriter::decZFileWriter( decBaseFileWriter *writer, bool pureMode ) :
+pWriter( NULL ),
+
+pZStream( NULL ),
+
+pBufferIn( NULL ),
+pBufferInSize( 0 ),
+pBufferInPosition( 0 ),
+
+pBufferOut( NULL ),
+pBufferOutSize( 0 )
+{
+	if( ! writer ){
+		DETHROW( deeInvalidParam );
 	}
-	
-	pBufferIn = new Bytef[ BUFFER_SIZE ];
-	pBufferInSize = BUFFER_SIZE;
-	pBufferOut = new Bytef[ BUFFER_SIZE ];
-	pBufferOutSize = BUFFER_SIZE;
-	
-	zstream->next_in = ( Bytef* )pBufferIn;
-	zstream->avail_in = 0;
-	zstream->next_out = ( Bytef* )pBufferOut;
-	zstream->avail_out = pBufferOutSize;
-	pZStream = zstream;
-	
-	pWriter = writer;
-	pWriter->AddReference();
+	pInit( writer, pureMode );
 }
 
 decZFileWriter::~decZFileWriter(){
@@ -213,4 +198,47 @@ void decZFileWriter::EndZWriting(){
 	if( deflateEnd( zstream ) != Z_OK ){
 		DETHROW( deeInvalidParam );
 	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void decZFileWriter::pInit( decBaseFileWriter *writer, bool pureMode ){
+	if( ! pureMode ){
+		writer->WriteByte( 0 ); // options in case we want to expand on functionality internally
+	}
+	
+	pBufferIn = NULL;
+	pBufferInPosition = 0;
+	pBufferInSize = 0;
+	pBufferOut = NULL;
+	pBufferOutSize = 0;
+	
+	z_stream * const zstream = new z_stream;
+	memset( zstream, 0, sizeof( z_stream ) );
+	zstream->zalloc = NULL;
+	zstream->zfree = NULL;
+	zstream->opaque = NULL;
+	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
+	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
+	if( deflateInit( zstream, Z_DEFAULT_COMPRESSION ) != Z_OK ){
+		delete zstream;
+		DETHROW( deeOutOfMemory );
+	}
+	
+	pBufferIn = new Bytef[ BUFFER_SIZE ];
+	pBufferInSize = BUFFER_SIZE;
+	pBufferOut = new Bytef[ BUFFER_SIZE ];
+	pBufferOutSize = BUFFER_SIZE;
+	
+	zstream->next_in = ( Bytef* )pBufferIn;
+	zstream->avail_in = 0;
+	zstream->next_out = ( Bytef* )pBufferOut;
+	zstream->avail_out = pBufferOutSize;
+	pZStream = zstream;
+	
+	pWriter = writer;
+	pWriter->AddReference();
 }

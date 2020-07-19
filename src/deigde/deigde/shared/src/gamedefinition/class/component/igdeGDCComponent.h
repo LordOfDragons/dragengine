@@ -33,7 +33,7 @@
 /**
  * \brief Game Definition Component.
  * 
- * Contains informations about a component used to display the element
+ * Contains information about a component used to display the element
  * inside the editor.
  */
 class igdeGDCComponent : public deObject{

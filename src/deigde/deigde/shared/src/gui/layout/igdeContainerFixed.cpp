@@ -24,59 +24,10 @@
 #include <string.h>
 
 #include "igdeContainerFixed.h"
-#include "../native/toolkit.h"
 #include "../igdeWidget.h"
+#include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
-
-
-
-// Native Widget
-//////////////////
-
-class igdeNativeFoxLayoutFixed : public FXPacker{
-	FXDECLARE( igdeNativeFoxLayoutFixed )
-	
-protected:
-	igdeNativeFoxLayoutFixed();
-	
-private:
-	igdeContainerFixed *pOwner;
-	
-public:
-	igdeNativeFoxLayoutFixed( igdeContainerFixed &owner, FXComposite *parent, int layoutFlags );
-	virtual ~igdeNativeFoxLayoutFixed();
-	
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-};
-
-
-FXDEFMAP( igdeNativeFoxLayoutFixed ) igdeNativeFoxLayoutFixedMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxLayoutFixed::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( igdeNativeFoxLayoutFixed, FXPacker,
-	igdeNativeFoxLayoutFixedMap, ARRAYNUMBER( igdeNativeFoxLayoutFixedMap ) )
-
-igdeNativeFoxLayoutFixed::igdeNativeFoxLayoutFixed(){ }
-
-igdeNativeFoxLayoutFixed::igdeNativeFoxLayoutFixed( igdeContainerFixed &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXPacker( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ){
-}
-
-igdeNativeFoxLayoutFixed::~igdeNativeFoxLayoutFixed(){
-}
-
-long igdeNativeFoxLayoutFixed::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	clflags.flags = 0;
-	clflags.canResizeHorizontal = true;
-	clflags.canResizeVertical = true;
-	return 1;
-}
-
 
 
 // Class igdeContainerFixed
@@ -102,23 +53,9 @@ void igdeContainerFixed::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXPacker * const nativeWidget = new igdeNativeFoxLayoutFixed( *this, nativeParent,
-		igdeUIFoxHelper::GetChildLayoutFlags( this ) );
-	
-	SetNativeWidget( nativeWidget );
-	if( nativeParent->id() ){
-		nativeWidget->create();
-	}
+	igdeNativeContainerFixed *const native = igdeNativeContainerFixed::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -128,7 +65,7 @@ void igdeContainerFixed::DestroyNativeWidget(){
 		return;
 	}
 	
-	FXPacker * const native = ( FXPacker* )GetNativeWidget();
+	igdeNativeContainerFixed *const native = ( igdeNativeContainerFixed* )GetNativeWidget();
 	DropNativeWidget();
-	delete native;
+	native->DestroyNativeWidget();
 }

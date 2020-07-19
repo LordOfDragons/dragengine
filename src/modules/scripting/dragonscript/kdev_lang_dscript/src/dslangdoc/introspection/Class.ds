@@ -68,7 +68,7 @@ class Class
 	
 	
 	
-	/** \name Class informations */
+	/** \name Class information */
 	/*@{*/
 	/** \brief Name of the class. */
 	public func String getName()

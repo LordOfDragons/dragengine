@@ -40,7 +40,7 @@ class deLogger;
  * 
  * Manages a list of game classes found in the game directory or elsewhere.
  * Game classes only contain the name of the class file and some classification
- * informations useful searching for the right class to use.
+ * information useful searching for the right class to use.
  */
 class igdeGDClassManager{
 private:

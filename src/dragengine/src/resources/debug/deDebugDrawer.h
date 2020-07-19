@@ -38,7 +38,7 @@ class deWorld;
  * A debug drawer is a helper object useful for debuging various engine
  * modules. The graphic module knows how to render efficiently debug
  * drawers ontop of a rendered world. Engine modules can register a
- * debug drawer with world objects to display useful informations. Every
+ * debug drawer with world objects to display useful information. Every
  * debug drawer object specifies a list of shapes and visual information
  * on how to render them. Debug drawers can be individually set invisible
  * if required.

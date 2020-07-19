@@ -16,7 +16,7 @@ precision highp int;
 #if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE
 	#define WITH_SOLIDITY 1
 #endif
-#if defined TEXTURE_EMISSIVITY || defined WITH_OUTLINE
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY || defined WITH_OUTLINE
 	#define WITH_EMISSIVITY 1
 #endif
 
@@ -110,6 +110,9 @@ NODE_FRAGMENT_UNIFORMS
 #ifdef TEXTURE_ABSORPTION
 	uniform lowp SAMPLER_2D texAbsorption;
 #endif
+#ifdef TEXTURE_RIM_EMISSIVITY
+	uniform mediump SAMPLER_2D texRimEmissivity;
+#endif
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2D texDepthTest;
 #endif
@@ -133,7 +136,7 @@ in vec2 vTCNormal;
 #if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
 in vec2 vTCReflectivity;
 #endif
-#ifdef TEXTURE_EMISSIVITY
+#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
 in vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
@@ -148,7 +151,7 @@ in vec3 vNormal;
 	in vec3 vTangent;
 	in vec3 vBitangent;
 #endif
-#ifdef TEXTURE_ENVMAP
+#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
 	in vec3 vReflectDir;
 #endif
 #ifdef PARTICLE
@@ -336,7 +339,7 @@ void main( void ){
 		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
 			#define tcReflectivity vTCReflectivity
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
 			#define tcEmissivity vTCEmissivity
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -363,7 +366,7 @@ void main( void ){
 		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
 			#define tcReflectivity tcReliefMapped
 		#endif
-		#ifdef TEXTURE_EMISSIVITY
+		#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
 			#define tcEmissivity tcReliefMapped
 		#endif
 		#ifdef TEXTURE_REFRACTION_DISTORT
@@ -392,7 +395,7 @@ void main( void ){
 			color = vec4( 0.0, 0.0, 0.0, TEXTURE( texTransparency, tcColor ).r );
 		#else
 			#ifdef WITH_OUTLINE
-				color = vec4( pOutlineColor, 1.0 );
+				color = vec4( pOutlineColor * pOutlineColorTint, 1.0 );
 			#else
 				color = vec4( 0.0, 0.0, 0.0, 1.0 );
 			#endif
@@ -593,8 +596,11 @@ void main( void ){
 		#endif
 	#endif
 	
-	#ifdef TEXTURE_ENVMAP
+	#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
 		vec3 fragmentDirection = normalize( vReflectDir );
+	#endif
+	
+	#ifdef TEXTURE_ENVMAP
 		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );
 		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );
 		
@@ -731,15 +737,19 @@ void main( void ){
 	
 	
 	// emissivity
-	#ifdef TEXTURE_EMISSIVITY
-		#ifdef PARTICLE
-			#define SCALE_EMISSIVITY vParticleColor.xyz * vParticleEmissivity
-		#else
-			#define SCALE_EMISSIVITY pEmissivityIntensity
-		#endif
-		outColor.rgb += pow( TEXTURE( texEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) ) * SCALE_EMISSIVITY;
+	#ifdef WITH_OUTLINE
+		outColor.rgb += pOutlineEmissivity * pOutlineEmissivityTint;
 		
-		// environment room emissivity
+	#else
+		#ifdef TEXTURE_EMISSIVITY
+			#ifdef PARTICLE
+				#define SCALE_EMISSIVITY vParticleColor.xyz * vParticleEmissivity
+			#else
+				#define SCALE_EMISSIVITY pEmissivityIntensity
+			#endif
+			outColor.rgb += pow( TEXTURE( texEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) ) * SCALE_EMISSIVITY;
+		#endif
+		
 		#ifdef TEXTURE_ENVROOM_EMISSIVITY
 			#ifdef TEXTURE_ENVROOM_MASK
 				outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
@@ -750,8 +760,19 @@ void main( void ){
 			#endif
 		#endif
 		
-	#elif defined WITH_OUTLINE
-		outColor.rgb += pOutlineEmissivity;
+		#ifdef TEXTURE_RIM_EMISSIVITY
+			if( pRimAngle > 0.5 ){
+				// deoglSkinTexture: pRimAngle = angle > 0.001 ? 1 / ( angle * pi/2 ) : 0
+				// for "angle = 0.001 .. 1" we have "pRimAngle = 0.637 .. 636.62". hence 0.5 as threshold
+				// 
+				// using "normal" is not giving the results one expects especially if close up.
+				// instead the normal is dotted with the normalized fragment direction.
+				outColor.rgb += pow( TEXTURE( texRimEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) )
+					* pRimEmissivityIntensity
+					* vec3( max( 1.0 - pow( asin( abs( dot( fragmentDirection, normal.xyz ) ) )
+						* pRimAngle, pRimExponent ), 0.0 ) );
+			}
+		#endif
 	#endif
 	
 	/* #ifdef HEIGHT_MAP

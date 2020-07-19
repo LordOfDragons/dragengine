@@ -33,10 +33,7 @@ pin Dragengine.Scenery
  * timer managers can be created to provide timer handling at different speeds if required.
  */
 class TimerManager
-	/** \brief Default timer manager. */
 	private static var TimerManager pDefaultManager = null
-	
-	/** \brief Registered timers */
 	private var SafeArray pTimers
 	
 	
@@ -69,7 +66,7 @@ class TimerManager
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
 	public func void advance( float elapsed )
-		if elapsed <= 0.0
+		if elapsed <= 0
 			return
 		end
 		

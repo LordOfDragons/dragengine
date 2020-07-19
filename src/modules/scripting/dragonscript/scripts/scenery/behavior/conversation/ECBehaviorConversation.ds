@@ -403,32 +403,40 @@ class ECBehaviorConversation extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			// we can save the conversation playback but not load it right now.
-			// the problem is that the self-actor is not registered anywhere.
-			// we need a change in the playback loading procedure so we can add the
-			// player actor before the playback loads so it can use the actor already
-			// present.
-			/*
-			if not env.readBool()
-				return
+			select reader.readByte() // version
+			case 0
+				// we can save the conversation playback but not load it right now.
+				// the problem is that the self-actor is not registered anywhere.
+				// we need a change in the playback loading procedure so we can add the
+				// player actor before the playback loads so it can use the actor already
+				// present.
+				/*
+				if not env.readBool()
+					return
+				end
+				
+				var int size = reader.readInt()
+				var MemoryFile data = MemoryFile.new( "ECBehaviorConversation.data" )
+				data.writeData( reader, size )
+				
+				// store away for enterFrame():
+				// - MemoryFile data
+				// - PersistencyEnvironment env (this requires env to be never changed)
+				// 
+				// during enterFrame():
+				// 
+				// this.pConversationPlayback = env.readObject( data.getReader() )
+				*/
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
 			end
-			
-			var int size = reader.readInt()
-			var MemoryFile data = MemoryFile.new( "ECBehaviorConversation.data" )
-			data.writeData( reader, size )
-			
-			// store away for enterFrame():
-			// - MemoryFile data
-			// - PersistencyEnvironment env (this requires env to be never changed)
-			// 
-			// during enterFrame():
-			// 
-			// this.pConversationPlayback = env.readObject( data.getReader() )
-			*/
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			/*
 			env.writeBool( this.pConversationPlayback != null )
 			if this.pConversationPlayback == null

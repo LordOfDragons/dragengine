@@ -1,0 +1,207 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief PanelInteractPrompt controller.
+ * 
+ * Panel holding an instance of PanelInteractPrompt implementing
+ * ECBehaviorPlayerLookAtInteractPrompt.PromptController and
+ * ECBehaviorPlayerInteractPrompt.PromptController to manipulate it.
+ */
+class PanelInteractPromptController extends Panel implements \
+ECBehaviorPlayerLookAtInteractPrompt.PromptController, \
+ECBehaviorPlayerInteractPrompt.PromptController
+	/** \brief Factory creating instance of PanelInteractPromptController. */
+	class ControllerFactory implements \
+	ECBehaviorPlayerLookAtInteractPrompt.PromptControllerFactory, \
+	ECBehaviorPlayerInteractPrompt.PromptControllerFactory
+		private var DisplayInteractPromptEntry.Placement pPlacement
+		private var String pDesignerSelector
+		private var String pEntryBaseSelectorName
+		
+		/** \brief Create factory. */
+		public func new() this( DisplayInteractPromptEntry.Placement.top )
+		end
+		
+		/** \brief Create factory. */
+		public func new( DisplayInteractPromptEntry.Placement placement ) \
+		this( placement, "InteractPrompt", "InteractPromptEntry" )
+		end
+		
+		/** \brief Create factory. */
+		public func new( DisplayInteractPromptEntry.Placement placement, \
+		String designerSelector, String entryBaseSelectorName )
+			if placement == null
+				throw ENullPointer.new()
+			end
+			if designerSelector == null
+				throw ENullPointer.new( "designerSelector" )
+			end
+			if entryBaseSelectorName == null
+				throw ENullPointer.new( "entryBaseSelectorName" )
+			end
+			
+			this.pPlacement = placement
+			this.pDesignerSelector = designerSelector
+			this.pEntryBaseSelectorName = entryBaseSelectorName
+		end
+		
+		
+		/** \brief Create instance of PromptController. */
+		public func ECBehaviorPlayerLookAtInteractPrompt.PromptController \
+		createPromptController( ECBehaviorPlayerLookAtInteractPrompt.Instance instance )
+			return PanelInteractPromptController.new( \
+				instance.getECBehavior().getBindingManager(), \
+				instance.getBindingIconHeight(), this.pPlacement, \
+				this.pDesignerSelector, this.pEntryBaseSelectorName )
+		end
+		
+		/** \brief Create instance of PromptController. */
+		public func ECBehaviorPlayerInteractPrompt.PromptController \
+		createPromptController( ECBehaviorPlayerInteractPrompt.Instance instance )
+			return PanelInteractPromptController.new( \
+				instance.getECBehavior().getBindingManager(), \
+				instance.getBindingIconHeight(), this.pPlacement, \
+				this.pDesignerSelector, this.pEntryBaseSelectorName )
+		end
+	end
+	
+	
+	
+	private var PanelInteractPrompt pPanelInteractPrompt
+	
+	
+	
+	/** \brief Create interact prompt panel. */
+	public func new() this( BaseGameApp.getApp().getBindingManager(), 32 )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight ) \
+	this( bindingManager, bindingIconHeight, DisplayInteractPromptEntry.Placement.top )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement )
+		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, bindingIconHeight, placement )
+		this.createContent( this.pPanelInteractPrompt )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, \
+	DisplayInteractPromptEntry.Placement placement, String designerSelector, \
+	String entryBaseSelectorName )
+		this.pPanelInteractPrompt = PanelInteractPrompt.new( bindingManager, \
+			bindingIconHeight, placement, designerSelector, entryBaseSelectorName )
+		this.createContent( this.pPanelInteractPrompt )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pPanelInteractPrompt = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Panel interact prompt. */
+	public func PanelInteractPrompt getPanelInteractPrompt()
+		return this.pPanelInteractPrompt
+	end
+	
+	
+	
+	/**
+	 * \brief Set prompt visibility.
+	 * 
+	 * Sets visibility of the controller panel.
+	 */
+	public func void setPromptVisible( bool visible )
+		this.setVisible( visible )
+	end
+	
+	/**
+	 * \brief Set prompt transparency.
+	 * 
+	 * Sets transparency of PanelInteractPrompt.
+	 */
+	public func void setPromptTransparency( float transparency )
+		this.pPanelInteractPrompt.setTransparency( transparency )
+	end
+	
+	/**
+	 * \brief Set prompts with Array of ECBehaviorInteractPrompt.Instance.
+	 * 
+	 * Calls PanelInteractPrompt.setPrompts().
+	 */
+	public func void setPrompts( Array prompts )
+		this.pPanelInteractPrompt.setPrompts( prompts )
+	end
+	
+	/**
+	 * \brief Prompt widget to be added to UI container.
+	 * 
+	 * Returns this.
+	 */
+	public func Widget promptWidget()
+		return this
+	end
+	
+	/** \brief Dispose of controller. */
+	public func void disposeController()
+		this.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Create content.
+	 * 
+	 * Interact prompt widget has been already created but has not been added yet. Create the
+	 * panel content then add panelInteractPrompt to the appropriate place.
+	 * 
+	 * Default implementation sets CentrizedBoxLayout layout and adds the panel. This shows
+	 * the panel centered on screen.
+	 * 
+	 * \warning
+	 * 
+	 * This is called in the base class constructor. Keep in mind that the subclass constructor
+	 * has not run yet. If you need this to be the case create empty implementation and do the
+	 * content creation at the appropriate time. You can get the panel by calling
+	 * getPanelInteractPrompt().
+	 */
+	protected func void createContent( PanelInteractPrompt panelInteractPrompt )
+		this.runWhileBlockingLayout( block
+			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
+			this.addWidget( panelInteractPrompt )
+		end )
+		this.doLayoutIfBlocked()
+	end
+end

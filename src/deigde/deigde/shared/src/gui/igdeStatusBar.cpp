@@ -27,7 +27,7 @@
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
-#include "native/fox/igdeNativeFoxStatusBar.h"
+#include "native/toolkit.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -80,22 +80,9 @@ void igdeStatusBar::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxStatusBar * const native = new igdeNativeFoxStatusBar( *this,
-		nativeParent, igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -105,12 +92,12 @@ void igdeStatusBar::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxStatusBar* )GetNativeWidget();
+	( ( igdeNativeStatusBar* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeStatusBar::OnTextChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxStatusBar* )GetNativeWidget() )->UpdateText();
+		( ( igdeNativeStatusBar* )GetNativeWidget() )->UpdateText();
 	}
 }

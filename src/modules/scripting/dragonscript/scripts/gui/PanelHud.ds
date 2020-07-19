@@ -1,0 +1,305 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Layouts
+
+
+
+/**
+ * \brief 10-Area HUD Panel.
+ * 
+ * Panel contains 10 areas typically used to create HUDs. 9 areas are located around the
+ * center area with appropriate layouts assigned like this:
+ * 
+ * <table>
+ * <tr><td>Top Left</td><td>Top Center</td><td>Top Right</td></tr>
+ * <tr><td>Left Top</td><td rowspan="3">Center</td><td>Right Top</td></tr>
+ * <tr><td>Left Center</td><td>Right Center</td></tr>
+ * <tr><td>Left Bottom</td><td>Right Bottom</td></tr>
+ * <tr><td>Bottom Left</td><td>Bottom Center</td><td>Bottom Right</td></tr>
+ * </table>
+ * 
+ * The panel itself uses BorderLayout. The top and bottom rows use BorderLayout. The left
+ * and right columns use BorderLayout. Each area inside the rows and columns uses FlowLayout.
+ * The center area uses StackLayout. You can change these layouts if you want to.
+ * 
+ * The panel and all areas can be individually styled using these selectors:
+ * 
+ * "Panel.PanelHud": The HUD panel itself
+ * "Panel.PanelHud.Top": The entire top row
+ * "Panel.PanelHud.TopLeft": The top left area
+ * "Panel.PanelHud.TopCenter": The top center area
+ * "Panel.PanelHud.TopRight": The top right area
+ * "Panel.PanelHud.Bottom": The entire bottom row
+ * "Panel.PanelHud.BottomLeft": The bottom left area
+ * "Panel.PanelHud.BottomCenter": The bottom center area
+ * "Panel.PanelHud.BottomRight": The bottom right area
+ * "Panel.PanelHud.Left": The entire left column between top and bottom row
+ * "Panel.PanelHud.LeftTop": The top area in the left column between top and bottom row
+ * "Panel.PanelHud.LeftCenter": The center area in the left column between top and bottom row
+ * "Panel.PanelHud.LeftBottom": The bottom area in the left column between top and bottom row
+ * "Panel.PanelHud.Right": The entire right column between top and bottom row
+ * "Panel.PanelHud.RightTop": The top area in the right column between top and bottom row
+ * "Panel.PanelHud.RightCenter": The center area in the right column between top and bottom row
+ * "Panel.PanelHud.RightBottom": The bottom area in the right column between top and bottom row
+ * 
+ * By using setDesignerSelector() not only the HUD panel designer selector itself is changed
+ * but all area designer selectors are changed too. In the list above "Panel.PanelHud" is
+ * replaced with the designer selector used in the most recent call to setDesignerSelector().
+ */
+class PanelHud extends Panel
+	private var Panel pTop
+	private var Panel pTopLeft
+	private var Panel pTopCenter
+	private var Panel pTopRight
+	
+	private var Panel pBottom
+	private var Panel pBottomLeft
+	private var Panel pBottomCenter
+	private var Panel pBottomRight
+	
+	private var Panel pLeft
+	private var Panel pLeftTop
+	private var Panel pLeftCenter
+	private var Panel pLeftBottom
+	
+	private var Panel pRight
+	private var Panel pRightTop
+	private var Panel pRightCenter
+	private var Panel pRightBottom
+	
+	private var Panel pCenter
+	
+	
+	
+	/** \brief Create hud panel. */
+	public func new()
+		this.runWhileBlockingLayout( block
+			this.setLayout( BorderLayout.new() )
+			
+			this.pTop = Panel.new( BorderLayout.new(), block Panel top
+				this.pTopLeft = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				top.addWidget( this.pTopLeft, BorderLayout.Area.left )
+				
+				this.pTopCenter = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				top.addWidget( this.pTopCenter, BorderLayout.Area.content )
+				
+				this.pTopRight = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				top.addWidget( this.pTopRight, BorderLayout.Area.right )
+			end )
+			this.addWidget( this.pTop, BorderLayout.Area.top )
+			
+			this.pBottom = Panel.new( BorderLayout.new(), block Panel bottom
+				this.pBottomLeft = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				bottom.addWidget( this.pBottomLeft, BorderLayout.Area.left )
+				
+				this.pBottomCenter = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				bottom.addWidget( this.pBottomCenter, BorderLayout.Area.content )
+				
+				this.pBottomRight = Panel.new( FlowLayout.new( LayoutAxis.x ) )
+				bottom.addWidget( this.pBottomRight, BorderLayout.Area.right )
+			end )
+			this.addWidget( this.pBottom, BorderLayout.Area.bottom )
+			
+			this.pLeft = Panel.new( BorderLayout.new(), block Panel left
+				this.pLeftTop = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				left.addWidget( this.pLeftTop, BorderLayout.Area.top )
+				
+				this.pLeftCenter = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				left.addWidget( this.pLeftCenter, BorderLayout.Area.content )
+				
+				this.pLeftBottom = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				left.addWidget( this.pLeftBottom, BorderLayout.Area.bottom )
+			end )
+			this.addWidget( this.pLeft, BorderLayout.Area.left )
+			
+			this.pRight = Panel.new( BorderLayout.new(), block Panel right
+				this.pRightTop = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				right.addWidget( this.pRightTop, BorderLayout.Area.top )
+				
+				this.pRightCenter = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				right.addWidget( this.pRightCenter, BorderLayout.Area.content )
+				
+				this.pRightBottom = Panel.new( FlowLayout.new( LayoutAxis.y ) )
+				right.addWidget( this.pRightBottom, BorderLayout.Area.bottom )
+			end )
+			this.addWidget( this.pRight, BorderLayout.Area.right )
+			
+			this.pCenter = Panel.new( StackLayout.new() )
+			this.addWidget( this.pCenter, BorderLayout.Area.content )
+		end )
+		
+		this.setDesignerSelector( "Panel.PanelHud" )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		super.dispose()
+		
+		this.pTop = null
+		this.pTopLeft = null
+		this.pTopCenter = null
+		this.pTopRight = null
+		
+		this.pBottom = null
+		this.pBottomLeft = null
+		this.pBottomCenter = null
+		this.pBottomRight = null
+		
+		this.pLeft = null
+		this.pLeftTop = null
+		this.pLeftCenter = null
+		this.pLeftBottom = null
+		
+		this.pRight = null
+		this.pRightTop = null
+		this.pRightCenter = null
+		this.pRightBottom = null
+		
+		this.pCenter = null
+	end
+	
+	
+	
+	/** \brief Top row. */
+	public func Panel getTop()
+		return this.pTop
+	end
+	
+	/** \brief Top row left area. */
+	public func Panel getTopLeft()
+		return this.pTopLeft
+	end
+	
+	/** \brief Top row center area. */
+	public func Panel getTopCenter()
+		return this.pTopCenter
+	end
+	
+	/** \brief Top row right area. */
+	public func Panel getTopRight()
+		return this.pTopRight
+	end
+	
+	
+	
+	/** \brief Bottom row. */
+	public func Panel getBottom()
+		return this.pBottom
+	end
+	
+	/** \brief Bottom row left area. */
+	public func Panel getBottomLeft()
+		return this.pBottomLeft
+	end
+	
+	/** \brief Bottom row center area. */
+	public func Panel getBottomCenter()
+		return this.pBottomCenter
+	end
+	
+	/** \brief Bottom row right area. */
+	public func Panel getBottomRight()
+		return this.pBottomRight
+	end
+	
+	
+	
+	/** \brief Left column. */
+	public func Panel getLeft()
+		return this.pLeft
+	end
+	
+	/** \brief Left column top area. */
+	public func Panel getLeftTop()
+		return this.pLeftTop
+	end
+	
+	/** \brief Left column center area. */
+	public func Panel getLeftCenter()
+		return this.pLeftCenter
+	end
+	
+	/** \brief Left column bottom area. */
+	public func Panel getLeftBottom()
+		return this.pLeftBottom
+	end
+	
+	
+	
+	/** \brief Right column. */
+	public func Panel getRight()
+		return this.pRight
+	end
+	
+	/** \brief Right column top area. */
+	public func Panel getRightTop()
+		return this.pRightTop
+	end
+	
+	/** \brief Right column center area. */
+	public func Panel getRightCenter()
+		return this.pRightCenter
+	end
+	
+	/** \brief Right column bottom area. */
+	public func Panel getRightBottom()
+		return this.pRightBottom
+	end
+	
+	
+	
+	/** \brief Center area. */
+	public func Panel getCenter()
+		return this.pCenter
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Default implementation changes all area designer selectors as outlined in the class
+	 * description. You can change this behavior by overwriting onDesignerSelectorChanged().
+	 */
+	public func void onDesignerSelectorChanged()
+		this.runWhileBlockingLayout( block
+			var String selector = this.getDesignerSelector()
+			this.pTopLeft.setDesignerSelector( selector + ".TopLeft" )
+			this.pTopCenter.setDesignerSelector( selector + ".TopCenter" )
+			this.pTopRight.setDesignerSelector( selector + ".TopRight" )
+			this.pBottomLeft.setDesignerSelector( selector + ".BottomLeft" )
+			this.pBottomCenter.setDesignerSelector( selector + ".BottomCenter" )
+			this.pBottomRight.setDesignerSelector( selector + ".BottomRight" )
+			this.pRightTop.setDesignerSelector( selector + ".RightTop" )
+			this.pRightCenter.setDesignerSelector( selector + ".RightCenter" )
+			this.pRightBottom.setDesignerSelector( selector + ".RightBottom" )
+			this.pLeftTop.setDesignerSelector( selector + ".LeftTop" )
+			this.pLeftCenter.setDesignerSelector( selector + ".LeftCenter" )
+			this.pLeftBottom.setDesignerSelector( selector + ".LeftBottom" )
+			this.pCenter.setDesignerSelector( selector + ".Center" )
+		end )
+		this.doLayoutIfBlocked()
+	end
+end

@@ -80,10 +80,10 @@ ceUCCVarSetVariable::~ceUCCVarSetVariable(){
 
 void ceUCCVarSetVariable::Undo(){
 	pCondition->SetVariable( pOldVariable );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCVarSetVariable::Redo(){
 	pCondition->SetVariable( pNewVariable );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

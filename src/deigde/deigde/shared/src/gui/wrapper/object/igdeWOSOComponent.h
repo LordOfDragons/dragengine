@@ -57,7 +57,6 @@ private:
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
 	deComponentReference pOutlineComponent;
-	deColliderReference pOutlineCollider;
 	
 	
 	
@@ -145,6 +144,7 @@ private:
 	void pDestroyComponent();
 	bool pIsVisible() const;
 	void pUpdateOutlineComponent();
+	void pReleaseOutlineComponent();
 };
 
 #endif

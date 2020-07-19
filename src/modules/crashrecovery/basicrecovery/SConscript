@@ -14,9 +14,9 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_fox' ], libs )
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.2'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/crashrecovery/basicrecovery/{}'.format(
 	envModule.subst( envModule[ 'path_de_config' ] ), versionString )
@@ -65,7 +65,7 @@ if envModule['OSWindows']:
 	elif False:
 		envModule.Append(CPPFLAGS = ['-DNO_CATCH_CRASH'])
 
-library = envModule.SharedLibrary( target='crbasicrecovery', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='crbasicrecovery', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'cr_basic_build', library )
 
 install = []
@@ -78,7 +78,8 @@ for l in library:
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 if not envModule['OSPosix']:
 	# this is a huge drama. getting duplicate FOX libraries would work with the ldloader
@@ -94,6 +95,7 @@ manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 Depends( updateManifest, parent_targets[ 'lib_fox' ][ 'runtimelibs' ] )
 
 install.append( envModule.Install( pathModule, updateManifest ) )
@@ -115,6 +117,7 @@ parent_targets[ 'cr_basic' ] = {
 	'name' : 'Basic Crash-Recovery Module ( FOX-Toolkit )',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

@@ -738,7 +738,7 @@ dsClass( "ColliderConstraint", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXE
 	pGameEngine = gameEngine;
 	pScrDS = scrDS;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	

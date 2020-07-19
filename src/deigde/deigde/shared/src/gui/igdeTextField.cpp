@@ -25,9 +25,9 @@
 
 #include "igdeTextField.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeTextFieldListener.h"
+#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
@@ -36,228 +36,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeTextField : public FXTextField{
-	FXDECLARE( cNativeIgdeTextField )
-	
-protected:
-	cNativeIgdeTextField();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXTextField::ID_LAST,
-	};
-	
-private:
-	igdeTextField *pOwner;
-	igdeFontReference pFont;
-	FXColor pOrgBackColor;
-	FXColor pInvalidBackColor;
-	bool pPreventKeyPressHook;
-	
-public:
-	cNativeIgdeTextField( igdeTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
-	virtual ~cNativeIgdeTextField();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onChanged( FXObject *sender, FXSelector selector, void *data );
-	long onKeyPress( FXObject *sender, FXSelector selector, void *data );
-	
-	virtual void Focus();
-	virtual void OnInvalidValueChanged();
-	virtual void UpdateText();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
-	virtual void UpdateEditable();
-	
-	static int TextFieldFlags( const igdeTextField &owner );
-	static igdeFont *TextFieldFont( const igdeTextField &owner, const igdeGuiTheme &guitheme );
-	static int TextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int TextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int TextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int TextFieldPadBottom( const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeIgdeTextField ) cNativeIgdeTextFieldMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeTextField::ID_SELF, cNativeIgdeTextField::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, cNativeIgdeTextField::ID_SELF, cNativeIgdeTextField::onChanged ),
-	FXMAPFUNC( SEL_KEYPRESS, cNativeIgdeTextField::ID_SELF, cNativeIgdeTextField::onKeyPress )
-};
-
-
-FXIMPLEMENT( cNativeIgdeTextField, FXTextField, cNativeIgdeTextFieldMap, ARRAYNUMBER( cNativeIgdeTextFieldMap ) )
-
-cNativeIgdeTextField::cNativeIgdeTextField(){ }
-
-cNativeIgdeTextField::cNativeIgdeTextField( igdeTextField &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXTextField( parent, owner.GetColumns(), this, ID_SELF, layoutFlags | TextFieldFlags( owner ),
-	0, 0, 0, 0,
-	TextFieldPadLeft( guitheme ), TextFieldPadRight( guitheme ),
-	TextFieldPadTop( guitheme ), TextFieldPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( TextFieldFont( owner, guitheme ) ),
-pOrgBackColor( getBackColor() ),
-pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 ), 0.25f ) ),
-pPreventKeyPressHook( false )
-{
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	
-	UpdateEditable();
-	UpdateEnabled();
-	UpdateText();
-	UpdateDescription();
-}
-
-cNativeIgdeTextField::~cNativeIgdeTextField(){
-}
-
-void cNativeIgdeTextField::OnInvalidValueChanged(){
-	setBackColor( pOwner->GetInvalidValue() ? pInvalidBackColor : pOrgBackColor );
-}
-
-void cNativeIgdeTextField::UpdateText(){
-	if( pOwner->GetText() != getText().text() ){
-		setText( pOwner->GetText().GetString() );
-	}
-}
-
-void cNativeIgdeTextField::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
-		enable();
-		
-	}else{
-		disable();
-	}
-}
-
-void cNativeIgdeTextField::UpdateDescription(){
-	setTipText( pOwner->GetDescription().GetString() );
-	setHelpText( pOwner->GetDescription().GetString() );
-}
-
-void cNativeIgdeTextField::UpdateEditable(){
-	setEditable( pOwner->GetEditable() );
-}
-
-long cNativeIgdeTextField::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetText( getText().text(), false, true );
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeTextField::onChanged( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetText( getText().text(), true );
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeTextField::onKeyPress( FXObject *sender, FXSelector selector, void *data ){
-	// returning 1 from this function stops FXTextField from processing
-	if( ! pOwner->GetEnabled() || pPreventKeyPressHook ){
-		return 0;
-	}
-	
-	const FXEvent &event = *( ( FXEvent* )data );
-	if( event.code != KEY_Return && event.code != KEY_KP_Enter ){
-		return 0;
-	}
-	
-	// we do it this way instead of a silent hook-method because we want the super-class
-	// implementation to call SEL_COMMAND before we send our NotifyEnterKey. do avoid a
-	// dead-loop in this case pPreventKeyPressHook is used.
-	pPreventKeyPressHook = true;
-	const int result = onKeyPress( sender, selector, data );
-	pPreventKeyPressHook = false;
-	
-	try{
-		pOwner->NotifyEnterKey();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-	}
-	
-	return result;
-}
-
-void cNativeIgdeTextField::Focus(){
-	setFocus();
-}
-
-int cNativeIgdeTextField::TextFieldFlags( const igdeTextField & ){
-	return FRAME_SUNKEN;
-}
-
-igdeFont *cNativeIgdeTextField::TextFieldFont( const igdeTextField &owner, const igdeGuiTheme &guitheme ){
-	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
-	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
-	}
-	
-	return owner.GetEnvironment().GetSharedFont( configuration );
-}
-
-int cNativeIgdeTextField::TextFieldPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::textFieldPaddingLeft, DEFAULT_PAD );
-}
-
-int cNativeIgdeTextField::TextFieldPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::textFieldPaddingRight, DEFAULT_PAD );
-}
-
-int cNativeIgdeTextField::TextFieldPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::textFieldPaddingTop, DEFAULT_PAD );
-}
-
-int cNativeIgdeTextField::TextFieldPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::textFieldPaddingBottom, DEFAULT_PAD );
-}
-
 
 
 // Class igdeTextField
@@ -412,9 +190,7 @@ int igdeTextField::GetCursorPosition() const{
 	if( ! GetNativeWidget() ){
 		return 0;
 	}
-	
-	cNativeIgdeTextField &native = *( ( cNativeIgdeTextField* )GetNativeWidget() );
-	return native.getCursorPos();
+	return ( ( igdeNativeTextField* )GetNativeWidget() )->GetCursorPosition();
 }
 
 void igdeTextField::SetCursorPosition( int position ){
@@ -426,8 +202,7 @@ void igdeTextField::SetCursorPosition( int position ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	cNativeIgdeTextField &native = *( ( cNativeIgdeTextField* )GetNativeWidget() );
-	native.setCursorPos( position );
+	( ( igdeNativeTextField* )GetNativeWidget() )->SetCursorPosition( position );
 }
 
 void igdeTextField::Focus(){
@@ -435,8 +210,7 @@ void igdeTextField::Focus(){
 		return;
 	}
 	
-	cNativeIgdeTextField &native = *( ( cNativeIgdeTextField* )GetNativeWidget() );
-	return native.Focus();
+	( ( igdeNativeTextField* )GetNativeWidget() )->Focus();
 }
 
 
@@ -489,22 +263,9 @@ void igdeTextField::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeTextField * const foxWidget = new cNativeIgdeTextField(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeTextField * const native = igdeNativeTextField::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeTextField::DestroyNativeWidget(){
@@ -512,36 +273,36 @@ void igdeTextField::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeTextField* )GetNativeWidget();
+	( ( igdeNativeTextField* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeTextField::OnTextChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeTextField* )GetNativeWidget() )->UpdateText();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateText();
 	}
 }
 
 void igdeTextField::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeTextField* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeTextField::OnEditableChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeTextField* )GetNativeWidget() )->UpdateEditable();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEditable();
 	}
 }
 
 void igdeTextField::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeTextField* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeTextField::OnInvalidValueChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeTextField* )GetNativeWidget() )->OnInvalidValueChanged();
+		( ( igdeNativeTextField* )GetNativeWidget() )->OnInvalidValueChanged();
 	}
 }

@@ -559,7 +559,9 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 			continue;
 		}
 		
-		pCBScriptModule->AddItem( module.GetName() );
+		if( ! pCBScriptModule->HasItem( module.GetName() ) ){
+			pCBScriptModule->AddItem( module.GetName() );
+		}
 	}
 	
 	pCBScriptModule->SortItems();

@@ -116,11 +116,7 @@ bool lpeLoadSaveSystem::HasLSLangPack( lpeLoadSaveLangPack *lsLangPack ) const{
 }
 
 int lpeLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const decString testFilename = filename;
+	const decString testFilename( filename );
 	int i;
 	
 	for( i=0; i<pLSLangPackCount; i++ ){

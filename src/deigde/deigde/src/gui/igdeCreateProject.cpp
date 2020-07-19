@@ -145,6 +145,13 @@ void igdeCreateProject::CreateProject(){
 	pProject->SetPathCache( pPathCache );
 	pProject->SetScriptModule( pScriptModule );
 	
+	const deLoadableModule * const scriptModule =
+		pWindowMain.GetEngine()->GetModuleSystem()->GetModuleNamed( pScriptModule );
+	if( ! scriptModule ){
+		DETHROW_INFO( deeInvalidParam, "Script module not found" );
+	}
+	pProject->SetScriptModuleVersion( scriptModule->GetVersion() );
+	
 	pCreateGameAliasId();
 	pCreateDirectories();
 	pCopyDefaultFiles();
@@ -277,7 +284,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	reader->Read( ( char* )pSharedGameDefContent.GetString(), contentLen );
 	reader->SetPosition( 0 );
 	
-	igdeXMLGameDefinition loadGameDefinition( pWindowMain.GetLogger() );
+	igdeXMLGameDefinition loadGameDefinition( pWindowMain.GetEnvironment(), pWindowMain.GetLogger() );
 	loadGameDefinition.Load( reader, *pGameDef );
 }
 

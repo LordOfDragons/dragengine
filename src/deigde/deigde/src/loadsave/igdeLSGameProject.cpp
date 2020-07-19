@@ -149,7 +149,7 @@ void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, de
 		gameDef = new igdeGameDefinition( environment );
 		gameDef->SetFilename( path.GetPathNative() );
 		
-		igdeXMLGameDefinition( logger ).Load( *gameDefReader, *gameDef );
+		igdeXMLGameDefinition( environment, logger ).Load( *gameDefReader, *gameDef );
 		
 		project->SetProjectGameDefinition( gameDef );
 		

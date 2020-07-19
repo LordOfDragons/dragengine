@@ -70,7 +70,7 @@ public class TitledTwoColorBorderFactory extends TwoColorBorderFactory
 		var TitledTwoColorBorder border = TitledTwoColorBorder.new()
 		
 		border.setRaised( this.getRaised() )
-		border.setColorHilight( this.getColorHilight() )
+		border.setColorHighlight( this.getColorHighlight() )
 		border.setColorShadow( this.getColorShadow() )
 		border.setText( this.getText() )
 		

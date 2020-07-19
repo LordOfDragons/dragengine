@@ -81,6 +81,15 @@ fixed class Video
 	end
 	
 	/**
+	 * \brief Videos are equal.
+	 * 
+	 * In contrary to equals(Object) this is safe to be called with null values.
+	 */
+	static public func bool equals( Video video1, Video video2 )
+		return false
+	end
+	
+	/**
 	 * \brief Hash code for use as dictionary keys.
 	 * \details Implements Object.hashCode().
 	 */

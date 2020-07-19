@@ -137,11 +137,27 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	public func void attachToParent( Element parent )
 	end
 	
-	/** \brief Read behavior instance from file. */
+	/**
+	 * \brief Read behavior instance from file.
+	 * 
+	 * The default implementation reads a single byte expecting value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
+	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		if reader.readByte() !=  0 // version
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
-	/** \brief Write behavior instance to file. */
+	/**
+	 * \brief Write behavior instance to file.
+	 * 
+	 * The default implementation writes a single byte of value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
+	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
 	end
 end

@@ -162,7 +162,7 @@ class WindowModal extends Window
 		this.pBlockWindow = blockWindow
 		blockWindow.setBlockingWindow( this )
 		
-		desktop.addWindow( this ) // has to come first otherwise miminium size can be wrong
+		desktop.addWindow( this ) // has to come first otherwise miminimum size can be wrong
 		
 		if fitSize
 			this.fitToContent()

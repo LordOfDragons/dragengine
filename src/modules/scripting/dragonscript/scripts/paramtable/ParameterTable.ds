@@ -101,18 +101,26 @@ class ParameterTable
 	
 	/** \brief Read parameter table from file. */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var int i, count = reader.readInt()
-		var ParameterTableEntry entry
-		
-		this.pParameters.removeAll()
-		for i = 0 to count
-			entry = ParameterTableEntry.readFromFile( env, reader )
-			this.pParameters.setAt( entry.getName(), entry )
+		select reader.readByte() // version
+		case 0
+			var int i, count = reader.readInt()
+			var ParameterTableEntry entry
+			
+			this.pParameters.removeAll()
+			for i = 0 to count
+				entry = ParameterTableEntry.readFromFile( env, reader )
+				this.pParameters.setAt( entry.getName(), entry )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
 	/** \brief Write parameter table to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeInt( this.pParameters.getCount() )
 		this.pParameters.forEachValue( block ParameterTableEntry each
 			each.writeToFile( env, writer )

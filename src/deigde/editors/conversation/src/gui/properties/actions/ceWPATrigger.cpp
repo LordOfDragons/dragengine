@@ -140,7 +140,7 @@ ceWPATrigger::~ceWPATrigger(){
 ///////////////
 
 ceCATrigger *ceWPATrigger::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatTrigger ){
 		return ( ceCATrigger* )action;

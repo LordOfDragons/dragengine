@@ -133,7 +133,7 @@ void deBaseSystem::Stop(){
 		return;
 	}
 	
-	LogInfoFormat( "Stoping %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat( "Stopping %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
@@ -195,7 +195,8 @@ void deBaseSystem::SetActiveModule( deLoadableModule *module ){
 		DETHROW( deeInvalidAction );
 	}
 	
-	LogInfoFormat( "Activating %s module %s", GetSystemName(), module->GetName().GetString() );
+	LogInfoFormat( "Activating %s module %s %s", GetSystemName(),
+		module->GetName().GetString(), module->GetVersion().GetString() );
 	
 	// set new module
 	if( pActiveLoadableModule ){

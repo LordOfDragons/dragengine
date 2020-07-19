@@ -356,23 +356,42 @@ class DefaultListModel implements ListModel
 	/**
 	 * \brief Set content from array.
 	 * 
-	 * Same effect as calling first removeAll() then addAll(content). Sends at most two
-	 * notifications. If model contains elements sends first a elements removed notification.
-	 * Then if any content is added sends an elements added notification. If you just want
-	 * to replace all elements without changing the number of elements use setAll() which
-	 * sends only a content changed notification.
+	 * If count of elements in \em content is equal to getCount() operates like setAll()
+	 * sending a single content changed notification unless both counts are 0. If the
+	 * counts are different replaces the content as if removeAll() and addAll() is called.
+	 * If elements are present sends first an elements removed notification. Then if
+	 * \em content contains any elements an elements added notification is send.
+	 * 
+	 * If you just want to replace all elements without changing the number of elements
+	 * use setAll().
 	 */
 	public func void setContent( Array content )
 		var int count = this.pElements.getCount()
-		if count > 0
-			this.pElements.removeAll()
-			this.notifyElementsRemoved( 0, count - 1 )
-		end
+		var int contentCount = content.getCount()
+		var int i
 		
-		this.pElements = Array.new( content )
-		count = content.getCount()
-		if count > 0
-			this.notifyElementsAdded( 0, count - 1 )
+		if count == contentCount
+			if count == 0
+				return
+			end
+			
+			for i = 0 to count
+				this.pElements.setAt( i, content.getAt( i ) )
+			end
+			this.notifyContentChanged( 0, count - 1 )
+			
+		else
+			if count > 0
+				this.pElements.removeAll()
+				this.notifyElementsRemoved( 0, count - 1 )
+			end
+			
+			content.forEach( block Object each
+				this.pElements.add( each )
+			end )
+			if contentCount > 0
+				this.notifyElementsAdded( 0, contentCount - 1 )
+			end
 		end
 	end
 	

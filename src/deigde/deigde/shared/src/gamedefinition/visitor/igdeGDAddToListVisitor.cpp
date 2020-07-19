@@ -143,7 +143,7 @@ const char *caption, deImage &image, void *userPointer ){
 /////////////
 
 void igdeGDAddToListVisitor::VisitObjectClass( igdeGDClass *gdclass ){
-	if( ! gdclass->GetCanInstanciate() ){
+	if( ! gdclass->GetCanInstantiate() ){
 		return;
 	}
 	

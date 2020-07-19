@@ -104,9 +104,15 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicAbsorption = false;
 	pDynamicVariation = false;
 	pDynamicOutlineColor = false;
+	pDynamicOutlineColorTint = false;
 	pDynamicOutlineThickness = false;
 	pDynamicOutlineSolidity = false;
 	pDynamicOutlineEmissivity = false;
+	pDynamicOutlineEmissivityTint = false;
+	pDynamicRimEmissivityTint = false;
+	pDynamicRimEmissivityIntensity = false;
+	pDynamicRimAngle = false;
+	pDynamicRimExponent = false;
 	
 	pTextureColor = false;
 	pTextureColorTintMask = false;
@@ -126,6 +132,7 @@ void deoglSkinShaderConfig::Reset(){
 	pTextureEnvRoom = false;
 	pTextureEnvRoomMask = false;
 	pTextureEnvRoomEmissivity = false;
+	pTextureRimEmissivity = false;
 }
 
 
@@ -350,6 +357,10 @@ void deoglSkinShaderConfig::SetDynamicOutlineColor( bool dynamic ){
 	pDynamicOutlineColor = dynamic;
 }
 
+void deoglSkinShaderConfig::SetDynamicOutlineColorTint( bool dynamic ){
+	pDynamicOutlineColorTint = dynamic;
+}
+
 void deoglSkinShaderConfig::SetDynamicOutlineThickness( bool dynamic ){
 	pDynamicOutlineThickness = dynamic;
 }
@@ -360,6 +371,26 @@ void deoglSkinShaderConfig::SetDynamicOutlineSolidity( bool dynamic ){
 
 void deoglSkinShaderConfig::SetDynamicOutlineEmissivity( bool dynamic ){
 	pDynamicOutlineEmissivity = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicOutlineEmissivityTint( bool dynamic ){
+	pDynamicOutlineEmissivityTint = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicRimEmissivityTint( bool dynamic ){
+	pDynamicRimEmissivityTint = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicRimEmissivityIntensity( bool dynamic ){
+	pDynamicRimEmissivityIntensity = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicRimAngle( bool dynamic ){
+	pDynamicRimAngle = dynamic;
+}
+
+void deoglSkinShaderConfig::SetDynamicRimExponent( bool dynamic ){
+	pDynamicRimExponent = dynamic;
 }
 
 
@@ -434,6 +465,10 @@ void deoglSkinShaderConfig::SetTextureEnvRoomMask( bool textureEnvRoomMask ){
 
 void deoglSkinShaderConfig::SetTextureEnvRoomEmissivity( bool textureEnvRoomEmissivity ){
 	pTextureEnvRoomEmissivity = textureEnvRoomEmissivity;
+}
+
+void deoglSkinShaderConfig::SetTextureRimEmissivity( bool useTexture ){
+	pTextureRimEmissivity = useTexture;
 }
 
 
@@ -637,6 +672,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pDynamicOutlineColor ){
 		string.Append( " dynOutColor" );
 	}
+	if( pDynamicOutlineColorTint ){
+		string.Append( " dynOutColorTint" );
+	}
 	if( pDynamicOutlineThickness ){
 		string.Append( " dynOutThick" );
 	}
@@ -645,6 +683,21 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pDynamicOutlineEmissivity ){
 		string.Append( " dynOutEmis" );
+	}
+	if( pDynamicOutlineEmissivityTint ){
+		string.Append( " dynOutEmisTint" );
+	}
+	if( pDynamicRimEmissivityTint ){
+		string.Append( " dynRimEmisTint" );
+	}
+	if( pDynamicRimEmissivityIntensity ){
+		string.Append( " dynRimEmisInt" );
+	}
+	if( pDynamicRimAngle ){
+		string.Append( " dynRimAng" );
+	}
+	if( pDynamicRimExponent ){
+		string.Append( " dynRimExp" );
 	}
 	
 	if( pTextureColor ){
@@ -700,6 +753,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pTextureEnvRoomEmissivity ){
 		string.Append( " texEnvRoomEmi" );
+	}
+	if( pTextureRimEmissivity ){
+		string.Append( " texRimEmis" );
 	}
 	
 	string.Append( ")" );
@@ -767,9 +823,15 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicAbsorption = config.pDynamicAbsorption;
 	pDynamicVariation = config.pDynamicVariation;
 	pDynamicOutlineColor = config.pDynamicOutlineColor;
+	pDynamicOutlineColorTint = config.pDynamicOutlineColorTint;
 	pDynamicOutlineThickness = config.pDynamicOutlineThickness;
 	pDynamicOutlineSolidity = config.pDynamicOutlineSolidity;
 	pDynamicOutlineEmissivity = config.pDynamicOutlineEmissivity;
+	pDynamicOutlineEmissivityTint = config.pDynamicOutlineEmissivityTint;
+	pDynamicRimEmissivityTint = config.pDynamicRimEmissivityTint;
+	pDynamicRimEmissivityIntensity = config.pDynamicRimEmissivityIntensity;
+	pDynamicRimAngle = config.pDynamicRimAngle;
+	pDynamicRimExponent = config.pDynamicRimExponent;
 	
 	pTextureColor = config.pTextureColor;
 	pTextureColorTintMask = config.pTextureColorTintMask;
@@ -789,6 +851,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pTextureEnvRoom = config.pTextureEnvRoom;
 	pTextureEnvRoomMask = config.pTextureEnvRoomMask;
 	pTextureEnvRoomEmissivity = config.pTextureEnvRoomEmissivity;
+	pTextureRimEmissivity = config.pTextureRimEmissivity;
 	
 	return *this;
 }
@@ -850,9 +913,15 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pDynamicAbsorption == config.pDynamicAbsorption
 		&& pDynamicVariation == config.pDynamicVariation
 		&& pDynamicOutlineColor == config.pDynamicOutlineColor
+		&& pDynamicOutlineColorTint == config.pDynamicOutlineColorTint
 		&& pDynamicOutlineThickness == config.pDynamicOutlineThickness
 		&& pDynamicOutlineSolidity == config.pDynamicOutlineSolidity
 		&& pDynamicOutlineEmissivity == config.pDynamicOutlineEmissivity
+		&& pDynamicOutlineEmissivityTint == config.pDynamicOutlineEmissivityTint
+		&& pDynamicRimEmissivityTint == config.pDynamicRimEmissivityTint
+		&& pDynamicRimEmissivityIntensity == config.pDynamicRimEmissivityIntensity
+		&& pDynamicRimAngle == config.pDynamicRimAngle
+		&& pDynamicRimExponent == config.pDynamicRimExponent
 		
 		&& pTextureColor == config.pTextureColor
 		&& pTextureColorTintMask == config.pTextureColorTintMask
@@ -871,5 +940,6 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pTextureRefractionDistort == config.pTextureRefractionDistort
 		&& pTextureEnvRoom == config.pTextureEnvRoom
 		&& pTextureEnvRoomMask == config.pTextureEnvRoomMask
-		&& pTextureEnvRoomEmissivity == config.pTextureEnvRoomEmissivity;
+		&& pTextureEnvRoomEmissivity == config.pTextureEnvRoomEmissivity
+		&& pTextureRimEmissivity == config.pTextureRimEmissivity;
 }

@@ -342,8 +342,8 @@ void deoalASpeaker::PrepareProcessAudio(){
 		
 		if( pLooping ){
 			if( state == AL_STOPPED ){
-				pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
-					pSound, pSynthesizer, pVideoPlayer );
+// 				pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
+// 					pSound, pSynthesizer, pVideoPlayer );
 				underrun = true;
 			}
 			
@@ -372,8 +372,8 @@ void deoalASpeaker::PrepareProcessAudio(){
 				// we have to be careful about not getting tricked by buffer underrun condition.
 				// openal makes it difficult for us to properly detect this
 				if( state == AL_STOPPED && pPlayPosition < pPlayTo && pStreaming ){
-					pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
-						pSound, pSynthesizer, pVideoPlayer );
+// 					pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
+// 						pSound, pSynthesizer, pVideoPlayer );
 					underrun = true;
 					
 				}else{
@@ -1353,7 +1353,7 @@ void deoalASpeaker::pUpdateSourceImportance(){
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
-	if( pMuted ){
+	if( pMuted || ! pAudioThread.GetActiveMicrophone() ){
 		pAttenuatedGain = 0.0f;
 		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, 0.0f ) );
 		return;

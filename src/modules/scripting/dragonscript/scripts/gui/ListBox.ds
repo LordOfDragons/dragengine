@@ -849,7 +849,7 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 			this.notifyChildrenParentStateChanged()
 			super.onStateChanged( event )
 		end )
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 	
 	
@@ -1134,9 +1134,9 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 				end
 			end )
 			
-			this.pPanelVisibleElements.doLayout()
+			this.pPanelVisibleElements.doLayoutIfBlocked()
 		end )
 		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 	end
 end

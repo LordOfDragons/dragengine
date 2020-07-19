@@ -25,9 +25,9 @@
 
 #include "igdeMenuCheck.h"
 #include "igdeMenuCascade.h"
-#include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../event/igdeAction.h"
+#include "../native/toolkit.h"
 #include "../resources/igdeIcon.h"
 #include "../../engine/igdeEngineController.h"
 #include "../../environment/igdeEnvironment.h"
@@ -35,102 +35,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeMenuCheck : public FXMenuCheck{
-	FXDECLARE( cNativeIgdeMenuCheck )
-	
-protected:
-	cNativeIgdeMenuCheck();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXMenuCheck::ID_LAST,
-	};
-	
-private:
-	igdeMenuCheck *pOwner;
-	
-public:
-	cNativeIgdeMenuCheck( igdeMenuCheck &owner, FXComposite *parent );
-	virtual ~cNativeIgdeMenuCheck();
-	
-	long onMenuAction( FXObject *sender, FXSelector selector, void *data );
-	long updateMenuAction( FXObject *sender, FXSelector selector, void *data );
-	
-	static FXString BuildConstrText( igdeMenuCommand &owner );
-};
-
-
-FXDEFMAP( cNativeIgdeMenuCheck ) cNativeIgdeMenuCheckMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeMenuCheck::ID_SELF, cNativeIgdeMenuCheck::onMenuAction ),
-	FXMAPFUNC( SEL_UPDATE, cNativeIgdeMenuCheck::ID_SELF, cNativeIgdeMenuCheck::updateMenuAction )
-};
-
-
-FXIMPLEMENT( cNativeIgdeMenuCheck, FXMenuCheck, cNativeIgdeMenuCheckMap, ARRAYNUMBER( cNativeIgdeMenuCheckMap ) )
-
-cNativeIgdeMenuCheck::cNativeIgdeMenuCheck(){ }
-
-cNativeIgdeMenuCheck::cNativeIgdeMenuCheck( igdeMenuCheck &owner, FXComposite *parent ) :
-FXMenuCheck( parent, BuildConstrText( owner ), this, ID_SELF ),
-pOwner( &owner )
-{
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-	
-	setCheck( owner.GetChecked() );
-}
-
-cNativeIgdeMenuCheck::~cNativeIgdeMenuCheck(){
-}
-
-long cNativeIgdeMenuCheck::onMenuAction( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	pOwner->SetChecked( getCheck() );
-	
-	try{
-		pOwner->OnAction();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeMenuCheck::updateMenuAction( FXObject *sender, FXSelector selector, void *data ){
-	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
-		return 0;
-	}
-	
-	try{
-		action->Update();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-	}
-	
-	return 0;
-}
-
-FXString cNativeIgdeMenuCheck::BuildConstrText( igdeMenuCommand &owner ){
-	return igdeUIFoxHelper::MnemonizeString( owner.GetText(), owner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( owner.GetHotKey() )
-		+ "\t" + owner.GetDescription().GetString();
-}
-
 
 
 // Class igdeMenuCheck
@@ -145,8 +49,13 @@ pChecked( false ){
 }
 
 igdeMenuCheck::igdeMenuCheck( igdeEnvironment &environment, igdeAction *action ) :
-igdeMenuCommand( environment, action ),
-pChecked( false ){
+igdeMenuCommand( environment ),
+pChecked( false )
+{
+	// WARNING we have to use SetAction not the base class constructor otherwise
+	//         OnParameterChanged is called before pSelected is constructed
+	//         and initialized causing wrong state to be stored
+	SetAction( action );
 }
 
 igdeMenuCheck::~igdeMenuCheck(){
@@ -182,20 +91,9 @@ void igdeMenuCheck::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeIgdeMenuCheck * const native = new cNativeIgdeMenuCheck( *this, foxParent );
+	igdeNativeMenuCheck * const native = igdeNativeMenuCheck::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeMenuCheck::DestroyNativeWidget(){
@@ -203,17 +101,14 @@ void igdeMenuCheck::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeMenuCheck* )GetNativeWidget();
+	( ( igdeNativeMenuCheck* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuCheck::OnCheckedChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeMenuCheck* )GetNativeWidget() )->UpdateChecked();
 	}
-	
-	FXMenuCheck &native = *( ( FXMenuCheck* )GetNativeWidget() );
-	native.setCheck( pChecked );
 }

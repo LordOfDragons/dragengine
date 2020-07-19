@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -97,6 +99,31 @@ pIsDnd( false )
 }
 
 igdeNativeFoxNVSlot::~igdeNativeFoxNVSlot(){
+}
+
+igdeNativeFoxNVSlot *igdeNativeFoxNVSlot::CreateNativeWidget( igdeNVSlot &owner ){
+	if( ! owner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	if( ! parent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVSlot( owner, parent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVSlot::PostCreateNativeWidget(){
+	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( parent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVSlot::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -480,3 +507,5 @@ long meWVNodeSlot::onRightMouseUp( FXObject *sender, FXSelector selector, void *
 }
 
 */
+
+#endif

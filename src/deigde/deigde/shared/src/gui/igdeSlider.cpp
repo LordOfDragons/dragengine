@@ -25,162 +25,12 @@
 
 #include "igdeSlider.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeSliderListener.h"
+#include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeSlider : public FXSlider{
-	FXDECLARE( cNativeIgdeSlider )
-	
-protected:
-	cNativeIgdeSlider();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXSlider::ID_LAST,
-	};
-	
-private:
-	igdeSlider *pOwner;
-	float pScale;
-	float pInvScale;
-	
-public:
-	cNativeIgdeSlider( igdeSlider &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeIgdeSlider();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onChanged( FXObject *sender, FXSelector selector, void *data );
-	
-	static int SliderFlags( const igdeSlider &owner );
-	void UpdateScale();
-	void UpdateRange();
-	void UpdateValue();
-	virtual void Focus();
-};
-
-
-FXDEFMAP( cNativeIgdeSlider ) cNativeIgdeSliderMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeSlider::ID_SELF, cNativeIgdeSlider::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, cNativeIgdeSlider::ID_SELF, cNativeIgdeSlider::onChanged )
-};
-
-
-FXIMPLEMENT( cNativeIgdeSlider, FXSlider, cNativeIgdeSliderMap, ARRAYNUMBER( cNativeIgdeSliderMap ) )
-
-cNativeIgdeSlider::cNativeIgdeSlider(){ }
-
-cNativeIgdeSlider::cNativeIgdeSlider( igdeSlider &owner, FXComposite *parent, int layoutFlags ) :
-FXSlider( parent, this, ID_SELF, layoutFlags | SliderFlags( owner ) ),
-pOwner( &owner )
-{
-	UpdateScale();
-	UpdateRange();
-	UpdateValue();
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
-}
-
-cNativeIgdeSlider::~cNativeIgdeSlider(){
-}
-
-long cNativeIgdeSlider::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	// we have to send this notification always even if nothing changed. this is because
-	// a SEL_CHANGED can be send right before the SEL_COMMAND and then the value would
-	// be already set and the SEL_COMMAND would be ignore. ignoring the SEL_COMMAND though
-	// breaks listeners only listening for the "changed" event.
-	// 
-	// we can re-enable this code if we start tracking ourself if the value changed by a
-	// previous SEL_CHANGED. but this would need first a true gain to be obvious
-	const float value = ( float )getValue() * pInvScale;
-	/*if( fabsf( pOwner->GetValue() - value ) < FLOAT_SAFE_EPSILON ){
-		return 0;
-	}*/
-	
-	try{
-		pOwner->SetValue( value );
-		pOwner->NotifyValueChanged();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeSlider::onChanged( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	const float value = ( float )getValue() * pInvScale;
-	if( fabsf( pOwner->GetValue() - value ) < FLOAT_SAFE_EPSILON ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetValue( value );
-		pOwner->NotifyValueChanging();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-int cNativeIgdeSlider::SliderFlags( const igdeSlider &owner ){
-	switch( owner.GetOrientation() ){
-	case igdeSlider::eoHorizontal:
-		return SLIDER_HORIZONTAL | SLIDER_ARROW_DOWN | SLIDER_TICKS_BOTTOM;
-		
-	case igdeSlider::eoVertical:
-		return SLIDER_VERTICAL | SLIDER_ARROW_RIGHT | SLIDER_TICKS_RIGHT;
-		
-	default:
-		return 0;
-	}
-}
-
-void cNativeIgdeSlider::UpdateScale(){
-	pScale = powf( 10.0f, ( float )pOwner->GetPrecision() );
-	pInvScale = 1.0f / pScale;
-}
-
-void cNativeIgdeSlider::UpdateRange(){
-	setRange( ( FXint )( pOwner->GetLower() * pScale + 0.5f ),
-		( FXint )( pOwner->GetUpper() * pScale + 0.5f ) );
-	setTickDelta( ( FXint )( pOwner->GetTickSpacing() * pScale + 0.5f ) );
-}
-
-void cNativeIgdeSlider::UpdateValue(){
-	setValue( ( FXint )( pOwner->GetValue() * pScale + 0.5f ) );
-}
-
-void cNativeIgdeSlider::Focus(){
-	setFocus();
-}
-
 
 
 // Class igdeSlider
@@ -289,7 +139,7 @@ void igdeSlider::SetDescription( const char *description ){
 
 void igdeSlider::Focus(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeSlider* )GetNativeWidget() )->Focus();
+		( ( igdeNativeSlider* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -333,21 +183,9 @@ void igdeSlider::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeSlider * const native = new cNativeIgdeSlider( *this, foxParent, layoutFlags );
+	igdeNativeSlider * const native = igdeNativeSlider::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeSlider::DestroyNativeWidget(){
@@ -355,28 +193,22 @@ void igdeSlider::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeSlider* )GetNativeWidget();
+	( ( igdeNativeSlider* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeSlider::OnRangeChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSlider* )GetNativeWidget() )->UpdateRange();
 	}
-	
-	cNativeIgdeSlider &native = *( ( cNativeIgdeSlider* )GetNativeWidget() );
-	native.UpdateRange();
 }
 
 void igdeSlider::OnValueChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSlider* )GetNativeWidget() )->UpdateValue();
 	}
-	
-	cNativeIgdeSlider &native = *( ( cNativeIgdeSlider* )GetNativeWidget() );
-	native.UpdateValue();
 }
 
 void igdeSlider::OnPrecisionChanged(){
@@ -384,33 +216,20 @@ void igdeSlider::OnPrecisionChanged(){
 		return;
 	}
 	
-	cNativeIgdeSlider &native = *( ( cNativeIgdeSlider* )GetNativeWidget() );
+	igdeNativeSlider &native = *( ( igdeNativeSlider* )GetNativeWidget() );
 	native.UpdateScale();
 	native.UpdateRange();
 	native.UpdateValue();
 }
 
 void igdeSlider::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	cNativeIgdeSlider &native = *( ( cNativeIgdeSlider* )GetNativeWidget() );
-	
-	if( pEnabled ){
-		native.enable();
-		
-	}else{
-		native.disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeSlider* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeSlider::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSlider* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	cNativeIgdeSlider &native = *( ( cNativeIgdeSlider* )GetNativeWidget() );
-	native.setTipText( pDescription.GetString() );
-	native.setHelpText( pDescription.GetString() );
 }

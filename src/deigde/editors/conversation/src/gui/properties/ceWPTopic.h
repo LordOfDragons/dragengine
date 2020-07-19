@@ -177,17 +177,20 @@ public:
 	/** \brief Update active topic. */
 	void UpdateTopic();
 	
-	/** \brief Active action. */
-	ceConversationAction *GetAction() const;
+	/** \brief Active action from tree. */
+	ceConversationAction *GetTreeAction() const;
 	
-	/** \brief Active condition. */
-	ceConversationCondition *GetCondition() const;
+	/** \brief Active condition from tree. */
+	ceConversationCondition *GetTreeCondition() const;
 	
-	/** \brief Selected active action. */
-	void SelectActiveAction();
+	/** \brief Set topic active element from tree selection. */
+	void SyncTopicActive();
 	
-	/** \brief Update active action. */
-	void UpdateAction();
+	/** \brief Selected active panel. */
+	void SelectActivePanel();
+	
+	/** \brief Update active. */
+	void UpdateActive();
 	
 	
 	

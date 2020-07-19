@@ -500,7 +500,7 @@ public:
 	 * The calculated angles are not unique and different rotation
 	 * vectors lead usually to the same matrix. The calculated rotation
 	 * vector is garanteed to produce the matrix it has been calculated
-	 * from. Furthermore there exist ambigious situations where the
+	 * from. Furthermore there exist ambiguous situations where the
 	 * calculated rotation vector is undefined. You should avoid using
 	 * this function if you can.
 	 */
@@ -574,6 +574,38 @@ public:
 	 * The result is a  4x4 identity matrix with the upper left 3x3 copied from this matrix.
 	 */
 	decDMatrix GetRotationMatrix() const;
+	
+	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Modifies matrix with scaling removed. Only normalized matrices are safe to be used
+	 * with the GetEulerAngles() and ToQuaternion() calls since scaling interferes with
+	 * the calculation.
+	 * 
+	 * This calls the same as this code
+	 * \code{.cpp}
+	 * SetWorld(GetPosition(), TransformView(), TransformUp())
+	 * \endcode
+	 * 
+	 * but is safe against 0-scaling. In such a case a 0-rotation matrix is set.
+	 */
+	void Normalize();
+	
+	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Returns matrix with scaling removed. Only normalized matrices are safe to be used
+	 * with the GetEulerAngles() and ToQuaternion() calls since scaling interferes with
+	 * the calculation.
+	 * 
+	 * This calls the same as this code
+	 * \code{.cpp}
+	 * decDMatrix::CreateWorld(m.GetPosition(), m.TransformView(), m.TransformUp())
+	 * \endcode
+	 * 
+	 * but is safe against 0-scaling. In such a case a 0-rotation matrix is created.
+	 */
+	decDMatrix Normalized() const;
 	
 	/**
 	 * \brief Matrix is cell wise equal to anither one in respect to a threshold.

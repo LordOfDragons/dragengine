@@ -110,6 +110,8 @@ bool igdeEditorModuleDefinition::LoadModule( igdeEnvironment *environment ){
 		return false;
 	}
 	
+	const decPath basePathEditorLib( decPath::CreatePathNative( pModuleManager.GetPathModules() ) );
+	
 	try{
 		if( ! pLoadLibrary() ){
 			return false;
@@ -120,6 +122,11 @@ bool igdeEditorModuleDefinition::LoadModule( igdeEnvironment *environment ){
 		
 		pModule->SetLoggingName( pLoggingName );
 		pModule->SetEditorDirectory( pDirectoryName );
+		
+		decPath pathEditorLib( basePathEditorLib );
+		pathEditorLib.AddComponent( pDirectoryName );
+		pModule->SetEditorPathLib( pathEditorLib.GetPathNative() );
+		
 		pModule->Start();
 		
 		if( environment->GetEngineController()->GetRunning() ){

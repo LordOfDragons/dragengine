@@ -77,6 +77,10 @@ aeUSetRuleRemoveBone::~aeUSetRuleRemoveBone(){
 // Management
 ///////////////
 
+bool aeUSetRuleRemoveBone::HasBones() const{
+	return pBones.GetCount() > 0;
+}
+
 void aeUSetRuleRemoveBone::Undo(){
 	const int count = pBones.GetCount();
 	int i;

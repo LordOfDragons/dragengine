@@ -26,7 +26,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class Skin
+abstract class SkinBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**
@@ -131,7 +131,7 @@ abstract class Skin
 	 * \brief Add image node to open node.
 	 */
 	protected func void addNodeImage( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
 	SkinPropertyNodeCombineMode combineMode, \
 	String path, Image image, Point repeat )
 	end
@@ -140,7 +140,7 @@ abstract class Skin
 	 * \brief Add text node to open node.
 	 */
 	protected func void addNodeText( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
 	SkinPropertyNodeCombineMode combineMode, \
 	String path, Font font, float fontSize, String text, Color color )
 	end
@@ -149,7 +149,7 @@ abstract class Skin
 	 * \brief Add shape node to open node.
 	 */
 	protected func void addNodeShape( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
 	SkinPropertyNodeCombineMode combineMode, \
 	int shapeType, Color fillColor, Color lineColor, float thickness )
 	end
@@ -160,7 +160,7 @@ abstract class Skin
 	 * Sets created group node as new open node to operate on.
 	 */
 	protected func void addNodeGroup( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
 	SkinPropertyNodeCombineMode combineMode )
 	end
 	

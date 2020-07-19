@@ -310,6 +310,7 @@ igdeWOSOComponent::~igdeWOSOComponent(){
 		( ( igdeWOSOComponentResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
 		pResLoad = NULL;
 	}
+	pReleaseOutlineComponent();
 	pDestroyComponent();
 	
 	if( pColliderAddedToWorld ){
@@ -531,6 +532,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	if( ! model || model->GetLODAt( 0 )->GetFaceCount() == 0 ){
 		pResLoad = NULL;
+		pReleaseOutlineComponent();
 		pDestroyComponent();
 		return;
 	}
@@ -543,15 +545,17 @@ void igdeWOSOComponent::pUpdateComponent(){
 	deRig *rig = rl.GetRig();
 	pColliderCanInteract = true;
 	if( rig ){
-		// if rig shapes are used collision is possible if at least one shape is present
 		const int boneCount = rig->GetBoneCount();
-		if( boneCount == 0 && rig->GetShapes().GetCount() == 0 ){
-			rig = GetEnvironment().GetSharedModelCollisionRig();
-			pColliderCanInteract = model->GetLODAt( 0 )->GetFaceCount() > 0;
+		if( boneCount == 0 ){
+			// if rig shapes are used collision is possible if at least one shape is present
+			if( rig->GetShapes().GetCount() == 0 ){
+				rig = GetEnvironment().GetSharedModelCollisionRig();
+				pColliderCanInteract = model->GetLODAt( 0 )->GetFaceCount() > 0;
+			}
 			
 		}else{
-			// if rig uses bone shapes and no bone has shapes use shared model collision rig unless
-			// model collision is not possible in which case fallback has to be used
+			// if rig uses bone shapes and no bone has shapes use shared model collision rig
+			// unless model collision is not possible in which case fallback has to be used
 			int i;
 			for( i=0; i<boneCount; i++ ){
 				if( rig->GetBoneAt( i ).GetShapes().GetCount() > 0 ){
@@ -928,25 +932,7 @@ bool igdeWOSOComponent::pIsVisible() const{
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){
-	// release outline component and collider if present
-	if( pOutlineCollider ){
-		if( pCollider ){
-			deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineCollider );
-			if( attachment ){
-				pCollider->RemoveAttachment( attachment );
-			}
-		}
-		if( pOutlineCollider->GetParentWorld() ){
-			pOutlineCollider->GetParentWorld()->RemoveCollider( pOutlineCollider );
-		}
-		pOutlineCollider = NULL;
-	}
-	if( pOutlineComponent ){
-		if( pOutlineComponent->GetParentWorld() ){
-			pOutlineComponent->GetParentWorld()->RemoveComponent( pOutlineComponent );
-		}
-		pOutlineComponent = NULL;
-	}
+	pReleaseOutlineComponent();
 	
 	// get outline skin and check if an outline is required
 	deSkin * const outlineSkin = GetWrapper().GetOutlineSkin();
@@ -970,14 +956,25 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	
 	GetWrapper().GetWorld()->AddComponent( pOutlineComponent );
 	
-	// create outline collider and attach it
-	pOutlineCollider.TakeOver( engine.GetColliderManager()->CreateColliderComponent() );
-	pOutlineCollider->SetEnabled( false );
-	( ( deColliderComponent& )( deCollider& )pOutlineCollider ).SetComponent( pOutlineComponent );
-	
-	GetWrapper().GetWorld()->AddCollider( pOutlineCollider );
-	
-	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineCollider );
+	// attach outline component
+	deColliderAttachment * const attachment = new deColliderAttachment( pOutlineComponent );
 	attachment->SetAttachType( deColliderAttachment::eatRig );
 	pCollider->AddAttachment( attachment );
+}
+
+void igdeWOSOComponent::pReleaseOutlineComponent(){
+	if( ! pOutlineComponent ){
+		return;
+	}
+	
+	if( pCollider ){
+		deColliderAttachment * const attachment = pCollider->GetAttachmentWith( pOutlineComponent );
+		if( attachment ){
+			pCollider->RemoveAttachment( attachment );
+		}
+	}
+	if( pOutlineComponent->GetParentWorld() ){
+		pOutlineComponent->GetParentWorld()->RemoveComponent( pOutlineComponent );
+	}
+	pOutlineComponent = NULL;
 }

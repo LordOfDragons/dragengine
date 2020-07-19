@@ -682,6 +682,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 		
 	}else{
 		result.xy = tcTo.xy;
+		result.z = 0.0;
 		//result.z = roughnessTestX;
 	}
 	

@@ -60,8 +60,14 @@ class CActionActorRemove extends ConversationAction
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+		select reader.readByte() // version
+		case 0
+			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -107,6 +113,10 @@ class CActionActorRemove extends ConversationAction
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		super.writeObjectToFile( env, writer )
+		
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
 	end
 end

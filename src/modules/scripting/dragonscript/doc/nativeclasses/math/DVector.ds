@@ -68,6 +68,10 @@ fixed class DVector
 	public func DVector normalize()
 	end
 	
+	/** \brief Vector with absolute of all components. */
+	public func DVector absolute()
+	end
+	
 	/** \brief Component wise multiplication. */
 	public func DVector compMultiply( DVector v )
 	end

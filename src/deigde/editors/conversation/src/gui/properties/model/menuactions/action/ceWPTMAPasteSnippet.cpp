@@ -72,18 +72,8 @@ void ceWPTMAPasteSnippet::OnAction(){
 		return;
 	}
 	
-	ceConversationAction *selectAction = NULL;
 	igdeUndoReference undo;
 	undo.TakeOver( CreateUndo( dialog.GetActions() ) );
 	//undo->SetShortInfo( "Paste Conversation Snippet" );
-	selectAction = ( ( ceUCActionPaste& )( igdeUndo& )undo ).GetActions().GetAt( 0 );
 	pConversation->GetUndoSystem()->Add( undo );
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAction * const modelAction = model.DeepFindAction( selectAction );
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }

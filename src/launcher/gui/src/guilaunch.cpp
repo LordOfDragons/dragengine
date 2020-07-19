@@ -74,7 +74,8 @@ int main( int argc, char **argv ){
 		parseArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
 		
 		foxArgCount = parseArguments.GetArgumentCount();
-		foxArgs = new char*[ foxArgCount ];
+		foxArgs = new char*[ foxArgCount + 1 ]; // workaround: fox seems to write past the buffer
+		
 		int i;
 		for( i=0; i<foxArgCount; i++ ){
 			const decString argument( parseArguments.GetArgumentAt( i )->ToUTF8() );

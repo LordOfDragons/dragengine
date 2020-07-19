@@ -29,9 +29,9 @@
 #include "../igdeUIHelper.h"
 #include "../dialog/igdeDialog.h"
 #include "../dialog/igdeDialogReference.h"
-#include "../native/fox/igdeNativeFoxViewCurveBezier.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascadeReference.h"
+#include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -509,22 +509,9 @@ void igdeViewCurveBezier::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const igdeUIFoxHelper::sChildLayoutFlags layoutFlags( igdeUIFoxHelper::GetChildLayoutFlagsAll( this ) );
-	igdeNativeFoxViewCurveBezier * const native = new igdeNativeFoxViewCurveBezier(
-		*this, nativeParent, layoutFlags, *GetGuiTheme() );
+	igdeNativeViewCurveBezier * const native = igdeNativeViewCurveBezier::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeViewCurveBezier::DestroyNativeWidget(){
@@ -532,7 +519,7 @@ void igdeViewCurveBezier::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxViewCurveBezier* )GetNativeWidget();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -541,8 +528,7 @@ void igdeViewCurveBezier::OnDefaultSizeChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateDefaultSize();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateDefaultSize();
 }
 
 void igdeViewCurveBezier::OnCurveChanged(){
@@ -550,8 +536,7 @@ void igdeViewCurveBezier::OnCurveChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateCurve();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateCurve();
 }
 
 void igdeViewCurveBezier::OnEnabledChanged(){
@@ -559,8 +544,7 @@ void igdeViewCurveBezier::OnEnabledChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateEnabled();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateEnabled();
 }
 
 void igdeViewCurveBezier::OnSelectedPointChanged(){
@@ -568,8 +552,7 @@ void igdeViewCurveBezier::OnSelectedPointChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateSelectedPoint();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateSelectedPoint();
 }
 
 void igdeViewCurveBezier::OnClampChanged(){
@@ -577,8 +560,7 @@ void igdeViewCurveBezier::OnClampChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateClamp();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateClamp();
 }
 
 void igdeViewCurveBezier::OnResetView(){
@@ -586,8 +568,7 @@ void igdeViewCurveBezier::OnResetView(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().ResetView();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().ResetView();
 }
 
 void igdeViewCurveBezier::OnFitToCurve(){
@@ -595,6 +576,5 @@ void igdeViewCurveBezier::OnFitToCurve(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().FitViewToCurve();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().FitViewToCurve();
 }

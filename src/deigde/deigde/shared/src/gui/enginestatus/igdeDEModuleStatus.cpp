@@ -100,7 +100,7 @@ pDialogEngine( dialogEngine )
 	
 	
 	// file handling information
-	helper.GroupBoxStatic( *this, groupBox, "File Handling Informations:" );
+	helper.GroupBoxStatic( *this, groupBox, "File Handling Information:" );
 	
 	helper.EditString( groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, NULL );
 	pEditPattern->SetEditable( false );
@@ -113,7 +113,7 @@ pDialogEngine( dialogEngine )
 	
 	
 	// library information
-	helper.GroupBoxStatic( *this, groupBox, "Library Module Informations:" );
+	helper.GroupBoxStatic( *this, groupBox, "Library Module Information:" );
 	
 	helper.EditString( groupBox, "Library Filename:", "Library Filename", pEditLibName, NULL );
 	pEditLibName->SetEditable( false );
@@ -335,11 +335,13 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 void igdeDEModuleStatus::UpdateModulesList(){
 	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
 	const int count = moduleSystem.GetModuleCount();
+	decString text;
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		deLoadableModule * const loadedModule = moduleSystem.GetModuleAt( i );
-		pCBModule->AddItem( loadedModule->GetName(), NULL, loadedModule );
+		text.Format( "%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString() );
+		pCBModule->AddItem( text.GetString(), NULL, loadedModule );
 	}
 	pCBModule->SortItems();
 }

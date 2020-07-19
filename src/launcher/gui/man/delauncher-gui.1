@@ -1,0 +1,244 @@
+.TH DELAUNCHER-GUI 1
+
+.SH NAME
+delauncher\-gui \- run and manage games based on the
+Drag[en]gine Game Engine using GUI.
+
+.SH SYNOPSIS
+.\" run game
+.B delauncher\-gui
+[ { \fB\-p\fR | \fB\-\-profile\fR } \fIprofile\-name\fR ]
+.RS 4
+.br
+{ \fIgame\-identifier\fR | \fIgame\-alias\fR | \fIdelga\-file\fR }
+.br
+[\fIgame\-options...\fR]
+.RE
+
+.\" install delga
+.B "delauncher\-gui \-\-install"
+.I delga\-file
+
+.SH DESCRIPTION
+.B delauncher\-gui
+run and manage games based on the Drag[en]gine Game Engine using GUI.
+From the command line games can be run and optionally DELGA files installed.
+All other interactions are done through the GUI.
+
+For game servers and users prefering console handling use
+\fIdelauncher\-console\fR instead.
+
+.SH OPTIONS
+
+.TP 4
+.I game\-identifier
+Run installed game using its unique identifier. Each game has a unique identifier
+in the form of a standard random UUID (for example "73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9").
+Since remembering such an identifier is cumbersome the \fIgame\-alias\fR can be used instead.
+See the game listing in the GUI to find the game identifier and game alias of installed games.
+
+.TP 4
+.I game\-alias
+Run installed game using its alias name. Each game has an human readable alias name
+which is short and easy to remember. The alias is not guaranteed to be unique.
+If more than one installed game shares the same alias you have to use the
+\fIgame\-identifier\fR instead.
+See the game listing in the GUI to find the game identifier and game alias of installed games.
+
+.TP 4
+.I delga\-file
+Run *.delga file. This can be any installed or not installed *.delga file.
+
+.TP 4
+[ { \fB\-p\fR | \fB\-\-profile\fR } \fIprofile\-name\fR ]
+Use game profile named \fIprofile\-name\fR instead of the game profile assigned
+to the game. Game profiles can be created in the GUI. If you want to use the
+profile for running the game in the future assign it to the game using the GUI.
+
+.TP 4
+[ \fB\-\-install\fR \fIdelga\-file\fR ]
+Install *.delga file using the GUI. All games and patches located inside the
+DELGA file are installed alongside. It is not possible to only install some
+content of the DELGA file. Installing a DELGA file installs all content always.
+If content is already installed the DELGA fails to install.
+
+To uninstall games and patches use the GUI.
+
+.TP 4
+[\fIgame\-options...\fR]
+Game specific options appended to the run arguments defined in the game.
+.RE
+.LP
+
+.SH "EXIT STATUS"
+.B delauncher\-gui
+exits with status 0 if the specified action succeeded or 1 if errors occured.
+
+.SH "ENVIRONMENT VARIABLES"
+
+.TP 4
+.B DELAUNCHER_SYS_CONFIG
+Overrides compiled in system wide launcher configuration directory.
+
+.TP 4
+.B HOME
+User directory used to store user specific configuration, game saves and captures.
+
+.TP 4
+.B USER
+If the environment variable \fIHOME\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B LOGUSER
+If the environment variable \fIUSER\fR is not found this environment variable
+is examined instead.
+
+.TP 4
+.B DELAUNCHER_USER_CONFIG
+Overrides user specific configuration directory. If not set
+\fBdelauncher\-gui\fR uses the path:
+.br
+.IR "~/.config/delauncher"
+
+.TP 4
+.B DELAUNCHER_GAMES
+Overrides compiled in path to directory where DELGA files are installed to.
+
+.TP 4
+.B DELAUNCHER_SHARES
+Overrides compiled in path to launcher shares directory.
+
+.TP 4
+.B DELAUNCHER_LOGS
+Overrides compiled in path to launcher logging directory.
+
+.TP 4
+.B DISPLAY
+Display to run the launcher GUI and games on.
+
+.TP 4
+.B DE_ENGINE_PATH
+Overrides compiled in path to game engine module libraries path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_SHARE_PATH
+Overrides compiled in path to game engine module shared path.
+Engine modules are installed inside the directory in the form
+\fImodule\-type/module\-version\fR.
+
+.TP 5
+.B DE_CONFIG_PATH
+Overrides user specific game engine configuration directory.
+If not set the game engine uses the path:
+.br
+.IR "~/.config/dragengine"
+
+.TP 5
+.B DE_CACHE_PATH
+Overrides compiled in path to game engine cache path.
+See \fI~/.cache/dragengine/local/{game\-identifier}\fR.
+
+.TP 5
+.B DE_CAPTURE_PATH
+Overrides compiled in path to game engine capture path.
+See \fI"~/.cache/dragengine/capture"\fR.
+
+.SH FILES
+
+.TP 4
+.B "~/.config/delauncher/launcher.xml"
+User specific configuration settings for all Drag[en]gine capable launchers.
+
+.TP 4
+.B "~/.config/delauncher/delauncherconsole.xml"
+User specific configuration settings for \fBdelauncher\-gui\fR.
+
+.TP 4
+.B "~/.config/delauncher/logs/delauncher\-gui.log"
+Log file storing logs produced by \fBdelauncher\-gui\fR.
+In case of GUI launcher problems and bug tracking provide
+the content of this file to bug tickets.
+
+.TP 4
+.B "~/.config/delauncher/games/{game\-identifier}"
+User specific configuration, saves and capture directory for game with
+identifier \fIgame\-identifier\fR. This directory contains these files:
+.RS 4
+
+.TP 4
+.B launcher.xml
+Game specific launcher settings for all Drag[en]gine capable launchers.
+
+.TP 4
+.B config
+Game configuration which is usually game settings and save states.
+
+.TP 4
+.B capture
+Game captures created by the user which are usually screenshots, recored
+videos and other game content made available to the user.
+
+.TP 4
+.B logs
+Game specific launcher logs. In case of game problems and bug tracking
+provide the content of this directory to bug tickets
+.RE
+
+.TP 4
+.B "~/.cache/dragengine/local/{game\-identifier}"
+User specific cache directory for game with identifier \fIgame\-identifier\fR.
+The directory contains sub directories for each engine module storing caches
+for the game. The sub directories as well as the game cache directory itself
+can be safely deleted to reclaim disk space.
+
+.TP 4
+.B "~/.cache/dragengine/capture"
+User specific capture directory for game engine modules. Used for developing
+and debugging engine modules. The directory can be safely deleted to reclaim
+disk space.
+.LP
+
+.SH EXAMPLES
+
+.TP 4
+.nf
+.B "delauncher\-gui \-\-install ~/download/DEExampleApp.delga"
+
+.fi
+Install Drag[en]gine Example App DELGA downloaded from
+\fIhttps://github.com/LordOfDragons/deexamples/releases\fR.
+
+.TP 4
+.nf
+.B "delauncher\-gui deexampleapp"
+
+.fi
+Run Drag[en]gine Example App using game alias "deexampleapp".
+In most situations using the alias is enough but if multiple installed
+games share the same alias the user has to use the game-identifier instead.
+
+.TP 4
+.nf
+.B "delauncher\-gui 73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9"
+
+.fi
+Run Drag[en]gine Example App using game identifier
+"73ac1719\-c9b2\-40c4\-8cd7\-6efa8f5b63f9". This identifier is unique for
+the game and is the same for all computers it is run on. Using the
+game identifier is thus recommended for scripts especially those distributed
+over the internet to operate on the correct game.
+
+.TP 4
+.nf
+.B "delauncher\-gui ~/download/DEExampleApp.delga"
+
+.fi
+Run Drag[en]gine Example App directly from the downloaded DELGA file.
+This allows to run games without installing them. Game configurations,
+save states and captures still work as if the game is installed. So if
+you wish to keep playing the game you can install it any time later an
+keep your game configurations, saves and captures.
+.LP

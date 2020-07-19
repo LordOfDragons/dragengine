@@ -102,9 +102,9 @@ void deoglCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command
 void deoglCommandExecuter::pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	answer.SetFromUTF8( "help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "extensions => Lists status of extensions.\n" );
-	answer.AppendFromUTF8( "renderWindow => Shows informations about the render window.\n" );
-	answer.AppendFromUTF8( "visual => Shows informations about the visual.\n" );
-	answer.AppendFromUTF8( "fboInfos => Shows FBO Informations." );
+	answer.AppendFromUTF8( "renderWindow => Shows information about the render window.\n" );
+	answer.AppendFromUTF8( "visual => Shows information about the visual.\n" );
+	answer.AppendFromUTF8( "fboInfos => Shows FBO Information." );
 }
 
 void deoglCommandExecuter::pExtensions( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -128,7 +128,7 @@ void deoglCommandExecuter::pRenderWindow( const decUnicodeArgumentList &command,
 	deoglRRenderWindow * const renderWindow = pOgl.GetActiveRRenderWindow();
 	
 	if( renderWindow ){
-		//answer.SetFromUTF8( "Active Render Window Informations.\n" );
+		//answer.SetFromUTF8( "Active Render Window Information.\n" );
 		pAnswerIntValue( answer, "Width", renderWindow->GetWidth() );
 		pAnswerIntValue( answer, "Height", renderWindow->GetHeight() );
 		pAnswerStringValue( answer, "Window Title", renderWindow->GetTitle() );
@@ -144,8 +144,8 @@ void deoglCommandExecuter::pRenderWindow( const decUnicodeArgumentList &command,
 }
 
 void deoglCommandExecuter::pVisual( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "Visual Informations.\n" );
-	answer.AppendFromUTF8( "< No informations available >\n" );
+	answer.SetFromUTF8( "Visual Information.\n" );
+	answer.AppendFromUTF8( "< No information available >\n" );
 }
 
 void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -159,7 +159,7 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		int f, count = fboMgr.GetFBOCount();
 		const deoglFramebuffer *fbo;
 		
-		answer.SetFromUTF8( "FBO Informations ( useOneFBO=" );
+		answer.SetFromUTF8( "FBO Information ( useOneFBO=" );
 		if( config.GetUseOneFBO() ){
 			answer.AppendFromUTF8( "yes ):\n" );
 			

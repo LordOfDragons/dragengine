@@ -57,16 +57,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reLSRig::reLSRig( deBaseRigModule *module ){
+reLSRig::reLSRig( deBaseRigModule *module ) :
+pModule( module )
+{
 	if( ! module ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pModule = module;
-	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	const decStringList &patternList = loadableModule.GetPatternList();
+	const int patternCount = patternList.GetCount();
+	int i;
+	
 	pName = loadableModule.GetName();
-	pPattern = loadableModule.GetPatternList().GetAt( 0 );
+	for( i=0; i<patternCount; i++ ){
+		if( i > 0 ){
+			pPattern.AppendCharacter( ',' );
+		}
+		pPattern.AppendCharacter( '*' );
+		pPattern.Append( patternList.GetAt( i ) );
+	}
 }
 
 reLSRig::~reLSRig(){
@@ -119,7 +129,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		
 		pModule->LoadRig( *file, *engRig );
 		
-		// now it's time to copy the informations over
+		// now it's time to copy the information over
 		boneCount = engRig->GetBoneCount();
 		for( b=0; b<boneCount; b++ ){
 			deRigBone &engRigBone = engRig->GetBoneAt( b );

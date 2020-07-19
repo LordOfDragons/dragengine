@@ -28,7 +28,7 @@
 /**
  * \brief Float parameter.
  * 
- * Base class for all openal parameters. Every parameter stores informations about
+ * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class desynParameterFloat : public desynParameter{

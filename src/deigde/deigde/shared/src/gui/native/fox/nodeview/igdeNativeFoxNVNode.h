@@ -74,6 +74,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVNode();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxNVNode* CreateNativeWidget( igdeNVNode &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -84,26 +93,28 @@ public:
 	
 	
 	/** \brief Update title from owner. */
-	void UpdateTitle();
+	virtual void UpdateTitle();
 	
 	/** \brief Update description from owner. */
-	void UpdateDescription();
+	virtual void UpdateDescription();
 	
 	/** \brief Update enabled from owner. */
-	void UpdateEnabled();
+	virtual void UpdateEnabled();
 	
 	/** \brief Update active from owner. */
-	void UpdateActive();
+	virtual void UpdateActive();
 	
 	/** \brief Update color from owner. */
-	void UpdateColors();
+	virtual void UpdateColors();
 	
 	/** \brief Update position from owner. */
-	void UpdatePosition();
+	virtual void UpdatePosition();
 	
 	/** \brief Resize node to fit size to content. */
-	void FitSizeToContent();
+	virtual void FitSizeToContent();
 	
+	/** \brief Get Size. */
+	virtual decPoint GetSize();
 	
 	
 	static int NVNodeFlags( const igdeNVNode &owner );
@@ -126,5 +137,7 @@ public:
 	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
+
+typedef igdeNativeFoxNVNode igdeNativeNVNode;
 
 #endif

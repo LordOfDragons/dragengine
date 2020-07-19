@@ -85,11 +85,17 @@ class CActionIfElseCase
 	static public func CActionIfElseCase readFromFile( PersistencyEnvironment env, FileReader reader )
 		var CActionIfElseCase ifcase = CActionIfElseCase.new()
 		
-		ifcase.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
-		
-		var int i, count = reader.readUShort()
-		for i = 0 to count
-			ifcase.pActions.add( env.readObject( reader ) )
+		select reader.readByte() // version
+		case 0
+			ifcase.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
+			
+			var int i, count = reader.readUShort()
+			for i = 0 to count
+				ifcase.pActions.add( env.readObject( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 		
 		return ifcase
@@ -97,6 +103,8 @@ class CActionIfElseCase
 	
 	/** \brief Write object to file writer. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeObjectOrNull( writer, this.pCondition )
 		
 		writer.writeUShort( this.pActions.getCount() )

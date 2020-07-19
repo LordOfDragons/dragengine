@@ -1,0 +1,422 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display InteractPromptEntry instance.
+ * 
+ * The panel can be styled using selector these designer selectors:
+ * - "InteractPromptEntry{.style}": The prompt entry panel
+ * - "Image.InteractPromptEntry{.style}": Interact image
+ * - "Video.InteractPromptEntry{.style}": Interact video
+ * - "Label.InteractPromptEntry{.style}.Verb": Verb label
+ * - "Label.InteractPromptEntry{.style}.Description": Description label
+ * - "Panel.InteractPromptEntry{.style}.Bindings": Bindings panel
+ */
+class DisplayInteractPromptEntry extends Panel
+	/** \brief Placement of image, verb and bindings. */
+	enum Placement
+		/** From top to bottom: image, verb then bindings. */
+		top
+		
+		/** From top to bottom: bindings, image, verb. */
+		bottom
+		
+		/** Left image, right verb above bindings. */
+		left
+		
+		/** Right image, left verb above bindings. */
+		right
+	end
+	
+	
+	
+	private var BindingManager pBindingManager
+	private var int pBindingIconHeight
+	private var String pBaseSelectorName
+	private var Placement pPlacement
+	
+	private var DisplayImage pDisplayImage
+	private var DisplayVideo pDisplayVideo
+	private var Label pLabelVerb
+	private var Label pLabelDescription
+	private var Panel pPanelBindings
+	private var Command pCommand
+	
+	
+	
+	/** \brief Create widget. */
+	public func new() this( null, 1, Placement.top )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement ) \
+	this( bindingManager, bindingIconHeight, placement, "InteractPromptEntry" )
+	end
+	
+	public func new( BindingManager bindingManager, int bindingIconHeight, Placement placement, \
+	String baseSelectorName )
+		if baseSelectorName == null
+			throw ENullPointer.new( "baseSelectorName" )
+		end
+		
+		this.pBindingManager = bindingManager
+		this.pBindingIconHeight = DEMath.max( bindingIconHeight, 1 )
+		this.pBaseSelectorName = baseSelectorName
+		this.pPlacement = placement
+		
+		this.runWhileBlockingLayout( block
+			select placement
+			case Placement.top
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 0 ) )
+				
+			case Placement.bottom
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0.5, 1 ) )
+				
+			case Placement.left
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 0, 0, 0.5 ) )
+				
+			case Placement.right
+				this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 0, 1, 0.5 ) )
+			end
+			
+			var Panel panelImage = Panel.new( StackLayout.new(), block Panel p
+				p.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p2
+					this.pDisplayImage = DisplayImage.new()
+					this.pDisplayImage.setVisible( false )
+					p2.addWidget( this.pDisplayImage )
+				end ) )
+				
+				p.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p2
+					this.pDisplayVideo = DisplayVideo.new()
+					this.pDisplayVideo.setVisible( false )
+					p2.addWidget( this.pDisplayVideo )
+				end ) )
+			end )
+			
+			this.pLabelVerb = Label.new( "" )
+			this.pLabelVerb.setVisible( false )
+			
+			this.pLabelDescription = Label.new( "" )
+			this.pLabelDescription.setVisible( false )
+			
+			select placement
+			case Placement.top
+				this.addWidget( panelImage )
+				this.addWidget( this.pLabelVerb )
+				this.addWidget( this.pLabelDescription )
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 5, 0.5, 0 ) )
+				this.addWidget( this.pPanelBindings )
+				
+			case Placement.bottom
+				this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 5, 0.5, 1 ) )
+				this.addWidget( this.pPanelBindings )
+				this.addWidget( panelImage )
+				this.addWidget( this.pLabelVerb )
+				this.addWidget( this.pLabelDescription )
+				
+			case Placement.left
+				this.addWidget( panelImage )
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0, 0, 0.5 ), block Panel p
+					p.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y ), block Panel p2
+						p2.addWidget( this.pLabelVerb )
+						p2.addWidget( this.pLabelDescription )
+						this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 0, 0.5 ) )
+						p2.addWidget( this.pPanelBindings )
+					end ) )
+				end ) )
+				
+			case Placement.right
+				this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0, 1, 0.5 ), block Panel p
+					p.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y ), block Panel p2
+						p2.addWidget( this.pLabelVerb )
+						p2.addWidget( this.pLabelDescription )
+						this.pPanelBindings = Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5, 1, 0.5 ) )
+						p2.addWidget( this.pPanelBindings )
+					end ) )
+				end ) )
+				this.addWidget( panelImage )
+			end
+			
+			this.setDesignerSelector( this.pBaseSelectorName )
+		end )
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		this.pDisplayImage = null
+		this.pDisplayVideo = null
+		this.pLabelVerb = null
+		this.pLabelDescription = null
+		this.pPanelBindings = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Binding manager or null to show no bindings. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief Binding icon height. */
+	public func int getBindingIconHeight()
+		return this.pBindingIconHeight
+	end
+	
+	/** \brief Base selector name. */
+	public func String getBaseSelectorName()
+		return this.pBaseSelectorName
+	end
+	
+	/** \brief Set base selector name. */
+	public func void setBaseSelectorName( String name )
+		if this.pBaseSelectorName.equals( name )
+			return
+		end
+		
+		this.updateFromEntry( null )
+		
+		this.pBaseSelectorName = name
+		this.setDesignerSelector( this.pBaseSelectorName )
+	end
+	
+	/** \brief Placement. */
+	public func Placement getPlacement()
+		return this.pPlacement
+	end
+	
+	
+	
+	/** \brief Display image widget. */
+	protected func DisplayImage getDisplayImage()
+		return this.pDisplayImage
+	end
+	
+	/** \brief Display video widget. */
+	protected func DisplayVideo getDisplayVideo()
+		return this.pDisplayVideo
+	end
+	
+	/** \brief Verb label. */
+	protected func Label getLabelVerb()
+		return this.pLabelVerb
+	end
+	
+	/** \brief Description label. */
+	protected func Label getLabelDescription()
+		return this.pLabelDescription
+	end
+	
+	/** \brief Bindings panel. */
+	protected func Panel getPanelBindings()
+		return this.pPanelBindings
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Updates the designer selector of all widgets.
+	 */
+	public func void onDesignerSelectorChanged()
+		this.runWhileBlockingLayout( block
+			var String selector = this.getDesignerSelector()
+			this.pDisplayImage.setDesignerSelector( "Image." + selector )
+			this.pDisplayVideo.setDesignerSelector( "Video." + selector )
+			this.pLabelVerb.setDesignerSelector( "Label." + selector + ".Verb" )
+			this.pLabelDescription.setDesignerSelector( "Label." + selector + ".Description" )
+			this.pPanelBindings.setDesignerSelector( "Panel." + selector + ".Bindings" )
+		end )
+		this.doLayoutIfBlocked()
+	end
+	
+	
+	
+	/**
+	 * \brief Update from entry.
+	 * 
+	 * Entry can be null to clear.
+	 */
+	public func void updateFromEntry( InteractPromptEntry entry )
+		this.runWhileBlockingLayout( block
+			if entry != null
+				this.pDisplayImage.setImage( entry.getImage() )
+				this.pDisplayImage.setVisible( entry.getImage() != null )
+				
+				this.pDisplayVideo.setVideo( entry.getVideo() )
+				this.pDisplayVideo.setVisible( entry.getVideo() != null )
+				
+				this.pLabelVerb.setText( entry.getVerb().toUTF8() )
+				this.pLabelVerb.setVisible( not this.pLabelVerb.getText().empty() )
+				
+				this.pLabelDescription.setText( entry.getDescription().toUTF8() )
+				this.pLabelDescription.setVisible( not this.pLabelDescription.getText().empty() )
+				
+				if this.pBindingManager != null
+					this.setCommand( entry.getCommand() )
+					
+				else
+					this.setCommand( null )
+				end
+				
+				if entry.getStyle().empty()
+					this.setDesignerSelector( this.pBaseSelectorName )
+					
+				else
+					this.setDesignerSelector( this.pBaseSelectorName + "." + entry.getStyle() )
+				end
+				
+			else
+				this.pDisplayImage.setImage( null )
+				this.pDisplayImage.setVisible( false )
+				
+				this.pDisplayVideo.setVideo( null )
+				this.pDisplayVideo.setVisible( false )
+				
+				this.pLabelVerb.setText( null )
+				this.pLabelVerb.setVisible( false )
+				
+				this.pLabelDescription.setText( null )
+				this.pLabelDescription.setVisible( false )
+				
+				this.pPanelBindings.setVisible( false )
+				
+				this.setDesignerSelector( this.pBaseSelectorName )
+			end
+		end )
+		this.doLayoutIfBlocked()
+	end
+	
+	/** \brief Set command updating widgets if required. */
+	protected func void setCommand( Command command )
+		if this.pCommand == command
+			return
+		end
+		
+		this.pCommand = command
+		this.updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Update binding widgets.
+	 * 
+	 * Tries to update existing widgets first creating new ones if required. All unused
+	 * widgets beyond the required count of widgets are hidden to reduce widget creation
+	 * to a minimum.
+	 */
+	protected func void updateBindingWidgets()
+		this.pPanelBindings.runWhileBlockingLayout( block
+			if this.pCommand == null
+				this.pPanelBindings.forEachWidget( block Widget each
+					each.setVisible( false )
+				end )
+				return null
+			end
+			
+			var int widgetCount = this.pPanelBindings.getWidgetCount()
+			var ObjectReference refIndex = ObjectReference.new( 0 )
+			var Widget widget
+			var int index
+			
+			this.pBindingManager.forEachButtonBinding( block Binding each
+				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
+					index = refIndex.get() cast int
+					refIndex.set( index + 1 )
+					
+					if index < widgetCount
+						widget = this.pPanelBindings.getWidget( index )
+						widget.setVisible( true )
+						
+					else
+						widget = this.createBindingWidget()
+						this.pPanelBindings.addWidget( widget )
+					end
+					
+					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
+					var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
+					this.updateBindingWidget( widget, device, button )
+				end
+			end )
+			
+			this.pBindingManager.forEachAxisBinding( block Binding each
+				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
+					index = refIndex.get() cast int
+					refIndex.set( index + 1 )
+					
+					if index < widgetCount
+						widget = this.pPanelBindings.getWidget( index )
+						widget.setVisible( true )
+						
+					else
+						widget = this.createBindingWidget()
+						this.pPanelBindings.addWidget( widget )
+					end
+					
+					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
+					var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
+					this.updateBindingWidget( widget, device, axis )
+				end
+			end )
+			
+			var int usedCount = refIndex.get() cast int
+			this.pPanelBindings.setVisible( usedCount > 0 )
+			
+			for index = usedCount to widgetCount
+				this.pPanelBindings.getWidget( index ).setVisible( false )
+			end
+		end )
+	end
+	
+	/**
+	 * \brief Create widget representing binding.
+	 * 
+	 * Default implementation creates instance of DisplayInputSource.
+	 */
+	protected func Widget createBindingWidget()
+		var DisplayInputSource dpi = DisplayInputSource.new( this.pBindingIconHeight )
+		dpi.setDesignerSelector( "DisplayInputSource." + this.getDesignerSelector() + ".Binding" )
+		return dpi
+	end
+	
+	/**
+	 * \brief Update widget representing binding.
+	 * 
+	 * Default implementation operates on instance of DisplayInputSource.
+	 */
+	protected func void updateBindingWidget( Widget widget, InputDevice device, InputDeviceButton button )
+		( widget cast DisplayInputSource ).set( null, button )
+	end
+	
+	protected func void updateBindingWidget( Widget widget, InputDevice device, InputDeviceAxis axis )
+		( widget cast DisplayInputSource ).set( null, axis )
+	end
+end

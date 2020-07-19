@@ -358,14 +358,22 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pSpeedLookHorizontal = reader.readFloat()
-			this.pSpeedLookVertical = reader.readFloat()
-			this.pAnalogFactorLookHorizontal = reader.readFloat()
-			this.pAnalogFactorLookVertical = reader.readFloat()
+			select reader.readByte() // version
+			case 0
+				this.pSpeedLookHorizontal = reader.readFloat()
+				this.pSpeedLookVertical = reader.readFloat()
+				this.pAnalogFactorLookHorizontal = reader.readFloat()
+				this.pAnalogFactorLookVertical = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pSpeedLookHorizontal )
 			writer.writeFloat( this.pSpeedLookVertical )
 			writer.writeFloat( this.pAnalogFactorLookHorizontal )

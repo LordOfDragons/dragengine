@@ -26,9 +26,9 @@
 
 
 /**
- * \brief Sound Module Sound Informations.
+ * \brief Sound Module Sound Information.
  *
- * Provides informations for a sound to loading afterwards. Can be used
+ * Provides information for a sound to loading afterwards. Can be used
  * by the sound module to store additional data structures needed for loading
  * in a subclasses object.
  */

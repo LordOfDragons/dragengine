@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>JPEG</name>
 	<description>Handles images saved in the JPEG format (lossy compression).</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.jpg</pattern>
 	<!-- <pattern>.jpg .jpeg</pattern> -->

@@ -59,33 +59,9 @@
 
 meConfiguration::meConfiguration( meWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-
-pMoveStep( 0.05f ),
-pMoveSnap( true ),
-
-pRotStep( 15.0f ),
-pRotSnap( true ),
-
-pScaleStep( 0.25f ),
-pScaleSnap( true ),
-
-pAutoUpdate( false ),
-pSensitivity( 1.0f ),
-
 pPreventSaving( false )
 {
-	pHotKeys[ ehkSelectWorkMode ] = deInputEvent::ekcW;
-	pHotKeys[ ehkSelectElementMode ] = deInputEvent::ekcE;
-	
-	pHotKeys[ ehkWorldMove ] = deInputEvent::ekcG;
-	pHotKeys[ ehkWorldRotate ] = deInputEvent::ekcR;
-	pHotKeys[ ehkWorldScale ] = deInputEvent::ekcS;
-	
-	pHotKeys[ ehkEditLockX ] = deInputEvent::ekcX;
-	pHotKeys[ ehkEditLockY ] = deInputEvent::ekcY;
-	pHotKeys[ ehkEditLockZ ] = deInputEvent::ekcZ;
-	pHotKeys[ ehkEditLocalCFrame ] = deInputEvent::ekcL;
-	pHotKeys[ ehkEditSnapToSnapPoints ] = deInputEvent::ekcP;
+	pReset();
 }
 
 meConfiguration::~meConfiguration(){
@@ -202,16 +178,20 @@ void meConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void meConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/worldEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/worldEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		meConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -250,4 +230,31 @@ void meConfiguration::SaveConfiguration(){
 //////////////////////
 
 void meConfiguration::pCleanUp(){
+}
+
+void meConfiguration::pReset(){
+	pMoveStep = 0.05f;
+	pMoveSnap = true;
+	
+	pRotStep = 15.0f;
+	pRotSnap = true;
+	
+	pScaleStep = 0.25f;
+	pScaleSnap = true;
+	
+	pAutoUpdate = false;
+	pSensitivity = 1.0f;
+	
+	pHotKeys[ ehkSelectWorkMode ] = deInputEvent::ekcW;
+	pHotKeys[ ehkSelectElementMode ] = deInputEvent::ekcE;
+	
+	pHotKeys[ ehkWorldMove ] = deInputEvent::ekcG;
+	pHotKeys[ ehkWorldRotate ] = deInputEvent::ekcR;
+	pHotKeys[ ehkWorldScale ] = deInputEvent::ekcS;
+	
+	pHotKeys[ ehkEditLockX ] = deInputEvent::ekcX;
+	pHotKeys[ ehkEditLockY ] = deInputEvent::ekcY;
+	pHotKeys[ ehkEditLockZ ] = deInputEvent::ekcZ;
+	pHotKeys[ ehkEditLocalCFrame ] = deInputEvent::ekcL;
+	pHotKeys[ ehkEditSnapToSnapPoints ] = deInputEvent::ekcP;
 }

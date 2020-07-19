@@ -301,7 +301,7 @@ class SpinButton extends Container implements RangeModelListener
 			this.addWidget( this.pButtonDown )
 		end )
 		
-		this.doLayout()
+		this.doLayoutIfBlocked()
 		
 		// set fixed width
 		this.setMinimumSize( Point.new( designer.spinButtonSize( this ), this.getMinimumSize().getY() ) )

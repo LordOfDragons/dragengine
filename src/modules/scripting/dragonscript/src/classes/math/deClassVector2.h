@@ -71,6 +71,7 @@ private:
 	DEF_NATFUNC( nfGetComponentAt );
 	DEF_NATFUNC( nfGetLength );
 	DEF_NATFUNC( nfNormalize );
+	DEF_NATFUNC( nfAbsolute );
 	DEF_NATFUNC( nfSmallest );
 	DEF_NATFUNC( nfLargest );
 	DEF_NATFUNC( nfClamped );

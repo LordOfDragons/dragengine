@@ -102,17 +102,25 @@ class TSTriggerTable
 	
 	/** \brief Read trigger table from file. */
 	public func void readFromFile( FileReader reader )
-		var int count = reader.readInt()
-		var int i
-		
-		this.removeAll()
-		for i = 0 to count
-			this.add( TSTriggerTarget.readFromFile( reader ) )
+		select reader.readByte() // version
+		case 0
+			var int count = reader.readInt()
+			var int i
+			
+			this.removeAll()
+			for i = 0 to count
+				this.add( TSTriggerTarget.readFromFile( reader ) )
+			end
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
 	end
 	
 	/** \brief Write trigger table to file. */
 	public func void writeToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeInt( this.pTargets.getCount() )
 		this.pTargets.forEachValue( block TSTriggerTarget each
 			each.writeToFile( writer )

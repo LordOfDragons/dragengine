@@ -1644,7 +1644,7 @@ void aeAnimator::pUpdateDDSBones(){
 	if( pEngComponent ){
 		boneCount = pEngComponent->GetBoneCount();
 		pEngComponent->PrepareBones();
-		matrix = decDMatrix( pEngComponent->GetMatrix() );
+		matrix = decDMatrix( pEngComponent->GetMatrix() ).Normalized();
 	}
 	
 	if( boneCount != pDDSBoneCount ){
@@ -1668,11 +1668,10 @@ void aeAnimator::pUpdateDDSBones(){
 	
 	for( i=0; i<pDDSBoneCount; i++ ){
 		if( i < boneCount && pEngComponent ){
-			const decMatrix &boneMatrix = pEngComponent->GetBoneAt( i ).GetMatrix();
-			
+			const decMatrix boneMatrix = pEngComponent->GetBoneAt( i ).GetMatrix().Normalized();
 			pDDSBones[ i ].SetPosition( boneMatrix.GetPosition() );
 			pDDSBones[ i ].SetOrientation( boneMatrix.ToQuaternion() );
-			pDDSBones[ i ].SetScale( boneMatrix.GetScale() * pDDSBoneSize );
+			pDDSBones[ i ].SetScale( decVector( pDDSBoneSize, pDDSBoneSize, pDDSBoneSize ) );
 			pDDSBones[ i ].SetVisible( true );
 			
 		}else{

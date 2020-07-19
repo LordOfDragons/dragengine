@@ -64,7 +64,7 @@ public:
 	
 	/** Updates the collision volume using a transformation matrix. */
 	virtual void UpdateWithMatrix( const decDMatrix &transformation );
-	/** Prints out on the console some debugging informations about the shape. */
+	/** Prints out on the console some debugging information about the shape. */
 	virtual void PrintDebug( dePhysicsBullet &module );
 	/*@}*/
 };

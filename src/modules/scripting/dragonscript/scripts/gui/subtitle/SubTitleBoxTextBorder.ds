@@ -221,44 +221,50 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	/** \brief Read action from file. */
 	public static func SubTitleBoxTextBorder readFromFile( \
 	PersistencyEnvironment env, FileReader reader )
-		// read content to know what kind of SubTitleBoxTextBorder to create
-		var String labelName = env.readString8OrNullIfEmpty( reader )
-		var String labelText = env.readString16OrNullIfEmpty( reader )
-		var String pathImagePortrait = env.readString16OrNullIfEmpty( reader )
-		var String pathVideoPortrait = env.readString16OrNullIfEmpty( reader )
-		var SubTitleBoxTextBorder.Placement placement = \
-			SubTitleBoxTextBorder.Placement.withOrder( reader.readByte() )
-		
-		// TODO how to read styled text?
-		var StyledTextDefinition styledText
-		var StyledTextDefinition styledName
-		
-		var String designerSelector = reader.readString8()
-		
-		var float triggerTime = reader.readFloat()
-		var float elapsedTime = reader.readFloat()
-		
-		// create SubTitleBoxTextBorder the right way
-		var Image imagePortrait
-		if pathImagePortrait != null
-			imagePortrait = Image.new( pathImagePortrait )
+		select reader.readByte() // version
+		case 0
+			// read content to know what kind of SubTitleBoxTextBorder to create
+			var String labelName = env.readString8OrNullIfEmpty( reader )
+			var String labelText = env.readString16OrNullIfEmpty( reader )
+			var String pathImagePortrait = env.readString16OrNullIfEmpty( reader )
+			var String pathVideoPortrait = env.readString16OrNullIfEmpty( reader )
+			var SubTitleBoxTextBorder.Placement placement = \
+				SubTitleBoxTextBorder.Placement.withOrder( reader.readByte() )
+			
+			// TODO how to read styled text?
+			var StyledTextDefinition styledText
+			var StyledTextDefinition styledName
+			
+			var String designerSelector = reader.readString8()
+			
+			var float triggerTime = reader.readFloat()
+			var float elapsedTime = reader.readFloat()
+			
+			// create SubTitleBoxTextBorder the right way
+			var Image imagePortrait
+			if pathImagePortrait != null
+				imagePortrait = Image.new( pathImagePortrait )
+			end
+			
+			var Video videoPortrait
+			if pathVideoPortrait != null
+				videoPortrait = Video.new( pathVideoPortrait )
+			end
+			
+			var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new( labelText, labelName, \
+				styledText, styledName, imagePortrait, videoPortrait, placement )
+			stbt.setDesignerSelector( designerSelector )
+			
+			if triggerTime > 0.0
+				stbt.pHideTimer = HideTimer.new( stbt, triggerTime )
+				stbt.pHideTimer.setElapsedTime( elapsedTime )
+			end
+			
+			return stbt
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
 		end
-		
-		var Video videoPortrait
-		if pathVideoPortrait != null
-			videoPortrait = Video.new( pathVideoPortrait )
-		end
-		
-		var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new( labelText, labelName, \
-			styledText, styledName, imagePortrait, videoPortrait, placement )
-		stbt.setDesignerSelector( designerSelector )
-		
-		if triggerTime > 0.0
-			stbt.pHideTimer = HideTimer.new( stbt, triggerTime )
-			stbt.pHideTimer.setElapsedTime( elapsedTime )
-		end
-		
-		return stbt
 	end
 	
 	/** \brief Dispose of widget. */
@@ -392,6 +398,8 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		if this.pLabelName != null
 			writer.writeString8( this.pLabelName.getText() )
 			

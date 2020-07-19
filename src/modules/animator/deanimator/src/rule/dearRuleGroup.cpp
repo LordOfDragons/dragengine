@@ -114,7 +114,7 @@ void dearRuleGroup::StoreFrameInto( int identifier, const char *moveName, float 
 	}
 }
 
-bool dearRuleGroup::RebuildInstance(){
+bool dearRuleGroup::RebuildInstance() const{
 	int i;
 	bool rebuild = false;
 	for( i=0; i<pRuleCount; i++ ){

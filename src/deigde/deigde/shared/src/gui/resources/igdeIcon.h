@@ -112,12 +112,6 @@ public:
 	 */
 	void *GetNativeIcon() const{ return pNativeIcon; }
 	/*@}*/
-	
-	
-	
-private:
-	static void *pCreateFromImage( deImage &image );
-	static void *pCreateFromPNG( decBaseFileReader &reader );
 };
 
 #endif

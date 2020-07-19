@@ -64,17 +64,4 @@ void ceWPTMACLogicClearCondition::OnAction(){
 	igdeUndoReference undo;
 	undo.TakeOver( new ceUCCLogicRemoveAll( pTopic, pAction, pLogic ) );
 	GetConversation().GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMCondition * const modelCondition = model.DeepFindCondition( pLogic );
-	if( modelCondition ){
-		modelCondition->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }

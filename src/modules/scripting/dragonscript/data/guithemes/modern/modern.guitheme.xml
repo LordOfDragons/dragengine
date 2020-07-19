@@ -40,7 +40,7 @@
 		<!--<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' all='1'/>
 			<canvasCreator parameter='active.canvas' type='Bevel'>
-				<color parameter='colorHilight' r='1' g='1' b='1'/>
+				<color parameter='colorHighlight' r='1' g='1' b='1'/>
 				<color parameter='colorShadow' r='0.6' g='0.6' b='0.6'/>
 			</canvasCreator>
 		</decoration>-->
@@ -67,6 +67,15 @@
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		<color parameter='disabled.textColor' r='0.5' g='0.5' b='0.5'/>
+	</designer>
+	
+	<designer name='Image' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'/>
+		<colorMatrix parameter='disabled.imageColorTransform'>
+			<saturation r='0' g='0' b='0'/>
+			<contrast r='0.5' g='0.5' b='0.5'/>
+			<brightness r='0.15' g='0.15' b='0.15' a='0'/>
+		</colorMatrix>
 	</designer>
 	
 	<designer name='Button' type='Button'>
@@ -475,6 +484,27 @@
 	- 'Label.EMPSystem.CycleValue.Value'
 	    Value label in cycle value panel
 	-->
+	
+	
+	<!--
+	PanelInteractPrompt.
+	- 'InteractPrompt': The prompt panel
+	- 'InteractPromptEntry': The prompt entry panel
+	- 'Image.InteractPromptEntry': Interact image
+	- 'Video.InteractPromptEntry': Interact video
+	- 'Label.InteractPromptEntry.Verb': Verb label
+	- 'Label.InteractPromptEntry.Description': Description label
+	- 'Panel.InteractPromptEntry.Bindings': Bindings panel
+	-->
+	<designer name='InteractPrompt' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0' g='0' b='0' a='0.5'/>
+			</colorMatrix>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='10'/>
+	</designer>
+	
 	
 	<!--
 	Logo window. These designer can be defined:

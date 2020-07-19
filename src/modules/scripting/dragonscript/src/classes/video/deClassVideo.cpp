@@ -217,6 +217,20 @@ void deClassVideo::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 	}
 }
 
+// static public func bool equals( Video video1, Video video2 )
+deClassVideo::nfEquals2::nfEquals2( const sInitData &init ) :
+dsFunction( init.clsVid, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsVid ); // video1
+	p_AddParameter( init.clsVid ); // video2
+}
+void deClassVideo::nfEquals2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassVideo &clsVideo = *( ( deClassVideo* )GetOwnerClass() );
+	const deVideo * const video1 = clsVideo.GetVideo( rt->GetValue( 0 )->GetRealObject() );
+	const deVideo * const video2 = clsVideo.GetVideo( rt->GetValue( 1 )->GetRealObject() );
+	
+	rt->PushBool( video1 == video2 );
+}
+
 
 
 // Class deClassVideo
@@ -278,6 +292,7 @@ void deClassVideo::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetPlayTime( init ) );
 	
 	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfEquals2( init ) );
 	AddFunction( new nfHashCode( init ) );
 }
 

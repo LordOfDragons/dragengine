@@ -142,11 +142,20 @@ public:
 	/** \brief Set bone combo box text. */
 	void SetCBBoneText( const char *text );
 	
+	/** \brief Selected bone list or NULL. */
+	const char *GetListBoneSelection() const;
+	
 	/** \brief Link combo box selection. */
 	aeLink *GetCBLinkSelection() const;
 	
 	/** \brief Set link combo box selection. */
 	void SetCBLinkSelection( aeLink *selection );
+	
+	/** \brief Link list selection. */
+	aeLink *GetListLinkSelection() const;
+	
+	/** \brief Set link list selection. */
+	void SetListLinkSelection( aeLink *selection );
 	
 	
 	

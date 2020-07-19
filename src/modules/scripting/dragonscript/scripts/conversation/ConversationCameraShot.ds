@@ -382,41 +382,49 @@ class ConversationCameraShot
 	
 	/** \brief Read from file. */
 	static public func ConversationCameraShot readFromFile( FileReader reader )
-		var StringID name = StringID.new( reader.readString8() )
-		var ConversationCameraShot shot = ConversationCameraShot.new( name )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
-		shot.pAlignTargets = flags.getAt( 0 )
-		shot.pLockUpAxis = flags.getAt( 1 )
-		shot.pRelativeToLookAt = flags.getAt( 2 )
-		shot.pLockCameraTarget = flags.getAt( 3 )
-		shot.pLockLookAtTarget = flags.getAt( 4 )
-		
-		shot.pActorCount = reader.readUShort()
-		shot.pOffsetCameraFrom = Vector.readFromFile( reader )
-		shot.pOffsetCameraTo = Vector.readFromFile( reader )
-		shot.pCameraOrbitFrom = Vector.readFromFile( reader )
-		shot.pCameraOrbitTo = Vector.readFromFile( reader )
-		shot.pCameraDistanceFrom = reader.readFloat()
-		shot.pCameraDistanceTo = reader.readFloat()
-		shot.pOffsetLookAtFrom = Vector.readFromFile( reader )
-		shot.pOffsetLookAtTo = Vector.readFromFile( reader )
-		shot.pPosFrom = Vector.readFromFile( reader )
-		shot.pPosTo = Vector.readFromFile( reader )
-		shot.pRotFrom = Vector.readFromFile( reader )
-		shot.pRotTo = Vector.readFromFile( reader )
-		shot.pTiltFrom = reader.readFloat()
-		shot.pTiltTo = reader.readFloat()
-		shot.pFovFrom = reader.readFloat()
-		shot.pFovTo = reader.readFloat()
-		
-		// Array pCurves
-		
-		return shot
+		select reader.readByte() // version
+		case 0
+			var StringID name = StringID.new( reader.readString8() )
+			var ConversationCameraShot shot = ConversationCameraShot.new( name )
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
+			shot.pAlignTargets = flags.getAt( 0 )
+			shot.pLockUpAxis = flags.getAt( 1 )
+			shot.pRelativeToLookAt = flags.getAt( 2 )
+			shot.pLockCameraTarget = flags.getAt( 3 )
+			shot.pLockLookAtTarget = flags.getAt( 4 )
+			
+			shot.pActorCount = reader.readUShort()
+			shot.pOffsetCameraFrom = Vector.readFromFile( reader )
+			shot.pOffsetCameraTo = Vector.readFromFile( reader )
+			shot.pCameraOrbitFrom = Vector.readFromFile( reader )
+			shot.pCameraOrbitTo = Vector.readFromFile( reader )
+			shot.pCameraDistanceFrom = reader.readFloat()
+			shot.pCameraDistanceTo = reader.readFloat()
+			shot.pOffsetLookAtFrom = Vector.readFromFile( reader )
+			shot.pOffsetLookAtTo = Vector.readFromFile( reader )
+			shot.pPosFrom = Vector.readFromFile( reader )
+			shot.pPosTo = Vector.readFromFile( reader )
+			shot.pRotFrom = Vector.readFromFile( reader )
+			shot.pRotTo = Vector.readFromFile( reader )
+			shot.pTiltFrom = reader.readFloat()
+			shot.pTiltTo = reader.readFloat()
+			shot.pFovFrom = reader.readFloat()
+			shot.pFovTo = reader.readFloat()
+			
+			// Array pCurves
+			
+			return shot
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write to file. */
 	public func void writeToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString8( this.pName.toString() )
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 5 )

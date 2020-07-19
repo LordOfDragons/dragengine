@@ -115,6 +115,7 @@ parent_targets[ 'launcher_android' ] = {
 	'name' : 'Drag[en]gine Android Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'android-libs' : library,
 	'cloc' : buildCloc,

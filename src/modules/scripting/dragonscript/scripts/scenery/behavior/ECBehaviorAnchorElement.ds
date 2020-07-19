@@ -46,6 +46,7 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorAnchorElement pECBehavior
 		private var StringID pAnchorID
+		private var bool pAnchorAdded
 		
 		
 		
@@ -77,16 +78,22 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
+			// pAnchorAdded is used to avoid exceptions thrown in removeFromGameWorld
+			// in case adding the anchor here throws an exception (duplicate ID).
+			// this avoids disposing of a game world after an exception ending up in
+			// another exception causing huge leak reports that are useless     
 			if this.pAnchorID != null
 				this.getElement().getGameWorld().getAnchoredElementList() \
 					.add( this.pAnchorID, this.getElement() )
+				this.pAnchorAdded = true
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pAnchorID != null
+			if this.pAnchorAdded
 				this.getElement().getGameWorld().getAnchoredElementList().remove( this.pAnchorID )
+				this.pAnchorAdded = false
 			end
 		end
 	end

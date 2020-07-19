@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef IGDE_TOOLKIT_FOX
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,6 +78,33 @@ pOwner( &owner )
 igdeNativeFoxMainWindow::~igdeNativeFoxMainWindow(){
 }
 
+igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget( igdeMainWindow &owner ){
+	return new igdeNativeFoxMainWindow( owner );
+}
+
+void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
+	// NOTE we need to fix the maximize problem during showing the window using PLACEMENT_* .
+	//      if we try to maximize(true) here things become the opposite. no idea how FOX
+	//      manages to mess up so hard. calling maximize at the end does work albeit looking
+	//      ugly while doing so. fixing this when main window is converted to new UI system
+	create();
+	
+	// here maximize seems to work
+	maximize( true );
+	
+	raise();
+}
+
+void igdeNativeFoxMainWindow::DestroyNativeWidget(){
+	// we use close() on purpose instead of delete because fox requires this
+	//delete ( igdeNativeFoxMainWindow* )GetNativeWidget();
+	close( false );
+}
+
+
+
+// Management
+///////////////
 
 void igdeNativeFoxMainWindow::create(){
 	FXMainWindow::create();
@@ -103,7 +132,7 @@ decColor igdeNativeFoxMainWindow::GetSystemColor( igdeEnvironment::eSystemColors
 	case igdeEnvironment::escWidgetForeground:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getForeColor() );
 		
-	case igdeEnvironment::escWidgetHilight:
+	case igdeEnvironment::escWidgetHighlight:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getHiliteColor() );
 		
 	case igdeEnvironment::escWidgetShadow:
@@ -177,6 +206,14 @@ void igdeNativeFoxMainWindow::UpdateIcon(){
 	FXIcon * const icon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
 	setIcon( icon );
 	setMiniIcon( icon );
+}
+
+void igdeNativeFoxMainWindow::UpdateTitle(){
+	setTitle( pOwner->GetTitle().GetString() );
+}
+
+void igdeNativeFoxMainWindow::UpdateSize(){
+	resize( pOwner->GetSize().x, pOwner->GetSize().y );
 }
 
 void igdeNativeFoxMainWindow::SetWindowState(){
@@ -256,3 +293,5 @@ long igdeNativeFoxMainWindow::onMaximized( FXObject*, FXSelector, void* ){
 	SetWindowState();
 	return 0;
 }
+
+#endif

@@ -366,7 +366,7 @@ public:
 		pWindow.SetEmitter( emitter );
 		emitter->FreeReference();
 		
-		// store informations
+		// store information
 		emitter->SetChanged( false );
 		emitter->SetSaved( true );
 		pWindow.GetRecentFiles().AddFile( filename );

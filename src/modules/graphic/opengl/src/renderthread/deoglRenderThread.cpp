@@ -995,12 +995,12 @@ void deoglRenderThread::pInitExtensions(){
 }
 
 void deoglRenderThread::pInitCapabilities(){
-	// query hardware informations
+	// query hardware information
 	pCapabilities = new deoglCapabilities( *this );
 	pCapabilities->DetectCapabilities();
 	
 	#ifdef ANDROID
-	pLogger->LogInfo( "Hardware informations:" );
+	pLogger->LogInfo( "Hardware information:" );
 	
 	int i, j;
 	decString text;

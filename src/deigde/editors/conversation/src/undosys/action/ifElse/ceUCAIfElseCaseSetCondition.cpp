@@ -99,9 +99,13 @@ ceUCAIfElseCaseSetCondition::~ceUCAIfElseCaseSetCondition(){
 void ceUCAIfElseCaseSetCondition::Undo(){
 	pCase->SetCondition( pOldCondition );
 	pTopic->NotifyActionStructureChanged( pIfElse );
+	
+	pTopic->SetActive( pIfElse, pOldCondition );
 }
 
 void ceUCAIfElseCaseSetCondition::Redo(){
 	pCase->SetCondition( pNewCondition );
 	pTopic->NotifyActionStructureChanged( pIfElse );
+	
+	pTopic->SetActive( pIfElse, pNewCondition );
 }

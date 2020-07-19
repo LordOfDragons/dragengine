@@ -133,7 +133,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		}
 		
 	}else{
-		printf( "No launcher object found. Can not gather crash informations!\n" );
+		printf( "No launcher object found. Can not gather crash information!\n" );
 	}
 	*/
 	
@@ -246,7 +246,7 @@ pLoggerHistory( NULL )
 	// created as the log file is obtained from there
 	pInitLogger();
 	
-	// now we can log the informations we found so far
+	// now we can log the information we found so far
 	pConfiguration->LogImportantValues();
 	
 	// load configuration

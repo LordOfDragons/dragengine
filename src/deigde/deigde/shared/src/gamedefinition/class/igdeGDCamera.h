@@ -30,7 +30,7 @@
 /**
  * \brief Game Definition Camera.
  *
- * Contains informations about a camera attached to an object.
+ * Contains information about a camera attached to an object.
  */
 class igdeGDCamera{
 private:

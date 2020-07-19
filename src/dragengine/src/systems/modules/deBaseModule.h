@@ -76,7 +76,7 @@ public:
 	/**
 	 * \brief Get information about parameter.
 	 * \param[in] index Index of the parameter
-	 * \param[in] parameter Object to fill with informations about the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
 	 */
 	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
 	
@@ -243,23 +243,23 @@ public:
 	/**
 	 * \brief Add trace point and sets the error if the trace is empty.
 	 * \param[in] error Short description of the error preferably of a single line.
-	 * \param[in] sourceFunc Name of the source file where the error occured.
-	 * \param[in] sourceLine The line number where the error occured.
-	 * \return Created trace point or NULL if an error occured.
+	 * \param[in] sourceFunc Name of the source file where the error occurred.
+	 * \param[in] sourceLine The line number where the error occurred.
+	 * \return Created trace point or NULL if an error occurred.
 	 */
 	deErrorTracePoint *SetErrorTrace( const char *error, const char *sourceFunc, int sourceLine );
 	
 	/**
 	 * \brief Add trace point and sets the error if the trace is empty.
 	 * \param[in] exception Exception to use as source for the error information.
-	 * \return Created trace point or NULL if an error occured.
+	 * \return Created trace point or NULL if an error occurred.
 	 */
 	deErrorTracePoint *SetErrorTrace( const deException &exception );
 	
 	/**
 	 * \brief Add trace point to the engine error trace with an empty error.
-	 * \param[in] sourceFunc Name of the source file where the error occured.
-	 * \param[in] sourceLine The line number where the error occured.
+	 * \param[in] sourceFunc Name of the source file where the error occurred.
+	 * \param[in] sourceLine The line number where the error occurred.
 	 */
 	deErrorTracePoint *AddErrorTracePoint( const char *sourceFunc, int sourceLine );
 	/*@}*/

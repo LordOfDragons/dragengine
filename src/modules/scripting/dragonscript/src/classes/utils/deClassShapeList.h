@@ -37,6 +37,7 @@ class decShapeHull;
 class deClassShapeList : public dsClass{
 private:
 	deScriptingDragonScript *pDS;
+	dsClass *pClsShapeType;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -60,6 +61,8 @@ public:
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	
 	void HullAddPoints( dsRunTime &rt, decShapeHull &hull, dsValue &pointsArray ) const;
+	
+	inline dsClass *GetClassShapeType() const{ return pClsShapeType; }
 	/*@}*/
 	
 private:
@@ -69,6 +72,7 @@ private:
 		dsClass *clsArray;
 		dsClass *clsFileReader;
 		dsClass *clsFileWriter;
+		dsClass *clsShapeType;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -84,6 +88,19 @@ private:
 	DEF_NATFUNC( nfEmpty );
 	DEF_NATFUNC( nfNotEmpty );
 	DEF_NATFUNC( nfRemoveAllShapes );
+	
+	DEF_NATFUNC( nfGetTypeAt );
+	DEF_NATFUNC( nfGetPositionAt );
+	DEF_NATFUNC( nfGetRadiusAt );
+	DEF_NATFUNC( nfGetHalfExtendsAt );
+	DEF_NATFUNC( nfGetOrientationAt );
+	DEF_NATFUNC( nfGetHalfHeightAt );
+	DEF_NATFUNC( nfGetTopRadiusAt );
+	DEF_NATFUNC( nfGetBottomRadiusAt );
+	DEF_NATFUNC( nfGetTopAxisScalingAt );
+	DEF_NATFUNC( nfGetBottomAxisScalingAt );
+	DEF_NATFUNC( nfGetPointCountAt );
+	DEF_NATFUNC( nfGetPointAt );
 	
 	DEF_NATFUNC( nfAddSphere );
 	

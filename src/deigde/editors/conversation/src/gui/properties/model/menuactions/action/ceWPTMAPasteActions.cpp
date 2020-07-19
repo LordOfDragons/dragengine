@@ -74,24 +74,9 @@ void ceWPTMAPasteActions::OnAction(){
 		return;
 	}
 	
-	ceConversationAction *selectAction = NULL;
 	igdeUndoReference undo;
 	undo.TakeOver( CreateUndo( cdata->GetActions() ) );
-	selectAction = ( ( ceUCActionPaste& )( igdeUndo& )undo ).GetActions().GetAt( 0 );
 	pConversation->GetUndoSystem()->Add( undo );
-	
-	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
-		return;
-	}
-	
-	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAction * const modelAction = model.DeepFindAction( selectAction );
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-	}
-	
-	wptopic.SelectActiveAction();
 }
 
 ceUCActionPaste *ceWPTMAPasteActions::CreateUndo( const ceConversationActionList &actions ){

@@ -166,17 +166,25 @@ class TSTriggerTarget
 	
 	/** \brief Read trigger target from file. */
 	static public func TSTriggerTarget readFromFile( FileReader reader )
-		var TSTriggerTarget target = TSTriggerTarget.new( StringID.new( reader.readString8() ) )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		target.pFired = flags.getAt( 0 )
-		target.pHasFired = flags.getAt( 1 )
-		
-		return target
+		select reader.readByte() // version
+		case 0
+			var TSTriggerTarget target = TSTriggerTarget.new( StringID.new( reader.readString8() ) )
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
+			target.pFired = flags.getAt( 0 )
+			target.pHasFired = flags.getAt( 1 )
+			
+			return target
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/** \brief Write trigger target to file. */
 	public func void writeToFile( FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		writer.writeString8( this.pName.toString() )
 		
 		var PersistencyFlags flags = PersistencyFlags.new( 2 )

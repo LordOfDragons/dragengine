@@ -547,7 +547,35 @@ class GameWorld
 	end
 	
 	/**
-	 * \brief Write elemen stubs to file.
+	 * \brief Read element stubs from file.
+	 * 
+	 * Reads first the next object ID and Unique ID remapper. Then remaps the stub elements
+	 * in the stub world. Then reads the element stubs.
+	 */
+	public func void readElementStubsFromFile( PersistencyEnvironment env, FileReader reader, \
+	MutableID idGenerator, ElementClassList elementClassList, StubGameWorld stubWorld )
+		select reader.readByte() // version
+		case 0
+			var UniqueID lastNextObjectID = UniqueID.readFromFile( reader )
+			this.pUniqueIDRemapper = UniqueIDRemapper.readFromFile( reader )
+			
+			var UniqueID nextObjectID = stubWorld.getNextObjectID()
+			if nextObjectID > lastNextObjectID
+				stubWorld.setNewElementsRange( this.pUniqueIDRemapper.add( \
+					lastNextObjectID, nextObjectID, idGenerator.toUniqueID() ) )
+				idGenerator.incrementBy( nextObjectID - lastNextObjectID )
+			end
+			
+			stubWorld.remapObjectIDs( this.pUniqueIDRemapper )
+			stubWorld.readElementStubsFromFile( env, reader, elementClassList )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
+	end
+	
+	/**
+	 * \brief Write element stubs to file.
 	 * 
 	 * Writes first the next object ID and Unique ID remapper. While loading the next object
 	 * ID and mapper can be used to modify remapping in case the object ID range of the
@@ -565,6 +593,8 @@ class GameWorld
 	 * has to stay the same for them to properly read their dynamic data.
 	 */
 	public func void writeElementStubsToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		this.pNextObjectID.writeToFile( writer )
 		this.pUniqueIDRemapper.writeToFile( writer )
 		

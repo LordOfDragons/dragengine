@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "ceUCActionRemoveAll.h"
+#include "ceUActionHelpers.h"
 #include "../../conversation/action/ceConversationAction.h"
 #include "../../conversation/topic/ceConversationTopic.h"
 
@@ -65,6 +66,10 @@ ceUCActionRemoveAll::~ceUCActionRemoveAll(){
 void ceUCActionRemoveAll::Undo(){
 	pTopic->GetActionList() = pActionList;
 	pTopic->NotifyActionStructureChanged( NULL );
+	
+	if( pActionList.GetCount() > 0 ){
+		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	}
 }
 
 void ceUCActionRemoveAll::Redo(){

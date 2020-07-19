@@ -805,6 +805,34 @@ decMatrix decMatrix::GetRotationMatrix() const{
 	return m;
 }
 
+void decMatrix::Normalize(){
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0f, 0.0f, 1.0f );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0f, 1.0f, 0.0f );
+	}
+	
+	SetWorld( GetPosition(), view, up );
+}
+
+decMatrix decMatrix::Normalized() const{
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0f, 0.0f, 1.0f );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0f, 1.0f, 0.0f );
+	}
+	
+	return CreateWorld( GetPosition(), view, up );
+}
+
 bool decMatrix::IsEqualTo( const decMatrix &matrix, float threshold ) const{
 	return fabs( a11 - matrix.a11 ) < threshold
 		&& fabs( a12 - matrix.a12 ) < threshold

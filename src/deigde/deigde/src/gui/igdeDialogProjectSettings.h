@@ -56,6 +56,7 @@ private:
 	igdeButtonReference pBtnPathGameDefBaseDown;
 	
 	igdeComboBoxReference pCBScriptModule;
+	igdeTextFieldReference pEditScriptModuleVersion;
 	
 	bool pBaseGameDefsChanged;
 	

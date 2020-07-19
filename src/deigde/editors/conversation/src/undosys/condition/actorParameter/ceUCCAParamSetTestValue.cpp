@@ -80,10 +80,10 @@ ceUCCAParamSetTestValue::~ceUCCAParamSetTestValue(){
 
 void ceUCCAParamSetTestValue::Undo(){
 	pCondition->SetTestValue( pOldValue );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCAParamSetTestValue::Redo(){
 	pCondition->SetTestValue( pNewValue );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

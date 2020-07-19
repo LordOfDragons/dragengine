@@ -80,10 +80,10 @@ ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
 
 void ceUCCACommandToggleNegate::Undo(){
 	pActorCommand->SetNegate( ! pActorCommand->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pActorCommand );
 }
 
 void ceUCCACommandToggleNegate::Redo(){
 	pActorCommand->SetNegate( ! pActorCommand->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pActorCommand );
 }

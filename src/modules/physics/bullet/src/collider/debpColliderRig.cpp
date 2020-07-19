@@ -319,7 +319,8 @@ void debpColliderRig::PrepareForStep(){
 	pPreventAttNotify = true;
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
-	if( ! pSimplePhyBody ){
+	if( pBones ){
+		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 	}
 	
@@ -331,6 +332,19 @@ void debpColliderRig::PrepareForStep(){
 
 void debpColliderRig::PrepareDetection( float elapsed ){
 	debpCollider::PrepareDetection( elapsed );
+	
+	// update the kinematic bones if using bone test mode
+	if( pBones && pDirtyBones ){
+		// bullet uses interpolation of the previous transformation and velocities with the current
+		// values to calculate CCD in particular. if the user sets the collider bone parameter himself
+		// it is assumed the object teleported or has been reset. in this case the interpolation has
+		// to be reset to prevent wrong results. to achieve this the pResetKinematicInterpolation is
+		// used to determine if Bone*Changed calls do reset the interpolation or not. during this
+		// preparation code Bone*Changed is not allowed to reset the interpolation or the CCD breaks
+// 		pResetKinematicInterpolation = false;
+		pBones->PrepareForDetection( elapsed );
+// 		pResetKinematicInterpolation = true;
+	}
 }
 
 void debpColliderRig::FinishDetection(){

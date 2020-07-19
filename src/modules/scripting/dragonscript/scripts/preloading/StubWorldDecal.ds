@@ -235,7 +235,7 @@ class StubWorldDecal extends StubWithProperties implements ResourceListener
 		end
 	end
 	
-	/** \brief Create world decal from the stub informations. */
+	/** \brief Create world decal from the stub information. */
 	public func void createWorldDecal( GameWorld gameWorld, DecalBuilder builder )
 		builder.setPositionAndOrientation( this.pPosition, \
 			DMatrix.newRotation( DVector.new( this.pRotation ) ).toQuaternion() )

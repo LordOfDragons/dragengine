@@ -43,7 +43,7 @@ class deBaseAnimatorAnimator;
  * component. Every animator composes of a set of rules and controllers
  * which indicate how the final animation state is produced from a set
  * animation. Some rules can also produce animations without the help of
- * the animation but external informations like for example where another
+ * the animation but external information like for example where another
  * object is located or a reference state captured before. Controllers provide
  * the values required by rules and one controller can be attached to more
  * than one rule. The animator object has peers into the animator module.

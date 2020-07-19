@@ -82,10 +82,10 @@ ceUCCACommandSetActor::~ceUCCACommandSetActor(){
 
 void ceUCCACommandSetActor::Undo(){
 	pCondition->SetActor( pOldActor );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }
 
 void ceUCCACommandSetActor::Redo(){
 	pCondition->SetActor( pNewActor );
-	pTopic->NotifyActionChanged( pAction );
+	pTopic->NotifyConditionChanged( pAction, pCondition );
 }

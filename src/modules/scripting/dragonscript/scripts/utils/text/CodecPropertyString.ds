@@ -839,6 +839,78 @@ class CodecPropertyString
 	
 	/** \brief Encode shape list into a property string. */
 	public func String encodeShapeList( ShapeList list )
-		throw EInvalidParam.new()
+		var Vector2 v2IsOne = Vector2.new( 1, 1 )
+		var Vector vIsZero = Vector.new()
+		var float vecThreshold = 0.0001
+		var int i, count = list.getCount()
+		var ShapeType shapeType
+		var int j, pointCount
+		var String s = "", s2
+		var Vector2 v2
+		var Vector v
+		var float f
+		
+		for i = 0 to count
+			shapeType = list.getTypeAt( i )
+			s2 = ""
+			
+			v = list.getPositionAt( i )
+			if not v.isEqualTo( vIsZero, vecThreshold )
+				s2 = s2 + ":position," + v.getX() + "," + v.getY() + "," + v.getZ()
+			end
+			
+			if shapeType != ShapeType.sphere
+				v = list.getOrientationAt( i ).getEulerAngles()
+				if not v.isEqualTo( vIsZero, vecThreshold )
+					s2 = s2 + ":rotation," + v.getX() + "," + v.getY() + "," + v.getZ()
+				end
+			end
+			
+			select shapeType
+			case ShapeType.sphere
+				s2 = "sphere" + s2 + ":radius," + list.getRadiusAt( i )
+				
+			case ShapeType.box
+				v = list.getHalfExtendsAt( i )
+				s2 = "box" + s2 + ":extends," + v.getX() + "," + v.getY() + "," + v.getZ()
+				
+			case ShapeType.cylinder
+			case ShapeType.capsule
+				if shapeType == ShapeType.cylinder
+					s2 = "cylinder" + s2
+					
+				else
+					s2 = "capsule" + s2
+				end
+				
+				s2 = s2 + ":height," + list.getHalfHeightAt( i ) \
+					+ ":radius," + list.getTopRadiusAt( i ) + "," + list.getBottomRadiusAt( i )
+				
+				v2 = list.getTopAxisScalingAt( i )
+				if not v2.isEqualTo( v2IsOne, vecThreshold )
+					s2 = s2 + ":topAxisScaling," + v2.getX() + "," + v2.getY()
+				end
+				
+				v2 = list.getBottomAxisScalingAt( i )
+				if not v2.isEqualTo( v2IsOne, vecThreshold )
+					s2 = s2 + ":bottomAxisScaling," + v2.getX() + "," + v2.getY()
+				end
+				
+			case ShapeType.hull
+				s2 = "hull" + s2 + ":points"
+				pointCount = list.getPointCountAt( i )
+				for j = 0 to pointCount
+					v = list.getPointAt( i, j )
+					s2 = s2 + "," + v.getX() + "," + v.getY() + "," + v.getZ()
+				end
+			end
+			
+			if not s.empty()
+				s = s + " "
+			end
+			s = s + s2
+		end
+		
+		return s
 	end
 end

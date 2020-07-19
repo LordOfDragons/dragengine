@@ -185,8 +185,8 @@ class ColliderRig extends Collider
 	
 	/** \name Attachments */
 	/*@{*/
-	/** \brief Attach collider rig synchronizing bone states. */
-	public func void attachRig( ColliderRig collider )
+	/** \brief Attach collider rig or component synchronizing bone states. */
+	public func void attachRig( Object resource )
 	end
 	
 	/** \brief Attach collider at bone relative to current position. */

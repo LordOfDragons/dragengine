@@ -61,8 +61,14 @@ class CConditionHasActor extends ConversationCondition
 	
 	/** \brief Read from file. */
 	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pActorID = env.readStringIDOrNullIfEmpty( reader )
-		this.pNegate = env.readBool( reader )
+		select reader.readByte() // version
+		case 0
+			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			this.pNegate = env.readBool( reader )
+			
+		else
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	
@@ -121,6 +127,8 @@ class CConditionHasActor extends ConversationCondition
 	
 	/** \brief Write object to file writer. */
 	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
+		
 		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
 		env.writeBool( writer, this.pNegate )
 	end

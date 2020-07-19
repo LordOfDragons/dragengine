@@ -64,9 +64,27 @@ public:
 	 * The file writer is taken over and deleted once the z-writer is deleted.
 	 * The file pointer has to be set to the starting position of the z-compressed data.
 	 * 
+	 * \note To ensure future feature compatibility this class stored private data in
+	 *       front of the actual compress data. To write a pure z compressed stream
+	 *       use \ref decZFileWriter(decBaseFileReader*,bool) .
+	 * 
 	 * \throws deeInvalidParam \em writer is NULL.
 	 */
 	decZFileWriter( decBaseFileWriter *writer );
+	
+	/**
+	 * \brief Create z-compressed file writer object for another file writer.
+	 * 
+	 * The file writer is taken over and deleted once the z-writer is deleted.
+	 * The file pointer has to be set to the starting position of the z-compressed data.
+	 * 
+	 * \param[in] pureMode If true does not write private compression data. Use this mode
+	 *                     if you want to write pure z compressed data. If false behaves
+	 *                     identical to \ref decZFileWriter(decBaseFileReader*) .
+	 * 
+	 * \throws deeInvalidParam \em writer is NULL.
+	 */
+	decZFileWriter( decBaseFileWriter *writer, bool pureMode );
 	
 protected:
 	/**
@@ -112,6 +130,11 @@ public:
 	 */
 	void EndZWriting();
 	/*@}*/
+	
+	
+	
+private:
+	void pInit( decBaseFileWriter *writer, bool pureMode );
 };
 
 #endif

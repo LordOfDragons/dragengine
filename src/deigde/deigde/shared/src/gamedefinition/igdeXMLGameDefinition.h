@@ -47,6 +47,7 @@ class igdeGDParticleEmitter;
 class igdeGDProperty;
 class igdeGDSkin;
 class igdeGDSky;
+class igdeEnvironment;
 
 class deLogger;
 class decStringSet;
@@ -61,11 +62,16 @@ class decXmlAttValue;
  * \brief Loads dragengine game definition xml files.
  */
 class igdeXMLGameDefinition : public igdeBaseXML{
+private:
+	igdeEnvironment &pEnvironment;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game definition xml object. */
-	igdeXMLGameDefinition( deLogger *logger );
+	igdeXMLGameDefinition( igdeEnvironment &environment, deLogger *logger );
 	
 	/** \brief Clean up game definition loader. */
 	virtual ~igdeXMLGameDefinition();

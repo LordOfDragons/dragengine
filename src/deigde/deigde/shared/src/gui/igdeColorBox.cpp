@@ -41,217 +41,6 @@
 
 
 
-// Native Widget
-//////////////////
-
-#define FOCUSBORDER 3               // Focus border
-
-class cNativeIgdeColorBox : public FXFrame{
-	FXDECLARE( cNativeIgdeColorBox )
-	
-protected:
-	cNativeIgdeColorBox();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXFrame::ID_LAST,
-	};
-	
-protected:
-	igdeColorBox *pOwner;
-	FXColor pColor;
-	int pDefaultHeight;
-	int pDefaultWidth;
-	
-public:
-	// Temporary FOX Bug hack
-	static decColor vCopyColor;
-	
-public:
-	cNativeIgdeColorBox( igdeColorBox &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
-	virtual ~cNativeIgdeColorBox();
-	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
-	
-	virtual void UpdateColor();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
-	
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
-	long onClicked( FXObject *sender, FXSelector selector, void *data );
-	long onRClicked( FXObject *sender, FXSelector selector, void *data );
-	
-	static FXColor ColorIgdeToFx( const decColor &color );
-	static decColor ColorFxToIgde( FXColor color );
-	static int ColorBoxFlags( const igdeColorBox &owner );
-	static int ColorBoxHeight( const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeIgdeColorBox ) cNativeIgdeColorBoxMap[] = {
-	FXMAPFUNC( SEL_PAINT, 0, cNativeIgdeColorBox::onPaint ),
-	FXMAPFUNC( SEL_LEFTBUTTONPRESS, 0, cNativeIgdeColorBox::onClicked ),
-	FXMAPFUNC( SEL_RIGHTBUTTONPRESS, 0, cNativeIgdeColorBox::onRClicked )
-};
-
-
-decColor cNativeIgdeColorBox::vCopyColor;
-
-
-FXIMPLEMENT( cNativeIgdeColorBox, FXFrame, cNativeIgdeColorBoxMap, ARRAYNUMBER( cNativeIgdeColorBoxMap ) )
-
-cNativeIgdeColorBox::cNativeIgdeColorBox(){ }
-
-cNativeIgdeColorBox::cNativeIgdeColorBox( igdeColorBox &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXFrame( parent, layoutFlags | ColorBoxFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pColor( ColorIgdeToFx( owner.GetColor() ) ),
-pDefaultHeight( ColorBoxHeight( guitheme ) ),
-pDefaultWidth( pDefaultHeight * 2 )
-{
-	UpdateEnabled();
-	UpdateDescription();
-}
-
-cNativeIgdeColorBox::~cNativeIgdeColorBox(){
-}
-
-
-int cNativeIgdeColorBox::getDefaultWidth(){
-	return pDefaultWidth;
-}
-
-int cNativeIgdeColorBox::getDefaultHeight(){
-	return pDefaultHeight;
-}
-
-
-void cNativeIgdeColorBox::UpdateColor(){
-	pColor = ColorIgdeToFx( pOwner->GetColor() );
-	update();
-}
-
-void cNativeIgdeColorBox::UpdateDescription(){
-	// missing in FXFrame
-// 	setTipText( pOwner->GetDescription().GetString() );
-// 	setHelpText( pOwner->GetDescription().GetString() );
-}
-
-void cNativeIgdeColorBox::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
-		enable();
-		
-	}else{
-		disable();
-	}
-}
-
-
-long cNativeIgdeColorBox::onPaint( FXObject*, FXSelector, void *data ){
-	FXDCWindow dc( this, ( FXEvent* )data );
-	int focusBorder = 0;
-	
-	dc.setForeground( backColor );
-	
-	if( hasSelection() ){
-		focusBorder = FOCUSBORDER;
-	}
-	
-	dc.fillRectangle( 0, 0, width, focusBorder );
-	dc.fillRectangle( 0, focusBorder, focusBorder, height - focusBorder * 2 );
-	dc.fillRectangle( width - focusBorder, focusBorder, focusBorder, height - focusBorder * 2 );
-	dc.fillRectangle( 0, height - focusBorder, width, focusBorder );
-	if( hasSelection() ){
-		dc.setForeground( borderColor );
-		dc.drawRectangle( 1, 1, width - 3, height - 3 );
-	}
-	
-	dc.setForeground( pColor );
-	dc.fillRectangle( focusBorder + 1, focusBorder + 1,
-		width - focusBorder * 2 - 2, height - focusBorder * 2 - 2 );
-	
-	drawSunkenRectangle( dc, focusBorder, focusBorder,
-		width - focusBorder * 2, height - focusBorder * 2 );
-	
-	if( hasFocus() ){
-		dc.drawFocusRectangle( 0, 0, width, height );
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeColorBox::onClicked( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	FXColorDialog dialog( this, "Select Color" );
-	
-	dialog.setOpaqueOnly( false );
-	dialog.setRGBA( pColor );
-	
-	if( ! dialog.execute( PLACEMENT_OWNER ) ){
-		return 0;
-	}
-	
-	const FXColor color = dialog.getRGBA();
-	if( color == pColor ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetColor( ColorFxToIgde( color ) );
-		pOwner->NotifyColorChanged();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeIgdeColorBox::onRClicked( FXObject*, FXSelector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	const FXEvent &event = *( ( FXEvent* )data );
-	pOwner->ShowContextMenu( decPoint( event.win_x, event.win_y ) );
-	return 1;
-}
-
-
-int cNativeIgdeColorBox::ColorBoxFlags( const igdeColorBox & ){
-	return FRAME_NORMAL;
-}
-
-FXColor cNativeIgdeColorBox::ColorIgdeToFx( const decColor &color ){
-	return FXRGBA(
-		( int )( color.r * 255.0f ),
-		( int )( color.g * 255.0f ),
-		( int )( color.b * 255.0f ),
-		( int )( color.a * 255.0f ) );
-}
-
-decColor cNativeIgdeColorBox::ColorFxToIgde( FXColor color ){
-	return decColor(
-		( float )( FXREDVAL( color ) ) / 255.0f,
-		( float )( FXGREENVAL( color ) ) / 255.0f,
-		( float )( FXBLUEVAL( color ) ) / 255.0f,
-		( float )( FXALPHAVAL( color ) ) / 255.0f );
-}
-
-int cNativeIgdeColorBox::ColorBoxHeight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::colorBoxHeight, 15 );
-}
-
-
-
 // Actions
 ////////////
 
@@ -262,7 +51,10 @@ pColorBox( colorBox ){
 }
 
 void igdeColorBox::cActionCopy::OnAction(){
-	cNativeIgdeColorBox::vCopyColor = pColorBox.GetColor();
+	if( ! pColorBox.GetNativeWidget() ){
+		DETHROW( deeInvalidParam );
+	}
+	( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardPutColor( pColorBox.GetColor() );
 }
 
 
@@ -273,8 +65,6 @@ pColorBox( colorBox ){
 }
 
 void igdeColorBox::cActionCopyHex::OnAction(){
-	//cNativeIgdeColorBox::vCopyColor = pColorBox.GetColor();
-	
 	// TODO... access system clipboard
 }
 
@@ -286,11 +76,15 @@ pColorBox( colorBox ){
 }
 
 void igdeColorBox::cActionPaste::OnAction(){
-	if( cNativeIgdeColorBox::vCopyColor.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color( ( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardGetColor() );
+	if( color.IsEqualTo( pColorBox.GetColor() ) ){
 		return;
 	}
 	
-	pColorBox.SetColor( cNativeIgdeColorBox::vCopyColor );
+	if( ! pColorBox.GetNativeWidget() ){
+		DETHROW( deeInvalidParam );
+	}
+	pColorBox.SetColor( color );
 	pColorBox.NotifyColorChanged();
 }
 
@@ -305,11 +99,12 @@ void igdeColorBox::cActionPasteHex::OnAction(){
 	// TODO... access system clipboard
 	
 	/*
-	if( cNativeIgdeColorBox::vCopyColor.IsEqualTo( pColorBox.GetColor() ) ){
+	const decColor color( ( ( igdeNativeColorBox* )pColorBox.GetNativeWidget() )->ClipboardGetColor() );
+	if( color.IsEqualTo( pColorBox.GetColor() ) ){
 		return;
 	}
 	
-	pColorBox.SetColor( cNativeIgdeColorBox::vCopyColor );
+	pColorBox.SetColor( color );
 	pColorBox.NotifyColorChanged();
 	*/
 }
@@ -500,22 +295,9 @@ void igdeColorBox::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeColorBox * const native = new cNativeIgdeColorBox(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
+	igdeNativeColorBox * const native = igdeNativeColorBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeColorBox::DestroyNativeWidget(){
@@ -523,24 +305,24 @@ void igdeColorBox::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeColorBox* )GetNativeWidget();
+	( ( igdeNativeColorBox* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeColorBox::OnColorChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeColorBox* )GetNativeWidget() )->UpdateColor();
+		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateColor();
 	}
 }
 
 void igdeColorBox::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeColorBox* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeColorBox::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeColorBox* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeColorBox* )GetNativeWidget() )->UpdateDescription();
 	}
 }

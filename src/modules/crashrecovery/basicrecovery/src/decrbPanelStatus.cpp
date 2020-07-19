@@ -79,12 +79,12 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	
 	pEditStatus = new FXText( frameBox, NULL, 0, TEXT_READONLY | TEXT_WORDWRAP
 		| FRAME_SUNKEN | LAYOUT_FILL_X );
-	text = "An error has occured. The engine is has been put into recovery mode. "
+	text = "An error has occurred. The engine is has been put into recovery mode. "
 		"You can now examine the error and try to get the engine back running. "
 		"This panel shows the current status of the engine modules.";
 	pEditStatus->appendText( text.text(), text.length() );
 	pEditStatus->setVisibleRows( 3 );
-	//new FXLabel( content, "An error has occured. The engine is has been put into recovery mode. "
+	//new FXLabel( content, "An error has occurred. The engine is has been put into recovery mode. "
 	//	"You can now examine the error and try to get the engine back running. "
 	//	"This panel shows the current status of the engine modules. ",
 	//	0, JUSTIFY_CENTER_X | FRAME_SUNKEN | LAYOUT_FILL_X );

@@ -82,6 +82,7 @@ private:
 	
 	bool pCaptureComponentState;
 	
+	bool pUseParallelTask;
 	dearTaskApplyRules *pActiveTaskApplyRule;
 	decThreadSafeObjectOrderedSet pTaskApplyRules;
 	
@@ -101,14 +102,6 @@ public:
 	/*@{*/
 	/** \brief Animator module. */
 	inline deDEAnimator &GetModule(){ return pModule; }
-	inline const deDEAnimator &GetModule() const { return pModule; }
-	
-	/** \brief Animator instance. */
-	inline deAnimatorInstance &GetAnimatorInstance(){ return pAnimatorInstance; }
-	inline const deAnimatorInstance &GetAnimatorInstance() const{ return pAnimatorInstance; }
-	
-	/** \brief Animator or \em NULL if not set. */
-	inline dearAnimator *GetAnimator() const{ return pAnimator; }
 	
 	
 	
@@ -123,28 +116,10 @@ public:
 	inline const dearBoneStateList &GetBoneStateList() const{ return pBoneStateList; }
 	
 	/** \brief Controller states. */
-	inline dearControllerStates &GetControllerStates(){ return pControllerStates; }
 	inline const dearControllerStates &GetControllerStates() const{ return pControllerStates; }
-	
-	/** \brief Rig to state mapping. */
-	inline const decIntList &GetMappingRigToState() const{ return pMappingRigToState; }
-	
-	
-	
-	/** \brief Capture current component state before applying rules. */
-	inline bool GetCaptureComponentState() const{ return pCaptureComponentState; }
 	
 	/** \brief Set capture current component state to true. */
 	void SetCaptureComponentState();
-	
-	
-	
-	/**
-	 * \brief Use blending.
-	 * \details If blend mode is deAnimatorRule::ebmBlend and factor is 1 applying
-	 *          states can be optimized by doing copy instead of blending.
-	 */
-	inline bool GetUseBlending() const{ return pUseBlending; }
 	
 	
 	
@@ -159,9 +134,6 @@ public:
 	
 	
 	
-	/** \brief Update controller states. */
-	void UpdateControllerStates();
-	
 	/**
 	 * \brief Apply rules to animator instance state.
 	 * \details This call is thread-safe. It can be used parallel or synchronous.
@@ -171,31 +143,10 @@ public:
 	void ApplyRules();
 	
 	/**
-	 * \brief Apply bone states to the bound engine component if existing.
-	 * \details This call is synchronous. It is used by synchronous calls or
-	 *          by the task Finished() call.
-	 */
-	void ApplyStateToComponent() const;
-	
-	/**
 	 * \brief Apply bone states to the bound animator module component if existing.
 	 * \details This call is asynchronous. It is used by task Run() call.
 	 */
 	void ApplyStateToArComponent() const;
-	
-	
-	
-	/**
-	 * \brief Run task to apply rules.
-	 * \details If running in parallel is disabled this calls ApplyRules() instead.
-	 */
-	void StartTaskApplyRules();
-	
-	/**
-	 * \brief Cancel task to apply rules if existing.
-	 * \details Forces parallel tasks to finish to ensure the tasks is finished.
-	 */
-	void CancelTaskApplyRules();
 	
 	/**
 	 * \brief Stop task running apply rules in parallel.
@@ -256,6 +207,8 @@ public:
 	virtual void ControllerChanged( int index );
 	/*@}*/
 	
+	
+	
 private:
 	void pCleanUp();
 	void pCheckRequireRebuild();
@@ -272,6 +225,35 @@ private:
 	void pUpdateRuleParams();
 	
 	dearTaskApplyRules *pNewTaskApplyRules();
+	
+	
+	
+	/** \brief Update controller states. */
+	void pUpdateControllerStates();
+	
+	/**
+	 * \brief Apply bone states to the bound engine component if existing.
+	 * \details This call is synchronous. It is used by synchronous calls or
+	 *          by the task Finished() call.
+	 */
+	void pApplyStateToComponent() const;
+	
+	/**
+	 * \brief Run task to apply rules.
+	 * 
+	 * If running in parallel is disabled this calls ApplyRules() instead.
+	 */
+	void pStartTaskApplyRules();
+	
+	/**
+	 * \brief Cancel task to apply rules if existing.
+	 * \details Forces parallel tasks to finish to ensure the tasks is finished.
+	 */
+	void pCancelTaskApplyRules();
+	
+	void pWaitTaskApplyRules();
+	
+	void pWaitAnimTaskFinished();
 };
 
 #endif

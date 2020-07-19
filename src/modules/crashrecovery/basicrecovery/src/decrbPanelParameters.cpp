@@ -28,6 +28,7 @@
 #include "dragengine/systems/modules/deBaseModule.h"
 #include "dragengine/systems/modules/deLoadableModule.h"
 #include "dragengine/systems/modules/deModuleParameter.h"
+#include "dragengine/systems/modules/deLoadableModule.h"
 #include "dragengine/common/exceptions.h"
 
 
@@ -91,7 +92,7 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pCBParameter->setNumVisible( 10 );
 	pCBParameter->setSortFunc( fSortClasses );
 	
-	// parameter informations
+	// parameter information
 	FXGroupBox *groupBox = new FXGroupBox( this, "Parameter:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0,
 		padding, padding, padding, padding );
@@ -148,7 +149,8 @@ void decrbPanelParameters::UpdateParameter(){
 	FXString text;
 	
 	if( selection != -1 ){
-		module = ( ( deLoadableModule* )pCBModule->getItemData( selection ) )->GetModule();
+		module = pWndMain->GetEngine()->GetModuleSystem()->
+			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	
@@ -222,7 +224,8 @@ void decrbPanelParameters::UpdateParametersList(){
 	int i, count;
 	
 	if( selection != -1 ){
-		loadableModule = ( deLoadableModule* )pCBModule->getItemData( selection );
+		loadableModule = pWndMain->GetEngine()->GetModuleSystem()->
+			GetModuleNamed( pCBModule->getItemText( selection ).text() );
 		module = loadableModule->GetModule();
 	}
 	
@@ -246,7 +249,9 @@ void decrbPanelParameters::UpdateModulesList(){
 	pCBModule->clearItems();
 	for( i=0; i<count; i++ ){
 		loadableModule = modSys->GetModuleAt( i );
-		pCBModule->appendItem( loadableModule->GetName().GetString(), loadableModule );
+		if( pCBModule->findItem( loadableModule->GetName().GetString() ) == -1 ){
+			pCBModule->appendItem( loadableModule->GetName().GetString() );
+		}
 	}
 	pCBModule->sortItems();
 }
@@ -273,7 +278,8 @@ long decrbPanelParameters::onBtnSetCommand( FXObject *sender, FXSelector selecto
 	FXString text;
 	
 	if( selection != -1 ){
-		module = ( ( deLoadableModule* )pCBModule->getItemData( selection ) )->GetModule();
+		module = pWndMain->GetEngine()->GetModuleSystem()->
+			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	
@@ -298,7 +304,8 @@ long decrbPanelParameters::onBtnResetCommand( FXObject *sender, FXSelector selec
 	deBaseModule *module = NULL;
 	
 	if( selection != -1 ){
-		module = ( ( deLoadableModule* )pCBModule->getItemData( selection ) )->GetModule();
+		module = pWndMain->GetEngine()->GetModuleSystem()->
+			GetModuleNamed( pCBModule->getItemText( selection ).text() )->GetModule();
 		selection = pCBParameter->getCurrentItem();
 	}
 	

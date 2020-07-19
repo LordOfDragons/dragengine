@@ -33,7 +33,7 @@
 /**
  * @brief Height Terrain Vegetation Rule Geometry.
  *
- * Source type rule providing informations about the current instance
+ * Source type rule providing information about the current instance
  * to be evaluated through the output slots.
  */
 class meHTVRuleGeometry : public meHTVRule{

@@ -24,101 +24,11 @@
 #include <string.h>
 
 #include "igdeToolBarDock.h"
-#include "native/toolkit.h"
 #include "igdeWidget.h"
+#include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeToolBarDock : public FXDockSite{
-	FXDECLARE( cNativeIgdeToolBarDock )
-	
-protected:
-	cNativeIgdeToolBarDock();
-	
-private:
-	igdeToolBarDock *pOwner;
-	
-public:
-	cNativeIgdeToolBarDock( igdeToolBarDock &owner, FXComposite *parent );
-	virtual ~cNativeIgdeToolBarDock();
-	
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-	
-	static int LayoutFlags( const igdeToolBarDock &owner );
-};
-
-
-FXDEFMAP( cNativeIgdeToolBarDock ) cNativeIgdeToolBarDockMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeIgdeToolBarDock::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( cNativeIgdeToolBarDock, FXDockSite,
-	cNativeIgdeToolBarDockMap, ARRAYNUMBER( cNativeIgdeToolBarDockMap ) )
-
-cNativeIgdeToolBarDock::cNativeIgdeToolBarDock(){ }
-
-cNativeIgdeToolBarDock::cNativeIgdeToolBarDock( igdeToolBarDock &owner, FXComposite *parent ) :
-FXDockSite( parent, LayoutFlags( owner ) ),
-pOwner( &owner ){
-}
-
-cNativeIgdeToolBarDock::~cNativeIgdeToolBarDock(){
-}
-
-long cNativeIgdeToolBarDock::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	
-	switch( pOwner->GetSide() ){
-	case igdeToolBarDock::esTop:
-		clflags.flags = LAYOUT_SIDE_TOP; // | LAYOUT_FILL_X;
-		break;
-		
-	case igdeToolBarDock::esLeft:
-		clflags.flags = LAYOUT_SIDE_LEFT; // | LAYOUT_FILL_Y;
-		break;
-		
-	case igdeToolBarDock::esRight:
-		clflags.flags = LAYOUT_SIDE_RIGHT; // | LAYOUT_FILL_Y;
-		break;
-		
-	case igdeToolBarDock::esBottom:
-		clflags.flags = LAYOUT_SIDE_BOTTOM; // | LAYOUT_FILL_X;
-		break;
-		
-	default:
-		clflags.flags = LAYOUT_SIDE_TOP; // | LAYOUT_FILL_X;
-		break;
-	}
-	
-// 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
-	return 1;
-}
-
-int cNativeIgdeToolBarDock::LayoutFlags( const igdeToolBarDock &owner ){
-	switch( owner.GetSide() ){
-	case igdeToolBarDock::esTop:
-		return LAYOUT_SIDE_TOP | LAYOUT_FILL_X;
-		
-	case igdeToolBarDock::esLeft:
-		return LAYOUT_SIDE_LEFT | LAYOUT_FILL_Y;
-		
-	case igdeToolBarDock::esRight:
-		return LAYOUT_SIDE_RIGHT | LAYOUT_FILL_Y;
-		
-	case igdeToolBarDock::esBottom:
-		return LAYOUT_SIDE_BOTTOM | LAYOUT_FILL_X;
-		
-	default:
-		return 0;
-	}
-}
-
 
 
 // Class igdeToolBarDock
@@ -145,22 +55,9 @@ void igdeToolBarDock::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeIgdeToolBarDock * const foxWidget = new cNativeIgdeToolBarDock( *this, foxParent );
-	
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeToolBarDock * const native = igdeNativeToolBarDock::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -170,6 +67,6 @@ void igdeToolBarDock::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeToolBarDock* )GetNativeWidget();
+	( ( igdeNativeToolBarDock* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }

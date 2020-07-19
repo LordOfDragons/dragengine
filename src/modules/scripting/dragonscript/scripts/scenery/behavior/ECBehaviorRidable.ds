@@ -38,8 +38,8 @@ pin Dragengine.Utils
 class ECBehaviorRidable extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		protected var ECBehaviorRidable pECBehavior
-		protected var ECBehaviorCollider.Instance pCollider
+		private var ECBehaviorRidable pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
 		
 		
 		

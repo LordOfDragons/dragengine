@@ -338,7 +338,7 @@ dsClass( "VideoPlayer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
 	// prepare
 	pDS = ds;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_GUI );
 	GetParserInfo()->SetBase( "Object" );
 	

@@ -115,7 +115,7 @@ ceConversationTopic *topic, ceConversationAction *action ){
 	pWindow.OnActionChanged();
 }
 
-void ceWindowDopeSheetListener::ActiveActionChanged( ceConversation *conversation, ceConversationFile *file,
+void ceWindowDopeSheetListener::ActiveChanged( ceConversation *conversation, ceConversationFile *file,
 ceConversationTopic *topic ){
 	if( conversation != pWindow.GetConversation()
 	|| file != conversation->GetActiveFile()

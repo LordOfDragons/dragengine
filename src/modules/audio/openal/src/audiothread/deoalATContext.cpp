@@ -161,7 +161,7 @@ void deoalATContext::pScanForDevices(){
 	const ALCchar *devices = NULL;
 	int position, len;
 	
-	// query for the informations
+	// query for the information
 	defaultDevice = alcGetString( NULL, ALC_DEFAULT_DEVICE_SPECIFIER );
 	
 	if( alcIsExtensionPresent( NULL, "ALC_ENUMERATE_ALL_EXT" ) == AL_TRUE ){

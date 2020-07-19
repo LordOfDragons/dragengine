@@ -140,7 +140,7 @@ void dearRuleSubAnimator::StoreFrameInto( int identifier, const char *moveName, 
 	}
 }
 
-bool dearRuleSubAnimator::RebuildInstance(){
+bool dearRuleSubAnimator::RebuildInstance() const{
 	deAnimator * const animator = pSubAnimator.GetSubAnimator();
 	dearAnimator * arAnimator = NULL;
 	

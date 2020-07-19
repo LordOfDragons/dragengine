@@ -34,7 +34,7 @@
  * defined but should be reasonably small to tell the user visually that
  * the task is still working. Each task has an info text and progress
  * value to communicate to the user the current state. After each step the
- * GUI updates with the stored informations. Two changed flags help to
+ * GUI updates with the stored information. Two changed flags help to
  * avoid updating if nothing changed. They are set by this base class
  * therefore subclasses do not have to worry about those flags. Just set
  * the status whenever it changes and leave the hard work for this class.
