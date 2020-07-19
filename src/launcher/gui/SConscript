@@ -18,6 +18,11 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 
+if envLauncher['OSBeOS']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['docdir']), 'man', 'man1')
+elif envLauncher['OSPosix']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['datadir']), 'man', 'man1')
+
 libs = []
 
 appendLibrary(envLauncher, parent_targets['dragengine'], libs)
@@ -136,8 +141,9 @@ if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	source = 'data/delauncher-gui-install.desktop'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
-	
-	target = os.path.join(pathDataDir, 'man', 'man1', 'delauncher-gui.1')
+
+if envLauncher['OSPosix']:
+	target = os.path.join(pathMan1, 'delauncher-gui.1')
 	source = 'man/delauncher-gui.1'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()

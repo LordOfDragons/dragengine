@@ -22,7 +22,9 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 
-if envLauncher['OSPosix']:
+if envLauncher['OSBeOS']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['docdir']), 'man', 'man1')
+elif envLauncher['OSPosix']:
 	pathMan1 = os.path.join(envLauncher.subst(envLauncher['datadir']), 'man', 'man1')
 
 # update the compile flags
