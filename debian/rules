@@ -77,7 +77,7 @@ override_dh_shlibdeps:
 	done
 	
 	# debian build package has a problem with the DragonScript packages
-	dh_shlibdeps -Xlibscrdscript -Xdsinstall
+	dh_shlibdeps -Xlibscrdscript -Xdsinstall -Xlibdscript -XlibDEFOX
 	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
 	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
 	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
