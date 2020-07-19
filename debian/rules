@@ -75,7 +75,7 @@ override_dh_shlibdeps:
 	# the game engine rejects all modules as non-genuine. to solve this we have to
 	# fix all module manifests. since it is unknown what step causes these problems
 	# the fix is placed here until better knowing
-	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules -name "*.so"`; do \
+	for f in `find "$(DESTDIR_ENGINE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
 	
