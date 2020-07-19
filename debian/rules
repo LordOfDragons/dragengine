@@ -76,7 +76,7 @@ override_dh_shlibdeps:
 	# fix all module manifests. since it is unknown what step causes these problems
 	# the fix is placed here until better knowing
 	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules -name "*.so"`; do \
-		/usr/bin/python3 debianFixManifests.py "$$f" \
+		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
 	
 	# debian build package has a problem with the DragonScript packages
