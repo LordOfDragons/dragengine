@@ -39,13 +39,13 @@ override_dh_auto_install:
 	# thus it is not possible to create this directory at package time.
 	#
 	# NOTE according to debian policy group writable should have permission 2775
-	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	
-	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#
+	#mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
 	#mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
@@ -88,13 +88,13 @@ override_dh_shlibdeps:
 	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
 	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
 
-override_dh_fixperms:
-	# avoid fix perms messing with our special permissions
-	dh_fixperms --exclude "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	
-	# fix permissions from above
-	#chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	#chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	#
-	#chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	#chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+#override_dh_fixperms:
+#	# avoid fix perms messing with our special permissions
+#	dh_fixperms --exclude "$(DESTDIR_ENGINE)"/usr/share/games/delauncher*
+#	
+#	# fix permissions from above
+#	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+#	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+#	
+#	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+#	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
