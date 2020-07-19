@@ -37,10 +37,13 @@ override_dh_auto_install:
 	# the required directories. this is not done in scons since the generic build
 	# is made for systems where the games group potentially does not exist and
 	# thus it is not possible to create this directory at package time.
-	#
-	# NOTE unfortunately debuilder somewhere reset permissions. do it later
 	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	
 	mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
 	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
 	#mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
@@ -84,11 +87,12 @@ override_dh_shlibdeps:
 	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
 
 override_dh_fixperms:
-	dh_fixperms
+	# avoid fix perms messing with our special directories
+	dh_fixperms --exclude "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	
 	# fix permissions from above
-	chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	
-	chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#
+	#chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
