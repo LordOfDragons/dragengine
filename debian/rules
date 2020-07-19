@@ -87,8 +87,8 @@ override_dh_fixperms:
 	dh_fixperms
 	
 	# fix permissions from above
-	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	chmod 750 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
 	
-	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	chown root.games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	chmod 770 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
