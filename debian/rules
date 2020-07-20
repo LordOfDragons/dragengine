@@ -59,9 +59,10 @@ override_dh_auto_install:
 	cd debian/dragengine ; \
 	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules/scripting/dragonscript/*/dsinstall -name "*.so"`; do \
 		f2=`echo $$f | sed -e "s@usr/share@usr/lib@"`; \
+		f3=`echo $$f | sed -e "s@.*/usr/share@/usr/lib@"`; \
 		mkdir -p `dirname $$f2`; \
 		mv $$f $$f2; \
-		ln -sf "/$$f2" $$f; \
+		ln -sf "$$f3" $$f; \
 	done
 	
 	# ubuntu seems to dislike it if build files are still around after this point in time
