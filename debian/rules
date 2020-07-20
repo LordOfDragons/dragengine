@@ -81,6 +81,9 @@ override_dh_shlibdeps:
 	for f in `find "$(DESTDIR_ENGINE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
+	for f in `find "$(DESTDIR_ENGINE)"/usr/lib/games/deigde/modules -type f -name "module.xml"`; do \
+		/usr/bin/python3 debianFixManifests.py "$$f"; \
+	done
 	
 	# debian build package has a problem with the DragonScript packages
 	dh_shlibdeps -Xlibscrdscript -Xdsinstall -Xlibdscript
