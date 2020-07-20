@@ -15,7 +15,7 @@ if [ "$1" = configure ]; then
 	fi
 
 	if ! [ -d /usr/share/games/delauncher ]; then
-		mkdir /usr/share/games/delauncher/games
+		mkdir /usr/share/games/delauncher
 		chgrp games /usr/share/games/delauncher
 		chown 2775 /usr/share/games/delauncher
 	fi
