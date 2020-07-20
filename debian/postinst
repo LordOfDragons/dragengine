@@ -4,7 +4,7 @@
 
 set -e
 
-if [ "$1" == configure ]; then
+if [ "$1" = configure ]; then
 	# /usr/share/games/delauncher/games is only created not removed since
 	# it contains user installed games and should NOT be deleted if this
 	# package is uninstalled
