@@ -228,12 +228,12 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end )
 		end
 		
-		/** \brief Test bone or null. */
+		/** \brief Test bone. */
 		public func String getBone()
 			return this.pBone
 		end
 		
-		/** \brief Set test bone or null. */
+		/** \brief Set test bone. */
 		public func void setBone( String bone )
 			if bone.equals( this.pBone )
 				return
@@ -572,7 +572,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		this.pDirection = ECPVector.new( prefix + "direction", Vector.new( 0, 0, 1 ) )
 		eclass.addProperty( this.pDirection )
 		
-		this.pBone = ECPString.new( prefix + "bone", null )
+		this.pBone = ECPString.new( prefix + "bone", "" )
 		eclass.addProperty( this.pBone )
 	end
 	
