@@ -10,7 +10,11 @@ tree = ET.parse(pathManifest)
 
 library = tree.getroot().find('library')
 
-libraryContent = open(os.path.join(dirManifest, library.find('file').text), 'rb').read()
+tag = library.find('file')  # dragengine modules
+if not tag:
+	tag = library.find('path')  # igde modules
+
+libraryContent = open(os.path.join(dirManifest, tag.text), 'rb').read()
 library.find('size').text = str(len(libraryContent))
 library.find('sha1').text = str(hashlib.sha1(libraryContent).hexdigest())
 
