@@ -11,7 +11,7 @@ tree = ET.parse(pathManifest)
 library = tree.getroot().find('library')
 
 tag = library.find('file')  # dragengine modules
-if not tag:
+if tag == None:  # do NOT use 'not tag'. it will return True!
 	tag = library.find('path')  # igde modules
 
 libraryContent = open(os.path.join(dirManifest, tag.text), 'rb').read()
