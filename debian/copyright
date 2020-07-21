@@ -4,15 +4,15 @@ Source: https://github.com/LordOfDragons/dragengine
 Upstream-Contact: roland@rptd.ch
 
 Files: *
-Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
+Copyright: 2020 Roland Plüss <roland@rptd.ch>
 License: LGPL-3.0+
 
 Files: debian/*
-Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
+Copyright: 2020 Roland Plüss <roland@rptd.ch>
 License: LGPL-3.0+
 
 Files: extern/dragonscript/libdscript-*.tar.bz2
-Copyright: 2020 Roland Plüss <roland@dragondreams.ch>
+Copyright: 2020 Roland Plüss <roland@rptd.ch>
 License: LGPL-3.0+
 
 Files: extern/fox/fox-*.tar.bz2
