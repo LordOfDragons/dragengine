@@ -1,4 +1,4 @@
-dragengine (1.2-ubuntu2) focal; urgency=medium
+dragengine (1.2.1-ubuntu2) focal; urgency=medium
 
   * Fixed debian/control Rules-Requires-Root being set to yes which fails on launchpad builder
 
