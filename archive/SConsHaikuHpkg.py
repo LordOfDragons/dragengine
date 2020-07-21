@@ -80,28 +80,28 @@ for target in parent_targets.values():
 # create builders
 package = []
 
-filename = 'dragengine-{}-1-x86.hpkg'.format(versionString)
+filename = 'dragengine-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesEngine.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_dragengine'),
 	PackageInfo=envPackage.File('haiku_packageinfo/dragengine').srcnode(),
 	PackageFiles=filesEngine))
 
-filename = 'dragengine_devel-{}-1-x86.hpkg'.format(versionString)
+filename = 'dragengine_devel-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesEngineDevelop.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_dragengine_develop'),
 	PackageInfo=envPackage.File('haiku_packageinfo/dragengine-develop').srcnode(),
 	PackageFiles=filesEngineDevelop))
 
-filename = 'deigde-{}-1-x86.hpkg'.format(versionString)
+filename = 'deigde-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesIGDE.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_deigde'),
 	PackageInfo=envPackage.File('haiku_packageinfo/igde').srcnode(),
 	PackageFiles=filesIGDE))
 
-filename = 'deigde_develop-{}-1-x86.hpkg'.format(versionString)
+filename = 'deigde_develop-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesIGDEDevelop.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_deigde_develop'),
