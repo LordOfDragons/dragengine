@@ -112,6 +112,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		private var float pRange
 		private var Vector pOrigin
 		private var Vector pDirection
+		private var Quaternion pOrientation
+		private var Matrix pViewMatrix
 		private var String pBone
 		private var Array pTests
 		
@@ -148,7 +150,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			this.pRange = DEMath.max( this.pECBehavior.getRange().getValue( stub ), 0.0 )
 			this.pOrigin = this.pECBehavior.getOrigin().getVector( stub, codec )
 			this.pDirection = this.pECBehavior.getDirection().getVector( stub, codec ).normalize()
+			this.pOrientation = Quaternion.newFromEuler( this.pECBehavior.getOrientation().getVector( stub, codec ) )
 			this.pBone = this.pECBehavior.getBone().getValue( stub )
+			
+			this.pViewMatrix = Matrix.newFromQuaternion( this.pOrientation )
 		end
 		
 		
@@ -184,10 +189,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			
 			this.pRange = range
 			
-			var Vector testDirection = this.pDirection * range
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setDirection( testDirection )
-			end )
+			this.resetTestDirections()
 		end
 		
 		/** \brief Test origin. */
@@ -222,10 +224,24 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			
 			this.pDirection = direction
 			
-			var Vector testDirection = direction * this.pRange
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setDirection( testDirection )
-			end )
+			this.resetTestDirections()
+		end
+		
+		/** \brief Test orientation. */
+		public func Quaternion getOrientation()
+			return this.pOrientation
+		end
+		
+		/** \brief Set test orientation. */
+		public func void setOrientation( Quaternion orientation )
+			if orientation.equals( this.pOrientation )
+				return
+			end
+			
+			this.pOrientation = orientation
+			this.pViewMatrix = Matrix.newFromQuaternion( orientation )
+			
+			this.resetTestDirections()
 		end
 		
 		/** \brief Test bone. */
@@ -286,7 +302,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var ColliderCollisionTest test
 			
 			if this.pTests.getCount() < count
-				var Vector testDirection = this.pDirection * this.pRange
+				var Vector testDirection = this.pViewMatrix * ( this.pDirection * this.pRange )
 				var Collider collider = this.pCollider.getCollider()
 				var Component component
 				if this.pComponent != null
@@ -339,8 +355,11 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			
 			for i = 0 to count
 				angle = factor * i
-				( this.pTests.getAt( i ) cast ColliderCollisionTest ).setDirection( Vector.new( \
-					DEMath.sin( angle ) * radius, DEMath.cos( angle ) * radius, distance ) )
+				( this.pTests.getAt( i ) cast ColliderCollisionTest ).setDirection( \
+					this.pViewMatrix * ( Vector.new( \
+						DEMath.sin( angle ) * radius, \
+						DEMath.cos( angle ) * radius, \
+						distance ) ) )
 			end
 		end
 		
@@ -368,8 +387,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				radius = DEMath.sin( testAngle ) * this.pRange
 				distance = DEMath.cos( testAngle ) * this.pRange
 				rotation = DEMath.random( 0.0, 360.0 )
-				each.setDirection( Vector.new( DEMath.sin( rotation ) * radius, \
-					DEMath.cos( rotation ) * radius, distance ) )
+				each.setDirection( this.pViewMatrix * ( Vector.new( \
+					DEMath.sin( rotation ) * radius, \
+					DEMath.cos( rotation ) * radius, \
+					distance ) ) )
 			end )
 		end
 		
@@ -403,8 +424,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				radius = DEMath.cos( testAngle ) * this.pRange
 				
 				testAngle = DEMath.random( fromX, toX )
-				each.setDirection( Vector.new( DEMath.sin( testAngle ) * radius, \
-					positionY, DEMath.cos( testAngle ) * radius ) )
+				each.setDirection( this.pViewMatrix * ( Vector.new( \
+					DEMath.sin( testAngle ) * radius, \
+					positionY, \
+					DEMath.cos( testAngle ) * radius ) ) )
 			end )
 		end
 		
@@ -448,8 +471,11 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				
 				for x = 0 to countX
 					testAngle = firstX + factorX * x
-					( this.pTests.getAt( index++ ) cast ColliderCollisionTest ).setDirection( Vector.new( \
-						DEMath.sin( testAngle ) * radius, positionY, DEMath.cos( testAngle ) * radius ) )
+					( this.pTests.getAt( index++ ) cast ColliderCollisionTest ).setDirection( \
+						this.pViewMatrix * ( Vector.new( \
+							DEMath.sin( testAngle ) * radius, \
+							positionY, \
+							DEMath.cos( testAngle ) * radius ) ) )
 				end
 			end
 		end
@@ -468,6 +494,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			this.pTests.forEach( block ColliderCollisionTest each
 				each.reset()
 				each.setEnabled( false )
+			end )
+		end
+		
+		/** \brief Set direction of all tests to viewMatrix * direction * range. */
+		public func void resetTestDirections()
+			var Vector direction = this.pViewMatrix * ( this.pDirection * this.pRange )
+			this.pTests.forEach( block ColliderCollisionTest each
+				each.setDirection( direction )
 			end )
 		end
 		
@@ -525,6 +559,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	private var ECPFloat pRange
 	private var ECPVector pOrigin
 	private var ECPVector pDirection
+	private var ECPVector pOrientation
 	private var ECPString pBone
 	
 	
@@ -572,6 +607,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		this.pDirection = ECPVector.new( prefix + "direction", Vector.new( 0, 0, 1 ) )
 		eclass.addProperty( this.pDirection )
 		
+		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
+		eclass.addProperty( this.pOrientation )
+		
 		this.pBone = ECPString.new( prefix + "bone", "" )
 		eclass.addProperty( this.pBone )
 	end
@@ -615,6 +653,11 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	/** \brief Normalized test direction. */
 	public func ECPVector getDirection()
 		return this.pDirection
+	end
+	
+	/** \brief Test orientation. */
+	public func ECPVector getOrientation()
+		return this.pOrientation
 	end
 	
 	/** \brief Test bone. */
