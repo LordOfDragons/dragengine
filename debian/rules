@@ -51,7 +51,7 @@ override_dh_auto_install:
 	mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
 	mv "$(DESTDIR_ENGINE)"/usr/lib/libdragengine.so "$(DESTDIR_ENGINE_DEV)"/usr/lib/libdragengine.so
 	
-	mkdir -p "$(DESTDIR_ENGINE_IGDE)"/usr/lib
+	mkdir -p "$(DESTDIR_IGDE_DEV)"/usr/lib
 	mv "$(DESTDIR_IGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_IGDE_DEV)"/usr/lib/libdeigdeshared.so
 	
 	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
