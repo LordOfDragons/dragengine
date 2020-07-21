@@ -93,17 +93,17 @@ InitCommon( parent_env )
 #print('sys.platform', sys.platform)
 
 # append flags
-parent_env.Replace( MODULE_CPPFLAGS = [] )
-parent_env.Replace( MODULE_LINKFLAGS = [] )
+parent_env.Replace(MODULE_CPPFLAGS = [])
+parent_env.Replace(MODULE_LINKFLAGS = [])
 
 for x in applyEnvVars:
 	if x in os.environ:
-		parent_env.Append(x = os.environ[x])
+		parent_env.Append(x = parent_env.ParseFlags(os.environ[x]))
 
 if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
-	parent_env.Append(MODULE_CPPFLAGS = os.environ['CPPFLAGS'])
+	parent_env.Append(MODULE_CPPFLAGS = parent_env.ParseFlags(os.environ['CPPFLAGS']))
 if 'LDFLAGS' in applyEnvVars and 'LDFLAGS' in os.environ:
-	parent_env.Append(MODULE_LINKFLAGS = os.environ['LDFLAGS'])
+	parent_env.Append(MODULE_LINKFLAGS = parent_env.ParseFlags(os.environ['LDFLAGS']))
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )
