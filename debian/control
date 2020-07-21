@@ -11,23 +11,59 @@ Package: dragengine
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Engine
- Required to play games (*.delga) or developing games.
- Run delauncher-gui or delauncher-console.
+ Required to play games using the Drag[en]gine Game Engine (*.delga) or
+ developing games using the Drag[en]gine Game Engine.
+ 
+ Includes the two launchers "delauncher-gui" and "delauncher-console".
+ 
+ For most users running "delauncher-gui" is prefered. This shows a GUI
+ with the installed games. The GUI launcher supports:
+ - Installing games and patches from *.delga files
+ - Uninstalling games and patches
+ - Running installed games
+ - Create, edit and delete Game Profiles
+ 
+ Game Profiles are used to configure the Drag[en]gine Game Engine.
+ To run games creating profiles is not required. Defaults are used
+ in that case. Creating profiles though can help to optimize running
+ games as well as solving potential problems.
+ 
+ The "delauncher-console" is for advanced users prefering running
+ games from the console or using them in scripts. The console launcher
+ supports similar features than the GUI launcher but can not create,
+ edit or delete Game Profiles.
 
 Package: dragengine-dev
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Engine Development
- Required to create Drag[en]gine Modules. Not required to create games.
+ Development files required to create Drag[en]gine Modules. This package
+ is not required to create games using the Drag[en]gine Game Engine.
+ It is only required for developers intending to create game engine
+ modules for the public use.
 
 Package: deigde
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Development Environment
- Required to developing games using the Drag[en]gine Game Engine. Run deigde.
+ Provides support to develop games using the Drag[en]gine Game Engine.
+ Developing games does not required source code access so you do not
+ need to install *-dev packages (especially not dragengine-dev or
+ deigde-dev) unless the Scripting Module of your choice requires some.
+ 
+ Run deigde to start the editor. Creating, developing, test running
+ and deploying games is done from inside the editor.
+ 
+ For informations on developing using the Drag[en]gine Game Engine
+ see the "Developer Wiki" at https://developer.dragondreams.ch/wiki/doku.php
+ or stop by with your questions at the "Developer Forum" at
+ https://developer.dragondreams.ch/forum .
 
 Package: deigde-dev
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine IGDE Development
- Required to create Drag[en]gine IGDE Editors. Not required to create games.
+ Development files required to create Drag[en]gine IGDE Editors.
+ This package is not required to create games using the Drag[en]gine
+ Game Engine. It is only required for developers intending to create
+ IGDE Editors for the public use.
