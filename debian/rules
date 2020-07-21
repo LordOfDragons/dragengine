@@ -47,11 +47,12 @@ override_dh_auto_install:
 	#chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	#chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
 	
-	# 'non-dev-pkg-with-shlib-symlink' expects library links in the "-dev" package
-	#mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
-	#mv "$(DESTDIR_ENGINE)"/usr/lib/libdragengine.so "$(DESTDIR_ENGINE_DEV)"/usr/lib/libdragengine.so
-	#mkdir -p "$(DESTDIR_ENGINE_IGDE)"/usr/lib
-	#mv "$(DESTDIR_IGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_IGDE_DEV)"/usr/lib/libdeigdeshared.so
+	# non-dev-pkg-with-shlib-symlink
+	mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
+	mv "$(DESTDIR_ENGINE)"/usr/lib/libdragengine.so "$(DESTDIR_ENGINE_DEV)"/usr/lib/libdragengine.so
+	
+	mkdir -p "$(DESTDIR_ENGINE_IGDE)"/usr/lib
+	mv "$(DESTDIR_IGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_IGDE_DEV)"/usr/lib/libdeigdeshared.so
 	
 	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
 	# loadable packages. we can solve this on debian only using a bit of
