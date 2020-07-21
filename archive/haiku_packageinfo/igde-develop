@@ -1,6 +1,6 @@
 name	dragengine_igde
 version	1.2-1
-architecture	x86
+architecture	x86_64
 summary	"Drag[en]gine Integrated Game Development Environment Development (IGDE) Files"
 description	"Provides the development files required to create Editor Modules for the Drag[en]gine Integrated Game Development Environment (IGDE)."
 packager	"Dragon Dreams <info@dragondreams.ch>"

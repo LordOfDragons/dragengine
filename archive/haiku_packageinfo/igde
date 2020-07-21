@@ -1,6 +1,6 @@
 name	dragengine_igde
 version	1.2-1
-architecture	x86
+architecture	x86_64
 summary	"Drag[en]gine Integrated Game Development Environment"
 description	"Provides the integrated game development environment for developing games using the Drag[en]gine game engine."
 packager	"Dragon Dreams <info@dragondreams.ch>"
