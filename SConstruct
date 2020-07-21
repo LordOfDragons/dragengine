@@ -101,9 +101,9 @@ for x in applyEnvVars:
 		parent_env.Append(x = os.environ[x])
 
 if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
-	parent_env.Append(MODULE_CPPFLAGS = os.environ[x])
+	parent_env.Append(MODULE_CPPFLAGS = os.environ['CPPFLAGS'])
 if 'LDFLAGS' in applyEnvVars and 'LDFLAGS' in os.environ:
-	parent_env.Append(MODULE_LINKFLAGS = os.environ[x])
+	parent_env.Append(MODULE_LINKFLAGS = os.environ['LDFLAGS'])
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )
