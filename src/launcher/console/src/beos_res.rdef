@@ -1,0 +1,17 @@
+resource app_flags B_MULTIPLE_LAUNCH;
+
+resource app_signature "application/x-vnd.dragengine-launcher.app";
+
+resource app_version {
+	major = 1,
+	minor = 2,
+	variety = B_APPV_FINAL,
+	internal = 0,
+	short_info = "Drag[en]gine Console Launcher",
+	long_info = "Console Launcher running Drag[en]gine based games (*.delga)"
+};
+
+resource file_types message {
+	"types" = "application/dragengine-delga",
+	"types" = "application/dragengine-gamedefinition"
+};

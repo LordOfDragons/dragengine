@@ -57,7 +57,13 @@ objects = [envLauncher.StaticObject(s) for s in sources]
 appendLibrary(envLauncher, parent_targets['dragengine'], libs)
 libs.extend(parent_targets['dragengine']['binlibs'])
 
-program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+if envLauncher['OSBeOS']:
+	program = envLauncher.Program(target='delauncher-console-org', source=objects, LIBS=libs)
+	rsrc = envLauncher.RDef('src/beos_res.rdef')
+	program = envLauncher.Rsrc(target='delauncher-console', source=[program, rsrc])
+else:
+	program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+
 if envLauncher['OSMacOS']:
 	program = envLauncher.BundleMacOS(target='DELauncherConsole', source=program,
 		BUNDLE_ID='ch.rptd.dragengine.delauncher-console',
