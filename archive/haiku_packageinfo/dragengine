@@ -33,7 +33,7 @@ requires {
 	libogg >= 1.3.4-1
 	libvorbis >= 1.3.6-1
 	libtheora >= 1.1.1-7
-	zlib >= 1.2.114
+	zlib >= 1.2.11-4
 }
 urls {
 	"https://dragondreams.ch"
