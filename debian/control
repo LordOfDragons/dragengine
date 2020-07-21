@@ -18,10 +18,10 @@ Description: Drag[en]gine Game Engine
  .
  For most users running "delauncher-gui" is preferred. This shows a GUI
  with the installed games. The GUI launcher supports:
- - Installing games and patches from *.delga files
- - Uninstalling games and patches
- - Running installed games
- - Create, edit and delete Game Profiles
+   - Installing games and patches from *.delga files
+   - Uninstalling games and patches
+   - Running installed games
+   - Create, edit and delete Game Profiles
  .
  Game Profiles are used to configure the Drag[en]gine Game Engine.
  To run games creating profiles is not required. Defaults are used
