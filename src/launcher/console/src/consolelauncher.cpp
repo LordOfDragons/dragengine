@@ -61,7 +61,7 @@ private:
 	
 public:
 	deBApp() :
-	BApplication( "application/x-vnd.dragengine-launcher-console" ),
+	BApplication( "application/x-vnd.dragengine-launcher-console.app" ),
 	pThread( -1 ){
 	}
 	

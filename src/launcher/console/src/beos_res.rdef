@@ -1,6 +1,6 @@
 resource app_flags B_MULTIPLE_LAUNCH;
 
-resource app_signature "application/x-vnd.dragengine-launcher.app";
+resource app_signature "application/x-vnd.dragengine-launcher-console.app";
 
 resource app_version {
 	major = 1,
