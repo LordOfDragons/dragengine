@@ -38,10 +38,13 @@ def createHaikuHpkg(env, target, source):
 		shutil.rmtree(dirCollect)
 	os.makedirs(dirCollect)
 	
-	# copy all files to package into the collect directory
+	# copy all files to package into the collect directory. it looks like HPKG
+	# stores files relative to /boot/system so we have to strip these from the
+	# path before storing.
 	for path, node in env['PackageFiles'].items():
-		if path[0:1] == '/':
-			path = path[1:]
+		if path[0:13] != '/boot/system/':
+			raise Exception('Invalid base path in package')
+		path = path[13:]
 		fileDir = os.path.join(dirCollect, os.path.dirname(path))
 		if not os.path.exists(fileDir):
 			os.makedirs(fileDir)
