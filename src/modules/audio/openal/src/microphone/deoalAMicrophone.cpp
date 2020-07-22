@@ -135,13 +135,6 @@ void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 void deoalAMicrophone::SetActive( bool active ){
 	// WARNING Called during synchronization time from main thread.
 	
-	// WARNING The active microphone is required to hold a strong reference to the parent world
-	//         otherwise segfaults can happen if the world resource is released in the main
-	//         thread while still used in the audio thread. The reason is that the microphone is
-	//         held by the audio module not the world resources. Without holding a reference to
-	//         the parent world the deoalAWorld reference drops to zero and vanishes. This can
-	//         be achieved in this method in a simple way
-	
 	if( active == pActive ){
 		return;
 	}
@@ -153,15 +146,12 @@ void deoalAMicrophone::SetActive( bool active ){
 		
 		if( pParentWorld ){
 			pParentWorld->SetAllSpeakersEnabled( false );
-			//pParentWorld->FreeReference();  // delayed until ProcessDeactivate()
 		}
 	}
 	
 	pActive = active;
 	
 	if( active && pParentWorld ){
-		pParentWorld->AddReference();
-		
 		pDirtyGeometry = true;
 		pDirtyGain = true;
 		pEnableAttachedSpeakers( true );
@@ -278,11 +268,6 @@ void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
 	if( pActive ){
 		pEnableAttachedSpeakers( false );
 		pActiveSpeakers.EnableAll( false );
-		
-		if( pParentWorld ){
-			// see SetActive() why this reference is released here
-			pParentWorld->FreeReference();
-		}
 	}
 	
 	pActiveSpeakers.RemoveAll();
@@ -299,9 +284,6 @@ void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
 	pParentWorld = world;
 	
 	if( pActive && world ){
-		// see SetActive() why this reference is released here
-		world->AddReference();
-		
 		// if the microphone is the active one enable all active speakers if added to a new world
 		pEnableAttachedSpeakers( true );
 		pActiveSpeakers.EnableAll( true );
@@ -349,8 +331,7 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	pDirtyEnvProbe = false;
 	pEnvProbe = NULL;
 	
-	deoalAWorld * const world = GetParentWorld();
-	if( ! world || pActiveSpeakers.GetCount() == 0 ){
+	if( ! pParentWorld || pActiveSpeakers.GetCount() == 0 ){
 		return NULL;
 	}
 	
@@ -455,8 +436,6 @@ void deoalAMicrophone::ProcessDeactivate(){
 	
 	if( pParentWorld ){
 		pParentWorld->ProcessDeactivate();
-		
-		pParentWorld->FreeReference();
 	}
 }
 
@@ -595,6 +574,7 @@ void deoalAMicrophone::SetLLWorldNext( deoalAMicrophone *microphone ){
 //////////////////////
 
 void deoalAMicrophone::pCleanUp(){
+	pParentWorld = NULL;
 	pEnvProbe = NULL;
 	if( pEnvProbeList ){
 		delete pEnvProbeList;

@@ -29,7 +29,7 @@ class deoalAudioThread;
 
 
 // enable leak tracking.
-// #define ENABLE_LEAK_TRACKING
+#define ENABLE_LEAK_TRACKING
 
 
 #ifdef ENABLE_LEAK_TRACKING
@@ -90,12 +90,14 @@ public: inline decPointerSet &Get ## type(){ return p ## type; } \
 public: inline void Add ## type( void *object ){ AddTracked( p ## type, object ); } \
 public: inline void Remove ## type( void *object ){ RemoveTracked( p ## type, object ); }
 	DECLARE_TRACKER( Component )
-	DECLARE_TRACKER( Model )
 	DECLARE_TRACKER( Microphone )
-	DECLARE_TRACKER( Speaker )
+	DECLARE_TRACKER( Model )
+	DECLARE_TRACKER( Skin )
 	DECLARE_TRACKER( Sound )
 	DECLARE_TRACKER( SoundLevelMeter )
-	DECLARE_TRACKER( Skin )
+	DECLARE_TRACKER( Speaker )
+	DECLARE_TRACKER( SynthesizerInstance )
+	DECLARE_TRACKER( VideoPlayer )
 	DECLARE_TRACKER( World )
 	
 	void AddTracked( decPointerSet &list, void *object );
