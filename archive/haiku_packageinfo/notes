@@ -1,0 +1,8 @@
+global-writable-files {
+	"settings/dragengine" directory keep-old
+	"settings/delauncher" directory keep-old
+}
+
+global-writable-files {
+	"settings/deigde" directory keep-old
+}

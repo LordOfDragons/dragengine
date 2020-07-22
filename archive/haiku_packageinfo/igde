@@ -24,6 +24,3 @@ requires {
 urls {
 	"https://dragondreams.ch"
 }
-global-writable-files {
-	"settings/deigde" directory keep-old
-}

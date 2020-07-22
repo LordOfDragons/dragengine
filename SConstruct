@@ -759,7 +759,7 @@ SConscript( 'src/tools/launcher/android/SConscriptSpecial',
 	duplicate=0, exports='parent_env parent_targets parent_report' )
 """
 
-SConscript('archive/SConsHaikuHpkg.py', variant_dir='archive/buildPackage',
+SConscript('archive/SConsHaikuHpkg.py', variant_dir='archive/build/haiku',
 	duplicate=0, exports='parent_env parent_targets parent_report')
 
 
