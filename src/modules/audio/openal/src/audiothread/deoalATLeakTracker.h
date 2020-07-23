@@ -29,7 +29,7 @@ class deoalAudioThread;
 
 
 // enable leak tracking.
-#define ENABLE_LEAK_TRACKING
+// #define ENABLE_LEAK_TRACKING
 
 
 #ifdef ENABLE_LEAK_TRACKING
