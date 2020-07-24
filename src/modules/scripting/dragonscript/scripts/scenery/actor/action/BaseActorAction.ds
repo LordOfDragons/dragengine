@@ -137,13 +137,24 @@ class BaseActorAction implements Persistable
 	 */
 	public func void activate( BehaviorElement actor )
 		this.actor = actor
-		
 		this.initBehaviors()
-		
 		this.initAnimator()
 		if this.actorAnimated != null
 			this.actorAnimated.applyAnimations() // avoid problems if activated past postThink
 		end
+	end
+	
+	/**
+	 * \brief Action has been set as active action in an actor while loading.
+	 * 
+	 * Similar to activate(BehaviorElement) but only stores the actor and calls initBehaviors().
+	 * This is required since while loading behaviors load their state and actions load their
+	 * states. If activate(BehaviorElement) is called these states would be reset to initial
+	 * values.
+	 */
+	public func void activateWhileLoading( BehaviorElement actor )
+		this.actor = actor
+		this.initBehaviors()
 	end
 	
 	/**
@@ -152,6 +163,14 @@ class BaseActorAction implements Persistable
 	 * The stored actor is not cleared to allow aiFinished() and aiFailed() calls to function.
 	 */
 	public func void deactivate()
+	end
+	
+	/** \brief Actor entered game world. */
+	public func void enteredGameWorld()
+	end
+	
+	/** \brief Actor left game world. */
+	public func void leftGameWorld()
 	end
 	
 	/** \brief Actor has been added to game world and enterFrame() is called once. */
@@ -170,18 +189,15 @@ class BaseActorAction implements Persistable
 	 * \brief Thinking.
 	 * 
 	 * Default implementation does these actions in this order:
-	 * - playerThink() if player is controlling this actor
 	 * - ECBehaviorConversationActor.updateLocomotion()
 	 * - updateLocomotion()
 	 * - updateAICollider()
 	 * - updateAnimator()
 	 * - applyAnimations()
+	 * 
+	 * playerThink() is called by ECBehaviorActorAIAction if player controls this actor.
 	 */
 	public func void think( float elapsed )
-		if this.isControlledByPlayer()
-			this.playerThink( elapsed )
-		end
-		
 		if this.conversationActor != null
 			this.conversationActor.updateLocomotion( elapsed )
 		end
@@ -192,8 +208,24 @@ class BaseActorAction implements Persistable
 		this.applyAnimations()
 	end
 	
+	/**
+	 * \brief Thinking for player controlled actor only.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void playerThink( float elapsed )
+	end
+	
 	/** \brief Post physics. */
 	public func void postThink( float elapsed )
+	end
+	
+	/**
+	 * \brief Post physics for player controlled actor only.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void playerPostThink( float elapsed )
 	end
 	
 	
@@ -318,14 +350,6 @@ class BaseActorAction implements Persistable
 	 * actor is looking.
 	 */
 	protected func void initAnimator()
-	end
-	
-	/**
-	 * \brief Thinking for player controlled actor only.
-	 * 
-	 * Default implementation does nothing.
-	 */
-	public func void playerThink( float elapsed )
 	end
 	
 	/**
