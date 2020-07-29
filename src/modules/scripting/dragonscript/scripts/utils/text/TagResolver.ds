@@ -76,8 +76,9 @@ class TagResolver
 	/**
 	 * \brief Resolve tags in text.
 	 * \param text Text to resolve tags in.
+	 * \param context Context in which the solving is done. Passed to rules while resolving.
 	 */
-	public func String resolveTags( String text )
+	public func String resolveTags( String text, Object context )
 		var int tagBegin = text.find( '{' )
 		var int len = text.getLength()
 		var TagResolverRule rule
@@ -119,7 +120,7 @@ class TagResolver
 					result = result + tagData
 					
 				else
-					result = result + rule.resolveTag( tagParams )
+					result = result + rule.resolveTag( tagParams, context )
 				end
 			end
 			

@@ -34,6 +34,7 @@ interface TagResolverRule
 	/**
 	 * \brief Resolve tag returning text to output instead of the tag.
 	 * \param parameters Parameters inside tag.
+	 * \param context Object in the context of which the resolving is done.
 	 */
-	func String resolveTag( String parameters )
+	func String resolveTag( String parameters, Object context )
 end
