@@ -31,14 +31,52 @@ namespace Dragengine.Utils
  * The special tag {{ prints a single { character.
  */
 class TagResolver
-	/** \brief Supported rules. */
+	private var byte pCharTagBegin
+	private var byte pCharTagEnd
+	private var byte pCharDelimiter
 	private var Dictionary pRules
+	private var TagResolverRule pDefaultRule
 	
 	
 	
 	/** \brief Create tag resolver. */
 	public func new()
+		this.pCharTagBegin = '{'
+		this.pCharTagEnd = '}'
+		this.pCharDelimiter = ':'
 		this.pRules = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Character starting tag. */
+	public func byte getCharTagBegin()
+		return this.pCharTagBegin
+	end
+	
+	/** \brief Set character starting tag. */
+	public func void setCharTagBegin( byte character )
+		this.pCharTagBegin = character
+	end
+	
+	/** \brief Character ending tag. */
+	public func byte getCharTagEnd()
+		return this.pCharTagEnd
+	end
+	
+	/** \brief Set character ending tag. */
+	public func void setCharTagEnd( byte character )
+		this.pCharTagEnd = character
+	end
+	
+	/** \brief Character separating action from parameters. */
+	public func byte getCharDelimiter()
+		return this.pCharDelimiter
+	end
+	
+	/** \brief Set character separating action from parameters. */
+	public func void setCharDelimiter( byte character )
+		this.pCharDelimiter = character
 	end
 	
 	
@@ -73,13 +111,25 @@ class TagResolver
 	
 	
 	
+	/** \brief Rule to use if no rule matches or null to return tag unmodified. */
+	public func TagResolverRule getDefaultRule()
+		return this.pDefaultRule
+	end
+	
+	/** \brief Set rule to use if no rule matches or null to return tag unmodified. */
+	public func void setDefaultRule( TagResolverRule rule )
+		this.pDefaultRule = rule
+	end
+	
+	
+	
 	/**
 	 * \brief Resolve tags in text.
 	 * \param text Text to resolve tags in.
 	 * \param context Context in which the solving is done. Passed to rules while resolving.
 	 */
 	public func String resolveTags( String text, Object context )
-		var int tagBegin = text.find( '{' )
+		var int tagBegin = text.find( this.pCharTagBegin )
 		var int len = text.getLength()
 		var TagResolverRule rule
 		var String result = ""
@@ -96,14 +146,14 @@ class TagResolver
 				result = result + text.substring( position, tagBegin )
 			end
 			
-			if text.getAt( tagBegin + 1 ) == '{'
-				result = result + "{"
+			if text.getAt( tagBegin + 1 ) == this.pCharTagBegin
+				result = result + this.pCharTagBegin
 				tagEnd = tagBegin + 1
 				
 			else
-				tagEnd = text.find( '}', tagBegin + 1 )
+				tagEnd = text.find( this.pCharTagEnd, tagBegin + 1 )
 				tagData = text.substring( tagBegin + 1, tagEnd )
-				actionEnd = tagData.find( ':' )
+				actionEnd = tagData.find( this.pCharDelimiter )
 				
 				if actionEnd == -1
 					tagAction = tagData
@@ -117,7 +167,11 @@ class TagResolver
 				rule = this.pRules.getAt( tagAction, null ) cast TagResolverRule
 				
 				if rule == null
-					result = result + tagData
+					rule = this.pDefaultRule
+				end
+				
+				if rule == null
+					result = result + text.substring( tagBegin, tagEnd + 1 )
 					
 				else
 					result = result + rule.resolveTag( tagParams, context )
@@ -125,7 +179,7 @@ class TagResolver
 			end
 			
 			position = tagEnd + 1
-			tagBegin = text.find( '{', position )
+			tagBegin = text.find( this.pCharTagBegin, position )
 		end
 		
 		if position < len
