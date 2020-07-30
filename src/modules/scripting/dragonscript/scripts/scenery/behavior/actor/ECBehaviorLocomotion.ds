@@ -305,6 +305,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		public func void resetLooking()
 			this.pLocomotion.setLookHorizontalGoal( 0 )
 			this.pLocomotion.setLookVerticalGoal( 0 )
+			this.pLocomotion.cancelInput()
 		end
 		
 		
