@@ -303,8 +303,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \brief Reset looking vertically and horizontally to 0.
 		 */
 		public func void resetLooking()
-			this.pLocomotion.setLookHorizontalGoal( 0 )
-			this.pLocomotion.setLookVerticalGoal( 0 )
+			this.pLocomotion.setLookHorizontal( 0 )
+			this.pLocomotion.setLookVertical( 0 )
 			this.pLocomotion.cancelInput()
 		end
 		
