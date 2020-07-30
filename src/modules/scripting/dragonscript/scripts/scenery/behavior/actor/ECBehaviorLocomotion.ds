@@ -295,10 +295,16 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \brief Clear all movement to ensure actor is not unintentially moving.
 		 */
 		public func void stopMoving()
-			this.pLocomotion.setLookHorizontalGoal( 0 )
-			this.pLocomotion.setLookVerticalGoal( 0 )
 			this.pLocomotion.applyStates()
 			this.pLocomotion.cancelMotion()
+		end
+		
+		/**
+		 * \brief Reset looking vertically and horizontally to 0.
+		 */
+		public func void resetLooking()
+			this.pLocomotion.setLookHorizontalGoal( 0 )
+			this.pLocomotion.setLookVerticalGoal( 0 )
 		end
 		
 		
