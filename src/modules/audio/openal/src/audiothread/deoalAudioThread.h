@@ -105,6 +105,7 @@ private:
 	
 	deoalAMicrophone *pActiveMicrophone;
 	deoalAMicrophone *pDeactiveMicrophone;
+	deoalAWorld *pActiveWorld;
 	
 	decTimer pTimerElapsed;
 	float pElapsed;
@@ -162,7 +163,7 @@ public:
 	void SetActiveMicrophone( deoalAMicrophone *microphone );
 	
 	/** \brief Active world if a microphone is active and has a parent world. */
-	deoalAWorld *GetActiveWorld() const;
+	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
 	
 	
 	

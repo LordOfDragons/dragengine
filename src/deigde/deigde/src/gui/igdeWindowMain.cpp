@@ -666,7 +666,7 @@ void igdeWindowMain::ShowWindowLogger(){
 
 
 
-bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ) {
+bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ){
 	const int argCount = arguments.GetCount();
 	decString loadFile;
 	int i;
@@ -690,36 +690,9 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 		return dialog->Run( this );
 	}
 	
-	igdeGameProject *project = NULL;
-	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );
 	
-	try{
-		project = pLoadSaveSystem->LoadGameProject( loadFile.GetString() );
-		project->MergeGameDefinitions();
-		
-	}catch( const deException &e ){
-		DisplayException( e );
-		igdeCommonDialogs::Error( this, "Loading Game Project Problem",
-			"Could not load game project. Creating an empty one instead" );
-		
-		if( project ){
-			project->FreeReference();
-			project = NULL;
-		}
-	}
-	
-	if( project ){
-		SetGameProject( project );
-		project->FreeReference();
-		
-	}else{
-		if( ! CreateNewGameProject() ){
-			return false;
-		}
-	}
-	
-	return true;
+	return LoadGameProject( loadFile );
 }
 
 
@@ -802,10 +775,9 @@ void igdeWindowMain::CreatePlaceholderGameProject(){
 	pModuleManager->ActivateProjectManager();
 }
 
-void igdeWindowMain::LoadGameProject( const char *filename ){
+bool igdeWindowMain::LoadGameProject( const char *filename ){
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", filename );
 	
-	// load project
 	deObjectReference refProject;
 	
 	try{
@@ -820,10 +792,11 @@ void igdeWindowMain::LoadGameProject( const char *filename ){
 		SetGameProject( project );
 		
 		AddRecentGameProject( filename );
+		return true;
 		
 	}catch( const deException &e ){
 		DisplayException( e );
-		return;
+		return false;
 	}
 }
 

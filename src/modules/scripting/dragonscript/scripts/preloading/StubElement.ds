@@ -296,7 +296,7 @@ class StubElement extends StubWithProperties
 	 * \returns stub element or \em null if classname is empty. This is used to find the
 	 *          end of stub list since the total number of elements is often not known.
 	 */
-	public static func StubElement readFromFile( FileReader reader, ElementClassList ElementClassList )
+	public static func StubElement readFromFile( FileReader reader, ElementClassList elementClassList )
 		var String classname = reader.readString8()
 		if classname.empty()
 			return null
@@ -307,7 +307,7 @@ class StubElement extends StubWithProperties
 			//BaseGameApp.getApp().getConsole().addMessage( "reading element '" + classname + "'" )
 			
 			var UniqueID id = UniqueID.readFromFile( reader )
-			var StubElement stub = StubElement.new( ElementClassList.getNamed( classname ), id )
+			var StubElement stub = StubElement.new( elementClassList.getNamed( classname ), id )
 			stub.pPosition = DVector.readFromFile( reader )
 			stub.pRotation = Vector.readFromFile( reader )
 			stub.pScaling = Vector.readFromFile( reader )

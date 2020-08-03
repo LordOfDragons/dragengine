@@ -531,7 +531,8 @@ void deoalRTPTListen::RunSphereReceiver(){
 // 	const float receiverRadius = powf( 15.0f * pSourceProbe->GetRoomVolume()
 // 		/ ( 2.0f * PI * rayCount ), 1.0f / 3.0f );
 	const float receiverRadiusSquared = receiverRadius * receiverRadius;
-	const float receiverVolume = ( 4.0f / 3.0f ) * PI * receiverRadiusSquared * receiverRadius;
+	const float receiverVolume = decMath::max( 0.01f,
+		( 4.0f / 3.0f ) * PI * receiverRadiusSquared * receiverRadius );
 	const float invReceiverVolume = fixGainScaleRecRad/*1.0f*/ / receiverVolume;
 	
 	// TODO receiver radius can explode if speaker is located on an open plane. in this case

@@ -394,6 +394,7 @@ void deoalSpeaker::pCleanUp(){
 	if( pASpeaker ){
 		pASpeaker->SetBackLink( NULL );
 		pASpeaker->FreeReference();
+		pASpeaker = NULL;
 	}
 }
 

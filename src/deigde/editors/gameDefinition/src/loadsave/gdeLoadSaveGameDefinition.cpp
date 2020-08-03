@@ -478,7 +478,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 			objectClass.SetIsGhost( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "canInstantiate"
-		/* backwards compatibility */ || "canInstanciate" ){
+		/* backwards compatibility */ || tagName == "canInstanciate" ){
 			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "inherit" ){

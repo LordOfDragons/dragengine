@@ -126,6 +126,7 @@ pWOVCollectElements( NULL ),
 
 pActiveMicrophone( NULL ),
 pDeactiveMicrophone( NULL ),
+pActiveWorld( NULL ),
 
 pElapsed( 0.0f ),
 
@@ -242,10 +243,14 @@ void deoalAudioThread::CleanUp(){
 	
 	SetActiveMicrophone( NULL );
 	
-	if( pDeactiveMicrophone && pDeactiveMicrophone->GetParentWorld() ){
-		pDeactiveMicrophone->GetParentWorld()->FreeReference();
+	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
+	}
+	
+	if( pActiveWorld ){
+		pActiveWorld->FreeReference();
+		pActiveWorld = NULL;
 	}
 	
 	if( pDebugInfo ){
@@ -532,29 +537,34 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if( microphone == pActiveMicrophone ){
-		return;
+	if( microphone != pActiveMicrophone ){
+		if( pActiveMicrophone ){
+			pDeactiveMicrophone = pActiveMicrophone;
+			pActiveMicrophone->SetActive( false );
+		}
+		
+		pActiveMicrophone = microphone;
+		
+		if( microphone ){
+			microphone->AddReference();
+			microphone->SetActive( true );
+		}
 	}
 	
-	if( pActiveMicrophone ){
-		pDeactiveMicrophone = pActiveMicrophone;
-		pActiveMicrophone->SetActive( false );
-	}
-	
-	pActiveMicrophone = microphone;
-	
-	if( microphone ){
-		microphone->AddReference();
-		microphone->SetActive( true );
+	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : NULL;
+	if( world != pActiveWorld ){
+		if( pActiveWorld ){
+			pActiveWorld->FreeReference();
+		}
+		
+		pActiveWorld = world;
+		
+		if( world ){
+			world->AddReference();
+		}
 	}
 }
 
-deoalAWorld *deoalAudioThread::GetActiveWorld() const{
-	if( ! pActiveMicrophone ){
-		return NULL;
-	}
-	return pActiveMicrophone->GetParentWorld();
-}
 
 
 // Private Functions
@@ -625,11 +635,13 @@ void deoalAudioThread::pCleanUpThread(){
 	SetActiveMicrophone( NULL );
 	
 	if( pDeactiveMicrophone ){
-		if( pDeactiveMicrophone->GetParentWorld() ){
-			pDeactiveMicrophone->GetParentWorld()->FreeReference();
-		}
 		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
+	}
+	
+	if( pActiveWorld ){
+		pActiveWorld->FreeReference();
+		pActiveWorld = NULL;
 	}
 	
 	if( pWOVCollectElements ){

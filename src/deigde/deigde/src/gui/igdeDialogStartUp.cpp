@@ -171,8 +171,9 @@ void igdeDialogStartUp::LoadSelectedRecentProject(){
 		return;
 	}
 	
-	pWindowMain.LoadGameProject( pWindowMain.GetConfiguration().GetRecentProjectList().GetAt( selection ) );
-	Accept();
+	if( pWindowMain.LoadGameProject( pWindowMain.GetConfiguration().GetRecentProjectList().GetAt( selection ) ) ){
+		Accept();
+	}
 }
 
 void igdeDialogStartUp::LoadProjectFromFile(){
@@ -194,8 +195,9 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 		return;
 	}
 	
-	pWindowMain.LoadGameProject( filename );
-	Accept();
+	if( pWindowMain.LoadGameProject( filename ) ){
+		Accept();
+	}
 }
 
 void igdeDialogStartUp::NewGameProject(){

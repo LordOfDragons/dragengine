@@ -49,16 +49,16 @@ deObjectDebug::~deObjectDebug(){
 
 void deObjectDebug::AddReference(){
 	const deeInvalidAction trace( __FILE__, __LINE__ );
-	printf( "[ObjectDebug] AddReference: logname=%s refcount=%d where=%s\n",
-		pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
+	printf( "[ObjectDebug] AddReference: object=%p logname=%s refcount=%d where=%s\n",
+		this, pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
 	
 	pRefCount++;
 }
 
 void deObjectDebug::FreeReference(){
 	const deeInvalidAction trace( __FILE__, __LINE__ );
-	printf( "[ObjectDebug] FreeReference: logname=%s refcount=%d where=%s\n",
-		pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
+	printf( "[ObjectDebug] FreeReference: object=%p logname=%s refcount=%d where=%s\n",
+		this, pLogName, pRefCount, trace.GetBacktrace().GetAt( pLogTraceIndex ).GetString() );
 	
 	pRefCount--;
 	if( pRefCount > 0 ){

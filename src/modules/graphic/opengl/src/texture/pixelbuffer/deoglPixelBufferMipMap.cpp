@@ -602,6 +602,7 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 						}
 						*/
 						dotMin = ( normal1 * normalAverage + normal2 * normalAverage + normal3 * normalAverage + normal4 * normalAverage ) * 0.25f;
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						
 						dotMin = acosf( dotMin ) * varianceFactorFloat;
 						
@@ -724,6 +725,7 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 						}
 						*/
 						dotMin = ( normal1 * normalAverage + normal2 * normalAverage + normal3 * normalAverage + normal4 * normalAverage ) * 0.25f;
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						
 						dotMinInt = ( int )( acosf( dotMin ) * varianceFactorByte );
 						
@@ -1029,6 +1031,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 						// function mapping the spread angle in the range of 0 to half-pi to the range from 0
 						// to 1. thus the deviation of the normals is an angle which in turn can be directly
 						// converted to an increase in roughness
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						dotMin = acosf( dotMin ) / HALF_PI;
 						
 						// apply the correction value to the roughness. since the correction is always positive

@@ -99,12 +99,24 @@ class BaseActorAI implements Persistable
 	
 	
 	/**
-	 * \brief Action has been set as active action in an actor.
+	 * \brief AI has been set as active AI in an actor.
 	 * 
 	 * Calls these hook methods:
 	 * - initBehaviors()
 	 */
 	public func void activate( BehaviorElement actor )
+		this.actor = actor
+		this.initBehaviors()
+	end
+	
+	/**
+	 * \brief AI has been set as active AI in an actor while loading.
+	 * 
+	 * Similar to activate(BehaviorElement) but only stores the actor and calls initBehaviors().
+	 * This is required since while loading behaviors load their state and AIs load their states.
+	 * If activate(BehaviorElement) is called these states would be reset to initial values.
+	 */
+	public func void activateWhileLoading( BehaviorElement actor )
 		this.actor = actor
 		this.initBehaviors()
 	end
@@ -139,6 +151,14 @@ class BaseActorAI implements Persistable
 	end
 	
 	
+	
+	/** \brief Actor entered game world. */
+	public func void enteredGameWorld()
+	end
+	
+	/** \brief Actor left game world. */
+	public func void leftGameWorld()
+	end
 	
 	/** \brief Actor has been added to game world and enterFrame() is called once. */
 	public func void enterFrame()

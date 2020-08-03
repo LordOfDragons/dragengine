@@ -312,7 +312,9 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 */
 		public func void setAIAndDispose( BaseActorAI ai )
 			var BaseActorAI disposeAI = this.pAI
+			
 			this.setAI( null )
+			
 			if disposeAI != null
 				disposeAI.dispose()
 			end
@@ -330,29 +332,65 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			end
 		end
 		
-		/** \brief Think about what to do for the next frame update. */
+		/**
+		 * \brief Think about what to do for the next frame update.
+		 * 
+		 * If actor is player controlled calls BaseActorAction.playerThink() and
+		 * BaseActorAction.think(). If actor is not player controlled calls
+		 * BaseActorAI.think() and BaseActorAction.think(). This avoids the need for
+		 * AI and Action to check if they are player controlled or not.
+		 */
 		public func void think( float elapsed )
-			if this.pAI != null
-				this.pAI.think( elapsed )
-			end
-			if this.pAction != null
-				this.pAction.think( elapsed )
+			if this.pPlayerControllable.isPlayerControlled()
+				if this.pAction != null
+					this.pAction.playerThink( elapsed )
+					this.pAction.think( elapsed )
+				end
+				
+			else
+				if this.pAI != null
+					this.pAI.think( elapsed )
+				end
+				if this.pAction != null
+					this.pAction.think( elapsed )
+				end
 			end
 		end
 		
-		/** \brief Post thinking after physics processing is finished. */
+		/**
+		 * \brief Post thinking after physics processing is finished.
+		 * 
+		 * If actor is player controlled calls BaseActorAction.playerPostThink(float)
+		 * and BaseActorAction.postThink(float). If actor is not player controlled only
+		 * BaseActorAction.postThink(float) is called.
+		 */
 		public func void postThink( float elapsed )
 			if this.pAction != null
+				if this.pPlayerControllable.isPlayerControlled()
+					this.pAction.playerPostThink( elapsed )
+				end
 				this.pAction.postThink( elapsed )
 			end
 		end
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
+			if this.pAI != null
+				this.pAI.enteredGameWorld()
+			end
+			if this.pAction != null
+				this.pAction.enteredGameWorld()
+			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
+			if this.pAI != null
+				this.pAI.leftGameWorld()
+			end
+			if this.pAction != null
+				this.pAction.leftGameWorld()
+			end
 		end
 		
 		
@@ -361,8 +399,17 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
 			case 0
+				var BehaviorElement element = this.getElement()
+				
 				this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
+				if this.pAI != null
+					this.pAI.activateWhileLoading( element )
+				end
+				
 				this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+				if this.pAction != null
+					this.pAction.activateWhileLoading( element )
+				end
 				
 			else
 				throw EInvalidParam.new( "unsupported version" )

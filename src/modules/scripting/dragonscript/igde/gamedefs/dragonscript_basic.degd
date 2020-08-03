@@ -2008,9 +2008,14 @@
 			<default>0 0 0</default>
 		</property>
 		<property name='direction'>
-			<description>Test direction.</description>
+			<description>Test direction. Used for single test only. For multiple tests use 'orientation' to precisely speciy the scan pattern.</description>
 			<type>vector3</type>
 			<default>0 0 1</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation of hit scan patterns. Applies to all hit scan patterns including single ones. If single one is used 'direction' is applied ontop of 'orientation'.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
 		</property>
 		<property name='bone'>
 			<description>Test bone.</description>
