@@ -41,7 +41,7 @@ class BEBehaviorIDAbsent extends Exception
 	/** \brief Create exception. */
 	public func new( BehaviorElement element, String behavior, String identifier ) \
 	super( "Behavior " + behavior + " with identifier '" + identifier \
-	+ "' not found element " + element.getClass().getClassname() )
+	+ "' not found in element " + element.getClass().getClassname() )
 		this.pElement = element
 		this.pBehavior = behavior
 		this.pIdentifier = identifier
