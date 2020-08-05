@@ -149,7 +149,7 @@ bool deBeOSInput::Init(){
 		
 		pDevices = new debiDeviceManager( *this );
 		pDevices->UpdateDeviceList();
-		pDevices->LogDevices();
+		//pDevices->LogDevices();
 		
 	}catch( const deException &e ){
 		LogException( e );

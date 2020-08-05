@@ -78,7 +78,7 @@ debiDevice( module )
 	axisY.SetID( "y" );
 	axisY.SetName( "Y" );
 	axisY.SetType( deInputDeviceAxis::eatMouse );
-	axisX.SetDisplayImages( "mouseY" );
+	axisY.SetDisplayImages( "mouseY" );
 	
 	refObject.TakeOver( new debiDeviceAxis( module ) );
 	AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
