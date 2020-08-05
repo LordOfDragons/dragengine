@@ -53,6 +53,13 @@ envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-maybe-uninitialized'])
 if envSpecialSoundTouch['with_warnerrors']:
 	envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-error'])
 
+if envSpecialSoundTouch['OSBeOS']:
+	# on 32-bit compilation SSE seems to be a problem on some machines. this causes compilatio
+	# to fail with errors about inlining SSE commands. one solution for this is to disable
+	# SSE altogether. needs more investigation if and when we need this
+	#envSpecialSoundTouch.Append(CPPFlags = ['-DSOUNDTOUCH_DISABLE_X86_OPTIMIZATIONS'])
+	pass
+
 # setup the builders
 sources = []
 headers = []
