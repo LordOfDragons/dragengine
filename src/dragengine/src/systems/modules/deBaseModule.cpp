@@ -293,7 +293,6 @@ void deBaseModule::pCreateVFS(){
 		pathRedirect.SetFromUnix( "/config/modules" );
 		pathRedirect.AddUnixPath( typeDirectory );
 		pathRedirect.AddUnixPath( directoryName );
-		pathRedirect.AddComponent( pLoadableModule.GetVersion() );
 		
 		pathRoot.SetFromUnix( "/config" );
 		
@@ -318,7 +317,6 @@ void deBaseModule::pCreateVFS(){
 		pathDisk.AddUnixPath( "modules" );
 		pathDisk.AddUnixPath( typeDirectory );
 		pathDisk.AddUnixPath( directoryName );
-		pathDisk.AddComponent( pLoadableModule.GetVersion() );
 		
 		pathRoot.SetFromUnix( "/config" );
 		
