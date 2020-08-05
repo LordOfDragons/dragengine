@@ -230,9 +230,9 @@ parent_targets['deigde_shared'] = {
 
 # application
 if envIGDEApp['OSBeOS']:
-	pathMan1 = os.path.join(envIGDEApp.subst(envLauncher['docdir']), 'man', 'man1')
+	pathMan1 = os.path.join(envIGDEApp.subst(envIGDEApp['docdir']), 'man', 'man1')
 elif envIGDEApp['OSPosix']:
-	pathMan1 = os.path.join(envIGDEApp.subst(envLauncher['datadir']), 'man', 'man1')
+	pathMan1 = os.path.join(envIGDEApp.subst(envIGDEApp['datadir']), 'man', 'man1')
 
 if envIGDEApp['OSWindows']:
 	envIGDEApp.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear

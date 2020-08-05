@@ -24,7 +24,7 @@ elif envLibrary['OSMacOS']:
 	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}' )
 	libLinkName = 'dscript'
 else:
-	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}.{}.{}.0'.format(
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}dscript${{SHLIBSUFFIX}}.{}.{}.0'.format(
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
 
