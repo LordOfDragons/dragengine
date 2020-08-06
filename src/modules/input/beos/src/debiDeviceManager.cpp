@@ -132,7 +132,7 @@ void debiDeviceManager::LogDevices(){
 		if( axisCount > 0 ){
 			pModule.LogInfo( "  Axes:" );
 			for( j=0; j<axisCount; j++ ){
-				const debiDeviceAxis &axis = device.GetAxisAt( j );
+				const debiDeviceAxis &axis = *device.GetAxisAt( j );
 				pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
 					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
 					axis.GetMaximum(), 0, 0 );
@@ -143,7 +143,7 @@ void debiDeviceManager::LogDevices(){
 		if( buttonCount > 0 ){
 			pModule.LogInfo( "  Buttons:" );
 			for( j=0; j<buttonCount; j++ ){
-				const debiDeviceButton &button = device.GetButtonAt( j );
+				const debiDeviceButton &button = *device.GetButtonAt( j );
 				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
 					button.GetBICode(), j );

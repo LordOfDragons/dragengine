@@ -181,7 +181,7 @@ void deClassInputDeviceFeedback::nfGetDisplayIconAt::RunFunction( dsRunTime *rt,
 
 // public func Image getLargestDisplayIconX( int maxWidth )
 deClassInputDeviceFeedback::nfGetLargestDisplayIconX::nfGetLargestDisplayIconX( const sInitData &init ) :
-dsFunction( init.clsInputDevice, "getLargestDisplayIconX", DSFT_FUNCTION,
+dsFunction( init.clsIDFeedback, "getLargestDisplayIconX", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 	p_AddParameter( init.clsInteger ); // maxWidth
 }
@@ -208,7 +208,7 @@ void deClassInputDeviceFeedback::nfGetLargestDisplayIconX::RunFunction( dsRunTim
 
 // public func Image getLargestDisplayIconY( int maxHeight )
 deClassInputDeviceFeedback::nfGetLargestDisplayIconY::nfGetLargestDisplayIconY( const sInitData &init ) :
-dsFunction( init.clsInputDevice, "getLargestDisplayIconY", DSFT_FUNCTION,
+dsFunction( init.clsIDFeedback, "getLargestDisplayIconY", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 	p_AddParameter( init.clsInteger ); // maxHeight
 }

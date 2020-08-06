@@ -239,12 +239,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	pRoomParameters->sabineLow *= pProbeConfig->GetRayUnitSurface();
 	pRoomParameters->sabineHigh *= pProbeConfig->GetRayUnitSurface();
 	
-	pRoomParameters->roomSurface *= pProbeConfig->GetRayUnitSurface();
+	pRoomParameters->roomSurface = decMath::max( 0.01f,
+		pRoomParameters->roomSurface * pProbeConfig->GetRayUnitSurface() );
+	
 	pRoomParameters->roomAbsorptionLow = pRoomParameters->sabineLow / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionMedium = pRoomParameters->sabineMedium / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionHigh = pRoomParameters->sabineHigh / pRoomParameters->roomSurface;
 	
-	pRoomParameters->roomVolume *= pProbeConfig->GetRayUnitVolume();
+	pRoomParameters->roomVolume = decMath::max( 0.01f,
+		pRoomParameters->roomVolume * pProbeConfig->GetRayUnitVolume() );
 // 	pRoomParameters->roomG = 10.0f * log10f( decMath::max( FLOAT_SAFE_EPSILON,
 // 		4.0f * ( 1.0f - pRoomParameters->roomAbsorptionMedium )
 // 			/ decMath::max( pRoomParameters->sabineMedium, 0.01f ) ) );

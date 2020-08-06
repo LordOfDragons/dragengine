@@ -713,18 +713,23 @@ void deoalASpeaker::pCleanUp(){
 	pSoundDecoder = NULL;
 	if( pBufferData ){
 		delete [] pBufferData;
+		pBufferData = NULL;
 	}
 	if( pEnvironment ){
 		delete pEnvironment;
+		pEnvironment = NULL;
 	}
 	if( pSound ){
 		pSound->FreeReference();
+		pSound = NULL;
 	}
 	if( pSynthesizer ){
 		pSynthesizer->FreeReference();
+		pSynthesizer = NULL;
 	}
 	if( pVideoPlayer ){
 		pVideoPlayer->FreeReference();
+		pVideoPlayer = NULL;
 	}
 	
 	// delayed deletion

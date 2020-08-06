@@ -61,24 +61,21 @@ private:
 	
 public:
 	deBApp() :
-	BApplication( "application/x-vnd.dragengine-launcher-console" ),
+	BApplication( "application/x-vnd.dragengine-launcher-console.app" ),
 	pThread( -1 ){
 	}
 	
 	virtual void ArgvReceived( int32 argc, char** argv ){
 		int i;
 		for( i=1; i<argc; i++ ){
-			printf( "[DELAUNCH] ArgvReceived: %d = '%s'\n", i, argv[ i ] );
 			pLauncher.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
 		}
 	}
 	
 	virtual void AboutRequested(){
-		printf( "[DELAUNCH] AboutRequested()\n" );
 	}
 	
 	virtual bool QuitRequested(){
-		printf( "[DELAUNCH] QuitRequested()\n" );
 		return true;
 	}
 	
@@ -92,10 +89,6 @@ public:
 	}
 	
 	virtual void MessageReceived( BMessage *message ){
-		const char whatStr[4] = {(char)((message->what>>24)&0xff), (char)((message->what>>16)&0xff),
-			(char)((message->what>>8)&0xff), (char)(message->what&0xff)};
-		printf( "BApp.MessageReceived: received %.4s\n", (char*)whatStr );
-		
 		if( pLauncher.GetEngine() && pLauncher.GetEngine()->GetEngine() ){
 			pLauncher.GetEngine()->GetEngine()->GetOS()->CastToOSBeOS()->MessageReceived( message );
 		}
@@ -131,15 +124,7 @@ public:
 };
 
 int main( int argcount, char **args ){
-	/*
-	new deBApp();
-	be_app->Run();
-	delete be_app;
-	return 0;
-	*/
-	deBApp app;
-	app.Run();
-	printf( "Quit finished\n" );
+	deBApp().Run();
 	return 0;
 }
 

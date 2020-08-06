@@ -62,7 +62,6 @@ private:
 	bool *pKeyStates;
 	bool pSystemAutoRepeatEnabled;
 	bool pAutoRepeatEnabled;
-	int pCurMouseButtonPressed;
 	decPoint pCurMousePosition;
 	
 	debiDeviceManager *pDevices;

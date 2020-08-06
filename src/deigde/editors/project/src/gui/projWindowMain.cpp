@@ -121,6 +121,9 @@ pPanelUndoHistory( NULL )
 	
 	pPanelUndoHistory = new projPanelUndoHistory( env );
 	pTabPanels->AddChild( pPanelUndoHistory, "Undo History" );
+	
+	// load game project
+	LoadProject();
 }
 
 projWindowMain::~projWindowMain(){

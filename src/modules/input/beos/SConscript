@@ -20,6 +20,7 @@ if envModule['force_version']:
 
 pathConfig = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+pathShared = '{}/modules/input/beos/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
@@ -29,6 +30,9 @@ sources = []
 headers = []
 globFiles(envModule, 'src', '*.cpp', sources)
 globFiles(envModule, 'src', '*.h', headers)
+
+data = []
+globFiles(envModule, 'data', '*', data)
 
 objects = [envModule.SharedObject(s) for s in sources]
 
@@ -58,6 +62,11 @@ Depends(updateManifest, 'SConscript')
 
 install.append(envModule.Install(pathModule, updateManifest))
 archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+for d in data:
+	filename = os.path.join(pathShared, d[5:])
+	install.append(envModule.InstallAs(filename, d))
+	archive[filename] = envModule.File(d).srcnode()
 
 targetInstall = envModule.Alias('inp_beos', install)
 

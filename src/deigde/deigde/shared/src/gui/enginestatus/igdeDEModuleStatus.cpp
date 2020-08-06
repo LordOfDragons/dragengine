@@ -252,6 +252,14 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		pEditType->SetText( "Occlusion Mesh" );
 		break;
 		
+	case deModuleSystem::emtSynthesizer:
+		pEditType->SetText( "Synthesizer" );
+		break;
+		
+	case deModuleSystem::emtArchive:
+		pEditType->SetText( "Archive" );
+		break;
+		
 	default:
 		pEditType->SetText( "Unknown Type" );
 	}

@@ -133,7 +133,7 @@ if parent_targets[ 'lib_dragonscript' ][ 'runtimedatadir' ]:
 		install.append( envModule.InstallAs( filename, d ) )
 		archive[ filename ] = d
 
-if envModule['OSPosix']:
+if envModule['OSPosix'] and not envModule['OSBeOS']:
 	pathDataDir = envModule.subst('$datadir')
 	filename = os.path.join(pathDataDir, 'katepart5', 'syntax', 'dragonscript.xml')
 	install.append(envModule.InstallAs(filename, 'kate_syntax/dragonscript.xml'))

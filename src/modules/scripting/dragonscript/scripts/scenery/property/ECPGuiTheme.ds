@@ -1,0 +1,154 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief GuiTheme class property for use with XML loading.
+ * 
+ * GuiTheme is set from XML using a path. Loads the gui theme during preloading.
+ * The value of the property is then the loaded resource. If loading fails null
+ * gui theme is stored.
+ */
+class ECPGuiTheme extends ElementClassProperty
+	private var LoadGuiTheme pLoader
+	private var String pPath
+	private var GuiTheme pGuiTheme
+	private var bool pHasPreloaded
+	
+	
+	
+	/** \brief Create property. */
+	public func new( String name, LoadGuiTheme loader ) this( name, loader, null )
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new( String name, LoadGuiTheme loader, String path ) super( name )
+		this.pLoader = loader
+		this.pPath = path
+	end
+	
+	
+	
+	/** \brief GuiTheme loader. */
+	public func LoadGuiTheme getLoader()
+		return this.pLoader
+	end
+	
+	/** \brief Path to animator. */
+	public func String getPath()
+		return this.pPath
+	end
+	
+	/** \brief Set path to animator. */
+	public func void setPath( String path )
+		this.pPath = path
+	end
+	
+	/** \brief GuiTheme or \em null if not present. */
+	public func GuiTheme getGuiTheme()
+		return this.pGuiTheme
+	end
+	
+	/** \brief Set animator or \em null if not present. */
+	public func void setGuiTheme( GuiTheme animator )
+		this.pGuiTheme = animator
+	end
+	
+	/** \brief Property has been preloaded. */
+	public func bool getHasPreloaded()
+		return this.pHasPreloaded
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue( Object value )
+		this.pPath = value cast String
+	end
+	
+	
+	
+	/** \brief Preload resources if supported. */
+	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
+		if this.pHasPreloaded
+			return
+		end
+		
+		this.pHasPreloaded = true
+		
+		if this.pPath == null or this.pPath.empty()
+			return
+		end
+		
+		var String path = File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath()
+		
+		try
+			this.pGuiTheme = this.pLoader.loadFromFile( path )
+			
+		catch Exception e
+		end
+	end
+	
+	/**
+	 * \brief Log preloading problems.
+	 * \returns True if problems are present.
+	 */
+	public func bool logPreloadProblems( ElementClass elementClass, Console console )
+		if this.pPath != null and not this.pPath.empty() and this.pGuiTheme == null
+			console.addMessage( "Property " + elementClass.getClassname() + "." \
+				+ this.getName() + ": Failed loading gui theme " \
+				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+			return true
+		end
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief GuiTheme modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored animator is returned.
+	 * If the named stub property is present it is loaded as animator resource.
+	 */
+	public func GuiTheme getGuiTheme( StubWithProperties stub, ElementClass eclass )
+		var String value = stub.getPropertyValueFor( this.getName(), "" )
+		if value.empty()
+			return this.pGuiTheme
+		end
+		
+		try
+			return this.pLoader.loadFromFile( value )
+			
+		catch Exception e
+			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+		end
+	end
+end

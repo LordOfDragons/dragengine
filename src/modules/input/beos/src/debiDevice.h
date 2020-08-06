@@ -23,8 +23,10 @@
 #define _DEBIDEVICE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/resources/image/deImageReference.h>
 
 class deBeOSInput;
 class debiDeviceAxis;
@@ -58,12 +60,12 @@ private:
 	deInputDevice::eDeviceTypes pType;
 	decString pID;
 	decString pName;
+	deImageReference pDisplayImage;
+	decObjectOrderedSet pDisplayIcons;
+	decString pDisplayText;
 	
-	int pButtonCount;
-	debiDeviceButton *pButtons;
-	
-	int pAxisCount;
-	debiDeviceAxis *pAxes;
+	decObjectOrderedSet pButtons;
+	decObjectOrderedSet pAxes;
 	
 	bool pDirtyAxesValues;
 	
@@ -125,16 +127,28 @@ public:
 	/** \brief Set name. */
 	void SetName( const char *name );
 	
+	/** \brief Display image. */
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	
+	/** \brief Display icons (deImage*). */
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	
+	/** \brief Set display image and icons. */
+	void SetDisplayImages( const char *name );
+	
+	/** \brief Display text. */
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	
+	/** \brief Set display text. */
+	void SetDisplayText( const char *text );
+	
 	
 	
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
-	
-	/** \brief Set number of buttons. */
-	void SetButtonCount( int count );
+	int GetButtonCount() const;
 	
 	/** \brief Button at index. */
-	debiDeviceButton &GetButtonAt( int index ) const;
+	debiDeviceButton *GetButtonAt( int index ) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
 	debiDeviceButton *GetButtonWithID( const char *id ) const;
@@ -145,16 +159,16 @@ public:
 	/** \brief Index of button with beos input code or -1 if absent. */
 	int IndexOfButtonWithBICode( int code ) const;
 	
+	/** \brief Add button. */
+	void AddButton( debiDeviceButton *button );
+	
 	
 	
 	/** \brief Number of axiss. */
-	inline int GetAxisCount() const{ return pAxisCount; }
-	
-	/** \brief Set number of axiss. */
-	void SetAxisCount( int count );
+	int GetAxisCount() const;
 	
 	/** \brief Axis at index. */
-	debiDeviceAxis &GetAxisAt( int index ) const;
+	debiDeviceAxis *GetAxisAt( int index ) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
 	debiDeviceAxis *GetAxisWithID( const char *id ) const;
@@ -164,6 +178,9 @@ public:
 	
 	/** \brief Index of axis with beos input code or -1 if absent. */
 	int IndexOfAxisWithBICode( int code ) const;
+	
+	/** \brief Add axis. */
+	void AddAxis( debiDeviceAxis *axis );
 	
 	
 	

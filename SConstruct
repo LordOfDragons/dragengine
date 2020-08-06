@@ -72,7 +72,7 @@ elif sys.platform == 'win32':
 	##parent_env.Append( ENV = { 'PATH' : 'C:\MinGW\bin;' + os.environ[ 'PATH' ] } )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
-
+	
 else:
 	parent_env = Environment(CPPPATH='.', LIBPATH='.')
 	parent_env[ 'OS_NAME' ] = os.name
@@ -80,6 +80,11 @@ else:
 	
 	applyEnvVars.append('CC')
 	applyEnvVars.append('CXX')
+
+# Haiku: The PATH found by SCons are wrong in many ways causing binaries to be not found.
+#        Replace them with sane values. This is not a 'good' solution but should work.
+if sys.platform == 'haiku1':
+	parent_env['ENV']['PATH'] = os.environ['PATH']
 
 parent_env.Tool('logStdOut')
 if parent_env['LogStdOut_Enabled']:
@@ -92,6 +97,10 @@ parent_env.Tool('macos_bundle')
 InitCommon( parent_env )
 #print('os.name', os.name)
 #print('sys.platform', sys.platform)
+
+# load platform specific tools
+if parent_env['OSBeOS']:
+	parent_env.Tool('beosResource')
 
 # append flags
 parent_env.Replace(MODULE_CPPFLAGS = [])
@@ -165,6 +174,7 @@ params.Add( TernaryVariable( 'with_system_libusb', 'Use System libusb' ) )
 params.Add( TernaryVariable( 'with_system_libhidapi', 'Use System libhidapi' ) )
 params.Add( TernaryVariable( 'with_system_libopenhmd', 'Use System libopenhmd' ) )
 params.Add( TernaryVariable( 'with_system_fftw', 'Use System fftw' ) )
+params.Add( TernaryVariable( 'with_system_soundtouch', 'Use System soundtouch' ) )
 
 params.Add( TernaryVariable( 'with_opengl', 'Use OpenGL' ) )
 params.Add( TernaryVariable( 'with_python', 'Use Python' ) )
@@ -284,7 +294,7 @@ elif parent_env['OSBeOS']:
 	params.Add( PathVariable( 'datadir', 'System shares', '${prefix}/data', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'sysconfdir', 'System configuration', '${prefix}/settings', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'execdir', 'System binaries', '${prefix}/bin', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'sysvardir', 'System var', '${prefix}/var', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'sysvardir', 'System var', '${prefix}/settings', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'cachedir', 'System cache', '${prefix}/cache', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'docdir', 'System documentation', '${prefix}/documentation', PathVariable.PathAccept ) )
 
@@ -327,7 +337,7 @@ elif parent_env['OSBeOS']:
 	params.Add( PathVariable( 'path_launcher_share', 'Path to the Launcher shares',
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
-		'/boot/system/delauncher/games', PathVariable.PathAccept ) )
+		'${sysvardir}/delauncher/games', PathVariable.PathAccept ) )
 	
 elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -641,6 +651,7 @@ extdirs.append( 'extern/libusb' )
 extdirs.append( 'extern/libhidapi' )
 extdirs.append( 'extern/libopenhmd' )
 extdirs.append( 'extern/fftw' )
+extdirs.append( 'extern/soundtouch' )
 
 for extdir in extdirs:
 	SConscript( dirs=extdir, variant_dir='{}/build'.format( extdir ),
@@ -764,7 +775,7 @@ SConscript( 'src/tools/launcher/android/SConscriptSpecial',
 	duplicate=0, exports='parent_env parent_targets parent_report' )
 """
 
-SConscript('archive/SConsHaikuHpkg.py', variant_dir='archive/buildPackage',
+SConscript('archive/SConsHaikuHpkg.py', variant_dir='archive/build/haiku',
 	duplicate=0, exports='parent_env parent_targets parent_report')
 
 

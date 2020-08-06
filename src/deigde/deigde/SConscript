@@ -229,6 +229,11 @@ parent_targets['deigde_shared'] = {
 
 
 # application
+if envIGDEApp['OSBeOS']:
+	pathMan1 = os.path.join(envIGDEApp.subst(envIGDEApp['docdir']), 'man', 'man1')
+elif envIGDEApp['OSPosix']:
+	pathMan1 = os.path.join(envIGDEApp.subst(envIGDEApp['datadir']), 'man', 'man1')
+
 if envIGDEApp['OSWindows']:
 	envIGDEApp.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
@@ -306,7 +311,7 @@ if envIGDEApp['OSPosix']:
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'man', 'man1', 'deigde.1')
+	target = os.path.join(pathMan1, 'deigde.1')
 	source = 'man/deigde.1'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()

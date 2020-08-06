@@ -26,14 +26,18 @@
 #include <sys/time.h>
 
 #ifdef OS_UNIX
-#	include <sys/select.h>
-#	include <sys/ioctl.h>
-#	include <net/if.h>
-#	include <netinet/in.h>
-#	include <arpa/inet.h>
-#	include <unistd.h>
-
+#include <sys/select.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #endif
+
+#ifdef OS_BEOS
+#include <sys/sockio.h>
+#endif
+
 #ifdef OS_W32
 #	include <dragengine/app/include_windows.h>
 #	include <iphlpapi.h>
@@ -388,7 +392,11 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 		char bufferIP[ 17 ];
 		
 		while( true ){
+			#ifdef OS_BEOS
+			ifr.ifr_index = ifindex++;
+			#else
 			ifr.ifr_ifindex = ifindex++;
+			#endif
 			if( ioctl( sock, SIOCGIFNAME, &ifr ) ){
 				break;
 			}
@@ -417,6 +425,12 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 		close( sock );
 		throw;
 	}
+	#endif
+	
+	// beos version
+	#ifdef OS_BEOS
+	(void)list;
+	DETHROW_INFO( deeInvalidParam, "TODO Implement this using BeOS means" );
 	#endif
 	
 	// windows version

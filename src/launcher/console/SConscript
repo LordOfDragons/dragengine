@@ -22,7 +22,9 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 
-if envLauncher['OSPosix']:
+if envLauncher['OSBeOS']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['docdir']), 'man', 'man1')
+elif envLauncher['OSPosix']:
 	pathMan1 = os.path.join(envLauncher.subst(envLauncher['datadir']), 'man', 'man1')
 
 # update the compile flags
@@ -55,7 +57,13 @@ objects = [envLauncher.StaticObject(s) for s in sources]
 appendLibrary(envLauncher, parent_targets['dragengine'], libs)
 libs.extend(parent_targets['dragengine']['binlibs'])
 
-program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+if envLauncher['OSBeOS']:
+	program = envLauncher.Program(target='delauncher-console-org', source=objects, LIBS=libs)
+	rsrc = envLauncher.RDef('src/beos_res.rdef')
+	program = envLauncher.Rsrc(target='delauncher-console', source=[program, rsrc])
+else:
+	program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+
 if envLauncher['OSMacOS']:
 	program = envLauncher.BundleMacOS(target='DELauncherConsole', source=program,
 		BUNDLE_ID='ch.rptd.dragengine.delauncher-console',

@@ -54,6 +54,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
@@ -390,8 +392,30 @@ igdeTemplate *igdeDialogNewGameProject::GetSelectedTemplate() const{
 }
 
 bool igdeDialogNewGameProject::CheckValidInput(){
+	const char * const mbtitle = "New Game Project";
+	
 	if( pEditName->GetText().IsEmpty() ){
-		igdeCommonDialogs::Error( this, "New Game Project", "Name can not be empty" );
+		pEditName->Focus();
+		igdeCommonDialogs::Error( this, mbtitle, "Name can not be empty" );
+		return false;
+	}
+	
+	if( ! pCBTemplate->GetSelectedItem()->GetData() ){
+		if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, mbtitle,
+		"No template selected. Do you really want to create an empty project?" )
+		== igdeCommonDialogs::ebNo ){
+			pCBTemplate->Focus();
+			return false;
+		}
+	}
+	
+	deVFSContainerReference container;
+	container.TakeOver( new deVFSDiskDirectory(
+		decPath::CreatePathNative( pEditPathProject->GetDirectory() ) ) );
+	if( container->ExistsFile( decPath() ) ){
+		pEditPathProject->Focus();
+		igdeCommonDialogs::Error( this, mbtitle, "Project directory exists. "
+			"New project can only be created using a non-existing directory" );
 		return false;
 	}
 	

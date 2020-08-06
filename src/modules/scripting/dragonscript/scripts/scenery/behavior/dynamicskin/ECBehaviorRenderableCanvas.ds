@@ -38,13 +38,14 @@ pin Dragengine.Utils
  * 
  * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
  * behavior. Create ECBehaviorRenderableCanvas behavior and set the dynamic skin and canvas
- * background color. The background color is black by default. Now you can add other behaviors
- * targeting the ECBehaviorRenderableCanvas to add Canvas resources to.
+ * background color or image. The background color empty by default so make sure to set an
+ * appropriate background. Now you can add other behaviors targeting the
+ * ECBehaviorRenderableCanvas to add Canvas resources to.
  * 
- * By default the background is empty. The behaviors using this canvas have to make sure they
- * cover the entire background to avoid artifacts. You can define though a background color or
- * image. In this case a CanvasPaint or CanvasImage with order 0 is added. Both background
- * color and image can be used at the same time for example if the image has transparency.
+ * If the background is not set the behaviors using this canvas have to make sure they cover
+ * the entire background to avoid artifacts. Background CanvasPaint or CanvasImage have
+ * order 0 respective 1 if both are used. Both canvas can be used for example if the image
+ * has transparency.
  * 
  * The canvas is created with a default size of 512x512 . You can change the size using the
  * element property to fit the texture requirements.

@@ -125,55 +125,6 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 			this.pPages.add( this.pPageInProgress )
 			this.pPageInProgress = null
 		end
-		
-		/*
-		var StyledTextRendering page
-		var STRElement element
-		var Font font = Font.new( "/epsylon/fonts/epsylon_7.font.xml", 22 )
-		
-		this.pPages.removeAll()
-		this.pBlockers.removeAll()
-		
-		page = StyledTextRendering.new()
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "This is the first line." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.black )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 5 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "This is another line a bit longer." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.blue )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 27 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "Oh god, a red line!" )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.red )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 20 )
-		( element cast STREText ).setY( 49 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "A normal line again." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.black )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 71 )
-		page.addElement( element )
-		
-		this.pPages.add( page )
-		*/
 	end
 	
 	

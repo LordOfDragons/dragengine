@@ -35,6 +35,9 @@
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputEventQueue.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/systems/deInputSystem.h>
 
 
@@ -50,23 +53,10 @@ pModule( module ),
 pIndex( -1 ),
 pSource( esBeOS ),
 pType( deInputDevice::edtMouse ),
-
-pButtonCount( 0 ),
-pButtons( NULL ),
-
-pAxisCount( 0 ),
-pAxes( NULL ),
-
 pDirtyAxesValues( false ){
 }
 
 debiDevice::~debiDevice(){
-	if( pAxes ){
-		delete [] pAxes;
-	}
-	if( pButtons ){
-		delete [] pButtons;
-	}
 }
 
 
@@ -90,114 +80,137 @@ void debiDevice::SetName( const char *name ){
 	pName = name;
 }
 
-
-
-void debiDevice::SetButtonCount( int count ){
-	if( pButtons ){
-		delete [] pButtons;
-		pButtons = NULL;
-		pButtonCount = 0;
+void debiDevice::SetDisplayImages( const char *name ){
+	pDisplayImage = NULL;
+	pDisplayIcons.RemoveAll();
+	
+	if( ! name ){
+		return;
 	}
 	
-	if( count > 0 ){
-		pButtons = new debiDeviceButton[ count ];
-		pButtonCount = count;
+	deImageManager &imageManager = *pModule.GetGameEngine()->GetImageManager();
+	deVirtualFileSystem * const vfs = &pModule.GetVFS();
+	const char * const basePath = "/share/image/device";
+	decString filename;
+	
+	filename.Format( "%s/%s/image.png", basePath, name );
+	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	
+	const int sizes[ 4 ] = {128, 64, 32, 16};
+	deImageReference icon;
+	int i;
+	
+	for( i=0; i<4; i++ ){
+		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
+		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+		pDisplayIcons.Add( ( deImage* )icon );
 	}
 }
 
-debiDeviceButton &debiDevice::GetButtonAt( int index ) const{
-	if( index < 0 || index >= pButtonCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pButtons[ index ];
+void debiDevice::SetDisplayText( const char *text ){
+	pDisplayText = text;
+}
+
+
+
+int debiDevice::GetButtonCount() const{
+	return pButtons.GetCount();
+}
+
+debiDeviceButton *debiDevice::GetButtonAt( int index ) const{
+	return ( debiDeviceButton* )pButtons.GetAt( index );
 }
 
 debiDeviceButton *debiDevice::GetButtonWithID( const char *id ) const{
+	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetID() == id ){
-			return pButtons + i;
+	for( i=0; i<count; i++ ){
+		debiDeviceButton * const button = ( debiDeviceButton* )pButtons.GetAt( i );
+		if( button->GetID() == id ){
+			return button;
 		}
 	}
-	
 	return NULL;
 }
 
 int debiDevice::IndexOfButtonWithID( const char *id ) const{
+	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetID() == id ){
+	for( i=0; i<count; i++ ){
+		if( ( ( debiDeviceButton* )pButtons.GetAt( i ) )->GetID() == id ){
 			return i;
 		}
 	}
-	
 	return -1;
 }
 
 int debiDevice::IndexOfButtonWithBICode( int code ) const{
+	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetBICode() == code ){
+	for( i=0; i<count; i++ ){
+		if( ( ( debiDeviceButton* )pButtons.GetAt( i ) )->GetBICode() == code ){
 			return i;
 		}
 	}
-	
 	return -1;
 }
 
-
-
-void debiDevice::SetAxisCount( int count ){
-	if( pAxes ){
-		delete [] pAxes;
-		pAxes = NULL;
-		pAxisCount = 0;
+void debiDevice::AddButton( debiDeviceButton *button ){
+	if( ! button ){
+		DETHROW( deeNullPointer );
 	}
-	
-	if( count > 0 ){
-		pAxes = new debiDeviceAxis[ count ];
-		pAxisCount = count;
-	}
+	pButtons.Add( button );
 }
 
-debiDeviceAxis &debiDevice::GetAxisAt( int index ) const{
-	if( index < 0 || index >= pAxisCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pAxes[ index ];
+
+
+int debiDevice::GetAxisCount() const{
+	return pAxes.GetCount();
+}
+
+debiDeviceAxis *debiDevice::GetAxisAt( int index ) const{
+	return ( debiDeviceAxis* )pAxes.GetAt( index );
 }
 
 debiDeviceAxis *debiDevice::GetAxisWithID( const char *id ) const{
+	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetID() == id ){
-			return pAxes + i;
+	for( i=0; i<count; i++ ){
+		debiDeviceAxis * const axis = ( debiDeviceAxis* )pAxes.GetAt( i );
+		if( axis->GetID() == id ){
+			return axis;
 		}
 	}
-	
 	return NULL;
 }
 
 int debiDevice::IndexOfAxisWithID( const char *id ) const{
+	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetID() == id ){
+	for( i=0; i<count; i++ ){
+		if( ( ( debiDeviceAxis* )pAxes.GetAt( i ) )->GetID() == id ){
 			return i;
 		}
 	}
-	
 	return -1;
 }
 
 int debiDevice::IndexOfAxisWithBICode( int code ) const{
+	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetBICode() == code ){
+	for( i=0; i<count; i++ ){
+		if( ( ( debiDeviceAxis* )pAxes.GetAt( i ) )->GetBICode() == code ){
 			return i;
 		}
 	}
-	
 	return -1;
+}
+
+void debiDevice::AddAxis( debiDeviceAxis *axis ){
+	if( ! axis ){
+		DETHROW( deeNullPointer );
+	}
+	pAxes.Add( axis );
 }
 
 
@@ -214,19 +227,25 @@ void debiDevice::GetInfo( deInputDevice &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
+	info.SetDisplayImage( pDisplayImage );
+	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
+		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	}
+	info.SetDisplayText( pDisplayText );
 	
-	info.SetDisplayImage( NULL );
 	info.SetDisplayModel( NULL );
 	info.SetDisplaySkin( NULL );
 	
-	info.SetButtonCount( pButtonCount );
-	for( i=0; i<pButtonCount; i++ ){
-		pButtons[ i ].GetInfo( info.GetButtonAt( i ) );
+	const int buttonCount = pButtons.GetCount();
+	info.SetButtonCount( buttonCount );
+	for( i=0; i<buttonCount; i++ ){
+		( ( debiDeviceButton* )pButtons.GetAt( i ) )->GetInfo( info.GetButtonAt( i ) );
 	}
 	
-	info.SetAxisCount( pAxisCount );
-	for( i=0; i<pAxisCount; i++ ){
-		pAxes[ i ].GetInfo( info.GetAxisAt( i ) );
+	const int axisCount = pAxes.GetCount();
+	info.SetAxisCount( axisCount );
+	for( i=0; i<axisCount; i++ ){
+		( ( debiDeviceAxis* )pAxes.GetAt( i ) )->GetInfo( info.GetAxisAt( i ) );
 	}
 }
 
@@ -240,8 +259,9 @@ void debiDevice::SendDirtyAxisEvents(){
 	
 	pDirtyAxesValues = false;
 	
+	const int axisCount = pAxes.GetCount();
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		pAxes[ i ].SendEvents( *this );
+	for( i=0; i<axisCount; i++ ){
+		( ( debiDeviceAxis* )pAxes.GetAt( i ) )->SendEvents( *this );
 	}
 }

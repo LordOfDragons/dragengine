@@ -46,6 +46,7 @@
 #ifdef OS_BEOS
 #include <Window.h>
 #include <DirectWindow.h>
+#include <Cursor.h>
 #include <GLView.h>
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSBeOS.h>
@@ -87,10 +88,9 @@
 
 
 #ifdef OS_BEOS
-deoglRRenderWindow::cGLView::cGLView( deoglRRenderWindow::cDirectWindow &window, const BRect &frame ) :
+deoglRRenderWindow::cGLView::cGLView( deoglRRenderWindow::cGLWindow &window, const BRect &frame ) :
 BGLView( frame, "glview", B_FOLLOW_ALL, B_WILL_DRAW, BGL_RGB | BGL_DOUBLE | BGL_DEPTH | BGL_STENCIL ),
-pWindow( window ),
-pNotifySizeChanged( false )
+pWindow( window )
 {
 	//SetViewColor( 0, 0, 0 );
 	
@@ -99,10 +99,6 @@ pNotifySizeChanged( false )
 	
 	// get events from all places even outside window
 	//SetEventMask( B_POINTER_EVENTS | B_KEYBOARD_EVENTS, B_NO_POINTER_HISTORY );
-}
-
-void deoglRRenderWindow::cGLView::FrameResized( float width, float height ){
-	pWindow.SendCurMessageToEngine();
 }
 
 void deoglRRenderWindow::cGLView::KeyDown( const char *bytes, int32 numBytes ){
@@ -125,40 +121,67 @@ void deoglRRenderWindow::cGLView::MouseUp( BPoint point ){
 	pWindow.SendCurMessageToEngine();
 }
 
-deoglRRenderWindow::cDirectWindow::cDirectWindow( deoglRRenderWindow &window ) :
+deoglRRenderWindow::cGLWindow::cGLWindow( deoglRRenderWindow &window ) :
 BDirectWindow(
 	BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ),
-	"Drag[en]gine", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0, B_CURRENT_WORKSPACE ),
+	"Drag[en]gine", B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0, B_CURRENT_WORKSPACE ),
 pWindow( window ),
-pGLView( NULL )
+pGLView( NULL ),
+pCursor( NULL ),
+pBlockQuitRequested( true )
 {
-	// for full-screen: B_NO_BORDER_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL
 	pGLView = new cGLView( *this, BRect( 0.0f, 0.0f, ( float )window.GetWidth(), ( float )window.GetHeight() ) );
 	AddChild( pGLView );
 	pGLView->MakeFocus();
+	
+	// create empty cursor and assign it
+	pCursor = new BCursor( B_CURSOR_ID_NO_CURSOR );
+	pGLView->SetViewCursor( pCursor );
 }
 
-void deoglRRenderWindow::cDirectWindow::SendCurMessageToEngine(){
+deoglRRenderWindow::cGLWindow::~cGLWindow(){
+	if( pCursor ){
+		pGLView->SetViewCursor( B_CURSOR_SYSTEM_DEFAULT );
+		delete pCursor;
+	}
+}
+
+void deoglRRenderWindow::cGLWindow::SendCurMessageToEngine(){
 	pWindow.GetRenderThread().GetContext().GetOSBeOS()->MessageReceived( CurrentMessage() );
 }
 
-void deoglRRenderWindow::cDirectWindow::DirectConnected( direct_buffer_info *info ){
+void deoglRRenderWindow::cGLWindow::DirectConnected( direct_buffer_info *info ){
+	BDirectWindow::DirectConnected( info );
 	pGLView->DirectConnected( info );
 }
 
-void deoglRRenderWindow::cDirectWindow::WindowActivated( bool active ){
+void deoglRRenderWindow::cGLWindow::WindowActivated( bool active ){
 	SendCurMessageToEngine();
 }
 
-void deoglRRenderWindow::cDirectWindow::MessageReceived( BMessage *message ){
+void deoglRRenderWindow::cGLWindow::MessageReceived( BMessage *message ){
 	BDirectWindow::MessageReceived( message );
 	SendCurMessageToEngine();
 }
 
-// TODO
-// listen to evetn of window being closed by the window close icon. in this case  engine
-// quit has to be called. do we also need to send B_QUIT_REQUESTED?
-// be_app->PostMessage( B_QUIT_REQUESTED );
+void deoglRRenderWindow::cGLWindow::FrameResized( float newWidth, float newHeight ){
+	BDirectWindow::FrameResized( newWidth, newHeight );
+	pWindow.OnResize( ( int )( newWidth + 0.5f ), ( int )( newHeight + 0.5f ) );
+}
+
+bool deoglRRenderWindow::cGLWindow::QuitRequested(){
+	if( pBlockQuitRequested ){
+		// do not close the window but post a quit request
+		be_app->PostMessage( B_QUIT_REQUESTED );
+		return false;
+	}
+	
+	return BDirectWindow::QuitRequested();
+}
+
+void deoglRRenderWindow::cGLWindow::SetBlockQuitRequested( bool blockQuitRequested ){
+	pBlockQuitRequested = blockQuitRequested;
+}
 #endif
 
 
@@ -202,7 +225,9 @@ pIcon( NULL ),
 
 pRCanvasView( NULL ),
 
-pSwapBuffers( false ){
+pSwapBuffers( false ),
+pNotifySizeChanged( false )
+{
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
 
@@ -261,6 +286,12 @@ void deoglRRenderWindow::SetSize( int width, int height ){
 	}
 	
 	if( width == pWidth && height == pHeight ){
+		return;
+	}
+	
+	if( pNotifySizeChanged ){
+		// user is most probably still resizing the window. do not change the size and
+		// wait for the next sync call to avoid problems
 		return;
 	}
 	
@@ -438,9 +469,7 @@ void deoglRRenderWindow::CreateWindow(){
 		return;
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Create BDirectWindow" );
-	pWindow = new cDirectWindow( *this );
-	pRenderThread.GetLogger().LogInfoFormat( "BDirectWindow ready" );
+	pWindow = new cGLWindow( *this );
 	
 	// show window
 	pWindow->Show();
@@ -556,6 +585,10 @@ void deoglRRenderWindow::SwapBuffers(){
 	
 #ifdef OS_BEOS
 	pWindow->GetGLView()->SwapBuffers( false ); // true = sync
+	
+	// ensure window resizing is properly applied to the opengl context
+	pWindow->GetGLView()->UnlockGL();
+	pWindow->GetGLView()->LockGL();
 #endif
 	
 #ifdef OS_MACOS
@@ -759,7 +792,10 @@ void deoglRRenderWindow::pDestroyWindow(){
 	// BeOS
 	#ifdef OS_BEOS
 	if( pWindow ){
-		pWindow->Lock();
+		pWindow->SetBlockQuitRequested( false );
+		if( ! pWindow->IsLocked() ){
+			pWindow->Lock();
+		}
 		pWindow->Quit(); // does unlock itself
 		pWindow = NULL;
 	}
@@ -869,14 +905,11 @@ void deoglRRenderWindow::pSetWindowTitle(){
 
 void deoglRRenderWindow::pUpdateFullScreen(){
 	if( pFullScreen ){
-		pRenderThread.GetLogger().LogInfo( "Enable full screen mode" );
-		
 		// TODO find the closest display resolution from deOS and change window and screen
 		//      resolution to match. window managers do not change the screen which can
 		//      lead to artifacts around the window
 		
 	}else{
-		pRenderThread.GetLogger().LogInfo( "Disable full screen mode" );
 	}
 	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
@@ -920,6 +953,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		pWindow->ResizeTo( ( float )pWidth, ( float )pHeight );
 	}
 	*/
+	pWindow->SetFullScreen( pFullScreen );
 #endif
 	
 #ifdef OS_MACOS

@@ -28,7 +28,7 @@ namespace Dragengine.Gui.Layouts
  * 
  * Widgets are resized to fit their requested minimum size. Extra space is distributed around
  * all laid out widgets using percentage placement to place the widget box in the container.
- * In contrary to BoxLayout the widgets are not forced to equal size nor are the stretched.
+ * In contrary to BoxLayout the widgets are not forced to equal size nor are they stretched.
  * The placement allows to place the box anywhere inside the container area. A value of 0
  * places the widgets at the left respective top border. A value of 1 places the widgets at
  * the right respective bottom border. The default value of 0.5 centers the widgets in the

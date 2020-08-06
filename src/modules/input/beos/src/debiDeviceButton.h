@@ -22,9 +22,13 @@
 #ifndef _DEBIDEVICEBUTTON_H_
 #define _DEBIDEVICEBUTTON_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
+#include <dragengine/resources/image/deImageReference.h>
 
+class deBeOSInput;
 class deInputDeviceButton;
 
 
@@ -32,11 +36,17 @@ class deInputDeviceButton;
 /**
  * \brief Input device button.
  */
-class debiDeviceButton{
+class debiDeviceButton : public deObject{
 private:
+	deBeOSInput &pModule;
+	
 	decString pID;
 	decString pName;
 	bool pPressed;
+	
+	deImageReference pDisplayImage;
+	decObjectOrderedSet pDisplayIcons;
+	decString pDisplayText;
 	
 	int pBICode;
 	int pBIChar;
@@ -49,16 +59,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device button. */
-	debiDeviceButton();
+	debiDeviceButton( deBeOSInput &module );
 	
+protected:
 	/** \brief Clean up device button. */
 	~debiDeviceButton();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Module Management */
 	/*@{*/
+	/** \brief Input module. */
+	inline deBeOSInput &GetModule() const{ return pModule; }
+	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
@@ -76,6 +91,26 @@ public:
 	
 	/** \brief Set if button is presssed. */
 	void SetPressed( bool pressed );
+	
+	
+	
+	/** \brief Display image. */
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	
+	/** \brief Display icons (deImage*). */
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	
+	/** \brief Set display image and icons. */
+	void SetDisplayImages( const char *name );
+	
+	/** \brief Set display image and icons. */
+	void SetDisplayImages( const debiDeviceButton &button );
+	
+	/** \brief Display text. */
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	
+	/** \brief Set display text. */
+	void SetDisplayText( const char *text );
 	
 	
 	

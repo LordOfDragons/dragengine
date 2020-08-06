@@ -1,26 +1,25 @@
 name	dragengine_devel
-version	1.0-1
-architecture	x86
+version	1.2-1
+architecture	x86_64
 summary	"Drag[en]gine Game Engine Development Files"
 description	"Provides the development files required to create Engine Modules for the Drag[en]gine Game Engine"
-packager	"Drag[en]gine Team <info@dragengine.rptd.ch>"
-vendor	"Drag[en]gine Team"
+packager	"Dragon Dreams <info@dragondreams.ch>"
+vendor	"Dragon Dreams"
 licenses {
 	"GNU GPL v3"
 	"GNU LGPL v3"
 }
 copyrights {
-	"Copyright (C) by Drag[en]gine Team <info@dragengine.rptd.ch>"
+	"Copyright (C) by Dragon Dreams <info@dragondreams.ch>"
 }
 provides {
-	dragengine_develop = 1.0-1
-	devel:libdragengine = 1.0-1
+	dragengine_develop = 1.2-1
+	devel:libdragengine = 1.2-1
 }
 requires {
-	dragengine >= 1.0-1
-	lib:libdragengine >= 1.0-1
+	dragengine >= 1.2-1
+	lib:libdragengine >= 1.2-1
 }
 urls {
-	"https://dragengine.rptd.ch"
-	"http://indiedb.com/engines/dragengine"
+	"https://dragondreams.ch"
 }

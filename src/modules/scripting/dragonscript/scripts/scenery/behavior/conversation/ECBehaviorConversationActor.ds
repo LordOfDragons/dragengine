@@ -650,6 +650,16 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Actor is in a conversation. */
+		public func bool isInConversation()
+			return this.pConversationActor.getPlayback() != null
+		end
+		
+		/** \brief Actor is not in a conversation. */
+		public func bool isNotInConversation()
+			return this.pConversationActor.getPlayback() == null
+		end
+		
 		
 		
 		/** \brief Ask listeners if conversation actions waiting for actor should block. */

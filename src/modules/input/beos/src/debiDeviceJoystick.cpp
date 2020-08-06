@@ -75,6 +75,7 @@ pStateAxis( NULL ),
 pStateHatCount( 0 ),
 pStateHat( NULL )
 {
+	deObjectReference refObject;
 	decString string;
 	BString bname;
 	
@@ -101,12 +102,15 @@ pStateHat( NULL )
 		// add axes
 		const int countAxes = pJoystick->CountAxes();
 		const int countHats = pJoystick->CountHats();
-		SetAxisCount( countAxes + countHats * 2 );
-			
+		int indexAxis = 0;
+		
 		int i;
 		for( i=0; i<countAxes; i++ ){
-			debiDeviceAxis &axis = GetAxisAt( i );
-			axis.SetIndex( i );
+			refObject.TakeOver( new debiDeviceAxis( module ) );
+			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			debiDeviceAxis &axis = ( debiDeviceAxis& )( deObject& )refObject;
+			
+			axis.SetIndex( indexAxis );
 			axis.SetAbsolute( true );
 			string.Format( "axis%d", i );
 			axis.SetID( string );
@@ -116,6 +120,21 @@ pStateHat( NULL )
 			axis.SetName( bname.String() );
 			axis.SetType( deInputDeviceAxis::eatStick );
 			axis.SetBICode( i );
+			
+			string.Format( "%d", indexAxis + 1 );
+			axis.SetDisplayText( string );
+			
+			if( i == 0 ){
+				axis.SetDisplayImages( "touchpadX" );
+				
+			}else if( i == 1 ){
+				axis.SetDisplayImages( "touchpadY" );
+				
+			}else{
+				// "mouseZ"
+			}
+			
+			indexAxis++;
 		}
 		if( countAxes > 0 ){
 			pStateAxis = new int16[ countAxes ];
@@ -123,14 +142,19 @@ pStateHat( NULL )
 		}
 		
 		for( i=0; i<countHats; i++ ){
-			debiDeviceAxis &hatX = GetAxisAt( countAxes + i * 2 );
-			debiDeviceAxis &hatY = GetAxisAt( countAxes + i * 2 + 1 );
+			refObject.TakeOver( new debiDeviceAxis( module ) );
+			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			debiDeviceAxis &hatX = ( debiDeviceAxis& )( deObject& )refObject;
+			
+			refObject.TakeOver( new debiDeviceAxis( module ) );
+			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			debiDeviceAxis &hatY = ( debiDeviceAxis& )( deObject& )refObject;
 			
 			if( pJoystick->GetHatNameAt( i, &bname ) != B_OK ){
 				DETHROW( deeInvalidParam );
 			}
 			
-			hatX.SetIndex( countAxes + i * 2 );
+			hatX.SetIndex( indexAxis );
 			hatX.SetAbsolute( true );
 			string.Format( "hat%dX", i );
 			hatX.SetID( string );
@@ -138,6 +162,11 @@ pStateHat( NULL )
 			hatX.SetName( string );
 			hatX.SetType( deInputDeviceAxis::eatHat );
 			hatX.SetBICode( i * 2 );
+			
+			string.Format( "%d", indexAxis + 1 );
+			hatX.SetDisplayText( string );
+			hatX.SetDisplayImages( "stickX" );
+			indexAxis++;
 			
 			hatY.SetIndex( countAxes + i * 2 + 1 );
 			hatY.SetAbsolute( true );
@@ -147,6 +176,11 @@ pStateHat( NULL )
 			hatY.SetName( string );
 			hatY.SetType( deInputDeviceAxis::eatHat );
 			hatY.SetBICode( i * 2 + 1 );
+			
+			string.Format( "%d", indexAxis + 1 );
+			hatY.SetDisplayText( string );
+			hatY.SetDisplayImages( "stickX" );
+			indexAxis++;
 		}
 		if( countHats > 0 ){
 			pStateHat = new uint8[ countHats ];
@@ -156,10 +190,11 @@ pStateHat( NULL )
 		// add buttons
 		const int countButtons = pJoystick->CountButtons();
 		
-		SetButtonCount( countButtons );
-		
 		for( i=0; i<countButtons; i++ ){
-			debiDeviceButton &button = GetButtonAt( i );
+			refObject.TakeOver( new debiDeviceButton( module ) );
+			AddButton( ( debiDeviceButton* )( deObject* )refObject );
+			debiDeviceButton &button = ( debiDeviceButton& )( deObject& )refObject;
+			
 			string.Format( "button%d", i );
 			button.SetID( string );
 			if( pJoystick->GetButtonNameAt( i, &bname ) != B_OK ){
@@ -167,6 +202,10 @@ pStateHat( NULL )
 			}
 			button.SetName( bname.String() );
 			button.SetBICode( i );
+			
+			string.Format( "%d", i + 1 );
+			button.SetDisplayText( string );
+			button.SetDisplayImages( "button" );
 		}
 		
 	}catch( const deException & ){
@@ -213,7 +252,7 @@ void debiDeviceJoystick::Update(){
 	int i;
 	
 	for( i=0; i<countAxis; i++ ){
-		debiDeviceAxis &axis = GetAxisAt( i );
+		debiDeviceAxis &axis = *GetAxisAt( i );
 		float value = axis.GetValue();
 		
 		switch( axis.GetType() ){
@@ -283,7 +322,7 @@ void debiDeviceJoystick::Update(){
 	const int countButtons = GetButtonCount();
 	
 	for( i=0; i<countButtons; i++ ){
-		debiDeviceButton &button = GetButtonAt( i );
+		debiDeviceButton &button = *GetButtonAt( i );
 		
 		if( ( buttonValues & ( 1 << button.GetBICode() ) ) == 0 ){
 			if( ! button.GetPressed() ){

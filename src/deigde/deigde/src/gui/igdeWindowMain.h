@@ -265,7 +265,7 @@ public:
 	/** \brief Creates a placeholder game project. */
 	void CreatePlaceholderGameProject();
 	/** \brief Load game project. */
-	void LoadGameProject( const char *filename );
+	bool LoadGameProject( const char *filename );
 	/** \brief Save game project. */
 	void SaveGameProject( const char *filename );
 	/** \brief Add entry to recently loaded file list and update the menus. */
