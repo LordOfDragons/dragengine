@@ -160,6 +160,7 @@ params.Add( TernaryVariable( 'with_system_libusb', 'Use System libusb' ) )
 params.Add( TernaryVariable( 'with_system_libhidapi', 'Use System libhidapi' ) )
 params.Add( TernaryVariable( 'with_system_libopenhmd', 'Use System libopenhmd' ) )
 params.Add( TernaryVariable( 'with_system_fftw', 'Use System fftw' ) )
+params.Add( TernaryVariable( 'with_system_soundtouch', 'Use System soundtouch' ) )
 
 params.Add( TernaryVariable( 'with_opengl', 'Use OpenGL' ) )
 params.Add( TernaryVariable( 'with_python', 'Use Python' ) )
@@ -636,6 +637,7 @@ extdirs.append( 'extern/libusb' )
 extdirs.append( 'extern/libhidapi' )
 extdirs.append( 'extern/libopenhmd' )
 extdirs.append( 'extern/fftw' )
+extdirs.append( 'extern/soundtouch' )
 
 for extdir in extdirs:
 	SConscript( dirs=extdir, variant_dir='{}/build'.format( extdir ),

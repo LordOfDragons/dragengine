@@ -152,6 +152,9 @@
 # 
 # with_system_fftw = 'auto'
 #   Use System fftw
+# 
+# with_system_soundtouch = 'auto'
+#   Use System soundtouch
 
 # When compiling OpenAL what backends are required.
 # 
