@@ -280,6 +280,10 @@ void decrbPanelModuleStatus::UpdateModuleStatus(){
 			pEditType->setText( "Animator" );
 			break;
 			
+		case deModuleSystem::emtSynthesizer:
+			pEditType->setText( "Synthesizer" );
+			break;
+			
 		case deModuleSystem::emtArchive:
 			pEditType->setText( "Archive" );
 			break;
