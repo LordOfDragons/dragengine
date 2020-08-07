@@ -262,11 +262,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.pStashables.forEach( block ECBehaviorStashable.Instance each
-				var BehaviorElement element = each.getElement()
-				var GameWorld gameWorld = element.getGameWorld()
-				if gameWorld != null
-					gameWorld.removeElement( element )
-				end
+				each.getElement().removeFromGameWorldIfPresent()
 			end )
 		end
 		
