@@ -152,6 +152,11 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			return this.pAttachSlot != null
 		end
 		
+		/** \brief Element is not attached to an attachment slot. */
+		public func bool isNotAttached()
+			return this.pAttachSlot == null
+		end
+		
 		/**
 		 * \brief Attach to attachment slot.
 		 * \throws EInvalidParam \em slot is \em null.
