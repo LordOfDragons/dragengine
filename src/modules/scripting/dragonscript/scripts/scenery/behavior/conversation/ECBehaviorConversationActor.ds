@@ -867,6 +867,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if this.pConversationActor != null and this.pRegisterConversationActor
 				this.getElement().getGameWorld().getConvoActorList().remove( this.pConversationActor.getID() )
 			end
+			this.pConversationActor.clearAllPlayback()
 		end
 		
 		
