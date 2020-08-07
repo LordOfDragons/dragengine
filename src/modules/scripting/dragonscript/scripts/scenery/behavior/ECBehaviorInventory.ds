@@ -221,6 +221,11 @@ class ECBehaviorInventory extends DefaultECBehavior
 			stashable.getElement().safeDispose()
 		end
 		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return this.pElementResolver
+		end
+		
 		
 		
 		/** \brief Add listener. */
