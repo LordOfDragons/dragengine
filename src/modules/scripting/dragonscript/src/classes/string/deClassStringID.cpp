@@ -155,6 +155,11 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 }
 
 void deClassStringID::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
+	// we simply return the index as hash code which is the perfect and fastest hash code.
+	// by supporting strings in equals call we run into a potential problem. if a dictionary
+	// is used the hash code of StringID and String are different causing the dictionary to
+	// not find a StringID key using a String. we want though to keep the benefits of using
+	// the index as hash code so we simply require the user to not fall into this trap
 	rt->PushInt( ( ( sStrIDNatDat* )p_GetNativeData( myself ) )->index );
 }
 
