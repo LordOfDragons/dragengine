@@ -189,7 +189,10 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			
 			var ColliderVolume colliderAI = this.pLocomotion.getColliderAI().getCollider()
 			
-			if this.pRidable != null
+			// this method can be called during disposal time. it is possible the ridable has
+			// been just disposed. in this case getElement() returns null and any use of the
+			// behavior produces incorrect results. check for this edge case to avoid problems
+			if this.pRidable != null and this.pRidable.getElement() != null
 				// during game world disposing it is possible the behavior is disposed of before
 				// the elements riding on it are disposed of. in this case the collider becomes
 				// null before we properly detach from it. avoid a null pointer in this case
@@ -305,10 +308,53 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				return
 			end
 			
+			// the default behavior checks if the ground supports ECBehaviorRidable and assings
+			// this instance if present otherwise null. there are tough edge cases and situations
+			// where this check is not enough. for example on a moving platform there can be some
+			// element blocking player movement which has no ECBehaviorRidable assigned. if the
+			// collider is just touching this element it is possible the project to ground
+			// reacts to the element but not the ground below. in this case this behavior
+			// considers the actor not riding on anything incorrectly causing the actor to
+			// drift of the moving platform.
+			// 
+			// to solve this problem if the found element is not ECBehaviorRidable it is checked
+			// if the ground element is attached to another element. typically such elements are
+			// attached to the platform element directly or indirectly. by traveling up the
+			// chain we can find the ridable platform and assign it. this is more stable than
+			// the simple solution while remaining functionally valid solution
+			/*
 			var Element groundElement = this.pProjectToGround.getGroundElement()
-			if groundElement != null and groundElement castable BehaviorElement
-				this.setRidable( ECBehaviorRidable.getInstanceIn( groundElement cast BehaviorElement ) )
+			if groundElement == null or not groundElement castable BehaviorElement
+				return
 			end
+			this.setRidable( ECBehaviorRidable.getInstanceIn( groundElement cast BehaviorElement ) )
+			*/
+			
+			var Element groundElement = this.pProjectToGround.getGroundElement()
+			var ECBehaviorRidable.Instance ridable
+			var ECBehaviorRideOn.Instance rideOn
+			var BehaviorElement checkElement
+			
+			while groundElement != null and groundElement castable BehaviorElement
+				checkElement = groundElement cast BehaviorElement
+				ridable = ECBehaviorRidable.getInstanceIn( checkElement )
+				if ridable != null
+					this.setRidable( ridable )
+					return
+				end
+				
+				// if the element supports ride-on behavior use this solution
+				rideOn = ECBehaviorRideOn.getInstanceIn( checkElement )
+				if rideOn != null
+					this.setRidable( rideOn.pRidable )
+					return
+				end
+				
+				// check the parent if element is attached
+				groundElement = checkElement.getParent()
+			end
+			
+			this.setRidable( null )
 		end
 		
 		
