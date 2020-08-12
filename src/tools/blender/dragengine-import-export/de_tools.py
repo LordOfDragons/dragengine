@@ -37,6 +37,7 @@ from .de_tool_shapropfromtex import OBJECT_OT_ToolShapePropertyFromTexture
 from .de_tool_texturefill import OBJECT_OT_ToolTextureFill
 from .de_tool_transferuv import OBJECT_OT_ToolTransferUV
 from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
+from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
 from .de_porting import registerClass
 
 
@@ -259,6 +260,8 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		layout = self.layout
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.mirroranimation", text="Mirror Animation")
+		row = layout.row(align=True)
+		row.operator(operator="dragengine.fixactiongroups", text="Fix Action Groups")
 	
 	def drawCommonTools(self, context):
 		layout = self.layout
