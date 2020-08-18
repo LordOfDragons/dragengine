@@ -1001,6 +1001,8 @@ ceWPTTreeItemModel *ceWPTopic::GetActionTreeItem(){
 }
 
 void ceWPTopic::UpdateFileList(){
+	ceConversationFile * const file = GetFile();
+	
 	pCBFile->RemoveAllItems();
 	
 	if( pConversation ){
@@ -1019,6 +1021,10 @@ void ceWPTopic::UpdateFileList(){
 	SelectActiveFile();
 	
 	pPanelASnippet->UpdateFileList();
+	
+	if( file ){
+		pConversation->SetActiveFile( file );
+	}
 }
 
 void ceWPTopic::SelectActiveFile(){
@@ -1045,7 +1051,8 @@ ceConversationTopic *ceWPTopic::GetTopic() const{
 }
 
 void ceWPTopic::UpdateTopicList(){
-	const ceConversationFile * const file = GetFile();
+	ceConversationTopic * const topic = GetTopic();
+	ceConversationFile * const file = GetFile();
 	
 	pCBTopic->RemoveAllItems();
 	
@@ -1065,6 +1072,10 @@ void ceWPTopic::UpdateTopicList(){
 	SelectActiveTopic();
 	
 	pPanelASnippet->UpdateTopicList();
+	
+	if( file && topic ){
+		file->SetActiveTopic( topic );
+	}
 }
 
 void ceWPTopic::SelectActiveTopic(){
