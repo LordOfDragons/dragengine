@@ -68,6 +68,8 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
+			this.pSpeedTurnHorizontal = this.pECBehavior.getSpeedTurnHorizontal().getValue( stub )
+			
 			if this.pECBehavior.getLocomotion() != null
 				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
 			end
@@ -253,6 +255,7 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	
 	
 	private var ECBehaviorLocomotion pLocomotion
+	private var ECPFloat pSpeedTurnHorizontal
 	
 	
 	
@@ -269,6 +272,9 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 		
 		this.pLocomotion = locomotion
 		
+		this.pSpeedTurnHorizontal = ECPFloat.new( prefix + "speedTurnHorizontal", 45, 0 )
+		eclass.addProperty( this.pSpeedTurnHorizontal )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -283,6 +289,11 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	/** \brief Locomotion behavior or null. */
 	public func ECBehaviorLocomotion getLocomotion()
 		return this.pLocomotion
+	end
+	
+	/** \brief Turn left right speed in degrees per second. */
+	public func ECPFloat getSpeedTurnHorizontal()
+		return this.pSpeedTurnHorizontal
 	end
 	
 	

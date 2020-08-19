@@ -118,6 +118,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			this.pSpeedFactorWalkBackward = 1
 			this.pSpeedFactorWalkLeft = 1
 			this.pSpeedFactorWalkRight = 1
+			
 			this.pSpeedFactorRunForward = 1
 			this.pSpeedFactorRunBackward = 1
 			this.pSpeedFactorRunLeft = 1
@@ -139,7 +140,16 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			end
 			
 			this.pSpeedWalk = this.pECBehavior.getSpeedWalk().getValue( stub )
+			this.pSpeedFactorWalkForward = this.pECBehavior.getSpeedFactorWalkForward().getValue( stub )
+			this.pSpeedFactorWalkBackward = this.pECBehavior.getSpeedFactorWalkBackward().getValue( stub )
+			this.pSpeedFactorWalkLeft = this.pECBehavior.getSpeedFactorWalkLeft().getValue( stub )
+			this.pSpeedFactorWalkRight = this.pECBehavior.getSpeedFactorWalkRight().getValue( stub )
+			
 			this.pSpeedRun = this.pECBehavior.getSpeedRun().getValue( stub )
+			this.pSpeedFactorRunForward = this.pECBehavior.getSpeedFactorRunForward().getValue( stub )
+			this.pSpeedFactorRunBackward = this.pECBehavior.getSpeedFactorRunBackward().getValue( stub )
+			this.pSpeedFactorRunLeft = this.pECBehavior.getSpeedFactorRunLeft().getValue( stub )
+			this.pSpeedFactorRunRight = this.pECBehavior.getSpeedFactorRunRight().getValue( stub )
 		end
 		
 		
@@ -718,11 +728,13 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				this.pRun = flags.getAt( 1 )
 				
 				this.pLocomotionType = LocomotionType.withOrder( reader.readByte() )
+				
 				this.pSpeedWalk = reader.readFloat()
 				this.pSpeedFactorWalkForward = reader.readFloat()
 				this.pSpeedFactorWalkBackward = reader.readFloat()
 				this.pSpeedFactorWalkLeft = reader.readFloat()
 				this.pSpeedFactorWalkRight = reader.readFloat()
+				
 				this.pSpeedRun = reader.readFloat()
 				this.pSpeedFactorRunForward = reader.readFloat()
 				this.pSpeedFactorRunBackward = reader.readFloat()
@@ -744,11 +756,13 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			flags.writeToFile( writer )
 			
 			writer.writeByte( this.pLocomotionType.order() )
+			
 			writer.writeFloat( this.pSpeedWalk )
 			writer.writeFloat( this.pSpeedFactorWalkForward )
 			writer.writeFloat( this.pSpeedFactorWalkBackward )
 			writer.writeFloat( this.pSpeedFactorWalkLeft )
 			writer.writeFloat( this.pSpeedFactorWalkRight )
+			
 			writer.writeFloat( this.pSpeedRun )
 			writer.writeFloat( this.pSpeedFactorRunForward )
 			writer.writeFloat( this.pSpeedFactorRunBackward )
@@ -762,6 +776,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	private var ECBehaviorLocomotion pLocomotion
 	private var ECPFloat pSpeedWalk
 	private var ECPFloat pSpeedRun
+	private var ECPFloat pSpeedFactorWalkForward
+	private var ECPFloat pSpeedFactorWalkBackward
+	private var ECPFloat pSpeedFactorWalkLeft
+	private var ECPFloat pSpeedFactorWalkRight
+	private var ECPFloat pSpeedFactorRunForward
+	private var ECPFloat pSpeedFactorRunBackward
+	private var ECPFloat pSpeedFactorRunLeft
+	private var ECPFloat pSpeedFactorRunRight
 	
 	
 	
@@ -783,6 +805,30 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		
 		this.pSpeedRun = ECPFloat.new( prefix + "speedRun", 4, 0 )
 		eclass.addProperty( this.pSpeedRun )
+		
+		this.pSpeedFactorWalkForward = ECPFloat.new( prefix + "speedFactorWalkForward", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorWalkForward )
+		
+		this.pSpeedFactorWalkBackward = ECPFloat.new( prefix + "speedFactorWalkBackward", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorWalkBackward )
+		
+		this.pSpeedFactorWalkLeft = ECPFloat.new( prefix + "speedFactorWalkLeft", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorWalkLeft )
+		
+		this.pSpeedFactorWalkRight = ECPFloat.new( prefix + "speedFactorWalkRight", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorWalkRight )
+		
+		this.pSpeedFactorRunForward = ECPFloat.new( prefix + "speedFactorRunForward", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorRunForward )
+		
+		this.pSpeedFactorRunBackward = ECPFloat.new( prefix + "speedFactorRunBackward", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorRunBackward )
+		
+		this.pSpeedFactorRunLeft = ECPFloat.new( prefix + "speedFactorRunLeft", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorRunLeft )
+		
+		this.pSpeedFactorRunRight = ECPFloat.new( prefix + "speedFactorRunRight", 1, 0 )
+		eclass.addProperty( this.pSpeedFactorRunRight )
 		
 		eclass.addBehavior( this )
 	end
@@ -808,6 +854,46 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	/** \brief Run speed. */
 	public func ECPFloat getSpeedRun()
 		return this.pSpeedRun
+	end
+	
+	/** \brief Speed factor Walk forward. */
+	public func ECPFloat getSpeedFactorWalkForward()
+		return this.pSpeedFactorWalkForward
+	end
+	
+	/** \brief Speed factor walk backward. */
+	public func ECPFloat getSpeedFactorWalkBackward()
+		return this.pSpeedFactorWalkBackward
+	end
+	
+	/** \brief Speed factor walk left. */
+	public func ECPFloat getSpeedFactorWalkLeft()
+		return this.pSpeedFactorWalkLeft
+	end
+	
+	/** \brief Speed factor walk right. */
+	public func ECPFloat getSpeedFactorWalkRight()
+		return this.pSpeedFactorWalkRight
+	end
+	
+	/** \brief Speed factor Run forward. */
+	public func ECPFloat getSpeedFactorRunForward()
+		return this.pSpeedFactorRunForward
+	end
+	
+	/** \brief Speed factor run backward. */
+	public func ECPFloat getSpeedFactorRunBackward()
+		return this.pSpeedFactorRunBackward
+	end
+	
+	/** \brief Speed factor run left. */
+	public func ECPFloat getSpeedFactorRunLeft()
+		return this.pSpeedFactorRunLeft
+	end
+	
+	/** \brief Speed factor run right. */
+	public func ECPFloat getSpeedFactorRunRight()
+		return this.pSpeedFactorRunRight
 	end
 	
 	
