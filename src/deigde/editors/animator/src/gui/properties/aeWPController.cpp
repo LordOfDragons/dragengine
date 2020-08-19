@@ -413,6 +413,7 @@ pAnimator( NULL )
 	pCBLocoAttr->AddItem( "Turning Speed", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaTurningSpeed );
 	pCBLocoAttr->AddItem( "Stance", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaStance );
 	pCBLocoAttr->AddItem( "Displacement", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaDisplacement );
+	pCBLocoAttr->AddItem( "Relative Displacement", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaRelativeDisplacement );
 	pCBLocoAttr->AddItem( "Body Tilt Offset", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltOffset );
 	pCBLocoAttr->AddItem( "Body Tilt Up-Down", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltUpDown );
 	pCBLocoAttr->AddItem( "Body Tilt Left-Right", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltRightLeft );

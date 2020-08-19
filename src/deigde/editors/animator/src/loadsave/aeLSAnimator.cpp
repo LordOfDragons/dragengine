@@ -396,6 +396,9 @@ void aeLSAnimator::pSaveController( decXmlWriter &writer, aeController *controll
 	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaDisplacement ){
 		writer.WriteDataTagString( "locomotionAttribute", "displacement" );
 		
+	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeDisplacement ){
+		writer.WriteDataTagString( "locomotionAttribute", "relativeDisplacement" );
+		
 	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltOffset ){
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltOffset" );
 		
@@ -1537,6 +1540,9 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator
 					
 				}else if( strcmp( cdata, "displacement" ) == 0 ){
 					controller->SetLocomotionAttribute( aeAnimatorLocomotion::eaDisplacement );
+					
+				}else if( strcmp( cdata, "relativeDisplacement" ) == 0 ){
+					controller->SetLocomotionAttribute( aeAnimatorLocomotion::eaRelativeDisplacement );
 					
 				}else if( strcmp( cdata, "bodyTiltOffset" ) == 0 ){
 					controller->SetLocomotionAttribute( aeAnimatorLocomotion::eaBodyTiltOffset );

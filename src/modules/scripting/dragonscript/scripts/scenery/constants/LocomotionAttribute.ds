@@ -45,7 +45,7 @@ enum LocomotionAttribute
 	/**
 	 * \brief Relative moving speed.
 	 * 
-	 * Similar to eaMovingSpeed but negated if absolute eaMovingDirection
+	 * Similar to movingSpeed but negated if absolute movingDirection
 	 * is larger than 90 degrees.
 	 */
 	relativeMovingSpeed
@@ -70,4 +70,12 @@ enum LocomotionAttribute
 	
 	/** \brief Tilt right and left. */
 	tiltHorizontal
+	
+	/**
+	 * \brief Relative displacement in meters.
+	 * 
+	 * Similar to displacement but negated if absolute movingDirection
+	 * is larger than 90 degrees.
+	 */
+	relativeDisplacement
 end

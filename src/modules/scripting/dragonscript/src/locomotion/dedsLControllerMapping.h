@@ -77,7 +77,15 @@ public:
 		eaTiltVertical,
 		
 		/** \brief Tilt right and left. */
-		eaTiltHorizontal
+		eaTiltHorizontal,
+		
+		/**
+		 * \brief Relative displacement in meters.
+		 * 
+		 * Same as eaDisplacement but negated if absolute eaMovingDirection
+		 * is larger than 90 degrees.
+		 */
+		eaRelativeDisplacement
 	};
 	
 	
