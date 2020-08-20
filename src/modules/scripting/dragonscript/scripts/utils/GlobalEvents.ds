@@ -1,0 +1,230 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Global events.
+ * 
+ * Provides support to register events on a global level and add listeners to them. This can be
+ * used to add global game events without needing to set up customized listeners for each event.
+ * 
+ * Global events use a common listener interface with one single method. Optionally code blocks
+ * can be assigned as listeners which avoids the need to implement the listener interface.
+ * In general though it is recommended to use the interface instead of the block.
+ * 
+ * Global events are generic by nature. The senders and listeners have to know what optional
+ * data can be send along an event as well as who the source might be.
+ */
+class GlobalEvents
+	/** \brief Event listener. */
+	interface Listener
+		/**
+		 * \brief Event fired.
+		 * \param source The source object sending the event. Can be null if there is no
+		 *               reasonable source object.
+		 * \param data Data send with the event. Can be null if the event requires no
+		 *             additional parameters.
+		 */
+		func void onEvent( Object source, Object data )
+	end
+	
+	/** \brief Default implementation of event listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Event fired.
+		 * \param source The source object sending the event. Can be null if there is no
+		 *               reasonable source object.
+		 * \param data Data send with the event. Can be null if the event requires no
+		 *             additional parameters.
+		 */
+		public func void onEvent( Object source, Object data )
+		end
+	end
+	
+	/**
+	 * \brief Listener Implementation calling code block.
+	 * 
+	 * Code block receives two Object type parameters. The first parameter is the source
+	 * sending the event and the second parameter the optional event data.
+	 */
+	class BlockListener implements Listener
+		private var Block pBlock
+		
+		/**
+		 * \brief Create block listener.
+		 * 
+		 * Code block receives two Object type parameters. The first parameter is the source
+		 * sending the event and the second parameter the optional event data.
+		 */
+		public func new( Block ablock )
+			this.setBlock( ablock )
+		end
+		
+		/** \brief Code block. */
+		public func Block getBlock()
+			return this.pBlock
+		end
+		
+		/**
+		 * \brief Set code block.
+		 * 
+		 * Code block receives two Object type parameters. The first parameter is the source
+		 * sending the event and the second parameter the optional event data.
+		 */
+		public func void setBlock( Block ablock )
+			if ablock == null
+				throw ENullPointer.new( "ablock" )
+			end
+			this.pBlock = ablock
+		end
+		
+		/**
+		 * \brief Event fired.
+		 * \param source The source object sending the event. Can be null if there is no
+		 *               reasonable source object.
+		 * \param data Data send with the event. Can be null if the event requires no
+		 *             additional parameters.
+		 */
+		public func void onEvent( Object source, Object data )
+			this.pBlock.run( source, data )
+		end
+	end
+	
+	
+	
+	private var Dictionary pEvents
+	
+	
+	
+	/** \brief Create global events. */
+	public func new()
+		this.pEvents = Dictionary.new()
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener for event.
+	 * 
+	 * It is save to add listeners while event is in progress of being send.
+	 * 
+	 * \throws EInvalidParam Listener has been already added to event.
+	 */
+	public func void addListener( String event, Listener listener )
+		if event == null
+			throw ENullPointer.new( "event" )
+		end
+		if listener == null
+			throw ENullPointer.new( "listener" )
+		end
+		
+		var SafeArray listeners = this.pEvents.getAt( event, null ) cast SafeArray
+		if listeners == null
+			listeners = SafeArray.new()
+			this.pEvents.setAt( event, listeners )
+		end
+		
+		listeners.add( listener )
+	end
+	
+	/**
+	 * \brief Remove listener from event.
+	 * 
+	 * It is save to remove listeners while event is in progress of being send.
+	 * 
+	 * \throws EInvalidParam Listener is not present for event.
+	 */
+	public func void removeListener( String event, Listener listener )
+		if event == null
+			throw ENullPointer.new( "event" )
+		end
+		if listener == null
+			throw ENullPointer.new( "listener" )
+		end
+		
+		( this.pEvents.getAt( event ) cast SafeArray ).remove( listener )
+	end
+	
+	/**
+	 * \brief Add block as listener for event if not added already.
+	 * 
+	 * Code block receives two Object type parameters. The first parameter is the source
+	 * sending the event and the second parameter the optional event data.
+	 * 
+	 * Adding a block listener creates an instance of BlockListener internally. For this
+	 * reason you can not remove a block listener. If you need to remove block listeners
+	 * create an instance of BlockListener yourself and add it.
+	 * 
+	 * It is save to add listener while event is in progress of being send.
+	 */
+	public func void addListener( String event, Block ablock )
+		this.addListener( event, BlockListener.new( ablock ) )
+	end
+	
+	
+	
+	/**
+	 * \brief Send event.
+	 * 
+	 * If event has no registered listeners this method does nothing.
+	 * 
+	 * \param source Source object sending the event. Can be null if there is no
+	 *               reasonable source object.
+	 * \param data Data send with the event. Can be null if the event requires no
+	 *             additional parameters.
+	 */
+	public func void sendEvent( String event, Object source, Object data )
+		var SafeArray listeners = this.pEvents.getAt( event, null ) cast SafeArray
+		if listeners == null
+			return
+		end
+		
+		listeners.forEach( block Listener each
+			each.onEvent( source, data )
+		end )
+	end
+	
+	/**
+	 * \brief Send event.
+	 * 
+	 * Same as sendEvent(String,Object,Object) but using null as data.
+	 */
+	public func void sendEvent( String event, Object source )
+		this.sendEvent( event, source, null )
+	end
+	
+	/**
+	 * \brief Send event.
+	 * 
+	 * Same as sendEvent(String,Object,Object) but using null as source and data.
+	 */
+	public func void sendEvent( String event )
+		this.sendEvent( event, null, null )
+	end
+end

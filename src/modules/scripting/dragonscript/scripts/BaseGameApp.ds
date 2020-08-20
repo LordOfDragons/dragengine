@@ -326,6 +326,7 @@ class BaseGameApp extends Game
 	private var ConnectionTracker pConnectionTracker
 	private var NetworkStateTracker pNetworkStateTracker
 	private var MutableID pIDGenerator
+	private var GlobalEvents pGlobalEvents
 	
 	private static var BaseGameApp pApp = null
 	
@@ -391,6 +392,7 @@ class BaseGameApp extends Game
 		
 		InputSystem.setCaptureInputDevices( true )
 		this.pIDGenerator = MutableID.new( 1 )
+		this.pGlobalEvents = GlobalEvents.new()
 		
 		this.pConsole = Console.new( 50 )
 		this.pConsole.addListener( LogConsoleMessages.new() )
@@ -715,6 +717,11 @@ class BaseGameApp extends Game
 	/** \brief ID Generator. */ 
 	public func MutableID getIDGenerator()
 		return this.pIDGenerator
+	end
+	
+	/** \brief Global event manager. */ 
+	public func GlobalEvents getGlobalEvents()
+		return this.pGlobalEvents
 	end
 	
 	
