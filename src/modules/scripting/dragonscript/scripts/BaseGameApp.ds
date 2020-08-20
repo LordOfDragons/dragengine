@@ -523,6 +523,7 @@ class BaseGameApp extends Game
 		end
 		
 		this.pSkinAnnotations = null
+		this.pGlobalEvents = null
 		
 		this.pLoaders = null
 		this.pConsole = null
