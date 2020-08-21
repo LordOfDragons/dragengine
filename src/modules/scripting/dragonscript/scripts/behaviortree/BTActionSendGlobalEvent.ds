@@ -1,0 +1,140 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree action sending a global event.
+ * 
+ * This action always returns BTResult.success.
+ * 
+ * It is possible to override the event send by adding the action parameter "event".
+ */
+class BTActionSendGlobalEvent implements BTAction
+	/** \brief Global event instance to send event to. */
+	private var GlobalEvents pGlobalEvents
+	
+	/** \brief Event to send. */
+	private var String pEvent
+	
+	/** \brief Optional source of event. */
+	private var Object pSource
+	
+	/** \brief Optional parameter to send with event. */
+	private var Object pData
+	
+	
+	
+	/** \brief Create action using BaseGameApp global events. */
+	public func new( String event ) this( BaseGameApp.getApp().getGlobalEvents(), event )
+	end
+	
+	/** \brief Create action using BaseGameApp global events. */
+	public func new( String event, Object source, Object data ) this( \
+	BaseGameApp.getApp().getGlobalEvents(), event, source, data )
+	end
+	
+	/** \brief Create action. */
+	public func new( GlobalEvents globalEvents, String event ) this( globalEvents, event, null, null )
+	end
+	
+	/** \brief Create action. */
+	public func new( GlobalEvents globalEvents, String event, Object source, Object data )
+		if globalEvents == null
+			throw ENullPointer.new( "globalEvents" )
+		end
+		if event == null
+			throw ENullPointer.new( "event" )
+		end
+		
+		this.pGlobalEvents = globalEvents
+		this.pEvent = event
+		this.pSource = source
+		this.pData = data
+	end
+	
+	
+	
+	/** \brief Global event instance to send event to. */
+	public func GlobalEvents getGlobalEvents()
+		return this.pGlobalEvents
+	end
+	
+	/** \brief Set global event instance to send event to. */
+	public func void setGlobalEvents( GlobalEvents globalEvents )
+		if globalEvents == null
+			throw ENullPointer.new()
+		end
+		this.pGlobalEvents = globalEvents
+	end
+	
+	/** \brief Event to send. */
+	public func String getEvent()
+		return this.pEvent
+	end
+	
+	/** \brief Set event to send. */
+	public func void setEvent( String event )
+		if event == null
+			throw ENullPointer.new()
+		end
+		this.pEvent = event
+	end
+	
+	/** \brief Optional source of event. */
+	public func Object getSource()
+		return this.pSource
+	end
+	
+	/** \brief Set optional source of event. */
+	public func void setSource( Object source )
+		this.pSource = source
+	end
+	
+	/** \brief Optional parameter to send with event. */
+	public func Object getData()
+		return this.pData
+	end
+	
+	/** \brief Set optional parameter to send with event. */
+	public func void setData( Object data )
+		this.pData = data
+	end
+	
+	
+	
+	/**
+	 * \brief Run action.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func BTResult runAction( BTContext context, Dictionary parameters )
+		this.pGlobalEvents.sendEvent( parameters.getAt( "event", this.pEvent ) cast String, \
+			this.pSource, this.pData )
+		return BTResult.success
+	end
+end
