@@ -774,6 +774,16 @@ class BaseGameApp extends Game
 		this.setInputProcessor( BindingInputProcessor.new( this.pBindingManager ) )
 	end
 	
+	/**
+	 * \brief Set input processor to nothing.
+	 * 
+	 * This is useful in situation where your game transitions from one input situation to
+	 * another and you do not want to have any user interaction causing disturbances.
+	 */
+	public func void setInputProcessorNothing()
+		this.setInputProcessor( DefaultInputProcessor.new() )
+	end
+	
 	
 	
 	/** \brief Load gui theme and assign it to desktop widget. */
