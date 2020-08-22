@@ -864,7 +864,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Remove from game world. */
 		public func void removeFromGameWorld()
-			if this.pConversationActor != null and this.pRegisterConversationActor
+			if this.pConversationActor == null
+				return
+			end
+			
+			if this.pRegisterConversationActor
 				this.getElement().getGameWorld().getConvoActorList().remove( this.pConversationActor.getID() )
 			end
 			this.pConversationActor.clearAllPlayback()
