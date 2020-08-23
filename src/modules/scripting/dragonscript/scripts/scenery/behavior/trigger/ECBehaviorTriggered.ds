@@ -184,6 +184,11 @@ class ECBehaviorTriggered extends DefaultECBehavior
 			this.pTriggerExpression = expression
 		end
 		
+		/** \brief Trigger expression is present. */
+		public func bool hasTriggerExpression()
+			return this.pTriggerExpression != null
+		end
+		
 		
 		
 		/** \brief Add listener. */
