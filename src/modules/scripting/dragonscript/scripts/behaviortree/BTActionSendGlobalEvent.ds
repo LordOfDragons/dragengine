@@ -31,8 +31,6 @@ pin Dragengine.Utils
  * \brief Behavior tree action sending a global event.
  * 
  * This action always returns BTResult.success.
- * 
- * It is possible to override the event send by adding the action parameter "event".
  */
 class BTActionSendGlobalEvent implements BTAction
 	/** \brief Global event instance to send event to. */
@@ -133,8 +131,7 @@ class BTActionSendGlobalEvent implements BTAction
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
 	public func BTResult runAction( BTContext context, Dictionary parameters )
-		this.pGlobalEvents.sendEvent( parameters.getAt( "event", this.pEvent ) cast String, \
-			this.pSource, this.pData )
+		this.pGlobalEvents.sendEvent( this.pEvent, this.pSource, this.pData )
 		return BTResult.success
 	end
 end
