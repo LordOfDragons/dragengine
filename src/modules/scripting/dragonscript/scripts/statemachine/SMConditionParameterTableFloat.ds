@@ -1,0 +1,259 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine condition evaluating a floating point parameter table entry.
+ * 
+ * Compares the value of a parameter table entry against a static value or another parameter
+ * table entry. A threshold is used for the compare operations defaulting to 0.0001.
+ */
+class SMConditionParameterTableFloat implements SMCondition
+	/** \brief Compare operator. */
+	public enum Operator
+		/** \brief Entry is equal to value inside threshold. */
+		equal
+		
+		/** \brief Entry is not equal to value inside threshold. */
+		notEqual
+		
+		/** \brief Entry is less than value including threshold. */
+		lessThan
+		
+		/** \brief Entry is less than or equal to value including threshold. */
+		lessThanOrEqual
+		
+		/** \brief Entry is greater than value including threshold. */
+		greaterThan
+		
+		/** \brief Entry is greater than or equal to value including threshold. */
+		greaterThanOrEqual
+	end
+	
+	
+	
+	/** \brief Parameter table entry to compare. */
+	private var ParameterTableEntry pEntry
+	
+	/** \brief Default value if entry to compare is not null. */
+	private var float pDefaultValue
+	
+	/** \brief Compare operator from eOperators. */
+	private var Operator pOperator
+	
+	/** \brief Threshold value. */
+	private var float pThreshold
+	
+	/** \brief Parameter table entry to compare against. */
+	private var ParameterTableEntry pEntryCompareValue
+	
+	/** \brief Default compare against value. */
+	private var float pCompareValue
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	private var String pParameterNameCompareValue
+	
+	
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, float compareValue ) \
+	this( entry, defaultValue, operator, null, compareValue, null )
+	end
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, \
+	float compareValue, String parameterNameCompareValue ) \
+	this( entry, defaultValue, operator, null, compareValue, parameterNameCompareValue )
+	end
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, \
+	ParameterTableEntry entryCompareValue, float compareValue, String parameterNameCompareValue )
+		if entry == null
+			throw EInvalidParam.new()
+		end
+		this.pEntry = entry
+		this.pDefaultValue = defaultValue
+		this.pOperator = operator
+		this.pThreshold = 0.0001
+		this.pEntryCompareValue = entryCompareValue
+		this.pCompareValue = compareValue
+		this.pParameterNameCompareValue = parameterNameCompareValue
+	end
+	
+	
+	
+	/** \brief Parameter table entry to compare. */
+	public func ParameterTableEntry getEntry()
+		return this.pEntry
+	end
+	
+	/** \brief Set parameter table entry to compare. */
+	public func void setEntry( ParameterTableEntry entry )
+		if entry == null
+			throw EInvalidParam.new()
+		end
+		this.pEntry = entry
+	end
+	
+	/** \brief Default value if entry to compare is not null. */
+	public func float getDefaultValue()
+		return this.pDefaultValue
+	end
+	
+	/** \brief Set default value if entry to compare is not null. */
+	public func void setDefaultValue( float defaultValue )
+		this.pDefaultValue = defaultValue
+	end
+	
+	/** \brief Compare operator from eOperators. */
+	public func Operator getOperator()
+		return this.pOperator
+	end
+	
+	/** \brief Set compare operator from eOperators. */
+	public func void setOperator( Operator operator )
+		this.pOperator = operator
+	end
+	
+	/** \brief Threshold value. */
+	public func float getThreshold()
+		return this.pThreshold
+	end
+	
+	/** \brief Set threshold value. */
+	public func void setThreshold( float threshold )
+		this.pThreshold = threshold
+	end
+	
+	/** \brief Parameter table entry to compare against. */
+	public func ParameterTableEntry getEntryCompareValue()
+		return this.pEntryCompareValue
+	end
+	
+	/** \brief Set parameter table entry to compare against. */
+	public func void setEntryCompareValue( ParameterTableEntry entry )
+		this.pEntryCompareValue = entry
+	end
+	
+	/** \brief Default compare against value. */
+	public func float getCompareValue()
+		return this.pCompareValue
+	end
+	
+	/** \brief Set default compare against value. */
+	public func void setCompareValue( float compareValue )
+		this.pCompareValue = compareValue
+	end
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	public func String getParameterNameCompareValue()
+		return this.pParameterNameCompareValue
+	end
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	public func void setParameterNameCompareValue( String name )
+		this.pParameterNameCompareValue = name
+	end
+	
+	
+	
+	/** \brief Create condition testing the exact opposite. */
+	public func SMConditionParameterTableFloat negated()
+		var Operator operator = this.pOperator
+		
+		select operator
+		case Operator.equal
+			operator = Operator.notEqual
+			
+		case Operator.notEqual
+			operator = Operator.equal
+			
+		case Operator.lessThan
+			operator = Operator.greaterThanOrEqual
+			
+		case Operator.lessThanOrEqual
+			operator = Operator.greaterThan
+			
+		case Operator.greaterThan
+			operator = Operator.lessThanOrEqual
+			
+		case Operator.greaterThanOrEqual
+			operator = Operator.lessThan
+		end
+		
+		var SMConditionParameterTableFloat condition = SMConditionParameterTableFloat.new( \
+			this.pEntry, this.pDefaultValue, operator, this.pEntryCompareValue, \
+			this.pCompareValue, this.pParameterNameCompareValue )
+		condition.pThreshold = this.pThreshold
+		return condition
+	end
+	
+	
+	
+	/**
+	 * \brief Evaluate condition.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func bool evaluateCondition( SMContext context, Dictionary parameters )
+		var float compareValue = this.pCompareValue
+		if this.pEntryCompareValue != null
+			compareValue = this.pEntryCompareValue.getValue( compareValue )
+		end
+		if this.pParameterNameCompareValue != null
+			var String value = parameters.getAt( this.pParameterNameCompareValue, null ) cast String
+			if value != null
+				compareValue = value.toFloat()
+			end
+		end
+		
+		select this.pOperator
+		case Operator.equal
+			return DEMath.fabs( this.pEntry.getValue( this.pDefaultValue ) - compareValue ) <= this.pThreshold
+			
+		case Operator.notEqual
+			return DEMath.fabs( this.pEntry.getValue( this.pDefaultValue ) - compareValue ) > this.pThreshold
+			
+		case Operator.lessThan
+			return this.pEntry.getValue( this.pDefaultValue ) < compareValue - this.pThreshold
+			
+		case Operator.lessThanOrEqual
+			return this.pEntry.getValue( this.pDefaultValue ) <= compareValue + this.pThreshold
+			
+		case Operator.greaterThan
+			return this.pEntry.getValue( this.pDefaultValue ) > compareValue + this.pThreshold
+			
+		case Operator.greaterThanOrEqual
+			return this.pEntry.getValue( this.pDefaultValue ) >= compareValue - this.pThreshold
+			
+		else
+			return false
+		end
+	end
+end

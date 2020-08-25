@@ -147,10 +147,66 @@ pin Dragengine.Utils
  * end
  * \endcode
  * 
+ * \par Action and Condition Factory
+ * 
+ * You can assign actions and conditions without using other behaviors by using one or more
+ * factories. The factories are added to the behavior. Upon creating the behavior instances
+ * the factories are asked to create and assign BTAction and BTCondition. The example below
+ * shows how to use a factory to add a condition checking for a trigger and an action
+ * manipulating a trigger.
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorBehaviorTree btbehavior = ECBehaviorBehaviorTree.new(this)
+ *       btbehavior.getPath().setValue("/content/mySpecificBehavior.desm")
+ *       
+ *       // add factory to create actions and conditions later on. this example uses
+ *       // a code block for simplicity. using classes implementing ActionConditionFactory
+ *       // is preferred since it allows to reuse factories across element classes.
+ *       btbehavior.setActionConditionFactory( block ECBehaviorBehaviorTree.Instance instance
+ *          // add condition evaluating to true if "player.insideZone" trigger is in fired state.
+ *          // the condition can be used in the behavior tree using the name "player is inside zone".
+ *          instance.setCondition("player is inside zone", BTConditionTrigger.new( \
+ *             "player.insideZone", BTConditionTrigger.TestMode.fired))
+ *          
+ *          // add action pulsing (fire and immediately reset) "player.damage" trigger.
+ *          // the action can be run in the behavior tree using the name "hurt playe".
+ *          instance.setAction("hurt player", BTActionTrigger.new("player.damage", BTActionTrigger.Action.pulse))
+ *       end )
+ *    end
+ * end
+ * \endcode
+ * 
  * This behavior does require the element class to be persistable (setPersistable) only if
  * the context is run by the behavior itself.
  */
 class ECBehaviorBehaviorTree extends DefaultECBehavior
+	/** \brief Factory assigining actions and conditions to behavior tree. */
+	interface ActionConditionFactory
+		/** \brief Assign actions and conditions to behavior tree. */
+		func void setActionsConditions( Instance instance )
+	end
+	
+	/** \brief Factory assigining actions and conditions to behavior tree using a block. */
+	class BlockActionConditionFactory implements ActionConditionFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter. */
+		public func new( Block factoryBlock )
+			if factoryBlock == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = factoryBlock
+		end
+		
+		/** \brief Assign actions and conditions to behavior tree. */
+		public func void setActionsConditions( Instance instance )
+			this.pBlock.run( instance )
+		end
+	end
+	
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorBehaviorTree pECBehavior
@@ -248,6 +304,8 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			
 			this.pFailed = true
 			this.setRequiresThink( false )
+			
+			this.pECBehavior.setActionsConditions( this )
 		end
 		
 		/** \brief Restart behavior tree to run it again. */
@@ -259,6 +317,35 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			this.pContext.reset()
 			this.pFailed = false
 			this.setRequiresThink( true )
+		end
+		
+		/** \brief Set action to behavior tree.
+		 */
+		public func void setAction( String name, BTAction action )
+			this.pContext.setAction( name, action )
+		end
+		
+		/**
+		 * \brief Set action to behavior tree using block.
+		 * 
+		 * Block receives arguments BTContext context and Dictionary parameters.
+		 */
+		public func void setAction( String name, Block actionBlock )
+			this.pContext.setAction( name, actionBlock )
+		end
+		
+		/** \brief Set condition to behavior tree. */
+		public func void setCondition( String name, BTCondition condition )
+			this.pContext.setCondition( name, condition )
+		end
+		
+		/**
+		 * \brief Set condition to behavior tree using block.
+		 * 
+		 * Block receives arguments BTContext context and Dictionary parameters and returns bool.
+		 */
+		public func void setCondition( String name, Block conditionBlock )
+			this.pContext.setCondition( name, conditionBlock )
 		end
 		
 		
@@ -301,6 +388,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	private var ECPBehaviorTree pBehaviorTree
 	private var ECPBoolean pRun
+	private var Array pActionConditionFactories
 	
 	
 	
@@ -340,7 +428,15 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		this.pRun = ECPBoolean.new( prefix + "run", false )
 		eclass.addProperty( this.pRun )
 		
+		this.pActionConditionFactories = Array.new()
+		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pActionConditionFactories = null
+		super.dispose()
 	end
 	
 	
@@ -353,6 +449,35 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	/** \brief Run behavior tree during element thinking. */
 	public func ECPBoolean getRun()
 		return this.pRun
+	end
+	
+	/** \brief Add action and condition factory. */
+	public func void addActionConditionFactory( ActionConditionFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pActionConditionFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add action and condition factory using block receiving Instance as parameter.
+	 * 
+	 * This is a convenience method for using BlockActionConditionFactory.
+	 */
+	public func void addActionConditionFactory( Block factory )
+		this.addActionConditionFactory( BlockActionConditionFactory.new( factory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ActionConditionFactory. */
+	public func void forEachActionConditionFactory( Block ablock )
+		this.pActionConditionFactories.forEach( ablock )
+	end
+	
+	/** \brief Assign actions and conditions to behavior instance. */
+	public func void setActionsConditions( Instance instance )
+		this.pActionConditionFactories.forEach( block ActionConditionFactory each
+			each.setActionsConditions( instance )
+		end )
 	end
 	
 	

@@ -1803,6 +1803,21 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorStateMachine'>
+		<description>Loads a single state machine from file and creates a SMContext. Other behaviors can add actions and conditions to this state machine allowing to compose state machine actions and conditions easily.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>stateMachine.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to state machine to load.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Conversation' pattern='*.desm' default='.desm'/>
+			</customPathPattern>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorRidable'>
 		<description>Behavior adding support to elements to be ridden by actors. Actors will attach using relative mode if ECBehaviorProjectToGround hits this element.</description>
 		<ghost>true</ghost>
