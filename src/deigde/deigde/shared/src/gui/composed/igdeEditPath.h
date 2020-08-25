@@ -156,7 +156,11 @@ public:
 	 */
 	void SetResourceType( igdeEnvironment::eFilePatternListTypes resourceType );
 	
-	/** \brief Custom pattern list overruling GetResourceType if not empty. */
+	/**
+	 * \brief Custom pattern list overruling GetResourceType if not empty.
+	 * 
+	 * If you change the content call SetSelectPathActions() to make the changes effective.
+	 */
 	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
 	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
 	

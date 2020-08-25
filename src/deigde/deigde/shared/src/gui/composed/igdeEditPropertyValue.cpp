@@ -812,6 +812,7 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 		
 	case igdeGDProperty::eptPath:
 		pSwitcher->SetCurrent( 9 );
+		pPath->GetCustomPatternList().RemoveAllFilePatterns();
 		
 		switch( pGDProperty->GetPathPatternType() ){
 		case igdeGDProperty::epptAll:
@@ -878,9 +879,11 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 		case igdeGDProperty::epptCustom:
 		default:
 			pPath->SetResourceType( igdeEnvironment::efpltAll );
+			pPath->GetCustomPatternList() = pGDProperty->GetCustomPathPattern();
 			break;
 		}
 		
+		pPath->SetSelectPathActions();
 		pPath->SetPath( pValue );
 		break;
 		
