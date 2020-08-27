@@ -355,6 +355,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			this.pListeners = null
 			this.pConditions = null
 			this.pCommands = null
+			this.pTagResolver = null
 			
 			super.dispose()
 		end
@@ -480,6 +481,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		/** \brief Component behavior. */
 		public func ECBehaviorComponent.Instance getComponent()
 			return this.pComponent
+		end
+		
+		/** \brief Parameter table behavior or null. */
+		public func ECBehaviorParameterTable.Instance getParameterTable()
+			return this.pParameterTable
 		end
 		
 		/** \brief Actor animated behavior or null. */
