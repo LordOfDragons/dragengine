@@ -132,9 +132,9 @@ void ceWDSLaneWord::FillIDList( decStringList &list ){
 	ceConversationActor *actor = actorList.GetWithIDOrAliasID( action->GetActor() );
 	if( actor ){
 		speechAnimation = actor->GetSpeechAnimation();
-		if( ! speechAnimation ){
-			return;
-		}
+	}
+	if( ! speechAnimation ){
+		return;
 	}
 	
 	const ceSAWordList &saWordList = speechAnimation->GetWordList();
