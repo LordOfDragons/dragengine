@@ -406,6 +406,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			dialog.setCanResize( false )
 			dialog.setTitle( title )
@@ -470,6 +471,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			dialog.setCanResize( false )
 			dialog.setTitle( title )
@@ -548,6 +550,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			dialog.setCanResize( false )
 			dialog.setTitle( title )
@@ -624,6 +627,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			//dialog.setCanResize( false ) // resizing is not so bad in this dialog type
 			dialog.setTitle( title )
@@ -687,6 +691,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			dialog.setCanResize( false )
 			dialog.setTitle( title )
@@ -760,6 +765,7 @@ class WindowDialog extends WindowModal
 		
 		dialog.runWhileBlockingLayout( block
 			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
 			dialog.setLayout( BorderLayout.new() )
 			dialog.setCanResize( false )
 			dialog.setTitle( title )
