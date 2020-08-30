@@ -36,32 +36,115 @@ namespace Dragengine.Scenery
  * 
  * \code{.ds}
  * class MyListener implements BooleanBehaviorListener
- *    public func new()
+ *    // This example uses an ECBehaviorLight to manipulate
+ *    public var ECBehaviorLight.Instance light
+ *    
+ *    public func new(ECBehaviorLight.Instance light)
+ *       this.light = light
  *    end
  *    
  *    public func void enabled()
- *       // ... react to state become enabled
+ *       // React to state become enabled. For example switch on the light
+ *       light.setActivated(true)
  *    end
  *    
  *    public func void disabled()
- *       // ... react to state become disabled
+ *       //React to state become disabled. For example switch off the light
+ *       light.setActivated(false)
  *    end
  * end
  * 
  * class MyClass extends BehaviorElementClass
+ *    public var ECBehaviorLight light
  *    public var ECBehaviorTriggered triggered
  *    
  *    public func new()
- *       triggered = ECBehaviorTriggered.new(this)
+ *       // Add a light to manipulate. For this example we leave out the collider so
+ *       // the light source can not move
+ *       light = ECBehaviorLight.new(this, null)
+ *       light.getLight().getColor().setColor(Color.red)
+ *       light.getLight().getIntensity().setValue(10)
+ *       light.getLight().getActivated().setValue(false)
  *       
- *       // Create instance of MyListener. It can be used used across multiple behaviors if needed
- *       var MyListener listener = MyListener.new()
+ *       // Add trigger used as source of the boolean listener
+ *       triggered = ECBehaviorTriggered.new(this)
  *       
  *       // This example uses the listener in a listener factory. The basic concept stays
  *       // the same outside listener factory use.
  *       triggered.addListenerFactory(block ECBehaviorTriggered.Instance instance
- *          return ECBehaviorTriggered.BooleanListener.new(listener)
+ *          // Typically you need to hand over to the MyListener instance some parameters
+ *          // to operate on.
+ *          // 
+ *          // In this example the instance of ECBehaviorLight created for the owner of
+ *          // "instance" is required. This is how it works:
+ *          // 
+ *          // 1) instance: The ECBehaviorTriggered instance to create the listener for
+ *          // 2) instance.getElement(): BehaviorElement the ECBehaviorTriggered instance has been created for
+ *          // 3) light: ECBehaviorLight of the enclosing MyClass. This is like the blueprint for the light
+ *          // 4) light.instance(): Get ECBehaviorLight instance that has been created for BehaviorElement
+ *          // 
+ *          // The MyListener instance owns now a reference to the ECBehaviorLight instance
+ *          // to manipulate.
+ *          return ECBehaviorTriggered.BooleanListener.new(MyListener.new(light.instance(instance.getElement())))
  *       end)
+ *    end
+ * end
+ * \endcode
+ * 
+ * \par Alternate Version
+ * 
+ * There is an alternative version you can use not requiring to use listener factories.
+ * This version is useful if the same listener is to be used for different boolean sources.
+ * The code below shows this version:
+ * 
+ * \code{.ds}
+ * class MyListener implements BooleanBehaviorListener
+ *    // same as in the above example
+ * end
+ * 
+ * class MyClass extends BehaviorElementClass
+ *    public var ECBehaviorLight light
+ *    public var ECBehaviorTriggered triggered
+ *    
+ *    public func new()
+ *       // Add light and triggered behavior as in the example above
+ *       
+ *       // This example uses the listener in a listener factory. The basic concept stays
+ *       // the same outside listener factory use.
+ *       triggered.addListenerFactory(block ECBehaviorTriggered.Instance instance
+ *          // Typically you need to hand over to the MyListener instance some parameters
+ *          // to operate on.
+ *          // 
+ *          // In this example the instance of ECBehaviorLight created for the owner of
+ *          // "instance" is required. This is how it works:
+ *          // 
+ *          // 1) instance: The ECBehaviorTriggered instance to create the listener for
+ *          // 2) instance.getElement(): BehaviorElement the ECBehaviorTriggered instance has been created for
+ *          // 3) light: ECBehaviorLight of the enclosing MyClass. This is like the blueprint for the light
+ *          // 4) light.instance(): Get ECBehaviorLight instance that has been created for BehaviorElement
+ *          // 
+ *          // The MyListener instance owns now a reference to the ECBehaviorLight instance
+ *          // to manipulate.
+ *          return ECBehaviorTriggered.BooleanListener.new(MyListener.new(light.instance(instance.getElement())))
+ *       end)
+ *    end
+ *    
+ *    protected func Element createElement()
+ *       // Create BehaviorElement. Keep in mind that behavior instance have been created and
+ *       // added to "element" but ECBehaviorInstance.init() has not yet been called on them.
+ *       // Adding listeners is allowed but other actions typically are not allowed
+ *       var BehaviorElement element = BehaviorElement.new(this)
+ *       
+ *       // Create listener. This listener can be shared across multiple behaviors
+ *       var MyListener listener = MyListener.new(light.instance(element))
+ *       
+ *       // Add listener to triggered behavior
+ *       triggered.instance(element).addListener(ECBehaviorTriggered.BooleanListener.new(listener))
+ *       
+ *       // Here you could now add the listener to other behaviors
+ *       // ...
+ *       
+ *       return element
  *    end
  * end
  * \endcode
