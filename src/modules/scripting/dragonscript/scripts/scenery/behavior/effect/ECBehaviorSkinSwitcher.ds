@@ -39,9 +39,9 @@ pin Dragengine.Utils
  * is to create damageable objects which change skin the more they are damaged.
  * 
  * To use thie behavior assign one or more skins to it. The first skin is used as
- * the starting skin. By calling setActiveSkin() the active skin can be selected
- * using the index of the skin in the list of defined skins. Furthermore activateNextSkin()
- * and activatePreviousSkin() can be used to cycle through skins.
+ * the starting skin. By calling setActive() the active skin can be selected
+ * using the index of the skin in the list of defined skins. Furthermore activateNext()
+ * and activatePrevious() can be used to cycle through skins.
  * 
  * Optionally this behavior can be attached to various other behaviors supporting
  * BooleanBehaviorListener. By doing so cycling though skins is attached to listener
@@ -137,7 +137,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		private var String pTexture
 		private var Array pSkins
 		private var bool pClamp
-		private var int pActiveSkin
+		private var int pActive
 		
 		
 		
@@ -146,7 +146,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			this.pECBehavior = ecbehavior
 			this.pClamp = false
 			this.pSkins = Array.new()
-			this.pActiveSkin = 0
+			this.pActive = 0
 			
 			this.pComponent = ecbehavior.getComponent().instance( element )
 		end
@@ -171,8 +171,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			end )
 			this.pClamp = this.pECBehavior.getClamp().getValue( stub )
 			
-			this.pActiveSkin = -1
-			this.setActiveSkin( this.pECBehavior.getActiveSkin().getValue( stub ) )
+			this.pActive = -1
+			this.setActive( this.pECBehavior.getActive().getValue( stub ) )
 		end
 		
 		
@@ -208,18 +208,18 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		end
 		
 		/** \brief Index of active skin. */
-		public func int getActiveSkin()
-			return this.pActiveSkin
+		public func int getActive()
+			return this.pActive
 		end
 		
 		/** \brief Set index of active skin. */
-		public func void setActiveSkin( int index )
-			if index == this.pActiveSkin
+		public func void setActive( int index )
+			if index == this.pActive
 				return
 			end
 			
 			this.setSkin( this.pSkins.getAt( index ) cast Skin )
-			this.pActiveSkin = index
+			this.pActive = index
 		end
 		
 		/**
@@ -227,12 +227,12 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * 
 		 * If clamp is true stops at the end of the list otherwise wraps back to the begin.
 		 */
-		public func void activateNextSkin()
-			var int index = this.pActiveSkin + 1
+		public func void activateNext()
+			var int index = this.pActive + 1
 			if this.pClamp
 				index = DEMath.min( index, this.pSkins.getCount() - 1 )
 			end
-			this.setActiveSkin( index )
+			this.setActive( index )
 		end
 		
 		/**
@@ -240,12 +240,12 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * 
 		 * If clamp is true stops at the begin of the list otherwise wraps back to the end.
 		 */
-		public func void activatePreviousSkin()
-			var int index = this.pActiveSkin - 1
+		public func void activatePrevious()
+			var int index = this.pActive - 1
 			if this.pClamp
 				index = DEMath.max( index, 0 )
 			end
-			this.setActiveSkin( index )
+			this.setActive( index )
 		end
 		
 		/**
@@ -254,16 +254,16 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * If clamp is true stops at the begin and end of the list otherwise wraps around.
 		 * \em distance can be positive or negative or 0 to do no switching.
 		 */
-		public func void activateSkin( int distance )
+		public func void activateNext( int distance )
 			if distance == 0
 				return
 			end
 			
-			var int index = this.pActiveSkin + distance
+			var int index = this.pActive + distance
 			if this.pClamp
 				index = DEMath.clamp( index, 0, this.pSkins.getCount() - 1 )
 			end
-			this.setActiveSkin( index )
+			this.setActive( index )
 		end
 		
 		
@@ -292,8 +292,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
 			case 0
-				this.pActiveSkin = -1
-				this.setActiveSkin( reader.readInt() )
+				this.pActive = -1
+				this.setActive( reader.readInt() )
 				
 			else
 				throw EInvalidParam.new( "unsupported version" )
@@ -304,7 +304,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 			writer.writeByte( 0 ) // version
 			
-			writer.writeInt( this.pActiveSkin )
+			writer.writeInt( this.pActive )
 		end
 	end
 	
@@ -314,7 +314,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	private var ECPString pTexture
 	private var ECPSkinList pSkins
 	private var ECPBoolean pClamp
-	private var ECPInteger pActiveSkin
+	private var ECPInteger pActive
 	
 	
 	
@@ -326,12 +326,18 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
+	this( eclass, component, id, id.empty() if "skinSwitcher" else "skinSwitcher(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id, String subId ) \
+	this( eclass, component, id, subId, subId + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id, String subId, String prefix ) \
 	super( eclass, id )
 		if component == null
-			throw ENullPointer.new( "compoent" )
+			throw ENullPointer.new( "component" )
 		end
-		
-		var String prefix = id.empty() if "skinSwitcher." else "skinSwitcher(" + id + ")."
 		
 		this.pComponent = component
 		
@@ -344,8 +350,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		this.pClamp = ECPBoolean.new( prefix + "clamp", false )
 		eclass.addProperty( this.pClamp )
 		
-		this.pActiveSkin = ECPInteger.new( prefix + "activeSkin", 0 )
-		eclass.addProperty( this.pActiveSkin )
+		this.pActive = ECPInteger.new( prefix + "activeSkin", 0 )
+		eclass.addProperty( this.pActive )
 		
 		eclass.addBehavior( this )
 	end
@@ -387,8 +393,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	end
 	
 	/** \brief Index of initially active skin property. */
-	public func ECPInteger getActiveSkin()
-		return this.pActiveSkin
+	public func ECPInteger getActive()
+		return this.pActive
 	end
 	
 	
@@ -402,11 +408,11 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		end
 		
 		public func void enabled()
-			this.pInstance.activateNextSkin()
+			this.pInstance.activateNext()
 		end
 		
 		public func void disabled()
-			this.pInstance.activateNextSkin()
+			this.pInstance.activateNext()
 		end
 	end
 	
