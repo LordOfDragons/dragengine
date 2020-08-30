@@ -1,0 +1,554 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding support to switch component skins.
+ * 
+ * If a texture name is specified the matching component texture skin is switched
+ * instead of switching the skin for the entire component.
+ * 
+ * Switching skins can be used for example with monitors which show an offline skin
+ * and if used by the player switch to one or more online skins. Another use case
+ * is to create damageable objects which change skin the more they are damaged.
+ * 
+ * To use thie behavior assign one or more skins to it. The first skin is used as
+ * the starting skin. By calling setActiveSkin() the active skin can be selected
+ * using the index of the skin in the list of defined skins. Furthermore activateNextSkin()
+ * and activatePreviousSkin() can be used to cycle through skins.
+ * 
+ * Optionally this behavior can be attached to various other behaviors supporting
+ * BooleanBehaviorListener. By doing so cycling though skins is attached to listener
+ * events called by other behaviors.
+ * 
+ * Skin switcher is set by default to wrap index around at the begin and end of the
+ * skin list. This allows to indefinitely cycle through all skins. By setting the "clamp"
+ * element class property to true the skins can cycle only once not wrapping around.
+ * 
+ * The example below switches the skin of a texture if the animated state become activate:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public var ECBehaviorComponent component
+ *    public var ECBehaviorCollider collider
+ *    public var ECBehaviorTwoStateAnimated animated
+ *    public var ECBehaviorSkinSwitcher skinSwitcher
+ *    
+ *    public func new()
+ *       // Create component to switch texture
+ *       component = ECBehaviorComponent.new(this)
+ *       
+ *       collider = ECBehaviorCollider.new(this, component)
+ *       
+ *       // Create animated behavior which is used as trigger for the skin switcher
+ *       animated = ECBehaviorTwoStateAnimated.new(this, component)
+ *       
+ *       // Create skin switcher for texture "display". If empty string is used instead
+ *       // the skin is switched for the entire component
+ *       skinSwitcher = ECBehaviorSkinSwitcher.new(this, component)
+ *       skinSwitcher.getTexture().setValue("display")
+ *       
+ *       // Add skins to load. This example uses an "off" and an "on" skin. Other examples
+ *       // could use multiple skins to cycle through. For switching multiple skins more
+ *       // complex logic is usually required so it is better if you add your own listeners
+ *       // do the appropriate switching. The provided listeners are suited for the simple
+ *       // case of switching between two skins
+ *       skinSwitcher.getSkins().add("/content/skins/displayOff.deskin")
+ *       skinSwitcher.getSkins().add("/content/skins/displayOn.deskin")
+ *       
+ *       // Add listener factory to ECBehaviorTwoStateAnimated. This makes the skin switch
+ *       // whenever the animated behavior enters or leaves "activated" state. This is only
+ *       // one possible way to connect to the ECBehaviorTwoStateAnimated but a common one.
+ *       skinSwitcher.listen(animated)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Multiple instances of ECBehaviorSkinSwitcher can be used for example to switch skins of
+ * multiple component textures. To use multiple instances use code like this in your subclass
+ * constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public var ECBehaviorComponent component
+ *    public var ECBehaviorCollider collider
+ *    public var ECBehaviorTwoStateAnimated animated
+ *    public var ECBehaviorSkinSwitcher skinSwitcher
+ *    public var ECBehaviorSkinSwitcher subSkinSwitcher
+ *    
+ *    public func new()
+ *       component = ECBehaviorComponent.new(this)
+ *       collider = ECBehaviorCollider.new(this, component)
+ *       animated = ECBehaviorTwoStateAnimated.new(this, component)
+ *       
+ *       skinSwitcher = ECBehaviorSkinSwitcher.new(this, component)
+ *       skinSwitcher.getTexture().setValue("display")
+ *       skinSwitcher.getSkins().add("/content/skins/displayOff.deskin")
+ *       skinSwitcher.getSkins().add("/content/skins/displayOn.deskin")
+ *       skinSwitcher.listen(animated)
+ *       
+ *       // Add a second skin switcher affecting a different texture. This example attaches
+ *       // to the same animated behavior but you could instead attach to a different one.
+ *       subSkinSwitcher = ECBehaviorSkinSwitcher.new(this, component, "subSkinSwitcher)
+ *       subSkinSwitcher.getTexture().setValue("subDisplay")
+ *       subSkinSwitcher.getSkins().add("/content/skins/subDisplayOff.deskin")
+ *       subSkinSwitcher.getSkins().add("/content/skins/subDisplayOn.deskin")
+ *       subSkinSwitcher.listen(animated)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "skinSwitcher{(id)}.".
+ * 
+ * This behavior does support element class to be persistable (setPersistable). Saves active
+ * skin index.
+ */
+class ECBehaviorSkinSwitcher extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorSkinSwitcher pECBehavior
+		private var ECBehaviorComponent.Instance pComponent
+		private var String pTexture
+		private var Array pSkins
+		private var bool pClamp
+		private var int pActiveSkin
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorSkinSwitcher ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pClamp = false
+			this.pSkins = Array.new()
+			this.pActiveSkin = 0
+			
+			this.pComponent = ecbehavior.getComponent().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pComponent = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pECBehavior.getSkins().getCount() == 0
+				throw EInvalidParam.new( "no skins defined" )
+			end
+			
+			this.pTexture = this.pECBehavior.getTexture().getValue( stub )
+			this.pECBehavior.getSkins().forEach( block Skin each
+				this.pSkins.add( each )
+			end )
+			this.pClamp = this.pECBehavior.getClamp().getValue( stub )
+			
+			this.pActiveSkin = -1
+			this.setActiveSkin( this.pECBehavior.getActiveSkin().getValue( stub ) )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorSkinSwitcher getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Component behavior. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Name of component texture to modify or empty string to modify entire component. */
+		public func String getTexture()
+			return this.pTexture
+		end
+		
+		/** \brief Set name of component texture to modify or empty string to modify entire component. */
+		protected func void setTexture( String texture )
+			this.pTexture = texture
+		end
+		
+		/** \brief Prevent wrapping around when cycling skins. */
+		public func bool getClamp()
+			return this.pClamp
+		end
+		
+		/** \brief Set prevent wrapping around when cycling skins. */
+		protected func void setClamp( bool clamp )
+			this.pClamp = clamp
+		end
+		
+		/** \brief Index of active skin. */
+		public func int getActiveSkin()
+			return this.pActiveSkin
+		end
+		
+		/** \brief Set index of active skin. */
+		public func void setActiveSkin( int index )
+			if index == this.pActiveSkin
+				return
+			end
+			
+			this.setSkin( this.pSkins.getAt( index ) cast Skin )
+			this.pActiveSkin = index
+		end
+		
+		/**
+		 * \brief Cycle to the next active skin.
+		 * 
+		 * If clamp is true stops at the end of the list otherwise wraps back to the begin.
+		 */
+		public func void activateNextSkin()
+			var int index = this.pActiveSkin + 1
+			if this.pClamp
+				index = DEMath.min( index, this.pSkins.getCount() - 1 )
+			end
+			this.setActiveSkin( index )
+		end
+		
+		/**
+		 * \brief Cycle to the previous active skin.
+		 * 
+		 * If clamp is true stops at the begin of the list otherwise wraps back to the end.
+		 */
+		public func void activatePreviousSkin()
+			var int index = this.pActiveSkin - 1
+			if this.pClamp
+				index = DEMath.max( index, 0 )
+			end
+			this.setActiveSkin( index )
+		end
+		
+		/**
+		 * \brief Cycle active skin by distance.
+		 * 
+		 * If clamp is true stops at the begin and end of the list otherwise wraps around.
+		 * \em distance can be positive or negative or 0 to do no switching.
+		 */
+		public func void activateSkin( int distance )
+			if distance == 0
+				return
+			end
+			
+			var int index = this.pActiveSkin + distance
+			if this.pClamp
+				index = DEMath.clamp( index, 0, this.pSkins.getCount() - 1 )
+			end
+			this.setActiveSkin( index )
+		end
+		
+		
+		
+		/** \brief Set skin. */
+		protected func void setSkin( Skin skin )
+			if this.pTexture.empty()
+				this.pComponent.getComponent().setSkin( skin )
+				
+			else
+				this.pComponent.getComponent().setTextureSkinAt( \
+					this.pComponent.getComponent().indexOfTextureNamed( this.pTexture ), skin, 0 )
+			end
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				this.pActiveSkin = -1
+				this.setActiveSkin( reader.readInt() )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeInt( this.pActiveSkin )
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECPString pTexture
+	private var ECPSkinList pSkins
+	private var ECPBoolean pClamp
+	private var ECPInteger pActiveSkin
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 */
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
+	this( eclass, component, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
+	super( eclass, id )
+		if component == null
+			throw ENullPointer.new( "compoent" )
+		end
+		
+		var String prefix = id.empty() if "skinSwitcher." else "skinSwitcher(" + id + ")."
+		
+		this.pComponent = component
+		
+		this.pTexture = ECPString.new( prefix + "texture", "" )
+		eclass.addProperty( this.pTexture )
+		
+		this.pSkins = ECPSkinList.new( prefix + "skins" )
+		eclass.addProperty( this.pSkins )
+		
+		this.pClamp = ECPBoolean.new( prefix + "clamp", false )
+		eclass.addProperty( this.pClamp )
+		
+		this.pActiveSkin = ECPInteger.new( prefix + "activeSkin", 0 )
+		eclass.addProperty( this.pActiveSkin )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/**
+	 * \brief Texture property.
+	 * 
+	 * Name of texture to affect or empty string to affect entire component.
+	 */
+	public func ECPString getTexture()
+		return this.pTexture
+	end
+	
+	/** \brief Skins property. */
+	public func ECPSkinList getSkins()
+		return this.pSkins
+	end
+	
+	/**
+	 * \brief Clamp property.
+	 * 
+	 * If set to true prevents wrapping around when cycling skins.
+	 */
+	public func ECPBoolean getClamp()
+		return this.pClamp
+	end
+	
+	/** \brief Index of initially active skin property. */
+	public func ECPInteger getActiveSkin()
+		return this.pActiveSkin
+	end
+	
+	
+	
+	/** \brief Boolean listener switching skin. */
+	class BooleanListener implements BooleanBehaviorListener
+		private var Instance pInstance
+		
+		public func new( Instance instance )
+			this.pInstance = instance
+		end
+		
+		public func void enabled()
+			this.pInstance.activateNextSkin()
+		end
+		
+		public func void disabled()
+			this.pInstance.activateNextSkin()
+		end
+	end
+	
+	/** \brief Add listener factory to ECBehaviorTriggered behavior. */
+	public func void listen( ECBehaviorTriggered behavior )
+		behavior.addListenerFactory( block ECBehaviorTriggered.Instance instance
+			return ECBehaviorTriggered.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	/** \brief Add listener factory to ECBehaviorEvaluate behavior. */
+	public func void listen( ECBehaviorEvaluate behavior )
+		behavior.addListenerFactory( block ECBehaviorEvaluate.Instance instance
+			return ECBehaviorEvaluate.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	/** \brief Add listener factory to ECBehaviorTouching behavior. */
+	public func void listen( ECBehaviorTouching behavior )
+		behavior.addListenerFactory( block ECBehaviorTouching.Instance instance
+			return ECBehaviorTouching.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	/** \brief Add listener factory to ECBehaviorTouchSensor behavior. */
+	public func void listen( ECBehaviorTouchSensor behavior )
+		behavior.addListenerFactory( block ECBehaviorTouchSensor.Instance instance
+			return ECBehaviorTouchSensor.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	/** \brief Add listener factory to ECBehaviorAnimated behavior. */
+	public func void listen( ECBehaviorAnimated behavior )
+		behavior.addListenerFactory( block ECBehaviorAnimated.Instance instance
+			return ECBehaviorAnimated.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	/** \brief Add listener factory to ECBehaviorTwoStateAnimated behavior. */
+	public func void listen( ECBehaviorTwoStateAnimated behavior )
+		behavior.addListenerFactory( block ECBehaviorTwoStateAnimated.Instance instance
+			return ECBehaviorTwoStateAnimated.BooleanListener.new( \
+				BooleanListener.new( this.instance( instance.getElement() ) ) )
+		end )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorSkinSwitcher getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorSkinSwitcher
+		end ) cast ECBehaviorSkinSwitcher
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorSkinSwitcher with specific identifier.
+	 */
+	static public func ECBehaviorSkinSwitcher getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorSkinSwitcher each
+			return each castable ECBehaviorSkinSwitcher and \
+				( each cast ECBehaviorSkinSwitcher ).getID().equals( id )
+		end ) cast ECBehaviorSkinSwitcher
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorSkinSwitcher behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorSkinSwitcher
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorSkinSwitcher.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorSkinSwitcher.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorSkinSwitcher.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

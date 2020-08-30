@@ -76,12 +76,15 @@ pin Dragengine.TriggerSystem
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
+ *    var ECBehaviorComponent component
+ *    var ECBehaviorComponent subComponent
+ *    
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorTwoStateAnimated.new(this)
+ *       component = ECBehaviorComponent.new(this)
+ *       ECBehaviorTwoStateAnimated.new(this, component)
  *       
- *       ECBehaviorComponent.new(this, "subComponent")
- *       ECBehaviorTwoStateAnimated.new(this, "subAnimator", "subComponent")
+ *       subComponent = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorTwoStateAnimated.new(this, subComponent, "subAnimator")
  *    end
  * end
  * \endcode
@@ -145,6 +148,50 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		
 		/** \brief Animation has been applied. */
 		public func void animationApplied( Instance instance )
+		end
+	end
+	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		private var BooleanBehaviorListener pListener
+		private var bool pFull
+		
+		/** \brief Create boolean listener operating on stopActivate() and startDeactivate(). */
+		public func new( BooleanBehaviorListener listener ) this( listener, false )
+		end
+		
+		/**
+		 * \brief Create boolean listener.
+		 * \param full If true operates on startActivate() and stopDeactivate() otherwise
+		 *             operates on stopActivate() and startDeactivate().
+		 */
+		public func new( BooleanBehaviorListener listener, bool full )
+			this.pListener = listener
+			this.pFull = full
+		end
+		
+		public func void startActivate( Instance instance )
+			if this.pFull
+				this.pListener.enabled()
+			end
+		end
+		
+		public func void stopDeactivate( Instance instance )
+			if this.pFull
+				this.pListener.disabled()
+			end
+		end
+		
+		public func void stopActivate( Instance instance )
+			if not this.pFull
+				this.pListener.enabled()
+			end
+		end
+		
+		public func void startDeactivate( Instance instance )
+			if not this.pFull
+				this.pListener.disabled()
+			end
 		end
 	end
 	

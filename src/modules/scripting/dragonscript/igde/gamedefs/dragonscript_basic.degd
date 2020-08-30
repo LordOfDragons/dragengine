@@ -2493,4 +2493,15 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorSkinSwitcher'>
+		<description>Switches component or component texture skin between multiple defined skins.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>skinSwitcher.</defaultInheritPropertyPrefix>
+		<property name='texture'>
+			<description>Name of texture to modify or empty string to modify entire component.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>

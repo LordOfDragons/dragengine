@@ -40,8 +40,8 @@ class BERequiresBehaviorException extends Exception
 	
 	/** \brief Create exception. */
 	public func new( BehaviorElementClass eclass, ECBehavior behavior, String requiredBehavior ) \
-	super( "Behavior " + behavior.className() + " requires behavior '" + requiredBehavior \
-	+ "' in element class " + eclass.getClassname() )
+	super( "Behavior {} requires behavior '{}' in element class {}".format( \
+	Array.newWith( behavior.className(), requiredBehavior, eclass.getClassname() ) ) )
 		this.pElementClass = eclass
 		this.pBehavior = behavior
 		this.pRequiredBehavior = requiredBehavior

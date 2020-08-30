@@ -1,0 +1,75 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Generic boolean behavior listener.
+ * 
+ * Various behaviors react to boolean state changes or expose listeners of boolean nature.
+ * This interface provides an abstraction over these various listeners allowing to use
+ * them without a lot of extra work.
+ * 
+ * To use this interface create a subclass implementing it. Create an instance of the
+ * subclass. This instance you can then use with appropriate behavior listener implementation
+ * accepting a BooleanBehaviorListener. For example for ECBehaviorTriggered this would be:
+ * 
+ * \code{.ds}
+ * class MyListener implements BooleanBehaviorListener
+ *    public func new()
+ *    end
+ *    
+ *    public func void enabled()
+ *       // ... react to state become enabled
+ *    end
+ *    
+ *    public func void disabled()
+ *       // ... react to state become disabled
+ *    end
+ * end
+ * 
+ * class MyClass extends BehaviorElementClass
+ *    public var ECBehaviorTriggered triggered
+ *    
+ *    public func new()
+ *       triggered = ECBehaviorTriggered.new(this)
+ *       
+ *       // Create instance of MyListener. It can be used used across multiple behaviors if needed
+ *       var MyListener listener = MyListener.new()
+ *       
+ *       // This example uses the listener in a listener factory. The basic concept stays
+ *       // the same outside listener factory use.
+ *       triggered.addListenerFactory(block ECBehaviorTriggered.Instance instance
+ *          return ECBehaviorTriggered.BooleanListener.new(listener)
+ *       end)
+ *    end
+ * end
+ * \endcode
+ */
+interface BooleanBehaviorListener
+	/** \brief State changed to enabled. */
+	func void enabled()
+	
+	/** \brief State changed to disabled. */
+	func void disabled()
+end

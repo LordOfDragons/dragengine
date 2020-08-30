@@ -64,6 +64,23 @@ class ECBehaviorTouching extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		private var BooleanBehaviorListener pListener
+		
+		public func new( BooleanBehaviorListener listener )
+			this.pListener = listener
+		end
+		
+		public func void startTouching( Instance instance )
+			this.pListener.enabled()
+		end
+		
+		public func void stopTouching( Instance instance )
+			this.pListener.disabled()
+		end
+	end
+	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
