@@ -72,6 +72,79 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		public func ParameterTable getParameterTable()
 			return this.pParameterTable
 		end
+		
+		
+		
+		/** \brief Get boolean parameter value or default value if parameter is not set. */
+		public func bool getParameterValue( String parameter, bool defaultValue )
+			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		end
+		
+		/** \brief Get integer parameter value or default value if parameter is not set. */
+		public func int getParameterValue( String parameter, int defaultValue )
+			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		end
+		
+		/** \brief Get floating point parameter value or default value if parameter is not set. */
+		public func float getParameterValue( String parameter, float defaultValue )
+			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		end
+		
+		/** \brief Get string parameter value or default value if parameter is not set. */
+		public func String getParameterValue( String parameter, String defaultValue )
+			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		end
+		
+		/** \brief Get persistable parameter value or default value if parameter is not set. */
+		public func Persistable getParameterValue( String parameter, Persistable defaultValue )
+			return this.pParameterTable.getAt( parameter ).getValue( defaultValue )
+		end
+		
+		
+	
+		/** \brief Set boolean parameter value. */
+		public func void setParameterValue( String parameter, bool value )
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+		
+		/** \brief Set integer parameter value. */
+		public func void setParameterValue( String parameter, int value )
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+		
+		/** \brief Set floating point parameter value. */
+		public func void setParameterValue( String parameter, float value )
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+		
+		/** \brief Set string parameter value. */
+		public func void setParameterValue( String parameter, String value )
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+		
+		/** \brief Set persistable parameter value. */
+		public func void setParameterValue( String parameter, Persistable value )
+			this.pParameterTable.getAt( parameter ).setValue( value )
+		end
+		
+		
+		
+		/** \brief Clear parameter value setting it to \em null. */
+		public func void clearParameterValue( String parameter )
+			this.pParameterTable.getAt( parameter ).clearValue()
+		end
+		
+		
+		
+		/** \brief Parameter value is \em null. */
+		public func bool isParameterNull( String parameter )
+			return this.pParameterTable.getAt( parameter ).isNull()
+		end
+		
+		/** \brief Parameter value is not \em null. */
+		public func bool isParameterNotNull( String parameter )
+			return this.pParameterTable.getAt( parameter ).isNotNull()
+		end
 	end
 	
 	
