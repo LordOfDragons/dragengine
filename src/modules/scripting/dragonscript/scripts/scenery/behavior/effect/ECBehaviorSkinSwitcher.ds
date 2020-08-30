@@ -270,12 +270,19 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		
 		/** \brief Set skin. */
 		protected func void setSkin( Skin skin )
+			var Component component = this.pComponent.getComponent()
+			if component == null
+				return
+			end
+			
 			if this.pTexture.empty()
-				this.pComponent.getComponent().setSkin( skin )
+				component.setSkin( skin )
 				
 			else
-				this.pComponent.getComponent().setTextureSkinAt( \
-					this.pComponent.getComponent().indexOfTextureNamed( this.pTexture ), skin, 0 )
+				var int index = component.indexOfTextureNamed( this.pTexture )
+				if index != -1
+					component.setTextureSkinAt( index, skin, 0 )
+				end
 			end
 		end
 		
