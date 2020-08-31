@@ -1,0 +1,338 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding a renderable Panel widget.
+ * 
+ * This behavior is useful for models with a complex dynamic texture where the content of the
+ * texture is provided by a Panel widget. Multiple other behaviors can add their content
+ * Widget to the Panel separating logic for reuse. Using ECBehaviorRenderablePanel instead
+ * of ECBehaviorRenderableCanvas allows to use the full power of the GUI ToolKit including
+ * using GuiThemes to create complex content easily.
+ * 
+ * The default layout for the Panel is StackLayout. The default gui theme is
+ * "/shareddata/guithemes/modern/modern.guitheme.xml". The default Panel designer selector
+ * is "RenderablePanel".
+ * 
+ * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
+ * behavior. Create ECBehaviorRenderablePanel behavior and set the dynamic skin and designer
+ * selector and GuiTheme for the Panel. Now you can add other behaviors targeting the
+ * ECBehaviorRenderablePanel to add Widget resources to.
+ * 
+ * The Panel is created with a default size of 512x512 . You can change the size using the
+ * element property to fit the texture requirements.
+ * 
+ * Multiple ECBehaviorRenderablePanel instances can be added to affect individual
+ * dynamic skin textures. The example below uses one component with one dynamic skin to two
+ * individual renderables named "content1" and "content2" each allowing to be individiaully
+ * filled with content by different behaviors.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorComponent.new(this)
+ *       ECBehaviorDynamicSkin.new(this)
+ *       
+ *       ECBehaviorCanvas.new(this)
+ *       ECBehaviorCanvas.new(this, "canvas2")
+ *       
+ *       var ECBehaviorRenderablePanel behavior = ECBehaviorRenderablePanel.new(this)
+ *       behavior.getRenderable().setValue("content1")
+ *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getDesignerSelector().setValue("Panel.MyElement")
+ *       
+ *       behavior = ECBehaviorRenderablePanel.new(this, "renderablePanel2")
+ *       behavior.setBackgroundColor(Color.blue)
+ *       behavior.getRenderable().setValue("intensity2")
+ *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getDesignerSelector().setValue("Panel.MyElement")
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "renderablePanel{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorRenderablePanel extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorRenderablePanel pECBehavior
+		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
+		private var int pRenderable
+		private var Panel pPanel
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorRenderablePanel ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pRenderable = -1
+			
+			this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pDynamicSkin = null
+			if this.pPanel != null
+				this.pPanel.dispose()
+				this.pPanel = null
+			end
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			var String renderableName = this.pECBehavior.getRenderable().getValue( stub )
+			if renderableName.empty()
+				return
+			end
+			
+			var ElementClass eclass = this.getElement().getClass()
+			var CodecPropertyString codec = eclass.getCodecPropertyString()
+			
+			this.pPanel = Panel.new( StackLayout.new(), block Panel p
+				p.setSize( this.pECBehavior.getSize().getPoint( stub, codec ) )
+				p.setGuiTheme( this.pECBehavior.getGuiTheme().getGuiTheme( stub, eclass ) )
+				p.setDesignerSelector( this.pECBehavior.getDesignerSelector().getValue( stub ) )
+			end )
+			
+			var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
+			this.pRenderable = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable( renderableName, DynamicSkinRenderableType.canvas )
+			dynamicSkin.setCanvasAt( this.pRenderable, this.pPanel.getCanvasWidget() )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRenderablePanel getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Dynamic skin behavior instance. */
+		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
+			return this.pDynamicSkin
+		end
+		
+		/** \brief Panel or \em null if no dynamic skin is present. */
+		public func Panel getPanel()
+			return this.pPanel
+		end
+	end
+	
+	
+	
+	private var ECBehaviorDynamicSkin pDynamicSkin
+	private var ECPString pRenderable
+	private var ECPPoint pSize
+	private var ECPGuiTheme pGuiTheme
+	private var ECPString pDesignerSelector
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin ) \
+	this( eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id ) \
+	this( eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), id )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders ) \
+	this( eclass, dynamicSkin, loaders, "" )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, String id ) \
+	this( eclass, dynamicSkin, loaders, id, id.empty() if "renderablePanel." else "renderablePanel(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, \
+	String id, String prefix ) super( eclass, id )
+		if dynamicSkin == null
+			throw ENullPointer.new( "dynamicSkin" )
+		end
+		
+		this.pDynamicSkin = dynamicSkin
+		
+		this.pRenderable = ECPString.new( prefix + "renderable", "" )
+		eclass.addProperty( this.pRenderable )
+		
+		this.pSize = ECPPoint.new( prefix + "size", Point.new( 512, 512 ) )
+		eclass.addProperty( this.pSize )
+		
+		this.pGuiTheme = ECPGuiTheme.new( prefix + "guiTheme", loaders.getGuiTheme(), \
+			"/shareddata/guithemes/modern/modern.guitheme.xml" )
+		eclass.addProperty( this.pGuiTheme )
+		
+		this.pDesignerSelector = ECPString.new( prefix + "designerSelector", "RenderablePanel" )
+		eclass.addProperty( this.pDesignerSelector )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pDynamicSkin = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Dynamic skin behavior. */
+	public func ECBehaviorDynamicSkin getDynamicSkin()
+		return this.pDynamicSkin
+	end
+	
+	/** \brief Name of renderable to create or empty string if not used. */
+	public func ECPString getRenderable()
+		return this.pRenderable
+	end
+	
+	/** \brief Size of canvas. */
+	public func ECPPoint getSize()
+		return this.pSize
+	end
+	
+	/** \brief Gui Theme to use for Panel. */
+	public func ECPGuiTheme getGuiTheme()
+		return this.pGuiTheme
+	end
+	
+	/** \brief Designer selector to use for Panel. */
+	public func ECPString getDesignerSelector()
+		return this.pDesignerSelector
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehavior each
+			return each castable ECBehaviorRenderablePanel
+		end ) cast ECBehaviorRenderablePanel
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorRenderablePanel with specific identifier.
+	 */
+	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorRenderablePanel each
+			return each castable ECBehaviorRenderablePanel and \
+				( each cast ECBehaviorRenderablePanel ).getID().equals( id )
+		end ) cast ECBehaviorRenderablePanel
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderablePanel behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		var Array list = Array.new()
+		eclass.forEachBehavior( block ECBehavior each
+			if each castable ECBehaviorRenderablePanel
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderablePanel.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderablePanel.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block ECBehaviorInstance each
+			return each castable Instance and \
+				( each cast Instance ).getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderablePanel.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		var Array list = Array.new()
+		element.forEachInstance( block ECBehaviorInstance each
+			if each castable Instance
+				list.add( each )
+			end
+		end )
+		return list
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

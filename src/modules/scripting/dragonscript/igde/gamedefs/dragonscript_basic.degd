@@ -850,6 +850,34 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorRenderablePanel'>
+		<description>Behavior element behavior adding a renderable Panel.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>renderablePanel.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='size'>
+			<description>Size of Panel.</description>
+			<type>point2</type>
+			<default>512 512</default>
+		</property>
+		<property name='guiTheme'>
+			<description>Path to gui theme to use.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+			</customPathPattern>
+		</property>
+		<property name='designerSelector'>
+			<description>Designer selector to use for Panel.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorRenderableLight'>
 		<description>Behavior element behavior matching renderable to light intensity.</description>
 		<ghost>true</ghost>
