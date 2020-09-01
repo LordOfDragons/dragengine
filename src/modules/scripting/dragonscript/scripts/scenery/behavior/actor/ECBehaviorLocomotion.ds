@@ -52,6 +52,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		private var ECBehaviorColliderAI.Instance pColliderAI
 		private var ECBehaviorCollider.Instance pCollider
 		private var Locomotion pLocomotion
+		private var bool pLoadedNoAdjust
 		
 		
 		
@@ -308,14 +309,25 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			this.pLocomotion.cancelInput()
 		end
 		
+		/**
+		 * \brief Set locomotion orientation from element up axis.
+		 */
+		public func void setOrientationFromUpAxis()
+			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
+		end
+		
 		
 		/**
 		 * \brief Add element to game world.
 		 * 
-		 * Ensure locomotion orientation matches actor orientation.
+		 * Ensure locomotion orientation matches actor orientation. Does nothing if element
+		 * has just been loaded to avoid falsify loaded state.
 		 */
 		public func void addToGameWorld()
-			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
+			if not this.pLoadedNoAdjust
+				this.setOrientationFromUpAxis()
+			end
+			this.pLoadedNoAdjust = false
 		end
 		
 		
@@ -331,12 +343,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			end
 			
 			// restore parameters
+			this.pLocomotion.updateAICollider()
 			this.getElement().setOrientation( this.pLocomotion.getOrientationQuaternion() )
-			
-			var Collider collider = this.pLocomotion.getAICollider()
-			if collider != null
-				collider.setLinearVelocity( this.pLocomotion.getLinearVelocity() )
-			end
+			this.pLoadedNoAdjust = true
 		end
 		
 		/** \brief Write element to file. */
