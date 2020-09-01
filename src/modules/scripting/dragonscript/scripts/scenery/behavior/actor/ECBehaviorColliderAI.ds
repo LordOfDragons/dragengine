@@ -365,7 +365,6 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
-			this.pCollider.setLinearVelocity( Vector.new() )
 		end
 		
 		

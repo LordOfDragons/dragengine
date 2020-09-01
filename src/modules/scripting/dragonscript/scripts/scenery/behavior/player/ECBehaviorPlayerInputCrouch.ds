@@ -158,17 +158,6 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		
 		
 		
-		/**
-		 * \brief Add element to game world.
-		 * 
-		 * Clears player input to ensure actor is not unintentially moving.
-		 */
-		public func void addToGameWorld()
-			this.reset()
-		end
-		
-		
-		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
