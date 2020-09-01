@@ -875,6 +875,10 @@ void seSkin::pUpdateComponent(){
 			pEngComponent->SetVisible( true );
 			pEngComponent->SetPosition( decDVector( 0.0f, 0.0f, 0.0f ) );
 			pEngComponent->SetOrientation( decQuaternion() );
+			
+			decLayerMask layerMask;
+			layerMask.SetBit( 0 );
+			pEngComponent->SetLayerMask( layerMask );
 		}
 		
 		if( model ) model->FreeReference();

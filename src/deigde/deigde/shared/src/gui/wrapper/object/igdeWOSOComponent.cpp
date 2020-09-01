@@ -158,6 +158,7 @@ public:
 		pCounter++;
 	}
 	inline deSkin *GetSkin() const{ return pSkin; }
+	inline bool HasPathSkin() const{ return ! pPathSkin.IsEmpty(); }
 	
 	void LoadRig( const char *path ){
 		pPathRig = path;
@@ -538,7 +539,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	deSkin *skin = rl.GetSkin();
-	if( ! skin && GetWrapper().GetGDClass() ){
+	if( ! skin && rl.HasPathSkin() && GetWrapper().GetGDClass() ){
 		skin = GetEnvironment().GetErrorSkin();
 	}
 	

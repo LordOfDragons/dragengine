@@ -124,9 +124,11 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters( deoglRenderPlan &plan 
 	}
 	
 	// determine if shadow casting has to be used
+	/*
 	if( plan.GetFBOTarget() ){
 		pUseShadow = false;
 	}
+	*/
 	
 	// temporary hack to deal with slow shadow casting for the video capturing
 	if( pLayer->GetLightIntensity() < 0.1f ){

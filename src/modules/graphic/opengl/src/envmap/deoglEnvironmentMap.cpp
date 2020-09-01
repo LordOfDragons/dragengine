@@ -625,7 +625,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	plan.SetUpscaleSize( pSize, pSize );
 	plan.SetUseUpscaling( false );
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
-	plan.SetForceShadowMapSize( pSize >> 1 );
+	plan.SetForceShadowMapSize( pSize ); //>> 1 );
 // 	plan.SetIgnoreStaticComponents( true );
 	plan.SetNoReflections( true );
 	
