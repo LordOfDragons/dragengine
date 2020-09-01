@@ -1153,10 +1153,6 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			this.update( elapsed )
 		end
 		
-		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-		end
-		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.stopMoving()

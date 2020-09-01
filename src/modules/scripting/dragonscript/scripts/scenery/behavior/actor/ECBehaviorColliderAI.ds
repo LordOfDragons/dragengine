@@ -359,13 +359,13 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			this.pCollider.setLinearVelocity( Vector.new() )
 			this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
+			this.pCollider.setLinearVelocity( Vector.new() )
 		end
 		
 		

@@ -311,11 +311,12 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		
 		/**
-		 * \brief Add element to game world.
+		 * \brief Remove element from game world.
 		 * 
-		 * Clears locomotion movement to ensure actor is not unintentially moving.
+		 * Clears locomotion movement to ensure actor is not unintentially moving the next
+		 * time it is added to a game world.
 		 */
-		public func void addToGameWorld()
+		public func void removeFromGameWorld()
 			this.stopMoving()
 			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
 		end
