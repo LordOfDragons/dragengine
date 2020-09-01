@@ -662,6 +662,7 @@ void igdeWindowMain::ShowWindowLogger(){
 	}
 	
 	pWindowLogger->SetVisible( true );
+	pWindowLogger->RaiseAndActivate();
 }
 
 
