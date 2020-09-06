@@ -121,6 +121,11 @@ class ConversationLookAtPlayback
 		return this.pElapsed
 	end
 	
+	/** \brief Playback position as index of look-at currently being played back. */
+	public func int getPosition()
+		return this.pPosition
+	end
+	
 	
 	
 	/** \brief Last look-at to blend from or \em null if not set. */
@@ -165,9 +170,19 @@ class ConversationLookAtPlayback
 	
 	
 	
-	/** \brief Look-ats to play back. */
-	public func Array getLookAts()
-		return this.pLookAts
+	/** \brief Count of look-ats to play back. */
+	public func int getLookAtCount()
+		return this.pLookAts.getCount()
+	end
+	
+	/** \brief Look-at to play back at index. */
+	public func LookAt getLookAtAt( int index )
+		return this.pLookAts.getAt( index ) cast LookAt
+	end
+	
+	/** \brief Visit look-ats to playback using block with argument LookAt. */
+	public func void forEachLookAts( Block ablock )
+		this.pLookAts.forEach( ablock )
 	end
 	
 	/** \brief Remove all look-ats. */
