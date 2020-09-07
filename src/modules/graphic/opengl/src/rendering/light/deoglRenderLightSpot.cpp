@@ -564,6 +564,7 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 	}
 	
 	// for environment maps we use only static shadows
+	/*
 	if( useShadow && plan.GetFBOTarget() ){
 		if( shadowType == deoglShadowCaster::estStaticAndDynamic ){
 			shadowType = deoglShadowCaster::estStaticOnly;
@@ -572,6 +573,12 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 			shadowType = deoglShadowCaster::estNoShadows;
 			useShadow = false;
 		}
+	}
+	*/
+	
+	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
+	if( useShadow && plan.GetUseLayerMask() ){
+		shadowType = deoglShadowCaster::estDynamicOnly;
 	}
 	
 	// determine if we need transparent shadow casting
@@ -959,6 +966,11 @@ const decDMatrix &matrixProjection, bool transparentStaticShadow, bool transpare
 	
 	const int ambientMapSize = scambient.GetPlanDynamicSize();
 	
+	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
+	if( plan.GetUseLayerMask() ){
+		shadowType = deoglShadowCaster::estDynamicOnly;
+	}
+	
 	// static shadow map
 	if( shadowType == deoglShadowCaster::estStaticOnly
 	||  shadowType == deoglShadowCaster::estStaticAndDynamic ){
@@ -1077,7 +1089,31 @@ const decDMatrix &matrixProjection, bool transparentStaticShadow, bool transpare
 		const deoglCollideList *clist1 = NULL;
 		const deoglCollideList *clist2 = NULL;
 		
-		if( shadowType == deoglShadowCaster::estDynamicOnly ){
+		if( plan.GetUseLayerMask() ){
+			const decLayerMask &layerMask = plan.GetLayerMask();
+			pCollideList.Clear();
+			
+			clist1 = light.GetStaticCollideList();
+			int i, count = clist1->GetComponentCount();
+			for( i=0; i<count; i++ ){
+				deoglRComponent * const component = clist1->GetComponentAt( i )->GetComponent();
+				if( component->GetLayerMask().IsEmpty() || layerMask.Matches( component->GetLayerMask() ) ){
+					pCollideList.AddComponent( component );
+				}
+			}
+			
+			clist1 = light.GetDynamicCollideList();
+			count = clist1->GetComponentCount();
+			for( i=0; i<count; i++ ){
+				deoglRComponent * const component = clist1->GetComponentAt( i )->GetComponent();
+				if( component->GetLayerMask().IsEmpty() || layerMask.Matches( component->GetLayerMask() ) ){
+					pCollideList.AddComponent( component );
+				}
+			}
+			
+			clist1 = &pCollideList;
+			
+		}else if( shadowType == deoglShadowCaster::estDynamicOnly ){
 			clist1 = light.GetStaticCollideList();
 			clist2 = light.GetDynamicCollideList();
 			
