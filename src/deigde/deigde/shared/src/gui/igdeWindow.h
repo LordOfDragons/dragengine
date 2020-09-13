@@ -100,6 +100,9 @@ public:
 	/** \brief Set window position. */
 	void SetPosition( const decPoint &position );
 	
+	/** \brief Raise and activate window. */
+	virtual void RaiseAndActivate();
+	
 	
 	
 	/**
@@ -174,6 +177,9 @@ protected:
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
+	
+	/** \brief Raise and activate window. */
+	virtual void OnRaiseAndActivate();
 	/*@}*/
 };
 

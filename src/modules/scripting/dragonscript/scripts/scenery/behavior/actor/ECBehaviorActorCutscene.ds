@@ -97,6 +97,24 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		func Listener createListener( Instance instance )
 	end
 	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
 	/** \brief States. */
 	public enum State
 		/** \brief Cutscene is stopped. */
@@ -686,6 +704,15 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */

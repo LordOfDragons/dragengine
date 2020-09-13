@@ -625,7 +625,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	plan.SetUpscaleSize( pSize, pSize );
 	plan.SetUseUpscaling( false );
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
-	plan.SetForceShadowMapSize( pSize >> 1 );
+	plan.SetForceShadowMapSize( pSize ); //>> 1 );
 // 	plan.SetIgnoreStaticComponents( true );
 	plan.SetNoReflections( true );
 	
@@ -651,7 +651,11 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 		
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		
-		fbo = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( pSize, pSize );
+		// we can not use a shared framebuffer here from GetManager().GetFBOWithResolution()
+		// because various rendering parts use shared framebuffer too. if the same framebuffer
+		// is selected it is used at the same time by the environment map rendering and other
+		// rendering. this can lead to problems
+		fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 		pRenderThread.GetFramebuffer().Activate( fbo );
 		
 		fbo->DetachAllImages();
@@ -666,15 +670,17 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 		}
 		
 		pRenderThread.GetFramebuffer().Activate( oldfbo );
+		/* only required with shared framebuffer
 		if( fbo ){
 			fbo->DecreaseUsageCount();
 		}
+		*/
 		
 		pEnvMap->CreateMipMaps();
 	}
 	
 	try{
-		fbo = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( pSize, pSize );
+		fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 		pRenderThread.GetFramebuffer().Activate( fbo );
 		
 		fbo->DetachAllImages();
@@ -708,9 +714,11 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 			//     NULL as indicator for a removed env-map is a workaround
 			if( ! pEnvMap ){
 				pRenderThread.GetFramebuffer().Activate( NULL );
+				/* only required with shared framebuffer
 				if( fbo ){
 					fbo->DecreaseUsageCount();
 				}
+				*/
 				plan.SetFBOTarget( NULL );
 				pNextUpdateFace = 6;
 				pDirty = false;
@@ -735,9 +743,11 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 		
 // 		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		pRenderThread.GetFramebuffer().Activate( NULL );
+		/* only required with shared framebuffer
 		if( fbo ){
 			fbo->DecreaseUsageCount();
 		}
+		*/
 		
 		pNextUpdateFace++;
 		if( pNextUpdateFace == 6 ){
@@ -822,9 +832,11 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 		pRenderThread.GetLogger().LogException( e );
 // 		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		pRenderThread.GetFramebuffer().Activate( NULL );
+		/* only required with shared framebuffer
 		if( fbo ){
 			fbo->DecreaseUsageCount();
 		}
+		*/
 		throw;
 	}
 	

@@ -23,8 +23,8 @@
 #define _DEOGLRENDERLIGHTSPOT_H_
 
 #include "deoglRenderLightBase.h"
+#include "../../collidelist/deoglCollideList.h"
 
-class deoglCollideList;
 class deoglLightShader;
 class deoglRenderPlan;
 class deoglRLight;
@@ -58,6 +58,7 @@ private:
 	deoglShaderProgram *pShaderBoxBoundary1Ambient;
 	deoglShaderProgram *pShaderBoxBoundary2;
 	deoglShaderProgram *pShaderOccMap;
+	deoglCollideList pCollideList;
 	
 	
 	

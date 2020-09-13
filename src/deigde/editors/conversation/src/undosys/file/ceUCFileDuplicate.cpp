@@ -82,4 +82,5 @@ void ceUCFileDuplicate::Undo(){
 
 void ceUCFileDuplicate::Redo(){
 	pConversation->AddFile( pFile );
+	pConversation->SetActiveFile( pFile );
 }

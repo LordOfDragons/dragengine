@@ -95,7 +95,22 @@ class File
 		this.pComponents = Array.new( parent.pComponents )
 		this.pPrefix = parent.pPrefix
 		filename.pComponents.forEach( block String each
-			this.pComponents.add( each )
+			if each.empty()
+				// this is either the root prefix right at the beginning (no components)
+				// or an empty path in which case it is ignored
+				if this.pComponents.getCount() == 0
+					this.pPrefix = "/"
+				end
+				
+			elif each.equals( ".." )
+				if this.pComponents.getCount() == 0
+					throw Exception.new( "Can not move into parent directory of root" )
+				end
+				this.pComponents.removeFrom( this.pComponents.getCount() - 1 )
+				
+			elif not each.equals( "." )
+				this.pComponents.add( each )
+			end
 		end )
 	end
 	

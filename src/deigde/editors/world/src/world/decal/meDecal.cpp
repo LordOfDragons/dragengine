@@ -125,41 +125,7 @@ pColliderOwner( this )
 		DETHROW( deeInvalidParam );
 	}
 	
-	deEngine &engine = *environment->GetEngineController()->GetEngine();
-	
-	try{
-		pTimerReattachDecals.TakeOver( new meDecalTimerReattachDecals( *this ) );
-		
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
-		
-		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmDecals );
-		
-		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
-		
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
-		
-		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
-		
-		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
-		
-		pDDSDecal = new igdeWDebugDrawerShape;
-		pDDSDecal->SetVisible( true );
-		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
-		
-		pUpdateDDSColors();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pInitShared();
 }
 
 meDecal::meDecal( const meDecal &decal ) :
@@ -202,35 +168,10 @@ pActive( false ),
 
 pColliderOwner( this )
 {
-	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
+	pInitShared();
 	
 	try{
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
-		
-		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmDecals );
-		
-		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
-		
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
-		
-		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
-		
-		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
-		
-		pDDSDecal = new igdeWDebugDrawerShape;
-		pDDSDecal->SetVisible( true );
-		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
-		
-		// init the rest
-		pEngSkin = decal.GetEngineSkin();
+		pEngSkin = decal.pEngSkin;
 		if( pEngSkin ){
 			pEngSkin->AddReference();
 		}
@@ -240,7 +181,6 @@ pColliderOwner( this )
 		pUpdateShapes();
 		// pAttachDecals(); // not needed as we have no parent world yet
 		
-		pUpdateDDSColors();
 		UpdateDynamicSkin();
 		
 	}catch( const deException & ){
@@ -707,6 +647,44 @@ void meDecal::NotifyActivePropertyChanged(){
 
 // Private Functions
 //////////////////////
+
+void meDecal::pInitShared(){
+	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
+	
+	try{
+		pTimerReattachDecals.TakeOver( new meDecalTimerReattachDecals( *this ) );
+		
+		pCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pCollider->SetEnabled( true );
+		pCollider->SetResponseType( deCollider::ertKinematic );
+		pCollider->SetUseLocalGravity( true );
+		
+		decLayerMask collisionCategory;
+		collisionCategory.SetBit( meWorld::eclmDecals );
+		
+		decLayerMask collisionFilter;
+		collisionFilter.SetBit( meWorld::eclmEditing );
+		
+		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		
+		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
+		
+		// create debug drawer and shapes
+		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer->SetXRay( true );
+		
+		pDDSDecal = new igdeWDebugDrawerShape;
+		pDDSDecal->SetVisible( true );
+		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
+		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
+		
+		pUpdateDDSColors();
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
 
 void meDecal::pCleanUp(){
 	SetWorld( NULL );

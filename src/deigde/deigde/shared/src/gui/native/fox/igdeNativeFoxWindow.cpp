@@ -75,24 +75,10 @@ igdeNativeFoxWindow::~igdeNativeFoxWindow(){
 }
 
 igdeNativeFoxWindow *igdeNativeFoxWindow::CreateNativeWidget( igdeWindow &owner ){
-	if( ! owner.GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	return new igdeNativeFoxWindow( owner, *owner.GetGuiTheme() );
 }
 
 void igdeNativeFoxWindow::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( ! parent.id() ){
-		return;
-	}
-	
 	create();
 	raise();
 }
@@ -135,6 +121,11 @@ void igdeNativeFoxWindow::UpdateTitle(){
 
 void igdeNativeFoxWindow::UpdateSize(){
 	resize( pOwner->GetSize().x, pOwner->GetSize().y );
+}
+
+void igdeNativeFoxWindow::RaiseAndActivate(){
+	raise();
+	// how to active the window?
 }
 
 

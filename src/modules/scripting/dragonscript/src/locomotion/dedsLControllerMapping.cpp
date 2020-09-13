@@ -119,12 +119,15 @@ void dedsLControllerMapping::Apply( const dedsLocomotion &locomotion, float elap
 		
 	case eaDisplacement:
 		controller.IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
-// 			if( pResetTimeWalk ){
-// 				controller.SetCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
-// 				
-// 			}else{
-// 				controller.IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
-// 			}
+		break;
+		
+	case eaRelativeDisplacement:
+		if( fabs( locomotion.GetMovingDirection() ) > 90.0f ){
+			controller.IncrementCurrentValue( -fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+			
+		}else{
+			controller.IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+		}
 		break;
 		
 	case eaTimeTurnIP:

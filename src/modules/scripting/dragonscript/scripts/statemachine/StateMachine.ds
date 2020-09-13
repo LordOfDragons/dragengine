@@ -1,0 +1,89 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine.
+ */
+class StateMachine
+	/** \brief Dictionary mapping String state identifier to SMState. */
+	private var Dictionary pStates
+	
+	/** \brief Initial state. */
+	private var String pInitialState
+	
+	
+	
+	/** \brief Create behavior tree. */
+	public func new()
+		this.pStates = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Count of states. */
+	public func int getStateCount()
+		return this.pStates.getCount()
+	end
+	
+	/** \brief State with identifier is present. */
+	public func bool hasStateAt( String id )
+		return this.pStates.has( id )
+	end
+	
+	/** \brief State with identifier or \em null if absent. */
+	public func SMState getStateAt( String id )
+		return this.pStates.getAt( id, null ) cast SMState
+	end
+	
+	/**
+	 * \brief Add state.
+	 * \throws EInvalidParam Another state with the same identifier is present.
+	 */
+	public func void addState( SMState state )
+		if state == null
+			throw ENullPointer.new()
+		end
+		if this.pStates.has( state.getID() )
+			throw EInvalidParam.new( "state id already present" )
+		end
+		this.pStates.setAt( state.getID(), state )
+	end
+	
+	
+	
+	/** \brief Initial state. */
+	public func String getInitialState()
+		return this.pInitialState
+	end
+	
+	/** \brief Set initial state. */
+	public func void setInitialState( String initialState )
+		this.pInitialState = initialState
+	end
+end

@@ -193,6 +193,12 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 	try{
 		attachment = new deColliderAttachment( pEnvMapProbe );
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment->SetPosition( GetVectorProperty(
+			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachPosition ),
+			pGDEnvMapProbe.GetPosition() ) );
+		attachment->SetOrientation( GetRotationProperty(
+			pGDEnvMapProbe.GetPropertyName( igdeGDCEnvMapProbe::epAttachRotation ),
+			pGDEnvMapProbe.GetOrientation() ) );
 		
 		if( colliderComponent ){
 			colliderComponent->AddAttachment( attachment );

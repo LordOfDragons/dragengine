@@ -305,7 +305,13 @@ void aeController::UpdateValue( float elapsed ){
 		
 	case aeAnimatorLocomotion::eaDisplacement:
 		if( enabled ){
-			IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+			IncrementCurrentValue( locomotion.GetMovingSpeed() * elapsed );
+		}
+		break;
+		
+	case aeAnimatorLocomotion::eaRelativeDisplacement:
+		if( enabled ){
+			IncrementCurrentValue( locomotion.GetRelativeMovingSpeed() * elapsed );
 		}
 		break;
 		
@@ -421,6 +427,7 @@ void aeController::ResetValue(){
 		break;
 		
 	case aeAnimatorLocomotion::eaDisplacement:
+	case aeAnimatorLocomotion::eaRelativeDisplacement:
 		SetCurrentValue( 0.0f );
 		break;
 		

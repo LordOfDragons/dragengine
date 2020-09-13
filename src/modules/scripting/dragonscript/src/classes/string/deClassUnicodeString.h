@@ -97,6 +97,7 @@ private:
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC( nfCompare );
 #undef DEF_NATFUNC
 };
 

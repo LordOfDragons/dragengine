@@ -1,0 +1,243 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine condition evaluating an integer parameter table entry.
+ * 
+ * Compares the value of a parameter table entry against a static value or another parameter
+ * table entry.
+ */
+class SMConditionParameterTableInt implements SMCondition
+	/** \brief Compare operator. */
+	public enum Operator
+		/** \brief Entry is equal to value. */
+		equal
+		
+		/** \brief Entry is not equal to value. */
+		notEqual
+		
+		/** \brief Entry is less than value. */
+		lessThan
+		
+		/** \brief Entry is less than or equal to value. */
+		lessThanOrEqual
+		
+		/** \brief Entry is greater than value. */
+		greaterThan
+		
+		/** \brief Entry is greater than or equal to value. */
+		greaterThanOrEqual
+	end
+	
+	
+	
+	/** \brief Parameter table entry to compare. */
+	private var ParameterTableEntry pEntry
+	
+	/** \brief Default value if entry to compare is not null. */
+	private var int pDefaultValue
+	
+	/** \brief Compare operator from eOperators. */
+	private var Operator pOperator
+	
+	/** \brief Parameter table entry to compare against. */
+	private var ParameterTableEntry pEntryCompareValue
+	
+	/** \brief Default compare against value. */
+	private var int pCompareValue
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	private var String pParameterNameCompareValue
+	
+	
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, int compareValue ) \
+	this( entry, defaultValue, operator, null, compareValue, null )
+	end
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, \
+	int compareValue, String parameterNameCompareValue ) \
+	this( entry, defaultValue, operator, null, compareValue, parameterNameCompareValue )
+	end
+	
+	/** \brief Create condition. */
+	public func new( ParameterTableEntry entry, int defaultValue, Operator operator, \
+	ParameterTableEntry entryCompareValue, int compareValue, String parameterNameCompareValue )
+		if entry == null
+			throw EInvalidParam.new()
+		end
+		this.pEntry = entry
+		this.pDefaultValue = defaultValue
+		this.pOperator = operator
+		this.pEntryCompareValue = entryCompareValue
+		this.pCompareValue = compareValue
+		this.pParameterNameCompareValue = parameterNameCompareValue
+	end
+	
+	
+	
+	/** \brief Parameter table entry to compare. */
+	public func ParameterTableEntry getEntry()
+		return this.pEntry
+	end
+	
+	/** \brief Set parameter table entry to compare. */
+	public func void setEntry( ParameterTableEntry entry )
+		if entry == null
+			throw EInvalidParam.new()
+		end
+		this.pEntry = entry
+	end
+	
+	/** \brief Default value if entry to compare is not null. */
+	public func int getDefaultValue()
+		return this.pDefaultValue
+	end
+	
+	/** \brief Set default value if entry to compare is not null. */
+	public func void setDefaultValue( int defaultValue )
+		this.pDefaultValue = defaultValue
+	end
+	
+	/** \brief Compare operator from eOperators. */
+	public func Operator getOperator()
+		return this.pOperator
+	end
+	
+	/** \brief Set compare operator from eOperators. */
+	public func void setOperator( Operator operator )
+		this.pOperator = operator
+	end
+	
+	/** \brief Parameter table entry to compare against. */
+	public func ParameterTableEntry getEntryCompareValue()
+		return this.pEntryCompareValue
+	end
+	
+	/** \brief Set parameter table entry to compare against. */
+	public func void setEntryCompareValue( ParameterTableEntry entry )
+		this.pEntryCompareValue = entry
+	end
+	
+	/** \brief Default compare against value. */
+	public func int getCompareValue()
+		return this.pCompareValue
+	end
+	
+	/** \brief Set default compare against value. */
+	public func void setCompareValue( int compareValue )
+		this.pCompareValue = compareValue
+	end
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	public func String getParameterNameCompareValue()
+		return this.pParameterNameCompareValue
+	end
+	
+	/** \brief Use named parameter as source of compare value if not null. */
+	public func void setParameterNameCompareValue( String name )
+		this.pParameterNameCompareValue = name
+	end
+	
+	
+	
+	/** \brief Create condition testing the exact opposite. */
+	public func SMConditionParameterTableInt negated()
+		var Operator operator = this.pOperator
+		
+		select operator
+		case Operator.equal
+			operator = Operator.notEqual
+			
+		case Operator.notEqual
+			operator = Operator.equal
+			
+		case Operator.lessThan
+			operator = Operator.greaterThanOrEqual
+			
+		case Operator.lessThanOrEqual
+			operator = Operator.greaterThan
+			
+		case Operator.greaterThan
+			operator = Operator.lessThanOrEqual
+			
+		case Operator.greaterThanOrEqual
+			operator = Operator.lessThan
+		end
+		
+		return SMConditionParameterTableInt.new( this.pEntry, this.pDefaultValue, \
+			operator, this.pEntryCompareValue, this.pCompareValue, \
+			this.pParameterNameCompareValue )
+	end
+	
+	
+	
+	/**
+	 * \brief Evaluate condition.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func bool evaluateCondition( SMContext context, Dictionary parameters )
+		var int compareValue = this.pCompareValue
+		if this.pEntryCompareValue != null
+			compareValue = this.pEntryCompareValue.getValue( compareValue )
+		end
+		if this.pParameterNameCompareValue != null
+			var String value = parameters.getAt( this.pParameterNameCompareValue, null ) cast String
+			if value != null
+				compareValue = value.toInt()
+			end
+		end
+		
+		select this.pOperator
+		case Operator.equal
+			return this.pEntry.getValue( this.pDefaultValue ) == compareValue
+			
+		case Operator.notEqual
+			return this.pEntry.getValue( this.pDefaultValue ) != compareValue
+			
+		case Operator.lessThan
+			return this.pEntry.getValue( this.pDefaultValue ) < compareValue
+			
+		case Operator.lessThanOrEqual
+			return this.pEntry.getValue( this.pDefaultValue ) <= compareValue
+			
+		case Operator.greaterThan
+			return this.pEntry.getValue( this.pDefaultValue ) > compareValue
+			
+		case Operator.greaterThanOrEqual
+			return this.pEntry.getValue( this.pDefaultValue ) >= compareValue
+			
+		else
+			return false
+		end
+	end
+end

@@ -23,8 +23,8 @@
 #define _DEOGLRENDERLIGHTPOINT_H_
 
 #include "deoglRenderLightBase.h"
+#include "../../collidelist/deoglCollideList.h"
 
-class deoglCollideList;
 class deoglCubeMap;
 class deoglLightShader;
 class deoglRenderPlan;
@@ -73,6 +73,8 @@ private:
 	deoglShaderProgram *pShaderOccMapCube;
 	
 	int pCubeFaces[ 6 ];
+	
+	deoglCollideList pCollideList;
 	
 	
 	

@@ -332,6 +332,26 @@ void deClassUnicodeString::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myse
 	rt->PushInt( string->Hash() );
 }
 
+// public func int compare( Object other )
+deClassUnicodeString::nfCompare::nfCompare( const sInitData &init ) :
+dsFunction( init.clsUS, "compare", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsObj ); // other
+}
+void deClassUnicodeString::nfCompare::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decUnicodeString &string = *( ( ( sUSNatDat* )p_GetNativeData( myself ) )->string );
+	deClassUnicodeString * const clsUS = ( deClassUnicodeString* )GetOwnerClass();
+	dsValue * const object = rt->GetValue( 0 );
+	
+	if( ! p_IsObjOfType( object, clsUS ) ){
+		rt->PushInt( 0 );
+		
+	}else{
+		const decUnicodeString &otherString = *( ( ( sUSNatDat* )p_GetNativeData( object ) )->string );
+		rt->PushInt( string.Compare( otherString ) );
+	}
+}
+
 
 
 // Conversion
@@ -564,6 +584,7 @@ void deClassUnicodeString::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
+	AddFunction( new nfCompare( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

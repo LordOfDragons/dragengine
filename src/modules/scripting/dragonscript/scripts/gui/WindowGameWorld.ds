@@ -297,7 +297,7 @@ class WindowGameWorld extends Window
 	 * Deactivates the old camera director if present and unsets camera and microphone.
 	 * Activates the new camera if present and sets camera and microphone.
 	 * 
-	 * Updates the camera director once.
+	 * Updates the camera director once if updating camera director is enabled
 	 */
 	public func void setCameraDirector( CameraDirector director )
 		if director == this.pCameraDirector
@@ -316,7 +316,10 @@ class WindowGameWorld extends Window
 			director.setCamera( this.pCamera )
 			director.setMicrophone( this.pMicrophone )
 			director.activate()
-			director.update( 0.0 )
+			
+			if this.pUpdateCameraDirector
+				director.update( 0 )
+			end
 		end
 	end
 	

@@ -22,7 +22,9 @@
 #ifndef _DEOGLRLSVISITORCOLLECTELEMENTS_H_
 #define _DEOGLRLSVISITORCOLLECTELEMENTS_H_
 
+#include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/math/decMath.h>
+
 #include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 #include "../../world/deoglDefaultWorldOctreeVisitor.h"
@@ -36,7 +38,8 @@ class deoglDCollisionFrustum;
 
 
 /**
- * @brief Render Light Sky Visitor Add Elements.
+ * \brief Render Light Sky Visitor Add Elements.
+ * 
  * World octree visitor to add elements for light sky shadow casting. This is a version of the
  * deoglRLSVisitorCollectElements class modified for speed and additional testing. Elements are tested
  * against a transformed frustum using an orthogonal extended shadow shaft enclosing the element
@@ -47,7 +50,7 @@ class deoglDCollisionFrustum;
  */
 class deoglRLSVisitorCollectElements : public deoglDefaultWorldOctreeVisitor{
 private:
-	deoglCollideList *pCollideList;
+	deoglCollideList &pCollideList;
 	deoglDCollisionBox pVolumeShadowBox;
 	decDVector pBoundaryBoxMinExtend;
 	decDVector pBoundaryBoxMaxExtend;
@@ -80,53 +83,82 @@ private:
 	float pEdgeDistance[ 5 ];
 	int pEdgeCount;
 	
+	bool pCullLayerMask;
+	decLayerMask pLayerMask;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new visitor. */
-	deoglRLSVisitorCollectElements( deoglCollideList *collideList );
+	/** \brief Create visitor. */
+	deoglRLSVisitorCollectElements( deoglCollideList &collideList );
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the frustum box min extend. */
+	/** \brief Frustum box min extend. */
 	inline const decVector &GetFrustumBoxMinExtend() const{ return pFrustumBoxMinExtend; }
-	/** Retrieves the frustum box max extend. */
+	
+	/** \brief Frustum box max extend. */
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
-	/** Retrieves the x light axis. */
+	/** \brief X light axis. */
 	inline const decVector &GetAxisX() const{ return pAxisX; }
-	/** Retrieves the y light axis. */
+	
+	/** \brief Y light axis. */
 	inline const decVector &GetAxisY() const{ return pAxisY; }
-	/** Retrieves the z light axis. */
+	
+	/** \brief Z light axis. */
 	inline const decVector &GetAxisZ() const{ return pAxisZ; }
-	/** Retrieves the absolute x light axis. */
+	
+	/** \brief Absolute x light axis. */
 	inline const decVector &GetAbsAxisX() const{ return pAbsAxisX; }
-	/** Retrieves the absolute y light axis. */
+	
+	/** \brief Absolute y light axis. */
 	inline const decVector &GetAbsAxisY() const{ return pAbsAxisY; }
-	/** Retrieves the absolute z light axis. */
+	
+	/** \brief Absolute z light axis. */
 	inline const decVector &GetAbsAxisZ() const{ return pAbsAxisZ; }
-	/** Retrieves the light space matrix. */
+	
+	/** \brief Light space matrix. */
 	inline const decDMatrix &GetMatrixLightSpace() const{ return pMatrixLightSpace; }
 	
-	/** Init the visitor from a frustum. */
-	void InitFromFrustum( deoglRenderPlan &plan, deoglRSkyInstanceLayer &skyLayer,
-		float backtrack );
+	/** \brief Layer mask is used for culling. */
+	inline bool GetCullLayerMask() const{ return pCullLayerMask; }
 	
-	/** Add a split to check. */
+	/** \brief Set if layer mask is used for culling. */
+	void SetCullLayerMask( bool cull );
+	
+	/** \brief Layer mask. */
+	const decLayerMask &GetLayerMask(){ return pLayerMask; }
+	
+	/** \brief Set layer mask. */
+	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/** \brief Init visitor from frustum. */
+	void InitFromFrustum( deoglRenderPlan &plan, deoglRSkyInstanceLayer &skyLayer, float backtrack );
+	
+	/** \brief Add split to check. */
 	void AddSplit( const decVector &minExtend, const decVector &maxExtend, const decVector2 &sizeThreshold );
-	/** Visit a world octree using this visitor. */
+	
+	/** \brief Visit world octree using visitor. */
 	void VisitWorldOctree( deoglWorldOctree &octree );
 	/*@}*/
 	
-	/** @name Visiting */
+	
+	
+	/** \name Visiting */
 	/*@{*/
-	/** Visits an octree node. */
+	/** \brief Visit an octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );
 	
-	/** Test axis aligned box for visibility. */
+	/** \brief Test axis aligned box for visibility. */
 	bool TestAxisAlignedBox( const decDVector &minExtend, const decDVector &maxExtend );
-	/** Test axis aligned box for visibility and store the shadow box split extends to be written to the element. */
+	
+	/** \brief Test axis aligned box for visibility and store the shadow box split extends to be written to the element. */
 	bool TestAxisAlignedBox( const decDVector &minExtend, const decDVector &maxExtend, int &splitMask );
 	/*@}*/
 };

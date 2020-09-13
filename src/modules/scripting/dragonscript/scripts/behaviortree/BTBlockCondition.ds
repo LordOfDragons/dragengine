@@ -36,8 +36,9 @@ pin Dragengine.Utils
  * Do not change the content of the dictionary as it is shared.
  * 
  * \code{.ds}
- * new BTBlockAction( block BTContext context, Dictionary parameters
- *    // do something
+ * new BTBlockCondition( block BTContext context, Dictionary parameters
+ *    // verify condition then return true or false
+ *    return true
  * end )
  * \endcode
  */

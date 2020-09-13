@@ -850,6 +850,34 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorRenderablePanel'>
+		<description>Behavior element behavior adding a renderable Panel.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>renderablePanel.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='size'>
+			<description>Size of Panel.</description>
+			<type>point2</type>
+			<default>512 512</default>
+		</property>
+		<property name='guiTheme'>
+			<description>Path to gui theme to use.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+			</customPathPattern>
+		</property>
+		<property name='designerSelector'>
+			<description>Designer selector to use for Panel.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorRenderableLight'>
 		<description>Behavior element behavior matching renderable to light intensity.</description>
 		<ghost>true</ghost>
@@ -1803,6 +1831,21 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorStateMachine'>
+		<description>Loads a single state machine from file and creates a SMContext. Other behaviors can add actions and conditions to this state machine allowing to compose state machine actions and conditions easily.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>stateMachine.</defaultInheritPropertyPrefix>
+		<property name='path'>
+			<description>Path to state machine to load.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Conversation' pattern='*.desm' default='.desm'/>
+			</customPathPattern>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorRidable'>
 		<description>Behavior adding support to elements to be ridden by actors. Actors will attach using relative mode if ECBehaviorProjectToGround hits this element.</description>
 		<ghost>true</ghost>
@@ -2475,6 +2518,17 @@
 			<type>range</type>
 			<range min='0' max='1'/>
 			<default>1</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorSkinSwitcher'>
+		<description>Switches component or component texture skin between multiple defined skins.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>skinSwitcher.</defaultInheritPropertyPrefix>
+		<property name='texture'>
+			<description>Name of texture to modify or empty string to modify entire component.</description>
+			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

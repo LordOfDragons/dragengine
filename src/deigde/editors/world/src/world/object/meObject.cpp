@@ -435,7 +435,6 @@ void meObject::OnGameDefinitionChanged(){
 		UpdateTriggerTargets();
 		UpdateNavPathTest();
 		UpdateIDGroupList();
-		IncrementIDGroupIDUsage();
 	}
 	
 	if( classDef == pClassDef ){
@@ -447,6 +446,7 @@ void meObject::OnGameDefinitionChanged(){
 	
 	pClassDef = classDef;
 	
+	IncrementIDGroupIDUsage();
 	pCreateSnapPoints();
 }
 
@@ -775,19 +775,19 @@ void meObject::IncrementIDGroupIDUsage(){
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
 		const decString &name = map.GetProperty()->GetName();
+		const decString *value = NULL;
 		
-		if( ! pProperties.Has( name ) ){
+		if( ! pProperties.GetAt( name, &value ) ){
 			continue;
 		}
 		
-		const decString &value = pProperties.GetAt( name );
-		if( value.IsEmpty() ){
+		if( value->IsEmpty() ){
 			continue; // ignore empty identifier
 		}
 		
 		//printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
 		//	map.GetGroup()->GetName().GetString(), value, map.GetGroup()->GetUsageCountFor( value ) );
-		map.GetGroup()->Add( value );
+		map.GetGroup()->Add( value->GetString() );
 	}
 	
 	// texture properties

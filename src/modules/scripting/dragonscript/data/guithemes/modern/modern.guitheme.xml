@@ -564,4 +564,11 @@
 	<designer name='Label.PanelDebugInformation.Label' extendNamed='Label.PanelDebugInformation'>
 		<color parameter='normal.textColor' r='1' g='1' b='0'/>
 	</designer>
+	
+	<!-- Behavior ECBehaviorRenderablePanel -->
+	<designer name='RenderablePanel' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='1' b='1'/>
+		</canvasCreator>
+	</designer>
 </guiTheme>

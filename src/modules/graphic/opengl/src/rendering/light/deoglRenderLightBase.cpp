@@ -116,6 +116,7 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	}
 	
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
 	if( pglClipControl && defren.GetUseInverseDepth() ){

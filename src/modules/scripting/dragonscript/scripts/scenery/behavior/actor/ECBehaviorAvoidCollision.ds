@@ -1118,11 +1118,6 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			end
 		end
 		
-		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			this.clearAvoiding()
-		end
-		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.clearAvoiding()

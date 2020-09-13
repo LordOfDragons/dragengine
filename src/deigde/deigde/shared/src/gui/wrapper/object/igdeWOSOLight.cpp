@@ -83,6 +83,7 @@ public:
 		pCounter++;
 	}
 	inline deSkin *GetLightSkin() const{ return pLightSkin; }
+	inline bool HasPathLightSkin() const{ return ! pPathLightSkin.IsEmpty(); }
 	
 	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource){
 		if( ! pOwner ){
@@ -191,7 +192,9 @@ void igdeWOSOLight::UpdateVisibility(){
 
 void igdeWOSOLight::UpdateLayerMasks(){
 	if( pLight ){
-		pLight->SetLayerMask( LayerMaskFromInt( GetWrapper().GetRenderLayerMask() ) );
+		int layerMask = GetWrapper().GetRenderLayerMask();
+		layerMask |= GetWrapper().GetRenderEnvMapMask();
+		pLight->SetLayerMask( LayerMaskFromInt( layerMask ) );
 	}
 }
 
@@ -301,7 +304,7 @@ void igdeWOSOLight::pUpdateLight(){
 		pGDLight.GetCastShadows() ) );
 	
 	deSkin *lightSkin = rl.GetLightSkin();
-	if( ! lightSkin && GetWrapper().GetGDClass() ){
+	if( ! lightSkin && rl.HasPathLightSkin() && GetWrapper().GetGDClass() ){
 		lightSkin = GetEnvironment().GetErrorSkin();
 	}
 	pLight->SetLightSkin( lightSkin );

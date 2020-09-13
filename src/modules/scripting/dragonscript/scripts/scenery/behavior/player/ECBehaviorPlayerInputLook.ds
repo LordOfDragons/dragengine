@@ -106,6 +106,11 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
+			this.pSpeedLookHorizontal = this.pECBehavior.getSpeedLookHorizontal().getValue( stub )
+			this.pSpeedLookVertical = this.pECBehavior.getSpeedLookVertical().getValue( stub )
+			this.pAnalogFactorLookHorizontal = this.pECBehavior.getAnalogFactorLookHorizontal().getValue( stub )
+			this.pAnalogFactorLookVertical = this.pECBehavior.getAnalogFactorLookVertical().getValue( stub )
+			
 			if this.pECBehavior.getLocomotion() != null
 				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
 			end
@@ -345,17 +350,6 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		
 		
-		/**
-		 * \brief Add element to game world.
-		 * 
-		 * Clears player input to ensure actor is not unintentially moving.
-		 */
-		public func void addToGameWorld()
-			this.reset()
-		end
-		
-		
-		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
@@ -384,6 +378,10 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	
 	
 	private var ECBehaviorLocomotion pLocomotion
+	private var ECPFloat pSpeedLookHorizontal
+	private var ECPFloat pSpeedLookVertical
+	private var ECPFloat pAnalogFactorLookHorizontal
+	private var ECPFloat pAnalogFactorLookVertical
 	
 	
 	
@@ -400,6 +398,18 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		this.pLocomotion = locomotion
 		
+		this.pSpeedLookHorizontal = ECPFloat.new( prefix + "speedLookHorizontal", 45, 0 )
+		eclass.addProperty( this.pSpeedLookHorizontal )
+		
+		this.pSpeedLookVertical = ECPFloat.new( prefix + "speedLookVertical", 45, 0 )
+		eclass.addProperty( this.pSpeedLookVertical )
+		
+		this.pAnalogFactorLookHorizontal = ECPFloat.new( prefix + "analogFactorLookHorizontal", 0.01 )
+		eclass.addProperty( this.pAnalogFactorLookHorizontal )
+		
+		this.pAnalogFactorLookVertical = ECPFloat.new( prefix + "analogFactorLookVertical", 0.01 )
+		eclass.addProperty( this.pAnalogFactorLookVertical )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -414,6 +424,26 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	/** \brief Locomotion behavior or null. */
 	public func ECBehaviorLocomotion getLocomotion()
 		return this.pLocomotion
+	end
+	
+	/** \brief Look left right speed in degrees per second. */
+	public func ECPFloat getSpeedLookHorizontal()
+		return this.pSpeedLookHorizontal
+	end
+	
+	/** \brief Look up down speed in degrees per second. */
+	public func ECPFloat getSpeedLookVertical()
+		return this.pSpeedLookVertical
+	end
+	
+	/** \brief Analog Look left right factor relative to left right input speed. */
+	public func ECPFloat getAnalogFactorLookHorizontal()
+		return this.pAnalogFactorLookHorizontal
+	end
+	
+	/** \brief Analog Look up down factor relative to up down input speed. */
+	public func ECPFloat getAnalogFactorLookVertical()
+		return this.pAnalogFactorLookVertical
 	end
 	
 	

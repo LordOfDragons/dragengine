@@ -308,16 +308,27 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			this.pLocomotion.cancelInput()
 		end
 		
+		/**
+		 * \brief Set locomotion orientation from element up axis.
+		 * 
+		 * Adjusts locomotion orientation to line up with the actor orientation.
+		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
+		 */
+		public func void setOrientationFromUpAxis()
+			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
+			this.pLocomotion.setMovingDirection( this.pLocomotion.getMovingOrientation() - this.pLocomotion.getOrientation() )
+		end
+		
 		
 		
 		/**
-		 * \brief Add element to game world.
+		 * \brief Position, orientation or size changed.
 		 * 
-		 * Clears locomotion movement to ensure actor is not unintentially moving.
+		 * Adjusts locomotion orientation to line up with the actor orientation.
+		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
 		 */
-		public func void addToGameWorld()
-			this.stopMoving()
-			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
+		public func void geometryChanged()
+			this.setOrientationFromUpAxis()
 		end
 		
 		
@@ -333,12 +344,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			end
 			
 			// restore parameters
+			this.pLocomotion.updateAICollider()
 			this.getElement().setOrientation( this.pLocomotion.getOrientationQuaternion() )
-			
-			var Collider collider = this.pLocomotion.getAICollider()
-			if collider != null
-				collider.setLinearVelocity( this.pLocomotion.getLinearVelocity() )
-			end
 		end
 		
 		/** \brief Write element to file. */

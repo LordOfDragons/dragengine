@@ -1,0 +1,91 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Action to run in a state machine state.
+ * 
+ * SMAction subclasses are created by the game developer and added to the state machine.
+ * If state action is run the action is looked up and run.
+ * 
+ * For performance reasons the action is looked up once then stored in the state.
+ */
+class SMStateAction
+	/** \brief Action identifier. */
+	private var String pActionID
+	
+	/** \brief Action or \em null if not cached. */
+	private var SMAction pAction
+	
+	/** \brief Parameters as Dictionary of type String key and String value. */
+	private var Dictionary pParameters
+	
+	
+	
+	/** \brief Create behavior tree rule. */
+	public func new( String actionID )
+		if actionID == null
+			throw ENullPointer.new()
+		end
+		this.pActionID = actionID
+		this.pParameters = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Action identifier. */
+	public func String getActionID()
+		return this.pActionID
+	end
+	
+	/** \brief Action or \em null if not cached. */
+	public func SMAction getAction()
+		return this.pAction
+	end
+	
+	/**
+	 * \brief Parameters as Dictionary of type String key and String value.
+	 * \warning Do not change the content of the dictionary as it is shared.
+	 */
+	public func Dictionary getParameters()
+		return this.pParameters
+	end
+	
+	
+	
+	/** \brief Run action. */
+	public func void run( SMContext context )
+		if this.pAction == null
+			this.pAction = context.getAction( this.pActionID )
+		end
+		
+		if this.pAction != null
+			this.pAction.runAction( context, this.pParameters )
+		end
+	end
+end

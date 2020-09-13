@@ -75,6 +75,26 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		func Listener createListener( Instance instance )
 	end
 	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorAttachSlot pECBehavior
@@ -457,14 +477,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pAttachable == null
-				return
-			end
-			
-			var BehaviorElement element = this.pAttachable.getElement()
-			var GameWorld gameWorld = element.getGameWorld()
-			if gameWorld != null
-				gameWorld.removeElement( element )
+			if this.pAttachable != null
+				this.pAttachable.getElement().removeFromGameWorldIfPresent()
 			end
 		end
 		
@@ -582,6 +596,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */

@@ -56,6 +56,7 @@ pEnabled( true )
 }
 
 igdeWindow::~igdeWindow(){
+	DestroyNativeWidget();
 }
 
 
@@ -106,6 +107,10 @@ void igdeWindow::SetPosition( const decPoint &position ){
 	
 	pPosition = position;
 	OnPositionChanged();
+}
+
+void igdeWindow::RaiseAndActivate(){
+	OnRaiseAndActivate();
 }
 
 
@@ -194,5 +199,11 @@ void igdeWindow::OnVisibleChanged(){
 void igdeWindow::OnEnabledChanged(){
 	if( GetNativeWidget() ){
 		( ( igdeNativeWindow* )GetNativeWidget() )->UpdateEnabled();
+	}
+}
+
+void igdeWindow::OnRaiseAndActivate(){
+	if( GetNativeWidget() ){
+		( ( igdeNativeWindow* )GetNativeWidget() )->RaiseAndActivate();
 	}
 }

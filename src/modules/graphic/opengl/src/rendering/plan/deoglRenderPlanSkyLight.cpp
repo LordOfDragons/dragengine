@@ -124,9 +124,11 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters( deoglRenderPlan &plan 
 	}
 	
 	// determine if shadow casting has to be used
+	/*
 	if( plan.GetFBOTarget() ){
 		pUseShadow = false;
 	}
+	*/
 	
 	// temporary hack to deal with slow shadow casting for the video capturing
 	if( pLayer->GetLightIntensity() < 0.1f ){
@@ -346,12 +348,14 @@ void deoglRenderPlanSkyLight::pCollectElements( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	deoglRLSVisitorCollectElements collectElements( &pCollideList );
+	deoglRLSVisitorCollectElements collectElements( pCollideList );
 	const int shadowMapSize = plan.GetShadowSkySize();
 	const float splitSizeLimitPixels = 1.0f;
 	int i;
 	
 	collectElements.InitFromFrustum( plan, *pLayer, 2000.0f );
+	collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
+	collectElements.SetLayerMask( plan.GetLayerMask() );
 	
 	for( i=0; i<pShadowLayerCount; i++ ){
 		const sShadowLayer &sl = pShadowLayers[ i ];

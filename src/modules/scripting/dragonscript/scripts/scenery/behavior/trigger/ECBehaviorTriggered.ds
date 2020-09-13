@@ -42,7 +42,7 @@ pin Dragengine.TriggerSystem
  * The initial state of the element is "false". If the element is added to the game world
  * notifyListeners() is only called if the trigger expression is "true" at this time.
  * 
- * Element class property is named "trigger{:id}".
+ * Element class property is named "trigger{(id)}".
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
  */
@@ -71,10 +71,45 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		private var BooleanBehaviorListener pListener
+		
+		public func new( BooleanBehaviorListener listener )
+			this.pListener = listener
+		end
+		
+		public func void triggerExpressionTrue( Instance instance )
+			this.pListener.enabled()
+		end
+		
+		public func void triggerExpressionFalse( Instance instance )
+			this.pListener.disabled()
+		end
+	end
+	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
 		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
 	end
 	
 	/** \brief Behavior instance. */
@@ -184,12 +219,17 @@ class ECBehaviorTriggered extends DefaultECBehavior
 			this.pTriggerExpression = expression
 		end
 		
+		/** \brief Trigger expression is present. */
+		public func bool hasTriggerExpression()
+			return this.pTriggerExpression != null
+		end
+		
 		
 		
 		/** \brief Add listener. */
 		public func void addListener( Listener listener )
 			if listener == null
-				throw EInvalidParam.new()
+				throw ENullPointer.new()
 			end
 			this.pListeners.add( listener )
 		end
@@ -319,6 +359,15 @@ class ECBehaviorTriggered extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */

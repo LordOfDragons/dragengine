@@ -44,10 +44,6 @@ from .de_porting import registerClass, matmul
 
 class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 	def exportActionList( self, context ):
-		configuration = Configuration( "deexport.config" )
-		if not configuration.parseConfig():
-			return []
-		
 		actionFilters = []
 		if context.scene.dragengine_movesetidx == -1:
 			actionFilters.append( re.compile( "^.+$" ) )
@@ -137,37 +133,35 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		configuration = Configuration( "deexport.config" )
 		if configuration.parseConfig():
 			configuration.printConfig()
-			
-			self.scaling = context.scene.dragengine_scaling
-			self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
-			self.transformScalePosition = matmul(self.scalePosition, transformPosition)
-			self.transformBoneScalePosition = matmul(self.scalePosition, transformBonePosition)
-			
-			self.animFPS = context.scene.dragengine_fps
-			self.transformTime = 1.0 / float( self.animFPS )
-			self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
-			
-			self.actionFilters = []
-			if context.scene.dragengine_movesetidx == -1:
+		
+		self.scaling = context.scene.dragengine_scaling
+		self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
+		self.transformScalePosition = matmul(self.scalePosition, transformPosition)
+		self.transformBoneScalePosition = matmul(self.scalePosition, transformBonePosition)
+		
+		self.animFPS = context.scene.dragengine_fps
+		self.transformTime = 1.0 / float( self.animFPS )
+		self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
+		
+		self.actionFilters = []
+		if context.scene.dragengine_movesetidx == -1:
+			if self.debugLevel > 0:
+				print( "animation actions: add filter '.+'" )
+			self.actionFilters.append( re.compile( "^.+$" ) )
+		else:
+			for f in context.scene.dragengine_movesets[ context.scene.dragengine_movesetidx ].filters:
 				if self.debugLevel > 0:
-					print( "animation actions: add filter '.+'" )
-				self.actionFilters.append( re.compile( "^.+$" ) )
-			else:
-				for f in context.scene.dragengine_movesets[ context.scene.dragengine_movesetidx ].filters:
-					if self.debugLevel > 0:
-						print( "animation actions: add filter '%s'" % f.name )
-					self.actionFilters.append( re.compile( "^%s$" % f.name ) )
-			
-			configuration = None # just to save some memory since it's no more required
-			
-			self.export( context )
-			
-			print( "*** WARNING ***" )
-			print( "animation exporting uses short for positions and rotations. for position this" )
-			print( "is multiplied by 1000 causing a maximal precision of 1mm. this can lead to" )
-			print( "problems. the code has to be changed to float to fix this. while being at it" )
-			print( "adding support for bezier curves would help to store animations at higher" )
-			print( "quality as well as reducing file size" )
+					print( "animation actions: add filter '%s'" % f.name )
+				self.actionFilters.append( re.compile( "^%s$" % f.name ) )
+		
+		self.export( context )
+		
+		print( "*** WARNING ***" )
+		print( "animation exporting uses short for positions and rotations. for position this" )
+		print( "is multiplied by 1000 causing a maximal precision of 1mm. this can lead to" )
+		print( "problems. the code has to be changed to float to fix this. while being at it" )
+		print( "adding support for bezier curves would help to store animations at higher" )
+		print( "quality as well as reducing file size" )
 		
 		return { 'FINISHED' }
 	
