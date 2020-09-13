@@ -1,8 +1,8 @@
 [Setup]
 AppId={{870ACA91-F55D-415A-9EB0-5F7F7E4DE2CA}
 AppName=Drag[en]gine Game Engine
-AppVersion=1.1
-;AppVerName=Drag[en]gine Game Engine 1.1
+AppVersion=1.3
+;AppVerName=Drag[en]gine Game Engine 1.3
 AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch
