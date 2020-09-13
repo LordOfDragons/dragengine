@@ -1,5 +1,5 @@
 name	dragengine_igde
-version	1.2-1
+version	1.3-0
 architecture	x86_64
 summary	"Drag[en]gine Integrated Game Development Environment Development (IGDE) Files"
 description	"Provides the development files required to create Editor Modules for the Drag[en]gine Integrated Game Development Environment (IGDE)."
@@ -13,11 +13,11 @@ copyrights {
 	"Copyright (C) by Dragon Dreams <info@dragondreams.ch>"
 }
 provides {
-	devel:libdeigdeshared = 1.2-1
+	devel:libdeigdeshared = 1.3-0
 }
 requires {
-	dragengine_igde >= 1.2-1
-	lib:libdeigdeshared >= 1.2-1
+	dragengine_igde >= 1.3-0
+	lib:libdeigdeshared >= 1.3-0
 }
 urls {
 	"https://dragondreams.ch"
