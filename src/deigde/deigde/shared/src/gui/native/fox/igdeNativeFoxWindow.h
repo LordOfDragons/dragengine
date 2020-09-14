@@ -76,6 +76,7 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateTitle();
 	virtual void UpdateSize();
+	virtual void RaiseAndActivate();
 	
 	static int WindowFlags( const igdeWindow &owner );
 	static int WindowPadLeft( const igdeGuiTheme &guitheme );

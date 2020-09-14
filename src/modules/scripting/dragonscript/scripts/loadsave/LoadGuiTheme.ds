@@ -107,12 +107,6 @@ class LoadGuiTheme extends BaseXmlLoader
 		var String tagName
 		
 		if root.hasAttributeNamed( "extend" )
-			if guitheme != null
-				this.printOnConsole( filename, root, \
-					"Attribute extend not allowed for importing" )
-				throw EInvalidParam.new()
-			end
-			
 			try
 				guitheme = GuiTheme.new( this.loadFromFile( File.absolutePath( \
 					root.getAttributeNamed( "extend" ), basePath ).getPath() ) )
@@ -126,9 +120,8 @@ class LoadGuiTheme extends BaseXmlLoader
 			isShared = true
 			
 		elif root.hasAttributeNamed( "extendNamed" )
-			if guitheme != null
-				this.printOnConsole( filename, root, \
-					"Attribute extendNamed not allowed for importing" )
+			if guitheme == null
+				this.printOnConsole( filename, root, "Attribute extendNamed only works on 'import' and 'theme'" )
 				throw EInvalidParam.new()
 			end
 			
@@ -138,7 +131,7 @@ class LoadGuiTheme extends BaseXmlLoader
 				
 			catch Exception e
 				this.printOnConsole( filename, root, "Gui theme named '" \
-					+ root.getAttributeNamed( "extend" ) + "' not found" )
+					+ root.getAttributeNamed( "extendNamed" ) + "' not found" )
 				throw
 			end
 			
@@ -182,7 +175,7 @@ class LoadGuiTheme extends BaseXmlLoader
 				
 			elif tagName.equals( "theme" )
 				guitheme.setNamedGuiTheme( element.getAttributeNamed( "name" ), \
-					this.parseGuiTheme( filename, element, basePath, null ) )
+					this.parseGuiTheme( filename, element, basePath, guitheme ) )
 				
 			elif tagName.equals( "import" )
 				try

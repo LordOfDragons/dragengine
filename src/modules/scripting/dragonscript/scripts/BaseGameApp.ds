@@ -326,6 +326,7 @@ class BaseGameApp extends Game
 	private var ConnectionTracker pConnectionTracker
 	private var NetworkStateTracker pNetworkStateTracker
 	private var MutableID pIDGenerator
+	private var GlobalEvents pGlobalEvents
 	
 	private static var BaseGameApp pApp = null
 	
@@ -391,6 +392,7 @@ class BaseGameApp extends Game
 		
 		InputSystem.setCaptureInputDevices( true )
 		this.pIDGenerator = MutableID.new( 1 )
+		this.pGlobalEvents = GlobalEvents.new()
 		
 		this.pConsole = Console.new( 50 )
 		this.pConsole.addListener( LogConsoleMessages.new() )
@@ -521,6 +523,7 @@ class BaseGameApp extends Game
 		end
 		
 		this.pSkinAnnotations = null
+		this.pGlobalEvents = null
 		
 		this.pLoaders = null
 		this.pConsole = null
@@ -717,6 +720,11 @@ class BaseGameApp extends Game
 		return this.pIDGenerator
 	end
 	
+	/** \brief Global event manager. */ 
+	public func GlobalEvents getGlobalEvents()
+		return this.pGlobalEvents
+	end
+	
 	
 	
 	/** \brief Console window toggled using CommandToggleConsole or \em null if absent. */
@@ -764,6 +772,16 @@ class BaseGameApp extends Game
 	/** \brief Set input processor to forward events to binding manager. */
 	public func void setInputProcessorBindings()
 		this.setInputProcessor( BindingInputProcessor.new( this.pBindingManager ) )
+	end
+	
+	/**
+	 * \brief Set input processor to nothing.
+	 * 
+	 * This is useful in situation where your game transitions from one input situation to
+	 * another and you do not want to have any user interaction causing disturbances.
+	 */
+	public func void setInputProcessorNothing()
+		this.setInputProcessor( DefaultInputProcessor.new() )
 	end
 	
 	

@@ -40,6 +40,10 @@ private:
 	deoglFramebuffer *pPrimary;
 	deoglFramebuffer *pActive;
 	
+	deoglFramebuffer *pEnvMap;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -65,6 +69,9 @@ public:
 	
 	/** \brief Activate framebuffer or \em NULL to activate the primary framebuffer. */
 	void Activate( deoglFramebuffer *framebuffer );
+	
+	/** \brief Environment map framebuffer. */
+	inline deoglFramebuffer *GetEnvMap() const{ return pEnvMap; }
 	/*@}*/
 	
 private:

@@ -104,20 +104,18 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 		configuration = Configuration( "deimport.config" )
 		if configuration.parseConfig():
 			configuration.printConfig()
-			
-			self.scaling = context.scene.dragengine_scaling
-			self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
-			self.scalePositionInv = Matrix( ( (1/self.scaling,0,0,0), (0,1/self.scaling,0,0), (0,0,1/self.scaling,0), (0,0,0,1) ) )
-			self.transformScalePosition = matmul(transformPositionInv, self.scalePositionInv)
-			self.transformBoneScalePosition = matmul(transformBonePositionInv, self.scalePositionInv)
-			
-			self.animFPS = context.scene.dragengine_fps
-			self.transformTime = 1.0 / float( self.animFPS )
-			self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
-			
-			configuration = None # just to save some memory since it's no more required
-			
-			self.importFile( context )
+		
+		self.scaling = context.scene.dragengine_scaling
+		self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
+		self.scalePositionInv = Matrix( ( (1/self.scaling,0,0,0), (0,1/self.scaling,0,0), (0,0,1/self.scaling,0), (0,0,0,1) ) )
+		self.transformScalePosition = matmul(transformPositionInv, self.scalePositionInv)
+		self.transformBoneScalePosition = matmul(transformBonePositionInv, self.scalePositionInv)
+		
+		self.animFPS = context.scene.dragengine_fps
+		self.transformTime = 1.0 / float( self.animFPS )
+		self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
+		
+		self.importFile( context )
 		
 		return { 'FINISHED' }
 	

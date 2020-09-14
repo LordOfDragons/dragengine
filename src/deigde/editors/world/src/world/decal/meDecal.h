@@ -250,6 +250,7 @@ public:
 	
 	
 private:
+	void pInitShared();
 	void pCleanUp();
 	
 	void pRepositionShapes();

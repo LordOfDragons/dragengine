@@ -76,12 +76,15 @@ pin Dragengine.TriggerSystem
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
+ *    var ECBehaviorComponent component
+ *    var ECBehaviorComponent subComponent
+ *    
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorTwoStateAnimated.new(this)
+ *       component = ECBehaviorComponent.new(this)
+ *       ECBehaviorTwoStateAnimated.new(this, component)
  *       
- *       ECBehaviorComponent.new(this, "subComponent")
- *       ECBehaviorTwoStateAnimated.new(this, "subAnimator", "subComponent")
+ *       subComponent = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorTwoStateAnimated.new(this, subComponent, "subAnimator")
  *    end
  * end
  * \endcode
@@ -148,11 +151,75 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		private var BooleanBehaviorListener pListener
+		private var bool pFull
+		
+		/** \brief Create boolean listener operating on stopActivate() and startDeactivate(). */
+		public func new( BooleanBehaviorListener listener ) this( listener, false )
+		end
+		
+		/**
+		 * \brief Create boolean listener.
+		 * \param full If true operates on startActivate() and stopDeactivate() otherwise
+		 *             operates on stopActivate() and startDeactivate().
+		 */
+		public func new( BooleanBehaviorListener listener, bool full )
+			this.pListener = listener
+			this.pFull = full
+		end
+		
+		public func void startActivate( Instance instance )
+			if this.pFull
+				this.pListener.enabled()
+			end
+		end
+		
+		public func void stopDeactivate( Instance instance )
+			if this.pFull
+				this.pListener.disabled()
+			end
+		end
+		
+		public func void stopActivate( Instance instance )
+			if not this.pFull
+				this.pListener.enabled()
+			end
+		end
+		
+		public func void startDeactivate( Instance instance )
+			if not this.pFull
+				this.pListener.disabled()
+			end
+		end
+	end
+	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
 		func Listener createListener( Instance instance )
 	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
@@ -1138,6 +1205,15 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */

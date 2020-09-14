@@ -57,6 +57,7 @@ class Loaders
 	private var LoadAnimator pAnimator
 	private var LoadAnnouncer pAnnouncer
 	private var LoadBehaviorTree pBehaviorTree
+	private var LoadStateMachine pStateMachine
 	private var LoadBorder pBorder
 	private var LoadCanvasCreator pCanvasCreator
 	private var LoadConversation pConversation
@@ -93,6 +94,7 @@ class Loaders
 		this.pAnimator = LoadAnimator.new( console )
 		this.pAnnouncer = LoadAnnouncer.new( console )
 		this.pBehaviorTree = LoadBehaviorTree.new( console )
+		this.pStateMachine = LoadStateMachine.new( console )
 		this.pBorder = LoadBorder.new( console )
 		this.pCanvasCreator = LoadCanvasCreator.new( console )
 		this.pConversation = LoadConversation.new( console )
@@ -156,6 +158,11 @@ class Loaders
 	/** \brief Behavior tree loader. */
 	public func LoadBehaviorTree getBehaviorTree()
 		return this.pBehaviorTree
+	end
+	
+	/** \brief State machine loader. */
+	public func LoadStateMachine getStateMachine()
+		return this.pStateMachine
 	end
 	
 	/** \brief Border loader. */

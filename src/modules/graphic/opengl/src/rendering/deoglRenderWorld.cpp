@@ -391,6 +391,19 @@ DEBUG_RESET_TIMER
 		renderers.GetLight().RenderLights( plan, true );
 		DBG_EXIT("RenderLights")
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+#if 0
+			if(plan.GetFBOTarget()){
+				static int c = 0;
+				const decDVector &p = plan.GetCameraPosition();
+				decString s;
+				s.Format("envmap_%g-%g-%g/c%d/lights-after/", p.x, p.y, p.z, c++);
+				deoglDebugSnapshot snapshot( renderThread );
+				snapshot.SetEnableColor( true );
+				snapshot.SetEnableStates( true );
+				snapshot.SetName( s );
+				snapshot.TakeSnapshot();
+			}
+#endif
 	}
 	QUICK_DEBUG_END
 	

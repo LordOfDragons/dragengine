@@ -103,14 +103,20 @@ debiDevice( module )
 	wheelX.SetDisplayText( "Wheel" );
 	
 	// add buttons
-	int32 buttonCount;
-	if( get_mouse_type( &buttonCount ) != B_OK ){
+	int32 buttonCount = 3;
+	// no more working. there is a constant B_MAX_MOUSE_BUTTONS but mmap.button[i] returns
+	// just 1<<i which is kinda pointless. assuming 3 buttons and wait until this is fixed
+	/*if( get_mouse_type( &buttonCount ) != B_OK ){
 		DETHROW( deeInvalidParam );
-	}
+	}*/
 	
 	mouse_map mmap;
 	if( get_mouse_map( &mmap ) != B_OK ){
 		DETHROW( deeInvalidParam );
+	}
+	
+	for(int I=0; I<B_MAX_MOUSE_BUTTONS; I++){
+		printf("SHIT %d %d\n", I, mmap.button[I]);
 	}
 	
 	if( buttonCount > 0 ){

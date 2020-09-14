@@ -1,5 +1,5 @@
 name	dragengine_igde
-version	1.2-1
+version	1.3-0
 architecture	x86_64
 summary	"Drag[en]gine Integrated Game Development Environment"
 description	"Provides the integrated game development environment for developing games using the Drag[en]gine game engine."
@@ -13,13 +13,13 @@ copyrights {
 	"Copyright (C) by Dragon Dreams <info@dragondreams.ch>"
 }
 provides {
-	dragengine_igde = 1.2-1
-	lib:libdeigdeshared = 1.2-1
-	app:deigde = 1.2-1
+	dragengine_igde = 1.3-0
+	lib:libdeigdeshared = 1.3-0
+	app:deigde = 1.3-0
 }
 requires {
-	dragengine >= 1.2-1
-	lib:libdragengine >= 1.2-1
+	dragengine >= 1.3-0
+	lib:libdragengine >= 1.3-0
 }
 urls {
 	"https://dragondreams.ch"

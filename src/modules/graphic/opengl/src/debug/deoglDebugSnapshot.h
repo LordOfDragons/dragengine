@@ -53,6 +53,9 @@ private:
 	bool pEnableRoughness;
 	bool pEnableAOSolidity;
 	bool pEnablePostProcess;
+	bool pEnableTemporary1;
+	bool pEnableTemporary2;
+	bool pEnableTemporary3;
 	
 	int pStatesKeyWidth;
 	
@@ -160,6 +163,24 @@ public:
 	
 	/** \brief Set enable save snapshot of post processing buffer. */
 	void SetEnablePostProcess( bool enable );
+	
+	/** \brief Enable save snapshot of deferred rendering temporary 1 buffer. */
+	inline bool GetEnableTemportary1() const{ return pEnableTemporary1; }
+	
+	/** \brief Set enable save snapshot of deferred rendering temporary 1 buffer. */
+	void SetEnableTemporary1( bool enable );
+	
+	/** \brief Enable save snapshot of deferred rendering temporary 2 buffer. */
+	inline bool GetEnableTemportary2() const{ return pEnableTemporary2; }
+	
+	/** \brief Set enable save snapshot of deferred rendering temporary 2 buffer. */
+	void SetEnableTemporary2( bool enable );
+	
+	/** \brief Enable save snapshot of deferred rendering temporary 3 buffer. */
+	inline bool GetEnableTemportary3() const{ return pEnableTemporary3; }
+	
+	/** \brief Set enable save snapshot of deferred rendering temporary 3 buffer. */
+	void SetEnableTemporary3( bool enable );
 	
 	
 	

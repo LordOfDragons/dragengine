@@ -180,11 +180,11 @@ class StubGameWorld extends StubWithProperties
 	 * to create the elements.
 	 */
 	public func void readElementStubsFromFile( PersistencyEnvironment env, FileReader reader, \
-	ElementClassList ElementClassList )
+	ElementClassList elementClassList )
 		var StubElement stub
 		
 		while true
-			stub = StubElement.readFromFile( reader, ElementClassList )
+			stub = StubElement.readFromFile( reader, elementClassList )
 			if stub == null
 				break
 			end

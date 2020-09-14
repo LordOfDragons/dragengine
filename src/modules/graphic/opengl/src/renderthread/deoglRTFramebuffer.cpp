@@ -41,12 +41,16 @@
 deoglRTFramebuffer::deoglRTFramebuffer( deoglRenderThread &renderThread ) :
 pManager( NULL ),
 pPrimary( NULL ),
-pActive( NULL ){
+pActive( NULL ),
+pEnvMap( NULL )
+{
 	try{
 		pManager = new deoglFramebufferManager( renderThread );
 		
 		pPrimary = new deoglFramebuffer( renderThread, true );
 		pActive = pPrimary;
+		
+		pEnvMap = new deoglFramebuffer( renderThread, false );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -88,6 +92,9 @@ void deoglRTFramebuffer::pCleanUp(){
 		delete pManager;
 	}
 	
+	if( pEnvMap ){
+		delete pEnvMap;
+	}
 	if( pPrimary ){
 		delete pPrimary;
 	}

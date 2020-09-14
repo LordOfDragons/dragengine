@@ -62,6 +62,10 @@ class DisplayImage extends Widget
 		this.setDesignerSelector( designerSelector )
 	end
 	
+	public func new( Image image, RepeatMode repeatMode, String designerSelector ) this( image, repeatMode )
+		this.setDesignerSelector( designerSelector )
+	end
+	
 	
 	
 	/** \brief Image to display or \em null if not set. */

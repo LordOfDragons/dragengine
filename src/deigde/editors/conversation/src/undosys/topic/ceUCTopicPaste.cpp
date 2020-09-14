@@ -106,9 +106,13 @@ void ceUCTopicPaste::Undo(){
 
 void ceUCTopicPaste::Redo(){
 	const int count = pTopics.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	int i;
 	for( i=0; i<count; i++ ){
 		pFile->AddTopic( pTopics.GetAt( i ) );
 	}
+	pFile->SetActiveTopic( pTopics.GetAt( count - 1 ) );
 }

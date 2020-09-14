@@ -66,6 +66,24 @@ class ECBehaviorInventory extends DefaultECBehavior
 		func Listener createListener( Instance instance )
 	end
 	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorInventory pECBehavior
@@ -221,6 +239,11 @@ class ECBehaviorInventory extends DefaultECBehavior
 			stashable.getElement().safeDispose()
 		end
 		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return this.pElementResolver
+		end
+		
 		
 		
 		/** \brief Add listener. */
@@ -262,11 +285,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
 			this.pStashables.forEach( block ECBehaviorStashable.Instance each
-				var BehaviorElement element = each.getElement()
-				var GameWorld gameWorld = element.getGameWorld()
-				if gameWorld != null
-					gameWorld.removeElement( element )
-				end
+				each.getElement().removeFromGameWorldIfPresent()
 			end )
 		end
 		
@@ -345,6 +364,15 @@ class ECBehaviorInventory extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */

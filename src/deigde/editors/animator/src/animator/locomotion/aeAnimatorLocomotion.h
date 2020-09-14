@@ -133,7 +133,10 @@ public:
 		eaLegPosition,
 		
 		/** \brief Leg orientation. */
-		eaLegOrientation
+		eaLegOrientation,
+		
+		/** \brief Relative displacement in meters. */
+		eaRelativeDisplacement
 	};
 	
 	

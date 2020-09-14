@@ -55,6 +55,11 @@ class deBaseScriptingCollider;
  * 
  * Provides a simple way to display a object defined by a game definition object class in a world.
  * The object can be fine tuned using string properties.
+ * 
+ * These are the default layer masks set for a newly constructed igdeWObject:
+ * - Render Layer Mask: 1 (Bit 0 set)
+ * - Render Environment Map Mask: 2 (Bit 1 set)
+ * - Audio: 4 (Bit 2 set)
  */
 class igdeWObject{
 public:

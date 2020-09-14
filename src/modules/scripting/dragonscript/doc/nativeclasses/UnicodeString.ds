@@ -154,6 +154,16 @@ class UnicodeString
 	 */
 	public func int hashCode()
 	end
+	
+	/**
+	 * \brief Compare object with another object.
+	 * \details Used to sort objects. Overwrite to implement sorting.
+	 * \retval 0 Object is equal to \em obj.
+	 * \retval <0 Object comes before \em obj.
+	 * \retval >0 Object comes after \em obj.
+	 */
+	public func int compare( Object obj )
+	end
 	/*@}*/
 	
 	

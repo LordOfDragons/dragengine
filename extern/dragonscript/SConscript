@@ -11,8 +11,8 @@ envLibrary = parent_env.Clone()
 
 # parameters
 distVersionMajor = 1
-distVersionMinor = 0
-srcdir = 'libdscript-{}.{}'.format(distVersionMajor, distVersionMinor)
+distVersionMinor = 1
+srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
 
 if envLibrary[ 'OSWindows' ]:
 	libFileName = 'lib/dscript.dll'

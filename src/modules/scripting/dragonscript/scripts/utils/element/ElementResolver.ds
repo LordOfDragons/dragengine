@@ -277,6 +277,37 @@ class ElementResolver
 		this.pRequests.removeAll()
 	end
 	
+	/**
+	 * \brief Resolve element.
+	 * 
+	 * Resolve all requests matching element calling the request blocks with the element
+	 * as parameter. Removes all matching requests after processing them. This method is
+	 * useful to resolve elements outside a game world.
+	 */
+	public func void resolve( Element element )
+		if element == null
+			throw EInvalidParam.new()
+		end
+		
+		var UniqueID id = element.getID()
+		var int index
+		
+		this.pRequests.removeIf( block Request each
+			if not each.getID().equals( id )
+				return false
+			end
+			
+			index = each.getBehaviorInstanceIndex()
+			if index != -1
+				each.getBlock().run( ( element cast BehaviorElement ).getInstanceAt( index ) )
+				
+			else
+				each.getBlock().run( element )
+			end
+			return true
+		end )
+	end
+	
 	
 	
 	/** \brief Number of pending requests. */

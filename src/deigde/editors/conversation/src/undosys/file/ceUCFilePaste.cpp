@@ -106,9 +106,13 @@ void ceUCFilePaste::Undo(){
 
 void ceUCFilePaste::Redo(){
 	const int count = pFiles.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	int i;
 	for( i=0; i<count; i++ ){
 		pConversation->AddFile( pFiles.GetAt( i ) );
 	}
+	pConversation->SetActiveFile( pFiles.GetAt( count - 1 ) );
 }

@@ -66,18 +66,18 @@ class ECComposeMoveOnRail
 		/** \brief Create mover. */
 		public func new( Collider collider )
 			if collider == null
-				throw EInvalidParam.new()
+				throw ENullPointer.new()
 			end
 			this.pCollider = collider
 			this.pStartAtFirstCorner = true
-			this.pVelocity = 1.0
-			this.pAcceleration = 1.0
-			this.pDeceleration = 1.0
-			this.pCurrentVelocity = 0.0
-			this.pBreakDistance = 0.0
+			this.pVelocity = 1
+			this.pAcceleration = 1
+			this.pDeceleration = 1
+			this.pCurrentVelocity = 0
+			this.pBreakDistance = 0
 			this.pCurrentCorner = -1
 			this.pTargetCorner = -1
-			this.pRemainingDistance = 0.0
+			this.pRemainingDistance = 0
 		end
 	
 		
@@ -131,14 +131,12 @@ class ECComposeMoveOnRail
 		public func void attachRail( RailList rails )
 			this.setRail( rails.getWithID( this.pRailID ) )
 			if this.pRail == null
-				throw EInvalidParam.new()
-				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' not found" )
+				throw EInvalidParam.new( "rail '" + this.pRailID + "' not found" )
 			end
 			
 			var int cornerCount = this.pRail.getCornerCount()
 			if cornerCount == 0
-				throw EInvalidParam.new()
-				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' has no corners" )
+				throw EInvalidParam.new( "rail '" + this.pRailID + "' has no corners" )
 			end
 			
 			this.pCurrentCorner = this.pStartAtFirstCorner if 0 else cornerCount - 1

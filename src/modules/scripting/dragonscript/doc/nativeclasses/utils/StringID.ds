@@ -19,6 +19,14 @@ pin Dragengine.Gui
  * string comparison.
  * 
  * This is a native class.
+ * 
+ * \warning
+ * 
+ * The hash code of StringID is not compatible with the hash code of String. This has been
+ * done to improve performance and get optimal dictionary distribution.
+ * 
+ * In particular this means if you use StringID as keys in Dictionary using a String to
+ * find the key in the dictionary will fail because their hash codes are different.
  */
 class StringID
 	/** \name Constructors */

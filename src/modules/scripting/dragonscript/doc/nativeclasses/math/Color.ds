@@ -17,43 +17,43 @@ fixed class Color
 	/** \name Color constants */
 	/*@{*/
 	/** \brief White. */
-	public static fixed var Color white = Color.new( 1.0, 1.0, 1.0, 1.0 )
+	public static fixed var Color white = Color.new( 1, 1, 1, 1 )
 	
 	/** \brief light gray. */
-	public static fixed var Color lightGray = Color.new( 0.75, 0.75, 0.75, 1.0 )
+	public static fixed var Color lightGray = Color.new( 0.75, 0.75, 0.75, 1 )
 	
 	/** \brief gray. */
-	public static fixed var Color gray = Color.new( 0.5, 0.5, 0.5, 1.0 )
+	public static fixed var Color gray = Color.new( 0.5, 0.5, 0.5, 1 )
 	
 	/** \brief Dark gray. */
-	public static fixed var Color darkGray = Color.new( 0.25, 0.25, 0.25, 1.0 )
+	public static fixed var Color darkGray = Color.new( 0.25, 0.25, 0.25, 1 )
 	
 	/** \brief Black. */
-	public static fixed var Color black = Color.new( 0.0, 0.0, 0.0, 1.0 )
+	public static fixed var Color black = Color.new( 0, 0, 0, 1 )
 	
 	/** \brief Red. */
-	public static fixed var Color red = Color.new( 1.0, 0.0, 0.0, 1.0 )
+	public static fixed var Color red = Color.new( 1, 0, 0, 1 )
 	
 	/** \brief Dark red. */
-	public static fixed var Color darkRed = Color.new( 0.5, 0.0, 0.0, 1.0 )
+	public static fixed var Color darkRed = Color.new( 0.5, 0, 0, 1 )
 	
 	/** \brief Green. */
-	public static fixed var Color green = Color.new( 0.0, 1.0, 0.0, 1.0 )
+	public static fixed var Color green = Color.new( 0, 1, 0, 1 )
 	
 	/** \brief Dark green. */
-	public static fixed var Color darkGreen = Color.new( 0.0, 0.5, 0.0, 1.0 )
+	public static fixed var Color darkGreen = Color.new( 0, 0.5, 0, 1 )
 	
 	/** \brief Blue. */
-	public static fixed var Color blue = Color.new( 0.0, 0.0, 1.0, 1.0 )
+	public static fixed var Color blue = Color.new( 0, 0, 1, 1 )
 	
 	/** \brief Dark blue. */
-	public static fixed var Color darkBlue = Color.new( 0.0, 0.0, 0.5, 1.0 )
+	public static fixed var Color darkBlue = Color.new( 0, 0, 0.5, 1 )
 	
 	/** \brief Yellow. */
-	public static fixed var Color yellow = Color.new( 1.0, 1.0, 0.0, 1.0 )
+	public static fixed var Color yellow = Color.new( 1, 1, 0, 1 )
 	
 	/** \brief Transparent. */
-	public static fixed var Color transparent = Color.new( 0.0, 0.0, 0.0, 0.0 )
+	public static fixed var Color transparent = Color.new( 0, 0, 0, 0 )
 	/*@}*/
 	
 	

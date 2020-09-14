@@ -63,6 +63,9 @@ pEnableReflectivity( false ),
 pEnableRoughness( false ),
 pEnableAOSolidity( false ),
 pEnablePostProcess( false ),
+pEnableTemporary1( false ),
+pEnableTemporary2( false ),
+pEnableTemporary3( false ),
 pStatesKeyWidth( 35 ){
 }
 
@@ -132,6 +135,18 @@ void deoglDebugSnapshot::SetEnablePostProcess( bool enable ){
 	pEnablePostProcess = enable;
 }
 
+void deoglDebugSnapshot::SetEnableTemporary1( bool enable ){
+	pEnableTemporary1 = enable;
+}
+
+void deoglDebugSnapshot::SetEnableTemporary2( bool enable ){
+	pEnableTemporary2 = enable;
+}
+
+void deoglDebugSnapshot::SetEnableTemporary3( bool enable ){
+	pEnableTemporary3 = enable;
+}
+
 
 
 void deoglDebugSnapshot::SetEnableDepthStencil( bool enable ){
@@ -164,6 +179,9 @@ void deoglDebugSnapshot::SetEnableAllBuffers( bool enable ){
 	pEnableRoughness = enable;
 	pEnableAOSolidity = enable;
 	pEnablePostProcess = enable;
+	pEnableTemporary1 = enable;
+	pEnableTemporary2 = enable;
+	pEnableTemporary3 = enable;
 }
 
 
@@ -237,6 +255,21 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 	if( pEnablePostProcess ){
 		dst.SaveTextureConversion( *defren.GetPostProcessTexture(), pName + "postprocess",
 			deoglDebugSaveTexture::ecNoConversion );
+	}
+	
+	if( pEnableTemporary1 ){
+		dst.SaveTextureConversion( *defren.GetTextureTemporary1(), pName + "temporary1",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
+	}
+	
+	if( pEnableTemporary2 ){
+		dst.SaveTextureConversion( *defren.GetTextureTemporary2(), pName + "temporary2",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
+	}
+	
+	if( pEnableTemporary3 ){
+		dst.SaveTextureConversion( *defren.GetTextureTemporary3(), pName + "temporary3",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 }
 

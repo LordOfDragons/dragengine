@@ -49,34 +49,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRLSVisitorCollectElements::deoglRLSVisitorCollectElements( deoglCollideList *collideList ){
-	if( ! collideList ){
-		DETHROW( deeInvalidParam );
-	}
-	
+deoglRLSVisitorCollectElements::deoglRLSVisitorCollectElements( deoglCollideList &collideList ) :
+pCollideList( collideList ),
+pSplitCount( 0 ),
+pShaftFar( 0.0f ),
+pFrustumPlaneCount( 0 ),
+pEdgeCount( 0 ),
+pCullLayerMask( false )
+{
 	int i;
-	
-	pCollideList = collideList;
-	
-	pShaftFar = 0.0f;
-	
 	for( i=0; i<6; i++ ){
 		pFrustumPlaneDistance[ i ] = 0.0f;
 	}
-	pFrustumPlaneCount = 0;
-	
 	for( i=0; i<5; i++ ){
 		pEdgeDistance[ i ] = 0.0f;
 	}
-	pEdgeCount = 0;
-	
-	pSplitCount = 0;
 }
 
 
 
 // Management
 ///////////////
+
+void deoglRLSVisitorCollectElements::SetCullLayerMask( bool cull ){
+	pCullLayerMask = cull;
+}
+
+void deoglRLSVisitorCollectElements::SetLayerMask( const decLayerMask &layerMask ){
+	pLayerMask = layerMask;
+}
+
+
 
 void deoglRLSVisitorCollectElements::InitFromFrustum( deoglRenderPlan &plan,
 deoglRSkyInstanceLayer &skyLayer, float backtrack ){
@@ -237,8 +240,8 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack ){
 	pSplitCount = 0;
 }
 
-void deoglRLSVisitorCollectElements::AddSplit( const decVector &minExtend, const decVector &maxExtend,
-const decVector2 &sizeThreshold ){
+void deoglRLSVisitorCollectElements::AddSplit( const decVector &minExtend,
+const decVector &maxExtend, const decVector2 &sizeThreshold ){
 	if( pSplitCount == 4 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -258,7 +261,7 @@ void deoglRLSVisitorCollectElements::VisitWorldOctree( deoglWorldOctree &octree 
 // Visiting
 /////////////
 
-void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int intersection ){
+void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 	// check if the node is fully inside or outside to speed up checks if possible
 	if( ! TestAxisAlignedBox( node->GetCenter() - node->GetHalfSize(), node->GetCenter() + node->GetHalfSize() ) ){
 		return; // axis aligned box of node is outside the boundary box. ignore all contained elements
@@ -271,30 +274,46 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int intersec
 	
 	// test components
 	count = sonode.GetComponentCount();
-	deoglRComponent *component;
 	
 	for( i=0; i<count; i++ ){
-		component = sonode.GetComponentAt( i );
+		deoglRComponent * const component = sonode.GetComponentAt( i );
 		
-		if( TestAxisAlignedBox( component->GetMinimumExtend(), component->GetMaximumExtend(), splitMask ) ){
-			component->SetSkyShadowSplitMask( splitMask );
-			//component->SetVisible( true );
-			pCollideList->AddComponent( component );
+		// cull using layer mask if required. components with empty layer mask never match
+		// and thus are never culled
+		if( pCullLayerMask && component->GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( component->GetLayerMask() ) ){
+			continue;
 		}
+		
+		if( ! TestAxisAlignedBox( component->GetMinimumExtend(), component->GetMaximumExtend(), splitMask ) ){
+			continue;
+		}
+		
+		component->SetSkyShadowSplitMask( splitMask );
+		//component->SetVisible( true );
+		pCollideList.AddComponent( component );
 	}
 	
 	// test billboards
 	count = sonode.GetBillboardList().GetCount();
-	deoglRBillboard *billboard;
 	
 	for( i=0; i<count; i++ ){
-		billboard = sonode.GetBillboardList().GetAt( i );
+		deoglRBillboard * const billboard = sonode.GetBillboardList().GetAt( i );
 		
-		if( TestAxisAlignedBox( billboard->GetMinimumExtend(), billboard->GetMaximumExtend(), splitMask ) ){
-			billboard->SetSkyShadowSplitMask( splitMask );
-			//billboard->SetVisible( true );
-			pCollideList->AddBillboard( billboard );
+		// cull using layer mask if required. billboards with empty layer mask never match
+		// and thus are never culled
+		if( pCullLayerMask && billboard->GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( billboard->GetLayerMask() ) ){
+			continue;
 		}
+		
+		if( ! TestAxisAlignedBox( billboard->GetMinimumExtend(), billboard->GetMaximumExtend(), splitMask ) ){
+			continue;
+		}
+		
+		billboard->SetSkyShadowSplitMask( splitMask );
+		//billboard->SetVisible( true );
+		pCollideList.AddBillboard( billboard );
 	}
 }
 

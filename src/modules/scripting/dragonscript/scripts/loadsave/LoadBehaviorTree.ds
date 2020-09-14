@@ -185,23 +185,12 @@ class LoadBehaviorTree extends BaseXmlLoader
 			
 		elif tagName.equals( "conditionMode" )
 			var String value = element.getFirstCData()
-			
-			if value.equals( "allTrue" )
-				rule.setConditionMode( BTRule.ConditionMode.allTrue )
-				
-			elif value.equals( "anyTrue" )
-				rule.setConditionMode( BTRule.ConditionMode.anyTrue )
-				
-			elif value.equals( "anyFalse" )
-				rule.setConditionMode( BTRule.ConditionMode.anyFalse )
-				
-			elif value.equals( "allFalse" )
-				rule.setConditionMode( BTRule.ConditionMode.allFalse)
-				
-			else
+			var BTRule.ConditionMode mode = BTRule.ConditionMode.named( value )
+			if mode == null
 				this.logInvalidValue( element, value )
 				throw EInvalidParam.new()
 			end
+			rule.setConditionMode( mode )
 			
 		else
 			return false
