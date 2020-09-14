@@ -115,10 +115,6 @@ debiDevice( module )
 		DETHROW( deeInvalidParam );
 	}
 	
-	for(int I=0; I<B_MAX_MOUSE_BUTTONS; I++){
-		printf("SHIT %d %d\n", I, mmap.button[I]);
-	}
-	
 	if( buttonCount > 0 ){
 		refObject.TakeOver( new debiDeviceButton( module ) );
 		AddButton( ( debiDeviceButton* )( deObject* )refObject );
