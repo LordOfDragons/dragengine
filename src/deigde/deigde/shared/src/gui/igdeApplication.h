@@ -33,10 +33,6 @@
 #include <dragengine/app/include_windows.h>
 #endif
 
-#ifdef OS_BEOS
-#include <app/Application.h>
-#endif
-
 
 class decUnicodeStringList;
 class igdeMainWindow;

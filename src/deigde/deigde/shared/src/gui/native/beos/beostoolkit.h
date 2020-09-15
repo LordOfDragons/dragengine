@@ -19,21 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _TOOLKIT_H_
-#define _TOOLKIT_H_
+#ifndef _BEOSTOOLKIT_H_
+#define _BEOSTOOLKIT_H_
 
-#include "../../deigde_configuration.h"
+#include "../../../deigde_configuration.h"
 
-#ifdef IGDE_TOOLKIT_FOX
-#	include "fox/foxtoolkit.h"
-#	include "fox/foxincludenative.h"
+#include <dragengine/common/math/decMath.h>
 
-#elif defined IGDE_TOOLKIT_BEOS
-#	include "beos/beostoolkit.h"
-#	include "fox/foxincludenative.h"
+#include <app/Application.h>
+#include <app/Message.h>
+#include <interface/Alert.h>
+#include <interface/Button.h>
+#include <interface/CheckBox.h>
+#include <interface/ListItem.h>
+#include <interface/ListView.h>
+#include <interface/StringItem.h>
 
-#elif defined IGDE_TOOLKIT_NULL
-
-#endif
+class igdeUIBeOSHelper{
+private:
+	igdeUIBeOSHelper();
+	
+public:
+	static rgb_color BlendColor( rgb_color color1, rgb_color color2, float factor );
+	static rgb_color ConvertColor(const decColor& color);
+	static decColor ConvertColor( rgb_color color );
+	static rgb_color BrighterColor( rgb_color color, int amount );
+};
 
 #endif

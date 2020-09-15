@@ -34,7 +34,7 @@
 // unix entry point
 /////////////////////
 
-#if defined OS_UNIX && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_MACOS
 int main( int argCount, char **args ){
 	try{
 		igdeRealApplication().Run( argCount, args );

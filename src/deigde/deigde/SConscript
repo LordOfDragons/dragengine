@@ -125,6 +125,8 @@ elif envIGDELib['OSBeOS']:
 
 if envIGDELib['igde_toolkit'] == 'fox':
 	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_FOX=1'])
+elif envIGDELib['igde_toolkit'] == 'beos':
+	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_BEOS=1'])
 elif envIGDELib['igde_toolkit'] == 'null':
 	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_NULL=1'])
 else:
