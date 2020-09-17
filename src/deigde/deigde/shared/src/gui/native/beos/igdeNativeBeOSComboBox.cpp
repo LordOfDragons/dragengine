@@ -39,23 +39,23 @@
 
 
 // Class igdeNativeBeOSComboBox
-////////////////////////////////
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 igdeNativeBeOSComboBox::igdeNativeBeOSComboBox( igdeComboBox &owner, const igdeGuiTheme &guitheme ) :
-BButton( owner.GetText(), new BMessage( eeDropDown ) ),
+BMenuField( "", new BPopUpMenu( "popup" ) ),
 pOwner( &owner ),
 pFont( ComboBoxFont( owner, guitheme ) ),
 pOrgBackColor( ViewColor() ),
 pInvalidBackColor( igdeUIBeOSHelper::BlendColor( pOrgBackColor, rgb_color{ 255, 0, 0, 255 }, 0.25f ) ),
-pListView( new BListView( B_SINGLE_SELECTION_LIST ) )
+pMenu( *( ( BPopUpMenu* )Menu() ) ),
+pTopItemIndex( 0 ),
+pCustomItem( NULL )
 {
 	//ComboBoxPadLeft( guitheme ), ComboBoxPadRight( guitheme ),
 	//ComboBoxPadTop( guitheme ), ComboBoxPadBottom( guitheme ) ),
-	
-	pListView->SetInvocationMessage( new BMessage( eeListInvocation ) );
 	
 	SetFont( ( BFont* )pFont->GetNativeFont() );
 	
@@ -64,16 +64,11 @@ pListView( new BListView( B_SINGLE_SELECTION_LIST ) )
 	SetToolTip( owner.GetDescription() );
 	
 	BuildList();
-	pListView->Select( owner.GetSelection() );
-	SetLabel( owner.GetText() );
 	
 	UpdateRowCount();
 }
 
 igdeNativeBeOSComboBox::~igdeNativeBeOSComboBox(){
-	if( pListView ){
-		delete pListView;
-	}
 }
 
 igdeNativeBeOSComboBox *igdeNativeBeOSComboBox::CreateNativeWidget( igdeComboBox &owner ){
@@ -96,24 +91,41 @@ void igdeNativeBeOSComboBox::BuildList(){
 	const int count = pOwner->GetItemCount();
 	int i;
 	
-	pListView->MakeEmpty();
+	pMenu.RemoveItems( 0, pMenu.CountItems(), true );
+	pTopItemIndex = 0;
+	pCustomItem = NULL;
+	
+	if( pOwner->GetEditable() ){
+		pCustomItem = new BMenuItem( pOwner->GetText(), new BMessage( eeCustomText ) );
+		pMenu.AddItem( pCustomItem );
+		pMenu.AddSeparatorItem();
+		pTopItemIndex = 2;
+	}
 	
 	for( i=0; i<count; i++ ){
 		const igdeListItem &item = *pOwner->GetItemAt( i );
-		
-		pListView->AddItem( new BStringItem( item.GetText() ), pListView->CountItems() );
+		BMenuItem * const menuItem = new BMenuItem( item.GetText(), new BMessage( eeSelectItem ) );
+		pMenu.AddItem( menuItem );
 		
 		if( item.GetIcon() ){
 			// how?
 			// list->setItemIcon( i, ( BBitmap* )item.GetIcon()->GetNativeIcon() );
 		}
 	}
+	
+	if( pOwner->GetSelection() != -1 ){
+		pMenu.ItemAt( pTopItemIndex + pOwner->GetSelection() )->SetMarked( true );
+		
+	}else if( pCustomItem ){
+		pCustomItem->SetMarked( true );
+	}
 }
 
 void igdeNativeBeOSComboBox::UpdateItem( int index ){
 	const igdeListItem &item = *pOwner->GetItemAt( index );
 	
-	( ( BStringItem* )pListView->ItemAt( index ) )->SetText( item.GetText() );
+	BMenuItem &menuItem = *pMenu.ItemAt( pTopItemIndex + index );
+	menuItem.SetLabel( item.GetText() );
 	
 	/*
 	how?
@@ -128,14 +140,8 @@ void igdeNativeBeOSComboBox::UpdateItem( int index ){
 }
 
 void igdeNativeBeOSComboBox::SyncSelection( bool changing ){
-	// keep in mind FXComboBox list selection can go out of synch with text. we need to
-	// set the text, then update the selection index to match the text and eventually to
-	// update the combo box list selection. since setting the combo box list selection
-	// trashes the set text we can not use the simple solution. using SetText() is more
-	// complex than required but it does work
-	
-	// how?
-	//pOwner->SetText( getText().text(), changing );
+	const BMenuItem * const marked = pMenu.FindMarked();
+	pOwner->SetText( marked ? marked->Label() : "", changing );
 }
 
 void igdeNativeBeOSComboBox::OnInvalidValueChanged(){
@@ -143,54 +149,47 @@ void igdeNativeBeOSComboBox::OnInvalidValueChanged(){
 }
 
 void igdeNativeBeOSComboBox::UpdateText(){
-	// documentation states setText() selects the matching list item. this is true if the
-	// list item is present but not if it is absent. in this case the old selection is kept
-	// causing the text in the combobox and the selected list item to be out of sync.
-	// we have to ensure this situation to never happen. the igde combo box widget does set
-	// selection to -1 if not matching the text.
-	// 
-	// unfortunately setCurrentItem() also changes the text although it is not stated in
-	// the documentation that this side-effects is present. we thus have to do this in the
-	// right order to avoid a total mess to break loose.
-	pListView->Select( pOwner->GetSelection() );
-	SetLabel( pOwner->GetText() );
+	if( pOwner->GetSelection() != -1 ){
+		pMenu.ItemAt( pTopItemIndex + pOwner->GetSelection() )->SetMarked( true );
+		
+	}else if( pCustomItem ){
+		pCustomItem->SetMarked( true );
+		
+	}else{
+		BMenuItem * const marked = pMenu.FindMarked();
+		if( marked ){
+			marked->SetMarked( false );
+		}
+	}
+	
+	if( pCustomItem ){
+		pCustomItem->SetLabel( pOwner->GetText() );
+	}
 }
 
 void igdeNativeBeOSComboBox::InsertItem( int index, const igdeListItem &item ){
-	pListView->AddItem( new BStringItem( item.GetText() ), index );
-	
-	/*
-	how?
-	
-	if( item.GetIcon() ){
-		list->setItemIcon( index, ( BBitmap* )item.GetIcon()->GetNativeIcon() );
-		
-	}else{
-		list->setItemIcon( index, NULL );
-	}
-	*/
+	BuildList();
 }
 
 void igdeNativeBeOSComboBox::RemoveItem( int index ){
-	pListView->RemoveItems( index, 1 );
+	BuildList();
 }
 
 void igdeNativeBeOSComboBox::RemoveAllItems(){
-	pListView->MakeEmpty();
+	BuildList();
 }
 
 void igdeNativeBeOSComboBox::MoveItem( int fromIndex, int toIndex ){
-	pListView->AddItem( pListView->RemoveItem( fromIndex ), toIndex );
+	BuildList();
 }
 
 void igdeNativeBeOSComboBox::Focus(){
-	MakeFocus();
+	MakeFocus( true );
 }
 
 void igdeNativeBeOSComboBox::UpdateRowCount(){
+	// automatic in haiku if I'm not mistaken
 	/*
-	how?
-	
 	const int count = decMath::max( decMath::min( pOwner->GetRows(), pListView->getNumItems() ), 1 );
 	if( count == getNumVisible() ){
 		return;
@@ -208,7 +207,7 @@ void igdeNativeBeOSComboBox::UpdateEnabled(){
 }
 
 void igdeNativeBeOSComboBox::UpdateEditable(){
-	//MakeEditable( pOwner->GetEditable() );
+	BuildList();
 }
 
 void igdeNativeBeOSComboBox::UpdateDescription(){
@@ -218,20 +217,25 @@ void igdeNativeBeOSComboBox::UpdateDescription(){
 
 
 void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
-	if( message->what == eeTextChanged ){
+	if( message->what == eeCustomText ){
 		if( ! pOwner->GetEnabled() ){
 			return;
 		}
 		
+		BAlert * const alert = new BAlert( "", pOwner->GetText(), "Cancel", "Save",
+			NULL, B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_EMPTY_ALERT );
+		//alert->TextView()->SetLabel( "Edit Custom Value:" );
+		alert->TextView()->MakeEditable( true );
+		alert->SetShortcut( 0, B_ESCAPE );
+		
+		if( alert->Go() == 0 ){
+			return;
+		}
+		
+		pCustomItem->SetLabel( alert->TextView()->Text() );
+		
 		try{
-			SyncSelection( false );
-			
-			// SyncSelection calls SetText which does call NotifyTextChanged but only if the
-			// text has not changed. Because onChanged is send right before onCommand the
-			// text is already set and SyncSelection will not cause a notification to be send.
-			// for this reason we have to do it manually here since onCommand will be only
-			// send if user interaction changed the value.
-			pOwner->NotifyTextChanged();
+			SyncSelection( true );
 			
 		}catch( const deException &e ){
 			pOwner->GetLogger()->LogException( "IGDE", e );
@@ -239,20 +243,7 @@ void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
 			return;
 		}
 		
-	}else if( message->what == eeDropDown ){
-		if( ! pOwner->GetEnabled() ){
-			return;
-		}
-		
-		try{
-			// show popup menu with list...
-			
-		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
-		}
-		
-	}else if( message->what == eeListInvocation ){
+	}else if( message->what == eeSelectItem ){
 		if( ! pOwner->GetEnabled() ){
 			return;
 		}
@@ -267,7 +258,7 @@ void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
 		}
 		
 	}else{
-		BButton::MessageReceived( message );
+		BMenuField::MessageReceived( message );
 	}
 }
 

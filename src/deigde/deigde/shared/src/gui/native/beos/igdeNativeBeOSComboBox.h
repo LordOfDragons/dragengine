@@ -35,12 +35,11 @@ class igdeWidget;
 /**
  * FOX Native comboBox.
  */
-class igdeNativeBeOSComboBox : public BButton{
+class igdeNativeBeOSComboBox : public BMenuField{
 public:
 	enum eEvents{
-		eeTextChanged = 'txtc',
-		eeDropDown = 'drdn',
-		eeListInvocation = 'linv'
+		eeSelectItem = 'seli',
+		eeCustomText = 'ctxt'
 	};
 	
 private:
@@ -48,7 +47,9 @@ private:
 	igdeFontReference pFont;
 	rgb_color pOrgBackColor;
 	rgb_color pInvalidBackColor;
-	BListView *pListView;
+	BPopUpMenu &pMenu;
+	int pTopItemIndex;
+	BMenuItem *pCustomItem;
 	
 public:
 	/** \name Constructors and Destructors */

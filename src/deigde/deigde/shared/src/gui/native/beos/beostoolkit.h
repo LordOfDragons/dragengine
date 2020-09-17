@@ -33,7 +33,11 @@
 #include <interface/CheckBox.h>
 #include <interface/ListItem.h>
 #include <interface/ListView.h>
+#include <interface/MenuField.h>
+#include <interface/MenuItem.h>
+#include <interface/PopUpMenu.h>
 #include <interface/StringItem.h>
+#include <interface/TextView.h>
 
 class igdeUIBeOSHelper{
 private:
