@@ -71,49 +71,37 @@ dedsCollider::~dedsCollider(){
 	// case delay the deletion until a safe time
 	if( pCollider && pCollider->GetRefCount() > 0 ){
 		if( pValCBBreaking ){
-			if( pValCBBreaking->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValCBBreaking );
-			}
+			pDS.AddValueDeleteLater( pValCBBreaking );
 			pValCBBreaking = NULL;
 			pHasCBBreaking = false;
 		}
 		
 		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValCB );
-			}
+			pDS.AddValueDeleteLater( pValCB );
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
 		if( pValOwner ){
-			if( pValOwner->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValOwner );
-			}
+			pDS.AddValueDeleteLater( pValOwner );
 			pValOwner = NULL;
 		}
 		
 	}else{
 		if( pValCBBreaking ){
-			if( pValCBBreaking->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCBBreaking );
-			}
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCBBreaking );
 			pValCBBreaking = NULL;
 			pHasCBBreaking = false;
 		}
 		
 		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
 		if( pValOwner ){
-			if( pValOwner->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValOwner );
-			}
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValOwner );
 			pValOwner = NULL;
 		}
 	}

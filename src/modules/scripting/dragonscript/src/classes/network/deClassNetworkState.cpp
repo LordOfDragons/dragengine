@@ -701,10 +701,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsNSL ){
 }
 void deClassNetworkState::nfGetStateListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
-	dedsNetworkState &scrState = *( ( dedsNetworkState* )state.GetPeerScripting() );
+	dedsNetworkState * const scrState = ( dedsNetworkState* )state.GetPeerScripting();
 	const deScriptingDragonScript &ds = ( ( deClassNetworkState* )GetOwnerClass() )->GetDS();
 	
-	rt->PushObject( scrState.GetCallback(), ds.GetClassNetworkStateListener() );
+	if( scrState ){
+		rt->PushObject( scrState->GetCallback(), ds.GetClassNetworkStateListener() );
+		
+	}else{
+		rt->PushObject( NULL, ds.GetClassNetworkStateListener() );
+	}
 }
 
 // public func void setStateListener( NetworkStateListener listener )
@@ -715,9 +720,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
 void deClassNetworkState::nfSetStateListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
-	dedsNetworkState &scrState = *( ( dedsNetworkState* )state.GetPeerScripting() );
-	
-	scrState.SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	dedsNetworkState * const scrState = ( dedsNetworkState* )state.GetPeerScripting();
+	if( scrState ){
+		scrState->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 

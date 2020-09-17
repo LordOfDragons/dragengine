@@ -59,24 +59,19 @@ dedsTouchSensor::~dedsTouchSensor(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
+	if( ! pValCB ){
+		return;
+	}
+	
 	if( pTouchSensor && pTouchSensor->GetRefCount() > 0 ){
-		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValCB );
-			}
-			pValCB = NULL;
-			pHasCB = false;
-		}
+		pDS.AddValueDeleteLater( pValCB );
 		
 	}else{
-		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
-			pValCB = NULL;
-			pHasCB = false;
-		}
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
 	}
+	
+	pValCB = NULL;
+	pHasCB = false;
 }
 
 

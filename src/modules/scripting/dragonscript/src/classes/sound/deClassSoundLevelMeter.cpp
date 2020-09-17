@@ -297,9 +297,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterListener ){
 void deClassSoundLevelMeter::nfGetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
 	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+	const dedsSoundLevelMeter * const peer = ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting();
 	
-	const dedsSoundLevelMeter &peer = *( ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting() );
-	rt->PushObject( peer.GetCallback(), ds.GetClassSoundLevelMeterListener() );
+	if( peer ){
+		rt->PushObject( peer->GetCallback(), ds.GetClassSoundLevelMeterListener() );
+		
+	}else{
+		rt->PushObject( NULL, ds.GetClassSoundLevelMeterListener() );
+	}
 }
 
 // public func void setListener( SoundLevelMeterListener listener )
@@ -310,9 +315,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
 void deClassSoundLevelMeter::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	
-	dedsSoundLevelMeter &peer = *( ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting() );
-	peer.SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	dedsSoundLevelMeter * const peer = ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting();
+	if( peer ){
+		peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 
