@@ -35,6 +35,10 @@ pin Dragengine.Utils
  * 
  * Behavior attaches to ECBehaviorActorMover to modify walking path while moving.
  * 
+ * To use this behavior add it to the element class and make sure to call setShapesSphere()
+ * to set up the collision test shapes. The best time to do this is either in
+ * BehaviorElement.init() or inside BaseActorAction if you need to change them per action.
+ * 
  * Requires these behaviors to be present:
  * - ECBehaviorColliderAI
  * - ECBehaviorLocomotion
