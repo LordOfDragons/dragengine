@@ -86,8 +86,6 @@ public:
 	/** \brief Set parent grid. */
 	void SetGrid( dedaiSpaceGrid *grid );
 	
-	
-	
 	/** \brief Vertex index. */
 	inline unsigned short GetIndex() const{ return pIndex; }
 	

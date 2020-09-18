@@ -30,6 +30,10 @@
 #include "../spaces/dedaiSpace.h"
 #include "../spaces/grid/dedaiSpaceGrid.h"
 #include "../spaces/mesh/dedaiSpaceMesh.h"
+#include "../spaces/mesh/dedaiSpaceMeshEdge.h"
+#include "../spaces/mesh/dedaiSpaceMeshFace.h"
+#include "../spaces/mesh/dedaiSpaceMeshCorner.h"
+#include "../spaces/mesh/dedaiSpaceMeshLink.h"
 #include "../blocker/dedaiNavBlocker.h"
 #include "../dedaiNavSpace.h"
 #include "../../world/dedaiWorld.h"
@@ -244,6 +248,87 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo( const decDVector &position
 	return bestFace;
 }
 
+dedaiSpaceGridEdge *dedaiLayer::GetGridNearestPoint( const decDVector &point,
+float radius, decDVector &nearestPoint, float &nearestLambda ){
+	float testNearestDistance, testLambda, bestDistanceSquared = radius;
+	dedaiSpaceGridEdge *bestEdge = NULL;
+	decVector testNearestPosition;
+	
+	// height terrain navspaces
+	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
+	if( heightTerrain ){
+		const int sectorCount = heightTerrain->GetSectorCount();
+		int i, j;
+		
+		for( i=0; i<sectorCount; i++ ){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
+			const int navSpaceCount = sector.GetNavSpaceCount();
+			for( j=0; j<navSpaceCount; j++ ){
+				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
+				if( space.GetLayer() != this ){
+					continue;
+				}
+				
+				dedaiSpaceGrid * const grid = space.GetGrid();
+				if( ! grid ){
+					continue;
+				}
+				
+				const decVector testPoint( space.GetInverseMatrix() * point );
+				dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPoint, radius,
+					testNearestPosition, testNearestDistance, testLambda );
+				if( ! testEdge || testNearestDistance > bestDistanceSquared ){
+					continue;
+				}
+				
+				bestEdge = testEdge;
+				bestDistanceSquared = testNearestDistance;
+				nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+				nearestLambda = testLambda;
+			}
+		}
+	}
+	
+	// navigation spaces
+	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
+	while( engNavSpace ){
+		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
+		if( ! navspace ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		dedaiSpace &space = *navspace->GetSpace();
+		if( space.GetLayer() != this ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		dedaiSpaceGrid * const grid = space.GetGrid();
+		if( ! grid ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		const decVector testPosition( space.GetInverseMatrix() * point );
+		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPosition, radius,
+			testNearestPosition, testNearestDistance, testLambda );
+		if( ! testEdge || testNearestDistance > bestDistanceSquared ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		bestEdge = testEdge;
+		bestDistanceSquared = testNearestDistance;
+		nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+		nearestLambda = testLambda;
+		
+		engNavSpace = engNavSpace->GetLLWorldNext();
+	}
+	
+	return bestEdge;
+}
+
 dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point, float radius, decDVector &nearest ){
 	const decDVector testMinExtend( point - decDVector( ( double )radius, ( double )radius, ( double )radius ) );
 	const decDVector testMaxExtend( point + decDVector( ( double )radius, ( double )radius, ( double )radius ) );
@@ -328,6 +413,107 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point,
 	}
 	
 	return bestFace;
+}
+
+bool dedaiLayer::NavMeshLineCollide( const decDVector &origin, const decVector &direction, float &distance ){
+	dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo( origin, distance );
+	if( ! curFace ){
+		return false;
+	}
+	
+	const decDVector target( origin + decDVector( direction ) );
+	decDVector curOrigin( origin );
+	
+	while( true ){
+		// find edge crossed by line. the direction is not required to be co-planar with the
+		// face or edges. to solve this problem the face normal is used together with the edge
+		// vertices to form planes to do plane-side tests against the target position.
+		// if this test passes the edge is direction is considered crossing this
+		// edge. with the first found edge the test moves on to the neight face until no
+		// neighbor face exists or the direction is exhausted (no edge found)
+		const dedaiSpaceMesh * const navmesh = curFace->GetMesh();
+		if( ! navmesh ){
+			DETHROW( deeInvalidParam );
+		}
+		
+		const int cornerCount = curFace->GetCornerCount();
+		if( cornerCount == 0 ){
+			return false;
+		}
+		
+		const decDMatrix &invMatrix = navmesh->GetSpace().GetInverseMatrix();
+		const decVector localTarget( invMatrix * target );
+		const decVector localOrigin( invMatrix * curOrigin );
+		const decVector localDirection( localTarget - localOrigin );
+		const int firstCorner = curFace->GetFirstCorner();
+		int i;
+		
+		const decVector &normal = curFace->GetNormal();
+		
+		for( i=0; i<cornerCount; i++ ){
+			const dedaiSpaceMeshCorner &c1 = navmesh->GetCornerAt( firstCorner + i );
+			const dedaiSpaceMeshCorner &c2 = navmesh->GetCornerAt( firstCorner + ( i + 1 ) % cornerCount );
+			const decVector &v1 = navmesh->GetVertexAt( c1.GetVertex() );
+			const decVector &v2 = navmesh->GetVertexAt( c2.GetVertex() );
+			
+			const decVector dotDir( v2 - v1 );
+			if( dotDir.IsZero() ){
+				continue; // sanity check
+			}
+			
+			if( ( normal % ( v1 - localOrigin ) ) * localDirection < 0.0f ){
+				continue; // outside left side of edge
+			}
+			if( ( normal % ( v2 - localOrigin ) ) * localDirection > 0.0f ){
+				continue; // outside right side of edge
+			}
+			
+			const decVector dotNormal( normal % dotDir.Normalized() );
+			const float denominator = dotNormal * localDirection;
+			if( fabsf( denominator ) < FLOAT_SAFE_EPSILON ){
+				continue; // co-linear to edge
+			}
+			
+			const float lambda = ( dotNormal * ( v1 - localOrigin ) ) / denominator;
+			if( lambda < 0.0f || lambda > 1.0f ){
+				continue; // line is not crossing the edge
+			}
+			
+			curOrigin += ( target - curOrigin ) * lambda;
+			
+			// determine if this edge leads somewhere
+			const dedaiSpaceMeshEdge &edge = navmesh->GetEdgeAt( c1.GetEdge() );
+			dedaiSpaceMeshFace *nextFace = NULL;
+			
+			if( edge.GetFace2() == -1 ){
+				if( c1.GetLink() != -1 ){
+					const dedaiSpaceMeshLink &link = navmesh->GetLinkAt( c1.GetLink() );
+					nextFace = link.GetMesh()->GetFaces() + link.GetFace();
+					//linkedCorner = link.GetCorner();
+				}
+				
+			}else{
+				nextFace = &navmesh->GetFaceAt( edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1() );
+			}
+			
+			// if the next face exists test it
+			if( nextFace ){
+				curFace = nextFace;
+				break;
+			}
+			
+			// otherwise this is the end of the line
+			distance = ( curOrigin - origin ).Length() / ( target - origin ).Length();
+			return true;
+		}
+		
+		// if no edge matches the line ends inside the current face
+		if( i == cornerCount ){
+			return false;
+		}
+	}
+	
+	return false;
 }
 
 

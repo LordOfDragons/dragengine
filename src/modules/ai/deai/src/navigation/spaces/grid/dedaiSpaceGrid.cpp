@@ -217,6 +217,8 @@ void dedaiSpaceGrid::AddEdge( unsigned short vertex1, unsigned short vertex2 ){
 		pEdgeSize = newSize;
 	}
 	
+	pEdges[ pEdgeCount ].SetGrid( this );
+	pEdges[ pEdgeCount ].SetIndex( pEdgeCount );
 	pEdges[ pEdgeCount ].SetVertex1( vertex1 );
 	pEdges[ pEdgeCount ].SetVertex2( vertex2 );
 	pEdges[ pEdgeCount ].SetTypeNumber1( 0 );
@@ -280,6 +282,47 @@ void dedaiSpaceGrid::RemoveAllLinks(){
 	
 	// tell the owner links have to be updated the next time
 	pSpace.LinksRemoves();
+}
+
+
+
+dedaiSpaceGridEdge *dedaiSpaceGrid::NearestPoint( const decVector &point, float radius,
+decVector &nearestPosition, float &nearestDistSquared, float &nearestLambda ) const{
+	const float radiusSquared = radius * radius;
+	dedaiSpaceGridEdge *nearestEdge = NULL;
+	nearestDistSquared = radiusSquared;
+	int i;
+	
+	for( i=0; i<pEdgeCount; i++ ){
+		const dedaiSpaceGridEdge &edge = pEdges[ i ];
+		const dedaiSpaceGridVertex &v1 = pVertices[ edge.GetVertex1() ];
+		const dedaiSpaceGridVertex &v2 = pVertices[ edge.GetVertex2() ];
+		
+// 		if( ! edge.GetEnabled() ){
+// 			return;
+// 		}
+		if( ! v1.GetEnabled() || ! v2.GetEnabled() ){
+			continue;
+		}
+		
+		const decVector edgeDirection( v2.GetPosition() - v1.GetPosition() );
+		const decVector testDirection( point - v1.GetPosition() );
+		const float edgeLambda = decMath::clamp(
+			edgeDirection * testDirection / edgeDirection.LengthSquared(), 0.0f, 1.0f );
+		const decVector edgeClosest( v1.GetPosition() + edgeDirection * edgeLambda );
+		const float edgeDistanceSquared = ( edgeClosest - point ).LengthSquared();
+		
+		if( edgeDistanceSquared > nearestDistSquared ){
+			continue;
+		}
+		
+		nearestEdge = pEdges + i;
+		nearestDistSquared = edgeDistanceSquared;
+		nearestPosition = edgeClosest;
+		nearestLambda = edgeLambda;
+	}
+	
+	return nearestEdge;
 }
 
 
@@ -568,16 +611,22 @@ void dedaiSpaceGrid::pInitFromNavSpace(){
 		pVertices[ i ].SetEdgeCount( 0 );
 	}
 	
-	for( pEdgeCount=0; pEdgeCount<edgeCount; pEdgeCount++ ){
-		const deNavigationSpaceEdge &edge = engNavSpace.GetEdgeAt( pEdgeCount );
-		
-		if( edge.GetVertex1() != edge.GetVertex2() ){
-			pEdges[ pEdgeCount ].SetVertex1( edge.GetVertex1() );
-			pEdges[ pEdgeCount ].SetVertex2( edge.GetVertex2() );
-			pEdges[ pEdgeCount ].SetTypeNumber1( pSpace.AddTypeMapping( edge.GetType1() ) );
-			pEdges[ pEdgeCount ].SetTypeNumber2( pSpace.AddTypeMapping( edge.GetType2() ) );
-			pEdges[ pEdgeCount ].SetLength( ( engNavSpace.GetVertexAt( edge.GetVertex2() ) - engNavSpace.GetVertexAt( edge.GetVertex1() ) ).Length() );
+	pEdgeCount = 0;
+	for( i=0; i<edgeCount; i++ ){
+		const deNavigationSpaceEdge &edge = engNavSpace.GetEdgeAt( i );
+		if( edge.GetVertex1() == edge.GetVertex2() ){
+			continue;
 		}
+		
+		pEdges[ pEdgeCount ].SetGrid( this );
+		pEdges[ pEdgeCount ].SetIndex( ( unsigned short )pEdgeCount );
+		pEdges[ pEdgeCount ].SetVertex1( edge.GetVertex1() );
+		pEdges[ pEdgeCount ].SetVertex2( edge.GetVertex2() );
+		pEdges[ pEdgeCount ].SetTypeNumber1( pSpace.AddTypeMapping( edge.GetType1() ) );
+		pEdges[ pEdgeCount ].SetTypeNumber2( pSpace.AddTypeMapping( edge.GetType2() ) );
+		pEdges[ pEdgeCount ].SetLength( ( engNavSpace.GetVertexAt( edge.GetVertex2() )
+			- engNavSpace.GetVertexAt( edge.GetVertex1() ) ).Length() );
+		pEdgeCount++;
 	}
 	
 	for( i=0; i<pVertexCount; i++ ){
@@ -680,7 +729,7 @@ void dedaiSpaceGrid::pInitFromHTNavSpace(){
 		pEdges = newArray;
 		pEdgeSize = edgeCount;
 	}
-	pEdgeCount = edgeCount;
+	pEdgeCount = 0;
 	
 	// init vertices and edges
 	for( i=0; i<edgeCount; i++ ){
@@ -689,14 +738,16 @@ void dedaiSpaceGrid::pInitFromHTNavSpace(){
 		}
 		
 		const deHeightTerrainNavSpaceEdge &engEdge = engEdges[ i ];
+		pEdges[ pEdgeCount ].SetGrid( this );
+		pEdges[ pEdgeCount ].SetIndex( ( unsigned short )pEdgeCount );
 		pEdges[ pEdgeCount ].SetVertex1( edges[ i ].vertex1 );
 		pEdges[ pEdgeCount ].SetVertex2( edges[ i ].vertex2 );
 		pEdges[ pEdgeCount ].SetTypeNumber1( pSpace.AddTypeMapping( engEdge.GetType1() ) );
 		pEdges[ pEdgeCount ].SetTypeNumber2( pSpace.AddTypeMapping( engEdge.GetType2() ) );
 		pEdges[ pEdgeCount ].SetLength( ( pVertices[ edges[ i ].vertex2 ].GetPosition()
 			- pVertices[ edges[ i ].vertex1 ].GetPosition() ).Length() );
+		pEdgeCount++;
 	}
-	pEdgeCount = edgeCount;
 	
 	int firstEdge = 0;
 	

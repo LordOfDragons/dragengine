@@ -138,7 +138,7 @@ class Navigator
 	 * \returns navigation information if navigation space boundary is touched before end of
 	 *          direction is reached. If no border is touched null is returned. Null is also
 	 *          returned if origin is not located in the navigation space. In the returned
-	 *          NavigationInfo object the following parameter set set:
+	 *          NavigationInfo object the following parameter are set:
 	 *          - getPathFactor() to get the percentage distance along direction (0 to 1).
 	 *          - getPosition() to get position of hit point at navigation space boundary.
 	 */
