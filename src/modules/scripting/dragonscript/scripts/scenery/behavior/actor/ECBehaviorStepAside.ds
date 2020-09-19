@@ -191,6 +191,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		/** \brief Initialize from stub. */
 		public func void init( StubElement stub )
 			this.pRadius = this.pECBehavior.getRadius().getValue( stub )
+			this.pEnabled = this.pECBehavior.getEnabled().getValue( stub )
 		end
 		
 		
@@ -430,6 +431,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	
 	private var ECBehaviorActorMover pActorMover
 	private var ECPFloat pRadius
+	private var ECPBoolean pEnabled
 	
 	
 	
@@ -451,6 +453,9 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		this.pRadius = ECPFloat.new( prefix + "radius", 0.4, 0 )
 		eclass.addProperty( this.pRadius )
 		
+		this.pEnabled = ECPBoolean.new( prefix + "boolean", true )
+		eclass.addProperty( this.pEnabled )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -470,6 +475,11 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	/** \brief Avoid radius. */
 	public func ECPFloat getRadius()
 		return this.pRadius
+	end
+	
+	/** \brief Behavior is initially enabled. */
+	public func ECPBoolean getEnabled()
+		return this.pEnabled
 	end
 	
 	

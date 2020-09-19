@@ -54,6 +54,31 @@ pin Dragengine.Utils
  * to set up the collision test shapes. The best time to do this is either in
  * BehaviorElement.init() or inside BaseActorAction if you need to change them per action.
  * 
+ * \par Configurations
+ * 
+ * There are usually two possible configurations used for this behavior.
+ * 
+ * The first configuration applies to short distances only. In this configuration the check
+ * interval is around 1s or lower and the clear path time is around 0.05s. This results in
+ * the actor clearing the path up ahead of only 0.06m (assuming a walk speed of 1.25 m/s).
+ * This configuration results in the actor clearing path only if he is nearly bumping into
+ * other actors. The advantage of this configuration is that actors do not move away other
+ * actors when approaching them but still moves them away if blocking the path.
+ * This configuration works best if you just want to ensure actors can not block the path
+ * of other actors without needing them to have a clear path a long distance ahead.
+ * 
+ * The second configuration applies to long distance clearing of path. In this configuration
+ * the check interval is around 1s and the clear path time is around 2s. This results in the
+ * actor clearing the path up ahead to 2.5m (assuming a walk speed of 1.25 m/s). In this
+ * configuration the actor usually does not get in contact with actors standing in his way.
+ * The downside is though actors trying to approach other actors. In this case they are easily
+ * made stepping aside which is not always what you want.
+ * 
+ * For most situations the first configuration is the one to choose since it prevents the
+ * actor-actor stuck problems while exhibiting the least side effects. The second configuration
+ * though can be insteresting to switch to if actors need a clear path for example while
+ * running away. For this reason the first configuration is used as default.
+ * 
  * Requires these behaviors to be present:
  * - ECBehaviorColliderAI
  * - ECBehaviorLocomotion
@@ -81,7 +106,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		private var ColliderCollisionTest pCollisionTest
 		private var ElementVisitor pClearPathElement
-		private var float pCheckOffset
 		private var float pRadius
 		private var bool pEnabled
 		
@@ -96,7 +120,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			this.pECBehavior = ecbehavior
 			
 			this.pClearPathElement = ClearPathElement.new( this )
-			this.pCheckOffset = 0.4
 			this.pRadius = 0.4
 			this.pEnabled = true
 			
@@ -104,7 +127,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			
 			this.pCheckInterval = 1
 			this.pCheckTimer = 0
-			this.pClearPathTime = 2
+			this.pClearPathTime = 0.05
 			
 			this.setRequiresThink( true )
 		end
@@ -127,7 +150,10 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			end
 			
 			var CollisionFilter collisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
+			this.pEnabled = this.pECBehavior.getEnabled().getValue( stub )
 			this.pRadius = this.pECBehavior.getRadius().getValue( stub )
+			this.pCheckInterval = this.pECBehavior.getCheckInterval().getValue( stub )
+			this.pClearPathTime = this.pECBehavior.getClearPathTime().getValue( stub )
 			
 			this.pCollisionTest = ColliderCollisionTest.new( collisionFilter, Vector.new(), Vector.new() )
 			this.pCollisionTest.setCollider( ColliderVolume.new() )
@@ -194,16 +220,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			end
 		end
 		
-		/** \brief Check offset. */
-		public func float getCheckOffset()
-			return this.pCheckOffset
-		end
-		
-		/** \brief Set check offset. */
-		public func void setCheckOffset( float offset )
-			this.pCheckOffset = DEMath.max( offset, 0.0 )
-		end
-		
 		/** \brief Check interval in seconds. */
 		public func float getCheckInterval()
 			return this.pCheckInterval
@@ -239,15 +255,12 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		/**
 		 * \brief Set sphere collision test collider shape.
 		 * 
-		 * Uses sphere shape located a distance above ground. Sets check offset to double the
-		 * radius plus 5cm safety gap.
+		 * Uses sphere shape located a distance above ground.
 		 */
 		public func void setShapeSphere( float radius, float distanceAboveGround )
 			var ShapeList shape = ShapeList.new()
 			shape.addSphere( Vector.new( 0, distanceAboveGround, 0 ), radius )
 			( this.pCollisionTest.getCollider() cast ColliderVolume ).setShape( shape )
-			
-			this.pCheckOffset = radius * 2 + 0.05
 		end
 		
 		/** \brief Add collider required for collision test as collider to ignore. */
@@ -330,7 +343,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			// 
 			// the test is only armed if the direction is longer than 1dm.
 			var Vector direction = velocity * this.pClearPathTime
-			if direction.getLength() > 0.1
+			if direction.getLength() > 0
 				this.armTest( direction )
 			end
 		end
@@ -388,7 +401,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
 				this.pEnabled = flags.getAt( 0 )
 				
-				this.pCheckOffset = reader.readFloat()
 				this.pCheckInterval = reader.readFloat()
 				this.pCheckTimer = reader.readFloat()
 				this.pClearPathTime = reader.readFloat()
@@ -406,7 +418,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			flags.setAt( 0, this.pEnabled )
 			flags.writeToFile( writer )
 			
-			writer.writeFloat( this.pCheckOffset )
 			writer.writeFloat( this.pCheckInterval )
 			writer.writeFloat( this.pCheckTimer )
 			writer.writeFloat( this.pClearPathTime )
@@ -417,7 +428,10 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	
 	private var ECBehaviorLocomotion pLocomotion
 	private var ECComposeCollisionFilter pCollisionFilter
+	private var ECPBoolean pEnabled
 	private var ECPFloat pRadius
+	private var ECPFloat pCheckInterval
+	private var ECPFloat pClearPathTime
 	
 	
 	
@@ -445,8 +459,17 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
 		
+		this.pEnabled = ECPBoolean.new( prefix + "boolean", true )
+		eclass.addProperty( this.pEnabled )
+		
 		this.pRadius = ECPFloat.new( prefix + "radius", 0.4, 0 )
 		eclass.addProperty( this.pRadius )
+		
+		this.pCheckInterval = ECPFloat.new( prefix + "checkInterval", 1, 0 )
+		eclass.addProperty( this.pCheckInterval )
+		
+		this.pClearPathTime = ECPFloat.new( prefix + "clearPathTime", 0.05, 0 )
+		eclass.addProperty( this.pClearPathTime )
 		
 		eclass.addBehavior( this )
 	end
@@ -469,9 +492,24 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		return this.pCollisionFilter
 	end
 	
+	/** \brief Behavior is initially enabled. */
+	public func ECPBoolean getEnabled()
+		return this.pEnabled
+	end
+	
 	/** \brief Avoid radius. */
 	public func ECPFloat getRadius()
 		return this.pRadius
+	end
+	
+	/** \brief Check interval in seconds. */
+	public func ECPFloat getCheckInterval()
+		return this.pCheckInterval
+	end
+	
+	/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
+	public func ECPFloat getClearPathTime()
+		return this.pClearPathTime
 	end
 	
 	
