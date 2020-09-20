@@ -29,9 +29,9 @@
 #include "igdeNativeBeOSCheckBox.h"
 #include "igdeNativeBeOSColorBox.h"
 #include "igdeNativeBeOSComboBox.h"
-/*
 #include "igdeNativeBeOSComboBoxFilter.h"
 #include "igdeNativeBeOSCommonDialogs.h"
+/*
 #include "igdeNativeBeOSContainerForm.h"
 #include "igdeNativeBeOSGroupBox.h"
 #include "igdeNativeBeOSIconListBox.h"

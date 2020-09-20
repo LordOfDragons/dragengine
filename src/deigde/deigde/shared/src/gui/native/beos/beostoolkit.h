@@ -38,6 +38,9 @@
 #include <interface/PopUpMenu.h>
 #include <interface/StringItem.h>
 #include <interface/TextView.h>
+#include <storage/FilePanel.h>
+#include <storage/Entry.h>
+#include <storage/Path.h>
 
 class igdeUIBeOSHelper{
 private:

@@ -42,7 +42,7 @@ public:
 		eeCustomText = 'ctxt'
 	};
 	
-private:
+protected:
 	igdeComboBox *pOwner;
 	igdeFontReference pFont;
 	rgb_color pOrgBackColor;
