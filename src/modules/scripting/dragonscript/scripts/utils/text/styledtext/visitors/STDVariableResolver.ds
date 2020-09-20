@@ -85,7 +85,8 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 		
 		for i = 0 to count
 			span = node.getSpanAt( i )
-			resolvedNode.addSpan( STDNTextSpan.new( this.resolveVariables( span.getText() ), span.getStyle() ) )
+			resolvedNode.addSpan( STDNTextSpan.new( this.resolveVariables( span.getText() ), \
+				span.getStyle(), span.getImage() ) )
 		end
 		
 		this.pDefinition.addNode( resolvedNode )
