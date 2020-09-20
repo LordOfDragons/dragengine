@@ -450,11 +450,11 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		
 		this.pActorMover = actorMover
 		
+		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
+		eclass.addProperty( this.pEnabled )
+		
 		this.pRadius = ECPFloat.new( prefix + "radius", 0.4, 0 )
 		eclass.addProperty( this.pRadius )
-		
-		this.pEnabled = ECPBoolean.new( prefix + "boolean", true )
-		eclass.addProperty( this.pEnabled )
 		
 		eclass.addBehavior( this )
 	end

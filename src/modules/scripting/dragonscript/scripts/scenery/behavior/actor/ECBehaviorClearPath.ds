@@ -38,15 +38,9 @@ pin Dragengine.Utils
  * periodically check for obstacles. If an obstacle is detected and it has ECBehaviorStepAside
  * support it is told to step aside if possible.
  * 
- * The default interval for checking is 1 second. This avoids checking for collisions at a
- * high rate.
- * 
- * The default clear path time is 2 seconds. This time indicates how far ahead the check is
- * projected and thus indicates how much time the other actor has to clear the path
- * 
  * This behavior can be used together with ECBehaviorAvoidCollision but the two can potentially
- * affect each other. The best way to use these two behaviors is to only enable one of the two
- * at each time.
+ * affect each other depending on the configuration used for this behavior. Should this happen
+ * either adjust the configuration or make sure only one behavior is enabled at each time.
  * 
  * This behavior can be disabled temporarily.
  * 
@@ -106,7 +100,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		private var ColliderCollisionTest pCollisionTest
 		private var ElementVisitor pClearPathElement
-		private var float pRadius
 		private var bool pEnabled
 		
 		private var float pCheckInterval
@@ -120,7 +113,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			this.pECBehavior = ecbehavior
 			
 			this.pClearPathElement = ClearPathElement.new( this )
-			this.pRadius = 0.4
 			this.pEnabled = true
 			
 			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
@@ -151,7 +143,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			
 			var CollisionFilter collisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
 			this.pEnabled = this.pECBehavior.getEnabled().getValue( stub )
-			this.pRadius = this.pECBehavior.getRadius().getValue( stub )
 			this.pCheckInterval = this.pECBehavior.getCheckInterval().getValue( stub )
 			this.pClearPathTime = this.pECBehavior.getClearPathTime().getValue( stub )
 			
@@ -190,16 +181,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		/** \brief Set clear path element visitor. */
 		public func void setClearPathElement( ElementVisitor visitor )
 			this.pClearPathElement = visitor
-		end
-		
-		/** \brief Step aside radius. */
-		public func float getRadius()
-			return this.pRadius
-		end
-		
-		/** \brief Set step aside radius. */
-		public func void setRadius( float radius )
-			this.pRadius = DEMath.max( radius, 0.0 )
 		end
 		
 		/** \brief Stepping aside is enabled. */
@@ -429,7 +410,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	private var ECBehaviorLocomotion pLocomotion
 	private var ECComposeCollisionFilter pCollisionFilter
 	private var ECPBoolean pEnabled
-	private var ECPFloat pRadius
 	private var ECPFloat pCheckInterval
 	private var ECPFloat pClearPathTime
 	
@@ -459,11 +439,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		
 		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
 		
-		this.pEnabled = ECPBoolean.new( prefix + "boolean", true )
+		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
 		eclass.addProperty( this.pEnabled )
-		
-		this.pRadius = ECPFloat.new( prefix + "radius", 0.4, 0 )
-		eclass.addProperty( this.pRadius )
 		
 		this.pCheckInterval = ECPFloat.new( prefix + "checkInterval", 1, 0 )
 		eclass.addProperty( this.pCheckInterval )
@@ -495,11 +472,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	/** \brief Behavior is initially enabled. */
 	public func ECPBoolean getEnabled()
 		return this.pEnabled
-	end
-	
-	/** \brief Avoid radius. */
-	public func ECPFloat getRadius()
-		return this.pRadius
 	end
 	
 	/** \brief Check interval in seconds. */
