@@ -81,4 +81,14 @@ public class TitledTwoColorBorderFactory extends TwoColorBorderFactory
 	public func BorderFactory copyFactory()
 		return TitledTwoColorBorderFactory.new( this )
 	end
+	
+	/** \brief Set parameter. */
+	public func void setParameter( String name, Object value )
+		if name.equals( "text" )
+			this.setText( value cast String )
+			
+		else
+			super.setParameter( name, value )
+		end
+	end
 end
