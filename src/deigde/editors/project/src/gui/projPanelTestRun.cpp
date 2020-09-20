@@ -225,6 +225,7 @@ pMaxLines( 500 )
 	helper.Button( groupBox, windowMain.GetActionShowLogs() );
 	helper.Button( groupBox, windowMain.GetActionShowConfig() );
 	helper.Button( groupBox, windowMain.GetActionShowOverlay() );
+	helper.Button( groupBox, windowMain.GetActionShowCapture() );
 	
 	
 	// logs widget
