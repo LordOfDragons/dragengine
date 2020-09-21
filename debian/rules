@@ -1,14 +1,22 @@
 #!/usr/bin/make -f
 
-DESTDIR_ENGINE := $(shell realpath debian/dragengine)
-DESTDIR_ENGINE_DEV := $(shell realpath debian/dragengine-dev)
+DESTDIR_LIBDE := $(shell realpath debian/libdragengine1)
+DESTDIR_LIBDE_DEV := $(shell realpath debian/libdragengine1-dev)
+DESTDIR_LAUNCH_CON := $(shell realpath debian/delauncher-console)
+DESTDIR_LAUNCH_GUI := $(shell realpath debian/delauncher-gui)
+DESTDIR_LIBIGDE := $(shell realpath debian/libigdeshared1)
+DESTDIR_LIBIGDE_DEV := $(shell realpath debian/libigdeshared1-dev)
 DESTDIR_IGDE := $(shell realpath debian/deigde)
-DESTDIR_IGDE_DEV := $(shell realpath debian/deigde-dev)
+DESTDIR_IGDE_DATA := $(shell realpath debian/deigde-data)
 
-SANDBOX_ENGINE := --install-sandbox="$(DESTDIR_ENGINE)"
-SANDBOX_ENGINE_DEV := --install-sandbox="$(DESTDIR_ENGINE_DEV)"
+SANDBOX_LIBDE := --install-sandbox="$(DESTDIR_LIBDE)"
+SANDBOX_LIBDE_DEV := --install-sandbox="$(DESTDIR_LIBDE_DEV)"
+SANDBOX_LAUNCH_CON := --install-sandbox="$(DESTDIR_LAUNCH_CON)"
+SANDBOX_LAUNCH_GUI := --install-sandbox="$(DESTDIR_LAUNCH_GUI)"
+SANDBOX_LIBIGDE := --install-sandbox="$(DESTDIR_LIBIGDE)"
+SANDBOX_LIBIGDE_DEV := --install-sandbox="$(DESTDIR_LIBIGDE_DEV)"
 SANDBOX_IGDE := --install-sandbox="$(DESTDIR_IGDE)"
-SANDBOX_IGDE_DEV := --install-sandbox="$(DESTDIR_IGDE_DEV)"
+SANDBOX_IGDE_DATA := --install-sandbox="$(DESTDIR_IGDE_DATA)"
 
 SCONS_OPTIONS := --logstdout=off
 
@@ -28,10 +36,14 @@ override_dh_auto_build:
 override_dh_auto_test:
 	
 override_dh_auto_install:
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_ENGINE) install_engine_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_ENGINE_DEV) dragengine_develop
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_igde_runtime
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DEV) deigde_shared_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE) dragengine_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE_DEV) dragengine_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_CON) launcher_console
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_GUI) launcher_gui
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) deigde_shared_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) deigde
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DATA) deigde_data
 	
 	# under debian the games group is known at package build time. we can create
 	# the required directories. this is not done in scons since the generic build
@@ -39,32 +51,20 @@ override_dh_auto_install:
 	# thus it is not possible to create this directory at package time.
 	#
 	# NOTE according to debian policy group writable should have permission 2775
-	#mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	#chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-	#chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+	#mkdir "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+	#chgrp games "$(DESTDIR_LiBDE)"/usr/share/games/delauncher
+	#chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
 	#
-	#mkdir "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	#chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-	#chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+	#mkdir "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+	#chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+	#chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
 	
 	# non-dev-pkg-with-shlib-symlink
-	mkdir -p "$(DESTDIR_ENGINE_DEV)"/usr/lib
-	mv "$(DESTDIR_ENGINE)"/usr/lib/libdragengine.so "$(DESTDIR_ENGINE_DEV)"/usr/lib/libdragengine.so
+	mkdir -p "$(DESTDIR_LIBDE_DEV)"/usr/lib
+	mv "$(DESTDIR_LIBDE)"/usr/lib/libdragengine.so "$(DESTDIR_LIBDE_DEV)"/usr/lib/libdragengine.so
 	
-	mkdir -p "$(DESTDIR_IGDE_DEV)"/usr/lib
-	mv "$(DESTDIR_IGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_IGDE_DEV)"/usr/lib/libdeigdeshared.so
-	
-	# 'arch-dependent-file-in-usr-share' does not like how DragonScript stores
-	# loadable packages. we can solve this on debian only using a bit of
-	# symlink magic
-	cd debian/dragengine ; \
-	for f in `find "$(DESTDIR_ENGINE)"/usr/share/games/dragengine/modules/scripting/dragonscript/*/dsinstall -name "*.so"`; do \
-		f2=`echo $$f | sed -e "s@usr/share@usr/lib@"`; \
-		f3=`echo $$f | sed -e "s@.*/usr/share@/usr/lib@"`; \
-		mkdir -p `dirname $$f2`; \
-		mv $$f $$f2; \
-		ln -sf "$$f3" $$f; \
-	done
+	mkdir -p "$(DESTDIR_LIBIGDE_DEV)"/usr/lib
+	mv "$(DESTDIR_LIBIGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_LIBIGDE_DEV)"/usr/lib/libdeigdeshared.so
 	
 	# ubuntu seems to dislike it if build files are still around after this point in time
 	scons $(SCONS_OPTIONS) --config=cache build -c
@@ -76,15 +76,14 @@ override_dh_shlibdeps:
 	# the game engine rejects all modules as non-genuine. to solve this we have to
 	# fix all module manifests. since it is unknown what step causes these problems
 	# the fix is placed here until better knowing
-	for f in `find "$(DESTDIR_ENGINE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
+	for f in `find "$(DESTDIR_LIBDE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
 	for f in `find "$(DESTDIR_IGDE)"/usr/lib/games/deigde/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
 	
-	# debian build package has a problem with the DragonScript packages
-	dh_shlibdeps -Xlibscrdscript -Xdsinstall -Xlibdscript
+	dh_shlibdeps
 	# -XlibDEFOX
 	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
 	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
@@ -92,11 +91,11 @@ override_dh_shlibdeps:
 
 #override_dh_fixperms:
 #	# avoid fix perms messing with our special permissions
-#	dh_fixperms --exclude "$(DESTDIR_ENGINE)"/usr/share/games/delauncher*
+#	dh_fixperms --exclude "$(DESTDIR_LIBDE)"/usr/share/games/delauncher*
 #	
 #	# fix permissions from above
-#	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
-#	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher
+#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
 #	
-#	chgrp games "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
-#	chmod 2775 "$(DESTDIR_ENGINE)"/usr/share/games/delauncher/games
+#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games

@@ -151,6 +151,8 @@ installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_p
 
 installLibRuntime = []
 
+installData = []
+
 archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in sharedHeaders}
 archiveLib = {}
 
@@ -181,7 +183,7 @@ globFiles(envIGDEApp, 'shared/data', '*', dataFiles)
 for f in dataFiles:
 	path = f.split('/')
 	filename = os.path.join(pathShare, *path[2:])
-	installLibRuntime.append(envIGDELib.InstallAs(filename, f))
+	installData.append(envIGDELib.InstallAs(filename, f))
 	archiveLib[filename] = envIGDELib.File(f).srcnode()
 
 if envIGDELib['igde_toolkit'] == 'fox':
@@ -194,7 +196,9 @@ if envIGDELib['igde_toolkit'] == 'fox':
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
 targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
-targetInstallLib = envIGDELib.Alias('deigde_shared', [targetInstallLibRuntime, targetInstallLibDevelop])
+targetInstallData = envIGDELib.Alias('deigde_data', installData)
+targetInstallLib = envIGDELib.Alias('deigde_shared', [
+    targetInstallLibRuntime, targetInstallLibDevelop, targetInstallData])
 
 cpppath = [envIGDELib.Dir('include')]
 cpppath.extend(parent_targets['dragengine']['cpppath'])
