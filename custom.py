@@ -43,6 +43,7 @@ with_system_libtheora ='yes'
 with_system_libhidapi = 'yes'
 with_system_libopenhmd = 'yes'
 with_system_libevdev = 'yes'
+with_system_dragonscript = 'yes'
 with_opengl = 'yes'
 with_dl = 'yes'
 with_pthread = 'yes'
@@ -57,12 +58,6 @@ with_npapisdk = 'no'
 
 # libfox in debian is 1.6 but 1.7 is required
 with_system_fox ='no'
-
-# libdscript is not packaged in debian yet
-# git repo: https://github.com/LordOfDragons/dragonscript
-# if required this can be turned into a debian package too.
-# right now though it is only used by the game engine so build in-tree
-with_system_dragonscript = 'no'
 
 # libusb is required by libhidapi which is system compiled so it is not required.
 # set to 'no' to avoid build system trying to find it in system
