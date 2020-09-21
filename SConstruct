@@ -108,7 +108,7 @@ parent_env.Replace(MODULE_LINKFLAGS = [])
 
 for x in applyEnvVars:
 	if x in os.environ:
-		parent_env.Append(x = shlex.split(os.environ[x]))
+		parent_env.MergeFlags({x: shlex.split(os.environ[x])})
 
 if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
 	parent_env.Append(MODULE_CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
