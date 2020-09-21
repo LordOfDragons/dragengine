@@ -62,9 +62,9 @@ Description: Drag[en]gine Game Engine Library
  Required to play games using the Drag[en]gine Game Engine (*.delga) or
  developing games using the Drag[en]gine Game Engine.
 
-Package: libdragengine1-dev
+Package: libdragengine-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libdragengine1 (= ${binary:Version})
 Description: Drag[en]gine Game Engine Development
  Development files required to create Drag[en]gine Modules. This package
  is not required to create games using the Drag[en]gine Game Engine.
@@ -101,9 +101,9 @@ Description: Drag[en]gine IGDE Data
  Architecture independent data files required by Drag[en]gine IGDE
  and all supported editors.
 
-Package: libigdeshared1-dev
+Package: libigdeshared-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libdeigdeshared1 (= ${binary:Version})
 Description: Drag[en]gine IGDE Development
  Development files required to create Drag[en]gine IGDE Editors.
  This package is not required to create games using the Drag[en]gine
