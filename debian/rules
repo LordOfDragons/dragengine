@@ -1,11 +1,11 @@
 #!/usr/bin/make -f
 
 DESTDIR_LIBDE := $(shell realpath debian/libdragengine1)
-DESTDIR_LIBDE_DEV := $(shell realpath debian/libdragengine1-dev)
+DESTDIR_LIBDE_DEV := $(shell realpath debian/libdragengine-dev)
 DESTDIR_LAUNCH_CON := $(shell realpath debian/delauncher-console)
 DESTDIR_LAUNCH_GUI := $(shell realpath debian/delauncher-gui)
-DESTDIR_LIBIGDE := $(shell realpath debian/libigdeshared1)
-DESTDIR_LIBIGDE_DEV := $(shell realpath debian/libigdeshared1-dev)
+DESTDIR_LIBIGDE := $(shell realpath debian/libdeigdeshared1)
+DESTDIR_LIBIGDE_DEV := $(shell realpath debian/libdeigdeshared-dev)
 DESTDIR_IGDE := $(shell realpath debian/deigde)
 DESTDIR_IGDE_DATA := $(shell realpath debian/deigde-data)
 

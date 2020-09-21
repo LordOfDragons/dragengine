@@ -1,9 +1,10 @@
 .debhelper
 *.substvars
-deigde-dev
-deigde
-dragengine-dev
 dragengine
+libdragengine*
+delauncher*
+libdeigdeshared*
+deigde*
 *.log
 debhelper-build-stamp
 files

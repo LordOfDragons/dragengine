@@ -9,7 +9,7 @@ Rules-Requires-Root: no
 
 Package: dragengine
 Version: 1.0
-Depends: delauncher-gui
+Depends: delauncher-gui, ${misc:Depends}
 Architecture: all
 Description: Drag[en]gine Game Engine
  Required to play games using the Drag[en]gine Game Engine (*.delga).
@@ -64,7 +64,7 @@ Description: Drag[en]gine Game Engine Library
 
 Package: libdragengine-dev
 Architecture: any
-Depends: libdragengine1 (= ${binary:Version})
+Depends: libdragengine1 (= ${binary:Version}), ${misc:Depends}
 Description: Drag[en]gine Game Engine Development
  Development files required to create Drag[en]gine Modules. This package
  is not required to create games using the Drag[en]gine Game Engine.
@@ -73,7 +73,7 @@ Description: Drag[en]gine Game Engine Development
 
 Package: deigde
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, deigde-data
+Depends: deigde-data (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Drag[en]gine Game Development Environment
  Provides support to develop games using the Drag[en]gine Game Engine.
  Developing games does not required source code access so you do not
@@ -103,7 +103,7 @@ Description: Drag[en]gine IGDE Data
 
 Package: libigdeshared-dev
 Architecture: any
-Depends: libdeigdeshared1 (= ${binary:Version})
+Depends: libdeigdeshared1 (= ${binary:Version}), ${misc:Depends}
 Description: Drag[en]gine IGDE Development
  Development files required to create Drag[en]gine IGDE Editors.
  This package is not required to create games using the Drag[en]gine
