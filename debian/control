@@ -8,7 +8,6 @@ Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
 
 Package: dragengine
-Version: 1.0
 Depends: delauncher-gui, ${misc:Depends}
 Architecture: all
 Description: Drag[en]gine Game Engine
@@ -96,12 +95,12 @@ Description: Drag[en]gine IGDE Shared Library
 
 Package: deigde-data
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}
 Description: Drag[en]gine IGDE Data
  Architecture independent data files required by Drag[en]gine IGDE
  and all supported editors.
 
-Package: libigdeshared-dev
+Package: libdeigdeshared-dev
 Architecture: any
 Depends: libdeigdeshared1 (= ${binary:Version}), ${misc:Depends}
 Description: Drag[en]gine IGDE Development
