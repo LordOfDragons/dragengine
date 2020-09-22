@@ -841,8 +841,8 @@ parent_targets['install_engine_runtime'] = {
 	'name' : 'Install Engine Runtime (no development files)',
 	'target' : targetInstallEngineRuntime }
 
-targetInstallIgdeRuntime = parent_env.Alias('install_igde_runtime', installIgdeRuntime)
-parent_targets['install_igde_runtime'] = {
+targetInstallIgdeRuntime = parent_env.Alias('install_deigde_runtime', installIgdeRuntime)
+parent_targets['install_deigde_runtime'] = {
 	'name' : 'Install IGDE Runtime (no development files)',
 	'target' : targetInstallIgdeRuntime }
 
