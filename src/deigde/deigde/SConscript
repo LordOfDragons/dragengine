@@ -338,7 +338,7 @@ parent_targets['deigde'] = {
 	'name' : 'Drag[en]gine IGDE',
 	'build' : targetBuildApp,
 	'install' : targetInstall,
-	'install-igde-runtime': targetInstall,
+	'install-igde-runtime': targetInstallApp,
 	'archive-igde' : archiveApp,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
