@@ -66,6 +66,9 @@ override_dh_auto_install:
 	mkdir -p "$(DESTDIR_LIBIGDE_DEV)"/usr/lib
 	mv "$(DESTDIR_LIBIGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_LIBIGDE_DEV)"/usr/lib/libdeigdeshared.so
 	
+	# temporary fix until FOX toolkit can be used from package
+	mv "$(DESTDIR_LAUNCH_GUI)"/usr/lib/libDEFOX-1.7.so "$(DESTDIR_LIBDE)"/usr/lib/libDEFOX-1.7.so
+	
 	# ubuntu seems to dislike it if build files are still around after this point in time
 	scons $(SCONS_OPTIONS) --config=cache build -c
 
