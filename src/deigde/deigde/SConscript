@@ -225,7 +225,6 @@ parent_targets['deigde_shared'] = {
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
-	'install-igde-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
