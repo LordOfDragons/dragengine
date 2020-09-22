@@ -281,9 +281,6 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
-envIGDEApp.Depends(installApp, targetInstallLibRuntime)
-
-
 if envIGDEApp['OSPosix']:
 	pathDataDir = envIGDEApp.subst('${datadir}')
 	
@@ -320,8 +317,8 @@ if envIGDEApp['OSPosix']:
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 
-
-targetInstallApp = envIGDEApp.Alias('deigde', installApp)
+targetInstallApp = envIGDEApp.Alias('install_deigde', installApp)
+targetInstall = envIGDEApp.Alias('deigde', [targetInstallApp, targetInstallLibRuntime])
 
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath
@@ -340,8 +337,8 @@ buildCloc = envIGDEApp.Alias('deigde_cloc', buildClocBare)
 parent_targets['deigde'] = {
 	'name' : 'Drag[en]gine IGDE',
 	'build' : targetBuildApp,
-	'install' : targetInstallApp,
-	'install-igde-runtime' : targetInstallApp,
+	'install' : targetInstall,
+	'install-runtime': targetInstall,
 	'archive-igde' : archiveApp,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

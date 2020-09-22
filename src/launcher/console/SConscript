@@ -92,6 +92,7 @@ if envLauncher['OSPosix']:
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 
+
 targetInstall = envLauncher.Alias('launcher_console', install)
 
 # source directory required for special commands
@@ -108,7 +109,7 @@ parent_targets['launcher_console'] = {
 	'name' : 'Drag[en]gine Console Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
-	'install-engine-runtime' : targetInstall,
+	'install-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

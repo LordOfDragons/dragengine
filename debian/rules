@@ -36,13 +36,13 @@ override_dh_auto_build:
 override_dh_auto_test:
 	
 override_dh_auto_install:
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE) dragengine_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE) install_engine_runtime
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE_DEV) dragengine_develop
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_CON) launcher_console
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_GUI) launcher_gui
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) deigde_shared_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) install_igde_runtimee
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) deigde
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_deigde
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DATA) deigde_data
 	
 	# under debian the games group is known at package build time. we can create
