@@ -8,8 +8,6 @@
 
 namespace Dragengine.Scenery
 
-
-
 /**
  * \brief Curve distance mapping.
  * 
@@ -35,14 +33,17 @@ class CurveDistanceMapping
 	/*@{*/
 	/** \brief Resolution in meters used for sampling. */
 	public func float getResolution()
+		return 0.0
 	end
 	
 	/** \brief Length of sampled curve in meters. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/** \brief Get evaluation parameter for distance. */
 	public func float map( float distance )
+		return 0.0
 	end
 	
 	/** \brief Clear mapping. */

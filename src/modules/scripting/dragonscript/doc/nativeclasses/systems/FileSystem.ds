@@ -19,18 +19,22 @@ fixed class FileSystem
 	/*@{*/
 	/** \brief Filepath separator character for this operating system. */
 	public static func byte getSeparator()
+		return 0
 	end
 	
 	/** \brief Path list separator character for this operating system. */
 	public static func byte getPathSeparator()
+		return 0
 	end
 	
 	/** \brief Current path prefix for this operating system. */
 	public static func String getCurrentPrefix()
+		return null
 	end
 	
 	/** \brief Path string set by the game. */
 	public static func String getGamePath()
+		return null
 	end
 	/*@}*/
 	
@@ -43,18 +47,22 @@ fixed class FileSystem
 	 * \details If the filename is relative it is checked against the game path.
 	 */
 	public static func bool existsFile( String path )
+		return false
 	end
 	
 	/** \brief File can be read. */
 	public static func bool canReadFile( String path )
+		return false
 	end
 	
 	/** \brief File can be written. */
 	public static func bool canWriteFile( String path )
+		return false
 	end
 	
 	/** \brief File can be deleted. */
 	public static func bool canDeleteFile( String path )
+		return false
 	end
 	
 	/** \brief Delete file. */
@@ -63,6 +71,7 @@ fixed class FileSystem
 	
 	/** \brief Type of file. */
 	public static func FileType getTypeOfFile( String path )
+		return null
 	end
 	
 	/**
@@ -85,6 +94,7 @@ fixed class FileSystem
 	
 	/** \brief Path matches a file pattern. */
 	public static func bool pathMatchesPattern( String string, String pattern )
+		return false
 	end
 	/*@}*/
 end

@@ -8,9 +8,6 @@
 
 namespace Dragengine
 
-pin Dragengine.Gui
-
-
 /**
  * \brief Re-entrant safe array.
  * 
@@ -32,14 +29,17 @@ class SafeArray
 	/*@{*/
 	/** \brief Nnumber of elements in the array. */
 	public func int getCount()
+		return 0
 	end
 	
 	/** \brief Element is present. */
 	public func bool has( Object element )
+		return false
 	end
 	
 	/** \brief Index of element or -1 if absent. */
 	public func int indexOf( Object element )
+		return 0
 	end
 	
 	/**
@@ -47,6 +47,7 @@ class SafeArray
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getCount().
 	 */
 	public func Object getAt( int index )
+		return null
 	end
 	
 	/**
@@ -104,6 +105,7 @@ class SafeArray
 	 * \returns Found element or \em null if no element matches,
 	 */
 	public func Object find( Block ablock )
+		return null
 	end
 	/*@}*/
 end

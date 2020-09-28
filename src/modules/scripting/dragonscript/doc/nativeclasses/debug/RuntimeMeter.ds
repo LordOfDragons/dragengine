@@ -8,7 +8,6 @@
 
 namespace Dragengine
 
-
 /**
  * \brief Runtime meter.
  * 
@@ -47,6 +46,7 @@ class RuntimeMeter
 	 * \details Resets the meter to 0 after returning.
 	 */
 	public func float elapsed( int meter )
+		return 0.0
 	end
 	
 	/**
@@ -54,6 +54,7 @@ class RuntimeMeter
 	 * \details Resets the meter to 0 after returning.
 	 */
 	public func int elapsedMicroSec( int meter )
+		return 0
 	end
 	
 	
@@ -81,10 +82,12 @@ class RuntimeMeter
 	
 	/** \brief Accumulated time in a counter in micro-seconds. */
 	public func int counterTime( int counter )
+		return 0
 	end
 	
 	/** \brief Number of times a counter has been incremented. */
 	public func int counterUpdates( int counter )
+		return 0
 	end
 	
 	/**
@@ -92,6 +95,7 @@ class RuntimeMeter
 	 * \details If no updates have been done 0 is returned.
 	 */
 	public func int counterAverageTime( int counter )
+		return 0
 	end
 	/*@}*/
 end

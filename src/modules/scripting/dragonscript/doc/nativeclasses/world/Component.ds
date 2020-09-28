@@ -31,6 +31,7 @@ class Component
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -39,6 +40,7 @@ class Component
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -47,6 +49,7 @@ class Component
 	
 	/** \brief Scaling. */
 	public func Vector getScaling()
+		return null
 	end
 	
 	/** \brief Set scaling. */
@@ -55,14 +58,17 @@ class Component
 	
 	/** \brief Matrix. */
 	public func DMatrix getMatrix()
+		return null
 	end
 	
 	/** \brief Inverse matrix. */
 	public func DMatrix getInverseMatrix()
+		return null
 	end
 	
 	/** \brief Component is visible. */
 	public func bool getVisible()
+		return false
 	end
 	
 	/** \brief Set if component is visible. */
@@ -73,6 +79,7 @@ class Component
 	
 	/** \brief Model or \em null if not set. */
 	public func Model getModel()
+		return null
 	end
 	
 	/**
@@ -95,6 +102,7 @@ class Component
 	
 	/** \brief Skin or \em null if not set. */
 	public func Skin getSkin()
+		return null
 	end
 	
 	/** \brief Set skin or \em null if not set. */
@@ -107,6 +115,7 @@ class Component
 	
 	/** \brief Rig or \em null if not set. */
 	public func Rig getRig()
+		return null
 	end
 	
 	/** \brief Set rig or \em null if not set. */
@@ -115,6 +124,7 @@ class Component
 	
 	/** \brief Occlusion mesh or \em null if not set. */
 	public func OcclusionMesh getOcclusionMesh()
+		return null
 	end
 	
 	/** \brief Set occlusion mesh or \em null if not set. */
@@ -123,6 +133,7 @@ class Component
 	
 	/** \brief Audio model or \em null if not set. */
 	public func Model getAudioModel()
+		return null
 	end
 	
 	/**
@@ -135,6 +146,7 @@ class Component
 	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
@@ -143,6 +155,7 @@ class Component
 	
 	/** \brief Dynamic skin or \em null if not set. */
 	public func DynamicSkin getDynamicSkin()
+		return null
 	end
 	
 	/** \brief Set dynamic skin or \em null if not set. */
@@ -166,10 +179,12 @@ class Component
 	/*@{*/
 	/** \brief Number of textures in the skin or 0 if no skin is set. */
 	public func int getTextureCount()
+		return 0
 	end
 	
 	/** \brief Index of named texture or -1 if not found or skin is not set. */
 	public func int indexOfTextureNamed( String name )
+		return 0
 	end
 	
 	/**
@@ -177,6 +192,7 @@ class Component
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
 	public func Skin getTextureSkinAt( int texture )
+		return null
 	end
 	
 	/**
@@ -184,6 +200,7 @@ class Component
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
 	public func int getTextureTextureAt( int texture )
+		return 0
 	end
 	
 	/**
@@ -198,6 +215,7 @@ class Component
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
 	public func TexMatrix2 getTextureTransformAt( int texture )
+		return null
 	end
 	
 	/**
@@ -212,6 +230,7 @@ class Component
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
 	public func DynamicSkin getTextureDynamicSkinAt( int texture )
+		return null
 	end
 	
 	/**
@@ -228,10 +247,12 @@ class Component
 	/*@{*/
 	/** \brief Number of bones. */
 	public func int getBoneCount()
+		return 0
 	end
 	
 	/** \brief Index of named bone or -1 if not found in rig or rig is not set. */
 	public func int indexOfBoneNamed( String name )
+		return 0
 	end
 	
 	/**
@@ -239,6 +260,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func String boneGetName( int index )
+		return null
 	end
 	
 	/**
@@ -246,6 +268,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Vector boneGetPosition( int bone )
+		return null
 	end
 	
 	/**
@@ -260,6 +283,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Quaternion boneGetRotation( int bone )
+		return null
 	end
 	
 	/**
@@ -274,6 +298,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix boneGetMatrix( int bone )
+		return null
 	end
 	
 	/**
@@ -281,6 +306,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix boneGetInverseMatrix( int bone )
+		return null
 	end
 	
 	/**
@@ -290,6 +316,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix getBoneOriginMatrix( int bone )
+		return null
 	end
 	
 	/**
@@ -299,6 +326,7 @@ class Component
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix getBoneOriginInverseMatrix( int bone )
+		return null
 	end
 	
 	
@@ -309,6 +337,7 @@ class Component
 	 * \deprecated Use boneGetPosition( indexOfBoneNamed( bone ) )
 	 */
 	public func Vector getBonePosition( String bone )
+		return null
 	end
 	
 	/**
@@ -325,6 +354,7 @@ class Component
 	 * \deprecated Use boneSetRotation( indexOfBoneNamed( bone ), position )
 	 */
 	public func Quaternion getBoneRotation( String bone )
+		return null
 	end
 	
 	/**
@@ -340,6 +370,7 @@ class Component
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
 	public func Matrix getBoneMatrix( String bone )
+		return null
 	end
 	
 	/**
@@ -347,6 +378,7 @@ class Component
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
 	public func Matrix getBoneInverseMatrix( String bone )
+		return null
 	end
 	/*@}*/
 	
@@ -356,6 +388,7 @@ class Component
 	/*@{*/
 	/** \brief Movement hint. */
 	public func ComponentHintMovement getHintMovement()
+		return null
 	end
 	
 	/** \brief Set movement hint. */
@@ -369,6 +402,7 @@ class Component
 	/*@{*/
 	/** \brief Number of decals. */
 	public func int getDecalCount()
+		return 0
 	end
 	
 	/** \brief Add decal. */
@@ -388,7 +422,7 @@ class Component
 	 * 
 	 * \warning Do not add or remove decals from inside the block.
 	 */
-	public func void getDecalAt( Block ablock )
+	public func void forEachDecal( Block ablock )
 	end
 	/*@}*/
 end

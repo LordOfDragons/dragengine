@@ -1942,7 +1942,7 @@ void deClassLocomotion::nfUpdateAICollider::RunFunction( dsRunTime *rt, dsValue 
 // File Handling
 //////////////////
 
-// static public func Vector readFromFile( FileReader reader )
+// public func void readFromFile( FileReader reader )
 deClassLocomotion::nfReadFromFile::nfReadFromFile( const sInitData &init ) : dsFunction( init.clsLoco,
 "readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFileReader ); // reader

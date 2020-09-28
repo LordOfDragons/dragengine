@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Sky.
  * 
@@ -27,6 +29,7 @@ class Sky
 	/*@{*/
 	/** \brief Background color. */
 	public func Color getBgColor()
+		return null
 	end
 	
 	/** \brief Set background color. */
@@ -37,6 +40,7 @@ class Sky
 	
 	/** \brief Number of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -59,6 +63,7 @@ class Sky
 	 *                        than or equal to getControllerCount().
 	 */
 	public func SkyController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -71,16 +76,19 @@ class Sky
 	 *             \em null is returned.
 	 */
 	public func SkyController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	
 	
 	
 	/** \brief Number of links. */
 	public func int getLinkCount()
+		return 0
 	end
 	
 	/**
@@ -101,12 +109,14 @@ class Sky
 	 *                        to getLinkCount().
 	 */
 	public func SkyLink getLinkAt( int index )
+		return null
 	end
 	
 	
 	
 	/** \brief Number of layers. */
 	public func int getLayerCount()
+		return 0
 	end
 	
 	/**
@@ -127,6 +137,7 @@ class Sky
 	 *                        to getLayerCount().
 	 */
 	public func SkyLayer getLayerAt( int index )
+		return null
 	end
 	
 	

@@ -124,7 +124,7 @@ class InputDevice
 	
 	/** \brief Text to display centered across display image or icon. */
 	public String getDisplayText()
-		return ""
+		return null
 	end
 	
 	
@@ -137,12 +137,14 @@ class InputDevice
 	 * to be thrown.
 	 */
 	public func bool isPresent()
+		return false
 	end
 	
 	
 	
 	/** \brief Number of axes. */
 	public func int getAxisCount()
+		return 0
 	end
 	
 	/**
@@ -152,12 +154,14 @@ class InputDevice
 	 *                        to getAxisCount().
 	 */
 	public func InputDeviceAxis getAxisAt( int index )
+		return null
 	end
 	
 	
 	
 	/** \brief Number of buttons. */
 	public func int getButtonCount()
+		return 0
 	end
 	
 	/**
@@ -167,12 +171,14 @@ class InputDevice
 	 *                        to getButtonCount().
 	 */
 	public func InputDeviceButton getButtonAt( int index )
+		return null
 	end
 	
 	
 	
 	/** \brief Number of feedbacks. */
 	public func int getFeedbackCount()
+		return 0
 	end
 	
 	/**
@@ -182,6 +188,7 @@ class InputDevice
 	 *                        to getFeedbackCount().
 	 */
 	public func InputDeviceFeedback getFeedbackAt( int index )
+		return null
 	end
 	
 	
@@ -198,6 +205,7 @@ class InputDevice
 	 * layouts without the user pressing input keys.
 	 */
 	public func int buttonMatchingKeyCode( int keyCode )
+		return 0
 	end
 	
 	/**
@@ -218,6 +226,7 @@ class InputDevice
 	 * layouts without the user pressing input keys.
 	 */
 	public func int buttonMatchingKeyChar( int character )
+		return 0
 	end
 	/*@}*/
 end

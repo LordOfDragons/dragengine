@@ -29,6 +29,7 @@ class Lumimeter
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -37,6 +38,7 @@ class Lumimeter
 	
 	/** \brief Direction. */
 	public func Vector getDirection()
+		return null
 	end
 	
 	/** \brief Set direction. */
@@ -45,6 +47,7 @@ class Lumimeter
 	
 	/** \brief Cone inner angle. */
 	public func float getConeInnerAngle()
+		return 0.0
 	end
 	
 	/** \brief Set cone inner angle. */
@@ -53,6 +56,7 @@ class Lumimeter
 	
 	/** \brief Cone outer angle. */
 	public func float getConeOuterAngle()
+		return 0.0
 	end
 	
 	/** \brief Set cone outer angle. */
@@ -61,6 +65,7 @@ class Lumimeter
 	
 	/** \brief Cone exponent. */
 	public func float getConeExponent()
+		return 0.0
 	end
 	
 	/** \brief Set cone exponent. */
@@ -74,10 +79,12 @@ class Lumimeter
 	/*@{*/
 	/** \brief Incident light intensity. */
 	public func float measureLuminance()
+		return 0.0
 	end
 	
 	/** \brief Incident light color. */
 	public func Color measureColor()
+		return null
 	end
 	/*@}*/
 end

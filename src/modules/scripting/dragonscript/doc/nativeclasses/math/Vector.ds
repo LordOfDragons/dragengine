@@ -35,26 +35,32 @@ fixed class Vector
 	/*@{*/
 	/** \brief X-Component. */
 	public func float getX()
+		return 0.0
 	end
 	
 	/** \brief Y-Component. */
 	public func float getY()
+		return 0.0
 	end
 	
 	/** \brief Z-Component. */
 	public func float getZ()
+		return 0.0
 	end
 	
 	/** \brief Component (0=X, 1=Y, 2=Z ). */
 	public func float get( int component )
+		return 0.0
 	end
 	
 	/** \brief Length. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/** \brief Squared length. */
 	public func float getLengthSquared()
+		return 0.0
 	end
 	
 	/**
@@ -62,22 +68,27 @@ fixed class Vector
 	 * \throws EDivisionByZero Length is \em 0.
 	 */
 	public func Vector normalize()
+		return null
 	end
 	
 	/** \brief Vector with absolute value of each component. */
 	public func Vector absolute()
+		return null
 	end
 	
 	/** \brief Component wise multiplication. */
 	public func Vector compMultiply( Vector v )
+		return null
 	end
 	
 	/** \brief Component wise division. */
 	public func Vector compDivide( Vector v )
+		return null
 	end
 	
 	/** \brief Vector with components set to true copied while all others are set to 0. */
 	public func Vector compSelect( bool x, bool y, bool z )
+		return null
 	end
 	
 	/**
@@ -85,36 +96,44 @@ fixed class Vector
 	 * \details For each component use this vector if value is \em true otherwise use \em vector component.
 	 */
 	public func Vector combine( Vector vector, bool x, bool y, bool z )
+		return null
 	end
 	
 	/** \brief Vector with all components set to the smallest value of two vectors. */
 	public func Vector smallest( Vector v )
+		return null
 	end
 	
 	/** \brief Vector with all components set to the largest value of two vectors. */
 	public func Vector largest( Vector v )
+		return null
 	end
 	
 	/** \brief Vector with all components clamped to a range of two vectors. */
 	public func Vector clamped( Vector min, Vector max )
+		return null
 	end
 	
 	
 	
 	/** \brief Two vectors are equal. */
 	public func bool isEqualTo( Vector v, float delta )
+		return false
 	end
 	
 	/** \brief All coordinates are at least of a minimal value. */
 	public func bool isAtLeast( float value )
+		return false
 	end
 	
 	/** \brief All coordinates are at most of a maximal value. */
 	public func bool isAtMost( float value )
+		return false
 	end
 	
 	/** \brief Vector is equal to zero vector. */
 	public func bool isZero()
+		return false
 	end
 	
 	
@@ -125,6 +144,7 @@ fixed class Vector
 	 * \returns \em true if \em other is of type Vector and components are equal.
 	*/
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -132,6 +152,7 @@ fixed class Vector
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	
 	/**
@@ -139,6 +160,7 @@ fixed class Vector
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
 	end
 	/*@}*/
 	
@@ -148,6 +170,7 @@ fixed class Vector
 	/*@{*/
 	/** \brief Read vector from a file reader. */
 	static public func Vector readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write vector to a file writer. */
@@ -161,18 +184,22 @@ fixed class Vector
 	/*@{*/
 	/** \brief Negated vector. */
 	public func Vector -()
+		return null
 	end
 	
 	/** \brief Sum of two vectors. */
 	public func Vector +( Vector v )
+		return null
 	end
 	
 	/** \brief Difference of two vectors. */
 	public func Vector -( Vector v )
+		return null
 	end
 	
 	/** \brief Vector scaled by scalar. */
 	public func Vector *( float scalar )
+		return null
 	end
 	
 	/**
@@ -180,30 +207,37 @@ fixed class Vector
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
 	public func Vector /( float scalar )
+		return null
 	end
 	
 	/** \brief Dot-Product between two vectors. */
 	public func float *( Vector v )
+		return 0.0
 	end
 	
 	/** \brief Cross-Product between two vectors. */
 	public func Vector %( Vector v )
+		return null
 	end
 	
 	/** \brief Vector is less than another vector in all components. */
 	public func bool <( Vector v )
+		return false
 	end
 	
 	/** \brief Vector is less than or equal to another vector in all components. */
 	public func bool <=( Vector v )
+		return false
 	end
 	
 	/** \brief Vector is greater than another vector in all components. */
 	public func bool >( Vector v )
+		return false
 	end
 	
 	/** \brief Vector is greater than or equal to another vector in all components. */
 	public func bool >=( Vector v )
+		return false
 	end
 	/*@}*/
 end

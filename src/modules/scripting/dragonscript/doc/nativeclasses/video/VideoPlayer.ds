@@ -27,6 +27,7 @@ class VideoPlayer
 	/*@{*/
 	/** \brief Video or \em null if not set. */
 	public func Video getVideo()
+		return null
 	end
 	
 	/** \brief Set video or \em null to unset. */
@@ -37,6 +38,7 @@ class VideoPlayer
 	
 	/** \brief Video is looping. */
 	public func bool getLooping()
+		return false
 	end
 	
 	/** \brief Set if video is looping. */
@@ -45,10 +47,12 @@ class VideoPlayer
 	
 	/** \brief Start play position. */
 	public func float getPlayFrom()
+		return 0.0
 	end
 	
 	/** \brief End play position. */
 	public func float getPlayTo()
+		return 0.0
 	end
 	
 	/** \brief Set play range. */
@@ -57,6 +61,7 @@ class VideoPlayer
 	
 	/** \brief Play position. */
 	public func float getPlayPosition()
+		return 0.0
 	end
 	
 	/** \brief Set play position. */
@@ -65,6 +70,7 @@ class VideoPlayer
 	
 	/** \brief Play speed. */
 	public func float getPlaySpeed()
+		return 0.0
 	end
 	
 	/** \brief Set play speed. */
@@ -75,14 +81,17 @@ class VideoPlayer
 	
 	/** \brief Video is playing back. */
 	public func bool getPlaying()
+		return false
 	end
 	
 	/** \brief Video is paused. */
 	public func bool getPaused()
+		return false
 	end
 	
 	/** \brief Video is stopped. */
 	public func bool getStopped()
+		return false
 	end
 	
 	/** \brief Start playing. */

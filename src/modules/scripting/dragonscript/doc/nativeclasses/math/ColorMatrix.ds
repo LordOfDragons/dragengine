@@ -34,62 +34,77 @@ fixed class ColorMatrix
 	
 	/** \brief Create translation color matrix. */
 	public static func ColorMatrix newTranslation( Color color )
+		return null
 	end
 	
 	/** \brief Create translation color matrix. */
 	public static func ColorMatrix newTranslation( float red, float green, float blue, float alpha )
+		return null
 	end
 	
 	/** \brief Create scaling color matrix. */
 	public static func ColorMatrix newScaling( Color color )
+		return null
 	end
 	
 	/** \brief Create scaling color matrix. */
 	public static func ColorMatrix newScaling( float red, float green, float blue, float alpha )
+		return null
 	end
 	
 	/** \brief Create scaling then translaction color matrix. */
 	public static func ColorMatrix newST( Color scaling, Color translation )
+		return null
 	end
 	
 	/** \brief Create brightness color matrix with same brightness value for each color component. */
 	public static func ColorMatrix newBrightness( float brightness )
+		return null
 	end
 	
 	/** \brief Create brightness color matrix. */
 	public static func ColorMatrix newBrightness( float red, float green, float blue )
+		return null
 	end
 	
 	/** \brief Create brightness color matrix. */
 	public static func ColorMatrix newBrightness( Color brightness )
+		return null
 	end
 	
 	/** \brief Create contrast color matrix with same contrast value for each color component. */
 	public static func ColorMatrix newContrast( float contrast )
+		return null
 	end
 	
 	/** \brief Create contrast color matrix. */
 	public static func ColorMatrix newContrast( float red, float green, float blue )
+		return null
 	end
 	
 	/** \brief Create contrast color matrix. */
 	public static func ColorMatrix newContrast( Color contrast )
+		return null
 	end
 	
 	/** \brief Create saturation color matrix with same saturation value for each color component. */
 	public static func ColorMatrix newSaturation( float saturation )
+		return null
 	end
 	
 	/** \brief Create saturation color matrix. */
 	public static func ColorMatrix newSaturation( float red, float green, float blue )
+		return null
 	end
 	
 	/** \brief Create saturation color matrix. */
 	public static func ColorMatrix newSaturation( Color saturation )
+		return null
 	end
 	
 	/** \brief Create color inversion color matrix. */
 	public static func ColorMatrix newColorInversion()
+		return null
 	end
 	/*@}*/
 	
@@ -103,106 +118,132 @@ fixed class ColorMatrix
 	 * \throws EInvalidParam \em col is less than 0 or larger than 4.
 	 */
 	public func float getAt( int row, int col )
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get11()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get12()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get13()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get14()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get15()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get21()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get22()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get23()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get24()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get25()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get31()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get32()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get33()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get34()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get35()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get41()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get42()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get43()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get44()
+		return 0.0
 	end
 	
 	/** \brief Cell value. */
 	public func float get45()
+		return 0.0
 	end
 	
 	/** \brief Color build from first colon. */
 	public func Color getRedBase()
+		return null
 	end
 	
 	/** \brief Color build from second colon. */
 	public func Color getGreenBase()
+		return null
 	end
 	
 	/** \brief Color build from third colon. */
 	public func Color getBlueBase()
+		return null
 	end
 	
 	/** \brief Color build from fourthed colon. */
 	public func Color getAlphaBase()
+		return null
 	end
 	
 	/** \brief Color build from fifth colon. */
 	public func Color getWhiteBase()
+		return null
 	end
 	
 	
@@ -213,6 +254,7 @@ fixed class ColorMatrix
 	 * \returns \em true if \em other is of type ColorMatrix and components are equal.
 	*/
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -220,6 +262,7 @@ fixed class ColorMatrix
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	
 	/**
@@ -227,6 +270,7 @@ fixed class ColorMatrix
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
 	end
 	/*@}*/
 	
@@ -236,6 +280,7 @@ fixed class ColorMatrix
 	/*@{*/
 	/** \brief Read color matrix from a file reader. */
 	static public func ColorMatrix readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write color matrix to a file writer. */
@@ -249,14 +294,17 @@ fixed class ColorMatrix
 	/*@{*/
 	/** \brief Sum of two color matrixs. */
 	public func ColorMatrix +( ColorMatrix matrix )
+		return null
 	end
 	
 	/** \brief Difference between two color matrixs. */
 	public func ColorMatrix -( ColorMatrix matrix )
+		return null
 	end
 	
 	/** \brief ColorMatrix with each component scaled by a value. */
 	public func ColorMatrix *( float scalar )
+		return null
 	end
 	
 	/**
@@ -264,6 +312,7 @@ fixed class ColorMatrix
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
 	public func ColorMatrix /( float scalar )
+		return null
 	end
 	
 	/**
@@ -272,10 +321,12 @@ fixed class ColorMatrix
 	 *          multiplication. The returned matrix is the upper 5x4 of the multiplication result.
 	 */
 	public func ColorMatrix *( ColorMatrix matrix )
+		return null
 	end
 	
 	/** \brief Transform color by color matrix. */
 	public func ColorMatrix *( Color color )
+		return null
 	end
 	/*@}*/
 end

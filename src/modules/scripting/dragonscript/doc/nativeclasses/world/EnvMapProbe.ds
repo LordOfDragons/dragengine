@@ -27,6 +27,7 @@ class EnvMapProbe
 	/*@{*/
 	/** \brief Pposition. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -35,6 +36,7 @@ class EnvMapProbe
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -43,6 +45,7 @@ class EnvMapProbe
 	
 	/** \brief Scaling. */
 	public func Vector getScaling()
+		return null
 	end
 	
 	/** \brief Set scaling. */
@@ -51,6 +54,7 @@ class EnvMapProbe
 	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
@@ -59,6 +63,7 @@ class EnvMapProbe
 	
 	/** \brief Influence shape list. */
 	public func ShapeList getShapeListInfluence()
+		return null
 	end
 	
 	/** \brief Set influence shape list. */
@@ -67,6 +72,7 @@ class EnvMapProbe
 	
 	/** \brief Shape list with the reflection shape or an empty shape list if the environment map is global. */
 	public func ShapeList getShapeReflection()
+		return null
 	end
 	
 	/** \brief Set reflection shape from a list with one shape or an empty list if the environment map is global. */
@@ -75,6 +81,7 @@ class EnvMapProbe
 	
 	/** \brief Reflection mask shape list. */
 	public func ShapeList getShapeListReflectionMask()
+		return null
 	end
 	
 	/** \brief Set reflection mask shape list. */
@@ -83,6 +90,7 @@ class EnvMapProbe
 	
 	/** \brief Influence border size. */
 	public func float getInfluenceBorderSize()
+		return 0.0
 	end
 	
 	/** \brief Set influence border size. */
@@ -91,6 +99,7 @@ class EnvMapProbe
 	
 	/** \brief Influence priority. */
 	public func int getInfluencePriority()
+		return 0
 	end
 	
 	/** \brief  Set influence priority. */

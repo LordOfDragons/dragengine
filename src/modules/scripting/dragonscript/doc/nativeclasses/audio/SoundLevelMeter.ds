@@ -67,7 +67,7 @@ class SoundLevelMeter
 	
 	/** \brief Cone angle in radians measured from cone center to outer hull. */
 	public func float getConeAngle()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Set cone angle in radians measured from cone center to outer hull. */
@@ -76,7 +76,7 @@ class SoundLevelMeter
 	
 	/** \brief Audible distance in meters.*/
 	public func float getAudibleDistance()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Set audible distance in meters. */

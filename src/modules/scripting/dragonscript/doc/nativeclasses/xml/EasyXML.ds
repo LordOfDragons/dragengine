@@ -34,18 +34,22 @@ class EasyXML
 	/*@{*/
 	/** \brief Filename of the xml file. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Parsing failed. */
 	public func bool hasParseFailed()
+		return false
 	end
 	
 	/** \brief Parse log. */
 	public func String getParseLog()
+		return null
 	end
 	
 	/** \brief Root element. */
 	public func EasyXMLElement getRootElement()
+		return null
 	end
 	
 	

@@ -46,6 +46,7 @@ class EffectFilterKernel extends Effect
 	
 	/** \brief Scale of kernel. */
 	public func float getScale()
+		return 0.0
 	end
 	
 	/** \brief Set scale of kernel. */
@@ -60,6 +61,7 @@ class EffectFilterKernel extends Effect
 	 * \returns \em true if \em other is of type EffectFilterKernel and effect are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -67,6 +69,7 @@ class EffectFilterKernel extends Effect
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

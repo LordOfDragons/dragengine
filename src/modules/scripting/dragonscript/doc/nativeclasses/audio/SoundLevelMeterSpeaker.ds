@@ -28,7 +28,7 @@ class SoundLevelMeterSpeaker
 	
 	/** \brief Audible volume. */
 	public func float getVolume()
-		return 0
+		return 0.0
 	end
 	/*@}*/
 end

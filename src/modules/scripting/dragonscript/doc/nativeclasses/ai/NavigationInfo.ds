@@ -31,6 +31,7 @@ class NavigationInfo
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -39,6 +40,7 @@ class NavigationInfo
 	
 	/** \brief Cost type at position if position is not \em null. */
 	public func int getCostType()
+		return 0
 	end
 	
 	/** \brief Set cost type at position. */
@@ -52,6 +54,7 @@ class NavigationInfo
 	 * \details -1 indicates navigation start position towards first path point.
 	 */
 	public func int getPathIndex()
+		return 0
 	end
 	
 	/**
@@ -64,6 +67,7 @@ class NavigationInfo
 	
 	/** \brief Factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
 	public func float getPathFactor()
+		return 0.0
 	end
 	
 	/** \brief Set factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
@@ -78,6 +82,7 @@ class NavigationInfo
 	 * \returns \em true if \em other is of type NavigationInfo and both point to the same navigation info object.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -85,6 +90,7 @@ class NavigationInfo
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

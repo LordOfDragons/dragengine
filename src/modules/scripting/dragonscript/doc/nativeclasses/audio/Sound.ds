@@ -46,26 +46,32 @@ fixed class Sound
 	/*@{*/
 	/** \brief Filename. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Bytes per sample. */
 	public func int getBytesPerSample()
+		return 0
 	end
 	
 	/** \brief Number of samples. */
 	public func int getSampleCount()
+		return 0
 	end
 	
 	/** \brief Number of channels. */
 	public func int getChannelCount()
+		return 0
 	end
 	
 	/** \brief Sample rate. */
 	public func int getSampleRate()
+		return 0
 	end
 	
 	/** \brief Play time in seconds. */
 	public func float getPlayTime()
+		return 0.0
 	end
 	/*@}*/
 end

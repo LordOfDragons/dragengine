@@ -47,6 +47,7 @@ fixed class Rig
 	/*@{*/
 	/** \brief Normalized filename the rig has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	
@@ -62,6 +63,7 @@ fixed class Rig
 	 *          rig resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -69,6 +71,7 @@ fixed class Rig
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -78,10 +81,12 @@ fixed class Rig
 	/*@{*/
 	/** \brief Number of bones. */
 	public func int getBoneCount()
+		return 0
 	end
 	
 	/** \brief Index of named bone or -1 if absent. */
 	public func int indexOfBoneNamed( String name )
+		return 0
 	end
 	
 	/**
@@ -89,6 +94,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func String boneGetName( int bone )
+		return null
 	end
 	
 	/**
@@ -96,6 +102,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Vector getBonePosition( int bone )
+		return null
 	end
 	
 	/**
@@ -103,6 +110,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Quaternion getBoneOrientation( int bone )
+		return null
 	end
 	
 	/**
@@ -110,6 +118,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Vector getBoneCentralMassPoint( int bone )
+		return null
 	end
 	
 	/**
@@ -117,6 +126,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func float boneGetMass( int bone )
+		return 0.0
 	end
 	
 	/**
@@ -124,6 +134,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func bool getBoneDynamic( int bone )
+		return false
 	end
 	/*@}*/
 	
@@ -136,6 +147,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Vector getBoneIKLimitsLower( int bone )
+		return null
 	end
 	
 	/**
@@ -143,6 +155,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Vector getBoneIKLimitsUpper( int bone )
+		return null
 	end
 	
 	/**
@@ -150,6 +163,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func Vector getBoneIKResistance( int bone )
+		return null
 	end
 	
 	/**
@@ -157,6 +171,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func bool getBoneIKLocked( int bone, int axis )
+		return false
 	end
 	/*@}*/
 	
@@ -169,6 +184,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func int getBoneConstraintCount( int bone )
+		return 0
 	end
 	
 	/**
@@ -181,6 +197,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to getBoneConstraintCount().
 	 */
 	public func ColliderConstraint getBoneConstraintAt( int bone, int constraint )
+		return null
 	end
 	/*@}*/
 	
@@ -193,6 +210,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
 	public func ShapeList boneGetShapes( int bone )
+		return null
 	end
 	
 	/**
@@ -201,6 +219,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to boneGetShapes().getCount().
 	 */
 	public func String boneShapeGetProperty( int bone, int shape )
+		return null
 	end
 	/*@}*/
 	
@@ -210,6 +229,7 @@ fixed class Rig
 	/*@{*/
 	/** \brief Shapes. */
 	public func ShapeList getShapes()
+		return null
 	end
 	
 	/**
@@ -217,6 +237,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to getShapes().getCount().
 	 */
 	public func String shapeGetProperty( int shape )
+		return null
 	end
 	/*@}*/
 end

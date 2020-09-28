@@ -51,22 +51,27 @@ fixed class Font
 	/*@{*/
 	/** \brief Normalized filename the font has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Size of text in pixels using this font. */
 	public func Point getTextSize( String text )
+		return null
 	end
 	
 	/** \brief Width of character in pixels using this font. */
 	public func float getCharWidth( int char )
+		return 0.0
 	end
 	
 	/** \brief Advance of character in pixels using this font. */
 	public func float getCharAdvance( int char )
+		return 0.0
 	end
 	
 	/** \brief Bearing of character in pixels using this font. */
 	public func float getCharBearing( int char )
+		return 0.0
 	end
 	
 	/**
@@ -75,10 +80,12 @@ fixed class Font
 	 * This is also the line height of the font.
 	 */
 	public func int getSize()
+		return 0
 	end
 	
 	/** \brief Largest width in pixels of all characters supported by this font. */
 	public func float getMaxWidth()
+		return 0.0
 	end
 	
 	
@@ -91,6 +98,7 @@ fixed class Font
 	 * \returns \em true if \em other is of type Font and both point to the same engine font resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -99,6 +107,7 @@ fixed class Font
 	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

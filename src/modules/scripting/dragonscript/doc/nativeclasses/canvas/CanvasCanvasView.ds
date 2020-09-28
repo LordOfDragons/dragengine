@@ -30,6 +30,7 @@ class CanvasCanvasView extends Canvas
 	/*@{*/
 	/** \brief Canvas view or \em null if not set. */
 	public func CanvasView getCanvasView()
+		return null
 	end
 	
 	/** \brief Set canvas view or \em null to unset. */
@@ -38,6 +39,7 @@ class CanvasCanvasView extends Canvas
 	
 	/** \brief Repeat count along X axis. */
 	public func int getRepeatX()
+		return 0
 	end
 	
 	/** \brief Set repeat count along X axis. */
@@ -46,6 +48,7 @@ class CanvasCanvasView extends Canvas
 	
 	/** \brief Repeat count along Y axis. */
 	public func int getRepeatY()
+		return 0
 	end
 	
 	/** \brief Set repeat count along Y axis. */
@@ -60,6 +63,7 @@ class CanvasCanvasView extends Canvas
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -67,6 +71,7 @@ class CanvasCanvasView extends Canvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

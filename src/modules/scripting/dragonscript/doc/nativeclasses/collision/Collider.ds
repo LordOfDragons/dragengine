@@ -58,6 +58,7 @@ class Collider
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -66,6 +67,7 @@ class Collider
 	
 	/** \brief Oorientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -74,6 +76,7 @@ class Collider
 	
 	/** \brief Scale. */
 	public func Vector getScale()
+		return null
 	end
 	
 	/**
@@ -114,28 +117,34 @@ class Collider
 	
 	/** \brief View direction. */
 	public func Vector getView()
+		return null
 	end
 	
 	/** \brief Up direction. */
 	public func Vector getUp()
+		return null
 	end
 	
 	/** \brief Right direction. */
 	public func Vector getRight()
+		return null
 	end
 	
 	/** \brief Get matrix. */
 	public func DMatrix getMatrix()
+		return null
 	end
 	
 	/** \brief Get inverse matrix. */
 	public func DMatrix getInverseMatrix()
+		return null
 	end
 	
 	
 	
 	/** \brief Linear velocity in m/s. */
 	public func Vector getLinearVelocity()
+		return null
 	end
 	
 	/** \brief Set linear velocity in m/s. */
@@ -144,6 +153,7 @@ class Collider
 	
 	/** \brief Angular velocity in degrees/s. */
 	public func Vector getAngularVelocity()
+		return null
 	end
 	
 	/** \brief Set angular velocity degrees/s. */
@@ -152,6 +162,7 @@ class Collider
 	
 	/** \brief Mass in kg. */
 	public func float getMass()
+		return 0.0
 	end
 	
 	/** \brief Set mass in kg. */
@@ -160,6 +171,7 @@ class Collider
 	
 	/** \brief Constant acceleration in N/s^2. */
 	public func Vector getGravity()
+		return null
 	end
 	
 	/** \brief Set constant acceleration in N/s^2. */
@@ -168,6 +180,7 @@ class Collider
 	
 	/** \brief Collider is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if collider is enabled. */
@@ -176,6 +189,7 @@ class Collider
 	
 	/** \brief Response type. */
 	public func CollisionResponse getResponseType()
+		return null
 	end
 	
 	/** \brief Set response type. */
@@ -184,6 +198,7 @@ class Collider
 	
 	/** \brief Collider defined gravity is used instead of World gravity. */
 	public func bool getUseLocalGravity()
+		return false
 	end
 	
 	/** \brief Set if collider defined gravity is used instead of World gravity. */
@@ -194,6 +209,7 @@ class Collider
 	
 	/** \brief Object owning the collider for interaction or \em null if not used. */
 	public func Object getOwner()
+		return null
 	end
 	
 	/** \brief Set object owning the collider for interaction or \em null if not used. */
@@ -204,6 +220,7 @@ class Collider
 	
 	/** \brief Factor for direct type force fields. */
 	public func float getForceFieldDirect()
+		return 0.0
 	end
 	
 	/** \brief Set factor for direct type force fields. */
@@ -212,6 +229,7 @@ class Collider
 	
 	/** \brief Factor for surface type force fields. */
 	public func float getForceFieldSurface()
+		return 0.0
 	end
 	
 	/** \brief Set factor for surface type force fields. */
@@ -220,6 +238,7 @@ class Collider
 	
 	/** \brief Factor for mass type force fields. */
 	public func float getForceFieldMass()
+		return 0.0
 	end
 	
 	/** \brief Set factor for mass type force fields. */
@@ -228,6 +247,7 @@ class Collider
 	
 	/** \brief Factor for speed type force fields. */
 	public func float getForceFieldSpeed()
+		return 0.0
 	end
 	
 	/** \brief Set factor for speed type force fields. */
@@ -238,6 +258,7 @@ class Collider
 	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
@@ -252,6 +273,7 @@ class Collider
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -263,6 +285,7 @@ class Collider
 	 *          If both are \em null \em true is returned.
 	 */
 	public static func bool equals( Collider collider1, Collider collider2 )
+		return false
 	end
 	
 	/**
@@ -270,6 +293,7 @@ class Collider
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -279,6 +303,7 @@ class Collider
 	/*@{*/
 	/** \brief Number of attachments. */
 	public func int getAttachmentCount()
+		return 0
 	end
 	
 	/**
@@ -286,6 +311,7 @@ class Collider
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getAttachmentCount().
 	 */
 	public func Object getAttachedResource( int index )
+		return null
 	end
 	
 	/** \brief Attach resource using static mode relative to current position. */
@@ -325,6 +351,7 @@ class Collider
 	/*@{*/
 	/** \brief Number of constraints. */
 	public func int getConstraintCount()
+		return 0
 	end
 	
 	/** \brief Add constraint from a collider constraint. */
@@ -356,6 +383,7 @@ class Collider
 	/*@{*/
 	/** \brief Number of colliders to ignore. */
 	public func int getIgnoreColliderCount()
+		return 0
 	end
 	
 	/**
@@ -363,10 +391,12 @@ class Collider
 	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
 	 */
 	public func Collider getIgnoreColliderAt( int index )
+		return null
 	end
 	
 	/** \brief Ignore collider is present. */
 	public func bool hasIgnoreCollider( Collider collider )
+		return false
 	end
 	
 	/** \brief Add collider to ignore. */
@@ -392,6 +422,7 @@ class Collider
 	/*@{*/
 	/** \brief Number of post physics collision tests. */
 	public func int getCollisionTestCount()
+		return 0
 	end
 	
 	/**
@@ -399,6 +430,7 @@ class Collider
 	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getCollisionTestCount().
 	 */
 	public func ColliderCollisionTest getCollisionTestAt( int index )
+		return null
 	end
 	
 	/** \brief Add post physics collision test. */
@@ -451,6 +483,7 @@ class Collider
 	/*@{*/
 	/** \brief Collider listener or \em null if not set. */
 	public func ColliderListener getColliderListener()
+		return null
 	end
 	
 	/** \brief Set collider listener or \em null to clear. */
@@ -459,6 +492,7 @@ class Collider
 	
 	/** \brief Custom can hit callback is enabled. */
 	public func bool colliderListenerGetCustomCanHit()
+		return false
 	end
 	
 	/** \brief Set if custom can hit callback is enabled. */
@@ -467,6 +501,7 @@ class Collider
 	
 	/** \brief Breaking listener or \em null if not set. */
 	public func ColliderBreakingListener getBreakingListener()
+		return null
 	end
 	
 	/** \brief Set breaking listener or \em null if not set. */
@@ -480,6 +515,7 @@ class Collider
 	/*@{*/
 	/** \brief Point is inside collider. */
 	public func bool pointInside( DVector point )
+		return false
 	end
 	
 	/** \brief Ray cast intersection test. */

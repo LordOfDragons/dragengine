@@ -30,6 +30,7 @@ class SSGroup extends SynthesizerSource
 	 * \throws EInvalidParam \em applicationType is not a valid value.
 	 */
 	public func void setApplicationType( SSGroupApplication applicationType )
+	end
 	
 	
 	

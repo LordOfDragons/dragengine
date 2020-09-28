@@ -48,24 +48,29 @@ fixed class LanguagePack
 	/*@{*/
 	/** \brief Normalized filename the language pack has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Name. */
 	public func UnicodeString getName()
+		return null
 	end
 	
 	/** \brief Description. */
 	public func UnicodeString getDescription()
+		return null
 	end
 	
 	
 	
 	/** \brief Translation for entry name or missing text if absent. */
 	public func UnicodeString translate( String name )
+		return null
 	end
 	
 	/** \brief Translation for entry name or default value if absent. */
 	public func UnicodeString translate( String name, UnicodeString defaultValue )
+		return null
 	end
 	
 	
@@ -79,6 +84,7 @@ fixed class LanguagePack
 	 *          language pack resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -87,6 +93,7 @@ fixed class LanguagePack
 	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

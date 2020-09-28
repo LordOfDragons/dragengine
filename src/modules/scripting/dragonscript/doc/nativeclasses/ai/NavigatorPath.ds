@@ -31,6 +31,7 @@ class NavigatorPath
 	/*@{*/
 	/** \brief Number of points. */
 	public func int getCount()
+		return 0
 	end
 	
 	/**
@@ -38,6 +39,7 @@ class NavigatorPath
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to getPointCount().
 	 */
 	public func DVector getAt( int index )
+		return null
 	end
 	
 	/**
@@ -72,10 +74,12 @@ class NavigatorPath
 	
 	/** \brief New path with points transformed by matrix. */
 	public func NavigatorPath transformed( DMatrix matrix )
+		return null
 	end
 	
 	/** \brief Length in meters from start of path to the end. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/**
@@ -83,6 +87,7 @@ class NavigatorPath
 	 * \throws deeOutOfBoundary \em endIndex is less than 0 or greater than or equal to getPointCount().
 	 */
 	public func float getLengthTo( int endIndex )
+		return 0.0
 	end
 	
 	/**
@@ -90,6 +95,7 @@ class NavigatorPath
 	 * \throws deeOutOfBoundary \em startIndex is less than 0 or greater than or equal to getPointCount().
 	 */
 	public func float getLengthFrom( int startIndex )
+		return 0.0
 	end
 	
 	/**
@@ -98,6 +104,7 @@ class NavigatorPath
 	 * \throws deeOutOfBoundary \em endIndex is less than \em startIndex or greater than or equal to getPointCount().
 	 */
 	public func float getLengthBetween( int startIndex, int endIndex )
+		return 0.0
 	end
 	/*@}*/
 	
@@ -107,6 +114,7 @@ class NavigatorPath
 	/*@{*/
 	/** \brief Read path from file reader. */
 	static public func NavigatorPath readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write path to file writer. */

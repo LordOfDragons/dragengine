@@ -27,6 +27,7 @@ class Camera
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -35,6 +36,7 @@ class Camera
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -43,6 +45,7 @@ class Camera
 	
 	/** \brief Field of view in degrees. */
 	public func float getFov()
+		return 0.0
 	end
 	
 	/** \brief Set field of view in degrees. */
@@ -51,6 +54,7 @@ class Camera
 	
 	/** \brief Field of view aspect ratio. */
 	public func float getFovRatio()
+		return 0.0
 	end
 	
 	/** \brief Set field of view aspect ratio. */
@@ -59,6 +63,7 @@ class Camera
 	
 	/** \brief Distance to image plane in meters. */
 	public func float getImageDistance()
+		return 0.0
 	end
 	
 	/** \brief Set distance to image plane in meters. */
@@ -67,6 +72,7 @@ class Camera
 	
 	/** \brief View distance in meters. */
 	public func float getViewDistance()
+		return 0.0
 	end
 	
 	/** \brief Set view distance in meters. */
@@ -75,6 +81,7 @@ class Camera
 	
 	/** \brief Exposure. */
 	public func float getExposure()
+		return 0.0
 	end
 	
 	/** \brief Set expsoure. */
@@ -83,6 +90,7 @@ class Camera
 	
 	/** \brief Lowest adaption intensity. */
 	public func float getLowestIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set lowest adaption intensity. */
@@ -91,6 +99,7 @@ class Camera
 	
 	/** \brief Highest adaption intensity. */
 	public func float getHighestIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set highest adaption intensity. */
@@ -99,6 +108,7 @@ class Camera
 	
 	/** \brief Adaption time in seconds. */
 	public func float getAdaptionTime()
+		return 0.0
 	end
 	
 	/** \brief Set adaption time in seconds. */
@@ -107,6 +117,7 @@ class Camera
 	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
@@ -115,18 +126,22 @@ class Camera
 	
 	/** \brief Project point from 3d world. */
 	public func Point project( Point viewportSize, DVector position )
+		return null
 	end
 	
 	/** \brief Back project position into 3d world. */
 	public func Vector backProject( Point viewportSize, Point position )
+		return null
 	end
 	
 	/** \brief Back project position into 3d world. */
 	public func Vector backProject( int width, int height, int x, int y )
+		return null
 	end
 	
 	/** \brief Parent world or \em null if not added to a world. */
 	public func World getParentWorld()
+		return null
 	end
 	/*@}*/
 	
@@ -136,6 +151,7 @@ class Camera
 	/*@{*/
 	/** \brief Number of effects. */
 	public func int getEffectCount()
+		return 0
 	end
 	
 	/**
@@ -143,6 +159,7 @@ class Camera
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getEffectCount().
 	 */
 	public func Effect getEffectAt( int index )
+		return null
 	end
 	
 	/** \brief Add effect. */

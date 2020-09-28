@@ -8,8 +8,6 @@
 
 namespace Dragengine.Scenery
 
-
-
 /**
  * \brief 3D Bezier curve.
  * 
@@ -34,6 +32,7 @@ class CurveBezier3D
 	/*@{*/
 	/** \brief Number of points. */
 	public func int getPointCount()
+		return 0
 	end
 	
 	/**
@@ -42,6 +41,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
 	public func Vector getPointAt( int position )
+		return null
 	end
 	
 	/**
@@ -50,6 +50,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
 	public func Vector getHandle1At( int position )
+		return null
 	end
 	
 	/**
@@ -58,6 +59,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
 	public func Vector getHandle2At( int position )
+		return null
 	end
 	
 	/**
@@ -121,6 +123,7 @@ class CurveBezier3D
 	
 	/** \brief Evaluate curve at segment position. */
 	public func Vector evaluateAt( int segment, float blend )
+		return null
 	end
 	
 	/**
@@ -128,6 +131,7 @@ class CurveBezier3D
 	 * \details Curve value composes of segment as integral part and blend factor as fractional part.
 	 */
 	public func Vector evaluateAt( float curveValue )
+		return null
 	end
 	/*@}*/
 end

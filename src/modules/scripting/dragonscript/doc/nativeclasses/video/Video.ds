@@ -47,26 +47,32 @@ fixed class Video
 	/*@{*/
 	/** \brief Normalized filename the video has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Wwidth in pixels. */
 	public func int getWidth()
+		return 0
 	end
 	
 	/** \brief Height in pixels. */
 	public func int getHeight()
+		return 0
 	end
 	
 	/** \brief Number of frames. */
 	public func int getFrameCount()
+		return 0
 	end
 	
 	/** \brief Frame rate. */
 	public func int getFrameRate()
+		return 0
 	end
 	
 	/** \brief Play time in seconds. */
 	public func float getPlayTime()
+		return 0.0
 	end
 	
 	
@@ -78,6 +84,7 @@ fixed class Video
 	 *          video resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -94,6 +101,7 @@ fixed class Video
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

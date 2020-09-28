@@ -10,7 +10,6 @@ namespace Dragengine.Scenery
 
 pin Dragengine.Gui
 
-
 /**
  * \brief Bezier curve.
  * 
@@ -130,7 +129,7 @@ class CurveBezier
 	
 	/** \brief Evaluates curve at position. */
 	public func float evaluateAt( float x )
-		return 0
+		return 0.0
 	end
 	/*@}*/
 end

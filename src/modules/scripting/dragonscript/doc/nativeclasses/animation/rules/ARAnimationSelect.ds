@@ -52,10 +52,12 @@ class ARAnimationSelect extends AnimatorRule
 	
 	/** \brief Number of moves. */
 	public func int getMoveCount()
+		return 0
 	end
 	
 	/** \brief Move at index. */
 	public func String getMoveAt( int index )
+		return null
 	end
 	
 	/** \brief Add move. */

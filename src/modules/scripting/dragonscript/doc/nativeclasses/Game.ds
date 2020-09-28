@@ -70,6 +70,7 @@ class Game
 	
 	/** \brief Number of command line arguments given to the game. */
 	public func int getArgumentCount()
+		return 0
 	end
 	
 	/**
@@ -77,6 +78,7 @@ class Game
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getArgumentCount().
 	 */
 	public func String getArgumentAt( int index )
+		return null
 	end
 	/*@}*/
 end
