@@ -109,7 +109,7 @@ class NetworkState
 	 * \brief Value of vector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Vector getValueVectorAt( int index )
+	public func Vector getValueVector3At( int index )
 		return null
 	end
 	
@@ -117,7 +117,7 @@ class NetworkState
 	 * \brief Value of dvector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func DVector getValueDVectorAt( int index )
+	public func DVector getValueDVector3At( int index )
 		return null
 	end
 	

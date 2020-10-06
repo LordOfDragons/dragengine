@@ -86,7 +86,7 @@ class ModuleParameter
 	end
 	
 	/** \brief Display category. */
-	public func ModuleParameterDisplayCategory getDisplayCategory()
+	public func ModuleParameterCategory getCategory()
 		return null
 	end
 	

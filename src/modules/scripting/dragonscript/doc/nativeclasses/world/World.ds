@@ -25,6 +25,10 @@ class World
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Detect collisions. */
+	public func void detectCollisions( float elapsed )
+	end
+	
 	/** \brief Update the world. */
 	public func void update( float elapsed )
 	end

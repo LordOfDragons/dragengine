@@ -119,12 +119,12 @@ class UniqueID
 	end
 	
 	/** \brief UniqueID decremented by value. */
-	public func UniqueID +( int value )
+	public func UniqueID -( int value )
 		return null
 	end
 	
 	/** \brief UniqueID decremented by another UniqueID. */
-	public func UniqueID +( UniqueID id )
+	public func UniqueID -( UniqueID id )
 		return null
 	end
 	

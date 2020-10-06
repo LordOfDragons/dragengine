@@ -203,6 +203,16 @@ fixed class Quaternion
 		return null
 	end
 	
+	/**
+	 * \brief Returns quaternion multiplication.
+	 * 
+	 * If both quaternions are unit quaternions this operation equals applying the
+	 * rotation of \em quaternion to the rotation of this quaternion.
+	 */
+	public func Quaternion *( Quaternion quaternion )
+		return null
+	end
+	
 	/** \brief Rotate vector by quaternion. */
 	public func Vector *( Vector vector )
 		return null

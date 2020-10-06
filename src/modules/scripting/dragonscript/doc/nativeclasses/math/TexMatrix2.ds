@@ -70,12 +70,12 @@ fixed class TexMatrix2
 	end
 	
 	/** \brief Create scaling-rotation-translation texture matrix composing of a scaling followed by a rotation and a translation. */
-	public static func TexMatrix2 newSRT( Vector2 translation, Vector2 scaling, float rotation )
+	public static func TexMatrix2 newSRT( Vector2 scaling, float rotation, Vector2 translation )
 		return null
 	end
 	
 	/** \brief Create scaling-rotation-translation texture matrix composing of a scaling followed by a rotation and a translation. */
-	public static func TexMatrix2 newSRT( float translationU, float translationV, float scalingU, float scalingV, float rotation )
+	public static func TexMatrix2 newSRT( float scalingU, float scalingV, float rotation, float translationU, float translationV )
 		return null
 	end
 	

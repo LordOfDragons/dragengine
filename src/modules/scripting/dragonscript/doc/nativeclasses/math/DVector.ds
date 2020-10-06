@@ -104,17 +104,17 @@ fixed class DVector
 	end
 	
 	/** \brief Vector with all components set to the smallest value of two vectors. */
-	public func DVector smallest( Vector v )
+	public func DVector smallest( DVector v )
 		return null
 	end
 	
 	/** \brief Vector with all components set to the largest value of two vectors. */
-	public func DVector largest( Vector v )
+	public func DVector largest( DVector v )
 		return null
 	end
 	
 	/** \brief Vector with all components clamped to a range of two vectors. */
-	public func DVector clamped( Vector min, Vector max )
+	public func DVector clamped( DVector min, DVector max )
 		return null
 	end
 	

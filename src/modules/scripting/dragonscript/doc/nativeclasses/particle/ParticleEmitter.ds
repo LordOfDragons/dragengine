@@ -246,7 +246,7 @@ class ParticleEmitter
 	 * \brief Collision response.
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
-	public func ParticleCollisionResponse getCollisionResponse( int type )
+	public func ParticleCollisionResponse getTypeCollisionResponse( int type )
 		return null
 	end
 	
@@ -254,7 +254,7 @@ class ParticleEmitter
 	 * \brief Set collision response.
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
-	public func void setCollisionResponse( int type, ParticleCollisionResponse response )
+	public func void setTypeCollisionResponse( int type, ParticleCollisionResponse response )
 	end
 	
 	/**

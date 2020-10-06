@@ -40,7 +40,7 @@ class NavigationBlocker
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Orientation orientation )
+	public func void setOrientation( Quaternion orientation )
 	end
 	
 	/** \brief Layer number. */

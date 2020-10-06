@@ -111,7 +111,7 @@ class InputDeviceButton
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
+	public func String getDisplayText()
 		return null
 	end
 	

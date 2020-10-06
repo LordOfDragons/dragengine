@@ -62,6 +62,19 @@ class Animator
 	/** \brief Set animation or null if not set. */
 	public func void setAnimation( Animation animation )
 	end
+	
+	/**
+	 * \brief Two animators are equal.
+	 * 
+	 * This is an extended version of equals() accepting also \em null for \em animator1 and
+	 * \em animator2. equals() would thrown an exception if \em null is compared to anything.
+	 * This call though allows to compare \em null against animators or even \em null itself.
+	 * If \em animator1 or \em animator2 is \em null \em false is returned. If both are
+	 * \em null \em true is returned.
+	 */
+	public static func bool equals( Animator animator1, Animator animator2 )
+		return false
+	end
 	/*@}*/
 	
 	

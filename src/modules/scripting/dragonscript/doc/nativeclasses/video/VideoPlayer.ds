@@ -80,17 +80,17 @@ class VideoPlayer
 	
 	
 	/** \brief Video is playing back. */
-	public func bool getPlaying()
+	public func bool isPlaying()
 		return false
 	end
 	
 	/** \brief Video is paused. */
-	public func bool getPaused()
+	public func bool isPaused()
 		return false
 	end
 	
 	/** \brief Video is stopped. */
-	public func bool getStopped()
+	public func bool isStopped()
 		return false
 	end
 	

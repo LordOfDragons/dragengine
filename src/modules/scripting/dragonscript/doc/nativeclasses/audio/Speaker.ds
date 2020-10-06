@@ -177,6 +177,15 @@ class Speaker
 	public func void setRollOff( float rollOff )
 	end
 	
+	/** \brief Sound generation shape. */
+	public func ShapeList getShape()
+		return null
+	end
+	
+	/** \brief Set sound generation shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
 		return null

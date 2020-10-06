@@ -100,7 +100,7 @@ class Collider
 	 * attachments are potentially repositioned twice. This call ensures attachments are
 	 * only repositioned once improving performance.
 	 */
-	public func void setGeometry( DVectir position, Quaternion orientation )
+	public func void setGeometry( DVector position, Quaternion orientation )
 	end
 	
 	/**
@@ -112,7 +112,7 @@ class Collider
 	 * attachments are potentially repositioned twice. This call ensures attachments are
 	 * only repositioned once improving performance.
 	 */
-	public func void setGeometry( DVectir position, Quaternion orientation, Vector scale )
+	public func void setGeometry( DVector position, Quaternion orientation, Vector scale )
 	end
 	
 	/** \brief View direction. */

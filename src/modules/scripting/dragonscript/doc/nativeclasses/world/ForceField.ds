@@ -130,6 +130,15 @@ class ForceField
 	
 	
 	
+	/** \brief Force field shape. */
+	public func ShapeList getShape()
+		return null
+	end
+	
+	/** \brief Set force field shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
 		return null
@@ -141,6 +150,7 @@ class ForceField
 	
 	/** \brief Force field is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if force field is enabled. */

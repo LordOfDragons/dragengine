@@ -60,6 +60,11 @@ fixed class Video
 		return 0
 	end
 	
+	/** \brief Size in pixels. */
+	public func Point getSize()
+		return null
+	end
+	
 	/** \brief Number of frames. */
 	public func int getFrameCount()
 		return 0

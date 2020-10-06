@@ -49,11 +49,41 @@ class ARLimit extends AnimatorRule
 	public func void setEnableScaleMax( bool enabledX, bool enabledY, bool enabledY )
 	end
 	
+	/** \brief Set minimum position value. */
+	public func void setMinimumPosition( Vector position )
+	end
+	
+	/** \brief Set maximum position value. */
+	public func void setMaximumPosition( Vector position )
+	end
+	
+	/** \brief Set minimum rotation value. */
+	public func void setMinimumRotation( Vector rotation )
+	end
+	
+	/** \brief Set maximum rotation value. */
+	public func void setMaximumRotation( Vector rotation )
+	end
+	
+	/** \brief Set minimum scaling value. */
+	public func void setMinimumScaling( Vector scaling )
+	end
+	
+	/** \brief Set maximum scaling value. */
+	public func void setMaximumScaling( Vector scaling )
+	end
+	
 	/**
 	 * \brief Set coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is an invalid value.
 	 */
 	public func void setCoordinateFrame( ARLimitCFrame coordinateFrame )
+	end
+	
+	/**
+	 * \brief Set target bone or empty string if not set.
+	 */
+	public func void setTargetBone( String boneName )
 	end
 	
 	

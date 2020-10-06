@@ -19,6 +19,10 @@ class NavigationSpace
 	/** \brief Create navigation space. */
 	public func new()
 	end
+	
+	/** \brief Create copy of navigation space. */
+	public func new( NavigationSpace navigationSpace )
+	end
 	/*@}*/
 	
 	
@@ -40,7 +44,7 @@ class NavigationSpace
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Orientation orientation )
+	public func void setOrientation( Quaternion orientation )
 	end
 	
 	/** \brief Layer number. */
@@ -53,12 +57,12 @@ class NavigationSpace
 	end
 	
 	/** \brief Space type. */
-	public func NavigationSpaceTpe getType()
+	public func NavigationSpaceType getType()
 		return null
 	end
 	
 	/** \brief Set space type. */
-	public func void setType( NavigationSpaceTpe type )
+	public func void setType( NavigationSpaceType type )
 	end
 	
 	/**
