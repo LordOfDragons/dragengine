@@ -8,6 +8,9 @@
 
 namespace Dragengine
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Input device axis.
  * 

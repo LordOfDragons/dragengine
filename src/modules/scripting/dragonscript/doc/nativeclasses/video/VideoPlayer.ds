@@ -6,7 +6,8 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine.Gui
+
 
 /**
  * \brief Video player resources.

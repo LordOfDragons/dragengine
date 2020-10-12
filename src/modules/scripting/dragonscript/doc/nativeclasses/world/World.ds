@@ -8,6 +8,10 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+pin Dragengine.Networking
+
+
 /**
  * \brief World.
  * 

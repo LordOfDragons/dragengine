@@ -6,9 +6,9 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine.Gui
 
-pin Dragengine.Gui
+pin Dragengine.Scenery
 
 
 /**
