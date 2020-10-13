@@ -366,7 +366,7 @@ deClassCanvasPaint::~deClassCanvasPaint(){
 ///////////////
 
 void deClassCanvasPaint::CreateClassMembers( dsEngine *engine ){
-	pClsCanvasPaintShape = engine->GetClass( "Dragengine.Scenery.CanvasPaintShape" );
+	pClsCanvasPaintShape = engine->GetClass( "Dragengine.Gui.CanvasPaintShape" );
 	
 	sInitData init;
 	init.clsCPaint = this;
