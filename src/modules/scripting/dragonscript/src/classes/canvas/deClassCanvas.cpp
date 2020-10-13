@@ -393,7 +393,7 @@ deClassCanvas::~deClassCanvas(){
 ///////////////
 
 void deClassCanvas::CreateClassMembers( dsEngine *engine ){
-	pClsCanvasBlendMode = engine->GetClass( "Dragengine.Scenery.CanvasBlendMode" );
+	pClsCanvasBlendMode = engine->GetClass( "Dragengine.Gui.CanvasBlendMode" );
 	
 	sInitData init;
 	init.clsCanvas = this;
