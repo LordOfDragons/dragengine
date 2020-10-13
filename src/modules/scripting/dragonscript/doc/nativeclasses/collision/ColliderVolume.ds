@@ -29,6 +29,7 @@ class ColliderVolume extends Collider
 	/*@{*
 	/** \brief Collider shape. */
 	public func ShapeList getShape()
+		return null
 	end
 	
 	/** \brief Set collider shape. */
@@ -43,6 +44,7 @@ class ColliderVolume extends Collider
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -54,6 +56,7 @@ class ColliderVolume extends Collider
 	 *          If both are \em null \em true is returned.
 	 */
 	public static func bool equals( Collider collider1, Collider collider2 )
+		return false
 	end
 	
 	/**
@@ -61,6 +64,7 @@ class ColliderVolume extends Collider
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

@@ -8,6 +8,9 @@
 
 namespace Dragengine
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Input device axis.
  * 
@@ -54,10 +57,12 @@ class InputDeviceAxis
 	/*@{*/
 	/** \brief Owner input device. */
 	public func InputDevice getInputDevice()
+		return null
 	end
 	
 	/** \brief Axis index. */
 	public func int getAxisIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -74,6 +79,7 @@ class InputDeviceAxis
 	 * key bindings.
 	 */
 	public func String getID()
+		return null
 	end
 	
 	/**
@@ -83,10 +89,12 @@ class InputDeviceAxis
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
 	public func String getName()
+		return null
 	end
 	
 	/** \brief Axis type. */
 	public func InputDeviceAxisType getType()
+		return null
 	end
 	
 	/**
@@ -131,8 +139,8 @@ class InputDeviceAxis
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
-		return ""
+	public func String getDisplayText()
+		return null
 	end
 	
 	
@@ -147,6 +155,7 @@ class InputDeviceAxis
 	 * If reattached the device properly works again.
 	 */
 	public func float getValue()
+		return 0.0
 	end
 	/*@}*/
 end

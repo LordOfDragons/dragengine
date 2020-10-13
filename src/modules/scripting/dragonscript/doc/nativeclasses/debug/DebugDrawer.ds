@@ -30,6 +30,7 @@ class DebugDrawer
 	/*@{*/
 	/** \brief Pposition. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -38,6 +39,7 @@ class DebugDrawer
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -46,6 +48,7 @@ class DebugDrawer
 	
 	/** \brief Scaling. */
 	public func Vector getScale()
+		return null
 	end
 	
 	/** \brief Set scaling. */
@@ -56,6 +59,7 @@ class DebugDrawer
 	
 	/** \brief Debug drawer is visible. */
 	public func bool getVisible()
+		return false
 	end
 	
 	/** \brief Set if debug drawer is visible. */
@@ -64,6 +68,7 @@ class DebugDrawer
 	
 	/** \brief Debug drawer is rendered in x-ray mode. */
 	public func bool getXRay()
+		return false
 	end
 	
 	/** \brief Set if debug drawer is rendered in x-ray mode. */
@@ -77,6 +82,7 @@ class DebugDrawer
 	/*@{*/
 	/** \brief Number of shapes. */
 	public func int getShapeCount()
+		return 0
 	end
 	
 	/** \brief Set number of shapes. */

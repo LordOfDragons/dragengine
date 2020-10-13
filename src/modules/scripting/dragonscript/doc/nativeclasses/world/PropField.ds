@@ -31,6 +31,7 @@ class PropField
 	
 	/** \brief Listener or \em null if not set. */
 	public func PropFieldListener getListener()
+		return null
 	end
 	
 	/** \brief Set listener or \em null if not set. */
@@ -43,8 +44,8 @@ class PropField
 	/** \name Types */
 	/*@{*/
 	/** \brief Add type returning the type index. */
-	public func int addType( Model model, Skin skin, float rotPerForce, float restitution, \
-	CollisionFilter collisionFilter, int instanceCount )
+	public func int addType( Model model, Skin skin, float rotPerForce, float restitution, CollisionFilter collisionFilter, int instanceCount )
+		return 0
 	end
 	
 	/** \brief Remove all types. */

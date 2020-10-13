@@ -44,6 +44,7 @@ fixed class OcclusionMesh
 	/*@{*/
 	/** \brief Normalized filename the occlusion mesh has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	
@@ -55,6 +56,7 @@ fixed class OcclusionMesh
 	 *          occlusion mesh resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -62,6 +64,7 @@ fixed class OcclusionMesh
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

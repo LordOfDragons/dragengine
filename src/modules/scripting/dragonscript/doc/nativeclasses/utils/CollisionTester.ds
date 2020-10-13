@@ -8,9 +8,6 @@
 
 namespace Dragengine.Scenery
 
-pin Dragengine.Gui
-
-
 /**
  * \brief Collision tester.
  * 
@@ -41,6 +38,7 @@ class CollisionTester
 	/*@{*/
 	/** \brief World to use for collision testing or \em null if not set. */
 	public func World getWorld()
+		return null
 	end
 	
 	/** \brief Set world to use for collision testing or \em null if not set. */
@@ -49,6 +47,7 @@ class CollisionTester
 	
 	/** \brief Touch sensor to use for testing collisions or \em null if not set. */
 	public func TouchSensor getTouchSensor()
+		return null
 	end
 	
 	/** \brief Set touch sensor to use for testing collisions or \em null if not set. */
@@ -67,6 +66,7 @@ class CollisionTester
 	
 	/** \brief Test direction for moving collision testing or \em null for hit collision testing. */
 	public func Vector getTestDirection()
+		return null
 	end
 	
 	/** \brief Set test direction for moving collision testing or \em null for hit collision testing. */
@@ -75,6 +75,7 @@ class CollisionTester
 	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
@@ -83,6 +84,7 @@ class CollisionTester
 	
 	/** \brief Collision listener used to test if a collision is possible or \em null to only use collision filtering. */
 	public func ColliderListener getColliderListener()
+		return null
 	end
 	
 	/** \brief Set collision listener used to test if a collision is possible or \em null to only use collision filtering. */
@@ -122,6 +124,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool rayHits( DVector position, Vector direction )
+		return false
 	end
 	
 	/**
@@ -129,6 +132,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderHits( DVector position )
+		return false
 	end
 	
 	/**
@@ -136,6 +140,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderHits( DVector position, Quaternion orientation )
+		return false
 	end
 	
 	/**
@@ -143,6 +148,7 @@ class CollisionTester
 	 * \returns \em true if a collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderMoveHits( DVector position, Vector direction )
+		return false
 	end
 	
 	/**
@@ -150,6 +156,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderMoveHits( DVector position, Quaternion orientation, Vector direction )
+		return false
 	end
 	
 	/**
@@ -157,6 +164,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderRotateHits( DVector position, Vector rotation )
+		return false
 	end
 	
 	/**
@@ -164,6 +172,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderRotateHits( DVector position, Quaternion orientation, Vector rotation )
+		return false
 	end
 	
 	/**
@@ -171,6 +180,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderMoveRotateHits( DVector position, Vector direction, Vector rotation )
+		return false
 	end
 	
 	/**
@@ -178,6 +188,7 @@ class CollisionTester
 	 * \returns \em true if collision has been detected or \em false if not or parameters are invalid.
 	 */
 	public func bool colliderMoveRotateHits( DVector position, Quaternion orientation, Vector direction, Vector rotation )
+		return false
 	end
 	/*@}*/
 	
@@ -187,6 +198,7 @@ class CollisionTester
 	/*@{*/
 	/** \brief Collision has been found. */
 	public func bool hasCollision()
+		return false
 	end
 	
 	/**
@@ -194,6 +206,7 @@ class CollisionTester
 	 * \details Only valid if hasCollision() returns \em true.
 	 */
 	public func float getHitDistance()
+		return 0.0
 	end
 	
 	/**
@@ -201,6 +214,7 @@ class CollisionTester
 	 * \details Only valid if hasCollision() returns \em true.
 	 */
 	public func Collider getHitCollider()
+		return null
 	end
 	
 	/**
@@ -208,6 +222,7 @@ class CollisionTester
 	 * \details Only valid if hasCollision() returns \em true.
 	 */
 	public func int getHitBone()
+		return 0
 	end
 	/*@}*/
 end

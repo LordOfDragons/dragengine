@@ -15,10 +15,14 @@ namespace Dragengine
  * This is a native class. This is a pure static class. The class can not be instantiated
  */
 fixed class Engine
+	private func new()
+	end
+	
 	/** \name Management */
 	/*@{*/
 	/** \brief Elapsed time since last update. */
 	public static func float getElapsedTime()
+		return 0.0
 	end
 	
 	/**
@@ -32,10 +36,12 @@ fixed class Engine
 	
 	/** \brief Game object. */
 	public static func Game getGame()
+		return null
 	end
 	
 	/** \brief Averaged FPS rate. */
 	public static func int getFPSRate()
+		return 0
 	end
 	
 	/**
@@ -50,10 +56,12 @@ fixed class Engine
 	 * \details This can be used by editor applications to allow in-editor game previews if supported.
 	 */
 	public static func bool getEditMode()
+		return false
 	end
 	
 	/** \brief Number of loading resources. */
 	public static func int loadingResourceCount()
+		return 0
 	end
 	
 	/** \brief Log message using engine logger. */
@@ -62,6 +70,7 @@ fixed class Engine
 	
 	/** \brief Script module states as Dictionary. */
 	public static func Dictionary getScriptModuleStats()
+		return null
 	end
 	/*@}*/
 end

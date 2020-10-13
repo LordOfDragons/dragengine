@@ -27,6 +27,7 @@ class ForceField
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -35,6 +36,7 @@ class ForceField
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -45,6 +47,7 @@ class ForceField
 	
 	/** \brief Influence area. */
 	public func ShapeList getInfluenceArea()
+		return null
 	end
 	
 	/** \brief Set influence area. */
@@ -53,6 +56,7 @@ class ForceField
 	
 	/** \brief Falloff radius. */
 	public func float getRadius()
+		return 0.0
 	end
 	
 	/** \brief Set falloff radius. */
@@ -61,6 +65,7 @@ class ForceField
 	
 	/** \brief Falloff exponent. */
 	public func float getExponent()
+		return 0.0
 	end
 	
 	/** \brief Set falloff exponent. */
@@ -71,13 +76,16 @@ class ForceField
 	
 	/** \brief Field type. */
 	public func ForceFieldType getFieldType()
+		return null
 	end
 	
 	/** \brief Set field type. */
 	public func void setFieldType( ForceFieldType type )
+	end
 	
 	/** \brief Force application type. */
 	public func ForceFieldApplication getApplicationType()
+		return null
 	end
 	
 	/** \brief Set application type. */
@@ -86,6 +94,7 @@ class ForceField
 	
 	/** \brief Force direction. */
 	public func Vector getDirection()
+		return null
 	end
 	
 	/** \brief Set force direction. */
@@ -94,6 +103,7 @@ class ForceField
 	
 	/** \brief Force in newton. */
 	public func float getForce()
+		return 0.0
 	end
 	
 	/** \brief Set force in newton. */
@@ -102,6 +112,7 @@ class ForceField
 	
 	/** \brief Fluctuation of direction in radians. */
 	public func float getFluctuationDirection()
+		return 0.0
 	end
 	
 	/** \brief Set fluctuation of direction in radians. */
@@ -110,6 +121,7 @@ class ForceField
 	
 	/** \brief Fluctuation of force in newton. */
 	public func float getFluctuationForce()
+		return 0.0
 	end
 	
 	/** \brief Set fluctuation of force in newton. */
@@ -118,8 +130,18 @@ class ForceField
 	
 	
 	
+	/** \brief Force field shape. */
+	public func ShapeList getShape()
+		return null
+	end
+	
+	/** \brief Set force field shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
@@ -128,6 +150,7 @@ class ForceField
 	
 	/** \brief Force field is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if force field is enabled. */

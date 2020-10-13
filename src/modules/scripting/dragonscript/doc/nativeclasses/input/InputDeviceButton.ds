@@ -6,7 +6,10 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine
+
+pin Dragengine.Gui
+
 
 /**
  * \brief Input device button.
@@ -34,10 +37,12 @@ class InputDeviceButton
 	/*@{*/
 	/** \brief Owner input device. */
 	public func InputDevice getInputDevice()
+		return null
 	end
 	
 	/** \brief Button index. */
 	public func int getButtonIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -54,6 +59,7 @@ class InputDeviceButton
 	 * key bindings.
 	 */
 	public func String getID()
+		return null
 	end
 	
 	/**
@@ -63,6 +69,7 @@ class InputDeviceButton
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
 	public func String getName()
+		return null
 	end
 	
 	/**
@@ -107,8 +114,8 @@ class InputDeviceButton
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
-		return ""
+	public func String getDisplayText()
+		return null
 	end
 	
 	
@@ -123,6 +130,7 @@ class InputDeviceButton
 	 * If reattached the device properly works again.
 	 */
 	public func bool isPressed()
+		return false
 	end
 	/*@}*/
 end

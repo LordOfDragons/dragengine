@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Immutable skin resources.
  * 
@@ -116,7 +118,7 @@ fixed class Skin
 	 *                        textureGetPropertyCount().
 	 */
 	public func SkinPropertyType propertyGetType( int texture, int property )
-		return 0
+		return null
 	end
 	
 	/**

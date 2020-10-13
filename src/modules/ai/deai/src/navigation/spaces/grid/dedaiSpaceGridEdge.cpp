@@ -34,12 +34,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiSpaceGridEdge::dedaiSpaceGridEdge(){
-	pVertex1 = 0;
-	pVertex2 = 0;
-	pTypeNumber1 = 0;
-	pTypeNumber2 = 0;
-	pLength = 0.0f;
+dedaiSpaceGridEdge::dedaiSpaceGridEdge() :
+pGrid( NULL ),
+pIndex( 0 ),
+pVertex1( 0 ),
+pVertex2( 0 ),
+pTypeNumber1( 0 ),
+pTypeNumber2( 0 ),
+pLength( 0.0f ){
 }
 
 dedaiSpaceGridEdge::~dedaiSpaceGridEdge(){
@@ -49,6 +51,14 @@ dedaiSpaceGridEdge::~dedaiSpaceGridEdge(){
 
 // Management
 ///////////////
+
+void dedaiSpaceGridEdge::SetGrid( dedaiSpaceGrid *grid ){
+	pGrid = grid;
+}
+
+void dedaiSpaceGridEdge::SetIndex( unsigned short index ){
+	pIndex = index;
+}
 
 void dedaiSpaceGridEdge::SetVertex1( unsigned short vertex ){
 	pVertex1 = vertex;

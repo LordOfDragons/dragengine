@@ -27,6 +27,7 @@ class NavigationBlocker
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -35,14 +36,16 @@ class NavigationBlocker
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Orientation orientation )
+	public func void setOrientation( Quaternion orientation )
 	end
 	
 	/** \brief Layer number. */
 	public func int getLayer()
+		return 0
 	end
 	
 	/** \brief Set layer number. */
@@ -51,6 +54,7 @@ class NavigationBlocker
 	
 	/** \brief Space type to navigate. */
 	public func NavigationSpaceType getSpaceType()
+		return null
 	end
 	
 	/** \brief Set space type to navigate. */
@@ -62,6 +66,7 @@ class NavigationBlocker
 	 * \details Blocks navigation meshes with a smaller or equal blocking priority.
 	 */
 	public func int getBlockingPriority()
+		return 0
 	end
 	
 	/**
@@ -73,6 +78,7 @@ class NavigationBlocker
 	
 	/** \brief Enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set enabled. */
@@ -83,6 +89,7 @@ class NavigationBlocker
 	
 	/** \brief Shape list. */
 	public func ShapeList getShapeList()
+		return null
 	end
 	
 	/** \brief Set shape list. */

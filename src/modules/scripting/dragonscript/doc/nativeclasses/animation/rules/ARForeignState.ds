@@ -59,14 +59,14 @@ class ARForeignState extends AnimatorRule
 	 * \brief Set source coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
 	 */
-	public func void setSourceCoordinateFrame( ARForeignState coordinateFrame )
+	public func void setSourceCoordinateFrame( ARForeignStateCFrame coordinateFrame )
 	end
 	
 	/**
 	 * \brief Set destination coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
 	 */
-	public func void setDestinationCoordinateFrame( ARForeignState coordinateFrame )
+	public func void setDestinationCoordinateFrame( ARForeignStateCFrame coordinateFrame )
 	end
 	
 	

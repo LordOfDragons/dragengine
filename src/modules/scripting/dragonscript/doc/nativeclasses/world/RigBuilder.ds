@@ -105,8 +105,7 @@ abstract class RigBuilder
 	 * \brief Add bone constraint.
 	 */
 	protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset, \
-	float linearDamping, float angularDamping, float springDamping, bool isRope,
-	float breakingThreshold, int parentBone )
+	float linearDamping, float angularDamping, float springDamping, bool isRope, float breakingThreshold, int parentBone )
 	end
 	
 	/**

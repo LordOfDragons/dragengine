@@ -33,6 +33,7 @@ class ColliderRig extends Collider
 	/*@{*/
 	/** \brief Rig or \em null if not set. */
 	public func Rig getRig()
+		return null
 	end
 	
 	/** \brief Set rig or \em null if not set. */
@@ -47,6 +48,7 @@ class ColliderRig extends Collider
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -58,6 +60,7 @@ class ColliderRig extends Collider
 	 *          If both are \em null \em true is returned.
 	 */
 	public static func bool equals( Collider collider1, Collider collider2 )
+		return false
 	end
 	
 	/**
@@ -65,6 +68,7 @@ class ColliderRig extends Collider
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -77,6 +81,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func DVector boneGetPosition( int bone )
+		return null
 	end
 	
 	/**
@@ -91,6 +96,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func Quaternion boneGetOrientation( int bone )
+		return null
 	end
 	
 	/**
@@ -105,6 +111,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func Vector boneGetLinearVelocity( int bone )
+		return null
 	end
 	
 	/**
@@ -119,6 +126,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func Vector boneGetAngularVelocity( int bone )
+		return null
 	end
 	
 	/**
@@ -133,6 +141,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func DMatrix boneGetMatrix( int bone )
+		return null
 	end
 	
 	/**
@@ -140,6 +149,7 @@ class ColliderRig extends Collider
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
 	public func DMatrix boneGetInverseMatrix( int bone )
+		return null
 	end
 	
 	

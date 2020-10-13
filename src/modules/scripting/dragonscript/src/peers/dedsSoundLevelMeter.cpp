@@ -57,27 +57,23 @@ pHasCB( false )
 }
 
 dedsSoundLevelMeter::~dedsSoundLevelMeter(){
+	if( ! pValCB ){
+		return;
+	}
+	
 	// check if the resource is in progress of being deleted. if this is not
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
 	if( pSoundLevelMeter && pSoundLevelMeter->GetRefCount() > 0 ){
-		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValCB );
-			}
-			pValCB = NULL;
-			pHasCB = false;
-		}
+		pDS.AddValueDeleteLater( pValCB );
+		pValCB = NULL;
+		pHasCB = false;
 		
 	}else{
-		if( pValCB ){
-			if( pValCB->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
-			pValCB = NULL;
-			pHasCB = false;
-		}
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pValCB = NULL;
+		pHasCB = false;
 	}
 }
 

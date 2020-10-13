@@ -103,7 +103,7 @@ void deClassBillboard::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *mysel
 	ds.GetClassDVector()->PushDVector( rt, billboard.GetPosition() );
 }
 
-// public func void setPosition( Vector position )
+// public func void setPosition( DVector position )
 deClassBillboard::nfSetPosition::nfSetPosition( const sInitData &init ) :
 dsFunction( init.clsBillboard, "setPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){

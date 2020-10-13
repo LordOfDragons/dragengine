@@ -31,10 +31,12 @@ class InputEvent
 	/*@{*/
 	/** \brief Event type. */
 	public func InputEventType getType()
+		return null
 	end
 	
 	/** \brief Event device index. */
 	public func int getDevice()
+		return 0
 	end
 	
 	/**
@@ -58,6 +60,7 @@ class InputEvent
 	 * | InputEventType.deviceParamsChanged | 0 |
 	 */
 	public func int getCode()
+		return 0
 	end
 	
 	/**
@@ -66,6 +69,7 @@ class InputEvent
 	 * Combination of flags from InputEventModifier.
 	 */
 	public func int getState()
+		return 0
 	end
 	
 	/**
@@ -74,6 +78,7 @@ class InputEvent
 	 * Used for InputEventType.keyPress and InputEventType.keyRelease only.
 	 */
 	public func int getKeyCode()
+		return 0
 	end
 	
 	/**
@@ -84,6 +89,7 @@ class InputEvent
 	 * currently pressed modifiers.
 	 */
 	public func int getKeyChar()
+		return 0
 	end
 	
 	/**
@@ -92,6 +98,7 @@ class InputEvent
 	 * Used for InputEventType.mouseMove and InputEventType.mouseWheel only.
 	 */
 	public func int getX()
+		return 0
 	end
 	
 	/**
@@ -100,6 +107,7 @@ class InputEvent
 	 * Used for InputEventType.mouseMove and InputEventType.mouseWheel only.
 	 */
 	public func int getY()
+		return 0
 	end
 	
 	/**
@@ -108,10 +116,12 @@ class InputEvent
 	 * Used for InputEventType.axisMove only.
 	 */
 	public func float getValue()
+		return 0.0
 	end
 	
 	/** \brief Time the event occurred. */
 	public func int getTime()
+		return 0
 	end
 	/*@}*/
 end

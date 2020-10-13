@@ -342,6 +342,10 @@ void projWindowMain::UpdateShowActionPath(){
 	pActionShowOverlay->SetPath( path.GetPathNative() );
 	
 	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/capture" );
+	pActionShowCapture->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
 	path.AddComponent( "testRun.log" );
 	pActionShowLogs->SetPath( path.GetPathNative() );
 	
@@ -762,7 +766,11 @@ void projWindowMain::pCreateActions(){
 	
 	pActionShowOverlay.TakeOver( new igdeActionExternOpen( env,
 		"Browse Run Overlay", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Run-Time OverlayDirectory in File Manager" ) );
+		"Open Run-Time Overlay Directory in File Manager" ) );
+	
+	pActionShowCapture.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Capture", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Capture Directory in File Manager" ) );
 	
 	pActionShowLogs.TakeOver( new igdeActionExternOpen( env,
 		"Open Run Logs", env.GetStockIcon( igdeEnvironment::esiOpen ),
@@ -848,4 +856,5 @@ void projWindowMain::pCreateMenuProfile( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionShowLogs );
 	helper.MenuCommand( menu, pActionShowConfig );
 	helper.MenuCommand( menu, pActionShowOverlay );
+	helper.MenuCommand( menu, pActionShowCapture );
 }

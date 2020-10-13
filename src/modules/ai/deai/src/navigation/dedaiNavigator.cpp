@@ -28,6 +28,8 @@
 #include "pathfinding/dedaiPathFinderNavGrid.h"
 #include "pathfinding/dedaiPathFinderNavMesh.h"
 #include "dedaiPathCollisionListener.h"
+#include "spaces/grid/dedaiSpaceGrid.h"
+#include "spaces/grid/dedaiSpaceGridEdge.h"
 #include "spaces/mesh/dedaiSpaceMeshFace.h"
 #include "spaces/mesh/dedaiSpaceMesh.h"
 #include "spaces/dedaiSpace.h"
@@ -418,9 +420,15 @@ decDVector &nearestPoint, int &nearestType ){
 	Prepare();
 	
 	switch( pNavigator.GetSpaceType() ){
-	case deNavigationSpace::estGrid:
-		pDEAI.LogError( "TODO: Navigator.NearestPoint: implementation for Grid type" );
-		break;
+	case deNavigationSpace::estGrid:{
+		float nearestLambda;
+		dedaiSpaceGridEdge * const edge = pLayer->GetGridNearestPoint( point, radius, nearestPoint, nearestLambda );
+		if( edge ){
+			nearestType = edge->GetGrid()->GetSpace().GetLayer()->GetCostTable().GetTypeAt(
+				nearestLambda < 0.5f ? edge->GetTypeNumber1() : edge->GetTypeNumber2() );
+			return true;
+		}
+		}break;
 		
 	case deNavigationSpace::estMesh:{
 		dedaiSpaceMeshFace * const face = pLayer->GetNavMeshNearestPoint( point, radius, nearestPoint );
@@ -439,7 +447,25 @@ decDVector &nearestPoint, int &nearestType ){
 }
 
 bool dedaiNavigator::LineCollide( const decDVector &origin, const decVector &direction, float &distance ) {
-	pDEAI.LogError( "TODO: Navigator.LineCollide: implementation" );
+	if( ! pParentWorld ){
+		return false;
+	}
+	
+	pLayer->Prepare();
+	Prepare();
+	
+	switch( pNavigator.GetSpaceType() ){
+	case deNavigationSpace::estGrid:
+		DETHROW_INFO( deeInvalidAction, "not supported for grid type" );
+		
+	case deNavigationSpace::estMesh:
+		return pLayer->NavMeshLineCollide( origin, direction, distance );
+		
+	case deNavigationSpace::estVolume:
+		pDEAI.LogError( "TODO: Navigator.LineCollide: implementation for Volume type" );
+		break;
+	}
+	
 	return false;
 }
 

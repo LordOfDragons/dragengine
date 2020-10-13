@@ -47,6 +47,7 @@ class Animator
 	/*@{*/
 	/** \brief Rig or \em null if not set. */
 	public func Rig getRig()
+		return null
 	end
 	
 	/** \brief Set rig or \em null if not set. */
@@ -55,10 +56,24 @@ class Animator
 	
 	/** \brief Animation or \em null if not set. */
 	public func Animation getAnimation()
+		return null
 	end
 	
 	/** \brief Set animation or null if not set. */
 	public func void setAnimation( Animation animation )
+	end
+	
+	/**
+	 * \brief Two animators are equal.
+	 * 
+	 * This is an extended version of equals() accepting also \em null for \em animator1 and
+	 * \em animator2. equals() would thrown an exception if \em null is compared to anything.
+	 * This call though allows to compare \em null against animators or even \em null itself.
+	 * If \em animator1 or \em animator2 is \em null \em false is returned. If both are
+	 * \em null \em true is returned.
+	 */
+	public static func bool equals( Animator animator1, Animator animator2 )
+		return false
 	end
 	/*@}*/
 	
@@ -68,6 +83,7 @@ class Animator
 	/*@{*/
 	/** \brief Nnumber of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -89,6 +105,7 @@ class Animator
 	 *                        than or equal to getControllerCount().
 	 */
 	public func AnimatorController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -101,10 +118,12 @@ class Animator
 	 *             \em null is returned.
 	 */
 	public func AnimatorController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	/*@}*/
 	
@@ -114,6 +133,7 @@ class Animator
 	/*@{*/
 	/** \brief Number of links. */
 	public func int getLinkCount()
+		return 0
 	end
 	
 	/**
@@ -122,6 +142,7 @@ class Animator
 	 * \returns Index of added link.
 	 */
 	public func int addLink( int controller )
+		return 0
 	end
 	
 	/** \brief Remove all links. */
@@ -157,6 +178,7 @@ class Animator
 	/*@{*/
 	/** \brief Number of rules. */
 	public func int getRuleCount()
+		return 0
 	end
 	
 	/** \brief Add rule. */
@@ -168,6 +190,7 @@ class Animator
 	 * \throws EOutOfBoundary \em index is less than 0 or large than or equal to getRuleCount().
 	 */
 	public func AnimatorRule getRuleAt( int index )
+		return null
 	end
 	
 	/** \brief Remove all rules. */

@@ -6,9 +6,7 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
-
-pin Dragengine.Gui
+namespace Dragengine.Gui
 
 
 /**
@@ -30,6 +28,7 @@ class CanvasPaint extends Canvas
 	/*@{*/
 	/** \brief Shape type. */
 	public func CanvasPaintShape getShapeType()
+		return null
 	end
 	
 	/** \brief Set shape type. */
@@ -38,6 +37,7 @@ class CanvasPaint extends Canvas
 	
 	/** \brief Line color. */
 	public func Color getLineColor()
+		return null
 	end
 	
 	/** \brief Set line color. */
@@ -46,6 +46,7 @@ class CanvasPaint extends Canvas
 	
 	/** \brief Fill color. */
 	public func Color getFillColor()
+		return null
 	end
 	
 	/** \brief Set fill color. */
@@ -54,6 +55,7 @@ class CanvasPaint extends Canvas
 	
 	/** \brief Line thickness in units. */
 	public func float getThickness()
+		return 0.0
 	end
 	
 	/** \brief Line thickness in units. */
@@ -67,7 +69,7 @@ class CanvasPaint extends Canvas
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
 	public func float getRoundCornerX()
-		return 0
+		return 0.0
 	end
 	
 	/**
@@ -86,7 +88,7 @@ class CanvasPaint extends Canvas
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
 	public func float getRoundCornerY()
-		return 0
+		return 0.0
 	end
 	
 	/**
@@ -104,7 +106,7 @@ class CanvasPaint extends Canvas
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
 	public func float getStartAngle()
-		return 0
+		return 0.0
 	end
 	
 	/**
@@ -120,8 +122,8 @@ class CanvasPaint extends Canvas
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	public func float eetEndAngle()
-		return 0
+	public func float getEndAngle()
+		return 0.0
 	end
 	
 	/**
@@ -136,10 +138,12 @@ class CanvasPaint extends Canvas
 	
 	/** \brief Number of points. */
 	public func int getPointCount()
+		return 0
 	end
 	
 	/** \brief Point at position. */
 	public func Point getPointAt( int index )
+		return null
 	end
 	
 	/** \brief Add a point. */
@@ -158,6 +162,7 @@ class CanvasPaint extends Canvas
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -165,6 +170,7 @@ class CanvasPaint extends Canvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

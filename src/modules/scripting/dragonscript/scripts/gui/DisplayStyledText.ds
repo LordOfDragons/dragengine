@@ -30,6 +30,26 @@ pin Dragengine.Scenery
 
 /**
  * \brief Display page of styled text document.
+ * 
+ * By default the text document uses page mode. In page mode the document is split into pages
+ * with the size of the available space (widget width minus padding). To switch between the
+ * pages call the setCurrentPage() method.
+ * 
+ * Optionally the text document can be set to non-page mode. In this mode the entire document
+ * is formatted on one single page.
+ * 
+ * To properly layout the document width of the widget is used. This is especially important
+ * if you want to use ScrollPanel to allow scrolling up and down. The Viewport widget is
+ * required to be set to FlowLayout or another layout adjusting the widget size to cover the
+ * full size. FlowLayout is best suited for this task since it allows the widget to be higher
+ * than the available space while using the available width. The following code creates a
+ * vertically scrollable DisplayStyledText.
+ * 
+ * \code{.ds}
+ * var DisplayStyledText widget = DisplayStyledText.new()
+ * // widget.setPagedMode(false) // if you want to use single page mode.
+ * container.addWidge(ScrollPanel.new(Viewport.new(widget, FlowLayout.new(LayoutAxis.y))))
+ * \endcode
  */
 class DisplayStyledText extends Widget
 	private var StyledTextDocument pStyledTextDocument
@@ -134,6 +154,8 @@ class DisplayStyledText extends Widget
 		this.pMinSizeForWidthSize = null
 		this.pCurrentPage = 0
 		this.updateCanvasPage()
+		
+		this.layoutParent()
 	end
 	
 	

@@ -27,6 +27,7 @@ class Microphone
 	/*@{*/
 	/** \brief Type. */
 	public func MicrophoneType getType()
+		return null
 	end
 	
 	/** \brief Set type. */
@@ -35,6 +36,7 @@ class Microphone
 	
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -43,6 +45,7 @@ class Microphone
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -51,6 +54,7 @@ class Microphone
 	
 	/** \brief Velocity in m/s. */
 	public func Vector getVelocity()
+		return null
 	end
 	
 	/** \brief Set velocity in m/s. */
@@ -61,6 +65,7 @@ class Microphone
 	
 	/** \brief Microphone is muted. */
 	public func bool getMuted()
+		return false
 	end
 	
 	/** \brief Set if microphone is muted. */
@@ -69,6 +74,7 @@ class Microphone
 	
 	/** \brief Volume. */
 	public func float getVolume()
+		return 0.0
 	end
 	
 	/** \brief Set volume. */
@@ -77,6 +83,7 @@ class Microphone
 	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */

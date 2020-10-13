@@ -72,9 +72,7 @@ class ParameterTableEntry
 				return false
 				
 			elif this.pValue castable String
-				return this.pValue.equals( "1" ) \
-					or this.pValue.equals( "true" ) == 0 \
-					or this.pValue.equals( "yes" ) == 0
+				return this.pValue.equals( "1" ) or this.pValue.equals( "true" ) or this.pValue.equals( "yes" )
 				
 			else
 				return this.pValue cast bool

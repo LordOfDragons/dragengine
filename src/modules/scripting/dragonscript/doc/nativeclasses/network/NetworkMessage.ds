@@ -30,6 +30,7 @@ class NetworkMessage
 	/*@{*/
 	/** \brief Llength of the message data. */
 	public func int getDataLength()
+		return 0
 	end
 	
 	/** \brief Clear message data. */
@@ -44,6 +45,7 @@ class NetworkMessage
 	 * calls can cause exceptions due to reading past the end of file.
 	 */
 	public func FileReader getReader()
+		return null
 	end
 	
 	/**
@@ -61,6 +63,7 @@ class NetworkMessage
 	 *               data to 0 bytes and starts writing.
 	 */
 	public func FileWriter getWriter( bool append )
+		return null
 	end
 	/*@}*/
 end

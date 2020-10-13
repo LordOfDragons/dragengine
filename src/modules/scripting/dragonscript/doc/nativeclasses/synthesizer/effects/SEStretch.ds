@@ -13,7 +13,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class. It can not be subclassed.
  */
-class SEStretch extends SynthesizerSource
+class SEStretch extends SynthesizerEffect
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create synthesizer effect. */

@@ -8,9 +8,6 @@
 
 namespace Dragengine.Scenery
 
-pin Dragengine.Gui
-
-
 /**
  * \brief 2D Curve.
  * 
@@ -30,6 +27,7 @@ class Curve2D
 	/*@{*/
 	/** \brief Nnumber of points. */
 	public func int getPointCount()
+		return 0
 	end
 	
 	/**
@@ -37,6 +35,7 @@ class Curve2D
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
 	public func Vector2 getPointAt( int position )
+		return null
 	end
 	
 	/**
@@ -44,6 +43,7 @@ class Curve2D
 	 * \details If no such point can be found -1 is returned.
 	 */
 	public func int indexOfPointClosestTo( float coordinate )
+		return 0
 	end
 	
 	/**
@@ -52,14 +52,17 @@ class Curve2D
 	 *          most prior point. Returns -1 if there are no points satisfying this criteria.
 	 */
 	public func int indexOfPointBefore( float coordinate )
+		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
 	public func int addPoint( Vector2 point )
+		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
 	public func int addPoint( float x, float y )
+		return 0
 	end
 	
 	/**
@@ -91,10 +94,12 @@ class Curve2D
 	
 	/** \brief Evaluate curve at coordinate using constant interpolation. */
 	public func float evaluateConstant( float coordinate )
+		return 0.0
 	end
 	
 	/** \brief Evaluate curve at coordinate using linear interpolation. */
 	public func float evaluateLinear( float coordinate )
+		return 0.0
 	end
 	/*@}*/
 end

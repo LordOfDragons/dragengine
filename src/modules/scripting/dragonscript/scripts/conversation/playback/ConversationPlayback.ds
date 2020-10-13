@@ -687,7 +687,7 @@ abstract class ConversationPlayback implements Persistable
 		
 		var ConversationPlaybackLayer layer = this.getTopLayer()
 		if layer.hasNextAction()
-			timeToForward = DEMath.max( layer.getNextAction().getDelay() - this.pActionWaiting, 0.0 )
+			timeToForward = DEMath.max( layer.getNextAction().getDelay() - this.pActionTime, 0.0 )
 		end
 		
 		var int i, count= this.pActors.getCount()

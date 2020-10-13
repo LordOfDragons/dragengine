@@ -215,23 +215,19 @@ class ShapeList
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector position, Quaternion orientation )
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector position, Quaternion orientation )
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling )
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
 	end
 	/*@}*/
 	
@@ -260,23 +256,19 @@ class ShapeList
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector position, Quaternion orientation )
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector position, Quaternion orientation )
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling )
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
 	end
 	/*@}*/
 	
@@ -312,6 +304,7 @@ class ShapeList
 	/*@{*/
 	/** \brief Read vector from a file reader. */
 	static public func ShapeList readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write vector to a file writer. */

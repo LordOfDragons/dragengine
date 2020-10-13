@@ -40,6 +40,7 @@ class NetworkState
 	/*@{*/
 	/** \brief Nnumber of values. */
 	public func int getValueCount()
+		return 0
 	end
 	
 	/** \brief Add value with type and format. */
@@ -51,6 +52,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func NetworkStateValueFormat getValueFormatAt( int index )
+		return null
 	end
 	
 	
@@ -60,6 +62,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func int getValueIntAt( int index )
+		return null
 	end
 	
 	/**
@@ -67,6 +70,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func float getValueFloatAt( int index )
+		return 0.0
 	end
 	
 	/**
@@ -74,6 +78,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func String getValueStringAt( int index )
+		return null
 	end
 	
 	/**
@@ -81,6 +86,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func Point getValuePoint2At( int index )
+		return null
 	end
 	
 	/**
@@ -88,6 +94,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func Point3 getValuePoint3At( int index )
+		return null
 	end
 	
 	/**
@@ -95,20 +102,23 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func Vector2 getValueVector2At( int index )
+		return null
 	end
 	
 	/**
 	 * \brief Value of vector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Vector getValueVectorAt( int index )
+	public func Vector getValueVector3At( int index )
+		return null
 	end
 	
 	/**
 	 * \brief Value of dvector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func DVector getValueDVectorAt( int index )
+	public func DVector getValueDVector3At( int index )
+		return null
 	end
 	
 	/**
@@ -116,6 +126,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func Quaternion getValueQuaternionAt( int index )
+		return null
 	end
 	
 	
@@ -192,6 +203,7 @@ class NetworkState
 	 *                       VALUE_VECTOR2 or VALUE_VECTOR3
 	 */
 	public func float getValuePrecisionAt( int index )
+		return 0.0
 	end
 	
 	/**
@@ -211,6 +223,7 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func NetworkStateListener getStateListener()
+		return null
 	end
 	
 	/** \brief Set state listener or \em null if not set. */

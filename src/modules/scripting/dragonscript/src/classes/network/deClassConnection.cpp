@@ -219,7 +219,12 @@ void deClassConnection::nfGetConnectionListener::RunFunction( dsRunTime *rt, dsV
 	dedsConnection *scrConnection = ( dedsConnection* )connection->GetPeerScripting();
 	deClassConnection *clsConnection = ( deClassConnection* )GetOwnerClass();
 	
-	rt->PushObject( scrConnection->GetCallback(), clsConnection->GetClassConnectionListener() );
+	if( scrConnection ){
+		rt->PushObject( scrConnection->GetCallback(), clsConnection->GetClassConnectionListener() );
+		
+	}else{
+		rt->PushObject( NULL, clsConnection->GetClassConnectionListener() );
+	}
 }
 
 // public func void setConnectionListener( ConnectionListener listener )
@@ -230,8 +235,9 @@ deClassConnection::nfSetConnectionListener::nfSetConnectionListener( const sInit
 void deClassConnection::nfSetConnectionListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deConnection *connection = ( ( sConNatDat* )p_GetNativeData( myself ) )->connection;
 	dedsConnection *scrConnection = ( dedsConnection* )connection->GetPeerScripting();
-	
-	scrConnection->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	if( scrConnection ){
+		scrConnection->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 

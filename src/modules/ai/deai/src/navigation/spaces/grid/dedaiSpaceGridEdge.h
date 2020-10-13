@@ -22,6 +22,8 @@
 #ifndef _DEDAISPACEGRIDEDGE_H_
 #define _DEDAISPACEGRIDEDGE_H_
 
+class dedaiSpaceGrid;
+
 
 
 /**
@@ -32,6 +34,8 @@
  */
 class dedaiSpaceGridEdge{
 private:
+	dedaiSpaceGrid *pGrid;
+	unsigned short pIndex;
 	unsigned short pVertex1;
 	unsigned short pVertex2;
 	unsigned short pTypeNumber1;
@@ -54,6 +58,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Parent grid. */
+	inline dedaiSpaceGrid *GetGrid() const{ return pGrid; }
+	
+	/** \brief Set parent grid. */
+	void SetGrid( dedaiSpaceGrid *grid );
+	
+	/** \brief Vertex index. */
+	inline unsigned short GetIndex() const{ return pIndex; }
+	
+	/** \brief Set vertex index. */
+	void SetIndex( unsigned short index );
+	
+	
+	
 	/** \brief Index of the first vertex. */
 	inline unsigned short GetVertex1() const{ return pVertex1; }
 	

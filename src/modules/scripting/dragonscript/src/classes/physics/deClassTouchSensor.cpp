@@ -563,7 +563,7 @@ void deClassTouchSensor::nfColliderRotateHits::RunFunction( dsRunTime *rt, dsVal
 	const decVector rotation( ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() ) * DEG2RAD );
 	dsRealObject * const objListener = rt->GetValue( 2 )->GetRealObject();
 	
-	if( ! collider || ! objListener ){
+	if( ! collider || ! collider->GetPeerScripting() || ! objListener ){
 		DSTHROW( dueNullPointer );
 	}
 	
@@ -686,7 +686,13 @@ void deClassTouchSensor::nfGetListener::RunFunction( dsRunTime *rt, dsValue *mys
 	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
 	deClassTouchSensor *clsTS = ( deClassTouchSensor* )GetOwnerClass();
 	dedsTouchSensor *scrTS = ( dedsTouchSensor* )touchSensor->GetPeerScripting();
-	rt->PushObject( scrTS->GetCallback(), clsTS->GetClassTouchSensorListener() );
+	
+	if( scrTS ){
+		rt->PushObject( scrTS->GetCallback(), clsTS->GetClassTouchSensorListener() );
+		
+	}else{
+		rt->PushObject( NULL, clsTS->GetClassTouchSensorListener() );
+	}
 }
 
 // public func void setListener( TouchSensorListener listener )
@@ -697,8 +703,9 @@ deClassTouchSensor::nfSetListener::nfSetListener( const sInitData &init ) : dsFu
 void deClassTouchSensor::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
 	dedsTouchSensor *scrTS = ( dedsTouchSensor* )touchSensor->GetPeerScripting();
-	
-	scrTS->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	if( scrTS ){
+		scrTS->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 

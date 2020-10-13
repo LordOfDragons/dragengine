@@ -32,6 +32,7 @@ class ColliderComponent extends ColliderRig
 	/*@{*/
 	/** \brief Component or \em null if not set. */
 	public func Component getComponent()
+		return null
 	end
 	
 	/** \brief Set component or \em null if not set. */
@@ -46,6 +47,7 @@ class ColliderComponent extends ColliderRig
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -57,6 +59,7 @@ class ColliderComponent extends ColliderRig
 	 *          If both are \em null \em true is returned.
 	 */
 	public static func bool equals( Collider collider1, Collider collider2 )
+		return false
 	end
 	
 	/**
@@ -64,6 +67,7 @@ class ColliderComponent extends ColliderRig
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	

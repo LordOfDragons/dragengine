@@ -58,7 +58,7 @@ class ARInverseKinematic extends AnimatorRule
 	end
 	
 	/** \brief Set reach bone name or empty string to use none. */
-	public func void setReachBone( Strnig bone )
+	public func void setReachBone( String bone )
 	end
 	
 	/** \brief Set reach center. */

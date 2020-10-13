@@ -141,6 +141,15 @@ public:
 	
 	
 	
+	/**
+	 * \brief Nearest position inside radius.
+	 * \details Sets nearest position and returns edge if found otherwise returns \em NULL.
+	 */
+	dedaiSpaceGridEdge *NearestPoint( const decVector &point, float radius,
+	decVector &nearestPosition, float &nearestDistSquared, float &nearestLambda ) const;
+	
+	
+	
 	/** \brief Init from grid from the parent space. */
 	void InitFromSpace();
 	
