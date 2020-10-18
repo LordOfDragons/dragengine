@@ -60,7 +60,6 @@ void ceWPTopicListener::ConversationChanged( ceConversation *conversation ){
 	pPanel.UpdateCameraShotLists();
 	pPanel.UpdateGestureLists();
 	pPanel.UpdateFacePoseLists();
-	pPanel.UpdateLookAtLists();
 	pPanel.UpdateFileList();
 	pPanel.UpdateTopicList();
 }
@@ -133,24 +132,6 @@ void ceWPTopicListener::FacePoseChanged( ceConversation *conversation, ceFacePos
 	}
 	
 	pPanel.UpdateFacePoseLists();
-}
-
-
-
-void ceWPTopicListener::LookAtStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtLists();
-}
-
-void ceWPTopicListener::LookAtChanged( ceConversation *conversation, ceLookAt* ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtLists();
 }
 
 

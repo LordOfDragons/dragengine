@@ -243,7 +243,7 @@ void ceWPACameraShot::UpdateTargetList(){
 	pCBLookAtTarget->RemoveAllItems();
 	
 	if( conversation ){
-		const ceTargetList &list = conversation->GetTargetList();
+		const ceTargetList list( conversation->AllTargets() );
 		const int count = list.GetCount();
 		int i;
 		

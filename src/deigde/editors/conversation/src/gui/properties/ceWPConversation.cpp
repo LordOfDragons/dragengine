@@ -35,7 +35,6 @@
 #include "../../conversation/facepose/ceFacePose.h"
 #include "../../conversation/gesture/ceGesture.h"
 #include "../../conversation/target/ceTarget.h"
-#include "../../conversation/lookat/ceLookAt.h"
 #include "../../configuration/ceConfiguration.h"
 #include "../../loadsave/ceLoadSaveSystem.h"
 #include "../../undosys/ceUConvoSetImportConvoPath.h"
@@ -78,10 +77,6 @@
 #include "../../undosys/gesture/ceUCGestureSetName.h"
 #include "../../undosys/gesture/ceUCGestureSetAnimator.h"
 #include "../../undosys/gesture/ceUCGestureToggleHold.h"
-#include "../../undosys/lookat/ceUCLookAtAdd.h"
-#include "../../undosys/lookat/ceUCLookAtRemove.h"
-#include "../../undosys/lookat/ceUCLookAtSetName.h"
-#include "../../undosys/lookat/ceUCLookAtSetTarget.h"
 #include "../../undosys/target/ceUCTargetAdd.h"
 #include "../../undosys/target/ceUCTargetRemove.h"
 #include "../../undosys/target/ceUCTargetSetName.h"
@@ -1266,138 +1261,6 @@ public:
 	}
 };
 
-
-
-class cComboLookAt : public cBaseComboBoxListener{
-public:
-	cComboLookAt( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation *conversation ){
-		conversation->SetActiveLookAt( comboBox.GetSelectedItem()
-			? ( ceLookAt* )comboBox.GetSelectedItem()->GetData() : NULL );
-		return NULL;
-	}
-};
-
-class cActionLookAtAdd : public cBaseAction{
-public:
-	cActionLookAtAdd( ceWPConversation &panel ) : cBaseAction( panel, "Add...",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		decString name( "Look-At" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Look-At", "Name:", name ) ){
-			return NULL;
-		}
-		if( conversation->GetLookAtList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		deObjectReference lookAt;
-		lookAt.TakeOver( new ceLookAt( name ) );
-		return new ceUCLookAtAdd( conversation, ( ceLookAt* )( deObject* )lookAt );
-	}
-};
-
-class cActionLookAtRemove : public cBaseAction{
-public:
-	cActionLookAtRemove( ceWPConversation &panel ) : cBaseAction( panel, "Remove",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation* ){
-		return pPanel.GetLookAt() ? new ceUCLookAtRemove( pPanel.GetLookAt() ) : NULL;
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtRename : public cBaseAction{
-public:
-	cActionLookAtRename( ceWPConversation &panel ) : cBaseAction( panel,
-	"Rename...", NULL, "Rename Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		if( ! lookAt ){
-			return NULL;
-		}
-		
-		decString name( lookAt->GetName() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Look-At", "Name:", name ) 
-		|| name == lookAt->GetName() ){
-			return NULL;
-		}
-		if( conversation->GetLookAtList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		return new ceUCLookAtSetName( lookAt, name );
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtDuplicate : public cBaseAction{
-public:
-	cActionLookAtDuplicate( ceWPConversation &panel ) : cBaseAction( panel,
-	"Duplicate...", NULL, "Duplicate Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		if( ! lookAt ){
-			return NULL;
-		}
-		
-		decString name( lookAt->GetName() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Duplicate Look-At", "Name:", name ) ){
-			return NULL;
-		}
-		if( conversation->GetLookAtList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Duplicate Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new ceLookAt( *lookAt ) );
-		( ( ceLookAt& )( deObject& )duplicate ).SetName( name );
-		return new ceUCLookAtAdd( conversation, ( ceLookAt* )( deObject* )duplicate );
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtMenu : public cBaseActionContextMenu{
-public:
-	cActionLookAtMenu( ceWPConversation &panel ) : cBaseActionContextMenu( panel, "Look-At menu" ){ }
-	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu, ceConversation* ){
-		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, new cActionLookAtAdd( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtRemove( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtRename( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtDuplicate( pPanel ), true );
-	}
-};
-
-class cComboLookAtTarget : public cBaseComboBoxListener{
-public:
-	cComboLookAtTarget( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation* ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		return lookAt && comboBox.GetText() != lookAt->GetTarget()
-			? new ceUCLookAtSetTarget( lookAt, comboBox.GetText() ) : NULL;
-	}
-};
-
 }
 
 
@@ -1579,21 +1442,6 @@ pConversation( NULL )
 	
 	helper.EditFloat( groupBox, "Value:", "Value of face pose controller",
 		pEditFPControllerValue, new cTextFPControllerValue( *this ) );
-	
-	
-	// lookAts
-	helper.GroupBox( content, groupBox, "Look-At:", true );
-	
-	helper.FormLineStretchFirst( groupBox, "Look-At:", "Look-At to edit", formLine );
-	helper.ComboBoxFilter( formLine, "Look-At to edit", pCBLookAt, new cComboLookAt( *this ) );
-	pCBLookAt->SetDefaultSorter();
-	actionContextMenu = new cActionLookAtMenu( *this );
-	helper.Button( formLine, pBtnLookAt, actionContextMenu, true );
-	actionContextMenu->SetWidget( pBtnLookAt );
-	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "ID of the target to use for this Look-At",
-		pCBLookAtTarget, new cComboLookAtTarget( *this ) );
-	pCBLookAtTarget->SetDefaultSorter();
 }
 
 ceWPConversation::~ceWPConversation(){
@@ -1642,7 +1490,6 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 	UpdateConversation();
 	UpdateGestureList();
 	UpdateFacePoseList();
-	UpdateLookAtList();
 	
 	UpdateActorIDLists();
 }
@@ -1986,11 +1833,9 @@ void ceWPConversation::UpdateTargetList(){
 	// update lists containing targets
 	const decString selCShotCamera( pCBCameraShotCameraTarget->GetText() );
 	const decString selCShotLookAt( pCBCameraShotLookAtTarget->GetText() );
-	const decString selLookAt( pCBLookAtTarget->GetText() );
 	
 	pCBCameraShotCameraTarget->RemoveAllItems();
 	pCBCameraShotLookAtTarget->RemoveAllItems();
-	pCBLookAtTarget->RemoveAllItems();
 	
 	if( pConversation ){
 		const ceTargetList list( pConversation->AllTargets() );
@@ -2003,21 +1848,17 @@ void ceWPConversation::UpdateTargetList(){
 			}
 			pCBCameraShotCameraTarget->AddItem( list.GetAt( i )->GetName() );
 			pCBCameraShotLookAtTarget->AddItem( list.GetAt( i )->GetName() );
-			pCBLookAtTarget->AddItem( list.GetAt( i )->GetName() );
 		}
 		
 		pCBCameraShotCameraTarget->SortItems();
 		pCBCameraShotLookAtTarget->SortItems();
-		pCBLookAtTarget->SortItems();
 	}
 	
 	pCBCameraShotCameraTarget->StoreFilterItems();
 	pCBCameraShotLookAtTarget->StoreFilterItems();
-	pCBLookAtTarget->StoreFilterItems();
 	
 	pCBCameraShotCameraTarget->SetText( selCShotCamera );
 	pCBCameraShotLookAtTarget->SetText( selCShotLookAt );
-	pCBLookAtTarget->SetText( selLookAt );
 }
 
 void ceWPConversation::SelectActiveTarget(){
@@ -2049,49 +1890,6 @@ void ceWPConversation::UpdateTarget(){
 		pEditTargetBone->SetText( target->GetBone() );
 		pEditTargetPosition->SetVector( target->GetPosition() );
 		pEditTargetOrientation->SetVector( target->GetOrientation() );
-	}
-}
-
-
-
-ceLookAt *ceWPConversation::GetLookAt() const{
-	return pConversation ? pConversation->GetActiveLookAt() : NULL;
-}
-
-void ceWPConversation::UpdateLookAtList(){
-	ceLookAt * const selection = GetLookAt();
-	
-	pCBLookAt->RemoveAllItems();
-	
-	if( pConversation ){
-		const ceLookAtList &list = pConversation->GetLookAtList();
-		const int count = list.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			ceLookAt * const lookat = list.GetAt( i );
-			pCBLookAt->AddItem( lookat->GetName(), NULL, lookat );
-		}
-		
-		pCBLookAt->SortItems();
-	}
-	
-	if( pConversation ){
-		pConversation->SetActiveLookAt( selection );
-	}
-}
-
-void ceWPConversation::SelectActiveLookAt(){
-	pCBLookAt->SetSelectionWithData( GetLookAt() );
-	pCBLookAtTarget->SetEnabled( GetLookAt() );
-	UpdateLookAt();
-}
-
-void ceWPConversation::UpdateLookAt(){
-	const ceLookAt * const lookAt = GetLookAt();
-	
-	if( lookAt ){
-		pCBLookAtTarget->SetText( lookAt->GetTarget() );
 	}
 }
 

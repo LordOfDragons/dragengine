@@ -172,32 +172,6 @@ void ceWPConversationListener::ActiveFacePoseChanged( ceConversation *conversati
 
 
 
-void ceWPConversationListener::LookAtStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtList();
-}
-
-void ceWPConversationListener::LookAtChanged( ceConversation *conversation, ceLookAt* ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtList();
-}
-
-void ceWPConversationListener::ActiveLookAtChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.SelectActiveLookAt();
-}
-
-
-
 void ceWPConversationListener::ActorStructureChanged( ceConversation *conversation ){
 	if( conversation != pPanel.GetConversation() ){
 		return;

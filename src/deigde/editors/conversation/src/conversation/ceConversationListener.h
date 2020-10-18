@@ -34,7 +34,6 @@ class ceConversationTopic;
 class ceConversationAction;
 class ceConversationCondition;
 class ceCameraShot;
-class ceLookAt;
 class ceGesture;
 class ceFacePose;
 class ceTarget;
@@ -100,13 +99,6 @@ public:
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
 	/** \brief Active face pose changed. */
 	virtual void ActiveFacePoseChanged( ceConversation *conversation );
-	
-	/** \brief LookAt count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	/** \brief LookAt changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	/** \brief Active lookat changed. */
-	virtual void ActiveLookAtChanged( ceConversation *conversation );
 	
 	/** \brief File count or order changed. */
 	virtual void FileStructureChanged( ceConversation *conversation );

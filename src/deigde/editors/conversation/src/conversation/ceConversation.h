@@ -28,7 +28,6 @@
 #include "file/ceConversationFileList.h"
 #include "facepose/ceFacePoseList.h"
 #include "gesture/ceGestureList.h"
-#include "lookat/ceLookAtList.h"
 #include "target/ceTargetList.h"
 #include "coordsystem/ceCoordSystemList.h"
 #include "prop/cePropList.h"
@@ -124,9 +123,6 @@ private:
 	decStringList pFacePoseControllerNames;
 	ceFacePoseList pFacePoseList;
 	ceFacePose *pActiveFacePose;
-	
-	ceLookAtList pLookAtList;
-	ceLookAt *pActiveLookAt;
 	
 	ceConversationFileList pFileList;
 	ceConversationFile *pActiveFile;
@@ -342,29 +338,6 @@ public:
 	void AllFacePoses( ceFacePoseList &list ) const;
 	/*@}*/
 	
-	/** \name LookAts */
-	/*@{*/
-	/** \brief Retrieves the lookat list read-only. */
-	inline const ceLookAtList &GetLookAtList() const{ return pLookAtList; }
-	/** \brief Adds a lookat. */
-	void AddLookAt( ceLookAt *lookat );
-	/** \brief Removes a lookat. */
-	void RemoveLookAt( ceLookAt *lookat );
-	/** \brief Remove all lookats. */
-	void RemoveAllLookAts();
-	/** \brief Retrieves the active lookat or NULL if none is active. */
-	inline ceLookAt *GetActiveLookAt() const{ return pActiveLookAt; }
-	/** \brief Sets the active lookat or NULL if none is active. */
-	void SetActiveLookAt( ceLookAt *lookat );
-	
-	/** \brief Named look-at including imported conversations. */
-	ceLookAt *GetLookAtNamed( const char *name ) const;
-	
-	/** \brief All look-ats including imported conversations. */
-	ceLookAtList AllLookAts() const;
-	void AllLookAts( ceLookAtList &list ) const;
-	/*@}*/
-	
 	/** \name Files */
 	/*@{*/
 	/** \brief Retrieves the file list read-only. */
@@ -500,13 +473,6 @@ public:
 	void NotifyFacePoseChanged( ceFacePose *facePose );
 	/** \brief Notifies all that the active face pose changed. */
 	void NotifyActiveFacePoseChanged();
-	
-	/** \brief Notifies all that the lookat count or order changed. */
-	void NotifyLookAtStructureChanged();
-	/** \brief Notifies all that a lookat changed. */
-	void NotifyLookAtChanged( ceLookAt *lookat );
-	/** \brief Notifies all that the active lookat changed. */
-	void NotifyActiveLookAtChanged();
 	
 	/** \brief Notifies all that the file count or order changed. */
 	void NotifyFileStructureChanged();

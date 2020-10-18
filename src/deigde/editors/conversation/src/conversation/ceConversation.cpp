@@ -32,7 +32,6 @@
 #include "facepose/ceFacePose.h"
 #include "gesture/ceGesture.h"
 #include "file/ceConversationFile.h"
-#include "lookat/ceLookAt.h"
 #include "target/ceTarget.h"
 #include "topic/ceConversationTopic.h"
 #include "textbox/ceTextBox.h"
@@ -108,7 +107,6 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	pEngSpeakerVAPreview = NULL;
 	
 	pActiveTarget = NULL;
-	pActiveLookAt = NULL;
 	pActiveCameraShot = NULL;
 	pActiveGesture = NULL;
 	pActiveFacePose = NULL;
@@ -231,7 +229,6 @@ ceConversation::~ceConversation(){
 void ceConversation::Dispose(){
 	RemoveAllActors();
 	RemoveAllFiles();
-	RemoveAllLookAts();
 	RemoveAllFacePoses();
 	RemoveAllGestures();
 	RemoveAllCameraShots();
@@ -741,111 +738,6 @@ void ceConversation::AllFacePoses( ceFacePoseList &list ) const{
 	int i;
 	for( i=count-1; i>=0; i-- ){
 		pImportedConversations.GetAt( i )->AllFacePoses( list );
-	}
-}
-
-
-
-// LookAts
-////////////
-
-void ceConversation::AddLookAt( ceLookAt *lookat ){
-	if( ! lookat || pLookAtList.HasNamed( lookat->GetName().GetString() ) || lookat->GetConversation() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pLookAtList.Add( lookat );
-	lookat->SetConversation( this );
-	NotifyLookAtStructureChanged();
-	
-	if( ! pActiveLookAt ){
-		SetActiveLookAt( lookat );
-	}
-}
-
-void ceConversation::RemoveLookAt( ceLookAt *lookat ){
-	if( ! lookat || ! pLookAtList.Has( lookat ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( lookat == pActiveLookAt ){
-		if( pLookAtList.GetCount() == 1 ){
-			SetActiveLookAt( NULL );
-			
-		}else{
-			if( pLookAtList.GetAt( 0 ) == lookat ){
-				SetActiveLookAt( pLookAtList.GetAt( 1 ) );
-				
-			}else{
-				SetActiveLookAt( pLookAtList.GetAt( 0 ) );
-			}
-		}
-	}
-	
-	lookat->SetConversation( NULL );
-	pLookAtList.Remove( lookat );
-	NotifyLookAtStructureChanged();
-}
-
-void ceConversation::RemoveAllLookAts(){
-	const int count = pLookAtList.GetCount();
-	int i;
-	
-	SetActiveLookAt( NULL );
-	
-	for( i=0; i<count; i++ ){
-		pLookAtList.GetAt( i )->SetConversation( NULL );
-	}
-	pLookAtList.RemoveAll();
-	NotifyLookAtStructureChanged();
-}
-
-void ceConversation::SetActiveLookAt( ceLookAt *lookat ){
-	if( lookat != pActiveLookAt ){
-		if( pActiveLookAt ){
-			pActiveLookAt->FreeReference();
-		}
-		
-		pActiveLookAt = lookat;
-		
-		if( lookat ){
-			lookat->AddReference();
-		}
-		
-		NotifyActiveLookAtChanged();
-	}
-}
-
-ceLookAt *ceConversation::GetLookAtNamed( const char *name ) const{
-	ceLookAt *lookAt = pLookAtList.GetNamed( name );
-	if( lookAt ){
-		return lookAt;
-	}
-	
-	const int count = pImportedConversations.GetCount();
-	int i;
-	for( i=count-1; i>=0; i-- ){
-		lookAt = pImportedConversations.GetAt( i )->GetLookAtNamed( name );
-		if( lookAt ){
-			return lookAt;
-		}
-	}
-	
-	return NULL;
-}
-
-ceLookAtList ceConversation::AllLookAts() const{
-	ceLookAtList list;
-	AllLookAts( list );
-	return list;
-}
-
-void ceConversation::AllLookAts( ceLookAtList &list ) const{
-	list += pLookAtList;
-	const int count = pImportedConversations.GetCount();
-	int i;
-	for( i=count-1; i>=0; i-- ){
-		pImportedConversations.GetAt( i )->AllLookAts( list );
 	}
 }
 
@@ -1434,39 +1326,6 @@ void ceConversation::NotifyActiveFacePoseChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActiveFacePoseChanged( this );
-	}
-}
-
-
-
-void ceConversation::NotifyLookAtStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->LookAtStructureChanged( this );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyLookAtChanged( ceLookAt *lookat ){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->LookAtChanged( this, lookat );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyActiveLookAtChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActiveLookAtChanged( this );
 	}
 }
 

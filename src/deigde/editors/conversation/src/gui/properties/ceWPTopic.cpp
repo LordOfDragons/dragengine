@@ -986,7 +986,6 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
-	UpdateLookAtLists();
 }
 
 
@@ -1402,9 +1401,6 @@ void ceWPTopic::UpdateActorLists(){
 
 void ceWPTopic::UpdateTargetLists(){
 	pPanelACameraShot->UpdateTargetList();
-}
-
-void ceWPTopic::UpdateLookAtLists(){
 }
 
 void ceWPTopic::UpdateConvoCoordSysLists(){

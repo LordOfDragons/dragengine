@@ -110,17 +110,6 @@ void ceConversationListener::ActiveFacePoseChanged( ceConversation *conversation
 
 
 
-void ceConversationListener::LookAtStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::LookAtChanged( ceConversation *conversation, ceLookAt *lookat ){
-}
-
-void ceConversationListener::ActiveLookAtChanged( ceConversation *conversation ){
-}
-
-
-
 void ceConversationListener::FileStructureChanged( ceConversation *conversation ){
 }
 

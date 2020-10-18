@@ -68,7 +68,6 @@ class ceConversationTopic;
 class ceFacePose;
 class ceGesture;
 class ceLoadSaveSystem;
-class ceLookAt;
 class ceStripList;
 class ceTarget;
 
@@ -117,7 +116,6 @@ private:
 	void pWriteCameraShot( decXmlWriter &writer, const ceCameraShot &cameraShot );
 	void pWriteGesture( decXmlWriter &writer, const ceGesture &gesture );
 	void pWriteFacePose( decXmlWriter &writer, const ceFacePose &facePose );
-	void pWriteLookAt( decXmlWriter &writer, const ceLookAt &lookat );
 	void pWriteFile( decXmlWriter &writer, const ceConversationFile &file );
 	void pWriteTopic( decXmlWriter &writer, const ceConversationTopic &topic );
 	void pWriteActionList( decXmlWriter &writer, const ceConversationActionList &list );
@@ -162,7 +160,6 @@ private:
 	void pReadCameraShot( const decXmlElementTag &root, ceConversation &conversation );
 	void pReadGesture( const decXmlElementTag &root, ceConversation &conversation );
 	void pReadFacePose( const decXmlElementTag &root, ceConversation &conversation );
-	void pReadLookAt( const decXmlElementTag &root, ceConversation &conversation );
 	void pReadFile( const decXmlElementTag &root, ceConversation &conversation );
 	void pReadTopic( const decXmlElementTag &root, ceConversation &conversation, ceConversationFile &file );
 	void pReadActionList( const decXmlElementTag &root, ceConversation &conversation, ceConversationActionList &list );

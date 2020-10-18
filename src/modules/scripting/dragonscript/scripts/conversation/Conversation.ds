@@ -33,7 +33,6 @@ class Conversation
 	private var String pPathFile
 	private var Dictionary pTargets
 	private var Dictionary pCameraShots
-	private var Dictionary pLookAts
 	private var Dictionary pGestures
 	private var Dictionary pFacePoses
 	private var Dictionary pTopicGroups
@@ -44,7 +43,6 @@ class Conversation
 	public func new( String pathFile )
 		this.pPathFile = pathFile
 		this.pTargets = Dictionary.new()
-		this.pLookAts = Dictionary.new()
 		this.pCameraShots = Dictionary.new()
 		this.pGestures = Dictionary.new()
 		this.pFacePoses = Dictionary.new()
@@ -73,23 +71,6 @@ class Conversation
 	/** \brief Visit targets with block with parameter ConversationTarget. */
 	public func void forEachTarget( Block ablock )
 		this.pTargets.forEachValue( ablock )
-	end
-	
-	
-	
-	/** \brief Named look-at or null if absent. */
-	public func ConversationLookAt getLookAtNamed( StringID name )
-		return this.pLookAts.getAt( name, null ) cast ConversationLookAt
-	end
-	
-	/** \brief Add look-at replacing existing one if present. */
-	public func void addLookAt( ConversationLookAt lookAt )
-		this.pLookAts.setAt( lookAt.getName(), lookAt )
-	end
-	
-	/** \brief Visit look-ats with block with argument ConversationLookAt. */
-	public func void forEachLookAt( Block ablock )
-		this.pLookAts.forEachValue( ablock )
 	end
 	
 	
@@ -187,9 +168,6 @@ class Conversation
 		end )
 		conversation.pCameraShots.forEachValue( block ConversationCameraShot each
 			this.pCameraShots.setAt( each.getName(), each )
-		end )
-		conversation.pLookAts.forEachValue( block ConversationLookAt each
-			this.pLookAts.setAt( each.getName(), each )
 		end )
 		conversation.pGestures.forEachValue( block ConversationGesture each
 			this.pGestures.setAt( each.getName(), each )

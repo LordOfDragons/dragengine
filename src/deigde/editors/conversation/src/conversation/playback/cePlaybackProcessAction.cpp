@@ -62,7 +62,6 @@
 #include "../gesture/ceGesture.h"
 #include "../facepose/ceFacePose.h"
 #include "../file/ceConversationFile.h"
-#include "../lookat/ceLookAt.h"
 #include "../playerChoiceBox/cePlayerChoiceBox.h"
 #include "../playerChoiceBox/cePCBOption.h"
 #include "../target/ceTarget.h"
@@ -462,7 +461,6 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 	
 	// update the face pose to play
 	if( action.GetFacePoseList().GetCount() > 0 ){
-		const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
 		const ceStripList &caFacePoseList = action.GetFacePoseList();
 		const int count = caFacePoseList.GetCount();
 		int i;
@@ -472,7 +470,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caFacePose = *caFacePoseList.GetAt( i );
 			
-			conversationActor.AddPlayFacePose( facePoseList.GetNamed( caFacePose.GetID() ),
+			conversationActor.AddPlayFacePose( conversation.GetFacePoseNamed( caFacePose.GetID() ),
 				caFacePose.GetPause(), caFacePose.GetDuration() );
 		}
 	}
@@ -488,7 +486,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caHeadLA = *caHeadLAList.GetAt( i );
 			
-			conversationActor.AddPlayHeadLookAt( conversation.GetLookAtNamed( caHeadLA.GetID() ),
+			conversationActor.AddPlayHeadLookAt( conversation.GetTargetNamed( caHeadLA.GetID() ),
 				caHeadLA.GetPause(), caHeadLA.GetDuration() );
 		}
 	}
@@ -504,7 +502,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caEyesLA = *caEyesLAList.GetAt( i );
 			
-			conversationActor.AddPlayEyesLookAt( conversation.GetLookAtNamed( caEyesLA.GetID() ),
+			conversationActor.AddPlayEyesLookAt( conversation.GetTargetNamed( caEyesLA.GetID() ),
 				caEyesLA.GetPause(), caEyesLA.GetDuration() );
 		}
 	}

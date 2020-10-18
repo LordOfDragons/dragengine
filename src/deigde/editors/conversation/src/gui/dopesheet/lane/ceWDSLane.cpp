@@ -34,7 +34,7 @@
 #include "../../../conversation/actor/speechAnimation/ceSAWord.h"
 #include "../../../conversation/actor/speechAnimation/ceSpeechAnimation.h"
 #include "../../../conversation/file/ceConversationFile.h"
-#include "../../../conversation/lookat/ceLookAt.h"
+#include "../../../conversation/target/ceTarget.h"
 #include "../../../conversation/strip/ceStrip.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripSetDuration.h"
@@ -915,7 +915,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 		return;
 	}
 	
-	const ceLookAtList lookAtList( pWindow.GetConversation()->AllLookAts() );
+	const ceTargetList lookAtList( pWindow.GetConversation()->AllTargets() );
 	const int lookAtCount = lookAtList.GetCount();
 	int i;
 	for( i=0; i<lookAtCount; i++ ){

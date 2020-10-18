@@ -37,7 +37,6 @@
 #include "../../conversation/target/ceTarget.h"
 #include "../../conversation/file/ceConversationFile.h"
 #include "../../conversation/topic/ceConversationTopic.h"
-#include "../../conversation/lookat/ceLookAt.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -54,9 +53,7 @@ ceUCTargetSetName::ceUCTargetSetName( ceTarget *target, const char *newName ){
 	
 	const ceCameraShotList &cameraShotList = target->GetConversation()->GetCameraShotList();
 	const ceConversationFileList &fileList = target->GetConversation()->GetFileList();
-	const ceLookAtList &lookAtList = target->GetConversation()->GetLookAtList();
 	const int cameraShotCount = cameraShotList.GetCount();
-	const int lookAtCount = lookAtList.GetCount();
 	const int fileCount = fileList.GetCount();
 	ceConversationTopic *topic;
 	int i, j;
@@ -92,14 +89,6 @@ ceUCTargetSetName::ceUCTargetSetName( ceTarget *target, const char *newName ){
 			}
 		}
 		
-		for( i=0; i<lookAtCount; i++ ){
-			ceLookAt * const lookAt = lookAtList.GetAt( i );
-			
-			if( lookAt->GetTarget() == pOldName ){
-				pLookAtList.Add( lookAt );
-			}
-		}
-		
 	}catch( const deException & ){
 		pActionList.RemoveAll();
 		
@@ -126,11 +115,11 @@ ceUCTargetSetName::~ceUCTargetSetName(){
 ///////////////
 
 void ceUCTargetSetName::Undo(){
-	pSetName( pNewName.GetString(), pOldName.GetString() );
+	pSetName( pNewName, pOldName );
 }
 
 void ceUCTargetSetName::Redo(){
-	pSetName( pOldName.GetString(), pNewName.GetString() );
+	pSetName( pOldName, pNewName );
 }
 
 
@@ -173,15 +162,6 @@ void ceUCTargetSetName::pSetName( const char *oldName, const char *newName ){
 		}
 		if( cameraShot.GetLookAtTarget() == oldName ){
 			cameraShot.SetLookAtTarget( newName );
-		}
-	}
-	
-	count = pLookAtList.GetCount();
-	for( i=0; i<count; i++ ){
-		ceLookAt &lookAt = *pLookAtList.GetAt( i );
-		
-		if( lookAt.GetTarget() == oldName ){
-			lookAt.SetTarget( newName );
 		}
 	}
 }

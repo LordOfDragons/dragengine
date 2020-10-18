@@ -39,7 +39,6 @@ class ceGesture;
 class ceFacePose;
 class ceCameraShot;
 class ceTarget;
-class ceLookAt;
 class ceControllerValue;
 
 
@@ -102,10 +101,6 @@ private:
 	igdeCheckBoxReference pChkCShotRelativeToLookAt;
 	igdeCheckBoxReference pChkCShotLockCameraTarget;
 	igdeCheckBoxReference pChkCShotLockLookAtTarget;
-	
-	igdeComboBoxFilterReference pCBLookAt;
-	igdeButtonReference pBtnLookAt;
-	igdeComboBoxFilterReference pCBLookAtTarget;
 	
 	
 	
@@ -217,18 +212,6 @@ public:
 	void UpdateCameraShot();
 	
 	
-	
-	/** \brief Active lookat. */
-	ceLookAt *GetLookAt() const;
-	
-	/** \brief Update the list of lookats. */
-	void UpdateLookAtList();
-	
-	/** \brief Select active lookat. */
-	void SelectActiveLookAt();
-	
-	/** \brief Update active lookat. */
-	void UpdateLookAt();
 	
 	/** \brief Update actor id lists. */
 	void UpdateActorIDLists();

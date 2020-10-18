@@ -73,7 +73,7 @@ class LoadConversation extends BaseXmlLoader
 		end
 		
 		conversation = Conversation.new( filename )
-		this.pReadConversation( root, conversation )
+		this.pReadConversation( root, conversation, File.new( filename ).getParent().getPath() )
 		this.pConversations.setAt( filename, conversation )
 		
 		return conversation
@@ -82,7 +82,7 @@ class LoadConversation extends BaseXmlLoader
 	
 	
 	/** Read conversation tag. */
-	private func void pReadConversation( EasyXMLElement root, Conversation conversation )
+	private func void pReadConversation( EasyXMLElement root, Conversation conversation, String basePath )
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "target" )
 				this.pReadTarget( element, conversation )
@@ -103,7 +103,7 @@ class LoadConversation extends BaseXmlLoader
 				this.pReadFacePose( element, conversation )
 				
 			elif tagName.equals( "lookAt" )
-				this.pReadLookAt( element, conversation )
+				// deprecated
 				
 			elif tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
 				this.pReadTopicGroup( element, conversation )
@@ -111,7 +111,7 @@ class LoadConversation extends BaseXmlLoader
 			elif tagName.equals( "import" )
 				var String filename = element.getFirstCData()
 				try
-					conversation.import( this.loadFromFile( filename ) )
+					conversation.import( this.loadFromFile( File.absolutePath( filename, basePath ).getPath() ) )
 					
 				catch Exception e
 					this.logLoadFileFailed( element, filename )
@@ -276,23 +276,6 @@ class LoadConversation extends BaseXmlLoader
 		end )
 		
 		conversation.addFacePose( facePose )
-	end
-	
-	/** Read look-at tag. */
-	private func void pReadLookAt( EasyXMLElement root, Conversation conversation )
-		var ConversationLookAt lookAt = ConversationLookAt.new( \
-			StringID.new( root.getAttributeNamed( "name" ) ) )
-		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "target" )
-				lookAt.setTarget( StringID.new( element.getFirstCData() ) )
-				
-			else
-				this.logUnknownTag( element )
-			end
-		end )
-		
-		conversation.addLookAt( lookAt )
 	end
 	
 	/** Read file tag. */

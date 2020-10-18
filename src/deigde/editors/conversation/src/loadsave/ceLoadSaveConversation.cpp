@@ -61,7 +61,6 @@
 #include "../conversation/facepose/ceFacePose.h"
 #include "../conversation/file/ceConversationFile.h"
 #include "../conversation/gesture/ceGesture.h"
-#include "../conversation/lookat/ceLookAt.h"
 #include "../conversation/strip/ceStrip.h"
 #include "../conversation/target/ceTarget.h"
 #include "../conversation/topic/ceConversationTopic.h"
@@ -87,22 +86,6 @@
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 
-
-
-// Definitions
-////////////////
-/*
-static const char *vParameterNames[] = {
-	"positionX",
-	"positionY",
-	"positionZ",
-	"lookAtX",
-	"lookAtY",
-	"lookAtZ",
-	"tilt",
-	"fov"
-};
-*/
 
 
 // Class ceLoadSaveConversation
@@ -216,15 +199,6 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		writer.WriteNewline();
 		for( i=0; i<count; i++ ){
 			pWriteFacePose( writer, *facePoseList.GetAt( i ) );
-		}
-	}
-	
-	const ceLookAtList &lookAtList = conversation.GetLookAtList();
-	count = lookAtList.GetCount();
-	if( count > 0 ){
-		writer.WriteNewline();
-		for( i=0; i<count; i++ ){
-			pWriteLookAt( writer, *lookAtList.GetAt( i ) );
 		}
 	}
 	
@@ -419,16 +393,6 @@ void ceLoadSaveConversation::pWriteFacePose( decXmlWriter &writer, const ceFaceP
 	}
 	
 	writer.WriteClosingTag( "facePose" );
-}
-
-void ceLoadSaveConversation::pWriteLookAt( decXmlWriter &writer, const ceLookAt &lookat ){
-	writer.WriteOpeningTagStart( "lookAt" );
-	writer.WriteAttributeString( "name", lookat.GetName() );
-	writer.WriteOpeningTagEnd();
-	
-	writer.WriteDataTagString( "target", lookat.GetTarget() );
-	
-	writer.WriteClosingTag( "lookAt" );
 }
 
 void ceLoadSaveConversation::pWriteFile( decXmlWriter &writer, const ceConversationFile &file ){
@@ -1233,7 +1197,7 @@ void ceLoadSaveConversation::pReadConversation( const decXmlElementTag &root, ce
 			pReadFacePose( *tag, conversation );
 			
 		}else if( tagName == "lookAt" ){
-			pReadLookAt( *tag, conversation );
+			// deprecated
 			
 		}else if( tagName == "group" || tagName == "file" ){ // "file" DEPRECATED
 			pReadFile( *tag, conversation );
@@ -1512,43 +1476,6 @@ void ceLoadSaveConversation::pReadFacePose( const decXmlElementTag &root, ceConv
 		}
 		if( facePose ){
 			facePose->FreeReference();
-		}
-		throw;
-	}
-}
-
-void ceLoadSaveConversation::pReadLookAt( const decXmlElementTag &root, ceConversation &conversation ){
-	const int elementCount = root.GetElementCount();
-	ceLookAt *lookAt = NULL;
-	const decXmlElementTag *tag;
-	int e;
-	
-	try{
-		lookAt = new ceLookAt;
-		lookAt->SetName( GetAttributeString( root, "name" ) );
-		if( conversation.GetLookAtList().HasNamed( lookAt->GetName() ) ){
-			LogErrorGenericProblemValue( root, lookAt->GetName(), "A look-at with this name exists already" );
-		}
-		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
-			
-			if( tag ){
-				if( strcmp( tag->GetName(), "target" ) == 0 ){
-					lookAt->SetTarget( GetCDataString( *tag ) );
-					
-				}else{
-					LogWarnUnknownTag( root, *tag );
-				}
-			}
-		}
-		
-		conversation.AddLookAt( lookAt );
-		lookAt->FreeReference();
-		
-	}catch( const deException & ){
-		if( lookAt ){
-			lookAt->FreeReference();
 		}
 		throw;
 	}

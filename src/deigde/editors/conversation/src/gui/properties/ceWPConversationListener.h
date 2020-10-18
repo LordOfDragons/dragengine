@@ -81,13 +81,6 @@ public:
 	/** Active face pose changed. */
 	virtual void ActiveFacePoseChanged( ceConversation *conversation );
 	
-	/** LookAt count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	/** LookAt changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	/** Active lookat changed. */
-	virtual void ActiveLookAtChanged( ceConversation *conversation );
-	
 	/** Actor count or order changed. */
 	virtual void ActorStructureChanged( ceConversation *conversation );
 	/** Actor changed. */

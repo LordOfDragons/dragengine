@@ -33,7 +33,6 @@
 #include "../ceConversation.h"
 #include "../facepose/ceFacePose.h"
 #include "../gesture/ceGesture.h"
-#include "../lookat/ceLookAt.h"
 #include "../target/ceTarget.h"
 #include "../../utils/ceControllerValue.h"
 
@@ -529,7 +528,7 @@ void ceConversationActor::RemoveAllPlayHeadLookAts(){
 	pPlayHeadLARunning = false;
 }
 
-void ceConversationActor::AddPlayHeadLookAt( ceLookAt *lookAt, float pause, float duration ){
+void ceConversationActor::AddPlayHeadLookAt( ceTarget *lookAt, float pause, float duration ){
 	if( pPlayHeadLACount == pPlayHeadLASize ){
 		int newSize = pPlayFacePoseSize + 20;
 		sLookAt *newArray = new sLookAt[ newSize ];
@@ -569,7 +568,7 @@ void ceConversationActor::RemoveAllPlayEyesLookAts(){
 	pPlayEyesLARunning = false;
 }
 
-void ceConversationActor::AddPlayEyesLookAt( ceLookAt *lookAt, float pause, float duration ){
+void ceConversationActor::AddPlayEyesLookAt( ceTarget *lookAt, float pause, float duration ){
 	if( pPlayEyesLACount == pPlayEyesLASize ){
 		int newSize = pPlayFacePoseSize + 20;
 		sLookAt *newArray = new sLookAt[ newSize ];
@@ -1313,7 +1312,6 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 	float headLeftRight = 0.0f;
 	float headUpDown = 0.0f;
 	decMatrix targetMatrix;
-	ceTarget *target;
 	
 	invActorMatrix = decMatrix::CreateRT( pOrientation * DEG2RAD, pPosition ).Invert();
 	if( pEngComponent && pEngComponent->GetRig() && ! pBoneHeadRotator.IsEmpty() ){
@@ -1334,7 +1332,7 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 		
 		while( pPlayHeadLAPos < pPlayHeadLACount ){
 			const float totalLength = pPlayHeadLAs[ pPlayHeadLAPos ].pause + pPlayHeadLAs[ pPlayHeadLAPos ].duration;
-			ceLookAt * const lookAt = pPlayHeadLAs[ pPlayHeadLAPos ].lookAt;
+			ceTarget * const lookAt = pPlayHeadLAs[ pPlayHeadLAPos ].lookAt;
 			
 			if( pPlayHeadLAElapsed < totalLength ){
 				if( pPlayCurHeadLA != lookAt ){
@@ -1396,51 +1394,37 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 	// determine the head left-right and up-down angles. for this the angles are calculated
 	// for the last and current look-at and then weighted
 	if( pPlayLastHeadLA ){
-		target = NULL;
-		if( ! pPlayLastHeadLA->GetTarget().IsEmpty() ){
-			target = pConversation->GetTargetNamed( pPlayLastHeadLA->GetTarget() );
-		}
+		pPlayLastHeadLA->GetCoordinateSystem( playback, targetMatrix );
+		lookAtPosition = invActorMatrix * targetMatrix.GetPosition();
 		
-		if( target ){
-			target->GetCoordinateSystem( playback, targetMatrix );
-			lookAtPosition = invActorMatrix * targetMatrix.GetPosition();
-			
-			float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
-			if( value < -90.0f ){
-				value = -90.0f;
-			}
-			if( value > 90.0f ){
-				value = 90.0f;
-			}
-			headLeftRight = value * blendFactor1;
-			
-			value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
-			headUpDown = value * blendFactor1;
+		float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
+		if( value < -90.0f ){
+			value = -90.0f;
 		}
+		if( value > 90.0f ){
+			value = 90.0f;
+		}
+		headLeftRight = value * blendFactor1;
+		
+		value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
+		headUpDown = value * blendFactor1;
 	}
 	
 	if( pPlayCurHeadLA ){
-		target = NULL;
-		if( ! pPlayCurHeadLA->GetTarget().IsEmpty() ){
-			target = pConversation->GetTargetNamed( pPlayCurHeadLA->GetTarget() );
-		}
+		pPlayCurHeadLA->GetCoordinateSystem( playback, targetMatrix );
+		lookAtPosition = invActorMatrix * targetMatrix.GetPosition();
 		
-		if( target ){
-			target->GetCoordinateSystem( playback, targetMatrix );
-			lookAtPosition = invActorMatrix * targetMatrix.GetPosition();
-			
-			float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
-			if( value < -90.0f ){
-				value = -90.0f;
-			}
-			if( value > 90.0f ){
-				value = 90.0f;
-			}
-			headLeftRight += value * blendFactor2;
-			
-			value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
-			headUpDown += value * blendFactor2;
+		float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
+		if( value < -90.0f ){
+			value = -90.0f;
 		}
+		if( value > 90.0f ){
+			value = 90.0f;
+		}
+		headLeftRight += value * blendFactor2;
+		
+		value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
+		headUpDown += value * blendFactor2;
 	}
 	
 	// apply the head rotation
@@ -1455,14 +1439,13 @@ void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float ela
 	float eyesLeftRight = 0.0f;
 	float eyesUpDown = 0.0f;
 	decMatrix targetMatrix;
-	ceTarget *target;
 	
 	if( pPlayEyesLARunning && pPlayEyesLACount > 0 ){
 		pPlayEyesLAElapsed += elapsed;
 		
 		while( pPlayEyesLAPos < pPlayEyesLACount ){
 			const float totalLength = pPlayEyesLAs[ pPlayEyesLAPos ].pause + pPlayEyesLAs[ pPlayEyesLAPos ].duration;
-			ceLookAt * const lookAt = pPlayEyesLAs[ pPlayEyesLAPos ].lookAt;
+			ceTarget * const lookAt = pPlayEyesLAs[ pPlayEyesLAPos ].lookAt;
 			
 			if( pPlayEyesLAElapsed < totalLength ){
 				if( pPlayCurEyesLA != lookAt ){
@@ -1552,51 +1535,37 @@ void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float ela
 		const decMatrix invHeadMatrix = ( matrixEye * boneHead->GetMatrix() * decMatrix::CreateRT( pOrientation * DEG2RAD, pPosition ) ).Invert();
 		
 		if( pPlayLastEyesLA ){
-			target = NULL;
-			if( ! pPlayLastEyesLA->GetTarget().IsEmpty() ){
-				target = pConversation->GetTargetNamed( pPlayLastEyesLA->GetTarget() );
-			}
+			pPlayLastEyesLA->GetCoordinateSystem( playback, targetMatrix );
+			lookAtPosition = invHeadMatrix * targetMatrix.GetPosition();
 			
-			if( target ){
-				target->GetCoordinateSystem( playback, targetMatrix );
-				lookAtPosition = invHeadMatrix * targetMatrix.GetPosition();
-				
-				float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
-				if( value < -90.0f ){
-					value = -90.0f;
-				}
-				if( value > 90.0f ){
-					value = 90.0f;
-				}
-				eyesLeftRight = value * blendFactor1;
-				
-				value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
-				eyesUpDown = value * blendFactor1;
+			float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
+			if( value < -90.0f ){
+				value = -90.0f;
 			}
+			if( value > 90.0f ){
+				value = 90.0f;
+			}
+			eyesLeftRight = value * blendFactor1;
+			
+			value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
+			eyesUpDown = value * blendFactor1;
 		}
 		
 		if( pPlayCurEyesLA ){
-			target = NULL;
-			if( ! pPlayCurEyesLA->GetTarget().IsEmpty() ){
-				target = pConversation->GetTargetNamed( pPlayCurEyesLA->GetTarget() );
-			}
+			pPlayCurEyesLA->GetCoordinateSystem( playback, targetMatrix );
+			lookAtPosition = invHeadMatrix * targetMatrix.GetPosition();
 			
-			if( target ){
-				target->GetCoordinateSystem( playback, targetMatrix );
-				lookAtPosition = invHeadMatrix * targetMatrix.GetPosition();
-				
-				float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
-				if( value < -90.0f ){
-					value = -90.0f;
-				}
-				if( value > 90.0f ){
-					value = 90.0f;
-				}
-				eyesLeftRight += value * blendFactor2;
-				
-				value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
-				eyesUpDown += value * blendFactor2;
+			float value = -atan2f( lookAtPosition.x, lookAtPosition.z ) * RAD2DEG;
+			if( value < -90.0f ){
+				value = -90.0f;
 			}
+			if( value > 90.0f ){
+				value = 90.0f;
+			}
+			eyesLeftRight += value * blendFactor2;
+			
+			value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
+			eyesUpDown += value * blendFactor2;
 		}
 	}
 	

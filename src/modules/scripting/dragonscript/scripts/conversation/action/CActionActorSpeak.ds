@@ -613,16 +613,11 @@ class CActionActorSpeak extends ConversationAction
 			var ConversationPlaybackLookAt charLookAt
 			
 			if each.getID() != null
-				var ConversationLookAt lookAt = conversation.getLookAtNamed( each.getID() )
-				
-				if lookAt != null and lookAt.getTarget() != null
-					var ConversationTarget target = conversation.getTargetNamed( lookAt.getTarget() )
-					
-					if target != null
-						charLookAt = ConversationPlaybackLookAt.new( playback, target )
-						if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
-							charLookAt = null
-						end
+				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
+				if target != null
+					charLookAt = ConversationPlaybackLookAt.new( playback, target )
+					if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
+						charLookAt = null
 					end
 				end
 			end
@@ -651,16 +646,11 @@ class CActionActorSpeak extends ConversationAction
 			var ConversationPlaybackLookAt charLookAt
 			
 			if each.getID() != null
-				var ConversationLookAt lookAt = conversation.getLookAtNamed( each.getID() )
-				
-				if lookAt != null and lookAt.getTarget() != null
-					var ConversationTarget target = conversation.getTargetNamed( lookAt.getTarget() )
-					
-					if target != null
-						charLookAt = ConversationPlaybackLookAt.new( playback, target )
-						if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
-							charLookAt = null
-						end
+				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
+				if target != null
+					charLookAt = ConversationPlaybackLookAt.new( playback, target )
+					if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
+						charLookAt = null
 					end
 				end
 			end
