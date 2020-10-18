@@ -50,6 +50,21 @@ ceWPTopicListener::~ceWPTopicListener(){
 // Management
 ///////////////
 
+void ceWPTopicListener::ConversationChanged( ceConversation *conversation ){
+	if( conversation != pPanel.GetConversation() ){
+		return;
+	}
+	
+	// if imports changed
+	pPanel.UpdateTargetLists();
+	pPanel.UpdateCameraShotLists();
+	pPanel.UpdateGestureLists();
+	pPanel.UpdateFacePoseLists();
+	pPanel.UpdateLookAtLists();
+	pPanel.UpdateFileList();
+	pPanel.UpdateTopicList();
+}
+
 void ceWPTopicListener::TargetStructureChanged( ceConversation *conversation ){
 	if( conversation != pPanel.GetConversation() ){
 		return;

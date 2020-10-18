@@ -915,7 +915,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 		return;
 	}
 	
-	const ceLookAtList &lookAtList = pWindow.GetConversation()->GetLookAtList();
+	const ceLookAtList lookAtList( pWindow.GetConversation()->AllLookAts() );
 	const int lookAtCount = lookAtList.GetCount();
 	int i;
 	for( i=0; i<lookAtCount; i++ ){

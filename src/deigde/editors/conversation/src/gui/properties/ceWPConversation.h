@@ -27,13 +27,14 @@
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class ceWindowProperties;
 class ceWPConversationListener;
 class ceConversation;
-class cePose;
 class ceGesture;
 class ceFacePose;
 class ceCameraShot;
@@ -52,9 +53,9 @@ private:
 	ceWPConversationListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeComboBoxFilterReference pCBPose;
-	igdeButtonReference pBtnPose;
-	igdeComboBoxFilterReference pCBPoseMove;
+	igdeEditPathReference pPathImportConvo;
+	igdeButtonReference pBtnImportConvoAdd;
+	igdeListBoxReference pListImportConvoPath;
 	
 	igdeComboBoxFilterReference pCBGesture;
 	igdeButtonReference pBtnGesture;
@@ -138,17 +139,14 @@ public:
 	
 	
 	
-	/** \brief Active pose. */
-	cePose *GetPose() const;
+	/** \brief Update import conversation path list. */
+	void UpdateImportConvoPathList();
 	
-	/** \brief Update list of poses. */
-	void UpdatePoseList();
+	/** \brief Get text from import conversation path. */
+	const decString &GetPathImportConvo() const;
 	
-	/** \brief Select active pose. */
-	void SelectActivePose();
-	
-	/** \brief Update active pose. */
-	void UpdatePose();
+	/** \brief Selected import conversation path or empty path if no selection. */
+	decString GetImportConvo() const;
 	
 	
 	

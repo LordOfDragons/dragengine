@@ -35,7 +35,6 @@ class ceConversationAction;
 class ceConversationCondition;
 class ceCameraShot;
 class ceLookAt;
-class cePose;
 class ceGesture;
 class ceFacePose;
 class ceTarget;
@@ -85,13 +84,6 @@ public:
 	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
 	/** \brief Active camera shot changed. */
 	virtual void ActiveCameraShotChanged( ceConversation *conversation );
-	
-	/** \brief Pose count or order changed. */
-	virtual void PoseStructureChanged( ceConversation *conversation );
-	/** \brief Pose changed. */
-	virtual void PoseChanged( ceConversation *conversation, cePose *pose );
-	/** \brief Active pose changed. */
-	virtual void ActivePoseChanged( ceConversation *conversation );
 	
 	/** \brief Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );

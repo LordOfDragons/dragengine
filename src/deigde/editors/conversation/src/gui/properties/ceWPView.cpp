@@ -2267,7 +2267,7 @@ void ceWPView::UpdatePlaybackFileList(){
 	pCBPlaybackFile->RemoveAllItems();
 	
 	if( pConversation ){
-		const ceConversationFileList &list = pConversation->GetFileList();
+		const ceConversationFileList list( pConversation->AllFiles() );
 		const int count = list.GetCount();
 		int i;
 		
@@ -2294,7 +2294,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 	pCBPlaybackTopic->RemoveAllItems();
 	
 	if( selectedFile ){
-		const ceConversationTopicList &list = selectedFile->GetTopicList();
+		const ceConversationTopicList list( pConversation->AllTopics( selectedFile->GetID() ) );
 		const int count = list.GetCount();
 		int i;
 		

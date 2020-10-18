@@ -51,6 +51,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Conversation changed. */
+	virtual void ConversationChanged( ceConversation *conversation );
+	
 	/** \brief Target count or order changed. */
 	virtual void TargetStructureChanged( ceConversation *conversation );
 	

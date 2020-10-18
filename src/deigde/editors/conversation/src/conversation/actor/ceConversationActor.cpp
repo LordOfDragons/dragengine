@@ -1307,7 +1307,6 @@ void ceConversationActor::pUpdatePlayFacePose( float elapsed ){
 
 void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float elapsed ){
 	decMatrix invActorMatrix;
-	const ceTargetList &targetList = pConversation->GetTargetList();
 	float blendFactor1 = 0.0f;
 	float blendFactor2 = 1.0f;
 	decVector lookAtPosition;
@@ -1399,7 +1398,7 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 	if( pPlayLastHeadLA ){
 		target = NULL;
 		if( ! pPlayLastHeadLA->GetTarget().IsEmpty() ){
-			target = targetList.GetNamed( pPlayLastHeadLA->GetTarget() );
+			target = pConversation->GetTargetNamed( pPlayLastHeadLA->GetTarget() );
 		}
 		
 		if( target ){
@@ -1423,7 +1422,7 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 	if( pPlayCurHeadLA ){
 		target = NULL;
 		if( ! pPlayCurHeadLA->GetTarget().IsEmpty() ){
-			target = targetList.GetNamed( pPlayCurHeadLA->GetTarget() );
+			target = pConversation->GetTargetNamed( pPlayCurHeadLA->GetTarget() );
 		}
 		
 		if( target ){
@@ -1450,7 +1449,6 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 }
 
 void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float elapsed ){
-	const ceTargetList &targetList = pConversation->GetTargetList();
 	float blendFactor1 = 0.0f;
 	float blendFactor2 = 1.0f;
 	decVector lookAtPosition;
@@ -1556,7 +1554,7 @@ void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float ela
 		if( pPlayLastEyesLA ){
 			target = NULL;
 			if( ! pPlayLastEyesLA->GetTarget().IsEmpty() ){
-				target = targetList.GetNamed( pPlayLastEyesLA->GetTarget() );
+				target = pConversation->GetTargetNamed( pPlayLastEyesLA->GetTarget() );
 			}
 			
 			if( target ){
@@ -1580,7 +1578,7 @@ void ceConversationActor::pUpdatePlayEyesLookAt( cePlayback &playback, float ela
 		if( pPlayCurEyesLA ){
 			target = NULL;
 			if( ! pPlayCurEyesLA->GetTarget().IsEmpty() ){
-				target = targetList.GetNamed( pPlayCurEyesLA->GetTarget() );
+				target = pConversation->GetTargetNamed( pPlayCurEyesLA->GetTarget() );
 			}
 			
 			if( target ){

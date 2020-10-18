@@ -22,13 +22,13 @@
 #ifndef _CECONVERSATION_H_
 #define _CECONVERSATION_H_
 
+#include "ceConversationList.h"
 #include "actor/ceConversationActorList.h"
 #include "camerashot/ceCameraShotList.h"
 #include "file/ceConversationFileList.h"
 #include "facepose/ceFacePoseList.h"
 #include "gesture/ceGestureList.h"
 #include "lookat/ceLookAtList.h"
-#include "pose/cePoseList.h"
 #include "target/ceTargetList.h"
 #include "coordsystem/ceCoordSystemList.h"
 #include "prop/cePropList.h"
@@ -39,7 +39,9 @@
 
 #include <dragengine/common/math/decMath.h>
 
+
 class ceConversationTopic;
+class ceConversationTopicList;
 class ceConversationAction;
 class ceConversationCondition;
 class ceConversationInfoBox;
@@ -48,6 +50,7 @@ class ceActorPose;
 class ceTextBox;
 class cePlayerChoiceBox;
 class cePlayback;
+class ceLoadSaveSystem;
 
 class igdeWSky;
 class igdeWObject;
@@ -106,14 +109,14 @@ private:
 	float pScreenRatio;
 	bool pShowRuleOfThirdsAid;
 	
+	decStringList pImportConversationPath;
+	ceConversationList pImportedConversations;
+	
 	ceTargetList pTargetList;
 	ceTarget *pActiveTarget;
 	
 	ceCameraShotList pCameraShotList;
 	ceCameraShot *pActiveCameraShot;
-	
-	cePoseList pPoseList;
-	cePose *pActivePose;
 	
 	ceGestureList pGestureList;
 	ceGesture *pActiveGesture;
@@ -225,6 +228,25 @@ public:
 	inline sPasteSnippetDialogParams &GetPasteSnippetDialogParams(){ return pPasteSnippetDialogParams; }
 	/*@}*/
 	
+	
+	
+	/** \name Imported conversations */
+	/*@{*/
+	/** \brief List of import conversation path. */
+	inline const decStringList &GetImportConversationPath() const{ return pImportConversationPath; }
+	
+	/** \brief Set list of import conversation path. */
+	void SetImportConversationPath( const decStringList &list );
+	
+	/** \brief Update imported conversations from path. */
+	void UpdateImportedConversations( ceLoadSaveSystem &lssystem );
+	
+	/** \brief Imported conversations. */
+	inline const ceConversationList &GetImportedConversations() const{ return pImportedConversations; }
+	/*@}*/
+	
+	
+	
 	/** \name Targets */
 	/*@{*/
 	/** \brief Retrieves the target list read-only. */
@@ -239,6 +261,13 @@ public:
 	inline ceTarget *GetActiveTarget() const{ return pActiveTarget; }
 	/** \brief Sets the active target or NULL if none is active. */
 	void SetActiveTarget( ceTarget *target );
+	
+	/** \brief Named target including imported conversations. */
+	ceTarget *GetTargetNamed( const char *name ) const;
+	
+	/** \brief All targets including imported conversations. */
+	ceTargetList AllTargets() const;
+	void AllTargets( ceTargetList &list ) const;
 	/*@}*/
 	
 	/** \name Camera Shots */
@@ -255,22 +284,13 @@ public:
 	inline ceCameraShot *GetActiveCameraShot() const{ return pActiveCameraShot; }
 	/** \brief Sets the active camera shot or NULL if none is active. */
 	void SetActiveCameraShot( ceCameraShot *cameraShot );
-	/*@}*/
 	
-	/** \name Poses */
-	/*@{*/
-	/** \brief Retrieves the pose list read-only. */
-	inline const cePoseList &GetPoseList() const{ return pPoseList; }
-	/** \brief Adds a pose. */
-	void AddPose( cePose *pose );
-	/** \brief Removes a pose. */
-	void RemovePose( cePose *pose );
-	/** \brief Remove all poses. */
-	void RemoveAllPoses();
-	/** \brief Retrieves the active pose or NULL if none is active. */
-	inline cePose *GetActivePose() const{ return pActivePose; }
-	/** \brief Sets the active pose or NULL if none is active. */
-	void SetActivePose( cePose *pose );
+	/** \brief Named camera shot including imported conversations. */
+	ceCameraShot *GetCameraShotNamed( const char *name ) const;
+	
+	/** \brief All camera shots including imported conversations. */
+	ceCameraShotList AllCameraShots() const;
+	void AllCameraShots( ceCameraShotList &list ) const;
 	/*@}*/
 	
 	/** \name Gestures */
@@ -287,6 +307,13 @@ public:
 	inline ceGesture *GetActiveGesture() const{ return pActiveGesture; }
 	/** \brief Sets the active gesture or NULL if none is active. */
 	void SetActiveGesture( ceGesture *gesture );
+	
+	/** \brief Named gesture including imported conversations. */
+	ceGesture *GetGestureNamed( const char *name ) const;
+	
+	/** \brief All gestures including imported conversations. */
+	ceGestureList AllGestures() const;
+	void AllGestures( ceGestureList &list ) const;
 	/*@}*/
 	
 	/** \name FacePoses */
@@ -306,6 +333,13 @@ public:
 	inline ceFacePose *GetActiveFacePose() const{ return pActiveFacePose; }
 	/** \brief Sets the active face pose or NULL if none is active. */
 	void SetActiveFacePose( ceFacePose *facePose );
+	
+	/** \brief Named face pose including imported conversations. */
+	ceFacePose *GetFacePoseNamed( const char *name ) const;
+	
+	/** \brief All face poses including imported conversations. */
+	ceFacePoseList AllFacePoses() const;
+	void AllFacePoses( ceFacePoseList &list ) const;
 	/*@}*/
 	
 	/** \name LookAts */
@@ -322,6 +356,13 @@ public:
 	inline ceLookAt *GetActiveLookAt() const{ return pActiveLookAt; }
 	/** \brief Sets the active lookat or NULL if none is active. */
 	void SetActiveLookAt( ceLookAt *lookat );
+	
+	/** \brief Named look-at including imported conversations. */
+	ceLookAt *GetLookAtNamed( const char *name ) const;
+	
+	/** \brief All look-ats including imported conversations. */
+	ceLookAtList AllLookAts() const;
+	void AllLookAts( ceLookAtList &list ) const;
 	/*@}*/
 	
 	/** \name Files */
@@ -338,6 +379,20 @@ public:
 	inline ceConversationFile *GetActiveFile() const{ return pActiveFile; }
 	/** \brief Sets the active file or NULL if none is active. */
 	void SetActiveFile( ceConversationFile *file );
+	
+	/** \brief Named file including imported conversations. */
+	ceConversationFile *GetFileWithID( const char *name ) const;
+	
+	/** \brief All files including imported conversations. */
+	ceConversationFileList AllFiles() const;
+	void AllFiles( ceConversationFileList &list ) const;
+	
+	/** \brief Named topic including imported conversations. */
+	ceConversationTopic *GetTopicWithID( const char *fileName, const char *topicName ) const;
+	
+	/** \brief All files including imported conversations. */
+	ceConversationTopicList AllTopics( const char *fileName ) const;
+	void AllTopics( const char *fileName, ceConversationTopicList &list ) const;
 	/*@}*/
 	
 	/** \name Actors */
@@ -429,13 +484,6 @@ public:
 	void NotifyCameraShotChanged( ceCameraShot *cameraShot );
 	/** \brief Notifies all that the active camera shot changed. */
 	void NotifyActiveCameraShotChanged();
-	
-	/** \brief Notifies all that the pose count or order changed. */
-	void NotifyPoseStructureChanged();
-	/** \brief Notifies all that a pose changed. */
-	void NotifyPoseChanged( cePose *pose );
-	/** \brief Notifies all that the active pose changed. */
-	void NotifyActivePoseChanged();
 	
 	/** \brief Notifies all that the gesture count or order changed. */
 	void NotifyGestureStructureChanged();
@@ -543,6 +591,8 @@ public:
 	/** \brief Notifies all that playback mising words changed. */
 	void NotifyPlaybackMissingWordsChanged();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

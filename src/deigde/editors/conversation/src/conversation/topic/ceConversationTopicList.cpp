@@ -126,3 +126,8 @@ ceConversationTopicList &ceConversationTopicList::operator=( const ceConversatio
 	pTopics = list.pTopics;
 	return *this;
 }
+
+ceConversationTopicList &ceConversationTopicList::operator+=( const ceConversationTopicList &list ){
+	pTopics += list.pTopics;
+	return *this;
+}

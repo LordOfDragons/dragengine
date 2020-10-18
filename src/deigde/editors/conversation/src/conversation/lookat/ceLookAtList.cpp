@@ -126,3 +126,8 @@ ceLookAtList &ceLookAtList::operator=( const ceLookAtList &list ){
 	pLookAts = list.pLookAts;
 	return *this;
 }
+
+ceLookAtList &ceLookAtList::operator+=( const ceLookAtList &list ){
+	pLookAts += list.pLookAts;
+	return *this;
+}

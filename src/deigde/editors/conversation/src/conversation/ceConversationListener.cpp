@@ -85,17 +85,6 @@ void ceConversationListener::ActiveCameraShotChanged( ceConversation *conversati
 
 
 
-void ceConversationListener::PoseStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::PoseChanged( ceConversation *conversation, cePose *pose ){
-}
-
-void ceConversationListener::ActivePoseChanged( ceConversation *conversation ){
-}
-
-
-
 void ceConversationListener::GestureStructureChanged( ceConversation *conversation ){
 }
 

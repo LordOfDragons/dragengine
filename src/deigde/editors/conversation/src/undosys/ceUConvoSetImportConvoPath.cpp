@@ -23,37 +23,35 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "ceUCPoseSetName.h"
-#include "../../conversation/pose/cePose.h"
+#include "ceUConvoSetImportConvoPath.h"
+#include "../conversation/ceConversation.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class ceUCPoseSetName
-//////////////////////////
+// Class ceUConvoSetImportConvoPath
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-ceUCPoseSetName::ceUCPoseSetName( cePose *pose, const char *newName ){
-	if( ! pose || ! newName ) DETHROW( deeInvalidParam );
+ceUConvoSetImportConvoPath::ceUConvoSetImportConvoPath( ceLoadSaveSystem &lssystem,
+	ceConversation *conversation, const decStringList &newValue ) :
+pLSSystem( lssystem ),
+pConversation( conversation ),
+pNewValue( newValue )
+{
+	if( ! conversation ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	pPose = NULL;
+	pOldValue = conversation->GetImportConversationPath();
 	
-	SetShortInfo( "Pose Set Name" );
-	
-	pOldName = pose->GetName();
-	pNewName = newName;
-	
-	pPose = pose;
-	pose->AddReference();
+	SetShortInfo( "Set Import Conversation Path List" );
 }
 
-ceUCPoseSetName::~ceUCPoseSetName(){
-	if( pPose ){
-		pPose->FreeReference();
-	}
+ceUConvoSetImportConvoPath::~ceUConvoSetImportConvoPath(){
 }
 
 
@@ -61,10 +59,14 @@ ceUCPoseSetName::~ceUCPoseSetName(){
 // Management
 ///////////////
 
-void ceUCPoseSetName::Undo(){
-	pPose->SetName( pOldName.GetString() );
+void ceUConvoSetImportConvoPath::Undo(){
+	pConversation->SetImportConversationPath( pOldValue );
+	pConversation->UpdateImportedConversations( pLSSystem );
+	pConversation->NotifyConversationChanged();
 }
 
-void ceUCPoseSetName::Redo(){
-	pPose->SetName( pNewName.GetString() );
+void ceUConvoSetImportConvoPath::Redo(){
+	pConversation->SetImportConversationPath( pNewValue );
+	pConversation->UpdateImportedConversations( pLSSystem );
+	pConversation->NotifyConversationChanged();
 }

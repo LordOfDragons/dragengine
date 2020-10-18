@@ -65,13 +65,6 @@ public:
 	/** Active camera shot changed. */
 	virtual void ActiveCameraShotChanged( ceConversation *conversation );
 	
-	/** Pose count or order changed. */
-	virtual void PoseStructureChanged( ceConversation *conversation );
-	/** Pose changed. */
-	virtual void PoseChanged( ceConversation *conversation, cePose *pose );
-	/** Active pose changed. */
-	virtual void ActivePoseChanged( ceConversation *conversation );
-	
 	/** Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );
 	/** Gesture changed. */

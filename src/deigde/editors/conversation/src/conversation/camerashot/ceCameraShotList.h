@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceCameraShotList &operator=( const ceCameraShotList &list );
+	
+	/** \brief Append camera shots if absent. */
+	ceCameraShotList &operator+=( const ceCameraShotList &list );
 	/*@}*/
 };
 

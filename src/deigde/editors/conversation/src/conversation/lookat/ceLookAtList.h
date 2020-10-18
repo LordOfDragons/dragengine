@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceLookAtList &operator=( const ceLookAtList &list );
+	
+	/** \brief Append look-ats if absent. */
+	ceLookAtList &operator+=( const ceLookAtList &list );
 	/*@}*/
 };
 

@@ -219,7 +219,7 @@ void ceWPACameraShot::UpdateCameraShotList(){
 	pCBName->RemoveAllItems();
 	
 	if( conversation ){
-		const ceCameraShotList &list = conversation->GetCameraShotList();
+		const ceCameraShotList list( conversation->AllCameraShots() );
 		const int count = list.GetCount();
 		int i;
 		

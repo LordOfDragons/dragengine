@@ -19,40 +19,50 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _CEUCPOSESETMOVE_H_
-#define _CEUCPOSESETMOVE_H_
+#ifndef _CEUCONVOSETIMPORTCONVOPATH_H_
+#define _CEUCONVOSETIMPORTCONVOPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
 
-class cePose;
+#include <dragengine/common/string/decStringList.h>
+
+class ceConversation;
+class ceLoadSaveSystem;
 
 
 
 /**
- * \brief Undo Action Pose Set Move.
+ * \brief Undo Action Conversation Action Set Delay.
  */
-class ceUCPoseSetMove : public igdeUndo{
+class ceUConvoSetImportConvoPath : public igdeUndo{
 private:
-	cePose *pPose;
+	ceLoadSaveSystem &pLSSystem;
+	ceConversation *pConversation;
+	decStringList pOldValue;
+	decStringList pNewValue;
 	
-	decString pOldMove;
-	decString pNewMove;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCPoseSetMove( cePose *file, const char *newMove );
+	ceUConvoSetImportConvoPath( ceLoadSaveSystem &lssystem,
+		ceConversation *conversation, const decStringList &newValue );
+	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCPoseSetMove();
+	virtual ~ceUConvoSetImportConvoPath();
 	/*@}*/
+	
+	
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
 	virtual void Undo();
+	
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/

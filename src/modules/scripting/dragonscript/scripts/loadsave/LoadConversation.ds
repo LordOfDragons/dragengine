@@ -54,26 +54,27 @@ class LoadConversation extends BaseXmlLoader
 	/** Load conversation from file. */
 	public func Conversation loadFromFile( String filename )
 		var Conversation conversation = this.pConversations.getAt( filename, null ) cast Conversation
-		
-		if conversation == null
-			this.logLoadingFromFile( filename )
-			
-			var EasyXML document = EasyXML.new( filename )
-			if document.hasParseFailed()
-				this.logParsingFailed( document.getParseLog() )
-				throw EInvalidParam.new()
-			end
-			
-			var EasyXMLElement root = document.getRootElement()
-			if not root.getTagName().equals( "conversation" )
-				this.logUnknownTag( root )
-				throw EInvalidParam.new()
-			end
-			
-			conversation = Conversation.new( filename )
-			this.pReadConversation( root, conversation )
-			this.pConversations.setAt( filename, conversation )
+		if conversation != null
+			return conversation
 		end
+		
+		this.logLoadingFromFile( filename )
+		
+		var EasyXML document = EasyXML.new( filename )
+		if document.hasParseFailed()
+			this.logParsingFailed( document.getParseLog() )
+			throw EInvalidParam.new()
+		end
+		
+		var EasyXMLElement root = document.getRootElement()
+		if not root.getTagName().equals( "conversation" )
+			this.logUnknownTag( root )
+			throw EInvalidParam.new()
+		end
+		
+		conversation = Conversation.new( filename )
+		this.pReadConversation( root, conversation )
+		this.pConversations.setAt( filename, conversation )
 		
 		return conversation
 	end
@@ -90,7 +91,7 @@ class LoadConversation extends BaseXmlLoader
 				this.pReadCameraShot( element, conversation )
 				
 			elif tagName.equals( "pose" )
-				// not used right now
+				// deprecated
 				
 			elif tagName.equals( "gesture" )
 				this.pReadGesture( element, conversation )
@@ -104,11 +105,18 @@ class LoadConversation extends BaseXmlLoader
 			elif tagName.equals( "lookAt" )
 				this.pReadLookAt( element, conversation )
 				
-			elif tagName.equals( "file" ) // DEPRECATED
+			elif tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
 				this.pReadTopicGroup( element, conversation )
 				
-			elif tagName.equals( "topicGroup" )
-				this.pReadTopicGroup( element, conversation )
+			elif tagName.equals( "import" )
+				var String filename = element.getFirstCData()
+				try
+					conversation.import( this.loadFromFile( filename ) )
+					
+				catch Exception e
+					this.logLoadFileFailed( element, filename )
+					throw
+				end
 				
 			else
 				this.logUnknownTag( element )
@@ -120,11 +128,6 @@ class LoadConversation extends BaseXmlLoader
 	private func void pReadTarget( EasyXMLElement root, Conversation conversation )
 		var ConversationTarget target = ConversationTarget.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
-		if conversation.getTargetNamed( target.getName() ) != null
-			this.printOnConsole( root, "A target exists already with the name '" \
-				+ target.getName().getString() + "'." )
-			throw EInvalidParam.new()
-		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "actor" )
@@ -154,11 +157,6 @@ class LoadConversation extends BaseXmlLoader
 	private func void pReadCameraShot( EasyXMLElement root, Conversation conversation )
 		var ConversationCameraShot cameraShot = ConversationCameraShot.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
-		if conversation.getCameraShotNamed( cameraShot.getName() ) != null
-			this.printOnConsole( root, "A camera shot exists already with the name '" \
-				+ cameraShot.getName().getString() + "'." )
-			throw EInvalidParam.new()
-		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "actorCount" )
@@ -245,11 +243,6 @@ class LoadConversation extends BaseXmlLoader
 	private func void pReadGesture( EasyXMLElement root, Conversation conversation )
 		var ConversationGesture gesture = ConversationGesture.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
-		if conversation.getGestureNamed( gesture.getName() ) != null
-			this.printOnConsole( root, "A gesture exists already with the name '" \
-				+ gesture.getName().getString() + "'." )
-			throw EInvalidParam.new()
-		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "animator" )
@@ -270,11 +263,6 @@ class LoadConversation extends BaseXmlLoader
 	private func void pReadFacePose( EasyXMLElement root, Conversation conversation )
 		var ConversationFacePose facePose = ConversationFacePose.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
-		if conversation.getFacePoseNamed( facePose.getName() ) != null
-			this.printOnConsole( root, "A face pose exists already with the name '" \
-				+ facePose.getName().getString() + "'." )
-			throw EInvalidParam.new()
-		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "controller" )
@@ -294,11 +282,6 @@ class LoadConversation extends BaseXmlLoader
 	private func void pReadLookAt( EasyXMLElement root, Conversation conversation )
 		var ConversationLookAt lookAt = ConversationLookAt.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
-		if conversation.getLookAtNamed( lookAt.getName() ) != null
-			this.printOnConsole( root, "A look-at exists already with the name '" \
-				+ lookAt.getName().getString() + "'." )
-			throw EInvalidParam.new()
-		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "target" )
@@ -314,35 +297,27 @@ class LoadConversation extends BaseXmlLoader
 	
 	/** Read file tag. */
 	private func void pReadTopicGroup( EasyXMLElement root, Conversation conversation )
-		var ConversationTopicGroup topicGroup = ConversationTopicGroup.new( \
-			StringID.new( root.getAttributeNamed( "id" ) ) )
-		if conversation.getTopicGroupWithID( topicGroup.getID() ) != null
-			this.printOnConsole( root, "A topic group exists already with the id '" \
-				+ topicGroup.getID().getString() + "'." )
-			throw EInvalidParam.new()
+		var StringID id = StringID.new( root.getAttributeNamed( "id" ) )
+		
+		var ConversationTopicGroup group = conversation.getTopicGroupWithID( id )
+		if group == null
+			group = ConversationTopicGroup.new( id )
+			conversation.addTopicGroup( group )
 		end
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "topic" )
-				this.pReadTopic( element, topicGroup )
+				this.pReadTopic( element, group )
 				
 			else
 				this.logUnknownTag( element )
 			end
 		end )
-		
-		conversation.addTopicGroup( topicGroup )
 	end
 	
 	/** Read topic tag. */
-	private func void pReadTopic( EasyXMLElement root, ConversationTopicGroup file )
-		var ConversationTopic topic = ConversationTopic.new( \
-			StringID.new( root.getAttributeNamed( "id" ) ) )
-		if file.getTopicWithID( topic.getID() ) != null
-			this.printOnConsole( root, "A topic exists already with the id '" \
-				+ topic.getID().getString() + "'." )
-			throw EInvalidParam.new()
-		end
+	private func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group )
+		var ConversationTopic topic = ConversationTopic.new( StringID.new( root.getAttributeNamed( "id" ) ) )
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "actions" )
@@ -355,7 +330,7 @@ class LoadConversation extends BaseXmlLoader
 			end
 		end )
 		
-		file.addTopic( topic )
+		group.addTopic( topic )
 	end
 	
 	/** Read actions. */
@@ -678,7 +653,7 @@ class LoadConversation extends BaseXmlLoader
 		var CActionSnippet action = CActionSnippet.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "file" )
+			if tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
 				action.setGroupID( StringID.new( element.getFirstCData() ) )
 				
 			elif tagName.equals( "topic" )

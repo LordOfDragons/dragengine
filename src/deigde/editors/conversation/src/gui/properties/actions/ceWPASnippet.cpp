@@ -195,7 +195,7 @@ void ceWPASnippet::UpdateFileList(){
 	pCBFile->RemoveAllItems();
 	
 	if( conversation ){
-		const ceConversationFileList &list = conversation->GetFileList();
+		const ceConversationFileList list( conversation->AllFiles() );
 		const int count = list.GetCount();
 		int i;
 		
@@ -212,14 +212,12 @@ void ceWPASnippet::UpdateFileList(){
 
 void ceWPASnippet::UpdateTopicList(){
 	ceConversation * const conversation = GetParentPanel().GetConversation();
-	const ceConversationFile * const file = conversation
-		? conversation->GetFileList().GetWithID( pCBFile->GetText() ) : NULL;
 	const decString selection( pCBTopic->GetText() );
 	
 	pCBTopic->RemoveAllItems();
 	
-	if( file ){
-		const ceConversationTopicList &list = file->GetTopicList();
+	if( conversation ){
+		const ceConversationTopicList list( conversation->AllTopics( pCBFile->GetText() ) );
 		const int count = list.GetCount();
 		int i;
 		

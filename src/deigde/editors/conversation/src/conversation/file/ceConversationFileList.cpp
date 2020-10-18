@@ -126,3 +126,8 @@ ceConversationFileList &ceConversationFileList::operator=( const ceConversationF
 	pFiles = list.pFiles;
 	return *this;
 }
+
+ceConversationFileList &ceConversationFileList::operator+=( const ceConversationFileList &list ){
+	pFiles += list.pFiles;
+	return *this;
+}

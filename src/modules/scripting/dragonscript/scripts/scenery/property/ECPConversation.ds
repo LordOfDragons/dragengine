@@ -42,6 +42,7 @@ class ECPConversation extends ElementClassProperty
 	private var String pPath
 	private var Conversation pConversation
 	private var bool pHasPreloaded
+	private var Exception pException
 	
 	
 	
@@ -114,6 +115,7 @@ class ECPConversation extends ElementClassProperty
 			this.pConversation = this.pLoader.loadFromFile( path )
 			
 		catch Exception e
+			this.pException = e
 		end
 	end
 	
@@ -123,9 +125,9 @@ class ECPConversation extends ElementClassProperty
 	 */
 	public func bool logPreloadProblems( ElementClass elementClass, Console console )
 		if this.pPath != null and not this.pPath.empty() and this.pConversation == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
+			console.addError( "Property " + elementClass.getClassname() + "." \
 				+ this.getName() + ": Failed loading conversation " \
-				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath() )
+				+ File.absolutePath( this.pPath, elementClass.getBasePath() ).getPath(), this.pException )
 			return true
 		end
 		return false
@@ -149,7 +151,7 @@ class ECPConversation extends ElementClassProperty
 			return this.pLoader.loadFromFile( value )
 			
 		catch Exception e
-			throw ELoadResourceFailed.new( value, eclass.getClassname() )
+			throw ELoadResourceFailed.new( value, eclass.getClassname() + ": " + e.getReason() )
 		end
 	end
 end

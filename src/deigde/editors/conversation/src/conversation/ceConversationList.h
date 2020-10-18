@@ -19,56 +19,64 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _CEPOSELIST_H_
-#define _CEPOSELIST_H_
+#ifndef _CECONVERSATIOnLIST_H_
+#define _CECONVERSATIOnLIST_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class cePose;
+class ceConversation;
 
 
 
 /**
- * \brief Pose List.
+ * \brief Conversation Listl
  */
-class cePoseList{
+class ceConversationList{
 private:
-	decObjectOrderedSet pPoses;
+	decObjectOrderedSet pConversations;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new pose list. */
-	cePoseList();
-	/** Cleans up the pose list. */
-	~cePoseList();
+	/** \brief Create list. */
+	ceConversationList();
+	
+	/** \brief Create copy of list. */
+	ceConversationList( const ceConversationList &list );
+	
+	/** \brief Clean up list. */
+	~ceConversationList();
 	/*@}*/
+	
+	
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of poses. */
+	/** \brief Count of conversations. */
 	int GetCount() const;
-	/** Retrieves the pose at the given position. */
-	cePose *GetAt( int index ) const;
-	/** Retrieves the named pose or NULL if not found. */
-	cePose *GetNamed( const char *name ) const;
-	/** Retrieves the index of a pose or -1 if not found. */
-	int IndexOf( cePose *pose ) const;
-	/** Retrieves the index of the named pose or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
-	/** Determines if a pose exists. */
-	bool Has( cePose *pose ) const;
-	/** Determines if a named pose exists. */
-	bool HasNamed( const char *name ) const;
-	/** Adds a pose. */
-	void Add( cePose *pose );
-	/** Removes a pose. */
-	void Remove( cePose *pose );
-	/** Removes all poses. */
+	
+	/** \brief Conversation at index. */
+	ceConversation *GetAt( int index ) const;
+	
+	/** \brief Index of conversation or -1 if absent. */
+	int IndexOf( ceConversation *conversation ) const;
+	
+	/** \brief Conversation is present. */
+	bool Has( ceConversation *conversation ) const;
+	
+	/** \brief Add conversation. */
+	void Add( ceConversation *conversation );
+	
+	/** \brief Remove conversation. */
+	void Remove( ceConversation *conversation );
+	
+	/** \brief Remove all conversations. */
 	void RemoveAll();
 	
-	/** Sets the list from another list. */
-	cePoseList &operator=( const cePoseList &list );
+	/** \brief Set list. */
+	ceConversationList &operator=( const ceConversationList &list );
 	/*@}*/
 };
 

@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceConversationTopicList &operator=( const ceConversationTopicList &list );
+	
+	/** \brief Append topics if absent. */
+	ceConversationTopicList &operator+=( const ceConversationTopicList &list );
 	/*@}*/
 };
 
