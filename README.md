@@ -20,7 +20,8 @@ This affects only game engine modules, launchers and IGDE editors.
 Game projects do not link against the game engine and thus are not affected by
 the license. They can use any license they see fit.
 
-In a nutshell this means: __If you create a game, no matter if commercial or not, you are free to choose your license.__
+In a nutshell this means: __If you create a game, no matter if commercial or not__
+__, you do not have to worry about licensing at all.__
 
 # Building Linux
 
