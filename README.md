@@ -11,6 +11,17 @@
 Example projects can be found on Development Wiki or in this repository:
 - Example Projects Repository: https://github.com/LordOfDragons/deexamples
 
+# License Information
+
+The Drag\[en\]gine Game Engine is dual licensed under **L-GPL** (for commercial
+projects and proprietary use like on consoles) and **GPL** (for free game project).
+This affects only __game engine modules__, __launchers__ and __IGDE editors__.
+Game projects do not link against the game engine and thus are not affected by
+the license. They can use any license they see fit.
+
+In a nutshell this means:
+__If you create a game, no matter if commercial or not, you are free to choose your license.__
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
