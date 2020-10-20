@@ -13,14 +13,14 @@ Example projects can be found on Development Wiki or in this repository:
 
 # License Information
 
-The Drag\[en\]gine Game Engine is dual licensed under **L-GPL** (for commercial
-projects and proprietary use like on consoles) and **GPL** (for free game project).
-This affects only __game engine modules__, __launchers__ and __IGDE editors__.
+The Drag\[en\]gine Game Engine is dual licensed under [L-GPL!](https://www.gnu.org/licenses/lgpl-3.0.html)
+(for commercial projects and proprietary use like on consoles) and
+[GPL!](https://www.gnu.org/licenses/gpl-3.0.html) (for free game project).
+This affects only game engine modules, launchers and IGDE editors.
 Game projects do not link against the game engine and thus are not affected by
 the license. They can use any license they see fit.
 
-In a nutshell this means:
-__If you create a game, no matter if commercial or not, you are free to choose your license.__
+In a nutshell this means: __If you create a game, no matter if commercial or not, you are free to choose your license.__
 
 # Building Linux
 
@@ -108,7 +108,7 @@ MinGW-64. VisualStudio compile is not supported officially.
 
 # Run in "Local Directory Mode"
 
-The Drag[en]gine Game Engine, Launchers and the IGDE can be run in the "Local Directory Mode".
+The Drag\[en\]gine Game Engine, Launchers and the IGDE can be run in the "Local Directory Mode".
 
 The **Live Launcher** is an example of a launcher using this mode to run games from any
 directory without installing.
