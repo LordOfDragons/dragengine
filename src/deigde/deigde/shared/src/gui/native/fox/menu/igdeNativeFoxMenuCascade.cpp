@@ -216,7 +216,10 @@ igdeWindow( menu.GetEnvironment(), "", NULL, false ),
 pMenu( menu ){
 }
 
-igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){}
+igdeNativeFoxMenuCascade_PopupWindow::~igdeNativeFoxMenuCascade_PopupWindow(){
+	// make sure native widget is gone. required due to igdeWindow::~igdeWindow()
+	DropNativeWidget();
+}
 
 
 void igdeNativeFoxMenuCascade_PopupWindow::Popup( const decPoint &position ){
