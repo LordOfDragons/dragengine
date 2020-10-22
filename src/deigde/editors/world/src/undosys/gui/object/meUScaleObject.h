@@ -19,15 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _MEUSCALEOBJECT_H_
 #define _MEUSCALEOBJECT_H_
 
-// includes
 #include "../meBaseUndoScale.h"
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
-// predefinitions
-class meUndoDataObject;
 class meObjectList;
 class meWorld;
 
@@ -39,8 +36,7 @@ class meWorld;
 class meUScaleObject : public meBaseUndoScale{
 private:
 	meWorld *pWorld;
-	meUndoDataObject **pObjects;
-	int pObjectCount;
+	decObjectOrderedSet pObjects;
 	
 public:
 	// constructor, destructor

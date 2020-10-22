@@ -19,15 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _MEUROTATEOBJECT_H_
 #define _MEUROTATEOBJECT_H_
 
-// includes
 #include "../meBaseUndoRotate.h"
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
-// predefinitions
-class meUndoDataObject;
 class meObjectList;
 class meWorld;
 
@@ -39,8 +36,7 @@ class meWorld;
 class meURotateObject : public meBaseUndoRotate{
 private:
 	meWorld *pWorld;
-	meUndoDataObject **pObjects;
-	int pObjectCount;
+	decObjectOrderedSet pObjects;
 	
 public:
 	// constructor, destructor

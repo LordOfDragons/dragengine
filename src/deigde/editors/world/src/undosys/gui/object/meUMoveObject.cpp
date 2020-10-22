@@ -43,26 +43,21 @@ meUMoveObject::meUMoveObject( meWorld *world, const meObjectList &objects ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	int count = objects.GetCount();
+	const int count = objects.GetCount();
+	deObjectReference ref;
 	
 	SetShortInfo( "Move Object" );
 	
 	pWorld = NULL;
 	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
 	try{
 		pWorld = world;
 		world->AddReference();
 		
-		if( count > 0 ){
-			pObjects = new meUndoDataObject*[ count ];
-			
-			while( pObjectCount < count ){
-				pObjects[ pObjectCount ] = new meUndoDataObject( objects.GetAt( pObjectCount ) );
-				pObjectCount++;
-			}
+		int i;
+		for( i=0; i<count; i++ ){
+			ref.TakeOver( new meUndoDataObject( objects.GetAt( i ) ) );
+			pObjects.Add( ref );
 		}
 		
 	}catch( const deException & ){
@@ -81,25 +76,30 @@ meUMoveObject::~meUMoveObject(){
 /////////////////////////////
 
 void meUMoveObject::Undo(){
+	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<pObjectCount; i++ ){
-		meObject * const object = pObjects[ i ]->GetObject();
-		object->SetPosition( pObjects[ i ]->GetOldPosition() );
-		object->SetRotation( pObjects[ i ]->GetOldOrientation() );
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		meObject * const object = data.GetObject();
+		object->SetPosition( data.GetOldPosition() );
+		object->SetRotation( data.GetOldOrientation() );
 		pWorld->NotifyObjectGeometryChanged( object );
 	}
 }
 
 void meUMoveObject::Redo(){
+	const int count = pObjects.GetCount();
+	int i;
+	
 	if( GetModifyOrientation() ){
-		int i;
 		
-		for( i=0; i<pObjectCount; i++ ){
-			meObject * const object = pObjects[ i ]->GetObject();
+		for( i=0; i<count; i++ ){
+			const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+			meObject * const object = data.GetObject();
 			
-			decDVector position( pObjects[ i ]->GetOldPosition() );
-			decDVector rotation( pObjects[ i ]->GetOldOrientation() );
+			decDVector position( data.GetOldPosition() );
+			decDVector rotation( data.GetOldOrientation() );
 			
 			TransformElement( position, rotation );
 			
@@ -110,12 +110,12 @@ void meUMoveObject::Redo(){
 		
 	}else{
 		const decDVector &distance = GetDistance();
-		int i;
 		
-		for( i=0; i<pObjectCount; i++ ){
-			meObject * const object = pObjects[ i ]->GetObject();
-			object->SetPosition( pObjects[ i ]->GetOldPosition() + distance );
-			object->SetRotation( pObjects[ i ]->GetOldOrientation() );
+		for( i=0; i<count; i++ ){
+			const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+			meObject * const object = data.GetObject();
+			object->SetPosition( data.GetOldPosition() + distance );
+			object->SetRotation( data.GetOldOrientation() );
 			pWorld->NotifyObjectGeometryChanged( object );
 		}
 	}
@@ -131,15 +131,6 @@ void meUMoveObject::ProgressiveRedo(){
 //////////////////////
 
 void meUMoveObject::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
-			pObjectCount--;
-			delete pObjects[ pObjectCount ];
-		}
-		
-		delete [] pObjects;
-	}
-	
 	if( pWorld ){
 		pWorld->FreeReference();
 	}

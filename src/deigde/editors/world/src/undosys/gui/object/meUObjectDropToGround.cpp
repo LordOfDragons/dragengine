@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "meUObjectDropToGround.h"
-#include "meUndoDataObject.h"
 #include "../../../collisions/meCLClosestElement.h"
 #include "../../../filter/meFilterObjectsByClass.h"
 #include "../../../world/meWorld.h"

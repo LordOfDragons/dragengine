@@ -23,8 +23,8 @@
 #define _MEUDELETEOBJECT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class meUndoDataObject;
 class meWorld;
 
 
@@ -35,8 +35,8 @@ class meWorld;
 class meUDeleteObject : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meUndoDataObject **pObjects;
-	int pObjectCount;
+	decObjectOrderedSet pObjects;
+	decObjectOrderedSet pAttached;
 	
 	
 	

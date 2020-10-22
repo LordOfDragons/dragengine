@@ -36,9 +36,7 @@
 ////////////////////////////
 
 meUDeleteObject::meUDeleteObject( meWorld *world ) :
-pWorld( NULL ),
-pObjects( NULL ),
-pObjectCount( 0 )
+pWorld( NULL )
 {
 	if( ! world ){
 		DETHROW( deeInvalidParam );
@@ -46,7 +44,9 @@ pObjectCount( 0 )
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
 	const int count = list.GetCount();
+	deObjectReference ref;
 	decString text;
+	int i;
 	
 	SetShortInfo( "Delete Objects" );
 	if( count > 1 ){
@@ -61,12 +61,19 @@ pObjectCount( 0 )
 		pWorld = world;
 		world->AddReference();
 		
-		if( count > 0 ){
-			pObjects = new meUndoDataObject*[ count ];
-			
-			while( pObjectCount < count ){
-				pObjects[ pObjectCount ] = new meUndoDataObject( list.GetAt( pObjectCount ) );
-				pObjectCount++;
+		for( i=0; i<count; i++ ){
+			ref.TakeOver( new meUndoDataObject( list.GetAt( i ) ) );
+			pObjects.Add( ref );
+		}
+		
+		// keep track of object attached to deleted objects
+		const meObjectList &allObjects = world->GetObjects();
+		const int allCount = allObjects.GetCount();
+		for( i=0; i<allCount; i++ ){
+			meObject * const object = allObjects.GetAt( i );
+			if( object->GetAttachedTo() && list.Has( object->GetAttachedTo() ) ){
+				ref.TakeOver( new meUndoDataObject( object ) );
+				pAttached.Add( ref );
 			}
 		}
 		
@@ -87,19 +94,28 @@ meUDeleteObject::~meUDeleteObject(){
 
 void meUDeleteObject::Undo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
+	const int count = pObjects.GetCount();
 	int i;
 	
 	selection.Reset();
 	
-	for( i=0; i<pObjectCount; i++ ){
-		meObject * const object = pObjects[ i ]->GetObject();
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		meObject * const object = data.GetObject();
 		
 		pWorld->AddObject( object );
 		selection.Add( object );
 		
 		pWorld->NotifyObjectAdded( object );
 		
-		object->SetAttachedTo( pObjects[ i ]->GetAttachedTo() );
+		object->SetAttachedTo( data.GetAttachedTo() );
+	}
+	
+	const int attachCount = pAttached.GetCount();
+	for( i=0; i<attachCount; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pAttached.GetAt( i ) );
+		meObject * const object = data.GetObject();
+		object->SetAttachedTo( data.GetAttachedTo() );
 	}
 	
 	selection.ActivateNext();
@@ -111,8 +127,15 @@ void meUDeleteObject::Redo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
 	int i;
 	
-	for( i=0; i<pObjectCount; i++ ){
-		meObject * const object = pObjects[ i ]->GetObject();
+	const int attachCount = pAttached.GetCount();
+	for( i=0; i<attachCount; i++ ){
+		( ( meUndoDataObject* )pAttached.GetAt( i ) )->GetObject()->SetAttachedTo( NULL );
+	}
+	
+	const int count = pObjects.GetCount();
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		meObject * const object = data.GetObject();
 		
 		object->SetAttachedTo( NULL );
 			// done automatically if removed from world but better be safe
@@ -122,7 +145,7 @@ void meUDeleteObject::Redo(){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveObject( pObjects[ i ]->GetObject() );
+		pWorld->RemoveObject( object );
 		
 		pWorld->NotifyObjectRemoved( object );
 	}
@@ -136,15 +159,6 @@ void meUDeleteObject::Redo(){
 //////////////////////
 
 void meUDeleteObject::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
-			pObjectCount--;
-			delete pObjects[ pObjectCount ];
-		}
-		
-		delete [] pObjects;
-	}
-	
 	if( pWorld ){
 		pWorld->FreeReference();
 	}

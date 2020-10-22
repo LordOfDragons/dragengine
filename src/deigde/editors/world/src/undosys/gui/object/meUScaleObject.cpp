@@ -47,25 +47,20 @@ meUScaleObject::meUScaleObject( meWorld *world, const meObjectList &objects ){
 	}
 	
 	const int count = objects.GetCount();
+	deObjectReference ref;
 	
 	SetShortInfo( "Scale Object" );
 	
 	pWorld = NULL;
 	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
 	try{
 		pWorld = world;
 		world->AddReference();
 		
-		if( count > 0 ){
-			pObjects = new meUndoDataObject*[ count ];
-			
-			while( pObjectCount < count ){
-				pObjects[ pObjectCount ] = new meUndoDataObject( objects.GetAt( pObjectCount ) );
-				pObjectCount++;
-			}
+		int i;
+		for( i=0; i<count; i++ ){
+			ref.TakeOver( new meUndoDataObject( objects.GetAt( i ) ) );
+			pObjects.Add( ref );
 		}
 		
 	}catch( const deException & ){
@@ -84,18 +79,21 @@ meUScaleObject::~meUScaleObject(){
 /////////////////////////////
 
 void meUScaleObject::Undo(){
+	const int count = pObjects.GetCount();
 	meObject *object;
 	int i;
 	
-	for( i=0; i<pObjectCount; i++ ){
-		object = pObjects[ i ]->GetObject();
-		object->SetPosition( pObjects[ i ]->GetOldPosition() );
-		object->SetSize( pObjects[ i ]->GetOldSize() );
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		object = data.GetObject();
+		object->SetPosition( data.GetOldPosition() );
+		object->SetSize( data.GetOldSize() );
 		pWorld->NotifyObjectGeometryChanged( object );
 	}
 }
 
 void meUScaleObject::Redo(){
+	const int count = pObjects.GetCount();
 	const decVector &factors = GetFactors();
 	const decDVector &pivot = GetPivot();
 	bool modifyPosition = GetModifyPosition();
@@ -103,13 +101,14 @@ void meUScaleObject::Redo(){
 	bool modifySize = GetModifySize();
 	decDVector position;
 	meObject *object;
-	int o, scaleMode;
+	int i, scaleMode;
 	
-	for( o=0; o<pObjectCount; o++ ){
-		object = pObjects[ o ]->GetObject();
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		object = data.GetObject();
 		
 		if( modifySize ){
-			const decVector &size = pObjects[ o ]->GetOldSize();
+			const decVector &size = data.GetOldSize();
 			scaleMode = object->GetScaleMode();
 			
 			if( scaleMode == igdeGDClass::esmUniform ){
@@ -121,7 +120,7 @@ void meUScaleObject::Redo(){
 		}
 		
 		if( modifyPosition ){
-			position = pObjects[ o ]->GetOldPosition() - pivot;
+			position = data.GetOldPosition() - pivot;
 			position.x = pivot.x + position.x * ( double )factors.x;
 			position.y = pivot.y + position.y * ( double )factors.y;
 			position.z = pivot.z + position.z * ( double )factors.z;
@@ -142,14 +141,5 @@ void meUScaleObject::ProgressiveRedo(){
 //////////////////////
 
 void meUScaleObject::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
-			pObjectCount--;
-			delete pObjects[ pObjectCount ];
-		}
-		
-		delete [] pObjects;
-	}
-	
 	if( pWorld ) pWorld->FreeReference();
 }
