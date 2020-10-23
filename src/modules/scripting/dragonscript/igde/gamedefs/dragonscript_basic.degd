@@ -1320,7 +1320,7 @@
 		<property name='lightSkin'>
 			<description>Use image to modulate light. For spot lights use a 2D image. For point lights use a 3D image.</description>
 			<type>path</type>
-			<pathPatternType>image</pathPatternType>
+			<pathPatternType>skin</pathPatternType>
 		</property>
 		<property name='hintMovement'>
 			<description>Hint telling graphic module how the light source moves. Used for optimization purpose only.</description>
