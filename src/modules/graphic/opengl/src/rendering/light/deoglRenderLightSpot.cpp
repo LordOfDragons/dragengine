@@ -1483,6 +1483,10 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 	
 	float lightImageGamma = OGL_RENDER_GAMMA;
 	
+	if( light.GetUseSkinTexture() ){
+		lightImageGamma = light.GetUseSkinTexture()->GetColorGamma();
+	}
+	
 	// NOTE the old version is not working anymore since spot cones can be squashed. this is
 	//      now done using shadow texture coordinates which requires some different parameters
 	float spotExponent = light.GetSpotExponent();
@@ -1558,7 +1562,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightImageGamma );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, lightImageGamma );
+			paramBlock.SetParameterDataFloat( target, decMath::max( lightImageGamma, 0.0f ) );
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightSpotFactor );

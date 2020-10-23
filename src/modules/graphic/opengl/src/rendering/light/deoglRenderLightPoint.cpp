@@ -1923,6 +1923,10 @@ deoglRenderPlan &plan, deoglRLight &light ){
 	
 	float lightImageGamma = OGL_RENDER_GAMMA;
 	
+	if( light.GetUseSkinTexture() ){
+		lightImageGamma = light.GetUseSkinTexture()->GetColorGamma();
+	}
+	
 	// set values
 	paramBlock.MapBuffer();
 	try{
@@ -1958,7 +1962,7 @@ deoglRenderPlan &plan, deoglRLight &light ){
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightImageGamma );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, lightImageGamma );
+			paramBlock.SetParameterDataFloat( target, decMath::max( lightImageGamma, 0.0f ) );
 		}
 		
 	}catch( const deException & ){
