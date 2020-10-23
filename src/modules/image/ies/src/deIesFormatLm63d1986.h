@@ -126,6 +126,7 @@ protected:
 	void pReadCandelaValues();
 	void pNormalizeCandelaValues();
 	void pSanitizeCandelaValues();
+	void pGammaCorrectCandelaValues();
 	void pCreateSamplePoints();
 	bool pIsAngle( float angle, float requiredAngle );
 	void pFillSamples( int index, sSamplePoint *samples, int sampleCount );

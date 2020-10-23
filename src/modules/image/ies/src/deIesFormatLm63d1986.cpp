@@ -175,6 +175,8 @@ void deIesFormatLm63d1986::LoadFile( unsigned short *pixels ){
 	pNormalizeCandelaValues();
 	pSanitizeCandelaValues();
 	
+	pGammaCorrectCandelaValues(); // see comments in function why this is done here
+	
 	pCreateSamplePoints();
 	pSetPixelsEquirect( pixels );
 	//pSetPixelsCubemap( pixels );
@@ -395,6 +397,21 @@ void deIesFormatLm63d1986::pSanitizeCandelaValues(){
 	int i;
 	for( i=0; i<count; i++ ){
 		pCandelaValues[ i ] = decMath::clamp( pCandelaValues[ i ], 0.0f, 1.0f );
+	}
+}
+
+void deIesFormatLm63d1986::pGammaCorrectCandelaValues(){
+	// images loaded into the game engine are typically gamma corrected with 2.2 . IES profiles
+	// though are gamma 1. there are now two possible solutions. either the user has to specify
+	// a "color.gamma" texture property of value 1 or this module gamma-corrects the values.
+	// forcing this on the user is not a good idea since this prevents IES profiles to be used
+	// as drop-in replacement for regular images. furthermore extra work is required by the
+	// used to specify gamma=1 everywhere
+	const int count = pVerticalAngleCount * pHorizontalAngleCount;
+	const float gamma = 1.0f / 2.2f;
+	int i;
+	for( i=0; i<count; i++ ){
+		pCandelaValues[ i ] = powf( pCandelaValues[ i ], gamma );
 	}
 }
 
