@@ -127,6 +127,8 @@ private:
 	deResourceReference pResource;
 	decVector pPosition;
 	decQuaternion pOrientation;
+	decVector pScaling;
+	bool pNoScaling;
 	decString pTrackBone;
 	sWeight *pWeights;
 	int pWeightCount;
@@ -180,6 +182,18 @@ public:
 	
 	/** \brief Set orientation of the attached resource relative to the attachment point. */
 	void SetOrientation( const decQuaternion &orientation );
+	
+	/** \brief Scaling of the attached resource relative to the attachment point. */
+	inline const decVector &GetScaling() const{ return pScaling; }
+	
+	/** \brief Set scaling of the attached resource relative to the attachment point. */
+	void SetScaling( const decVector &scaling );
+	
+	/** \brief Ignore scaling. */
+	inline bool GetNoScaling() const{ return pNoScaling; }
+	
+	/** \brief Set if scaling is ignored. */
+	void SetNoScaling( bool noScaling );
 	
 	
 	

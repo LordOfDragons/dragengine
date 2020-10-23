@@ -40,6 +40,8 @@
 deColliderAttachment::deColliderAttachment( deResource *resource ) :
 pAttachType( eatStatic ),
 pResource( resource ),
+pScaling( 1.0f, 1.0f, 1.0f ),
+pNoScaling( false ),
 pWeights( NULL ),
 pWeightCount( 0 )
 {
@@ -69,6 +71,14 @@ void deColliderAttachment::SetPosition( const decVector &position ){
 
 void deColliderAttachment::SetOrientation( const decQuaternion &orientation ){
 	pOrientation = orientation;
+}
+
+void deColliderAttachment::SetScaling( const decVector &scaling ){
+	pScaling = scaling;
+}
+
+void deColliderAttachment::SetNoScaling( bool noScaling ){
+	pNoScaling = noScaling;
 }
 
 void deColliderAttachment::SetTrackBone( const char *bone ){
