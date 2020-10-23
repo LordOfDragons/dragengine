@@ -59,7 +59,7 @@ igdeGDClass::igdeGDClass( const char *name ){
 	}
 	
 	pName = name;
-	pScaleMode = esmFree;
+	pScaleMode = esmUniform;
 	
 	pCamera = NULL;
 	pHasCamera = false;

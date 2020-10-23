@@ -323,6 +323,7 @@
 	<class name='TriggerTouch'>
 		<description>Trigger firing if elements enter/leave the trigger area. By default shape is set to box matching trigger size. To use custom shape use the shape property to define the shape and set shapeFromSize property to 1.</description>
 		<ghost>true</ghost>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorTouching'>
 			<propertyPrefix>touching.</propertyPrefix>
 		</inherit>
