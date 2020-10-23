@@ -59,7 +59,7 @@ igdeGDClass::igdeGDClass( const char *name ){
 	}
 	
 	pName = name;
-	pScaleMode = esmFixed;
+	pScaleMode = esmFree;
 	
 	pCamera = NULL;
 	pHasCamera = false;
@@ -158,10 +158,6 @@ void igdeGDClass::SetDescription( const char *description ){
 }
 
 void igdeGDClass::SetScaleMode( eScaleModes mode ){
-	if( mode < esmFixed || mode > esmFree ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pScaleMode = mode;
 }
 

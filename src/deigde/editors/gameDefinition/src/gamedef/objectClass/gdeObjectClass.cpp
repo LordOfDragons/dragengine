@@ -54,7 +54,7 @@
 gdeObjectClass::gdeObjectClass( const char *name ) :
 pGameDefinition( NULL ),
 pName( name ),
-pScaleMode( esmFixed ),
+pScaleMode( esmFree ),
 
 pIsGhost( false ),
 pCanInstantiate( true ){
