@@ -1300,7 +1300,8 @@ void debpColliderComponent::OrientationChanged(){
 void debpColliderComponent::GeometryChanged(){
 	const decDVector &position = pColliderComponent.GetPosition();
 	const decQuaternion &orientation = pColliderComponent.GetOrientation();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) ){
+	const decVector &scale = pColliderComponent.GetScale();
+	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && pScale.IsEqualTo( scale ) ){
 		return;
 	}
 	
@@ -1337,6 +1338,7 @@ void debpColliderComponent::GeometryChanged(){
 		// update component if existing since component is implicitely attached
 		component->SetPosition( position );
 		component->SetOrientation( orientation );
+		component->SetScaling( scale );
 	}
 	
 	pDirtyShapes = true;
@@ -2341,10 +2343,8 @@ void debpColliderComponent::pUpdateBones(){
 	// this can be either a rig with only rig shapes or no rig at all
 	}else if( component ){
 		// scaling
-		decVector scale( component->GetScaling() );
-		scale.x *= pColliderComponent.GetScale().x;
-		scale.y *= pColliderComponent.GetScale().y;
-		scale.z *= pColliderComponent.GetScale().z;
+// 		decVector scale( component->GetScaling().Multiply( pColliderComponent.GetScale() ) );
+		const decVector scale( pColliderComponent.GetScale() );
 		
 		// create the physics body which is the same no matter what shape we have
 		pSimplePhyBody = new debpPhysicsBody;

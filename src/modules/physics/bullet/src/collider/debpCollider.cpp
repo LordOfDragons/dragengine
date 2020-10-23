@@ -169,6 +169,14 @@ const decDMatrix &debpCollider::GetInverseMatrix(){
 	return pInvMatrix;
 }
 
+const decDMatrix &debpCollider::GetMatrixNormal(){
+	if( pDirtyMatrix ){
+		UpdateMatrix();
+		pDirtyMatrix = false;
+	}
+	return pMatrixNormal;
+}
+
 void debpCollider::SetIndex( int index ){
 	pIndex = index;
 }
@@ -290,7 +298,9 @@ void debpCollider::UpdateExtends(){
 }
 
 void debpCollider::UpdateMatrix(){
-	pMatrix.SetWorld( pCollider.GetPosition(), pCollider.GetOrientation() );
+	pMatrixNormal.SetFromQuaternion( pCollider.GetOrientation() );
+	pMatrix = decDMatrix::CreateScale( pCollider.GetScale() ).QuickMultiply( pMatrixNormal )
+		.QuickMultiply( decDMatrix::CreateTranslation( pCollider.GetPosition() ) );
 	pInvMatrix = pMatrix.QuickInvert();
 }
 

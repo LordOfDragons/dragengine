@@ -97,7 +97,8 @@ public:
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDVector &position, const decQuaternion &orientation, bool changeNotify );
+	void Reposition( const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, bool changeNotify );
 	
 	/**
 	 * \brief Transform attached resource using a relative matrix.
@@ -110,7 +111,8 @@ public:
 private:
 	void pCleanUp();
 	void pPrepareLocalMatrix();
-	void pRepositionResource( const decDVector &position, const decQuaternion &orientation, bool changeNotify );
+	void pRepositionResource( const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, bool changeNotify );
 };
 
 #endif

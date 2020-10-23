@@ -54,6 +54,7 @@ debpShapeSphere::~debpShapeSphere(){
 
 void debpShapeSphere::UpdateWithMatrix( const decDMatrix &transformation ){
 	pCSphere.SetCenter( transformation * pSSphere->GetPosition() );
+// 	pCSphere.SetRadius( pSSphere->GetRadius() * UniformScale( transformation ) );
 }
 
 void debpShapeSphere::PrintDebug( dePhysicsBullet &module ){
