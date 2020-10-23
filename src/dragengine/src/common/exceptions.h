@@ -148,7 +148,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If NULL set to a default string.
 	 */
-	deeInvalidFormat( const char *file, int line );
+	deeInvalidFormat( const char *file, int line, const char *description = NULL );
 };
 
 /**

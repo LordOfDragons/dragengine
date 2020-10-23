@@ -62,8 +62,8 @@ deeInvalidAction::deeInvalidAction( const char *file, int line, const char *desc
 deException( "InvalidAction", description ? description : "Invalid Action (internal error)", file, line ){
 }
 
-deeInvalidFormat::deeInvalidFormat( const char *file, int line ) :
-deException( "InvalidFormat", "Invalid Format", file, line ){
+deeInvalidFormat::deeInvalidFormat( const char *file, int line, const char *description ) :
+deException( "InvalidFormat", description ? description : "Invalid Format", file, line ){
 }
 
 
