@@ -37,6 +37,15 @@ protected:
 		float factor;
 	};
 	
+	struct sSamplePoint{
+		int index1;
+		int index2;
+		float blend1;
+		float blend2;
+		void Set( int index );
+		void Set( int index, float blend );
+	};
+	
 	enum ePhotometricType{
 		eptTypeC,
 		eptTypeB,
@@ -76,6 +85,10 @@ protected:
 	float *pHorizontalAngles;
 	float *pCandelaValues;
 	
+	int pAngularResolution;
+	sSamplePoint *pVerticalSamplePoints;
+	sSamplePoint *pHorizontalSamplePoints;
+	
 	
 	
 public:
@@ -113,7 +126,14 @@ protected:
 	void pReadCandelaValues();
 	void pNormalizeCandelaValues();
 	void pSanitizeCandelaValues();
-	void pSetPixels( unsigned short *pixels );
+	void pCreateSamplePoints();
+	bool pIsAngle( float angle, float requiredAngle );
+	void pFillSamples( int index, sSamplePoint *samples, int sampleCount );
+	void pSample( const float *angles, int angleCount, sSamplePoint *samples, int sampleCount );
+	void pMirrorSamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
+	void pCopySamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
+	void pSetPixelsEquirect( unsigned short *pixels );
+	void pSetPixelsCubemap( unsigned short *pixels );
 };
 
 #endif

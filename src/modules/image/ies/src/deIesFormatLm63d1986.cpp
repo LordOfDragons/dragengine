@@ -32,6 +32,20 @@
 // Class deIesFormatLm63d1986
 ///////////////////////////////
 
+void deIesFormatLm63d1986::sSamplePoint::Set( int aindex ){
+	index1 = aindex;
+	index2 = aindex;
+	blend1 = 1.0f;
+	blend2 = 0.0f;
+}
+
+void deIesFormatLm63d1986::sSamplePoint::Set( int aindex, float ablend ){
+	index1 = aindex;
+	index2 = aindex + 1;
+	blend1 = 1.0f - ablend;
+	blend2 = ablend;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -53,7 +67,10 @@ pFutureBallastFactor( 1.0f ),
 pFinalLumMultiplier( 1.0f ),
 pVerticalAngles( NULL ),
 pHorizontalAngles( NULL ),
-pCandelaValues( NULL ){
+pCandelaValues( NULL ),
+pAngularResolution( 1 ),
+pVerticalSamplePoints( NULL ),
+pHorizontalSamplePoints( NULL ){
 }
 
 deIesFormatLm63d1986::~deIesFormatLm63d1986(){
@@ -68,6 +85,12 @@ deIesFormatLm63d1986::~deIesFormatLm63d1986(){
 	}
 	if( pCandelaValues ){
 		delete [] pCandelaValues;
+	}
+	if( pVerticalSamplePoints ){
+		delete [] pVerticalSamplePoints;
+	}
+	if( pHorizontalSamplePoints ){
+		delete [] pHorizontalSamplePoints;
 	}
 }
 
@@ -84,13 +107,61 @@ bool deIesFormatLm63d1986::LoadHeader( decBaseFileReader &reader ){
 	pReadTilt();
 	pReadLampConfig();
 	
-	// we use equi-rectangular images here. the advantage is that if the light source is
-	// a point light it uses the image as 3D image. if the light source is a spot or
-	// projected light it uses the image as is. this makes it possible to cover all bases
-	// with a single image format. furthermore equi-rectangular maps allow to use the
-	// vertical and horizontal angle count directly making creating theimage easy
-	pWidth = pHorizontalAngleCount;
-	pHeight = pVerticalAngleCount;
+// 	pWidth = pHorizontalAngleCount;
+// 	pHeight = pVerticalAngleCount;
+	
+	// about resolutions. angles have no defined placement and in particular the spacing
+	// across angles in files tends to vary. to capture this the angles are up-sampled
+	// into images of larger size to store the denser areas while blending the large ones.
+	// theoretically the sampling density could be derived from the smallest spacing in
+	// the data set but this works only for equirectangular images and even there it is
+	// not sure if the spacing is not offset in a bad way. for this reason up-sampling is
+	// the better solution even if potentially less accurace for high density files.
+	// 
+	// the image size to use can be calculated from the desired angular resolution. in
+	// examined files the sampling density is between 1.25 - 5 degrees. the following
+	// table shows the angular resolution for image resolutions of 360, 180 and 90 degrees:
+	// - 11.25 degrees: 32 (16) (8) pixels
+	// - 5.62 degrees: 64 (32) (16) pixels
+	// - 2.81 degrees: 128 (64) (32) pixels
+	// - 1.41 degrees: 256 (128) (64) pixels
+	// - 0.70 degrees: 512 (256) (128) pixels
+	// - 0.35 degrees: 1024 (512) (256) pixels
+	// 
+	// for equirectangular image the size 360x180 degrees is required:
+	// - 11.25 degrees: 32 x 16 pixels
+	// - 5.62 degrees: 64 x 32 pixels
+	// - 2.81 degrees: 128 x 64 pixels
+	// - 1.41 degrees: 256 x 128 pixels
+	// - 0.70 degrees: 512 x 256 pixels
+	// - 0.35 degrees: 1024 x 512 pixels
+	// 
+	// for cube map image the size 90x90 degrees is required:
+	// - 11.25 degrees: 8 x 8 pixels
+	// - 5.62 degrees: 16 x 16 pixels
+	// - 2.81 degrees: 32 x 32 pixels
+	// - 1.41 degrees: 64 x 64 pixels
+	// - 0.70 degrees: 128 x 128 pixels
+	// - 0.35 degrees: 256 x 256 pixels
+	// 
+	// 2.81 degrees would be enough to capture the files examined. this requires the sizes:
+	// - equirectangular: 128 x 64 pixels
+	// - cube map: 32 x 32 pixels
+	// 
+	// 1.41 degrees is more fine grained. this requires the sizes:
+	// - equirect: 256 x 128 pixels
+	// - cube map: 64 x 64 pixels
+	// 
+	// for the time being 1.41 degrees is used. this yields cube maps of size 64x64 which
+	// should be still good enough for GPU to cache which should result in best performance.
+	// 
+	// the angular resolution stores the pixel count for 360 degrees
+	pAngularResolution = 256;
+	
+	pWidth = pAngularResolution;
+	pHeight = pAngularResolution / 2;
+	pDepth = 1;
+	
 	return true;
 }
 
@@ -104,7 +175,9 @@ void deIesFormatLm63d1986::LoadFile( unsigned short *pixels ){
 	pNormalizeCandelaValues();
 	pSanitizeCandelaValues();
 	
-	pSetPixels( pixels );
+	pCreateSamplePoints();
+	pSetPixelsEquirect( pixels );
+	//pSetPixelsCubemap( pixels );
 }
 
 
@@ -325,7 +398,224 @@ void deIesFormatLm63d1986::pSanitizeCandelaValues(){
 	}
 }
 
-void deIesFormatLm63d1986::pSetPixels( unsigned short *pixels ){
+void deIesFormatLm63d1986::pCreateSamplePoints(){
+	if( pVerticalAngleCount == 0 || pHorizontalAngleCount == 0 ){
+		return;
+	}
+	
+	const int count360 = pAngularResolution;
+	const int count180 = pAngularResolution / 2;
+	const int count90 = pAngularResolution / 4;
+	
+	// horizontal angles
+	pHorizontalSamplePoints = new sSamplePoint[ count360 ];
+	
+	if( pPhotometricType == eptTypeC ){
+		const float lastAngle = pHorizontalAngles[ pHorizontalAngleCount - 1 ];
+		const float firstAngle = pHorizontalAngles[ 0 ];
+		
+		if( pIsAngle( firstAngle, 0.0f ) ){
+			if( pIsAngle( lastAngle, 0.0f ) ){
+				// 0°: only one horizontal angle. light is fully symmetric
+				pFillSamples( 0, pHorizontalSamplePoints, count360 );
+				
+			}else if( pIsAngle( lastAngle, 90.0f ) ){
+				// 90°: symmetric in each quadrant.
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count90 );
+				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count90, count90 );
+				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180, count180 );
+				
+			}else if( pIsAngle( lastAngle, 180.0f ) ){
+				// 180°: symmetric about the 0-180 degree plane.
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count180 );
+				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180, count180 );
+				
+			}else{
+				// >180° && <360°: no symmetry
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count360 );
+			}
+			
+		}else if( pIsAngle( firstAngle, 90.0f ) ){
+			if( pIsAngle( lastAngle, 270.0f ) ){
+				// A luminaire that is bilaterally symmetric about the 90-270 degree photometric
+				// plane will have a first value of 90 degrees and a last value of 270 degrees.
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints + count90, count180 );
+				pMirrorSamples( pHorizontalSamplePoints + count90, pHorizontalSamplePoints, count90 );
+				pMirrorSamples( pHorizontalSamplePoints + count180,
+					pHorizontalSamplePoints + count180 + count90, count90 );
+				
+			}else{
+				DETHROW_INFO( deeInvalidFileFormat, "invalid end angle" );
+			}
+			
+		}else{
+			DETHROW_INFO( deeInvalidFileFormat, "invalid start angle" );
+		}
+		
+	}else{
+		const float lastAngle = pHorizontalAngles[ pHorizontalAngleCount - 1 ];
+		const float firstAngle = pHorizontalAngles[ 0 ];
+		
+		if( pIsAngle( lastAngle, 90.0f ) ){
+			if( pIsAngle( firstAngle, 0.0f ) ){
+				// range [0°..90°]: laterally symmetric about a vertical reference plane.
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count90 );
+				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180 + count90, count90 );
+				pFillSamples( pHorizontalAngleCount - 1, pHorizontalSamplePoints + count90, count180 );
+				
+			}else if( pIsAngle( firstAngle, -90.0f ) ){
+				// range [-90°..90°]: no symmetry
+				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints + count90, count180 );
+				pCopySamples( pHorizontalSamplePoints + count90,
+					pHorizontalSamplePoints + count180 + count90, count90 );
+				pCopySamples( pHorizontalSamplePoints + count180, pHorizontalSamplePoints, count90 );
+				pFillSamples( 0, pHorizontalSamplePoints + count180, count90 );
+				pFillSamples( pHorizontalAngleCount - 1, pHorizontalSamplePoints + count90, count90 );
+				
+			}else{
+				DETHROW_INFO( deeInvalidFileFormat, "invalid start angle" );
+			}
+			
+		}else{
+			DETHROW_INFO( deeInvalidFileFormat, "invalid end angle" );
+		}
+	}
+	
+	// vertical angles
+	pVerticalSamplePoints = new sSamplePoint[ count180 ];
+	
+	if( pPhotometricType == eptTypeC ){
+		const float lastAngle = pVerticalAngles[ pVerticalAngleCount - 1 ];
+		const float firstAngle = pVerticalAngles[ 0 ];
+		
+		if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 90.0f ) ){
+			// range [0°..90°]
+			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count90 );
+			pFillSamples( pVerticalAngleCount - 1, pVerticalSamplePoints + count90, count90 );
+			
+		}else if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 180.0f ) ){
+			// range [0°..180°]
+			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count180 );
+			
+		}else if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 180.0f ) ){
+			// range [90°..90°]
+			pFillSamples( 0, pVerticalSamplePoints, count180 );
+			
+		}else if( pIsAngle( firstAngle, 90.0f ) && pIsAngle( lastAngle, 180.0f ) ){
+			// range [90°..180°]
+			pFillSamples( 0, pVerticalSamplePoints, count90 );
+			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints + count90, count90 );
+			
+		}else{
+			DETHROW_INFO( deeInvalidFileFormat, "invalid angle range" );
+		}
+		
+	}else{
+		const float lastAngle = pVerticalAngles[ pVerticalAngleCount - 1 ];
+		const float firstAngle = pVerticalAngles[ 0 ];
+		
+		if( pIsAngle( lastAngle, 90.0f ) ){
+			if( pIsAngle( firstAngle, -90.0f ) ){
+				// range [-90°..90°]
+				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count180 );
+				
+			}else if( pIsAngle( firstAngle, 0.0f ) ){
+				// range [0°..90°]
+				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count90 );
+				pFillSamples( pVerticalAngleCount - 1, pVerticalSamplePoints + count90, count90 );
+				
+			}else{
+				DETHROW_INFO( deeInvalidFileFormat, "invalid first angle" );
+			}
+			
+		}else{
+			DETHROW_INFO( deeInvalidFileFormat, "invalid last angle" );
+		}
+	}
+}
+
+bool deIesFormatLm63d1986::pIsAngle( float angle, float requiredAngle ){
+	return fabsf( angle - requiredAngle ) < 0.1f;
+}
+
+void deIesFormatLm63d1986::pFillSamples( int index, sSamplePoint *samples, int sampleCount ){
+	int i;
+	for( i=0; i<sampleCount; i++ ){
+		samples[ i ].Set( index );
+	}
+}
+
+void deIesFormatLm63d1986::pSample( const float *angles, int angleCount, sSamplePoint *samples, int sampleCount ){
+	if( sampleCount == 1 ){
+		pFillSamples( 0, samples, 1 );
+		return;
+	}
+	
+	const int lastIndex = angleCount - 1;
+	const float firstAngle = angles[ 0 ];
+	const float angleStep = ( angles[ lastIndex ] - firstAngle ) / ( sampleCount - 1 );
+	int i, prev = 0;
+	
+	samples[ 0 ].Set( 0 );
+	
+	for( i=1; i<sampleCount; i++ ){
+		const float angle = firstAngle + angleStep * i;
+		
+		while( prev < lastIndex && angle >= angles[ prev + 1 ] ){
+			prev++;
+		}
+		
+		if( prev < lastIndex ){
+			samples[ i ].Set( prev, ( angle - angles[ prev ] ) / ( angles[ prev + 1 ] - angles[ prev ] ) );
+			
+		}else{
+			samples[ i ].Set( lastIndex );
+		}
+	}
+}
+
+void deIesFormatLm63d1986::pMirrorSamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount ){
+	const int lastIndex = sampleCount - 1;
+	int i;
+	for( i=0; i<sampleCount; i++ ){
+		samplesTo[ i ] = samplesFrom[ lastIndex - i ];
+	}
+}
+
+void deIesFormatLm63d1986::pCopySamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount ){
+	int i;
+	for( i=0; i<sampleCount; i++ ){
+		samplesTo[ i ] = samplesFrom[ i ];
+	}
+}
+
+void deIesFormatLm63d1986::pSetPixelsEquirect( unsigned short *pixels ){
+	// NOTE candela values are column-major while pixels are row-major
+	// NOTE vertical angle 0 degrees is bottom (aka negative Z axis)
+	unsigned short *nextPixel = pixels;
+	int x, y;
+	
+	for( y=0; y<pHeight; y++ ){
+		const sSamplePoint &sampleVertical = pVerticalSamplePoints[ pHeight - 1 - y ];
+		const float * const baseCandelaValues1 = pCandelaValues + sampleVertical.index1;
+		const float * const baseCandelaValues2 = pCandelaValues + sampleVertical.index2;
+		
+		for( x=0; x<pWidth; x++ ){
+			const sSamplePoint &sampleHorizontal = pHorizontalSamplePoints[ x ];
+			const int offset1 = pVerticalAngleCount * sampleHorizontal.index1;
+			const int offset2 = pVerticalAngleCount * sampleHorizontal.index2;
+			const float value1 = baseCandelaValues1[ offset1 ] * sampleHorizontal.blend1
+				+ baseCandelaValues1[ offset2 ] * sampleHorizontal.blend2;
+			const float value2 = baseCandelaValues2[ offset1 ] * sampleHorizontal.blend1
+				+ baseCandelaValues2[ offset2 ] * sampleHorizontal.blend2;
+			const float value = value1 * sampleVertical.blend1 + value2 * sampleVertical.blend2;
+			
+			*( nextPixel++ ) = ( unsigned short )( value * 65535.0f );
+		}
+	}
+}
+
+void deIesFormatLm63d1986::pSetPixelsCubemap( unsigned short *pixels ){
 	/*
 	sample into a cube map. cube maps can use HW support while equirect needs additional shader
 	instructions. since we need to over-sample the image anyways we can directly go to cube map
@@ -341,53 +631,7 @@ void deIesFormatLm63d1986::pSetPixels( unsigned short *pixels ){
 	
 	Each layer has to be oriented along the other two positive axes. Hence the positive x axis
 	layer has to be oriented with the image x and y axis along the cube map y and z axis.
-	
-	files seem to have a maximum resolution of 2.5 degrees. for a cube map covering 90 degrees
-	this requires a texture size of 32 pixels. using a size of 64 pixels gives 1.4 degrees
-	resolution. using a size of 128 pixels gives 0.7 degrees resolution. a resolution of
-	1.4 degrees (64 pixels size) seems enough. 32 pixels for tighter memory. could be a
-	module parameter.
-	
-	---
-	
-	vertical angles:
-		type c: range [0°..90°] or [90°..180°]
-		type a/b: range [-90°..90°] or [0°..90°]
-	
-	horizontal angles:
-		type c: begin 0°, last:
-			0°: only one horizontal angle. light is fully symmetric
-			90°: symmetric in each quadrant.
-			180°: symmetric about the 0-180 degree plane.
-			>180° && <360°: no symmetry
-			
-			(A luminaire that is bilaterally symmetric about the 90-270 degree photometric
-			plane will have a first value of 90 degrees and a last value of 270 degrees.)
-			
-		type a/b:
-			range [0°..90°]: laterally symmetric about a vertical reference plane.
-			range [-90°..90°]: no symmetry
-	
-	---
-	
-	for efficient and save sampling use a struct sSampleParam{ int index, float blend }.
-	for both vertical and horizontal create an array of sSampleParam with the cube map
-	size as count. calculate for each sample point (for example vertical) the index of the
-	first angle and the blend factor to the next higher index angle. since angles are
-	sorted this can be calculated in a linear way stepping from angle to angle. then during
-	sampling the arrays can be queried to find the x/y indices to sample as well as the
-	blend weights
 	*/
-	if( pVerticalAngleCount == 0 || pHorizontalAngleCount == 0 ){
-		return;
-	}
 	
-	int i, j;
-	
-	for( i=0; i<pHorizontalAngleCount; i++ ){
-		const float * const rowCandelaValues = pCandelaValues + pVerticalAngleCount * i;
-		for( j=0; j<pVerticalAngleCount; j++ ){
-			pixels[ pWidth * j + i ] = ( unsigned short )( rowCandelaValues[ j ] * 65535.0f );
-		}
-	}
+	// TODO
 }

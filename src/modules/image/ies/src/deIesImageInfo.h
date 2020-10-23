@@ -35,6 +35,7 @@ class deIesImageInfo : public deBaseImageInfo{
 protected:
 	int pWidth;
 	int pHeight;
+	int pDepth;
 	decStringList pLines;
 	int pCurLine;
 	

@@ -37,6 +37,7 @@
 deIesImageInfo::deIesImageInfo() :
 pWidth( 0 ),
 pHeight( 0 ),
+pDepth( 1 ),
 pCurLine( 0 ){
 }
 
@@ -56,7 +57,7 @@ int deIesImageInfo::GetHeight(){
 }
 
 int deIesImageInfo::GetDepth(){
-	return 1;
+	return pDepth;
 }
 
 int deIesImageInfo::GetComponentCount(){
