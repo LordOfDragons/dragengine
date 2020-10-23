@@ -674,6 +674,7 @@ scdirs.append( 'src/modules/image/png' )
 scdirs.append( 'src/modules/image/png3d' )
 scdirs.append( 'src/modules/image/tga' )
 scdirs.append( 'src/modules/image/jpeg' )
+scdirs.append( 'src/modules/image/ies' )
 
 scdirs.append( 'src/modules/input/console' )
 scdirs.append( 'src/modules/input/xsystem' )
