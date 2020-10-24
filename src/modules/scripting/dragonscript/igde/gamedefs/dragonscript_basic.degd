@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
 <gameDefinition>
 	<identifier>DragonScript Basic</identifier>
 	<description>Base game definition for projects based on DragonScript Scripting Module.</description>
@@ -37,6 +36,7 @@
 	<defaultSkin>/shareddata/materials/testMap.deskin</defaultSkin>
 	<class name='SimpleElement'>
 		<description>Basic class for elements containing a single component and collider.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -53,6 +53,7 @@
 	</class>
 	<class name='PhysicsElement'>
 		<description>Basic class for elements  affected by physical simulation containing a single component and collider.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -66,6 +67,7 @@
 	</class>
 	<class name='GhostElement'>
 		<description>Low cost class for decorative elements containing only a component not interacting with the game world.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -73,6 +75,7 @@
 	</class>
 	<class name='BaseActor'>
 		<description>Base class for actors using behaviors.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -134,6 +137,7 @@
 	</class>
 	<class name='AnimatedElement'>
 		<description>Basic class for elements containing a single component and collider with support for animation.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorAnimated'>
@@ -143,6 +147,7 @@
 	</class>
 	<class name='TwoStateAnimatedElement'>
 		<description>Two state animated element extends SimpleElement with support to play back animations for elements in two different states with transition between them. The used animator is required to have 4 controllers set up in a specific way to function with this element class.<br/><br/>Controller 0: Deactivated Playback<br/>This controller is used to play back the animation for the element in the deactivated state. This has to be a looping animation advanced by the elapsed time.<br/><br/>Controller 1: Activate<br/>This controller is used to transition from the deactivated state animation to the activated state animation. This controller has to be non-looping (aka clamped). The transition time is the difference between the upper and lower controller value. Upon starting the transition the controller is reset to the lower value and incremented by the elapsed time. When the controller reaches the upper value the transition is considered done and the element enters the activated state.<br/><br/>Controller 2: Deactivate<br/>This is the inverse of the activate controller transitioning from the activated state animation to the deactivated state animation. The same properties apply to this controller as to the activate controller.<br/><br/>Controller 3: Activated Playback<br/>This is the same as the deactivated playback controller but for the activated state.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorTwoStateAnimated'>
@@ -152,6 +157,7 @@
 	</class>
 	<class name='SimpleElementOnRail'>
 		<description>Basic class for simple elements moving on a rail. Whenever triggered the element starts moving to the opposite end of the rail. If no trigger is used the element keeps moving forth and back between the first and last corner of the rail.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorMoveOnRail'>
@@ -191,6 +197,7 @@
 	</class>
 	<class name='RandomElement'>
 		<description>Use random element class from list of element classes. This class supports only persistable element classes. If you try to use a non-persistable element class an exception will be thrown. This is requied since the random state can only be saved if the created element is persisted. If not persisted the element would simply vanish during loading.</description>
+		<scaleMode>free</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/randomElement.deskin</skin>
 			<size x='0.5' y='0.5'/>
@@ -441,6 +448,7 @@
 	</class>
 	<class name='VirtualElement'>
 		<description>Virtual element for IGDE Editor use only. This element class is ignored while loading game worlds. Helps mappers to place a virtual element in the world as reference for the content worked on. This can be for example adjacend elements required for proper alignment. Use ECBehaviorComponent properties and texture replacements to change the look of the element.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -2242,6 +2250,7 @@
 	<class name='BaseForceField'>
 		<description>Base force field source.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorForceField'>
 			<propertyPrefix>forceField.</propertyPrefix>
 		</inherit>
@@ -2261,6 +2270,7 @@
 	<class name='AttachableBaseForceField'>
 		<description>Extends BaseForceField with support to be attached to other elements using a ghost collider. This allows to quickly attach a force field to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeForceField and ECComposeAttachForceField.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/forceField.deskin</skin>
 			<size x='0.5' y='0.5'/>
@@ -2331,6 +2341,7 @@
 	</class>
 	<class name='BaseBillboard'>
 		<description>Basic class for elements containing a single billboard and collider.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorBillboard'>
 			<propertyPrefix>billboard.</propertyPrefix>
 		</inherit>
@@ -2341,6 +2352,7 @@
 	</class>
 	<class name='AttachableBaseBillboard'>
 		<description>Attachable basic class for elements containing a single billboard and collider.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorBillboard'>
 			<propertyPrefix>billboard.</propertyPrefix>
 		</inherit>
