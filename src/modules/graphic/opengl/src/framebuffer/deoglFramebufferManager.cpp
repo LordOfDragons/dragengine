@@ -70,8 +70,7 @@ deoglFramebufferManager::~deoglFramebufferManager(){
 
 const deoglFramebuffer *deoglFramebufferManager::GetFBOAt( int index ) const{
 	if( index < 0 || index >= pFBOCount ) DETHROW( deeInvalidParam );
-	
-	return ( const deoglFramebuffer * )pFBOs[ index ];
+	return pFBOs[ index ];
 }
 
 deoglFramebuffer *deoglFramebufferManager::GetFBOWithResolution( int width, int height ){

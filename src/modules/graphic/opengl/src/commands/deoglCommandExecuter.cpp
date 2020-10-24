@@ -157,7 +157,6 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		deoglFramebufferManager &fboMgr = renderThread.GetFramebuffer().GetManager();
 		deoglConfiguration &config = pOgl.GetConfiguration();
 		int f, count = fboMgr.GetFBOCount();
-		const deoglFramebuffer *fbo;
 		
 		answer.SetFromUTF8( "FBO Information ( useOneFBO=" );
 		if( config.GetUseOneFBO() ){
@@ -168,14 +167,14 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		}
 		
 		for( f=0; f<count; f++ ){
-			fbo = fboMgr.GetFBOAt( f );
+			const deoglFramebuffer &fbo = *fboMgr.GetFBOAt( f );
 			
 			answer.AppendFromUTF8( "- " );
-			answer += fbo->GetUsageWidth();
+			answer.AppendValue( fbo.GetUsageWidth() );
 			answer.AppendFromUTF8( " x " );
-			answer += fbo->GetUsageHeight();
+			answer.AppendValue( fbo.GetUsageHeight() );
 			answer.AppendFromUTF8( ": usage=" );
-			answer += fbo->GetUsageCount();
+			answer.AppendValue( fbo.GetUsageCount() );
 			answer.AppendFromUTF8( "\n" );
 		}
 		
