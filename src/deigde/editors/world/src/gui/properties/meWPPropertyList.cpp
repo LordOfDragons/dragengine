@@ -375,10 +375,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pPanel.GetUndoSystem()->Add( pUndo );
@@ -392,10 +395,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pUndo->Redo();
