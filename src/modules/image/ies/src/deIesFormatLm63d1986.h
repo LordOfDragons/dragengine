@@ -24,6 +24,8 @@
 
 #include "deIesImageInfo.h"
 
+#include <dragengine/common/math/decMath.h>
+
 class decBaseFileReader;
 
 
@@ -135,6 +137,8 @@ protected:
 	void pCopySamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
 	void pSetPixelsEquirect( unsigned short *pixels );
 	void pSetPixelsCubemap( unsigned short *pixels );
+	void pSetPixelsCubemapFace( unsigned short *pixels, const decMatrix &matrix );
+	void pGetMatrixForFace( decMatrix &matrix, int face );
 };
 
 #endif

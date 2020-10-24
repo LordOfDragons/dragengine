@@ -107,9 +107,6 @@ bool deIesFormatLm63d1986::LoadHeader( decBaseFileReader &reader ){
 	pReadTilt();
 	pReadLampConfig();
 	
-// 	pWidth = pHorizontalAngleCount;
-// 	pHeight = pVerticalAngleCount;
-	
 	// about resolutions. angles have no defined placement and in particular the spacing
 	// across angles in files tends to vary. to capture this the angles are up-sampled
 	// into images of larger size to store the denser areas while blending the large ones.
@@ -155,12 +152,25 @@ bool deIesFormatLm63d1986::LoadHeader( decBaseFileReader &reader ){
 	// for the time being 1.41 degrees is used. this yields cube maps of size 64x64 which
 	// should be still good enough for GPU to cache which should result in best performance.
 	// 
-	// the angular resolution stores the pixel count for 360 degrees
+	// the angular resolution stores the pixel count for 360 degrees. for equirectangular
+	// the same resolution as the image width is used since the values are mostly one-to-one
+	// translated. for cubemap images though the resolution has to be increased since cubemap
+	// pixels are not evenly spaced. cranking up the resolution helps
+	
 	pAngularResolution = 256;
 	
+	// equirectangular
+	/*
 	pWidth = pAngularResolution;
-	pHeight = pAngularResolution / 2;
+	pHeight = pWidth / 2;
 	pDepth = 1;
+	*/
+	
+	// cubemap
+	pWidth = pAngularResolution / 4;
+	pHeight = pWidth;
+	pDepth = 6;
+	pAngularResolution *= 4; // increase sampling resolution
 	
 	return true;
 }
@@ -178,8 +188,8 @@ void deIesFormatLm63d1986::LoadFile( unsigned short *pixels ){
 	pGammaCorrectCandelaValues(); // see comments in function why this is done here
 	
 	pCreateSamplePoints();
-	pSetPixelsEquirect( pixels );
-	//pSetPixelsCubemap( pixels );
+// 	pSetPixelsEquirect( pixels );
+	pSetPixelsCubemap( pixels );
 }
 
 
@@ -650,5 +660,109 @@ void deIesFormatLm63d1986::pSetPixelsCubemap( unsigned short *pixels ){
 	layer has to be oriented with the image x and y axis along the cube map y and z axis.
 	*/
 	
-	// TODO
+	const int strideFace = pWidth * pWidth;
+	decMatrix matrix;
+	int i;
+	
+	for( i=0; i<6; i++ ){
+		pGetMatrixForFace( matrix, i );
+		pSetPixelsCubemapFace( pixels + strideFace * i, matrix );
+	}
+}
+
+void deIesFormatLm63d1986::pSetPixelsCubemapFace( unsigned short *pixels, const decMatrix &matrix ){
+	// NOTE - candela values are column-major while pixels are row-major
+	// NOTE vertical angle 0 degrees is bottom (aka negative Z axis)
+	const float factorSampleAngle = ( float )pAngularResolution / 360.0f;
+	const int lastSampleIndexHorizontal = pAngularResolution - 1;
+	const int lastSampleIndexVertical = ( pAngularResolution / 2 ) - 1;
+	const int size = pWidth; // same as pHeight
+	const float faceOffset = 0.5f - 0.5f * size;
+	unsigned short *nextPixel = pixels;
+	decVector vector( 0.0f, 0.0f, 0.5f * size );
+	int x, y;
+	
+	for( y=0; y<size; y++ ){
+		vector.y = faceOffset + y;
+		for( x=0; x<size; x++ ){
+			vector.x = faceOffset + x;
+			const decVector tvec( matrix.TransformNormal( vector ) );
+			
+			const float angleVertical = -atan2f( tvec.y, decVector2( tvec.x, tvec.z ).Length() ) * RAD2DEG + 90.0f;
+			const float angleHorizontal = -atan2f( tvec.x, tvec.z ) * RAD2DEG + 180.0f;
+			
+			const sSamplePoint &sampleVertical = pVerticalSamplePoints[ decMath::clamp(
+				( int )( factorSampleAngle * angleVertical ), 0, lastSampleIndexVertical ) ];
+			const sSamplePoint &sampleHorizontal = pHorizontalSamplePoints[ decMath::clamp(
+				( int )( factorSampleAngle * angleHorizontal ), 0, lastSampleIndexHorizontal ) ];
+			
+			const float * const baseCandelaValues1 = pCandelaValues + sampleVertical.index1;
+			const float * const baseCandelaValues2 = pCandelaValues + sampleVertical.index2;
+			const int offset1 = pVerticalAngleCount * sampleHorizontal.index1;
+			const int offset2 = pVerticalAngleCount * sampleHorizontal.index2;
+			const float value1 = baseCandelaValues1[ offset1 ] * sampleHorizontal.blend1
+				+ baseCandelaValues1[ offset2 ] * sampleHorizontal.blend2;
+			const float value2 = baseCandelaValues2[ offset1 ] * sampleHorizontal.blend1
+				+ baseCandelaValues2[ offset2 ] * sampleHorizontal.blend2;
+			const float value = value1 * sampleVertical.blend1 + value2 * sampleVertical.blend2;
+			
+			*( nextPixel++ ) = ( unsigned short )( value * 65535.0f );
+		}
+	}
+}
+
+void deIesFormatLm63d1986::pGetMatrixForFace( decMatrix &matrix, int face ){
+	//matrix.SetCamera( decVector(), decVector( 1.0f, 0.0f, 0.0f ), decVector( 0.0f, 1.0f, 0.0f ) );
+	// right = up % view;
+	// [ right.x | right.y | right.z | -(position * right) ]
+	// [    up.x |    up.y |    up.z |    -(position * up) ]
+	// [  view.x |  view.y |  view.z |  -(position * view) ]
+	// [    0    |    0    |    0    |          1          ]
+	
+	switch( face ){
+	case 0: // positive x
+		//matrix.SetCamera( decVector(), decVector( 1.0f, 0.0f, 0.0f ), decVector( 0.0f, 1.0f, 0.0f ) );
+		matrix.a11 =  0.0f; matrix.a12 =  0.0f; matrix.a13 = -1.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  1.0f; matrix.a23 =  0.0f;
+		matrix.a31 =  1.0f; matrix.a32 =  0.0f; matrix.a33 =  0.0f;
+		break;
+		
+	case 1: // negative x
+		//matrix.SetCamera( decVector(), decVector( -1.0f, 0.0f, 0.0f ), decVector( 0.0f, 1.0f, 0.0f ) );
+		matrix.a11 =  0.0f; matrix.a12 =  0.0f; matrix.a13 =  1.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  1.0f; matrix.a23 =  0.0f;
+		matrix.a31 = -1.0f; matrix.a32 =  0.0f; matrix.a33 =  0.0f;
+		break;
+		
+	case 2: // positive y
+		//matrix.SetCamera( decVector(), decVector( 0.0f, 1.0f, 0.0f ), decVector( 0.0f, 0.0f, -1.0f ) );
+		matrix.a11 =  1.0f; matrix.a12 =  0.0f; matrix.a13 =  0.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  0.0f; matrix.a23 = -1.0f;
+		matrix.a31 =  0.0f; matrix.a32 =  1.0f; matrix.a33 =  0.0f;
+		break;
+		
+	case 3: // negative y
+		//matrix.SetCamera( decVector(), decVector( 0.0f, -1.0f, 0.0f ), decVector( 0.0f, 0.0f, 1.0f ) );
+		matrix.a11 =  1.0f; matrix.a12 =  0.0f; matrix.a13 =  0.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  0.0f; matrix.a23 =  1.0f;
+		matrix.a31 =  0.0f; matrix.a32 = -1.0f; matrix.a33 =  0.0f;
+		break;
+		
+	case 4: // positive z
+		//matrix.SetCamera( decVector(), decVector( 0.0f, 0.0f, 1.0f ), decVector( 0.0f, 1.0f, 0.0f ) );
+		matrix.a11 =  1.0f; matrix.a12 =  0.0f; matrix.a13 =  0.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  1.0f; matrix.a23 =  0.0f;
+		matrix.a31 =  0.0f; matrix.a32 =  0.0f; matrix.a33 =  1.0f;
+		break;
+		
+	case 5: // negative z
+		//matrix.SetCamera( decVector(), decVector( 0.0f, 0.0f, -1.0f ), decVector( 0.0f, 1.0f, 0.0f ) );
+		matrix.a11 = -1.0f; matrix.a12 =  0.0f; matrix.a13 =  0.0f;
+		matrix.a21 =  0.0f; matrix.a22 =  1.0f; matrix.a23 =  0.0f;
+		matrix.a31 =  0.0f; matrix.a32 =  0.0f; matrix.a33 = -1.0f;
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }
