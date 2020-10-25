@@ -156,6 +156,9 @@ void deoglVSDetermineChannelFormat::ProcessChannel( deoglSkinChannel::eChannelTy
 	case deoglSkinChannel::ectEnvironmentMap:
 	case deoglSkinChannel::ectEnvironmentRoom:
 	case deoglSkinChannel::ectEnvironmentRoomEmissivity:
+		// opengl adds thick artifacts lines across the borders of the texture if mip mapping
+		// is used. these textures to not required mip mapping anyways since they are sampled
+		// independent of the model size on screen. this also reduces GPU RAM consumption
 		pAllowMipMap = false;
 		break;
 		
