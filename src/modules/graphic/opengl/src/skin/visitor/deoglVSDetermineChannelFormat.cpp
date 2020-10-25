@@ -66,6 +66,7 @@ pIsDynamic( false ),
 pIsDefined( false ),
 pRequiredComponentCount( 1 ),
 pRequiresFloat( false ),
+pAllowMipMap( true ),
 pSharedImage( NULL ){
 }
 
@@ -85,6 +86,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel( deoglSkinChannel::eChannelTy
 	pOglChanType = channel;
 	pRequiredComponentCount = 1;
 	pRequiresFloat = false;
+	pAllowMipMap = true;
 	pSharedImage = NULL;
 	
 	switch( channel ){
@@ -145,6 +147,20 @@ void deoglVSDetermineChannelFormat::ProcessChannel( deoglSkinChannel::eChannelTy
 		}
 		//printf( "channel=%i, width=%i, height=%i, depth=%i, components=%i\n", pOglChanType,
 		//	pRequiredWidth, pRequiredHeight, pRequiredDepth, pRequiredComponentCount );
+	}
+	
+	// check if mip mapping is allowed
+	switch( channel ){
+	case deoglSkinChannel::ectColorOmnidirCube:
+	case deoglSkinChannel::ectColorOmnidirEquirect:
+	case deoglSkinChannel::ectEnvironmentMap:
+	case deoglSkinChannel::ectEnvironmentRoom:
+	case deoglSkinChannel::ectEnvironmentRoomEmissivity:
+		pAllowMipMap = false;
+		break;
+		
+	default:
+		break;
 	}
 }
 

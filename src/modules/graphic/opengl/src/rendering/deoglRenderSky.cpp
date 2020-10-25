@@ -607,13 +607,12 @@ int layerIndex, bool first ){
 	
 	// set texture
 	if( textures[ deoglRSkyLayer::eiSphere ] == -1 ){
-		tsmgr.EnableTexture( 0, *renderThread.GetDefaultTextures().GetColor(),
-			GetSamplerRepeatLinear() );
+		tsmgr.EnableTexture( 0, *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampLinear() );
 		
 	}else{
 		tsmgr.EnableSkin( 0, *skin, textures[ deoglRSkyLayer::eiSphere ],
 			deoglSkinChannel::ectColor, renderThread.GetDefaultTextures().GetColor(),
-			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
+			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	}
 	
 	// render layer
@@ -692,8 +691,7 @@ deoglRSkyInstance &instance, int layerIndex ){
 		matrixBody.SetFromQuaternion( bodies[ b ].orientation );
 		
 		tsmgr.EnableSkin( 0, skin, 0, deoglSkinChannel::ectColor, defTexColor, tscClampLinear );
-		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency,
-			defTexTransparency, tscClampLinear );
+		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency, defTexTransparency, tscClampLinear );
 		
 		shader->SetParameterDMatrix4x4( spbodyMatrixMVP, matrixBody * matrixLCP );
 		shader->SetParameterFloat( spbodyScalePosition, size.x, size.y );

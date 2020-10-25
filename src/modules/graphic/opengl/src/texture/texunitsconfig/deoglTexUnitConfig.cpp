@@ -261,9 +261,16 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 	}
 	
+	// determine if texture coordinates have to be clamped
+	bool clampTexCoord = skinTexture.GetTexCoordClamp();
+	
+	if( skinChannel == deoglSkinChannel::ectColorOmnidirEquirect ){
+		clampTexCoord = true;
+	}
+	
 	// determine sampler to use
 	if( useTexture && useTexture->GetMipMapped() ){
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
 			
 		}else{
@@ -271,7 +278,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 	}else{
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
 			
 		}else{
