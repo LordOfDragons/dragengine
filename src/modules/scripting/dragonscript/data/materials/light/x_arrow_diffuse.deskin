@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<image property='color.omnidir.equirect'>profiles/x_arrow_diffuse.ies</image>
+	</texture>
+</skin>

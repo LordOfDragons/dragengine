@@ -27,6 +27,12 @@
 				<name>Dragengine</name>
 				<description>Skins provided by DragonScript Script Module for in-game use.</description>
 				<autoCategorize>/shareddata/materials/*</autoCategorize>
+				
+				<category>
+					<name>Light</name>
+					<description>Skins providing light profiles for light sources. Use them on "lightSkin" properties.</description>
+					<autoCategorize>/shareddata/materials/light/*</autoCategorize>
+				</category>
 			</category>
 		</skins>
 	</categories>
