@@ -61,6 +61,8 @@
 #include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/light/deLightManager.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>
@@ -91,7 +93,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment ){
+seSkin::seSkin( igdeEnvironment *environment) :
+igdeEditableEntity( environment ),
+pPreviewMode( epmModel )
+{
 	deEngine * const engine = GetEngine();
 	
 	deAnimatorController *amController = NULL;
@@ -129,19 +134,16 @@ seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment 
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		amController = new deAnimatorController;
-		if( ! amController ) DETHROW( deeOutOfMemory );
 		amController->SetClamp( false );
 		pEngAnimator->AddController( amController );
 		amController = NULL;
 		
 		engLink = new deAnimatorLink;
-		if( ! engLink ) DETHROW( deeOutOfMemory );
 		engLink->SetController( 0 );
 		pEngAnimator->AddLink( engLink );
 		engLink = NULL;
 		
 		amRuleAnim = new deAnimatorRuleAnimation;
-		if( ! amRuleAnim ) DETHROW( deeOutOfMemory );
 		amRuleAnim->SetEnabled( true );
 		
 		amRuleAnim->GetTargetMoveTime().AddLink( 0 );
@@ -188,6 +190,7 @@ seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment 
 		
 		pEnvObject->SetGDClassName( "IGDETestTerrain" );
 		
+		pCreateLight();
 		pCreateParticleEmitter();
 		
 		// create empty skin
@@ -221,71 +224,119 @@ seSkin::~seSkin(){
 // Management
 ///////////////
 
-void seSkin::SetModelPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pModelPath.Equals( path ) ){
-		pModelPath = path;
-		
-		pUpdateComponent();
-		pUpdateTextureDynamicSkins();
-		NotifyViewChanged();
+void seSkin::SetPreviewMode( ePreviewMode mode ){
+	if( mode == pPreviewMode ){
+		return;
 	}
+	
+	pPreviewMode = mode;
+	
+	// make appropriate engine resource visible
+	if( pEngComponent ){
+		pEngComponent->SetVisible( mode == epmModel );
+	}
+	pEngLight->SetActivated( mode == epmLight );
+	
+	// reset environment model, sky and camera
+	pCamera->Reset();
+	pCamera->SetOrientation( decVector( 0.0f, 180.0f, 0.0f ) );
+	pCamera->SetDistance( 5.0f );
+	pCamera->SetHighestIntensity( 20.0f );
+	pCamera->SetLowestIntensity( 20.0f );
+	pCamera->SetAdaptionTime( 4.0f );
+	
+	switch( mode ){
+	case epmModel:
+		pEnvObject->SetGDClassName( "IGDETestTerrain" );
+		pEnvObject->SetPosition( decDVector( 0.0, -2.0, 0.0 ) );
+		pSky->SetGDDefaultSky();
+		pCamera->SetPosition( decDVector() );
+		break;
+		
+	case epmLight:
+		pEnvObject->SetGDClassName( "IGDELightSkinBox" );
+		pEnvObject->SetPosition( decDVector( 0.0, -1.0, 0.0 ) );
+		pSky->SetPath( "/igde/skies/black.desky" );
+		pCamera->SetPosition( decDVector( 0.0, -1.0, 0.0 ) );
+		break;
+	}
+	
+	// notify ui
+	NotifyViewChanged();
+	NotifyEnvObjectChanged();
+	NotifySkyChanged();
+	NotifyCameraChanged();
+}
+
+void seSkin::SetModelPath( const char *path ){
+	if( pModelPath.Equals( path ) ){
+		return;
+	}
+	
+	pModelPath = path;
+	
+	pUpdateComponent();
+	pUpdateTextureDynamicSkins();
+	NotifyViewChanged();
 }
 
 void seSkin::SetRigPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pRigPath.Equals( path ) ){
-		pRigPath = path;
-		
-		pUpdateComponent();
-		pUpdateTextureDynamicSkins();
-		NotifyViewChanged();
+	if( pRigPath.Equals( path ) ){
+		return;
 	}
+	
+	pRigPath = path;
+	
+	pUpdateComponent();
+	pUpdateTextureDynamicSkins();
+	NotifyViewChanged();
 }
 
 void seSkin::SetAnimationPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pAnimationPath.Equals( path ) ){
-		pAnimationPath = path;
-		
-		pUpdateAnimator();
-		NotifyViewChanged();
+	if( pAnimationPath.Equals( path ) ){
+		return;
 	}
+	
+	pAnimationPath = path;
+	
+	pUpdateAnimator();
+	NotifyViewChanged();
 }
 
 void seSkin::SetMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
-	if( ! pMoveName.Equals( moveName ) ){
-		pMoveName = moveName;
-		
-		pUpdateAnimatorMove();
-		NotifyViewChanged();
+	if( pMoveName.Equals( moveName ) ){
+		return;
 	}
+	
+	pMoveName = moveName;
+	
+	pUpdateAnimatorMove();
+	NotifyViewChanged();
 }
 
 void seSkin::SetMoveTime( float moveTime ){
-	if( fabs( moveTime - pMoveTime ) > 1e-5f ){
-		pMoveTime = moveTime;
-		
-		pEngAnimatorInstance->GetControllerAt( 0 ).SetCurrentValue( pMoveTime );
-		pEngAnimatorInstance->NotifyControllerChangedAt( 0 );
-		
-		NotifyViewChanged();
+	if( fabs( moveTime - pMoveTime ) < FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pMoveTime = moveTime;
+	
+	pEngAnimatorInstance->GetControllerAt( 0 ).SetCurrentValue( pMoveTime );
+	pEngAnimatorInstance->NotifyControllerChangedAt( 0 );
+	
+	NotifyViewChanged();
 }
 
 void seSkin::SetPlayback( bool playback ){
-	if( playback != pPlayback ){
-		pPlayback = playback;
-		
-		pEngAnimatorInstance->GetControllerAt( 0 ).SetFrozen( ! playback );
-		
-		NotifyViewChanged();
+	if( playback == pPlayback ){
+		return;
 	}
+	
+	pPlayback = playback;
+	
+	pEngAnimatorInstance->GetControllerAt( 0 ).SetFrozen( ! playback );
+	
+	NotifyViewChanged();
 }
 
 void seSkin::SetEnableSkinUpdate( bool enableSkinUpdate ){
@@ -327,6 +378,7 @@ void seSkin::Update( float elapsed ){
 				engComponentTexture.SetTexture( 0 );
 				pEngComponent->NotifyTextureChanged( i );
 			}
+			pEngLight->SetLightSkin( NULL );
 		}
 		pRewindTextures = 2;
 		
@@ -388,6 +440,10 @@ void seSkin::AssignTextureSkins(){
 		}
 		
 		pEngComponent->NotifyTextureChanged( i );
+	}
+	
+	if( pTextureList.GetCount() > 0 ){
+		pEngLight->SetLightSkin( pTextureList.GetAt( 0 )->GetEngineSkin() );
 	}
 	
 	pDirtySkinAssignment = false;
@@ -782,7 +838,10 @@ void seSkin::pCleanUp(){
 	}
 	
 	if( pEngWorld ){
-		if( pEngComponent ){
+		if( pEngLight && pEngLight->GetParentWorld() ){
+			pEngWorld->RemoveLight( pEngLight );
+		}
+		if( pEngComponent && pEngComponent->GetParentWorld() ){
 			pEngWorld->RemoveComponent( pEngComponent );
 			pEngComponent->FreeReference();
 		}
@@ -791,6 +850,23 @@ void seSkin::pCleanUp(){
 }
 
 
+
+void seSkin::pCreateLight(){
+	pEngLight.TakeOver( GetEngine()->GetLightManager()->CreateLight() );
+	pEngLight->SetType( deLight::eltPoint );
+	pEngLight->SetActivated( false );
+	pEngLight->SetAmbientRatio( 0.0f );
+	pEngLight->SetHalfIntensityDistance( 0.25f );
+	pEngLight->SetIntensity( 20.0f );
+	
+	decLayerMask layerMask;
+	layerMask.SetBit( 0 );
+	pEngLight->SetLayerMask( layerMask );
+	pEngLight->SetLayerMaskShadow( layerMask );
+	
+	pEngLight->SetRange( 25.0f );
+	pEngWorld->AddLight( pEngLight );
+}
 
 void seSkin::pCreateParticleEmitter(){
 #if 0

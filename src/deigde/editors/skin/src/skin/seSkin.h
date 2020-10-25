@@ -22,13 +22,14 @@
 #ifndef _SESKIN_H_
 #define _SESKIN_H_
 
+#include "property/sePropertyList.h"
+#include "texture/seTextureList.h"
+
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
-
-#include "property/sePropertyList.h"
-#include "texture/seTextureList.h"
+#include <dragengine/resources/light/deLightReference.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
@@ -58,6 +59,14 @@ class deWorld;
  * @brief Editable Skin.
  */
 class seSkin : public igdeEditableEntity{
+public:
+	enum ePreviewMode{
+		epmModel,
+		epmLight
+	};
+	
+	
+	
 private:
 	deWorld *pEngWorld;
 	
@@ -70,6 +79,9 @@ private:
 	deAnimatorInstance *pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
+	deLightReference pEngLight;
+	
+	ePreviewMode pPreviewMode;
 	
 	decString pModelPath;
 	decString pRigPath;
@@ -91,6 +103,8 @@ private:
 	bool pEnableSkinUpdate;
 	
 	decObjectSet pListeners;
+	
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -121,6 +135,16 @@ public:
 	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
 	/** Retrieves the particle emitter. */
 	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
+	
+	/** \brief Engine light or NULL. */
+	inline const deLight *GetEngineLight() const{ return pEngLight; }
+	
+	/** \brief Preview mode. */
+	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
+	
+	/** \brief Set preview mode. */
+	void SetPreviewMode( ePreviewMode mode );
+	
 	/** Retrieves the model path. */
 	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
@@ -272,9 +296,11 @@ public:
 private:
 	void pCleanUp();
 	
+	void pCreateLight();
 	void pCreateParticleEmitter();
 	
 	void pUpdateComponent();
+	void pUpdateLight();
 	void pUpdateAnimator();
 	void pUpdateAnimatorMove();
 	
