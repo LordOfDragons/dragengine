@@ -20,8 +20,8 @@ UBOLAYOUT uniform InstanceParameters{
 			mat4 pShadowMatrix4;
 			vec4 pLayerBorder;
 		#endif
-		#if defined TEXTURE_COLOR || defined TEXTURE_COLOR_CUBEMAP || defined TEXTURE_COLOR_EQUIRECT
-			mat4x3 pLightImageMatrix;
+		#if defined TEXTURE_COLOR_CUBEMAP || defined TEXTURE_COLOR_EQUIRECT
+			mat4x3 pLightImageOmniMatrix;
 		#endif
 		
 		vec3 pShadow1Solid; // x=pixelSizeU, y=pixelSizeV, z=noiseScale

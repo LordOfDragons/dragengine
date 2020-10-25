@@ -939,8 +939,7 @@ deoglLightShaderConfig &config ){
 			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
 				config.SetTextureColorOmnidirCube( true );
 				
-			}else if( pUseSkinTexture->IsChannelEnabled(
-			deoglSkinChannel::ectColorOmnidirEquirect ) ){
+			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
 				config.SetTextureColorOmnidirEquirect( true );
 				
 			}else if( pUseSkinTexture->GetMaterialPropertyAt(
@@ -975,8 +974,30 @@ deoglLightShaderConfig &config ){
 		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
 		config.SetTextureNoise( false );
 		
-		if( pLightSkin || pLightCanvas ){
+		if( pLightCanvas ){
 			config.SetTextureColor( true );
+			
+		}else if( pUseSkinTexture ){
+			// usually spot/projector lights use 2D textures. it is though also allowed to use
+			// omni-directional textures like point lights. in this case the spot properties
+			// clamp the texture into the positive Z direction
+			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
+				config.SetTextureColorOmnidirCube( true );
+				
+			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
+				config.SetTextureColorOmnidirEquirect( true );
+				
+			}else if( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empColorOmnidirCube ).GetRenderable() != -1 ){
+				config.SetTextureColorOmnidirCube( true );
+				
+			}else if( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empColorOmnidirEquirect ).GetRenderable() != -1 ){
+				config.SetTextureColorOmnidirEquirect( true );
+				
+			}else{
+				config.SetTextureColor( true );
+			}
 		}
 		break;
 	}

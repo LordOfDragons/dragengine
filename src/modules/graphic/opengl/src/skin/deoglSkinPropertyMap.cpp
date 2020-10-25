@@ -29,7 +29,7 @@
 
 
 deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const char *type ){
-	static const int entryCount = 73;
+	static const int entryCount = 74;
 	static struct sEntry{
 		const char *name;
 		deoglSkinPropertyMap::ePropertyTypes type;
@@ -103,6 +103,7 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "texcoord.offset", eptTexCoordOffset },
 		{ "texcoord.scale", eptTexCoordScale },
 		{ "texcoord.rotate", eptTexCoordRotate },
+		{ "omnidir.rotate", eptOmniDirRotate },
 		
 		{ "variation.u", eptVariationU },
 		{ "variation.v", eptVariationV },

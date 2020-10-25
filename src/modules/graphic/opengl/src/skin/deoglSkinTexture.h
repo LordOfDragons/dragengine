@@ -82,6 +82,7 @@ public:
 		empTexCoordOffset,
 		empTexCoordScale,
 		empTexCoordRotate,
+		empOmniDirRotate,
 		empThickness,
 		empTransparency,
 		empTransparencyMultiplier,
@@ -273,6 +274,7 @@ private:
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScale;
 	float pTexCoordRotate;
+	decVector pOmniDirRotate;
 	
 	bool pVariationU;
 	bool pVariationV;
@@ -700,6 +702,12 @@ public:
 	
 	/** \brief Set texture coordinates rotate. */
 	void SetTexCoordRotate( float rotate );
+	
+	/** \brief Omni directional texture rotate. */
+	inline const decVector &GetOmniDirRotate() const{ return pOmniDirRotate; }
+	
+	/** \brief Set omni directional texture rotate. */
+	void SetOmniDirRotate( const decVector &rotate );
 	
 	
 	

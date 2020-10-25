@@ -85,7 +85,7 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	"pShadowMatrix4", // eiutShadowMatrix4
 	"pLayerBorder", // eiutLayerBorder
 	
-	"pLightImageMatrix", // eiutLightImageMatrix
+	"pLightImageOmniMatrix", // eiutLightImageOmniMatrix
 	
 	"pShadow1Solid", // elutShadow1Solid
 	"pShadow1Transparent", // elutShadow1Transparent
@@ -133,7 +133,7 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix4 ( mat4 )
 	{ deoglSPBParameter::evtFloat, 4, 1 }, // pLayerBorder ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageMatrix ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageOmniMatrix ( mat4x3 )
 	
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Solid ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Transparent ( vec3 )
@@ -795,9 +795,8 @@ void deoglLightShader::UpdateUniformTargets(){
 			pInstanceUniformTargets[ eiutLayerBorder ] = pUsedInstanceUniformTargetCount++;
 		}
 		
-		if( pConfig.GetTextureColor() || pConfig.GetTextureColorOmnidirCube()
-		|| pConfig.GetTextureColorOmnidirEquirect() ){
-			pInstanceUniformTargets[ eiutLightImageMatrix ] = pUsedInstanceUniformTargetCount++;
+		if( pConfig.GetTextureColorOmnidirCube() || pConfig.GetTextureColorOmnidirEquirect() ){
+			pInstanceUniformTargets[ eiutLightImageOmniMatrix ] = pUsedInstanceUniformTargetCount++;
 		}
 		
 		pInstanceUniformTargets[ eiutShadow1Solid ] = pUsedInstanceUniformTargetCount++;

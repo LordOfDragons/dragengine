@@ -2020,9 +2020,13 @@ sShadowDepthMaps &shadowDepthMaps ){
 			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
 		}
 		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageMatrix );
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageOmniMatrix );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixMV.QuickInvert() );
+			decVector rotate;
+			if( light.GetUseSkinTexture() ){
+				rotate = light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI;
+			}
+			paramBlock.SetParameterDataMat4x3( target, ( decMatrix::CreateRotation( rotate ) * matrixMV ).QuickInvert() );
 		}
 		
 		/*

@@ -1020,13 +1020,13 @@ void main( void ){
 	#elif defined TEXTURE_COLOR_CUBEMAP
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec3 lightImageTC = normalize( pLightImageMatrix * vec4( position, 1.0 ) );
+		vec3 lightImageTC = normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) );
 		lightColor *= pow( texture( texColorCubemap, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 		
 	#elif defined TEXTURE_COLOR_EQUIRECT
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageMatrix * vec4( position, 1.0 ) ) );
+		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) ) );
 		lightColor *= pow( texture( texColorEquirect, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 	#endif
 	

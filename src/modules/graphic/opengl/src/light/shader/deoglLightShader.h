@@ -89,7 +89,7 @@ public:
 		eiutShadowMatrix4,
 		eiutLayerBorder,
 		
-		eiutLightImageMatrix,
+		eiutLightImageOmniMatrix,
 		
 		eiutShadow1Solid,
 		eiutShadow1Transparent,

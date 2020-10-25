@@ -222,6 +222,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Texture coordinates rotation. */
 		eptTexCoordRotate,
 		
+		/** \brief Omni direction texture rotation. */
+		eptOmniDirRotate,
+		
 		
 		
 		/** \brief Use texture variation in U direction. */

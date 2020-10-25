@@ -876,6 +876,53 @@ void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid, deogl
 		}
 	}
 	
+	target = lightShader->GetTextureTarget( deoglLightShader::ettColorCubemap );
+	if( target != -1 ){
+		deoglTexUnitConfig tuc;
+		
+		if( light.GetLightCanvas() ){
+			// TODO can not be used as cube-map for the time being
+			
+		}else if( light.GetUseSkinTexture() ){
+			tuc.EnableCubeMapFromChannel( renderThread, *light.GetUseSkinTexture(),
+				deoglSkinChannel::ectColorOmnidirCube, light.GetSkinState(),
+				light.GetDynamicSkin(), renderThread.GetDefaultTextures().GetEnvMap() );
+		}
+		
+		if( tuc.IsEnabled() ){
+			tuc.Apply( renderThread, target );
+			
+		}else{
+			tsmgr.EnableCubeMap( target, *renderThread.GetDefaultTextures().GetEnvMap(),
+				GetSamplerClampLinear() );
+		}
+	}
+	
+	target = lightShader->GetTextureTarget( deoglLightShader::ettColorEquirect );
+	if( target != -1 ){
+		deoglTexUnitConfig tuc;
+		
+		if( light.GetLightCanvas() ){
+			deoglRenderTarget * const target = light.GetLightCanvas()->GetRenderTarget();
+			if( target ){
+				tuc.EnableTexture( target->GetTexture(), &GetSamplerClampLinear() );
+			}
+			
+		}else if( light.GetUseSkinTexture() ){
+			tuc.EnableTextureFromChannel( renderThread, *light.GetUseSkinTexture(),
+				deoglSkinChannel::ectColorOmnidirEquirect, light.GetSkinState(),
+				light.GetDynamicSkin(), renderThread.GetDefaultTextures().GetColor() );
+		}
+		
+		if( tuc.IsEnabled() ){
+			tuc.Apply( renderThread, target );
+			
+		}else{
+			tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetColor(),
+				GetSamplerClampLinear() );
+		}
+	}
+	
 	target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(),
@@ -1652,8 +1699,11 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
 		}
 		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageMatrix );
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageOmniMatrix );
 		if( target != -1 ){
+			/*
+			// no idea where i used this but right now only omni-direction light images require
+			// a matrix. for this reason the same code as with point lights is used
 			const decTexMatrix2 &transform = light.GetTransform();
 			
 			decMatrix matrix;
@@ -1672,6 +1722,13 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			// matrix to go from world to local space and also flip (1-y)
 			
 			paramBlock.SetParameterDataMat4x3( target, matrix );
+			*/
+			
+			decVector rotate;
+			if( light.GetUseSkinTexture() ){
+				rotate = light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI;
+			}
+			paramBlock.SetParameterDataMat4x3( target, ( decMatrix::CreateRotation( rotate ) * matrixMV ).QuickInvert() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );

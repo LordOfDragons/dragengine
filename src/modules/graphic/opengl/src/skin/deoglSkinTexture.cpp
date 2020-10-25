@@ -1511,6 +1511,10 @@ void deoglSkinTexture::SetTexCoordRotate( float rotate ){
 	pTexCoordRotate = rotate;
 }
 
+void deoglSkinTexture::SetOmniDirRotate( const decVector &rotate ){
+	pOmniDirRotate = rotate;
+}
+
 
 
 void deoglSkinTexture::SetVariationU( bool enable ){
@@ -2354,6 +2358,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pTexCoordRotate = value;
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( value, value, value );
+			break;
+			
 		case deoglSkinPropertyMap::eptShadowNone:
 			pShadowNone = value > 0.5f;
 			break;
@@ -2492,6 +2500,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
 			pTexCoordScale.Set( color.r, color.g );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( color.r, color.g, color.b );
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
@@ -2704,6 +2716,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
 			materialProperty = pMaterialProperties + empTexCoordRotate;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			materialProperty = pMaterialProperties + empOmniDirRotate;
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
@@ -2984,6 +3000,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
 			pMaterialProperties[ empTexCoordRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pMaterialProperties[ empOmniDirRotate ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
