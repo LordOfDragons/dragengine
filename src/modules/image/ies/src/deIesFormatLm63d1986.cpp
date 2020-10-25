@@ -32,24 +32,25 @@
 // Class deIesFormatLm63d1986
 ///////////////////////////////
 
-void deIesFormatLm63d1986::sSamplePoint::Set( int aindex ){
-	index1 = aindex;
-	index2 = aindex;
+void deIesFormatLm63d1986::sSamplePoint::Set( int index ){
+	index1 = index;
+	index2 = index;
 	blend1 = 1.0f;
 	blend2 = 0.0f;
 }
 
-void deIesFormatLm63d1986::sSamplePoint::Set( int aindex, float ablend ){
-	index1 = aindex;
-	index2 = aindex + 1;
-	blend1 = 1.0f - ablend;
-	blend2 = ablend;
+void deIesFormatLm63d1986::sSamplePoint::Set( int index, float blend ){
+	index1 = index;
+	index2 = index + 1;
+	blend1 = 1.0f - blend;
+	blend2 = blend;
 }
 
 // Constructor, destructor
 ////////////////////////////
 
 deIesFormatLm63d1986::deIesFormatLm63d1986() :
+pImageType( eitEquirectangular ),
 pAngleFactorCount( 0 ),
 pAngleFactors( NULL ),
 pLampCount( 0 ),
@@ -68,7 +69,10 @@ pFinalLumMultiplier( 1.0f ),
 pVerticalAngles( NULL ),
 pHorizontalAngles( NULL ),
 pCandelaValues( NULL ),
-pAngularResolution( 1 ),
+pSmallestVerticalStep( 0.0f ),
+pSmallestHorizontalStep( 0.0f ),
+pVerticalResolution( 1 ),
+pHorizontalResolution( 1 ),
 pVerticalSamplePoints( NULL ),
 pHorizontalSamplePoints( NULL ){
 }
@@ -106,6 +110,12 @@ bool deIesFormatLm63d1986::LoadHeader( decBaseFileReader &reader ){
 	}
 	pReadTilt();
 	pReadLampConfig();
+	
+	// reading angles is required to figure out the appropriate image size
+	pReadBallast();
+	pCalcFinalLumMuliplier();
+	pReadVerticalAngles();
+	pReadHorizontalAngles();
 	
 	// about resolutions. angles have no defined placement and in particular the spacing
 	// across angles in files tends to vary. to capture this the angles are up-sampled
@@ -156,30 +166,31 @@ bool deIesFormatLm63d1986::LoadHeader( decBaseFileReader &reader ){
 	// the same resolution as the image width is used since the values are mostly one-to-one
 	// translated. for cubemap images though the resolution has to be increased since cubemap
 	// pixels are not evenly spaced. cranking up the resolution helps
+	pFindSmallestSteps();
 	
-	pAngularResolution = 256;
+	const float overSampleFactor = 2.0f; // 2.0f
+	
+	pVerticalResolution = decMath::min( ( int )( 180.0f / ( pSmallestVerticalStep / overSampleFactor ) + 0.5f ), 1024 );
+	pHorizontalResolution = decMath::min( ( int )( 360.0f / ( pSmallestHorizontalStep / overSampleFactor ) + 0.5f ), 2048 );
 	
 	// equirectangular
-	/*
-	pWidth = pAngularResolution;
-	pHeight = pWidth / 2;
+	pImageType = eitEquirectangular;
+	pWidth = pHorizontalResolution;
+	pHeight = pVerticalResolution;
 	pDepth = 1;
-	*/
 	
 	// cubemap
-	pWidth = pAngularResolution / 4;
+	/*
+	pImageType = eitCubeMap;
+	pWidth = decMath::max( pVerticalResolution / 2, pHorizontalResolution / 4, 32 );
 	pHeight = pWidth;
 	pDepth = 6;
-	pAngularResolution *= 4; // increase sampling resolution
+	*/
 	
 	return true;
 }
 
 void deIesFormatLm63d1986::LoadFile( unsigned short *pixels ){
-	pReadBallast();
-	pCalcFinalLumMuliplier();
-	pReadVerticalAngles();
-	pReadHorizontalAngles();
 	pReadCandelaValues();
 	
 	pNormalizeCandelaValues();
@@ -188,8 +199,19 @@ void deIesFormatLm63d1986::LoadFile( unsigned short *pixels ){
 	pGammaCorrectCandelaValues(); // see comments in function why this is done here
 	
 	pCreateSamplePoints();
-// 	pSetPixelsEquirect( pixels );
-	pSetPixelsCubemap( pixels );
+	
+	switch( pImageType ){
+	case eitEquirectangular:
+		pSetPixelsEquirect( pixels );
+		break;
+		
+	case eitCubeMap:
+		pSetPixelsCubemap( pixels );
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }
 
 
@@ -353,6 +375,26 @@ void deIesFormatLm63d1986::pReadHorizontalAngles(){
 	}
 }
 
+void deIesFormatLm63d1986::pFindSmallestSteps(){
+	int i;
+	
+	pSmallestVerticalStep = 180.0f;
+	for( i=1; i<pVerticalAngleCount; i++ ){
+		const float difference = pVerticalAngles[ i ] - pVerticalAngles[ i - 1 ];
+		if( difference < pSmallestVerticalStep ){
+			pSmallestVerticalStep = difference;
+		}
+	}
+	
+	pSmallestHorizontalStep = 360.0f;
+	for( i=1; i<pHorizontalAngleCount; i++ ){
+		const float difference = pHorizontalAngles[ i ] - pHorizontalAngles[ i - 1 ];
+		if( difference < pSmallestHorizontalStep ){
+			pSmallestHorizontalStep = difference;
+		}
+	}
+}
+
 void deIesFormatLm63d1986::pReadCandelaValues(){
 	if( pVerticalAngleCount == 0 || pHorizontalAngleCount == 0 ){
 		return;
@@ -430,12 +472,12 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		return;
 	}
 	
-	const int count360 = pAngularResolution;
-	const int count180 = pAngularResolution / 2;
-	const int count90 = pAngularResolution / 4;
+	const int horizontalCount360 = pHorizontalResolution;
+	const int horizontalCount180 = pHorizontalResolution / 2;
+	const int horizontalCount90 = pHorizontalResolution / 4;
 	
 	// horizontal angles
-	pHorizontalSamplePoints = new sSamplePoint[ count360 ];
+	pHorizontalSamplePoints = new sSamplePoint[ horizontalCount360 ];
 	
 	if( pPhotometricType == eptTypeC ){
 		const float lastAngle = pHorizontalAngles[ pHorizontalAngleCount - 1 ];
@@ -444,32 +486,40 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if( pIsAngle( firstAngle, 0.0f ) ){
 			if( pIsAngle( lastAngle, 0.0f ) ){
 				// 0°: only one horizontal angle. light is fully symmetric
-				pFillSamples( 0, pHorizontalSamplePoints, count360 );
+				pFillSamples( 0, pHorizontalSamplePoints, horizontalCount360 );
 				
 			}else if( pIsAngle( lastAngle, 90.0f ) ){
 				// 90°: symmetric in each quadrant.
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count90 );
-				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count90, count90 );
-				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180, count180 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints, horizontalCount90 );
+				pMirrorSamples( pHorizontalSamplePoints,
+					pHorizontalSamplePoints + horizontalCount90, horizontalCount90 );
+				pMirrorSamples( pHorizontalSamplePoints,
+					pHorizontalSamplePoints + horizontalCount180, horizontalCount180 );
 				
 			}else if( pIsAngle( lastAngle, 180.0f ) ){
 				// 180°: symmetric about the 0-180 degree plane.
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count180 );
-				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180, count180 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints, horizontalCount180 );
+				pMirrorSamples( pHorizontalSamplePoints,
+					pHorizontalSamplePoints + horizontalCount180, horizontalCount180 );
 				
 			}else{
 				// >180° && <360°: no symmetry
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count360 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints, horizontalCount360 );
 			}
 			
 		}else if( pIsAngle( firstAngle, 90.0f ) ){
 			if( pIsAngle( lastAngle, 270.0f ) ){
 				// A luminaire that is bilaterally symmetric about the 90-270 degree photometric
 				// plane will have a first value of 90 degrees and a last value of 270 degrees.
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints + count90, count180 );
-				pMirrorSamples( pHorizontalSamplePoints + count90, pHorizontalSamplePoints, count90 );
-				pMirrorSamples( pHorizontalSamplePoints + count180,
-					pHorizontalSamplePoints + count180 + count90, count90 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints + horizontalCount90, horizontalCount180 );
+				pMirrorSamples( pHorizontalSamplePoints + horizontalCount90,
+					pHorizontalSamplePoints, horizontalCount90 );
+				pMirrorSamples( pHorizontalSamplePoints + horizontalCount180,
+					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90 );
 				
 			}else{
 				DETHROW_INFO( deeInvalidFileFormat, "invalid end angle" );
@@ -486,18 +536,24 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if( pIsAngle( lastAngle, 90.0f ) ){
 			if( pIsAngle( firstAngle, 0.0f ) ){
 				// range [0°..90°]: laterally symmetric about a vertical reference plane.
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints, count90 );
-				pMirrorSamples( pHorizontalSamplePoints, pHorizontalSamplePoints + count180 + count90, count90 );
-				pFillSamples( pHorizontalAngleCount - 1, pHorizontalSamplePoints + count90, count180 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints, horizontalCount90 );
+				pMirrorSamples( pHorizontalSamplePoints,
+					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90 );
+				pFillSamples( pHorizontalAngleCount - 1,
+					pHorizontalSamplePoints + horizontalCount90, horizontalCount180 );
 				
 			}else if( pIsAngle( firstAngle, -90.0f ) ){
 				// range [-90°..90°]: no symmetry
-				pSample( pHorizontalAngles, pHorizontalAngleCount, pHorizontalSamplePoints + count90, count180 );
-				pCopySamples( pHorizontalSamplePoints + count90,
-					pHorizontalSamplePoints + count180 + count90, count90 );
-				pCopySamples( pHorizontalSamplePoints + count180, pHorizontalSamplePoints, count90 );
-				pFillSamples( 0, pHorizontalSamplePoints + count180, count90 );
-				pFillSamples( pHorizontalAngleCount - 1, pHorizontalSamplePoints + count90, count90 );
+				pSample( pHorizontalAngles, pHorizontalAngleCount,
+					pHorizontalSamplePoints + horizontalCount90, horizontalCount180 );
+				pCopySamples( pHorizontalSamplePoints + horizontalCount90,
+					pHorizontalSamplePoints + horizontalCount180 + horizontalCount90, horizontalCount90 );
+				pCopySamples( pHorizontalSamplePoints + horizontalCount180,
+					pHorizontalSamplePoints, horizontalCount90 );
+				pFillSamples( 0, pHorizontalSamplePoints + horizontalCount180, horizontalCount90 );
+				pFillSamples( pHorizontalAngleCount - 1,
+					pHorizontalSamplePoints + horizontalCount90, horizontalCount90 );
 				
 			}else{
 				DETHROW_INFO( deeInvalidFileFormat, "invalid start angle" );
@@ -509,7 +565,10 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 	}
 	
 	// vertical angles
-	pVerticalSamplePoints = new sSamplePoint[ count180 ];
+	const int verticalCount180 = pVerticalResolution;
+	const int verticalCount90 = pVerticalResolution / 2;
+	
+	pVerticalSamplePoints = new sSamplePoint[ verticalCount180 ];
 	
 	if( pPhotometricType == eptTypeC ){
 		const float lastAngle = pVerticalAngles[ pVerticalAngleCount - 1 ];
@@ -517,21 +576,23 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		
 		if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 90.0f ) ){
 			// range [0°..90°]
-			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count90 );
-			pFillSamples( pVerticalAngleCount - 1, pVerticalSamplePoints + count90, count90 );
+			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount90 );
+			pFillSamples( pVerticalAngleCount - 1,
+				pVerticalSamplePoints + verticalCount90, verticalCount90 );
 			
 		}else if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 180.0f ) ){
 			// range [0°..180°]
-			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count180 );
+			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount180 );
 			
 		}else if( pIsAngle( firstAngle, 0.0f ) && pIsAngle( lastAngle, 180.0f ) ){
 			// range [90°..90°]
-			pFillSamples( 0, pVerticalSamplePoints, count180 );
+			pFillSamples( 0, pVerticalSamplePoints, verticalCount180 );
 			
 		}else if( pIsAngle( firstAngle, 90.0f ) && pIsAngle( lastAngle, 180.0f ) ){
 			// range [90°..180°]
-			pFillSamples( 0, pVerticalSamplePoints, count90 );
-			pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints + count90, count90 );
+			pFillSamples( 0, pVerticalSamplePoints, verticalCount90 );
+			pSample( pVerticalAngles, pVerticalAngleCount,
+				pVerticalSamplePoints + verticalCount90, verticalCount90 );
 			
 		}else{
 			DETHROW_INFO( deeInvalidFileFormat, "invalid angle range" );
@@ -544,12 +605,13 @@ void deIesFormatLm63d1986::pCreateSamplePoints(){
 		if( pIsAngle( lastAngle, 90.0f ) ){
 			if( pIsAngle( firstAngle, -90.0f ) ){
 				// range [-90°..90°]
-				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count180 );
+				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount180 );
 				
 			}else if( pIsAngle( firstAngle, 0.0f ) ){
 				// range [0°..90°]
-				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, count90 );
-				pFillSamples( pVerticalAngleCount - 1, pVerticalSamplePoints + count90, count90 );
+				pSample( pVerticalAngles, pVerticalAngleCount, pVerticalSamplePoints, verticalCount90 );
+				pFillSamples( pVerticalAngleCount - 1,
+					pVerticalSamplePoints + verticalCount90, verticalCount90 );
 				
 			}else{
 				DETHROW_INFO( deeInvalidFileFormat, "invalid first angle" );
@@ -673,9 +735,10 @@ void deIesFormatLm63d1986::pSetPixelsCubemap( unsigned short *pixels ){
 void deIesFormatLm63d1986::pSetPixelsCubemapFace( unsigned short *pixels, const decMatrix &matrix ){
 	// NOTE - candela values are column-major while pixels are row-major
 	// NOTE vertical angle 0 degrees is bottom (aka negative Z axis)
-	const float factorSampleAngle = ( float )pAngularResolution / 360.0f;
-	const int lastSampleIndexHorizontal = pAngularResolution - 1;
-	const int lastSampleIndexVertical = ( pAngularResolution / 2 ) - 1;
+	const float factorSampleAngleHorizontal = ( float )pHorizontalResolution / 360.0f;
+	const float factorSampleAngleVertical = ( float )pVerticalResolution / 180.0f;
+	const int lastSampleIndexHorizontal = pHorizontalResolution - 1;
+	const int lastSampleIndexVertical = pVerticalResolution - 1;
 	const int size = pWidth; // same as pHeight
 	const float faceOffset = 0.5f - 0.5f * size;
 	unsigned short *nextPixel = pixels;
@@ -689,22 +752,33 @@ void deIesFormatLm63d1986::pSetPixelsCubemapFace( unsigned short *pixels, const 
 			const decVector tvec( matrix.TransformNormal( vector ) );
 			
 			const float angleVertical = -atan2f( tvec.y, decVector2( tvec.x, tvec.z ).Length() ) * RAD2DEG + 90.0f;
-			const float angleHorizontal = -atan2f( tvec.x, tvec.z ) * RAD2DEG + 180.0f;
+			const float angleHorizontal = atan2f( tvec.x, tvec.z ) * RAD2DEG + 180.0f;
 			
 			const sSamplePoint &sampleVertical = pVerticalSamplePoints[ decMath::clamp(
-				( int )( factorSampleAngle * angleVertical ), 0, lastSampleIndexVertical ) ];
+				( int )( factorSampleAngleVertical * angleVertical ), 0, lastSampleIndexVertical ) ];
 			const sSamplePoint &sampleHorizontal = pHorizontalSamplePoints[ decMath::clamp(
-				( int )( factorSampleAngle * angleHorizontal ), 0, lastSampleIndexHorizontal ) ];
+				( int )( factorSampleAngleHorizontal * angleHorizontal ), 0, lastSampleIndexHorizontal ) ];
+			
+			const float verticalAngle1 = pVerticalAngles[ sampleVertical.index1 ];
+			const float verticalAngle2 = pVerticalAngles[ sampleVertical.index2 ];
+			const float verticalBlend2 = decMath::linearStep( angleVertical, verticalAngle1, verticalAngle2 );
+			const float verticalBlend1 = 1.0f - verticalBlend2;
+			
+			const float horizontalAngle1 = pHorizontalAngles[ sampleHorizontal.index1 ];
+			const float horizontalAngle2 = pHorizontalAngles[ sampleHorizontal.index2 ];
+			const float horizontalBlend2 = decMath::linearStep( angleHorizontal, horizontalAngle1, horizontalAngle2 );
+			const float horizontalBlend1 = 1.0f - horizontalBlend2;
 			
 			const float * const baseCandelaValues1 = pCandelaValues + sampleVertical.index1;
 			const float * const baseCandelaValues2 = pCandelaValues + sampleVertical.index2;
 			const int offset1 = pVerticalAngleCount * sampleHorizontal.index1;
 			const int offset2 = pVerticalAngleCount * sampleHorizontal.index2;
-			const float value1 = baseCandelaValues1[ offset1 ] * sampleHorizontal.blend1
-				+ baseCandelaValues1[ offset2 ] * sampleHorizontal.blend2;
-			const float value2 = baseCandelaValues2[ offset1 ] * sampleHorizontal.blend1
-				+ baseCandelaValues2[ offset2 ] * sampleHorizontal.blend2;
-			const float value = value1 * sampleVertical.blend1 + value2 * sampleVertical.blend2;
+			const float value1 = baseCandelaValues1[ offset1 ] * /*sampleHorizontal.blend1*/ horizontalBlend1
+				+ baseCandelaValues1[ offset2 ] * /*sampleHorizontal.blend2*/ horizontalBlend2;
+			const float value2 = baseCandelaValues2[ offset1 ] * /*sampleHorizontal.blend1*/ horizontalBlend1
+				+ baseCandelaValues2[ offset2 ] * /*sampleHorizontal.blend2*/ horizontalBlend2;
+			const float value = value1 * /*sampleVertical.blend1*/ verticalBlend1
+				+ value2 * /*sampleVertical.blend2*/ verticalBlend2;
 			
 			*( nextPixel++ ) = ( unsigned short )( value * 65535.0f );
 		}

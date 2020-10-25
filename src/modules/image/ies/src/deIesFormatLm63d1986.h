@@ -40,6 +40,8 @@ protected:
 	};
 	
 	struct sSamplePoint{
+		int angle1;
+		int angle2;
 		int index1;
 		int index2;
 		float blend1;
@@ -58,6 +60,13 @@ protected:
 		eutFeet,
 		eutMeters
 	};
+	
+	enum eImageType{
+		eitEquirectangular,
+		eitCubeMap
+	};
+	
+	eImageType pImageType;
 	
 	decString pTilt;
 	
@@ -87,7 +96,10 @@ protected:
 	float *pHorizontalAngles;
 	float *pCandelaValues;
 	
-	int pAngularResolution;
+	float pSmallestVerticalStep;
+	float pSmallestHorizontalStep;
+	int pVerticalResolution;
+	int pHorizontalResolution;
 	sSamplePoint *pVerticalSamplePoints;
 	sSamplePoint *pHorizontalSamplePoints;
 	
@@ -125,6 +137,7 @@ protected:
 	void pCalcFinalLumMuliplier();
 	void pReadVerticalAngles();
 	void pReadHorizontalAngles();
+	void pFindSmallestSteps();
 	void pReadCandelaValues();
 	void pNormalizeCandelaValues();
 	void pSanitizeCandelaValues();
