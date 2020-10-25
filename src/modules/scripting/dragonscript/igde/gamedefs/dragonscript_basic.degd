@@ -1294,7 +1294,8 @@
 		</property>
 		<property name='halfIntensityDistance'>
 			<description>Relative distance compared to range where the intensity of the light is reduced to 50%. A natural value is 0.1 whereas most of the time it is better to use a higher value to keep light range low.</description>
-			<type>float</type>
+			<type>range</type>
+			<range min='0' max='1'/>
 			<default>0.1</default>
 		</property>
 		<property name='ambientRatio'>
