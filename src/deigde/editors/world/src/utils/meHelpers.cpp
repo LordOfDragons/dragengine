@@ -36,6 +36,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 
@@ -103,6 +104,24 @@ bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, decString &prefix, i
 		}
 	}
 	return false;
+}
+
+
+
+void meHelpers::GetPatternTypePropertyNames( const igdeGDClass &gdclass,
+igdeGDProperty::ePathPatternTypes patternType, decStringList &names ){
+	decStringSet allPropNames;
+	gdclass.AddPropertyNames( allPropNames, true );
+	
+	const int allPropNameCount = allPropNames.GetCount();
+	int i;
+	
+	for( i=0; i<allPropNameCount; i++ ){
+		const igdeGDProperty &gdprop = *gdclass.GetPropertyNamed( allPropNames.GetAt( i ) );
+		if( gdprop.GetType() == igdeGDProperty::eptPath && gdprop.GetPathPatternType() == patternType ){
+			names.Add( allPropNames.GetAt( i ) );
+		}
+	}
 }
 
 

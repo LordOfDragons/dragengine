@@ -24,15 +24,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
+
 
 class meObject;
 class igdeGDClass;
 class igdeGDCComponent;
 class igdeGDCLight;
 class igdeGDCCTexture;
+class igdeGDPropertyList;
 
 class deObjectReference;
 class decString;
+class decStringList;
 
 
 namespace meHelpers{
@@ -61,6 +65,12 @@ namespace meHelpers{
 	
 	/** \brief Find first game definition light. */
 	bool FindFirstLight( const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light );
+	
+	
+	
+	/** \brief Get names of all path type properties matching pattern type. */
+	void GetPatternTypePropertyNames( const igdeGDClass &gdclass,
+		igdeGDProperty::ePathPatternTypes patternType, decStringList &names );
 	
 	
 	

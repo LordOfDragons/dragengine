@@ -29,8 +29,11 @@
 #include "../meWindowMain.h"
 #include "../../undosys/properties/decal/meUDecalSkin.h"
 #include "../../undosys/properties/object/meUSetObjectClass.h"
+#include "../../undosys/properties/object/property/meUObjectAddProperty.h"
+#include "../../undosys/properties/object/property/meUObjectSetProperty.h"
 #include "../../undosys/properties/object/texture/meUObjectTextureSetSkin.h"
 #include "../../undosys/properties/object/texture/meUObjectAddTexture.h"
+#include "../../utils/meHelpers.h"
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
 #include "../../world/decal/meDecal.h"
@@ -47,6 +50,7 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
 #include <deigde/gamedefinition/skin/igdeGDSkin.h>
 #include <deigde/gamedefinition/skin/igdeGDSkinManager.h>
 #include <deigde/gamedefinition/sky/igdeGDSky.h>
@@ -163,8 +167,9 @@ class cActionSetSkinObjTex : public igdeAction{
 	const decString pName;
 	
 public:
-	cActionSetSkinObjTex( meWPBrowser &panel, const decString &name ) : igdeAction( name, NULL,
-		"Set active object texture" ), pPanel( panel ), pName( name ){ }
+	cActionSetSkinObjTex( meWPBrowser &panel, const decString &name ) : igdeAction(
+		decString( "Active Object Set Texture: " ) + name, NULL,
+		decString( "Set texture '" ) + name + "' of active object" ), pPanel( panel ), pName( name ){ }
 	
 	virtual void OnAction(){
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -187,7 +192,6 @@ public:
 			}
 			
 			undo.TakeOver( new meUObjectTextureSetSkin( texture, newskin ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 			
 		}else{
 			deObjectReference refTexture;
@@ -196,8 +200,46 @@ public:
 			texture->SetSkinPath( newskin );
 			
 			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 		}
+		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cActionSetSkinObjProp : public igdeAction{
+	meWPBrowser &pPanel;
+	const decString pName;
+	
+public:
+	cActionSetSkinObjProp( meWPBrowser &panel, const decString &name ) : igdeAction(
+		decString( "Active Object Set Property: " ) + name, NULL,
+		decString( "Set property '" ) + name + "' of active object" ), pPanel( panel ), pName( name ){ }
+	
+	virtual void OnAction(){
+		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
+		if( ! gdskin ){
+			return;
+		}
+		
+		meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
+		if( ! object ){
+			return;
+		}
+		
+		const decString &newValue = gdskin->GetPath();
+		igdeUndoReference undo;
+		
+		if( object->GetProperties().Has( pName ) ){
+			const decString &oldValue = object->GetProperties().GetAt( pName );
+			if( newValue == oldValue ){
+				return;
+			}
+			
+			undo.TakeOver( new meUObjectSetProperty( object, pName, oldValue, newValue ) );
+			
+		}else{
+			undo.TakeOver( new meUObjectAddProperty( object, pName, newValue ) );
+		}
+		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -259,23 +301,40 @@ public:
 			switch( pPanel.GetWorld()->GetGuiParameters().GetElementMode() ){
 			case meWorldGuiParameters::eemObject:{
 				const meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
+				if( ! object ){
+					break;
+				}
 				
-				if( object ){
-					igdeMenuCascadeReference subMenu;
-					subMenu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment(), "Set Object Texture" ) );
-					
-					decStringList names;
-					object->GetModelTextureNameList( names );
-					names.SortAscending();
-					
-					const int textureCount = names.GetCount();
+				// object textures
+				decStringList names;
+				object->GetModelTextureNameList( names );
+				names.SortAscending();
+				
+				const int textureCount = names.GetCount();
+				if( textureCount > 0 ){
+					helper.MenuSeparator( menu );
 					int i;
 					for( i=0; i<textureCount; i++ ){
-						helper.MenuCommand( subMenu, new cActionSetSkinObjTex( pPanel, names.GetAt( i ) ), true );
+						helper.MenuCommand( menu, new cActionSetSkinObjTex( pPanel, names.GetAt( i ) ), true );
 					}
-					
-					menu.AddChild( subMenu );
 				}
+				
+				// skin based properties
+				if( object->GetGDClass() ){
+					names.RemoveAll();
+					meHelpers::GetPatternTypePropertyNames( *object->GetGDClass(), igdeGDProperty::epptSkin, names );
+					names.SortAscending();
+					
+					const int nameCount = names.GetCount();
+					if( nameCount > 0 ){
+						helper.MenuSeparator( menu );
+						int i;
+						for( i=0; i<nameCount; i++ ){
+							helper.MenuCommand( menu, new cActionSetSkinObjProp( pPanel, names.GetAt( i ) ), true );
+						}
+					}
+				}
+				
 				}break;
 				
 			case meWorldGuiParameters::eemDecal:
@@ -318,7 +377,7 @@ class cActionSetClass : public igdeAction{
 	
 public:
 	cActionSetClass( meWPBrowser &panel ) : igdeAction( "Set Class", NULL,
-		"Set class to selected objects" ), pPanel( panel ){ }
+		"Set class of selected objects" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDClass * const gdclass = pPanel.GetSelectedObjectClass();
@@ -358,8 +417,8 @@ class cActionSetSkin : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetSkin( meWPBrowser &panel ) : igdeAction( "Set Skin", NULL,
-		"Set skin to selected objects active textures" ), pPanel( panel ){ }
+	cActionSetSkin( meWPBrowser &panel ) : igdeAction( "Objects Set Active Texture Skin", NULL,
+		"Set skin of active texture of selected objects" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -399,8 +458,8 @@ class cActionSetDecal : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetDecal( meWPBrowser &panel ) : igdeAction( "Set Skin", NULL,
-		"Set skin to selected decals" ), pPanel( panel ){ }
+	cActionSetDecal( meWPBrowser &panel ) : igdeAction( "Decals Set Skin", NULL,
+		"Set skin of selected decals" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
