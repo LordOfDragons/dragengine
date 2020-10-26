@@ -226,7 +226,9 @@ void deIesFormatLm63d1986::pReadValues( decStringList &values, int count ){
 	values.RemoveAll();
 	
 	while( next < count ){
-		const decStringList lineValues( pLines.GetAt( pCurLine++ ).Split( " \t\v" ) );
+		// according to the reference documentation values are separated by spaces. in one file
+		// though commas are used instead. accepting this here too although not correct
+		const decStringList lineValues( pLines.GetAt( pCurLine++ ).Split( " \t\v," ) );
 		const int lineValueCount = lineValues.GetCount();
 		
 		for( i=0; i<lineValueCount; i++ ){
