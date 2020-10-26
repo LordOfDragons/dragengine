@@ -1083,11 +1083,36 @@
 			This is a single value with default 0. Rotates texture coordinates counter
 			clock wise around the center of the texture. If multiple transformations are
 			used applies first "texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+			Value represents rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
 		<default>
 			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='omnidir.rotate'>
+		<description>
+			Defines rotation of omni-direction textures relative to model texture coordinates.
+			This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+			counter clock wise. Red (first) component is rotation around X axis, green (second)
+			component is rotation around Y axis and blue (third) component is rotation around
+			Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
