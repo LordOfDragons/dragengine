@@ -53,6 +53,8 @@ private:
 	deModelReference pModel;
 	deSkinReference pSkin;
 	deDynamicSkinReference pDynamicSkin;
+	deModelReference pLightBoxModel;
+	deSkinReference pLightBoxSkin;
 	igdeWSky *pSky;
 	deCanvasRenderWorldReference pCanvasRenderWorld;
 	
