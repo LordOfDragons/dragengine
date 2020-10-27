@@ -225,6 +225,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Omni direction texture rotation. */
 		eptOmniDirRotate,
 		
+		/** \brief Omni direction texture rotation applied only on spot type light sources. */
+		eptOmniDirRotateSpot,
+		
 		
 		
 		/** \brief Use texture variation in U direction. */

@@ -83,6 +83,7 @@ public:
 		empTexCoordScale,
 		empTexCoordRotate,
 		empOmniDirRotate,
+		empOmniDirRotateSpot,
 		empThickness,
 		empTransparency,
 		empTransparencyMultiplier,
@@ -275,6 +276,7 @@ private:
 	decVector2 pTexCoordScale;
 	float pTexCoordRotate;
 	decVector pOmniDirRotate;
+	decVector pOmniDirRotateSpot;
 	
 	bool pVariationU;
 	bool pVariationV;
@@ -708,6 +710,12 @@ public:
 	
 	/** \brief Set omni directional texture rotate. */
 	void SetOmniDirRotate( const decVector &rotate );
+	
+	/** \brief Omni directional texture rotate for spot lights only. */
+	inline const decVector &GetOmniDirRotateSpot() const{ return pOmniDirRotateSpot; }
+	
+	/** \brief Set omni directional texture rotate for spot lights only. */
+	void SetOmniDirRotateSpot( const decVector &rotate );
 	
 	
 	

@@ -1724,11 +1724,12 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			paramBlock.SetParameterDataMat4x3( target, matrix );
 			*/
 			
-			decVector rotate;
+			decMatrix matrixRotate;
 			if( light.GetUseSkinTexture() ){
-				rotate = light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI;
+				matrixRotate = decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotateSpot() * TWO_PI )
+					.QuickMultiply( decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI ) );
 			}
-			paramBlock.SetParameterDataMat4x3( target, ( decMatrix::CreateRotation( rotate ) * matrixMV ).QuickInvert() );
+			paramBlock.SetParameterDataMat4x3( target, matrixRotate.QuickMultiply( matrixMV ).QuickInvert() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );

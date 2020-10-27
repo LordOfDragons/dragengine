@@ -1515,6 +1515,10 @@ void deoglSkinTexture::SetOmniDirRotate( const decVector &rotate ){
 	pOmniDirRotate = rotate;
 }
 
+void deoglSkinTexture::SetOmniDirRotateSpot( const decVector &rotate ){
+	pOmniDirRotateSpot = rotate;
+}
+
 
 
 void deoglSkinTexture::SetVariationU( bool enable ){
@@ -1548,6 +1552,10 @@ void deoglSkinTexture::SetOutlineSolidity( float solidity ){
 
 void deoglSkinTexture::SetOutlineThickness( float thickness ){
 	pOutlineThickness = decMath::max( thickness, 0.0f );
+}
+
+void deoglSkinTexture::SetOutlineThicknessScreen( bool enable ){
+	pOutlineThicknessScreen = enable;
 }
 
 void deoglSkinTexture::SetOutlineEmissivity( const decColor &emissivity ){
@@ -2362,6 +2370,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pOmniDirRotate.Set( value, value, value );
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( value, value, value );
+			break;
+			
 		case deoglSkinPropertyMap::eptShadowNone:
 			pShadowNone = value > 0.5f;
 			break;
@@ -2504,6 +2516,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
 			pOmniDirRotate.Set( color.r, color.g, color.b );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( color.r, color.g, color.b );
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
@@ -2720,6 +2736,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
 			materialProperty = pMaterialProperties + empOmniDirRotate;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			materialProperty = pMaterialProperties + empOmniDirRotateSpot;
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
@@ -3004,6 +3024,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOmniDirRotate:
 			pMaterialProperties[ empOmniDirRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pMaterialProperties[ empOmniDirRotateSpot ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
