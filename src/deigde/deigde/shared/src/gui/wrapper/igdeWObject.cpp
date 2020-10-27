@@ -272,6 +272,9 @@ void igdeWObject::SetGDClass( igdeGDClass *gdClass ){
 	
 	if( pWorld ){
 		pCreateSubObjects();
+		
+		pSubObjectsInitTriggers();
+		pSubObjectsUpdateTriggers();
 	}
 }
 
