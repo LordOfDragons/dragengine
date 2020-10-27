@@ -32,11 +32,12 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/skin/deSkinManager.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 
@@ -170,8 +171,9 @@ void seTexture::UpdateEngineSkin(){
 	
 	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin( "", builder );
 	
-	// update the component with the new skin
+	// update component and light with the new skin
 	AssignSkinToComponentTexture();
+	AssignSkinToLight();
 	
 	// no more dirty
 	pDirtySkin = false;
@@ -200,6 +202,17 @@ void seTexture::AssignSkinToComponentTexture(){
 	engComponent.NotifyTextureChanged( index );
 	
 	pUpdateTexCoordTransform();
+}
+
+void seTexture::AssignSkinToLight(){
+	if( ! pSkin || ! pSkin->GetEngineComponent() ){
+		return;
+	}
+	if( pSkin->GetTextureList().GetAt( 0 ) != this ){
+		return;
+	}
+	
+	pSkin->GetEngineLight()->SetLightSkin( pEngSkin );
 }
 
 

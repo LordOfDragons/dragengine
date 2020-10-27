@@ -103,6 +103,9 @@ public:
 	/** Assign skin to the matching component texture if possible. */
 	void AssignSkinToComponentTexture();
 	
+	/** \brief Assign skin to light if possible. */
+	void AssignSkinToLight();
+	
 	/** Notifies the listeners that the texture changed. */
 	void NotifyChanged();
 	/** Notifies the listeners that the texture name changed. */

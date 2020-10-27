@@ -137,7 +137,7 @@ public:
 	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
 	
 	/** \brief Engine light or NULL. */
-	inline const deLight *GetEngineLight() const{ return pEngLight; }
+	inline deLight *GetEngineLight() const{ return pEngLight; }
 	
 	/** \brief Preview mode. */
 	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
