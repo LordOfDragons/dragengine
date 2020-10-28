@@ -205,6 +205,7 @@ class ECBehaviorLight extends DefaultECBehavior
 				return
 			end
 			
+			this.addShadowIgnoreComponents( stub )
 			this.pECBehavior.createListeners( this )
 			
 			if this.pECBehavior.getTriggerTable() != null
@@ -233,6 +234,23 @@ class ECBehaviorLight extends DefaultECBehavior
 		 */
 		protected func Light createLight( StubElement stub )
 			return this.pECBehavior.getLight().createLight( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Add components to ignore while casting shadows.
+		 * \version 1.4
+		 * 
+		 * Default implementation calls ECBehaviorLight.forEachIgnoreComponent() and adds
+		 * all visited components as components to ignore.
+		 */
+		protected func void addShadowIgnoreComponents( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			this.pECBehavior.forEachShadowIgnoreComponent( block ECBehaviorComponent each
+				var Component component = each.instance( element ).getComponent()
+				if component != null
+					this.pLight.addShadowIgnoreComponent( component )
+				end
+			end )
 		end
 		
 		/**
@@ -411,6 +429,7 @@ class ECBehaviorLight extends DefaultECBehavior
 	private var ECBehaviorTriggered pTrigger
 	private var ECBehaviorLight pSyncTrigger
 	private var TSTriggerTable pTriggerTable
+	private var Array pShadowIgnoreComponents
 	private var Array pListenerFactories
 	
 	
@@ -446,6 +465,7 @@ class ECBehaviorLight extends DefaultECBehavior
 	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
 		this.pCollider = collider
 		this.pTriggerTable = triggerTable
+		this.pShadowIgnoreComponents = Array.new()
 		this.pListenerFactories = Array.new()
 		
 		this.pLight = ECComposeLight.new( eclass, prefix )
@@ -460,6 +480,7 @@ class ECBehaviorLight extends DefaultECBehavior
 	public func void dispose()
 		this.pCollider = null
 		this.pSyncTrigger = null
+		this.pShadowIgnoreComponents = null
 		this.pListenerFactories = null
 		super.dispose()
 	end
@@ -504,6 +525,25 @@ class ECBehaviorLight extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	protected func void setTriggerTable( TSTriggerTable triggerTable )
 		this.pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Add component to ignore while casting shadows.
+	 * \version 1.4
+	 */
+	public func void addShadowIgnoreComponent( ECBehaviorComponent component )
+		if component == null
+			throw ENullPointer.new()
+		end
+		this.pShadowIgnoreComponents.add( component )
+	end
+	
+	/**
+	 * \brief Visit components to ignore while casting shadows using block with parameter ECBehaviorComponent.
+	 * \version 1.4
+	 */
+	public func void forEachShadowIgnoreComponent( Block ablock )
+		this.pShadowIgnoreComponents.forEach( ablock )
 	end
 	
 	/** \brief Add listener factory. */
