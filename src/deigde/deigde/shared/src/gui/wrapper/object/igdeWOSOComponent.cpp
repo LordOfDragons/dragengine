@@ -290,6 +290,7 @@ pAttachment( NULL ),
 pPlaybackControllerIndex( -1 ),
 pRenderEnvMap( false ),
 pAffectsAudio( false ),
+pLightShadowIgnore( pGDComponent.GetLightShadowIgnore() ),
 pColliderCanInteract( false ),
 pColliderAddedToWorld( false )
 {

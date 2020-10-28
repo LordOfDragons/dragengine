@@ -35,7 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDCComponent::igdeGDCComponent(){
+igdeGDCComponent::igdeGDCComponent() :
+pLightShadowIgnore( false )
+{
 	pDoNotScale = false;
 	pStatic = true;
 	pPartialHide = false;
@@ -59,6 +61,7 @@ pRenderEnvMap( component.pRenderEnvMap ),
 pAffectsAudio( component.pAffectsAudio ),
 pPartialHide( component.pPartialHide ),
 pAttachTarget( component.pAttachTarget ),
+pLightShadowIgnore( component.pLightShadowIgnore ),
 pColliderResponseType( component.pColliderResponseType ),
 pPosition( component.pPosition ),
 pOrientation( component.pOrientation ),
@@ -134,6 +137,10 @@ void igdeGDCComponent::SetRenderEnvMap( bool renderEnvMap ){
 
 void igdeGDCComponent::SetAffectsAudio( bool affectsAudio ){
 	pAffectsAudio = affectsAudio;
+}
+
+void igdeGDCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+	pLightShadowIgnore = lightShadowIgnore;
 }
 
 void igdeGDCComponent::SetPosition( const decDVector &position ){

@@ -465,6 +465,9 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 			}else if( tagName == "affectsAudio" ){
 				component->SetAffectsAudio( GetCDataBool( *tag ) );
 				
+			}else if( tagName == "lightShadowIgnore" ){
+				component->SetLightShadowIgnore( GetCDataBool( *tag ) );
+				
 			}else if( tagName == "position" ){
 				decVector position;
 				ReadVector( *tag, position );

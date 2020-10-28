@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "igdeWOSOLight.h"
+#include "igdeWOSOComponent.h"
 #include "igdeWOSOVisitor.h"
 #include "../igdeWObject.h"
 #include "../../../engine/igdeEngineController.h"
@@ -124,6 +125,21 @@ public:
 	}
 };
 
+class VisitorAddShadowIgnoreComponents : public igdeWOSOVisitor{
+private:
+	deLight &pLight;
+	
+public:
+	VisitorAddShadowIgnoreComponents( deLight &light ) : pLight( light ){ }
+	
+	virtual void VisitComponent( igdeWOSOComponent &component ){
+		if( component.GetLightShadowIgnore()
+		&& ! pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
+			pLight.AddShadowIgnoreComponent( component.GetComponent() );
+		}
+	}
+};
+
 
 // Class igdeWOSOLight
 ////////////////////////
@@ -200,6 +216,7 @@ void igdeWOSOLight::UpdateLayerMasks(){
 
 void igdeWOSOLight::OnAllSubObjectsFinishedLoading(){
 	pUpdateLight();
+	pAddShadowIgnoreComponents();
 }
 
 void igdeWOSOLight::Visit( igdeWOSOVisitor &visitor ){
@@ -394,4 +411,11 @@ void igdeWOSOLight::DetachFromCollider(){
 	pAttachedToCollider->RemoveAttachment( pAttachment );
 	pAttachment = NULL;
 	pAttachedToCollider = NULL;
+}
+
+void igdeWOSOLight::pAddShadowIgnoreComponents(){
+	if( pLight ){
+		VisitorAddShadowIgnoreComponents visitor( pLight );
+		GetWrapper().VisitSubObjects( visitor );
+	}
 }

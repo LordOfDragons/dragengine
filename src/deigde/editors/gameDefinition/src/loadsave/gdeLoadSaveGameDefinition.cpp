@@ -703,6 +703,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 		}else if( tagName == "affectsAudio" ){
 			component.SetAffectsAudio( GetCDataBool( *tag ) );
 			
+		}else if( tagName == "lightShadowIgnore" ){
+			component.SetLightShadowIgnore( GetCDataBool( *tag ) );
+			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
@@ -2346,6 +2349,9 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	}
 	if( ! component.GetAffectsAudio() ){
 		writer.WriteDataTagBool( "affectsAudio", component.GetAffectsAudio() );
+	}
+	if( ! component.GetLightShadowIgnore() ){
+		writer.WriteDataTagBool( "lightShadowIgnore", component.GetLightShadowIgnore() );
 	}
 	
 	const decVector &position = component.GetPosition();

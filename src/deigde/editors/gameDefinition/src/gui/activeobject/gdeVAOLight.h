@@ -29,6 +29,7 @@ class gdeOCLight;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
+class deComponent;
 class deDebugDrawer;
 class deLight;
 
@@ -91,6 +92,9 @@ public:
 	
 	/** \brief Selected object changed. */
 	void SelectedObjectChanged();
+	
+	/** \brief Ignore component during shadow casting. */
+	void ShadowIgnoreComponent( deComponent *component );
 	/*@}*/
 	
 	

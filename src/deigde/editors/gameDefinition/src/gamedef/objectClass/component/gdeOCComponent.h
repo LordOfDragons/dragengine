@@ -87,6 +87,7 @@ private:
 	bool pAffectsAudio;
 	bool pPartialHide;
 	bool pAttachTarget;
+	bool pLightShadowIgnore;
 	deCollider::eResponseType pColliderResponseType;
 	decVector pPosition;
 	decVector pRotation;
@@ -201,6 +202,12 @@ public:
 	
 	/** \brief Set if component affects audio. */
 	void SetAffectsAudio( bool affectsAudio );
+	
+	/** \brief Component is ignore from shadow casting of lights on the same object. */
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
+	
+	/** \brief Set if component is ignored from shadow casting of lights on the same object. */
+	void SetLightShadowIgnore( bool lightShadowIgnore );
 	
 	
 	

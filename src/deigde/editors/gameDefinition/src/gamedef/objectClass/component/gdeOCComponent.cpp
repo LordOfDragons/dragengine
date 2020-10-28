@@ -43,6 +43,7 @@ pRenderEnvMap( true ),
 pAffectsAudio( true ),
 pPartialHide( false ),
 pAttachTarget( true ),
+pLightShadowIgnore( false ),
 pColliderResponseType( deCollider::ertStatic ),
 pActiveTexture( NULL ){
 }
@@ -61,6 +62,7 @@ pRenderEnvMap( component.pRenderEnvMap ),
 pAffectsAudio( component.pAffectsAudio ),
 pPartialHide( component.pPartialHide ),
 pAttachTarget( component.pAttachTarget ),
+pLightShadowIgnore( component.pLightShadowIgnore ),
 pColliderResponseType( component.pColliderResponseType ),
 pPosition( component.pPosition ),
 pRotation( component.pRotation ),
@@ -156,6 +158,10 @@ void gdeOCComponent::SetRenderEnvMap( bool renderEnvMap ){
 
 void gdeOCComponent::SetAffectsAudio( bool affectsAudio ){
 	pAffectsAudio = affectsAudio;
+}
+
+void gdeOCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+	pLightShadowIgnore = lightShadowIgnore;
 }
 
 void gdeOCComponent::SetPosition( const decVector &position ){
