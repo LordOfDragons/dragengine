@@ -1051,8 +1051,8 @@ pDirtyEngModelTexNames( true )
 		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pTextureListProperties, 5, headersPropertyValues, 2,
-		"Property values", new cListTexturePropertyValues( *this ) );
+	helper.IconListBox( groupBox, pTextureListProperties, decPoint( 100, 120 ),
+		headersPropertyValues, 2, "Property values", new cListTexturePropertyValues( *this ) );
 	pTextureListProperties->SetDefaultSorter();
 }
 

@@ -1033,32 +1033,54 @@ igdeListBoxListener *listener ){
 
 
 void igdeUIHelper::IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
-int rows, const sColumnHeader *headers, int headerCount, const char *description,
-igdeIconListBoxListener *listener ){
-	IconListBox( rows, headers, headerCount, description, listBox, listener );
+const sColumnHeader *headers, int headerCount, const char *description, igdeIconListBoxListener *listener ){
+	IconListBox( headers, headerCount, description, listBox, listener );
 	parent.AddChild( listBox );
 }
 
-void igdeUIHelper::IconListBox( int rows, const sColumnHeader *headers, int headerCount,
-const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
-	if( ! headers || headerCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	listBox.TakeOver( new igdeIconListBox( pEnvironment, rows, description ) );
+
+void igdeUIHelper::IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
+const decPoint &minimumSize, const sColumnHeader *headers, int headerCount, const char *description,
+igdeIconListBoxListener *listener ){
+	IconListBox( minimumSize, headers, headerCount, description, listBox, listener );
+	parent.AddChild( listBox );
+}
+
+static void igdeUIHelperIconListBoxShared( igdeIconListBox &listBox,
+const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxListener *listener ){
 	igdeListHeaderReference realHeader;
 	
 	int i;
 	for( i=0; i<headerCount; i++ ){
 		realHeader.TakeOver( new igdeListHeader( headers[ i ].title,
 			headers[ i ].icon, headers[ i ].size ) );
-		listBox->AddHeader( realHeader );
+		listBox.AddHeader( realHeader );
 	}
 	
 	if( listener ){
-		listBox->AddListener( listener );
+		listBox.AddListener( listener );
 		listener->FreeReference(); // we take over the reference
 	}
+}
+
+void igdeUIHelper::IconListBox( const sColumnHeader *headers, int headerCount,
+const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
+	if( ! headers || headerCount < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	listBox.TakeOver( new igdeIconListBox( pEnvironment, description ) );
+	igdeUIHelperIconListBoxShared( listBox, headers, headerCount, listener );
+}
+
+void igdeUIHelper::IconListBox( const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
+const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
+	if( ! headers || headerCount < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	listBox.TakeOver( new igdeIconListBox( pEnvironment, minimumSize, description ) );
+	igdeUIHelperIconListBoxShared( listBox, headers, headerCount, listener );
 }
 
 

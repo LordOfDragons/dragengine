@@ -102,6 +102,7 @@ public:
 	virtual void UpdateStyles();
 	virtual void UpdateDescription();
 	virtual void UpdateEnabled();
+	virtual void UpdateMinimumSize();
 	virtual void Focus();
 	virtual void MakeItemVisible( int index );
 	virtual void RemoveAllItems();

@@ -225,7 +225,8 @@ igdeDialog( environment, title, NULL, canResize )
 	const igdeUIHelper::sColumnHeader headers[] = {
 		igdeUIHelper::sColumnHeader( "Name", NULL, 200 )
 	};
-	helper.IconListBox( panelItems, pListItems, 10, headers, 1, "Items", new igdeDialogBrowser_ListItems( *this ) );
+	helper.IconListBox( panelItems, pListItems, decPoint( 100, 200 ), headers, 1, "Items",
+		new igdeDialogBrowser_ListItems( *this ) );
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode( igdeIconListBox::evmIconVertical );
 	

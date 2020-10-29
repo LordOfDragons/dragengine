@@ -449,7 +449,8 @@ pEnabled( true )
 	helper.Button( frameLine, pBtnKeyAdd, pActionPropertyAdd );
 	
 	const igdeUIHelper::sColumnHeader headers[] = { { "Key", NULL, 200 }, { "Value", NULL, 200 } };
-	helper.IconListBox( *this, pListProperties, 10, headers, 2, "Properties", new cListProperties( *this ) );
+	helper.IconListBox( *this, pListProperties, decPoint( 100, 150 ), headers, 2, "Properties",
+		new cListProperties( *this ) );
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue( *this, pEditPropertyValue, new cEditPropertyValue( *this ) );

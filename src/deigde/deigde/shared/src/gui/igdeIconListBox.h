@@ -75,7 +75,7 @@ private:
 	eViewMode pViewMode;
 	int pSelection;
 	igdeListItemSorterReference pSorter;
-	int pRows;
+	decPoint pMinimumSize;
 	decString pDescription;
 	decObjectOrderedSet pHeaders;
 	
@@ -87,7 +87,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listbox. */
-	igdeIconListBox( igdeEnvironment &environment, int rows, const char *description = "" );
+	igdeIconListBox( igdeEnvironment &environment, const char *description = "" );
+	
+	/** \brief Create listbox. */
+	igdeIconListBox( igdeEnvironment &environment, const decPoint &minimumSize, const char *description = "" );
 	
 	
 	
@@ -112,11 +115,11 @@ public:
 	/** \brief Set if button is enabled. */
 	void SetEnabled( bool enabled );
 	
-	/** \brief Visible rows. */
-	inline int GetRows() const{ return pRows; }
+	/** \brief Minimum size. */
+	inline const decPoint &GetMiniumSize() const{ return pMinimumSize; }
 	
-	/** \brief Set visible rows. */
-	void SetRows( int rows );
+	/** \brief Set minimum size. */
+	void SetMinimumSize( const decPoint &size );
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
@@ -369,6 +372,9 @@ protected:
 	
 	/** \brief Header changed. */
 	virtual void OnHeaderChanged();
+	
+	/** \brief Minimum size changed. */
+	virtual void OnMinimumSizeChanged();
 	/*@}*/
 };
 
