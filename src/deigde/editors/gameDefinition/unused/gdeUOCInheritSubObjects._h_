@@ -1,0 +1,128 @@
+/* 
+ * Drag[en]gine IGDE Game Definition Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+#ifndef _GDEUOCINHERITSUBOBJECTS_H_
+#define _GDEUOCINHERITSUBOBJECTS_H_
+
+#include "../../gamedef/objectClass/billboard/gdeOCBillboardList.h"
+#include "../../gamedef/objectClass/camera/gdeOCCameraList.h"
+#include "../../gamedef/objectClass/component/gdeOCComponentList.h"
+#include "../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbeList.h"
+#include "../../gamedef/objectClass/forceField/gdeOCForceFieldList.h"
+#include "../../gamedef/objectClass/light/gdeOCLightList.h"
+#include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlockerList.h"
+#include "../../gamedef/objectClass/navspace/gdeOCNavigationSpaceList.h"
+#include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitterList.h"
+#include "../../gamedef/objectClass/snappoint/gdeOCSnapPointList.h"
+#include "../../gamedef/objectClass/speaker/gdeOCSpeakerList.h"
+
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/deObjectReference.h>
+
+class gdeObjectClass;
+class gdeObjectClassList;
+
+
+
+/**
+ * \brief Undo action object class add component.
+ */
+class gdeUOCInheritSubObjects : public igdeUndo{
+private:
+	deObjectReference pObjectClass;
+	
+	gdeOCBillboardList pBillboards;
+	gdeOCCameraList pCameras;
+	gdeOCComponentList pComponents;
+	gdeOCEnvMapProbeList pEnvMapProbes;
+	gdeOCForceFieldList pForceFields;
+	gdeOCLightList pLights;
+	gdeOCNavigationBlockerList pNavigationBlockers;
+	gdeOCNavigationSpaceList pNavigationSpaces;
+	gdeOCParticleEmitterList pParticleEmitters;
+	gdeOCSnapPointList pSnapPoints;
+	gdeOCSpeakerList pSpeakers;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	gdeUOCInheritSubObjects( gdeObjectClass *objectClass );
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~gdeUOCInheritSubObjects();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Inherit sub objects replacing existing ones. */
+	void InheritAll( const gdeObjectClassList &objectClassList );
+	
+	void InheritBillboards( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritCameras( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass );
+	
+	void InheritComponents( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritEnvMapProbes( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritForceFields( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritLights( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritNavigationBlockers( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritNavigationSpaces( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritParticleEmitters( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	void InheritSnapPoints( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass );
+	
+	void InheritSpeakers( const gdeObjectClassList &objectClassList,
+		const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
+
+#endif

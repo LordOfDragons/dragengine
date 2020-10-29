@@ -50,7 +50,8 @@ public:
 		epRenderEnvMap,
 		epAffectsAudio,
 		epAttachPosition,
-		epAttachRotation
+		epAttachRotation,
+		epLightShadowIgnore
 	};
 	
 	
@@ -75,7 +76,7 @@ private:
 	decQuaternion pOrientation;
 	decString pBoneName;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[ epLightShadowIgnore + 1 ];
 	
 	igdeGDCCTextureList pTextureList;
 	

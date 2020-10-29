@@ -520,6 +520,9 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 				}else if( strcmp( value, "attachRotation" ) == 0 ){
 					component->SetPropertyName( igdeGDCComponent::epAttachRotation, GetAttributeString( *tag, "property" ) );
 					
+				}else if( strcmp( value, "lightShadowIgnore" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epLightShadowIgnore, GetAttributeString( *tag, "property" ) );
+					
 				}else{
 					LogWarnUnknownValue( *tag, value );
 				}

@@ -68,7 +68,7 @@ pOrientation( component.pOrientation ),
 pBoneName( component.pBoneName )
 {
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
+	for( i=0; i<=epLightShadowIgnore; i++ ){
 		pPropertyNames[ i ] = component.pPropertyNames[ i ];
 	}
 	
@@ -171,7 +171,7 @@ void igdeGDCComponent::SetPropertyName( int property, const char *name ){
 
 bool igdeGDCComponent::HasPropertyWithName( const char *name ) const{
 	int j;
-	for( j=0; j<=epAttachRotation; j++ ){
+	for( j=0; j<=epLightShadowIgnore; j++ ){
 		if( pPropertyNames[ j ] == name ){
 			return true;
 		}

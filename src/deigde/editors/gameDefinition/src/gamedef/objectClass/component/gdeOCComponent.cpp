@@ -81,7 +81,7 @@ pActiveTexture( NULL )
 			texture = NULL;
 		}
 		
-		for( i=0; i<=epAttachRotation; i++ ){
+		for( i=0; i<=epLightShadowIgnore; i++ ){
 			pPropertyNames[ i ] = component.pPropertyNames[ i ];
 		}
 		
@@ -192,7 +192,7 @@ void gdeOCComponent::SetPropertyName( eProperties property, const char *name ){
 
 bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
+	for( i=0; i<=epLightShadowIgnore; i++ ){
 		if( pPropertyNames[ i ] == name ){
 			return true;
 		}

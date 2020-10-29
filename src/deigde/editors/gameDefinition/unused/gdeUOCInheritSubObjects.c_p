@@ -1,0 +1,768 @@
+/* 
+ * Drag[en]gine IGDE Game Definition Editor
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "gdeUOCInheritSubObjects.h"
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
+#include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../gamedef/objectClass/inherit/gdeOCInherit.h"
+
+#include <dragengine/common/exceptions.h>
+
+
+
+// Class gdeUOCInheritSubObjects
+//////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+gdeUOCInheritSubObjects::gdeUOCInheritSubObjects( gdeObjectClass *objectClass ) :
+pObjectClass( objectClass )
+{
+	if( ! objectClass ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	SetShortInfo( "Inherit Sub-Objects" );
+}
+
+gdeUOCInheritSubObjects::~gdeUOCInheritSubObjects(){
+}
+
+
+
+// Management
+///////////////
+
+void gdeUOCInheritSubObjects::InheritAll( const gdeObjectClassList &objectClassList ){
+	const gdeOCInheritList &inherits = ( ( gdeObjectClass* )( deObject* )pObjectClass )->GetInherits();
+	const int count = inherits.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( ! childObjectClass ){
+			continue;
+		}
+		
+		InheritBillboards( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritCameras( objectClassList, *childObjectClass );
+		InheritComponents( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritEnvMapProbes( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritForceFields( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritLights( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritNavigationBlockers( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritNavigationSpaces( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritParticleEmitters( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+		InheritSnapPoints( objectClassList, *childObjectClass );
+		InheritSpeakers( objectClassList, *childObjectClass, inherit.GetPropertyPrefix() );
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritBillboards( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCBillboardList &billboards = objectClass.GetBillboards();
+	const int count = billboards.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCBillboard( *billboards.GetAt( i ) ) );
+		
+		gdeOCBillboard &billboard = ( gdeOCBillboard& )( deObject& )ref;
+		for( j=gdeOCBillboard::epSkin; j<gdeOCBillboard::epAttachPosition; j++ ){
+			const gdeOCBillboard::eProperties p = ( gdeOCBillboard::eProperties )j;
+			if( billboard.IsPropertySet( p ) ){
+				billboard.SetPropertyName( p, propertyPrefix + billboard.GetPropertyName( p ) );
+			}
+		}
+		
+		pBillboards.Add( &billboard );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritBillboards( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritCameras( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass ){
+	const gdeOCCameraList &cameras = objectClass.GetCameras();
+	const int count = cameras.GetCount();
+	deObjectReference ref;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCCamera( *cameras.GetAt( i ) ) );
+		pCameras.Add( ( gdeOCCamera* )( deObject* )ref );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritCameras( objectClassList, *childObjectClass );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritComponents( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCComponentList &components = objectClass.GetComponents();
+	const int count = components.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCComponent( *components.GetAt( i ) ) );
+		
+		gdeOCComponent &component = ( gdeOCComponent& )( deObject& )ref;
+		for( j=gdeOCComponent::epModel; j<gdeOCComponent::epAttachRotation; j++ ){
+			const gdeOCComponent::eProperties p = ( gdeOCComponent::eProperties )j;
+			if( component.IsPropertySet( p ) ){
+				component.SetPropertyName( p, propertyPrefix + component.GetPropertyName( p ) );
+			}
+		}
+		
+		pComponents.Add( &component );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritComponents( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritEnvMapProbes( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCEnvMapProbeList &probes = objectClass.GetEnvMapProbes();
+	const int count = probes.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCEnvMapProbe( *probes.GetAt( i ) ) );
+		
+		gdeOCEnvMapProbe &probe = ( gdeOCEnvMapProbe& )( deObject& )ref;
+		for( j=gdeOCEnvMapProbe::epInfluenceArea; j<gdeOCEnvMapProbe::epAttachRotation; j++ ){
+			const gdeOCEnvMapProbe::eProperties p = ( gdeOCEnvMapProbe::eProperties )j;
+			if( probe.IsPropertySet( p ) ){
+				probe.SetPropertyName( p, propertyPrefix + probe.GetPropertyName( p ) );
+			}
+		}
+		
+		pEnvMapProbes.Add( &probe );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritEnvMapProbes( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritForceFields( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCForceFieldList &forceFields = objectClass.GetForceFields();
+	const int count = forceFields.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCForceField( *forceFields.GetAt( i ) ) );
+		
+		gdeOCForceField &forceField = ( gdeOCForceField& )( deObject& )ref;
+		for( j=gdeOCForceField::epInfluenceArea; j<gdeOCForceField::epAttachRotation; j++ ){
+			const gdeOCForceField::eProperties p = ( gdeOCForceField::eProperties )j;
+			if( forceField.IsPropertySet( p ) ){
+				forceField.SetPropertyName( p, propertyPrefix + forceField.GetPropertyName( p ) );
+			}
+		}
+		for( j=gdeOCForceField::etEnabled; j<gdeOCForceField::etEnabled; j++ ){
+			const gdeOCForceField::eTriggers p = ( gdeOCForceField::eTriggers )j;
+			if( forceField.IsTriggerSet( p ) ){
+				forceField.SetTriggerName( p, propertyPrefix + forceField.GetTriggerName( p ) );
+			}
+		}
+		
+		pForceFields.Add( &forceField );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritForceFields( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritLights( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCLightList &lights = objectClass.GetLights();
+	const int count = lights.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCLight( *lights.GetAt( i ) ) );
+		
+		gdeOCLight &light = ( gdeOCLight& )( deObject& )ref;
+		for( j=gdeOCLight::epType; j<gdeOCLight::epAttachRotation; j++ ){
+			const gdeOCLight::eProperties p = ( gdeOCLight::eProperties )j;
+			if( light.IsPropertySet( p ) ){
+				light.SetPropertyName( p, propertyPrefix + light.GetPropertyName( p ) );
+			}
+		}
+		for( j=gdeOCLight::etActivated; j<gdeOCLight::etActivated; j++ ){
+			const gdeOCLight::eTriggers p = ( gdeOCLight::eTriggers )j;
+			if( light.IsTriggerSet( p ) ){
+				light.SetTriggerName( p, propertyPrefix + light.GetTriggerName( p ) );
+			}
+		}
+		
+		pLights.Add( &light );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritLights( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritNavigationBlockers( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCNavigationBlockerList &blockers = objectClass.GetNavigationBlockers();
+	const int count = blockers.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCNavigationBlocker( *blockers.GetAt( i ) ) );
+		
+		gdeOCNavigationBlocker &blocker = ( gdeOCNavigationBlocker& )( deObject& )ref;
+		for( j=gdeOCNavigationBlocker::epEnabled; j<gdeOCNavigationBlocker::epAttachRotation; j++ ){
+			const gdeOCNavigationBlocker::eProperties p = ( gdeOCNavigationBlocker::eProperties )j;
+			if( blocker.IsPropertySet( p ) ){
+				blocker.SetPropertyName( p, propertyPrefix + blocker.GetPropertyName( p ) );
+			}
+		}
+		
+		pNavigationBlockers.Add( &blocker );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritNavigationBlockers( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritNavigationSpaces( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCNavigationSpaceList &spaces = objectClass.GetNavigationSpaces();
+	const int count = spaces.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCNavigationSpace( *spaces.GetAt( i ) ) );
+		
+		gdeOCNavigationSpace &space = ( gdeOCNavigationSpace& )( deObject& )ref;
+		for( j=gdeOCNavigationSpace::epPath; j<gdeOCNavigationSpace::epAttachRotation; j++ ){
+			const gdeOCNavigationSpace::eProperties p = ( gdeOCNavigationSpace::eProperties )j;
+			if( space.IsPropertySet( p ) ){
+				space.SetPropertyName( p, propertyPrefix + space.GetPropertyName( p ) );
+			}
+		}
+		
+		pNavigationSpaces.Add( &space );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritNavigationSpaces( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritParticleEmitters( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCParticleEmitterList &emitters = objectClass.GetParticleEmitters();
+	const int count = emitters.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCParticleEmitter( *emitters.GetAt( i ) ) );
+		
+		gdeOCParticleEmitter &emitter = ( gdeOCParticleEmitter& )( deObject& )ref;
+		for( j=gdeOCParticleEmitter::epPath; j<gdeOCParticleEmitter::epAttachRotation; j++ ){
+			const gdeOCParticleEmitter::eProperties p = ( gdeOCParticleEmitter::eProperties )j;
+			if( emitter.IsPropertySet( p ) ){
+				emitter.SetPropertyName( p, propertyPrefix + emitter.GetPropertyName( p ) );
+			}
+		}
+		for( j=gdeOCParticleEmitter::etCasting; j<gdeOCParticleEmitter::etCasting; j++ ){
+			const gdeOCParticleEmitter::eTriggers p = ( gdeOCParticleEmitter::eTriggers )j;
+			if( emitter.IsTriggerSet( p ) ){
+				emitter.SetTriggerName( p, propertyPrefix + emitter.GetTriggerName( p ) );
+			}
+		}
+		
+		pParticleEmitters.Add( &emitter );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritParticleEmitters( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritSnapPoints( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass ){
+	const gdeOCSnapPointList &snapPoints = objectClass.GetSnapPoints();
+	const int count = snapPoints.GetCount();
+	deObjectReference ref;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCSnapPoint( *snapPoints.GetAt( i ) ) );
+		pSnapPoints.Add( ( gdeOCSnapPoint* )( deObject* )ref );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritSnapPoints( objectClassList, *childObjectClass );
+		}
+	}
+}
+
+void gdeUOCInheritSubObjects::InheritSpeakers( const gdeObjectClassList &objectClassList,
+const gdeObjectClass &objectClass, const decString &propertyPrefix ){
+	const gdeOCSpeakerList &speakers = objectClass.GetSpeakers();
+	const int count = speakers.GetCount();
+	deObjectReference ref;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		ref.TakeOver( new gdeOCSpeaker( *speakers.GetAt( i ) ) );
+		
+		gdeOCSpeaker &speaker = ( gdeOCSpeaker& )( deObject& )ref;
+		for( j=gdeOCSpeaker::epSound; j<gdeOCSpeaker::epAttachRotation; j++ ){
+			const gdeOCSpeaker::eProperties p = ( gdeOCSpeaker::eProperties )j;
+			if( speaker.IsPropertySet( p ) ){
+				speaker.SetPropertyName( p, propertyPrefix + speaker.GetPropertyName( p ) );
+			}
+		}
+		for( j=gdeOCSpeaker::etPlaying; j<gdeOCSpeaker::etMuted; j++ ){
+			const gdeOCSpeaker::eTriggers p = ( gdeOCSpeaker::eTriggers )j;
+			if( speaker.IsTriggerSet( p ) ){
+				speaker.SetTriggerName( p, propertyPrefix + speaker.GetTriggerName( p ) );
+			}
+		}
+		
+		pSpeakers.Add( &speaker );
+	}
+	
+	if( count > 0 ){
+		return;
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int count2 = inherits.GetCount();
+	
+	for( i=0; i<count2; i++ ){
+		const gdeOCInherit &inherit = *inherits.GetAt( i );
+		const gdeObjectClass * const childObjectClass = objectClassList.GetNamed( inherit.GetName() );
+		if( childObjectClass ){
+			InheritSpeakers( objectClassList, *childObjectClass, propertyPrefix + inherit.GetPropertyPrefix() );
+		}
+	}
+}
+
+
+
+void gdeUOCInheritSubObjects::Undo(){
+	gdeObjectClass &objectClass = *( ( gdeObjectClass* )( deObject* )pObjectClass );
+	
+	// clear selection if any object to remove is active
+	gdeGameDefinition * const gameDefinition = objectClass.GetGameDefinition();
+	if( gameDefinition ){
+		if( objectClass.GetBillboards().Has( gameDefinition->GetActiveOCBillboard() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCBillboard( NULL );
+			
+		}else if( objectClass.GetCameras().Has( gameDefinition->GetActiveOCCamera() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCCamera( NULL );
+			
+		}else if( objectClass.GetComponents().Has( gameDefinition->GetActiveOCComponent() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCComponent( NULL );
+			
+		}else if( objectClass.GetEnvMapProbes().Has( gameDefinition->GetActiveOCEnvMapProbe() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCEnvMapProbe( NULL );
+			
+		}else if( objectClass.GetForceFields().Has( gameDefinition->GetActiveOCForceField() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCForceField( NULL );
+			
+		}else if( objectClass.GetLights().Has( gameDefinition->GetActiveOCLight() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCLight( NULL );
+			
+		}else if( objectClass.GetNavigationBlockers().Has( gameDefinition->GetActiveOCNavigationBlocker() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCNavigationBlocker( NULL );
+			
+		}else if( objectClass.GetNavigationSpaces().Has( gameDefinition->GetActiveOCNavigationSpace() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCNavigationSpace( NULL );
+			
+		}else if( objectClass.GetParticleEmitters().Has( gameDefinition->GetActiveOCParticleEmitter() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCParticleEmitter( NULL );
+			
+		}else if( objectClass.GetSnapPoints().Has( gameDefinition->GetActiveOCSnapPoint() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCSnapPoint( NULL );
+			
+		}else if( objectClass.GetSpeakers().Has( gameDefinition->GetActiveOCSpeaker() ) ){
+			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker ){
+				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+			}
+			gameDefinition->SetActiveOCSpeaker( NULL );
+		}
+	}
+	
+	// remove objects
+	int i;
+	
+	if( pBillboards.GetCount() > 0 ){
+		for( i=0; i<pBillboards.GetCount(); i++ ){
+			if( objectClass.GetBillboards().Has( pBillboards.GetAt( i ) ) ){
+				objectClass.GetBillboards().Remove( pBillboards.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyBillboardsChanged();
+	}
+	
+	if( pCameras.GetCount() > 0 ){
+		for( i=0; i<pCameras.GetCount(); i++ ){
+			if( objectClass.GetCameras().Has( pCameras.GetAt( i ) ) ){
+				objectClass.GetCameras().Remove( pCameras.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyCamerasChanged();
+	}
+	
+	if( pComponents.GetCount() > 0 ){
+		for( i=0; i<pComponents.GetCount(); i++ ){
+			if( objectClass.GetComponents().Has( pComponents.GetAt( i ) ) ){
+				objectClass.GetComponents().Remove( pComponents.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyComponentsChanged();
+	}
+	
+	if( pEnvMapProbes.GetCount() > 0 ){
+		for( i=0; i<pEnvMapProbes.GetCount(); i++ ){
+			if( objectClass.GetEnvMapProbes().Has( pEnvMapProbes.GetAt( i ) ) ){
+				objectClass.GetEnvMapProbes().Remove( pEnvMapProbes.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyEnvMapProbesChanged();
+	}
+	
+	if( pForceFields.GetCount() > 0 ){
+		for( i=0; i<pForceFields.GetCount(); i++ ){
+			if( objectClass.GetForceFields().Has( pForceFields.GetAt( i ) ) ){
+				objectClass.GetForceFields().Remove( pForceFields.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyForceFieldsChanged();
+	}
+	
+	if( pLights.GetCount() > 0 ){
+		for( i=0; i<pLights.GetCount(); i++ ){
+			if( objectClass.GetLights().Has( pLights.GetAt( i ) ) ){
+				objectClass.GetLights().Remove( pLights.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyLightsChanged();
+	}
+	
+	if( pNavigationBlockers.GetCount() > 0 ){
+		for( i=0; i<pNavigationBlockers.GetCount(); i++ ){
+			if( objectClass.GetNavigationBlockers().Has( pNavigationBlockers.GetAt( i ) ) ){
+				objectClass.GetNavigationBlockers().Remove( pNavigationBlockers.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyNavigationBlockersChanged();
+	}
+	
+	if( pNavigationSpaces.GetCount() > 0 ){
+		for( i=0; i<pNavigationSpaces.GetCount(); i++ ){
+			if( objectClass.GetNavigationSpaces().Has( pNavigationSpaces.GetAt( i ) ) ){
+				objectClass.GetNavigationSpaces().Remove( pNavigationSpaces.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyNavigationSpacesChanged();
+	}
+	
+	if( pParticleEmitters.GetCount() > 0 ){
+		for( i=0; i<pParticleEmitters.GetCount(); i++ ){
+			if( objectClass.GetParticleEmitters().Has( pParticleEmitters.GetAt( i ) ) ){
+				objectClass.GetParticleEmitters().Remove( pParticleEmitters.GetAt( i ) );
+			}
+		}
+		objectClass.NotifyParticleEmittersChanged();
+	}
+	
+	if( pSnapPoints.GetCount() > 0 ){
+		for( i=0; i<pSnapPoints.GetCount(); i++ ){
+			if( objectClass.GetSnapPoints().Has( pSnapPoints.GetAt( i ) ) ){
+				objectClass.GetSnapPoints().Remove( pSnapPoints.GetAt( i ) );
+			}
+		}
+		objectClass.NotifySnapPointsChanged();
+	}
+	
+	if( pSpeakers.GetCount() > 0 ){
+		for( i=0; i<pSpeakers.GetCount(); i++ ){
+			if( objectClass.GetSpeakers().Has( pSpeakers.GetAt( i ) ) ){
+				objectClass.GetSpeakers().Remove( pSpeakers.GetAt( i ) );
+			}
+		}
+		objectClass.NotifySpeakersChanged();
+	}
+}
+
+void gdeUOCInheritSubObjects::Redo(){
+	gdeObjectClass &objectClass = *( ( gdeObjectClass* )( deObject* )pObjectClass );
+	int i;
+	
+	if( pBillboards.GetCount() > 0 ){
+		for( i=0; i<pBillboards.GetCount(); i++ ){
+			objectClass.GetBillboards().Add( pBillboards.GetAt( i ) );
+		}
+		objectClass.NotifyBillboardsChanged();
+	}
+	
+	if( pCameras.GetCount() > 0 ){
+		for( i=0; i<pCameras.GetCount(); i++ ){
+			objectClass.GetCameras().Add( pCameras.GetAt( i ) );
+		}
+		objectClass.NotifyCamerasChanged();
+	}
+	
+	if( pComponents.GetCount() > 0 ){
+		for( i=0; i<pComponents.GetCount(); i++ ){
+			objectClass.GetComponents().Add( pComponents.GetAt( i ) );
+		}
+		objectClass.NotifyComponentsChanged();
+	}
+	
+	if( pEnvMapProbes.GetCount() > 0 ){
+		for( i=0; i<pEnvMapProbes.GetCount(); i++ ){
+			objectClass.GetEnvMapProbes().Add( pEnvMapProbes.GetAt( i ) );
+		}
+		objectClass.NotifyEnvMapProbesChanged();
+	}
+	
+	if( pForceFields.GetCount() > 0 ){
+		for( i=0; i<pForceFields.GetCount(); i++ ){
+			objectClass.GetForceFields().Add( pForceFields.GetAt( i ) );
+		}
+		objectClass.NotifyForceFieldsChanged();
+	}
+	
+	if( pLights.GetCount() > 0 ){
+		for( i=0; i<pLights.GetCount(); i++ ){
+			objectClass.GetLights().Add( pLights.GetAt( i ) );
+		}
+		objectClass.NotifyLightsChanged();
+	}
+	
+	if( pNavigationBlockers.GetCount() > 0 ){
+		for( i=0; i<pNavigationBlockers.GetCount(); i++ ){
+			objectClass.GetNavigationBlockers().Add( pNavigationBlockers.GetAt( i ) );
+		}
+		objectClass.NotifyNavigationBlockersChanged();
+	}
+	
+	if( pNavigationSpaces.GetCount() > 0 ){
+		for( i=0; i<pNavigationSpaces.GetCount(); i++ ){
+			objectClass.GetNavigationSpaces().Add( pNavigationSpaces.GetAt( i ) );
+		}
+		objectClass.NotifyNavigationSpacesChanged();
+	}
+	
+	if( pParticleEmitters.GetCount() > 0 ){
+		for( i=0; i<pParticleEmitters.GetCount(); i++ ){
+			objectClass.GetParticleEmitters().Add( pParticleEmitters.GetAt( i ) );
+		}
+		objectClass.NotifyParticleEmittersChanged();
+	}
+	
+	if( pSnapPoints.GetCount() > 0 ){
+		for( i=0; i<pSnapPoints.GetCount(); i++ ){
+			objectClass.GetSnapPoints().Add( pSnapPoints.GetAt( i ) );
+		}
+		objectClass.NotifySnapPointsChanged();
+	}
+	
+	if( pSpeakers.GetCount() > 0 ){
+		for( i=0; i<pSpeakers.GetCount(); i++ ){
+			objectClass.GetSpeakers().Add( pSpeakers.GetAt( i ) );
+		}
+		objectClass.NotifySpeakersChanged();
+	}
+}

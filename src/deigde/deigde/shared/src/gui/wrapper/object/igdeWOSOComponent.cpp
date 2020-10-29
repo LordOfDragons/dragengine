@@ -290,7 +290,7 @@ pAttachment( NULL ),
 pPlaybackControllerIndex( -1 ),
 pRenderEnvMap( false ),
 pAffectsAudio( false ),
-pLightShadowIgnore( pGDComponent.GetLightShadowIgnore() ),
+pLightShadowIgnore( false ),
 pColliderCanInteract( false ),
 pColliderAddedToWorld( false )
 {
@@ -625,6 +625,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 	pAffectsAudio = GetBoolProperty(
 		pGDComponent.GetPropertyName( igdeGDCComponent::epAffectsAudio ),
 		pGDComponent.GetAffectsAudio() );
+	pLightShadowIgnore = GetBoolProperty(
+		pGDComponent.GetPropertyName( igdeGDCComponent::epLightShadowIgnore ),
+		pGDComponent.GetLightShadowIgnore() );
 	
 	if( pGDComponent.GetDoNotScale() ){
 		pComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );

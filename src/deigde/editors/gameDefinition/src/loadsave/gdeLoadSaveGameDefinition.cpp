@@ -753,6 +753,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 			}else if( value == "affectsAudio" ){
 				component.SetPropertyName( gdeOCComponent::epAffectsAudio, property );
 				
+			}else if( value == "lightShadowIgnore" ){
+				component.SetPropertyName( gdeOCComponent::epLightShadowIgnore, property );
+				
 			}else if( value == "attachPosition" ){
 				component.SetPropertyName( gdeOCComponent::epAttachPosition, property );
 				
@@ -2403,6 +2406,8 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		"link", "renderEnvMap" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAffectsAudio ),
 		"link", "affectsAudio" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epLightShadowIgnore ),
+		"link", "lightShadowIgnore" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAttachPosition ),
 		"link", "attachPosition" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAttachRotation ),

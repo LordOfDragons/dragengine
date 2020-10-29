@@ -611,6 +611,7 @@
 			<link target='audioModel' property='audioModel'/>
 			<link target='renderEnvMap' property='renderEnvMap'/>
 			<link target='affectsAudio' property='affectsAudio'/>
+			<link target='lightShadowIgnore' property='igdeLightShadowIgnore'/>
 		</component>
 		<property name='model'>
 			<description>Model file to use instead of the class defined one.</description>

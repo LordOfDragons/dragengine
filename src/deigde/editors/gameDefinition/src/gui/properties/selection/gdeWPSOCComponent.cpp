@@ -1004,6 +1004,7 @@ pDirtyEngModelTexNames( true )
 	pCBPropertyNames->AddItem( "Audio model", NULL, ( void* )( intptr_t )gdeOCComponent::epAudioModel );
 	pCBPropertyNames->AddItem( "Render env-map", NULL, ( void* )( intptr_t )gdeOCComponent::epRenderEnvMap );
 	pCBPropertyNames->AddItem( "Affects audio", NULL, ( void* )( intptr_t )gdeOCComponent::epAffectsAudio );
+	pCBPropertyNames->AddItem( "Light Shadow Ignore", NULL, ( void* )( intptr_t )gdeOCComponent::epLightShadowIgnore );
 	pCBPropertyNames->AddItem( "Attach position", NULL,  ( void* )( intptr_t )gdeOCComponent::epAttachPosition );
 	pCBPropertyNames->AddItem( "Attach rotation", NULL, ( void* )( intptr_t )gdeOCComponent::epAttachRotation );
 	

@@ -133,9 +133,15 @@ public:
 	VisitorAddShadowIgnoreComponents( deLight &light ) : pLight( light ){ }
 	
 	virtual void VisitComponent( igdeWOSOComponent &component ){
-		if( component.GetLightShadowIgnore()
-		&& ! pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
-			pLight.AddShadowIgnoreComponent( component.GetComponent() );
+		if( component.GetLightShadowIgnore() ){
+			if( ! pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
+				pLight.AddShadowIgnoreComponent( component.GetComponent() );
+			}
+			
+		}else{
+			if( pLight.HasShadowIgnoreComponent( component.GetComponent() ) ){
+				pLight.RemoveShadowIgnoreComponent( component.GetComponent() );
+			}
 		}
 	}
 };
