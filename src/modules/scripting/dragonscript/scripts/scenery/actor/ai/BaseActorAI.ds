@@ -96,6 +96,22 @@ class BaseActorAI implements Persistable
 		return this.playerControllable != null and this.playerControllable.isPlayerControlled()
 	end
 	
+	/**
+	 * \brief AI is active actor AI.
+	 * \version 1.4
+	 */
+	public func bool isActive()
+		return this.aiAction.getAI() == this
+	end
+	
+	/**
+	 * \brief AI is not active actor AI.
+	 * \version 1.4
+	 */
+	public func bool isNotActive()
+		return this.aiAction.getAI() != this
+	end
+	
 	
 	
 	/**
