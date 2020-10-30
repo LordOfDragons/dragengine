@@ -1055,10 +1055,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 		
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
 		if( size.z == 1 ){
-			if( size.x != size.y ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( size ) ){
+			if( SetRequiredSize( size ) ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
