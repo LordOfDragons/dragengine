@@ -70,6 +70,7 @@ pNodeSelection( *this ),
 pActiveNodeLayer( 0 ),
 pNodeTileX( false ),
 pNodeTileY( false ),
+pNodeBitCount( 8 ),
 
 pSelected( false ),
 pActive( false )
@@ -110,6 +111,7 @@ pActiveNodeLayer( 0 ),
 pNodeColor( property.pNodeColor ),
 pNodeTileX( property.pNodeTileX ),
 pNodeTileY( property.pNodeTileY ),
+pNodeBitCount( property.pNodeBitCount ),
 
 pSelected( false ),
 pActive( false )
@@ -366,6 +368,24 @@ void seProperty::SetNodeTileY( bool tileY ){
 	
 	pNodeTileY = tileY;
 	NotifyChanged();
+}
+
+void seProperty::SetNodeBitCount( int bitCount ){
+	if( bitCount == pNodeBitCount ){
+		return;
+	}
+	
+	switch( bitCount ){
+	case 8:
+	case 16:
+	case 32:
+		pNodeBitCount = bitCount;
+		NotifyChanged();
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }
 
 

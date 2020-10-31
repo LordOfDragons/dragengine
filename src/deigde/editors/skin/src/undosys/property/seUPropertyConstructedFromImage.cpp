@@ -51,6 +51,9 @@ pNewContent( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
+	pOldBitCount = property->GetNodeBitCount();
+	pNewBitCount = image->GetBitCount();
+	
 	const decPoint3 size( image->GetWidth(), image->GetHeight(), image->GetDepth() );
 	
 	SetShortInfo( "Property constructed from image" );
@@ -94,10 +97,12 @@ seUPropertyConstructedFromImage::~seUPropertyConstructedFromImage(){
 
 void seUPropertyConstructedFromImage::Undo(){
 	pProperty->SetNodeGroup( pOldContent );
+	pProperty->SetNodeBitCount( pOldBitCount );
 }
 
 void seUPropertyConstructedFromImage::Redo(){
 	pProperty->SetNodeGroup( pNewContent );
+	pProperty->SetNodeBitCount( pNewBitCount );
 }
 
 

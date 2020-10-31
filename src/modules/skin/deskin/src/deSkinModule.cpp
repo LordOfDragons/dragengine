@@ -720,6 +720,12 @@ deSkinPropertyConstructed& property ){
 					property.SetTileY( strcmp( cdata->GetData(), "true" ) == 0 || strcmp( cdata->GetData(), "1" ) == 0 );
 				}
 				
+			}else if( strcmp( tag->GetName(), "bitCount" ) == 0 ){
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					property.SetBitCount( decString( cdata->GetData() ).ToInt() );
+				}
+				
 			}else{
 				node = pParsePropertyNode( *tag );
 				

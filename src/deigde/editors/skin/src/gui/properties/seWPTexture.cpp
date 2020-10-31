@@ -41,6 +41,7 @@
 #include "../../undosys/property/seUPropertySetConstructedColor.h"
 #include "../../undosys/property/seUPropertyConstructedToggleTileX.h"
 #include "../../undosys/property/seUPropertyConstructedToggleTileY.h"
+#include "../../undosys/property/seUPropertyConstructedSetBitCount.h"
 #include "../../undosys/property/seUPropertySetRenderableName.h"
 #include "../../undosys/property/seUPropertySetConstructedSize.h"
 
@@ -675,6 +676,29 @@ public:
 	}
 };
 
+class cComboConstructedBitCount : public igdeComboBoxListener{
+	seWPTexture &pPanel;
+public:
+	cComboConstructedBitCount( seWPTexture &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		seSkin * const skin = pPanel.GetSkin();
+		seProperty * const property = pPanel.GetProperty();
+		if( ! skin || ! pPanel.GetTexture() || ! property || ! comboBox->GetSelectedItem() ){
+			return;
+		}
+		
+		const int bitCount = ( int )( intptr_t )comboBox->GetSelectedItem()->GetData();
+		if( bitCount == property->GetNodeBitCount() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new seUPropertyConstructedSetBitCount( property, bitCount ) );
+		skin->GetUndoSystem()->Add( undo );
+	}
+};
+
 }
 
 
@@ -804,6 +828,12 @@ pSkin( NULL )
 	helper.FormLine( groupBox, "Tile:", "Tile nodes", formLine );
 	helper.CheckBox( formLine, pConstructedChkTileX, new cActionConstructedChkTileX( *this ), true );
 	helper.CheckBox( formLine, pConstructedChkTileY, new cActionConstructedChkTileY( *this ), true );
+	
+	helper.ComboBox( groupBox, "Bit Count:", "Bit count of constructed image",
+		pConstructedCBBitCount, new cComboConstructedBitCount( *this ) );
+	pConstructedCBBitCount->AddItem( "8-Bit", NULL, ( void* )( intptr_t )8 );
+	pConstructedCBBitCount->AddItem( "16-Bit", NULL, ( void* )( intptr_t )16 );
+	pConstructedCBBitCount->AddItem( "32-Bit", NULL, ( void* )( intptr_t )32 );
 	
 	
 	// mapped
@@ -1101,6 +1131,7 @@ void seWPTexture::UpdateProperty(){
 		
 		pConstructedClrColor->SetColor( property->GetNodeColor() );
 		pConstructedEditSize->SetPoint3( property->GetNodeGroup()->GetSize() );
+		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )property->GetNodeBitCount() );
 		
 	}else{
 		pEditPropName->ClearText();
@@ -1119,6 +1150,7 @@ void seWPTexture::UpdateProperty(){
 		
 		pConstructedClrColor->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
 		pConstructedEditSize->SetPoint3( decPoint3() );
+		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )8 );
 	}
 	
 	const bool enabled = property;
@@ -1139,6 +1171,7 @@ void seWPTexture::UpdateProperty(){
 	pConstructedEditSize->SetEnabled( enabled );
 	pConstructedChkTileX->GetAction()->Update();
 	pConstructedChkTileY->GetAction()->Update();
+	pConstructedCBBitCount->SetEnabled( enabled );
 	
 	UpdatePropertyMappedComponent();
 }

@@ -82,9 +82,11 @@ private:
 		decPoint3 clipFrom;
 		decPoint3 clipTo;
 		float transparency;
+		float gamma;
 		
 		sContext();
 		sContext( const deSkinPropertyNode &node, sContext *pparent );
+		decColor applyGamma( const decColor &color ) const;
 	};
 	
 	deoglSkinChannel &pChannel;

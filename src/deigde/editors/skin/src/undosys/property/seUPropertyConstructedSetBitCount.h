@@ -19,42 +19,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _SEUPROPERTYCONSTRUCTEDFROMIMAGE_H_
-#define _SEUPROPERTYCONSTRUCTEDFROMIMAGE_H_
-
-#include "../../skin/property/seProperty.h"
-
-#include <dragengine/common/math/decMath.h>
+#ifndef _SEUPROPERTYSETCONSTRUCTEDSETBITCOUNT_H_
+#define _SEUPROPERTYSETCONSTRUCTEDSETBITCOUNT_H_
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
+class seProperty;
 
 
 
 /**
- * \brief Undo action property set constructed from image.
+ * \brief Undo action property constructed set bit count.
  */
-class seUPropertyConstructedFromImage : public igdeUndo{
+class seUPropertyConstructedSetBitCount : public igdeUndo{
 private:
 	seProperty *pProperty;
-	
-	sePropertyNodeGroup *pOldContent;
-	sePropertyNodeGroup *pNewContent;
-	int pOldBitCount;
-	int pNewBitCount;
-	
+	int pOldValue;
+	int pNewValue;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedFromImage( seProperty *property );
+	seUPropertyConstructedSetBitCount( seProperty *property, int newValue );
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyConstructedFromImage();
+	virtual ~seUPropertyConstructedSetBitCount();
 	/*@}*/
 	
 	
@@ -68,11 +60,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

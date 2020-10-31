@@ -89,6 +89,7 @@ private:
 	igdeEditPoint3Reference pConstructedEditSize;
 	igdeCheckBoxReference pConstructedChkTileX;
 	igdeCheckBoxReference pConstructedChkTileY;
+	igdeComboBoxReference pConstructedCBBitCount;
 	
 	igdeEditPointReference pPreviewEditTCOffset;
 	igdeEditPointReference pPreviewEditTCScaling;

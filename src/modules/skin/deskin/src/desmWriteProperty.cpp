@@ -160,6 +160,9 @@ void desmWriteProperty::VisitConstructed( deSkinPropertyConstructed &property ){
 	if( property.GetTileY() ){
 		pWriter.WriteDataTagBool( "tileY", property.GetTileY() );
 	}
+	if( property.GetBitCount() != 8 ){
+		pWriter.WriteDataTagInt( "bitCount", property.GetBitCount() );
+	}
 	
 	desmWritePropertyNode writer( pWriter );
 	const int count = content.GetNodeCount();

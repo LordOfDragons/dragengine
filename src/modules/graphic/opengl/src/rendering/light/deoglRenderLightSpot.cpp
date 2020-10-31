@@ -1726,8 +1726,8 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			
 			decMatrix matrixRotate;
 			if( light.GetUseSkinTexture() ){
-				matrixRotate = decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotateSpot() * TWO_PI )
-					.QuickMultiply( decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI ) );
+				matrixRotate = decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI )
+					.QuickMultiply( decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotateSpot() * TWO_PI ) );
 			}
 			paramBlock.SetParameterDataMat4x3( target, matrixRotate.QuickMultiply( matrixMV ).QuickInvert() );
 		}

@@ -1019,6 +1019,7 @@ void deoglVSDetermineChannelFormat::pProcessPropertyValue( const deoglSkinProper
 void deoglVSDetermineChannelFormat::pProcessPropertyConstructed( const deSkinPropertyConstructed &property,
 const deoglSkinPropertyMap::ePropertyTypes channelType ){
 	const decPoint3 &size = property.GetContent().GetSize();
+	const bool requiresFloat = property.GetBitCount() > 8;
 	
 	switch( channelType ){
 	case deoglSkinPropertyMap::eptColor:
@@ -1028,10 +1029,12 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			if( pRequiredComponentCount < 3 ){
 				pRequiredComponentCount = 3;
 			}
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
 		}
+		
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
@@ -1043,6 +1046,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
+				pRequiresFloat |= requiresFloat;
 				
 			}else{
 				WarnImageIncompatibleSize( property );
@@ -1059,6 +1063,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
+				pRequiresFloat |= requiresFloat;
 				
 			}else{
 				WarnImageIncompatibleSize( property );
@@ -1076,6 +1081,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 4;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1085,6 +1091,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1096,6 +1103,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1107,6 +1115,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1120,6 +1129,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			if( pRequiredComponentCount < 3 ){
 				pRequiredComponentCount = 3;
 			}
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1131,6 +1141,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 2; // room for cone map appended to it
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1142,6 +1153,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 3;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1153,6 +1165,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 2;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1166,6 +1179,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			if( pRequiredComponentCount < 3 ){
 				pRequiredComponentCount = 3;
 			}
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1178,6 +1192,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pIsDefined = true;
 			//pRequiredComponentCount = 4; // if using combined
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1189,6 +1204,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1204,6 +1220,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
+				pRequiresFloat |= requiresFloat;
 				
 			}else{
 				WarnImageIncompatibleSize( property );
@@ -1223,6 +1240,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
+				pRequiresFloat |= requiresFloat;
 				
 			}else{
 				WarnImageIncompatibleSize( property );
@@ -1238,6 +1256,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 1;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1253,6 +1272,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 				pSharedImage = NULL;
 				pIsDefined = true;
 				pRequiredComponentCount = 3;
+				pRequiresFloat |= requiresFloat;
 				
 			}else{
 				WarnImageIncompatibleSize( property );
@@ -1268,6 +1288,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 3;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
@@ -1279,6 +1300,7 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 			pSharedImage = NULL;
 			pIsDefined = true;
 			pRequiredComponentCount = 3;
+			pRequiresFloat |= requiresFloat;
 			
 		}else{
 			WarnImageIncompatibleSize( property );
