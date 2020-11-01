@@ -397,6 +397,7 @@ void meWindowMain::RecentFilesChanged(){
 
 void meWindowMain::OnGameProjectChanged(){
 	pConfiguration->LoadConfiguration();
+	pWindowProperties->OnGameProjectChanged();
 	CreateNewWorld();
 }
 

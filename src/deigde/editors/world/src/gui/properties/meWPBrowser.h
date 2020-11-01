@@ -157,6 +157,9 @@ public:
 	/** \brief Current item changed. */
 	void CurrentItemChanged();
 	
+	/** \brief Game project changed. */
+	void OnGameProjectChanged();
+	
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
@@ -209,6 +212,12 @@ public:
 	
 	/** \brief Select object class. */
 	void SelectObjectClass( igdeGDClass *gdclass );
+	
+	/** \brief Select skin. */
+	void SelectSkin( igdeGDSkin *gdskin );
+	
+	/** \brief Select sky. */
+	void SelectSky( igdeGDSky *gdsky );
 	
 	
 	inline igdeAction *GetActionSetClass() const{ return pActionSetClass; }

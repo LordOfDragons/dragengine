@@ -677,6 +677,8 @@ pViewMode( evmPreview )
 	
 	helper.EditString( groupBox, "Item information", pEditInfos, 50, 5, NULL );
 	pEditInfos->SetEditable( false );
+	
+	OnGameDefinitionChanged();
 }
 
 meWPBrowser::~meWPBrowser(){
@@ -709,37 +711,42 @@ void meWPBrowser::SetWorld( meWorld *world ){
 		world->AddReference();
 	}
 	
-	UpdateCategoryList();
-	UpdateItemList();
+	CurrentItemChanged();
 }
 
 
 
 void meWPBrowser::UpdateCategoryList(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
-	igdeGDCategory * const selection = GetSelectedCategory();
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	const decString selection( GetSelectedCategory() ? GetSelectedCategory()->GetFullPathString() : "" );
 	
 	pTreeCategories->RemoveAllItems();
 	
-	if( gameDefinition ){
-		switch( GetPreviewItemType() ){
-		case epitObjectClass:
-			UpdateCategoryListWith( gameDefinition->GetClassManager()->GetCategories() );
-			break;
-			
-		case epitSkin:
-			UpdateCategoryListWith( gameDefinition->GetSkinManager()->GetCategories() );
-			break;
-			
-		case epitSky:
-			UpdateCategoryListWith( gameDefinition->GetSkyManager()->GetCategories() );
-			break;
-		}
-		
-		pTreeCategories->SortAllItems();
+	if( ! gameDefinition ){
+		return;
 	}
 	
-	SelectCategory( selection );
+	igdeGDCategory *categories = NULL;
+	
+	switch( GetPreviewItemType() ){
+	case epitObjectClass:
+		categories = gameDefinition->GetClassManager()->GetCategories();
+		break;
+		
+	case epitSkin:
+		categories = gameDefinition->GetSkinManager()->GetCategories();
+		break;
+		
+	case epitSky:
+		categories = gameDefinition->GetSkyManager()->GetCategories();
+		break;
+	}
+	
+	UpdateCategoryListWith( categories );
+	pTreeCategories->SortAllItems();
+	if( ! selection.IsEmpty() ){
+		SelectCategory( categories->GetCategoryWithPath( decPath::CreatePathNative( selection ) ) );
+	}
 }
 
 void meWPBrowser::UpdateCategoryListWith( igdeGDCategory *category ){
@@ -781,7 +788,7 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 }
 
 void meWPBrowser::UpdateItemList(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
 	
 	pListItems->RemoveAllItems();
@@ -879,7 +886,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 }
 
 void meWPBrowser::CurrentItemChanged(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	if( ! gameDefinition ){
 		pEditInfos->ClearText();
 		return;
@@ -888,31 +895,33 @@ void meWPBrowser::CurrentItemChanged(){
 	const igdeListItem * const selection = pListItems->GetSelectedItem();
 	decString text;
 	
-	switch( GetPreviewItemType() ){
-	case epitObjectClass:
-		if( selection ){
-			const igdeGDClass * const gdclass = ( igdeGDClass* )selection->GetData();
-			pWorld->GetGuiParameters().SetBrowseClass( gdclass->GetName() );
-			text.Format( "%s:\n%s", gdclass->GetName().GetString(), gdclass->GetDescription().GetString() );
+	if( pWorld ){
+		switch( GetPreviewItemType() ){
+		case epitObjectClass:
+			if( selection ){
+				const igdeGDClass * const gdclass = ( igdeGDClass* )selection->GetData();
+				pWorld->GetGuiParameters().SetBrowseClass( gdclass->GetName() );
+				text.Format( "%s:\n%s", gdclass->GetName().GetString(), gdclass->GetDescription().GetString() );
+				
+			}else{
+				pWorld->GetGuiParameters().SetBrowseClass( "" );
+			}
+			break;
 			
-		}else{
-			pWorld->GetGuiParameters().SetBrowseClass( "" );
-		}
-		break;
-		
-	case epitSkin:
-		if( selection ){
-			const igdeGDSkin * const gdskin = ( igdeGDSkin* )selection->GetData();
-			pWorld->GetGuiParameters().SetBrowseSkin( gdskin->GetPath() );
-			text.Format( "%s:\n%s", gdskin->GetName().GetString(), gdskin->GetDescription().GetString() );
+		case epitSkin:
+			if( selection ){
+				const igdeGDSkin * const gdskin = ( igdeGDSkin* )selection->GetData();
+				pWorld->GetGuiParameters().SetBrowseSkin( gdskin->GetPath() );
+				text.Format( "%s:\n%s", gdskin->GetName().GetString(), gdskin->GetDescription().GetString() );
+				
+			}else{
+				pWorld->GetGuiParameters().SetBrowseSkin( "" );
+			}
+			break;
 			
-		}else{
-			pWorld->GetGuiParameters().SetBrowseSkin( "" );
+		case epitSky:
+			break;
 		}
-		break;
-		
-	case epitSky:
-		break;
 	}
 	
 	pEditInfos->SetText( text );
@@ -1010,13 +1019,53 @@ void meWPBrowser::SetViewMode( eViewModes viewMode ){
 
 
 
+void meWPBrowser::OnGameProjectChanged(){
+	printf("OnGameProjectChanged\n");
+	OnGameDefinitionChanged();
+}
+
 void meWPBrowser::OnGameDefinitionChanged(){
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
+	decString selection;
+	
+	switch( GetPreviewItemType() ){
+	case epitObjectClass:
+		if( GetSelectedObjectClass() ){
+			selection = GetSelectedObjectClass()->GetName();
+		}
+		break;
+		
+	case epitSkin:
+		if( GetSelectedSkin() ){
+			selection = GetSelectedSkin()->GetPath();
+		}
+		break;
+		
+	case epitSky:
+		if( GetSelectedSky() ){
+			selection = GetSelectedSky()->GetPath();
+		}
+		break;
+	}
 	
 	UpdateCategoryList();
 	UpdateItemList();
 	
-	pListItems->SetSelectionWithData( selection );
+	if( ! selection.IsEmpty() && GetGameDefinition() ){
+		switch( GetPreviewItemType() ){
+		case epitObjectClass:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetClassManager()->GetNamed( selection ) );
+			break;
+			
+		case epitSkin:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetSkinManager()->GetSkinWithPath( selection ) );
+			break;
+			
+		case epitSky:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetSkyManager()->GetSkyList().GetWithPath( selection ) );
+			break;
+		}
+	}
+	
 	if( ! pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0 ){
 		pListItems->SetSelection( 0 );
 	}
@@ -1030,7 +1079,7 @@ void meWPBrowser::SelectObjectClass( igdeGDClass *gdclass ){
 	}
 	
 	// find object class category
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	if( ! gameDefinition ){
 		return;
 	}
@@ -1044,6 +1093,50 @@ void meWPBrowser::SelectObjectClass( igdeGDClass *gdclass ){
 	
 	// select object class
 	pListItems->SetSelectionWithData( gdclass );
+}
+
+void meWPBrowser::SelectSkin( igdeGDSkin *gdskin ){
+	if( ! gdskin ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// find skin category
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	if( ! gameDefinition ){
+		return;
+	}
+	
+	igdeGDCategory * const category = gameDefinition->GetSkinManager()->GetCategories()
+		->GetCategoryWithPath( decPath::CreatePathUnix( gdskin->GetCategory() ) );
+	
+	// select category
+	SetPreviewItemType( epitSkin );
+	SelectCategory( category );
+	
+	// select object class
+	pListItems->SetSelectionWithData( gdskin );
+}
+
+void meWPBrowser::SelectSky( igdeGDSky *gdsky ){
+	if( ! gdsky ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// find sky category
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	if( ! gameDefinition ){
+		return;
+	}
+	
+	igdeGDCategory * const category = gameDefinition->GetSkyManager()->GetCategories()
+		->GetCategoryWithPath( decPath::CreatePathUnix( gdsky->GetCategory() ) );
+	
+	// select category
+	SetPreviewItemType( epitSky );
+	SelectCategory( category );
+	
+	// select object class
+	pListItems->SetSelectionWithData( gdsky );
 }
 
 
