@@ -50,7 +50,7 @@ pDDVolume( NULL ),
 pWorld( NULL ),
 pHostObject( NULL )
 {
-	SetLowestIntensity( 10.0f );
+	SetLowestIntensity( 1.0f );
 	SetHighestIntensity( 20.0f );
 	
 	GetEngineCamera()->GetLayerMask().SetBit( meWorld::elmCamera );

@@ -12,6 +12,6 @@
 		<value property='outline.thickness' renderable='thickness'>0.005</value>
 		<value property='outline.thickness.screen'>1</value>
 		<color property='outline.emissivity' r='0' g='0' b='0' a='1' renderable='color'/>
-		<value property='outline.emissivity.intensity'>4</value>
+		<value property='outline.emissivity.intensity'>1</value>
 	</texture>
 </skin>

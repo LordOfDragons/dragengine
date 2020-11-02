@@ -8,7 +8,7 @@
 		<value property='reflected'>'0</value>
 		<value property='roughness'>1</value>
 		<image property='emissivity'>images/conversationColor.png</image>
-		<value property='emissivity.intensity'>4</value>
+		<value property='emissivity.intensity'>0.1</value>
 		<value property='shadow.none'>1</value>
 		<value property='hint.nocompression'>1</value>
 	</texture>
