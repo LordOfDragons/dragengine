@@ -579,11 +579,10 @@ int layerIndex, bool first ){
 	// calculate the parameters
 	float znear = plan.GetCameraImageDistance();
 	constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f )
-		* znear / plan.GetAspectRatio();
+	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
 	
 	// set the shaders
-	float matGamma = oglSkinTexture->GetColorGamma();
+	const float matGamma = oglSkinTexture->GetColorGamma();
 	
 	renderThread.GetShader().ActivateShader( pShaderSkySphere );
 	shader = pShaderSkySphere->GetCompiled();
@@ -602,7 +601,7 @@ int layerIndex, bool first ){
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
-	shader->SetParameterColor4( spsphSkyBgColor, LinearBgColor( instance, first ) );
+	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
 	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );
 	
 	// set texture
