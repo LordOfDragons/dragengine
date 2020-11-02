@@ -204,6 +204,14 @@ class CameraDirector
 	end
 	
 	/**
+	 * \brief Request graphic module to reset camera adapted intensity to optimal value.
+	 * \version 1.4
+	 */
+	public func void resetCameraAdaptedIntensity()
+		this.pCamera.resetAdaptedIntensity()
+	end
+	
+	/**
 	 * \brief Director has been activated.
 	 * 
 	 * Useful for init camera parameters that do not change over time. Default implementation

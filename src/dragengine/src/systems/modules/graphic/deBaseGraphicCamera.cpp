@@ -55,11 +55,14 @@ void deBaseGraphicCamera::LayerMaskChanged(){
 
 
 
-void deBaseGraphicCamera::EffectAdded( int index, deEffect *effect ){
+void deBaseGraphicCamera::EffectAdded( int, deEffect* ){
 }
 
-void deBaseGraphicCamera::EffectRemoved( int index, deEffect *effect ){
+void deBaseGraphicCamera::EffectRemoved( int, deEffect* ){
 }
 
 void deBaseGraphicCamera::AllEffectsRemoved(){
+}
+
+void deBaseGraphicCamera::ResetAdaptedIntensity(){
 }

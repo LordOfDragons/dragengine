@@ -117,6 +117,13 @@ class Camera
 	public func void setAdaptionTime( float adaptionTime )
 	end
 	
+	/**
+	 * \brief Request graphic module to reset adapted intensity to optimal value.
+	 * \version 1.4
+	 */
+	public func void resetAdaptedIntensity()
+	end
+	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
 		return null
