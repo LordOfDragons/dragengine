@@ -278,6 +278,16 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 	#endif
 }
 
+void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clist ){
+	const int count = clist.GetComponentCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *clist.GetComponentAt( i )->GetComponent();
+		AddComponent( component, component.GetLODCount() - 1 );
+	}
+}
+
 void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int texture, int lodLevel ){
 	if( ! component.GetModel() ){
 		return;

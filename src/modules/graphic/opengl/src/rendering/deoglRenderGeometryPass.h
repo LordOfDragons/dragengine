@@ -73,6 +73,11 @@ public:
 	 */
 	void RenderSolidGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
 	
+	/**
+	 * \brief Render luminance only pass.
+	 */
+	void RenderLuminanceOnly( deoglRenderPlan &plan );
+	
 	
 	
 	/**

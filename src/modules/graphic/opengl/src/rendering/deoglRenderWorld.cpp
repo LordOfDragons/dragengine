@@ -62,6 +62,7 @@
 #include "../sky/deoglRSky.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../sky/deoglRSkyLayer.h"
+#include "../texture/texture2d/deoglTexture.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
@@ -151,6 +152,7 @@ deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pRenderPB( NULL ),
+pRenderLuminancePB( NULL ),
 pRenderCubePB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
@@ -166,6 +168,7 @@ pDebugInfo( renderThread )
 	
 	try{
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false );
+		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false );
 		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
 		
 		pRenderTask = new deoglRenderTask;
@@ -387,6 +390,11 @@ DEBUG_RESET_TIMER
 			renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 		}
 		
+		if( ! mask ){
+			//renderers.GetToneMap().LuminancePrepare( plan );
+			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
+		}
+		
 		DBG_ENTER("RenderLights")
 		renderers.GetLight().RenderLights( plan, true );
 		DBG_EXIT("RenderLights")
@@ -569,46 +577,28 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// fill the parameter block parameters with the found values. only used parameters are set
 	pRenderPB->MapBuffer();
 	try{
-		pRenderPB->SetParameterDataVec4(
-			deoglSkinShader::erutAmbient, ambient, 1.0f );
-		pRenderPB->SetParameterDataMat4x3(
-			deoglSkinShader::erutMatrixV, matrixCamera );
-		pRenderPB->SetParameterDataMat4x4(
-			deoglSkinShader::erutMatrixP, matrixProjection );
-		pRenderPB->SetParameterDataMat4x4(
-			deoglSkinShader::erutMatrixVP, matrixCamera * matrixProjection );
-		pRenderPB->SetParameterDataMat3x3(
-				deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
-		pRenderPB->SetParameterDataMat3x3(
-			deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
+		pRenderPB->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
+		pRenderPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matrixProjection );
+		pRenderPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera * matrixProjection );
+		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
+		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
 		
-		pRenderPB->SetParameterDataFloat(
-			deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
-		pRenderPB->SetParameterDataFloat(
-			deoglSkinShader::erutNorRoughCorrStrength,
-				config.GetNormalRoughnessCorrectionStrength() );
+		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
+		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
 		
-		pRenderPB->SetParameterDataBool(
-			deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
-		pRenderPB->SetParameterDataBool(
-			deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+		pRenderPB->SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
+		pRenderPB->SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
 		
-		defren.SetShaderViewport( *pRenderPB,
-			deoglSkinShader::erutViewport, true );
-		pRenderPB->SetParameterDataVec4(
-			deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
-		pRenderPB->SetParameterDataVec4(
-			deoglSkinShader::erutScreenSpace,
-				defren.GetScalingU(), defren.GetScalingV(),
-				defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-		pRenderPB->SetParameterDataVec4(
-			deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
+		defren.SetShaderViewport( *pRenderPB, deoglSkinShader::erutViewport, true );
+		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
+		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
+			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 		
-		pRenderPB->SetParameterDataVec3(
-			deoglSkinShader::erutParticleLightHack, particleLight );
+		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
 		
-		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale,
-			tanf( plan.GetCameraFov() * 0.5f ) );
+		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
 		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
@@ -620,6 +610,48 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		throw;
 	}
 	pRenderPB->UnmapBuffer();
+	
+	// luminance parameter block is the same except screen space differs
+	pRenderLuminancePB->MapBuffer();
+	try{
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
+		pRenderLuminancePB->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
+		pRenderLuminancePB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matrixProjection );
+		pRenderLuminancePB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera * matrixProjection );
+		pRenderLuminancePB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
+		pRenderLuminancePB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		
+		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
+		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, 0.0f );
+		
+		pRenderLuminancePB->SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, true );
+		pRenderLuminancePB->SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+		
+		const int width = defren.GetTextureLuminance()->GetWidth();
+		const int height = defren.GetTextureLuminance()->GetHeight();
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutViewport,
+			0.0f, 0.0f, 1.0f - 1.0f / ( float )width, 1.0f - 1.0f / ( float )height );
+		
+		defren.SetShaderViewport( *pRenderLuminancePB, deoglSkinShader::erutViewport, true );
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
+			1.0f, 1.0f, 1.0f / ( float )width, 1.0f / ( float )height );
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
+		
+		pRenderLuminancePB->SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, decColor() );
+		
+		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
+		
+		const float znear = plan.GetCameraImageDistance();
+		const float zfar = plan.GetCameraViewDistance();
+		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
+		pRenderLuminancePB->SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
+		
+	}catch( const deException & ){
+		pRenderLuminancePB->UnmapBuffer();
+		throw;
+	}
+	pRenderLuminancePB->UnmapBuffer();
 DBG_EXIT("PrepareRenderParamBlock")
 }
 

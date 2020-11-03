@@ -1,28 +1,4 @@
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
-
-// some helper definitions to make the code easier to read
-#if defined OUTPUT_COLOR || defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT
-	#define _REQ_TEX_CLR_1 1
-#endif
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define _REQ_TEX_CLR_2 1
-#endif
-#if defined _REQ_TEX_CLR_1 || defined _REQ_TEX_CLR_2
-	#define REQUIRES_TEX_COLOR 1
-#endif
-
-#if defined TEXTURE_HEIGHT || defined TEXTURE_RIM_EMISSIVITY
-	#define REQUIRES_NORMAL 1
-#endif
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
-
-
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
 ///////////////////////
@@ -103,9 +79,11 @@ NODE_VERTEX_INPUTS
 	#ifdef REQUIRES_NORMAL
 		out vec3 vTCSNormal;
 		#define vNormal vTCSNormal
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			out vec3 vTCSTangent;
 			#define vTangent vTCSTangent
+		#endif
+		#ifdef WITH_BITANGENT
 			out vec3 vTCSBitangent;
 			#define vBitangent vTCSBitangent
 		#endif
@@ -135,9 +113,11 @@ NODE_VERTEX_INPUTS
 	#ifdef REQUIRES_NORMAL
 		out vec3 vGSNormal;
 		#define vNormal vGSNormal
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			out vec3 vGSTangent;
 			#define vTangent vGSTangent
+		#endif
+		#ifdef WITH_BITANGENT
 			out vec3 vGSBitangent;
 			#define vBitangent vGSBitangent
 		#endif
@@ -174,8 +154,10 @@ NODE_VERTEX_INPUTS
 	#endif
 	#ifdef REQUIRES_NORMAL
 		out vec3 vNormal;
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			out vec3 vTangent;
+		#endif
+		#ifdef WITH_BITANGENT
 			out vec3 vBitangent;
 		#endif
 	#endif

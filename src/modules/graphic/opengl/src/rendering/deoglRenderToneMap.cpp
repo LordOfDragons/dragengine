@@ -175,6 +175,11 @@ enum eSPFinalize{
 	spfinContrast
 };
 
+enum eSPLumPrepare{
+	splpPosTransform,
+	splpTCTransform
+};
+
 
 
 // Debug Checks
@@ -309,6 +314,8 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	pShaderToneMap = NULL;
 	pShaderFinalize = NULL;
 	
+	pShaderLumPrepare = NULL;
+	
 	try{
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
@@ -337,6 +344,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
+		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
+		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
 		
 		pTextureToneMapParams = new deoglTexture( renderThread );
@@ -358,6 +368,45 @@ deoglRenderToneMap::~deoglRenderToneMap(){
 
 // Rendering
 //////////////
+
+void deoglRenderToneMap::LuminancePrepare( deoglRenderPlan &plan ){
+DEBUG_RESET_TIMERS;
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglTexture &texLum = *defren.GetTextureLuminance();
+	const int realHeight = defren.GetHeight();
+	const int realWidth = defren.GetWidth();
+	const int height = texLum.GetHeight();
+	const int width = texLum.GetWidth();
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	defren.ActivateFBOLuminance();
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
+	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	
+	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
+	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
+	
+	shader.SetParameterFloat( splpPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	defren.SetShaderParamFSQuad( shader, splpTCTransform, 0.0f, 0.0f, ( float )realWidth, ( float )realHeight );
+	
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
+}
 
 void deoglRenderToneMap::ToneMap( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
@@ -1041,6 +1090,9 @@ void deoglRenderToneMap::pCleanUp(){
 	}
 	if( pShaderFinalize ){
 		pShaderFinalize->RemoveUsage();
+	}
+	if( pShaderLumPrepare ){
+		pShaderLumPrepare->RemoveUsage();
 	}
 	
 	if( pTextureToneMapParams ){

@@ -122,6 +122,7 @@ public:
 	bool pAmbientLighting;
 	bool pFullScreenQuad;
 	bool pSubSurface;
+	bool pLuminanceOnly;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -247,6 +248,12 @@ public:
 	
 	/** \brief Set if sub-surface separation has to be used. */
 	void SetSubSurface( bool subSurface );
+	
+	/** \brief Luminance only. */
+	inline bool GetLuminanceOnly() const{ return pLuminanceOnly; }
+	
+	/** \brief Set luminance only. */
+	void SetLuminanceOnly( bool luminanceOnly );
 	
 	
 	

@@ -207,19 +207,14 @@ deoglLightShader::~deoglLightShader(){
 // Management
 ///////////////
 
-int deoglLightShader::GetTextureTarget( deoglLightShader::eTextureTargets target ) const{
-	if( target < 0 || target >= ETT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetTextureTarget( eTextureTargets target ) const{
 	return pTextureTargets[ target ];
 }
 
-void deoglLightShader::SetTextureTarget( deoglLightShader::eTextureTargets target, int index ){
-	if( target < 0 || target >= ETT_COUNT || index < -1 ){
+void deoglLightShader::SetTextureTarget( eTextureTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pTextureTargets[ target ] = index;
 }
 
@@ -232,35 +227,25 @@ void deoglLightShader::SetUsedTextureTargetCount( int usedTextureTargetCount ){
 
 
 
-int deoglLightShader::GetInstanceUniformTarget( deoglLightShader::eInstanceUniformTargets target ) const{
-	if( target < 0 || target >= EIUT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetInstanceUniformTarget( eInstanceUniformTargets target ) const{
 	return pInstanceUniformTargets[ target ];
 }
 
-void deoglLightShader::SetInstanceUniformTarget( deoglLightShader::eInstanceUniformTargets target, int index ){
-	if( target < 0 || target >= EIUT_COUNT || index < -1 ){
+void deoglLightShader::SetInstanceUniformTarget( eInstanceUniformTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pInstanceUniformTargets[ target ] = index;
 }
 
-int deoglLightShader::GetLightUniformTarget( deoglLightShader::eLightUniformTargets target ) const{
-	if( target < 0 || target >= ELUT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetLightUniformTarget( eLightUniformTargets target ) const{
 	return pLightUniformTargets[ target ];
 }
 
-void deoglLightShader::SetLightUniformTarget( deoglLightShader::eLightUniformTargets target, int index ){
-	if( target < 0 || target >= ELUT_COUNT || index < -1 ){
+void deoglLightShader::SetLightUniformTarget( eLightUniformTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pLightUniformTargets[ target ] = index;
 }
 
@@ -296,6 +281,7 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		
 		spb->GetParameterAt( erutPosTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );
@@ -592,6 +578,9 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetSubSurface() ){
 		defines.AddDefine( "WITH_SUBSURFACE", "1" );
+	}
+	if( pConfig.GetLuminanceOnly() ){
+		defines.AddDefine( "LUMINANCE_ONLY", "1" );
 	}
 	
 	switch( pConfig.GetShadowTapMode() ){

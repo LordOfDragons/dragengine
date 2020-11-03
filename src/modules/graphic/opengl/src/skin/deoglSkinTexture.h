@@ -120,6 +120,7 @@ public:
 		estComponentShadowDistance,
 		estComponentShadowDistanceCube,
 		estComponentEnvMap,
+		estComponentLuminance,
 		
 		estBillboardGeometry,
 		estBillboardDepth,
@@ -161,6 +162,7 @@ public:
 		estHeightMapShadowOrthogonal,
 		estHeightMapShadowDistance,
 		estHeightMapEnvMap,
+		estHeightMapLuminance,
 		
 		estParticleGeometry,
 		estParticleGeometryDepthTest,

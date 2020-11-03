@@ -49,6 +49,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -427,4 +428,83 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 DBG_EXIT("RenderSolidGeometryPass")
+}
+
+void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
+	const deoglCollideList &collideList = plan.GetCollideList();
+	deoglRenderTask &renderTask = *renworld.GetRenderTask();
+	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
+	const int width = defren.GetTextureLuminance()->GetWidth();
+	const int height = defren.GetTextureLuminance()->GetHeight();
+	
+	// clear textures
+	defren.ActivateFBOLuminanceNormal();
+	
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
+	if( pglClipControl && defren.GetUseInverseDepth() ){
+		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
+	}
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	
+	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearLuminance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearLuminance[ 0 ] ) );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 0 ] ) );
+	
+	// render sky. clears targets
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	SetCullMode( plan.GetFlipCulling() );
+// 	GetRenderThread().GetRenderers().GetSky().RenderSky( plan );
+	
+	// render geometry
+	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renworld.GetRenderLuminancePB() );
+	
+	addToRenderTask.Reset();
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoRendered( true );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	
+	if( collideList.GetHTSectorCount() > 0 ){
+		// height terrain has to come first since it has to be handled differently
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapLuminance );
+		addToRenderTask.AddHeightTerrains( collideList, true );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		renderTask.PrepareForRender( renderThread );
+		rengeom.RenderTask( renderTask );
+		
+		renderTask.Clear();
+		renderTask.SetRenderParamBlock( renworld.GetRenderLuminancePB() );
+		addToRenderTask.AddHeightTerrains( collideList, false );
+		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+		renderTask.PrepareForRender( renderThread );
+		rengeom.RenderTask( renderTask );
+		
+		renderTask.Clear();
+		renderTask.SetRenderParamBlock( renworld.GetRenderLuminancePB() );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	}
+	
+	addToRenderTask.SetFilterDecal( true );
+	addToRenderTask.SetDecal( false );
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentLuminance );
+	addToRenderTask.AddComponentsHighestLod( collideList );
+	
+	renderTask.PrepareForRender( renderThread );
+	rengeom.RenderTask( renderTask );
 }

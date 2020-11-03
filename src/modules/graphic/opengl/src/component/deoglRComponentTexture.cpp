@@ -93,6 +93,7 @@ pTUCEnvMap( NULL ),
 pTUCOutlineDepth( NULL ),
 pTUCOutlineGeometry( NULL ),
 pTUCOutlineCounter( NULL ),
+pTUCLuminance( NULL ),
 
 pValidParamBlockDepth( false ),
 pValidParamBlockGeometry( false ),
@@ -110,7 +111,8 @@ pDirtyTUCShadowCube( true ),
 pDirtyTUCEnvMap( true ),
 pDirtyTUCOutlineDepth( true ),
 pDirtyTUCOutlineGeometry( true ),
-pDirtyTUCOutlineCounter( true )
+pDirtyTUCOutlineCounter( true ),
+pDirtyTUCLuminance( true )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentTexture );
 }
@@ -130,6 +132,7 @@ public:
 	deoglTexUnitsConfig *tucOutlineGeometry;
 	deoglTexUnitsConfig *tucOutlineDepth;
 	deoglTexUnitsConfig *tucOutlineCounter;
+	deoglTexUnitsConfig *tucLuminance;
 	
 	deoglRComponentTextureDeletion() :
 	skinState( NULL ),
@@ -177,6 +180,9 @@ public:
 		}
 		if( tucOutlineCounter ){
 			tucOutlineCounter->RemoveUsage();
+		}
+		if( tucLuminance ){
+			tucLuminance->RemoveUsage();
 		}
 		if( paramBlockDepth ){
 			paramBlockDepth->FreeReference();
@@ -231,6 +237,7 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 		delayedDeletion->tucOutlineGeometry = pTUCOutlineGeometry;
 		delayedDeletion->tucOutlineDepth = pTUCOutlineDepth;
 		delayedDeletion->tucOutlineCounter = pTUCOutlineCounter;
+		delayedDeletion->tucLuminance = pTUCLuminance;
 		pComponent.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
 		
 	}catch( const deException &e ){
@@ -417,6 +424,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
 	switch( shaderType ){
 	case deoglSkinTexture::estComponentGeometry:
+	case deoglSkinTexture::estComponentLuminance:
 	case deoglSkinTexture::estDecalGeometry:
 	case deoglSkinTexture::estOutlineGeometry:
 		return GetParamBlockGeometry();
@@ -645,6 +653,9 @@ deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForShaderType( deoglSkinTextu
 	case deoglSkinTexture::estOutlineCounterClipPlane:
 		return GetTUCOutlineCounter();
 		
+	case deoglSkinTexture::estComponentLuminance:
+		return GetTUCLuminance();
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -823,6 +834,18 @@ deoglTexUnitsConfig *deoglRComponentTexture::GetTUCOutlineCounter(){
 	return pTUCOutlineCounter;
 }
 
+deoglTexUnitsConfig *deoglRComponentTexture::GetTUCLuminance(){
+	if( pDirtyTUCLuminance ){
+		if( pTUCLuminance ){
+			pTUCLuminance->RemoveUsage();
+			pTUCLuminance = NULL;
+		}
+		pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estComponentLuminance );
+		pDirtyTUCLuminance = false;
+	}
+	return pTUCLuminance;
+}
+
 deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(
 deoglSkinTexture::eShaderTypes shaderType ) const{
 	if( ! pUseSkinTexture ){
@@ -889,6 +912,7 @@ void deoglRComponentTexture::MarkTUCsDirty(){
 	pDirtyTUCOutlineDepth = true;
 	pDirtyTUCOutlineGeometry = true;
 	pDirtyTUCOutlineCounter = true;
+	pDirtyTUCLuminance = true;
 }
 
 

@@ -1,20 +1,8 @@
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout specifications
 layout( points ) in;
 layout( triangle_strip, max_vertices=4 ) out;
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_EMISSIVITY 1
-#endif
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
 
 
 
@@ -79,8 +67,10 @@ out vec2 vTCColor;
 #endif
 
 out vec3 vNormal;
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	out vec3 vTangent;
+#endif
+#ifdef WITH_BITANGENT
 	out vec3 vBitangent;
 #endif
 #ifdef WITH_REFLECT_DIR
@@ -143,8 +133,10 @@ void main( void ){
 	
 	// calculate normal, tangent and bitangent. the same for all vertices
 	vNormal = vec3( 0.0, 0.0, -1.0 );
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		vTangent = vec3( rotmat * vec2( 1.0, 0.0 ), 0.0 );
+	#endif
+	#ifdef WITH_BITANGENT
 		vBitangent = vec3( rotmat * vec2( 0.0, -1.0 ), 0.0 );
 	#endif
 	

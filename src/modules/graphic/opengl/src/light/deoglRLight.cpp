@@ -898,16 +898,21 @@ deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderTyp
 
 bool deoglRLight::GetShaderConfigFor( deoglRLight::eShaderTypes shaderType,
 deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
 	
 	config.Reset();
 	
 	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	
+	switch( shaderType ){
+	case estLumSolid1:
+	case estLumSolid1NoAmbient:
+	case estLumSolid2:
+		break;
+		
+	default:
+		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	}
 	
 	switch( pLightType ){
 	case deLight::eltPoint:
@@ -926,8 +931,17 @@ deoglLightShaderConfig &config ){
 			config.SetShadowMatrix2EqualsMatrix1( true );
 		}
 		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		switch( shaderType ){
+		case estLumSolid1:
+		case estLumSolid1NoAmbient:
+		case estLumSolid2:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+			break;
+			
+		default:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		}
 		config.SetTextureNoise( false );
 		
 		if( pLightCanvas ){
@@ -970,8 +984,17 @@ deoglLightShaderConfig &config ){
 		config.SetShadowMatrix2EqualsMatrix1( true );
 		config.SetShadowInverseDepth( true );
 		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		switch( shaderType ){
+		case estLumSolid1:
+		case estLumSolid1NoAmbient:
+		case estLumSolid2:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+			break;
+			
+		default:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		}
 		config.SetTextureNoise( false );
 		
 		if( pLightCanvas ){
@@ -1009,11 +1032,13 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid1:
+	case estLumSolid1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadowAmbient( true );
 		break;
 		
 	case estSolid1NoAmbient:
+	case estLumSolid1NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		break;
 		
@@ -1029,6 +1054,7 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid2:
+	case estLumSolid2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadowAmbient( true );

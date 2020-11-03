@@ -87,6 +87,15 @@ public:
 		/** \brief Double solid and transparent shadow. */
 		estSolid2Transp2,
 		
+		/** \brief Luminance only single solid. */
+		estLumSolid1,
+		
+		/** \brief Luminance only single solid without ambient lighting. */
+		estLumSolid1NoAmbient,
+		
+		/** \brief Luminance only double solid. */
+		estLumSolid2,
+		
 		/** \brief Number of shaders. */
 		EST_COUNT
 	};

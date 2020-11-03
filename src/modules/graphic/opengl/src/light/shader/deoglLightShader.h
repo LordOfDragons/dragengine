@@ -69,6 +69,7 @@ public:
 	enum eRenderUniformTargets{
 		erutPosTransform,
 		erutAOSelfShadow,
+		erutLumFragCoordScale,
 		ERUT_COUNT
 	};
 	

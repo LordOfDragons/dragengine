@@ -1,28 +1,7 @@
 //#extension GL_ARB_tessellation_shader : enable
-
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_SOLIDITY || defined OUTPUT_COLOR || defined TEXTURE_HEIGHT
-	#define REQUIRES_TEX_COLOR 1
-#endif
-
-#ifdef TEXTURE_HEIGHT
-	#define REQUIRES_NORMAL 1
-#endif
-
-
-
-// Definitions
-////////////////
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 layout( triangles, equal_spacing, ccw ) in;
-
-
 
 // Uniform Parameters
 ///////////////////////
@@ -64,8 +43,10 @@ layout( triangles, equal_spacing, ccw ) in;
 #endif
 #ifdef REQUIRES_NORMAL
 	in vec3 vTESNormal[];
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		in vec3 vTESTangent[];
+	#endif
+	#ifdef WITH_BITANGENT
 		in vec3 vTESBitangent[];
 	#endif
 #endif
@@ -102,9 +83,11 @@ layout( triangles, equal_spacing, ccw ) in;
 	#ifdef REQUIRES_NORMAL
 		out vec3 vGSNormal;
 		#define vNormal vGSNormal
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			out vec3 vGSTangent;
 			#define vTangent vGSTangent
+		#endif
+		#ifdef WITH_BITANGENT
 			out vec3 vGSBitangent;
 			#define vBitangent vGSBitangent
 		#endif
@@ -128,8 +111,10 @@ layout( triangles, equal_spacing, ccw ) in;
 	#endif
 	#ifdef REQUIRES_NORMAL
 		out vec3 vNormal;
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			out vec3 vTangent;
+		#endif
+		#ifdef WITH_BITANGENT
 			out vec3 vBitangent;
 		#endif
 	#endif
@@ -159,8 +144,10 @@ void main(){
 	#endif
 	#ifdef REQUIRES_NORMAL
 		TESS_VAR_LINEAR_TRI( vNormal, vTESNormal );
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			TESS_VAR_LINEAR_TRI( vTangent, vTESTangent );
+		#endif
+		#ifdef WITH_BITANGENT
 			TESS_VAR_LINEAR_TRI( vBitangent, vTESBitangent );
 		#endif
 	#endif
@@ -204,8 +191,10 @@ void main(){
 	// normalize normals again. required since for displacement the normals have to be in the proper coordinate system
 	#ifdef REQUIRES_NORMAL
 		vNormal = normalize( vNormal * pMatrixVn );
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			vTangent = normalize( vTangent * pMatrixVn );
+		#endif
+		#ifdef WITH_BITANGENT
 			vBitangent = normalize( vBitangent * pMatrixVn );
 		#endif
 	#endif

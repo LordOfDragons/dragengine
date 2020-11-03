@@ -65,6 +65,7 @@ void deoglLightShaderConfig::Reset(){
 	pShadowInverseDepth = false;
 	pFullScreenQuad = false;
 	pSubSurface = false;
+	pLuminanceOnly = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -80,46 +81,26 @@ void deoglLightShaderConfig::Reset(){
 
 
 void deoglLightShaderConfig::SetLightMode( eLightModes lightMode ){
-	if( lightMode < elmPoint || lightMode > elmParticle ){
-		DETHROW( deeInvalidParam );
-	}
 	pLightMode = lightMode;
 }
 
 void deoglLightShaderConfig::SetShadowTapMode( eShadowTapModes shadowTapMode ){
-	if( shadowTapMode < estmSingle || shadowTapMode > estmPcfVariableTap ){
-		DETHROW( deeInvalidParam );
-	}
 	pShadowTapMode = shadowTapMode;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm1(
-eShadowMappingAlgorithms shadowMappingAlgorithm ){
-	if( shadowMappingAlgorithm < esma2D || shadowMappingAlgorithm > esmaPyramid ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglLightShaderConfig::SetShadowMappingAlgorithm1( eShadowMappingAlgorithms shadowMappingAlgorithm ){
 	pShadowMappingAlgorithm1 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm2(
-eShadowMappingAlgorithms shadowMappingAlgorithm ){
-	if( shadowMappingAlgorithm < esma2D || shadowMappingAlgorithm > esmaPyramid ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglLightShaderConfig::SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm ){
 	pShadowMappingAlgorithm2 = shadowMappingAlgorithm;
 }
 
 void deoglLightShaderConfig::SetMaterialNormalMode( eMaterialNormalModes materialNormalMode ){
-	if( materialNormalMode < emnmFloat || materialNormalMode > emnmSpheremap ){
-		DETHROW( deeInvalidParam );
-	}
 	pMaterialNormalMode = materialNormalMode;
 }
 
 void deoglLightShaderConfig::SetParticleMode( eParticleModes mode ){
-	if( mode < epmParticle || mode > epmBeam ){
-		DETHROW( deeInvalidParam );
-	}
 	pParticleMode = mode;
 }
 
@@ -159,6 +140,10 @@ void deoglLightShaderConfig::SetFullScreenQuad( bool fullScreenQuad ){
 
 void deoglLightShaderConfig::SetSubSurface( bool subSurface ){
 	pSubSurface = subSurface;
+}
+
+void deoglLightShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
+	pLuminanceOnly = luminanceOnly;
 }
 
 
@@ -205,16 +190,11 @@ void deoglLightShaderConfig::SetTextureShadowAmbient( bool isUsed ){
 //////////
 
 void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
-	const char * const lightModeStrings[] = {
-		"point", "spot", "projector", "sky", "particle" };
-	const char * const shadowTapModeStrings[] = {
-		"single", "pcf4", "pcf9", "pcfvar" };
-	const char * const shadowMappingAlgorithmStrings[] = {
-		"2D", "cube", "dualpara", "pyramid" };
-	const char * const materialNormalModeStrings[] = {
-		"matnorFloat", "matnorIntBasic", "matnorSpheremap" };
-	const char * const particleModeStrings[] = {
-		"particle", "ribbon", "beam" };
+	const char * const lightModeStrings[] = { "point", "spot", "projector", "sky", "particle" };
+	const char * const shadowTapModeStrings[] = { "single", "pcf4", "pcf9", "pcfvar" };
+	const char * const shadowMappingAlgorithmStrings[] = { "2D", "cube", "dualpara", "pyramid" };
+	const char * const materialNormalModeStrings[] = { "matnorFloat", "matnorIntBasic", "matnorSpheremap" };
+	const char * const particleModeStrings[] = { "particle", "ribbon", "beam" };
 	
 	string.Format( "(%s %s %s %s sma1=%s sma2=%s",
 		lightModeStrings[ pLightMode ],
@@ -265,6 +245,9 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pSubSurface ){
 		string.Append( " subSurface" );
 	}
+	if( pLuminanceOnly ){
+		string.Append( " luminanceOnly" );
+	}
 	
 	if( pTextureShadow1Solid ){
 		string.Append( " shadow1Solid" );
@@ -307,6 +290,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pShadowInverseDepth = config.pShadowInverseDepth;
 	pFullScreenQuad = config.pFullScreenQuad;
 	pSubSurface = config.pSubSurface;
+	pLuminanceOnly = config.pLuminanceOnly;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;
@@ -338,6 +322,7 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pShadowInverseDepth == config.pShadowInverseDepth
 		&& pFullScreenQuad == config.pFullScreenQuad
 		&& pSubSurface == config.pSubSurface
+		&& pLuminanceOnly == config.pLuminanceOnly
 		
 		&& pTextureNoise == config.pTextureNoise
 		&& pTextureColor == config.pTextureColor

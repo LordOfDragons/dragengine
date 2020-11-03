@@ -222,7 +222,7 @@ const float epsilon = 0.0001;
 	const vec2 noiseOffset = vec2( -0.5 );
 #endif
 
-#if defined( DECODE_IN_DEPTH ) || defined( DECODE_IN_SHADOW )
+#if defined DECODE_IN_DEPTH || defined DECODE_IN_SHADOW
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif
 
@@ -397,7 +397,7 @@ const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 
 // for HW_DEPTH_COMPARE mediump is required
 float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DTC position ){
-	vec4 tcoffset, collect;
+	vec4 tcoffset;
 	float shadow;
 	
 	#ifdef NOISE_TAP
@@ -470,7 +470,6 @@ float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DT
 #ifdef EVALUATE_SHADOWCUBE
 float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position ){
 	float shadow;
-	vec4 collect;
 	
 	float pdist = position.w;
 	position.w = position.w * params.x + params.y;
@@ -616,11 +615,14 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
+	#ifdef LUMINANCE_ONLY
+	ivec2 tc = ivec2( gl_FragCoord.xy * pLumFragCoordScale );
+	#else
 	ivec2 tc = ivec2( gl_FragCoord.xy );
+	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	
 	if( diffuse.a == 0.0 ){
 		discard;
 	}

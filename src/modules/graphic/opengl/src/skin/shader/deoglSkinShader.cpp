@@ -1817,9 +1817,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}else if( pConfig.GetOutputColor() ){
 		defines.AddDefine( "OUTPUT_COLOR", "1" );
 	}
-	if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
-	|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-		defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", "1" );
+	if( ! pConfig.GetLuminanceOnly() ){
+		if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
+		|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+			defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", "1" );
+		}
 	}
 	
 	// texture property usage definitions
@@ -1855,6 +1857,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetOutlineThicknessScreen() ){
 		defines.AddDefine( "WITH_OUTLINE_THICKNESS_SCREEN", "1" );
+	}
+	if( pConfig.GetLuminanceOnly() ){
+		defines.AddDefine( "LUMINANCE_ONLY", "1" );
 	}
 	
 	// dynamic texture property usage definitions
@@ -2471,25 +2476,31 @@ void deoglSkinShader::InitShaderParameters(){
 		break;
 		
 	default:
-		if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
-		&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-			outputList.Add( "outColor", 0 );
+		if( pConfig.GetLuminanceOnly() ){
+			outputList.Add( "outLuminance", 0 );
+			outputList.Add( "outNormal", 1 );
 			
 		}else{
-			if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outRoughness", 3 );
-				outputList.Add( "outAOSolidity", 4 );
-				outputList.Add( "outSubSurface", 5 );
-				outputList.Add( "outColor", 6 );
+			if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
+			&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+				outputList.Add( "outColor", 0 );
 				
 			}else{
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outColor", 3 );
+				if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
+					outputList.Add( "outDiffuse", 0 );
+					outputList.Add( "outNormal", 1 );
+					outputList.Add( "outReflectivity", 2 );
+					outputList.Add( "outRoughness", 3 );
+					outputList.Add( "outAOSolidity", 4 );
+					outputList.Add( "outSubSurface", 5 );
+					outputList.Add( "outColor", 6 );
+					
+				}else{
+					outputList.Add( "outDiffuse", 0 );
+					outputList.Add( "outNormal", 1 );
+					outputList.Add( "outReflectivity", 2 );
+					outputList.Add( "outColor", 3 );
+				}
 			}
 		}
 	}

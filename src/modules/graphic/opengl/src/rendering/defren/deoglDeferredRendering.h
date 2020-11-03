@@ -93,6 +93,12 @@ private:
 	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
+	deoglTexture *pTextureLuminance;
+	deoglTexture *pTextureLuminanceNormal;
+	deoglTexture *pTextureLuminanceDepth;
+	deoglFramebuffer *pFBOLuminance;
+	deoglFramebuffer *pFBOLuminanceNormal;
+	
 	int pMemoryUsageGPU;
 	int pMemoryUsageGPUTexture;
 	int pMemoryUsageGPURenBuf;
@@ -278,6 +284,21 @@ public:
 	
 	/** Retrieves the depth min-map texture. */
 	inline deoglDRDepthMinMax &GetDepthMinMax() const{ return *pDepthMinMax; }
+	
+	/** Luminance texture. */
+	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+	
+	/** Luminance normal texture. */
+	inline deoglTexture *GetTextureLuminanceNormal() const{ return pTextureLuminanceNormal; }
+	
+	/** Luminance depth texture. */
+	inline deoglTexture *GetTextureLuminanceDepth() const{ return pTextureLuminanceDepth; }
+	
+	/** Activate luminance fbo. */
+	void ActivateFBOLuminance();
+	
+	/** Activate luminance normal fbo. */
+	void ActivateFBOLuminanceNormal();
 	
 	/** Retrieves the full screen quad VAO. */
 	inline deoglVAO *GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }

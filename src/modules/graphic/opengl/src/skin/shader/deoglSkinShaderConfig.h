@@ -154,6 +154,7 @@ public:
 	int pSPBInstanceArraySize;
 	bool pOutline;
 	bool pOutlineThicknessScreen;
+	bool pLuminanceOnly;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -410,6 +411,12 @@ public:
 	
 	/** \brief Set if outline thickness is relative to screen width. */
 	void SetOutlineThicknessScreen( bool enable );
+	
+	/** \brief Luminance only. */
+	inline bool GetLuminanceOnly() const{ return pLuminanceOnly; }
+	
+	/** \brief Set luminance only. */
+	void SetLuminanceOnly( bool luminanceOnly );
 	
 	
 	

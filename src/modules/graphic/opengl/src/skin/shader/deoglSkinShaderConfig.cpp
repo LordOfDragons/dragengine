@@ -78,6 +78,7 @@ void deoglSkinShaderConfig::Reset(){
 	pSPBInstanceArraySize = 0;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
+	pLuminanceOnly = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -253,6 +254,10 @@ void deoglSkinShaderConfig::SetOutline( bool outline ){
 
 void deoglSkinShaderConfig::SetOutlineThicknessScreen( bool enable ){
 	pOutlineThicknessScreen = enable;
+}
+
+void deoglSkinShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
+	pLuminanceOnly = luminanceOnly;
 }
 
 
@@ -596,6 +601,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pOutlineThicknessScreen ){
 		string.Append( " outlineTS" );
 	}
+	if( pLuminanceOnly ){
+		string.Append( " luminanceOnly" );
+	}
 	
 	if( pDynamicColorTint ){
 		string.Append( " dynClrTint" );
@@ -797,6 +805,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pSPBInstanceArraySize = config.pSPBInstanceArraySize;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
+	pLuminanceOnly = config.pLuminanceOnly;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;
@@ -887,6 +896,7 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pSPBInstanceArraySize == config.pSPBInstanceArraySize
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen
+		&& pLuminanceOnly == config.pLuminanceOnly
 		
 		&& pDynamicColorTint == config.pDynamicColorTint
 		&& pDynamicColorGamma == config.pDynamicColorGamma
