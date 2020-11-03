@@ -77,11 +77,12 @@ private:
 	deoglTexture *pTextureAOSolidity;
 	deoglTexture *pTextureSubSurface;
 	deoglTexture *pTextureColor;
+	deoglTexture *pTextureLuminance;
 	deoglTexture *pTextureTemporary1;
 	deoglTexture *pTextureTemporary2;
 	deoglTexture *pTextureTemporary3;
 	
-	deoglFramebuffer *pFBOs[ 30 ];
+	deoglFramebuffer *pFBOs[ 37 ];
 	deoglFramebuffer **pFBOMipMapDepth1;
 	deoglFramebuffer **pFBOMipMapDepth2;
 	deoglFramebuffer **pFBOMipMapTemporary1;
@@ -93,11 +94,11 @@ private:
 	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
-	deoglTexture *pTextureLuminance;
-	deoglTexture *pTextureLuminanceNormal;
-	deoglTexture *pTextureLuminanceDepth;
-	deoglFramebuffer *pFBOLuminance;
-	deoglFramebuffer *pFBOLuminanceNormal;
+// 	deoglTexture *pTextureLuminance;
+// 	deoglTexture *pTextureLuminanceNormal;
+// 	deoglTexture *pTextureLuminanceDepth;
+// 	deoglFramebuffer *pFBOLuminance;
+// 	deoglFramebuffer *pFBOLuminanceNormal;
 	
 	int pMemoryUsageGPU;
 	int pMemoryUsageGPUTexture;
@@ -224,6 +225,10 @@ public:
 	inline deoglTexture *GetTextureSubSurface() const{ return pTextureSubSurface; }
 	/** Retrieves the color texture. */
 	inline deoglTexture *GetTextureColor() const{ return pTextureColor; }
+	
+	/** Luminance texture. */
+	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+	
 	/** Retrieves the first temporary texture. */
 	inline deoglTexture *GetTextureTemporary1() const{ return pTextureTemporary1; }
 	/** Retrieves the second temporary texture. */
@@ -270,7 +275,7 @@ public:
 	/** Activates the third temporary fbo without depth. */
 	void ActivateFBOTemporary3();
 	/** Activates the color fbo with or without depth. */
-	void ActivateFBOColor( bool withDepth );
+	void ActivateFBOColor( bool withDepth, bool withLuminance );
 	/** Activates the depth and diffuse fbo with depth. */
 	void ActivateFBODepthDiffuse();
 	/** Activates the depth and first temporary fbo with depth. */
@@ -278,27 +283,29 @@ public:
 	/** Activates the color fbo with depth. */
 	void ActivateFBOColorDepth();
 	/** Activates the color and temporary2 fbo with depth. */
-	void ActivateFBOColorTemp2( bool withDepth );
+	void ActivateFBOColorTemp2( bool withDepth, bool withLuminance );
 	/** Activates the diffuse, normal, reflectivity, roughness and color fbo with depth. */
 	void ActivateFBOMaterialColor();
+	/** Activate luminance without depth. */
+	void ActivateFBOLuminance();
 	
 	/** Retrieves the depth min-map texture. */
 	inline deoglDRDepthMinMax &GetDepthMinMax() const{ return *pDepthMinMax; }
 	
 	/** Luminance texture. */
-	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+// 	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
 	
 	/** Luminance normal texture. */
-	inline deoglTexture *GetTextureLuminanceNormal() const{ return pTextureLuminanceNormal; }
+// 	inline deoglTexture *GetTextureLuminanceNormal() const{ return pTextureLuminanceNormal; }
 	
 	/** Luminance depth texture. */
-	inline deoglTexture *GetTextureLuminanceDepth() const{ return pTextureLuminanceDepth; }
+// 	inline deoglTexture *GetTextureLuminanceDepth() const{ return pTextureLuminanceDepth; }
 	
 	/** Activate luminance fbo. */
-	void ActivateFBOLuminance();
+// 	void ActivateFBOLuminance();
 	
 	/** Activate luminance normal fbo. */
-	void ActivateFBOLuminanceNormal();
+// 	void ActivateFBOLuminanceNormal();
 	
 	/** Retrieves the full screen quad VAO. */
 	inline deoglVAO *GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }

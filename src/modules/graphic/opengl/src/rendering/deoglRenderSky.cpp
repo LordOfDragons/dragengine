@@ -263,7 +263,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	DEBUG_RESET_TIMERS;
-	defren.ActivateFBOColor( true );
+	defren.ActivateFBOColor( true, false );
 		// change the skin shader so the color texture is the first one.
 		// would not require this switch here anymore
 	
@@ -371,7 +371,7 @@ void deoglRenderSky::RenderSkyOld( deoglRenderPlan &plan ){
 	
 DEBUG_RESET_TIMERS;
 	// attach color buffer, depth buffer and stencil buffer
-	defren.ActivateFBOColor( true );
+	defren.ActivateFBOColor( true, false );
 DEBUG_PRINT_TIMER( "RenderSky: attach color/depth/stencil" );
 	
 	// set states

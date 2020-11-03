@@ -430,6 +430,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 DBG_EXIT("RenderSolidGeometryPass")
 }
 
+#if 0
 void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -508,3 +509,4 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	renderTask.PrepareForRender( renderThread );
 	rengeom.RenderTask( renderTask );
 }
+#endif

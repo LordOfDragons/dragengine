@@ -4,15 +4,14 @@
 	
 	<version>130</version>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texColor' target='1'/>
+	<texture name='texColor' target='0'/>
 	
 	<parameter name='pPosTransform'/> <!-- 0 -->
 	<parameter name='pTCTransform'/> <!-- 1 -->
 	
 	<attribute name='inPosition' target='0'/> <!-- 0 -->
 	
-	<output name='outLum' target='0'/>
+	<output name='outLuminance' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/tonemap/lum_prepare.glsl</sourceCode>

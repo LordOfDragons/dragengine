@@ -76,7 +76,7 @@ public:
 	/**
 	 * \brief Render luminance only pass.
 	 */
-	void RenderLuminanceOnly( deoglRenderPlan &plan );
+// 	void RenderLuminanceOnly( deoglRenderPlan &plan );
 	
 	
 	

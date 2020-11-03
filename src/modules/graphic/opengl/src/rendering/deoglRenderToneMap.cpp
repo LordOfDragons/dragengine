@@ -374,14 +374,11 @@ DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglTexture &texLum = *defren.GetTextureLuminance();
-	const int realHeight = defren.GetHeight();
-	const int realWidth = defren.GetWidth();
-	const int height = texLum.GetHeight();
-	const int width = texLum.GetWidth();
+	const int height = defren.GetHeight();
+	const int width = defren.GetWidth();
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -393,14 +390,13 @@ DEBUG_RESET_TIMERS;
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
 	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
 	
 	shader.SetParameterFloat( splpPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	defren.SetShaderParamFSQuad( shader, splpTCTransform, 0.0f, 0.0f, ( float )realWidth, ( float )realHeight );
+	defren.SetShaderParamFSQuad( shader, splpTCTransform );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
@@ -455,11 +451,12 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	bool modeTarget;
 	
 	if( config.GetDebugSnapshot() == 55 ){
-		DebugNanCheck( renderThread, defren, *defren.GetTextureColor() );
+		DebugNanCheck( renderThread, defren, *defren.GetTextureLuminance() );
 	}
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+// 		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
 	}
 	
 	// convert color to log luminance. to allow for proper averaging the output image is reduced
@@ -506,7 +503,8 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	defren.ActivateFBOTemporary1( false );
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+// 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderColor2LogLum );
 	shader = pShaderColor2LogLum->GetCompiled();

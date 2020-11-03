@@ -183,6 +183,7 @@ uniform lowp sampler2D texAOSolidity;
 ////////////
 
 out vec4 outColor;
+out float outLuminance;
 #ifdef WITH_SUBSURFACE
 	out vec4 outSubSurface;
 #endif
@@ -229,6 +230,9 @@ const float epsilon = 0.0001;
 #ifdef AMBIENT_LIGHTING
 const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 #endif
+
+const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
+//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 
 
 
@@ -1159,6 +1163,8 @@ void main( void ){
 	#ifdef AMBIENT_LIGHTING
 		finalColorSubSurface += finalColorAmbient;
 	#endif
+	
+	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );
 	
 	#ifdef WITH_SUBSURFACE
 		outColor = vec4( finalColorSurface, diffuse.a );

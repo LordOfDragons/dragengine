@@ -90,9 +90,6 @@ public:
 	/** \brief Restore depth texture binding from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTextureDepthSmooth();
 	
-	/** \brief Restore render fbo including attachments. */
-	void RestoreFBO();
-	
 	
 	
 	/** \brief Add top level debug information in the right order. */

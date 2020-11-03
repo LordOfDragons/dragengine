@@ -588,7 +588,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	defren.ActivateFBOColor( false );
+	defren.ActivateFBOColor( false, false );
 	
 	renderThread.GetShader().ActivateShader( pShaderSSSSS );
 	deoglShaderCompiled * const shader = pShaderSSSSS->GetCompiled();

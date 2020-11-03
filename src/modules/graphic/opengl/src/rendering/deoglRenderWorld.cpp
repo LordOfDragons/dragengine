@@ -391,8 +391,8 @@ DEBUG_RESET_TIMER
 		}
 		
 		if( ! mask ){
-			//renderers.GetToneMap().LuminancePrepare( plan );
-			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
+			renderers.GetToneMap().LuminancePrepare( plan );
+// 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
 		}
 		
 		DBG_ENTER("RenderLights")
