@@ -508,6 +508,8 @@ if parent_env['with_debug']:
 	if parent_env['with_sanitize']:
 		parent_env.Append(MODULE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(MODULE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(CROSSCOMPILE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
 	
 else:
 	parent_env.Append(MODULE_CPPFLAGS = ['-fvisibility=hidden'])

@@ -420,7 +420,6 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	config.SetTextureNoise( false );
 	
 	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	config.SetAmbientLighting( false );
 	
 	config.SetTextureShadow1Solid( false );
 	config.SetTextureShadow1Transparent( false );

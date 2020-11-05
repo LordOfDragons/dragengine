@@ -94,6 +94,11 @@ private:
 	deoglTexture *pForeignTexAmbient;
 	deoglTexture *pUseTexAmbient;
 	
+	deoglFramebuffer *pFBOCubeAmbient;
+	deoglRenderableDepthCubeMap *pCubeMapAmbient;
+	deoglCubeMap *pForeignCubeMapAmbient;
+	deoglCubeMap *pUseCubeMapAmbient;
+	
 	
 	
 public:
@@ -257,6 +262,27 @@ public:
 	
 	/** \brief Activate ambient texture with the given size. */
 	void ActivateAmbientTexture( int size );
+	
+	
+	
+	
+	/** \brief Ambient cubemap. */
+	deoglCubeMap *GetAmbientCubeMap() const;
+	
+	/** \brief Set foreign ambient cubemap. */
+	void SetForeignAmbientCubeMap( deoglCubeMap *cubemap );
+	
+	/** \brief Drop ambient cubemaps. */
+	void DropAmbientCubeMaps();
+	
+	/** \brief Drop foreign ambient cubemaps. */
+	void DropForeignAmbientCubeMaps();
+	
+	/** \brief Activate ambient cubemap with size. */
+	void ActivateAmbientCubeMap( int size );
+	
+	/** \brief Activate ambient cubemap face with size. */
+	void ActivateAmbientCubeMapFace( int size, int face );
 	/*@}*/
 	
 	

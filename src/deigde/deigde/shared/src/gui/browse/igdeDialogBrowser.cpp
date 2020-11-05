@@ -181,7 +181,9 @@ public:
 ////////////////////////////
 
 igdeDialogBrowser::igdeDialogBrowser( igdeEnvironment &environment, const char *title, bool canResize ) :
-igdeDialog( environment, title, NULL, canResize )
+igdeDialog( environment, title, NULL, canResize ),
+pPreviewSize( epsLarge ),
+pViewMode( evmPreview )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	

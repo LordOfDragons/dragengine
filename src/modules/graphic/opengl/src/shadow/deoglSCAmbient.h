@@ -26,6 +26,7 @@ class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
 class deoglRenderableDepthTexture;
+class deoglRenderableDepthCubeMap;
 
 
 
@@ -42,6 +43,7 @@ private:
 	bool pHasStatic;
 	
 	deoglRenderableDepthTexture *pDynamicMap;
+	deoglRenderableDepthCubeMap *pDynamicCubeMap;
 	
 	int pPlanStaticSize;
 	int pPlanDynamicSize;
@@ -96,6 +98,12 @@ public:
 	
 	/** \brief Obtain dynamic map with size if absent. */
 	deoglRenderableDepthTexture *GetDynamicMap( int size );
+	
+	/** \brief Dynamic shadow cube map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
+	
+	/** \brief Obtain dynamic shadow cube map with size if absent. */
+	deoglRenderableDepthCubeMap *ObtainDynamicCubeMapWithSize( int size );
 	
 	/** \brief Drop dynamic map if present. */
 	void DropDynamic();

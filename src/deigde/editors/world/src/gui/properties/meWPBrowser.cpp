@@ -1020,7 +1020,6 @@ void meWPBrowser::SetViewMode( eViewModes viewMode ){
 
 
 void meWPBrowser::OnGameProjectChanged(){
-	printf("OnGameProjectChanged\n");
 	OnGameDefinitionChanged();
 }
 

@@ -1408,9 +1408,9 @@ void deoglDeferredRendering::pCleanUp(){
 // 	if( pTextureLuminanceNormal ){
 // 		delete pTextureLuminanceNormal;
 // 	}
-	if( pTextureLuminance ){
-		delete pTextureLuminance;
-	}
+// 	if( pTextureLuminance ){
+// 		delete pTextureLuminance;
+// 	}
 	
 	if( pTextureColor ){
 		delete pTextureColor;

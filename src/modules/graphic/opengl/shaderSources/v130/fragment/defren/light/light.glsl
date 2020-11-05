@@ -1003,7 +1003,7 @@ void main( void ){
 	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
 	
 	#ifdef AMBIENT_LIGHTING
-		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+// 		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
 	#endif
 	dotval = max( dotval, 0.0 );
 	
@@ -1040,7 +1040,8 @@ void main( void ){
 		vec3 absorptionLightColor = lightColor;
 	#endif
 	
-	lightColor *= vec3( dotval );
+// 	lightColor *= vec3( dotval );
+	lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
 	#ifdef SHADOW_CASTING
 		lightColor *= shadowColor;
 	#endif
@@ -1069,7 +1070,8 @@ void main( void ){
 	//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
 	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
 	#ifdef AMBIENT_LIGHTING
-		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+// 		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+		vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 	#endif
 	
 	// distance and spot attenuation

@@ -135,8 +135,9 @@ public:
 	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light );
 	
 	/** \brief Render shadows for a point light. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light, const decDMatrix &matrixProjection,
-		bool transparentStaticShadow, bool transparentDynamicShadow );
+	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
+		const decDMatrix &matrixProjection, bool transparentStaticShadow,
+		bool transparentDynamicShadow, bool refilterShadow );
 	
 	/** \brief Clear cube map. */
 	void ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize );
@@ -149,8 +150,8 @@ public:
 	
 	/** \brief Render ambient map. */
 	void RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixProjection,
-		deoglShadowMapper &shadowMapper, const deoglCollideList &clist, int ambientMapSize,
-		float shadowScale, float shadowOffset );
+		deoglShadowMapper &shadowMapper, const deoglCollideList *clist1, const deoglCollideList *clist2,
+		int ambientMapSize, float shadowScale, float shadowOffset );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
