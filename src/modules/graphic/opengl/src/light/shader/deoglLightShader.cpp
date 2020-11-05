@@ -64,7 +64,8 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texShadow2SolidDepth", // ettShadow2SolidDepth
 	"texShadow2TransparentDepth", // ettShadow2TransparentDepth
 	"texShadow2TransparentColor", // ettShadow2TransparentColor
-	"texShadowAmbient", // ettShadowAmbient
+	"texShadow1Ambient", // ettShadow1Ambient
+	"texShadow2Ambient", // ettShadow2Ambient
 	"texLightDepth1", // ettLightDepth1
 	"texLightDepth2" // ettLightDepth2
 };
@@ -551,8 +552,11 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetTextureShadow2Transparent() ){
 		defines.AddDefine( "TEXTURE_SHADOW2_TRANSPARENT", "1" );
 	}
-	if( pConfig.GetTextureShadowAmbient() ){
-		defines.AddDefine( "TEXTURE_SHADOW_AMBIENT", "1" );
+	if( pConfig.GetTextureShadow1Ambient() ){
+		defines.AddDefine( "TEXTURE_SHADOW1_AMBIENT", "1" );
+	}
+	if( pConfig.GetTextureShadow2Ambient() ){
+		defines.AddDefine( "TEXTURE_SHADOW2_AMBIENT", "1" );
 	}
 	
 	if( pConfig.GetDecodeInDepth() ){
@@ -730,8 +734,11 @@ void deoglLightShader::UpdateTextureTargets(){
 		pTextureTargets[ ettShadow2TransparentDepth ] = textureUnitNumber++;
 		pTextureTargets[ ettShadow2TransparentColor ] = textureUnitNumber++;
 	}
-	if( pConfig.GetTextureShadowAmbient() ){
-		pTextureTargets[ ettShadowAmbient ] = textureUnitNumber++;
+	if( pConfig.GetTextureShadow1Ambient() ){
+		pTextureTargets[ ettShadow1Ambient ] = textureUnitNumber++;
+	}
+	if( pConfig.GetTextureShadow2Ambient() ){
+		pTextureTargets[ ettShadow2Ambient ] = textureUnitNumber++;
 	}
 	if( pConfig.GetSubSurface() ){
 		if( pConfig.GetTextureShadow1Solid() ){

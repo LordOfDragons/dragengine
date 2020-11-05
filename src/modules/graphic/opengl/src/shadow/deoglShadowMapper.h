@@ -90,7 +90,7 @@ private:
 	deoglRenderableColorTexture *pTextureOcclusion;
 	
 	deoglFramebuffer *pFBOAmbient;
-	deoglRenderableColorTexture *pTextureAmbient;
+	deoglRenderableDepthTexture *pTextureAmbient;
 	deoglTexture *pForeignTexAmbient;
 	deoglTexture *pUseTexAmbient;
 	
@@ -261,7 +261,7 @@ public:
 	void DropForeignAmbientTextures();
 	
 	/** \brief Activate ambient texture with the given size. */
-	void ActivateAmbientTexture( int size );
+	void ActivateAmbientTexture( int size, bool useFloatDepth );
 	
 	
 	

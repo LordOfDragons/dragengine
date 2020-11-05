@@ -156,7 +156,7 @@ void deoglSCAmbient::ResetLastUseStatic(){
 
 
 
-deoglRenderableDepthTexture *deoglSCAmbient::GetDynamicMap( int size ){
+deoglRenderableDepthTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}

@@ -46,7 +46,8 @@ public:
 		deoglTexture *shadow1Transp;
 		deoglTexture *shadow2Solid;
 		deoglTexture *shadow2Transp;
-		deoglTexture *shadowAmbient;
+		deoglTexture *shadow1Ambient;
+		deoglTexture *shadow2Ambient;
 		sShadowDepthMaps();
 	};
 	
@@ -115,7 +116,7 @@ public:
 	/** \brief Render shadow maps. */
 	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
 		const decDMatrix &matrixProjection, bool transparentStaticShadow,
-		bool transparentDynamicShadow );
+		bool transparentDynamicShadow, bool refilterShadow );
 	
 	/** \brief Render shadow map. */
 	void RenderShadowMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixCamera,
@@ -126,7 +127,7 @@ public:
 	/** \brief Render ambient map. */
 	void RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixCamera,
 		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
-		const deoglCollideList &clist, int ambientMapSize );
+		const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSize );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,

@@ -75,7 +75,8 @@ void deoglLightShaderConfig::Reset(){
 	pTextureShadow1Transparent = false;
 	pTextureShadow2Solid = false;
 	pTextureShadow2Transparent = false;
-	pTextureShadowAmbient = false;
+	pTextureShadow1Ambient = false;
+	pTextureShadow2Ambient = false;
 }
 
 
@@ -180,8 +181,12 @@ void deoglLightShaderConfig::SetTextureShadow2Transparent( bool isUsed ){
 	pTextureShadow2Transparent = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadowAmbient( bool isUsed ){
-	pTextureShadowAmbient = isUsed;
+void deoglLightShaderConfig::SetTextureShadow1Ambient( bool isUsed ){
+	pTextureShadow1Ambient = isUsed;
+}
+
+void deoglLightShaderConfig::SetTextureShadow2Ambient( bool isUsed ){
+	pTextureShadow2Ambient = isUsed;
 }
 
 
@@ -261,8 +266,11 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pTextureShadow2Transparent ){
 		string.Append( " shadow2Transp" );
 	}
-	if( pTextureShadowAmbient ){
-		string.Append( " shadowAmbient" );
+	if( pTextureShadow1Ambient ){
+		string.Append( " shadow1Ambient" );
+	}
+	if( pTextureShadow2Ambient ){
+		string.Append( " shadow2Ambient" );
 	}
 	
 	string.Append( ")" );
@@ -300,7 +308,8 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pTextureShadow1Transparent = config.pTextureShadow1Transparent;
 	pTextureShadow2Solid = config.pTextureShadow2Solid;
 	pTextureShadow2Transparent = config.pTextureShadow2Transparent;
-	pTextureShadowAmbient = config.pTextureShadowAmbient;
+	pTextureShadow1Ambient = config.pTextureShadow1Ambient;
+	pTextureShadow2Ambient = config.pTextureShadow2Ambient;
 	
 	return *this;
 }
@@ -332,5 +341,6 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pTextureShadow1Transparent == config.pTextureShadow1Transparent
 		&& pTextureShadow2Solid == config.pTextureShadow2Solid
 		&& pTextureShadow2Transparent == config.pTextureShadow2Transparent
-		&& pTextureShadowAmbient == config.pTextureShadowAmbient;
+		&& pTextureShadow1Ambient == config.pTextureShadow1Ambient
+		&& pTextureShadow2Ambient == config.pTextureShadow2Ambient;
 }

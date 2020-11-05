@@ -1165,13 +1165,18 @@ void deoglShadowMapper::DropForeignAmbientTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateAmbientTexture( int size ){
+void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignTexAmbient && pForeignTexAmbient->GetWidth() != size ){
-		DropAmbientTextures();
+	if( pForeignTexAmbient ){
+		if( pForeignTexAmbient->GetWidth() != size
+		|| pForeignTexAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+			DropAmbientTextures();
+		}
 	}
-	if( pTextureAmbient && pTextureAmbient->GetWidth() != size ){
-		DropAmbientTextures();
+	if( pTextureAmbient ){
+		if( pTextureAmbient->GetWidth() != size || pTextureAmbient->GetUseFloat() != useFloatDepth ){
+			DropAmbientTextures();
+		}
 	}
 	
 	// obtain a framebuffer for this size if not existing already
@@ -1181,7 +1186,8 @@ void deoglShadowMapper::ActivateAmbientTexture( int size ){
 	
 	// obtain ambient texture if not existing already
 	if( ! pTextureAmbient && ! pForeignTexAmbient ){
-		pTextureAmbient = pRenderThread.GetTexture().GetRenderableColorTexture().GetTextureWith( size, size, 1, false );
+		pTextureAmbient = pRenderThread.GetTexture().GetRenderableDepthTexture()
+			.GetTextureWith( size, size, false, useFloatDepth );
 		pUseTexAmbient = pTextureAmbient->GetTexture();
 	}
 	
@@ -1189,11 +1195,11 @@ void deoglShadowMapper::ActivateAmbientTexture( int size ){
 	pRenderThread.GetFramebuffer().Activate( pFBOAmbient );
 	
 	pFBOAmbient->DetachAllImages();
-	pFBOAmbient->AttachColorTexture( 0, pUseTexAmbient );
+	pFBOAmbient->AttachDepthTexture( pUseTexAmbient );
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 	
 	pFBOAmbient->Verify();
 	

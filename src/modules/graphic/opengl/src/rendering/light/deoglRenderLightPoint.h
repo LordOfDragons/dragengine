@@ -46,7 +46,8 @@ public:
 		deoglCubeMap *shadow1Transp;
 		deoglCubeMap *shadow2Solid;
 		deoglCubeMap *shadow2Transp;
-		deoglCubeMap *shadowAmbient;
+		deoglCubeMap *shadow1Ambient;
+		deoglCubeMap *shadow2Ambient;
 		
 		inline sShadowDepthMaps() :
 		shadow1Solid( NULL ),

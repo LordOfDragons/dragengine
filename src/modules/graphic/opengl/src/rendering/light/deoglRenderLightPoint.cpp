@@ -700,7 +700,6 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 	bool transparentStaticShadow = false;
 	bool transparentDynamicShadow = false;
 	
-	printf("shadowType: %p %d\n", this, shadowType);
 	if( useShadow ){
 		//if( ! plan.GetTransparentShadow() ){
 			const deoglCollideList &clistStatic = *light.GetStaticCollideList();
@@ -758,7 +757,8 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 	deoglCubeMap *texTranspColor1 = NULL;
 	deoglCubeMap *texTranspDepth2 = NULL;
 	deoglCubeMap *texTranspColor2 = NULL;
-	deoglCubeMap *texAmbient = NULL;
+	deoglCubeMap *texAmbient1 = NULL;
+	deoglCubeMap *texAmbient2 = NULL;
 	
 	if( useShadow ){
 		RenderShadows( plan, solid, light, matrixLP, transparentStaticShadow, transparentDynamicShadow, refilterShadow );
@@ -776,7 +776,7 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 				texTranspDepth1 = sctransp.GetStaticShadowCubeMap();
 				texTranspColor1 = sctransp.GetStaticColorCubeMap();
 			}
-			texAmbient = scambient.GetStaticCubeMap();
+			texAmbient1 = scambient.GetStaticCubeMap();
 			break;
 			
 		case deoglShadowCaster::estDynamicOnly:
@@ -806,16 +806,16 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 			}
 			
 			if( scambient.GetDynamicCubeMap() ){
-				texAmbient = scambient.GetDynamicCubeMap()->GetCubeMap();
+				texAmbient1 = scambient.GetDynamicCubeMap()->GetCubeMap();
 				
 			}else{
-				texAmbient = shadowMapper.GetAmbientCubeMap();
+				texAmbient1 = shadowMapper.GetAmbientCubeMap();
 			}
 			break;
 			
 		case deoglShadowCaster::estStaticAndDynamic:
 			texSolidDepth1 = scsolid.GetStaticCubeMap();
-			texAmbient = scambient.GetStaticCubeMap();
+			texAmbient1 = scambient.GetStaticCubeMap();
 			
 			if( scsolid.GetDynamicCubeMap() ){
 				texSolidDepth2 = scsolid.GetDynamicCubeMap()->GetCubeMap();
@@ -851,10 +851,10 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 			}
 			
 			if( scambient.GetDynamicCubeMap() ){
-				texAmbient = scambient.GetDynamicCubeMap()->GetCubeMap();
+				texAmbient2 = scambient.GetDynamicCubeMap()->GetCubeMap();
 				
 			}else{
-				texAmbient = shadowMapper.GetAmbientCubeMap();
+				texAmbient2 = shadowMapper.GetAmbientCubeMap();
 			}
 			break;
 			
@@ -916,7 +916,7 @@ DEBUG_RESET_TIMER
 			
 		}else{
 			if( texTranspDepth1 ){
-				if( texAmbient ){
+				if( texAmbient1 ){
 					lightShader = light.GetShaderFor( deoglRLight::estSolid1Transp1 );
 					
 				}else{
@@ -924,7 +924,7 @@ DEBUG_RESET_TIMER
 				}
 				
 			}else{
-				if( texAmbient ){
+				if( texAmbient1 ){
 					lightShader = light.GetShaderFor( deoglRLight::estSolid1 );
 					
 				}else{
@@ -957,7 +957,8 @@ DEBUG_RESET_TIMER
 	shadowDepthmaps.shadow1Solid = texSolidDepth1;
 	shadowDepthmaps.shadow1Transp = texTranspDepth1;
 	shadowDepthmaps.shadow2Solid = texSolidDepth2;
-	shadowDepthmaps.shadowAmbient = texAmbient;
+	shadowDepthmaps.shadow1Ambient = texAmbient1;
+	shadowDepthmaps.shadow2Ambient = texAmbient2;
 	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, light, shadowDepthmaps );
 	
 	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
@@ -1069,9 +1070,14 @@ DEBUG_RESET_TIMER
 		tsmgr.EnableCubeMap( target, *texTranspColor2, GetSamplerClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadowAmbient );
+	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1Ambient );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texAmbient, GetSamplerShadowClampLinear() );
+		tsmgr.EnableCubeMap( target, *texAmbient1, GetSamplerShadowClampLinear() );
+	}
+	
+	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2Ambient );
+	if( target != -1 ){
+		tsmgr.EnableCubeMap( target, *texAmbient2, GetSamplerShadowClampLinear() );
 	}
 	
 	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );

@@ -132,7 +132,8 @@ public:
 	bool pTextureShadow1Transparent;
 	bool pTextureShadow2Solid;
 	bool pTextureShadow2Transparent;
-	bool pTextureShadowAmbient;
+	bool pTextureShadow1Ambient;
+	bool pTextureShadow2Ambient;
 	
 	
 	
@@ -310,10 +311,16 @@ public:
 	void SetTextureShadow2Transparent( bool isUsed );
 	
 	/** \brief Shadow ambient map texture is used. */
-	inline bool GetTextureShadowAmbient() const{ return pTextureShadowAmbient; }
+	inline bool GetTextureShadow1Ambient() const{ return pTextureShadow1Ambient; }
 	
 	/** \brief Set if shadow ambient map is used. */
-	void SetTextureShadowAmbient( bool isUsed );
+	void SetTextureShadow1Ambient( bool isUsed );
+	
+	/** \brief Shadow ambient map texture is used. */
+	inline bool GetTextureShadow2Ambient() const{ return pTextureShadow2Ambient; }
+	
+	/** \brief Set if shadow ambient map is used. */
+	void SetTextureShadow2Ambient( bool isUsed );
 	/*@}*/
 	
 	

@@ -97,7 +97,7 @@ public:
 	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** \brief Obtain dynamic map with size if absent. */
-	deoglRenderableDepthTexture *GetDynamicMap( int size );
+	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size );
 	
 	/** \brief Dynamic shadow cube map if present or \em NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }

@@ -59,7 +59,8 @@ public:
 		ettShadow2SolidDepth,
 		ettShadow2TransparentDepth,
 		ettShadow2TransparentColor,
-		ettShadowAmbient,
+		ettShadow1Ambient,
+		ettShadow2Ambient,
 		ettLightDepth1,
 		ettLightDepth2,
 		ETT_COUNT

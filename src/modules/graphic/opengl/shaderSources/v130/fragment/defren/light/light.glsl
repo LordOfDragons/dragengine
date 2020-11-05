@@ -114,11 +114,18 @@ uniform lowp sampler2D texAOSolidity;
 		uniform lowp sampler2D texShadow2TransparentColor;
 	#endif
 #endif
-#ifdef TEXTURE_SHADOW_AMBIENT
+#ifdef TEXTURE_SHADOW1_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadowAmbient;
+		uniform lowp SAMPLER_SHADOWCUBE texShadow1Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadowAmbient;
+		uniform lowp SAMPLER_SHADOW2D texShadow1Ambient;
+	#endif
+#endif
+#ifdef TEXTURE_SHADOW2_AMBIENT
+	#ifdef SMA1_CUBE
+		uniform lowp SAMPLER_SHADOWCUBE texShadow2Ambient;
+	#else
+		uniform lowp SAMPLER_SHADOW2D texShadow2Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_NOISE
@@ -886,17 +893,28 @@ void main( void ){
 				// initialized value is used
 				vec3 fullShadowColor = vec3( shadow ); // required for specular reflection
 				
-			#elif defined TEXTURE_SHADOW_AMBIENT
+			#elif defined TEXTURE_SHADOW1_AMBIENT || defined TEXTURE_SHADOW2_AMBIENT
 				// if shadow is 1 the fragment is in plain light and has to stay at 1
 				// if shadow is 0 the fragment is in shadows. in this case it can received ambient light or not.
 				// if ambient light applies it is applied using the ambient ratio parameter of the light source.
 				// to avoid problems with light leaking through inside rooms having only a back facing wall the
 				// ambient map is used like an additional shadow map before calculating the real result
-				#ifdef SMA1_CUBE
-					float ambientShadow = evaluateShadowCube( texShadowAmbient, pShadow1Solid, shapos1 );
-				#else
-					float ambientShadow = evaluateShadow2D( texShadowAmbient, pShadow1Solid, ES2D( shapos1 ) );
+				float ambientShadow = 1.0;
+				#ifdef TEXTURE_SHADOW1_AMBIENT
+					#ifdef SMA1_CUBE
+						ambientShadow = min( ambientShadow, evaluateShadowCube( texShadow1Ambient, pShadow1Solid, shapos1 ) );
+					#else
+						ambientShadow = min( ambientShadow, evaluateShadow2D( texShadow1Ambient, pShadow1Solid, ES2D( shapos1 ) ) );
+					#endif
 				#endif
+				#ifdef TEXTURE_SHADOW2_AMBIENT
+					#ifdef SMA2_CUBE
+						ambientShadow = min( ambientShadow, evaluateShadowCube( texShadow2Ambient, pShadow2Solid, shapos2 ) );
+					#else
+						ambientShadow = min( ambientShadow, evaluateShadow2D( texShadow2Ambient, pShadow2Solid, ES2D( shapos2 ) ) );
+					#endif
+				#endif
+				
 				vec3 fullShadowColor = vec3( shadow * ambientShadow ); // required for specular reflection
 				shadow = mix( pLightAmbientRatio, 1.0, shadow ) * ambientShadow;
 				/*
