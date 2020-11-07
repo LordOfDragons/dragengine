@@ -71,7 +71,8 @@
 				<inputUpper>1</inputUpper>
 			</blue>
 		</mapped>
-		<value property='emissivity.intensity'>1</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='hint.nocompression'>1</value>
 	</texture>
 </skin>
