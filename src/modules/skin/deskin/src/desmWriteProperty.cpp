@@ -85,10 +85,18 @@ void desmWriteProperty::VisitColor( deSkinPropertyColor &property ){
 	
 	pWriter.WriteOpeningTagStart( "color" );
 	pWriter.WriteAttributeString( "property", pPropertyType );
-	pWriter.WriteAttributeFloat( "r", color.r );
-	pWriter.WriteAttributeFloat( "g", color.g );
-	pWriter.WriteAttributeFloat( "b", color.b );
-	pWriter.WriteAttributeFloat( "a", color.a );
+	if( fabsf( color.r ) > FLOAT_SAFE_EPSILON ){
+		pWriter.WriteAttributeFloat( "r", color.r );
+	}
+	if( fabsf( color.g ) > FLOAT_SAFE_EPSILON ){
+		pWriter.WriteAttributeFloat( "g", color.g );
+	}
+	if( fabsf( color.b ) > FLOAT_SAFE_EPSILON ){
+		pWriter.WriteAttributeFloat( "b", color.b );
+	}
+	if( fabsf( 1.0f - color.a ) > FLOAT_SAFE_EPSILON ){
+		pWriter.WriteAttributeFloat( "a", color.a );
+	}
 	if( ! property.GetRenderable().IsEmpty() ){
 		pWriter.WriteAttributeString( "renderable", property.GetRenderable().GetString() );
 	}
@@ -145,10 +153,16 @@ void desmWriteProperty::VisitConstructed( deSkinPropertyConstructed &property ){
 	const decColor &color = property.GetColor();
 	if( ! color.IsEqualTo( decColor() ) ){
 		pWriter.WriteOpeningTagStart( "color" );
-		pWriter.WriteAttributeFloat( "r", color.r );
-		pWriter.WriteAttributeFloat( "g", color.g );
-		pWriter.WriteAttributeFloat( "b", color.b );
-		if( color.a < 1.0 - FLOAT_SAFE_EPSILON ){
+		if( fabsf( color.r ) > FLOAT_SAFE_EPSILON ){
+			pWriter.WriteAttributeFloat( "r", color.r );
+		}
+		if( fabsf( color.g ) > FLOAT_SAFE_EPSILON ){
+			pWriter.WriteAttributeFloat( "g", color.g );
+		}
+		if( fabsf( color.b ) > FLOAT_SAFE_EPSILON ){
+			pWriter.WriteAttributeFloat( "b", color.b );
+		}
+		if( fabsf( 1.0f - color.a ) > FLOAT_SAFE_EPSILON ){
 			pWriter.WriteAttributeFloat( "a", color.a );
 		}
 		pWriter.WriteOpeningTagEnd( true );
