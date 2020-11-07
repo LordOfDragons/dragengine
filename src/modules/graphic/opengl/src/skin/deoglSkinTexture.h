@@ -263,6 +263,7 @@ private:
 	decColor pEmissivity;
 	decColor pEmissivityTint;
 	float pEmissivityIntensity;
+	bool pEmissivityCameraAdapted;
 	decVector2 pEnvironmentRoomSize;
 	decVector pEnvironmentRoomOffset;
 	decColor pEnvironmentRoomEmissivityTint;
@@ -585,6 +586,12 @@ public:
 	
 	/** \brief Set emissivity intensity. */
 	void SetEmissivityIntensity( float intensity );
+	
+	/** \brief Emissivity camera adapted. */
+	inline bool GetEmissivityCameraAdapted() const{ return pEmissivityCameraAdapted; }
+	
+	/** \brief Set emissivity camera adapted. */
+	void SetEmissivityCameraAdapted( bool cameraAdapted );
 	
 	
 	

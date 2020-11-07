@@ -136,6 +136,8 @@ static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
 	"pTexOutlineSolidity", // etutTexOutlineSolidity
 	"pTexOutlineEmissivity", // etutTexOutlineEmissivity
 	"pTexOutlineEmissivityTint", // etutTexOutlineEmissivityTint
+	
+	"pTexEmissivityCameraAdapted", // etutTexEmissivityCameraAdapted
 };
 
 static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = {
@@ -255,6 +257,8 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivityTint ( vec3 )
+	
+	{ deoglSPBParameter::evtBool, 1, 1, 1 }, // etutTexEmissivityCameraAdapted ( bool )
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIUT_COUNT ] = {
@@ -537,6 +541,7 @@ deoglRenderThread &renderThread, bool cubeMap ){
 		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -2415,6 +2420,7 @@ void deoglSkinShader::InitShaderParameters(){
 	parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
 	parameterList.Add( "pFadeRange" ); // erutFadeRange
 	parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
+	parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
 	
 	for( i=0; i<ETUT_COUNT; i++ ){
 		if( pTextureUniformTargets[ i ] != -1 ){

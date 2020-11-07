@@ -154,6 +154,10 @@ NODE_FRAGMENT_OUTPUTS
 */
 
 
+float finalEmissivityIntensity( in float intensity ){
+	return mix( intensity, intensity * pCameraAdaptedIntensity, pEmissivityCameraAdapted );
+}
+
 
 // Main Function
 //////////////////
@@ -284,7 +288,7 @@ void main( void ){
 					// using "normal" is not giving the results one expects especially if close up.
 					// instead the normal is dotted with the normalized fragment direction.
 					emissivity += pow( TEXTURE( texRimEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) )
-						* pRimEmissivityIntensity
+						* finalEmissivityIntensity( pRimEmissivityIntensity )
 						* vec3( max( 1.0 - pow( asin( abs( dot( fragmentDirection, normal ) ) )
 							* pRimAngle, pRimExponent ), 0.0 ) );
 				}

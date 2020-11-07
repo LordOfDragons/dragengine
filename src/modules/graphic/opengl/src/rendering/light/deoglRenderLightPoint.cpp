@@ -689,8 +689,7 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 	// all bits the "camera layer mask" then this would be enough to still fullfil the
 	// requirement to use the static shadow maps.
 	// TODO check if this special filter check should be added or not
-	const bool refilterShadow = plan.GetUseLayerMask()
-		&& ( light.GetLayerMaskShadow() & plan.GetLayerMask() ) != light.GetLayerMaskShadow();
+	const bool refilterShadow = plan.GetUseLayerMask() && ! light.StaticMatchesCamera( plan.GetLayerMask() );
 	
 	if( useShadow && refilterShadow ){
 		shadowType = deoglShadowCaster::estDynamicOnly;

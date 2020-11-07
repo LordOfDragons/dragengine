@@ -247,6 +247,14 @@ const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
 
 
 
+float finalEmissivityIntensity( in float intensity ){
+	return mix( intensity, intensity * pCameraAdaptedIntensity, pEmissivityCameraAdapted );
+}
+
+vec3 finalEmissivityIntensity( in vec3 intensity ){
+	return mix( intensity, intensity * vec3( pCameraAdaptedIntensity ), bvec3( pEmissivityCameraAdapted ) );
+}
+
 // Main Function
 //////////////////
 
@@ -743,9 +751,9 @@ void main( void ){
 	#else
 		#ifdef TEXTURE_EMISSIVITY
 			#ifdef PARTICLE
-				#define SCALE_EMISSIVITY vParticleColor.xyz * vParticleEmissivity
+				#define SCALE_EMISSIVITY vParticleColor.xyz * finalEmissivityIntensity( vParticleEmissivity )
 			#else
-				#define SCALE_EMISSIVITY pEmissivityIntensity
+				#define SCALE_EMISSIVITY finalEmissivityIntensity( pEmissivityIntensity )
 			#endif
 			outColor.rgb += pow( TEXTURE( texEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) ) * SCALE_EMISSIVITY;
 		#endif
@@ -753,10 +761,10 @@ void main( void ){
 		#ifdef TEXTURE_ENVROOM_EMISSIVITY
 			#ifdef TEXTURE_ENVROOM_MASK
 				outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
-					* pEnvRoomEmissivityIntensity * vec3( envRoomMask );
+					* finalEmissivityIntensity( pEnvRoomEmissivityIntensity ) * vec3( envRoomMask );
 			#else
 				outColor.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb
-					* pEnvRoomEmissivityIntensity;
+					* finalEmissivityIntensity( pEnvRoomEmissivityIntensity );
 			#endif
 		#endif
 		
@@ -768,7 +776,7 @@ void main( void ){
 				// using "normal" is not giving the results one expects especially if close up.
 				// instead the normal is dotted with the normalized fragment direction.
 				outColor.rgb += pow( TEXTURE( texRimEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) )
-					* pRimEmissivityIntensity
+					* finalEmissivityIntensity( pRimEmissivityIntensity )
 					* vec3( max( 1.0 - pow( asin( abs( dot( fragmentDirection, normal.xyz ) ) )
 						* pRimAngle, pRimExponent ), 0.0 ) );
 			}

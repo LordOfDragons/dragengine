@@ -34,4 +34,5 @@ UBOLAYOUT uniform RenderParameters{
 	vec3 pParticleLightHack; // temporary hack
 	vec3 pFadeRange; // x=fadeNear, y=farFar, z=1/(fadeFar-fadeNear)
 	float pBillboardZScale; // billboard z scale if size is fixed to screen
+	float pCameraAdaptedIntensity;
 };

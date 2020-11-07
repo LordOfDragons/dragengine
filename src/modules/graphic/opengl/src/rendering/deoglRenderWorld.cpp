@@ -600,6 +600,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		
 		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
 		
+		if( plan.GetCamera() ){
+			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
+			
+		}else{
+			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCameraAdaptedIntensity() );
+		}
+		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
 		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km

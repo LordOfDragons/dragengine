@@ -383,6 +383,7 @@ pName( texture.GetName() )
 	pEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
+	pEmissivityCameraAdapted = false;
 	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
 	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
@@ -1303,6 +1304,11 @@ deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType
 				powf( pOutlineEmissivityTint.g, 2.2f ), powf( pOutlineEmissivityTint.b, 2.2f ) );
 		}
 		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEmissivityCameraAdapted );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataBool( target, pEmissivityCameraAdapted );
+		}
+		
 	}catch( const deException & ){
 		pParamBlocks[ shaderType ]->UnmapBuffer();
 		throw;
@@ -1455,6 +1461,10 @@ void deoglSkinTexture::SetEmissivityTint( const decColor &tint ){
 
 void deoglSkinTexture::SetEmissivityIntensity( float intensity ){
 	pEmissivityIntensity = intensity;
+}
+
+void deoglSkinTexture::SetEmissivityCameraAdapted( bool cameraAdapted ){
+	pEmissivityCameraAdapted = cameraAdapted;
 }
 
 void deoglSkinTexture::SetThickness( float thickness ){
@@ -2334,6 +2344,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
 			pEmissivityIntensity = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptEmissivityCameraAdapted:
+			pEmissivityCameraAdapted = value > 0.5f;
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:

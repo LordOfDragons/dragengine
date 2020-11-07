@@ -152,6 +152,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Emissivity intensity. */
 		eptEmissivityIntensity,
 		
+		/** \brief Emissivity camera adapted property. */
+		eptEmissivityCameraAdapted,
+		
 		
 		
 		/** \brief Environment room. */

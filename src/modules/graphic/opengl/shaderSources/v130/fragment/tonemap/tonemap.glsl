@@ -17,13 +17,14 @@ const ivec2 tcParams = ivec2( 0, 0 );
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 
+/*
 float uchimura(float x, float P, float a, float m, float l, float c, float b) {
 	// Uchimura 2017, "HDR theory and practice"
 	// Math: https://www.desmos.com/calculator/gslcdxvipg
 	// Source: https://www.slideshare.net/nikuque/hdr-theory-and-practicce-jp
 	float l0 = ((P - m) * l) / a;
-	float L0 = m - m / a;
-	float L1 = m + (1.0 - m) / a;
+	//float L0 = m - m / a; // unused
+	//float L1 = m + (1.0 - m) / a; // unused
 	float S0 = m + l0;
 	float S1 = m + a * l0;
 	float C2 = (a * P) / (P - S1);
@@ -39,15 +40,46 @@ float uchimura(float x, float P, float a, float m, float l, float c, float b) {
 	
 	return T * w0 + L * w1 + S * w2;
 }
+*/
+
+float uchimuraModified(float x, float m, float c) {
+	float l0 = 1.0 - m;
+	float S01 = m + l0;
+	float C2 = 1.0 / (1.0 - S01);
+	
+	float w0 = 1.0 - smoothstep(0.0, m, x);
+	float w2 = step(m + l0, x);
+	float w1 = 1.0 - w0 - w2;
+	
+	float T = m * pow(x / m, c);
+	float S = 1.0 - (1.0 - S01) * exp(-C2 * (x - S01));
+	
+	return T * w0 + x * w1 + S01 * w2;
+}
 
 float uchimura(float x) {
-	const float P = 1.0;  // max display brightness
-	const float a = 1.0;  // contrast
-	const float m = 0.22; // linear section start
-	const float l = 0.4;  // linear section length
-	const float c = 1.33; // black
-	const float b = 0.0;  // pedestal
+	// original parameters
+	/*
+	const float P = 1.0;  // max display brightness [1..100]
+	const float a = 1.0;  // contrast [0..5]
+	const float m = 0.22; // linear section start [0..1]
+	const float l = 0.4;  // linear section length [0..1]
+	const float c = 1.33; // black [1..3]
+	const float b = 0.0;  // pedestal [0..1]
+	
 	return uchimura(x, P, a, m, l, c, b);
+	*/
+	
+	// modified parameters to flatten the excessive white curve.
+	// this avoids colors washing out at the top end
+// 	const float P = 1.0;  // max display brightness [1..100]
+// 	const float a = 1.0;  // contrast [0..5]
+	const float m = 0.1;  // linear section start
+// 	const float l = 0.0;  // linear section length [0..1]
+	const float c = 1.3;  // black
+// 	const float b = 0.0;  // pedestal [0..1]
+	
+	return uchimuraModified(x, m, c);
 }
 
 void main( void ){

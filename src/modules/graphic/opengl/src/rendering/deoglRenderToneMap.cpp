@@ -446,7 +446,6 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 //	const float pixelSizeS = defren.GetPixelSizeU();
 //	const float pixelSizeT = defren.GetPixelSizeV();
-	deoglRCamera *oglCamera = plan.GetCamera();
 	deoglShaderCompiled *shader;
 	bool modeTarget;
 	
@@ -620,22 +619,23 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	// determine tone map parameters to use for this scene
 	renderThread.GetFramebuffer().Activate( pFBOToneMapParams );
 	
-	deoglTexture * const lastParams = oglCamera->GetToneMapParamsTexture();
-	float adaptationTime = oglCamera->GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
+	deoglRCamera &oglCamera = *plan.GetCamera();
+	deoglTexture * const lastParams = oglCamera.GetToneMapParamsTexture();
+	float adaptationTime = oglCamera.GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
 	
-	if( adaptationTime < 0.001f || oglCamera->GetForceToneMapAdaption() ){
+	if( adaptationTime < 0.001f || oglCamera.GetForceToneMapAdaption() ){
 		//adaptationTime = 4.0; //1.0f; // required for the time being for the longer darkness adjust hack
 		adaptationTime = 100.0f; // hack for the time being. shader does clamp(value*0.25,0,1) in the worst case
 		
 	}else{
-		adaptationTime = 1.0f - expf( -oglCamera->GetElapsedToneMapAdaption() / adaptationTime );
+		adaptationTime = 1.0f - expf( -oglCamera.GetElapsedToneMapAdaption() / adaptationTime );
 		//adaptationTime = oglCamera->GetElapsedToneMapAdaption() * adaptationTime;
 	}
 	
 	// const float fTau = 0.5f;
 	// float fAdaptedLum = fLastLum + (fCurrentLum - fLastLum) * (1 - exp(-g_fDT * fTau));
 	
-	oglCamera->SetForceToneMapAdaption( false );
+	oglCamera.SetForceToneMapAdaption( false );
 	
 	renderThread.GetShader().ActivateShader( pShaderParameters );
 	shader = pShaderParameters->GetCompiled();
@@ -667,11 +667,11 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	}
 	
 	shader->SetParameterFloat( sppAvgLogLumTCs, pixelSizeU * ( ( float )tcPingPongOffset + 1.0f ), pixelSizeV, tcOffsetU, tcOffsetV );
-	shader->SetParameterFloat( sppOptions, oglCamera->GetExposure(), config.GetHDRRMaximumIntensity() );
-	shader->SetParameterFloat( sppAdaption, oglCamera->GetLowestIntensity(),
-		oglCamera->GetHighestIntensity(), adaptationTime, 0.0f );
+	shader->SetParameterFloat( sppOptions, oglCamera.GetExposure(), config.GetHDRRMaximumIntensity() );
+	shader->SetParameterFloat( sppAdaption, oglCamera.GetLowestIntensity(),
+		oglCamera.GetHighestIntensity(), adaptationTime, 0.0f );
 	
-	oglCamera->ResetElapsedToneMapAdaption();
+	oglCamera.ResetElapsedToneMapAdaption();
 	
 	pFBOToneMapParams->AttachColorTexture( 0, pTextureToneMapParams );
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
@@ -698,13 +698,13 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
-	oglCamera->SetToneMapParamsTexture( pTextureToneMapParams );
+	oglCamera.SetToneMapParamsTexture( pTextureToneMapParams );
 	pTextureToneMapParams = lastParams;
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
-		oglCamera->GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
+		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
 		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer.GetPointerFloat4();
 		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
 	}

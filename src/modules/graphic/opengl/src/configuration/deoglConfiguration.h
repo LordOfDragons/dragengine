@@ -105,6 +105,7 @@ private:
 	int pDefRenSizeLimit;
 	bool pUseHDRR;
 	float pHDRRMaxIntensity;
+	float pHDRRSceneKey;
 	int pRenderDownScale;
 	bool pUseInverseDepth;
 	
@@ -307,6 +308,13 @@ public:
 	inline float GetHDRRMaximumIntensity() const{ return pHDRRMaxIntensity; }
 	/** Sets the maximum intensity for the hdrr tone mapper. */
 	void SetHDRRMaximumIntensity( float maximumIntensity );
+	
+	/** \brief High definition range rendering scene key. */
+	inline float GetHDRRSceneKey() const{ return pHDRRSceneKey; }
+	
+	/** \brief Set high definition range rendering scene key. */
+	void SetHDRRSceneKey( float key );
+	
 	/** Determines if rendering takes place with halve the resolution and then upscaled. */
 	inline int GetRenderDownScale() const{ return pRenderDownScale; }
 	/** Sets if rendering takes place with halve the resolution and then upscaled. */

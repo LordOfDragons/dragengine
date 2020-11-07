@@ -99,6 +99,7 @@ public:
 		erutParticleLightHack,
 		erutFadeRange,
 		erutBillboardZScale,
+		erutCameraAdaptedIntensity,
 		ERUT_COUNT
 	};
 	
@@ -153,6 +154,8 @@ public:
 		etutTexOutlineSolidity,
 		etutTexOutlineEmissivity,
 		etutTexOutlineEmissivityTint,
+		
+		etutTexEmissivityCameraAdapted,
 		
 		ETUT_COUNT
 	};
