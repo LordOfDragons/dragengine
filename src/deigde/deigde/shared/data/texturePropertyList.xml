@@ -783,7 +783,7 @@
 			intensities the emissivity is inadequate in extreme light conditions. With this
 			property enabled the emissivity is kept at a stable, final tone mapped intensity.<br/>
 			<br/>
-			Another typical use case is for particles and beams. This allows using compat
+			Another typical use case is for particles and beams. This allows using
 			particle and beam effects in different lighting conditions without becoming
 			too faint nor white-out with excessive bloom.<br/>
 			<br/>
