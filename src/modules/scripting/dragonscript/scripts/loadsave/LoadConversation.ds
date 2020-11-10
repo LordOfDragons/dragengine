@@ -40,18 +40,18 @@ class LoadConversation extends BaseXmlLoader
 	
 	
 	
-	/** Creates a new loader. */
+	/** \brief Creates a new loader. */
 	public func new( Console console ) this( console, "LoadConversation" )
 	end
 	
-	/** Creates a new loader. */
+	/** \brief Creates a new loader. */
 	public func new( Console console, String name ) super( console, name )
 		this.pConversations = Dictionary.new()
 	end
 	
 	
 	
-	/** Load conversation from file. */
+	/** \brief Load conversation from file. */
 	public func Conversation loadFromFile( String filename )
 		var Conversation conversation = this.pConversations.getAt( filename, null ) cast Conversation
 		if conversation != null
@@ -81,8 +81,8 @@ class LoadConversation extends BaseXmlLoader
 	
 	
 	
-	/** Read conversation tag. */
-	private func void pReadConversation( EasyXMLElement root, Conversation conversation, String basePath )
+	/** \brief Read conversation tag. */
+	protected func void pReadConversation( EasyXMLElement root, Conversation conversation, String basePath )
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "target" )
 				this.pReadTarget( element, conversation )
@@ -124,8 +124,8 @@ class LoadConversation extends BaseXmlLoader
 		end )
 	end
 	
-	/** Read target tag. */
-	private func void pReadTarget( EasyXMLElement root, Conversation conversation )
+	/** \brief Read target tag. */
+	protected func void pReadTarget( EasyXMLElement root, Conversation conversation )
 		var ConversationTarget target = ConversationTarget.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
 		
@@ -153,8 +153,8 @@ class LoadConversation extends BaseXmlLoader
 		conversation.addTarget( target )
 	end
 	
-	/** Read camera shot tag. */
-	private func void pReadCameraShot( EasyXMLElement root, Conversation conversation )
+	/** \brief Read camera shot tag. */
+	protected func void pReadCameraShot( EasyXMLElement root, Conversation conversation )
 		var ConversationCameraShot cameraShot = ConversationCameraShot.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
 		
@@ -239,8 +239,8 @@ class LoadConversation extends BaseXmlLoader
 		conversation.addCameraShot( cameraShot )
 	end
 	
-	/** Read gesture tag. */
-	private func void pReadGesture( EasyXMLElement root, Conversation conversation )
+	/** \brief Read gesture tag. */
+	protected func void pReadGesture( EasyXMLElement root, Conversation conversation )
 		var ConversationGesture gesture = ConversationGesture.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
 		
@@ -259,8 +259,8 @@ class LoadConversation extends BaseXmlLoader
 		conversation.addGesture( gesture )
 	end
 	
-	/** Read face pose tag. */
-	private func void pReadFacePose( EasyXMLElement root, Conversation conversation )
+	/** \brief Read face pose tag. */
+	protected func void pReadFacePose( EasyXMLElement root, Conversation conversation )
 		var ConversationFacePose facePose = ConversationFacePose.new( \
 			StringID.new( root.getAttributeNamed( "name" ) ) )
 		
@@ -278,8 +278,8 @@ class LoadConversation extends BaseXmlLoader
 		conversation.addFacePose( facePose )
 	end
 	
-	/** Read file tag. */
-	private func void pReadTopicGroup( EasyXMLElement root, Conversation conversation )
+	/** \brief Read file tag. */
+	protected func void pReadTopicGroup( EasyXMLElement root, Conversation conversation )
 		var StringID id = StringID.new( root.getAttributeNamed( "id" ) )
 		
 		var ConversationTopicGroup group = conversation.getTopicGroupWithID( id )
@@ -298,8 +298,8 @@ class LoadConversation extends BaseXmlLoader
 		end )
 	end
 	
-	/** Read topic tag. */
-	private func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group )
+	/** \brief Read topic tag. */
+	protected func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group )
 		var ConversationTopic topic = ConversationTopic.new( StringID.new( root.getAttributeNamed( "id" ) ) )
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -316,8 +316,8 @@ class LoadConversation extends BaseXmlLoader
 		group.addTopic( topic )
 	end
 	
-	/** Read actions. */
-	private func Array pReadActions( EasyXMLElement root )
+	/** \brief Read actions. */
+	protected func Array pReadActions( EasyXMLElement root )
 		var Array actions = Array.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -386,8 +386,8 @@ class LoadConversation extends BaseXmlLoader
 		return actions
 	end
 	
-	/** Read common action. */
-	private func bool pReadActionCommon( EasyXMLElement root, ConversationAction action )
+	/** \brief Read common action. */
+	protected func bool pReadActionCommon( EasyXMLElement root, ConversationAction action )
 		var String tagName = root.getTagName()
 		
 		if tagName.equals( "waitForActor" )
@@ -406,8 +406,8 @@ class LoadConversation extends BaseXmlLoader
 		return false
 	end
 	
-	/** Read camera shot action. */
-	private func ConversationAction pReadActionCameraShot( EasyXMLElement root )
+	/** \brief Read camera shot action. */
+	protected func ConversationAction pReadActionCameraShot( EasyXMLElement root )
 		var CActionCameraShot action = CActionCameraShot.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -432,7 +432,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read music action. */
-	private func ConversationAction pReadActionMusic( EasyXMLElement root )
+	protected func ConversationAction pReadActionMusic( EasyXMLElement root )
 		var CActionMusic action = CActionMusic.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -447,8 +447,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read actor speak action. */
-	private func ConversationAction pReadActionActorSpeak( EasyXMLElement root )
+	/** \brief Read actor speak action. */
+	protected func ConversationAction pReadActionActorSpeak( EasyXMLElement root )
 		var CActionActorSpeak action = CActionActorSpeak.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -515,8 +515,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read if-else action. */
-	private func ConversationAction pReadActionIfElse( EasyXMLElement root )
+	/** \brief Read if-else action. */
+	protected func ConversationAction pReadActionIfElse( EasyXMLElement root )
 		var CActionIfElse action = CActionIfElse.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -537,7 +537,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read if-else if-case action. */
-	private func CActionIfElseCase pReadActionIfElseCase( EasyXMLElement root )
+	protected func CActionIfElseCase pReadActionIfElseCase( EasyXMLElement root )
 		var CActionIfElseCase ifcase = CActionIfElseCase.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -557,8 +557,8 @@ class LoadConversation extends BaseXmlLoader
 		return ifcase
 	end
 	
-	/** Read player choice action. */
-	private func ConversationAction pReadActionPlayerChoice( EasyXMLElement root )
+	/** \brief Read player choice action. */
+	protected func ConversationAction pReadActionPlayerChoice( EasyXMLElement root )
 		var CActionPlayerChoice action = CActionPlayerChoice.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -581,8 +581,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read player choice option action. */
-	private func CActionPlayerChoiceOption pReadActionPlayerChoiceOption( EasyXMLElement root )
+	/** \brief Read player choice option action. */
+	protected func CActionPlayerChoiceOption pReadActionPlayerChoiceOption( EasyXMLElement root )
 		var CActionPlayerChoiceOption option = CActionPlayerChoiceOption.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -606,7 +606,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read stop conversation action. */
-	private func ConversationAction pReadActionStopConversation( EasyXMLElement root )
+	protected func ConversationAction pReadActionStopConversation( EasyXMLElement root )
 		var CActionStopConversation action = CActionStopConversation.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -619,7 +619,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read stop topic action. */
-	private func ConversationAction pReadActionStopTopic( EasyXMLElement root )
+	protected func ConversationAction pReadActionStopTopic( EasyXMLElement root )
 		var CActionStopTopic action = CActionStopTopic.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -631,8 +631,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read snippet action. */
-	private func ConversationAction pReadActionSnippet( EasyXMLElement root )
+	/** \brief Read snippet action. */
+	protected func ConversationAction pReadActionSnippet( EasyXMLElement root )
 		var CActionSnippet action = CActionSnippet.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -650,8 +650,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read set variable action. */
-	private func ConversationAction pReadActionSetVariable( EasyXMLElement root )
+	/** \brief Read set variable action. */
+	protected func ConversationAction pReadActionSetVariable( EasyXMLElement root )
 		var CActionSetVariable action = CActionSetVariable.new()
 		var String identifier
 		
@@ -695,8 +695,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read set actor parameter action. */
-	private func ConversationAction pReadActionSetActorParameter( EasyXMLElement root )
+	/** \brief Read set actor parameter action. */
+	protected func ConversationAction pReadActionSetActorParameter( EasyXMLElement root )
 		var CActionSetActorParameter action = CActionSetActorParameter.new()
 		var String identifier
 		
@@ -743,8 +743,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read send actor command action. */
-	private func ConversationAction pReadActionActorCommand( EasyXMLElement root )
+	/** \brief Read send actor command action. */
+	protected func ConversationAction pReadActionActorCommand( EasyXMLElement root )
 		var CActionActorCommand action = CActionActorCommand.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -762,8 +762,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read send ganme command action. */
-	private func ConversationAction pReadActionGameCommand( EasyXMLElement root )
+	/** \brief Read send ganme command action. */
+	protected func ConversationAction pReadActionGameCommand( EasyXMLElement root )
 		var CActionGameCommand action = CActionGameCommand.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -778,8 +778,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read wait action. */
-	private func ConversationAction pReadActionWait( EasyXMLElement root )
+	/** \brief Read wait action. */
+	protected func ConversationAction pReadActionWait( EasyXMLElement root )
 		var CActionWait action = CActionWait.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -802,8 +802,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read set variable action. */
-	private func ConversationAction pReadActionTrigger( EasyXMLElement root )
+	/** \brief Read set variable action. */
+	protected func ConversationAction pReadActionTrigger( EasyXMLElement root )
 		var CActionTrigger action = CActionTrigger.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -840,8 +840,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read actor add action. */
-	private func ConversationAction pReadActionActorAdd( EasyXMLElement root )
+	/** \brief Read actor add action. */
+	protected func ConversationAction pReadActionActorAdd( EasyXMLElement root )
 		var CActionActorAdd action = CActionActorAdd.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -859,8 +859,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read actor remove action. */
-	private func ConversationAction pReadActionActorRemove( EasyXMLElement root )
+	/** \brief Read actor remove action. */
+	protected func ConversationAction pReadActionActorRemove( EasyXMLElement root )
 		var CActionActorRemove action = CActionActorRemove.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -875,8 +875,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read coordinate system add action. */
-	private func ConversationAction pReadActionCoordSystemAdd( EasyXMLElement root )
+	/** \brief Read coordinate system add action. */
+	protected func ConversationAction pReadActionCoordSystemAdd( EasyXMLElement root )
 		var CActionCoordSystemAdd action = CActionCoordSystemAdd.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -894,8 +894,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read coordinate system remove action. */
-	private func ConversationAction pReadActionCoordSystemRemove( EasyXMLElement root )
+	/** \brief Read coordinate system remove action. */
+	protected func ConversationAction pReadActionCoordSystemRemove( EasyXMLElement root )
 		var CActionCoordSystemRemove action = CActionCoordSystemRemove.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -910,8 +910,8 @@ class LoadConversation extends BaseXmlLoader
 		return action
 	end
 	
-	/** Read conditions. */
-	private func Array pReadConditions( EasyXMLElement root )
+	/** \brief Read conditions. */
+	protected func Array pReadConditions( EasyXMLElement root )
 		var Array conditions = Array.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -947,8 +947,8 @@ class LoadConversation extends BaseXmlLoader
 		return conditions
 	end
 	
-	/** Read at most one conditions. */
-	private func ConversationCondition pReadSingleCondition( EasyXMLElement root )
+	/** \brief Read at most one conditions. */
+	protected func ConversationCondition pReadSingleCondition( EasyXMLElement root )
 		var Array conditions = this.pReadConditions( root )
 		
 		if conditions.getCount() == 1
@@ -960,8 +960,8 @@ class LoadConversation extends BaseXmlLoader
 		end
 	end
 	
-	/** Read logic condition. */
-	private func ConversationCondition pReadConditionLogic( EasyXMLElement root )
+	/** \brief Read logic condition. */
+	protected func ConversationCondition pReadConditionLogic( EasyXMLElement root )
 		var CConditionLogic condition = CConditionLogic.new()
 		var String identifier
 		
@@ -995,8 +995,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read has actor condition. */
-	private func ConversationCondition pReadConditionHasActor( EasyXMLElement root )
+	/** \brief Read has actor condition. */
+	protected func ConversationCondition pReadConditionHasActor( EasyXMLElement root )
 		var CConditionHasActor condition = CConditionHasActor.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -1015,7 +1015,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read actor in conversation condition. */
-	private func ConversationCondition pReadConditionActorInConversation( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionActorInConversation( EasyXMLElement root )
 		var CConditionActorInConversation condition = CConditionActorInConversation.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -1033,8 +1033,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read variable condition. */
-	private func ConversationCondition pReadConditionVariable( EasyXMLElement root )
+	/** \brief Read variable condition. */
+	protected func ConversationCondition pReadConditionVariable( EasyXMLElement root )
 		var CConditionVariable condition = CConditionVariable.new()
 		var String identifier
 		
@@ -1081,8 +1081,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read actor parameter condition. */
-	private func ConversationCondition pReadConditionActorParameter( EasyXMLElement root )
+	/** \brief Read actor parameter condition. */
+	protected func ConversationCondition pReadConditionActorParameter( EasyXMLElement root )
 		var CConditionActorParameter condition = CConditionActorParameter.new()
 		var String identifier
 		
@@ -1132,8 +1132,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read actor command condition. */
-	private func ConversationCondition pReadConditionActorCommand( EasyXMLElement root )
+	/** \brief Read actor command condition. */
+	protected func ConversationCondition pReadConditionActorCommand( EasyXMLElement root )
 		var CConditionActorCommand condition = CConditionActorCommand.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -1154,8 +1154,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read game command condition. */
-	private func ConversationCondition pReadConditionGameCommand( EasyXMLElement root )
+	/** \brief Read game command condition. */
+	protected func ConversationCondition pReadConditionGameCommand( EasyXMLElement root )
 		var CConditionGameCommand condition = CConditionGameCommand.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -1173,8 +1173,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read trigger condition. */
-	private func ConversationCondition pReadConditionTrigger( EasyXMLElement root )
+	/** \brief Read trigger condition. */
+	protected func ConversationCondition pReadConditionTrigger( EasyXMLElement root )
 		var CConditionTrigger condition = CConditionTrigger.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -1211,8 +1211,8 @@ class LoadConversation extends BaseXmlLoader
 		return condition
 	end
 	
-	/** Read strips. */
-	private func Array pReadStrips( EasyXMLElement root )
+	/** \brief Read strips. */
+	protected func Array pReadStrips( EasyXMLElement root )
 		var Array strips = Array.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
