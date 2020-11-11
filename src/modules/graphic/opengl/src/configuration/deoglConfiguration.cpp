@@ -51,7 +51,7 @@ pDebugUseShadow( true ),
 pDebugShowCB( false ),
 pDebugWireframe( false ),
 pDebugUVSplitter( true ),
-pDebugPrintSkyUpdate( true ),
+pDebugPrintSkyUpdate( false ),
 pShowLightCB( false ),
 
 pShadowMapSize( 1024 ),
