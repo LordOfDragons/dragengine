@@ -616,9 +616,6 @@ class CActionActorSpeak extends ConversationAction
 				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
 				if target != null
 					charLookAt = ConversationPlaybackLookAt.new( playback, target )
-					if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
-						charLookAt = null
-					end
 				end
 			end
 			
@@ -649,9 +646,6 @@ class CActionActorSpeak extends ConversationAction
 				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
 				if target != null
 					charLookAt = ConversationPlaybackLookAt.new( playback, target )
-					if charLookAt.getActor() == null and charLookAt.getCoordSystem() == null
-						charLookAt = null
-					end
 				end
 			end
 			
