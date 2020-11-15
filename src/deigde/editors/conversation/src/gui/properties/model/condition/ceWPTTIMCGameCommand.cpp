@@ -56,17 +56,20 @@ ceWPTTIMCGameCommand::~ceWPTTIMCGameCommand(){
 
 void ceWPTTIMCGameCommand::Update(){
 	const ceCConditionGameCommand &condition = *GetConditionGameCommand();
-	decString text( "Game Command" );
+	decString text;
 	
 	if( ! condition.GetCommand().IsEmpty() ){
 		const decString lineCommand( condition.GetCommand().Split( '\n' ).GetAt( 0 ) );
-		text += ": ";
+		
+		if( condition.GetNegate() ){
+			text += "[not] ";
+		}
 		
 		if( lineCommand.GetLength() > 40 ){
-			text = lineCommand.GetLeft( 40 ) + "...";
+			text += lineCommand.GetLeft( 40 ) + "...";
 			
 		}else{
-			text = lineCommand;
+			text += lineCommand;
 		}
 	}
 	

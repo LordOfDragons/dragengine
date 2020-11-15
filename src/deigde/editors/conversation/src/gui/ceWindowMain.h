@@ -61,6 +61,7 @@ private:
 	igdeIconReference pIconActionOption;
 	igdeIconReference pIconActionSnippet;
 	igdeIconReference pIconActionStop;
+	igdeIconReference pIconActionActorCommand;
 	igdeIconReference pIconActionCommand;
 	igdeIconReference pIconActionVariable;
 	igdeIconReference pIconActionWait;
@@ -72,6 +73,7 @@ private:
 	igdeIconReference pIconActionComment;
 	
 	igdeIconReference pIconConditionLogic;
+	igdeIconReference pIconConditionActorCommand;
 	igdeIconReference pIconConditionCommand;
 	igdeIconReference pIconConditionVariable;
 	igdeIconReference pIconConditionHasActor;
@@ -178,6 +180,7 @@ public:
 	inline igdeIcon *GetIconActionOption() const{ return pIconActionOption; }
 	inline igdeIcon *GetIconActionSnippet() const{ return pIconActionSnippet; }
 	inline igdeIcon *GetIconActionStop() const{ return pIconActionStop; }
+	inline igdeIcon *GetIconActionActorCommand() const{ return pIconActionActorCommand; }
 	inline igdeIcon *GetIconActionCommand() const{ return pIconActionCommand; }
 	inline igdeIcon *GetIconActionVariable() const{ return pIconActionVariable; }
 	inline igdeIcon *GetIconActionWait() const{ return pIconActionWait; }
@@ -189,6 +192,7 @@ public:
 	inline igdeIcon *GetIconActionComment() const{ return pIconActionComment; }
 	
 	inline igdeIcon *GetIconConditionLogic() const{ return pIconConditionLogic; }
+	inline igdeIcon *GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
 	inline igdeIcon *GetIconConditionCommand() const{ return pIconConditionCommand; }
 	inline igdeIcon *GetIconConditionVariable() const{ return pIconConditionVariable; }
 	inline igdeIcon *GetIconConditionHasActor() const{ return pIconConditionHasActor; }
