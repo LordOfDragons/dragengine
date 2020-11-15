@@ -117,6 +117,14 @@ public:
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
+	/** \brief Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
+	
 	
 	
 	/** \brief Actor count or order changed. */

@@ -209,6 +209,26 @@ ceConversationTopic *topic, ceConversationAction* ){
 	pPanel.UpdateActive();
 }
 
+void ceWPTopicListener::ConditionStructureChanged( ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction* ){
+	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	pPanel.UpdateActive();
+}
+
+void ceWPTopicListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition* ){
+	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	pPanel.UpdateActive();
+}
+
 
 
 void ceWPTopicListener::ActorStructureChanged( ceConversation *conversation ){
