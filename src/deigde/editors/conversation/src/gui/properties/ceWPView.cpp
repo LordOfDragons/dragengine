@@ -959,7 +959,8 @@ public:
 		}
 		
 		decString command;
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Add Command", "Command:", command )
+		if( ! igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Add Command", "Command:", command )
 		|| actor->GetCommands().HasWith( command ) ){
 			return NULL;
 		}
@@ -1334,7 +1335,8 @@ public:
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
 		decString command;
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Add Command", "Command:", command )
+		if( ! igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Add Command", "Command:", command )
 		|| conversation->GetPlayback()->GetCommands().HasWith( command ) ){
 			return NULL;
 		}
@@ -1566,8 +1568,8 @@ public:
 		ordered.SortAscending();
 		
 		decString text( ordered.Join( "\n" ) );
-		igdeCommonDialogs::GetMultilineString( &pPanel, "Copy To Clipboard",
-			"Text for you to copy to the clipboard", text );
+		igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Copy To Clipboard", "Text for you to copy to the clipboard", text );
 		return NULL;
 	}
 };

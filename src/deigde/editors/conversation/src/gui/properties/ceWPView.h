@@ -146,6 +146,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Properties window. */
+	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	
 	/** \brief Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
