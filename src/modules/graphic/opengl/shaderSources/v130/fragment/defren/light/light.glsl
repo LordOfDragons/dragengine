@@ -1058,8 +1058,12 @@ void main( void ){
 		vec3 absorptionLightColor = lightColor;
 	#endif
 	
-// 	lightColor *= vec3( dotval );
-	lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+	#ifdef PARTICLE_LIGHT
+		lightColor *= vec3( dotval );
+	#else
+// 		lightColor *= vec3( dotval );
+		lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+	#endif
 	#ifdef SHADOW_CASTING
 		lightColor *= shadowColor;
 	#endif

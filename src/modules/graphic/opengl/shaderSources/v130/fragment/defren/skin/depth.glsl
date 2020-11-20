@@ -158,6 +158,10 @@ float finalEmissivityIntensity( in float intensity ){
 	return mix( intensity, intensity * pCameraAdaptedIntensity, pEmissivityCameraAdapted );
 }
 
+vec3 finalEmissivityIntensity( in vec3 intensity ){
+	return mix( intensity, intensity * vec3( pCameraAdaptedIntensity ), bvec3( pEmissivityCameraAdapted ) );
+}
+
 
 // Main Function
 //////////////////
