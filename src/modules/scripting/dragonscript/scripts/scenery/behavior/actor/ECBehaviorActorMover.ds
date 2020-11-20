@@ -769,7 +769,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * If present point is in world space (transformed by relative collider if present).
 		 */
 		public func DVector getWorldNextPathPoint()
-			if this.pNextPathPoint >= this.pPath.getCount()
+			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
 				return null
 			end
 			
@@ -786,7 +786,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * If present normal is in world space (transformed by relative collider if present).
 		 */
 		public func DVector getWorldNextPlaneNormal()
-			if this.pNextPathPoint >= this.pPath.getCount()
+			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
 				return null
 			end
 			
@@ -804,7 +804,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * Returns 0 if next corner or normal is not present.
 		 */
 		public func float getWorldDistanceNextPoint()
-			if this.pNextPathPoint >= this.pPath.getCount()
+			if this.pPath == null or this.pNextPathPoint >= this.pPath.getCount()
 				return 0
 			end
 			
@@ -1011,7 +1011,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		public func void calculateRemainingDistance()
 			this.pRemainingDistance = 0
 			
-			if this.pGoalPosition != null and this.pNextPathPoint < this.pPath.getCount()
+			if this.pGoalPosition != null and this.pPath != null and this.pNextPathPoint < this.pPath.getCount()
 				this.pRemainingDistance = this.pPath.getLengthFrom( this.pNextPathPoint )
 			end
 		end
@@ -1023,7 +1023,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \param position Value in range 0 (current position) to 1 (goal position) along path.
 		 */
 		public func void placeOnPath( float position )
-			if this.pGoalPosition == null
+			if this.pGoalPosition == null or this.pPath == null
 				return
 			end
 			

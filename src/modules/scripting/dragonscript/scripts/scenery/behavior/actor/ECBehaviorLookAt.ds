@@ -333,6 +333,17 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			return this.pLookAtElement
 		end
 		
+		/**
+		 * \brief Look-at element if of type BehaviorElement or null.
+		 * \version 1.4 
+		 */
+		public func BehaviorElement getLookAtBehaviorElement()
+			if this.pLookAtElement != null and this.pLookAtElement castable BehaviorElement
+				return this.pLookAtElement cast BehaviorElement
+			end
+			return null
+		end
+		
 		/** \brief Is looking at an element. */
 		public func bool hasLookAtElement()
 			return this.pLookAtElement != null
