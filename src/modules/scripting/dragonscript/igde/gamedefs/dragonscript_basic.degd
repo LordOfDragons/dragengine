@@ -2568,4 +2568,26 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorInteractionSpot'>
+		<description>Adds support to define interaction spot for actors. Defines position and orientation actors or the player have to assume to properly interact with the owner element. This is typically required to line up animations of the actor and the element. Furthermore this allows to track if an actor is occupying the interaction spot. Hence at most one actor can occpuy an interaction spot at each time.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>interactionSpot.</defaultInheritPropertyPrefix>
+		<property name='position'>
+			<description>Position relative to owner element the occpupier has to be placed at.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to owner element the occpupier has to be placed at.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='lookAt'>
+			<description>Look-at position for element to use while approaching. By default no look-at is used which equals to an empty string.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>
