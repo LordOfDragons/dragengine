@@ -1556,6 +1556,22 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace( const decXmlEle
 		}else if( tagName == "layer" ){
 			navspace.SetLayer( GetCDataInt( *tag ) );
 			
+		}else if( tagName == "type" ){
+			const decString value( GetCDataString( *tag ) );
+			
+			if( value == "grid" ){
+				navspace.SetType( deNavigationSpace::estGrid );
+				
+			}else if( value == "mesh" ){
+				navspace.SetType( deNavigationSpace::estMesh );
+				
+			}else if( value == "volume" ){
+				navspace.SetType( deNavigationSpace::estVolume );
+				
+			}else{
+				LogWarnUnknownValue( *tag, value );
+			}
+			
 		}else if( tagName == "blockingPriority" ){
 			navspace.SetBlockingPriority( GetCDataInt( *tag ) );
 			
@@ -3102,6 +3118,19 @@ decXmlWriter &writer, const gdeOCNavigationSpace &navspace ){
 	
 	if( navspace.GetLayer() != 0 ){
 		writer.WriteDataTagInt( "layer", navspace.GetLayer() );
+	}
+	
+	switch( navspace.GetType() ){
+	case deNavigationSpace::estGrid:
+		writer.WriteDataTagString( "type", "grid" );
+		break;
+		
+	case deNavigationSpace::estMesh:
+		break; // default: "mesh"
+		
+	case deNavigationSpace::estVolume:
+		writer.WriteDataTagString( "type", "volume" );
+		break;
 	}
 	
 	if( navspace.GetBlockingPriority() != 0 ){

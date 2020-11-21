@@ -43,6 +43,7 @@
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetPropertyName.h"
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetSnapAngle.h"
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetSnapDistance.h"
+#include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetType.h"
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -247,6 +248,21 @@ public:
 	}
 };
 
+class cComboType : public cBaseComboBoxListener{
+public:
+	cComboType( gdeWPSOCNavigationSpace &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCNavigationSpace *navspace ){
+		const deNavigationSpace::eSpaceTypes value =
+			( deNavigationSpace::eSpaceTypes )( intptr_t )comboBox.GetSelectedItem()->GetData();
+		if( value == navspace->GetType() ){
+			return NULL;
+		}
+		return new gdeUOCNavSpaceSetType( objectClass, navspace, value );
+	}
+};
+
 class cTextBlockingPriority : public cBaseTextFieldListener{
 public:
 	cTextBlockingPriority( gdeWPSOCNavigationSpace &panel ) : cBaseTextFieldListener( panel ){ }
@@ -369,6 +385,11 @@ pGameDefinition( NULL )
 	helper.EditFloat( groupBox, "Snap angle:", "Snap angle", 4, 1,
 		pEditSnapAngle, new cTextSnapAngle( *this ) );
 	
+	helper.ComboBox( groupBox, "Type:", "Navigation space ", pCBType, new cComboType( *this ) );
+	pCBType->AddItem( "Grid", NULL, ( void* )( intptr_t )deNavigationSpace::estGrid );
+	pCBType->AddItem( "Mesh", NULL, ( void* )( intptr_t )deNavigationSpace::estMesh );
+	pCBType->AddItem( "Volume", NULL, ( void* )( intptr_t )deNavigationSpace::estVolume );
+	
 	helper.EditInteger( groupBox, "Blocking priority:",
 		"Blocks navigation spaces with the same or lower priority",
 		pEditBlockingPriority, new cTextBlockingPriority( *this ) );
@@ -478,6 +499,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 		pEditLayer->SetInteger( navspace->GetLayer() );
 		pEditSnapDistance->SetFloat( navspace->GetSnapDistance() );
 		pEditSnapAngle->SetFloat( navspace->GetSnapAngle() );
+		pCBType->SetSelectionWithData( ( void* )( intptr_t )navspace->GetType() );
 		pEditBlockingPriority->SetInteger( navspace->GetBlockingPriority() );
 		
 		igdeCodecPropertyString codec;
@@ -493,6 +515,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 		pEditLayer->ClearText();
 		pEditSnapDistance->ClearText();
 		pEditSnapAngle->ClearText();
+		pCBType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estGrid );
 		pEditBlockingPriority->ClearText();
 		pEditBlockerShape->ClearText();
 	}
@@ -505,6 +528,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 	pEditLayer->SetEnabled( enabled);
 	pEditSnapDistance->SetEnabled( enabled);
 	pEditSnapAngle->SetEnabled( enabled);
+	pCBType->SetEnabled( enabled );
 	pEditBlockingPriority->SetEnabled( enabled);
 	pEditBlockerShape->SetEnabled( enabled);
 	

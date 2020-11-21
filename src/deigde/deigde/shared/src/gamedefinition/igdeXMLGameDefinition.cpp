@@ -1504,6 +1504,22 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace( const decXmlElementTag &
 			}else if( tagName == "layer" ){
 				gdcNavSpace->SetLayer( GetCDataInt( *tag ) );
 				
+			}else if( tagName == "type" ){
+				const char * const value = GetCDataString( *tag );
+				
+				if( strcmp( value, "grid" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estGrid );
+					
+				}else if( strcmp( value, "mesh" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estMesh );
+					
+				}else if( strcmp( value, "volume" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estVolume );
+					
+				}else{
+					LogWarnUnknownValue( *tag, value );
+				}
+				
 			}else if( tagName == "blockingPriority" ){
 				gdcNavSpace->SetBlockingPriority( GetCDataInt( *tag ) );
 				

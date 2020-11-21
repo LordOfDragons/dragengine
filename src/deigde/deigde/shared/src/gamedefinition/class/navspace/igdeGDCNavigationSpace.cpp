@@ -39,6 +39,7 @@ igdeGDCNavigationSpace::igdeGDCNavigationSpace() :
 pLayer( 0 ),
 pSnapDistance( 0.001f ),
 pSnapAngle( 180.0 ),
+pType( deNavigationSpace::estMesh ),
 pBlockingPriority( 0 ){
 }
 
@@ -50,6 +51,7 @@ pBoneName( navspace.pBoneName ),
 pLayer( navspace.pLayer ),
 pSnapDistance( navspace. pSnapDistance ),
 pSnapAngle( navspace.pSnapAngle ),
+pType( navspace.pType ),
 pBlockingPriority( navspace.pBlockingPriority ),
 pBlockerShapeList( navspace.pBlockerShapeList )
 {
@@ -87,6 +89,10 @@ void igdeGDCNavigationSpace::SetBoneName( const char *boneName ){
 
 void igdeGDCNavigationSpace::SetLayer( int layer ){
 	pLayer = layer;
+}
+
+void igdeGDCNavigationSpace::SetType( deNavigationSpace::eSpaceTypes type ){
+	pType = type;
 }
 
 void igdeGDCNavigationSpace::SetBlockingPriority( int priority ){
