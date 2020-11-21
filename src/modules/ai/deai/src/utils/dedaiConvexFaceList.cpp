@@ -48,7 +48,19 @@
 
 #define THRESHOLD_ON_PLANE	0.0001f
 
-#define PLANE_SIDE(dist)	( ( ( dist ) > THRESHOLD_ON_PLANE ) ? 1 : ( ( ( dist ) < -THRESHOLD_ON_PLANE ) ? -1 : 0 ) )
+enum ePlaneResult{
+	eprFront,
+	eprBack,
+	eprTouch
+};
+
+#define PLANE_SIDE(dist)	( \
+	( ( dist ) > THRESHOLD_ON_PLANE ) ? eprFront : \
+		( ( ( dist ) < -THRESHOLD_ON_PLANE ) ? eprBack : eprTouch ) )
+
+#define DBG_PLANE_RESULT(result)	( \
+	( ( result ) == eprFront ) ? "front" : \
+		( ( ( result ) == eprBack ) ? "back" : "touch" ) )
 
 
 
@@ -79,7 +91,7 @@ dedaiConvexFaceList::dedaiConvexFaceList( const dedaiConvexFaceList &list ){
 			AddVertex( list.GetVertexAt( i ) );
 		}
 		for( i=0; i<faceCount; i++ ){
-			face = CreateFace( list.GetFaceAt( i ) );
+			face = CreateFace( list.GetFaceAt( i )->GetMarker() );
 			*face = *list.GetFaceAt( i ); // CreateFace does not create a copy just a new face
 			AddFace( face );
 			face = NULL;
@@ -296,8 +308,9 @@ void dedaiConvexFaceList::SplitByFace( const dedaiConvexFaceList &splitterFaceLi
 		
 		for( j=0; j<splitVertexCount; j++ ){
 			const decVector &edgeVertex1 = splitterFaceList.GetVertexAt( splitterFace.GetVertexAt( j ) );
-			const decVector &edgeVertex2 = splitterFaceList.GetVertexAt( splitterFace.GetVertexAt( ( j + 1 ) % splitVertexCount ) );
-			const decVector edgeDirection = edgeVertex2 - edgeVertex1;
+			const decVector &edgeVertex2 = splitterFaceList.GetVertexAt(
+				splitterFace.GetVertexAt( ( j + 1 ) % splitVertexCount ) );
+			const decVector edgeDirection( edgeVertex2 - edgeVertex1 );
 			
 			const float numer = planeNormal * edgeVertex1 - planeDist;
 			const float denom = planeNormal * edgeDirection;
@@ -311,7 +324,7 @@ void dedaiConvexFaceList::SplitByFace( const dedaiConvexFaceList &splitterFaceLi
 			// if the hit point is on the edge the edge contributes a cut edge point
 			const float dist = -numer / denom;
 			if( dist >= 0.0f && dist <= 1.0f ){
-				const decVector hitPoint = edgeVertex1 + edgeDirection * dist;
+				const decVector hitPoint( edgeVertex1 + edgeDirection * dist );
 				
 				if( ! hasEdgeFrom ){
 					edgeFrom = hitPoint;
@@ -327,12 +340,14 @@ void dedaiConvexFaceList::SplitByFace( const dedaiConvexFaceList &splitterFaceLi
 			}
 		}
 		
-		// if there is a split edge split the plan
+		// if there is a split edge split the face
 		if( hasEdgeFrom && hasEdgeTo ){
 			pSplitFaceByEdge( i, edgeFrom, edgeTo );
 			
-			// if the face becomes degenerated or empty remove it
-			if( testFace.GetVertexCount() < 3 ){
+			// if the face becomes degenerated or empty remove it. we can not use testFace
+			// reference since pSplitFaceByEdge potentially added faces which potentially
+			// caused memory rellocation. the face index though stays correct
+			if( ( ( dedaiConvexFace* )pFaces.GetAt( i ) )->GetVertexCount() < 3 ){
 				RemoveFaceAt( i );
 				i--;
 				faceCount--;
@@ -389,7 +404,7 @@ void dedaiConvexFaceList::SplitByVolume( const decConvexVolume &volume ){
 	// remove all faces with centers located in the split volume
 	for( i=pFaces.GetCount()-1; i>=0; i-- ){
 		const dedaiConvexFace &face = *( ( dedaiConvexFace* )pFaces.GetAt( i ) );
-		const decVector faceCenter = face.CalculateCenter( *this );
+		const decVector faceCenter( face.CalculateCenter( *this ) );
 		
 		for( j=0; j<volumeFaceCount; j++ ){
 			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt( j );
@@ -413,13 +428,9 @@ void dedaiConvexFaceList::SplitByVolume( const decConvexVolume &volume ){
 // Subclassing
 ////////////////
 
-dedaiConvexFace *dedaiConvexFaceList::CreateFace( dedaiConvexFace *face ){
-	dedaiConvexFace *newFace = new dedaiConvexFace;
-	
-	if( face ){
-		newFace->SetMarker( face->GetMarker() );
-	}
-	
+dedaiConvexFace *dedaiConvexFaceList::CreateFace( int marker ){
+	dedaiConvexFace * const newFace = new dedaiConvexFace;
+	newFace->SetMarker( marker );
 	return newFace;
 }
 
@@ -441,30 +452,31 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 	
 	// cut edges and determine at the same time if cut edge points are inside
 	dedaiConvexFace &face = *( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) );
-	const decVector cutEdgeDir = cutEdgeTo - cutEdgeFrom;
+	const decVector cutEdgeDir( cutEdgeTo - cutEdgeFrom );
 	const decVector &faceNormal = face.GetNormal();
 	bool insideEdgeFrom = true;
 	bool insideEdgeTo = true;
-	bool hasSplitEdge = false;
+	bool hasIntersection = false;
 	int i;
-	DBG( printf( "faceNormal=(%f,%f,%f) cutEdgeDir=(%f,%f,%f)\n", faceNormal.x, faceNormal.y, faceNormal.z, cutEdgeDir.x, cutEdgeDir.y, cutEdgeDir.z ) );
+	DBG( printf( "faceNormal=(%f,%f,%f) cutEdgeDir=(%f,%f,%f)\n",
+		faceNormal.x, faceNormal.y, faceNormal.z, cutEdgeDir.x, cutEdgeDir.y, cutEdgeDir.z ) );
 	
 	for( i=0; i<face.GetVertexCount(); i++ ){
 		const decVector &v1 = pVertices[ face.GetVertexAt( i ) ];
 		const decVector &v2 = pVertices[ face.GetVertexAt( ( i + 1 ) % face.GetVertexCount() ) ];
-		const decVector edge = v2 - v1;
+		const decVector edge( v2 - v1 );
 		const float edgeLen = edge.Length();
-		const decVector edgeNorm = edge / edgeLen;
-		const decVector planeNormal = faceNormal % edgeNorm;
+		const decVector edgeNorm( edge / edgeLen );
+		const decVector planeNormal( faceNormal % edgeNorm );
 		const float planeDist = planeNormal * v1;
 		
 		// test if the edge points are not inside
 		const float fromDist = planeNormal * cutEdgeFrom - planeDist;
 		const float toDist = planeNormal * cutEdgeTo - planeDist;
-		const int fromSide = PLANE_SIDE( fromDist );
-		const int toSide = PLANE_SIDE( toDist );
-		insideEdgeFrom &= ( fromDist > -THRESHOLD_ON_PLANE ); // touching counts as inside
-		insideEdgeTo &= ( toDist > -THRESHOLD_ON_PLANE ); // touching counts as inside
+		const ePlaneResult fromSide = PLANE_SIDE( fromDist );
+		const ePlaneResult toSide = PLANE_SIDE( toDist );
+		insideEdgeFrom &= fromSide != eprBack; // touching counts as inside
+		insideEdgeTo &= toSide != eprBack; // touching counts as inside
 		
 		// cut edge if intersected by the split edge. parallel does not cut since other edges do this
 		const float numer = fromDist;
@@ -485,45 +497,47 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 			continue;
 		}
 		
-		const decVector hitPoint = cutEdgeFrom + cutEdgeDir * dist;
+		const decVector hitPoint( cutEdgeFrom + cutEdgeDir * dist );
 		const float hitDist = edgeNorm * ( hitPoint - v1 );
-		if( hitDist < THRESHOLD_EQUAL || hitDist > edgeLen - THRESHOLD_EQUAL ){
+		if( hitDist < 0.0f || hitDist > edgeLen ){
 			continue;
 		}
 		
-		DBG( printf( "split edge %i in face %i cut (%f,%f,%f)\n", i, faceIndex, hitPoint.x, hitPoint.y, hitPoint.z ) );
+		DBG( printf( "split edge %i in face %i cut (%f,%f,%f)\n",
+			i, faceIndex, hitPoint.x, hitPoint.y, hitPoint.z ) );
 		int cutIndex = IndexOfVertex( hitPoint );
 		
 		if( cutIndex == -1 ){
 			cutIndex = pVertexCount;
 			AddVertex( hitPoint );
-			
-		}else if( face.HasVertex( cutIndex ) ){
-			// the split vertex is already part of the face so this edge is not split
-			DBG( printf( "cut point exists already and is already part of the face -> drop it\n" ) );
-			continue;
 		}
 		
-		face.InsertVertex( i + 1, cutIndex );
-		i++;
+		if( ! face.HasVertex( cutIndex ) ){
+			face.InsertVertex( i + 1, cutIndex );
+			i++;
+			
+			// it is possible the intersection point is the same as a face corner.
+			// in this case the face is also split but the cut point is not added
+		}
 		
 		// if the cut edge is touching the split point with one end it is possible the other end
 		// is outside the face and then no split has to be done
 		if( hitPoint.IsEqualTo( cutEdgeFrom, THRESHOLD_EQUAL ) ){
-			if( toSide < 1 ){
+			if( toSide != eprFront ){
 				continue;
 			}
 			
 		}else if( hitPoint.IsEqualTo( cutEdgeTo, THRESHOLD_EQUAL ) ){
-			if( fromSide < 1 ){
+			if( fromSide != eprFront ){
 				continue;
 			}
 		}
 		
-		hasSplitEdge = true;
+		hasIntersection = true;
 	}
 	
-	DBG( printf( "inside test face %i from=%i to=%i\n", faceIndex, insideEdgeFrom?1:0, insideEdgeTo?1:0 ) );
+	DBG( printf( "inside test face %d from=%d to=%d hasSplitEdge=%d\n",
+		faceIndex, insideEdgeFrom, insideEdgeTo, hasSplitEdge ) );
 	
 	// add the inside edge vertices and keep track of their indices
 	int indexCutEdgeFrom = -1;
@@ -536,9 +550,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 			indexCutEdgeFrom = pVertexCount;
 			AddVertex( cutEdgeFrom );
 			
-		// if the index exist already in the face drop it to avoid invalid 0-length edge
 		}else if( face.HasVertex( indexCutEdgeFrom ) ){
-			DBG( printf( "curEdgeFrom exists already and is already part of the face -> drop it\n" ) );
 			indexCutEdgeFrom = -1;
 		}
 	}
@@ -550,9 +562,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 			indexCutEdgeTo = pVertexCount;
 			AddVertex( cutEdgeTo );
 			
-		// if the index exist already in the face drop it to avoid invalid 0-length edge
 		}else if( face.HasVertex( indexCutEdgeTo ) ){
-			DBG( printf( "curEdgeTo exists already and is already part of the face -> drop it\n" ) );
 			indexCutEdgeTo = -1;
 		}
 	}
@@ -560,11 +570,11 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 	// split up the face if at least one edge vertex is inside. it doesn't matter which
 	// edge vertex is used for the splitting as long as it is inside. the chosen vertex
 	// acts as pivot point and the edge as pivot axis. 
-	if( ! ( hasSplitEdge || ( insideEdgeFrom && insideEdgeTo ) ) ){
+	if( ! ( hasIntersection || ( insideEdgeFrom && insideEdgeTo ) ) ){
 		return;
 	}
 	
-	const decVector &refAxis = faceNormal % cutEdgeDir.Normalized();
+	const decVector refAxis( faceNormal % cutEdgeDir.Normalized() );
 	const float refDist = refAxis * cutEdgeFrom;
 	
 	// splitting the face by an edge can result in up to four faces which each can be
@@ -574,111 +584,111 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 	// point. crossing the edge means one vertex is < 0 and the other > 0. if one of
 	// the vertices is 0 or the respective cut edge end is not inside the respective
 	// filler face does not exist.
-	dedaiConvexFace *newFaceBack = NULL;
+	// 
+	// front side is inside of cut volume. face to be cut is back face
+	dedaiConvexFace *newFaceFront = NULL;
 	dedaiConvexFace *newFaceFiller = NULL;
 	
 	int lastVertex = face.GetVertexAt( face.GetVertexCount() - 1 );
-	int lastSide = PLANE_SIDE( refAxis * pVertices[ lastVertex ] - refDist );
-	DBG( for(i=0; i<face.GetVertexCount(); i++ ) printf( "state: face %i vertex %i(%i) (%f,%f,%f)\n", faceIndex, i, face.GetVertexAt(i),
-		pVertices[face.GetVertexAt(i)].x, pVertices[face.GetVertexAt(i)].y, pVertices[face.GetVertexAt(i)].z ); )
+	ePlaneResult lastSide = PLANE_SIDE( refAxis * pVertices[ lastVertex ] - refDist );
+	DBG( for(i=0; i<face.GetVertexCount(); i++ ){
+		printf( "state: face %i vertex %i(%i) (%f,%f,%f)\n", faceIndex, i, face.GetVertexAt(i),
+			pVertices[face.GetVertexAt(i)].x, pVertices[face.GetVertexAt(i)].y,
+			pVertices[face.GetVertexAt(i)].z );
+		} )
+	
+	// AddFace() causes potential memory rellocation. it is thus not possible to use
+	// the face reference safely
+	const int newFaceMarker = face.GetMarker();
 	
 	try{
-		for( i=0; i<face.GetVertexCount(); i++ ){
-			const int curVertex = face.GetVertexAt( i );
-			const int curSide = PLANE_SIDE( refAxis * pVertices[ curVertex ] - refDist );
-			DBG( printf( "corner=%i last=(%i,%i) cur=(%i,%i) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
-				i, lastVertex, lastSide, curVertex, curSide, indexCutEdgeFrom, indexCutEdgeTo ) );
+		for( i=0; i<( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) )->GetVertexCount(); i++ ){
+			const int curVertex = ( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) )->GetVertexAt( i );
+			const ePlaneResult curSide = PLANE_SIDE( refAxis * pVertices[ curVertex ] - refDist );
+			DBG( printf( "corner=%i last=(%i,%s) cur=(%i,%s) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
+				i, lastVertex, DBG_PLANE_RESULT(lastSide), curVertex,
+				DBG_PLANE_RESULT(curSide), indexCutEdgeFrom, indexCutEdgeTo ) );
 			
-			// if the last vertex is < 0 and the cur vertex > 0 the cut edge has been cross at the
-			// cutEdgeTo closer end point.
-			if( lastSide < 0 && curSide > 0 ){
-				// add filler face if the last vertex, cur vertex and cutEdgeTo are not co-linear.
-				// this is the case if insideEdgeTo is true
-				if( indexCutEdgeTo != -1 ){
-					DBG( printf( "add filler face at cutEdgeTo with vertices %i, %i and %i\n", indexCutEdgeTo, lastVertex, curVertex ) );
-					newFaceFiller = CreateFace( &face );
-					newFaceFiller->SetNormal( faceNormal );
-					newFaceFiller->SetMarker( face.GetMarker() );
-					newFaceFiller->AddVertex( indexCutEdgeTo );
-					newFaceFiller->AddVertex( lastVertex );
-					newFaceFiller->AddVertex( curVertex );
-					AddFace( newFaceFiller );
-					newFaceFiller = NULL;
-				}
+			// if the last vertex is back and the cur vertex is front the cut edge has not
+			// crossed nor touched the edge. in this configuration the end point of the cut
+			// edge is always closer to the face edge than the begin end
+			if( lastSide == eprBack && curSide == eprFront && indexCutEdgeTo != -1 ){
+				DBG( printf( "add filler face at cutEdgeTo with vertices %i, %i and %i\n",
+					indexCutEdgeTo, lastVertex, curVertex ) );
 				
-				// if the end point has been added to the face list add it also to the front and back face
-				if( indexCutEdgeTo != -1 ){
-					// add cutEdgeTo to the back face
-					if( ! newFaceBack ){
-						DBG( printf( "crossTo: create back face\n" ) );
-						newFaceBack = CreateFace( &face );
-						newFaceBack->SetNormal( faceNormal );
-						newFaceBack->SetMarker( face.GetMarker() );
-					}
-					DBG( printf( "crossTo: add indexCutEdgeTo %i to back face\n", indexCutEdgeTo ) );
-					newFaceBack->AddVertex( indexCutEdgeTo );
-					
-					// add cutEdgeTo to the front face
-					DBG( printf( "crossTo: insert indexCutEdgeTo %i into front face at %i\n", indexCutEdgeTo, i ) );
-					face.InsertVertex( i, indexCutEdgeTo );
-					i++;
+				// add filler face if the cut edge end point is inside the face
+				newFaceFiller = CreateFace( newFaceMarker );
+				newFaceFiller->SetNormal( faceNormal );
+				newFaceFiller->AddVertex( indexCutEdgeTo );
+				newFaceFiller->AddVertex( lastVertex );
+				newFaceFiller->AddVertex( curVertex );
+				AddFace( newFaceFiller );
+				newFaceFiller = NULL;
+				
+				// add cutEdgeTo to the front face
+				if( ! newFaceFront ){
+					DBG( printf( "crossTo: create front face\n" ) );
+					newFaceFront = CreateFace( newFaceMarker );
+					newFaceFront->SetNormal( faceNormal );
 				}
+				DBG( printf( "crossTo: add indexCutEdgeTo %i to front face\n", indexCutEdgeTo ) );
+				newFaceFront->AddVertex( indexCutEdgeTo );
+				
+				// add cutEdgeTo to the back face
+				DBG( printf( "crossTo: insert indexCutEdgeTo %i into back face at %i\n", indexCutEdgeTo, i ) );
+				( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) )->InsertVertex( i, indexCutEdgeTo );
+				i++;
 			}
 			
-			// if the last vertex is > 0 and the cur vertex < 0 the cut edge has been cross at the
-			// cutEdgeFrom closer end point.
-			if( lastSide > 0 && curSide < 0 ){
+			// if the last vertex is front and the cur vertex is back the cut edge has not
+			// crossed nor touched the edge. in this configuration the start point of the cut
+			// edge is always closer to the face edge than the end end
+			if( lastSide == eprFront && curSide == eprBack && indexCutEdgeFrom != -1 ){
+				DBG( printf( "add filler face at cutEdgeFrom with vertices %i, %i and %i\n",
+					indexCutEdgeFrom, lastVertex, curVertex ) );
+				
 				// add filler face if the last vertex, cur vertex and cutEdgeFrom are not co-linear.
 				// this is the case if insideEdgeFrom is true
-				if( indexCutEdgeFrom != -1 ){
-					DBG( printf( "add filler face at cutEdgeFrom with vertices %i, %i and %i\n", indexCutEdgeFrom, lastVertex, curVertex ) );
-					newFaceFiller = CreateFace( &face );
-					newFaceFiller->SetNormal( faceNormal );
-					newFaceFiller->SetMarker( face.GetMarker() );
-					newFaceFiller->AddVertex( indexCutEdgeFrom );
-					newFaceFiller->AddVertex( lastVertex );
-					newFaceFiller->AddVertex( curVertex );
-					AddFace( newFaceFiller );
-					newFaceFiller = NULL;
-				}
+				newFaceFiller = CreateFace( newFaceMarker );
+				newFaceFiller->SetNormal( faceNormal );
+				newFaceFiller->AddVertex( indexCutEdgeFrom );
+				newFaceFiller->AddVertex( lastVertex );
+				newFaceFiller->AddVertex( curVertex );
+				AddFace( newFaceFiller );
+				newFaceFiller = NULL;
 				
-				// if the from point has been added to the face list add it also to the front and back face
-				if( indexCutEdgeFrom != -1 ){
-					// add cutEdgeFrom to the back face
-					if( ! newFaceBack ){
-						DBG( printf( "crossFrom: create back face\n" ) );
-						newFaceBack = CreateFace( &face );
-						newFaceBack->SetNormal( faceNormal );
-						newFaceBack->SetMarker( face.GetMarker() );
-					}
-					DBG( printf( "crossFrom: add indexCutEdgeFrom %i to back face\n", indexCutEdgeFrom ) );
-					newFaceBack->AddVertex( indexCutEdgeFrom );
-					
-					// add cutEdgeFrom to the back face
-					DBG( printf( "crossFrom: insert indexCutEdgeFrom %i into front face at %i\n", indexCutEdgeFrom, i ) );
-					face.InsertVertex( i, indexCutEdgeFrom );
-					i++;
+				// add cutEdgeFrom to the front face
+				if( ! newFaceFront ){
+					DBG( printf( "crossFrom: create back face\n" ) );
+					newFaceFront = CreateFace( newFaceMarker );
+					newFaceFront->SetNormal( faceNormal );
 				}
+				DBG( printf( "crossFrom: add indexCutEdgeFrom %i to front face\n", indexCutEdgeFrom ) );
+				newFaceFront->AddVertex( indexCutEdgeFrom );
+				
+				// add cutEdgeFrom to the back face
+				DBG( printf( "crossFrom: insert indexCutEdgeFrom %i into back face at %i\n", indexCutEdgeFrom, i ) );
+				( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) )->InsertVertex( i, indexCutEdgeFrom );
+				i++;
 			}
 			
-			// if the side is <= 0 add the vertex to the back face. this has to come after the
-			// crossing checks above to keep the ordering correct
-			if( curSide <= 0 ){
-				if( ! newFaceBack ){
-					DBG( printf( "curSide<=0: create back face\n" ) );
-					newFaceBack = CreateFace( &face );
-					newFaceBack->SetNormal( faceNormal );
-					newFaceBack->SetMarker( face.GetMarker() );
+			// if the current side is not back add the vertex to front face. this has to
+			// come after the crossing checks above to keep the ordering correct
+			if( curSide != eprBack ){
+				if( ! newFaceFront ){
+					DBG( printf( "curSide != back: create front face\n" ) );
+					newFaceFront = CreateFace( newFaceMarker );
+					newFaceFront->SetNormal( faceNormal );
 				}
-				DBG( printf( "curSide<=0: add vertex %i to back face\n", curVertex ) );
-				newFaceBack->AddVertex( curVertex );
+				DBG( printf( "curSide != back: add vertex %i to front face\n", curVertex ) );
+				newFaceFront->AddVertex( curVertex );
 			}
 			
-			// if the side is strictly < 0 remove the vertex from the front face since
-			// it belongs now entirely to the back face
-			if( curSide < 0 ){
-				DBG( printf( "curSide<0: remove vertex %i from front face at %i\n", curVertex, i ) );
-				face.RemoveVertexFrom( i );
+			// if the side is front remove the vertex from the back face since it belongs
+			// now only to the front face
+			if( curSide == eprFront ){
+				DBG( printf( "curSide == front: remove vertex %i from back face at %i\n", curVertex, i ) );
+				( ( dedaiConvexFace* )pFaces.GetAt( faceIndex ) )->RemoveVertexFrom( i );
 				i--;
 			}
 			
@@ -687,18 +697,23 @@ void dedaiConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutE
 			lastSide = curSide;
 		}
 		
-		// add the new faces if they have enough corners
-		if( newFaceBack && newFaceBack->GetVertexCount() > 2 ){
-			AddFace( newFaceBack );
-			newFaceBack = NULL;
+		// add front face if enough corners are present
+		if( newFaceFront ){
+			if( newFaceFront->GetVertexCount() > 2 ){
+				AddFace( newFaceFront );
+				
+			}else{
+				delete newFaceFront;
+			}
+			newFaceFront = NULL;
 		}
 		
 	}catch( const deException & ){
 		if( newFaceFiller ){
 			delete newFaceFiller;
 		}
-		if( newFaceBack ){
-			delete newFaceBack;
+		if( newFaceFront ){
+			delete newFaceFront;
 		}
 		throw;
 	}
