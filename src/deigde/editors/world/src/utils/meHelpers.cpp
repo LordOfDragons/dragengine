@@ -34,6 +34,8 @@
 #include <deigde/gamedefinition/class/component/igdeGDCComponent.h>
 #include <deigde/gamedefinition/class/component/igdeGDCCTexture.h>
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
+#include <deigde/gamedefinition/class/navblocker/igdeGDCNavigationBlocker.h>
+#include <deigde/gamedefinition/class/navspace/igdeGDCNavigationSpace.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -99,6 +101,74 @@ bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, decString &prefix, i
 	for( int i=0; i<count; i++ ){
 		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
 		if( inherit.GetClass() && meHelpers::FindFirstLight( *inherit.GetClass(), prefix, light ) ){
+			prefix = inherit.GetPropertyPrefix() + prefix;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass *gdclass ){
+	return gdclass ? FindFirstNavigationSpace( *gdclass ) : NULL;
+}
+
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass ){
+	igdeGDCNavigationSpace *navigationSpace = NULL;
+	decString prefix;
+	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace ) ? navigationSpace : NULL;
+}
+
+bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace ){
+	decString prefix;
+	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace );
+}
+
+bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace ){
+	if( gdclass.GetNavigationSpaceList().GetCount() > 0 ){
+		navigationSpace = gdclass.GetNavigationSpaceList().GetAt( 0 );
+		prefix.Empty();
+		return true;
+	}
+	const int count = gdclass.GetInheritClassCount();
+	for( int i=0; i<count; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() && meHelpers::FindFirstNavigationSpace( *inherit.GetClass(), prefix, navigationSpace ) ){
+			prefix = inherit.GetPropertyPrefix() + prefix;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass *gdclass ){
+	return gdclass ? FindFirstNavigationBlocker( *gdclass ) : NULL;
+}
+
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass ){
+	igdeGDCNavigationBlocker *navigationBlocker = NULL;
+	decString prefix;
+	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker ) ? navigationBlocker : NULL;
+}
+
+bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker ){
+	decString prefix;
+	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker );
+}
+
+bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker ){
+	if( gdclass.GetNavigationBlockerList().GetCount() > 0 ){
+		navigationBlocker = gdclass.GetNavigationBlockerList().GetAt( 0 );
+		prefix.Empty();
+		return true;
+	}
+	const int count = gdclass.GetInheritClassCount();
+	for( int i=0; i<count; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() && meHelpers::FindFirstNavigationBlocker( *inherit.GetClass(), prefix, navigationBlocker ) ){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}

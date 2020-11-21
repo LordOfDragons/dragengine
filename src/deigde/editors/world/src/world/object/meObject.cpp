@@ -34,6 +34,7 @@
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
 #include "../../collisions/meCLInvalidateDecals.h"
+#include "../../utils/meHelpers.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -689,12 +690,8 @@ void meObject::UpdateNavPathTest(){
 	bool affectsPath = false;
 	
 	if( pClassDef && pWorld ){
-		if( pClassDef->GetNavigationSpaceList().GetCount() > 0 ){
-			affectsPath = true;
-		}
-		if( pClassDef->GetNavigationBlockerList().GetCount() > 0 ){
-			affectsPath = true;
-		}
+		affectsPath |= meHelpers::FindFirstNavigationSpace( *pClassDef )
+			|| meHelpers::FindFirstNavigationBlocker( *pClassDef );
 	}
 	
 	if( affectsPath ){
