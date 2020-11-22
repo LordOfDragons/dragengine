@@ -1319,10 +1319,14 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &position2 = list.GetVertexAt( vertex );
 				const decVector &position3 = list.GetVertexAt( nextVertex );
 				const decVector &position4 = list.GetVertexAt( nextVertex2 );
-				const decVector direction1( face.GetNormal() % ( position2 - position1 ) );
-				const decVector normal1( ! direction1.IsZero() ? direction1.Normalized() : decVector( 0.0f, 1.0f, 0.0f ) );
-				const decVector direction2( face.GetNormal() % ( position4 - position3 ) );
-				const decVector normal2( ! direction2.IsZero() ? direction2.Normalized() : decVector( 0.0f, 1.0f, 0.0f ) );
+				const decVector direction1( position2 - position1 );
+				const decVector direction2( position4 - position3 );
+				if( direction1.IsZero() || direction2.IsZero() ){
+					lastVertex = vertex;
+					continue; // should ot happen
+				}
+				const decVector normal1( face.GetNormal() % direction1.Normalized() );
+				const decVector normal2( face.GetNormal() % direction2.Normalized() );
 				
 				const int otherVertexCount = otherFace->GetVertexCount();
 				const int otherVertexPrev2 = otherFace->GetVertexAt( ( otherCorner - 2 + otherVertexCount ) % otherVertexCount );
@@ -1330,17 +1334,14 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &otherPosition1 = list.GetVertexAt( otherVertexNext );
 				const decVector &otherPosition2 = list.GetVertexAt( otherVertexPrev2 );
 				
-				if( normal1 * ( otherPosition1 - position2 ) < -thresholdConvex ){
+				if( normal1 * ( otherPosition1 - position2 ) < -thresholdConvex
+				||  normal2 * ( otherPosition2 - position3 ) < -thresholdConvex ){
 					lastVertex = vertex;
-					continue; // first edge would lead into a concave face
-				}
-				if( normal2 * ( otherPosition2 - position3 ) < -thresholdConvex ){
-					lastVertex = vertex;
-					continue; // second edge would lead into a concave face
+					continue; // first/second edge would lead into a concave face
 				}
 				
-				// the joined face is convex. insert the vertices of the other face into this face
-				// and remove the other face
+				// the joined face is convex. insert the vertices of the other face into this
+				// face and remove the other face
 				for( v2=0; v2<otherVertexCount-2; v2++ ){
 					face.InsertVertex( nextCorner + v2, otherFace->GetVertexAt(
 						( otherCorner + 1 + v2 ) % otherVertexCount ) );
@@ -1385,21 +1386,20 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &position1 = list.GetVertexAt( lastVertex );
 				const decVector &position2 = list.GetVertexAt( vertex );
 				const decVector &position3 = list.GetVertexAt( nextVertex );
-				const decVector direction( face.GetNormal() % ( position2 - position1 ) );
+				const decVector direction( position2 - position1 );
 				if( direction.IsZero() ){
 					lastVertex = vertex;
 					continue;
 				}
-				
-				const decVector normal( direction.Normalized() );
+				const decVector normal( face.GetNormal() % direction.Normalized() );
 				
 				if( fabsf( normal * ( position3 - position2 ) ) > thresholdColinear ){
 					lastVertex = vertex;
 					continue; // edges are not co-linear
 				}
 				
-				// edges are co-linear. remove vertex. continue testing with the current vertex since
-				// the next edge could be co-linear again
+				// edges are co-linear. remove vertex. continue testing with the current
+				// vertex since the next edge could be co-linear again
 				face.RemoveVertexFrom( v );
 				vertexCount--;
 				if( vertexCount < 3 ){
