@@ -121,6 +121,7 @@ for s in igdeGameDefs:
 	node = envModule.File(s)
 	modifiedFile = envModule.Command(node, node.srcnode(),
 		Action(ActionReplaceTokenInPlace), Replacements=replacements)
+	envModule.Depends(modifiedFile, 'SConscript')
 	
 	filename = os.path.join(pathIGDEShared, 'gamedefs', s.split('/')[-1])
 	
