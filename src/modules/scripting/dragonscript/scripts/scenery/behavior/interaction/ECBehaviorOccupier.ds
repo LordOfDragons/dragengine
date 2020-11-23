@@ -35,7 +35,12 @@ pin Dragengine.Scenery
  * assume to interact properly with this element. The ECBehaviorOccupier behavior provides
  * support to claim such interaction spots.
  * 
- * Element class properties have the prefix "occupier.".
+ * Usually an element has one instance of ECBehaviorOccupier but it is possible to use
+ * multiple instance for example to track different interacions. Think of a chair the
+ * actor can sit down upon. The actor can use one occupier to track sitting on the chair
+ * while using another occupier to track interacting with something while being seated.
+ * 
+ * Element class properties have the prefix "occupier{(id)}.".
  * 
  * This behavior uses no other behaviors.
  * 
