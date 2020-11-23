@@ -1,3 +1,9 @@
+dragengine (1.4-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
+
+  * Changelog 1.4: https://dragondreams.ch/?page_id=307
+
+ -- Roland Plüss <roland@rptd.ch>  Mon, 23 Nov 2020 09:14:51 +0000
+
 dragengine (1.3.1-ubuntu5~ubuntu20.10-ppa1ubuntu1) focal; urgency=medium
 
   * added native class documentation for DragonScript script module
