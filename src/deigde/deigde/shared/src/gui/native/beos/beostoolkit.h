@@ -38,15 +38,28 @@
 #include <interface/PopUpMenu.h>
 #include <interface/StringItem.h>
 #include <interface/TextView.h>
+#include <interface/GridView.h>
+#include <interface/GridLayout.h>
 #include <storage/FilePanel.h>
 #include <storage/Entry.h>
 #include <storage/Path.h>
 
+class igdeContainer;
+
 class igdeUIBeOSHelper{
+public:
+	enum ePerformCodes{
+		epcAddView = 'addv'
+	};
+	
 private:
 	igdeUIBeOSHelper();
 	
 public:
+	static void AddView( BView *view, igdeContainer *parent );
+	static void AddView( BView *view, BView *parent );
+	static void DestroyView( BView *view );
+	
 	static rgb_color BlendColor( rgb_color color1, rgb_color color2, float factor );
 	static rgb_color ConvertColor(const decColor& color);
 	static decColor ConvertColor( rgb_color color );

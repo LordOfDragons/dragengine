@@ -79,7 +79,7 @@ void igdeNativeBeOSApplication::InnerApp::ReadyToRun(){
 ////////////////////////////
 
 igdeNativeBeOSApplication::igdeNativeBeOSApplication( igdeApplication &owner ) :
-pOwner( &owner ),
+pOwner( owner ),
 pInnerApp( *this ),
 pDisableModalUpdating( false ){
 }
@@ -130,7 +130,7 @@ void igdeNativeBeOSApplication::Run(){
 	// how to trigger OnFrameUpdate regularly?
 	/*
 	while( runWhileEvents() ){
-		igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
+		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 		if( mainWindow ){
 			mainWindow->OnFrameUpdate();
 		}
@@ -201,7 +201,7 @@ void igdeNativeBeOSApplication::RunModalWhileShown( igdeWindow &window ){
 	
 	while( runModalWhileEvents( native ) && native->shown() ){
 		if( updateWindowMain ){
-			igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
+			igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 			if( mainWindow ){
 				mainWindow->OnFrameUpdate();
 			}

@@ -55,7 +55,9 @@ igdeNativeBeOSComboBoxFilter::~igdeNativeBeOSComboBoxFilter(){
 }
 
 igdeNativeBeOSComboBoxFilter *igdeNativeBeOSComboBoxFilter::CreateNativeWidget( igdeComboBoxFilter &owner ){
-	return new igdeNativeBeOSComboBoxFilter( owner, *owner.GetGuiTheme() );
+	igdeNativeBeOSComboBoxFilter * const native = new igdeNativeBeOSComboBoxFilter( owner, *owner.GetGuiTheme() );
+	igdeUIBeOSHelper::AddViewToParent( native, owner.GetParent() );
+	return native;
 }
 
 
@@ -66,8 +68,8 @@ igdeNativeBeOSComboBoxFilter *igdeNativeBeOSComboBoxFilter::CreateNativeWidget( 
 void igdeNativeBeOSComboBoxFilter::UpdateRowCount(){
 	// automatic in haiku if I'm not mistaken
 	/*
-	const int count = decMath::max( decMath::min( pOwner->GetRows(),
-		decMath::max( pOwner->GetItemCount(), pOwner->GetFilterItemCount() ) ) ), 1 );
+	const int count = decMath::max( decMath::min( pOwner.GetRows(),
+		decMath::max( pOwner.GetItemCount(), pOwner.GetFilterItemCount() ) ) ), 1 );
 	if( count == getNumVisible() ){
 		return;
 	}
@@ -80,23 +82,23 @@ void igdeNativeBeOSComboBoxFilter::UpdateRowCount(){
 }
 
 void igdeNativeBeOSComboBoxFilter::UpdateFilterString(){
-// 	pEditFilter->setText( pOwner->GetFilterString().GetString() );
+// 	pEditFilter->setText( pOwner.GetFilterString().GetString() );
 }
 
 
 
 void igdeNativeBeOSComboBoxFilter::MessageReceived( BMessage *message ){
 	if( message->what == eeFilterChanged ){
-		if( ! pOwner->GetEnabled() ){
+		if( ! pOwner.GetEnabled() ){
 			return;
 		}
 		
 		try{
-// 			pOwner->SetFilterString( pEditFilter->getText().text() );
+// 			pOwner.SetFilterString( pEditFilter->getText().text() );
 			
 		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
+			pOwner.GetLogger()->LogException( "IGDE", e );
+			igdeCommonDialogs::Exception( &pOwner, e );
 		}
 		
 	}else{

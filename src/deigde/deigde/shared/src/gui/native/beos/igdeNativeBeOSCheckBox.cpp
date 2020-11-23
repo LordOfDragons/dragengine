@@ -45,7 +45,7 @@
 
 igdeNativeBeOSCheckBox::igdeNativeBeOSCheckBox( igdeCheckBox &owner, const igdeGuiTheme &guitheme ) :
 BCheckBox( CheckBoxText( owner ), new BMessage( eeClicked ) ),
-pOwner( &owner ),
+pOwner( owner ),
 pFont( CheckBoxFont( owner, guitheme ) )
 {
 	SetTarget( this );
@@ -63,14 +63,16 @@ igdeNativeBeOSCheckBox::~igdeNativeBeOSCheckBox(){
 }
 
 igdeNativeBeOSCheckBox *igdeNativeBeOSCheckBox::CreateNativeWidget( igdeCheckBox &owner ){
-	return new igdeNativeBeOSCheckBox( owner, *owner.GetGuiTheme() );
+	igdeNativeBeOSCheckBox * const native = new igdeNativeBeOSCheckBox( owner, *owner.GetGuiTheme() );
+	igdeUIBeOSHelper::AddView( native, owner.GetParent() );
+	return native;
 }
 
 void igdeNativeBeOSCheckBox::PostCreateNativeWidget(){
 }
 
 void igdeNativeBeOSCheckBox::DestroyNativeWidget(){
-	delete this;
+	igdeUIBeOSHelper::DestroyView( this );
 }
 
 
@@ -87,48 +89,48 @@ void igdeNativeBeOSCheckBox::SetChecked( bool checked ){
 }
 
 void igdeNativeBeOSCheckBox::UpdateChecked(){
-	if( pOwner->GetChecked() != GetChecked() ){
-		SetChecked( pOwner->GetChecked() );
+	if( pOwner.GetChecked() != GetChecked() ){
+		SetChecked( pOwner.GetChecked() );
 	}
 }
 
 void igdeNativeBeOSCheckBox::UpdateStyle(){
-	SetLabel( CheckBoxText( *pOwner ) );
-	SetIcon( CheckBoxIcon( *pOwner ) );
+	SetLabel( CheckBoxText( pOwner ) );
+	SetIcon( CheckBoxIcon( pOwner ) );
 }
 
 void igdeNativeBeOSCheckBox::UpdateText(){
-	SetLabel( CheckBoxText( *pOwner ) );
+	SetLabel( CheckBoxText( pOwner ) );
 }
 
 void igdeNativeBeOSCheckBox::UpdateDescription(){
-	SetToolTip( pOwner->GetDescription() );
+	SetToolTip( pOwner.GetDescription() );
 }
 
 void igdeNativeBeOSCheckBox::UpdateIcon(){
-	SetIcon( CheckBoxIcon( *pOwner ) );
+	SetIcon( CheckBoxIcon( pOwner ) );
 }
 
 void igdeNativeBeOSCheckBox::UpdateEnabled(){
-	SetEnabled( pOwner->GetEnabled() );
+	SetEnabled( pOwner.GetEnabled() );
 }
 
 
 
 void igdeNativeBeOSCheckBox::MessageReceived( BMessage *message ){
 	if( message->what == eeClicked ){
-		if( ! pOwner->GetEnabled() ){
+		if( ! pOwner.GetEnabled() ){
 			return;
 		}
 		
-		pOwner->SetChecked( GetChecked() );
+		pOwner.SetChecked( GetChecked() );
 		
 		try{
-			pOwner->OnAction();
+			pOwner.OnAction();
 			
 		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
+			pOwner.GetLogger()->LogException( "IGDE", e );
+			igdeCommonDialogs::Exception( &pOwner, e );
 		}
 		
 	}else{
@@ -137,7 +139,7 @@ void igdeNativeBeOSCheckBox::MessageReceived( BMessage *message ){
 }
 
 void igdeNativeBeOSCheckBox::UpdateAction(){
-	igdeAction * const action = pOwner->GetAction();
+	igdeAction * const action = pOwner.GetAction();
 	if( ! action ){
 		return;
 	}
@@ -146,7 +148,7 @@ void igdeNativeBeOSCheckBox::UpdateAction(){
 		action->Update();
 		
 	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+		pOwner.GetLogger()->LogException( "IGDE", e );
 	}
 }
 

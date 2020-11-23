@@ -47,7 +47,7 @@ decColor igdeNativeBeOSColorBox::vCopyColor;
 
 igdeNativeBeOSColorBox::igdeNativeBeOSColorBox( igdeColorBox &owner, const igdeGuiTheme &guitheme ) :
 BView( BRect( 0, 0, ColorBoxHeight( guitheme ) * 2, ColorBoxHeight( guitheme ) ), NULL, B_FOLLOW_ALL, B_WILL_DRAW ),
-pOwner( &owner ),
+pOwner( owner ),
 pDefaultHeight( ColorBoxHeight( guitheme ) ),
 pDefaultWidth( pDefaultHeight * 2 )
 {
@@ -60,14 +60,16 @@ igdeNativeBeOSColorBox::~igdeNativeBeOSColorBox(){
 }
 
 igdeNativeBeOSColorBox *igdeNativeBeOSColorBox::CreateNativeWidget( igdeColorBox &owner ){
-	return new igdeNativeBeOSColorBox( owner, *owner.GetGuiTheme() );
+	igdeNativeBeOSColorBox * const native = new igdeNativeBeOSColorBox( owner, *owner.GetGuiTheme() );
+	igdeUIBeOSHelper::AddView( native, owner.GetParent() );
+	return native;
 }
 
 void igdeNativeBeOSColorBox::PostCreateNativeWidget(){
 }
 
 void igdeNativeBeOSColorBox::DestroyNativeWidget(){
-	delete this;
+	igdeUIBeOSHelper::DestroyView( this );
 }
 
 
@@ -81,7 +83,7 @@ void igdeNativeBeOSColorBox::GetPreferredSize( float *width, float *height ){
 }
 
 void igdeNativeBeOSColorBox::MouseUp( BPoint where ){
-	if( ! pOwner->GetEnabled() ){
+	if( ! pOwner.GetEnabled() ){
 		return;
 	}
 	
@@ -101,36 +103,36 @@ void igdeNativeBeOSColorBox::MouseUp( BPoint where ){
 	}
 	
 	try{
-		pOwner->SetColor( ColorBeOSToIgde( color ) );
-		pOwner->NotifyColorChanged();
+		pOwner.SetColor( ColorBeOSToIgde( color ) );
+		pOwner.NotifyColorChanged();
 		
 	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+		pOwner.GetLogger()->LogException( "IGDE", e );
+		igdeCommonDialogs::Exception( &pOwner, e );
 		return;
 	}
 	*/
 	
 	/* TODO right mouse
-	if( ! pOwner->GetEnabled() ){
+	if( ! pOwner.GetEnabled() ){
 		return;
 	}
 	
-	pOwner->ShowContextMenu( decPoint( where.x, where.y ) );
+	pOwner.ShowContextMenu( decPoint( where.x, where.y ) );
 	*/
 }
 
 
 void igdeNativeBeOSColorBox::UpdateColor(){
-	SetViewColor( ColorIgdeToBeOS( pOwner->GetColor() ) );
+	SetViewColor( ColorIgdeToBeOS( pOwner.GetColor() ) );
 }
 
 void igdeNativeBeOSColorBox::UpdateDescription(){
-	SetToolTip( pOwner->GetDescription() );
+	SetToolTip( pOwner.GetDescription() );
 }
 
 void igdeNativeBeOSColorBox::UpdateEnabled(){
-	//SetEnabled( pOwner->GetEnabled() );
+	//SetEnabled( pOwner.GetEnabled() );
 }
 
 void igdeNativeBeOSColorBox::ClipboardPutColor( const decColor &color ){

@@ -111,7 +111,7 @@ public:
 	
 	
 private:
-	igdeApplication *pOwner;
+	igdeApplication &pOwner;
 	InnerApp pInnerApp;
 	bool pDisableModalUpdating;
 	decUnicodeStringList pArguments;

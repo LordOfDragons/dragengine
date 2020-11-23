@@ -46,7 +46,7 @@
 
 igdeNativeBeOSComboBox::igdeNativeBeOSComboBox( igdeComboBox &owner, const igdeGuiTheme &guitheme ) :
 BMenuField( "", new BPopUpMenu( "popup" ) ),
-pOwner( &owner ),
+pOwner( owner ),
 pFont( ComboBoxFont( owner, guitheme ) ),
 pOrgBackColor( ViewColor() ),
 pInvalidBackColor( igdeUIBeOSHelper::BlendColor( pOrgBackColor, rgb_color{ 255, 0, 0, 255 }, 0.25f ) ),
@@ -72,14 +72,16 @@ igdeNativeBeOSComboBox::~igdeNativeBeOSComboBox(){
 }
 
 igdeNativeBeOSComboBox *igdeNativeBeOSComboBox::CreateNativeWidget( igdeComboBox &owner ){
-	return new igdeNativeBeOSComboBox( owner, *owner.GetGuiTheme() );
+	igdeNativeBeOSComboBox * const native = new igdeNativeBeOSComboBox( owner, *owner.GetGuiTheme() );
+	igdeUIBeOSHelper::AddView( native, owner.GetParent() );
+	return native;
 }
 
 void igdeNativeBeOSComboBox::PostCreateNativeWidget(){
 }
 
 void igdeNativeBeOSComboBox::DestroyNativeWidget(){
-	delete this;
+	igdeUIBeOSHelper::DestroyView( this );
 }
 
 
@@ -88,22 +90,22 @@ void igdeNativeBeOSComboBox::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeBeOSComboBox::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner.GetItemCount();
 	int i;
 	
 	pMenu.RemoveItems( 0, pMenu.CountItems(), true );
 	pTopItemIndex = 0;
 	pCustomItem = NULL;
 	
-	if( pOwner->GetEditable() ){
-		pCustomItem = new BMenuItem( pOwner->GetText(), new BMessage( eeCustomText ) );
+	if( pOwner.GetEditable() ){
+		pCustomItem = new BMenuItem( pOwner.GetText(), new BMessage( eeCustomText ) );
 		pMenu.AddItem( pCustomItem );
 		pMenu.AddSeparatorItem();
 		pTopItemIndex = 2;
 	}
 	
 	for( i=0; i<count; i++ ){
-		const igdeListItem &item = *pOwner->GetItemAt( i );
+		const igdeListItem &item = *pOwner.GetItemAt( i );
 		BMenuItem * const menuItem = new BMenuItem( item.GetText(), new BMessage( eeSelectItem ) );
 		pMenu.AddItem( menuItem );
 		
@@ -113,8 +115,8 @@ void igdeNativeBeOSComboBox::BuildList(){
 		}
 	}
 	
-	if( pOwner->GetSelection() != -1 ){
-		pMenu.ItemAt( pTopItemIndex + pOwner->GetSelection() )->SetMarked( true );
+	if( pOwner.GetSelection() != -1 ){
+		pMenu.ItemAt( pTopItemIndex + pOwner.GetSelection() )->SetMarked( true );
 		
 	}else if( pCustomItem ){
 		pCustomItem->SetMarked( true );
@@ -122,7 +124,7 @@ void igdeNativeBeOSComboBox::BuildList(){
 }
 
 void igdeNativeBeOSComboBox::UpdateItem( int index ){
-	const igdeListItem &item = *pOwner->GetItemAt( index );
+	const igdeListItem &item = *pOwner.GetItemAt( index );
 	
 	BMenuItem &menuItem = *pMenu.ItemAt( pTopItemIndex + index );
 	menuItem.SetLabel( item.GetText() );
@@ -141,16 +143,16 @@ void igdeNativeBeOSComboBox::UpdateItem( int index ){
 
 void igdeNativeBeOSComboBox::SyncSelection( bool changing ){
 	const BMenuItem * const marked = pMenu.FindMarked();
-	pOwner->SetText( marked ? marked->Label() : "", changing );
+	pOwner.SetText( marked ? marked->Label() : "", changing );
 }
 
 void igdeNativeBeOSComboBox::OnInvalidValueChanged(){
-	SetViewColor( pOwner->GetInvalidValue() ? pInvalidBackColor : pOrgBackColor );
+	SetViewColor( pOwner.GetInvalidValue() ? pInvalidBackColor : pOrgBackColor );
 }
 
 void igdeNativeBeOSComboBox::UpdateText(){
-	if( pOwner->GetSelection() != -1 ){
-		pMenu.ItemAt( pTopItemIndex + pOwner->GetSelection() )->SetMarked( true );
+	if( pOwner.GetSelection() != -1 ){
+		pMenu.ItemAt( pTopItemIndex + pOwner.GetSelection() )->SetMarked( true );
 		
 	}else if( pCustomItem ){
 		pCustomItem->SetMarked( true );
@@ -163,7 +165,7 @@ void igdeNativeBeOSComboBox::UpdateText(){
 	}
 	
 	if( pCustomItem ){
-		pCustomItem->SetLabel( pOwner->GetText() );
+		pCustomItem->SetLabel( pOwner.GetText() );
 	}
 }
 
@@ -190,7 +192,7 @@ void igdeNativeBeOSComboBox::Focus(){
 void igdeNativeBeOSComboBox::UpdateRowCount(){
 	// automatic in haiku if I'm not mistaken
 	/*
-	const int count = decMath::max( decMath::min( pOwner->GetRows(), pListView->getNumItems() ), 1 );
+	const int count = decMath::max( decMath::min( pOwner.GetRows(), pListView->getNumItems() ), 1 );
 	if( count == getNumVisible() ){
 		return;
 	}
@@ -203,7 +205,7 @@ void igdeNativeBeOSComboBox::UpdateRowCount(){
 }
 
 void igdeNativeBeOSComboBox::UpdateEnabled(){
-	SetEnabled( pOwner->GetEnabled() );
+	SetEnabled( pOwner.GetEnabled() );
 }
 
 void igdeNativeBeOSComboBox::UpdateEditable(){
@@ -211,18 +213,18 @@ void igdeNativeBeOSComboBox::UpdateEditable(){
 }
 
 void igdeNativeBeOSComboBox::UpdateDescription(){
-	SetToolTip( pOwner->GetDescription() );
+	SetToolTip( pOwner.GetDescription() );
 }
 
 
 
 void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
 	if( message->what == eeCustomText ){
-		if( ! pOwner->GetEnabled() ){
+		if( ! pOwner.GetEnabled() ){
 			return;
 		}
 		
-		BAlert * const alert = new BAlert( "", pOwner->GetText(), "Cancel", "Save",
+		BAlert * const alert = new BAlert( "", pOwner.GetText(), "Cancel", "Save",
 			NULL, B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_EMPTY_ALERT );
 		//alert->TextView()->SetLabel( "Edit Custom Value:" );
 		alert->TextView()->MakeEditable( true );
@@ -238,13 +240,13 @@ void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
 			SyncSelection( true );
 			
 		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
+			pOwner.GetLogger()->LogException( "IGDE", e );
+			igdeCommonDialogs::Exception( &pOwner, e );
 			return;
 		}
 		
 	}else if( message->what == eeSelectItem ){
-		if( ! pOwner->GetEnabled() ){
+		if( ! pOwner.GetEnabled() ){
 			return;
 		}
 		
@@ -252,8 +254,8 @@ void igdeNativeBeOSComboBox::MessageReceived( BMessage *message ){
 			SyncSelection( true );
 			
 		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
+			pOwner.GetLogger()->LogException( "IGDE", e );
+			igdeCommonDialogs::Exception( &pOwner, e );
 			return;
 		}
 		

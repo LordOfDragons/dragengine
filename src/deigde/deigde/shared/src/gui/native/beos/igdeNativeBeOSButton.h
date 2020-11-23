@@ -40,7 +40,7 @@ private:
 		eeClicked = 'clic'
 	};
 	
-	igdeButton *pOwner;
+	igdeButton &pOwner;
 	igdeFontReference pFont;
 	
 public:

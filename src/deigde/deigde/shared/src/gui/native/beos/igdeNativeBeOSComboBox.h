@@ -43,7 +43,7 @@ public:
 	};
 	
 protected:
-	igdeComboBox *pOwner;
+	igdeComboBox &pOwner;
 	igdeFontReference pFont;
 	rgb_color pOrgBackColor;
 	rgb_color pInvalidBackColor;

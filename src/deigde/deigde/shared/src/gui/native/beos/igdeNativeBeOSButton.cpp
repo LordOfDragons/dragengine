@@ -45,7 +45,7 @@
 
 igdeNativeBeOSButton::igdeNativeBeOSButton( igdeButton &owner, const igdeGuiTheme &guitheme ) :
 BButton( ButtonText( owner ), new BMessage( eeClicked ) ),
-pOwner( &owner ),
+pOwner( owner ),
 pFont( ButtonFont( owner, guitheme ) )
 {
 	SetTarget( this );
@@ -65,14 +65,16 @@ igdeNativeBeOSButton::~igdeNativeBeOSButton(){
 }
 
 igdeNativeBeOSButton *igdeNativeBeOSButton::CreateNativeWidget( igdeButton &owner ){
-	return new igdeNativeBeOSButton( owner, *owner.GetGuiTheme() );
+	igdeNativeBeOSButton * const native = new igdeNativeBeOSButton( owner, *owner.GetGuiTheme() );
+	igdeUIBeOSHelper::AddView( native, owner.GetParent() );
+	return native;
 }
 
 void igdeNativeBeOSButton::PostCreateNativeWidget(){
 }
 
 void igdeNativeBeOSButton::DestroyNativeWidget(){
-	delete this;
+	igdeUIBeOSHelper::DestroyView( this );
 }
 
 
@@ -85,41 +87,41 @@ void igdeNativeBeOSButton::Focus(){
 }
 
 void igdeNativeBeOSButton::UpdateStyle(){
-	SetLabel( igdeNativeBeOSButton::ButtonText( *pOwner ) );
-	SetIcon( igdeNativeBeOSButton::ButtonIcon( *pOwner ) );
-	SetFlat( pOwner->GetStyle() == igdeButton::ebsToolBar );
+	SetLabel( igdeNativeBeOSButton::ButtonText( pOwner ) );
+	SetIcon( igdeNativeBeOSButton::ButtonIcon( pOwner ) );
+	SetFlat( pOwner.GetStyle() == igdeButton::ebsToolBar );
 }
 
 void igdeNativeBeOSButton::UpdateText(){
-	SetLabel( igdeNativeBeOSButton::ButtonText( *pOwner ) );
+	SetLabel( igdeNativeBeOSButton::ButtonText( pOwner ) );
 }
 
 void igdeNativeBeOSButton::UpdateDescription(){
-	SetToolTip( pOwner->GetDescription() );
+	SetToolTip( pOwner.GetDescription() );
 }
 
 void igdeNativeBeOSButton::UpdateIcon(){
-	SetIcon( igdeNativeBeOSButton::ButtonIcon( *pOwner ) );
+	SetIcon( igdeNativeBeOSButton::ButtonIcon( pOwner ) );
 }
 
 void igdeNativeBeOSButton::UpdateEnabled(){
-	SetEnabled( pOwner->GetEnabled() );
+	SetEnabled( pOwner.GetEnabled() );
 }
 
 
 
 void igdeNativeBeOSButton::MessageReceived( BMessage *message ){
 	if( message->what == eeClicked ){
-		if( ! pOwner->GetEnabled() ){
+		if( ! pOwner.GetEnabled() ){
 			return;
 		}
 		
 		try{
-			pOwner->OnAction();
+			pOwner.OnAction();
 			
 		}catch( const deException &e ){
-			pOwner->GetLogger()->LogException( "IGDE", e );
-			igdeCommonDialogs::Exception( pOwner, e );
+			pOwner.GetLogger()->LogException( "IGDE", e );
+			igdeCommonDialogs::Exception( &pOwner, e );
 		}
 		
 	}else{
@@ -128,7 +130,7 @@ void igdeNativeBeOSButton::MessageReceived( BMessage *message ){
 }
 
 void igdeNativeBeOSButton::UpdateAction(){
-	igdeAction * const action = pOwner->GetAction();
+	igdeAction * const action = pOwner.GetAction();
 	if( ! action ){
 		return;
 	}
@@ -137,7 +139,7 @@ void igdeNativeBeOSButton::UpdateAction(){
 		action->Update();
 		
 	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+		pOwner.GetLogger()->LogException( "IGDE", e );
 	}
 }
 

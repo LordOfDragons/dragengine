@@ -22,6 +22,9 @@
 #ifdef IGDE_TOOLKIT_BEOS
 
 #include "beostoolkit.h"
+#include "../../igdeContainer.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,6 +37,35 @@ igdeUIBeOSHelper::igdeUIBeOSHelper(){}
 
 // Management
 ///////////////
+
+void igdeUIBeOSHelper::AddView( BView *view, igdeContainer *parent ){
+	if( ! view ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! parent ){
+		delete view;
+		DETHROW( deeInvalidParam );
+	}
+	
+	AddView( view, ( BView* )parent->GetNativeContainer() );
+}
+
+void igdeUIBeOSHelper::AddView( BView *view, BView *parent ){
+	if( ! view ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! parent || parent->Perform( epcAddView, view ) != B_OK ){
+		delete view;
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void igdeUIBeOSHelper::DestroyView( BView *view ){
+	if( ! view || ! view->RemoveSelf() ){
+		DETHROW( deeInvalidParam );
+	}
+	delete view;
+}
 
 rgb_color igdeUIBeOSHelper::BlendColor( rgb_color color1, rgb_color color2, float factor ){
 	const float c1r = ( float )color1.red / 255.f;

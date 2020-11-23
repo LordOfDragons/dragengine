@@ -41,7 +41,7 @@ public:
 	};
 	
 private:
-	igdeCheckBox *pOwner;
+	igdeCheckBox &pOwner;
 	igdeFontReference pFont;
 	
 public:

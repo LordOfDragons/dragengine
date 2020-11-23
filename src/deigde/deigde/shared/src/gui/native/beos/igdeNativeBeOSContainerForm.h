@@ -19,41 +19,34 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _IGDENATIVEBEOSCOLORBOX_H_
-#define _IGDENATIVEBEOSCOLORBOX_H_
+#ifndef _IGDENATIVEBEOSCONTANIERFORM_H_
+#define _IGDENATIVEBEOSCONTANIERFORM_H_
 
 #include "beostoolkit.h"
-#include "../../resources/igdeFontReference.h"
 
-class igdeColorBox;
-class igdeEnvironment;
-class igdeGuiTheme;
-class igdeWidget;
+class igdeContainerForm;
 
 
 /**
- * FOX Native colorBox.
+ * \brief BeOS toolkit Native Form Container.
  */
-class igdeNativeBeOSColorBox : public BView{
+class igdeNativeBeOSContainerForm : public BGridView{
 private:
-	igdeColorBox &pOwner;
-	int pDefaultHeight;
-	int pDefaultWidth;
+	igdeContainerForm &pOwner;
 	
-	// Temporary
-	static decColor vCopyColor;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create native widget. */
-	igdeNativeBeOSColorBox( igdeColorBox &owner, const igdeGuiTheme &guitheme );
+	/** \brief Create container. */
+	igdeNativeBeOSContainerForm( igdeContainerForm &owner );
 	
-	/** \brief Clean up native widget. */
-	virtual ~igdeNativeBeOSColorBox();
+	/** \brief Clean up container. */
+	virtual ~igdeNativeBeOSContainerForm();
 	
 	/** \brief Create native widget. */
-	static igdeNativeBeOSColorBox* CreateNativeWidget( igdeColorBox &owner );
+	static igdeNativeBeOSContainerForm* CreateNativeWidget( igdeContainerForm &owner );
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -66,22 +59,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void GetPreferredSize( float *width, float *height );
-	virtual void MouseUp( BPoint where );
+	virtual void ChildRemoved();
 	
-	virtual void UpdateColor();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
-	
-	virtual void ClipboardPutColor( const decColor &color );
-	virtual decColor ClipboardGetColor();
-	
-	static rgb_color ColorIgdeToBeOS( const decColor &color );
-	static decColor ColorBeOSToIgde( rgb_color color );
-	static int ColorBoxHeight( const igdeGuiTheme &guitheme );
+	virtual void FrameResized( float newWidth, float newHeight );
+	virtual status_t Perform( perform_code d, void *arg );
 	/*@}*/
 };
 
-typedef igdeNativeBeOSColorBox igdeNativeColorBox;
+typedef igdeNativeBeOSContainerForm igdeNativeContainerForm;
 
 #endif
