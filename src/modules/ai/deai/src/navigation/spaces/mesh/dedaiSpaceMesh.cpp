@@ -59,7 +59,10 @@
 // Definitions
 ////////////////
 
-#define THRESHOLD_EQUAL 0.0001
+#define THRESHOLD_EQUAL		1e-4f
+
+// has to match dedaiConvexFaceList.cpp THRESHOLD_EQUAL
+// #define THRESHOLD_EQUAL 0.005f
 
 
 
@@ -1278,7 +1281,8 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				}
 				
 				dedaiConvexFace * const testFace = list.GetFaceAt( f2 );
-				if( testFace->GetVertexCount() < 3 ){
+				const int testVertexCount = testFace->GetVertexCount();
+				if( testVertexCount < 3 ){
 					continue;
 				}
 				
@@ -1294,8 +1298,8 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				// is only required for the two face test case. because collapsing test is
 				// order independent only face after this face need to be check which is faster
 				if( f2 > f ){
-					const int testVertexCount = testFace->GetVertexCount();
-					const int testVertexPrev = testFace->GetVertexAt( ( testCorner - 1 + testVertexCount ) % testVertexCount );
+					const int testVertexPrev = testFace->GetVertexAt(
+						( testCorner - 1 + testVertexCount ) % testVertexCount );
 					
 					if( testVertexPrev != nextVertex ){
 						continue;
@@ -1323,7 +1327,7 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector direction2( position4 - position3 );
 				if( direction1.IsZero() || direction2.IsZero() ){
 					lastVertex = vertex;
-					continue; // should ot happen
+					continue; // should not happen
 				}
 				const decVector normal1( face.GetNormal() % direction1.Normalized() );
 				const decVector normal2( face.GetNormal() % direction2.Normalized() );
@@ -1334,8 +1338,9 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &otherPosition1 = list.GetVertexAt( otherVertexNext );
 				const decVector &otherPosition2 = list.GetVertexAt( otherVertexPrev2 );
 				
-				if( normal1 * ( otherPosition1 - position2 ) < -thresholdConvex
-				||  normal2 * ( otherPosition2 - position3 ) < -thresholdConvex ){
+				const decVector otherDirection1( otherPosition1 - position2 );
+				const decVector otherDirection2( otherPosition2 - position3 );
+				if( normal1 * otherDirection1 < -thresholdConvex || normal2 * otherDirection2 < -thresholdConvex ){
 					lastVertex = vertex;
 					continue; // first/second edge would lead into a concave face
 				}
