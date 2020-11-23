@@ -1976,7 +1976,8 @@ void meObject::pUpdateDDSNavSpaces(){
 		}
 		
 		virtual void VisitNavigationBlocker( igdeWOSONavigationBlocker &navigationBlocker ){
-			if( navigationBlocker.GetNavigationBlocker()->GetShapeList().GetCount() > 0 ){
+			if( navigationBlocker.GetNavigationBlocker()
+			&& navigationBlocker.GetNavigationBlocker()->GetShapeList().GetCount() > 0 ){
 				Blocker( navigationBlocker.GetNavigationBlocker()->GetShapeList() );
 			}
 		}
