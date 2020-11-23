@@ -231,7 +231,11 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, id, id.empty() if "occupier." else "occupier(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
 		if this.getBehaviorIn( eclass ) != null
 			throw BEMultipleInstanceException.new( eclass, this )
 		end
