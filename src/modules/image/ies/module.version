@@ -1,0 +1,4 @@
+IMGIES {
+  global: IESCreateModule;
+  local: *;
+};

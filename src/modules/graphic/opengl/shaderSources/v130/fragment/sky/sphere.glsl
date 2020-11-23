@@ -41,7 +41,7 @@ void main( void ){
 	normal = pMatrixLayer * normalize( pLayerPosition + normal * l );
 	
 	tc.s = atan( normal.x, normal.z ) * INV_TWO_PI + 0.5;
-	tc.t = 0.5 - asin( normal.y ) * INV_PI; //asin( normal.y ) * INV_PI + 0.5;
+	tc.t = 0.5 - asin( normal.y ) * INV_PI;
 	
 	outColor = pow( texture( texSky, tc ), pMaterialGamma ) * pLayerColor;
 	

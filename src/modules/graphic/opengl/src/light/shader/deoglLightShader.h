@@ -59,7 +59,8 @@ public:
 		ettShadow2SolidDepth,
 		ettShadow2TransparentDepth,
 		ettShadow2TransparentColor,
-		ettShadowAmbient,
+		ettShadow1Ambient,
+		ettShadow2Ambient,
 		ettLightDepth1,
 		ettLightDepth2,
 		ETT_COUNT
@@ -69,6 +70,7 @@ public:
 	enum eRenderUniformTargets{
 		erutPosTransform,
 		erutAOSelfShadow,
+		erutLumFragCoordScale,
 		ERUT_COUNT
 	};
 	
@@ -89,7 +91,7 @@ public:
 		eiutShadowMatrix4,
 		eiutLayerBorder,
 		
-		eiutLightImageMatrix,
+		eiutLightImageOmniMatrix,
 		
 		eiutShadow1Solid,
 		eiutShadow1Transparent,

@@ -55,6 +55,7 @@ private:
 	igdeTextFieldReference pEditBoneName;
 	igdeTextFieldReference pEditLayer;
 	igdeTextFieldReference pEditSnapDistance;
+	igdeComboBoxReference pCBType;
 	igdeTextFieldReference pEditSnapAngle;
 	igdeTextFieldReference pEditBlockingPriority;
 	igdeTextFieldReference pEditBlockerShape;

@@ -126,6 +126,7 @@ void dedaiPathFinderNavMesh::FindPath(){
 		pClearLists();
 		
 	}catch( const deException & ){
+		//pNavigator->GetDEAI().LogException( e );
 		pClearLists();
 		throw;
 	}

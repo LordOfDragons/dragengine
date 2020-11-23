@@ -27,6 +27,7 @@
 
 #include "ceWPAActorCmd.h"
 #include "../ceWPTopic.h"
+#include "../ceWindowProperties.h"
 #include "../../ceWindowMain.h"
 #include "../../../conversation/ceConversation.h"
 #include "../../../conversation/action/ceCAActorCommand.h"
@@ -116,7 +117,9 @@ public:
 		}
 		
 		decString text( action->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Edit Command", "Command:", text )
+		if( ! igdeCommonDialogs::GetMultilineString(
+			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"Edit Command", "Command:", text )
 		|| text == action->GetCommand() ){
 			return;
 		}

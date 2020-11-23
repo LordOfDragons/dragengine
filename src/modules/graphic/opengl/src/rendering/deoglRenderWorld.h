@@ -42,6 +42,7 @@ class deoglSPBlockUBO;
 class deoglRenderWorld : public deoglRenderBase{
 private:
 	deoglSPBlockUBO *pRenderPB;
+	deoglSPBlockUBO *pRenderLuminancePB;
 	deoglSPBlockUBO *pRenderCubePB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
@@ -74,6 +75,9 @@ public:
 	
 	/** \brief Render parameter block. */
 	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
+	
+	/** \brief Render luminance parameter block. */
+	inline deoglSPBlockUBO *GetRenderLuminancePB() const{ return pRenderLuminancePB; }
 	
 	/** \brief Render parameter block cube map. */
 	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }

@@ -82,6 +82,8 @@ public:
 		empTexCoordOffset,
 		empTexCoordScale,
 		empTexCoordRotate,
+		empOmniDirRotate,
+		empOmniDirRotateSpot,
 		empThickness,
 		empTransparency,
 		empTransparencyMultiplier,
@@ -118,6 +120,7 @@ public:
 		estComponentShadowDistance,
 		estComponentShadowDistanceCube,
 		estComponentEnvMap,
+		estComponentLuminance,
 		
 		estBillboardGeometry,
 		estBillboardDepth,
@@ -159,6 +162,7 @@ public:
 		estHeightMapShadowOrthogonal,
 		estHeightMapShadowDistance,
 		estHeightMapEnvMap,
+		estHeightMapLuminance,
 		
 		estParticleGeometry,
 		estParticleGeometryDepthTest,
@@ -259,6 +263,7 @@ private:
 	decColor pEmissivity;
 	decColor pEmissivityTint;
 	float pEmissivityIntensity;
+	bool pEmissivityCameraAdapted;
 	decVector2 pEnvironmentRoomSize;
 	decVector pEnvironmentRoomOffset;
 	decColor pEnvironmentRoomEmissivityTint;
@@ -273,6 +278,8 @@ private:
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScale;
 	float pTexCoordRotate;
+	decVector pOmniDirRotate;
+	decVector pOmniDirRotateSpot;
 	
 	bool pVariationU;
 	bool pVariationV;
@@ -580,6 +587,12 @@ public:
 	/** \brief Set emissivity intensity. */
 	void SetEmissivityIntensity( float intensity );
 	
+	/** \brief Emissivity camera adapted. */
+	inline bool GetEmissivityCameraAdapted() const{ return pEmissivityCameraAdapted; }
+	
+	/** \brief Set emissivity camera adapted. */
+	void SetEmissivityCameraAdapted( bool cameraAdapted );
+	
 	
 	
 	/** \brief Environment room size. */
@@ -700,6 +713,18 @@ public:
 	
 	/** \brief Set texture coordinates rotate. */
 	void SetTexCoordRotate( float rotate );
+	
+	/** \brief Omni directional texture rotate. */
+	inline const decVector &GetOmniDirRotate() const{ return pOmniDirRotate; }
+	
+	/** \brief Set omni directional texture rotate. */
+	void SetOmniDirRotate( const decVector &rotate );
+	
+	/** \brief Omni directional texture rotate for spot lights only. */
+	inline const decVector &GetOmniDirRotateSpot() const{ return pOmniDirRotateSpot; }
+	
+	/** \brief Set omni directional texture rotate for spot lights only. */
+	void SetOmniDirRotateSpot( const decVector &rotate );
 	
 	
 	

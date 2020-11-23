@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
 <gameDefinition>
 	<identifier>DragonScript Basic</identifier>
 	<description>Base game definition for projects based on DragonScript Scripting Module.</description>
@@ -28,6 +27,12 @@
 				<name>Dragengine</name>
 				<description>Skins provided by DragonScript Script Module for in-game use.</description>
 				<autoCategorize>/shareddata/materials/*</autoCategorize>
+				
+				<category>
+					<name>Light</name>
+					<description>Skins providing light profiles for light sources. Use them on "lightSkin" properties.</description>
+					<autoCategorize>/shareddata/materials/light/*</autoCategorize>
+				</category>
 			</category>
 		</skins>
 	</categories>
@@ -37,6 +42,7 @@
 	<defaultSkin>/shareddata/materials/testMap.deskin</defaultSkin>
 	<class name='SimpleElement'>
 		<description>Basic class for elements containing a single component and collider.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -53,6 +59,7 @@
 	</class>
 	<class name='PhysicsElement'>
 		<description>Basic class for elements  affected by physical simulation containing a single component and collider.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -66,6 +73,7 @@
 	</class>
 	<class name='GhostElement'>
 		<description>Low cost class for decorative elements containing only a component not interacting with the game world.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -73,6 +81,7 @@
 	</class>
 	<class name='BaseActor'>
 		<description>Base class for actors using behaviors.</description>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -134,6 +143,7 @@
 	</class>
 	<class name='AnimatedElement'>
 		<description>Basic class for elements containing a single component and collider with support for animation.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorAnimated'>
@@ -143,6 +153,7 @@
 	</class>
 	<class name='TwoStateAnimatedElement'>
 		<description>Two state animated element extends SimpleElement with support to play back animations for elements in two different states with transition between them. The used animator is required to have 4 controllers set up in a specific way to function with this element class.<br/><br/>Controller 0: Deactivated Playback<br/>This controller is used to play back the animation for the element in the deactivated state. This has to be a looping animation advanced by the elapsed time.<br/><br/>Controller 1: Activate<br/>This controller is used to transition from the deactivated state animation to the activated state animation. This controller has to be non-looping (aka clamped). The transition time is the difference between the upper and lower controller value. Upon starting the transition the controller is reset to the lower value and incremented by the elapsed time. When the controller reaches the upper value the transition is considered done and the element enters the activated state.<br/><br/>Controller 2: Deactivate<br/>This is the inverse of the activate controller transitioning from the activated state animation to the deactivated state animation. The same properties apply to this controller as to the activate controller.<br/><br/>Controller 3: Activated Playback<br/>This is the same as the deactivated playback controller but for the activated state.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorTwoStateAnimated'>
@@ -152,6 +163,7 @@
 	</class>
 	<class name='SimpleElementOnRail'>
 		<description>Basic class for simple elements moving on a rail. Whenever triggered the element starts moving to the opposite end of the rail. If no trigger is used the element keeps moving forth and back between the first and last corner of the rail.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='SimpleElement'>
 		</inherit>
 		<inherit name='ECBehaviorMoveOnRail'>
@@ -167,6 +179,7 @@
 	</class>
 	<class name='RailCorner'>
 		<description>Defines a corner in a rail. Elements can use the rail to move along corners. Corners are ordered in the rail using their order number. The corner with the smallest order is the first corner in the rail. All other corners follow according to increasing order value.</description>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/rail.deskin</skin>
 			<size x='0.25' y='0.25'/>
@@ -190,6 +203,7 @@
 	</class>
 	<class name='RandomElement'>
 		<description>Use random element class from list of element classes. This class supports only persistable element classes. If you try to use a non-persistable element class an exception will be thrown. This is requied since the random state can only be saved if the created element is persisted. If not persisted the element would simply vanish during loading.</description>
+		<scaleMode>free</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/randomElement.deskin</skin>
 			<size x='0.5' y='0.5'/>
@@ -232,6 +246,7 @@
 	<class name='SpawnPoint'>
 		<description>Spawn point for actors and props. Spawn points have a unique name and are added to the SpawnPointList of a GameWorld.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<component>
 			<model>/igde/models/interactionZone/izone.demodel</model>
 			<skin>/igde/models/interactionZone/materials/spawnPoint.deskin</skin>
@@ -252,6 +267,7 @@
 	<class name='BaseLight'>
 		<description>Base light source.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorLight'>
 			<propertyPrefix>light.</propertyPrefix>
 		</inherit>
@@ -270,6 +286,7 @@
 	<class name='AttachableBaseLight'>
 		<description>Extends BaseLight with support to be attached to other elements using a ghost collider. This allows to quickly attach a light to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeLight and ECComposeAttachLight.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/lamp.deskin</skin>
 			<size x='0.25' y='0.25'/>
@@ -295,6 +312,7 @@
 	<class name='AttachSlot'>
 		<description>Element providing a single ECBehaviorAttachSlot. Can be used to provide arbitrary attach slots in a game world not connected to a behaviorelement. Typical use for this element is to provide another element to the player he can retrieve during the game. Usually this element is placed in the game world in the appropriate place and is static in nature. This element supports though also ECBehaviorAttachToParent allowing it to be attached to other elements. This allows arbitrary elements to be equipped with attachment slots moving along.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/attachSlot.deskin</skin>
 			<size x='0.25' y='0.25'/>
@@ -317,8 +335,8 @@
 	</class>
 	<class name='TriggerTouch'>
 		<description>Trigger firing if elements enter/leave the trigger area. By default shape is set to box matching trigger size. To use custom shape use the shape property to define the shape and set shapeFromSize property to 1.</description>
-		<scaleMode>free</scaleMode>
 		<ghost>true</ghost>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorTouching'>
 			<propertyPrefix>touching.</propertyPrefix>
 		</inherit>
@@ -339,6 +357,7 @@
 	<class name='TriggerEvaluate'>
 		<description>Base trigger firing if a trigger expression becomes true. This trigger is useful to reuse complex trigger expressions for various other objects.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorEvaluate'>
 			<propertyPrefix>evaluate.</propertyPrefix>
 		</inherit>
@@ -357,6 +376,7 @@
 	<class name='TriggerShout'>
 		<description>Trigger adding message to console every time trigger expression becomes true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorShowMessage'>
 			<propertyPrefix>showMessage.</propertyPrefix>
 		</inherit>
@@ -375,6 +395,7 @@
 	<class name='TriggerToggle'>
 		<description>Trigger toggling a trigger target between fired and reset state if trigger expression becomes true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorToggle'>
 			<propertyPrefix>toggle.</propertyPrefix>
 		</inherit>
@@ -393,6 +414,7 @@
 	<class name='TriggerTimer'>
 		<description>Base trigger firing and resetting a trigger target after a certain time elapses if a trigger expression holds true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorTimer'>
 			<propertyPrefix>timer.</propertyPrefix>
 		</inherit>
@@ -411,6 +433,7 @@
 	<class name='TriggerConversation'>
 		<description>Trigger starting conversation if trigger expression changes to true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorConversationActor'>
 			<propertyPrefix>convoActor.</propertyPrefix>
 		</inherit>
@@ -431,6 +454,7 @@
 	</class>
 	<class name='VirtualElement'>
 		<description>Virtual element for IGDE Editor use only. This element class is ignored while loading game worlds. Helps mappers to place a virtual element in the world as reference for the content worked on. This can be for example adjacend elements required for proper alignment. Use ECBehaviorComponent properties and texture replacements to change the look of the element.</description>
+		<scaleMode>free</scaleMode>
 		<inherit name='ECBehaviorComponent'>
 			<propertyPrefix>component.</propertyPrefix>
 		</inherit>
@@ -438,6 +462,7 @@
 	</class>
 	<class name='MapperNote'>
 		<description>Information for mappers during development or for modders. Ignored inside a production game run.</description>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/note.deskin</skin>
 			<size x='0.25' y='0.25'/>
@@ -455,6 +480,7 @@
 	<class name='BaseSpeaker'>
 		<description>Base speaker. Supports triggers to toggle playing back sound and muting speaker. The base implementation does not persist position nor orientation only playing/muted state. Create subclass if you need to save moving speakers.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorSpeaker'>
 			<propertyPrefix>speaker.</propertyPrefix>
 		</inherit>
@@ -473,6 +499,7 @@
 	<class name='AttachableBaseSpeaker'>
 		<description>Extends BaseSpeaker with support to be attached to other elements using a ghost collider. This allows to quickly attach a speaker to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeSpeaker and ECComposeAttachSpeaker.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorCollider'>
 			<propertyPrefix>collider.</propertyPrefix>
 		</inherit>
@@ -497,6 +524,7 @@
 	<class name='BaseParticleEmitter'>
 		<description>Base particle emitter. Supports triggers to toggle playing back sound and muting particle emitter. The base implementation does not persist position nor orientation only playing/muted state. Create subclass if you need to save moving particle emitters.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorParticleEmitter'>
 			<propertyPrefix>particleEmitter.</propertyPrefix>
 		</inherit>
@@ -515,6 +543,7 @@
 	<class name='AttachableBaseParticleEmitter'>
 		<description>Extends BaseParticleEmitter with support to be attached to other elements using a ghost collider. This allows to quickly attach a particle emitter to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeParticleEmitter and ECComposeAttachParticleEmitter.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorCollider'>
 			<propertyPrefix>collider.</propertyPrefix>
 		</inherit>
@@ -539,6 +568,7 @@
 	<class name='EnvironmentMap'>
 		<description>Environment map probe.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorEnvMapProbe'>
 			<propertyPrefix>envMapProbe.</propertyPrefix>
 		</inherit>
@@ -551,6 +581,7 @@
 	<class name='InfoConvoCoordSystem'>
 		<description>Defines a named conversation coordinate system.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorConvoCoordSystem'>
 			<propertyPrefix>convoCoordSystem.</propertyPrefix>
 		</inherit>
@@ -580,6 +611,7 @@
 			<link target='audioModel' property='audioModel'/>
 			<link target='renderEnvMap' property='renderEnvMap'/>
 			<link target='affectsAudio' property='affectsAudio'/>
+			<link target='lightShadowIgnore' property='igdeLightShadowIgnore'/>
 		</component>
 		<property name='model'>
 			<description>Model file to use instead of the class defined one.</description>
@@ -1269,7 +1301,8 @@
 		</property>
 		<property name='halfIntensityDistance'>
 			<description>Relative distance compared to range where the intensity of the light is reduced to 50%. A natural value is 0.1 whereas most of the time it is better to use a higher value to keep light range low.</description>
-			<type>float</type>
+			<type>range</type>
+			<range min='0' max='1'/>
 			<default>0.1</default>
 		</property>
 		<property name='ambientRatio'>
@@ -1304,7 +1337,7 @@
 		<property name='lightSkin'>
 			<description>Use image to modulate light. For spot lights use a 2D image. For point lights use a 3D image.</description>
 			<type>path</type>
-			<pathPatternType>image</pathPatternType>
+			<pathPatternType>skin</pathPatternType>
 		</property>
 		<property name='hintMovement'>
 			<description>Hint telling graphic module how the light source moves. Used for optimization purpose only.</description>
@@ -2107,6 +2140,7 @@
 	<class name='BaseSky'>
 		<description>Base sky. Supports static skies, skies with playback and dynamic skies for day-of-time use.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorSky'>
 			<propertyPrefix>sky.</propertyPrefix>
 		</inherit>
@@ -2224,6 +2258,7 @@
 	<class name='BaseForceField'>
 		<description>Base force field source.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorForceField'>
 			<propertyPrefix>forceField.</propertyPrefix>
 		</inherit>
@@ -2243,6 +2278,7 @@
 	<class name='AttachableBaseForceField'>
 		<description>Extends BaseForceField with support to be attached to other elements using a ghost collider. This allows to quickly attach a force field to dynamic or kinematic moving elements without needing to create a new element class extended with ECComposeForceField and ECComposeAttachForceField.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/forceField.deskin</skin>
 			<size x='0.5' y='0.5'/>
@@ -2313,7 +2349,7 @@
 	</class>
 	<class name='BaseBillboard'>
 		<description>Basic class for elements containing a single billboard and collider.</description>
-		<scaleMode>free</scaleMode>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorBillboard'>
 			<propertyPrefix>billboard.</propertyPrefix>
 		</inherit>
@@ -2324,7 +2360,7 @@
 	</class>
 	<class name='AttachableBaseBillboard'>
 		<description>Attachable basic class for elements containing a single billboard and collider.</description>
-		<scaleMode>free</scaleMode>
+		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorBillboard'>
 			<propertyPrefix>billboard.</propertyPrefix>
 		</inherit>
@@ -2529,6 +2565,28 @@
 		<property name='texture'>
 			<description>Name of texture to modify or empty string to modify entire component.</description>
 			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorInteractionSpot'>
+		<description>Adds support to define interaction spot for actors. Defines position and orientation actors or the player have to assume to properly interact with the owner element. This is typically required to line up animations of the actor and the element. Furthermore this allows to track if an actor is occupying the interaction spot. Hence at most one actor can occpuy an interaction spot at each time.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>interactionSpot.</defaultInheritPropertyPrefix>
+		<property name='position'>
+			<description>Position relative to owner element the occpupier has to be placed at.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='orientation'>
+			<description>Orientation in euler angles relative to owner element the occpupier has to be placed at.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='lookAt'>
+			<description>Look-at position for element to use while approaching. By default no look-at is used which equals to an empty string.</description>
+			<type>vector3</type>
+			<default>0 0 0</default>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

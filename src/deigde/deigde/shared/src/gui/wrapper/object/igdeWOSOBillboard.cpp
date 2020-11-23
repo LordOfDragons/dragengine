@@ -350,6 +350,7 @@ void igdeWOSOBillboard::AttachToCollider(){
 		attachment->SetPosition( GetVectorProperty(
 			pGDBillboard.GetPropertyName( igdeGDCBillboard::epAttachPosition ),
 			pGDBillboard.GetPosition() ) );
+		attachment->SetNoScaling( true );
 		
 		if( colliderComponent ){
 			if( ! pGDBillboard.GetBoneName().IsEmpty() ){

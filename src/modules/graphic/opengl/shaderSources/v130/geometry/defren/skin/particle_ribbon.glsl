@@ -1,13 +1,9 @@
-#define USE_SHEETS 1
-
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout specifications
 layout( lines_adjacency ) in;
+
+#define USE_SHEETS 1
 
 #ifdef USE_SHEETS
 	// OpenGL requires these minimum limits: MaxVertices=256, MaxComponents=1024.
@@ -23,14 +19,6 @@ layout( lines_adjacency ) in;
 	
 #else
 	layout( triangle_strip, max_vertices=4 ) out;
-#endif
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_EMISSIVITY 1
-#endif
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
 #endif
 
 
@@ -98,8 +86,10 @@ out vec2 vTCColor;
 #endif
 
 out vec3 vNormal;
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	out vec3 vTangent;
+#endif
+#ifdef WITH_BITANGENT
 	out vec3 vBitangent;
 #endif
 
@@ -222,8 +212,10 @@ void main( void ){
 	
 	// this is the same for all points
 	vNormal = particleNormal;
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		vTangent = particleTangent;
+	#endif
+	#ifdef WITH_BITANGENT
 		vBitangent = particleBitangent;
 	#endif
 	

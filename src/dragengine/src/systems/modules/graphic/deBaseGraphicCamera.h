@@ -67,6 +67,9 @@ public:
 	
 	/** \brief All effects have been removed. */
 	virtual void AllEffectsRemoved();
+	
+	/** \brief Request graphic module to reset adapted intensity to optimal value. */
+	virtual void ResetAdaptedIntensity();
 	/*@}*/
 };
 

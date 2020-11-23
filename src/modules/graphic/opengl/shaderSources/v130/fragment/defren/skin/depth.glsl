@@ -1,31 +1,4 @@
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
-
-// some helper definitions to make the code easier to read
-#if defined OUTPUT_COLOR || defined TEXTURE_SOLIDITY || defined TEXTURE_HEIGHT
-	#define _REQ_TEX_CLR_1 1
-#endif
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define _REQ_TEX_CLR_2 1
-#endif
-#if defined _REQ_TEX_CLR_1 || defined _REQ_TEX_CLR_2
-	#define REQUIRES_TEX_COLOR 1
-#endif
-
-#if defined TEXTURE_HEIGHT || defined TEXTURE_RIM_EMISSIVITY
-	#define REQUIRES_NORMAL 1
-#endif
-
-#if defined TEXTURE_SOLIDITY || defined WITH_OUTLINE
-	#define WITH_SOLIDITY 1
-#endif
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY || defined WITH_OUTLINE
-	#define WITH_EMISSIVITY 1
-#endif
-
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
 ///////////////////////
@@ -110,8 +83,10 @@ NODE_FRAGMENT_SAMPLERS
 #endif
 #ifdef REQUIRES_NORMAL
 	in vec3 vNormal;
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		in vec3 vTangent;
+	#endif
+	#ifdef WITH_BITANGENT
 		in vec3 vBitangent;
 	#endif
 #endif
@@ -178,6 +153,14 @@ NODE_FRAGMENT_OUTPUTS
 #endif
 */
 
+
+float finalEmissivityIntensity( in float intensity ){
+	return mix( intensity, intensity * pCameraAdaptedIntensity, pEmissivityCameraAdapted );
+}
+
+vec3 finalEmissivityIntensity( in vec3 intensity ){
+	return mix( intensity, intensity * vec3( pCameraAdaptedIntensity ), bvec3( pEmissivityCameraAdapted ) );
+}
 
 
 // Main Function
@@ -309,7 +292,7 @@ void main( void ){
 					// using "normal" is not giving the results one expects especially if close up.
 					// instead the normal is dotted with the normalized fragment direction.
 					emissivity += pow( TEXTURE( texRimEmissivity, tcEmissivity ).rgb, vec3( pColorGamma ) )
-						* pRimEmissivityIntensity
+						* finalEmissivityIntensity( pRimEmissivityIntensity )
 						* vec3( max( 1.0 - pow( asin( abs( dot( fragmentDirection, normal ) ) )
 							* pRimAngle, pRimExponent ), 0.0 ) );
 				}

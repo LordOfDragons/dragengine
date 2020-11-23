@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "ceWPAActorSpeak.h"
+#include "../ceWindowProperties.h"
 #include "../ceWPTopic.h"
 #include "../../ceWindowMain.h"
 #include "../../../conversation/ceConversation.h"
@@ -124,7 +125,9 @@ public:
 		}
 		
 		decString text( action->GetTextBoxText().ToUTF8() );
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Edit Text Box Text", "Text:", text )
+		if( ! igdeCommonDialogs::GetMultilineString(
+			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"Edit Text Box Text", "Text:", text )
 		|| text == action->GetTextBoxText().ToUTF8() ){
 			return;
 		}

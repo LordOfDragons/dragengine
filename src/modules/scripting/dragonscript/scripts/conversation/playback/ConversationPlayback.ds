@@ -543,7 +543,7 @@ abstract class ConversationPlayback implements Persistable
 					if not condition.evaluate( this )
 						layer.cancelLooping()
 						this.pLayers.resize( i + 1 )
-						this.pActionTime = 0.0
+						this.pActionTime = 0
 						this.pActionWaiting = true
 						break
 					end
@@ -600,7 +600,7 @@ abstract class ConversationPlayback implements Persistable
 				
 				if this.pActionTime >= action.getDelay()
 					action.execute( this )
-					this.pActionTime = 0.0
+					this.pActionTime = 0
 					this.pActionWaiting = true
 					
 				else
@@ -652,7 +652,7 @@ abstract class ConversationPlayback implements Persistable
 				
 				if layer.hasNextAction()
 					this.pActionWaiting = true
-					this.pActionTime = 0.0
+					this.pActionTime = 0
 					break
 				end
 				
@@ -744,7 +744,7 @@ abstract class ConversationPlayback implements Persistable
 			if this.pLayers.getAt( i ) == layer
 				layer.cancelLooping()
 				this.pLayers.resize( i + 1 )
-				this.pActionTime = 0.0
+				this.pActionTime = 0
 				this.pActionWaiting = true
 				return
 			end
@@ -792,7 +792,7 @@ abstract class ConversationPlayback implements Persistable
 	public func void stopConversation()
 		this.pLayers.removeAll()
 		this.pActionWaiting = false
-		this.pActionTime = 0.0
+		this.pActionTime = 0
 		this.setRunning( false )
 	end
 	

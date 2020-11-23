@@ -27,57 +27,48 @@ pin Dragengine.Scenery
 
 
 /**
- * A topic group in a conversation script.
+ * \brief Topic group in conversation script.
  */
 class ConversationTopicGroup
-	/** Unique ID. */
 	private var StringID pID
-	/** List of files. */
-	private var Array pTopics
+	private var Dictionary pTopics
 	
 	
 	
-	/** Create a new conversation file. */
+	/** \brief Create topic group. */
 	public func new( StringID id )
 		if id == null
 			throw EInvalidParam.new()
 		end
 		
 		this.pID = id
-		this.pTopics = Array.new()
+		this.pTopics = Dictionary.new()
 	end
 	
 	
 	
-	/** Retrieves the ID. */
+	/** \brief ID. */
 	public func StringID getID()
 		return this.pID
 	end
 	
 	/** \brief Topic with ID is present. */
 	public func bool hasTopicWithID( StringID id )
-		return this.pTopics.find( block ConversationTopic each
-			return each.getID().equals( id )
-		end ) != null
+		return this.pTopics.has( id )
 	end
 	
-	/** Retrieves the topic with ID or null if not found. */
+	/** \brief Topic with ID or null if absent. */
 	public func ConversationTopic getTopicWithID( StringID id )
-		return this.pTopics.find( block ConversationTopic each
-			return each.getID().equals( id )
-		end ) cast ConversationTopic
+		return this.pTopics.getAt( id, null ) cast ConversationTopic
 	end
 	
-	/** Adds a topic. */
+	/** \brief Add topic replacing existing one if present. */
 	public func void addTopic( ConversationTopic topic )
-		if this.getTopicWithID( topic.getID() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pTopics.add( topic )
+		this.pTopics.setAt( topic.getID(), topic )
 	end
 	
-	/** Visits all topics. */
+	/** \brief Visits topics with block with parameter ConversationTopic. */
 	public func void forEachTopic( Block aBlock )
-		this.pTopics.forEach( aBlock )
+		this.pTopics.forEachValue( aBlock )
 	end
 end

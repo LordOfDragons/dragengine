@@ -56,6 +56,7 @@ private:
 	deoglTexUnitsConfig *pTUCGeometry;
 	deoglTexUnitsConfig *pTUCShadow;
 	deoglTexUnitsConfig *pTUCEnvMap;
+	deoglTexUnitsConfig *pTUCLuminance;
 	
 	bool pValidParamBlockDepth;
 	bool pValidParamBlockGeometry;
@@ -68,6 +69,7 @@ private:
 	bool pDirtyTUCGeometry;
 	bool pDirtyTUCShadow;
 	bool pDirtyTUCEnvMap;
+	bool pDirtyTUCLuminance;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -149,6 +151,13 @@ public:
 	 * This texture units configuration works for the shader type estEnvMap.
 	 */
 	deoglTexUnitsConfig *GetTUCEnvMap();
+	
+	/**
+	 * Texture units configuration for luminance type shaders or NULL if empty.
+	 * Works for the shader type estHeightMapLuminance.
+	 */
+	deoglTexUnitsConfig *GetTUCLuminance();
+	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	

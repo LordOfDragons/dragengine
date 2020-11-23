@@ -753,10 +753,17 @@ public:
 	
 	/** \brief Add Icon List Box with. */
 	void IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
-		int rows, const sColumnHeader *headers, int headerCount, const char *description,
+		const sColumnHeader *headers, int headerCount, const char *description,
 		igdeIconListBoxListener *listener );
 	
-	void IconListBox( int rows, const sColumnHeader *headers, int headerCount,
+	void IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
+		const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
+		const char *description, igdeIconListBoxListener *listener );
+	
+	void IconListBox( const sColumnHeader *headers, int headerCount, const char *description,
+		igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener );
+	
+	void IconListBox( const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
 		const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener );
 	
 	

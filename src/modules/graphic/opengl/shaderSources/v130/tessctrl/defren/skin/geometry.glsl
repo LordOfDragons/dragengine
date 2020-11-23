@@ -1,21 +1,7 @@
 //#extension GL_ARB_tessellation_shader : enable
-
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 layout( vertices=3 ) out;
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_EMISSIVITY 1
-#endif
-
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
 
 
 
@@ -40,8 +26,10 @@ in vec2 vTCSTCColor[];
 #endif
 
 in vec3 vTCSNormal[];
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	in vec3 vTCSTangent[];
+#endif
+#ifdef WITH_BITANGENT
 	in vec3 vTCSBitangent[];
 #endif
 
@@ -78,8 +66,10 @@ out vec2 vTESTCColor[];
 #endif
 
 out vec3 vTESNormal[];
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	out vec3 vTESTangent[];
+#endif
+#ifdef WITH_BITANGENT
 	out vec3 vTESBitangent[];
 #endif
 
@@ -137,8 +127,10 @@ void main(void){
 	#endif
 
 	vTESNormal[ gl_InvocationID ] = vTCSNormal[ gl_InvocationID ];
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		vTESTangent[ gl_InvocationID ] = vTCSTangent[ gl_InvocationID ];
+	#endif
+	#ifdef WITH_BITANGENT
 		vTESBitangent[ gl_InvocationID ] = vTCSBitangent[ gl_InvocationID ];
 	#endif
 

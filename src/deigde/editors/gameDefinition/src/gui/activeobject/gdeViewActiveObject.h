@@ -276,6 +276,7 @@ private:
 	void pInitOCNavigationBlockers( const gdeObjectClass &objectClass );
 	void pInitOCSnapPoints( const gdeObjectClass &objectClass );
 	void pInitOCSpeakers( const gdeObjectClass &objectClass );
+	void pAddComponentShadowIgnore();
 	void pRebuildOCBillboards( const gdeObjectClass &objectClass );
 	void pRebuildOCCameras( const gdeObjectClass &objectClass );
 	void pRebuildOCComponents( const gdeObjectClass &objectClass );

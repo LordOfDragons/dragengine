@@ -878,6 +878,10 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 		//      - pLightAmbientRatio = lightAmbientRatio
 		//      - pLightColorAmbient = not used anymore
 		//      
+		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target, 0.0f );
+		}
 		
 	}catch( const deException & ){
 		paramBlock.UnmapBuffer();

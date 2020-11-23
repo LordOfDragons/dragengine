@@ -383,6 +383,27 @@ bool deoglRLight::HasShadowIgnoreComponent( deoglRComponent *component ) const{
 	return pShadowIgnoreComponents.Has( component );
 }
 
+bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
+	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
+	// the logic is this. lights filter scene elements to be included in their shadow maps by
+	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
+	// the layer mask this filtering stays correct if all bits of the "shadow layer mask" are
+	// covered by the bits of the "camery layer mask".
+	// 
+	// as a side note it would be also possible for this rule to not apply if not all bits of
+	// the "shadow layer mask" match the "camera layer mask". this requires or combining all
+	// layer masks of all filtered scene elements. if this combined layer mask does match in
+	// all bits the "camera layer mask" then this would be enough to still fullfil the
+	// requirement to use the static shadow maps.
+	// TODO check if this special filter check should be added or not
+	if( pLayerMaskShadow.IsEmpty() || pLayerMaskShadow.IsFull() ){
+		return layerMask.IsEmpty() || layerMask.IsFull();
+		
+	}else{
+		return layerMask.IsEmpty() || ( pLayerMaskShadow & layerMask ) == pLayerMaskShadow;
+	}
+}
+
 
 
 void deoglRLight::SetMatrix( const decDMatrix &matrix ){
@@ -898,16 +919,21 @@ deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderTyp
 
 bool deoglRLight::GetShaderConfigFor( deoglRLight::eShaderTypes shaderType,
 deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
 	
 	config.Reset();
 	
 	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	
+	switch( shaderType ){
+	case estLumSolid1:
+	case estLumSolid1NoAmbient:
+	case estLumSolid2:
+		break;
+		
+	default:
+		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	}
 	
 	switch( pLightType ){
 	case deLight::eltPoint:
@@ -926,8 +952,17 @@ deoglLightShaderConfig &config ){
 			config.SetShadowMatrix2EqualsMatrix1( true );
 		}
 		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		switch( shaderType ){
+		case estLumSolid1:
+		case estLumSolid1NoAmbient:
+		case estLumSolid2:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+			break;
+			
+		default:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		}
 		config.SetTextureNoise( false );
 		
 		if( pLightCanvas ){
@@ -939,8 +974,7 @@ deoglLightShaderConfig &config ){
 			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
 				config.SetTextureColorOmnidirCube( true );
 				
-			}else if( pUseSkinTexture->IsChannelEnabled(
-			deoglSkinChannel::ectColorOmnidirEquirect ) ){
+			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
 				config.SetTextureColorOmnidirEquirect( true );
 				
 			}else if( pUseSkinTexture->GetMaterialPropertyAt(
@@ -971,12 +1005,43 @@ deoglLightShaderConfig &config ){
 		config.SetShadowMatrix2EqualsMatrix1( true );
 		config.SetShadowInverseDepth( true );
 		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		switch( shaderType ){
+		case estLumSolid1:
+		case estLumSolid1NoAmbient:
+		case estLumSolid2:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+			break;
+			
+		default:
+			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
+		}
 		config.SetTextureNoise( false );
 		
-		if( pLightSkin || pLightCanvas ){
+		if( pLightCanvas ){
 			config.SetTextureColor( true );
+			
+		}else if( pUseSkinTexture ){
+			// usually spot/projector lights use 2D textures. it is though also allowed to use
+			// omni-directional textures like point lights. in this case the spot properties
+			// clamp the texture into the positive Z direction
+			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
+				config.SetTextureColorOmnidirCube( true );
+				
+			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
+				config.SetTextureColorOmnidirEquirect( true );
+				
+			}else if( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empColorOmnidirCube ).GetRenderable() != -1 ){
+				config.SetTextureColorOmnidirCube( true );
+				
+			}else if( pUseSkinTexture->GetMaterialPropertyAt(
+			deoglSkinTexture::empColorOmnidirEquirect ).GetRenderable() != -1 ){
+				config.SetTextureColorOmnidirEquirect( true );
+				
+			}else{
+				config.SetTextureColor( true );
+			}
 		}
 		break;
 	}
@@ -988,18 +1053,20 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid1:
+	case estLumSolid1:
 		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadowAmbient( true );
+		config.SetTextureShadow1Ambient( true );
 		break;
 		
 	case estSolid1NoAmbient:
+	case estLumSolid1NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		break;
 		
 	case estSolid1Transp1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadowAmbient( true );
+		config.SetTextureShadow1Ambient( true );
 		break;
 		
 	case estSolid1Transp1NoAmbient:
@@ -1008,16 +1075,19 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid2:
+	case estLumSolid2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadowAmbient( true );
+		config.SetTextureShadow1Ambient( true );
+		config.SetTextureShadow2Ambient( true );
 		break;
 		
 	case estSolid2Transp1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadowAmbient( true );
+		config.SetTextureShadow1Ambient( true );
+		config.SetTextureShadow2Ambient( true );
 		break;
 		
 	case estSolid2Transp2:
@@ -1025,7 +1095,8 @@ deoglLightShaderConfig &config ){
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadow2Transparent( true );
-		config.SetTextureShadowAmbient( true );
+		config.SetTextureShadow1Ambient( true );
+		config.SetTextureShadow2Ambient( true );
 		break;
 		
 	default:

@@ -119,6 +119,7 @@ pRenderThread( renderThread ){
 	pCameraFovRatio = 1.0f;
 	pCameraImageDistance = 0.01f;
 	pCameraViewDistance = 200.0f;
+	pCameraAdaptedIntensity = 1.0f;
 	pViewportX = 0;
 	pViewportY = 0;
 	pViewportWidth = 100;
@@ -1417,6 +1418,10 @@ void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imag
 	pDirtyProjMat = true;
 }
 
+void deoglRenderPlan::SetCameraAdaptedIntensity( float intensity ){
+	pCameraAdaptedIntensity = intensity;
+}
+
 void deoglRenderPlan::SetViewport( int x, int y, int width, int height ){
 	if( width < 1 || height < 1 ) DETHROW( deeInvalidParam );
 	
@@ -1439,6 +1444,7 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pCameraFovRatio = plan.pCameraFovRatio;
 	pCameraImageDistance = plan.pCameraImageDistance;
 	pCameraViewDistance = plan.pCameraViewDistance;
+	pCameraAdaptedIntensity = plan.pCameraAdaptedIntensity;
 	
 	pProjectionMatrix = plan.pProjectionMatrix;
 	pFrustumMatrix = plan.pFrustumMatrix;

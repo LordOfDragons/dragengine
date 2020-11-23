@@ -275,6 +275,18 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			this.pLookAt = lookAt
 		end
 		
+		/**
+		 * \brief Set conversation look-at from world position.
+		 * \version 1.4
+		 * 
+		 * Shortcut for calling setLookAt() with ConversationPlaybackLookAt using
+		 * ConversationCustomTarget with matrix set from world position.
+		 */
+		public func void setLookAt( DVector lookAt )
+			this.pLookAt = ConversationPlaybackLookAt.new( \
+				ConversationCustomTarget.new( DMatrix.newTranslation( lookAt ) ) )
+		end
+		
 		/** \brief Clear target parameters. */
 		public func void clearTarget()
 			this.pTargetPosition = null

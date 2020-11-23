@@ -46,7 +46,7 @@
 	
 	<class name='IGDEElement'>
 		<description>Basic element used only in the IGDE.</description>
-		<scaleMode>fixed</scaleMode>
+		<scaleMode>free</scaleMode>
 		<component>
 			<model>/igde/models/box/box.demodel</model>
 			<link target='model' property='model'/>
@@ -98,7 +98,7 @@
 	
 	<class name='IGDETestTerrain'>
 		<description>Test terrain for use in the IGDE editors only.</description>
-		<scaleMode>fixed</scaleMode>
+		<scaleMode>uniform</scaleMode>
 		<component>
 			<model>/igde/models/testTerrain/testTerrain.demodel</model>
 			<rig>/igde/models/testTerrain/testTerrain.derig</rig>
@@ -122,11 +122,26 @@
 		<category>IGDE</category>
 	</class>
 	
+	<class name='IGDELightSkinBox'>
+		<description>Light box for testing light materials.</description>
+		<scaleMode>uniform</scaleMode>
+		<component>
+			<model>/igde/models/lightBox/lightBox.demodel</model>
+			<skin>/igde/models/lightBox/lightBox.deskin</skin>
+			<rig>/igde/models/lightBox/lightBox.derig</rig>
+		</component>
+		<environmentMapProbe>
+			<position x='0' y='0' z='0'/>
+			<reflectionShape>box:extends,4,4,4</reflectionShape>
+		</environmentMapProbe>
+		<category>IGDE</category>
+	</class>
+	
 	<class name='IGDEEnvironmentRigEditor'>
 		<description>Test environment for the rig editor.</description>
 		<size x='52' y='5' z='52'/>
 		<base x='15' y='2.5' z='-5'/>
-		<scaleMode>fixed</scaleMode>
+		<scaleMode>uniform</scaleMode>
 		<component>
 			<model>/igde/models/environments/rigeditor.demodel</model>
 			<rig>/igde/models/environments/rigeditor.derig</rig>

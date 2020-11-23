@@ -190,6 +190,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 					property->SetNodeColor( constructed.GetColor() );
 					property->SetNodeTileX( constructed.GetTileX() );
 					property->SetNodeTileY( constructed.GetTileY() );
+					property->SetNodeBitCount( constructed.GetBitCount() );
 					nodeGroup = LoadPropertyNodeGroup( constructed.GetContent() );
 					property->SetNodeGroup( nodeGroup );
 					nodeGroup->FreeReference();

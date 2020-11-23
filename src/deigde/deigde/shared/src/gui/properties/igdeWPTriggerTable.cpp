@@ -421,6 +421,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	pActionFullReset.TakeOver( new cActionFullReset( *this ) );
 	
 	helper.ListBox( *this, 8, "List of targets in the table", pListTriggerTable, new cListTable( *this ) );
+	pListTriggerTable->SetDefaultSorter();
 	
 	igdeContainerReference frameLine;
 	frameLine.TakeOver( new igdeContainerFlow( env, eaX, esLast ) );

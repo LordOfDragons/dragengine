@@ -132,6 +132,10 @@ decDVector4 decDVector4::Mix( const decDVector4 &vector, double blendFactor ) co
 		w * factor2 + vector.w * factor1 );
 }
 
+decDVector4 decDVector4::Multiply( const decDVector4 &vector ) const{
+	return decDVector4( x * vector.x, y * vector.y, z * vector.z, w * vector.w );
+}
+
 
 
 // Operators

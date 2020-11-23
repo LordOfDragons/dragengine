@@ -62,7 +62,6 @@
 #include "../gesture/ceGesture.h"
 #include "../facepose/ceFacePose.h"
 #include "../file/ceConversationFile.h"
-#include "../lookat/ceLookAt.h"
 #include "../playerChoiceBox/cePlayerChoiceBox.h"
 #include "../playerChoiceBox/cePCBOption.h"
 #include "../target/ceTarget.h"
@@ -161,7 +160,7 @@ void cePlaybackProcessAction::ProcessAction( ceConversation &conversation, ceCon
 
 
 void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, const ceCACameraShot &action ){
-	ceCameraShot * const cameraShot = conversation.GetCameraShotList().GetNamed( action.GetName() );
+	ceCameraShot * const cameraShot = conversation.GetCameraShotNamed( action.GetName() );
 	cePlayback &playback = *conversation.GetPlayback();
 	
 	if( cameraShot ){
@@ -174,7 +173,7 @@ void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, c
 		
 		// determine targets
 		if( ! action.GetCameraTarget().IsEmpty() ){
-			cameraTarget = conversation.GetTargetList().GetNamed( action.GetCameraTarget() );
+			cameraTarget = conversation.GetTargetNamed( action.GetCameraTarget() );
 			
 			if( cameraTarget ){
 				cameraActor = conversation.GetActorList().IndexWithIDOrAliasID( cameraTarget->GetActor() );
@@ -190,7 +189,7 @@ void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, c
 		}
 		
 		if( ! action.GetLookAtTarget().IsEmpty() ){
-			lookAtTarget = conversation.GetTargetList().GetNamed( action.GetLookAtTarget() );
+			lookAtTarget = conversation.GetTargetNamed( action.GetLookAtTarget() );
 			
 			if( lookAtTarget ){
 				lookAtActor = conversation.GetActorList().IndexWithIDOrAliasID( lookAtTarget->GetActor() );
@@ -446,7 +445,6 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 	
 	// update the gesture to play
 	if( action.GetGestureList().GetCount() > 0 ){
-		const ceGestureList &gestureList = conversation.GetGestureList();
 		const ceStripList &caGestureList = action.GetGestureList();
 		const int count = caGestureList.GetCount();
 		int i;
@@ -456,14 +454,13 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caGesture = *caGestureList.GetAt( i );
 			
-			conversationActor.AddPlayGesture( gestureList.GetNamed( caGesture.GetID() ),
+			conversationActor.AddPlayGesture( conversation.GetGestureNamed( caGesture.GetID() ),
 				caGesture.GetPause(), caGesture.GetDuration() );
 		}
 	}
 	
 	// update the face pose to play
 	if( action.GetFacePoseList().GetCount() > 0 ){
-		const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
 		const ceStripList &caFacePoseList = action.GetFacePoseList();
 		const int count = caFacePoseList.GetCount();
 		int i;
@@ -473,14 +470,13 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caFacePose = *caFacePoseList.GetAt( i );
 			
-			conversationActor.AddPlayFacePose( facePoseList.GetNamed( caFacePose.GetID() ),
+			conversationActor.AddPlayFacePose( conversation.GetFacePoseNamed( caFacePose.GetID() ),
 				caFacePose.GetPause(), caFacePose.GetDuration() );
 		}
 	}
 	
 	// update the head look-at to play
 	if( action.GetHeadLookAtList().GetCount() > 0 ){
-		const ceLookAtList &lookAtList = conversation.GetLookAtList();
 		const ceStripList &caHeadLAList = action.GetHeadLookAtList();
 		const int count = caHeadLAList.GetCount();
 		int i;
@@ -490,14 +486,13 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caHeadLA = *caHeadLAList.GetAt( i );
 			
-			conversationActor.AddPlayHeadLookAt( lookAtList.GetNamed( caHeadLA.GetID() ),
+			conversationActor.AddPlayHeadLookAt( conversation.GetTargetNamed( caHeadLA.GetID() ),
 				caHeadLA.GetPause(), caHeadLA.GetDuration() );
 		}
 	}
 	
 	// update the eyes look-at to play
 	if( action.GetEyesLookAtList().GetCount() > 0 ){
-		const ceLookAtList &lookAtList = conversation.GetLookAtList();
 		const ceStripList &caEyesLAList = action.GetEyesLookAtList();
 		const int count = caEyesLAList.GetCount();
 		int i;
@@ -507,7 +502,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caEyesLA = *caEyesLAList.GetAt( i );
 			
-			conversationActor.AddPlayEyesLookAt( lookAtList.GetNamed( caEyesLA.GetID() ),
+			conversationActor.AddPlayEyesLookAt( conversation.GetTargetNamed( caEyesLA.GetID() ),
 				caEyesLA.GetPause(), caEyesLA.GetDuration() );
 		}
 	}
@@ -523,14 +518,8 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 }
 
 void cePlaybackProcessAction::ProcessSnippet( ceConversation &conversation, ceCASnippet *action ){
+	ceConversationTopic * const topic = conversation.GetTopicWithID( action->GetFile(), action->GetTopic() );
 	cePlayback &playback = *conversation.GetPlayback();
-	ceConversationFile *file = NULL;
-	ceConversationTopic *topic = NULL;
-	
-	file = conversation.GetFileList().GetWithID( action->GetFile() );
-	if( file ){
-		topic = file->GetTopicList().GetWithID( action->GetTopic() );
-	}
 	
 	if( topic ){
 		playback.GetActionStack().Push( topic, action, &topic->GetActionList(), 0 );
@@ -896,7 +885,7 @@ int cePlaybackProcessAction::GetTargetActor( ceConversation &conversation, const
 	int actor = -1;
 	
 	if( ! targetName.IsEmpty() ){
-		const ceTarget * const target = conversation.GetTargetList().GetNamed( targetName );
+		const ceTarget * const target = conversation.GetTargetNamed( targetName );
 		cePlayback &playback = *conversation.GetPlayback();
 		
 		if( target ){

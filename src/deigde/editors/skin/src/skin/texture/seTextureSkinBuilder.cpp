@@ -155,6 +155,7 @@ void seTextureSkinBuilder::BuildSkin( deSkin *engSkin ){
 				engPropertyConstructed->GetContent().SetSize( property.GetNodeGroup()->GetSize() );
 				engPropertyConstructed->SetTileX( property.GetNodeTileX() );
 				engPropertyConstructed->SetTileY( property.GetNodeTileY() );
+				engPropertyConstructed->SetBitCount( property.GetNodeBitCount() );
 				
 				CreateNodeGroup( engPropertyConstructed->GetContent(), *property.GetNodeGroup() );
 				

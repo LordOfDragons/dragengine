@@ -83,14 +83,6 @@ public:
 	
 	
 	
-	/** \brief Look-at count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	
-	/** \brief Look-at changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	
-	
-	
 	/** \brief File count or order changed. */
 	virtual void FileStructureChanged( ceConversation *conversation );
 	

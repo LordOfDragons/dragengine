@@ -7,7 +7,7 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 # fetch values in expanded form for later use
-versionString = '1.2'
+versionString = '1.4'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

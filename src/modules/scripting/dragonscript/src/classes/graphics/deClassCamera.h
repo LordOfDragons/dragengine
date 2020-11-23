@@ -109,6 +109,7 @@ private:
 	DEF_NATFUNC( nfSetHighestIntensity );
 	DEF_NATFUNC( nfGetAdaptionTime );
 	DEF_NATFUNC( nfSetAdaptionTime );
+	DEF_NATFUNC( nfResetAdaptedIntensity );
 	
 	DEF_NATFUNC( nfProject );
 	DEF_NATFUNC( nfBackProject );

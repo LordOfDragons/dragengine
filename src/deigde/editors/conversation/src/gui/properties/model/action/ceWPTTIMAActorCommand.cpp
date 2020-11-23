@@ -42,7 +42,7 @@ ceWPTTIMAActorCommand::ceWPTTIMAActorCommand( ceWindowMain &windowMain,
 ceConversation &conversation, ceCAActorCommand *action ) :
 ceWPTTIMAction( windowMain, etActionActorCommand, conversation, action )
 {
-	SetIcon( windowMain.GetIconActionCommand() );
+	SetIcon( windowMain.GetIconActionActorCommand() );
 	Update();
 }
 
@@ -58,17 +58,16 @@ void ceWPTTIMAActorCommand::Update(){
 	const ceCAActorCommand &action = *GetActionActorCommand();
 	decString text;
 	
-	text.Format( "Actor Command (%s)", action.GetActor().GetString() );
+	text.Format( "%s => ", action.GetActor().GetString() );
 	
 	if( ! action.GetCommand().IsEmpty() ){
 		const decString lineCommand( action.GetCommand().Split( '\n' ).GetAt( 0 ) );
-		text += ": ";
 		
 		if( lineCommand.GetLength() > 40 ){
-			text = lineCommand.GetLeft( 40 ) + "...";
+			text += lineCommand.GetLeft( 40 ) + "...";
 			
 		}else{
-			text = lineCommand;
+			text += lineCommand;
 		}
 	}
 	

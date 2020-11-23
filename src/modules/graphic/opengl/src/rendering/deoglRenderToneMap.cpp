@@ -175,6 +175,11 @@ enum eSPFinalize{
 	spfinContrast
 };
 
+enum eSPLumPrepare{
+	splpPosTransform,
+	splpTCTransform
+};
+
 
 
 // Debug Checks
@@ -309,6 +314,8 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	pShaderToneMap = NULL;
 	pShaderFinalize = NULL;
 	
+	pShaderLumPrepare = NULL;
+	
 	try{
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
@@ -337,6 +344,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
+		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
+		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
 		
 		pTextureToneMapParams = new deoglTexture( renderThread );
@@ -358,6 +368,41 @@ deoglRenderToneMap::~deoglRenderToneMap(){
 
 // Rendering
 //////////////
+
+void deoglRenderToneMap::LuminancePrepare( deoglRenderPlan &plan ){
+DEBUG_RESET_TIMERS;
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const int height = defren.GetHeight();
+	const int width = defren.GetWidth();
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	defren.ActivateFBOLuminance();
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
+	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	
+	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
+	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
+	
+	shader.SetParameterFloat( splpPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	defren.SetShaderParamFSQuad( shader, splpTCTransform );
+	
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
+}
 
 void deoglRenderToneMap::ToneMap( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
@@ -401,16 +446,16 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 //	const float pixelSizeS = defren.GetPixelSizeU();
 //	const float pixelSizeT = defren.GetPixelSizeV();
-	deoglRCamera *oglCamera = plan.GetCamera();
 	deoglShaderCompiled *shader;
 	bool modeTarget;
 	
 	if( config.GetDebugSnapshot() == 55 ){
-		DebugNanCheck( renderThread, defren, *defren.GetTextureColor() );
+		DebugNanCheck( renderThread, defren, *defren.GetTextureLuminance() );
 	}
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+// 		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
 	}
 	
 	// convert color to log luminance. to allow for proper averaging the output image is reduced
@@ -457,7 +502,8 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	defren.ActivateFBOTemporary1( false );
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+// 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderColor2LogLum );
 	shader = pShaderColor2LogLum->GetCompiled();
@@ -573,22 +619,23 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	// determine tone map parameters to use for this scene
 	renderThread.GetFramebuffer().Activate( pFBOToneMapParams );
 	
-	deoglTexture * const lastParams = oglCamera->GetToneMapParamsTexture();
-	float adaptationTime = oglCamera->GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
+	deoglRCamera &oglCamera = *plan.GetCamera();
+	deoglTexture * const lastParams = oglCamera.GetToneMapParamsTexture();
+	float adaptationTime = oglCamera.GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
 	
-	if( adaptationTime < 0.001f || oglCamera->GetForceToneMapAdaption() ){
+	if( adaptationTime < 0.001f || oglCamera.GetForceToneMapAdaption() ){
 		//adaptationTime = 4.0; //1.0f; // required for the time being for the longer darkness adjust hack
 		adaptationTime = 100.0f; // hack for the time being. shader does clamp(value*0.25,0,1) in the worst case
 		
 	}else{
-		adaptationTime = 1.0f - expf( -oglCamera->GetElapsedToneMapAdaption() / adaptationTime );
+		adaptationTime = 1.0f - expf( -oglCamera.GetElapsedToneMapAdaption() / adaptationTime );
 		//adaptationTime = oglCamera->GetElapsedToneMapAdaption() * adaptationTime;
 	}
 	
 	// const float fTau = 0.5f;
 	// float fAdaptedLum = fLastLum + (fCurrentLum - fLastLum) * (1 - exp(-g_fDT * fTau));
 	
-	oglCamera->SetForceToneMapAdaption( false );
+	oglCamera.SetForceToneMapAdaption( false );
 	
 	renderThread.GetShader().ActivateShader( pShaderParameters );
 	shader = pShaderParameters->GetCompiled();
@@ -620,11 +667,11 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	}
 	
 	shader->SetParameterFloat( sppAvgLogLumTCs, pixelSizeU * ( ( float )tcPingPongOffset + 1.0f ), pixelSizeV, tcOffsetU, tcOffsetV );
-	shader->SetParameterFloat( sppOptions, oglCamera->GetExposure(), config.GetHDRRMaximumIntensity() );
-	shader->SetParameterFloat( sppAdaption, oglCamera->GetLowestIntensity(),
-		oglCamera->GetHighestIntensity(), adaptationTime, 0.0f );
+	shader->SetParameterFloat( sppOptions, oglCamera.GetExposure(), config.GetHDRRMaximumIntensity() );
+	shader->SetParameterFloat( sppAdaption, oglCamera.GetLowestIntensity(),
+		oglCamera.GetHighestIntensity(), adaptationTime, 0.0f );
 	
-	oglCamera->ResetElapsedToneMapAdaption();
+	oglCamera.ResetElapsedToneMapAdaption();
 	
 	pFBOToneMapParams->AttachColorTexture( 0, pTextureToneMapParams );
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
@@ -651,13 +698,13 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
-	oglCamera->SetToneMapParamsTexture( pTextureToneMapParams );
+	oglCamera.SetToneMapParamsTexture( pTextureToneMapParams );
 	pTextureToneMapParams = lastParams;
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
-		oglCamera->GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
+		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
 		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer.GetPointerFloat4();
 		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
 	}
@@ -1041,6 +1088,9 @@ void deoglRenderToneMap::pCleanUp(){
 	}
 	if( pShaderFinalize ){
 		pShaderFinalize->RemoveUsage();
+	}
+	if( pShaderLumPrepare ){
+		pShaderLumPrepare->RemoveUsage();
 	}
 	
 	if( pTextureToneMapParams ){

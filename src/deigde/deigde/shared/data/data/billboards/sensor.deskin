@@ -8,7 +8,8 @@
 		<value property='reflected'>'0</value>
 		<value property='roughness'>1</value>
 		<image property='emissivity'>images/sensorColor.png</image>
-		<value property='emissivity.intensity'>4</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='shadow.none'>1</value>
 		<value property='hint.nocompression'>1</value>
 	</texture>

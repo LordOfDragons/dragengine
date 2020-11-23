@@ -37,7 +37,7 @@ class ceConversation;
 class ceSpeechAnimation;
 class ceGesture;
 class ceFacePose;
-class ceLookAt;
+class ceTarget;
 
 class igdeEnvironment;
 class deComponent;
@@ -67,7 +67,7 @@ private:
 	};
 	
 	struct sLookAt{
-		ceLookAt *lookAt;
+		ceTarget *lookAt;
 		float pause;
 		float duration;
 	};
@@ -139,8 +139,8 @@ private:
 	int pPlayHeadLAPos;
 	float pPlayHeadLAElapsed;
 	bool pPlayHeadLARunning;
-	ceLookAt *pPlayLastHeadLA;
-	ceLookAt *pPlayCurHeadLA;
+	ceTarget *pPlayLastHeadLA;
+	ceTarget *pPlayCurHeadLA;
 	
 	sLookAt *pPlayEyesLAs;
 	int pPlayEyesLACount;
@@ -148,8 +148,8 @@ private:
 	int pPlayEyesLAPos;
 	float pPlayEyesLAElapsed;
 	bool pPlayEyesLARunning;
-	ceLookAt *pPlayLastEyesLA;
-	ceLookAt *pPlayCurEyesLA;
+	ceTarget *pPlayLastEyesLA;
+	ceTarget *pPlayCurEyesLA;
 	int pPlayEyesBoneDisable;
 	
 	float pBlinkFreqMin;
@@ -304,12 +304,12 @@ public:
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayHeadLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayHeadLookAt( ceLookAt *lookAt, float pause, float duration );
+	void AddPlayHeadLookAt( ceTarget *lookAt, float pause, float duration );
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayEyesLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayEyesLookAt( ceLookAt *lookAt, float pause, float duration );
+	void AddPlayEyesLookAt( ceTarget *lookAt, float pause, float duration );
 	
 	/** \brief Determines if the actor causes waiting if the playback checks for actor waiting. */
 	inline bool GetWaiting() const{ return pWaiting; }

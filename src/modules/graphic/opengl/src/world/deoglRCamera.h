@@ -61,6 +61,11 @@ private:
 	
 	bool pInitTexture;
 	
+	float pLastAverageLuminance;
+	bool pDirtyLastAverageLuminance;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -151,6 +156,27 @@ public:
 	
 	/** \brief Set adaption time of the eye in seconds. */
 	void SetAdaptionTime( float adaptionTime );
+	
+	
+	
+	/**
+	 * \brief Last average scene luminance.
+	 * 
+	 * If dirty reads back the adaption parameters from the GPU and stores the last used
+	 * average scene luminance. This has a slight performance impact so this method should
+	 * be called only at the beginning of rendering where the GPU data has been written
+	 * back in time the longest and thus stalling is not to be expected.
+	 * 
+	 * Time measuring shows ~0.1-0.2ms for this call to return.
+	 * 
+	 * If no adaption parameters are present the minimum camera intensity times the
+	 * scene key constant is used.
+	 * 
+	 * Once the average luminance is stored the dirty flag is cleared. Thus retrieving the
+	 * data from the GPU happens only the first time after the camera updated the adaption
+	 * parameters on the GPU.
+	 */
+	float GetLastAverageLuminance();
 	
 	
 	

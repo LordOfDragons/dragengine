@@ -1478,7 +1478,7 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	
 	// activate fbo
 //defren.ActivateFBOTemporary1( false );
-	defren.ActivateFBOColor( false );
+	defren.ActivateFBOColor( false, false );
 	DEBUG_PRINT_TIMER( "Reflection: Activate FBO" );
 	
 	// activate shader and set the parameters
@@ -1802,7 +1802,7 @@ void deoglRenderReflection::RenderEnvMaps( deoglRenderPlan &plan ){
 	
 	// activate temporary 2 fbo
 //	defren.ActivateFBOTemporary2( false );
-	defren.ActivateFBOColor( false );
+	defren.ActivateFBOColor( false, false );
 	DEBUG_PRINT_TIMER( "EnvMap Pass: Activate FBO" );
 	
 	// clear the temporary 2 texture
@@ -2617,7 +2617,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	pEnvMapsParamBlock->UnmapBuffer();
 	
 	// apply reflections
-	defren.ActivateFBOColor( false );
+	defren.ActivateFBOColor( false, false );
 	
 //OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );

@@ -825,7 +825,8 @@ void deClassCollider::nfAttachStatic2::RunFunction( dsRunTime *rt, dsValue *myse
 		DSTHROW( dueNullPointer );
 	}
 	
-	clsCol.AttachStatic( *nd.collider, resource, position, orientation );
+	clsCol.AttachStatic( *nd.collider, resource, position, orientation,
+		deClassCollider::GetResourceScale( *resource ) );
 }
 
 // public func void attachRelativeMovement( Object resource )
@@ -2179,117 +2180,150 @@ void deClassCollider::PushResource( dsRunTime &rt, deResource *resource ){
 	}
 }
 
-decDMatrix deClassCollider::GetResourceMatrix( const deResource &resource ) const{
+decDMatrix deClassCollider::GetResourceMatrix( const deResource &resource ){
 	switch( resource.GetResourceManager()->GetResourceType() ){
 	case deResourceManager::ertCollider:{
 		const deCollider &collider = ( const deCollider & )resource;
-		return decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() );
+		};
 		
 	case deResourceManager::ertBillboard:{
 		const deBillboard &billboard = ( const deBillboard & )resource;
 		return decDMatrix::CreateTranslation( billboard.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertCamera:{
 		const deCamera &camera = ( const deCamera & )resource;
 		return decDMatrix::CreateWorld( camera.GetPosition(), camera.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertComponent:{
 		const deComponent &component = ( const deComponent & )resource;
-		return decDMatrix::CreateWorld( component.GetPosition(), component.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( component.GetPosition(),
+			component.GetOrientation(), component.GetScaling() );
+		};
 		
 	case deResourceManager::ertDebugDrawer:{
 		const deDebugDrawer &debugDrawer = ( const deDebugDrawer & )resource;
-		return decDMatrix::CreateWorld( debugDrawer.GetPosition(), debugDrawer.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( debugDrawer.GetPosition(),
+			debugDrawer.GetOrientation(), debugDrawer.GetScale() );
+		};
 		
 	case deResourceManager::ertEnvMapProbe:{
 		const deEnvMapProbe &envMapProbe = ( const deEnvMapProbe & )resource;
 		return decDMatrix::CreateWorld( envMapProbe.GetPosition(), envMapProbe.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertForceField:{
 		const deForceField &forceField = ( const deForceField & )resource;
 		return decDMatrix::CreateWorld( forceField.GetPosition(), forceField.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertLight:{
 		const deLight &light = ( const deLight & )resource;
 		return decDMatrix::CreateWorld( light.GetPosition(), light.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertLumimeter:{
 		const deLumimeter &lumimeter = ( const deLumimeter & )resource;
 		return decDMatrix::CreateTranslation( lumimeter.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertMicrophone:{
 		const deMicrophone &microphone = ( const deMicrophone & )resource;
 		return decDMatrix::CreateWorld( microphone.GetPosition(), microphone.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertNavigationSpace:{
 		const deNavigationSpace &navigationSpace = ( const deNavigationSpace & )resource;
 		return decDMatrix::CreateWorld( navigationSpace.GetPosition(), navigationSpace.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertNavigationBlocker:{
 		const deNavigationBlocker &navigationBlocker = ( const deNavigationBlocker & )resource;
-		return decDMatrix::CreateWorld( navigationBlocker.GetPosition(), navigationBlocker.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( navigationBlocker.GetPosition(),
+			navigationBlocker.GetOrientation(), navigationBlocker.GetScaling() );
+		};
 		
 	case deResourceManager::ertNavigator:{
 		return decDMatrix(); // because navigator path is in world space
-		}break;
+		};
 		
 	case deResourceManager::ertParticleEmitterInstance:{
 		const deParticleEmitterInstance &instance = ( const deParticleEmitterInstance & )resource;
 		return decDMatrix::CreateWorld( instance.GetPosition(), instance.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertPropField:{
 		const dePropField &propField = ( const dePropField & )resource;
 		return decDMatrix::CreateTranslation( propField.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertSpeaker:{
 		const deSpeaker &speaker = ( const deSpeaker & )resource;
 		return decDMatrix::CreateWorld( speaker.GetPosition(), speaker.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertTouchSensor:{
 		const deTouchSensor &touchSensor = ( const deTouchSensor & )resource;
 		return decDMatrix::CreateWorld( touchSensor.GetPosition(), touchSensor.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertSoundLevelMeter:{
 		const deSoundLevelMeter &soundLevelMeter = ( const deSoundLevelMeter & )resource;
 		return decDMatrix::CreateWorld( soundLevelMeter.GetPosition(), soundLevelMeter.GetOrientation() );
-		}break;
+		};
 		
 	default:
 		return decDMatrix();
 	}
 }
 
+decVector deClassCollider::GetResourceScale( const deResource &resource ){
+	switch( resource.GetResourceManager()->GetResourceType() ){
+	case deResourceManager::ertCollider:{
+		const deCollider &collider = ( const deCollider & )resource;
+		return collider.GetScale();
+		};
+		
+	case deResourceManager::ertComponent:{
+		const deComponent &component = ( const deComponent & )resource;
+		return component.GetScaling();
+		};
+		
+	case deResourceManager::ertDebugDrawer:{
+		const deDebugDrawer &debugDrawer = ( const deDebugDrawer & )resource;
+		return debugDrawer.GetScale();
+		};
+		
+	case deResourceManager::ertNavigationBlocker:{
+		const deNavigationBlocker &navigationBlocker = ( const deNavigationBlocker & )resource;
+		return navigationBlocker.GetScaling();
+		};
+		
+	default:
+		return decVector( 1.0, 1.0, 1.0 );
+	}
+}
+
 void deClassCollider::AttachStatic( deCollider &collider, deResource *resource ) const{
 	const decDMatrix matrix( GetResourceMatrix( *resource ).QuickMultiply(
-		decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ).QuickInvert() ) );
+		decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() ).QuickInvert() ) );
 	
-	AttachStatic( collider, resource, matrix.GetPosition(), matrix.ToQuaternion() );
+	AttachStatic( collider, resource, matrix.GetPosition(), matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 }
 
 void deClassCollider::AttachStatic( deCollider &collider, deResource *resource,
-const decVector &position, const decQuaternion &orientation ) const{
+const decVector &position, const decQuaternion &orientation, const decVector &scale ) const{
 	deColliderAttachment *attachment = NULL;
 	
 	try{
 		attachment = new deColliderAttachment( resource );
 		attachment->SetPosition( position );
 		attachment->SetOrientation( orientation );
+		attachment->SetScaling( scale );
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		collider.AddAttachment( attachment );
 		
@@ -2342,20 +2376,22 @@ void deClassCollider::AttachBone( deCollider &collider, deResource *resource, co
 	}
 	
 	matrix = GetResourceMatrix( *resource ).QuickMultiply(
-		matrix.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ) )
-			.QuickInvert() );
+		matrix.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() ) ).QuickInvert() );
 	
-	AttachBone( collider, resource, targetBone, matrix.GetPosition(), matrix.ToQuaternion() );
+	AttachBone( collider, resource, targetBone, matrix.GetPosition(),
+		matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 }
 
 void deClassCollider::AttachBone( deCollider &collider, deResource *resource, const char *targetBone,
-const decVector &position, const decQuaternion &orientation  ) const{
+const decVector &position, const decQuaternion &orientation, const decVector &scale ) const{
 	deColliderAttachment *attachment = NULL;
 	
 	try{
 		attachment = new deColliderAttachment( resource );
 		attachment->SetPosition( position );
 		attachment->SetOrientation( orientation );
+		attachment->SetScaling( scale );
 		attachment->SetTrackBone( targetBone );
 		attachment->SetAttachType( deColliderAttachment::eatBone );
 		collider.AddAttachment( attachment );
@@ -2412,7 +2448,7 @@ void deClassCollider::AttachWeight( deCollider &collider, deResource *resource, 
 						.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
 							collider.GetOrientation() ) ).QuickInvert() ) );
 				AttachBone( collider, resource, rig->GetBoneAt( bone ).GetName(),
-					matrix.GetPosition(), matrix.ToQuaternion() );
+					matrix.GetPosition(), matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 				
 			}else{
 				pDS.LogWarnFormat( "Collider.AttachWeight: bone(%i) outside range(%i). "
@@ -2437,14 +2473,15 @@ void deClassCollider::AttachWeight( deCollider &collider, deResource *resource, 
 			}
 			
 			const decDMatrix matrix( GetResourceMatrix( *resource )
-				.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ) )
-					.QuickInvert() );
+				.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
+					collider.GetOrientation(), collider.GetScale() ) ).QuickInvert() );
 			
 			try{
 				attachment = new deColliderAttachment( resource );
 				attachment->SetAttachType( deColliderAttachment::eatStatic );
 				attachment->SetPosition( matrix.GetPosition().ToVector() );
-				attachment->SetOrientation( matrix.ToQuaternion() );
+				attachment->SetOrientation( matrix.Normalized().ToQuaternion() );
+				attachment->SetScaling( matrix.GetScale() );
 				colliderComponent.InitWeightAttachment( *attachment, face );
 				collider.AddAttachment( attachment );
 				

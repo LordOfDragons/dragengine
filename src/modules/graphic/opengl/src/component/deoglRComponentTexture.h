@@ -78,6 +78,7 @@ private:
 	deoglTexUnitsConfig *pTUCOutlineDepth;
 	deoglTexUnitsConfig *pTUCOutlineGeometry;
 	deoglTexUnitsConfig *pTUCOutlineCounter;
+	deoglTexUnitsConfig *pTUCLuminance;
 	
 	bool pValidParamBlockDepth;
 	bool pValidParamBlockGeometry;
@@ -96,6 +97,7 @@ private:
 	bool pDirtyTUCOutlineDepth;
 	bool pDirtyTUCOutlineGeometry;
 	bool pDirtyTUCOutlineCounter;
+	bool pDirtyTUCLuminance;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -287,6 +289,13 @@ public:
 	 *          - deoglSkinTexture::estOutlineCounterClipPlane
 	 */
 	deoglTexUnitsConfig *GetTUCOutlineCounter();
+	
+	/**
+	 * \brief Texture units configuration for luminance type shaders or \em NULL if empty.
+	 * \details This texture units configuration works for the shader types:
+	 *          - deoglSkinTexture::estComponentLuminance
+	 */
+	deoglTexUnitsConfig *GetTUCLuminance();
 	
 	/**
 	 * \brief Obtain texture units configuration for a shader type.

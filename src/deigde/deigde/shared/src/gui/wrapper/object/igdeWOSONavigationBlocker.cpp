@@ -96,8 +96,8 @@ void igdeWOSONavigationBlocker::Visit( igdeWOSOVisitor &visitor ){
 void igdeWOSONavigationBlocker::pUpdateNavigationBlocker(){
 	if( ! pNavigationBlocker ){
 		pNavigationBlocker.TakeOver( GetEngine().GetNavigationBlockerManager()->CreateNavigationBlocker() );
+		pNavigationBlocker->SetSpaceType( pGDNavigationBlocker.GetType() );
 	}
-	
 	
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;

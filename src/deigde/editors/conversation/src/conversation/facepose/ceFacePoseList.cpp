@@ -126,3 +126,8 @@ ceFacePoseList &ceFacePoseList::operator=( const ceFacePoseList &list ){
 	pFacePoses = list.pFacePoses;
 	return *this;
 }
+
+ceFacePoseList &ceFacePoseList::operator+=( const ceFacePoseList &list ){
+	pFacePoses += list.pFacePoses;
+	return *this;
+}

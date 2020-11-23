@@ -52,7 +52,7 @@ igdeCamera::igdeCamera( deEngine *engine ){
 	pViewDistance = 500.0f;
 	
 	pExposure = 1.0f;
-	pLowestIntensity = 10.0f;
+	pLowestIntensity = 1.0f;
 	pHighestIntensity = 20.0f;
 	pAdaptionTime = 1.0f;
 	

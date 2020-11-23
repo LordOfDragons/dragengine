@@ -99,6 +99,7 @@ private:
 	decColor pNodeColor;
 	bool pNodeTileX;
 	bool pNodeTileY;
+	int pNodeBitCount;
 	
 	bool pSelected;
 	bool pActive;
@@ -258,6 +259,12 @@ public:
 	
 	/** \brief Set if nodes are tiled along y axis. */
 	void SetNodeTileY( bool tileY );
+	
+	/** \brief Node bit count. */
+	inline int GetNodeBitCount() const{ return pNodeBitCount; }
+	
+	/** \brief Set node bit count. */
+	void SetNodeBitCount( int bitCount );
 	
 	
 	

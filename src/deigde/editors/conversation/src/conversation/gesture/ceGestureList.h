@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceGestureList &operator=( const ceGestureList &list );
+	
+	/** \brief Append gesture if absent. */
+	ceGestureList &operator+=( const ceGestureList &list );
 	/*@}*/
 };
 

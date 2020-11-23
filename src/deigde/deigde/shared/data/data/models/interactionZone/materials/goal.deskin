@@ -3,7 +3,8 @@
 	<texture name='top'>
 		<image property='color'>images/goal.png</image>
 		<image property='emissivity'>images/goal.png</image>
-		<value property='emissivity.intensity'>0.1</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>
@@ -14,7 +15,8 @@
 	<texture name='base'>
 		<color property='color' r='0.5' g='0.5' b='0.5'/>
 		<color property='emissivity' r='0.5' g='0.5' b='0.5'/>
-		<value property='emissivity.intensity'>0.1</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>
@@ -25,7 +27,8 @@
 	<texture name='arrow'>
 		<color property='color' r='0' g='0' b='1'/>
 		<color property='emissivity' r='0' g='0' b='1'/>
-		<value property='emissivity.intensity'>0.1</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='reflectivity'>0</value>
 		<value property='roughness'>1</value>
 		<value property='reflected'>0</value>

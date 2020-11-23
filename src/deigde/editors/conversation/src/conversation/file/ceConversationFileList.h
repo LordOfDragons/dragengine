@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceConversationFileList &operator=( const ceConversationFileList &list );
+	
+	/** \brief Append files if absent. */
+	ceConversationFileList &operator+=( const ceConversationFileList &list );
 	/*@}*/
 };
 

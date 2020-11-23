@@ -43,6 +43,7 @@ pRenderEnvMap( true ),
 pAffectsAudio( true ),
 pPartialHide( false ),
 pAttachTarget( true ),
+pLightShadowIgnore( false ),
 pColliderResponseType( deCollider::ertStatic ),
 pActiveTexture( NULL ){
 }
@@ -61,6 +62,7 @@ pRenderEnvMap( component.pRenderEnvMap ),
 pAffectsAudio( component.pAffectsAudio ),
 pPartialHide( component.pPartialHide ),
 pAttachTarget( component.pAttachTarget ),
+pLightShadowIgnore( component.pLightShadowIgnore ),
 pColliderResponseType( component.pColliderResponseType ),
 pPosition( component.pPosition ),
 pRotation( component.pRotation ),
@@ -79,7 +81,7 @@ pActiveTexture( NULL )
 			texture = NULL;
 		}
 		
-		for( i=0; i<=epAttachRotation; i++ ){
+		for( i=0; i<=epLightShadowIgnore; i++ ){
 			pPropertyNames[ i ] = component.pPropertyNames[ i ];
 		}
 		
@@ -158,6 +160,10 @@ void gdeOCComponent::SetAffectsAudio( bool affectsAudio ){
 	pAffectsAudio = affectsAudio;
 }
 
+void gdeOCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+	pLightShadowIgnore = lightShadowIgnore;
+}
+
 void gdeOCComponent::SetPosition( const decVector &position ){
 	pPosition = position;
 }
@@ -186,7 +192,7 @@ void gdeOCComponent::SetPropertyName( eProperties property, const char *name ){
 
 bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
+	for( i=0; i<=epLightShadowIgnore; i++ ){
 		if( pPropertyNames[ i ] == name ){
 			return true;
 		}

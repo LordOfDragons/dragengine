@@ -212,7 +212,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 		this.pExposure = ECPFloat.new( prefix + ".exposure", 1, 0 )
 		eclass.addProperty( this.pExposure )
 		
-		this.pLowestIntensity = ECPFloat.new( prefix + ".lowestIntensity", 10, 0 )
+		this.pLowestIntensity = ECPFloat.new( prefix + ".lowestIntensity", 1, 0 )
 		eclass.addProperty( this.pLowestIntensity )
 		
 		this.pHighestIntensity = ECPFloat.new( prefix + ".higtestIntensity", 20, 0 )

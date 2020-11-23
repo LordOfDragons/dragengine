@@ -788,7 +788,7 @@ void deoglShaderPreprocessor::pProcessDirectiveElse() {
 }
 
 bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive, bool groupOpen ){
-	// defined {'('} symbol {')'}
+	// {'!'} defined {'('} symbol {')'}
 	// condition1 && condition2
 	// condition1 || condition2
 	// (condition)
@@ -1011,14 +1011,14 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive,
 			continue;
 		}
 		
+		if( updateNegate ){
+			updateResultValue = ! updateResultValue;
+		}
+		
 		if( firstResult ){
 			result = updateResultValue;
 			firstResult = false;
 			continue;
-		}
-		
-		if( updateNegate ){
-			updateResultValue = ! updateResultValue;
 		}
 		
 		switch( updateOp ){

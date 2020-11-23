@@ -765,6 +765,65 @@
 		</affects>
 	</property>
 	
+	<property name='emissivity.camera.adapted'>
+		<description>
+			Defines if all emissivity based properties are absolute intensities or intensities
+			relative to the camera maximum adapted intensity.<br/>
+			<br/>
+			The camera adapted intensity is updated by the Graphic Module to to choose an
+			appropriate exposure for the visible camera content. The camera adapted intensity
+			is adjusted over time to match up with the required intensity. This ensures the
+			rendered content is not under nor over exposed when the lighting conditions change.<br/>
+			<br/>
+			By using this texture property you can ensure the intensity of all emissivity
+			properties is not too low in strong light conditions nor too high (white-out
+			or even blooming) in low light conditions.<br/>
+			<br/>
+			A typical use case for this texture property are monitors. With absolute
+			intensities the emissivity is inadequate in extreme light conditions. With this
+			property enabled the emissivity is kept at a stable, final tone mapped intensity.<br/>
+			<br/>
+			Another typical use case is for particles and beams. This allows using
+			particle and beam effects in different lighting conditions without becoming
+			too faint nor white-out with excessive bloom.<br/>
+			<br/>
+			The property is a boolean type property.<br/>
+			<br/>
+			A value of 0 equals to all emissivity intensities to be absolute intensities
+			in the range from 0 to infinity.<br/>
+			<br/>
+			A value of 1 equals to all emissivity intensities to be relative to the camera
+			adapted intensity. The values of all emissivity properties are in the range from
+			0 to infinity and are multiplied by the camera adapted maximum intensity.
+			Values in the range from 0 to 1 are recommended (0% to 100% intensity). Values
+			higher than 1 can be used to ensure emissive objects receive white-out and
+			bloom effects.<br/>
+			<br/>
+			When using relative emissivity intensities keep in mind that graphic modules
+			have to do tone mapping one way or the other. Tone mapping in general requires
+			increasing contrast to avoid colors being washed out. This in turn means high
+			intensity values near the maximum intensity for a given scene key tend to
+			wash out towards white (or even blooming). It is thus not recommended to use
+			emissivity intensities above 0.75 if you want to avoid colors to wash out
+			towards white color. In bright light this effect is less pronounced than in
+			low light conditions. By staying under this threshold you should get good
+			results. Of course if you want to ensure emissive materials to white out and
+			bloom starting at an emissivity of 2.0 and above is a good way to ensure this.
+			<br/>
+			Other values are mapped to the closed of these two values.<br/>
+			<br/>
+			Usually this property is an single value, either 0 or 1. The default is 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='environmentroom'>
 		<description>
 			Defines an environment room to use to produce the illusion of a 3 dimensional room
@@ -1083,11 +1142,59 @@
 			This is a single value with default 0. Rotates texture coordinates counter
 			clock wise around the center of the texture. If multiple transformations are
 			used applies first "texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+			Value represents rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
 		<default>
 			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='omnidir.rotate'>
+		<description>
+			Defines rotation of omni-direction textures relative to model texture coordinates.
+			This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+			counter clock wise. Red (first) component is rotation around X axis, green (second)
+			component is rotation around Y axis and blue (third) component is rotation around
+			Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='omnidir.rotate.spot'>
+		<description>
+			Defines rotation of omni-direction textures relative to model texture coordinates
+			for spot or projected type light sources only.
+			This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+			counter clock wise. Red (first) component is rotation around X axis, green (second)
+			component is rotation around Y axis and blue (third) component is rotation around
+			Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
 		</default>
 		<affects>
 			<module>graphic</module>

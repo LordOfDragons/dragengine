@@ -1364,9 +1364,30 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Create conversation playback.
 	 * 
-	 * Default implementation create instance of BaseConversationPlayback. Overwrite to
-	 * create playback supporting game specific features like obtaining conversation actors
-	 * and coordinate system by identifier and running game commands and conditions.
+	 * Create instance of BaseConversationPlayback. Overwrite to create playback supporting
+	 * game specific features like obtaining conversation actors and coordinate system by
+	 * identifier and running game commands and conditions.
+	 * 
+	 * For many game projects the base BaseConversationPlayback implementation is enough
+	 * with game specific behavior defined by adding game commands and game conditions.
+	 * This example shows a typical subclass implementation for this common scenario.
+	 * 
+	 * \code{.ds}
+	 * public func BaseConversationPlayback createConversationPlayback(Conversation conversation)
+	 *    var BaseConversationPlayback playback = super.createConversationPlayback(conversation)
+	 *    playback.addCommand("player", PlayerGameCommand.new())
+	 *    playback.addCondition("player", PlayerGameCondition.new())
+	 *    return playback
+	 * end
+	 * \endcode
+	 * 
+	 * Where PlayerGameCommand implements BaseConversationPlayback.ConversationCommand
+	 * and PlayerGameCondition implements BaseConversationPlayback.ConversationCondition.
+	 * Conversation scripts can then use "player arg1 arg2 ... argN" game command and game
+	 * condition with the classes above receiving the command conveniently as Array of String.
+	 * 
+	 * Any number of commands and conditions can be added easily this way without needing
+	 * to subclass BaseConversationPlayback.
 	 */
 	public func BaseConversationPlayback createConversationPlayback( Conversation conversation )
 		return BaseConversationPlayback.new( conversation )

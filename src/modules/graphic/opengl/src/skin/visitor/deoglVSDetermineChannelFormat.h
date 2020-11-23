@@ -55,6 +55,7 @@ public:
 	bool pIsDefined;
 	int pRequiredComponentCount;
 	bool pRequiresFloat;
+	bool pAllowMipMap;
 	deoglRImage *pSharedImage;
 	
 	
@@ -96,6 +97,9 @@ public:
 	
 	/** \brief Channel is dynamic. */
 	inline bool GetIsDynamic() const{ return pIsDynamic; }
+	
+	/** \brief Mip mapping is allowed. */
+	inline bool GetAllowMipMap() const{ return pAllowMipMap; }
 	
 	/** \brief Shared image. */
 	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }

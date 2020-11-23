@@ -126,3 +126,8 @@ ceCameraShotList &ceCameraShotList::operator=( const ceCameraShotList &list ){
 	pShots = list.pShots;
 	return *this;
 }
+
+ceCameraShotList &ceCameraShotList::operator+=( const ceCameraShotList &list ){
+	pShots += list.pShots;
+	return *this;
+}

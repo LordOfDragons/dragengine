@@ -55,3 +55,8 @@ debpShape::~debpShape(){
 void debpShape::SetCollisionVolume( debpDCollisionVolume *collisionVolume ){
 	pCollisionVolume = collisionVolume;
 }
+
+float debpShape::UniformScale( const decDMatrix &matrix ){
+	const decDVector scale( matrix.GetScale() );
+	return ( float )( ( scale.x + scale.y + scale.z ) / 3.0 );
+}

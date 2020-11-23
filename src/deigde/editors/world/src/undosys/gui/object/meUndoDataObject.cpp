@@ -37,8 +37,7 @@
 ////////////////////////////
 
 meUndoDataObject::meUndoDataObject( meObject *object ) :
-pObject( NULL ),
-pAttachedTo( NULL )
+pObject( object )
 {
 	if( ! object ){
 		DETHROW( deeInvalidParam );
@@ -47,23 +46,10 @@ pAttachedTo( NULL )
 	pOldPosition = object->GetPosition();
 	pOldOrientation = object->GetRotation();
 	pOldSize = object->GetSize();
-	
-	pObject = object;
-	object->AddReference();
-	
 	pAttachedTo = object->GetAttachedTo();
-	if( pAttachedTo ){
-		pAttachedTo->AddReference();
-	}
 }
 
 meUndoDataObject::~meUndoDataObject(){
-	if( pAttachedTo ){
-		pAttachedTo->FreeReference();
-	}
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -72,17 +58,5 @@ meUndoDataObject::~meUndoDataObject(){
 ///////////////
 
 void meUndoDataObject::SetAttachedTo( meObject *object ){
-	if( object == pAttachedTo ){
-		return;
-	}
-	
-	if( pAttachedTo ){
-		pAttachedTo->FreeReference();
-	}
-	
 	pAttachedTo = object;
-	
-	if( object ){
-		object->AddReference();
-	}
 }

@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceFacePoseList &operator=( const ceFacePoseList &list );
+	
+	/** \brief Append face poses if absent. */
+	ceFacePoseList &operator+=( const ceFacePoseList &list );
 	/*@}*/
 };
 

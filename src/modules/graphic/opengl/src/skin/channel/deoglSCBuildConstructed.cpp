@@ -61,7 +61,8 @@ child( NULL ),
 root( this ),
 mask( NULL ),
 clipTo( 0, 0, 1 ),
-transparency( 1.0f ){
+transparency( 1.0f ),
+gamma( 1.0f ){
 }
 
 deoglSCBuildConstructed::sContext::sContext( const deSkinPropertyNode &node, sContext *pparent ) :
@@ -96,6 +97,7 @@ mask( NULL )
 		* decColorMatrix::CreateBrightness( node.GetBrightness() )
 		* decColorMatrix::CreateScaling( node.GetColorize() );
 	transparency = node.GetTransparency();
+	gamma = node.GetGamma();
 	
 	if( pparent ){
 		const decVector2 p1( transformScreen.GetPosition() );
@@ -113,6 +115,7 @@ mask( NULL )
 		
 		transformColor *= pparent->transformColor;
 		transparency *= pparent->transparency;
+		gamma *= pparent->gamma;
 		
 		pparent->child = this;
 		
@@ -131,6 +134,10 @@ mask( NULL )
 	// transparency and other modifications are properly applied
 	//
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+}
+
+decColor deoglSCBuildConstructed::sContext::applyGamma( const decColor &color ) const{
+	return decColor( powf( color.r, gamma ), powf( color.g, gamma ), powf( color.b, gamma ) );
 }
 
 deoglSCBuildConstructed::sTarget::sTarget() :
@@ -502,7 +509,11 @@ void deoglSCBuildConstructed::VisitText( deSkinPropertyNodeText &node ){
 	context.clamp.y = ( int )( fontSize - 0.5f ); // (fontsize - 1) + 0.5
 	
 	if( ! font->GetIsColorFont() ){
-		context.transformColor *= decColorMatrix::CreateScaling( node.GetColor() );
+		decColor fontColor( node.GetColor() );
+		fontColor.r = powf( fontColor.r, node.GetGamma() );
+		fontColor.g = powf( fontColor.g, node.GetGamma() );
+		fontColor.b = powf( fontColor.b, node.GetGamma() );
+		context.transformColor *= decColorMatrix::CreateScaling( fontColor );
 	}
 	
 	while( utf8Decoder.GetPosition() < len ){
@@ -1086,12 +1097,15 @@ void deoglSCBuildConstructed::pWritePixel( const sContext &context,
 int offset, const decColor &color ){
 	if( context.transparency < 0.001f || color.a < 0.001f ){
 		return;
-		
-	}else if( context.transparency > 0.999f && color.a > 0.999f ){
-		pWritePixelSet( offset, context.transformColor * color );
+	}
+	
+	const decColor c( context.applyGamma( context.transformColor * color ) );
+	
+	if( context.transparency > 0.999f && color.a > 0.999f ){
+		pWritePixelSet( offset, c );
 		
 	}else{
-		pWritePixelBlend( offset, context.transformColor * color, color.a * context.transparency );
+		pWritePixelBlend( offset, c, color.a * context.transparency );
 	}
 }
 

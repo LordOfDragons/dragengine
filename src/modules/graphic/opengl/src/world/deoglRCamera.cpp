@@ -63,10 +63,11 @@ pAdaptionTime( 1.0f ),
 
 pPlan( NULL ),
 
-pInitTexture( true )
+pInitTexture( true ),
+
+pLastAverageLuminance( 0.0f ),
+pDirtyLastAverageLuminance( true )
 {
-	const bool useHDRR = renderThread.GetConfiguration().GetUseHDRR();
-	
 	try{
 		// create render plan
 		pPlan = new deoglRenderPlan( renderThread );
@@ -75,7 +76,7 @@ pInitTexture( true )
 		// create tone mapping parameters texture
 		pTextureToneMapParams = new deoglTexture( renderThread );
 		pTextureToneMapParams->SetSize( 1, 1 );
-		pTextureToneMapParams->SetFBOFormat( 4, useHDRR );
+		pTextureToneMapParams->SetFBOFormat( 4, renderThread.GetConfiguration().GetUseHDRR() );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -131,6 +132,7 @@ void deoglRCamera::SetCameraMatrices( const decDMatrix &matrix ){
 
 void deoglRCamera::SetToneMapParamsTexture( deoglTexture *texture ){
 	pTextureToneMapParams = texture;
+	pDirtyLastAverageLuminance = true;
 }
 
 void deoglRCamera::SetElapsedToneMapAdaption( float elapsed ){
@@ -139,6 +141,7 @@ void deoglRCamera::SetElapsedToneMapAdaption( float elapsed ){
 
 void deoglRCamera::SetForceToneMapAdaption( bool forceAdaption ){
 	pForceToneMapAdaption = forceAdaption;
+	pDirtyLastAverageLuminance |= forceAdaption;
 }
 
 void deoglRCamera::ResetElapsedToneMapAdaption(){
@@ -161,6 +164,25 @@ void deoglRCamera::SetHighestIntensity( float highestIntensity ){
 
 void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 	pAdaptionTime = decMath::max( adaptionTime, 0.0f );
+}
+
+
+
+float deoglRCamera::GetLastAverageLuminance(){
+	if( pDirtyLastAverageLuminance ){
+		pDirtyLastAverageLuminance = false;
+		
+		if( pInitTexture || pForceToneMapAdaption ){
+			pLastAverageLuminance = pLowestIntensity * pRenderThread.GetConfiguration().GetHDRRSceneKey();
+			
+		}else{
+			deoglPixelBuffer pbToneMapParams( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
+			pTextureToneMapParams->GetPixels( pbToneMapParams );
+			pLastAverageLuminance = pbToneMapParams.GetPointerFloat4()->r;
+		}
+	}
+	
+	return pLastAverageLuminance;
 }
 
 
@@ -192,12 +214,13 @@ void deoglRCamera::PrepareForRender(){
 	if( pInitTexture ){
 		deoglPixelBuffer pbToneMapParams( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
 		deoglPixelBuffer::sFloat4 &dataToneMapParams = *pbToneMapParams.GetPointerFloat4();
-		dataToneMapParams.r = 0.5f; // averageLuminance
+		dataToneMapParams.r = pRenderThread.GetConfiguration().GetHDRRSceneKey(); // averageLuminance
 		dataToneMapParams.g = 0.0f; // scaleLum
 		dataToneMapParams.b = 0.0f; // lwhite
 		dataToneMapParams.a = 0.0f; // brightPassThreshold
 		pTextureToneMapParams->SetPixels( pbToneMapParams );
 		pInitTexture = false;
+		pDirtyLastAverageLuminance = true;
 	}
 	
 	const int effectCount = pEffects.GetCount();
@@ -223,7 +246,7 @@ public:
 	virtual ~deoglRCameraDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		if( textureToneMapParams ){
 			delete textureToneMapParams;
 		}

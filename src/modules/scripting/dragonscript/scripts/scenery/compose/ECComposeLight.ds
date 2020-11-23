@@ -75,8 +75,8 @@ class ECComposeLight
 	 * using XML subclassing use ownerClass.removeProperty() to remove them.
 	 */
 	public func new( ElementClass ownerClass, String prefix )
-		this.pLayerMask = LayerMask.new()
-		this.pLayerMaskShadow = LayerMask.new()
+		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap )
+		this.pLayerMaskShadow = LayerMask.new( this.pLayerMask )
 		
 		this.pType = ECPEnumeration.new( prefix + "type", LightType.all(), LightType.point )
 		ownerClass.addProperty( this.pType )

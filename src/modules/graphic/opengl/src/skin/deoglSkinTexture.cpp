@@ -147,6 +147,8 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
 	// estComponentEnvMap
 	SCIE(EnvMap, false, false, EnvMap, Component, Projection, Particle, None),
+	// estComponentLuminance
+	SCIE(Geometry, false, false, Geometry, Component, Projection, Particle, None),
 	
 	
 	// Billboard
@@ -241,6 +243,8 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	SCIE(Shadow, false, false, Depth, HeightMap, Distance, Particle, None),
 	// estHeightMapEnvMap
 	SCIE(EnvMap, false, false, EnvMap, HeightMap, Projection, Particle, None),
+	// estHeightMapLuminance
+	SCIE(Geometry, false, false, Geometry, HeightMap, Projection, Particle, None),
 	
 	
 	// Particle Emitter
@@ -379,6 +383,7 @@ pName( texture.GetName() )
 	pEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
+	pEmissivityCameraAdapted = false;
 	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
 	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
@@ -667,6 +672,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	const bool isParticle = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmParticle );
 	//const bool isPropField = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmPropField );
 	const bool realTranspParticle = GetRenderThread().GetChoices().GetRealTransparentParticles();
+	const bool luminanceOnly = shaderType == estComponentLuminance || shaderType == estHeightMapLuminance;
 	
 	int i;
 	
@@ -716,10 +722,13 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetGeometryMode( shaderConfigInfo.geometryMode );
 	config.SetDepthMode( shaderConfigInfo.depthMode );
 	config.SetParticleMode( shaderConfigInfo.particleMode );
+	config.SetLuminanceOnly( luminanceOnly );
 	
 	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
 	config.SetInverseDepth( defren.GetUseInverseDepth() );
-	config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
+	if( ! luminanceOnly ){
+		config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
+	}
 	config.SetVariations( pVariationU || pVariationV );
 	
 	config.SetUseNormalRoughnessCorrection( pMaterialProperties[ empNormal ].GetRenderable() == -1 );
@@ -736,121 +745,143 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetAmbientLightProbe( isParticle && ! realTranspParticle );
 		config.SetBillboard( shaderConfigInfo.billboard );
 		//config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] || ! pSolid || isParticle );
-		config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
-			|| ( isParticle && ! realTranspParticle ) );
 		
-		config.SetTextureColor( hasChanTex[ deoglSkinChannel::ectColor ] );
-		config.SetTextureColorTintMask( hasChanTex[ deoglSkinChannel::ectColorTintMask ] );
-		config.SetTextureTransparency( hasChanTex[ deoglSkinChannel::ectTransparency ] );
-		config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
-		config.SetTextureNormal( hasChanTex[ deoglSkinChannel::ectNormal ] );
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetTextureReflectivity( hasChanTex[ deoglSkinChannel::ectReflectivity ] );
-		config.SetTextureRoughness( hasChanTex[ deoglSkinChannel::ectRoughness ] );
-		config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
-		config.SetTextureAO( hasChanTex[ deoglSkinChannel::ectAO ] );
-		config.SetTextureRimEmissivity( hasChanTex[ deoglSkinChannel::ectRimEmissivity ] );
-		
-		if( deoglSkinShader::REFLECTION_TEST_MODE == 0 ){
-			config.SetTextureEnvMap( pReflects || ( isParticle && ! realTranspParticle ) );
+		if( luminanceOnly ){
+			config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
+			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
+			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
 			
-		}else if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
-			// !pSolid only until transparency works properly with the separate environment map pass
-			config.SetTextureEnvMap( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
-				|| ! pSolid || ( isParticle && ! realTranspParticle ) );
+			if( ! isParticle ){
+				config.SetDynamicHeightRemap(
+					pMaterialProperties[ empHeightScale ].IsDynamic()
+					|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
+				config.SetDynamicEmissivityTint(
+					pMaterialProperties[ empEmissivityTint ].IsDynamic() );
+				config.SetDynamicEmissivityIntensity(
+					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicEnvRoomEmissivityTint(
+					pMaterialProperties[ empEnvironmentRoomEmissivityTint ].IsDynamic() );
+				config.SetDynamicEnvRoomEmissivityIntensity(
+					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
+			}
 			
 		}else{
-			//config.SetTextureEnvMap( isParticle && ! realTranspParticle );
-			config.SetTextureEnvMap( true );
-		}
-		
-		config.SetTextureEnvMapEqui( ! hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] && useEquiEnvMap );
-		config.SetTextureRenderColor( ! pSolid && ! isDecal && ! ( isParticle && ! realTranspParticle ) );
-				//&& ! pHasHoles  // problems with transparent
-		//config.SetTextureRenderColor( ! pSolid && ! isDecal ); // problems with emssivity-only
-		config.SetTextureRefractionDistort( config.GetTextureRenderColor()
-			&& hasChanTex[ deoglSkinChannel::ectRefractDistort ] );
-		config.SetTextureEnvRoom( hasChanTex[ deoglSkinChannel::ectEnvironmentRoom ] );
-		config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
-		config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
-		config.SetTextureAbsorption( hasChanTex[ deoglSkinChannel::ectAbsorption ] );
-		
-		if( ! isParticle ){
-			config.SetDynamicColorTint(
-				pMaterialProperties[ empColorTint ].IsDynamic() );
-			config.SetDynamicColorGamma(
-				pMaterialProperties[ empColorGamma ].IsDynamic() );
-			config.SetDynamicColorSolidityMultiplier(
-				pMaterialProperties[ empColorSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicAmbientOcclusionSolidityMultiplier(
-				pMaterialProperties[ empAmbientOcclusionSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicTransparencyMultiplier(
-				pMaterialProperties[ empTransparencyMultiplier ].IsDynamic() );
-			config.SetDynamicSolidityMultiplier(
-				pMaterialProperties[ empSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicHeightRemap(
-				pMaterialProperties[ empHeightScale ].IsDynamic()
-				|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-			config.SetDynamicNormalStrength(
-				pMaterialProperties[ empNormalStrength ].IsDynamic() );
-			config.SetDynamicNormalSolidityMultiplier(
-				pMaterialProperties[ empNormalSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicRoughnessRemap(
-				pMaterialProperties[ empRoughnessRemapLower ].IsDynamic()
-				|| pMaterialProperties[ empRoughnessRemapUpper ].IsDynamic() );
-			config.SetDynamicRoughnessGamma(
-				pMaterialProperties[ empRoughnessGamma ].IsDynamic() );
-			config.SetDynamicRoughnessSolidityMultiplier(
-				pMaterialProperties[ empRoughnessSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicRefractionDistortStrength(
-				pMaterialProperties[ empRefractDistortStrength ].IsDynamic() );
-			config.SetDynamicReflectivitySolidityMultiplier(
-				pMaterialProperties[ empReflectivitySolidityMultiplier ].IsDynamic() );
-			config.SetDynamicReflectivityMultiplier(
-				pMaterialProperties[ empReflectivityMultiplier ].IsDynamic() );
-			config.SetDynamicEmissivityTint(
-				pMaterialProperties[ empEmissivityTint ].IsDynamic() );
-			config.SetDynamicEmissivityIntensity(
-				pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicEnvRoomSize(
-				pMaterialProperties[ empEnvironmentRoomSize ].IsDynamic() );
-			config.SetDynamicEnvRoomOffset(
-				pMaterialProperties[ empEnvironmentRoomOffset ].IsDynamic() );
-			config.SetDynamicEnvRoomEmissivityTint(
-				pMaterialProperties[ empEnvironmentRoomEmissivityTint ].IsDynamic() );
-			config.SetDynamicEnvRoomEmissivityIntensity(
-				pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicThickness(
-				pMaterialProperties[ empThickness ].IsDynamic() );
-			config.SetDynamicAbsorption(
-				pMaterialProperties[ empAbsorptionRange ].IsDynamic()
-				|| pMaterialProperties[ empAbsorptionHalfIntensityDistance ].IsDynamic() );
-			config.SetDynamicVariation(
-				pMaterialProperties[ empVariationU ].IsDynamic()
-				|| pMaterialProperties[ empVariationV ].IsDynamic() );
-			config.SetDynamicRimEmissivityTint(
-				pMaterialProperties[ empRimEmissivityTint ].IsDynamic() );
-			config.SetDynamicRimEmissivityIntensity(
-				pMaterialProperties[ empRimEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicRimAngle(
-				pMaterialProperties[ empRimAngle ].IsDynamic() );
-			config.SetDynamicRimExponent(
-				pMaterialProperties[ empRimExponent ].IsDynamic() );
+			config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
+				|| ( isParticle && ! realTranspParticle ) );
 			
-			// required to be compatible with outline shaders if used to build parameter block
-			config.SetDynamicOutlineColor(
-				pMaterialProperties[ empOutlineColor ].IsDynamic() );
-			config.SetDynamicOutlineColorTint(
-				pMaterialProperties[ empOutlineColorTint ].IsDynamic() );
-			config.SetDynamicOutlineThickness(
-				pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-			config.SetDynamicOutlineSolidity(
-				pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
-			config.SetDynamicOutlineEmissivity(
-				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicOutlineEmissivityTint(
-				pMaterialProperties[ empOutlineEmissivityTint ].IsDynamic() );
+			config.SetTextureColor( hasChanTex[ deoglSkinChannel::ectColor ] );
+			config.SetTextureColorTintMask( hasChanTex[ deoglSkinChannel::ectColorTintMask ] );
+			config.SetTextureTransparency( hasChanTex[ deoglSkinChannel::ectTransparency ] );
+			config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
+			config.SetTextureNormal( hasChanTex[ deoglSkinChannel::ectNormal ] );
+			config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
+			config.SetTextureReflectivity( hasChanTex[ deoglSkinChannel::ectReflectivity ] );
+			config.SetTextureRoughness( hasChanTex[ deoglSkinChannel::ectRoughness ] );
+			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
+			config.SetTextureAO( hasChanTex[ deoglSkinChannel::ectAO ] );
+			config.SetTextureRimEmissivity( hasChanTex[ deoglSkinChannel::ectRimEmissivity ] );
+			
+			if( deoglSkinShader::REFLECTION_TEST_MODE == 0 ){
+				config.SetTextureEnvMap( pReflects || ( isParticle && ! realTranspParticle ) );
+				
+			}else if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+				// !pSolid only until transparency works properly with the separate environment map pass
+				config.SetTextureEnvMap( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
+					|| ! pSolid || ( isParticle && ! realTranspParticle ) );
+				
+			}else{
+				//config.SetTextureEnvMap( isParticle && ! realTranspParticle );
+				config.SetTextureEnvMap( true );
+			}
+			
+			config.SetTextureEnvMapEqui( ! hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] && useEquiEnvMap );
+			config.SetTextureRenderColor( ! pSolid && ! isDecal && ! ( isParticle && ! realTranspParticle ) );
+					//&& ! pHasHoles  // problems with transparent
+			//config.SetTextureRenderColor( ! pSolid && ! isDecal ); // problems with emssivity-only
+			config.SetTextureRefractionDistort( config.GetTextureRenderColor()
+				&& hasChanTex[ deoglSkinChannel::ectRefractDistort ] );
+			config.SetTextureEnvRoom( hasChanTex[ deoglSkinChannel::ectEnvironmentRoom ] );
+			config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
+			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
+			config.SetTextureAbsorption( hasChanTex[ deoglSkinChannel::ectAbsorption ] );
+			
+			if( ! isParticle ){
+				config.SetDynamicColorTint(
+					pMaterialProperties[ empColorTint ].IsDynamic() );
+				config.SetDynamicColorGamma(
+					pMaterialProperties[ empColorGamma ].IsDynamic() );
+				config.SetDynamicColorSolidityMultiplier(
+					pMaterialProperties[ empColorSolidityMultiplier ].IsDynamic() );
+				config.SetDynamicAmbientOcclusionSolidityMultiplier(
+					pMaterialProperties[ empAmbientOcclusionSolidityMultiplier ].IsDynamic() );
+				config.SetDynamicTransparencyMultiplier(
+					pMaterialProperties[ empTransparencyMultiplier ].IsDynamic() );
+				config.SetDynamicSolidityMultiplier(
+					pMaterialProperties[ empSolidityMultiplier ].IsDynamic() );
+				config.SetDynamicHeightRemap(
+					pMaterialProperties[ empHeightScale ].IsDynamic()
+					|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
+				config.SetDynamicNormalStrength(
+					pMaterialProperties[ empNormalStrength ].IsDynamic() );
+				config.SetDynamicNormalSolidityMultiplier(
+					pMaterialProperties[ empNormalSolidityMultiplier ].IsDynamic() );
+				config.SetDynamicRoughnessRemap(
+					pMaterialProperties[ empRoughnessRemapLower ].IsDynamic()
+					|| pMaterialProperties[ empRoughnessRemapUpper ].IsDynamic() );
+				config.SetDynamicRoughnessGamma(
+					pMaterialProperties[ empRoughnessGamma ].IsDynamic() );
+				config.SetDynamicRoughnessSolidityMultiplier(
+					pMaterialProperties[ empRoughnessSolidityMultiplier ].IsDynamic() );
+				config.SetDynamicRefractionDistortStrength(
+					pMaterialProperties[ empRefractDistortStrength ].IsDynamic() );
+				config.SetDynamicReflectivitySolidityMultiplier(
+					pMaterialProperties[ empReflectivitySolidityMultiplier ].IsDynamic() );
+				config.SetDynamicReflectivityMultiplier(
+					pMaterialProperties[ empReflectivityMultiplier ].IsDynamic() );
+				config.SetDynamicEmissivityTint(
+					pMaterialProperties[ empEmissivityTint ].IsDynamic() );
+				config.SetDynamicEmissivityIntensity(
+					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicEnvRoomSize(
+					pMaterialProperties[ empEnvironmentRoomSize ].IsDynamic() );
+				config.SetDynamicEnvRoomOffset(
+					pMaterialProperties[ empEnvironmentRoomOffset ].IsDynamic() );
+				config.SetDynamicEnvRoomEmissivityTint(
+					pMaterialProperties[ empEnvironmentRoomEmissivityTint ].IsDynamic() );
+				config.SetDynamicEnvRoomEmissivityIntensity(
+					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicThickness(
+					pMaterialProperties[ empThickness ].IsDynamic() );
+				config.SetDynamicAbsorption(
+					pMaterialProperties[ empAbsorptionRange ].IsDynamic()
+					|| pMaterialProperties[ empAbsorptionHalfIntensityDistance ].IsDynamic() );
+				config.SetDynamicVariation(
+					pMaterialProperties[ empVariationU ].IsDynamic()
+					|| pMaterialProperties[ empVariationV ].IsDynamic() );
+				config.SetDynamicRimEmissivityTint(
+					pMaterialProperties[ empRimEmissivityTint ].IsDynamic() );
+				config.SetDynamicRimEmissivityIntensity(
+					pMaterialProperties[ empRimEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicRimAngle(
+					pMaterialProperties[ empRimAngle ].IsDynamic() );
+				config.SetDynamicRimExponent(
+					pMaterialProperties[ empRimExponent ].IsDynamic() );
+				
+				// required to be compatible with outline shaders if used to build parameter block
+				config.SetDynamicOutlineColor(
+					pMaterialProperties[ empOutlineColor ].IsDynamic() );
+				config.SetDynamicOutlineColorTint(
+					pMaterialProperties[ empOutlineColorTint ].IsDynamic() );
+				config.SetDynamicOutlineThickness(
+					pMaterialProperties[ empOutlineThickness ].IsDynamic() );
+				config.SetDynamicOutlineSolidity(
+					pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
+				config.SetDynamicOutlineEmissivity(
+					pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
+					|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
+				config.SetDynamicOutlineEmissivityTint(
+					pMaterialProperties[ empOutlineEmissivityTint ].IsDynamic() );
+			}
 		}
 		
 		if( config.GetTextureHeight() ){ // temporary
@@ -1273,6 +1304,11 @@ deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType
 				powf( pOutlineEmissivityTint.g, 2.2f ), powf( pOutlineEmissivityTint.b, 2.2f ) );
 		}
 		
+		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEmissivityCameraAdapted );
+		if( target != -1 ){
+			pParamBlocks[ shaderType ]->SetParameterDataBool( target, pEmissivityCameraAdapted );
+		}
+		
 	}catch( const deException & ){
 		pParamBlocks[ shaderType ]->UnmapBuffer();
 		throw;
@@ -1427,6 +1463,10 @@ void deoglSkinTexture::SetEmissivityIntensity( float intensity ){
 	pEmissivityIntensity = intensity;
 }
 
+void deoglSkinTexture::SetEmissivityCameraAdapted( bool cameraAdapted ){
+	pEmissivityCameraAdapted = cameraAdapted;
+}
+
 void deoglSkinTexture::SetThickness( float thickness ){
 	pThickness = thickness;
 }
@@ -1511,6 +1551,14 @@ void deoglSkinTexture::SetTexCoordRotate( float rotate ){
 	pTexCoordRotate = rotate;
 }
 
+void deoglSkinTexture::SetOmniDirRotate( const decVector &rotate ){
+	pOmniDirRotate = rotate;
+}
+
+void deoglSkinTexture::SetOmniDirRotateSpot( const decVector &rotate ){
+	pOmniDirRotateSpot = rotate;
+}
+
 
 
 void deoglSkinTexture::SetVariationU( bool enable ){
@@ -1544,6 +1592,10 @@ void deoglSkinTexture::SetOutlineSolidity( float solidity ){
 
 void deoglSkinTexture::SetOutlineThickness( float thickness ){
 	pOutlineThickness = decMath::max( thickness, 0.0f );
+}
+
+void deoglSkinTexture::SetOutlineThicknessScreen( bool enable ){
+	pOutlineThicknessScreen = enable;
 }
 
 void deoglSkinTexture::SetOutlineEmissivity( const decColor &emissivity ){
@@ -2294,6 +2346,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pEmissivityIntensity = value;
 			break;
 			
+		case deoglSkinPropertyMap::eptEmissivityCameraAdapted:
+			pEmissivityCameraAdapted = value > 0.5f;
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pEnvironmentRoomSize.Set( value, value );
 			break;
@@ -2352,6 +2408,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
 			pTexCoordRotate = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( value, value, value );
 			break;
 			
 		case deoglSkinPropertyMap::eptShadowNone:
@@ -2492,6 +2556,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordScale:
 			pTexCoordScale.Set( color.r, color.g );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( color.r, color.g, color.b );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( color.r, color.g, color.b );
 			break;
 			
 		case deoglSkinPropertyMap::eptRimEmissivity:
@@ -2704,6 +2776,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
 			materialProperty = pMaterialProperties + empTexCoordRotate;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			materialProperty = pMaterialProperties + empOmniDirRotate;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			materialProperty = pMaterialProperties + empOmniDirRotateSpot;
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:
@@ -2984,6 +3064,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptTexCoordRotate:
 			pMaterialProperties[ empTexCoordRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pMaterialProperties[ empOmniDirRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pMaterialProperties[ empOmniDirRotateSpot ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptVariationU:

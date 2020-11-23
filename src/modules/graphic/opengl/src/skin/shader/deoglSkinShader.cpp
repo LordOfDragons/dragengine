@@ -136,6 +136,8 @@ static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
 	"pTexOutlineSolidity", // etutTexOutlineSolidity
 	"pTexOutlineEmissivity", // etutTexOutlineEmissivity
 	"pTexOutlineEmissivityTint", // etutTexOutlineEmissivityTint
+	
+	"pTexEmissivityCameraAdapted", // etutTexEmissivityCameraAdapted
 };
 
 static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = {
@@ -255,6 +257,8 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivityTint ( vec3 )
+	
+	{ deoglSPBParameter::evtBool, 1, 1, 1 }, // etutTexEmissivityCameraAdapted ( bool )
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIUT_COUNT ] = {
@@ -537,6 +541,7 @@ deoglRenderThread &renderThread, bool cubeMap ){
 		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -1817,9 +1822,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}else if( pConfig.GetOutputColor() ){
 		defines.AddDefine( "OUTPUT_COLOR", "1" );
 	}
-	if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
-	|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-		defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", "1" );
+	if( ! pConfig.GetLuminanceOnly() ){
+		if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
+		|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+			defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", "1" );
+		}
 	}
 	
 	// texture property usage definitions
@@ -1855,6 +1862,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetOutlineThicknessScreen() ){
 		defines.AddDefine( "WITH_OUTLINE_THICKNESS_SCREEN", "1" );
+	}
+	if( pConfig.GetLuminanceOnly() ){
+		defines.AddDefine( "LUMINANCE_ONLY", "1" );
 	}
 	
 	// dynamic texture property usage definitions
@@ -2410,6 +2420,7 @@ void deoglSkinShader::InitShaderParameters(){
 	parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
 	parameterList.Add( "pFadeRange" ); // erutFadeRange
 	parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
+	parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
 	
 	for( i=0; i<ETUT_COUNT; i++ ){
 		if( pTextureUniformTargets[ i ] != -1 ){
@@ -2471,25 +2482,31 @@ void deoglSkinShader::InitShaderParameters(){
 		break;
 		
 	default:
-		if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
-		&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-			outputList.Add( "outColor", 0 );
+		if( pConfig.GetLuminanceOnly() ){
+			outputList.Add( "outLuminance", 0 );
+			outputList.Add( "outNormal", 1 );
 			
 		}else{
-			if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outRoughness", 3 );
-				outputList.Add( "outAOSolidity", 4 );
-				outputList.Add( "outSubSurface", 5 );
-				outputList.Add( "outColor", 6 );
+			if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
+			&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+				outputList.Add( "outColor", 0 );
 				
 			}else{
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outColor", 3 );
+				if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
+					outputList.Add( "outDiffuse", 0 );
+					outputList.Add( "outNormal", 1 );
+					outputList.Add( "outReflectivity", 2 );
+					outputList.Add( "outRoughness", 3 );
+					outputList.Add( "outAOSolidity", 4 );
+					outputList.Add( "outSubSurface", 5 );
+					outputList.Add( "outColor", 6 );
+					
+				}else{
+					outputList.Add( "outDiffuse", 0 );
+					outputList.Add( "outNormal", 1 );
+					outputList.Add( "outReflectivity", 2 );
+					outputList.Add( "outColor", 3 );
+				}
 			}
 		}
 	}

@@ -51,6 +51,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Conversation changed. */
+	virtual void ConversationChanged( ceConversation *conversation );
+	
 	/** \brief Target count or order changed. */
 	virtual void TargetStructureChanged( ceConversation *conversation );
 	
@@ -80,14 +83,6 @@ public:
 	
 	/** \brief Face pose changed. */
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
-	
-	
-	
-	/** \brief Look-at count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	
-	/** \brief Look-at changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
 	
 	
 	
@@ -121,6 +116,14 @@ public:
 	/** \brief Action changed. */
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** \brief Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
 	
 	
 	

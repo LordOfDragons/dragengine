@@ -79,7 +79,7 @@ void ceWDSLaneGesture::FillIDList( decStringList &list ){
 		return;
 	}
 	
-	const ceGestureList &gestureList = GetWindow().GetConversation()->GetGestureList();
+	const ceGestureList gestureList( GetWindow().GetConversation()->AllGestures() );
 	const int gestureCount = gestureList.GetCount();
 	int i;
 	for( i=0; i<gestureCount; i++ ){

@@ -260,6 +260,10 @@ decVector decVector::Mix( const decVector &vector, float blendFactor ) const{
 		z * factor2 + vector.z * factor1 );
 }
 
+decVector decVector::Multiply( const decVector &vector ) const{
+	return decVector( x * vector.x, y * vector.y, z * vector.z );
+}
+
 
 
 // Operators

@@ -267,10 +267,9 @@ void debpCreateBulletShape::VisitShapeBox( decShapeBox &box ){
 		}
 	}
 	
-	// the margin is subtracted from the object producing a small gap. there
-	// is nothing wrong with this unless the margin is larger than the half
-	// extends of the box. in this case the margin has to be reduced to avoid
-	// nasty problems
+	// the margin is subtracted from the object producing a small gap. there is nothing wrong
+	// with this unless the margin is larger than the half extends of the box. in this case
+	// the margin has to be reduced to avoid nasty problems
 	if( ( btScalar )smallestHalfExtends - margin < minSafeSize ){
 		margin = ( btScalar )smallestHalfExtends - minSafeSize;
 		

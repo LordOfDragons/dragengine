@@ -597,7 +597,13 @@ void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
 							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
 							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
 							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							volumeFace->SetNormal( ( ( fv2 - fv1 ) % ( fv3 - fv2 ) ).Normalized() );
+							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
+							if( ! edgeVector.IsZero() ){
+								volumeFace->SetNormal( edgeVector.Normalized() );
+								
+							}else{
+								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+							}
 							
 							volume->AddFace( volumeFace );
 							volumeFace = NULL;
@@ -692,7 +698,13 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
 							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
 							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							volumeFace->SetNormal( ( ( fv2 - fv1 ) % ( fv3 - fv2 ) ).Normalized() );
+							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
+							if( ! edgeVector.IsZero() ){
+								volumeFace->SetNormal( edgeVector.Normalized() );
+								
+							}else{
+								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+							}
 							
 							volume->AddFace( volumeFace );
 							volumeFace = NULL;

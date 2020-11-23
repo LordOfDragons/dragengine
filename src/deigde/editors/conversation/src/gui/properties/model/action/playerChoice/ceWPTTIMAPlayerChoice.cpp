@@ -205,8 +205,7 @@ void ceWPTTIMAPlayerChoice::pUpdateOptions(){
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAPlayerChoiceOption( windowMain,
-				conversation, playerChoice, option, i );
+			model = new ceWPTTIMAPlayerChoiceOption( windowMain, conversation, playerChoice, option, i );
 			
 			try{
 				InsertChild( model, i );

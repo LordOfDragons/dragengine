@@ -34,10 +34,10 @@
 #include "../../conversation/camerashot/ceCameraShot.h"
 #include "../../conversation/facepose/ceFacePose.h"
 #include "../../conversation/gesture/ceGesture.h"
-#include "../../conversation/pose/cePose.h"
 #include "../../conversation/target/ceTarget.h"
-#include "../../conversation/lookat/ceLookAt.h"
 #include "../../configuration/ceConfiguration.h"
+#include "../../loadsave/ceLoadSaveSystem.h"
+#include "../../undosys/ceUConvoSetImportConvoPath.h"
 #include "../../undosys/cameraShot/ceUCCShotAdd.h"
 #include "../../undosys/cameraShot/ceUCCShotRemove.h"
 #include "../../undosys/cameraShot/ceUCCShotSetActorCount.h"
@@ -77,14 +77,6 @@
 #include "../../undosys/gesture/ceUCGestureSetName.h"
 #include "../../undosys/gesture/ceUCGestureSetAnimator.h"
 #include "../../undosys/gesture/ceUCGestureToggleHold.h"
-#include "../../undosys/pose/ceUCPoseAdd.h"
-#include "../../undosys/pose/ceUCPoseRemove.h"
-#include "../../undosys/pose/ceUCPoseSetName.h"
-#include "../../undosys/pose/ceUCPoseSetMove.h"
-#include "../../undosys/lookat/ceUCLookAtAdd.h"
-#include "../../undosys/lookat/ceUCLookAtRemove.h"
-#include "../../undosys/lookat/ceUCLookAtSetName.h"
-#include "../../undosys/lookat/ceUCLookAtSetTarget.h"
 #include "../../undosys/target/ceUCTargetAdd.h"
 #include "../../undosys/target/ceUCTargetRemove.h"
 #include "../../undosys/target/ceUCTargetSetName.h"
@@ -103,12 +95,16 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -267,6 +263,141 @@ public:
 
 
 
+class cActionImportConvoAdd : public cBaseAction{
+public:
+	cActionImportConvoAdd( ceWPConversation &panel ) : cBaseAction( panel, "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Import Conversation" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		const decString &path = pPanel.GetPathImportConvo();
+		if( path.IsEmpty() || path == conversation->GetFilePath()
+		|| conversation->GetImportConversationPath().Has( path ) ){
+			return NULL;
+		}
+		
+		decStringList list( pPanel.GetConversation()->GetImportConversationPath() );
+		list.Add( path );
+		return new ceUConvoSetImportConvoPath( pPanel.GetWindowProperties().GetWindowMain()
+			.GetLoadSaveSystem(), pPanel.GetConversation(), list );
+	}
+};
+
+class cActionImportConvoRemove : public cBaseAction{
+public:
+	cActionImportConvoRemove( ceWPConversation &panel ) : cBaseAction( panel, "Remove",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove Import" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation* ){
+		const decString path( pPanel.GetImportConvo() );
+		if( path.IsEmpty() ){
+			return NULL;
+		}
+		
+		decStringList list( pPanel.GetConversation()->GetImportConversationPath() );
+		const int index = list.IndexOf( path );
+		if( index == -1 ){
+			return NULL;
+		}
+		
+		list.RemoveFrom( index );
+		return new ceUConvoSetImportConvoPath( pPanel.GetWindowProperties().GetWindowMain()
+			.GetLoadSaveSystem(), pPanel.GetConversation(), list );
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( ! pPanel.GetImportConvo().IsEmpty() );
+	}
+};
+
+class cActionImportConvoMoveUp : public cBaseAction{
+public:
+	cActionImportConvoMoveUp( ceWPConversation &panel ) : cBaseAction( panel, "Move Up",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ), "Move Up" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation* ){
+		const decString path( pPanel.GetImportConvo() );
+		if( path.IsEmpty() ){
+			return NULL;
+		}
+		
+		decStringList list( pPanel.GetConversation()->GetImportConversationPath() );
+		const int index = list.IndexOf( path );
+		if( index < 1 ){
+			return NULL;
+		}
+		
+		list.Move( index, index - 1 );
+		return new ceUConvoSetImportConvoPath( pPanel.GetWindowProperties().GetWindowMain()
+			.GetLoadSaveSystem(), pPanel.GetConversation(), list );
+	}
+	
+	virtual void Update( const ceConversation &conversation ){
+		const int index = conversation.GetImportConversationPath().IndexOf( pPanel.GetImportConvo() );
+		SetEnabled( ! pPanel.GetImportConvo().IsEmpty() && index > 0 );
+	}
+};
+
+class cActionImportConvoMoveDown : public cBaseAction{
+public:
+	cActionImportConvoMoveDown( ceWPConversation &panel ) : cBaseAction( panel, "Move Down",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ), "Move Down" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation* ){
+		const decString path( pPanel.GetImportConvo() );
+		if( path.IsEmpty() ){
+			return NULL;
+		}
+		
+		decStringList list( pPanel.GetConversation()->GetImportConversationPath() );
+		const int index = list.IndexOf( path );
+		if( index == -1 || index < list.GetCount() - 1 ){
+			return NULL;
+		}
+		
+		list.Move( index, index + 1 );
+		return new ceUConvoSetImportConvoPath( pPanel.GetWindowProperties().GetWindowMain()
+			.GetLoadSaveSystem(), pPanel.GetConversation(), list );
+	}
+	
+	virtual void Update( const ceConversation &conversation ){
+		const decStringList &list = conversation.GetImportConversationPath();
+		const int index = list.IndexOf( pPanel.GetImportConvo() );
+		SetEnabled( ! pPanel.GetImportConvo().IsEmpty() && index != -1 && index < list.GetCount() - 1 );
+	}
+};
+
+class cActionImportConvoClear : public cBaseAction{
+public:
+	cActionImportConvoClear( ceWPConversation &panel ) : cBaseAction( panel, "Remove All",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove All Imports" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation* ){
+		return pPanel.GetConversation() && pPanel.GetConversation()->GetImportConversationPath().GetCount() > 0
+			? new ceUConvoSetImportConvoPath( pPanel.GetWindowProperties().GetWindowMain()
+				.GetLoadSaveSystem(), pPanel.GetConversation(), decStringList() ) : NULL;
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( pPanel.GetConversation() && pPanel.GetConversation()->GetImportConversationPath().GetCount() > 0 );
+	}
+};
+
+class cListImportConvo : public igdeListBoxListener{
+	ceWPConversation &pPanel;
+public:
+	cListImportConvo( ceWPConversation &panel ) : pPanel( panel ){ }
+	
+	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( menu, new cActionImportConvoMoveUp( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportConvoMoveDown( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportConvoRemove( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportConvoClear( pPanel ), true );
+	}
+};
+
+
+
 class cComboTarget : public cBaseComboBoxListener{
 public:
 	cComboTarget( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
@@ -329,7 +460,7 @@ public:
 		|| name == target->GetName() ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetTargetList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Rename Target", "Duplicate name" );
 			return NULL;
 		}
@@ -432,7 +563,7 @@ public:
 		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Camera Shot", "Name:", name ) ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetCameraShotList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Add Camera Shot", "Duplicate name" );
 			return NULL;
 		}
@@ -473,7 +604,7 @@ public:
 		|| name == cameraShot->GetName() ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetCameraShotList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Rename Camera Shot", "Duplicate name" );
 			return NULL;
 		}
@@ -501,7 +632,7 @@ public:
 		if( ! igdeCommonDialogs::GetString( &pPanel, "Duplicate Camera Shot", "Name:", name ) ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetCameraShotList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Duplicate Camera Shot", "Duplicate name" );
 			return NULL;
 		}
@@ -836,106 +967,6 @@ public:
 
 
 
-class cComboPose : public cBaseComboBoxListener{
-public:
-	cComboPose( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation *conversation ){
-		conversation->SetActivePose( comboBox.GetSelectedItem()
-			? ( cePose* )comboBox.GetSelectedItem()->GetData() : NULL );
-		return NULL;
-	}
-};
-
-class cActionPoseAdd : public cBaseAction{
-public:
-	cActionPoseAdd( ceWPConversation &panel ) : cBaseAction( panel, "Add...",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Pose" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		decString name( "Pose" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Pose", "Name:", name ) ){
-			return NULL;
-		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Pose", "Duplicate name" );
-			return NULL;
-		}
-		
-		deObjectReference pose;
-		pose.TakeOver( new cePose( name ) );
-		return new ceUCPoseAdd( conversation, ( cePose* )( deObject* )pose );
-	}
-};
-
-class cActionPoseRemove : public cBaseAction{
-public:
-	cActionPoseRemove( ceWPConversation &panel ) : cBaseAction( panel, "Remove",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove Pose" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation* ){
-		return pPanel.GetPose() ? new ceUCPoseRemove( pPanel.GetPose() ) : NULL;
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetPose() );
-	}
-};
-
-class cActionPoseRename : public cBaseAction{
-public:
-	cActionPoseRename( ceWPConversation &panel ) : cBaseAction( panel,
-	"Rename...", NULL, "Rename Pose" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		cePose * const pose = pPanel.GetPose();
-		if( ! pose ){
-			return NULL;
-		}
-		
-		decString name( pose->GetName() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Pose", "Name:", name ) 
-		|| name == pose->GetName() ){
-			return NULL;
-		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename Pose", "Duplicate name" );
-			return NULL;
-		}
-		
-		return new ceUCPoseSetName( pose, name );
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetPose() );
-	}
-};
-
-class cActionPoseMenu : public cBaseActionContextMenu{
-public:
-	cActionPoseMenu( ceWPConversation &panel ) : cBaseActionContextMenu( panel, "Pose menu" ){ }
-	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu, ceConversation* ){
-		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, new cActionPoseAdd( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionPoseRemove( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionPoseRename( pPanel ), true );
-	}
-};
-
-class cComboPoseMove : public cBaseComboBoxListener{
-public:
-	cComboPoseMove( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation* ){
-		cePose * const pose = pPanel.GetPose();
-		return pose && comboBox.GetText() != pose->GetMove()
-			? new ceUCPoseSetMove( pose, comboBox.GetText() ) : NULL;
-	}
-};
-
-
-
 class cComboGesture : public cBaseComboBoxListener{
 public:
 	cComboGesture( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
@@ -1074,7 +1105,7 @@ public:
 		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Face Pose", "Name:", name ) ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetFacePoseList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Add Face Pose", "Duplicate name" );
 			return NULL;
 		}
@@ -1115,7 +1146,7 @@ public:
 		|| name == facePose->GetName() ){
 			return NULL;
 		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
+		if( conversation->GetFacePoseList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Rename Face Pose", "Duplicate name" );
 			return NULL;
 		}
@@ -1147,6 +1178,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeComboBox&, ceConversation* ){
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if( facePose ){
+			pPanel.UpdateFPController();
 		}
 		return NULL;
 	}
@@ -1229,138 +1261,6 @@ public:
 	}
 };
 
-
-
-class cComboLookAt : public cBaseComboBoxListener{
-public:
-	cComboLookAt( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation *conversation ){
-		conversation->SetActiveLookAt( comboBox.GetSelectedItem()
-			? ( ceLookAt* )comboBox.GetSelectedItem()->GetData() : NULL );
-		return NULL;
-	}
-};
-
-class cActionLookAtAdd : public cBaseAction{
-public:
-	cActionLookAtAdd( ceWPConversation &panel ) : cBaseAction( panel, "Add...",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		decString name( "Look-At" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Look-At", "Name:", name ) ){
-			return NULL;
-		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		deObjectReference lookAt;
-		lookAt.TakeOver( new ceLookAt( name ) );
-		return new ceUCLookAtAdd( conversation, ( ceLookAt* )( deObject* )lookAt );
-	}
-};
-
-class cActionLookAtRemove : public cBaseAction{
-public:
-	cActionLookAtRemove( ceWPConversation &panel ) : cBaseAction( panel, "Remove",
-	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation* ){
-		return pPanel.GetLookAt() ? new ceUCLookAtRemove( pPanel.GetLookAt() ) : NULL;
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtRename : public cBaseAction{
-public:
-	cActionLookAtRename( ceWPConversation &panel ) : cBaseAction( panel,
-	"Rename...", NULL, "Rename Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		if( ! lookAt ){
-			return NULL;
-		}
-		
-		decString name( lookAt->GetName() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Look-At", "Name:", name ) 
-		|| name == lookAt->GetName() ){
-			return NULL;
-		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		return new ceUCLookAtSetName( lookAt, name );
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtDuplicate : public cBaseAction{
-public:
-	cActionLookAtDuplicate( ceWPConversation &panel ) : cBaseAction( panel,
-	"Duplicate...", NULL, "Duplicate Look-At" ){ }
-	
-	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		if( ! lookAt ){
-			return NULL;
-		}
-		
-		decString name( lookAt->GetName() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Duplicate Look-At", "Name:", name ) ){
-			return NULL;
-		}
-		if( conversation->GetGestureList().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Duplicate Look-At", "Duplicate name" );
-			return NULL;
-		}
-		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new ceLookAt( *lookAt ) );
-		( ( ceLookAt& )( deObject& )duplicate ).SetName( name );
-		return new ceUCLookAtAdd( conversation, ( ceLookAt* )( deObject* )duplicate );
-	}
-	
-	virtual void Update( const ceConversation & ){
-		SetEnabled( pPanel.GetLookAt() );
-	}
-};
-
-class cActionLookAtMenu : public cBaseActionContextMenu{
-public:
-	cActionLookAtMenu( ceWPConversation &panel ) : cBaseActionContextMenu( panel, "Look-At menu" ){ }
-	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu, ceConversation* ){
-		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, new cActionLookAtAdd( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtRemove( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtRename( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionLookAtDuplicate( pPanel ), true );
-	}
-};
-
-class cComboLookAtTarget : public cBaseComboBoxListener{
-public:
-	cComboLookAtTarget( ceWPConversation &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation* ){
-		ceLookAt * const lookAt = pPanel.GetLookAt();
-		return lookAt && comboBox.GetText() != lookAt->GetTarget()
-			? new ceUCLookAtSetTarget( lookAt, comboBox.GetText() ) : NULL;
-	}
-};
-
 }
 
 
@@ -1386,6 +1286,17 @@ pConversation( NULL )
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	AddChild( content );
+	
+	
+	// import conversation
+	helper.GroupBoxFlow( content, groupBox, "Import Conversation:", true, true );
+	
+	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
+	helper.EditPath( formLine, "Path to add to import list", *windowProperties.GetWindowMain()
+		.GetLoadSaveSystem().GetConversationFilePatterns(), pPathImportConvo, NULL );
+	helper.Button( formLine, new cActionImportConvoAdd( *this ), true );
+	groupBox->AddChild( formLine );
+	helper.ListBox( groupBox, 3, "Imported conversations", pListImportConvoPath, new cListImportConvo( *this ) );
 	
 	
 	// targets
@@ -1497,21 +1408,6 @@ pConversation( NULL )
 	helper.CheckBox( groupBox2, pChkCShotLockLookAtTarget, new cActionCShotLockLookAtTarget( *this ), true );
 	
 	
-	// poses
-	helper.GroupBox( content, groupBox, "Poses:", true );
-	
-	helper.FormLineStretchFirst( groupBox, "Pose:", "Pose to edit", formLine );
-	helper.ComboBoxFilter( formLine, "Pose to edit", pCBPose, new cComboPose( *this ) );
-	pCBPose->SetDefaultSorter();
-	actionContextMenu = new cActionPoseMenu( *this );
-	helper.Button( formLine, pBtnPose, actionContextMenu, true );
-	actionContextMenu->SetWidget( pBtnPose );
-	
-	helper.ComboBoxFilter( groupBox, "Move:", true, "Move to use for this pose",
-		pCBPoseMove, new cComboPoseMove( *this ) );
-	pCBPoseMove->SetDefaultSorter();
-	
-	
 	// gestures
 	helper.GroupBox( content, groupBox, "Gestures:", true );
 	
@@ -1544,23 +1440,8 @@ pConversation( NULL )
 	helper.Button( formLine, pBtnFPController, actionContextMenu, true );
 	actionContextMenu->SetWidget( pBtnFPController );
 	
-	helper.EditFloat( groupBox2, "Value:", "Value of face pose controller",
+	helper.EditFloat( groupBox, "Value:", "Value of face pose controller",
 		pEditFPControllerValue, new cTextFPControllerValue( *this ) );
-	
-	
-	// lookAts
-	helper.GroupBox( content, groupBox, "Look-At:", true );
-	
-	helper.FormLineStretchFirst( groupBox, "Look-At:", "Look-At to edit", formLine );
-	helper.ComboBoxFilter( formLine, "Look-At to edit", pCBLookAt, new cComboLookAt( *this ) );
-	pCBLookAt->SetDefaultSorter();
-	actionContextMenu = new cActionLookAtMenu( *this );
-	helper.Button( formLine, pBtnLookAt, actionContextMenu, true );
-	actionContextMenu->SetWidget( pBtnLookAt );
-	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "ID of the target to use for this Look-At",
-		pCBLookAtTarget, new cComboLookAtTarget( *this ) );
-	pCBLookAtTarget->SetDefaultSorter();
 }
 
 ceWPConversation::~ceWPConversation(){
@@ -1607,10 +1488,8 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 	UpdateTargetList();
 	UpdateCameraShotList();
 	UpdateConversation();
-	UpdatePoseList();
 	UpdateGestureList();
 	UpdateFacePoseList();
-	UpdateLookAtList();
 	
 	UpdateActorIDLists();
 }
@@ -1618,55 +1497,39 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 
 
 void ceWPConversation::UpdateConversation(){
+	UpdateImportConvoPathList();
 }
 
 
 
-cePose *ceWPConversation::GetPose() const{
-	return pConversation ? pConversation->GetActivePose() : NULL;
-}
-
-void ceWPConversation::UpdatePoseList(){
-	cePose * const selection = GetPose();
+void ceWPConversation::UpdateImportConvoPathList(){
+	const decString selection( GetImportConvo() );
 	
-	pCBPose->RemoveAllItems();
+	pListImportConvoPath->RemoveAllItems();
 	
 	if( pConversation ){
-		const cePoseList &list = pConversation->GetPoseList();
+		const decStringList &list = pConversation->GetImportConversationPath();
 		const int count = list.GetCount();
 		int i;
-		
 		for( i=0; i<count; i++ ){
-			cePose * const pose = list.GetAt( i );
-			pCBPose->AddItem( pose->GetName(), NULL, pose );
+			pListImportConvoPath->AddItem( list.GetAt( i ) );
 		}
-		
-		pCBPose->SortItems();
 	}
 	
-	if( pConversation ){
-		pConversation->SetActivePose( selection );
+	if( ! selection.IsEmpty() ){
+		pListImportConvoPath->SetSelection( pListImportConvoPath->IndexOfItem( selection ) );
+	}
+	if( pListImportConvoPath->GetSelection() == -1 && pListImportConvoPath->GetItemCount() > 0 ){
+		pListImportConvoPath->SetSelection( 0 );
 	}
 }
 
-void ceWPConversation::SelectActivePose(){
-	pCBPose->SetSelectionWithData( GetPose() );
-	
-	const bool enabled = GetPose();
-	pCBPoseMove->SetEnabled( enabled );
-	
-	if( ! enabled ){
-		pCBPoseMove->ClearText();
-	}
-	
-	UpdatePose();
+const decString & ceWPConversation::GetPathImportConvo() const{
+	return pPathImportConvo->GetPath();
 }
 
-void ceWPConversation::UpdatePose(){
-	cePose * const pose = GetPose();
-	if( pose ){
-		pCBPoseMove->SetText( pose->GetMove() );
-	}
+decString ceWPConversation::GetImportConvo() const{
+	return pListImportConvoPath->GetSelectedItem() ? pListImportConvoPath->GetSelectedItem()->GetText() : "";
 }
 
 
@@ -1754,11 +1617,9 @@ void ceWPConversation::SelectActiveFacePose(){
 	
 	const bool enabled = GetFacePose();
 	pCBFPController->SetEnabled( enabled );
-	pEditFPControllerValue->SetEnabled( enabled );
 	
 	if( ! enabled ){
 		pCBFPController->ClearText();
-		pEditFPControllerValue->ClearText();
 	}
 	
 	UpdateFacePose();
@@ -1803,6 +1664,9 @@ void ceWPConversation::UpdateFPControllerList(){
 	}
 	
 	pCBFPController->SetSelectionWithData( controller );
+	if( pCBFPController->GetSelection() == -1 && pCBFPController->GetItemCount() > 0 ){
+		pCBFPController->SetSelection( 0 );
+	}
 	UpdateFPController();
 }
 
@@ -1969,14 +1833,12 @@ void ceWPConversation::UpdateTargetList(){
 	// update lists containing targets
 	const decString selCShotCamera( pCBCameraShotCameraTarget->GetText() );
 	const decString selCShotLookAt( pCBCameraShotLookAtTarget->GetText() );
-	const decString selLookAt( pCBLookAtTarget->GetText() );
 	
 	pCBCameraShotCameraTarget->RemoveAllItems();
 	pCBCameraShotLookAtTarget->RemoveAllItems();
-	pCBLookAtTarget->RemoveAllItems();
 	
 	if( pConversation ){
-		const ceTargetList &list = pConversation->GetTargetList();
+		const ceTargetList list( pConversation->AllTargets() );
 		const int count = list.GetCount();
 		int i;
 		
@@ -1986,21 +1848,17 @@ void ceWPConversation::UpdateTargetList(){
 			}
 			pCBCameraShotCameraTarget->AddItem( list.GetAt( i )->GetName() );
 			pCBCameraShotLookAtTarget->AddItem( list.GetAt( i )->GetName() );
-			pCBLookAtTarget->AddItem( list.GetAt( i )->GetName() );
 		}
 		
 		pCBCameraShotCameraTarget->SortItems();
 		pCBCameraShotLookAtTarget->SortItems();
-		pCBLookAtTarget->SortItems();
 	}
 	
 	pCBCameraShotCameraTarget->StoreFilterItems();
 	pCBCameraShotLookAtTarget->StoreFilterItems();
-	pCBLookAtTarget->StoreFilterItems();
 	
 	pCBCameraShotCameraTarget->SetText( selCShotCamera );
 	pCBCameraShotLookAtTarget->SetText( selCShotLookAt );
-	pCBLookAtTarget->SetText( selLookAt );
 }
 
 void ceWPConversation::SelectActiveTarget(){
@@ -2032,49 +1890,6 @@ void ceWPConversation::UpdateTarget(){
 		pEditTargetBone->SetText( target->GetBone() );
 		pEditTargetPosition->SetVector( target->GetPosition() );
 		pEditTargetOrientation->SetVector( target->GetOrientation() );
-	}
-}
-
-
-
-ceLookAt *ceWPConversation::GetLookAt() const{
-	return pConversation ? pConversation->GetActiveLookAt() : NULL;
-}
-
-void ceWPConversation::UpdateLookAtList(){
-	ceLookAt * const selection = GetLookAt();
-	
-	pCBLookAt->RemoveAllItems();
-	
-	if( pConversation ){
-		const ceLookAtList &list = pConversation->GetLookAtList();
-		const int count = list.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			ceLookAt * const lookat = list.GetAt( i );
-			pCBLookAt->AddItem( lookat->GetName(), NULL, lookat );
-		}
-		
-		pCBLookAt->SortItems();
-	}
-	
-	if( pConversation ){
-		pConversation->SetActiveLookAt( selection );
-	}
-}
-
-void ceWPConversation::SelectActiveLookAt(){
-	pCBLookAt->SetSelectionWithData( GetLookAt() );
-	pCBLookAtTarget->SetEnabled( GetLookAt() );
-	UpdateLookAt();
-}
-
-void ceWPConversation::UpdateLookAt(){
-	const ceLookAt * const lookAt = GetLookAt();
-	
-	if( lookAt ){
-		pCBLookAtTarget->SetText( lookAt->GetTarget() );
 	}
 }
 

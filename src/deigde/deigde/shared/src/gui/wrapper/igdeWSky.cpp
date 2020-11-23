@@ -149,14 +149,18 @@ void igdeWSky::SetGDSky( igdeGDSky *gdsky ){
 		return;
 	}
 	
-	pGDSky = gdsky;
-	
 	if( gdsky ){
 		pLoadSky( gdsky->GetPath() );
 		
 	}else{
 		SetSky( NULL );
 	}
+	
+	// SetSky sets pGDSky to NULL if sky is different from the sky in the sky instance.
+	// pLoadSky calls SetSky so the same problem applies to both code path. By setting
+	// the sky after these calls are done it is ensured pGDSky is not suddenly NULL
+	// although it should not be NULL
+	pGDSky = gdsky;
 }
 
 void igdeWSky::SetPath( const char *path ){

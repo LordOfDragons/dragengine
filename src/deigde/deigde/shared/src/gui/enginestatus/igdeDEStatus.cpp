@@ -117,7 +117,7 @@ pDialogEngine( dialogEngine )
 		igdeUIHelper::sColumnHeader( "Active Module", NULL, 200 ),
 		igdeUIHelper::sColumnHeader( "Status", NULL, 150 )
 	};
-	helper.IconListBox( groupBox, pListSystems, 10, columns, 3, "System Status", NULL );
+	helper.IconListBox( groupBox, pListSystems, decPoint( 100, 150 ), columns, 3, "System Status", NULL );
 	
 	pAddSystem( GetEngine()->GetGraphicSystem() );
 	pAddSystem( GetEngine()->GetAudioSystem() );

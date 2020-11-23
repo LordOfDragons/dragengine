@@ -55,6 +55,10 @@ void ceWPViewListener::ConversationChanged( ceConversation *conversation ){
 	}
 	
 	pPanel.UpdateView();
+	
+	// if imports changed
+	pPanel.UpdatePlaybackFileList();
+	pPanel.UpdatePlaybackTopicList();
 }
 
 void ceWPViewListener::SkyChanged( ceConversation *conversation ){

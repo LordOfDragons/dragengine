@@ -133,12 +133,10 @@ void igdeTriggerTargetList::RemoveAll(){
 
 void igdeTriggerTargetList::RemoveUnused(){
 	const int count = pTargets.GetCount();
-	igdeTriggerTarget *target;
 	int i;
 	
 	for( i=count-1; i>=0; i-- ){
-		target = ( igdeTriggerTarget* )pTargets.GetAt( i );
-		
+		igdeTriggerTarget * const target = ( igdeTriggerTarget* )pTargets.GetAt( i );
 		if( target->GetRefCount() == 1 ){
 			pTargets.Remove( target );
 		}

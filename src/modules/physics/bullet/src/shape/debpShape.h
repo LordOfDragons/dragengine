@@ -95,6 +95,7 @@ public:
 	
 protected:
 	void SetCollisionVolume( debpDCollisionVolume *collisionVolume );
+	static float UniformScale( const decDMatrix &matrix );
 };
 
 #endif

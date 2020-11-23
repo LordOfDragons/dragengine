@@ -35,7 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDCComponent::igdeGDCComponent(){
+igdeGDCComponent::igdeGDCComponent() :
+pLightShadowIgnore( false )
+{
 	pDoNotScale = false;
 	pStatic = true;
 	pPartialHide = false;
@@ -59,13 +61,14 @@ pRenderEnvMap( component.pRenderEnvMap ),
 pAffectsAudio( component.pAffectsAudio ),
 pPartialHide( component.pPartialHide ),
 pAttachTarget( component.pAttachTarget ),
+pLightShadowIgnore( component.pLightShadowIgnore ),
 pColliderResponseType( component.pColliderResponseType ),
 pPosition( component.pPosition ),
 pOrientation( component.pOrientation ),
 pBoneName( component.pBoneName )
 {
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
+	for( i=0; i<=epLightShadowIgnore; i++ ){
 		pPropertyNames[ i ] = component.pPropertyNames[ i ];
 	}
 	
@@ -136,6 +139,10 @@ void igdeGDCComponent::SetAffectsAudio( bool affectsAudio ){
 	pAffectsAudio = affectsAudio;
 }
 
+void igdeGDCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+	pLightShadowIgnore = lightShadowIgnore;
+}
+
 void igdeGDCComponent::SetPosition( const decDVector &position ){
 	pPosition = position;
 }
@@ -164,7 +171,7 @@ void igdeGDCComponent::SetPropertyName( int property, const char *name ){
 
 bool igdeGDCComponent::HasPropertyWithName( const char *name ) const{
 	int j;
-	for( j=0; j<=epAttachRotation; j++ ){
+	for( j=0; j<=epLightShadowIgnore; j++ ){
 		if( pPropertyNames[ j ] == name ){
 			return true;
 		}

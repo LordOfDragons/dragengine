@@ -465,6 +465,9 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 			}else if( tagName == "affectsAudio" ){
 				component->SetAffectsAudio( GetCDataBool( *tag ) );
 				
+			}else if( tagName == "lightShadowIgnore" ){
+				component->SetLightShadowIgnore( GetCDataBool( *tag ) );
+				
 			}else if( tagName == "position" ){
 				decVector position;
 				ReadVector( *tag, position );
@@ -516,6 +519,9 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 					
 				}else if( strcmp( value, "attachRotation" ) == 0 ){
 					component->SetPropertyName( igdeGDCComponent::epAttachRotation, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "lightShadowIgnore" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epLightShadowIgnore, GetAttributeString( *tag, "property" ) );
 					
 				}else{
 					LogWarnUnknownValue( *tag, value );
@@ -1497,6 +1503,22 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace( const decXmlElementTag &
 				
 			}else if( tagName == "layer" ){
 				gdcNavSpace->SetLayer( GetCDataInt( *tag ) );
+				
+			}else if( tagName == "type" ){
+				const char * const value = GetCDataString( *tag );
+				
+				if( strcmp( value, "grid" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estGrid );
+					
+				}else if( strcmp( value, "mesh" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estMesh );
+					
+				}else if( strcmp( value, "volume" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estVolume );
+					
+				}else{
+					LogWarnUnknownValue( *tag, value );
+				}
 				
 			}else if( tagName == "blockingPriority" ){
 				gdcNavSpace->SetBlockingPriority( GetCDataInt( *tag ) );

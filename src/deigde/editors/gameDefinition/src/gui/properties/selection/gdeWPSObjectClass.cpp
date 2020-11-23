@@ -828,8 +828,8 @@ pGameDefinition( NULL )
 		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pListPropertyValues, 5, headersPropertyValues, 2,
-		"Property values", new cListPropertyValues( *this ) );
+	helper.IconListBox( groupBox, pListPropertyValues, decPoint( 100, 120 ),
+		headersPropertyValues, 2, "Property values", new cListPropertyValues( *this ) );
 	pListPropertyValues->SetDefaultSorter();
 	
 	

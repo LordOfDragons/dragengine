@@ -545,8 +545,8 @@ public:
 			list.Add( missingWords.GetAt( i ) );
 		}
 		decString result( list.Join( "\n" ) );
-		igdeCommonDialogs::GetMultilineString( &pPanel, "Missing Words",
-			"Missing words found in topic", result );
+		igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Missing Words", "Missing words found in topic", result );
 	}
 	
 	virtual void Update(){
@@ -986,7 +986,6 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
-	UpdateLookAtLists();
 }
 
 
@@ -1402,9 +1401,6 @@ void ceWPTopic::UpdateActorLists(){
 
 void ceWPTopic::UpdateTargetLists(){
 	pPanelACameraShot->UpdateTargetList();
-}
-
-void ceWPTopic::UpdateLookAtLists(){
 }
 
 void ceWPTopic::UpdateConvoCoordSysLists(){

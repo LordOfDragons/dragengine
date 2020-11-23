@@ -179,6 +179,12 @@ void deCamera::NotifyLayerMaskChanged(){
 	}
 }
 
+void deCamera::ResetAdaptedIntensity(){
+	if( pPeerGraphic ){
+		pPeerGraphic->ResetAdaptedIntensity();
+	}
+}
+
 
 
 // Effects

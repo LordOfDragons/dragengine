@@ -112,9 +112,9 @@ ceDialogPasteSnippet::~ceDialogPasteSnippet(){
 ///////////////
 
 void ceDialogPasteSnippet::UpdateCameraShotLists(){
+	const ceCameraShotList list( pConversation->AllCameraShots() );
 	const decString selection1( pCBCameraShot1->GetText() );
 	const decString selection2( pCBCameraShot2->GetText() );
-	const ceCameraShotList &list = pConversation->GetCameraShotList();
 	const int count = list.GetCount();
 	int i;
 	
@@ -138,9 +138,9 @@ void ceDialogPasteSnippet::UpdateCameraShotLists(){
 }
 
 void ceDialogPasteSnippet::UpdateTargetLists(){
+	const ceTargetList list( pConversation->AllTargets() );
 	const decString &selection1( pCBTarget1->GetText() );
 	const decString &selection2( pCBTarget2->GetText() );
-	const ceTargetList &list = pConversation->GetTargetList();
 	const int count = list.GetCount();
 	int i;
 	

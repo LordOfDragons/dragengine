@@ -39,6 +39,7 @@ gdeOCNavigationSpace::gdeOCNavigationSpace() :
 pLayer( 0 ),
 pSnapDistance( 0.001f ),
 pSnapAngle( 180.0 ),
+pType( deNavigationSpace::estMesh ),
 pBlockingPriority( 0 ){
 }
 
@@ -50,6 +51,7 @@ pBoneName( space.pBoneName ),
 pLayer( space.pLayer ),
 pSnapDistance( space. pSnapDistance ),
 pSnapAngle( space.pSnapAngle ),
+pType( space.pType ),
 pBlockingPriority( space.pBlockingPriority ),
 pBlockerShapeList( space.pBlockerShapeList )
 {
@@ -88,6 +90,10 @@ void gdeOCNavigationSpace::SetBoneName( const char *boneName ){
 
 void gdeOCNavigationSpace::SetLayer( int layer ){
 	pLayer = layer;
+}
+
+void gdeOCNavigationSpace::SetType( deNavigationSpace::eSpaceTypes type ){
+	pType = type;
 }
 
 void gdeOCNavigationSpace::SetBlockingPriority( int priority ){
