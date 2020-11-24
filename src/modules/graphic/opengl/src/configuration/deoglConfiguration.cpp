@@ -51,7 +51,7 @@ pDebugUseShadow( true ),
 pDebugShowCB( false ),
 pDebugWireframe( false ),
 pDebugUVSplitter( true ),
-pDebugPrintSkyUpdate( true ),
+pDebugPrintSkyUpdate( false ),
 pShowLightCB( false ),
 
 pShadowMapSize( 1024 ),
@@ -82,6 +82,7 @@ pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
+pHDRRSceneKey( 0.18f ),
 pRenderDownScale( 1 ),
 pUseInverseDepth( true ),
 
@@ -525,6 +526,14 @@ void deoglConfiguration::SetHDRRMaximumIntensity( float maximumIntensity ){
 		return;
 	}
 	pHDRRMaxIntensity = maximumIntensity;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetHDRRSceneKey( float key ){
+	if( fabsf( key - pHDRRSceneKey ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	pHDRRSceneKey = key;
 	pDirty = true;
 }
 

@@ -97,12 +97,13 @@ void igdeWOSONavigationSpace::Visit( igdeWOSOVisitor &visitor ){
 void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	if( ! pNavigationSpace ){
 		pNavigationSpace.TakeOver( GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace() );
+		pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
 	}
 	
 	decString pathNavSpace( GetStringProperty(
 		pGDNavigationSpace.GetPropertyName( igdeGDCNavigationSpace::epPath ),
 		pGDNavigationSpace.GetPath() ) );
-	
+		
 	if( pathNavSpace != pPathNavigationSpace ){
 		pNavigationSpace->SetRoomCount( 0 );
 		pNavigationSpace->SetWallCount( 0 );
@@ -110,7 +111,7 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 		pNavigationSpace->SetCornerCount( 0 );
 		pNavigationSpace->SetEdgeCount( 0 );
 		pNavigationSpace->SetVertexCount( 0 );
-		pNavigationSpace->SetType( deNavigationSpace::estGrid );
+		pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
 		
 		if( ! pathNavSpace.IsEmpty() ){
 			igdeLoadSaveNavSpace loadNavSpace( &GetEnvironment(), "DEIGDE" );
@@ -130,7 +131,7 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 					pNavigationSpace->SetCornerCount( 0 );
 					pNavigationSpace->SetEdgeCount( 0 );
 					pNavigationSpace->SetVertexCount( 0 );
-					pNavigationSpace->SetType( deNavigationSpace::estGrid );
+					pNavigationSpace->SetType( pGDNavigationSpace.GetType() );
 					GetLogger().LogException( "DEIGDE", e );
 				}
 			}

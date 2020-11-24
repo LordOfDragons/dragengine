@@ -30,6 +30,7 @@ class Effect
 	/*@{*/
 	/** \brief Effect is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if effect is enabled. */
@@ -44,6 +45,7 @@ class Effect
 	 * \returns \em true if \em other is of type Effect and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -51,6 +53,7 @@ class Effect
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

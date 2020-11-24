@@ -58,7 +58,19 @@ void ceWPTTIMAActorSpeak::Update(){
 	const ceCAActorSpeak &action = *GetActionActorSpeak();
 	decString text;
 	
-	text.Format( "Actor Speak (%s)", action.GetActor().GetString() );
+	text.Format( "%s: ", action.GetActor().GetString() );
+	
+	const decString tbtext( action.GetTextBoxText().ToUTF8() );
+	if( ! tbtext.IsEmpty() ){
+		const decString lineTBText( tbtext.Split( '\n' ).GetAt( 0 ) );
+		
+		if( lineTBText.GetLength() > 40 ){
+			text += lineTBText.GetLeft( 40 ) + "...";
+			
+		}else{
+			text += lineTBText;
+		}
+	}
 	
 	SetText( text );
 }

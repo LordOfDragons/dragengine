@@ -71,6 +71,7 @@ private:
 	igdeActionExternOpenReference pActionShowContent;
 	igdeActionExternOpenReference pActionShowConfig;
 	igdeActionExternOpenReference pActionShowOverlay;
+	igdeActionExternOpenReference pActionShowCapture;
 	igdeActionExternOpenReference pActionShowLogs;
 	
 	igdeIconReference pIconStart;
@@ -127,6 +128,7 @@ public:
 	inline igdeActionExternOpen *GetActionShowContent() const{ return pActionShowContent; }
 	inline igdeActionExternOpen *GetActionShowConfig() const{ return pActionShowConfig; }
 	inline igdeActionExternOpen *GetActionShowOverlay() const{ return pActionShowOverlay; }
+	inline igdeActionExternOpen *GetActionShowCapture() const{ return pActionShowCapture; }
 	inline igdeActionExternOpen *GetActionShowLogs() const{ return pActionShowLogs; }
 	
 	inline igdeIcon *GetIconStart() const{ return pIconStart; }

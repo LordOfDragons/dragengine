@@ -27,6 +27,7 @@ class ParticleEmitterInstance
 	/*@{*/
 	/** \brief Pparticle emitter or \em null if not set. */
 	public func ParticleEmitter getEmitter()
+		return null
 	end
 	
 	/**
@@ -40,6 +41,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -48,6 +50,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -56,6 +59,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Casting particles is enabled. */
 	public func bool getEnableCasting()
+		return false
 	end
 	
 	/** \brief Set if casting particles is enabled. */
@@ -64,6 +68,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Emitter instance is removed from the world if the last particle died. */
 	public func bool getRemoveAfterLastParticleDied()
+		return false
 	end
 	
 	/** \brief Set if the emitter instance is removed from the world if the last particle died. */
@@ -72,6 +77,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Scaling for the time to be added to controllers linked to time. */
 	public func float getTimeScale()
+		return 0.0
 	end
 	
 	/** \brief Set scaling for the time to be added to controllers linked to time. */
@@ -82,6 +88,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Rendr layer mask. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set render layer mask. */
@@ -90,6 +97,7 @@ class ParticleEmitterInstance
 		
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
@@ -110,6 +118,7 @@ class ParticleEmitterInstance
 	
 	/** \brief Listener or \em null if not set. */
 	public func ParticleEmitterInstanceListener getListener()
+		return null
 	end
 	
 	/** \brief Set listener or \em null if not set. */
@@ -126,6 +135,7 @@ class ParticleEmitterInstance
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
 	 */
 	public func Component getTypeComponent( int type )
+		return null
 	end
 	
 	/**
@@ -140,6 +150,7 @@ class ParticleEmitterInstance
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to emitter instance type count.
 	 */
 	public func DynamicSkin getTypeDynamicSkin( int type )
+		return null
 	end
 	
 	/**
@@ -156,6 +167,7 @@ class ParticleEmitterInstance
 	/*@{*/
 	/** \brief Nnumber of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -170,6 +182,7 @@ class ParticleEmitterInstance
 	 *                        than or equal to getControllerCount().
 	 */
 	public func ParticleEmitterController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -182,10 +195,12 @@ class ParticleEmitterInstance
 	 *             \em null is returned.
 	 */
 	public func ParticleEmitterController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	
 	/**
@@ -194,6 +209,7 @@ class ParticleEmitterInstance
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
 	public func void copyControllerStates( ParticleEmitterInstance instance, int count )
+	end
 	
 	/**
 	 * \brief Copy the first count controller values and vectors from another particle emitter instance.
@@ -209,5 +225,6 @@ class ParticleEmitterInstance
 	 * \details Non-matching controllers are ignored.
 	 */
 	public func void copyNamedControllerStates( ParticleEmitterInstance instance )
+	end
 	/*@}*/
 end

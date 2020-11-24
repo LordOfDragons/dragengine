@@ -156,7 +156,8 @@ void deClassColliderRig::nfAttachBone2::RunFunction( dsRunTime *rt, dsValue *mys
 		DSTHROW( dueNullPointer );
 	}
 	
-	ds.GetClassCollider()->AttachBone( collider, resource, targetBone, position, orientation );
+	ds.GetClassCollider()->AttachBone( collider, resource, targetBone,
+		position, orientation, deClassCollider::GetResourceScale( *resource ) );
 }
 
 // public func void attachWeight( Object resource, CollisionInfo colInfo )

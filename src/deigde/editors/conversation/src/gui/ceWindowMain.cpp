@@ -676,6 +676,7 @@ void ceWindowMain::pLoadIcons(){
 	pIconActionOption.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_option.png" ) );
 	pIconActionSnippet.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_snippet.png" ) );
 	pIconActionStop.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_stop.png" ) );
+	pIconActionActorCommand.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_actor_command.png" ) );
 	pIconActionCommand.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_command.png" ) );
 	pIconActionVariable.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_variable.png" ) );
 	pIconActionWait.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_wait.png" ) );
@@ -687,6 +688,7 @@ void ceWindowMain::pLoadIcons(){
 	pIconActionComment.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_comment.png" ) );
 	
 	pIconConditionLogic.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/condition_logic.png" ) );
+	pIconConditionActorCommand.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_actor_command.png" ) );
 	pIconConditionCommand.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_command.png" ) );
 	pIconConditionVariable.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/action_variable.png" ) );
 	pIconConditionHasActor.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/condition_hasactor.png" ) );

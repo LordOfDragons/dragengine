@@ -79,7 +79,7 @@ void ceWDSLaneFacePose::FillIDList( decStringList &list ){
 		return;
 	}
 	
-	const ceFacePoseList &facePoseList = GetWindow().GetConversation()->GetFacePoseList();
+	const ceFacePoseList facePoseList( GetWindow().GetConversation()->AllFacePoses() );
 	const int facePoseCount = facePoseList.GetCount();
 	int i;
 	for( i=0; i<facePoseCount; i++ ){

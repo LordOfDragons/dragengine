@@ -103,7 +103,12 @@ pTextureOcclusion( NULL ),
 pFBOAmbient( NULL ),
 pTextureAmbient( NULL ),
 pForeignTexAmbient( NULL ),
-pUseTexAmbient( NULL ){
+pUseTexAmbient( NULL ),
+
+pFBOCubeAmbient( NULL ),
+pCubeMapAmbient( NULL ),
+pForeignCubeMapAmbient( NULL ),
+pUseCubeMapAmbient( NULL ){
 }
 
 deoglShadowMapper::~deoglShadowMapper(){
@@ -319,7 +324,6 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
-
 
 
 
@@ -1161,13 +1165,18 @@ void deoglShadowMapper::DropForeignAmbientTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateAmbientTexture( int size ){
+void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignTexAmbient && pForeignTexAmbient->GetWidth() != size ){
-		DropAmbientTextures();
+	if( pForeignTexAmbient ){
+		if( pForeignTexAmbient->GetWidth() != size
+		|| pForeignTexAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+			DropAmbientTextures();
+		}
 	}
-	if( pTextureAmbient && pTextureAmbient->GetWidth() != size ){
-		DropAmbientTextures();
+	if( pTextureAmbient ){
+		if( pTextureAmbient->GetWidth() != size || pTextureAmbient->GetUseFloat() != useFloatDepth ){
+			DropAmbientTextures();
+		}
 	}
 	
 	// obtain a framebuffer for this size if not existing already
@@ -1177,7 +1186,8 @@ void deoglShadowMapper::ActivateAmbientTexture( int size ){
 	
 	// obtain ambient texture if not existing already
 	if( ! pTextureAmbient && ! pForeignTexAmbient ){
-		pTextureAmbient = pRenderThread.GetTexture().GetRenderableColorTexture().GetTextureWith( size, size, 1, false );
+		pTextureAmbient = pRenderThread.GetTexture().GetRenderableDepthTexture()
+			.GetTextureWith( size, size, false, useFloatDepth );
 		pUseTexAmbient = pTextureAmbient->GetTexture();
 	}
 	
@@ -1185,13 +1195,125 @@ void deoglShadowMapper::ActivateAmbientTexture( int size ){
 	pRenderThread.GetFramebuffer().Activate( pFBOAmbient );
 	
 	pFBOAmbient->DetachAllImages();
-	pFBOAmbient->AttachColorTexture( 0, pUseTexAmbient );
+	pFBOAmbient->AttachDepthTexture( pUseTexAmbient );
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 	
 	pFBOAmbient->Verify();
+	
+	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+}
+
+
+
+deoglCubeMap *deoglShadowMapper::GetAmbientCubeMap() const{
+	if( ! pCubeMapAmbient ){
+		DETHROW( deeInvalidParam );
+	}
+	return pCubeMapAmbient->GetCubeMap();
+}
+
+void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
+	if( pCubeMapAmbient ){
+		pCubeMapAmbient->SetInUse( false );
+		pCubeMapAmbient = NULL;
+	}
+	
+	pForeignCubeMapAmbient = cubemap;
+	pUseCubeMapAmbient = cubemap;
+}
+
+void deoglShadowMapper::DropAmbientCubeMaps(){
+	if( pFBOCubeAmbient ){
+		pFBOCubeAmbient->DecreaseUsageCount();
+		pFBOCubeAmbient = NULL;
+	}
+	
+	pUseCubeMapAmbient = NULL;
+	pForeignCubeMapAmbient = NULL;
+	if( pCubeMapAmbient ){
+		pCubeMapAmbient->SetInUse( false );
+		pCubeMapAmbient = NULL;
+	}
+}
+
+void deoglShadowMapper::DropForeignAmbientCubeMaps(){
+	if( pForeignCubeMapAmbient ){
+		pForeignCubeMapAmbient = NULL;
+		pUseCubeMapAmbient = NULL;
+	}
+}
+
+void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
+		DropAmbientCubeMaps();
+	}
+	if( pCubeMapAmbient && pCubeMapAmbient->GetSize() != size ){
+		DropAmbientCubeMaps();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCubeAmbient ){
+		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// obtain solid depth cubemap if not existing already
+	if( ! pCubeMapAmbient && ! pForeignCubeMapAmbient ){
+		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCubeAmbient );
+	
+	pFBOCubeAmbient->DetachAllImages();
+	pFBOCubeAmbient->AttachDepthCubeMap( pUseCubeMapAmbient );
+	
+	const GLenum buffers[ 1 ] = { GL_NONE };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	
+	pFBOCubeAmbient->Verify();
+	
+	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+}
+
+void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
+		DropAmbientCubeMaps();
+	}
+	if( pCubeMapAmbient && pCubeMapAmbient->GetSize() != size ){
+		DropAmbientCubeMaps();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCubeAmbient ){
+		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// obtain depth cubemap if not existing already
+	if( ! pCubeMapAmbient && ! pForeignCubeMapAmbient ){
+		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCubeAmbient );
+	
+	pFBOCubeAmbient->DetachAllImages();
+	pFBOCubeAmbient->AttachDepthCubeMapFace( pUseCubeMapAmbient, face );
+	
+	const GLenum buffers[ 1 ] = { GL_NONE };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	
+	pFBOCubeAmbient->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
@@ -1203,6 +1325,7 @@ void deoglShadowMapper::ActivateAmbientTexture( int size ){
 //////////////////////
 
 void deoglShadowMapper::pCleanUp(){
+	DropAmbientCubeMaps();
 	DropAmbientTextures();
 	DropOcclusionTextures();
 	DropArrayTextures();

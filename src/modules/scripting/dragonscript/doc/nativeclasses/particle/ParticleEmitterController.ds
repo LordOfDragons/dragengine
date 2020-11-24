@@ -37,14 +37,17 @@ class ParticleEmitterController
 	/*@{*/
 	/** \brief Owner particle emitter or \em null if not owned by particle emitter. */
 	public func ParticleEmitter getParticleEmitter()
+		return null
 	end
 	
 	/** \brief Onwer particle emitter instance or \em null if not owned by particle emitter instance. */
 	public func ParticleEmitterInstance getParticleEmitterInstance()
+		return null
 	end
 	
 	/** \brief Controller index. */
 	public func int getControllerIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -54,6 +57,7 @@ class ParticleEmitterController
 	/*@{*/
 	/** \brief Name. */
 	public func String getName()
+		return null
 	end
 	
 	/** \brief Set name. */
@@ -62,10 +66,12 @@ class ParticleEmitterController
 	
 	/** \brief Lower limit. */
 	public func float getLower()
+		return 0.0
 	end
 	
 	/** \brief Upper limit. */
 	public func float getUpper()
+		return 0.0
 	end
 	
 	/** \brief Set value range. */
@@ -74,6 +80,7 @@ class ParticleEmitterController
 	
 	/** \brief Value. */
 	public func float getValue()
+		return 0.0
 	end
 	
 	/** \brief Set value. */
@@ -82,6 +89,7 @@ class ParticleEmitterController
 	
 	/** \brief Value mapped from range (minimum..maximum) to range (0..1). */
 	public func float getRelativeValue()
+		return 0.0
 	end
 	
 	/** \brief Set value from range (0..1) mapped to range (minimum..maximum). */
@@ -90,6 +98,7 @@ class ParticleEmitterController
 	
 	/** \brief Controller is frozen. */
 	public func bool getFrozen()
+		return false
 	end
 	
 	/** \brief Set if controller is frozen. */
@@ -98,6 +107,7 @@ class ParticleEmitterController
 	
 	/** \brief Controller value is clamped instead of wrapped around if outside range. */
 	public func bool getClamp()
+		return false
 	end
 	
 	/** \brief Set if controller value is clamped instead of wrapped around if outside range. */
@@ -132,10 +142,12 @@ class ParticleEmitterController
 	
 	/** \brief Controller value is at lower value. */
 	public func bool isAtLower()
+		return false
 	end
 	
 	/** \brief Controller value is at upper value. */
 	public func bool isAtUpper()
+		return false
 	end
 	/*@}*/
 end

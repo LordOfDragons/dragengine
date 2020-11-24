@@ -588,7 +588,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	defren.ActivateFBOColor( false );
+	defren.ActivateFBOColor( false, false );
 	
 	renderThread.GetShader().ActivateShader( pShaderSSSSS );
 	deoglShaderCompiled * const shader = pShaderSSSSS->GetCompiled();
@@ -639,6 +639,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 
 void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
+	deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	
 	pLightPB->MapBuffer();
 	try{
@@ -647,6 +648,10 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
 			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
 			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
+		
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
+			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
+			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();

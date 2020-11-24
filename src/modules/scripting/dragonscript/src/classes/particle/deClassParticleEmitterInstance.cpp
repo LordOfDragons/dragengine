@@ -576,12 +576,12 @@ void deClassParticleEmitterInstance::nfGetListener::RunFunction( dsRunTime *rt, 
 	deScriptingDragonScript &ds = *( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS() );
 	dedsParticleEmitter *peer = ( dedsParticleEmitter* )instance.GetPeerScripting();
 	
-	//if( peer ){
+	if( peer ){
 		rt->PushObject( peer->GetCallback(), ds.GetClassParticleEmitterInstanceListener() );
-	/*	
+		
 	}else{
-		rt->PushObject( NULL, ds.GetClassParticleEmitterListener() );
-	}*/
+		rt->PushObject( NULL, ds.GetClassParticleEmitterInstanceListener() );
+	}
 }
 
 // public func void setListener( PropFieldListener listener )
@@ -592,15 +592,9 @@ deClassParticleEmitterInstance::nfSetListener::nfSetListener( const sInitData &i
 void deClassParticleEmitterInstance::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deParticleEmitterInstance &instance = *( ( ( sPEINatDat* )p_GetNativeData( myself ) )->instance );
 	dedsParticleEmitter *peer = ( dedsParticleEmitter* )instance.GetPeerScripting();
-	
-	/*
-	if( ! peer ){
-		emitter->SetScriptingPeer( new dedsParticleEmitter( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS(), emitter ) );
-		if( ! emitter->GetScriptingPeer() ) DSTHROW( dueOutOfMemory );
+	if( peer ){
+		peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
 	}
-	*/
-	
-	peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
 }
 
 

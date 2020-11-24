@@ -286,31 +286,27 @@ int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) c
 
 
 void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, const decString &propertyName ){
-	if( pWrapper.GetTriggerTable() ){
-		const igdeTriggerExpressionParser parser;
-		decString value;
-		
-		if( GetPropertyValue( propertyName, value ) ){
-			if( ! value.IsEmpty() ){
-				try{
-					trigger.TakeOver( parser.StringToExpression( value ) );
-					
-				}catch( const deException &e ){
-					pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-						"Invalid trigger expression '%s'", value.GetString() );
-				}
-			}
+	const igdeTriggerExpressionReference guard( trigger );
+	trigger = NULL;
+	
+	decString value;
+	if( pWrapper.GetTriggerTable() && GetPropertyValue( propertyName, value ) && ! value.IsEmpty() ){
+		try{
+			const igdeTriggerExpressionParser parser;
+			trigger.TakeOver( parser.StringToExpression( value ) );
 			
-			if( trigger ){
-				trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
-			}
-			
-		}else{
-			pClearTrigger( trigger );
+		}catch( const deException &e ){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
+				"Invalid trigger expression '%s'", value.GetString() );
 		}
 		
-	}else{
-		pClearTrigger( trigger );
+		if( trigger ){
+			trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
+		}
+	}
+	
+	if( guard ){
+		guard->UnlinkTriggerTargets();
 	}
 }
 

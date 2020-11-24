@@ -8,8 +8,6 @@
 
 namespace Dragengine
 
-pin Dragengine.Gui
-
 
 /**
  * \brief String identifier for efficient comparison.
@@ -45,7 +43,17 @@ class StringID
 	/** \name Management */
 	/*@{*/
 	/** \brief String this string identifier represents. */
+	public func String getString()
+		return null
+	end
+	
+	/**
+	 * \brief String this string identifier represents.
+	 * 
+	 * Same as getString() but overwriting Object.toString().
+	 */
 	public func String toString()
+		return null
 	end
 	
 	/**
@@ -55,6 +63,7 @@ class StringID
 	 *          \em other is of type String and matches the string at the table position.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -62,6 +71,7 @@ class StringID
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -71,6 +81,7 @@ class StringID
 	/*@{*/
 	/** \brief Read string identifier from a file reader. */
 	static public func StringID readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write string identifier to a file writer. */

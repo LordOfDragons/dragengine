@@ -35,10 +35,12 @@ class CollisionFilter
 	/*@{*/
 	/** \brief Category. */
 	public func LayerMask getCategory()
+		return null
 	end
 	
 	/** \brief Filter. */
 	public func LayerMask getFilter()
+		return null
 	end
 	
 	/**
@@ -48,6 +50,7 @@ class CollisionFilter
 	 *          for both collision filters.
 	 */
 	public func bool collides( CollisionFilter collisionFilter )
+		return false
 	end
 	
 	/**
@@ -57,12 +60,14 @@ class CollisionFilter
 	 *          collision filters.
 	 */
 	public func bool collidesNot( CollisionFilter collisionFilter )
+		return false
 	end
 	
 	
 	
 	/** \brief Convert to string representation. */
 	public func String toString()
+		return null
 	end
 	
 	/**
@@ -72,6 +77,7 @@ class CollisionFilter
 	 *          set in the filter and category.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -79,6 +85,7 @@ class CollisionFilter
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

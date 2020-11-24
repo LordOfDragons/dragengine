@@ -102,6 +102,10 @@ bool decLayerMask::IsNotEmpty() const{
 	return pMask != 0;
 }
 
+bool decLayerMask::IsFull() const{
+	return ~pMask == 0;
+}
+
 bool decLayerMask::Matches( const decLayerMask &layerMask ) const{
 	return ( pMask & layerMask.pMask ) != 0;
 }

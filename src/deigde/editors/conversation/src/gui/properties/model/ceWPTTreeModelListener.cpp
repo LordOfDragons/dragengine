@@ -93,14 +93,6 @@ void ceWPTTreeModelListener::FacePoseChanged( ceConversation*, ceFacePose* ){
 
 
 
-void ceWPTTreeModelListener::LookAtStructureChanged( ceConversation* ){
-}
-
-void ceWPTTreeModelListener::LookAtChanged( ceConversation*, ceLookAt* ){
-}
-
-
-
 void ceWPTTreeModelListener::FileStructureChanged( ceConversation* ){
 }
 

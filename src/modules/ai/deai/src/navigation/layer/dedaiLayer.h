@@ -30,6 +30,7 @@
 
 class dedaiSpaceMeshFace;
 class dedaiSpaceGridVertex;
+class dedaiSpaceGridEdge;
 class dedaiWorld;
 
 
@@ -102,7 +103,19 @@ public:
 	 * \brief Nearest position inside radius.
 	 * \details Sets position and returns face if found otherwise returns \em NULL.
 	 */
+	dedaiSpaceGridEdge *GetGridNearestPoint( const decDVector &point, float radius,
+		decDVector &nearestPoint, float &nearestLambda );
+	
+	/**
+	 * \brief Nearest position inside radius.
+	 * \details Sets position and returns face if found otherwise returns \em NULL.
+	 */
 	dedaiSpaceMeshFace *GetNavMeshNearestPoint( const decDVector &point, float radius, decDVector &nearest );
+	
+	/**
+	 * \brief Check for line colliding with mesh boundaries.
+	 */
+	bool NavMeshLineCollide( const decDVector &origin, const decVector &direction, float &distance );
 	
 	
 	

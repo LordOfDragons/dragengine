@@ -1,5 +1,4 @@
-precision highp float;
-precision highp int;
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 layout( points ) in;
 layout( triangle_strip, max_vertices=4 ) out;
@@ -8,11 +7,6 @@ uniform mat4 pMatrixProj;
 
 in vec3 vParticle0[ 1 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 1 ]; // red, green, blue, transparency
-
-// some helper definitions to make the code easier to read
-#if defined WITH_REFLECTION || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
 
 out vec2 vTCDiffuse;
 out vec2 vTCNormal;

@@ -65,13 +65,6 @@ public:
 	/** Active camera shot changed. */
 	virtual void ActiveCameraShotChanged( ceConversation *conversation );
 	
-	/** Pose count or order changed. */
-	virtual void PoseStructureChanged( ceConversation *conversation );
-	/** Pose changed. */
-	virtual void PoseChanged( ceConversation *conversation, cePose *pose );
-	/** Active pose changed. */
-	virtual void ActivePoseChanged( ceConversation *conversation );
-	
 	/** Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );
 	/** Gesture changed. */
@@ -87,13 +80,6 @@ public:
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
 	/** Active face pose changed. */
 	virtual void ActiveFacePoseChanged( ceConversation *conversation );
-	
-	/** LookAt count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	/** LookAt changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	/** Active lookat changed. */
-	virtual void ActiveLookAtChanged( ceConversation *conversation );
 	
 	/** Actor count or order changed. */
 	virtual void ActorStructureChanged( ceConversation *conversation );

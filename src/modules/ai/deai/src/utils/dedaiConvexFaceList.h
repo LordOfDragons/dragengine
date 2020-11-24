@@ -72,7 +72,7 @@ public:
 	dedaiConvexFaceList( const dedaiConvexFaceList &list );
 	
 	/** \brief Clean up list. */
-	virtual ~dedaiConvexFaceList();
+	~dedaiConvexFaceList();
 	/*@}*/
 	
 	
@@ -162,15 +162,8 @@ public:
 	
 	/** \name Subclassing */
 	/*@{*/
-	/**
-	 * \brief Create convex face.
-	 * 
-	 * Overwrite to create convex faces of specialized subclasses.
-	 * If face is not NULL it indicates the face this new face is based
-	 * upon. The default implementation creates a convex face of type
-	 *         dedaiConvexFace using normal and marker from face if not NULL.
-	 */
-	virtual dedaiConvexFace *CreateFace( dedaiConvexFace *face );
+	/** \brief Create convex face. */
+	dedaiConvexFace *CreateFace( int marker );
 	/*@}*/
 	
 	

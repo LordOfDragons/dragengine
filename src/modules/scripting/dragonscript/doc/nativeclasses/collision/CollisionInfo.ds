@@ -27,66 +27,81 @@ class CollisionInfo
 	/*@{*/
 	/** \brief Owner bone or -1 if not applicable. */
 	public func int getOwnerBone()
+		return 0
 	end
 	
 	/** \brief Owner shape or -1 if not applicable. */
 	public func int getOwnerShape()
+		return 0
 	end
 	
 	/** \brief Owner face or -1 if not applicable. */
 	public func int getOwnerFace()
+		return 0
 	end
 	
 	
 	
 	/** \brief Ccollider or \em null if hit something else. */
 	public func Collider getCollider()
+		return null
 	end
 	
 	/** \brief Collider bone or -1 if hit something else. */
 	public func int getBone()
+		return 0
 	end
 	
 	/** \brief Collider rig (bone) shape or -1 if hit something else. */
 	public func int getShape()
+		return 0
 	end
 	
 	/** \brief Collider bone or -1 if hit something else. */
 	public func int getFace()
+		return 0
 	end
 	
 	/** \brief Collision has occurred. */
 	public func bool hasCollision()
+		return false
 	end
 	
 	/** \brief Collision with collider occurred, */
 	public func bool isCollider()
+		return false
 	end
 	
 	/** \brief Collision with collider bone occurred. */
 	public func bool hasBone()
+		return false
 	end
 	
 	/** \brief Collision with collider rig (bone) shape occurred. */
 	public func bool hasShape()
+		return false
 	end
 	
 	/** \brief Collision with collider face occurred. */
 	public func bool hasFace()
+		return false
 	end
 	
 	
 	
 	/** \brief Particle lifetime. */
 	public func float getParticleLifetime()
+		return 0.0
 	end
 	
 	/** \brief Particle mass. */
 	public func float getParticleMass()
+		return 0.0
 	end
 	
 	/** \brief Particle position. */
 	public func DVector getParticlePosition()
+		return null
 	end
 	
 	/** \brief Set particle position. */
@@ -95,6 +110,7 @@ class CollisionInfo
 	
 	/** \brief Particle velocity. */
 	public func Vector getParticleVelocity()
+		return null
 	end
 	
 	/** \brief Set particle velocity. */
@@ -103,6 +119,7 @@ class CollisionInfo
 	
 	/** \brief Collision response to apply to particle. */
 	public func ParticleCollisionResponse getParticleResponse()
+		return null
 	end
 	
 	/** \brief Set collision response to apply to particle. */
@@ -113,6 +130,7 @@ class CollisionInfo
 	
 	/** \brief Distance relative to displacement vector resulting in collision. */
 	public func float getDistance()
+		return 0.0
 	end
 	
 	/**
@@ -123,6 +141,7 @@ class CollisionInfo
 	 * a reasonable hit normal. Hit normals are well defined with ray casts.
 	 */
 	public func Vector getNormal()
+		return null
 	end
 	
 	/**
@@ -133,6 +152,7 @@ class CollisionInfo
 	 * a sound or emit particles at this location.
 	 */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/**
@@ -142,12 +162,14 @@ class CollisionInfo
 	 * hit impulse relative between both collision objects.
 	 */
 	public func float getImpulse()
+		return 0.0
 	end
 	
 	
 	
 	/** \brief Collision detection has to stop. */
 	public func bool getStopTesting()
+		return false
 	end
 	
 	/** \brief Set if collision detection has to stop. */

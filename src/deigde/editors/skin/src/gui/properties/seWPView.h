@@ -24,6 +24,7 @@
 
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
+#include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
@@ -47,6 +48,8 @@ private:
 	seWPViewListener *pListener;
 	
 	seSkin *pSkin;
+	
+	igdeComboBoxReference pCBPreviewMode;
 	
 	igdeEditPathReference pEditModelPath;
 	igdeEditPathReference pEditRigPath;

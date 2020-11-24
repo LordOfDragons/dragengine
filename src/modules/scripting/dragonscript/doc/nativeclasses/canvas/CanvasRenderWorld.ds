@@ -6,9 +6,9 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine.Gui
 
-pin Dragengine.Gui
+pin Dragengine.Scenery
 
 
 /**
@@ -30,6 +30,7 @@ class CanvasRenderWorld extends Canvas
 	/*@{*/
 	/** \brief Camera or \em null if not set. */
 	public func Camera getCamera()
+		return null
 	end
 	
 	/** \brief Set camera or \em null to unset. */
@@ -43,6 +44,7 @@ class CanvasRenderWorld extends Canvas
 	 * \throws EInvalidParam Camera is \em null.
 	 */
 	public func Point project( DVector position )
+		return null
 	end
 	
 	/**
@@ -50,6 +52,7 @@ class CanvasRenderWorld extends Canvas
 	 * \throws EInvalidParam Camera is \em null.
 	 */
 	public func Vector backProject( Point position )
+		return null
 	end
 	
 	
@@ -60,6 +63,7 @@ class CanvasRenderWorld extends Canvas
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -67,6 +71,7 @@ class CanvasRenderWorld extends Canvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

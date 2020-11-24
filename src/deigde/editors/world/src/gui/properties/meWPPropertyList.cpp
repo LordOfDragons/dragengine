@@ -375,10 +375,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pPanel.GetUndoSystem()->Add( pUndo );
@@ -392,10 +395,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pUndo->Redo();
@@ -443,7 +449,8 @@ pEnabled( true )
 	helper.Button( frameLine, pBtnKeyAdd, pActionPropertyAdd );
 	
 	const igdeUIHelper::sColumnHeader headers[] = { { "Key", NULL, 200 }, { "Value", NULL, 200 } };
-	helper.IconListBox( *this, pListProperties, 10, headers, 2, "Properties", new cListProperties( *this ) );
+	helper.IconListBox( *this, pListProperties, decPoint( 100, 150 ), headers, 2, "Properties",
+		new cListProperties( *this ) );
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue( *this, pEditPropertyValue, new cEditPropertyValue( *this ) );

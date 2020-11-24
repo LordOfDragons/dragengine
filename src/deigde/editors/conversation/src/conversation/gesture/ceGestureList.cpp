@@ -126,3 +126,8 @@ ceGestureList &ceGestureList::operator=( const ceGestureList &list ){
 	pGestures = list.pGestures;
 	return *this;
 }
+
+ceGestureList &ceGestureList::operator+=( const ceGestureList &list ){
+	pGestures += list.pGestures;
+	return *this;
+}

@@ -8,6 +8,10 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+pin Dragengine.Networking
+
+
 /**
  * \brief World.
  * 
@@ -25,12 +29,17 @@ class World
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Detect collisions. */
+	public func void detectCollisions( float elapsed )
+	end
+	
 	/** \brief Update the world. */
 	public func void update( float elapsed )
 	end
 	
 	/** \brief Size of the world. */
 	public func DVector getSize()
+		return null
 	end
 	
 	/** \brief Set size of the world. */
@@ -44,6 +53,7 @@ class World
 	/*@{*/
 	/** \brief Gravity vector. */
 	public func Vector getGravity()
+		return null
 	end
 	
 	/** \brief Set gravity vector. */
@@ -57,6 +67,7 @@ class World
 	/*@{*/
 	/** \brief All lights are disabled rendering world in full bright. */
 	public func bool getDisableLights()
+		return false
 	end
 	
 	/** \brief Set if all lights are disabled rendering world in full bright. */
@@ -65,6 +76,7 @@ class World
 	
 	/** \brief Ambient light. */
 	public func Color getAmbientLight()
+		return null
 	end
 	
 	/** \brief Set ambient light. */
@@ -73,6 +85,7 @@ class World
 	
 	/** \brief Light color matrix. */
 	public func Matrix getLightColorMatrix()
+		return null
 	end
 	
 	/** \brief Set light color matrix. */
@@ -86,6 +99,7 @@ class World
 	/*@{*/
 	/** \brief Number of skies. */
 	public func int getSkyCount()
+		return 0
 	end
 	
 	/** \brief Add sky. */
@@ -107,6 +121,7 @@ class World
 	/*@{*/
 	/** \brief Hheight terrain or \em null if not set. */
 	public func HeightTerrain getHeightTerrain()
+		return null
 	end
 	
 	/** \brief Set height terrain or \em null if not set. */
@@ -120,6 +135,7 @@ class World
 	/*@{*/
 	/** \brief Number of camera. */
 	public func int getCameraCount()
+		return 0
 	end
 	
 	/** \brief Add camera. */
@@ -141,6 +157,7 @@ class World
 	/*@{*/
 	/** \brief Number of speakers. */
 	public func int getSpeakerCount()
+		return 0
 	end
 	
 	/** \brief Add speaker. */
@@ -162,6 +179,7 @@ class World
 	/*@{*/
 	/** \brief Number of microphones. */
 	public func int getMicrophoneCount()
+		return 0
 	end
 	
 	/** \brief Add microphone. */
@@ -205,6 +223,7 @@ class World
 	/*@{*/
 	/** \brief Number of network states. */
 	public func int getNetworkStateCount()
+		return 0
 	end
 	
 	/** \brief Add network state. */
@@ -226,6 +245,7 @@ class World
 	/*@{*/
 	/** \brief Number of components. */
 	public func int getComponentCount()
+		return 0
 	end
 	
 	/** \brief Add component. */
@@ -247,6 +267,7 @@ class World
 	/*@{*/
 	/** \brief Number of lights. */
 	public func int getLightCount()
+		return 0
 	end
 	
 	/** \brief Add light. */
@@ -268,6 +289,7 @@ class World
 	/*@{*/
 	/** \brief Number of colliders. */
 	public func int getColliderCount()
+		return 0
 	end
 	
 	/** \brief Add collider. */
@@ -289,6 +311,7 @@ class World
 	/*@{*/
 	/** \brief Number of lumimeters. */
 	public func int getLumimeterCount()
+		return 0
 	end
 	
 	/** \brief Add lumimeter. */
@@ -310,6 +333,7 @@ class World
 	/*@{*/
 	/** \brief Number of touch sensors. */
 	public func int getTouchSensorCount()
+		return 0
 	end
 	
 	/** \brief Add touch sensor. */
@@ -331,6 +355,7 @@ class World
 	/*@{*/
 	/** \brief Number of prop fields. */
 	public func int getPropFieldCount()
+		return 0
 	end
 	
 	/** \brief Add prop field. */
@@ -352,6 +377,7 @@ class World
 	/*@{*/
 	/** \brief Number of force fields. */
 	public func int getForceFieldCount()
+		return 0
 	end
 	
 	/** \brief Add force field. */
@@ -373,6 +399,7 @@ class World
 	/*@{*/
 	/** \brief Number of particle emitters. */
 	public func int getParticleEmitterCount()
+		return 0
 	end
 	
 	/** \brief Add particle emitter. */
@@ -394,6 +421,7 @@ class World
 	/*@{*/
 	/** \brief Number of debug drawers. */
 	public func int getDebugDrawerCount()
+		return 0
 	end
 	
 	/** \brief Add debug drawer. */
@@ -415,6 +443,7 @@ class World
 	/*@{*/
 	/** \brief Number of navigation spaces. */
 	public func int getNavigationSpaceCount()
+		return 0
 	end
 	
 	/** \brief Add navigation space if absent. */
@@ -436,6 +465,7 @@ class World
 	/*@{*/
 	/** \brief Number of navigation blockers. */
 	public func int getNavigationBlockerCount()
+		return 0
 	end
 	
 	/** \brief Add navigation blockers if absent. */
@@ -457,6 +487,7 @@ class World
 	/*@{*/
 	/** \brief Number of navigators. */
 	public func int getNavigatorCount()
+		return 0
 	end
 	
 	/** \brief Add navigator if absent. */
@@ -478,6 +509,7 @@ class World
 	/*@{*/
 	/** \brief Number of environment map probes. */
 	public func int getEnvMapProbeCount()
+		return 0
 	end
 	
 	/** \brief Add environment map probe if absent. */
@@ -499,6 +531,7 @@ class World
 	/*@{*/
 	/** \brief Number of billboards. */
 	public func int getBillboardCount()
+		return 0
 	end
 	
 	/** \brief Add billboard. */
@@ -524,8 +557,7 @@ class World
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	public func void pointHits( DVector point, ColliderListener listener, \
-	CollisionFilter collisionFilter )
+	public func void pointHits( DVector point, ColliderListener listener, CollisionFilter collisionFilter )
 	end
 	
 	/** \brief Static collider intersection test. */
@@ -533,26 +565,22 @@ class World
 	end
 	
 	/** \brief Moving collider collision test. */
-	public func void colliderMoveHits( Collider collider, Vector displacement, \
-	ColliderListener listener )
+	public func void colliderMoveHits( Collider collider, Vector displacement, ColliderListener listener )
 	end
 	
 	/** \brief Moving collider collision test reporting only closest hit. */
-	public func void colliderMoveHitsClosest( Collider collider, Vector displacement, \
-	ColliderListener listener )
+	public func void colliderMoveHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
 	end
 	
 	/** \brief Ray cast intersection test. */
-	public func void rayHits( DVector rayOrigin, Vector rayDirection, \
-	ColliderListener listener, CollisionFilter collisionFilter )
+	public func void rayHits( DVector rayOrigin, Vector rayDirection, ColliderListener listener, CollisionFilter collisionFilter )
 	end
 	
 	/**
 	 * \brief Closest ray cast intersection test.
 	 * \details Only closest intersection is reported to listener. rayHits() reports all intersections.
 	 */
-	public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, \
-	ColliderListener listener, CollisionFilter collisionFilter )
+	public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, ColliderListener listener, CollisionFilter collisionFilter )
 	end
 	/*@}*/
 end

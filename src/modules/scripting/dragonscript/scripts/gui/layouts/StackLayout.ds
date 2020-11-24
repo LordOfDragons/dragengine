@@ -65,17 +65,26 @@ class StackLayout implements Layout
 	/** \brief Aspect ratio mode. */
 	private var AspectRatio pAspectRatio
 	
+	/** \brief Stretch widget if minimum size is less than the available space. */
+	private var bool pStretchIfSmaller
+	
 	
 	
 	/** \brief Create layout with AspectRatio.stretch aspect ratio mode. */
-	public func new() this( AspectRatio.stretch )
+	public func new() this( AspectRatio.stretch, true )
+	end
+	
+	/** \brief Create layout. */
+	public func new( AspectRatio aspectRatio ) this( aspectRatio, true )
 	end
 	
 	/**
 	 * \brief Create layout.
+	 * \version 1.4
 	 */
-	public func new( AspectRatio aspectRatio )
+	public func new( AspectRatio aspectRatio, bool stretchIfSmaller )
 		this.pAspectRatio = aspectRatio
+		this.pStretchIfSmaller = stretchIfSmaller
 	end
 	
 	
@@ -90,6 +99,26 @@ class StackLayout implements Layout
 	 */
 	public func void setAspectRatio( AspectRatio aspectRatio )
 		this.pAspectRatio = aspectRatio
+	end
+	
+	/**
+	 * \brief Stretch widget if minimum size is less than the available space.
+	 * \version 1.4
+	 * 
+	 * Used only if aspect ratio is not AspectRatio.stretch
+	 */
+	public func bool getStretchIfSmaller()
+		return this.pStretchIfSmaller
+	end
+	
+	/**
+	 * \brief Set to stretch widget if minimum size is less than the available space.
+	 * \version 1.4
+	 * 
+	 * Used only if aspect ratio is not AspectRatio.stretch
+	 */
+	public func void setStretchIfSmaller( bool stretchIfSmaller )
+		this.pStretchIfSmaller = stretchIfSmaller
 	end
 	
 	
@@ -113,10 +142,10 @@ class StackLayout implements Layout
 	/** \brief Layout widgets in container. */
 	public func void doLayout( Container container )
 		var int count = container.getWidgetCount()
-		var int width = container.getContainerWidth()
-		var int height = container.getContainerHeight()
 		var int offx = container.getPadding().getLeft()
 		var int offy = container.getPadding().getTop()
+		var int width = container.getContainerWidth()
+		var int height = container.getContainerHeight()
 		var float aspectRatio1 = 1
 		var int borderLeft
 		var int borderTop
@@ -160,27 +189,35 @@ class StackLayout implements Layout
 				var int aspectOffsetX = 0
 				var int aspectOffsetY = 0
 				
-				var float aspectRatio2 = ( childMinSize.getX() cast float ) / ( childMinSize.getY() cast float )
-				
-				if this.pAspectRatio == AspectRatio.fit
-					if aspectRatio2 < aspectRatio1
-						childWidth = ( ( childHeight cast float ) * aspectRatio2 ) cast int
-						aspectOffsetX = ( ( width - borderWidth ) - childWidth ) / 2
+				if this.pStretchIfSmaller or not ( childMinSize <= Point.new( childWidth, childHeight ) )
+					var float aspectRatio2 = ( childMinSize.getX() cast float ) / ( childMinSize.getY() cast float )
+					
+					if this.pAspectRatio == AspectRatio.fit
+						if aspectRatio2 < aspectRatio1
+							childWidth = ( ( childHeight cast float ) * aspectRatio2 ) cast int
+							aspectOffsetX = ( ( width - borderWidth ) - childWidth ) / 2
+							
+						else
+							childHeight = ( ( childWidth cast float ) / aspectRatio2 ) cast int
+							aspectOffsetY = ( ( height - borderHeight ) - childHeight ) / 2
+						end
 						
-					else
-						childHeight = ( ( childWidth cast float ) / aspectRatio2 ) cast int
-						aspectOffsetY = ( ( height - borderHeight ) - childHeight ) / 2
+					else // AspectRatio.clip
+						if aspectRatio2 < aspectRatio1
+							childHeight = ( ( childWidth cast float ) / aspectRatio2 ) cast int
+							aspectOffsetY = ( ( height - borderHeight ) - childHeight ) / 2
+							
+						else
+							childWidth = ( ( childHeight cast float ) * aspectRatio2 ) cast int
+							aspectOffsetX = ( ( width - borderWidth ) - childWidth ) / 2
+						end
 					end
 					
-				else // AspectRatio.clip
-					if aspectRatio2 < aspectRatio1
-						childHeight = ( ( childWidth cast float ) / aspectRatio2 ) cast int
-						aspectOffsetY = ( ( height - borderHeight ) - childHeight ) / 2
-						
-					else
-						childWidth = ( ( childHeight cast float ) * aspectRatio2 ) cast int
-						aspectOffsetX = ( ( width - borderWidth ) - childWidth ) / 2
-					end
+				else
+					childWidth = childMinSize.getX()
+					childHeight = childMinSize.getY()
+					aspectOffsetX = ( ( width - borderWidth ) - childWidth ) / 2
+					aspectOffsetY = ( ( height - borderHeight ) - childHeight ) / 2
 				end
 				
 				child.setPosition( Point.new( offx + borderLeft + aspectOffsetX, offy + borderTop + aspectOffsetY ) )

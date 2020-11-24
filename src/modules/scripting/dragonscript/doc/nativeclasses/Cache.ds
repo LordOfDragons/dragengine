@@ -8,7 +8,6 @@
 
 namespace Dragengine
 
-
 /**
  * \brief Game usable cache directory.
  * 
@@ -122,6 +121,7 @@ class Cache
 	
 	/** \brief Open cache file by identifier for writing. */
 	public func FileWriter write( String id )
+		return null
 	end
 	
 	/** \brief Delete cache file by identifier if present. */

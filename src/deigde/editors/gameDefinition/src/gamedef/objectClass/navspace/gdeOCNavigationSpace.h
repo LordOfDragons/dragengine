@@ -26,6 +26,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
 
 
@@ -72,6 +73,7 @@ private:
 	float pSnapDistance;
 	float pSnapAngle;
 	
+	deNavigationSpace::eSpaceTypes pType;
 	int pBlockingPriority;
 	decShapeList pBlockerShapeList;
 	
@@ -125,6 +127,12 @@ public:
 	
 	/** \brief Set layer number. */
 	void SetLayer( int layer );
+	
+	/** \brief Space type. */
+	inline deNavigationSpace::eSpaceTypes GetType() const{ return pType; }
+	
+	/** \brief Set space type. */
+	void SetType( deNavigationSpace::eSpaceTypes type );
 	
 	/**
 	 * \brief Blocking priority.

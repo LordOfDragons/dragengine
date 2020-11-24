@@ -1,23 +1,8 @@
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout definitions
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-	#define WITH_REFLECTIVITY 1
-#endif
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_EMISSIVITY 1
-#endif
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
 
 
 
@@ -45,8 +30,10 @@ in vec2 vGSTCColor[ 3 ];
 #endif
 
 in vec3 vGSNormal[ 3 ];
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	in vec3 vGSTangent[ 3 ];
+#endif
+#ifdef WITH_BITANGENT
 	in vec3 vGSBitangent[ 3 ];
 #endif
 #ifdef WITH_REFLECT_DIR
@@ -99,8 +86,10 @@ in vec2 vTCColor;
 #endif
 
 out vec3 vNormal;
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	out vec3 vTangent;
+#endif
+#ifdef WITH_BITANGENT
 	out vec3 vBitangent;
 #endif
 #ifdef WITH_REFLECT_DIR
@@ -161,8 +150,10 @@ void main( void ){
 		#endif
 		
 		vNormal = vGSNormal[ i ];
-		#ifdef TEXTURE_NORMAL
+		#ifdef WITH_TANGENT
 			vTangent = vGSTangent[ i ];
+		#endif
+		#ifdef WITH_BITANGENT
 			vBitangent = vGSBitangent[ i ];
 		#endif
 		#ifdef WITH_REFLECT_DIR

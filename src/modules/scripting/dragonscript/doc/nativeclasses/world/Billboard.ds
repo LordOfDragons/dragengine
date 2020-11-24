@@ -26,12 +26,12 @@ class Billboard
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	public func Vector getPosition()
+	public func DVector getPosition()
 		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( Vector position )
+	public func void setPosition( DVector position )
 	end
 	
 	/** \brief Axis. */

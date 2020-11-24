@@ -53,6 +53,7 @@ private:
 	decString pPathAnimator;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
+	bool pLightShadowIgnore;
 	decObjectDictionary pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
@@ -85,6 +86,9 @@ public:
 	
 	/** \brief Playback controller index. */
 	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }
+	
+	/** \brief Ignore component while casting shadows by lights present in the same object. */
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

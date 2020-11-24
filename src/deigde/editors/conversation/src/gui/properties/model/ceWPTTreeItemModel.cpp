@@ -180,7 +180,7 @@ void ceWPTTreeItemModel::MoveChild( int from, int to ){
 		return;
 	}
 	
-	ceWPTTreeItemModel *child = ( ceWPTTreeItemModel* )pChildren.GetAt( from );
+	ceWPTTreeItemModel * const child = ( ceWPTTreeItemModel* )pChildren.GetAt( from );
 	
 	ceWPTTreeItemModel *otherChild = NULL;
 	if( to < count ){
@@ -191,12 +191,11 @@ void ceWPTTreeItemModel::MoveChild( int from, int to ){
 	
 	if( pTreeItem && child->GetTreeItem() && ( ! otherChild || otherChild->GetTreeItem() ) ){
 		igdeTreeItem *otherItem = NULL;
-		
 		if( otherChild ){
 			otherItem = otherChild->GetTreeItem();
 		}
 		
-		pTreeItem->GetTreeList().MoveItemBefore( otherItem, child->GetTreeItem() );
+		pTreeItem->GetTreeList().MoveItemBefore( child->GetTreeItem(), otherItem );
 	}
 }
 

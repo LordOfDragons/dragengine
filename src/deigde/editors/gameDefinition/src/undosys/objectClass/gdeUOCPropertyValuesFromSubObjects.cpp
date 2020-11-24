@@ -89,6 +89,11 @@ igdeCodecPropertyString codec, const gdeOCComponent &component ){
 			component.GetAffectsAudio() ? "1" : "0" );
 	}
 	
+	if( component.IsPropertySet( gdeOCComponent::epLightShadowIgnore ) ){
+		values.SetAt( component.GetPropertyName( gdeOCComponent::epLightShadowIgnore ),
+			component.GetLightShadowIgnore() ? "1" : "0" );
+	}
+	
 	if( component.IsPropertySet( gdeOCComponent::epAttachPosition ) ){
 		decString string;
 		codec.EncodeVector( component.GetPosition(), string );

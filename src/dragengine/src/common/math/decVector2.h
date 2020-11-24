@@ -114,6 +114,9 @@ public:
 	
 	/** \brief Mix vectors component wise. */
 	decVector2 Mix( const decVector2 &vector, float blendFactor ) const;
+	
+	/** \brief Multiply component wise. */
+	decVector2 Multiply( const decVector2 &vector ) const;
 	/*@}*/
 	
 	

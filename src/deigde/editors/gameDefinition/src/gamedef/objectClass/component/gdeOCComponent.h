@@ -68,7 +68,10 @@ public:
 		epAttachPosition,
 		
 		/** \brief Attach rotation. */
-		epAttachRotation
+		epAttachRotation,
+		
+		/** \brief Component is ignore from shadow casting of lights on the same object. */
+		epLightShadowIgnore
 	};
 	
 	
@@ -87,12 +90,13 @@ private:
 	bool pAffectsAudio;
 	bool pPartialHide;
 	bool pAttachTarget;
+	bool pLightShadowIgnore;
 	deCollider::eResponseType pColliderResponseType;
 	decVector pPosition;
 	decVector pRotation;
 	decString pBoneName;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[ epLightShadowIgnore + 1 ];
 	
 	gdeOCComponentTextureList pTextures;
 	gdeOCComponentTexture *pActiveTexture;
@@ -182,7 +186,7 @@ public:
 	/** \brief Set collider response type to use. */
 	void SetColliderResponseType( deCollider::eResponseType responseType );
 	
-	/** \brief Resourcec can be attached to component. */
+	/** \brief Resource can be attached to component. */
 	inline bool GetAttachTarget() const{ return pAttachTarget; }
 	
 	/** \brief Set if resources can be attached to component. */
@@ -201,6 +205,12 @@ public:
 	
 	/** \brief Set if component affects audio. */
 	void SetAffectsAudio( bool affectsAudio );
+	
+	/** \brief Component is ignore from shadow casting of lights on the same object. */
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
+	
+	/** \brief Set if component is ignored from shadow casting of lights on the same object. */
+	void SetLightShadowIgnore( bool lightShadowIgnore );
 	
 	
 	

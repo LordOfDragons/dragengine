@@ -6,9 +6,7 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
-
-pin Dragengine.Gui
+namespace Dragengine.Gui
 
 
 /**
@@ -30,6 +28,7 @@ class CanvasText extends Canvas
 	/*@{*/
 	/** \brief Font or \em null if not set. */
 	public func Font getFont()
+		return null
 	end
 	
 	/** \brief Set font or \em null to unset. */
@@ -38,6 +37,7 @@ class CanvasText extends Canvas
 	
 	/** \brief Text. */
 	public func String getText()
+		return null
 	end
 	
 	/** \brief Set text. */
@@ -46,6 +46,7 @@ class CanvasText extends Canvas
 	
 	/** \brief Text color. */
 	public func Color getColor()
+		return null
 	end
 	
 	/** \brief Set text color. */
@@ -60,6 +61,7 @@ class CanvasText extends Canvas
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -67,6 +69,7 @@ class CanvasText extends Canvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

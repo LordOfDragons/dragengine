@@ -32,6 +32,7 @@ class SynthesizerInstance
 	/*@{*/
 	/** \brief synthesizer or \em null if not set. */
 	public func Synthesizer getSynthesizer()
+		return null
 	end
 	
 	/** \brief Set synthesizer or \em null if not set. */
@@ -42,6 +43,7 @@ class SynthesizerInstance
 	
 	/** \brief Number of samples to create. */
 	public func float getSampleCount()
+		return 0.0
 	end
 	
 	/** \brief Set number of samples to create. */
@@ -55,6 +57,7 @@ class SynthesizerInstance
 	/*@{*/
 	/** \brief Nnumber of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -76,6 +79,7 @@ class SynthesizerInstance
 	 *                        than or equal to getControllerCount().
 	 */
 	public func SynthesizerController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -88,10 +92,12 @@ class SynthesizerInstance
 	 *             \em null is returned.
 	 */
 	public func SynthesizerController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	
 	/**
@@ -100,6 +106,7 @@ class SynthesizerInstance
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
 	public func void copyControllerStates( SynthesizerInstance instance, int count )
+	end
 	
 	/**
 	 * \brief Copy the first count controller values and vectors from another synthesizer instance.
@@ -115,5 +122,6 @@ class SynthesizerInstance
 	 * \details Non-matching controllers are ignored.
 	 */
 	public func void copyNamedControllerStates( SynthesizerInstance instance )
+	end
 	/*@}*/
 end

@@ -124,6 +124,22 @@ class BaseActorAction implements Persistable
 		return this.playerControllable != null and this.playerControllable.isPlayerControlled()
 	end
 	
+	/**
+	 * \brief Action is active actor action.
+	 * \version 1.4
+	 */
+	public func bool isActive()
+		return this.aiAction.getAction() == this
+	end
+	
+	/**
+	 * \brief Action is not active actor action.
+	 * \version 1.4
+	 */
+	public func bool isNotActive()
+		return this.aiAction.getAction() != this
+	end
+	
 	
 	
 	/**

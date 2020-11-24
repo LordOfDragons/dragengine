@@ -37,14 +37,17 @@ class SynthesizerController
 	/*@{*/
 	/** \brief Owner synthesizer or \em null if not owned by synthesizer. */
 	public func Synthesizer getSynthesizer()
+		return null
 	end
 	
 	/** \brief Onwer synthesizer instance or \em null if not owned by synthesizer instance. */
 	public func SynthesizerInstance getSynthesizerInstance()
+		return null
 	end
 	
 	/** \brief Controller index. */
 	public func int getControllerIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -54,6 +57,7 @@ class SynthesizerController
 	/*@{*/
 	/** \brief Name. */
 	public func String getName()
+		return null
 	end
 	
 	/** \brief Set name. */
@@ -62,10 +66,12 @@ class SynthesizerController
 	
 	/** \brief Lower limit. */
 	public func float getLower()
+		return 0.0
 	end
 	
 	/** \brief Upper limit. */
 	public func float getUpper()
+		return 0.0
 	end
 	
 	/** \brief Set value range. */
@@ -74,6 +80,7 @@ class SynthesizerController
 	
 	/** \brief Curve. */
 	public func CurveBezier getCurve()
+		return null
 	end
 	
 	/** \brief Set curve. */
@@ -98,6 +105,7 @@ class SynthesizerController
 	
 	/** \brief Controller value is clamped instead of wrapped around if outside range. */
 	public func bool getClamp()
+		return false
 	end
 	
 	/** \brief Set if controller value is clamped instead of wrapped around if outside range. */

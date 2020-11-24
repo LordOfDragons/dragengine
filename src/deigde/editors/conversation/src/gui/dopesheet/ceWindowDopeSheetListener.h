@@ -51,6 +51,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Conversation changed. */
+	virtual void ConversationChanged( ceConversation *conversation );
+	
 	/** \brief Camera shot changed. */
 	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
 	

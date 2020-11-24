@@ -52,6 +52,9 @@ private:
 	deoglShaderProgram *pShaderToneMap;
 	deoglShaderProgram *pShaderFinalize;
 	
+	deoglShaderProgram *pShaderLumPrepare;
+	
+	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
@@ -63,6 +66,9 @@ public:
 	
 	/** @name Rendering */
 	/*@{*/
+	/** Prepare luminance texture from solid color and depth texture. */
+	void LuminancePrepare( deoglRenderPlan &plan );
+	
 	/** Tone maps the render. */
 	void ToneMap( deoglRenderPlan &plan );
 	

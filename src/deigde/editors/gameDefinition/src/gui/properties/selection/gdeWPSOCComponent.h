@@ -87,6 +87,7 @@ private:
 	igdeCheckBoxReference pChkAffectsAudio;
 	igdeCheckBoxReference pChkPartialHide;
 	igdeCheckBoxReference pChkAttachTarget;
+	igdeCheckBoxReference pChkLightShadowIgnore;
 	igdeComboBoxReference pCBCollisionResponseType;
 	igdeEditVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;

@@ -17,23 +17,11 @@ pin Dragengine.Scenery
  * This is a native class. This is a pure static class. The class can not be instantiated
  */
 fixed class NetworkSystem
-	/** \name Management */
-	/*@{*/
-	/** \brief Active microphone. */
-	public static func Microphone getActiveMicrophone()
-	end
-	
-	/** \brief Set active microphone. */
-	public static func setActiveMicrophone( Microphone microphone )
-	end
-	/*@}*/
-	
-	
-	
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters available. */
 	public static func int getParameterCount()
+		return 0
 	end
 	
 	/**
@@ -41,10 +29,12 @@ fixed class NetworkSystem
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
 	public static func ModuleParameter getParameterInfo( int index )
+		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
 	public static func ModuleParameter getParameterInfo( String name )
+		return null
 	end
 	
 	/**
@@ -52,6 +42,7 @@ fixed class NetworkSystem
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
 	public static func String getParameterValue( String name )
+		return null
 	end
 	
 	/**
@@ -63,6 +54,7 @@ fixed class NetworkSystem
 	
 	/** \brief Send command. */
 	public static func String sendCommand( String command )
+		return null
 	end
 	/*@}*/
 end

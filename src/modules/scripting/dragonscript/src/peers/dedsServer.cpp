@@ -52,23 +52,23 @@ dedsServer::dedsServer( deScriptingDragonScript *ds, deServer *server ){
 }
 
 dedsServer::~dedsServer(){
-	if( pValCB ){
-		if( pValCB->GetRealObject() ){
-			// check if the resource is in progress of being deleted. if this is not
-			// the case we can end up re-entering this destructor due to the resource
-			// being deleted due to links breaking while freeing the value. if this
-			// is the case delay the deletion until a safe time
-			if( pServer && pServer->GetRefCount() > 0 ){
-				pDS->AddValueDeleteLater( pValCB );
-				
-			}else{
-				pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
-		}
-		
-		pValCB = NULL;
-		pHasCB = false;
+	if( ! pValCB ){
+		return;
 	}
+	
+	// check if the resource is in progress of being deleted. if this is not
+	// the case we can end up re-entering this destructor due to the resource
+	// being deleted due to links breaking while freeing the value. if this
+	// is the case delay the deletion until a safe time
+	if( pServer && pServer->GetRefCount() > 0 ){
+		pDS->AddValueDeleteLater( pValCB );
+		
+	}else{
+		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+	}
+	
+	pValCB = NULL;
+	pHasCB = false;
 }
 
 
@@ -81,17 +81,19 @@ dsRealObject *dedsServer::GetCallback() const{
 }
 
 void dedsServer::SetCallback( dsRealObject *object ){
-	if( pValCB ){
-		dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
+	if( ! pValCB ){
+		return;
+	}
+	
+	dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
+	
+	if( object ){
+		rt.SetObject( pValCB, object );
+		pHasCB = true;
 		
-		if( object ){
-			rt.SetObject( pValCB, object );
-			pHasCB = true;
-			
-		}else{
-			rt.SetNull( pValCB, pDS->GetClassServerListener() );
-			pHasCB = false;
-		}
+	}else{
+		rt.SetNull( pValCB, pDS->GetClassServerListener() );
+		pHasCB = false;
 	}
 }
 

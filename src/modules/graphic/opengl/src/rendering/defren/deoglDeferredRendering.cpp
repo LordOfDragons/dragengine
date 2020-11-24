@@ -199,6 +199,8 @@ enum eFBOMappingsEncodedDepth{
 	efbomedTemp3,
 	/** Color with RenBuf. */
 	efbomedColorRB,
+	/** Color with RenBuf. */
+	efbomedColorLumRB,
 	/** Depth1, Diffuse with RenBuf. */
 	efbomedDepth1DiffRB,
 	/** Depth2, Diffuse with RenBuf. */
@@ -213,6 +215,8 @@ enum eFBOMappingsEncodedDepth{
 	efbomedColorDepth2RB,
 	/** Color, tmeporary2 with RenBuf. */
 	efbomedColorTemp2RB,
+	/** Color, tmeporary2 with RenBuf. */
+	efbomedColorLumTemp2RB,
 	/** Diffuse, Normal, Specularity, Color with RenBuf. */
 	efbomedMaterialColorRB,
 	/** Diffuse, Normal, Specularity, Temporary1 with RenBuf. */
@@ -276,15 +280,29 @@ enum eFBOMappingsDepth{
 	efbomdColorTemp2D1,
 	/** Color, temporary1 with Depth2. */
 	efbomdColorTemp2D2,
+	/** Color without depth. */
+	efbomdColorLum,
+	/** Color with Depth1. */
+	efbomdColorLumD1,
+	/** Color with Depth2. */
+	efbomdColorLumD2,
+	/** Color, temporary1 without depth. */
+	efbomdColorLumTemp2,
+	/** Color, temporary1 with Depth1. */
+	efbomdColorLumTemp2D1,
+	/** Color, temporary1 with Depth2. */
+	efbomdColorLumTemp2D2,
 	/** Diffuse, Normal, Specularity, Color with Depth1. */
 	efbomdMaterialColorD1,
 	/** Diffuse, Normal, Specularity, Color with Depth2. */
 	efbomdMaterialColorD2,
+	/** Luminance. */
+	efbomdLuminance,
 	/** Number of FBOs used. */
 	EFBOMD_COUNT
 };
 
-#define FBO_COUNT 30
+#define FBO_COUNT 37
 
 
 
@@ -295,7 +313,13 @@ enum eFBOMappingsDepth{
 ////////////////////////////
 
 deoglDeferredRendering::deoglDeferredRendering( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread ),
+pTextureLuminance( NULL )
+// pTextureLuminanceNormal( NULL ),
+// pTextureLuminanceDepth( NULL ),
+// pFBOLuminance( NULL ),
+// pFBOLuminanceNormal( NULL )
+{
 	const GLfloat fsquad[ 12 ] = {
 		-1.0f,  1.0f,
 		 1.0f,  1.0f,
@@ -524,6 +548,8 @@ void deoglDeferredRendering::Resize( int width, int height ){
 		pTextureAOSolidity->CreateTexture();
 		pTextureSubSurface->SetSize( textureWidth, textureHeight );
 		pTextureSubSurface->CreateTexture();
+		pTextureLuminance->SetSize( textureWidth, textureHeight );
+		pTextureLuminance->CreateTexture();
 		
 		pTextureTemporary1->SetSize( textureWidth, textureHeight );
 		pTextureTemporary1->CreateTexture();
@@ -894,7 +920,7 @@ void deoglDeferredRendering::ActivatePostProcessFBO( bool withDepth ){
 		ActivateFBOTemporary2( withDepth );
 		
 	}else{
-		ActivateFBOColor( withDepth );
+		ActivateFBOColor( withDepth, false );
 	}
 }
 
@@ -1067,21 +1093,41 @@ void deoglDeferredRendering::ActivateFBOTemporary3(){
 	}
 }
 
-void deoglDeferredRendering::ActivateFBOColor( bool withDepth ){
+void deoglDeferredRendering::ActivateFBOColor( bool withDepth, bool withLuminance ){
 	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorRB ] );
+		if( withLuminance ){
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorLumRB ] );
+			
+		}else{
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorRB ] );
+		}
 		
 	}else{
 		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD1 ] );
+			if( withLuminance ){
+				if( pModeDepth ){
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLumD1 ] );
+					
+				}else{
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLumD2 ] );
+				}
 				
 			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD2 ] );
+				if( pModeDepth ){
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD1 ] );
+					
+				}else{
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD2 ] );
+				}
 			}
 			
 		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColor ] );
+			if( withLuminance ){
+				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLum ] );
+				
+			}else{
+				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColor ] );
+			}
 		}
 	}
 }
@@ -1128,21 +1174,41 @@ void deoglDeferredRendering::ActivateFBOColorDepth(){
 	}
 }
 
-void deoglDeferredRendering::ActivateFBOColorTemp2( bool withDepth ){
+void deoglDeferredRendering::ActivateFBOColorTemp2( bool withDepth, bool withLuminance ){
 	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorTemp2RB ] );
+		if( withLuminance ){
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorLumTemp2RB ] );
+			
+		}else{
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorTemp2RB ] );
+		}
 		
 	}else{
 		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D1 ] );
+			if( withLuminance ){
+				if( pModeDepth ){
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLumTemp2D1 ] );
+					
+				}else{
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLumTemp2D2 ] );
+				}
 				
 			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D2 ] );
+				if( pModeDepth ){
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D1 ] );
+					
+				}else{
+					pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D2 ] );
+				}
 			}
 			
 		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2 ] );
+			if( withLuminance ){
+				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorLumTemp2 ] );
+				
+			}else{
+				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2 ] );
+			}
 		}
 	}
 }
@@ -1160,6 +1226,18 @@ void deoglDeferredRendering::ActivateFBOMaterialColor(){
 		}
 	}
 }
+
+void deoglDeferredRendering::ActivateFBOLuminance(){
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdLuminance ] );
+}
+
+// void deoglDeferredRendering::ActivateFBOLuminance(){
+// 	pRenderThread.GetFramebuffer().Activate( pFBOLuminance );
+// }
+
+// void deoglDeferredRendering::ActivateFBOLuminanceNormal(){
+// 	pRenderThread.GetFramebuffer().Activate( pFBOLuminanceNormal );
+// }
 
 
 
@@ -1324,6 +1402,16 @@ void deoglDeferredRendering::pCleanUp(){
 		pglDeleteBuffers( 1, &pVBOFullScreenQuad );
 	}
 	
+// 	if( pTextureLuminanceDepth ){
+// 		delete pTextureLuminanceDepth;
+// 	}
+// 	if( pTextureLuminanceNormal ){
+// 		delete pTextureLuminanceNormal;
+// 	}
+// 	if( pTextureLuminance ){
+// 		delete pTextureLuminance;
+// 	}
+	
 	if( pTextureColor ){
 		delete pTextureColor;
 	}
@@ -1335,6 +1423,9 @@ void deoglDeferredRendering::pCleanUp(){
 	}
 	if( pTextureTemporary1 ){
 		delete pTextureTemporary1;
+	}
+	if( pTextureLuminance ){
+		delete pTextureLuminance;
 	}
 	if( pTextureSubSurface ){
 		delete pTextureSubSurface;
@@ -1444,6 +1535,28 @@ void deoglDeferredRendering::pCreateTextures(){
 	pTextureColor = new deoglTexture( pRenderThread );
 	pTextureColor->SetFBOFormat( 4, true );
 	//pTextureColor->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRGBA32F ); // only for special debugging
+	
+	// create luminance texture
+	pTextureLuminance = new deoglTexture( pRenderThread );
+	pTextureLuminance->SetFBOFormat( 1, true );
+	
+	// luminance textures
+	/*
+	pTextureLuminance = new deoglTexture( pRenderThread );
+	pTextureLuminance->SetFBOFormat( 1, true );
+	pTextureLuminance->SetSize( 128, 64 );
+	pTextureLuminance->CreateTexture();
+	
+	pTextureLuminanceNormal = new deoglTexture( pRenderThread );
+	pTextureLuminanceNormal->SetFBOFormat( 3, true );
+	pTextureLuminanceNormal->SetSize( 128, 64 );
+	pTextureLuminanceNormal->CreateTexture();
+	
+	pTextureLuminanceDepth = new deoglTexture( pRenderThread );
+	pTextureLuminanceDepth->SetDepthFormat( true, pUseInverseDepth );
+	pTextureLuminanceDepth->SetSize( 128, 64 );
+	pTextureLuminanceDepth->CreateTexture();
+	*/
 }
 
 void deoglDeferredRendering::pUpdateMemoryUsage(){
@@ -1462,6 +1575,7 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 	pMemoryUsageGPUTexture += pTextureAOSolidity->GetMemoryUsageGPU();
 	pMemoryUsageGPUTexture += pTextureSubSurface->GetMemoryUsageGPU();
 	pMemoryUsageGPUTexture += pTextureColor->GetMemoryUsageGPU();
+	pMemoryUsageGPUTexture += pTextureLuminance->GetMemoryUsageGPU();
 	pMemoryUsageGPUTexture += pTextureTemporary1->GetMemoryUsageGPU();
 	pMemoryUsageGPUTexture += pTextureTemporary2->GetMemoryUsageGPU();
 	pMemoryUsageGPUTexture += pTextureTemporary3->GetMemoryUsageGPU();
@@ -1476,6 +1590,10 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
 		pMemoryUsageGPUTexture += pDepthMinMax->GetTexture()->GetMemoryUsageGPU();
 	}
+	
+// 	pMemoryUsageGPUTexture += pTextureLuminance->GetMemoryUsageGPU();
+// 	pMemoryUsageGPUTexture += pTextureLuminanceNormal->GetMemoryUsageGPU();
+// 	pMemoryUsageGPUTexture += pTextureLuminanceDepth->GetMemoryUsageGPU();
 	
 	pMemoryUsageGPU = pMemoryUsageGPUTexture + pMemoryUsageGPURenBuf;
 	
@@ -1502,6 +1620,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		pCreateFBORenBuf( efbomedTemp2RB, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedTemp3, pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, false );
 		pCreateFBORenBuf( efbomedColorRB, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, true );
+		pCreateFBORenBuf( efbomedColorLumRB, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedDepth1DiffRB, pTextureDepth1, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedDepth2DiffRB, pTextureDepth2, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedDepth1Temp1RB, pTextureDepth1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, true );
@@ -1509,6 +1628,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		pCreateFBORenBuf( efbomedColorDepth1RB, pTextureColor, pTextureDepth1, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedColorDepth2RB, pTextureColor, pTextureDepth2, NULL, NULL, NULL, NULL, NULL, true );
 		pCreateFBORenBuf( efbomedColorTemp2RB, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, true );
+		pCreateFBORenBuf( efbomedColorLumTemp2RB, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, true );
 		
 		if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 			pCreateFBORenBuf( efbomedMaterialColorRB, pTextureDiffuse, pTextureNormal,
@@ -1548,6 +1668,13 @@ void deoglDeferredRendering::pCreateFBOs(){
 		pCreateFBOTex( efbomdColorTemp2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL );
 		pCreateFBOTex( efbomdColorTemp2D1, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
 		pCreateFBOTex( efbomdColorTemp2D2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+		pCreateFBOTex( efbomdColorLum, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL );
+		pCreateFBOTex( efbomdColorLumD1, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+		pCreateFBOTex( efbomdColorLumD2, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+		pCreateFBOTex( efbomdColorLumTemp2, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL );
+		pCreateFBOTex( efbomdColorLumTemp2D1, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth1 );
+		pCreateFBOTex( efbomdColorLumTemp2D2, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth2 );
+		pCreateFBOTex( efbomdLuminance, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
 		
 		if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 			pCreateFBOTex( efbomdMaterialColorD1, pTextureDiffuse, pTextureNormal,
@@ -1662,6 +1789,28 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 		}
 	}
+	
+	// luminance fbo
+	/*
+	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	
+	pFBOLuminance = new deoglFramebuffer( pRenderThread, false );
+	pRenderThread.GetFramebuffer().Activate( pFBOLuminance );
+	pFBOLuminance->AttachDepthTexture( pTextureLuminanceDepth );
+	pFBOLuminance->AttachColorTexture( 0, pTextureLuminance );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBOLuminance->Verify();
+	
+	pFBOLuminanceNormal = new deoglFramebuffer( pRenderThread, false );
+	pRenderThread.GetFramebuffer().Activate( pFBOLuminanceNormal );
+	pFBOLuminanceNormal->AttachDepthTexture( pTextureLuminanceDepth );
+	pFBOLuminanceNormal->AttachColorTexture( 0, pTextureLuminance );
+	pFBOLuminanceNormal->AttachColorTexture( 1, pTextureLuminanceNormal );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 2, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBOLuminanceNormal->Verify();
+	*/
 }
 
 void deoglDeferredRendering::pCreateFBOTex( int index, deoglTexture *texture1, deoglTexture *texture2,
@@ -1774,6 +1923,15 @@ deoglTexture *texture7 ){
 
 void deoglDeferredRendering::pDestroyFBOs(){
 	int i;
+	
+// 	if( pFBOLuminanceNormal ){
+// 		delete pFBOLuminanceNormal;
+// 		pFBOLuminanceNormal = NULL;
+// 	}
+// 	if( pFBOLuminance ){
+// 		delete pFBOLuminance;
+// 		pFBOLuminance = NULL;
+// 	}
 	
 	for( i=0; i<pFBOMipMapCount; i++ ){
 		if( pFBOMipMapTemporary1[ i ] ){

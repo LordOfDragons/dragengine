@@ -173,3 +173,5 @@
 #else
 	#define pOutlineEmissivityTint pTexOutlineEmissivityTint
 #endif
+
+#define pEmissivityCameraAdapted pTexEmissivityCameraAdapted

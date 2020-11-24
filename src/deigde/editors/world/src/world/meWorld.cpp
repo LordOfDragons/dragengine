@@ -124,7 +124,7 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 	pNotifierSize = 0;
 	
 	try{
-		SetFilePath( "world.xml" );
+		SetFilePath( "new.deworld" );
 		
 		pGuiParams = new meWorldGuiParameters( *this );
 		

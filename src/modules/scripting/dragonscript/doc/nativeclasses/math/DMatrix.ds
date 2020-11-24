@@ -22,9 +22,7 @@ fixed class DMatrix
 	end
 	
 	/** \brief Create matrix from values. */
-	public func new( float a11, float a12, float a13, float a14, \
-	float a21, float a22, float a23, float a24, \
-	float a31, float a32, float a33, float a34 )
+	public func new( float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34 )
 	end
 	
 	/** \brief Create translation matrix. */

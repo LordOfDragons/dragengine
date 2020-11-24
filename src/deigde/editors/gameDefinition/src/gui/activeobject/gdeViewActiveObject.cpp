@@ -789,6 +789,7 @@ void gdeViewActiveObject::pInitObjectClass(){
 	}
 	pObjectClass->AddReference();
 	pInitObjectClassOCs( *pObjectClass );
+	pAddComponentShadowIgnore();
 }
 
 void gdeViewActiveObject::pInitSkin(){
@@ -1027,6 +1028,23 @@ void gdeViewActiveObject::pInitOCSpeakers( const gdeObjectClass &objectClass ){
 	for( i=0; i<count; i++ ){
 		vao.TakeOver( new gdeVAOSpeaker( *this, list.GetAt( i ) ) );
 		pOCSpeakers.Add( vao );
+	}
+}
+
+void gdeViewActiveObject::pAddComponentShadowIgnore(){
+	const int componentCount = pOCComponents.GetCount();
+	const int lightCount = pOCLights.GetCount();
+	int i, j;
+	
+	for( i=0; i<componentCount; i++ ){
+		const gdeVAOComponent &occomp = *( ( gdeVAOComponent* )pOCComponents.GetAt( i ) );
+		if( ! occomp.GetOCComponent()->GetLightShadowIgnore() ){
+			continue;
+		}
+		
+		for( j=0; j<lightCount; j++ ){
+			( ( gdeVAOLight* )pOCLights.GetAt( j ) )->ShadowIgnoreComponent( occomp.GetComponent() );
+		}
 	}
 }
 

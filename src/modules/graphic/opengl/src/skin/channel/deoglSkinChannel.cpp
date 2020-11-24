@@ -860,7 +860,7 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 		pCompressed = false;
 		
 	}else{
-		mipMapped = true;
+		mipMapped = channelFormat.GetAllowMipMap();
 		
 		if( pType == ectNormal ){
 			pCompressed = true;

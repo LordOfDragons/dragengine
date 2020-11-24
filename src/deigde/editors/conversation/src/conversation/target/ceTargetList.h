@@ -69,6 +69,9 @@ public:
 	
 	/** Sets the list from another list. */
 	ceTargetList &operator=( const ceTargetList &list );
+	
+	/** \brief Add targets to list if absent. */
+	ceTargetList &operator+=( const ceTargetList &list );
 	/*@}*/
 };
 

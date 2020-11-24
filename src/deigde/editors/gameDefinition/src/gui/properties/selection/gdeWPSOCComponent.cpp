@@ -48,6 +48,7 @@
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAttachTarget.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleRenderEnvMap.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAffectsAudio.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentToggleLightShadowIgnore.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleStatic.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPlaybackController.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPosition.h"
@@ -384,6 +385,18 @@ public:
 	
 	virtual igdeUndo *OnActionComponent( gdeObjectClass *objectClass, gdeOCComponent *component ){
 		return new gdeUOCComponentToggleAffectsAudio( objectClass, component );
+	}
+	
+	virtual void Update(){ /* empty on purpose! */ }
+};
+
+class cActionLightShadowIgnore : public cBaseAction{
+public:
+	cActionLightShadowIgnore( gdeWPSOCComponent &panel ) : cBaseAction( panel, "Light Shadow Ignore",
+		"Component is not casting shadows from lights present in the same object" ){ }
+	
+	virtual igdeUndo *OnActionComponent( gdeObjectClass *objectClass, gdeOCComponent *component ){
+		return new gdeUOCComponentToggleLightShadowIgnore( objectClass, component );
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
@@ -974,6 +987,7 @@ pDirtyEngModelTexNames( true )
 	helper.CheckBox( groupBox, pChkAttachTarget, new cActionAttachTarget( *this ), true );
 	helper.CheckBox( groupBox, pChkRenderEnvMap, new cActionRenderEnvMap( *this ), true );
 	helper.CheckBox( groupBox, pChkAffectsAudio, new cActionAffectsAudio( *this ), true );
+	helper.CheckBox( groupBox, pChkLightShadowIgnore, new cActionLightShadowIgnore( *this ), true );
 	helper.CheckBox( groupBox, pChkStatic, new cActionStatic( *this ), true );
 	
 	
@@ -990,6 +1004,7 @@ pDirtyEngModelTexNames( true )
 	pCBPropertyNames->AddItem( "Audio model", NULL, ( void* )( intptr_t )gdeOCComponent::epAudioModel );
 	pCBPropertyNames->AddItem( "Render env-map", NULL, ( void* )( intptr_t )gdeOCComponent::epRenderEnvMap );
 	pCBPropertyNames->AddItem( "Affects audio", NULL, ( void* )( intptr_t )gdeOCComponent::epAffectsAudio );
+	pCBPropertyNames->AddItem( "Light Shadow Ignore", NULL, ( void* )( intptr_t )gdeOCComponent::epLightShadowIgnore );
 	pCBPropertyNames->AddItem( "Attach position", NULL,  ( void* )( intptr_t )gdeOCComponent::epAttachPosition );
 	pCBPropertyNames->AddItem( "Attach rotation", NULL, ( void* )( intptr_t )gdeOCComponent::epAttachRotation );
 	
@@ -1036,8 +1051,8 @@ pDirtyEngModelTexNames( true )
 		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pTextureListProperties, 5, headersPropertyValues, 2,
-		"Property values", new cListTexturePropertyValues( *this ) );
+	helper.IconListBox( groupBox, pTextureListProperties, decPoint( 100, 120 ),
+		headersPropertyValues, 2, "Property values", new cListTexturePropertyValues( *this ) );
 	pTextureListProperties->SetDefaultSorter();
 }
 
@@ -1173,6 +1188,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked( component->GetStatic() );
 		pChkRenderEnvMap->SetChecked( component->GetRenderEnvMap() );
 		pChkAffectsAudio->SetChecked( component->GetAffectsAudio() );
+		pChkLightShadowIgnore->SetChecked( component->GetLightShadowIgnore() );
 		pChkPartialHide->SetChecked( component->GetPartialHide() );
 		pChkAttachTarget->SetChecked( component->GetAttachTarget() );
 		pCBCollisionResponseType->SetSelectionWithData(
@@ -1195,6 +1211,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked( false );
 		pChkRenderEnvMap->SetChecked( false );
 		pChkAffectsAudio->SetChecked( false );
+		pChkLightShadowIgnore->SetChecked( false );
 		pChkPartialHide->SetChecked( false );
 		pChkAttachTarget->SetChecked( false );
 		pCBCollisionResponseType->SetSelectionWithData( ( void* )( intptr_t )deCollider::ertStatic );
@@ -1217,6 +1234,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 	pChkStatic->SetEnabled( enabled );
 	pChkRenderEnvMap->SetEnabled( enabled );
 	pChkAffectsAudio->SetEnabled( enabled );
+	pChkLightShadowIgnore->SetEnabled( enabled );
 	pChkPartialHide->SetEnabled( enabled );
 	pChkAttachTarget->SetEnabled( enabled );
 	pCBCollisionResponseType->SetEnabled( enabled );

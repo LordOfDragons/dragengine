@@ -152,6 +152,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Emissivity intensity. */
 		eptEmissivityIntensity,
 		
+		/** \brief Emissivity camera adapted property. */
+		eptEmissivityCameraAdapted,
+		
 		
 		
 		/** \brief Environment room. */
@@ -221,6 +224,12 @@ namespace deoglSkinPropertyMap{
 		
 		/** \brief Texture coordinates rotation. */
 		eptTexCoordRotate,
+		
+		/** \brief Omni direction texture rotation. */
+		eptOmniDirRotate,
+		
+		/** \brief Omni direction texture rotation applied only on spot type light sources. */
+		eptOmniDirRotateSpot,
 		
 		
 		

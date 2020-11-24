@@ -20,6 +20,6 @@ interface NetworkStateListener
 	 * \brief State value changed.
 	 * \param value Index of value whose value changed.
 	 */
-	public func void stateValueChanged( int value )
+	func void stateValueChanged( int value )
 	/*@}*/
 end

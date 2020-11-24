@@ -61,8 +61,6 @@
 #include "../conversation/facepose/ceFacePose.h"
 #include "../conversation/file/ceConversationFile.h"
 #include "../conversation/gesture/ceGesture.h"
-#include "../conversation/lookat/ceLookAt.h"
-#include "../conversation/pose/cePose.h"
 #include "../conversation/strip/ceStrip.h"
 #include "../conversation/target/ceTarget.h"
 #include "../conversation/topic/ceConversationTopic.h"
@@ -88,22 +86,6 @@
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 
-
-
-// Definitions
-////////////////
-/*
-static const char *vParameterNames[] = {
-	"positionX",
-	"positionY",
-	"positionZ",
-	"lookAtX",
-	"lookAtY",
-	"lookAtZ",
-	"tilt",
-	"fov"
-};
-*/
 
 
 // Class ceLoadSaveConversation
@@ -160,18 +142,20 @@ void ceLoadSaveConversation::SaveConversation( const ceConversation &conversatio
 //////////////////////
 
 void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceConversation &conversation ){
-	const decStringList &facePoseControllerNameList = conversation.GetFacePoseControllerNameList();
-	const ceCameraShotList &cameraShotList = conversation.GetCameraShotList();
-	const ceConversationFileList &fileList = conversation.GetFileList();
-	const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
-	const ceGestureList &gestureList = conversation.GetGestureList();
-	const ceTargetList &targetList = conversation.GetTargetList();
-	const ceLookAtList &lookAtList = conversation.GetLookAtList();
-	const cePoseList &poseList = conversation.GetPoseList();
 	int i, count;
 	
 	writer.WriteOpeningTag( "conversation", false, true );
 	
+	const decStringList &importConversationPath = conversation.GetImportConversationPath();
+	count = importConversationPath.GetCount();
+	if( count > 0 ){
+		writer.WriteNewline();
+		for( i=0; i<count; i++ ){
+			writer.WriteDataTagString( "import", importConversationPath.GetAt( i ) );
+		}
+	}
+	
+	const ceTargetList &targetList = conversation.GetTargetList();
 	count = targetList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -180,6 +164,7 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		}
 	}
 	
+	const ceCameraShotList &cameraShotList = conversation.GetCameraShotList();
 	count = cameraShotList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -188,14 +173,7 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		}
 	}
 	
-	count = poseList.GetCount();
-	if( count > 0 ){
-		writer.WriteNewline();
-		for( i=0; i<count; i++ ){
-			pWritePose( writer, *poseList.GetAt( i ) );
-		}
-	}
-	
+	const ceGestureList &gestureList = conversation.GetGestureList();
 	count = gestureList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -204,6 +182,7 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		}
 	}
 	
+	const decStringList &facePoseControllerNameList = conversation.GetFacePoseControllerNameList();
 	count = facePoseControllerNameList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -214,6 +193,7 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		writer.WriteClosingTag( "facePoseControllerNames" );
 	}
 	
+	const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
 	count = facePoseList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -222,14 +202,7 @@ void ceLoadSaveConversation::pWriteConversation( decXmlWriter &writer, const ceC
 		}
 	}
 	
-	count = lookAtList.GetCount();
-	if( count > 0 ){
-		writer.WriteNewline();
-		for( i=0; i<count; i++ ){
-			pWriteLookAt( writer, *lookAtList.GetAt( i ) );
-		}
-	}
-	
+	const ceConversationFileList &fileList = conversation.GetFileList();
 	count = fileList.GetCount();
 	if( count > 0 ){
 		writer.WriteNewline();
@@ -388,16 +361,6 @@ void ceLoadSaveConversation::pWriteCameraShot( decXmlWriter &writer, const ceCam
 	writer.WriteClosingTag( "cameraShot" );
 }
 
-void ceLoadSaveConversation::pWritePose( decXmlWriter &writer, const cePose &pose ){
-	writer.WriteOpeningTagStart( "pose" );
-	writer.WriteAttributeString( "name", pose.GetName() );
-	writer.WriteOpeningTagEnd();
-	
-	writer.WriteDataTagString( "move", pose.GetMove() );
-	
-	writer.WriteClosingTag( "pose" );
-}
-
 void ceLoadSaveConversation::pWriteGesture( decXmlWriter &writer, const ceGesture &gesture ){
 	writer.WriteOpeningTagStart( "gesture" );
 	writer.WriteAttributeString( "name", gesture.GetName() );
@@ -432,21 +395,11 @@ void ceLoadSaveConversation::pWriteFacePose( decXmlWriter &writer, const ceFaceP
 	writer.WriteClosingTag( "facePose" );
 }
 
-void ceLoadSaveConversation::pWriteLookAt( decXmlWriter &writer, const ceLookAt &lookat ){
-	writer.WriteOpeningTagStart( "lookAt" );
-	writer.WriteAttributeString( "name", lookat.GetName() );
-	writer.WriteOpeningTagEnd();
-	
-	writer.WriteDataTagString( "target", lookat.GetTarget() );
-	
-	writer.WriteClosingTag( "lookAt" );
-}
-
 void ceLoadSaveConversation::pWriteFile( decXmlWriter &writer, const ceConversationFile &file ){
 	const ceConversationTopicList &topicList = file.GetTopicList();
 	int i, count;
 	
-	writer.WriteOpeningTagStart( "file" );
+	writer.WriteOpeningTagStart( "group" );
 	writer.WriteAttributeString( "id", file.GetID() );
 	writer.WriteOpeningTagEnd();
 	
@@ -455,7 +408,7 @@ void ceLoadSaveConversation::pWriteFile( decXmlWriter &writer, const ceConversat
 		pWriteTopic( writer, *topicList.GetAt( i ) );
 	}
 	
-	writer.WriteClosingTag( "file" );
+	writer.WriteClosingTag( "group" );
 }
 
 void ceLoadSaveConversation::pWriteTopic( decXmlWriter &writer, const ceConversationTopic &topic ){
@@ -736,7 +689,7 @@ void ceLoadSaveConversation::pWriteActionStopTopic( decXmlWriter &writer, const 
 void ceLoadSaveConversation::pWriteActionSnippet( decXmlWriter &writer, const ceCASnippet &action ){
 	writer.WriteOpeningTag( "snippet" );
 	pWriteActionCommon( writer, action );
-	writer.WriteDataTagString( "file", action.GetFile() );
+	writer.WriteDataTagString( "group", action.GetFile() );
 	writer.WriteDataTagString( "topic", action.GetTopic() );
 	writer.WriteClosingTag( "snippet" );
 }
@@ -1215,42 +1168,50 @@ void ceLoadSaveConversation::pWriteCurveBezierPoint( decXmlWriter &writer, const
 
 void ceLoadSaveConversation::pReadConversation( const decXmlElementTag &root, ceConversation &conversation ){
 	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
+	decStringList importConversationPath;
 	int e;
 	
 	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+		const decXmlElementTag * const tag = root.GetElementIfTag( e );
+		if( !tag ){
+			continue;
+		}
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "target" ) == 0 ){
-				pReadTarget( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "cameraShot" ) == 0 ){
-				pReadCameraShot( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "pose" ) == 0 ){
-				pReadPose( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "gesture" ) == 0 ){
-				pReadGesture( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "facePoseControllerNames" ) == 0 ){
-				pReadStringList( *tag, conversation.GetFacePoseControllerNameList(), "name" );
-				
-			}else if( strcmp( tag->GetName(), "facePose" ) == 0 ){
-				pReadFacePose( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "lookAt" ) == 0 ){
-				pReadLookAt( *tag, conversation );
-				
-			}else if( strcmp( tag->GetName(), "file" ) == 0 ){
-				pReadFile( *tag, conversation );
-				
-			}else{
-				LogWarnUnknownTag( root, *tag );
-			}
+		const decString &tagName = tag->GetName();
+		if( tagName == "target" ){
+			pReadTarget( *tag, conversation );
+			
+		}else if( tagName == "cameraShot" ){
+			pReadCameraShot( *tag, conversation );
+			
+		}else if( tagName == "pose" ){
+			// deprecated
+			
+		}else if( tagName == "gesture" ){
+			pReadGesture( *tag, conversation );
+			
+		}else if( tagName == "facePoseControllerNames" ){
+			pReadStringList( *tag, conversation.GetFacePoseControllerNameList(), "name" );
+			
+		}else if( tagName == "facePose" ){
+			pReadFacePose( *tag, conversation );
+			
+		}else if( tagName == "lookAt" ){
+			// deprecated
+			
+		}else if( tagName == "group" || tagName == "file" ){ // "file" DEPRECATED
+			pReadFile( *tag, conversation );
+			
+		}else if( tagName == "import" ){
+			importConversationPath.Add( GetCDataString( *tag ) );
+			
+		}else{
+			LogWarnUnknownTag( root, *tag );
 		}
 	}
+	
+	conversation.SetImportConversationPath( importConversationPath );
+	conversation.UpdateImportedConversations( *pLSSys );
 }
 
 void ceLoadSaveConversation::pReadTarget( const decXmlElementTag &root, ceConversation &conversation ){
@@ -1437,43 +1398,6 @@ void ceLoadSaveConversation::pReadCameraShot( const decXmlElementTag &root, ceCo
 	}
 }
 
-void ceLoadSaveConversation::pReadPose( const decXmlElementTag &root, ceConversation &conversation ){
-	const int elementCount = root.GetElementCount();
-	cePose *pose = NULL;
-	const decXmlElementTag *tag;
-	int e;
-	
-	try{
-		pose = new cePose;
-		pose->SetName( GetAttributeString( root, "name" ) );
-		if( conversation.GetPoseList().HasNamed( pose->GetName() ) ){
-			LogErrorGenericProblemValue( root, pose->GetName(), "A pose with this name exists already" );
-		}
-		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
-			
-			if( tag ){
-				if( strcmp( tag->GetName(), "move" ) == 0 ){
-					pose->SetMove( GetCDataString( *tag ) );
-					
-				}else{
-					LogWarnUnknownTag( root, *tag );
-				}
-			}
-		}
-		
-		conversation.AddPose( pose );
-		pose->FreeReference();
-		
-	}catch( const deException & ){
-		if( pose ){
-			pose->FreeReference();
-		}
-		throw;
-	}
-}
-
 void ceLoadSaveConversation::pReadGesture( const decXmlElementTag &root, ceConversation &conversation ){
 	const int elementCount = root.GetElementCount();
 	ceGesture *gesture = NULL;
@@ -1552,43 +1476,6 @@ void ceLoadSaveConversation::pReadFacePose( const decXmlElementTag &root, ceConv
 		}
 		if( facePose ){
 			facePose->FreeReference();
-		}
-		throw;
-	}
-}
-
-void ceLoadSaveConversation::pReadLookAt( const decXmlElementTag &root, ceConversation &conversation ){
-	const int elementCount = root.GetElementCount();
-	ceLookAt *lookAt = NULL;
-	const decXmlElementTag *tag;
-	int e;
-	
-	try{
-		lookAt = new ceLookAt;
-		lookAt->SetName( GetAttributeString( root, "name" ) );
-		if( conversation.GetLookAtList().HasNamed( lookAt->GetName() ) ){
-			LogErrorGenericProblemValue( root, lookAt->GetName(), "A look-at with this name exists already" );
-		}
-		
-		for( e=0; e<elementCount; e++ ){
-			tag = root.GetElementIfTag( e );
-			
-			if( tag ){
-				if( strcmp( tag->GetName(), "target" ) == 0 ){
-					lookAt->SetTarget( GetCDataString( *tag ) );
-					
-				}else{
-					LogWarnUnknownTag( root, *tag );
-				}
-			}
-		}
-		
-		conversation.AddLookAt( lookAt );
-		lookAt->FreeReference();
-		
-	}catch( const deException & ){
-		if( lookAt ){
-			lookAt->FreeReference();
 		}
 		throw;
 	}
@@ -2338,22 +2225,23 @@ void ceLoadSaveConversation::pReadActionStopTopic( const decXmlElementTag &root,
 
 void ceLoadSaveConversation::pReadActionSnippet( const decXmlElementTag &root, ceCASnippet &action ){
 	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
 	int e;
 	
 	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+		const decXmlElementTag * const tag = root.GetElementIfTag( e );
+		if( ! tag ){
+			continue;
+		}
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "file" ) == 0 ){
-				action.SetFile( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "topic" ) == 0 ){
-				action.SetTopic( GetCDataString( *tag ) );
-				
-			}else if( ! pReadActionCommon( *tag, action ) ){
-				LogWarnUnknownTag( root, *tag );
-			}
+		const decString &tagName = tag->GetName();
+		if( tagName == "group" || tagName == "file" ){ // "file" DEPRECATED
+			action.SetFile( GetCDataString( *tag ) );
+			
+		}else if( tagName == "topic" ){
+			action.SetTopic( GetCDataString( *tag ) );
+			
+		}else if( ! pReadActionCommon( *tag, action ) ){
+			LogWarnUnknownTag( root, *tag );
 		}
 	}
 }

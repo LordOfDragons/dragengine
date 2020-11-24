@@ -28,14 +28,17 @@ class FileReader
 	/*@{*/
 	/** \brief File name. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief File size in bytes. */
 	public func int getLength()
+		return 0
 	end
 	
 	/** \brief Current reading position in bytes from the beginning of the file. */
 	public func int getPosition()
+		return 0
 	end
 	
 	/** \brief Set reading file position in bytes relative to beginning of file. */
@@ -54,6 +57,7 @@ class FileReader
 	
 	/** \brief Stream version used by readFromFile of native classes. */
 	public func int getStreamVersion()
+		return 0
 	end
 	
 	/** \brief Set stream version used by readFromFile of native classes. */
@@ -63,46 +67,57 @@ class FileReader
 	
 	/** \brief File reading pointer is at the end of file. */
 	public func bool eof()
+		return false
 	end
 	
 	/** \brief Read one byte ( 1 byte ) and advance the file reading position. */
 	public func int readChar()
+		return 0
 	end
 	
 	/** \brief Read one unsigned byte ( 1 byte ) and advance the file reading position. */
 	public func int readByte()
+		return 0
 	end
 	
 	/** \brief Read one short ( 2 bytes ) and advance the file reading position. */
 	public func int readShort()
+		return 0
 	end
 	
 	/** \brief Read one unsigned short ( 2 bytes ) and advance the file reading position. */
 	public func int readUShort()
+		return 0
 	end
 	
 	/** \brief Read one int ( 4 bytes ) and advance the file reading position. */
 	public func int readInt()
+		return 0
 	end
 	
 	/** \brief Read one unsigned int ( 4 bytes ) and advance the file reading position. */
 	public func int readUInt()
+		return 0
 	end
 	
 	/** \brief Read one float ( 4 bytes ) and advance the file reading position. */
 	public func float readFloat()
+		return 0.0
 	end
 	
 	/** \brief Read string prefixed by a 1-byte length field and advance the file reading position. */
 	public func String readString8()
+		return null
 	end
 	
 	/** \brief Read string prefixed by a 2-byte2 length field and advance the file reading position. */
 	public func String readString16()
+		return null
 	end
 	
 	/** \brief Read string without length field and advance the file reading position. */
 	public func String readString( int size )
+		return null
 	end
 	
 	/** \brief Skips string prefixed by a 1-byte length field and advance the file reading position. */

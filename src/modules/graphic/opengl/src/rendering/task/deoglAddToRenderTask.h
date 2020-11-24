@@ -253,6 +253,9 @@ public:
 	/** \brief Add components from the given collide list. */
 	void AddComponents( const deoglCollideList &clist );
 	
+	/** \brief Add components from the given collide list using highest lod level. */
+	void AddComponentsHighestLod( const deoglCollideList &clist );
+	
 	/**
 	 * \brief Add continuous run of all faces of a texture of a component.
 	 * \details The component is supposed to be updated already and that a model and skin exists

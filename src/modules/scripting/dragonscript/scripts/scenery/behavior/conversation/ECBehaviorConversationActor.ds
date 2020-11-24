@@ -700,7 +700,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		public func void runCommand( Array arguments )
 			if arguments.getCount() == 0
-				throw EInvalidParam.new( "commandString is empty" )
+				throw EInvalidParam.new( "arguments is empty" )
 			end
 			
 			var String name = arguments.getAt( 0 ) cast String
@@ -719,7 +719,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		public func bool evaluateCondition( Array arguments )
 			if arguments.getCount() == 0
-				throw EInvalidParam.new( "commandString is empty" )
+				throw EInvalidParam.new( "arguments is empty" )
 			end
 			
 			var String name = arguments.getAt( 0 ) cast String

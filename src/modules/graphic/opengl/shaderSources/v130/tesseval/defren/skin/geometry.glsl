@@ -1,21 +1,8 @@
 //#extension GL_ARB_tessellation_shader : enable
-
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+#include "v130/shared/defren/skin/macros_geometry.glsl"
 
 //layout( quads, equal_spacing, cw ) in;
 layout( triangles, equal_spacing, ccw ) in;
-
-// some helper definitions to make the code easier to read
-#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_EMISSIVITY 1
-#endif
-#if defined TEXTURE_ENVMAP || defined TEXTURE_RIM_EMISSIVITY
-	#define WITH_REFLECT_DIR 1
-#endif
 
 
 
@@ -60,8 +47,10 @@ in vec2 vTESTCColor[];
 #endif
 
 in vec3 vTESNormal[];
-#ifdef TEXTURE_NORMAL
+#ifdef WITH_TANGENT
 	in vec3 vTESTangent[];
+#endif
+#ifdef WITH_BITANGENT
 	in vec3 vTESBitangent[];
 #endif
 
@@ -108,9 +97,11 @@ in vec3 vTESNormal[];
 	
 	out vec3 vGSNormal;
 	#define vNormal vGSNormal
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		out vec3 vGSTangent;
 		#define vTangent vGSTangent
+	#endif
+	#ifdef WITH_BITANGENT
 		out vec3 vGSBitangent;
 		#define vBitangent vGSBitangent
 	#endif
@@ -148,8 +139,10 @@ in vec3 vTESNormal[];
 	#endif
 	
 	out vec3 vNormal;
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		out vec3 vTangent;
+	#endif
+	#ifdef WITH_BITANGENT
 		out vec3 vBitangent;
 	#endif
 	
@@ -190,8 +183,10 @@ void main(){
 	#endif
 	
 	TESS_VAR_LINEAR_TRI( vNormal, vTESNormal );
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		TESS_VAR_LINEAR_TRI( vTangent, vTESTangent );
+	#endif
+	#ifdef WITH_BITANGENT
 		TESS_VAR_LINEAR_TRI( vBitangent, vTESBitangent );
 	#endif
 	
@@ -229,8 +224,10 @@ void main(){
 	
 	// normalize normals. this has to be done after position adjustment since otherwise the coordinate system is wrong
 	vNormal = normalize( vNormal * pMatrixVn );
-	#ifdef TEXTURE_NORMAL
+	#ifdef WITH_TANGENT
 		vTangent = normalize( vTangent * pMatrixVn );
+	#endif
+	#ifdef WITH_BITANGENT
 		vBitangent = normalize( vBitangent * pMatrixVn );
 	#endif
 }

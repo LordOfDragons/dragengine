@@ -44,7 +44,10 @@
 		</replace>
 	</file>
 	
-	<!--  Include path could be set with .kdev_include_paths file -->
+	<file>
+		<path>.kdev4/project.kdev4</path>
+		<directory>project</directory>
+	</file>
 	
 	<!-- This file provides a default configuration for the Project Editor -->
 	<file>

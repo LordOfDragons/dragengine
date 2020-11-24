@@ -304,7 +304,7 @@ ceConversationAction::eActionTypes actionType ){
 		return windowMain.GetIconActionStop();
 		
 	case ceConversationAction::eatActorCommand:
-		return windowMain.GetIconActionCommand();
+		return windowMain.GetIconActionActorCommand();
 		
 	case ceConversationAction::eatGameCommand:
 		return windowMain.GetIconActionCommand();

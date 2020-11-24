@@ -5,7 +5,8 @@
 	
 	<version>130</version>
 	
-	<texture name='texColor' target='0'/>
+	<!--<texture name='texColor' target='0'/>-->
+	<texture name='texLuminance' target='0'/>
 	
 	<parameter name='pPosTransform'/> <!-- 0 -->
 	<parameter name='pTCTransform'/> <!-- 1 -->

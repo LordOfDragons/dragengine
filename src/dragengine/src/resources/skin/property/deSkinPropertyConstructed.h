@@ -37,6 +37,7 @@ private:
 	decColor pColor;
 	bool pTileX;
 	bool pTileY;
+	int pBitCount;
 	
 	
 	
@@ -78,6 +79,20 @@ public:
 	
 	/** \brief Set if nodes are tiled along y axis. */
 	void SetTileY( bool tileY );
+	
+	/**
+	 * \brief Bit count.
+	 * 
+	 * Can be 8, 16 or 32.
+	 */
+	inline int GetBitCount() const{ return pBitCount; }
+	
+	/**
+	 * \brief Set bit count.
+	 * 
+	 * Allowed are 8, 16 or 32.
+	 */
+	void SetBitCount( int bitCount );
 	/*@}*/
 	
 	

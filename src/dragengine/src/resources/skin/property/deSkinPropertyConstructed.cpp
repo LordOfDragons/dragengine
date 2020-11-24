@@ -40,7 +40,8 @@ deSkinPropertyConstructed::deSkinPropertyConstructed( const char *type ) :
 deSkinProperty( type ),
 pContent( NULL ),
 pTileX( false ),
-pTileY( false )
+pTileY( false ),
+pBitCount( 8 )
 {
 	pContent = new deSkinPropertyNodeGroup;
 	pContent->SetSize( decVector( 256.0f, 256.0f, 1.0f ) );
@@ -67,6 +68,19 @@ void deSkinPropertyConstructed::SetTileX( bool tileX ){
 
 void deSkinPropertyConstructed::SetTileY( bool tileY ){
 	pTileY = tileY;
+}
+
+void deSkinPropertyConstructed::SetBitCount( int bitCount ){
+	switch( bitCount ){
+	case 8:
+	case 16:
+	case 32:
+		pBitCount = bitCount;
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }
 
 

@@ -47,6 +47,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Determine if the actor can turn. */
 	public func bool getCanTurn()
+		return false
 	end
 	
 	/** \brief Set if the actor can turn. */
@@ -60,6 +61,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Looking up limit angle in degrees. */
 	public func float getLimitLookUp()
+		return 0.0
 	end
 	
 	/** \brief Set looking up limit angle in degrees. */
@@ -68,6 +70,7 @@ class Locomotion
 	
 	/** \brief Looking down limit angle in degrees. */
 	public func float getLimitLookDown()
+		return 0.0
 	end
 	
 	/** \brief Set looking down limit angle in degrees. */
@@ -76,6 +79,7 @@ class Locomotion
 	
 	/** \brief Look up-down adjustment time in seconds. */
 	public func float getAdjustTimeVertical()
+		return 0.0
 	end
 	
 	/** \brief Set look up-down adjustment time in seconds. */
@@ -84,6 +88,7 @@ class Locomotion
 	
 	/** \brief Look up-down adjustment range. */
 	public func float getAdjustRangeVertical()
+		return 0.0
 	end
 	
 	/** \brief Set look up-down adjustment range. */
@@ -92,6 +97,7 @@ class Locomotion
 	
 	/** \brief Looking up-down goal. */
 	public func float getLookVerticalGoal()
+		return 0.0
 	end
 	
 	/** \brief Set looking up-down goal. */
@@ -100,6 +106,7 @@ class Locomotion
 	
 	/** \brief Looking up-down value. */
 	public func float getLookVertical()
+		return 0.0
 	end
 	
 	/** \brief Looking up-down value. */
@@ -110,6 +117,7 @@ class Locomotion
 	
 	/** \brief Looking left limit in degrees. */
 	public func float getLimitLookLeft()
+		return 0.0
 	end
 	
 	/** \brief Set looking left limit in degrees. */
@@ -118,6 +126,7 @@ class Locomotion
 	
 	/** \brief Looking right limit in degrees. */
 	public func float getLimitLookRight()
+		return 0.0
 	end
 	
 	/** \brief Set looking right limit in degrees. */
@@ -126,6 +135,7 @@ class Locomotion
 	
 	/** \brief Look left-right adjustment time in seconds. */
 	public func float getAdjustTimeHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set look left-right adjustment time in seconds. */
@@ -134,6 +144,7 @@ class Locomotion
 	
 	/** \brief Look left-right adjustment range. */
 	public func float getAdjustRangeHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set look left-right adjustment range. */
@@ -142,6 +153,7 @@ class Locomotion
 	
 	/** \brief Look left-right goal. */
 	public func float getLookHorizontalGoal()
+		return 0.0
 	end
 	
 	/** \brief Set look left-right goal. */
@@ -150,6 +162,7 @@ class Locomotion
 	
 	/** \brief Look left-right value. */
 	public func float getLookHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set look left-right value. */
@@ -158,6 +171,7 @@ class Locomotion
 	
 	/** \brief Adjust looking left-right while turning. */
 	public func bool getTurnAdjustLookHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set if looking left-right is adjusted while turning. */
@@ -168,6 +182,7 @@ class Locomotion
 	
 	/** \brief Analog looking up-down. */
 	public func float getAnalogMovingVertical()
+		return 0.0
 	end
 	
 	/** \brief Set analog looking up-down. */
@@ -181,6 +196,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Turn left-right value. */
 	public func float getTurnHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set turn left-right value. */
@@ -191,6 +207,7 @@ class Locomotion
 	
 	/** \brief Orientation adjustment time in seconds. */
 	public func float getAdjustTimeOrientation()
+		return 0.0
 	end
 	
 	/** \brief Set orientation adjustment time in seconds. */
@@ -199,6 +216,7 @@ class Locomotion
 	
 	/** \brief Actor orientation in world space. */
 	public func float getOrientation()
+		return 0.0
 	end
 	
 	/** \brief Set actor orientation in world space. */
@@ -207,6 +225,7 @@ class Locomotion
 	
 	/** \brief Actor orientation as quaternion. */
 	public func Quaternion getOrientationQuaternion()
+		return null
 	end
 	
 	/** \brief Set actor orientation as quaternion. */
@@ -215,6 +234,7 @@ class Locomotion
 	
 	/** \brief Turning speed in meters per second. */
 	public func float getTurningSpeed()
+		return 0.0
 	end
 	
 	/** \brief Set turning speed in meters per second. */
@@ -223,6 +243,7 @@ class Locomotion
 	
 	/** \brief Angular velocity of the actor turning. */
 	public func Vector getAngularVelocity()
+		return null
 	end
 	
 	/** \brief Set angular velocity of the actor turning. */
@@ -233,6 +254,7 @@ class Locomotion
 	
 	/** \brief Determine if the actor is turning in place. */
 	public func bool getIsTurningIP()
+		return false
 	end
 	
 	/** \brief Set if the actor is turning in place. */
@@ -241,6 +263,7 @@ class Locomotion
 	
 	/** \brief Adjustment time in seconds for turning in-place. */
 	public func float getAdjustTimeTurnIP()
+		return 0.0
 	end
 	
 	/** \brief Set adjustment time in seconds for turning in-place. */
@@ -249,6 +272,7 @@ class Locomotion
 	
 	/** \brief Turn in place value. */
 	public func float getTurnIP()
+		return 0.0
 	end
 	
 	/** \brief Set turn in place value. */
@@ -257,6 +281,7 @@ class Locomotion
 	
 	/** \brief Determine if the turn in place time linked controllers have to be reset. */
 	public func bool getResetTimeTurnIP()
+		return false
 	end
 	
 	/** \brief Set if the turn in place time linked controllers have to be reset. */
@@ -265,6 +290,7 @@ class Locomotion
 	
 	/** \brief Determine if the turn in place time linked controllers have to be reversed. */
 	public func bool getReverseTimeTurnIP()
+		return false
 	end
 	
 	/** \brief Set if the turn in place time linked controllers have to be reversed. */
@@ -275,6 +301,7 @@ class Locomotion
 	
 	/** \brief Actor can turn in-place if looking beyond limits. */
 	public func bool getCanTurnInPlace()
+		return false
 	end
 	
 	/** \brief Set if actor can turn in-place if looking beyond limits. */
@@ -283,6 +310,7 @@ class Locomotion
 	
 	/** \brief Looking left limit in degrees before turning in-place. */
 	public func float getLimitTurnInPlaceLeft()
+		return 0.0
 	end
 	
 	/** \brief Set looking left limit in degrees before turning in-place. */
@@ -291,6 +319,7 @@ class Locomotion
 	
 	/** \brief Looking right limit in degrees before turning in-place. */
 	public func float getLimitTurnInPlaceRight()
+		return 0.0
 	end
 	
 	/** \brief Set looking right limit in degrees before turning in-place. */
@@ -304,6 +333,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Analog looking left-right adjustment time in seconds. */
 	public func float getAdjustTimeAnalogMovingHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set analog looking left-right adjustment time in seconds. */
@@ -312,6 +342,7 @@ class Locomotion
 	
 	/** \brief Analog looking left-right adjustment range. */
 	public func float getAdjustRangeAnalogMovingHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set analog looking left-right adjustment range. */
@@ -320,6 +351,7 @@ class Locomotion
 	
 	/** \brief Analog looking left-right goal. */
 	public func float getAnalogMovingHorizontalGoal()
+		return 0.0
 	end
 	
 	/** \brief Set analog looking left-right goal. */
@@ -328,6 +360,7 @@ class Locomotion
 	
 	/** \brief Analog looking left-right. */
 	public func float getAnalogMovingHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set analog looking left-right. */
@@ -338,6 +371,7 @@ class Locomotion
 	
 	/** \brief Analog moving speed. */
 	public func float getAnalogMovingSpeed()
+		return 0.0
 	end
 	
 	/** \brief Set analog moving speed. */
@@ -348,6 +382,7 @@ class Locomotion
 	
 	/** \brief Determine if the actor is moving direct or analog. */
 	public func bool getIsMoving()
+		return false
 	end
 	
 	/** \brief Set determine if the actor is moving direct or analog. */
@@ -359,10 +394,12 @@ class Locomotion
 	 * \details For Non-FPS locomotion type this is negative for moving backwards.
 	 */
 	public func float getMovingSpeed()
+		return 0.0
 	end
 	
 	/** \brief Absolute movement speed. */
 	public func float getAbsMovingSpeed()
+		return 0.0
 	end
 	
 	/**
@@ -376,6 +413,7 @@ class Locomotion
 	
 	/** \brief Linear velocity. */
 	public func Vector getLinearVelocity()
+		return null
 	end
 	
 	/** \brief Set linear velocity. */
@@ -384,6 +422,7 @@ class Locomotion
 	
 	/** \brief Linear velocity adjustment time in seconds. */
 	public func float getAdjustTimeLinearVelocity()
+		return 0.0
 	end
 	
 	/** \brief Set linear velocity adjustment time in seconds. */
@@ -392,6 +431,7 @@ class Locomotion
 	
 	/** \brief Linear velocity adjustment range in meters per second. */
 	public func float getAdjustRangeLinearVelocity()
+		return 0.0
 	end
 	
 	/** \brief Set linear velocity adjustment range in meters per second. */
@@ -402,6 +442,7 @@ class Locomotion
 	
 	/** \brief Movement orientation in world space. */
 	public func float getMovingOrientation()
+		return 0.0
 	end
 	
 	/** \brief Set movement orientation in world space. */
@@ -410,10 +451,12 @@ class Locomotion
 	
 	/** \brief Movement direction relative to view orientation. */
 	public func float getMovingDirection()
+		return 0.0
 	end
 	
 	/** \brief Movement direction vector relative to view orientation. */
 	public func Vector getMovingDirectionVector()
+		return null
 	end
 	
 	/** \brief Set movement direction relative to view orientation. */
@@ -424,6 +467,7 @@ class Locomotion
 	
 	/** \brief Determine if the walk/run time linked controllers have to be reset. */
 	public func bool getResetTimeWalk()
+		return false
 	end
 	
 	/** \brief Set if the walk/run time linked controllers have to be reset. */
@@ -437,6 +481,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Adjustment time for stance in seconds. */
 	public func float getAdjustTimeStance()
+		return 0.0
 	end
 	
 	/** \brief Adjustment time for stance in seconds. */
@@ -445,6 +490,7 @@ class Locomotion
 	
 	/** \brief Adjustment range for stance. */
 	public func float getAdjustRangeStance()
+		return 0.0
 	end
 	
 	/** \brief Adjustment range for stance. */
@@ -453,6 +499,7 @@ class Locomotion
 	
 	/** \brief Stance value. */
 	public func float getStance()
+		return 0.0
 	end
 	
 	/** \brief Set stance value. */
@@ -461,6 +508,7 @@ class Locomotion
 	
 	/** \brief Stance goal value. */
 	public func float getStanceGoal()
+		return 0.0
 	end
 	
 	/** \brief Set stance goal value. */
@@ -474,6 +522,7 @@ class Locomotion
 	/*@{*/
 	/** \brief Determine if the actor can tilt the body. */
 	public func bool getCanTilt()
+		return false
 	end
 	
 	/** \brief Set if the actor can tilt the body. */
@@ -482,6 +531,7 @@ class Locomotion
 	
 	/** \brief Tilt mode. */
 	public func LocomotionTilt getTiltMode()
+		return null
 	end
 	
 	/** \brief Set tilt mode. */
@@ -512,6 +562,7 @@ class Locomotion
 	
 	/** \brief Tilt up limit in degrees. */
 	public func float getLimitTiltUp()
+		return 0.0
 	end
 	
 	/** \brief Set tilt up limit in degrees. */
@@ -520,6 +571,7 @@ class Locomotion
 	
 	/** \brief Tilt down limit in degrees. */
 	public func float getLimitTiltDown()
+		return 0.0
 	end
 	
 	/** \brief Set tilt down limit in degrees. */
@@ -528,6 +580,7 @@ class Locomotion
 	
 	/** \brief Current tilt up/down angle in degrees. */
 	public func float getTiltVertical()
+		return 0.0
 	end
 	
 	/** \brief Set current tilt up/down angle in degrees. */
@@ -536,6 +589,7 @@ class Locomotion
 	
 	/** \brief Goal tilt up/down angle in degrees. */
 	public func float getTiltVerticalGoal()
+		return 0.0
 	end
 	
 	/** \brief Set goal tilt up/down angle in degrees. */
@@ -544,6 +598,7 @@ class Locomotion
 	
 	/** \brief Tilt up/down adjust time in seconds. */
 	public func float getAdjustTimeTiltVertical()
+		return 0.0
 	end
 	
 	/** \brief Set tilt up/down afjust time in seconds. */
@@ -552,6 +607,7 @@ class Locomotion
 	
 	/** \brief Tilt up/down adjust range. */
 	public func float getAdjustRangeTiltVertical()
+		return 0.0
 	end
 	
 	/** \brief Set tilt up/down afjust range. */
@@ -562,6 +618,7 @@ class Locomotion
 	
 	/** \brief Tilt left limit in degrees. */
 	public func float getLimitTiltLeft()
+		return 0.0
 	end
 	
 	/** \brief Set tilt left limit in degrees. */
@@ -570,6 +627,7 @@ class Locomotion
 	
 	/** \brief Tilt right limit in degrees. */
 	public func float getLimitTiltRight()
+		return 0.0
 	end
 	
 	/** \brief Set Tilt right limit in degrees. */
@@ -578,6 +636,7 @@ class Locomotion
 	
 	/** \brief Current tilt left/right angle in degrees. */
 	public func float getTiltHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set current tilt left/right angle in degrees. */
@@ -586,6 +645,7 @@ class Locomotion
 	
 	/** \brief Goal tilt left/right angle in degrees. */
 	public func float getTiltHorizontalGoal()
+		return 0.0
 	end
 	
 	/** \brief Set goal tilt left/right angle in degrees. */
@@ -594,6 +654,7 @@ class Locomotion
 	
 	/** \brief Tilt left/right adjust time in seconds. */
 	public func float getAdjustTimeTiltHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set tilt left/right afjust time in seconds. */
@@ -602,6 +663,7 @@ class Locomotion
 	
 	/** \brief Tilt left/right adjust range. */
 	public func float getAdjustRangeTiltHorizontal()
+		return 0.0
 	end
 	
 	/** \brief Set tilt left/right afjust range. */
@@ -612,6 +674,7 @@ class Locomotion
 	
 	/** \brief Tilt offset in meters. */
 	public func float getTiltOffset()
+		return 0.0
 	end
 	
 	/** \brief Set tilt offset in meters. */
@@ -750,6 +813,7 @@ class Locomotion
 	
 	/** \brief AI collider to update or NULL if not used. */
 	public func Collider getAICollider()
+		return null
 	end
 	
 	/** \brief Set AI collider to update or NULL if not used. */
@@ -758,6 +822,7 @@ class Locomotion
 	
 	/** \brief Determine if the angular velocity of the AI collider is updated. */
 	public func Collider getUpdateAIColliderAngularVelocity()
+		return null
 	end
 	
 	/** \brief Set if the angular velocity of the AI collider is updated. */
@@ -776,7 +841,7 @@ class Locomotion
 	 * - Controller Mappings
 	 * - Assigned AI Collider
 	 */
-	public func Vector readFromFile( FileReader reader )
+	public func void readFromFile( FileReader reader )
 	end
 	
 	/**

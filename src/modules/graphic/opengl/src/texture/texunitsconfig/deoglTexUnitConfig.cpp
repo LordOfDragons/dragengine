@@ -261,9 +261,20 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 	}
 	
+	// determine if texture coordinates have to be clamped
+	bool clampTexCoord = skinTexture.GetTexCoordClamp();
+	
+	if( skinChannel == deoglSkinChannel::ectColorOmnidirEquirect ){
+		// this is important here. if not clamped opengl adds thin artifact lines across the
+		// 0-degrees angle from top to bottom as well as causing poles to be distorted and
+		// flipped upside down (top pole is down). no idea what driver problem causes this
+		// but forcing clamping solves the problem
+		clampTexCoord = true;
+	}
+	
 	// determine sampler to use
 	if( useTexture && useTexture->GetMipMapped() ){
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
 			
 		}else{
@@ -271,7 +282,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 	}else{
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
 			
 		}else{

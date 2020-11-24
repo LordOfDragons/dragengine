@@ -34,6 +34,7 @@
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
 #include "../../collisions/meCLInvalidateDecals.h"
+#include "../../utils/meHelpers.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -51,6 +52,7 @@
 #include <deigde/gui/wrapper/object/igdeWOSOVisitor.h>
 #include <deigde/gui/wrapper/object/igdeWOSOLight.h>
 #include <deigde/gui/wrapper/object/igdeWOSONavigationSpace.h>
+#include <deigde/gui/wrapper/object/igdeWOSONavigationBlocker.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 #include <deigde/triggersystem/igdeTriggerTarget.h>
@@ -112,6 +114,7 @@
 #include <dragengine/resources/sound/deSpeakerManager.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundManager.h>
+#include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/exceptions.h>
@@ -687,12 +690,8 @@ void meObject::UpdateNavPathTest(){
 	bool affectsPath = false;
 	
 	if( pClassDef && pWorld ){
-		if( pClassDef->GetNavigationSpaceList().GetCount() > 0 ){
-			affectsPath = true;
-		}
-		if( pClassDef->GetNavigationBlockerList().GetCount() > 0 ){
-			affectsPath = true;
-		}
+		affectsPath |= meHelpers::FindFirstNavigationSpace( *pClassDef )
+			|| meHelpers::FindFirstNavigationBlocker( *pClassDef );
 	}
 	
 	if( affectsPath ){
@@ -1942,6 +1941,7 @@ void meObject::pUpdateDDSNavSpaces(){
 				return;
 			}
 			
+			// navigation space
 			igdeWDebugDrawerShape *ddshape = NULL;
 			
 			if( count < ddShapes.GetCount() ){
@@ -1968,6 +1968,47 @@ void meObject::pUpdateDDSNavSpaces(){
 			ddshape->RemoveAllFaces();
 			ddshape->RemoveAllShapes();
 			ddshape->AddNavSpaceFaces( *navigationSpace.GetNavigationSpace() );
+			
+			// navigation blocker
+			if( navigationSpace.GetNavigationSpace()->GetBlockerShapeList().GetCount() > 0 ){
+				Blocker( navigationSpace.GetNavigationSpace()->GetBlockerShapeList() );
+			}
+		}
+		
+		virtual void VisitNavigationBlocker( igdeWOSONavigationBlocker &navigationBlocker ){
+			if( navigationBlocker.GetNavigationBlocker()
+			&& navigationBlocker.GetNavigationBlocker()->GetShapeList().GetCount() > 0 ){
+				Blocker( navigationBlocker.GetNavigationBlocker()->GetShapeList() );
+			}
+		}
+		
+		void Blocker( const decShapeList &shapes ){
+			igdeWDebugDrawerShape *ddshape = NULL;
+			
+			if( count < ddShapes.GetCount() ){
+				ddshape = ddShapes.GetAt( count );
+				
+			}else{
+				try{
+					ddshape = new igdeWDebugDrawerShape;
+					ddshape->SetParentDebugDrawer( debugDrawer );
+					ddshape->SetEdgeColor( decColor( 0.25f, 0.25f, 0.35f, 1.0f ) );
+					ddshape->SetFillColor( decColor( 0.25f, 0.25f, 0.35f, 0.1f ) );
+					ddShapes.Add( ddshape );
+					requiresReposition = true;
+					
+				}catch( const deException & ){
+					if( ddshape ){
+						delete ddshape;
+					}
+					throw;
+				}
+			}
+			
+			count++;
+			ddshape->RemoveAllFaces();
+			ddshape->RemoveAllShapes();
+			ddshape->AddShapes( shapes );
 		}
 	} wosoNavSpaceVisitor( pDebugDrawer, pDDSListNavSpaces );
 	pWObject->VisitSubObjects( wosoNavSpaceVisitor );

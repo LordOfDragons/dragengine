@@ -263,7 +263,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	DEBUG_RESET_TIMERS;
-	defren.ActivateFBOColor( true );
+	defren.ActivateFBOColor( true, false );
 		// change the skin shader so the color texture is the first one.
 		// would not require this switch here anymore
 	
@@ -371,7 +371,7 @@ void deoglRenderSky::RenderSkyOld( deoglRenderPlan &plan ){
 	
 DEBUG_RESET_TIMERS;
 	// attach color buffer, depth buffer and stencil buffer
-	defren.ActivateFBOColor( true );
+	defren.ActivateFBOColor( true, false );
 DEBUG_PRINT_TIMER( "RenderSky: attach color/depth/stencil" );
 	
 	// set states
@@ -579,11 +579,10 @@ int layerIndex, bool first ){
 	// calculate the parameters
 	float znear = plan.GetCameraImageDistance();
 	constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f )
-		* znear / plan.GetAspectRatio();
+	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
 	
 	// set the shaders
-	float matGamma = oglSkinTexture->GetColorGamma();
+	const float matGamma = oglSkinTexture->GetColorGamma();
 	
 	renderThread.GetShader().ActivateShader( pShaderSkySphere );
 	shader = pShaderSkySphere->GetCompiled();
@@ -602,18 +601,17 @@ int layerIndex, bool first ){
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
-	shader->SetParameterColor4( spsphSkyBgColor, LinearBgColor( instance, first ) );
+	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
 	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );
 	
 	// set texture
 	if( textures[ deoglRSkyLayer::eiSphere ] == -1 ){
-		tsmgr.EnableTexture( 0, *renderThread.GetDefaultTextures().GetColor(),
-			GetSamplerRepeatLinear() );
+		tsmgr.EnableTexture( 0, *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampLinear() );
 		
 	}else{
 		tsmgr.EnableSkin( 0, *skin, textures[ deoglRSkyLayer::eiSphere ],
 			deoglSkinChannel::ectColor, renderThread.GetDefaultTextures().GetColor(),
-			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
+			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	}
 	
 	// render layer
@@ -692,8 +690,7 @@ deoglRSkyInstance &instance, int layerIndex ){
 		matrixBody.SetFromQuaternion( bodies[ b ].orientation );
 		
 		tsmgr.EnableSkin( 0, skin, 0, deoglSkinChannel::ectColor, defTexColor, tscClampLinear );
-		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency,
-			defTexTransparency, tscClampLinear );
+		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency, defTexTransparency, tscClampLinear );
 		
 		shader->SetParameterDMatrix4x4( spbodyMatrixMVP, matrixBody * matrixLCP );
 		shader->SetParameterFloat( spbodyScalePosition, size.x, size.y );
@@ -750,6 +747,7 @@ deoglEnvironmentMap &envmap ){
 	
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
 	plan.SetCameraMatrix( decDMatrix() );
+	plan.SetCameraAdaptedIntensity( 1.0f ); // only sky rendered. actual value not used
 	plan.SetViewport( 0, 0, size, size );
 	
 	plan.SetWorld( NULL ); // little hack since we only want the projection matrix to be updated

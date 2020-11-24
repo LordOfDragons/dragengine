@@ -163,7 +163,7 @@ ceConversationCondition::eConditionTypes conditionType ){
 		return windowMain.GetIconConditionVariable();
 		
 	case ceConversationCondition::ectActorCommand:
-		return windowMain.GetIconConditionCommand();
+		return windowMain.GetIconConditionActorCommand();
 		
 	case ceConversationCondition::ectGameCommand:
 		return windowMain.GetIconConditionCommand();

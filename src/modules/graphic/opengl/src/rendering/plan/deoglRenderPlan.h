@@ -86,6 +86,7 @@ private:
 	float pCameraFovRatio;
 	float pCameraImageDistance;
 	float pCameraViewDistance;
+	float pCameraAdaptedIntensity;
 	decVector4 pDepthToPosition;
 	int pViewportX;
 	int pViewportY;
@@ -306,6 +307,12 @@ public:
 	
 	/** \brief Set camera parameters. */
 	void SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance );
+	
+	/** \brief Camera adapted intensity if camera is NULL. */
+	inline float GetCameraAdaptedIntensity() const{ return pCameraAdaptedIntensity; }
+	
+	/** \brief Set camera adapted intensity if camera is NULL. */
+	void SetCameraAdaptedIntensity( float intensity );
 	
 	/** \brief Copy camera parameters from another render plan. */
 	void CopyCameraParametersFrom( const deoglRenderPlan &plan );

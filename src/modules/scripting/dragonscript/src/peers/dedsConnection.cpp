@@ -60,23 +60,23 @@ pHasCB( false )
 }
 
 dedsConnection::~dedsConnection(){
-	if( pValCB ){
-		if( pValCB->GetRealObject() ){
-			// check if the resource is in progress of being deleted. if this is not
-			// the case we can end up re-entering this destructor due to the resource
-			// being deleted due to links breaking while freeing the value. if this
-			// is the case delay the deletion until a safe time
-			if( pConnection && pConnection->GetRefCount() > 0 ){
-				pDS.AddValueDeleteLater( pValCB );
-				
-			}else{
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
-		}
-		
-		pValCB = NULL;
-		pHasCB = false;
+	if( ! pValCB ){
+		return;
 	}
+	
+	// check if the resource is in progress of being deleted. if this is not
+	// the case we can end up re-entering this destructor due to the resource
+	// being deleted due to links breaking while freeing the value. if this
+	// is the case delay the deletion until a safe time
+	if( pConnection && pConnection->GetRefCount() > 0 ){
+		pDS.AddValueDeleteLater( pValCB );
+		
+	}else{
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+	}
+	
+	pValCB = NULL;
+	pHasCB = false;
 }
 
 

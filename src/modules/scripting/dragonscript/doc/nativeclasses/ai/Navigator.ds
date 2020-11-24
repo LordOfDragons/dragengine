@@ -27,6 +27,7 @@ class Navigator
 	/*@{*/
 	/** \brief Layer number. */
 	public func int getLayer()
+		return 0
 	end
 	
 	/** \brief Set layer number. */
@@ -35,6 +36,7 @@ class Navigator
 	
 	/** \brief Space type to navigate. */
 	public func NavigationSpaceType getSpaceType()
+		return null
 	end
 	
 	/** \brief Set space type to navigate. */
@@ -47,6 +49,7 @@ class Navigator
 	 *          The default disstance is 0.5m .
 	 */
 	public func float getMaxOutsideDistance()
+		return 0.0
 	end
 	
 	/**
@@ -60,6 +63,7 @@ class Navigator
 	
 	/** \brief Fix cost to use if no matching type is found. */
 	public func float getDefaultFixCost()
+		return 0.0
 	end
 	
 	/** \brief Set fix cost to use if no matching type is found. */
@@ -68,6 +72,7 @@ class Navigator
 	
 	/** \brief Cost per meter to use if no matching type is found. */
 	public func float getDefaultCostPerMeter()
+		return 0.0
 	end
 	
 	/** \brief Set cost per meter to use if no matching type is found. */
@@ -76,6 +81,7 @@ class Navigator
 	
 	/** \brief Maximum cost beyond which a node or path is considered impassable. */
 	public func float getBlockingCost()
+		return 0.0
 	end
 	
 	/** \brief Set maximum cost beyond which a node or path is considered impassable. */
@@ -86,6 +92,7 @@ class Navigator
 	
 	/** \brief Fix cost for type or default fix cost if not found. */
 	public func float getTypeFixCost( int type )
+		return 0.0
 	end
 	
 	/** \brief Set fix cost for type or default fix cost if not found. */
@@ -94,6 +101,7 @@ class Navigator
 	
 	/** \brief Cost per meter for type or default cost per meter if not found. */
 	public func float getTypeCostPerMeter( int type )
+		return 0.0
 	end
 	
 	/** \brief Set cost per meter for type or default cost per meter if not found. */
@@ -127,6 +135,7 @@ class Navigator
 	 * \returns Nearest point (sets position, costType) if found or \em null if not found.
 	 */
 	public func NavigationInfo nearestPoint( DVector point, float radius )
+		return null
 	end
 	
 	/**
@@ -138,11 +147,12 @@ class Navigator
 	 * \returns navigation information if navigation space boundary is touched before end of
 	 *          direction is reached. If no border is touched null is returned. Null is also
 	 *          returned if origin is not located in the navigation space. In the returned
-	 *          NavigationInfo object the following parameter set set:
+	 *          NavigationInfo object the following parameter are set:
 	 *          - getPathFactor() to get the percentage distance along direction (0 to 1).
 	 *          - getPosition() to get position of hit point at navigation space boundary.
 	 */
 	public func NavigationInfo lineCollide( DVector origin, Vector direction )
+		return null
 	end
 	
 	
@@ -152,6 +162,7 @@ class Navigator
 	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
 	 */
 	public func NavigationInfo pathCollideRay( NavigatorPath path, Collider collider )
+		return null
 	end
 	
 	/**
@@ -166,8 +177,8 @@ class Navigator
 	 * \throws EOutOfBoundary \em nextPoint is less than 0 or larger than getPathPointCount().
 	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
 	 */
-	public func NavigationInfo pathCollideRay( NavigatorPath path, Collider collider, \
-	DVector startPosition, int nextPoint, float maxDistance )
+	public func NavigationInfo pathCollideRay( NavigatorPath path, Collider collider, DVector startPosition, int nextPoint, float maxDistance )
+		return null
 	end
 	
 	/**
@@ -175,6 +186,7 @@ class Navigator
 	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
 	 */
 	public func NavigationInfo pathCollideShape( NavigatorPath path, Collider collider, Collider agent )
+		return null
 	end
 	
 	/**
@@ -190,8 +202,8 @@ class Navigator
 	 * \throws EOutOfBoundary \em nextPoint is less than 0 or larger than getPathPointCount().
 	 * \returns Navigation info (sets pathIndex, pathFactor) or \em null if not collision is found.
 	 */
-	public func NavigationInfo pathCollideShape( NavigatorPath path, Collider collider, \
-	Collider agent, DVector startPosition, int nextPoint, float maxDistance )
+	public func NavigationInfo pathCollideShape( NavigatorPath path, Collider collider, Collider agent, DVector startPosition, int nextPoint, float maxDistance )
+		return null
 	end
 	/*@}*/
 end

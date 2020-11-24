@@ -24,7 +24,6 @@
 
 #include "../action/ceUndoCActionList.h"
 #include "../../conversation/camerashot/ceCameraShotList.h"
-#include "../../conversation/lookat/ceLookAtList.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -46,7 +45,6 @@ private:
 	
 	ceUndoCActionList pActionList;
 	ceCameraShotList pCameraShotList;
-	ceLookAtList pLookAtList;
 	
 public:
 	/** \name Constructors and Destructors */

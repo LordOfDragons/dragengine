@@ -109,10 +109,10 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( sssssEnable ){
-		defren.ActivateFBOColorTemp2( hasDepthCopy );
+		defren.ActivateFBOColorTemp2( hasDepthCopy, true );
 		
 	}else{
-		defren.ActivateFBOColor( hasDepthCopy );
+		defren.ActivateFBOColor( hasDepthCopy, true );
 	}
 	
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
@@ -197,22 +197,6 @@ void deoglRenderLightBase::RestoreDRTextureDepthSmooth(){
 	
 	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 0 );
-}
-
-void deoglRenderLightBase::RestoreFBO(){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const bool sssssEnable = renderThread.GetConfiguration().GetSSSSSEnable();
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	
-	if( sssssEnable ){
-		defren.ActivateFBOColorTemp2( true );
-		
-	}else{
-		defren.ActivateFBOColor( true );
-	}
 }
 
 

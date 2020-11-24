@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Speaker.
  *
@@ -48,6 +51,7 @@ class Speaker
 	/*@{*/
 	/** \brief Type. */
 	public func SpeakerType getType()
+		return null
 	end
 	
 	/** \brief Set type. */
@@ -56,6 +60,7 @@ class Speaker
 	
 	/** \brief Sound or \em null if not set. */
 	public func Sound getSound()
+		return null
 	end
 	
 	/** \brief Set sound or \em null to not set. */
@@ -64,6 +69,7 @@ class Speaker
 	
 	/** \brief Synthesizer or \em null if not set. */
 	public func SynthesizerInstance getSynthesizer()
+		return null
 	end
 	
 	/** \brief Set synthesizer or \em null to not set. */
@@ -72,6 +78,7 @@ class Speaker
 	
 	/** \brief Video player or \em null if not set. */
 	public func VideoPlayer getVideoPlayer()
+		return null
 	end
 	
 	/** \brief Set video player or \em null to not set. */
@@ -80,6 +87,7 @@ class Speaker
 	
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -88,6 +96,7 @@ class Speaker
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -96,6 +105,7 @@ class Speaker
 	
 	/** \brief Velocity in m/s. */
 	public func Vector getVelocity()
+		return null
 	end
 	
 	/** \brief Set velocity in m/s. */
@@ -106,6 +116,7 @@ class Speaker
 	
 	/** \brief Speaker is muted. */
 	public func bool getMuted()
+		return false
 	end
 	
 	/** \brief Set if speaker is muted. */
@@ -114,6 +125,7 @@ class Speaker
 	
 	/** \brief Sound is looping. */
 	public func bool getLooping()
+		return false
 	end
 	
 	/** \brief Set if sound is looping. */
@@ -122,6 +134,7 @@ class Speaker
 	
 	/** \brief Play speed. */
 	public func float getPlaySpeed()
+		return 0.0
 	end
 	
 	/** \brief Set play speed. */
@@ -130,6 +143,7 @@ class Speaker
 	
 	/** \brief Volume. */
 	public func float getVolume()
+		return 0.0
 	end
 	
 	/** \brief Set volume. */
@@ -140,6 +154,7 @@ class Speaker
 	
 	/** \brief Range in meters beyond which the sound is inaudible. */
 	public func float getRange()
+		return 0.0
 	end
 	
 	/** \brief Set range in meters beyond which the sound is inaudible. */
@@ -153,6 +168,7 @@ class Speaker
 	 * apply weaker attenuation.
 	 */
 	public func float getRollOff()
+		return 0.0
 	end
 	
 	/**
@@ -164,8 +180,18 @@ class Speaker
 	public func void setRollOff( float rollOff )
 	end
 	
+	/** \brief Sound generation shape. */
+	public func ShapeList getShape()
+		return null
+	end
+	
+	/** \brief Set sound generation shape. */
+	public func void setShape( ShapeList shape )
+	end
+	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
@@ -176,6 +202,7 @@ class Speaker
 	
 	/** \brief Object owning the speaker for use with SoundLevelMeter or \em null if not used. */
 	public func Object getOwner()
+		return null
 	end
 	
 	/** \brief Set object owning the speaker for use with SoundLevelMeter or \em null if not used. */
@@ -189,10 +216,12 @@ class Speaker
 	/*@{*/
 	/** \brief Start play position in samples. */
 	public func int getPlayFrom()
+		return 0
 	end
 	
 	/** \brief End play position in samples. */
 	public func int getPlayTo()
+		return 0
 	end
 	
 	/** \brief Set play position in samples. */
@@ -203,14 +232,17 @@ class Speaker
 	
 	/** \brief Speaker is playing. */
 	public func bool getPlaying()
+		return false
 	end
 	
 	/** \brief Speaker is paused. */
 	public func bool getPaused()
+		return false
 	end
 	
 	/** \brief Speaker is stopped. */
 	public func bool getStopped()
+		return false
 	end
 	
 	/** \brief Start playing. */

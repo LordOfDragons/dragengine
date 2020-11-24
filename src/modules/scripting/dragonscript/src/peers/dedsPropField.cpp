@@ -53,23 +53,23 @@ dedsPropField::dedsPropField( deScriptingDragonScript *ds, dePropField *propFiel
 }
 
 dedsPropField::~dedsPropField(){
-	if( pValCB ){
-		if( pValCB->GetRealObject() ){
-			// check if the resource is in progress of being deleted. if this is not
-			// the case we can end up re-entering this destructor due to the resource
-			// being deleted due to links breaking while freeing the value. if this
-			// is the case delay the deletion until a safe time
-			if( pPropField && pPropField->GetRefCount() > 0 ){
-				pDS->AddValueDeleteLater( pValCB );
-				
-			}else{
-				pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-			}
-		}
-		
-		pValCB = NULL;
-		pHasCB = false;
+	if( ! pValCB ){
+		return;
 	}
+	
+	// check if the resource is in progress of being deleted. if this is not
+	// the case we can end up re-entering this destructor due to the resource
+	// being deleted due to links breaking while freeing the value. if this
+	// is the case delay the deletion until a safe time
+	if( pPropField && pPropField->GetRefCount() > 0 ){
+		pDS->AddValueDeleteLater( pValCB );
+		
+	}else{
+		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+	}
+	
+	pValCB = NULL;
+	pHasCB = false;
 }
 
 
@@ -82,18 +82,20 @@ dsRealObject *dedsPropField::GetCallback() const{
 }
 
 void dedsPropField::SetCallback( dsRealObject *object ){
-	if( pValCB ){
-		dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
+	if( ! pValCB ){
+		return;
+	}
+	
+	dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
+	
+	if( object ){
+		rt.SetObject( pValCB, object );
+		rt.CastValueTo( pValCB, pValCB, pDS->GetClassPropFieldListener() );
+		pHasCB = true;
 		
-		if( object ){
-			rt.SetObject( pValCB, object );
-			rt.CastValueTo( pValCB, pValCB, pDS->GetClassPropFieldListener() );
-			pHasCB = true;
-			
-		}else{
-			rt.SetNull( pValCB, pDS->GetClassPropFieldListener() );
-			pHasCB = false;
-		}
+	}else{
+		rt.SetNull( pValCB, pDS->GetClassPropFieldListener() );
+		pHasCB = false;
 	}
 }
 

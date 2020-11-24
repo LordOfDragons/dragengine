@@ -64,7 +64,8 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texShadow2SolidDepth", // ettShadow2SolidDepth
 	"texShadow2TransparentDepth", // ettShadow2TransparentDepth
 	"texShadow2TransparentColor", // ettShadow2TransparentColor
-	"texShadowAmbient", // ettShadowAmbient
+	"texShadow1Ambient", // ettShadow1Ambient
+	"texShadow2Ambient", // ettShadow2Ambient
 	"texLightDepth1", // ettLightDepth1
 	"texLightDepth2" // ettLightDepth2
 };
@@ -85,7 +86,7 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	"pShadowMatrix4", // eiutShadowMatrix4
 	"pLayerBorder", // eiutLayerBorder
 	
-	"pLightImageMatrix", // eiutLightImageMatrix
+	"pLightImageOmniMatrix", // eiutLightImageOmniMatrix
 	
 	"pShadow1Solid", // elutShadow1Solid
 	"pShadow1Transparent", // elutShadow1Transparent
@@ -133,7 +134,7 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix4 ( mat4 )
 	{ deoglSPBParameter::evtFloat, 4, 1 }, // pLayerBorder ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageMatrix ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageOmniMatrix ( mat4x3 )
 	
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Solid ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Transparent ( vec3 )
@@ -207,19 +208,14 @@ deoglLightShader::~deoglLightShader(){
 // Management
 ///////////////
 
-int deoglLightShader::GetTextureTarget( deoglLightShader::eTextureTargets target ) const{
-	if( target < 0 || target >= ETT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetTextureTarget( eTextureTargets target ) const{
 	return pTextureTargets[ target ];
 }
 
-void deoglLightShader::SetTextureTarget( deoglLightShader::eTextureTargets target, int index ){
-	if( target < 0 || target >= ETT_COUNT || index < -1 ){
+void deoglLightShader::SetTextureTarget( eTextureTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pTextureTargets[ target ] = index;
 }
 
@@ -232,35 +228,25 @@ void deoglLightShader::SetUsedTextureTargetCount( int usedTextureTargetCount ){
 
 
 
-int deoglLightShader::GetInstanceUniformTarget( deoglLightShader::eInstanceUniformTargets target ) const{
-	if( target < 0 || target >= EIUT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetInstanceUniformTarget( eInstanceUniformTargets target ) const{
 	return pInstanceUniformTargets[ target ];
 }
 
-void deoglLightShader::SetInstanceUniformTarget( deoglLightShader::eInstanceUniformTargets target, int index ){
-	if( target < 0 || target >= EIUT_COUNT || index < -1 ){
+void deoglLightShader::SetInstanceUniformTarget( eInstanceUniformTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pInstanceUniformTargets[ target ] = index;
 }
 
-int deoglLightShader::GetLightUniformTarget( deoglLightShader::eLightUniformTargets target ) const{
-	if( target < 0 || target >= ELUT_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+int deoglLightShader::GetLightUniformTarget( eLightUniformTargets target ) const{
 	return pLightUniformTargets[ target ];
 }
 
-void deoglLightShader::SetLightUniformTarget( deoglLightShader::eLightUniformTargets target, int index ){
-	if( target < 0 || target >= ELUT_COUNT || index < -1 ){
+void deoglLightShader::SetLightUniformTarget( eLightUniformTargets target, int index ){
+	if( index < -1 ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	pLightUniformTargets[ target ] = index;
 }
 
@@ -296,6 +282,7 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		
 		spb->GetParameterAt( erutPosTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );
@@ -565,8 +552,11 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetTextureShadow2Transparent() ){
 		defines.AddDefine( "TEXTURE_SHADOW2_TRANSPARENT", "1" );
 	}
-	if( pConfig.GetTextureShadowAmbient() ){
-		defines.AddDefine( "TEXTURE_SHADOW_AMBIENT", "1" );
+	if( pConfig.GetTextureShadow1Ambient() ){
+		defines.AddDefine( "TEXTURE_SHADOW1_AMBIENT", "1" );
+	}
+	if( pConfig.GetTextureShadow2Ambient() ){
+		defines.AddDefine( "TEXTURE_SHADOW2_AMBIENT", "1" );
 	}
 	
 	if( pConfig.GetDecodeInDepth() ){
@@ -592,6 +582,9 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetSubSurface() ){
 		defines.AddDefine( "WITH_SUBSURFACE", "1" );
+	}
+	if( pConfig.GetLuminanceOnly() ){
+		defines.AddDefine( "LUMINANCE_ONLY", "1" );
 	}
 	
 	switch( pConfig.GetShadowTapMode() ){
@@ -741,8 +734,11 @@ void deoglLightShader::UpdateTextureTargets(){
 		pTextureTargets[ ettShadow2TransparentDepth ] = textureUnitNumber++;
 		pTextureTargets[ ettShadow2TransparentColor ] = textureUnitNumber++;
 	}
-	if( pConfig.GetTextureShadowAmbient() ){
-		pTextureTargets[ ettShadowAmbient ] = textureUnitNumber++;
+	if( pConfig.GetTextureShadow1Ambient() ){
+		pTextureTargets[ ettShadow1Ambient ] = textureUnitNumber++;
+	}
+	if( pConfig.GetTextureShadow2Ambient() ){
+		pTextureTargets[ ettShadow2Ambient ] = textureUnitNumber++;
 	}
 	if( pConfig.GetSubSurface() ){
 		if( pConfig.GetTextureShadow1Solid() ){
@@ -795,9 +791,8 @@ void deoglLightShader::UpdateUniformTargets(){
 			pInstanceUniformTargets[ eiutLayerBorder ] = pUsedInstanceUniformTargetCount++;
 		}
 		
-		if( pConfig.GetTextureColor() || pConfig.GetTextureColorOmnidirCube()
-		|| pConfig.GetTextureColorOmnidirEquirect() ){
-			pInstanceUniformTargets[ eiutLightImageMatrix ] = pUsedInstanceUniformTargetCount++;
+		if( pConfig.GetTextureColorOmnidirCube() || pConfig.GetTextureColorOmnidirEquirect() ){
+			pInstanceUniformTargets[ eiutLightImageOmniMatrix ] = pUsedInstanceUniformTargetCount++;
 		}
 		
 		pInstanceUniformTargets[ eiutShadow1Solid ] = pUsedInstanceUniformTargetCount++;
@@ -884,8 +879,9 @@ void deoglLightShader::InitShaderParameters(){
 	
 	// outputs
 	outputList.Add( "outColor", 0 );
+	outputList.Add( "outLuminance", 1 );
 	if( pConfig.GetSubSurface() ){
-		outputList.Add( "outSubSurface", 1 );
+		outputList.Add( "outSubSurface", 2 );
 	}
 	
 	// uniform blocks

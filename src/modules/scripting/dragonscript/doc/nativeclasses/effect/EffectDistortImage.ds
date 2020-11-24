@@ -44,6 +44,7 @@ class EffectDistortImage extends Effect
 	 * \returns \em true if \em other is of type EffectDistortImage and effect are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -51,6 +52,7 @@ class EffectDistortImage extends Effect
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

@@ -136,7 +136,12 @@ void deClassServer::nfGetServerListener::RunFunction( dsRunTime *rt, dsValue *my
 	dedsServer *scrServer = ( dedsServer* )server->GetPeerScripting();
 	deClassServer *clsServer = ( deClassServer* )GetOwnerClass();
 	
-	rt->PushObject( scrServer->GetCallback(), clsServer->GetClassServerListener() );
+	if( scrServer ){
+		rt->PushObject( scrServer->GetCallback(), clsServer->GetClassServerListener() );
+		
+	}else{
+		rt->PushObject( NULL, clsServer->GetClassServerListener() );
+	}
 }
 
 // public func void setServerListener( ServerListener listener )
@@ -147,8 +152,9 @@ deClassServer::nfSetServerListener::nfSetServerListener( const sInitData &init )
 void deClassServer::nfSetServerListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deServer *server = ( ( sSvrNatDat* )p_GetNativeData( myself ) )->server;
 	dedsServer *scrServer = ( dedsServer* )server->GetPeerScripting();
-	
-	scrServer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	if( scrServer ){
+		scrServer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 

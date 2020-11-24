@@ -27,6 +27,7 @@ class SSChain extends SynthesizerSource
 	/*@{*/
 	/** \brief Number of sound files. */
 	public func int getSoundCount()
+		return 0
 	end
 	
 	/** \brief Add sound. */

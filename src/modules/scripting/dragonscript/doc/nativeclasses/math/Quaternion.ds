@@ -30,26 +30,32 @@ fixed class Quaternion
 	
 	/** \brief Create quaternion from euler angles. */
 	static public func Quaternion newFromEuler( float rx, float ry, float rz )
+		return null
 	end
 	
 	/** \brief Create quaternion from euler angles. */
 	static public func Quaternion newFromEuler( Vector angles )
+		return null
 	end
 	
 	/** \brief Create quaternion from an euler angle around the x axis. */
 	static public func Quaternion newFromEulerX( float angle )
+		return null
 	end
 	
 	/** \brief Create quaternion from an euler angle around the y axis. */
 	static public func Quaternion newFromEulerY( float angle )
+		return null
 	end
 	
 	/** \brief Create quaternion from an euler angle around the z axis. */
 	static public func Quaternion newFromEulerZ( float angle )
+		return null
 	end
 	
 	/** \brief Create quaternion from axis and angle around the axis. */
 	static public func Quaternion newFromAxis( Vector axis, float angle )
+		return null
 	end
 	/*@}*/
 	
@@ -59,26 +65,32 @@ fixed class Quaternion
 	/*@{*/
 	/** \brief X-Component. */
 	public func float getX()
+		return 0.0
 	end
 	
 	/** \brief Y-Component. */
 	public func float getY()
+		return 0.0
 	end
 	
 	/** \brief Z-Component. */
 	public func float getZ()
+		return 0.0
 	end
 	
 	/** \brief W-Component. */
 	public func float getW()
+		return 0.0
 	end
 	
 	/** \brief Component by index (0=X, 1=Y, 2=Z, 3=W). */
 	public func float get( int component )
+		return 0.0
 	end
 	
 	/** \brief Length. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/**
@@ -86,13 +98,17 @@ fixed class Quaternion
 	 * \throws EDivisionByZero Length is \em 0.
 	 */
 	public func Quaternion normalize()
+		return null
+	end
 	
 	/** \brief Conjugated quaternion. */
 	public func Quaternion conjugate()
+		return null
 	end
 	
 	/** \brief Absolute quaternion. */
 	public func Quaternion absolute()
+		return null
 	end
 	
 	/**
@@ -100,14 +116,18 @@ fixed class Quaternion
 	 * \details Result is only correct if the quaternion is normalized.
 	 */
 	public func Vector getEulerAngles()
+		return null
 	end
 	
 	/** \brief Slerp quaternion with another quaternion. */
 	public func Quaternion slerp( Quaternion other, float factor )
+		return null
 	end
 	
 	/** \brief Two quaternions are equal. */
 	public func bool isEqualTo( Quaternion q, float threshold )
+		return false
+	end
 	
 	
 	
@@ -117,6 +137,7 @@ fixed class Quaternion
 	 * \returns \em true if \em other is of type Quaternion and components are equal.
 	*/
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -124,6 +145,7 @@ fixed class Quaternion
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	
 	/**
@@ -131,6 +153,7 @@ fixed class Quaternion
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
 	end
 	/*@}*/
 	
@@ -140,6 +163,7 @@ fixed class Quaternion
 	/*@{*/
 	/** \brief Read quaternion from a file reader. */
 	static public func Quaternion readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write quaternion to a file writer. */
@@ -153,18 +177,22 @@ fixed class Quaternion
 	/*@{*/
 	/** \brief Returns the negated of quaternion. */
 	public func Quaternion -()
+		return null
 	end
 	
 	/** \brief Returns the sum of quaternion with another Quaternion. */
 	public func Quaternion +( Quaternion quaternion )
+		return null
 	end
 	
 	/** \brief Returns the difference of quaternion and another Quaternion. */
 	public func Quaternion -( Quaternion quaternion )
+		return null
 	end
 	
 	/** \brief Returns quaternion multiplied by a factor. */
 	public func Quaternion *( float scalar )
+		return null
 	end
 	
 	/**
@@ -172,14 +200,27 @@ fixed class Quaternion
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
 	public func Quaternion /( float scalar )
+		return null
+	end
+	
+	/**
+	 * \brief Returns quaternion multiplication.
+	 * 
+	 * If both quaternions are unit quaternions this operation equals applying the
+	 * rotation of \em quaternion to the rotation of this quaternion.
+	 */
+	public func Quaternion *( Quaternion quaternion )
+		return null
 	end
 	
 	/** \brief Rotate vector by quaternion. */
 	public func Vector *( Vector vector )
+		return null
 	end
 	
 	/** \brief Rotate vector by quaternion. */
 	public func DVector *( DVector vector )
+		return null
 	end
 	/*@}*/
 end

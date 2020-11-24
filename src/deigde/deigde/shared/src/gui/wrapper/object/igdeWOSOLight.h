@@ -102,6 +102,7 @@ private:
 	void pLoadResources();
 	void pUpdateLight();
 	void pDestroyLight();
+	void pAddShadowIgnoreComponents();
 };
 
 #endif

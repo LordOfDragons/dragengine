@@ -257,7 +257,7 @@ deClassFontBuilder::deClassFontBuilder( deScriptingDragonScript &ds ) :
 dsClass( "FontBuilder", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ),
 pDS( ds )
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent( DENS_GUI );
 	GetParserInfo()->SetBase( "Object" );
 	
 	p_SetNativeDataSize( sizeof( sFntBldNatDat ) );

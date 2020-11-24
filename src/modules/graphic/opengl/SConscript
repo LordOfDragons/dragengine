@@ -80,7 +80,7 @@ if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
 
 # fetch values in expanded form for later use
-versionString = '1.3'
+versionString = '1.4'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

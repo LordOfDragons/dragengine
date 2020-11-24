@@ -32,14 +32,17 @@ class SkyTarget
 	/*@{*/
 	/** \brief Owner sky. */
 	public func Sky getSky()
+		return null
 	end
 	
 	/** \brief Owner layer index. */
 	public func int getLayerIndex()
+		return 0
 	end
 	
 	/** \brief Target in layer. */
 	public func int getTarget()
+		return 0
 	end
 	/*@}*/
 	
@@ -49,6 +52,7 @@ class SkyTarget
 	/*@{*/
 	/** \brief Number of links. */
 	public func int getLinkCount()
+		return 0
 	end
 	
 	/**
@@ -57,6 +61,7 @@ class SkyTarget
 	 *                        to getLinkCount().
 	 */
 	public func int getLinkAt( int index )
+		return 0
 	end
 	
 	/** \brief Add link. */

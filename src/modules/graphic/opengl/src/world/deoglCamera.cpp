@@ -64,7 +64,8 @@ pDirtyAdaptionParams( true ),
 pDirtyLayerMask( true ),
 pDirtyPlanCamParams( true ),
 pDirtyPropFields( true ),
-pDirtyEffects( true )
+pDirtyEffects( true ),
+pResetAdaptedIntensity( true )
 {
 	try{
 		pRCamera = new deoglRCamera( ogl.GetRenderThread() );
@@ -176,6 +177,11 @@ void deoglCamera::SyncToRender(){
 	pRCamera->SetElapsedToneMapAdaption( pRCamera->GetElapsedToneMapAdaption() + pNextSyncUpdateTime );
 	pNextSyncUpdateTime = 0.0f;
 	
+	if( pResetAdaptedIntensity ){
+		pResetAdaptedIntensity = false;
+		pRCamera->SetForceToneMapAdaption( true );
+	}
+	
 	// effects
 	const int effectCount = pCamera.GetEffectCount();
 	int i;
@@ -217,6 +223,10 @@ void deoglCamera::AdaptionChanged(){
 
 void deoglCamera::LayerMaskChanged(){
 	pDirtyLayerMask = true;
+}
+
+void deoglCamera::ResetAdaptedIntensity(){
+	pResetAdaptedIntensity = true;
 }
 
 

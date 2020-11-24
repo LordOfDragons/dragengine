@@ -296,15 +296,25 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 // " tlw=" + textLineWidth + " TT=" + font.getTextSize( spanText.substring( spanStart, lastPosition ) ).getX() + "\n" )
 				
 				if spanImage != null
-					testWidth = textLineWidth + spanSpacesWidth + spanWidth + spanImage.getWidth()
+					// if we are at the start of a new word increase the word count by one
+					if wordCharacters == 0
+						wordCount++
+					end
 					
-					if testWidth > fmaxLineWidth
-						textLineWidth += spanSpacesWidth
-						spanSpacesWidth = 0
-						
+					// increase character count of word by one. the image width is not added to
+					// the word width but used for the line width exceed test
+					var int imageHeight = spanImage.getHeight()
+					var int imageWidth = spanImage.getWidth()
+					wordCharacters++
+					
+					textLineWidth += spanSpacesWidth
+					spanSpacesWidth = 0
+					
+					testWidth = textLineWidth + spanWidth + wordWidth + spacesWidth
+					textLineHeight = Math.max( textLineHeight, Math.max( imageHeight, lineHeight ) )
+					
+					if testWidth + imageWidth > fmaxLineWidth
 						textLineWidth += spanWidth
-						textLineHeight = Math.max( textLineHeight, lineHeight )
-						
 						spanStart = wordStart
 					end
 					
@@ -315,7 +325,7 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 					var STREImage streImage = STREImage.new()
 					streImage.setImage( spanImage )
 					streImage.setPosition( Point.new( textLineWidth cast int, \
-						( lineHeight - spanImage.getHeight() ) / 2 ) )
+						Math.max( lineHeight - spanImage.getHeight(), 0 ) / 2 ) )
 					textLine.add( streImage )
 					
 					textLineWidth += spanImage.getWidth()

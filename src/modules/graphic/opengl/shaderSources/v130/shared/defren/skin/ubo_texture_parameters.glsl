@@ -50,6 +50,8 @@ UBOLAYOUT uniform TextureParameters{
 	float pTexOutlineSolidity;
 	vec3 pTexOutlineEmissivity;
 	vec3 pTexOutlineEmissivityTint;
+	
+	bool pTexEmissivityCameraAdapted;
 };
 
 #ifdef BUG_UBO_DIRECT_LINK_DEAD_LOOP
@@ -102,4 +104,6 @@ UBOLAYOUT uniform TextureParameters{
 	#define pTexOutlineSolidity float(pTexOutlineSolidity)
 	#define pTexOutlineEmissivity vec3(pTexOutlineEmissivity)
 	#define pTexOutlineEmissivityTint vec3(pTexOutlineEmissivityTint)
+	
+	#define pTexEmissivityCameraAdapted bool(pTexEmissivityCameraAdapted)
 #endif

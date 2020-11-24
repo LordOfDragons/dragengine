@@ -53,6 +53,7 @@ private:
 	bool pDirtyPlanCamParams;
 	bool pDirtyPropFields;
 	bool pDirtyEffects;
+	bool pResetAdaptedIntensity;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;
@@ -124,6 +125,9 @@ public:
 	
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
+	
+	/** \brief Request graphic module to reset adapted intensity to optimal value. */
+	virtual void ResetAdaptedIntensity();
 	
 	
 	

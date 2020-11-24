@@ -305,6 +305,14 @@ void deClassCamera::nfSetAdaptionTime::RunFunction( dsRunTime *rt, dsValue *myse
 	camera->SetAdaptionTime( rt->GetValue( 0 )->GetFloat() );
 }
 
+// public func void resetAdaptedIntensity()
+deClassCamera::nfResetAdaptedIntensity::nfResetAdaptedIntensity( const sInitData &init ) :
+dsFunction( init.clsCam, "resetAdaptedIntensity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassCamera::nfResetAdaptedIntensity::RunFunction( dsRunTime*, dsValue *myself ){
+	( ( sCamNatDat* )p_GetNativeData( myself ) )->camera->ResetAdaptedIntensity();
+}
+
 
 
 // public func Point project( Point viewportSize, DVector position )
@@ -615,6 +623,7 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetHighestIntensity( init ) );
 	AddFunction( new nfGetAdaptionTime( init ) );
 	AddFunction( new nfSetAdaptionTime( init ) );
+	AddFunction( new nfResetAdaptedIntensity( init ) );
 	AddFunction( new nfProject( init ) );
 	AddFunction( new nfBackProject( init ) );
 	AddFunction( new nfBackProject2( init ) );

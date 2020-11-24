@@ -209,9 +209,6 @@ public:
 	/** \brief Update target lists. */
 	void UpdateTargetLists();
 	
-	/** \brief Update look-at lists. */
-	void UpdateLookAtLists();
-	
 	/** \brief Update conversation coordinate system lists. */
 	void UpdateConvoCoordSysLists();
 	

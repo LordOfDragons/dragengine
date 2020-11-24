@@ -67,6 +67,9 @@ class deBaseGraphicCamera;
  * work has to be done. for canvas render world the canvas has to have
  * a depth of 6. if the depth 1 one the output is converted into a
  * single image mercartor map. this is though not the default use case.
+ * => another option is outputing an equirectangular image. this works well with various
+ *    texture properties and especially works well with canvas systems since it is an
+ *    image with depth 1 as most other images are
  */
 class deCamera : public deResource{
 private:
@@ -181,6 +184,9 @@ public:
 	
 	/** \brief Notifies the peers that the layer mask changed. */
 	void NotifyLayerMaskChanged();
+	
+	/** \brief Request graphic module to reset adapted intensity to optimal value. */
+	void ResetAdaptedIntensity();
 	/*@}*/
 	
 	

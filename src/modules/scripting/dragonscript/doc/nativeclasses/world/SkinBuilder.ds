@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Skin builder.
  * 
@@ -77,36 +80,31 @@ abstract class SkinBuilder
 	/**
 	 * \brief Add value texture property.
 	 */
-	protected func void addPropertyValue( int texture, String type, String texCoordSet, \
-	String renderable, float value )
+	protected func void addPropertyValue( int texture, String type, String texCoordSet, String renderable, float value )
 	end
 	
 	/**
 	 * \brief Add color texture property.
 	 */
-	protected func void addPropertyColor( int texture, String type, String texCoordSet, \
-	String renderable, Color color )
+	protected func void addPropertyColor( int texture, String type, String texCoordSet, String renderable, Color color )
 	end
 	
 	/**
 	 * \brief Add image texture property.
 	 */
-	protected func void addPropertyImage( int texture, String type, String texCoordSet, \
-	String renderable, String pathImage, Image image )
+	protected func void addPropertyImage( int texture, String type, String texCoordSet, String renderable, String pathImage, Image image )
 	end
 	
 	/**
 	 * \brief Add video texture property.
 	 */
-	protected func void addPropertyVideo( int texture, String type, String texCoordSet, \
-	String renderable, String pathVideo, Video video, bool sharedTime )
+	protected func void addPropertyVideo( int texture, String type, String texCoordSet, String renderable, String pathVideo, Video video, bool sharedTime )
 	end
 	
 	/**
 	 * \brief Add constructed texture property.
 	 */
-	protected func void addPropertyConstructed( int texture, String type, String texCoordSet, \
-	String renderable, Color color, bool tileX, bool tileY, Point3 size )
+	protected func void addPropertyConstructed( int texture, String type, String texCoordSet, String renderable, Color color, bool tileX, bool tileY, Point3 size )
 	end
 	
 	/**
@@ -132,8 +130,7 @@ abstract class SkinBuilder
 	 */
 	protected func void addNodeImage( Point3 position, Point3 size, float rotation, float shear, \
 	float brightness, float contrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	String path, Image image, Point repeat )
+	SkinPropertyNodeCombineMode combineMode, String path, Image image, Point repeat )
 	end
 	
 	/**
@@ -141,8 +138,7 @@ abstract class SkinBuilder
 	 */
 	protected func void addNodeText( Point3 position, Point3 size, float rotation, float shear, \
 	float brightness, float contrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	String path, Font font, float fontSize, String text, Color color )
+	SkinPropertyNodeCombineMode combineMode, String path, Font font, float fontSize, String text, Color color )
 	end
 	
 	/**
@@ -150,8 +146,7 @@ abstract class SkinBuilder
 	 */
 	protected func void addNodeShape( Point3 position, Point3 size, float rotation, float shear, \
 	float brightness, float contrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	int shapeType, Color fillColor, Color lineColor, float thickness )
+	SkinPropertyNodeCombineMode combineMode, int shapeType, Color fillColor, Color lineColor, float thickness )
 	end
 	
 	/**
@@ -160,8 +155,7 @@ abstract class SkinBuilder
 	 * Sets created group node as new open node to operate on.
 	 */
 	protected func void addNodeGroup( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float contrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode )
+	float brightness, float contrast, float gamma, Color colorize, float transparency, SkinPropertyNodeCombineMode combineMode )
 	end
 	
 	/**

@@ -916,7 +916,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	// transparency layer the entire mask has to be rendered. this works since the depth has
 	// been cleared to 0 and the test is GEQUAL. for all other layers the mask has to be the
 	// reference value mask to render only behind the pixels affecting the current layer.
-	defren.ActivateFBOColor( true );
+	defren.ActivateFBOColor( true, false );
 	
 	SetCullMode( plan.GetFlipCulling() );
 	

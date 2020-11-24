@@ -38,6 +38,7 @@ class SynchronizedInt
 	/*@{*/
 	/** \brief Value of network state or local value if not set. */
 	public func int getValue()
+		return 0
 	end
 	
 	/** \brief Set value and update network state if set. */
@@ -46,10 +47,12 @@ class SynchronizedInt
 	
 	/** \brief Linked network state or \em null if not set. */
 	public func NetworkState getNetworkState()
+		return null
 	end
 	
 	/** \brief Linked network state value index or -1 if not set. */
 	public func int getNetworkStateValue()
+		return 0
 	end
 	
 	/**
@@ -62,7 +65,8 @@ class SynchronizedInt
 	
 	
 	/** \brief String representation. */
-	public String toString()
+	public func String toString()
+		return null
 	end
 	/*@}*/
 end

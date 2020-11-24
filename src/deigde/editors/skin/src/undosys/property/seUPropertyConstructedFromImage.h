@@ -41,6 +41,8 @@ private:
 	
 	sePropertyNodeGroup *pOldContent;
 	sePropertyNodeGroup *pNewContent;
+	int pOldBitCount;
+	int pNewBitCount;
 	
 	
 	

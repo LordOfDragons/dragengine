@@ -29,6 +29,7 @@ class Server
 	/*@{*/
 	/** \brief Network address. */
 	public func String getAddress()
+		return null
 	end
 	
 	/**
@@ -46,6 +47,7 @@ class Server
 	 * \returns \em true if listening or \em false in case of error.
 	 */
 	public func bool listenOn( String address )
+		return false
 	end
 	
 	/** \brief Stop listening. */
@@ -56,6 +58,7 @@ class Server
 	
 	/** \brief Server listener or \em null if not set. */
 	public func ServerListener getServerListener()
+		return null
 	end
 	
 	/** \brief Set server listener or \em null if not set. */

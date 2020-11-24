@@ -17,43 +17,43 @@ fixed class Color
 	/** \name Color constants */
 	/*@{*/
 	/** \brief White. */
-	public static fixed var Color white = Color.new( 1, 1, 1, 1 )
+	public static fixed var Color white = Color.new( 1.0, 1.0, 1.0, 1.0 )
 	
 	/** \brief light gray. */
-	public static fixed var Color lightGray = Color.new( 0.75, 0.75, 0.75, 1 )
+	public static fixed var Color lightGray = Color.new( 0.75, 0.75, 0.75, 1.0 )
 	
 	/** \brief gray. */
-	public static fixed var Color gray = Color.new( 0.5, 0.5, 0.5, 1 )
+	public static fixed var Color gray = Color.new( 0.5, 0.5, 0.5, 1.0 )
 	
 	/** \brief Dark gray. */
-	public static fixed var Color darkGray = Color.new( 0.25, 0.25, 0.25, 1 )
+	public static fixed var Color darkGray = Color.new( 0.25, 0.25, 0.25, 1.0 )
 	
 	/** \brief Black. */
-	public static fixed var Color black = Color.new( 0, 0, 0, 1 )
+	public static fixed var Color black = Color.new( 0.0, 0.0, 0.0, 1.0 )
 	
 	/** \brief Red. */
-	public static fixed var Color red = Color.new( 1, 0, 0, 1 )
+	public static fixed var Color red = Color.new( 1.0, 0.0, 0.0, 1.0 )
 	
 	/** \brief Dark red. */
-	public static fixed var Color darkRed = Color.new( 0.5, 0, 0, 1 )
+	public static fixed var Color darkRed = Color.new( 0.5, 0.0, 0.0, 1.0 )
 	
 	/** \brief Green. */
-	public static fixed var Color green = Color.new( 0, 1, 0, 1 )
+	public static fixed var Color green = Color.new( 0.0, 1.0, 0.0, 1.0 )
 	
 	/** \brief Dark green. */
-	public static fixed var Color darkGreen = Color.new( 0, 0.5, 0, 1 )
+	public static fixed var Color darkGreen = Color.new( 0.0, 0.5, 0.0, 1.0 )
 	
 	/** \brief Blue. */
-	public static fixed var Color blue = Color.new( 0, 0, 1, 1 )
+	public static fixed var Color blue = Color.new( 0.0, 0.0, 1.0, 1.0 )
 	
 	/** \brief Dark blue. */
-	public static fixed var Color darkBlue = Color.new( 0, 0, 0.5, 1 )
+	public static fixed var Color darkBlue = Color.new( 0.0, 0.0, 0.5, 1.0 )
 	
 	/** \brief Yellow. */
-	public static fixed var Color yellow = Color.new( 1, 1, 0, 1 )
+	public static fixed var Color yellow = Color.new( 1.0, 1.0, 0.0, 1.0 )
 	
 	/** \brief Transparent. */
-	public static fixed var Color transparent = Color.new( 0, 0, 0, 0 )
+	public static fixed var Color transparent = Color.new( 0.0, 0.0, 0.0, 0.0 )
 	/*@}*/
 	
 	
@@ -89,22 +89,22 @@ fixed class Color
 	/*@{*/
 	/** \brief Red intensity. */
 	public func float getRed()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Green intensity. */
 	public func float getGreen()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Blue intensity. */
 	public func float getBlue()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Alpha value. */
 	public func float getAlpha()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Color with all intensities clamped to the range of 0 to 1. */

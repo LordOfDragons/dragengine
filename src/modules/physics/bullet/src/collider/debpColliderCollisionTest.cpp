@@ -112,7 +112,7 @@ void debpColliderCollisionTest::Update(){
 	
 	if( pCollisionTest.GetLocalDirection() ){
 		position = matrix * position;
-		direction = matrix.TransformNormal( direction );
+		direction = pParentCollider.GetMatrixNormal().TransformNormal( direction );
 		
 	}else{
 		position += matrix.GetPosition();

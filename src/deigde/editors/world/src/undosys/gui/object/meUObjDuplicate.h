@@ -19,19 +19,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _MEUOBJDUPLICATE_H_
 #define _MEUOBJDUPLICATE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
-
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meWorld;
 class meObject;
-class meUndoDataObject;
 
 
 
@@ -43,9 +39,7 @@ class meUndoDataObject;
 class meUObjDuplicate : public igdeUndo{
 private:
 	meWorld *pWorld;
-	
-	meUndoDataObject **pObjects;
-	int pObjectCount;
+	decObjectOrderedSet pObjects;
 	
 public:
 	/** \name Constructors and Destructors */

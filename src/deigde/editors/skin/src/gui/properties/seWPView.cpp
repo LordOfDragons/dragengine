@@ -35,6 +35,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeGroupBox.h>
@@ -142,7 +143,35 @@ public:
 	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ) = 0;
 };
 
+class cBaseComboBoxListener : public igdeComboBoxListener{
+protected:
+	seWPView &pPanel;
+	
+public:
+	cBaseComboBoxListener( seWPView &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		seSkin * const skin = pPanel.GetSkin();
+		if( skin ){
+			OnChanged( *comboBox, *skin );
+		}
+	}
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ) = 0;
+};
 
+
+
+class cComboPreviewMode : public cBaseComboBoxListener{
+public:
+	cComboPreviewMode( seWPView &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
+		if( comboBox.GetSelectedItem() ){
+			skin.SetPreviewMode( ( seSkin::ePreviewMode )( intptr_t )comboBox.GetSelectedItem()->GetData() );
+		}
+	}
+};
 
 class cEditModelPath : public cBaseEditPathListener{
 public:
@@ -252,6 +281,10 @@ pSkin( NULL )
 	// resources
 	helper.GroupBox( content, groupBox, "Preview:" );
 	
+	helper.ComboBox( groupBox, "Mode:", "Preview mode.", pCBPreviewMode, new cComboPreviewMode( *this ) );
+	pCBPreviewMode->AddItem( "Model", NULL, ( void* )( intptr_t )seSkin::epmModel );
+	pCBPreviewMode->AddItem( "Light", NULL, ( void* )( intptr_t )seSkin::epmLight );
+	
 	helper.EditPath( groupBox, "Model:", "Path to the model resource to use.",
 		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath( *this ) );
 	helper.EditPath( groupBox, "Rig:", "Path to the rig resource to use.",
@@ -331,12 +364,14 @@ void seWPView::SetSkin( seSkin *skin ){
 
 void seWPView::UpdateView(){
 	if( pSkin ){
+		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )pSkin->GetPreviewMode() );
 		pEditModelPath->SetPath( pSkin->GetModelPath() );
 		pEditRigPath->SetPath( pSkin->GetRigPath() );
 		pEditAnimPath->SetPath( pSkin->GetAnimationPath() );
 		pCBAnimMoves->SetText( pSkin->GetMoveName() );
 		
 	}else{
+		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )seSkin::epmModel );
 		pEditModelPath->ClearPath();
 		pEditRigPath->ClearPath();
 		pEditAnimPath->ClearPath();
@@ -344,6 +379,7 @@ void seWPView::UpdateView(){
 	}
 	
 	const bool enabled = pSkin;
+	pCBPreviewMode->SetEnabled( enabled );
 	pEditModelPath->SetEnabled( enabled );
 	pEditRigPath->SetEnabled( enabled );
 	pEditAnimPath->SetEnabled( enabled );

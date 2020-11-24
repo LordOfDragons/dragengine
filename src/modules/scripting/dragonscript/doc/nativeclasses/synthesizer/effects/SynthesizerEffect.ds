@@ -28,5 +28,9 @@ class SynthesizerEffect
 	/** \brief Effect is enabled. */
 	public func void setEnabled( bool enabled )
 	end
+	
+	/** \brief Set effect strength. */
+	public func void setStrength( float strength )
+	end
 	/*@}*/
 end

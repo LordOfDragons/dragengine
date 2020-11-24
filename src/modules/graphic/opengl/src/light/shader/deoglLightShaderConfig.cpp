@@ -65,6 +65,7 @@ void deoglLightShaderConfig::Reset(){
 	pShadowInverseDepth = false;
 	pFullScreenQuad = false;
 	pSubSurface = false;
+	pLuminanceOnly = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -74,52 +75,33 @@ void deoglLightShaderConfig::Reset(){
 	pTextureShadow1Transparent = false;
 	pTextureShadow2Solid = false;
 	pTextureShadow2Transparent = false;
-	pTextureShadowAmbient = false;
+	pTextureShadow1Ambient = false;
+	pTextureShadow2Ambient = false;
 }
 
 
 
 void deoglLightShaderConfig::SetLightMode( eLightModes lightMode ){
-	if( lightMode < elmPoint || lightMode > elmParticle ){
-		DETHROW( deeInvalidParam );
-	}
 	pLightMode = lightMode;
 }
 
 void deoglLightShaderConfig::SetShadowTapMode( eShadowTapModes shadowTapMode ){
-	if( shadowTapMode < estmSingle || shadowTapMode > estmPcfVariableTap ){
-		DETHROW( deeInvalidParam );
-	}
 	pShadowTapMode = shadowTapMode;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm1(
-eShadowMappingAlgorithms shadowMappingAlgorithm ){
-	if( shadowMappingAlgorithm < esma2D || shadowMappingAlgorithm > esmaPyramid ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglLightShaderConfig::SetShadowMappingAlgorithm1( eShadowMappingAlgorithms shadowMappingAlgorithm ){
 	pShadowMappingAlgorithm1 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetShadowMappingAlgorithm2(
-eShadowMappingAlgorithms shadowMappingAlgorithm ){
-	if( shadowMappingAlgorithm < esma2D || shadowMappingAlgorithm > esmaPyramid ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglLightShaderConfig::SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm ){
 	pShadowMappingAlgorithm2 = shadowMappingAlgorithm;
 }
 
 void deoglLightShaderConfig::SetMaterialNormalMode( eMaterialNormalModes materialNormalMode ){
-	if( materialNormalMode < emnmFloat || materialNormalMode > emnmSpheremap ){
-		DETHROW( deeInvalidParam );
-	}
 	pMaterialNormalMode = materialNormalMode;
 }
 
 void deoglLightShaderConfig::SetParticleMode( eParticleModes mode ){
-	if( mode < epmParticle || mode > epmBeam ){
-		DETHROW( deeInvalidParam );
-	}
 	pParticleMode = mode;
 }
 
@@ -161,6 +143,10 @@ void deoglLightShaderConfig::SetSubSurface( bool subSurface ){
 	pSubSurface = subSurface;
 }
 
+void deoglLightShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
+	pLuminanceOnly = luminanceOnly;
+}
+
 
 
 void deoglLightShaderConfig::SetTextureNoise( bool isUsed ){
@@ -195,8 +181,12 @@ void deoglLightShaderConfig::SetTextureShadow2Transparent( bool isUsed ){
 	pTextureShadow2Transparent = isUsed;
 }
 
-void deoglLightShaderConfig::SetTextureShadowAmbient( bool isUsed ){
-	pTextureShadowAmbient = isUsed;
+void deoglLightShaderConfig::SetTextureShadow1Ambient( bool isUsed ){
+	pTextureShadow1Ambient = isUsed;
+}
+
+void deoglLightShaderConfig::SetTextureShadow2Ambient( bool isUsed ){
+	pTextureShadow2Ambient = isUsed;
 }
 
 
@@ -205,16 +195,11 @@ void deoglLightShaderConfig::SetTextureShadowAmbient( bool isUsed ){
 //////////
 
 void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
-	const char * const lightModeStrings[] = {
-		"point", "spot", "projector", "sky", "particle" };
-	const char * const shadowTapModeStrings[] = {
-		"single", "pcf4", "pcf9", "pcfvar" };
-	const char * const shadowMappingAlgorithmStrings[] = {
-		"2D", "cube", "dualpara", "pyramid" };
-	const char * const materialNormalModeStrings[] = {
-		"matnorFloat", "matnorIntBasic", "matnorSpheremap" };
-	const char * const particleModeStrings[] = {
-		"particle", "ribbon", "beam" };
+	const char * const lightModeStrings[] = { "point", "spot", "projector", "sky", "particle" };
+	const char * const shadowTapModeStrings[] = { "single", "pcf4", "pcf9", "pcfvar" };
+	const char * const shadowMappingAlgorithmStrings[] = { "2D", "cube", "dualpara", "pyramid" };
+	const char * const materialNormalModeStrings[] = { "matnorFloat", "matnorIntBasic", "matnorSpheremap" };
+	const char * const particleModeStrings[] = { "particle", "ribbon", "beam" };
 	
 	string.Format( "(%s %s %s %s sma1=%s sma2=%s",
 		lightModeStrings[ pLightMode ],
@@ -265,6 +250,9 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pSubSurface ){
 		string.Append( " subSurface" );
 	}
+	if( pLuminanceOnly ){
+		string.Append( " luminanceOnly" );
+	}
 	
 	if( pTextureShadow1Solid ){
 		string.Append( " shadow1Solid" );
@@ -278,8 +266,11 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pTextureShadow2Transparent ){
 		string.Append( " shadow2Transp" );
 	}
-	if( pTextureShadowAmbient ){
-		string.Append( " shadowAmbient" );
+	if( pTextureShadow1Ambient ){
+		string.Append( " shadow1Ambient" );
+	}
+	if( pTextureShadow2Ambient ){
+		string.Append( " shadow2Ambient" );
 	}
 	
 	string.Append( ")" );
@@ -307,6 +298,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pShadowInverseDepth = config.pShadowInverseDepth;
 	pFullScreenQuad = config.pFullScreenQuad;
 	pSubSurface = config.pSubSurface;
+	pLuminanceOnly = config.pLuminanceOnly;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;
@@ -316,7 +308,8 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pTextureShadow1Transparent = config.pTextureShadow1Transparent;
 	pTextureShadow2Solid = config.pTextureShadow2Solid;
 	pTextureShadow2Transparent = config.pTextureShadow2Transparent;
-	pTextureShadowAmbient = config.pTextureShadowAmbient;
+	pTextureShadow1Ambient = config.pTextureShadow1Ambient;
+	pTextureShadow2Ambient = config.pTextureShadow2Ambient;
 	
 	return *this;
 }
@@ -338,6 +331,7 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pShadowInverseDepth == config.pShadowInverseDepth
 		&& pFullScreenQuad == config.pFullScreenQuad
 		&& pSubSurface == config.pSubSurface
+		&& pLuminanceOnly == config.pLuminanceOnly
 		
 		&& pTextureNoise == config.pTextureNoise
 		&& pTextureColor == config.pTextureColor
@@ -347,5 +341,6 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pTextureShadow1Transparent == config.pTextureShadow1Transparent
 		&& pTextureShadow2Solid == config.pTextureShadow2Solid
 		&& pTextureShadow2Transparent == config.pTextureShadow2Transparent
-		&& pTextureShadowAmbient == config.pTextureShadowAmbient;
+		&& pTextureShadow1Ambient == config.pTextureShadow1Ambient
+		&& pTextureShadow2Ambient == config.pTextureShadow2Ambient;
 }

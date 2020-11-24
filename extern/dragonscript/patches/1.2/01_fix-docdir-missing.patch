@@ -1,0 +1,11 @@
+diff -Naur dragonscript-1.2/SConstruct fixed-dragonscript-1.2/SConstruct
+--- dragonscript-1.2/SConstruct	2020-11-22 13:13:48.026214400 +0100
++++ fixed-dragonscript-1.2/SConstruct	2020-11-24 00:05:13.652476416 +0100
+@@ -90,6 +90,7 @@
+ 	params.Add(PathVariable('sysconfdir', 'System configuration', '${prefix}/settings', PathVariable.PathAccept))
+ 	params.Add(PathVariable('execdir', 'System binaries', '${prefix}/bin', PathVariable.PathAccept))
+ 	params.Add(PathVariable('sysvardir', 'System var', '${prefix}/var', PathVariable.PathAccept))
++	params.Add(PathVariable('docdir', 'System documentation', '${prefix}/documentation', PathVariable.PathAccept))
+ 
+ elif globalEnv['TARGET_PLATFORM'] == 'macos':
+ 	params.Add(PathVariable('prefix', 'System path', '/usr', PathVariable.PathAccept))

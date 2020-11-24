@@ -126,3 +126,8 @@ ceTargetList &ceTargetList::operator=( const ceTargetList &list ){
 	pTargets = list.pTargets;
 	return *this;
 }
+
+ceTargetList &ceTargetList::operator+=( const ceTargetList &list ){
+	pTargets += list.pTargets;
+	return *this;
+}

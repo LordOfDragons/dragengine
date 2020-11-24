@@ -79,6 +79,7 @@ pSector( sector )
 	pTUCGeometry = NULL;
 	pTUCShadow = NULL;
 	pTUCEnvMap = NULL;
+	pTUCLuminance = NULL;
 	
 	pValidParamBlockDepth = false;
 	pValidParamBlockGeometry = false;
@@ -91,6 +92,7 @@ pSector( sector )
 	pDirtyTUCGeometry = true;
 	pDirtyTUCShadow = true;
 	pDirtyTUCEnvMap = true;
+	pDirtyTUCLuminance = true;
 }
 
 deoglHTSTexture::~deoglHTSTexture(){
@@ -135,6 +137,7 @@ void deoglHTSTexture::SetSkin ( deoglRSkin *skin ){
 deoglSPBlockUBO *deoglHTSTexture::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
 	switch( shaderType ){
 	case deoglSkinTexture::estHeightMapGeometry:
+	case deoglSkinTexture::estHeightMapLuminance:
 		return GetParamBlockGeometry();
 		
 	case deoglSkinTexture::estHeightMapDepth:
@@ -247,6 +250,7 @@ void deoglHTSTexture::MarkTUCsDirty(){
 	pDirtyTUCGeometry = true;
 	pDirtyTUCShadow = true;
 	pDirtyTUCEnvMap = true;
+	pDirtyTUCLuminance = true;
 }
 
 
@@ -271,6 +275,9 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eSh
 		
 	case deoglSkinTexture::estHeightMapEnvMap:
 		return GetTUCEnvMap();
+		
+	case deoglSkinTexture::estHeightMapLuminance:
+		return GetTUCLuminance();
 		
 	default:
 		DETHROW( deeInvalidParam );
@@ -357,6 +364,18 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCEnvMap(){
 	}
 	
 	return pTUCEnvMap;
+}
+
+deoglTexUnitsConfig *deoglHTSTexture::GetTUCLuminance(){
+	if( pDirtyTUCLuminance ){
+		if( pTUCLuminance ){
+			pTUCLuminance->RemoveUsage();
+			pTUCLuminance = NULL;
+		}
+		pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estHeightMapLuminance );
+		pDirtyTUCLuminance = false;
+	}
+	return pTUCLuminance;
 }
 
 deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
@@ -527,5 +546,9 @@ void deoglHTSTexture::pCleanUp(){
 	if( pTUCEnvMap ){
 		pTUCEnvMap->RemoveUsage();
 		pTUCEnvMap = NULL;
+	}
+	if( pTUCLuminance ){
+		pTUCLuminance->RemoveUsage();
+		pTUCLuminance = NULL;
 	}
 }

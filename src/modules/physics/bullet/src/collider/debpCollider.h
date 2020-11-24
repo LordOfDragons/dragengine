@@ -67,7 +67,7 @@ private:
 	deCollider &pCollider;
 	decDVector pMinExtend, pMaxExtend;
 	decDVector pShapeMinExtend, pShapeMaxExtend;
-	decDMatrix pMatrix, pInvMatrix;
+	decDMatrix pMatrix, pInvMatrix, pMatrixNormal;
 	
 	debpColliderAttachment **pAttachments;
 	int pAttachmentCount;
@@ -147,6 +147,7 @@ public:
 	void SetIsMoving( bool isMoving );
 	const decDMatrix &GetMatrix();
 	const decDMatrix &GetInverseMatrix();
+	const decDMatrix &GetMatrixNormal();
 	void SetIndex( int index );
 	virtual void SetParentWorld( debpWorld *parentWorld );
 	

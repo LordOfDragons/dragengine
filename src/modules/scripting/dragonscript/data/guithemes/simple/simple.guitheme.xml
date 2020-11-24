@@ -421,12 +421,17 @@
 	- 'Panel.InteractPromptEntry.Bindings': Bindings panel
 	-->
 	<designer name='InteractPrompt' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0' b='0' a='0.5'/>
 			</colorMatrix>
 		</canvasCreator>
 		<borderSize parameter='normal.padding' all='10'/>
+	</designer>
+	
+	<designer name='Label.InteractPromptEntry' type='Label'>
+		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
 	</designer>
 	
 	

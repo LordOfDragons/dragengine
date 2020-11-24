@@ -290,6 +290,7 @@ pAttachment( NULL ),
 pPlaybackControllerIndex( -1 ),
 pRenderEnvMap( false ),
 pAffectsAudio( false ),
+pLightShadowIgnore( false ),
 pColliderCanInteract( false ),
 pColliderAddedToWorld( false )
 {
@@ -366,16 +367,17 @@ void igdeWOSOComponent::UpdateGeometry(){
 	pCollider->SetPosition( GetWrapper().GetPosition() );
 	pCollider->SetOrientation( GetWrapper().GetOrientation() );
 	
-	if( pComponent ){
-		pComponent->SetPosition( GetWrapper().GetPosition() );
-		pComponent->SetOrientation( GetWrapper().GetOrientation() );
+	if( pGDComponent.GetDoNotScale() ){
+		pCollider->SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
 		
-		if( pGDComponent.GetDoNotScale() ){
-			pComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );
-			
-		}else{
-			pComponent->SetScaling( GetWrapper().GetScaling() );
-		}
+	}else{
+		pCollider->SetScale( GetWrapper().GetScaling() );
+	}
+	
+	if( pComponent ){
+		pComponent->SetPosition( pCollider->GetPosition() );
+		pComponent->SetOrientation( pCollider->GetOrientation() );
+		pComponent->SetScaling( pCollider->GetScale() );
 	}
 }
 
@@ -623,6 +625,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 	pAffectsAudio = GetBoolProperty(
 		pGDComponent.GetPropertyName( igdeGDCComponent::epAffectsAudio ),
 		pGDComponent.GetAffectsAudio() );
+	pLightShadowIgnore = GetBoolProperty(
+		pGDComponent.GetPropertyName( igdeGDCComponent::epLightShadowIgnore ),
+		pGDComponent.GetLightShadowIgnore() );
 	
 	if( pGDComponent.GetDoNotScale() ){
 		pComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );

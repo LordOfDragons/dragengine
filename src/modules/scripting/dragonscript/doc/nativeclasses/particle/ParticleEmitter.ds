@@ -27,6 +27,7 @@ class ParticleEmitter
 	/*@{*/
 	/** \brief Nnumber of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -48,6 +49,7 @@ class ParticleEmitter
 	 *                        than or equal to getControllerCount().
 	 */
 	public func ParticleEmitterController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -60,10 +62,12 @@ class ParticleEmitter
 	 *             \em null is returned.
 	 */
 	public func ParticleEmitterController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	/*@}*/
 	
@@ -73,6 +77,7 @@ class ParticleEmitter
 	/*@{*/
 	/** \brief Burst lifetime. */
 	public func float getBurstLifetime()
+		return 0.0
 	end
 	
 	/** \brief Set the burst liftime. */
@@ -81,6 +86,7 @@ class ParticleEmitter
 	
 	/** \brief Particles are emitted in bursts instead of continuous. */
 	public func bool getEmitBurst()
+		return false
 	end
 	
 	/** \brief Set if particles are emitted in bursts instead of continuous. */
@@ -94,6 +100,7 @@ class ParticleEmitter
 	/*@{*/
 	/** \brief Number of types. */
 	public func int getTypeCount()
+		return 0
 	end
 	
 	/** \brief Set number of types. */
@@ -105,6 +112,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func Skin getTypeSkin( int type )
+		return null
 	end
 	
 	/**
@@ -119,6 +127,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func Model getTypeModel( int type )
+		return null
 	end
 	
 	/**
@@ -133,6 +142,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func Skin getTypeModelSkin( int type )
+		return null
 	end
 	
 	/**
@@ -147,6 +157,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func ParticleEmitterCastFrom getTypeCastFrom( int type )
+		return null
 	end
 	
 	/**
@@ -161,6 +172,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func ParticleEmitterSimulation getTypeSimulationType( int type )
+		return null
 	end
 	
 	/**
@@ -175,6 +187,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func bool getTypeIntervalAsDistance( int type )
+		return false
 	end
 	
 	/**
@@ -189,6 +202,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func ParticleEmitter getTypeTrailEmitter( int type )
+		return null
 	end
 	
 	/**
@@ -203,6 +217,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func int getTypeTrailController( int type, ParticleEmitterEmitController controller )
+		return 0
 	end
 	
 	/**
@@ -217,6 +232,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func float getTypePhysicsSize( int type )
+		return 0.0
 	end
 	
 	/**
@@ -230,14 +246,15 @@ class ParticleEmitter
 	 * \brief Collision response.
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
-	public func ParticleCollisionResponse getCollisionResponse( int type )
+	public func ParticleCollisionResponse getTypeCollisionResponse( int type )
+		return null
 	end
 	
 	/**
 	 * \brief Set collision response.
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
-	public func void setCollisionResponse( int type, ParticleCollisionResponse response )
+	public func void setTypeCollisionResponse( int type, ParticleCollisionResponse response )
 	end
 	
 	/**
@@ -245,6 +262,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func ParticleEmitter getTypeCollisionEmitter( int type )
+		return null
 	end
 	
 	/**
@@ -259,6 +277,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func float getTypeEmitMinImpulse( int type )
+		return 0.0
 	end
 	
 	/**
@@ -273,6 +292,7 @@ class ParticleEmitter
 	 * \throws EOutOfBoundary \em type is less than 0 or larger than or equal to getTypeCount().
 	 */
 	public func int getTypeEmitController( int type, ParticleEmitterEmitController controller )
+		return 0
 	end
 	
 	/**

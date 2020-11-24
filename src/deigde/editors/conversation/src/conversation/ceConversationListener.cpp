@@ -85,17 +85,6 @@ void ceConversationListener::ActiveCameraShotChanged( ceConversation *conversati
 
 
 
-void ceConversationListener::PoseStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::PoseChanged( ceConversation *conversation, cePose *pose ){
-}
-
-void ceConversationListener::ActivePoseChanged( ceConversation *conversation ){
-}
-
-
-
 void ceConversationListener::GestureStructureChanged( ceConversation *conversation ){
 }
 
@@ -117,17 +106,6 @@ void ceConversationListener::FacePoseChanged( ceConversation *conversation, ceFa
 }
 
 void ceConversationListener::ActiveFacePoseChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::LookAtStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::LookAtChanged( ceConversation *conversation, ceLookAt *lookat ){
-}
-
-void ceConversationListener::ActiveLookAtChanged( ceConversation *conversation ){
 }
 
 

@@ -632,6 +632,26 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	plan.SetUseLayerMask( true );
 	plan.SetLayerMask( pLayerMask );
 	
+	// TODO we need to find a way to figure out what adapted intensity to use here.
+	//      in the case of regular rendering the lower camera intensity is used which
+	//      is fine enough for the first image rendered until the last average scene
+	//      intensity is known. in the case of environment maps though we have neither
+	//      a last average scene intensity nor a camera with intensity boundaries.
+	//      
+	//      one solution would be to examine all lights affecting the environment
+	//      map and to calculate the incoming light intensity similar to lumimeters.
+	//      this would require though testing against occlusion meshes or shadow maps
+	//      to not use a too high intensity.
+	//      
+	//      another solution would be to look at cameras in the world finding the one
+	//      closest to the environment map. this way we could use the last known average
+	//      intensity of a camera recently rendered. this also has potential problems
+	//      but it would base the decision on somewhat usful data.
+	//      
+	//      all in all there is no simple solution to this problem. using right now
+	//      the constant scene key should ensure guessing not too high
+	plan.SetCameraAdaptedIntensity( 1.0f );
+	
 	//plan.SetDebugTiming( true );
 	
 	matrixCamera.SetCamera( pPosition, decDVector( 0.0, 0.0, 1.0 ), decDVector( 0.0, 1.0, 0.0 ) );

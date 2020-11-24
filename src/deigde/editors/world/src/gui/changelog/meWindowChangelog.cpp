@@ -118,7 +118,8 @@ pWorld( NULL )
 		igdeUIHelper::sColumnHeader( "Sector", NULL, 50 ),
 		igdeUIHelper::sColumnHeader( "What", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Filename", NULL, 380 ) };
-	helper.IconListBox( 10, headers, 3, "Changes", pListChanges, new cListChangelog( *this ) );
+	helper.IconListBox( decPoint( 100, 150 ), headers, 3, "Changes", pListChanges,
+		new cListChangelog( *this ) );
 	AddChild( pListChanges, igdeContainerBorder::eaCenter );
 	
 	igdeListItemSorterReference sorter;

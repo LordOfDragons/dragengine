@@ -112,32 +112,6 @@ void ceWPConversationListener::ActiveCameraShotChanged( ceConversation *conversa
 
 
 
-void ceWPConversationListener::PoseStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdatePoseList();
-}
-
-void ceWPConversationListener::PoseChanged( ceConversation *conversation, cePose* ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdatePoseList();
-}
-
-void ceWPConversationListener::ActivePoseChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.SelectActivePose();
-}
-
-
-
 void ceWPConversationListener::GestureStructureChanged( ceConversation *conversation ){
 	if( conversation != pPanel.GetConversation() ){
 		return;
@@ -194,32 +168,6 @@ void ceWPConversationListener::ActiveFacePoseChanged( ceConversation *conversati
 	}
 	
 	pPanel.SelectActiveFacePose();
-}
-
-
-
-void ceWPConversationListener::LookAtStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtList();
-}
-
-void ceWPConversationListener::LookAtChanged( ceConversation *conversation, ceLookAt* ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtList();
-}
-
-void ceWPConversationListener::ActiveLookAtChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.SelectActiveLookAt();
 }
 
 

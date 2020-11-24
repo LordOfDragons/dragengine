@@ -400,7 +400,7 @@ class Window extends Container
 	/**
 	 * \brief Grab the focus if possible.
 	 * \details If the window is disabled or not visible the focus is not grabbed.
-	 *          Otherwise the focus is grabbed by the first list entry able to do so:
+	 *          Otherwise the focus is grabbed by the first widget able to do so:
 	 *          - Active widget
 	 *          - First focusable widget otherwise
 	 *          - Window itself

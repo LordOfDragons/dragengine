@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Dynamic skin.
  * 
@@ -27,14 +30,17 @@ class DynamicSkin
 	/*@{*/
 	/** \brief Number of renderables. */
 	public func int getRenderableCount()
+		return 0
 	end
 	
 	/** \brief Named renderable is present. */
 	public func bool hasRenderable( String name )
+		return false
 	end
 	
 	/** \brief Index of named renderable or -1 if absent. */
 	public func int indexOfRenderable( String name )
+		return 0
 	end
 	
 	/**
@@ -62,6 +68,7 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 */
 	public func DynamicSkinRenderableType getTypeAt( int renderable )
+		return null
 	end
 	
 	
@@ -96,6 +103,7 @@ class DynamicSkin
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
 	 */
 	public func CanvasView getCanvasAt( int renderable )
+		return null
 	end
 	
 	/**

@@ -173,15 +173,14 @@ pResizer( NULL )
 	}
 	pListBox->setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	pDefaultSize.Set( 200, pListBox->getFont()->getFontHeight() * owner.GetRows() );
-	
-	//setNumVisible( owner.GetRows() ); // not supported
 	if( ! owner.GetEnabled() ){
 		pListBox->disable();
 	}
 	
 	//setTipText( owner.GetDescription().GetString() ); // not supported
 	pListBox->setHelpText( owner.GetDescription().GetString() );
+	
+	UpdateMinimumSize();
 	
 	BuildHeader();
 	BuildList();
@@ -337,6 +336,11 @@ void igdeNativeFoxIconListBox::UpdateEnabled(){
 	}else{
 		pListBox->disable();
 	}
+}
+
+void igdeNativeFoxIconListBox::UpdateMinimumSize(){
+	pDefaultSize = pOwner->GetMiniumSize();
+	recalc();
 }
 
 void igdeNativeFoxIconListBox::Focus(){

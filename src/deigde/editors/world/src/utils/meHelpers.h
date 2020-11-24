@@ -24,15 +24,21 @@
 
 #include <dragengine/common/math/decMath.h>
 
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
+
 
 class meObject;
 class igdeGDClass;
 class igdeGDCComponent;
 class igdeGDCLight;
 class igdeGDCCTexture;
+class igdeGDPropertyList;
+class igdeGDCNavigationSpace;
+class igdeGDCNavigationBlocker;
 
 class deObjectReference;
 class decString;
+class decStringList;
 
 
 namespace meHelpers{
@@ -61,6 +67,40 @@ namespace meHelpers{
 	
 	/** \brief Find first game definition light. */
 	bool FindFirstLight( const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light );
+	
+	
+	
+	/** \brief Find first game definition navigationSpace. */
+	igdeGDCNavigationSpace *FindFirstNavigationSpace( const igdeGDClass *gdclass );
+	
+	/** \brief Find first game definition navigationSpace. */
+	igdeGDCNavigationSpace *FindFirstNavigationSpace( const igdeGDClass &gdclass );
+	
+	/** \brief Find first game definition navigationSpace. */
+	bool FindFirstNavigationSpace( const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace );
+	
+	/** \brief Find first game definition navigationSpace. */
+	bool FindFirstNavigationSpace( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace );
+	
+	
+	
+	/** \brief Find first game definition navigationBlocker. */
+	igdeGDCNavigationBlocker *FindFirstNavigationBlocker( const igdeGDClass *gdclass );
+	
+	/** \brief Find first game definition navigationBlocker. */
+	igdeGDCNavigationBlocker *FindFirstNavigationBlocker( const igdeGDClass &gdclass );
+	
+	/** \brief Find first game definition navigationBlocker. */
+	bool FindFirstNavigationBlocker( const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker );
+	
+	/** \brief Find first game definition navigationBlocker. */
+	bool FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker );
+	
+	
+	
+	/** \brief Get names of all path type properties matching pattern type. */
+	void GetPatternTypePropertyNames( const igdeGDClass &gdclass,
+		igdeGDProperty::ePathPatternTypes patternType, decStringList &names );
 	
 	
 	

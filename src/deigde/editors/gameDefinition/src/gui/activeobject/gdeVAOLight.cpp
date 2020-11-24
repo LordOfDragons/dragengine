@@ -191,6 +191,12 @@ void gdeVAOLight::SelectedObjectChanged(){
 	pUpdateDDShapeColor();
 }
 
+void gdeVAOLight::ShadowIgnoreComponent( deComponent *component ){
+	if( pLight && ! pLight->HasShadowIgnoreComponent( component ) ){
+		pLight->AddShadowIgnoreComponent( component );
+	}
+}
+
 
 
 // Private functions

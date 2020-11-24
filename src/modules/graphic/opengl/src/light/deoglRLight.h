@@ -87,6 +87,15 @@ public:
 		/** \brief Double solid and transparent shadow. */
 		estSolid2Transp2,
 		
+		/** \brief Luminance only single solid. */
+		estLumSolid1,
+		
+		/** \brief Luminance only single solid without ambient lighting. */
+		estLumSolid1NoAmbient,
+		
+		/** \brief Luminance only double solid. */
+		estLumSolid2,
+		
 		/** \brief Number of shaders. */
 		EST_COUNT
 	};
@@ -318,6 +327,13 @@ public:
 	
 	/** \brief Has shadow ignore component. */
 	bool HasShadowIgnoreComponent( deoglRComponent *component ) const;
+	
+	/**
+	 * \brief Check if camera layer mask matches light/shadow layer masks.
+	 * 
+	 * Static shadow maps are only valid if this method returns true.
+	 */
+	bool StaticMatchesCamera( const decLayerMask &layerMask ) const;
 	
 	
 	

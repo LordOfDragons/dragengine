@@ -84,6 +84,20 @@ pCacheValid( true )
 		flags |= 0x2;
 	}
 	
+	switch( property.GetBitCount() ){
+	case 8:
+		flags |= 0x4;
+		break;
+		
+	case 16:
+		flags |= 0x8;
+		break;
+		
+	case 32:
+		flags |= 0xc;
+		break;
+	}
+	
 	pDefinition->WriteColor( property.GetColor() );
 	pDefinition->WriteByte( flags );
 }

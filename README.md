@@ -11,6 +11,18 @@
 Example projects can be found on Development Wiki or in this repository:
 - Example Projects Repository: https://github.com/LordOfDragons/deexamples
 
+# License Information
+
+The Drag\[en\]gine Game Engine is dual licensed under [L-GPL](https://www.gnu.org/licenses/lgpl-3.0.html)
+(for commercial projects and proprietary use like on consoles) and
+[GPL](https://www.gnu.org/licenses/gpl-3.0.html) (for free game project).
+This affects only game engine modules, launchers and IGDE editors.
+Game projects do not link against the game engine and thus are not affected by
+the license. They can use any license they see fit.
+
+In a nutshell this means: __If you create a game, no matter if commercial or not__
+__, you do not have to worry about licensing at all.__
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
@@ -97,7 +109,7 @@ MinGW-64. VisualStudio compile is not supported officially.
 
 # Run in "Local Directory Mode"
 
-The Drag[en]gine Game Engine, Launchers and the IGDE can be run in the "Local Directory Mode".
+The Drag\[en\]gine Game Engine, Launchers and the IGDE can be run in the "Local Directory Mode".
 
 The **Live Launcher** is an example of a launcher using this mode to run games from any
 directory without installing.

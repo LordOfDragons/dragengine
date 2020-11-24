@@ -309,7 +309,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 					const igdeGDCComponent &component = *firstInheritClass->GetComponentList().GetAt( 0 );
 					bool hasComponent = false;
 					
-					for( j=0; j<=igdeGDCComponent::epAttachRotation; j++ ){
+					for( j=0; j<=igdeGDCComponent::epLightShadowIgnore; j++ ){
 						if( component.IsPropertySet( j ) ){
 							hasComponent = true;
 							break;
@@ -389,7 +389,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				component.SetOrientation( inheritClassComponent->GetOrientation() );
 				component.SetBoneName( inheritClassComponent->GetBoneName() );
 				
-				for( k=0; k<=igdeGDCComponent::epAttachRotation; k++ ){
+				for( k=0; k<=igdeGDCComponent::epLightShadowIgnore; k++ ){
 					component.SetPropertyName( k, inheritComponentPrefix + inheritClassComponent->GetPropertyName( k ) );
 				}
 				
@@ -436,6 +436,11 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				const decString &nameAffectsAudio = component.GetPropertyName( igdeGDCComponent::epAffectsAudio );
 				if( ! nameAffectsAudio.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAffectsAudio, propertyValue ) ){
 					component.SetAffectsAudio( propertyValue == "1" );
+				}
+				
+				const decString &nameLightShadowIgnore = component.GetPropertyName( igdeGDCComponent::epLightShadowIgnore );
+				if( ! nameLightShadowIgnore.IsEmpty() && gdClass->GetDefaultPropertyValue( nameLightShadowIgnore, propertyValue ) ){
+					component.SetLightShadowIgnore( propertyValue == "1" );
 				}
 			}
 		}

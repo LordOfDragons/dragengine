@@ -28,12 +28,14 @@ class FileWriter
 	/*@{*/
 	/** \brief File name. */
 	public func String getFilename()
+		return null
 	end
 	
 	
 	
 	/** \brief Stream version used by writeToFile of native classes. */
 	public func int getStreamVersion()
+		return 0
 	end
 	
 	/** \brief Set stream version used by writeToFile of native classes. */

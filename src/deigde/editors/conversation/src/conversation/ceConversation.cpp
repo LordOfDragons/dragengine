@@ -29,11 +29,9 @@
 #include "action/ceConversationAction.h"
 #include "actor/ceConversationActor.h"
 #include "camerashot/ceCameraShot.h"
-#include "pose/cePose.h"
 #include "facepose/ceFacePose.h"
 #include "gesture/ceGesture.h"
 #include "file/ceConversationFile.h"
-#include "lookat/ceLookAt.h"
 #include "target/ceTarget.h"
 #include "topic/ceConversationTopic.h"
 #include "textbox/ceTextBox.h"
@@ -42,6 +40,7 @@
 #include "infobox/ceConversationInfoBox.h"
 #include "coordsystem/ceCoordSystem.h"
 #include "prop/ceProp.h"
+#include "../loadsave/ceLoadSaveSystem.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -108,9 +107,7 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	pEngSpeakerVAPreview = NULL;
 	
 	pActiveTarget = NULL;
-	pActiveLookAt = NULL;
 	pActiveCameraShot = NULL;
-	pActivePose = NULL;
 	pActiveGesture = NULL;
 	pActiveFacePose = NULL;
 	pActiveFile = NULL;
@@ -232,10 +229,8 @@ ceConversation::~ceConversation(){
 void ceConversation::Dispose(){
 	RemoveAllActors();
 	RemoveAllFiles();
-	RemoveAllLookAts();
 	RemoveAllFacePoses();
 	RemoveAllGestures();
-	RemoveAllPoses();
 	RemoveAllCameraShots();
 	RemoveAllTargets();
 	
@@ -294,6 +289,36 @@ void ceConversation::SetCTAPath( const char *path ){
 
 void ceConversation::SetCTFIPath( const char *path ){
 	pCTFIPath = path;
+}
+
+
+
+// Imported conversations
+///////////////////////////
+
+void ceConversation::SetImportConversationPath( const decStringList &list ){
+	pImportConversationPath = list;
+}
+
+void ceConversation::UpdateImportedConversations( ceLoadSaveSystem &lssystem ){
+	// we reload all conversation to be on the save side. this is less efficient than keeping
+	// alread loaded conversations around but avoids potential problems if files changed
+	pImportedConversations.RemoveAll();
+	
+	const int count = pImportConversationPath.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const decString &path = pImportConversationPath.GetAt( i );
+		const decPath fullPath( decPath::AbsolutePathUnix( path, GetDirectoryPath() ) );
+		try{
+			pImportedConversations.Add( lssystem.LoadConversation( fullPath.GetPathUnix() ) );
+			
+		}catch( const deException &e ){
+			GetLogger()->LogException( LOGSOURCE, e );
+			// ignore unusable files
+		}
+	}
 }
 
 
@@ -365,6 +390,39 @@ void ceConversation::SetActiveTarget( ceTarget *target ){
 		}
 		
 		NotifyActiveTargetChanged();
+	}
+}
+
+ceTarget *ceConversation::GetTargetNamed( const char *name ) const{
+	ceTarget *target = pTargetList.GetNamed( name );
+	if( target ){
+		return target;
+	}
+	
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		target = pImportedConversations.GetAt( i )->GetTargetNamed( name );
+		if( target ){
+			return target;
+		}
+	}
+	
+	return NULL;
+}
+
+ceTargetList ceConversation::AllTargets() const{
+	ceTargetList list;
+	AllTargets( list );
+	return list;
+}
+
+void ceConversation::AllTargets( ceTargetList &list ) const{
+	list += pTargetList;
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllTargets( list );
 	}
 }
 
@@ -440,75 +498,36 @@ void ceConversation::SetActiveCameraShot( ceCameraShot *cameraShot ){
 	}
 }
 
-
-
-// Poses
-/////////////
-
-void ceConversation::AddPose( cePose *pose ){
-	if( ! pose || pPoseList.HasNamed( pose->GetName().GetString() ) || pose->GetConversation() ){
-		DETHROW( deeInvalidParam );
+ceCameraShot *ceConversation::GetCameraShotNamed( const char *name ) const{
+	ceCameraShot *cameraShot = pCameraShotList.GetNamed( name );
+	if( cameraShot ){
+		return cameraShot;
 	}
 	
-	pPoseList.Add( pose );
-	pose->SetConversation( this );
-	NotifyPoseStructureChanged();
-	
-	if( ! pActivePose ){
-		SetActivePose( pose );
-	}
-}
-
-void ceConversation::RemovePose( cePose *pose ){
-	if( ! pose || ! pPoseList.Has( pose ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pose == pActivePose ){
-		if( pPoseList.GetCount() == 1 ){
-			SetActivePose( NULL );
-			
-		}else{
-			if( pPoseList.GetAt( 0 ) == pose ){
-				SetActivePose( pPoseList.GetAt( 1 ) );
-				
-			}else{
-				SetActivePose( pPoseList.GetAt( 0 ) );
-			}
-		}
-	}
-	
-	pose->SetConversation( NULL );
-	pPoseList.Remove( pose );
-	NotifyActorStructureChanged();
-}
-
-void ceConversation::RemoveAllPoses(){
-	const int count = pPoseList.GetCount();
+	const int count = pImportedConversations.GetCount();
 	int i;
-	
-	SetActivePose( NULL );
-	
-	for( i=0; i<count; i++ ){
-		pPoseList.GetAt( i )->SetConversation( NULL );
+	for( i=count-1; i>=0; i-- ){
+		cameraShot = pImportedConversations.GetAt( i )->GetCameraShotNamed( name );
+		if( cameraShot ){
+			return cameraShot;
+		}
 	}
-	pPoseList.RemoveAll();
-	NotifyPoseStructureChanged();
+	
+	return NULL;
 }
 
-void ceConversation::SetActivePose( cePose *pose ){
-	if( pose != pActivePose ){
-		if( pActivePose ){
-			pActivePose->FreeReference();
-		}
-		
-		pActivePose = pose;
-		
-		if( pose ){
-			pose->AddReference();
-		}
-		
-		NotifyActivePoseChanged();
+ceCameraShotList ceConversation::AllCameraShots() const{
+	ceCameraShotList list;
+	AllCameraShots( list );
+	return list;
+}
+
+void ceConversation::AllCameraShots( ceCameraShotList &list ) const{
+	list += pCameraShotList;
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllCameraShots( list );
 	}
 }
 
@@ -584,6 +603,39 @@ void ceConversation::SetActiveGesture( ceGesture *gesture ){
 	}
 }
 
+ceGesture *ceConversation::GetGestureNamed( const char *name ) const{
+	ceGesture *gesture = pGestureList.GetNamed( name );
+	if( gesture ){
+		return gesture;
+	}
+	
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		gesture = pImportedConversations.GetAt( i )->GetGestureNamed( name );
+		if( gesture ){
+			return gesture;
+		}
+	}
+	
+	return NULL;
+}
+
+ceGestureList ceConversation::AllGestures() const{
+	ceGestureList list;
+	AllGestures( list );
+	return list;
+}
+
+void ceConversation::AllGestures( ceGestureList &list ) const{
+	list += pGestureList;
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllGestures( list );
+	}
+}
+
 
 
 // Face Poses
@@ -656,75 +708,36 @@ void ceConversation::SetActiveFacePose( ceFacePose *facePose ){
 	}
 }
 
-
-
-// LookAts
-////////////
-
-void ceConversation::AddLookAt( ceLookAt *lookat ){
-	if( ! lookat || pLookAtList.HasNamed( lookat->GetName().GetString() ) || lookat->GetConversation() ){
-		DETHROW( deeInvalidParam );
+ceFacePose *ceConversation::GetFacePoseNamed( const char *name ) const{
+	ceFacePose *facePose = pFacePoseList.GetNamed( name );
+	if( facePose ){
+		return facePose;
 	}
 	
-	pLookAtList.Add( lookat );
-	lookat->SetConversation( this );
-	NotifyLookAtStructureChanged();
-	
-	if( ! pActiveLookAt ){
-		SetActiveLookAt( lookat );
-	}
-}
-
-void ceConversation::RemoveLookAt( ceLookAt *lookat ){
-	if( ! lookat || ! pLookAtList.Has( lookat ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( lookat == pActiveLookAt ){
-		if( pLookAtList.GetCount() == 1 ){
-			SetActiveLookAt( NULL );
-			
-		}else{
-			if( pLookAtList.GetAt( 0 ) == lookat ){
-				SetActiveLookAt( pLookAtList.GetAt( 1 ) );
-				
-			}else{
-				SetActiveLookAt( pLookAtList.GetAt( 0 ) );
-			}
-		}
-	}
-	
-	lookat->SetConversation( NULL );
-	pLookAtList.Remove( lookat );
-	NotifyLookAtStructureChanged();
-}
-
-void ceConversation::RemoveAllLookAts(){
-	const int count = pLookAtList.GetCount();
+	const int count = pImportedConversations.GetCount();
 	int i;
-	
-	SetActiveLookAt( NULL );
-	
-	for( i=0; i<count; i++ ){
-		pLookAtList.GetAt( i )->SetConversation( NULL );
+	for( i=count-1; i>=0; i-- ){
+		facePose = pImportedConversations.GetAt( i )->GetFacePoseNamed( name );
+		if( facePose ){
+			return facePose;
+		}
 	}
-	pLookAtList.RemoveAll();
-	NotifyLookAtStructureChanged();
+	
+	return NULL;
 }
 
-void ceConversation::SetActiveLookAt( ceLookAt *lookat ){
-	if( lookat != pActiveLookAt ){
-		if( pActiveLookAt ){
-			pActiveLookAt->FreeReference();
-		}
-		
-		pActiveLookAt = lookat;
-		
-		if( lookat ){
-			lookat->AddReference();
-		}
-		
-		NotifyActiveLookAtChanged();
+ceFacePoseList ceConversation::AllFacePoses() const{
+	ceFacePoseList list;
+	AllFacePoses( list );
+	return list;
+}
+
+void ceConversation::AllFacePoses( ceFacePoseList &list ) const{
+	list += pFacePoseList;
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllFacePoses( list );
 	}
 }
 
@@ -800,6 +813,78 @@ void ceConversation::SetActiveFile( ceConversationFile *file ){
 	}
 	
 	NotifyActiveFileChanged();
+}
+
+ceConversationFile *ceConversation::GetFileWithID( const char *name ) const{
+	ceConversationFile *file = pFileList.GetWithID( name );
+	if( file ){
+		return file;
+	}
+	
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		file = pImportedConversations.GetAt( i )->GetFileWithID( name );
+		if( file ){
+			return file;
+		}
+	}
+	
+	return NULL;
+}
+
+ceConversationFileList ceConversation::AllFiles() const{
+	ceConversationFileList list;
+	AllFiles( list );
+	return list;
+}
+
+void ceConversation::AllFiles( ceConversationFileList &list ) const{
+	list += pFileList;
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllFiles( list );
+	}
+}
+
+ceConversationTopic *ceConversation::GetTopicWithID( const char * fileName, const char *topicName ) const{
+	ceConversationFile *file = pFileList.GetWithID( fileName );
+	if( file ){
+		ceConversationTopic * const topic = file->GetTopicList().GetWithID( topicName );
+		if( topic ){
+			return topic;
+		}
+	}
+	
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		ceConversationTopic * const topic = pImportedConversations.GetAt( i )->GetTopicWithID( fileName, topicName );
+		if( topic ){
+			return topic;
+		}
+	}
+	
+	return NULL;
+}
+
+ceConversationTopicList ceConversation::AllTopics( const char *fileName ) const{
+	ceConversationTopicList list;
+	AllTopics( fileName, list );
+	return list;
+}
+
+void ceConversation::AllTopics( const char *fileName, ceConversationTopicList &list ) const{
+	ceConversationFile *file = pFileList.GetWithID( fileName );
+	if( file ){
+		list += file->GetTopicList();
+	}
+	const int count = pImportedConversations.GetCount();
+	int i;
+	for( i=count-1; i>=0; i-- ){
+		pImportedConversations.GetAt( i )->AllTopics( fileName, list );
+	}
 }
 
 
@@ -1169,39 +1254,6 @@ void ceConversation::NotifyActiveCameraShotChanged(){
 
 
 
-void ceConversation::NotifyPoseStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->PoseStructureChanged( this );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyPoseChanged( cePose *pose ){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->PoseChanged( this, pose );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyActivePoseChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActivePoseChanged( this );
-	}
-}
-
-
-
 void ceConversation::NotifyGestureStructureChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int l;
@@ -1274,39 +1326,6 @@ void ceConversation::NotifyActiveFacePoseChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActiveFacePoseChanged( this );
-	}
-}
-
-
-
-void ceConversation::NotifyLookAtStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->LookAtStructureChanged( this );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyLookAtChanged( ceLookAt *lookat ){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->LookAtChanged( this, lookat );
-	}
-	
-	SetChanged( true );
-}
-
-void ceConversation::NotifyActiveLookAtChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for( l=0; l<listenerCount; l++ ){
-		( ( ceConversationListener* )pListeners.GetAt( l ) )->ActiveLookAtChanged( this );
 	}
 }
 

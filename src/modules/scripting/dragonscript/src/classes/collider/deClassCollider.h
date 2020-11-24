@@ -108,14 +108,21 @@ public:
 	 * \throws EInvalidParam deColliderAttachment::CanAttachResource()
 	 *                       returns false for the resource.
 	 */
-	decDMatrix GetResourceMatrix( const deResource &resource ) const;
+	static decDMatrix GetResourceMatrix( const deResource &resource );
+	
+	/**
+	 * \brief Retrieve the scale of a resource.
+	 * \throws EInvalidParam deColliderAttachment::CanAttachResource()
+	 *                       returns false for the resource.
+	 */
+	static decVector GetResourceScale( const deResource &resource );
 	
 	/** \brief Attach resource using deColliderAttachment::eatStatic mode. */
 	void AttachStatic( deCollider &collider, deResource *resource ) const;
 	
 	/** \brief Attach resource using deColliderAttachment::eatStatic mode. */
-	void AttachStatic( deCollider &collider, deResource *resource,
-	const decVector &position, const decQuaternion &orientation ) const;
+	void AttachStatic( deCollider &collider, deResource *resource, const decVector &position,
+		const decQuaternion &orientation, const decVector &scale ) const;
 	
 	/** \brief Attach resource using deColliderAttachment::eatRig mode. */
 	void AttachRig( deCollider &collider, deResource *resource ) const;
@@ -125,7 +132,7 @@ public:
 	
 	/** \brief Attach resource using deColliderAttachment::eatBone mode. */
 	void AttachBone( deCollider &collider, deResource *resource, const char *targetBone,
-	const decVector &position, const decQuaternion &orientation ) const;
+	const decVector &position, const decQuaternion &orientation, const decVector &scale ) const;
 	
 	/** \brief Attach resource using deColliderAttachment::eatWeight mode. */
 	void AttachWeight( deCollider &collider, deResource *resource, const deCollisionInfo &colInfo ) const;

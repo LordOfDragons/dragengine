@@ -23,8 +23,8 @@
 #define _MEUMOVEOBJECT_H_
 
 #include "../meBaseUndoMove.h"
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class meUndoDataObject;
 class meObjectList;
 class meWorld;
 
@@ -36,8 +36,7 @@ class meWorld;
 class meUMoveObject : public meBaseUndoMove{
 private:
 	meWorld *pWorld;
-	meUndoDataObject **pObjects;
-	int pObjectCount;
+	decObjectOrderedSet pObjects;
 	
 	
 	

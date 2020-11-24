@@ -52,16 +52,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeIconListBox::igdeIconListBox( igdeEnvironment &environment, int rows, const char *description ) :
+igdeIconListBox::igdeIconListBox( igdeEnvironment &environment, const char *description ) :
 igdeWidget( environment ),
 pEnabled( true ),
 pSelectionMode( esmSingle ),
 pViewMode( evmList ),
 pSelection( -1 ),
-pRows( rows ),
-pDescription( description )
-{
-	if( rows < 1 ){
+pMinimumSize( 100, 60 ),
+pDescription( description ){
+}
+
+igdeIconListBox::igdeIconListBox( igdeEnvironment &environment,
+	const decPoint &minimumSize, const char *description ) :
+igdeWidget( environment ),
+pEnabled( true ),
+pSelectionMode( esmSingle ),
+pViewMode( evmList ),
+pSelection( -1 ),
+pMinimumSize( minimumSize ),
+pDescription( description ){
+	if( ! ( minimumSize >= decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 }
@@ -84,17 +94,17 @@ void igdeIconListBox::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeIconListBox::SetRows( int rows ){
-	if( rows < 1 ){
+void igdeIconListBox::SetMinimumSize( const decPoint &size ){
+	if( ! ( size >= decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( rows == pRows ){
+	if( size == pMinimumSize ){
 		return;
 	}
 	
-	pRows = rows;
-	//OnRowsChanged();
+	pMinimumSize = size;
+	OnMinimumSizeChanged();
 }
 
 void igdeIconListBox::SetDescription( const char *description ){
@@ -726,5 +736,11 @@ void igdeIconListBox::OnSelectionModeChanged(){
 void igdeIconListBox::OnHeaderChanged(){
 	if( GetNativeWidget() ){
 		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateHeader();
+	}
+}
+
+void igdeIconListBox::OnMinimumSizeChanged(){
+	if( GetNativeWidget() ){
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateMinimumSize();
 	}
 }

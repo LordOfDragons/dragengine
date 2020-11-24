@@ -30,6 +30,7 @@ class EffectColorMatrix extends Effect
 	/*@{*/
 	/** \brief Color matrix. */
 	public func ColorMatrix getColorMatrix()
+		return null
 	end
 	
 	/** \brief Set color matrix. */
@@ -44,6 +45,7 @@ class EffectColorMatrix extends Effect
 	 * \returns \em true if \em other is of type EffectColorMatrix and effect are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -51,6 +53,7 @@ class EffectColorMatrix extends Effect
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

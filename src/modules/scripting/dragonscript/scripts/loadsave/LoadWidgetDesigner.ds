@@ -183,8 +183,7 @@ class LoadWidgetDesigner extends BaseXmlLoader
 			end
 			
 			try
-				designer = guitheme.getNamedWidgetDesigner( \
-					root.getAttributeNamed( "extendNamed" ) )
+				designer = guitheme.getNamedWidgetDesigner( root.getAttributeNamed( "extendNamed" ) )
 				
 			catch Exception e
 				this.printOnConsole( filename, root, "Designer '" \
@@ -193,13 +192,11 @@ class LoadWidgetDesigner extends BaseXmlLoader
 			end
 			
 		elif root.hasAttributeNamed( "type" )
-			try
-				designer = this.pDesigners.getNamed( root.getAttributeNamed( "type" ) )
-				
-			catch Exception e
+			designer = this.pDesigners.getNamed( root.getAttributeNamed( "type" ) )
+			if designer == null
 				this.printOnConsole( filename, root, "Widget designer type '" \
 					+ root.getAttributeNamed( "type" ) + "' not found" )
-				throw
+				throw EInvalidParam.new()
 			end
 			
 		else

@@ -1,8 +1,8 @@
 [Setup]
 AppId={{15FD3C65-A7CA-4CE2-A500-6EF483EC5C4B}
 AppName=Drag[en]gine IGDE SDK
-AppVersion=1.3
-;AppVerName=Drag[en]gine IGDE SDK 1.3
+AppVersion=1.4
+;AppVerName=Drag[en]gine IGDE SDK 1.4
 AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch

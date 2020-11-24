@@ -82,6 +82,9 @@ public:
 	/** \brief Layer mask has at least one bit set. */
 	bool IsNotEmpty() const;
 	
+	/** \brief Layer mask has all bits set. */
+	bool IsFull() const;
+	
 	/** \brief Determines if this mask shares at least one bit with another mask. */
 	bool Matches( const decLayerMask &layerMask ) const;
 	

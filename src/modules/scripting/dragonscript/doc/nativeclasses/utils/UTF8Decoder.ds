@@ -28,18 +28,22 @@ class UTF8Decoder
 	/*@{*/
 	/** \brief Sstring. */
 	public func String getString()
+		return null
 	end
 	
 	/** \brief Length of string. */
 	public func int getLength()
+		return 0
 	end
 	
 	/** \brief Decoding position in bytes from the beginning. */
 	public func int getPosition()
+		return 0
 	end
 	
 	/** \brief End of the decoder reached. */
 	public func bool hasReachedEnd()
+		return false
 	end
 	
 	/** \brief Set string. */
@@ -56,6 +60,7 @@ class UTF8Decoder
 	 *          Otherwise the unicode value is of the character is returned.
 	 */
 	public func int decodeNextCharacter()
+		return 0
 	end
 	/*@}*/
 end

@@ -50,6 +50,20 @@ ceWPTopicListener::~ceWPTopicListener(){
 // Management
 ///////////////
 
+void ceWPTopicListener::ConversationChanged( ceConversation *conversation ){
+	if( conversation != pPanel.GetConversation() ){
+		return;
+	}
+	
+	// if imports changed
+	pPanel.UpdateTargetLists();
+	pPanel.UpdateCameraShotLists();
+	pPanel.UpdateGestureLists();
+	pPanel.UpdateFacePoseLists();
+	pPanel.UpdateFileList();
+	pPanel.UpdateTopicList();
+}
+
 void ceWPTopicListener::TargetStructureChanged( ceConversation *conversation ){
 	if( conversation != pPanel.GetConversation() ){
 		return;
@@ -122,24 +136,6 @@ void ceWPTopicListener::FacePoseChanged( ceConversation *conversation, ceFacePos
 
 
 
-void ceWPTopicListener::LookAtStructureChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtLists();
-}
-
-void ceWPTopicListener::LookAtChanged( ceConversation *conversation, ceLookAt* ){
-	if( conversation != pPanel.GetConversation() ){
-		return;
-	}
-	
-	pPanel.UpdateLookAtLists();
-}
-
-
-
 void ceWPTopicListener::FileStructureChanged( ceConversation *conversation ){
 	if( conversation != pPanel.GetConversation() ){
 		return;
@@ -205,6 +201,26 @@ ceConversationTopic *topic, ceConversationAction* ){
 
 void ceWPTopicListener::ActionChanged( ceConversation *conversation, ceConversationFile *file,
 ceConversationTopic *topic, ceConversationAction* ){
+	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	pPanel.UpdateActive();
+}
+
+void ceWPTopicListener::ConditionStructureChanged( ceConversation *conversation,
+ceConversationFile *file, ceConversationTopic *topic, ceConversationAction* ){
+	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
+	|| topic != file->GetActiveTopic() ){
+		return;
+	}
+	
+	pPanel.UpdateActive();
+}
+
+void ceWPTopicListener::ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+ceConversationTopic *topic, ceConversationAction*, ceConversationCondition* ){
 	if( conversation != pPanel.GetConversation() || file != conversation->GetActiveFile()
 	|| topic != file->GetActiveTopic() ){
 		return;

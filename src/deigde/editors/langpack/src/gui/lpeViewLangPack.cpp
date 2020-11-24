@@ -266,7 +266,7 @@ pLangPack( NULL )
 		{ "Identifier", NULL, 200 },
 		{ "Text", NULL, 800 }
 	};
-	helper.IconListBox( 10, listHeaders, 2, "Entries", pListEntries, NULL );
+	helper.IconListBox( decPoint( 100, 150 ), listHeaders, 2, "Entries", pListEntries, NULL );
 	pListEntries->SetSelectionMode( igdeIconListBox::esmMultiple );
 	cListEntries::AddToListBox( *this, pListEntries );
 	splitted->AddChild( pListEntries, igdeContainerSplitted::eaCenter );

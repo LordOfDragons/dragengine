@@ -114,11 +114,18 @@ uniform lowp sampler2D texAOSolidity;
 		uniform lowp sampler2D texShadow2TransparentColor;
 	#endif
 #endif
-#ifdef TEXTURE_SHADOW_AMBIENT
+#ifdef TEXTURE_SHADOW1_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadowAmbient;
+		uniform lowp SAMPLER_SHADOWCUBE texShadow1Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadowAmbient;
+		uniform lowp SAMPLER_SHADOW2D texShadow1Ambient;
+	#endif
+#endif
+#ifdef TEXTURE_SHADOW2_AMBIENT
+	#ifdef SMA1_CUBE
+		uniform lowp SAMPLER_SHADOWCUBE texShadow2Ambient;
+	#else
+		uniform lowp SAMPLER_SHADOW2D texShadow2Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_NOISE
@@ -183,6 +190,7 @@ uniform lowp sampler2D texAOSolidity;
 ////////////
 
 out vec4 outColor;
+out float outLuminance;
 #ifdef WITH_SUBSURFACE
 	out vec4 outSubSurface;
 #endif
@@ -222,13 +230,16 @@ const float epsilon = 0.0001;
 	const vec2 noiseOffset = vec2( -0.5 );
 #endif
 
-#if defined( DECODE_IN_DEPTH ) || defined( DECODE_IN_SHADOW )
+#if defined DECODE_IN_DEPTH || defined DECODE_IN_SHADOW
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif
 
 #ifdef AMBIENT_LIGHTING
 const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 #endif
+
+const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
+//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 
 
 
@@ -397,7 +408,7 @@ const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 
 // for HW_DEPTH_COMPARE mediump is required
 float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DTC position ){
-	vec4 tcoffset, collect;
+	vec4 tcoffset;
 	float shadow;
 	
 	#ifdef NOISE_TAP
@@ -470,7 +481,6 @@ float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DT
 #ifdef EVALUATE_SHADOWCUBE
 float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position ){
 	float shadow;
-	vec4 collect;
 	
 	float pdist = position.w;
 	position.w = position.w * params.x + params.y;
@@ -616,11 +626,14 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
+	#ifdef LUMINANCE_ONLY
+	ivec2 tc = ivec2( gl_FragCoord.xy * pLumFragCoordScale );
+	#else
 	ivec2 tc = ivec2( gl_FragCoord.xy );
+	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	
 	if( diffuse.a == 0.0 ){
 		discard;
 	}
@@ -880,17 +893,28 @@ void main( void ){
 				// initialized value is used
 				vec3 fullShadowColor = vec3( shadow ); // required for specular reflection
 				
-			#elif defined TEXTURE_SHADOW_AMBIENT
+			#elif defined TEXTURE_SHADOW1_AMBIENT || defined TEXTURE_SHADOW2_AMBIENT
 				// if shadow is 1 the fragment is in plain light and has to stay at 1
 				// if shadow is 0 the fragment is in shadows. in this case it can received ambient light or not.
 				// if ambient light applies it is applied using the ambient ratio parameter of the light source.
 				// to avoid problems with light leaking through inside rooms having only a back facing wall the
 				// ambient map is used like an additional shadow map before calculating the real result
-				#ifdef SMA1_CUBE
-					float ambientShadow = evaluateShadowCube( texShadowAmbient, pShadow1Solid, shapos1 );
-				#else
-					float ambientShadow = evaluateShadow2D( texShadowAmbient, pShadow1Solid, ES2D( shapos1 ) );
+				float ambientShadow = 1.0;
+				#ifdef TEXTURE_SHADOW1_AMBIENT
+					#ifdef SMA1_CUBE
+						ambientShadow = min( ambientShadow, evaluateShadowCube( texShadow1Ambient, pShadow1Solid, shapos1 ) );
+					#else
+						ambientShadow = min( ambientShadow, evaluateShadow2D( texShadow1Ambient, pShadow1Solid, ES2D( shapos1 ) ) );
+					#endif
 				#endif
+				#ifdef TEXTURE_SHADOW2_AMBIENT
+					#ifdef SMA2_CUBE
+						ambientShadow = min( ambientShadow, evaluateShadowCube( texShadow2Ambient, pShadow2Solid, shapos2 ) );
+					#else
+						ambientShadow = min( ambientShadow, evaluateShadow2D( texShadow2Ambient, pShadow2Solid, ES2D( shapos2 ) ) );
+					#endif
+				#endif
+				
 				vec3 fullShadowColor = vec3( shadow * ambientShadow ); // required for specular reflection
 				shadow = mix( pLightAmbientRatio, 1.0, shadow ) * ambientShadow;
 				/*
@@ -997,7 +1021,7 @@ void main( void ){
 	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
 	
 	#ifdef AMBIENT_LIGHTING
-		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+// 		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
 	#endif
 	dotval = max( dotval, 0.0 );
 	
@@ -1020,14 +1044,13 @@ void main( void ){
 	#elif defined TEXTURE_COLOR_CUBEMAP
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec3 lightImageTC = normalize( pLightImageMatrix * vec4( position, 1.0 ) );
+		vec3 lightImageTC = normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) );
 		lightColor *= pow( texture( texColorCubemap, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 		
 	#elif defined TEXTURE_COLOR_EQUIRECT
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec2 lightImageTC = equirectFromNormal( normalize(
-			pLightImageMatrix * vec4( position, 1.0 ) ) );
+		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) ) );
 		lightColor *= pow( texture( texColorEquirect, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 	#endif
 	
@@ -1035,7 +1058,12 @@ void main( void ){
 		vec3 absorptionLightColor = lightColor;
 	#endif
 	
-	lightColor *= vec3( dotval );
+	#ifdef PARTICLE_LIGHT
+		lightColor *= vec3( dotval );
+	#else
+// 		lightColor *= vec3( dotval );
+		lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+	#endif
 	#ifdef SHADOW_CASTING
 		lightColor *= shadowColor;
 	#endif
@@ -1064,7 +1092,8 @@ void main( void ){
 	//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
 	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
 	#ifdef AMBIENT_LIGHTING
-		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+// 		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+		vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 	#endif
 	
 	// distance and spot attenuation
@@ -1158,6 +1187,8 @@ void main( void ){
 	#ifdef AMBIENT_LIGHTING
 		finalColorSubSurface += finalColorAmbient;
 	#endif
+	
+	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );
 	
 	#ifdef WITH_SUBSURFACE
 		outColor = vec4( finalColorSurface, diffuse.a );

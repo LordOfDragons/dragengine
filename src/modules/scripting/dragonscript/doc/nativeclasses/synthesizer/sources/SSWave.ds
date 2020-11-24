@@ -43,14 +43,14 @@ class SSWave extends SynthesizerSource
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( int target, int link )
+	public func void targetAddLink( SSWaveTarget target, int link )
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( int target )
+	public func void targetRemoveAllLinks( SSWaveTarget target )
 	end
 	/*@}*/
 end

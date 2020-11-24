@@ -50,6 +50,14 @@ ceWindowDopeSheetListener::~ceWindowDopeSheetListener(){
 // Management
 ///////////////
 
+void ceWindowDopeSheetListener::ConversationChanged( ceConversation *conversation ){
+	if( conversation != pWindow.GetConversation() ){
+		return;
+	}
+	
+	pWindow.OnActionChanged();
+}
+
 void ceWindowDopeSheetListener::CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot ){
 	if( conversation != pWindow.GetConversation()
 	|| cameraShot != conversation->GetActiveCameraShot() ){

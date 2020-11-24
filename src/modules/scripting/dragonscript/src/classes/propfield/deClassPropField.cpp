@@ -217,7 +217,12 @@ void deClassPropField::nfGetListener::RunFunction( dsRunTime *rt, dsValue *mysel
 	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
 	dedsPropField *peer = ( dedsPropField* )propfield->GetPeerScripting();
 	
-	rt->PushObject( peer->GetCallback(), clsPF->GetDS()->GetClassPropFieldListener() );
+	if( peer ){
+		rt->PushObject( peer->GetCallback(), clsPF->GetDS()->GetClassPropFieldListener() );
+		
+	}else{
+		rt->PushObject( NULL, clsPF->GetDS()->GetClassPropFieldListener() );
+	}
 }
 
 // public func void setListener( PropFieldListener listener )
@@ -228,8 +233,9 @@ deClassPropField::nfSetListener::nfSetListener( const sInitData &init ) : dsFunc
 void deClassPropField::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
 	dedsPropField *peer = ( dedsPropField* )propfield->GetPeerScripting();
-	
-	peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	if( peer ){
+		peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 

@@ -340,14 +340,14 @@ void cePlayback::UpdateCamera( float elapsed ){
 			pCamera->SetCameraTarget( NULL );
 			
 		}else{
-			pCamera->SetCameraTarget( pConversation.GetTargetList().GetNamed( cameraShot.GetCameraTarget().GetString() ) );
+			pCamera->SetCameraTarget( pConversation.GetTargetNamed( cameraShot.GetCameraTarget() ) );
 		}
 		
 		if( cameraShot.GetLookAtTarget().IsEmpty() ){
 			pCamera->SetLookAtTarget( NULL );
 			
 		}else{
-			pCamera->SetLookAtTarget( pConversation.GetTargetList().GetNamed( cameraShot.GetLookAtTarget().GetString() ) );
+			pCamera->SetLookAtTarget( pConversation.GetTargetNamed( cameraShot.GetLookAtTarget() ) );
 		}
 		
 		pCamera->SetOffsetCameraFrom( cameraShot.GetOffsetCameraFrom() );

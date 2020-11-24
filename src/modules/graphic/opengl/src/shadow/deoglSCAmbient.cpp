@@ -29,6 +29,8 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTexture.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -54,6 +56,7 @@ pLastUseStatic( 0 ),
 pHasStatic( false ),
 
 pDynamicMap( NULL ),
+pDynamicCubeMap( NULL ),
 
 pPlanStaticSize( 16 ),
 pPlanDynamicSize( 16 ),
@@ -153,7 +156,7 @@ void deoglSCAmbient::ResetLastUseStatic(){
 
 
 
-deoglRenderableDepthTexture *deoglSCAmbient::GetDynamicMap( int size ){
+deoglRenderableDepthTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -172,10 +175,35 @@ deoglRenderableDepthTexture *deoglSCAmbient::GetDynamicMap( int size ){
 	return pDynamicMap;
 }
 
+deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int size ){
+	if( pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth() ){
+		DETHROW( deeInvalidAction );
+	}
+	
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pDynamicCubeMap ){
+		if( pDynamicCubeMap->GetSize() == size ){
+			return pDynamicCubeMap;
+		}
+		DropDynamic();
+	}
+	
+	pDynamicCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	
+	return pDynamicCubeMap;
+}
+
 void deoglSCAmbient::DropDynamic(){
 	if( pDynamicMap ){
 		pDynamicMap->SetInUse( false );
 		pDynamicMap = NULL;
+	}
+	if( pDynamicCubeMap ){
+		pDynamicCubeMap->SetInUse( false );
+		pDynamicCubeMap = NULL;
 	}
 }
 
