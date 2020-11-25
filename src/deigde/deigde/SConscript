@@ -37,7 +37,7 @@ pathShare = envIGDELib.subst(envIGDELib['path_igde_share'])
 if envIGDELib['OSWindows']:
 	pathSysLib = envIGDELib.subst(envIGDELib['systemroot'])
 
-versionString = '1.4'
+versionString = '1.5'
 if envIGDELib['force_version']:
 	versionString = envModule['force_version']
 
