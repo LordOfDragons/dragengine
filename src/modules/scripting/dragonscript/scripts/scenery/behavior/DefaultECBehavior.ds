@@ -37,7 +37,7 @@ pin Dragengine.Utils
  * This is typically used in behavior element constructors to store the instances for
  * directly accessed behaviors without finding them.
  */
-abstract public class DefaultECBehavior implements ECBehavior
+abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentify
 	private var String pID
 	private var int pInstanceIndex
 	
@@ -81,5 +81,20 @@ abstract public class DefaultECBehavior implements ECBehavior
 	 */
 	public func void assignInstanceIndex( int instanceIndex )
 		this.pInstanceIndex = instanceIndex
+	end
+	
+	/**
+	 * \brief Unique identifier of behavior.
+	 * \version 1.5
+	 * 
+	 * Has to return a string which is unique in the owner BehaviorElementClass. This string
+	 * will be stored while persisting BehaviorElement instances. This allows to assign
+	 * restored behavior instance data to the corrent behavior instance if present.
+	 * 
+	 * The implementation in this class combines the fully qualified class name with the
+	 * behavior identifier like this: "fqcn:id".
+	 */
+	public func String getBehaviorID()
+		return this.className() + ":" + this.pID
 	end
 end

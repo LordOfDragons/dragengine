@@ -368,6 +368,28 @@ class BehaviorElement extends Element
 	
 	/** \brief Write element to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		// TODO add support to persist behaviors in a backwards and future expansion compatible
+		//      way. right now the layout of the behaviors can not change without breaking
+		//      compatibility.
+		//      
+		//      to solve this ECBehaviorIdentify has been added with DefaultECBehavior
+		//      implementing the getBehaviorID() method. modify the saving like this:
+		//      
+		//      eclass = this.getClass() cast BehaviorElementClass
+		//      forEach instance
+		//         write instance data into MemoryFile
+		//         writeString8( ( eclass.getBehaviorAt( each.getInstanceIndex() ) cast ECBehaviorIdentify ).getBehaviorID() )
+		//         writeInt( size of memory file content )
+		//         write memory file content
+		//      
+		//      while restoring iterate first over all behavior instance and create a
+		//      dictionary with getBehaviorID() as key and ECBehaviorInstance as value.
+		//      then read the instance block and match them against the dictionary.
+		//      if a match is found make instance read the data. if no match is found
+		//      use data length to skip over the block
+		//      
+		//      this new persistency layout becomes version 1
+		//      
 		writer.writeByte( 0 ) // version
 		
 		this.pInstances.forEach( block ECBehaviorInstance each
