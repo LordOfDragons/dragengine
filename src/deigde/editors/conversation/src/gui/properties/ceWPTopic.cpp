@@ -576,12 +576,12 @@ public:
 					continue;
 				}
 				
-				const ceConversationActor &conversationActor = *actorList.GetWithIDOrAliasID( actorID );
-				if( ! conversationActor.GetSpeechAnimation() ){
+				const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
+				if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
 					continue;
 				}
 				
-				const ceSpeechAnimation &speechAnimation = *conversationActor.GetSpeechAnimation();
+				const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
 				const ceSAWordList &saWordList = speechAnimation.GetWordList();
 				
 				for( j=0; j<wordCount; j++ ){
