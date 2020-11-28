@@ -69,6 +69,8 @@ public:
 	
 	/** Word count or order changed. */
 	virtual void WordStructureChanged( saeSAnimation *sanimation );
+	/** Word name changed. */
+	virtual void WordNameChanged( saeSAnimation *sanimation, saeWord *word );
 	/** Word changed. */
 	virtual void WordChanged( saeSAnimation *sanimation, saeWord *word );
 	/** Active word changed. */

@@ -214,6 +214,8 @@ public:
 	/** Notifies all that the word count or order changed. */
 	void NotifyWordStructureChanged();
 	/** Notifies all that a word changed. */
+	void NotifyWordNameChanged( saeWord *word );
+	/** Notifies all that a word changed. */
 	void NotifyWordChanged( saeWord *word );
 	/** Notifies all that the active word changed. */
 	void NotifyActiveWordChanged();

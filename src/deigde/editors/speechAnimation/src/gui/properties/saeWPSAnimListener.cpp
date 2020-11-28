@@ -72,8 +72,12 @@ void saeWPSAnimListener::WordStructureChanged( saeSAnimation *sanimation ){
 	pPanel.UpdateWordList();
 }
 
-void saeWPSAnimListener::WordChanged( saeSAnimation *sanimation, saeWord *word ){
+void saeWPSAnimListener::WordNameChanged( saeSAnimation *sanimation, saeWord *word ){
 	pPanel.UpdateWordList();
+}
+
+void saeWPSAnimListener::WordChanged( saeSAnimation *sanimation, saeWord *word ){
+	pPanel.UpdateWord();
 }
 
 void saeWPSAnimListener::ActiveWordChanged( saeSAnimation *sanimation ){
