@@ -73,7 +73,7 @@ deException( "FileNotFound", pCreateText( path ), file, line ){
 }
 
 decString deeFileNotFound::pCreateText( const char *path ){
-	decString text( "File does not exit" );
+	decString text( "File does not exist" );
 	if( path ){
 		text += ": ";
 		text += path;
