@@ -2347,7 +2347,7 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		writer.WriteDataTagBool( "partialHide", component.GetPartialHide() );
 	}
 	if( ! component.GetAttachTarget() ){
-		writer.WriteDataTagBool( "GetAttachTarget", component.GetAttachTarget() );
+		writer.WriteDataTagBool( "attachTarget", component.GetAttachTarget() );
 	}
 	
 	switch( component.GetColliderResponseType() ){
