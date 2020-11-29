@@ -1571,6 +1571,13 @@ void debpColliderComponent::ComponentChanged(){
 			GetAttachmentAt( i )->AttachmentChanged();
 		}
 	}
+	
+	// align component if present
+	if( component ){
+		component->SetPosition( pColliderComponent.GetPosition() );
+		component->SetOrientation( pColliderComponent.GetOrientation() );
+		component->SetScaling( pColliderComponent.GetScale() );
+	}
 }
 
 void debpColliderComponent::AttachmentAdded( int index, deColliderAttachment *attachment ){
