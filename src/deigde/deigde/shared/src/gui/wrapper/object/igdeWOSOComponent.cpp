@@ -364,8 +364,10 @@ void igdeWOSOComponent::UpdateCollisionFilter(){
 }
 
 void igdeWOSOComponent::UpdateGeometry(){
-	pCollider->SetPosition( GetWrapper().GetPosition() );
-	pCollider->SetOrientation( GetWrapper().GetOrientation() );
+	if( ! pAttachedToCollider ){
+		pCollider->SetPosition( GetWrapper().GetPosition() );
+		pCollider->SetOrientation( GetWrapper().GetOrientation() );
+	}
 	
 	if( pGDComponent.GetDoNotScale() ){
 		pCollider->SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
@@ -374,11 +376,11 @@ void igdeWOSOComponent::UpdateGeometry(){
 		pCollider->SetScale( GetWrapper().GetScaling() );
 	}
 	
-	if( pComponent ){
+	/* if( pComponent ){
 		pComponent->SetPosition( pCollider->GetPosition() );
 		pComponent->SetOrientation( pCollider->GetOrientation() );
 		pComponent->SetScaling( pCollider->GetScale() );
-	}
+	} */
 }
 
 void igdeWOSOComponent::UpdateColliderResponseType(){
@@ -395,8 +397,8 @@ void igdeWOSOComponent::Update( float elapsed ){
 		return;
 	}
 	
-	pComponent->SetPosition( pCollider->GetPosition() );
-	pComponent->SetOrientation( pCollider->GetOrientation() );
+// 	pComponent->SetPosition( pCollider->GetPosition() );
+// 	pComponent->SetOrientation( pCollider->GetOrientation() );
 	
 	if( pAnimator ){
 		if( pPlaybackControllerIndex != -1 ){
@@ -411,8 +413,8 @@ void igdeWOSOComponent::ResetPhysics(){
 	// sync the component position and orientation to the collider and reset the animation state.
 	// for this the bone states are reset to the reference position and the animator applied.
 	if( pComponent ){
-		pComponent->SetPosition( pCollider->GetPosition() );
-		pComponent->SetOrientation( pCollider->GetOrientation() );
+// 		pComponent->SetPosition( pCollider->GetPosition() );
+// 		pComponent->SetOrientation( pCollider->GetOrientation() );
 		
 		const int boneCount = pComponent->GetBoneCount();
 		int i;
@@ -645,7 +647,8 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	// assign component back to the places it has been previously been removed from
 	if( modelChanged || skinChanged || rigChanged ){
-		( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( pComponent );
+		deColliderComponent &collider = ( deColliderComponent& )( deCollider& )pCollider;
+		collider.SetComponent( pComponent );
 		if( pAnimator ){
 			pAnimator->SetComponent( pComponent );
 		}
@@ -875,7 +878,7 @@ void igdeWOSOComponent::pDestroyComponent(){
 void igdeWOSOComponent::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pComponent || pGDComponent.GetAttachTarget() ){
+	if( /*! pComponent ||*/ pGDComponent.GetAttachTarget() ){
 		return;
 	}
 	
@@ -884,7 +887,7 @@ void igdeWOSOComponent::AttachToCollider(){
 	deColliderAttachment *attachment = NULL;
 	
 	try{
-		attachment = new deColliderAttachment( pComponent );
+		attachment = new deColliderAttachment( /*pComponent*/ pCollider );
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		attachment->SetPosition( GetVectorProperty(
 			pGDComponent.GetPropertyName( igdeGDCComponent::epAttachPosition ),
@@ -892,6 +895,7 @@ void igdeWOSOComponent::AttachToCollider(){
 		attachment->SetOrientation( GetRotationProperty(
 			pGDComponent.GetPropertyName( igdeGDCComponent::epAttachRotation ),
 			pGDComponent.GetOrientation() ) );
+		attachment->SetNoScaling( true );
 		
 		if( colliderComponent ){
 			if( ! pGDComponent.GetBoneName().IsEmpty() ){
@@ -934,7 +938,8 @@ bool igdeWOSOComponent::pIsVisible() const{
 		visible = partiallyVisible;
 	}
 	
-	return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+	//return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+	return GetWrapper().GetColliderComponent() && partiallyVisible;
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){
