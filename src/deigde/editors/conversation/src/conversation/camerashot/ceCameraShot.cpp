@@ -63,39 +63,39 @@ ceCameraShot::ceCameraShot( const ceCameraShot &cameraShot ){
 	int i;
 	
 	pConversation = NULL;
-	pName = cameraShot.GetName();
-	pActorCount = cameraShot.GetActorCount();
+	pName = cameraShot.pName;
+	pActorCount = cameraShot.pActorCount;
 	
-	pCameraTarget = cameraShot.GetCameraTarget();
-	pOffsetCameraFrom = cameraShot.GetOffsetCameraFrom();
-	pOffsetCameraTo = cameraShot.GetOffsetCameraTo();
-	pCameraOrbitFrom = cameraShot.GetCameraOrbitFrom();
-	pCameraOrbitTo = cameraShot.GetCameraOrbitTo();
-	pCameraDistanceFrom = cameraShot.GetCameraDistanceFrom();
-	pCameraDistanceTo = cameraShot.GetCameraDistanceTo();
+	pCameraTarget = cameraShot.pCameraTarget;
+	pOffsetCameraFrom = cameraShot.pOffsetCameraFrom;
+	pOffsetCameraTo = cameraShot.pOffsetCameraTo;
+	pCameraOrbitFrom = cameraShot.pCameraOrbitFrom;
+	pCameraOrbitTo = cameraShot.pCameraOrbitTo;
+	pCameraDistanceFrom = cameraShot.pCameraDistanceFrom;
+	pCameraDistanceTo = cameraShot.pCameraDistanceTo;
 	
-	pLookAtTarget = cameraShot.GetLookAtTarget();
-	pOffsetLookAtFrom = cameraShot.GetOffsetLookAtFrom();
-	pOffsetLookAtTo = cameraShot.GetOffsetLookAtTo();
+	pLookAtTarget = cameraShot.pLookAtTarget;
+	pOffsetLookAtFrom = cameraShot.pOffsetLookAtFrom;
+	pOffsetLookAtTo = cameraShot.pOffsetLookAtTo;
 	
-	pPositionFrom = cameraShot.GetPositionFrom();
-	pPositionTo = cameraShot.GetPositionTo();
-	pRotationFrom = cameraShot.GetRotationFrom();
-	pRotationTo = cameraShot.GetRotationTo();
+	pPositionFrom = cameraShot.pPositionFrom;
+	pPositionTo = cameraShot.pPositionTo;
+	pRotationFrom = cameraShot.pRotationFrom;
+	pRotationTo = cameraShot.pRotationTo;
 	
-	pTiltFrom = cameraShot.GetTiltFrom();
-	pTiltTo = cameraShot.GetTiltTo();
-	pFovFrom = cameraShot.GetFovFrom();
-	pFovTo = cameraShot.GetFovTo();
+	pTiltFrom = cameraShot.pTiltFrom;
+	pTiltTo = cameraShot.pTiltTo;
+	pFovFrom = cameraShot.pFovFrom;
+	pFovTo = cameraShot.pFovTo;
 	
-	pLockUpAxis = cameraShot.GetLockUpAxis();
-	pAlignTargets = cameraShot.GetAlignTargets();
-	pRelativeToLookAt = cameraShot.GetRelativeToLookAt();
-	pLockCameraTarget = cameraShot.GetLockCameraTarget();
-	pLockLookAtTarget = cameraShot.GetLockLookAtTarget();
+	pLockUpAxis = cameraShot.pLockUpAxis;
+	pAlignTargets = cameraShot.pAlignTargets;
+	pRelativeToLookAt = cameraShot.pRelativeToLookAt;
+	pLockCameraTarget = cameraShot.pLockCameraTarget;
+	pLockLookAtTarget = cameraShot.pLockLookAtTarget;
 	
 	for( i=0; i<EP_COUNT; i++ ){
-		pCurve[ i ] = cameraShot.GetParameterCurve( i );
+		pCurve[ i ] = cameraShot.pCurve[ i ];
 	}
 }
 
