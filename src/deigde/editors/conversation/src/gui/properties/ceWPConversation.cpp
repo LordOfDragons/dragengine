@@ -817,7 +817,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationFrom() )
-			? new ceUCCShotSetPosFrom( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotFrom( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
@@ -828,7 +828,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationTo() )
-			? new ceUCCShotSetPosTo( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotTo( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
