@@ -233,6 +233,8 @@ class ConversationFacePosePlayback
 		var float blendFactor1 = 0.0
 		var float blendFactor2 = 1.0
 		
+		this.pRequiresApply = false
+		
 		if this.pRunning and this.pPoses.getCount() > 0
 			var int poseCount = this.pPoses.getCount()
 			
@@ -327,12 +329,9 @@ class ConversationFacePosePlayback
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
 	public func void applyAnimation()
-		if not this.pRequiresApply
-			return
+		if this.pRequiresApply
+			this.pAnimatorInstance.apply()
 		end
-		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
 	end
 	
 	
