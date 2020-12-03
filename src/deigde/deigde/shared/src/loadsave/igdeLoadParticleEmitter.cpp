@@ -397,6 +397,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			deParticleEmitterType::eEmitControllers controller;
 			if( ! ControllerForName( identifier, controller ) ){
 				LogErrorUnknownValue( *tag, identifier );
+				continue;
 			}
 			if( type.GetTrailEmitter() ){
 				type.SetTrailController( controller, type.GetTrailEmitter()->
@@ -447,6 +448,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			deParticleEmitterType::eEmitControllers controller;
 			if( ! ControllerForName( identifier, controller ) ){
 				LogErrorUnknownValue( *tag, identifier );
+				continue;
 			}
 			if( type.GetCollisionEmitter() ){
 				type.SetEmitController( controller, type.GetCollisionEmitter()->
