@@ -516,6 +516,7 @@ void peeLoadSaveEmitter::pReadType( const decXmlElementTag &root, peeEmitter &em
 				deParticleEmitterType::eEmitControllers controller;
 				if( ! ControllerForName( controller, identifier ) ){
 					LogErrorUnknownValue( *tag, identifier );
+					continue;
 				}
 				type->SetTrailController( controller, GetCDataString( *tag ) );
 				
@@ -549,6 +550,7 @@ void peeLoadSaveEmitter::pReadType( const decXmlElementTag &root, peeEmitter &em
 				deParticleEmitterType::eEmitControllers controller;
 				if( ! ControllerForName( controller, identifier ) ){
 					LogErrorUnknownValue( *tag, identifier );
+					continue;
 				}
 				type->SetEmitController( controller, GetCDataString( *tag ) );
 				
