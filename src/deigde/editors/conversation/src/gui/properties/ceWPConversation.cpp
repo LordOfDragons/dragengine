@@ -1554,6 +1554,7 @@ void ceWPConversation::UpdateGestureList(){
 		}
 		
 		pCBGesture->SortItems();
+		pCBGesture->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1605,6 +1606,7 @@ void ceWPConversation::UpdateFacePoseList(){
 		}
 		
 		pCBFacePose->SortItems();
+		pCBFacePose->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1709,6 +1711,7 @@ void ceWPConversation::UpdateCameraShotList(){
 		}
 		
 		pCBCameraShot->SortItems();
+		pCBCameraShot->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1824,6 +1827,7 @@ void ceWPConversation::UpdateTargetList(){
 		}
 		
 		pCBTarget->SortItems();
+		pCBTarget->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1922,6 +1926,7 @@ void ceWPConversation::UpdateActorIDLists(){
 		}
 		
 		pCBTargetActorID->SortItems();
+		pCBTargetActorID->StoreFilterItems();
 	}
 	
 	pCBTargetActorID->SetText( selection );

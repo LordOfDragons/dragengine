@@ -1015,6 +1015,7 @@ void ceWPTopic::UpdateFileList(){
 		}
 		
 		pCBFile->SortItems();
+		pCBFile->StoreFilterItems();
 	}
 	
 	SelectActiveFile();
@@ -1066,6 +1067,7 @@ void ceWPTopic::UpdateTopicList(){
 		}
 		
 		pCBTopic->SortItems();
+		pCBTopic->StoreFilterItems();
 	}
 	
 	SelectActiveTopic();
