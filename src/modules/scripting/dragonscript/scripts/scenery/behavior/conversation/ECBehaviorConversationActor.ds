@@ -78,6 +78,20 @@ pin Dragengine.Utils.StyledText.Definition
  * - ECBehaviorActorAnimated
  * - ECBehaviorAnimated
  * - ECBehaviorTwoStateAnimated
+ * 
+ * \par Version 1.5 Additions
+ * 
+ * Behavior supports re-mapping bone names in response to ConversationActor.getMatrix() and
+ * ConversationActor.getInverseMatrix() . Define bone mappings using setBoneMapping(). The
+ * mappings are persistent until changed. Bone mappings are useful for various situations
+ * including the following ones:
+ * - Use element with mismatching bone names. Using bone mapping the required conversation
+ *   bone names are mapped to the actual rig bone name without needing to change the
+ *   conversation scripts.
+ * - Dynamically change the meaning of a target bone. This can be used to refer to either
+ *   the left or right hand of an actor by using a virtual bone name. Script code can change
+ *   the mapping for the bone at any time to make conversation scripts always refer to the
+ *   right actor hand.
  */
 class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -225,7 +239,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if bone != null
 				var ECBehaviorComponent.Instance component = this.pInstance.getComponent()
 				if component != null
-					matrix = component.getComponent().getBoneMatrix( bone ).toDMatrix() * matrix
+					matrix = component.getComponent().getBoneMatrix( \
+						this.pInstance.mapBone( bone ) ).toDMatrix() * matrix
 				end
 			end
 			return matrix
@@ -240,7 +255,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if bone != null
 				var ECBehaviorComponent.Instance component = this.pInstance.getComponent()
 				if component != null
-					matrix = matrix * component.getComponent().getBoneInverseMatrix( bone ).toDMatrix()
+					matrix = matrix * component.getComponent().getBoneInverseMatrix( \
+						this.pInstance.mapBone( bone ) ).toDMatrix()
 				end
 			end
 			return matrix
@@ -324,6 +340,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		private var String pSubtitleSelectorId
 		private var Dictionary pCommands
 		private var Dictionary pConditions
+		private var Dictionary pBoneMappings
 		private var bool pRegisterConversationActor
 		private var BehaviorConversationActor pConversationActor
 		
@@ -337,6 +354,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			this.pSubtitleTheme = ecbehavior.getSubtitleTheme()
 			this.pCommands = Dictionary.new()
 			this.pConditions = Dictionary.new()
+			this.pBoneMappings = Dictionary.new()
 			this.pListeners = Array.new()
 		end
 		
@@ -355,6 +373,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			this.pListeners = null
 			this.pConditions = null
 			this.pCommands = null
+			this.pBoneMappings = null
 			this.pTagResolver = null
 			
 			super.dispose()
@@ -638,6 +657,61 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				throw EInvalidParam.new()
 			end
 			this.pConditions.setAt( name, condition )
+		end
+		
+		
+		
+		/**
+		 * \brief Count of bone mappings.
+		 * \version 1.5
+		 */
+		public func int getBoneMappingCount()
+			return this.pBoneMappings.getCount()
+		end
+		
+		/**
+		 * \brief Mapped bone or \em bone if no matching mapping is present.
+		 * \version 1.5
+		 */
+		public func String mapBone( String bone )
+			return this.pBoneMappings.getAt( bone, bone ) cast String
+		end
+		
+		/**
+		 * \brief Set bone mapping.
+		 * \version 1.5
+		 */
+		public func void setBoneMapping( String bone, String mappedBone )
+			if bone == null or mappedBone == null
+				throw EInvalidParam.new()
+			end
+			this.pBoneMappings.setAt( bone, mappedBone )
+		end
+		
+		/**
+		 * \brief Remove bone mapping if present.
+		 * \version 1.5
+		 */
+		public func void removeBoneMapping( String bone )
+			this.pBoneMappings.removeIfExisting( bone )
+		end
+		
+		/**
+		 * \brief Remove all bone mappings.
+		 * \version 1.5
+		 */
+		public func void removeAllBoneMappings()
+			this.pBoneMappings.removeAll()
+		end
+		
+		/**
+		 * \brief Visit bone mappings with block.
+		 * \version 1.5
+		 * 
+		 * Block receives as first argument String bone and as second String mappedBone.
+		 */
+		public func void forEachBoneMapping( Block ablock )
+			this.pBoneMappings.forEach( ablock )
 		end
 		
 		
