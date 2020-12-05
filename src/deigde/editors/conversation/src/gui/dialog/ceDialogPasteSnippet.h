@@ -54,6 +54,7 @@ private:
 	igdeComboBoxFilterReference pCBTarget2;
 	igdeTextFieldReference pEditDelayCameraShot;
 	igdeTextFieldReference pEditDelayActorSpeak;
+	igdeTextFieldReference pEditScaleActorSpeak;
 	
 	
 	
@@ -83,7 +84,7 @@ public:
 	void GenerateActions();
 	
 	/** \brief Words from text. */
-	void WordsFromText( ceStripList &wordList, const decUnicodeString &text );
+	void WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale );
 	
 	/**
 	 * \brief List of action snippet.

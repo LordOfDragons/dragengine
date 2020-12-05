@@ -89,6 +89,9 @@ pConversation( conversation )
 	helper.EditFloat( content, "Wait Actor Speak:",
 		"Delay in seconds for added actor speak actions", pEditDelayActorSpeak, NULL );
 	
+	helper.EditFloat( content, "Scale Actor Speak:",
+		"Scale duration of spoken words added to actor speak actions", pEditScaleActorSpeak, NULL );
+	
 	helper.EditString( content, "Snippet:", "Conversation snippet to generate actions from",
 		pEditSnippet, 80, 20, NULL );
 	
@@ -110,6 +113,7 @@ pConversation( conversation )
 	pCBTarget2->SetText( params.target2 );
 	pEditDelayCameraShot->SetFloat( params.delayCameraShot );
 	pEditDelayActorSpeak->SetFloat( params.delayActorSpeak );
+	pEditScaleActorSpeak->SetFloat( params.scaleActorSpeak );
 }
 
 ceDialogPasteSnippet::~ceDialogPasteSnippet(){
@@ -183,6 +187,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 	const bool hasCameraShot2 = ! cameraShot2.IsEmpty();
 	const float delayCameraShots = pEditDelayCameraShot->GetFloat();
 	const float delayActorSpeak = pEditDelayActorSpeak->GetFloat();
+	const float scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
 	decString actor, lastActor, text;
 	deObjectReference action;
 	bool firstActor = true;
@@ -263,7 +268,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 		actionActorSpeak->SetTextBoxText( decUnicodeString::NewFromUTF8( text ) );
 		actionActorSpeak->SetUseSpeechAnimation( true );
 		actionActorSpeak->SetDelay( delayActorSpeak );
-		WordsFromText( actionActorSpeak->GetWordList(), actionActorSpeak->GetTextBoxText() );
+		WordsFromText( actionActorSpeak->GetWordList(), actionActorSpeak->GetTextBoxText(), scaleActorSpeak );
 		pActions.Add( actionActorSpeak );
 		
 		// keep track of which actor spoke the last time
@@ -271,9 +276,10 @@ void ceDialogPasteSnippet::GenerateActions(){
 	}
 }
 
-void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicodeString &text ){
+void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale ){
 	const decUnicodeString padding = decUnicodeString::NewFromUTF8( " \t\n\r,.;:\"?!" );
 	const float letterDuration = 0.075f;
+// 	const float phrasePause = 0.5f;
 	const int length = text.GetLength();
 	deObjectReference entry;
 	decUnicodeString word;
@@ -286,7 +292,8 @@ void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicod
 		
 		if( padding.Find( character, 0 ) != -1 ){
 			if( word.GetLength() > 0 ){
-				entry.TakeOver( new ceStrip( word.GetLower().ToUTF8(), letterDuration * ( float )word.GetLength(), 0.0f ) );
+				entry.TakeOver( new ceStrip( word.GetLower().ToUTF8(),
+					letterDuration * ( float )word.GetLength() * scale, 0.0f ) );
 				wordList.Add( ( ceStrip* )( deObject* )entry );
 				word.SetFromUTF8( "" );
 			}
@@ -309,6 +316,7 @@ bool ceDialogPasteSnippet::Accept(){
 	params.target2 = pCBTarget2->GetText();
 	params.delayCameraShot = pEditDelayCameraShot->GetFloat();
 	params.delayActorSpeak = pEditDelayActorSpeak->GetFloat();
+	params.scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
 	
 	// generate actions
 	GenerateActions();

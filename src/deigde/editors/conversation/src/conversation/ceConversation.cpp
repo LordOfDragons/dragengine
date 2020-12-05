@@ -127,6 +127,7 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	
 	pPasteSnippetDialogParams.delayCameraShot = 0.5f;
 	pPasteSnippetDialogParams.delayActorSpeak = 0.5f;
+	pPasteSnippetDialogParams.scaleActorSpeak = 1.0f;
 	
 	try{
 		SetFilePath( "new.deconvo" );
