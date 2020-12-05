@@ -125,6 +125,9 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	pScreenRatio = 1.6f; // 16:10 wide screen
 	pShowRuleOfThirdsAid = false;
 	
+	pPasteSnippetDialogParams.delayCameraShot = 0.5f;
+	pPasteSnippetDialogParams.delayActorSpeak = 0.5f;
+	
 	try{
 		SetFilePath( "new.deconvo" );
 		SetCTSPath( "test.dects" );

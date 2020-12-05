@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DELauncher.iml" filepath="$PROJECT_DIR$/DELauncher.iml" group="DELauncher" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="DELauncher/app" />
+      <module fileurl="file://$PROJECT_DIR$/DELauncher.iml" filepath="$PROJECT_DIR$/DELauncher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/DELauncher.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/DELauncher.app.iml" />
     </modules>
   </component>
 </project>
