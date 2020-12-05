@@ -170,6 +170,8 @@ void ceDialogPasteSnippet::GenerateActions(){
 	const decString &cameraShot2 = pCBCameraShot2->GetText();
 	const decString &target1 = pCBTarget1->GetText();
 	const decString &target2 = pCBTarget2->GetText();
+	const bool hasCameraShot1 = ! cameraShot1.IsEmpty();
+	const bool hasCameraShot2 = ! cameraShot2.IsEmpty();
 	decString actor, lastActor, text;
 	deObjectReference action;
 	bool firstActor = true;
@@ -230,15 +232,16 @@ void ceDialogPasteSnippet::GenerateActions(){
 		
 		// if the actor changed add a camera shot
 		if( actor != lastActor ){
-			action.TakeOver( new ceCACameraShot );
-			ceCACameraShot * const actionCameraShot = ( ceCACameraShot* )( deObject* )action;
-			actionCameraShot->SetName( firstActor ? cameraShot1 : cameraShot2 );
-			actionCameraShot->SetCameraTarget( firstActor ? target2 : target1 );
-			actionCameraShot->SetDuration( 10.0f );
-			actionCameraShot->SetLookAtTarget( firstActor ? target1 : target2 );
-			actionCameraShot->SetDelay( 0.5f ); //0.25f );
-			pActions.Add( actionCameraShot );
-			
+			if( firstActor ? hasCameraShot1 : hasCameraShot2 ){
+				action.TakeOver( new ceCACameraShot );
+				ceCACameraShot * const actionCameraShot = ( ceCACameraShot* )( deObject* )action;
+				actionCameraShot->SetName( firstActor ? cameraShot1 : cameraShot2 );
+				actionCameraShot->SetCameraTarget( firstActor ? target2 : target1 );
+				actionCameraShot->SetDuration( 10.0f );
+				actionCameraShot->SetLookAtTarget( firstActor ? target1 : target2 );
+				actionCameraShot->SetDelay( 0.5f ); //0.25f );
+				pActions.Add( actionCameraShot );
+			}
 			firstActor = ! firstActor;
 		}
 		
