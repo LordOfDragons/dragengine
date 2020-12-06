@@ -379,19 +379,11 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			// update look-at if present
 			if this.pConversationActor != null
 				var ConversationActor convoActor = this.pConversationActor.getConversationActor()
-				if convoActor != null
+				if convoActor != null and this.pLookAt != null
 					var ConversationLookAtPlayback hlap = convoActor.getHeadLookAtPlayback()
 					hlap.clearLookAtState()
-					if this.pLookAt != null
-						hlap.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
-					end
-					
-				else
-					this.pLookAt = null
+					hlap.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
 				end
-				
-			else
-				this.pLookAt = null
 			end
 			
 			// set some locomotion parameters required for correct operation
@@ -460,7 +452,8 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			var Locomotion locomotion = this.pLocomotion.getLocomotion()
 			var float turnDifference = DEMath.normalize( targetOrientation - locomotion.getOrientation(), -180.0, 180.0 )
 			
-			if this.pLookAt == null
+			var ConversationLookAtPlayback hlap = this.pConversationActor.getConversationActor().getHeadLookAtPlayback()
+			if not hlap.getRunning() and hlap.getLastLookAtPosition() == null
 				var float turnAngle = DEMath.clamp( turnDifference, -90.0, 90.0 ) // avoid orientation fixing due to over-steering
 				locomotion.setLookHorizontalGoal( turnAngle )
 				locomotion.setLookVerticalGoal( this.pTargetLookVertical )
@@ -565,26 +558,24 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			end
 			
 			var Locomotion locomotion = this.pLocomotion.getLocomotion()
+			var ConversationLookAtPlayback hlap = this.pConversationActor.getConversationActor().getHeadLookAtPlayback()
 			
 			if DEMath.fabs( locomotion.getTurnHorizontal() ) > 0.05 \
-			or DEMath.fabs( locomotion.getStance() - locomotion.getStanceGoal() ) > 0.05
+			or DEMath.fabs( locomotion.getStance() - locomotion.getStanceGoal() ) > 0.05 \
+			or hlap.getRunning()
 				return
 			end
 			
-			if this.pLookAt != null
-				if this.pConversationActor.getConversationActor().getHeadLookAtPlayback().getRunning()
+			if hlap.getCurrentLookAtPosition() == null
+				if DEMath.fabs( locomotion.getLookHorizontal() - locomotion.getLookHorizontalGoal() ) > 0.05 \
+				or DEMath.fabs( locomotion.getLookVertical() - locomotion.getLookVerticalGoal() ) > 0.05
 					return
 				end
-				this.pLookAt = null
-			end
-			
-			if DEMath.fabs( locomotion.getLookHorizontal() - locomotion.getLookHorizontalGoal() ) > 0.05 \
-			or DEMath.fabs( locomotion.getLookVertical() - locomotion.getLookVerticalGoal() ) > 0.05
-				return
+				
+				this.pLocomotion.getLocomotion().applyStates()
 			end
 			
 			// align finished. apply some final touches to be on the safe side
-			this.pLocomotion.getLocomotion().applyStates()
 			this.pAlignFinished = true
 			this.pSucceeded = true
 			this.clearTarget()
@@ -604,8 +595,10 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 				return
 			end
 			
-			this.pConversationActor.getConversationActor().getHeadLookAtPlayback() \
-				.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
+			var ConversationLookAtPlayback hlap = this.pConversationActor.getConversationActor().getHeadLookAtPlayback()
+			if hlap.getCurrentLookAtPosition() != null
+				hlap.addLookAt( this.pLookAt, ConversationStrip.new( StringID.new(), 0, 0.5 ) )
+			end
 		end
 		
 		
