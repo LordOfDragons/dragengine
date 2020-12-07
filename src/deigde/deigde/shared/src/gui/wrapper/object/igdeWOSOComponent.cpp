@@ -376,6 +376,15 @@ void igdeWOSOComponent::UpdateGeometry(){
 		pCollider->SetScale( GetWrapper().GetScaling() );
 	}
 	
+	if( pComponent ){
+		if( pGDComponent.GetDoNotScale() ){
+			pComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );
+			
+		}else{
+			pComponent->SetScaling( GetWrapper().GetScaling() );
+		}
+	}
+	
 	/* if( pComponent ){
 		pComponent->SetPosition( pCollider->GetPosition() );
 		pComponent->SetOrientation( pCollider->GetOrientation() );
