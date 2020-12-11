@@ -515,27 +515,9 @@ class DefaultListModel implements ListModel
 	 * \param toIndex Index of last element that changed
 	 */
 	public func void notifyContentChanged( int fromIndex, int toIndex )
-		var bool notifySelectedChanged
-		
-		if this.pSelected != -1
-			this.pSelected = -1
-			notifySelectedChanged = true
-		end
-		
-		if this.pSelected == -1 and this.pAutoSelect and this.pElements.getCount() > 0
-			this.pSelected = 0
-			notifySelectedChanged = true
-		end
-		
 		this.pListeners.forEach( block ListModelListener each
 			each.contentChanged( this, fromIndex, toIndex )
 		end )
-		
-		if notifySelectedChanged
-			this.pListeners.forEach( block ListModelListener each
-				each.selectionChanged( this )
-			end )
-		end
 	end
 	
 	/**
