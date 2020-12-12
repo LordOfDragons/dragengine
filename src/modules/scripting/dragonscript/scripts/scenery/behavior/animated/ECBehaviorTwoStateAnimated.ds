@@ -240,11 +240,21 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			end
 			
 			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.activate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.activate()
+					
+				else
+					this.pInstance.setActivated()
+				end
 			end
 			
 			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
-				this.pInstance.deactivate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.deactivate()
+					
+				else
+					this.pInstance.setDeactivated()
+				end
 			end
 		end
 		

@@ -80,11 +80,21 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 			end
 			
 			public func void lightActivated( ECBehaviorLight.Instance instance )
-				this.pInstance.activate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.activate()
+					
+				else
+					this.pInstance.setActivated()
+				end
 			end
 			
 			public func void lightDeactivated( ECBehaviorLight.Instance instance )
-				this.pInstance.deactivate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.deactivate()
+					
+				else
+					this.pInstance.setDeactivated()
+				end
 			end
 		end
 		
@@ -221,6 +231,42 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 				this.pState = State.lower
 				this.setRequiresThink( true )
 			end
+		end
+		
+		/**
+		 * \brief Set light to activated state now.
+		 * \version 1.5
+		 */
+		public func void setActivated()
+			if this.pState == State.on
+				return
+			end
+			
+			this.pState = State.on
+			this.setRequiresThink( false )
+			
+			var Light light = this.pLight.getLight()
+			light.setIntensity( this.pFullBrightIntensity )
+			light.setActivated( true )
+			this.pLight.notifyParametersChanged()
+		end
+		
+		/**
+		 * \brief Set light to deactivated state now.
+		 * \version 1.5
+		 */
+		public func void setDeactivated()
+			if this.pState == State.off
+				return
+			end
+			
+			this.pState = State.off
+			this.setRequiresThink( false )
+			
+			var Light light = this.pLight.getLight()
+			light.setIntensity( 0 )
+			light.setActivated( false )
+			this.pLight.notifyParametersChanged()
 		end
 		
 		

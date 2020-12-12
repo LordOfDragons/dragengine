@@ -50,6 +50,7 @@ class BehaviorElement extends Element
 	private var bool pRequiresEnterFrame
 	private var bool pRequiresThink
 	private var bool pRequiresAttachToParent
+	private var bool pIsChangingGameWorld
 	
 	
 	
@@ -178,6 +179,60 @@ class BehaviorElement extends Element
 	
 	
 	
+	/**
+	 * \brief Behavior element is in progress of beeing added to or removed from a GameWorld.
+	 * \version 1.5
+	 * 
+	 * Returns true while inside addToGameWorld() or removeFromGameWorld(). This knowledge
+	 * is required by certain behaviors to produce correct result.
+	 * 
+	 * For example ECBehaviorTwoStateAnimated requires this. In this situation the behavior
+	 * element layout can look like this:
+	 * - ECBehaviorTriggered
+	 * - ECBehaviorTwoStateAnimated
+	 * 
+	 * The ECBehaviorTriggered has been added by ECBehaviorTwoStateAnimated.
+	 * 
+	 * The rule of ECBehaviorTwoStateAnimated is that if the trigger changes while the element
+	 * is in a GameWorld then activate() or deactivate() is called to start the transition
+	 * process. If the element is not in a GameWorld then setActivated() or setDeactivated()
+	 * has to be called instead. This is required to ensure the element starts out in the
+	 * activated state when added to a game world in which the trigger expression happens to
+	 * eavluate to true.
+	 * 
+	 * When the element is added to the game world the following call-chain happens:
+	 * - BehaviorElement.addToGameWorld() // GameWorld will be set now
+	 * - ECBehaviorTriggered.addToGameWorld()
+	 * - ECBehaviorTwoStateAnimated.addToGameWorld()
+	 * 
+	 * ECBehaviorTriggered.addToGameWorld() evaluates the trigger expression using the GameWorld
+	 * the element is beeing added to. Since the trigger expression evaluates to true all
+	 * listeners are notified about the ECBehaviorTriggered state having changed to true.
+	 * This causes ECBehaviorTwoStateAnimated.SwitchStateListener to be fired. At this point
+	 * in time the BehaviorElement already returns the GameWorld instance instead of null and
+	 * the ECBehaviorTwoStateAnimated thinks it needs to do an activate() instead of a
+	 * setActivated().
+	 * 
+	 * By using isChangingGameWorld() the ECBehaviorTwoStateAnimated can figure out that
+	 * it should not call activate() but setActivated().
+	 */
+	public func bool isChangingGameWorld()
+		return this.pIsChangingGameWorld
+	end
+	
+	/**
+	 * \brief Element is in GameWorld and not in progress of beeing removed from it.
+	 * \version 1.5
+	 * 
+	 * Convenience method returning true if getGameWorld() returns not null and
+	 * isChangingGameWorld() returns false.
+	 */
+	public func bool isReallyInGameWorld()
+		return not this.pIsChangingGameWorld and this.getGameWorld() != null
+	end
+	
+	
+	
 	/** \brief Position changed. */
 	public func void onSetPosition()
 		this.pInstances.forEach( block ECBehaviorInstance each
@@ -226,30 +281,50 @@ class BehaviorElement extends Element
 	public func void addToGameWorld()
 		super.addToGameWorld()
 		
-		this.pInstances.forEach( block ECBehaviorInstance each
-			each.addToGameWorld()
-		end )
-		
-		if this.pRequiresEnterFrame \
-		or this.getStub().getAttachTo() != null \
-		or this.pInstances.find( block ECBehaviorInstance each
-			return each.requiresEnterFrame()
-		end ) != null
-			this.getGameWorld().addEnterFrameOnce( this )
+		try
+			this.pIsChangingGameWorld = true
+			
+			this.pInstances.forEach( block ECBehaviorInstance each
+				each.addToGameWorld()
+			end )
+			
+			if this.pRequiresEnterFrame \
+			or this.getStub().getAttachTo() != null \
+			or this.pInstances.find( block ECBehaviorInstance each
+				return each.requiresEnterFrame()
+			end ) != null
+				this.getGameWorld().addEnterFrameOnce( this )
+			end
+			
+			this.updateThinking()
+			
+			this.pIsChangingGameWorld = false
+			
+		catch Exception e
+			this.pIsChangingGameWorld = false
+			throw
 		end
-		
-		this.updateThinking()
 	end
 	
 	/** \brief Remove element from game world if set. */
 	public func void removeFromGameWorld()
-		this.pInstances.forEachReverse( block ECBehaviorInstance each
-			each.removeFromGameWorld()
-		end )
-		
-		var GameWorld gameWorld = this.getGameWorld()
-		gameWorld.removeThinker( this )
-		gameWorld.removeEnterFrameOnce( this )
+		try
+			this.pIsChangingGameWorld = true
+			
+			this.pInstances.forEachReverse( block ECBehaviorInstance each
+				each.removeFromGameWorld()
+			end )
+			
+			var GameWorld gameWorld = this.getGameWorld()
+			gameWorld.removeThinker( this )
+			gameWorld.removeEnterFrameOnce( this )
+			
+			this.pIsChangingGameWorld = false
+			
+		catch Exception e
+			this.pIsChangingGameWorld = false
+			throw
+		end
 		
 		super.removeFromGameWorld()
 	end
