@@ -741,7 +741,9 @@ class InteractiveMainMenu extends Window
 		camera.setLowestIntensity( 1 )
 		camera.setHighestIntensity( 1 )
 		camera.setAdaptionTime( 0 )
-		camera.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.default ) )
+		// see CameraDirector for explanation of the layer mask used here
+		camera.setLayerMask( LayerMask.newWith( \
+			BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap ) )
 		return camera
 	end
 end

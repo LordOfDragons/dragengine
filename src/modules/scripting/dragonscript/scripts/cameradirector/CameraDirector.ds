@@ -79,12 +79,21 @@ class CameraDirector
 	/** \brief Create camera director. */
 	public func new()
 		this.pFov = fovFirstPerson
-		this.pExposure = 1.0
-		this.pLowestIntensity = 10.0
-		this.pHighestIntensity = 20.0
+		this.pExposure = 1
+		this.pLowestIntensity = 10
+		this.pHighestIntensity = 20
 		this.pAdaptionTime = 0.1
-		this.pViewDistance = 200.0
-		this.pLayerMask = LayerMask.newWith( BaseGameApp.WorldLayerBit.default )
+		this.pViewDistance = 200
+		
+		// set layer mask. theoretically a camera needs only the default layer bit.
+		// light sources use by default both default and envmap layer bit. this would
+		// cause the camera to potentially have a restricted set of visible scene elements
+		// compared to the light sources. this can cause graphic modules to miss on
+		// optimization opportunities. it is quite unlikely you will find a scene elemnt
+		// this has the envmap layer bit set but not the default layer bit. it is thus
+		// safe to use both bits on cameras to allow graphic modules to apply all optimizations
+		this.pLayerMask = LayerMask.newWith( \
+			BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap )
 	end
 	
 	/** \brief Create camera director. */
