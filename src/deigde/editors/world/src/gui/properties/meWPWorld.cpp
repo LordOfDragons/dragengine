@@ -46,6 +46,8 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -168,6 +170,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meWorld *world ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPWorld &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPWorld &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
+		if( undo ){
+			world->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meWorld *world ) = 0;
+};
+
 
 class cEditWorldProperties : public meWPPropertyList {
 	meWPWorld &pPanel;
@@ -228,11 +253,11 @@ public:
 };
 
 
-class cEditPFTStartPosition : public cBaseEditVectorListener{
+class cEditPFTStartPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetStartPosition( vector );
 		return NULL;
 	}
@@ -249,11 +274,11 @@ public:
 	}
 };
 
-class cEditPFTGoalPosition : public cBaseEditVectorListener{
+class cEditPFTGoalPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetGoalPosition( vector );
 		return NULL;
 	}
@@ -529,12 +554,12 @@ pWorld( NULL )
 	helper.GroupBox( content, groupBox, "Path Find Test:", true );
 	
 	helper.FormLineStretchFirst( groupBox, "Start Position:", "Start position of the test path", formLine );
-	helper.EditVector( formLine, "Start position of the test path",
+	helper.EditDVector( formLine, "Start position of the test path",
 		pEditPFTStartPosition, new cEditPFTStartPosition( *this ) );
 	helper.Button( formLine, pBtnPFTStartPosFromCamera, new cActionPFTStartPosFromCamera( *this ), true );
 	
 	helper.FormLineStretchFirst( groupBox, "Goal Position:", "Goal position of the test path", formLine );
-	helper.EditVector( formLine, "Goal position of the test path",
+	helper.EditDVector( formLine, "Goal position of the test path",
 		pEditPFTGoalPosition, new cEditPFTGoalPosition( *this ) );
 	helper.Button( formLine, pBtnPFTGoalPosFromCamera, new cActionPFTGoalPosFromCamera( *this ), true );
 	
@@ -624,16 +649,16 @@ void meWPWorld::UpdateWorld(){
 void meWPWorld::UpdatePathFindTest(){
 	if( pWorld ){
 		const mePathFindTest &pft = *pWorld->GetPathFindTest();
-		pEditPFTStartPosition->SetVector( pft.GetStartPosition() );
-		pEditPFTGoalPosition->SetVector( pft.GetGoalPosition() );
+		pEditPFTStartPosition->SetDVector( pft.GetStartPosition() );
+		pEditPFTGoalPosition->SetDVector( pft.GetGoalPosition() );
 		pEditPFTLayer->SetInteger( pft.GetLayer() );
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )pft.GetSpaceType() );
 		pEditPFTBlockingCost->SetInteger( pft.GetBlockingCost() );
 		pChkPFTShowPath->SetChecked( pft.GetShowPath() );
 		
 	}else{
-		pEditPFTStartPosition->SetVector( decVector() );
-		pEditPFTGoalPosition->SetVector( decVector() );
+		pEditPFTStartPosition->SetDVector( decDVector() );
+		pEditPFTGoalPosition->SetDVector( decDVector() );
 		pEditPFTLayer->ClearText();
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estMesh );
 		pEditPFTBlockingCost->ClearText();

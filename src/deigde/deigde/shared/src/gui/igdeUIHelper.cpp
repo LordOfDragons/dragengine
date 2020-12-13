@@ -82,6 +82,9 @@
 #include "composed/igdeEditSliderText.h"
 #include "composed/igdeEditSliderTextReference.h"
 #include "composed/igdeEditSliderTextListener.h"
+#include "composed/igdeEditDVector.h"
+#include "composed/igdeEditDVectorReference.h"
+#include "composed/igdeEditDVectorListener.h"
 #include "composed/igdeEditVector.h"
 #include "composed/igdeEditVectorReference.h"
 #include "composed/igdeEditVectorListener.h"
@@ -834,6 +837,44 @@ igdeEditDirectoryListener *listener, bool useGameVFS ){
 	editDirectory.TakeOver( new igdeEditDirectory( *this, description, useGameVFS ) );
 	if( listener ){
 		editDirectory->AddListener( listener );
+		listener->FreeReference(); // we take over the reference
+	}
+}
+
+
+
+void igdeUIHelper::EditDVector( igdeContainer &form, const char *label, const char *description,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( form, label, description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &form, const char *label, const char *description,
+int columns, int precision, igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( description, columns, precision, editDVector, listener );
+	FormLine( form, label, description, editDVector );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &parent, const char *description,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( parent, description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &parent, const char *description, int columns,
+int precision, igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( description, columns, precision, editDVector, listener );
+	parent.AddChild( editDVector );
+}
+
+void igdeUIHelper::EditDVector( const char *description, igdeEditDVectorReference &editDVector,
+igdeEditDVectorListener *listener ){
+	EditDVector( description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( const char *description, int columns, int precision,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	editDVector.TakeOver( new igdeEditDVector( *this, columns, precision, description ) );
+	if( listener ){
+		editDVector->AddListener( listener );
 		listener->FreeReference(); // we take over the reference
 	}
 }

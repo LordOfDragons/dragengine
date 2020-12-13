@@ -41,6 +41,8 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -110,24 +112,24 @@ public:
 	}
 };
 
-class cEditPosition : public igdeEditVectorListener{
+class cEditPosition : public igdeEditDVectorListener{
 	meWPSNavSpace &pPanel;
 	
 public:
 	cEditPosition( meWPSNavSpace &panel ) : pPanel( panel ){ }
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
 		meNavigationSpace * const navspace = pPanel.GetNavigationSpace();
 		if( ! navspace ){
 			return;
 		}
 		
-		if( editVector->GetVector().IsEqualTo( navspace->GetPosition() ) ){
+		if( editDVector->GetDVector().IsEqualTo( navspace->GetPosition() ) ){
 			return;
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( new meUNavSpaceSetPosition( navspace, editVector->GetVector() ) );
+		undo.TakeOver( new meUNavSpaceSetPosition( navspace, editDVector->GetDVector() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -194,7 +196,7 @@ pWorld( NULL )
 	helper.GroupBox( content, groupBox, "Navigation Space:" );
 	helper.EditPath( groupBox, "Path:", "Path to the navigation space",
 		igdeEnvironment::efpltNavigationSpace, pEditPath, new cPathNavSpace( *this ) );
-	helper.EditVector( groupBox, "Position:", "Position of the navigation space.",
+	helper.EditDVector( groupBox, "Position:", "Position of the navigation space.",
 		pEditPositon, new cEditPosition( *this ) );
 	helper.EditVector( groupBox, "Orientation:", "Orientation of the navigation space.",
 		pEditOrientation, new cEditOrientation( *this ) );
@@ -290,11 +292,11 @@ void meWPSNavSpace::UpdateGeometry(){
 	const meNavigationSpace * const navspace = GetNavigationSpace();
 	
 	if( navspace ){
-		pEditPositon->SetVector( navspace->GetPosition() );
+		pEditPositon->SetDVector( navspace->GetPosition() );
 		pEditOrientation->SetVector( navspace->GetOrientation() );
 		
 	}else{
-		pEditPositon->SetVector( decVector() );
+		pEditPositon->SetDVector( decDVector() );
 		pEditOrientation->SetVector( decVector() );
 	}
 }

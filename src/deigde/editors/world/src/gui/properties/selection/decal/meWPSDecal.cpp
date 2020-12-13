@@ -68,6 +68,8 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector2.h>
@@ -160,6 +162,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPSDecal &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPSDecal &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meDecal * const decal = pPanel.GetActiveDecal();
+		if( ! decal ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
+		if( undo ){
+			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ) = 0;
+};
+
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
 protected:
 	meWPSDecal &pPanel;
@@ -206,11 +231,11 @@ public:
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener{
+class cEditPosition : public cBaseEditDVectorListener{
 public:
-	cEditPosition( meWPSDecal &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPosition( meWPSDecal &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ){
+	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ){
 		return ! decal->GetPosition().IsEqualTo( vector ) ? new meUDecalPosition( decal, vector ) : NULL;
 	}
 };
@@ -477,7 +502,7 @@ pWorld( NULL )
 	helper.EditString( groupBox, "ID:", "Unique decal ID", pEditID, NULL );
 	pEditID->SetEditable( false );
 	
-	helper.EditVector( groupBox, "Position:", "Position of decal.", pEditPosition, new cEditPosition( *this ) );
+	helper.EditDVector( groupBox, "Position:", "Position of decal.", pEditPosition, new cEditPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation of decal.", pEditRotation, new cEditRotation( *this ) );
 	helper.EditVector( groupBox, "Size:", "Size of decal.", pEditSize, new cEditSize( *this ) );
 	helper.EditInteger( groupBox, "Order:", "Drawing order of decal.", pEditOrder, new cEditOrder( *this ) );
@@ -626,12 +651,12 @@ void meWPSDecal::UpdateGeometry(){
 	if( decal ){
 		//pEditID->SetText( decal->GetID() ); // not created
 		
-		pEditPosition->SetVector( decal->GetPosition() );
+		pEditPosition->SetDVector( decal->GetPosition() );
 		pEditSize->SetVector( decal->GetSize() );
 		pEditRotation->SetVector( decal->GetRotation() );
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetDVector( decDVector() );
 		pEditSize->SetVector( decVector() );
 		pEditRotation->SetVector( decVector() );
 	}

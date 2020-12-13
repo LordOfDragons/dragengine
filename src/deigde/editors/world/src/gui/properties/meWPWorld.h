@@ -27,6 +27,7 @@
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -54,9 +55,9 @@ private:
 	
 	igdeWidgetReference pEditProperties;
 	
-	igdeEditVectorReference pEditPFTStartPosition;
+	igdeEditDVectorReference pEditPFTStartPosition;
 	igdeButtonReference pBtnPFTStartPosFromCamera;
-	igdeEditVectorReference pEditPFTGoalPosition;
+	igdeEditDVectorReference pEditPFTGoalPosition;
 	igdeButtonReference pBtnPFTGoalPosFromCamera;
 	igdeTextFieldReference pEditPFTLayer;
 	igdeComboBoxReference pCBPFTSpaceType;
