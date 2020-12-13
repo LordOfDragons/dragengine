@@ -208,8 +208,8 @@ void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component, int 
 	
 	const decDVector &maxExtend = component->GetMaximumExtend();
 	const decDVector &minExtend = component->GetMinimumExtend();
-	decDVector boxCenter = ( minExtend + maxExtend ) * 0.5;
-	decDVector boxHalfExtends = ( maxExtend - minExtend ) * 0.5;
+	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5 );
+	const decDVector boxHalfExtends( ( maxExtend - minExtend ) * 0.5 );
 	
 	deoglWorldOctree *currentNode = component->GetOctreeNode();
 	

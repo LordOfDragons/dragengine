@@ -151,6 +151,8 @@ int hackCSOctCount = 0;
 float hackCSOctTime = 0;
 int hackCSBoneMapCount = 0;
 float hackCSBoneMapTime = 0;
+int hackCSSpecialCount = 0;
+float hackCSSpecialTime = 0;
 #endif
 
 void deoglComponent::SyncToRender(){

@@ -1196,8 +1196,9 @@ void deoglRLight::EnvMapNotifyLightChanged(){
 		return;
 	}
 	
-	deoglNotifyEnvMapLightChanged visitor( *this );
 	pUpdateExtends();
+	
+	deoglNotifyEnvMapLightChanged visitor( *this );
 	pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
 }
 

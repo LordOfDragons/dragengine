@@ -83,7 +83,7 @@
 #include "../world/deoglWorldOctree.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionBox.h"
-#include "../utils/collision/deoglCollisionDetection.h"
+#include "../utils/collision/deoglDCollisionDetection.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -229,6 +229,9 @@ void deoglRComponent::SetOctreeNode( deoglWorldOctree *octreeNode ){
 	pOctreeNode = octreeNode;
 }
 
+// extern int hackCSSpecialCount;
+// extern float hackCSSpecialTime;
+
 void deoglRComponent::UpdateOctreeNode(){
 	if( ! pParentWorld ){
 		return;
@@ -243,8 +246,11 @@ void deoglRComponent::UpdateOctreeNode(){
 		pParentWorld->GetOctree().InsertComponentIntoTree( this, 8 );
 		
 		// visit the world for touching lights
+// 			decTimer timer;
 		deoglComponentTestForTouch testForTouching( this );
 		pParentWorld->VisitRegion( pMinExtend, pMaxExtend, testForTouching );
+// 			hackCSSpecialCount++;
+// 			hackCSSpecialTime += timer.GetElapsedTime();
 		
 	}else{
 		if( pOctreeNode ){

@@ -300,8 +300,9 @@ void deGraphicOpenGl::TerminateAppWindow(){
 // Frame Management
 /////////////////////
 
-// #include <dragengine/common/utils/decTimer.h>
+// static decTimer timerInBetween;
 void deGraphicOpenGl::RenderWindows(){
+// 		LogInfoFormat( "RenderWindows: InBetween = %d ys", (int)(timerInBetween.GetElapsedTime() * 1e6f) );
 // 	decTimer timer;
 	// wait for rendering to finish. if done asynchronously uses time history to judge if
 	// rendering is finished soon enough to wait for this event or to skip synchronization
@@ -347,6 +348,7 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderThread->Synchronize();
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+// 		timerInBetween.Reset();
 #ifdef OS_ANDROID
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
 #endif

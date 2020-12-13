@@ -744,6 +744,8 @@ extern int hackCSOctCount;
 extern float hackCSOctTime;
 extern int hackCSBoneMapCount;
 extern float hackCSBoneMapTime;
+extern int hackCSSpecialCount;
+extern float hackCSSpecialTime;
 #endif
 
 void deoglWorld::pSyncComponents(){
@@ -764,6 +766,8 @@ void deoglWorld::pSyncComponents(){
 	hackCSOctTime = 0;
 	hackCSBoneMapCount = 0;
 	hackCSBoneMapTime = 0;
+	hackCSSpecialCount = 0;
+	hackCSSpecialTime = 0;
 	#endif
 	
 	if( pDirtyComponents ){
@@ -818,6 +822,7 @@ void deoglWorld::pSyncComponents(){
 	pOgl.LogInfoFormat( "CSExt     %.1fys (%i, %.1fys)", hackCSExtTime*1e6f, hackCSExtCount, hackCSExtCount==0 ? 0 : hackCSExtTime/(float)hackCSExtCount*1e6f );
 	pOgl.LogInfoFormat( "CSOct     %.1fys (%i, %.1fys)", hackCSOctTime*1e6f, hackCSOctCount, hackCSOctCount==0 ? 0 : hackCSOctTime/(float)hackCSOctCount*1e6f );
 	pOgl.LogInfoFormat( "CSBoneMap %.1fys (%i, %.1fys)", hackCSBoneMapTime*1e6f, hackCSBoneMapCount, hackCSBoneMapCount==0 ? 0 : hackCSBoneMapTime/(float)hackCSBoneMapCount*1e6f );
+	pOgl.LogInfoFormat( "CSSpecial %.1fys (%i, %.1fys)", hackCSSpecialTime*1e6f, hackCSSpecialCount, hackCSSpecialCount==0 ? 0 : hackCSSpecialTime/(float)hackCSSpecialCount*1e6f );
 	#endif
 }
 
