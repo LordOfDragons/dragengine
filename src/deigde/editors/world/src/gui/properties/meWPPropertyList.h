@@ -71,7 +71,9 @@ private:
 	igdeActionReference pActionPropertyRemove;
 	igdeActionReference pActionPropertyClear;
 	igdeActionReference pActionPropertyCopy;
+	igdeActionReference pActionPropertyCopyAll;
 	igdeActionReference pActionPropertyCut;
+	igdeActionReference pActionPropertyCutAll;
 	igdeActionReference pActionPropertyPaste;
 	igdeActionReference pActionPropertyRename;
 	
@@ -188,7 +190,9 @@ public:
 	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
 	inline igdeAction *GetActionPropertyClear() const{ return pActionPropertyClear; }
 	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline igdeAction *GetActionPropertyCopyAll() const{ return pActionPropertyCopyAll; }
 	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline igdeAction *GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
 	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
 	inline igdeAction *GetActionPropertyRename() const{ return pActionPropertyRename; }
 	/*@}*/

@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "meWPPropertyList.h"
-// #include "../../clipboard/meClipboardDataObject.h"
+#include "../../clipboard/meCDProperties.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
@@ -111,7 +111,9 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPropertyRename() );
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCopy() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyCopyAll() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCut() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyCutAll() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyPaste() );
 		
 		pPanel.AddContextMenuEntries( helper, menu );
@@ -255,24 +257,44 @@ public:
 	
 	virtual void OnAction(){
 		const decString property( pPanel.GetProperty() );
-		if( property.IsEmpty() || ! pPanel.GetUndoSystem() ){
+		if( property.IsEmpty() || ! pPanel.GetClipboard() ){
 			return;
 		}
 		
-		/*
-		deObjectReference clipProperty;
-		clipProperty.TakeOver( new gdeProperty( *property ) );
-		
-		igdeClipboardDataReference clipData;
-		clipData.TakeOver( new gdeClipboardDataProperty( ( gdeProperty* )( deObject* )clipProperty ) );
-		
-		pPanel.GetClipboard()->Set( clipData );
-		*/
+		decStringDictionary properties;
+		properties.SetAt( property, pPanel.GetPropertyValue() );
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new meCDProperties( properties ) );
+		pPanel.GetClipboard()->Set( clip );
 	}
 	
 	virtual void Update(){
-		//SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() );
-		SetEnabled( false );
+		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard() );
+	}
+};
+
+class cActionPropertyCopyAll : public igdeAction {
+protected:
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyCopyAll( meWPPropertyList &panel ) :
+	igdeAction( "Copy All", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+		"Copy all properties" ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetClipboard() ){
+			return;
+		}
+		
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new meCDProperties( pPanel.GetProperties() ) );
+		pPanel.GetClipboard()->Set( clip );
+	}
+	
+	virtual void Update(){
+		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard() );
 	}
 };
 
@@ -290,20 +312,44 @@ public:
 			return;
 		}
 		
-		/*
 		cActionPropertyCopy::OnAction();
 		
 		igdeUndoReference undo;
-		undo.TakeOver( pPanel.UndoRemove( property ) );
+		undo.TakeOver( pPanel.UndoRemoveProperty( property ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
-		*/
 	}
 	
 	virtual void Update(){
-		//SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
-		SetEnabled( false );
+		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
+	}
+};
+
+class cActionPropertyCutAll : public cActionPropertyCopyAll {
+public:
+	cActionPropertyCutAll( meWPPropertyList &panel ) : cActionPropertyCopyAll( panel ){
+		SetText( "Cut All" );
+		SetIcon( panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) );
+		SetDescription( "Cut all properties" );
+	}
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetUndoSystem() || ! pPanel.GetClipboard() ){
+			return;
+		}
+		
+		cActionPropertyCopyAll::OnAction();
+		
+		igdeUndoReference undo;
+		undo.TakeOver( pPanel.UndoSetProperties( decStringDictionary() ) );
+		if( undo ){
+			pPanel.GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
 	}
 };
 
@@ -321,41 +367,27 @@ public:
 			return;
 		}
 		
-		/*
-		const gdeClipboardDataProperty * const clip = ( const gdeClipboardDataProperty * )
-			pPanel.GetClipboard()->GetWithTypeName( gdeClipboardDataProperty::TYPE_NAME );
-		if( ! clip ){
+		const meCDProperties * const clip = ( const meCDProperties * )
+			pPanel.GetClipboard()->GetWithTypeName( meCDProperties::TYPE_NAME );
+		if( ! clip || clip->GetProperties().GetCount() == 0 ){
 			return;
 		}
 		
-		const gdePropertyList &list = *pPanel.GetProperties();
-		decString name( clip->GetProperty()->GetName() );
-		
-		while( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Paste Property", "Name exists already." );
-			if( ! igdeCommonDialogs::GetString( &pPanel, "Paste Property", "Name:", name ) ){
-				return;
-			}
+		decStringDictionary properties( pPanel.GetProperties() );
+		properties += clip->GetProperties();
+		if( pPanel.GetProperties() == properties ){
+			return;
 		}
-		
-		deObjectReference refProperty;
-		refProperty.TakeOver( new gdeProperty( *clip->GetProperty() ) );
-		gdeProperty * const property = ( gdeProperty* )( deObject* )refProperty;
-		property->SetName( name );
 		
 		igdeUndoReference undo;
-		undo.TakeOver( pPanel.UndoPaste( property ) );
+		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
-			pPanel.SelectProperty( ( gdeProperty* )( deObject* )property );
 		}
-		*/
 	}
 	
 	virtual void Update(){
-		/*SetEnabled( pPanel.GetProperties() && pPanel.GetClipboard()
-			&& pPanel.GetClipboard()->HasWithTypeName( gdeClipboardDataProperty::TYPE_NAME ) );*/
-		SetEnabled( false );
+		SetEnabled( pPanel.GetClipboard() && pPanel.GetClipboard()->HasWithTypeName( meCDProperties::TYPE_NAME ) );
 	}
 };
 
@@ -438,7 +470,9 @@ pEnabled( true )
 	pActionPropertyRemove.TakeOver( new cActionPropertyRemove( *this ) );
 	pActionPropertyClear.TakeOver( new cActionPropertyClear( *this ) );
 	pActionPropertyCopy.TakeOver( new cActionPropertyCopy( *this ) );
+	pActionPropertyCopyAll.TakeOver( new cActionPropertyCopyAll( *this ) );
 	pActionPropertyCut.TakeOver( new cActionPropertyCut( *this ) );
+	pActionPropertyCutAll.TakeOver( new cActionPropertyCutAll( *this ) );
 	pActionPropertyPaste.TakeOver( new cActionPropertyPaste( *this ) );
 	pActionPropertyRename.TakeOver( new cActionPropertyRename( *this ) );
 	

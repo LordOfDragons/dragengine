@@ -19,45 +19,52 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _MECDNSNAVSPACE_H_
-#define _MECDNSNAVSPACE_H_
+#ifndef _MECDOPROPERTIES_H_
+#define _MECDOPROPERTIES_H_
 
-#include <dragengine/common/math/decMath.h>
-
-class meNavigationSpace;
+#include <deigde/clipboard/igdeClipboardData.h>
+#include <dragengine/common/string/decStringDictionary.h>
 
 
 
 /**
- * \brief Navigation space clipboard clip.
+ * \brief Clipboard data properties.
  */
-class meCDNSNavigationSpace {
+class meCDProperties : public igdeClipboardData{
+public:
+	/** \brief Type name. */
+	static const char * const TYPE_NAME;
+	
+	
+	
 private:
-	decDVector pPosition;
-	decVector pOrientation;
+	decStringDictionary pProperties;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create navigation space clip data. */
-	meCDNSNavigationSpace( meNavigationSpace *navspace );
+	/** \brief Create clipboard data. */
+	meCDProperties( const decStringDictionary &properties );
 	
-	/** \brief Clean up clip data. */
-	~meCDNSNavigationSpace();
+protected:
+	/**
+	 * \brief Clean up object.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 *       accidently deleting a reference counted object through the object
+	 *       pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	virtual ~meCDProperties();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
-	
-	/** \brief Orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
-	
-	/** \brief Update navigation space with stored data. */
-	void UpdateNavSpace( meNavigationSpace &navspace ) const;
+	/** \brief Properties. */
+	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	/*@}*/
 };
 
