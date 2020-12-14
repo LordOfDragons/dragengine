@@ -34,6 +34,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gui/composed/igdeEditPropertyValueListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -115,6 +116,9 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCut() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCutAll() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyPaste() );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyExport() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyImport() );
 		
 		pPanel.AddContextMenuEntries( helper, menu );
 	}
@@ -294,7 +298,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard() );
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 && pPanel.GetClipboard() );
 	}
 };
 
@@ -363,7 +367,7 @@ public:
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetClipboard() ){
+		if( ! pPanel.GetClipboard() || ! pPanel.GetUndoSystem() ){
 			return;
 		}
 		
@@ -387,7 +391,112 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetClipboard() && pPanel.GetClipboard()->HasWithTypeName( meCDProperties::TYPE_NAME ) );
+		SetEnabled( pPanel.GetClipboard() && pPanel.GetUndoSystem()
+			&& pPanel.GetClipboard()->HasWithTypeName( meCDProperties::TYPE_NAME ) );
+	}
+};
+
+class cActionPropertyExport : public igdeAction {
+protected:
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyExport( meWPPropertyList &panel ) :
+	igdeAction( "Export All To Text...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
+		"Show dialog with all properties in text form" ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 ){
+			return;
+		}
+		
+		decString text;
+		const decStringDictionary &properties = pPanel.GetProperties();
+		const decStringList keys( properties.GetKeys() );
+		const int count = keys.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			const decString &key = keys.GetAt( i );
+			text.AppendFormat( "%s=%s", key.GetString(), properties.GetAt( key ).GetString() );
+		}
+		
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Export To Text", "Properties", text );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 );
+	}
+};
+
+class cActionPropertyImport : public igdeAction {
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyImport( meWPPropertyList &panel ) :
+	igdeAction( "Import From Text...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
+		"Show dialog to enter properties to import in text form." ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( ! pPanel.GetUndoSystem() ){
+			return;
+		}
+		
+		decStringDictionary imported;
+		decString text;
+		
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Properties. One property per line in the form 'key=value'.", text ) ){
+				return;
+			}
+			
+			const decStringList lines( text.Split( '\n' ) );
+			const int lineCount = lines.GetCount();
+			int i;
+			
+			imported.RemoveAll();
+			
+			for( i=0; i<lineCount; i++ ){
+				const decString &line = lines.GetAt( i );
+				const decStringList parts( line.Split( '=' ) );
+				if( parts.GetCount() != 2 || parts.GetAt( 0 ).IsEmpty() ){
+					igdeCommonDialogs::ErrorFormat( pPanel.GetParentWindow(), "Import From Text",
+						"Invalid property on line %d: '%s'", i + 1, line.GetString() );
+					break;
+				}
+				
+				imported.SetAt( parts.GetAt( 0 ), parts.GetAt( 1 ) );
+			}
+			if( i == lineCount ){
+				break;
+			}
+		}
+		
+		if( imported.GetCount() == 0 ){
+			return;
+		}
+		
+		decStringDictionary properties( pPanel.GetProperties() );
+		properties += imported;
+		if( pPanel.GetProperties() == properties ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
+		if( undo ){
+			pPanel.GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetUndoSystem() );
 	}
 };
 
@@ -475,6 +584,8 @@ pEnabled( true )
 	pActionPropertyCutAll.TakeOver( new cActionPropertyCutAll( *this ) );
 	pActionPropertyPaste.TakeOver( new cActionPropertyPaste( *this ) );
 	pActionPropertyRename.TakeOver( new cActionPropertyRename( *this ) );
+	pActionPropertyExport.TakeOver( new cActionPropertyExport( *this ) );
+	pActionPropertyImport.TakeOver( new cActionPropertyImport( *this ) );
 	
 	
 	helper.FormLineStretchFirst( *this, "Property:", "Property to add", frameLine );

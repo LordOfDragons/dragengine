@@ -76,6 +76,8 @@ private:
 	igdeActionReference pActionPropertyCutAll;
 	igdeActionReference pActionPropertyPaste;
 	igdeActionReference pActionPropertyRename;
+	igdeActionReference pActionPropertyExport;
+	igdeActionReference pActionPropertyImport;
 	
 	bool pEnabled;
 	
@@ -195,6 +197,8 @@ public:
 	inline igdeAction *GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
 	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
 	inline igdeAction *GetActionPropertyRename() const{ return pActionPropertyRename; }
+	inline igdeAction *GetActionPropertyExport() const{ return pActionPropertyExport; }
+	inline igdeAction *GetActionPropertyImport() const{ return pActionPropertyImport; }
 	/*@}*/
 	
 	
