@@ -464,14 +464,14 @@ public:
 			
 			for( i=0; i<lineCount; i++ ){
 				const decString &line = lines.GetAt( i );
-				const decStringList parts( line.Split( '=' ) );
-				if( parts.GetCount() != 2 || parts.GetAt( 0 ).IsEmpty() ){
+				const int delimiter = line.Find( '=' );
+				if( delimiter < 1 ){
 					igdeCommonDialogs::ErrorFormat( pPanel.GetParentWindow(), "Import From Text",
 						"Invalid property on line %d: '%s'", i + 1, line.GetString() );
 					break;
 				}
 				
-				imported.SetAt( parts.GetAt( 0 ), parts.GetAt( 1 ) );
+				imported.SetAt( line.GetLeft( delimiter ), line.GetMiddle( delimiter + 1 ) );
 			}
 			if( i == lineCount ){
 				break;
