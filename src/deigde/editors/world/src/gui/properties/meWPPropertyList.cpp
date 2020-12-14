@@ -421,7 +421,8 @@ public:
 				text.AppendCharacter( '\n' );
 			}
 			const decString &key = keys.GetAt( i );
-			text.AppendFormat( "%s=%s", key.GetString(), properties.GetAt( key ).GetString() );
+			decString value( properties.GetAt( key ).GetReplacedString( "\n", "<br/>" ) );
+			text.AppendFormat( "%s=%s", key.GetString(), value.GetString() );
 		}
 		
 		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
@@ -471,7 +472,8 @@ public:
 					break;
 				}
 				
-				imported.SetAt( line.GetLeft( delimiter ), line.GetMiddle( delimiter + 1 ) );
+				imported.SetAt( line.GetLeft( delimiter ), line.GetMiddle( delimiter + 1 )
+					.GetReplacedString( "<br/>", "\n" ) );
 			}
 			if( i == lineCount ){
 				break;
