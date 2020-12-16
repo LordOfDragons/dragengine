@@ -668,11 +668,52 @@ class InteractiveMainMenu extends Window
 	
 	
 	
-	/** \brief Add element classes. */
+	/**
+	 * \brief Add element classes.
+	 * 
+	 * Adds the same element classes as BaseGameApp.createAndAddElementClasses().
+	 * In addition adds IMM*Class element classes.
+	 */
 	protected func void addElementClasses()
+		// from BaseGameApp.createAndAddElementClasses()
+		this.pElementClasses.add( IgnoreElementClass.new( "VirtualElement" ) )
+		this.pElementClasses.add( IgnoreElementClass.new( "MapperNote" ) )
+		this.pElementClasses.add( SimpleElementClass.new( this.pLoaders ) )
+		this.pElementClasses.add( PhysicsElementClass.new() )
+		this.pElementClasses.add( AnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
+		this.pElementClasses.add( TwoStateAnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
+		this.pElementClasses.add( RandomElementClass.new( this.pElementClasses ) )
+		this.pElementClasses.add( BaseLightClass.new() )
+		this.pElementClasses.add( BaseSpeakerClass.new() )
+		this.pElementClasses.add( BaseParticleEmitterClass.new() )
+		this.pElementClasses.add( BaseSkyClass.new() )
+		this.pElementClasses.add( BaseForceFieldClass.new() )
+		this.pElementClasses.add( BaseBillboardClass.new() )
+		this.pElementClasses.add( AttachableBaseLightClass.new() )
+		this.pElementClasses.add( AttachableBaseSpeakerClass.new() )
+		this.pElementClasses.add( AttachableBaseParticleEmitterClass.new() )
+		this.pElementClasses.add( AttachableBaseForceFieldClass.new() )
+		this.pElementClasses.add( AttachableBaseBillboardClass.new() )
+		this.pElementClasses.add( AttachSlotClass.new() )
+		this.pElementClasses.add( SpawnPointClass.new() )
+		this.pElementClasses.add( BaseActorClass.new() )
+		this.pElementClasses.add( EnvironmentMapClass.new() )
+		this.pElementClasses.add( TriggerEvaluateClass.new( this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerTimerClass.new( this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerToggleClass.new( this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerTouchClass.new( this.pTriggerTable ) )
+		this.pElementClasses.add( TriggerShoutClass.new( this.pTriggerTable, this.pConsole ) )
+		this.pElementClasses.add( TriggerConversationClass.new( this.pTriggerTable, this.pLoaders, null ) )
+		this.pElementClasses.add( RailCornerClass.new() )
+		this.pElementClasses.add( SimpleElementOnRailClass.new() )
+		this.pElementClasses.add( InfoConvoCoordSystemClass.new() )
+		
+		// main menu specific
 		this.pElementClasses.add( IMMPropClass.new( this ) )
 		this.pElementClasses.add( IMMHotSpotClass.new( this ) )
 		this.pElementClasses.add( IMMCameraSpotClass.new( this ) )
+		
+		// deprecated classes kept for compatibility
 		this.pElementClasses.add( IMMLightClass.new( this ) )
 		this.pElementClasses.add( IMMSpeakerClass.new( this ) )
 		this.pElementClasses.add( IMMParticleEmitterClass.new( this ) )
@@ -681,6 +722,7 @@ class InteractiveMainMenu extends Window
 		this.pElementClasses.add( TriggerTimerClass.new( "DE_IMM_TriggerTimer", this.pTriggerTable ) )
 		this.pElementClasses.add( TriggerToggleClass.new( "DE_IMM_TriggerToggle", this.pTriggerTable ) )
 		
+		// load xml classes
 		if this.pDirXmlElementClasses != null
 			this.pLoaders.getElementClass().addXmlElementClasses( \
 				this.pElementClasses, this.pDirXmlElementClasses, true )
