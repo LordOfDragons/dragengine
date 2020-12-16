@@ -2202,6 +2202,12 @@ void debpColliderComponent::ComponentMeshDirty(){
 		DirtyBones();
 	}
 	
+	if( GetAttachmentCount() > 0 ){
+		// component mesh dirty is send if component has bones changed by animation.
+		// attachments have to be updated also if animation only is used
+		DirtyAttachments();
+	}
+	
 	// TODO in model dynamic test mode the triangle mesh changes causing the collision object
 	//      to change. this can be done using a component hosted triangle collision shape
 	//      which changes. requires no bone update.
@@ -2307,7 +2313,7 @@ void debpColliderComponent::pUpdateBones(){
 		}
 	}
 	
-	// of there are no shapes but bones check if there is at least one bone with a shape
+	// if there are no shapes but bones check if there is at least one bone with a shape
 	bool hasBonesWithShape = false;
 	if( shapeCount == 0 ){
 		for( b=0; b<boneCount; b++ ){
