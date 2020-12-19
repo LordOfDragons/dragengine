@@ -2620,6 +2620,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
 			materialProperty = pMaterialProperties + empColorTintMask;
+			requiresTexture = true;
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
@@ -2899,6 +2900,8 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
 			pMaterialProperties[ empColorTintMask ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empColorTintMask ].GetRenderable() ).
+				SetRequiresTexture( true );
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
