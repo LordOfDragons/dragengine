@@ -147,7 +147,8 @@ public:
 	tucEnvMap( NULL ),
 	tucOutlineGeometry( NULL ),
 	tucOutlineDepth( NULL ),
-	tucOutlineCounter( NULL ){
+	tucOutlineCounter( NULL ),
+	tucLuminance( NULL ){
 	}
 	
 	virtual ~deoglRComponentTextureDeletion(){
