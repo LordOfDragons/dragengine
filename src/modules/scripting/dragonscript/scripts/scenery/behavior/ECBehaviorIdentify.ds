@@ -37,7 +37,7 @@ public interface ECBehaviorIdentify
 	 * 
 	 * Has to return a string which is unique in the owner BehaviorElementClass. This string
 	 * will be stored while persisting BehaviorElement instances. This allows to assign
-	 * restored behavior instance data to the corrent behavior instance if present.
+	 * restored behavior instance data to the correct behavior instance if present.
 	 */
 	func String getBehaviorID()
 end

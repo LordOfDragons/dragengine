@@ -1,0 +1,462 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior using ECBehaviorCustomColor on ECBehaviorDynamicSkin.
+ * 
+ * This behavior applies the chosen color of an ECBehaviorCustomColor either directly to
+ * a color type renderable or indirectly to a canvas type renderable.
+ * 
+ * Element class properties have the prefix "renderableCustomColor{(id)}.".
+ * 
+ * 
+ * 
+ * \par Multi Texture Mode (Using Color Type Renderable)
+ * 
+ * If no ECBehaviorRenderableCanvas is provided a color type renderable is created and the
+ * chosen collor assigned to it.
+ * 
+ * This mode of operation is best used for models using
+ * individual textures for each part to colorize. This is the fastest solution.
+ * 
+ * The following example creates an element class with two custom colors each affecting
+ * an individual skin texture:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
+ *       
+ *       // add first color tinting texture named "texture1"
+ *       var ECBehaviorCustomColor color1 = ECBehaviorCustomColor.new(this, "color1", "Color 1", Color.blue)
+ *       ECBehaviorRenderableCustomColor.new(this, "color1", color1, dynamicSkin, "texture1" )
+ *       
+ *       // add second color tinting texture named "texture2"
+ *       var ECBehaviorCustomColor color2 = ECBehaviorCustomColor.new(this, "color2", "Color 2", Color.red)
+ *       ECBehaviorRenderableCustomColor.new(this, "color2", color2, dynamicSkin, "texture2" )
+ *    end
+ * end
+ * \endcode
+ * 
+ * 
+ * 
+ * \par Single Texture Mode (Using ECBehaviorRenderableCanvas)
+ * 
+ * If ECBehaviorRenderableCanvas is provided a CanvasImage is added to the canvas view.
+ * The color transform of the CanvasImage is set to the chosen color.
+ * 
+ * This mode of operation is best used for models with a single texture to colorized in a
+ * pixel-precise way. Multiple ECBehaviorCustomColor can then affect the same model texture
+ * each colorizing a precisely defined area of the texture.
+ * 
+ * The image has to be a grayscale image with optional alpha channel. Typically the image
+ * contains black-and-white pixels to enable or disable colorizing for in individual image
+ * parts but can be full grayscale to apply blending of chosen color. If the image also
+ * contains an alpha channel then the grayscale content of the image is multiplied by
+ * the color with the alpha channel defining how much the final color affects the result.
+ * Hence grayscale image without alpha channel apply flat colorization while grayscale
+ * images with alpha channel applied shaded colorization.
+ * 
+ * The order of adding ECBehaviorRenderableCustomColor to element classes is important.
+ * Behaviors added later are layered ontop of behaviors added earlier. This is especially
+ * useful for blending custom colors to get good results.
+ * 
+ * It is recommended to set the background color or image of ECBehaviorRenderableCanvas.
+ * This ensures all pixels in the texture are properly set.
+ * 
+ * The advantage of using this mode is that you can layer any number of custom colors onto
+ * a texture easily.
+ * 
+ * The disadvantage is that graphic modules have to render the renderable from the canvas
+ * view before it can be used for rendering the component. If many elements use this kind
+ * of colorizing the GPU memory consumption can be high. Graphic modules know about this
+ * and can release dynamic texture content. Nevertheless it is good to keep this in mind.
+ * 
+ * The following example creates an element class with two custom colors each applying one
+ * layer of tint to a texture with:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
+ *       
+ *       // add renderable canvas for texture named "texture"
+ *       // 
+ *       var ECBehaviorRenderableCanvas renderable = ECBehaviorRenderableCanvas.new(this, dynamicSkin)
+ *       renderable.getRenderable().setValue("texture")
+ *       
+ *       // the background color is set to white which applies no tinting. hence by default
+ *       // the texture is not tinted unless any custom color is not white
+ *       renderable.getBackgroundColor().setColor(Color.white)
+ *       
+ *       // set the size of the renderable. this size usually matches the size of the mask
+ *       // images assigned to the custom colors
+ *       renderable.getSize().setPoint(Point.new(512, 512))
+ *       
+ *       // add first color
+ *       var ECBehaviorCustomColor color1 = ECBehaviorCustomColor.new(this, "color1", "Color 1", Color.blue)
+ *       ECBehaviorRenderableCustomColor.new(this, "color1", color1, renderable )
+ *       
+ *       // add second color
+ *       var ECBehaviorCustomColor color2 = ECBehaviorCustomColor.new(this, "color2", "Color 2", Color.red)
+ *       ECBehaviorRenderableCustomColor.new(this, "color2", color2, renderable )
+ *    end
+ * end
+ * \endcode
+ * 
+ * 
+ * 
+ * \par Persistency
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorRenderableCustomColor extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Update renderable listener. */
+		public class UpdateRenderableListener extends ECBehaviorCustomColor.DefaultListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				this.pInstance = instance
+			end
+			
+			public func void colorChanged( ECBehaviorCustomColor.Instance instance )
+				this.pInstance.updateColor()
+			end
+		end
+		
+		
+		
+		private var ECBehaviorRenderableCustomColor pECBehavior
+		private var ECBehaviorCustomColor.Instance pCustomColor
+		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
+		private var ECBehaviorRenderableCanvas.Instance pRenderableCanvas
+		private var int pRenderableColor
+		private var CanvasImage pCanvas
+		//private var CanvasPaint pCanvas
+		private var float pOrder
+		private var Image pImage
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorRenderableCustomColor ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			
+			this.pRenderableColor = -1
+			
+			this.pCustomColor = ecbehavior.getCustomColor().instance( element )
+			
+			if ecbehavior.getDynamicSkin() != null
+				this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
+			end
+			if ecbehavior.getRenderableCanvas() != null
+				this.pRenderableCanvas = ecbehavior.getRenderableCanvas().instance( element )
+			end
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			this.pRenderableCanvas = null
+			this.pDynamicSkin = null
+			this.pCustomColor = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			if this.pDynamicSkin != null
+				var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
+				
+				var String value = this.pECBehavior.getRenderable().getValue( stub )
+				if not value.empty()
+					this.pRenderableColor = dynamicSkin.getRenderableCount()
+					dynamicSkin.addRenderable( value, DynamicSkinRenderableType.color )
+				end
+				
+			else
+				var CanvasView canvasView = this.pRenderableCanvas.getCanvasView()
+				if canvasView == null
+					return
+				end
+				
+				this.pImage = this.pECBehavior.getImage().getImage( stub, this.getElement().getClass() )
+				
+				this.pCanvas = CanvasImage.new()
+				this.pCanvas.setImage( this.pImage )
+				this.pCanvas.setSize( canvasView.getSize() )
+				
+				/*
+				this.pCanvas = CanvasPaint.new()
+				this.pCanvas.setShapeType( CanvasPaintShape.rectangle )
+				this.pCanvas.setLineColor( Color.transparent )
+				this.pCanvas.setThickness( 0 )
+				this.pCanvas.setSize( canvasView.getSize() )
+				
+				var CanvasImage ci = CanvasImage.new()
+				ci.setImage( this.pImage )
+				ci.setSize( canvasView.getSize() )
+				this.pCanvas.setMask( ci )
+				*/
+				
+				this.pOrder = canvasView.getCanvasCount()
+				this.pCanvas.setOrder( this.pOrder )
+				canvasView.addCanvas( this.pCanvas )
+			end
+			
+			this.pCustomColor.addListener( UpdateRenderableListener.new( this ) )
+			
+			this.updateColor()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRenderableCustomColor getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Custom color behavior instance. */
+		public func ECBehaviorCustomColor.Instance getCustomColor()
+			return this.pCustomColor
+		end
+		
+		/** \brief Dynamic skin behavior instance or null. */
+		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
+			return this.pDynamicSkin
+		end
+		
+		/** \brief Renderable canvas behavior instance or null. */
+		public func ECBehaviorRenderableCanvas.Instance getRenderableCanvas()
+			return this.pRenderableCanvas
+		end
+		
+		/** \brief Index of color renderable or -1 if not used. */
+		public func int getRenderableColor()
+			return this.pRenderableColor
+		end
+		
+		/** \brief Canvas or \em null. */
+		public func CanvasImage getCanvas()
+			return this.pCanvas
+		end
+		
+		/** \brief Order to use for canvas. */
+		public func float getOrder()
+			return this.pOrder
+		end
+		
+		/** \brief Set order for canvas. */
+		public func void setOrder( float order )
+			this.pOrder = order
+			
+			if this.pCanvas != null
+				this.pCanvas.setOrder( order )
+			end
+		end
+		
+		
+		
+		/** \brief Update color. */
+		public func void updateColor()
+			if this.pRenderableColor != -1
+				this.pDynamicSkin.getDynamicSkin().setColorAt( this.pRenderableColor, \
+					this.pCustomColor.getColorOrDefault() )
+				
+			elif this.pCanvas != null
+				// we can use a single image canvas to achieve the desired results by using
+				// color transformation. depending on the presence of an alpha channel in
+				// the image the color matrix looks different. the columns in the color
+				// matrix are named (from left to right): red, green, blue, alpha and white
+				
+				if this.pImage.getComponentCount() == 4
+					// image with alpha channel. here we want to apply the colorize
+					// to the image content and keep the alpha. this is a simple
+					// colorize matrix with an optional desaturation matrix applied
+					// in case the image is not grayscale
+					this.pCanvas.setColorTransform( ColorMatrix.newSaturation( 0 ) \
+						* ColorMatrix.newScaling( this.pCustomColor.getColorOrDefault() ) )
+					
+				else
+					// image with no alpha channel. here we want to transfer the image
+					// content to the alpha channel while applying the colorization
+					// to the red, green and blue component. to achieve this we need a
+					// color matrix of this form:
+					//   [ 0 | 0 | 0 | 0 | r ]
+					//   [ 0 | 0 | 0 | 0 | g ]
+					//   [ 0 | 0 | 0 | 0 | b ]
+					//   [ 1 | 0 | 0 | 0 | 0 ]
+					// 
+					// in case a color image has been provided instead of a grayscale
+					// image we would need to apply a desaturation which can be done
+					// by altering the last row
+					//   [ 0.3 | 0.59 | 0.11 | 0 ]
+					// 
+					// the constructor below receives the columns from left to right
+					
+					this.pCanvas.setColorTransform( ColorMatrix.new( \
+						Color.new( 0, 0, 0, 0.3 ), Color.new( 0, 0, 0, 0.59 ), \
+						Color.new( 0, 0, 0, 0.11 ), Color.new( 0, 0, 0, 0 ), \
+						Color.new( this.pCustomColor.getColorOrDefault(), 0 ) ) )
+				end
+				//this.pCanvas.setFillColor( this.pCustomColor.getColorOrDefault() )
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorCustomColor pCustomColor
+	private var ECBehaviorDynamicSkin pDynamicSkin
+	private var ECPString pRenderable
+	private var ECBehaviorRenderableCanvas pRenderableCanvas
+	private var ECPImage pImage
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorDynamicSkin dynamicSkin, String renderable ) \
+	this( eclass, customColor, dynamicSkin, renderable, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorDynamicSkin dynamicSkin, String renderable, String id ) \
+	this( eclass, customColor, dynamicSkin, renderable, id, \
+	id.empty() if "renderableCustomColor." else "renderableCustomColor(" + id + ")." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorDynamicSkin dynamicSkin, String renderable, String id, String prefix ) \
+	this( eclass, customColor, dynamicSkin, renderable, null, null, id, prefix )
+		if dynamicSkin == null
+			throw ENullPointer.new( "dynamicSkin" )
+		end
+		if renderable == null
+			throw ENullPointer.new( "renderable" )
+		end
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorRenderableCanvas renderableCanvas, String pathImage ) \
+	this( eclass, customColor, renderableCanvas, pathImage, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorRenderableCanvas renderableCanvas, String pathImage, String id ) \
+	this( eclass, customColor, renderableCanvas, pathImage, id, \
+	id.empty() if "renderableCustomColor." else "renderableCustomColor(" + id + ")." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorRenderableCanvas renderableCanvas, String pathImage, String id, String prefix ) \
+	this( eclass, customColor, null, "", renderableCanvas, pathImage, id, prefix )
+		if renderableCanvas == null
+			throw ENullPointer.new( "renderableCanvas" )
+		end
+		if pathImage == null
+			throw ENullPointer.new( "pathImage" )
+		end
+	end
+	
+	/** \brief Create behavior element class. */
+	protected func new( BehaviorElementClass eclass, ECBehaviorCustomColor customColor, \
+	ECBehaviorDynamicSkin dynamicSkin, String renderable, \
+	ECBehaviorRenderableCanvas renderableCanvas, String pathImage, \
+	String id, String prefix ) super( eclass, id )
+		if customColor == null
+			throw ENullPointer.new( "customColor" )
+		end
+		
+		this.pCustomColor = customColor
+		this.pDynamicSkin = dynamicSkin
+		this.pRenderableCanvas = renderableCanvas
+		
+		this.pRenderable = ECPString.new( prefix + "renderable", renderable )
+		eclass.addProperty( this.pRenderable )
+		
+		this.pImage = ECPImage.new( prefix + "image", pathImage )
+		eclass.addProperty( this.pImage )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pCustomColor = null
+		this.pDynamicSkin = null
+		this.pRenderableCanvas = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Custom color behavior. */
+	public func ECBehaviorCustomColor getCustomColor()
+		return this.pCustomColor
+	end
+	
+	/** \brief Dynamic skin behavior. */
+	public func ECBehaviorDynamicSkin getDynamicSkin()
+		return this.pDynamicSkin
+	end
+	
+	/** \brief Name of renderable to create or empty string if not used. */
+	public func ECPString getRenderable()
+		return this.pRenderable
+	end
+	
+	/** \brief Renderable canvas behavior. */
+	public func ECBehaviorRenderableCanvas getRenderableCanvas()
+		return this.pRenderableCanvas
+	end
+	
+	/** \brief Image to use. */
+	public func ECPImage getImage()
+		return this.pImage
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end
