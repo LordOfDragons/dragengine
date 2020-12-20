@@ -92,7 +92,8 @@ enum eSPCanvas{
 	spcColorTransform2,
 	spcGamma,
 	spcClipRect,
-	spcTCClamp
+	spcTCClamp,
+	spcTCTransformMask
 };
 
 
@@ -111,7 +112,9 @@ pVAOShapes( 0 ),
 pActiveVAO( 0 ),
 
 pShaderCanvasColor( NULL ),
+pShaderCanvasColorMask( NULL ),
 pShaderCanvasImage( NULL ),
+pShaderCanvasImageMask( NULL ),
 
 pDebugInfoCanvas( NULL ),
 pDebugInfoCanvasView( NULL ),
@@ -161,6 +164,13 @@ pDebugInfoPlanPrepareLights( NULL )
 		
 		defines.AddDefine( "WITH_TEXTURE", "1" );
 		pShaderCanvasImage = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		defines.AddDefine( "WITH_MASK", "1" );
+		pShaderCanvasColorMask = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "WITH_TEXTURE", "1" );
+		pShaderCanvasImageMask = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -297,15 +307,20 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	decTexMatrix2 transform( context.GetTransform() );
 	const float transparency = context.GetTransparency();
 	const float thickness = decMath::max( 0.0f, canvas.GetThickness() );
 	
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderCanvasColor );
-	deoglShaderCompiled &shader = *pShaderCanvasColor->GetCompiled();
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
+	
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasColorMask : pShaderCanvasColor;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -317,9 +332,9 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 		context.GetTCClampMinimum().x, context.GetTCClampMinimum().y,
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
+	shader.SetParameterTexMatrix3x2( spcTransform, context.GetTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
-	
-	shader.SetParameterTexMatrix3x2( spcTransform, transform );
 	
 	deoglSharedVBOBlock &vboBlock = *canvas.GetVBOBlock();
 	const int vboOffset = vboBlock.GetOffset();
@@ -373,20 +388,23 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
 	tsmgr.EnableTexture( 0, *image->GetTexture(), GetSamplerRepeatLinear() );
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
 	
-	const decTexMatrix2 &transform = context.GetTransform();
-	const decTexMatrix2 &tctransform = canvas.GetTCTransform();
 	const float transparency = context.GetTransparency();
 	const decColorMatrix colorTransform( decColorMatrix::CreateScaling(
 		1.0f, 1.0f, 1.0f, transparency ) * context.GetColorTransform() );
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCanvasImage );
-	deoglShaderCompiled &shader = *pShaderCanvasImage->GetCompiled();
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
-	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * transform );
-	shader.SetParameterTexMatrix3x2( spcTCTransform, tctransform );
+	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -432,19 +450,22 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
 	tsmgr.EnableTexture( 0, *renderTarget->GetTexture(), GetSamplerRepeatLinear() );
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
 	
-	const decTexMatrix2 &transform = context.GetTransform();
-	const decTexMatrix2 &tctransform = canvas.GetTCTransform();
 	const float transparency = context.GetTransparency();
 	const decColorMatrix colorTransform( decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency ) * context.GetColorTransform() );
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCanvasImage );
-	deoglShaderCompiled &shader = *pShaderCanvasImage->GetCompiled();
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
-	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * transform );
-	shader.SetParameterTexMatrix3x2( spcTCTransform, tctransform );
+	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -485,19 +506,22 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
 	tsmgr.EnableTexture( 0, *videoPlayer->GetTexture(), GetSamplerRepeatLinear() );
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
 	
-	const decTexMatrix2 &transform = context.GetTransform();
-	const decTexMatrix2 &tctransform = canvas.GetTCTransform();
 	const float transparency = context.GetTransparency();
 	const decColorMatrix colorTransform( decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency ) * context.GetColorTransform() );
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCanvasImage );
-	deoglShaderCompiled &shader = *pShaderCanvasImage->GetCompiled();
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
-	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * transform );
-	shader.SetParameterTexMatrix3x2( spcTCTransform, tctransform );
+	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -550,13 +574,16 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	// set texture
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	tsmgr.EnableTexture( 0, *image->GetTexture(), GetSamplerClampNearest() );
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
 	
 	// set shader
-	renderThread.GetShader().ActivateShader( pShaderCanvasImage );
-	deoglShaderCompiled &shader = *pShaderCanvasImage->GetCompiled();
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
 	// set color
-	const decTexMatrix2 &transform = context.GetTransform();
 	const float transparency = context.GetTransparency();
 	
 	if( font->GetIsColorFont() ){
@@ -582,6 +609,8 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 		context.GetTCClampMinimum().x, context.GetTCClampMinimum().y,
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	
 	// render text
 	const deoglRFont::sGlyph * const oglGlyphs = font->GetGlyphs();
 	decUTF8Decoder utf8Decoder;
@@ -591,6 +620,8 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	utf8Decoder.SetString( canvas.GetText() );
 	const int len = utf8Decoder.GetLength();
 	const float fontScale = canvas.GetFontSize() / ( float )font->GetLineHeight();
+	
+	const decTexMatrix2 &transform = context.GetTransform();
 	
 	while( utf8Decoder.GetPosition() < len ){
 		const int character = utf8Decoder.DecodeNextCharacter();
@@ -695,18 +726,21 @@ const deoglRCanvasRenderWorld &canvas ){
 	// render finalize pass into canvas space with all the bells and whistles
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
-	
-	const decTexMatrix2 &transform = context.GetTransform();
-	const decTexMatrix2 tctransform( decTexMatrix2::CreateST( defren.GetScalingU(), -defren.GetScalingV(), 0.0f, defren.GetScalingV() ) );
-	const float transparency = context.GetTransparency();
+	if( context.GetMask() ){
+		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
+	}
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
+	const float transparency = context.GetTransparency();
 	
-	renderThread.GetShader().ActivateShader( pShaderCanvasImage );
-	deoglShaderCompiled &shader = *pShaderCanvasImage->GetCompiled();
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled &shader = *program->GetCompiled();
 	
-	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * transform );
-	shader.SetParameterTexMatrix3x2( spcTCTransform, tctransform );
+	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
+	shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
+		defren.GetScalingU(), -defren.GetScalingV(), 0.0f, defren.GetScalingV() ) );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
 	const deoglConfiguration &config = renderThread.GetConfiguration();
@@ -932,8 +966,14 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pShaderCanvasImage ){
 		pShaderCanvasImage->RemoveUsage();
 	}
+	if( pShaderCanvasImageMask ){
+		pShaderCanvasImageMask->RemoveUsage();
+	}
 	if( pShaderCanvasColor ){
 		pShaderCanvasColor->RemoveUsage();
+	}
+	if( pShaderCanvasColorMask ){
+		pShaderCanvasColorMask->RemoveUsage();
 	}
 	
 	if( pVAOShapes ){

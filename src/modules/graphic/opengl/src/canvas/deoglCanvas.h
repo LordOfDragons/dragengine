@@ -47,6 +47,9 @@ private:
 	bool pDirtyParameters;
 	bool pDirtyContent;
 	bool pDirtyParentPaint;
+	bool pDirtyMaskContent;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -78,6 +81,9 @@ public:
 	
 	/** \brief Set parent paint dirty. */
 	void SetDirtyParentPaint();
+	
+	/** \brief Set mask content dirty. */
+	void SetDirtyMaskContent();
 	
 	
 	
@@ -119,9 +125,14 @@ public:
 	/** \brief Blend mode changed. */
 	virtual void BlendModeChanged();
 	
+	/** \brief Mask changed. */
+	virtual void MaskChanged();
+	
 	/** \brief Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
+	
+	
 	
 protected:
 	/** \brief Create render canvas. Subclass responsibility. */

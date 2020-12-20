@@ -105,6 +105,8 @@ void deoglRCanvasRenderWorld::PrepareForRender(){
 		return;
 	}
 	
+	deoglRCanvas::PrepareForRender();
+	
 	if( pForceToneMapAdaption ){
 		pCamera->SetForceToneMapAdaption( true );
 		pForceToneMapAdaption = false;

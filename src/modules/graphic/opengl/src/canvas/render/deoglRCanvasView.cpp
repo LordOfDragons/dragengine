@@ -180,6 +180,7 @@ void deoglRCanvasView::PrepareRenderTarget(){
 		// each other out resulting in an identity transformation. this way no second code path is
 		// required.
 		context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
+		context.UpdateTransformMask();
 		
 		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
 		Render( context );
@@ -193,8 +194,13 @@ void deoglRCanvasView::PrepareRenderTarget(){
 
 void deoglRCanvasView::PrepareForRender(){
 	const int count = pChildren.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	deoglRCanvas::PrepareForRender();
+	
+	int i;
 	for( i=0; i<count; i++ ){
 		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
 		if( child.GetVisible() ){

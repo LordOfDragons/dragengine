@@ -150,6 +150,7 @@ void deoglRCanvasPaint::PrepareForRender(){
 		return;
 	}
 	
+	deoglRCanvas::PrepareForRender();
 	pPrepareVBOBlock();
 }
 

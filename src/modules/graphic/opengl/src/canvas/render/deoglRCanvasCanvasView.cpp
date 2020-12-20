@@ -90,6 +90,8 @@ void deoglRCanvasCanvasView::PrepareForRender(){
 	if( ! pCanvasView ){
 		return;
 	}
+	
+	deoglRCanvas::PrepareForRender();
 	pCanvasView->PrepareRenderTarget();
 }
 

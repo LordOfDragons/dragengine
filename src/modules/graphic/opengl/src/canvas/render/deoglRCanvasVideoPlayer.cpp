@@ -87,9 +87,12 @@ void deoglRCanvasVideoPlayer::SetTCClampMaximum( const decVector2 &clamp ){
 
 
 void deoglRCanvasVideoPlayer::PrepareForRender(){
-	if( pVideoPlayer ){
-		pVideoPlayer->UpdateTexture();
+	if( ! pVideoPlayer ){
+		return;
 	}
+	
+	deoglRCanvas::PrepareForRender();
+	pVideoPlayer->UpdateTexture();
 }
 
 void deoglRCanvasVideoPlayer::Render( const deoglRenderCanvasContext &context ){

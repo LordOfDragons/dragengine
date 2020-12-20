@@ -28,6 +28,7 @@ class deoglFramebuffer;
 class deoglRCanvas;
 class deoglRCanvasView;
 class deoglRenderTarget;
+class deoglTexture;
 
 
 
@@ -49,6 +50,10 @@ private:
 	decVector2 pTCClampMax;
 	decColorMatrix pColorTransform;
 	float pTransparency;
+	deoglTexture *pMask;
+	decTexMatrix2 pTransformMask;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -57,7 +62,7 @@ public:
 	deoglRenderCanvasContext( const deoglRenderCanvasContext &copy );
 	
 	/** \brief Create render canvas context for an initial canvas view. */
-	deoglRenderCanvasContext( const deoglRCanvasView &canvas, deoglFramebuffer *fbo,
+	deoglRenderCanvasContext( const deoglRCanvas &canvas, deoglFramebuffer *fbo,
 		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown );
 	
 	/** \brief Create render canvas context for a child canvas. */
@@ -131,7 +136,24 @@ public:
 	
 	/** \brief Set transparency relative to render target. */
 	void SetTransparency( float transparency );
+	
+	/** \brief Mask or NULL. */
+	inline deoglTexture *GetMask() const{ return pMask; }
+	
+	/** \brief Set mask or NULL. */
+	void SetMask( deoglTexture *mask );
+	
+	/** \brief Transformation relative to mask render target. */
+	inline const decTexMatrix2 &GetTransformMask() const{ return pTransformMask; }
+	
+	/** \brief Set transformation relative to mask render target. */
+	void SetTransformMask( const decTexMatrix2 &transform );
+	
+	/** \brief Update transformation mask from transformation. */
+	void UpdateTransformMask();
 	/*@}*/
+	
+	
 	
 private:
 	void pCalculateClipping( const decVector2 &canvasSize );

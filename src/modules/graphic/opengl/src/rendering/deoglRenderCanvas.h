@@ -46,7 +46,9 @@ private:
 	GLuint pActiveVAO;
 	
 	deoglShaderProgram *pShaderCanvasColor;
+	deoglShaderProgram *pShaderCanvasColorMask;
 	deoglShaderProgram *pShaderCanvasImage;
+	deoglShaderProgram *pShaderCanvasImageMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;

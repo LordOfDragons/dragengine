@@ -29,7 +29,7 @@
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
-
+class deoglRenderTarget;
 
 
 /**
@@ -46,7 +46,11 @@ private:
 	float pTransparency;
 	GLenum pBlendSrc;
 	GLenum pBlendDest;
+	deoglRCanvas *pMask;
 	bool pVisible;
+	deoglRenderTarget *pMaskRenderTarget;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -113,11 +117,23 @@ public:
 	/** \brief Set OpenGL destination blend mode. */
 	void SetBlendDest( GLenum blendDest );
 	
+	/** \brief Mask. */
+	inline deoglRCanvas *GetMask() const{ return pMask; }
+	
+	/** \brief Set mask. */
+	void SetMask( deoglRCanvas *mask );
+	
 	/** \brief Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set visible. */
 	void SetVisible( bool visible );
+	
+	/** \brief Mask render target or \em NULL if not ready. */
+	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
+	
+	/** \brief Dirty mask render target if present. */
+	void DirtyMaskRenderTarget();
 	
 	
 	
