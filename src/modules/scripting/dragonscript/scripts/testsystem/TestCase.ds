@@ -1,0 +1,229 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TestSystem
+
+
+
+/**
+ * \brief Test Case.
+ * \version 1.5
+ * 
+ * Defines a test case. Test cases have a init(), run() and tearDown() method. While running
+ * the test case init() is called first. Then run() is called during each frame update until
+ * run() returns false. Once the test finished (either successfully or not) tearDown() is
+ * called. It is guaranteed tearDown() is always called if init() has been called.
+ */
+abstract class TestCase
+	/** \brief Test State. */
+	public enum State
+		/** \brief Test case has not run yet. */
+		pending
+		
+		/** \brief Test case is running. */
+		running
+		
+		/** \brief Test case finished successfully. */
+		passed
+		
+		/** \brief Test case finished with failure. */
+		failed
+	end
+	
+	
+	
+	/** \brief Test suite. */
+	private var WeakReference pTestSuite
+	
+	/** \brief Test identifier. */
+	private var String pID
+	
+	/** \brief Test name. */
+	private var UnicodeString pName
+	
+	/** \brief Test case is enabled. */
+	private var bool pEnabled
+	
+	/** \brief Test state. */
+	private var State pState
+	
+	/** \brief Exception if test case failed. */
+	private var Exception pException
+	
+	
+	
+	/**
+	 * \brief Create test case.
+	 */
+	public func new( String id, UnicodeString name )
+		if id == null
+			throw ENullPointer.new( "id" )
+		end
+		if id.empty()
+			throw EInvalidParam.new( "id is empty" )
+		end
+		if name == null
+			throw ENullPointer.new( "name" )
+		end
+		
+		this.pID = id
+		this.pName = name
+		this.pEnabled = true
+		this.pState = State.pending
+		this.pTestSuite = WeakReference.new()
+	end
+	
+	
+	
+	/** \brief Test suite. */
+	public func TestSuite getTestSuite()
+		return this.pTestSuite.get() cast TestSuite
+	end
+	
+	/**
+	 * \brief Set test suite.
+	 * 
+	 * For use only by TestSuite.
+	 */
+	public func void setTestSuite( TestSuite testSuite )
+		this.pTestSuite.set( testSuite )
+	end
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return this.pID
+	end
+	
+	/** \brief Display name. */
+	public func UnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief Test case is enabled. */
+	public func bool getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Set if test case is enabled. */
+	public func void setEnabled( bool enabled )
+		this.pEnabled = enabled
+	end
+	
+	/** \brief Test state. */
+	public func State getState()
+		return this.pState
+	end
+	
+	/** \brief Set test state. */
+	public func void setState( State state )
+		if state == null
+			throw ENullPointer.new( "state" )
+		end
+		
+		this.pState = state
+	end
+	
+	/** \brief Exception if test case failed. */
+	public func Exception getException()
+		return this.pException
+	end
+	
+	/** \brief Set exception if test case failed. */
+	public func void setException( Exception exception )
+		this.pException = exception
+	end
+	
+	
+	
+	/** \brief Initialize test. */
+	public func void init()
+	end
+	
+	/**
+	 * \brief Run test.
+	 * 
+	 * Called every frame update. Test keeps running while this method returns true.
+	 * Once this method returns false the test finishes with state set to passed.
+	 * To fail the test throw an exception.
+	 */
+	abstract public func bool run()
+	
+	/** \brief Tear down after test finished. */
+	public func void tearDown()
+	end
+	
+	
+	
+	/** \brief Fail test if \em found does not equal \em expected. */
+	protected func void assertEquals( Object found, Object expected )
+		if found == expected
+			return
+		end
+		if found != null and found.equals( expected )
+			return
+		end
+		throw AssertEqualsException.new( expected, found )
+	end
+	
+	/** \brief Fail test if \em found equals \em expected. */
+	protected func void assertDiffers( Object found, Object shouldNot )
+		if found == null and shouldNot != null
+			return
+		end
+		if found != null and not found.equals( shouldNot )
+			return
+		end
+		throw AssertDiffersException.new( found )
+	end
+	
+	/** \brief Fail test if \em found is not true. */
+	protected func void assertTrue( bool found )
+		this.assertEquals( found, true )
+	end
+	
+	/** \brief Fail test if \em found is not false. */
+	protected func void assertFalse( bool found )
+		this.assertEquals( found, false )
+	end
+	
+	/** \brief Fail test if \em found is not null. */
+	protected func void assertNull( Object found )
+		this.assertEquals( found, null )
+	end
+	
+	/** \brief Fail test if \em found is not null. */
+	protected func void assertNotNull( Object found )
+		this.assertDiffers( found, null )
+	end
+	
+	/** \brief Fail test if \em ablock does not throw an exception. */
+	protected func void assertThrows( Block ablock )
+		try
+			ablock.run()
+			
+		catch Exception e
+			return
+		end
+		
+		AssertThrowsException.new()
+	end
+end

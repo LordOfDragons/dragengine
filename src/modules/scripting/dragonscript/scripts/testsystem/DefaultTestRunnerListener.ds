@@ -1,0 +1,73 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TestSystem
+
+
+
+/**
+ * \brief Default implementation of TestRunnerListener.
+ * \version 1.5
+ */
+class DefaultTestRunnerListener implements TestRunnerListener
+	/** \brief Create listener. */
+	public func new()
+	end
+	
+	
+	
+	/**
+	 * \brief Started running tests.
+	 */
+	public func void runnerStarted( TestRunner testRunner )
+	end
+	
+	/**
+	 * \brief Finished running tests.
+	 */
+	public func void runnerFinished( TestRunner testRunner )
+	end
+	
+	/**
+	 * \brief Start running test suite.
+	 */
+	public func void testSuiteStarted( TestRunner testRunner, TestSuite testSuite )
+	end
+	
+	/**
+	 * \brief Finished running test suite.
+	 */
+	public func void testSuiteFinished( TestRunner testRunner, TestSuite testSuite )
+	end
+	
+	/**
+	 * \brief Start running test case.
+	 */
+	public func void testCaseStarted( TestRunner testRunner, TestSuite testSuite, TestCase testCase )
+	end
+	
+	/**
+	 * \brief Finished running test case.
+	 */
+	public func void testCaseFinished( TestRunner testRunner, TestSuite testSuite, TestCase testCase )
+	end
+end

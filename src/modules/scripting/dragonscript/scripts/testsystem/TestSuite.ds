@@ -1,0 +1,156 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.TestSystem
+
+
+
+/**
+ * \brief Test Suite.
+ * \version 1.5
+ * 
+ * Groups multiple TestCase. Test suites typically test various functionality of an object type.
+ */
+class TestSuite
+	/** \brief Identifier. */
+	private var String pID
+	
+	/** \brief Display  name. */
+	private var UnicodeString pName
+	
+	/** \brief Test cases as Array of TestCase. */
+	private var Array pTestCases
+	
+	
+	
+	/**
+	 * \brief Create test suite.
+	 */
+	public func new( String id, UnicodeString name )
+		if id == null
+			throw ENullPointer.new( "id" )
+		end
+		if id.empty()
+			throw EInvalidParam.new( "id is empty" )
+		end
+		if name == null
+			throw ENullPointer.new( "name" )
+		end
+		
+		this.pID = id
+		this.pName = name
+		this.pTestCases = Array.new()
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	public func String getID()
+		return this.pID
+	end
+	
+	/** \brief Display name. */
+	public func UnicodeString getName()
+		return this.pName
+	end
+	
+	
+	
+	/** \brief Count of test cases. */
+	public func int getTestCaseCount()
+		return this.pTestCases.getCount()
+	end
+	
+	/** \brief Get test case at index. */
+	public func TestCase getTestCaseAt( int index )
+		return this.pTestCases.getAt( index ) cast TestCase
+	end
+	
+	/** \brief Get test case with identifier or null if not found. */
+	public func TestCase getTestCaseWithID( String id )
+		return this.pTestCases.find( block TestCase each
+			return each.getID().equals( id )
+		end ) cast TestCase
+	end
+	
+	/** \brief Index of test or -1 if absent. */
+	public func int indexOfTestCase( TestCase testCase )
+		return this.pTestCases.indexOf( testCase )
+	end
+	
+	/** \brief Add test case. */
+	public func void addTestCase( TestCase testCase )
+		if testCase == null
+			throw ENullPointer.new( "testCase" )
+		end
+		if this.getTestCaseWithID( testCase.getID() ) != null
+			throw EInvalidParam.new( "test case exists with id: " + testCase.getID() )
+		end
+		this.pTestCases.add( testCase )
+		testCase.setTestSuite( this )
+	end
+	
+	/** brief Remove test case. */
+	public func void removeTestCase( TestCase testCase )
+		this.pTestCases.remove( testCase )
+		testCase.setTestSuite( null )
+	end
+	
+	/** \brief Remove all test cases. */
+	public func void removeAllTestCases()
+		this.pTestCases.forEach( block TestCase each
+			each.setTestSuite( null )
+		end )
+		this.pTestCases.removeAll()
+	end
+	
+	/**
+	 * \brief Visit test cases block.
+	 * 
+	 * Block receives as single parameter TestCase instance.
+	 */
+	public func void forEachTestCase( Block ablock )
+		this.pTestCases.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find test case with block.
+	 * 
+	 * Block receives as single parameter TestCase instance and returns true if the desires
+	 * test case has been found or false to continue searching.
+	 * 
+	 * \returns Found TestCase or null.
+	 */
+	public func TestCase findTestCase( Block ablock )
+		return this.pTestCases.find( ablock ) cast TestCase
+	end
+	
+	/**
+	 * \brief Collect failed test cases.
+	 * \returns Array of TestCase.
+	 */
+	public func Array failedTestCases()
+		return this.pTestCases.collect( block TestCase each
+			return each.getState() == TestCase.State.failed
+		end )
+	end
+end
