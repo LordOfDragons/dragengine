@@ -53,6 +53,14 @@ class Game
 	public func void inputEvent( InputEvent event )
 	end
 	
+	/**
+	 * \brief User requested window to be closed.
+	 * 
+	 * Default implementation calls quitGame().
+	 */
+	public func void userRequestedQuit()
+	end
+	
 	
 	
 	/**
