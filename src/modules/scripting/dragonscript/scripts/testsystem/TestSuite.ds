@@ -29,8 +29,27 @@ namespace Dragengine.TestSystem
  * \version 1.5
  * 
  * Groups multiple TestCase. Test suites typically test various functionality of an object type.
+ * Also supports init() and tearDown() method. This allows to set up testing environment for
+ * a group of tests to run in avoiding the need to set them up for each test.
  */
 class TestSuite
+	/** \brief Test State. */
+	public enum State
+		/** \brief Test suite has not run yet. */
+		pending
+		
+		/** \brief Test suite is running. */
+		running
+		
+		/** \brief All test case finished successfully. */
+		passed
+		
+		/** \brief One or more test case finished with failure. */
+		failed
+	end
+	
+	
+	
 	/** \brief Identifier. */
 	private var String pID
 	
@@ -39,6 +58,12 @@ class TestSuite
 	
 	/** \brief Test cases as Array of TestCase. */
 	private var Array pTestCases
+	
+	/** \brief Test state. */
+	private var State pState
+	
+	/** \brief Exception if test case failed. */
+	private var Exception pException
 	
 	
 	
@@ -59,6 +84,7 @@ class TestSuite
 		this.pID = id
 		this.pName = name
 		this.pTestCases = Array.new()
+		this.pState = State.pending
 	end
 	
 	
@@ -71,6 +97,30 @@ class TestSuite
 	/** \brief Display name. */
 	public func UnicodeString getName()
 		return this.pName
+	end
+	
+	/** \brief Test state. */
+	public func State getState()
+		return this.pState
+	end
+	
+	/** \brief Set test state. */
+	public func void setState( State state )
+		if state == null
+			throw ENullPointer.new( "state" )
+		end
+		
+		this.pState = state
+	end
+	
+	/** \brief Exception if test suite failed. */
+	public func Exception getException()
+		return this.pException
+	end
+	
+	/** \brief Set exception if test suite failed. */
+	public func void setException( Exception exception )
+		this.pException = exception
 	end
 	
 	
@@ -152,5 +202,14 @@ class TestSuite
 		return this.pTestCases.collect( block TestCase each
 			return each.getState() == TestCase.State.failed
 		end )
+	end
+	
+	
+	/** \brief Initialize test suite. */
+	public func void init()
+	end
+	
+	/** \brief Tear down after test suite finished. */
+	public func void tearDown()
 	end
 end

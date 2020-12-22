@@ -165,7 +165,7 @@ abstract class TestCase
 	 * Once this method returns false the test finishes with state set to passed.
 	 * To fail the test throw an exception.
 	 */
-	abstract public func bool run()
+	abstract public func bool run( TestSuite testSuite )
 	
 	/** \brief Tear down after test finished. */
 	public func void tearDown()
