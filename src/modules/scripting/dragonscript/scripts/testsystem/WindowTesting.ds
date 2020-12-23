@@ -1,0 +1,606 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Window for running tests.
+ * 
+ * Provides default UI for running tests. To use this window create instance of window
+ * and add test suites.
+ */
+class WindowTesting extends Window
+	/** \brief Test suite renderer .*/
+	protected class LERTestSuite extends DefaultListElementRenderer
+		private var Dictionary stateNames
+		private var Dictionary dsStateSuffices
+		
+		public func new()
+			stateNames = Dictionary.new()
+			stateNames.setAt(TestSuite.State.pending, "Pending")
+			stateNames.setAt(TestSuite.State.running, "Running")
+			stateNames.setAt(TestSuite.State.passed, "Passed")
+			stateNames.setAt(TestSuite.State.failed, "Failed")
+			
+			dsStateSuffices = Dictionary.new()
+			dsStateSuffices.setAt(TestSuite.State.pending, ".Pending")
+			dsStateSuffices.setAt(TestSuite.State.running, ".Running")
+			dsStateSuffices.setAt(TestSuite.State.passed, ".Passed")
+			dsStateSuffices.setAt(TestSuite.State.failed, ".Failed")
+			
+			setDesignerSelector("ListRenderer.TestSuite")
+		end
+		
+		public func Widget createRenderer(ListBox listBox)
+			return Panel.new(FlowLayout.new(LayoutAxis.x, 5, FlowLayout.Stretch.first), block Panel p
+				p.addWidget(Label.new(""))
+				p.addWidget(Label.new(""))
+			end)
+		end
+		
+		public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+			var Panel panel = renderer cast Panel
+			var Label labelName = panel.getWidget(0) cast Label
+			var Label labelState = panel.getWidget(1) cast Label
+			var String ds = getDesignerSelector()
+			var String dsStateSuffix = ""
+			var String dsSuffix = ""
+			
+			if selected
+				dsSuffix = ".Selected"
+			end
+			
+			panel.runWhileBlockingLayout(block
+				if element != null
+					var TestSuite suite = element cast TestSuite
+					labelName.setText(suite.getName().toUTF8())
+					labelState.setText(stateNames.getAt(suite.getState()) cast String)
+					dsStateSuffix = dsStateSuffices.getAt(suite.getState()) cast String
+					
+				else
+					labelName.setText(String.new('X', 30))
+					labelState.setText("Pending")
+				end
+				
+				panel.setDesignerSelector("Panel." + ds + dsSuffix)
+				labelName.setDesignerSelector("Label." + ds + ".Name" + dsSuffix)
+				labelState.setDesignerSelector("Label." + ds + ".State" + dsStateSuffix + dsSuffix)
+			end)
+			panel.doLayout()
+		end
+	end
+	
+	/** \brief Test suite model listener. */
+	protected class SelectTestSuite extends DefaultListModelListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void selectionChanged(ListModel listModel)
+			window.updateModelTestCases()
+		end
+	end
+	
+	/** \brief Test case renderer .*/
+	protected class LERTestCase extends DefaultListElementRenderer
+		private var Dictionary stateNames
+		private var Dictionary dsStateSuffices
+		
+		public func new()
+			stateNames = Dictionary.new()
+			stateNames.setAt(TestCase.State.pending, "Pending")
+			stateNames.setAt(TestCase.State.running, "Running")
+			stateNames.setAt(TestCase.State.passed, "Passed")
+			stateNames.setAt(TestCase.State.failed, "Failed")
+			
+			dsStateSuffices = Dictionary.new()
+			dsStateSuffices.setAt(TestCase.State.pending, ".Pending")
+			dsStateSuffices.setAt(TestCase.State.running, ".Running")
+			dsStateSuffices.setAt(TestCase.State.passed, ".Passed")
+			dsStateSuffices.setAt(TestCase.State.failed, ".Failed")
+			
+			setDesignerSelector("ListRenderer.TestCase")
+		end
+		
+		public func Widget createRenderer(ListBox listBox)
+			return Panel.new(FlowLayout.new(LayoutAxis.x, 5, FlowLayout.Stretch.first), block Panel p
+				p.addWidget(Label.new(""))
+				p.addWidget(Label.new(""))
+			end)
+		end
+		
+		public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+			var Panel panel = renderer cast Panel
+			var Label labelName = panel.getWidget(0) cast Label
+			var Label labelState = panel.getWidget(1) cast Label
+			var String ds = getDesignerSelector()
+			var String dsStateSuffix = ""
+			var String dsSuffix = ""
+			
+			if selected
+				dsSuffix = ".Selected"
+			end
+			
+			panel.runWhileBlockingLayout(block
+				if element != null
+					var TestCase tc = element cast TestCase
+					labelName.setText(tc.getName().toUTF8())
+					labelState.setText(stateNames.getAt(tc.getState()) cast String)
+					dsStateSuffix = dsStateSuffices.getAt(tc.getState()) cast String
+					
+				else
+					labelName.setText(String.new('X', 30))
+					labelState.setText("Pending")
+				end
+				
+				panel.setDesignerSelector("Panel." + ds + dsSuffix)
+				labelName.setDesignerSelector("Label." + ds + ".Name" + dsSuffix)
+				labelState.setDesignerSelector("Label." + ds + ".State" + dsStateSuffix + dsSuffix)
+			end)
+			panel.doLayout()
+		end
+	end
+	
+	/** \brief Test runner listener updating window representation. */
+	protected class UpdateUIListener extends DefaultTestRunnerListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void runnerStarted(TestRunner testRunner)
+			window.onTestSuitesChanged()
+			window.onTestCasesChanged()
+			window.updateButtonStates()
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			window.onTestSuitesChanged()
+			window.onTestCasesChanged()
+			window.updateButtonStates()
+		end
+		
+		public func void testSuiteStarted(TestRunner testRunner, TestSuite testSuite)
+			window.onTestSuiteChanged(testSuite)
+			window.selectTestSuite(testSuite)
+		end
+		
+		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+			window.onTestSuiteChanged(testSuite)
+		end
+		
+		public func void testCaseStarted(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			window.onTestCaseChanged(testCase)
+			window.selectTestCase(testCase)
+		end
+		
+		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			window.onTestCaseChanged(testCase)
+		end
+	end
+	
+	/** \brief Test runner listener logging to console. */
+	protected class LogConsoleListener extends DefaultTestRunnerListener
+		private var WindowTesting window
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void runnerStarted(TestRunner testRunner)
+			window.addLogs("Start running tests")
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			var int countTests = testRunner.getTestSuiteCount()
+			var int countFailed = testRunner.failedTestSuites().getCount()
+			window.addLogs("Finished running tests: {} suites PASSED, {} suites FAILED".format(\
+				Array.newWith(countTests - countFailed, countFailed)))
+		end
+		
+		public func void testSuiteStarted(TestRunner testRunner, TestSuite testSuite)
+			window.addLogs("Start testing test suite: {} ({})".format(\
+				Array.newWith(testSuite.getName(), testSuite.getID())))
+		end
+		
+		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+			var int countTests = testSuite.getTestCaseCount()
+			var int countFailed = testSuite.failedTestCases().getCount()
+			window.addLogs("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
+				Array.newWith(testSuite.getName(), testSuite.getID(), countTests - countFailed, countFailed)))
+		end
+		
+		public func void testCaseStarted(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			window.addLogs("Start testing test case: {} ({})".format(\
+				Array.newWith(testCase.getName(), testCase.getID())))
+		end
+		
+		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			if testCase.getState() == TestCase.State.passed
+				window.addLogs("Finished testing test case: {} ({}): PASSED".format(\
+					Array.newWith(testCase.getName(), testCase.getID())))
+				
+			else
+				window.addLogs("Finished testing test case: {} ({}): FAILED".format(\
+					Array.newWith(testCase.getName(), testCase.getID())))
+				if testCase.getException() != null
+					var String text = " => " + testCase.getException().getReason()
+					var int i, count = testCase.getException().getTraceCount()
+					
+					for i = 0 to count
+						text = text + "\n{}) {}.{}(): {}".format(Array.newWith(i + 1, \
+							testCase.getException().getTraceClass(i), \
+							testCase.getException().getTraceFunction(i), \
+							testCase.getException().getTraceLine(i)))
+					end
+					
+					window.addLogs(text)
+				end
+			end
+		end
+	end
+	
+	/** \brief Start running tests action. */
+	protected class StartTestingAll implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			window.startTesting()
+		end
+	end
+	
+	/** \brief Start running tests action. */
+	protected class StartTestingSelected implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			var TestSuite suite = window.getSelectedTestSuite()
+			if suite != null
+				window.startTesting(Array.newWith(suite))
+			end
+		end
+	end
+	
+	/** \brief Stop running tests action. */
+	protected class StopTesting implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			window.stopTesting()
+		end
+	end
+	
+	
+	
+	private var Console console
+	private var TestRunner testRunner
+	private var TestGameApp testGameApp
+	private var DefaultListModel modelTestSuites
+	private var DefaultListModel modelTestCases
+	private var DefaultTextModel modelLogs
+	private var ScrollPanel scrollPanelLogs
+	private var Button buttonRunAll
+	private var Button buttonRunSelected
+	private var Button buttonStop
+	
+	
+	
+	/** \brief Create window. */
+	public func new(Console console, Desktop desktop)
+		if console == null
+			throw ENullPointer.new("console")
+		end
+		if desktop == null
+			throw ENullPointer.new("desktop")
+		end
+		
+		this.console = console
+		
+		testGameApp = TestGameApp.new()
+		testGameApp.initGame()
+		
+		createContent()
+		desktop.addWindow(this)
+		
+		testRunner = TestRunner.new()
+		testRunner.addListener(LogConsoleListener.new(this))
+		testRunner.addListener(UpdateUIListener.new(this))
+		
+		addTestSuites()
+		updateButtonStates()
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		if testRunner != null
+			testRunner.dispose()
+			testRunner = null
+		end
+		if testGameApp != null
+			testGameApp.cleanUp()
+			testGameApp = null
+		end
+		
+		super.dispose()
+		
+		modelTestSuites = null
+		modelTestCases = null
+		modelLogs = null
+		scrollPanelLogs = null
+		buttonRunAll = null
+		buttonRunSelected = null
+		buttonStop = null
+		console = null
+	end
+	
+	
+	
+	/** \brief Game application for use by test suited. */
+	public func TestGameApp getTestGameApp()
+		return testGameApp
+	end
+	
+	/** \brief Console. */
+	public func Console getConsole()
+		return console
+	end
+	
+	/** \brief Add test suite. */
+	public func void addTestSuite(TestSuite suite)
+		if suite == null
+			throw ENullPointer.new("suite")
+		end
+		if not this.modelTestSuites.has(suite)
+			this.modelTestSuites.add(suite)
+		end
+	end
+	
+	/** \brief Remove test suite. */
+	public func void removeTestSuite(TestSuite suite)
+		if this.modelTestSuites.has(suite)
+			this.modelTestSuites.remove(suite)
+		end
+	end
+	
+	/** \brief Remove all test suites. */
+	public func void removeAllTestSuites()
+		this.modelTestSuites.removeAll()
+	end
+	
+	
+	
+	/** \brief Start testing. */
+	public func void startTesting()
+		var Array suites = Array.new()
+		modelTestSuites.forEach(block TestSuite each
+			suites.add(each)
+		end)
+		startTesting(suites)
+	end
+	
+	/** \brief Start testing Array of TestSuite. */
+	public func void startTesting(Array suites)
+		if suites == null
+			throw ENullPointer.new("suites")
+		end
+		
+		if testRunner.getRunning()
+			return
+		end
+		
+		modelLogs.setText("")
+		
+		testRunner.removeAllTestSuites()
+		suites.forEach(block TestSuite each
+			testRunner.addTestSuite(each)
+		end)
+		
+		testRunner.start()
+	end
+	
+	/** \brief Stop testing. */
+	public func void stopTesting()
+		if testRunner.getRunning()
+			testRunner.stop()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Create window content.
+	 */
+	protected func void createContent()
+		runWhileBlockingLayout(block
+			setDesignerSelector("Window.WindowTesting")
+			setVisible(true)
+			setWindowState(Window.WindowState.maximized)
+			
+			setLayout(BorderLayout.new(5))
+			
+			// content panel with test suite and test case list box and log panel
+			addWidget(Panel.new(GridLayout.new(2, 1, 5), block Panel p
+				p.addWidget(Panel.new(GridLayout.new(1, 2, 5), block Panel p2
+					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p3
+						p3.addWidget(Label.new("Test Suites:"))
+						
+						modelTestSuites = DefaultListModel.new()
+						modelTestSuites.addListener(SelectTestSuite.new(this))
+						p3.addWidget(ListBox.new(modelTestSuites, LERTestSuite.new()))
+					end))
+					
+					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p3
+						p3.addWidget(Label.new("Test Cases:"))
+						
+						modelTestCases = DefaultListModel.new()
+						p3.addWidget(ListBox.new(modelTestCases, LERTestCase.new()))
+					end))
+				end))
+				
+				p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p2
+					p2.addWidget(Label.new("Test Runner Logs:"))
+					
+					modelLogs = DefaultTextModel.new()
+					var TextArea textArea = TextArea.new(modelLogs, 10, true)
+					textArea.setDesignerSelector("TextArea.Logs")
+					p2.addWidget(scrollPanelLogs = ScrollPanel.new(textArea))
+				end))
+			end), BorderLayout.Area.content)
+			
+			// button panel at the bottom
+			addWidget(Panel.new(GridLayout.new(0, 1, 5), block Panel p
+				p.addWidget(buttonRunAll = Button.new("Run All", StartTestingAll.new(this)))
+				p.addWidget(buttonRunSelected = Button.new("Run Selected", StartTestingSelected.new(this)))
+				p.addWidget(buttonStop = Button.new("Stop", StopTesting.new(this)))
+				p.addWidget(Button.new("Quit", BlockActionListener.new(block ActionEvent event
+					Engine.quit()
+				end)))
+			end), BorderLayout.Area.bottom)
+		end)
+		doLayout()
+	end
+	
+	/** \brief Update button states. */
+	public func void updateButtonStates()
+		buttonRunAll.setEnabled(not testRunner.getRunning())
+		buttonRunSelected.setEnabled(not testRunner.getRunning())
+		buttonStop.setEnabled(testRunner.getRunning())
+	end
+	
+	/** \brief Add test suites. */
+	protected func void addTestSuites()
+	end
+	
+	/** \brief Selected test suite or null. */
+	public func TestSuite getSelectedTestSuite()
+		if modelTestSuites.getSelected() == -1
+			return null
+		end
+		return modelTestSuites.getAt(modelTestSuites.getSelected()) cast TestSuite
+	end
+	
+	/** \brief Select test suite. */
+	public func void selectTestSuite(TestSuite testSuite)
+		var int index = modelTestSuites.indexOf(testSuite)
+		if index != -1
+			modelTestSuites.setSelected(index)
+		end
+	end
+	
+	/** \brief All test suites changed. */
+	public func void onTestSuitesChanged()
+		if modelTestSuites.getCount() > 0
+			modelTestSuites.notifyContentChanged(0, modelTestSuites.getCount() - 1)
+		end
+	end
+	
+	/** \brief Test suite changed. */
+	public func void onTestSuiteChanged(TestSuite testSuite)
+		var int index = modelTestSuites.indexOf(testSuite)
+		if index != -1
+			modelTestSuites.notifyContentChanged(index, index)
+		end
+	end
+	
+	/** \brief Update test cases model. */
+	public func void updateModelTestCases()
+		var Array elements = Array.new()
+		var TestSuite suite = getSelectedTestSuite()
+		if suite != null
+			suite.forEachTestCase(block TestCase each
+				elements.add(each)
+			end)
+		end
+		modelTestCases.setContent(elements)
+	end
+	
+	/** \brief Selected test case or null. */
+	public func TestCase getSelectedTestCase()
+		if modelTestCases.getSelected() == -1
+			return null
+		end
+		return modelTestCases.getAt(modelTestCases.getSelected()) cast TestCase
+	end
+	
+	/** \brief Select test case. */
+	public func void selectTestCase(TestCase testCase)
+		var int index = modelTestCases.indexOf(testCase)
+		if index != -1
+			modelTestCases.setSelected(index)
+		end
+	end
+	
+	/** \brief All test cases changed. */
+	public func void onTestCasesChanged()
+		if modelTestCases.getCount() > 0
+			modelTestCases.notifyContentChanged(0, modelTestCases.getCount() - 1)
+		end
+	end
+	
+	/** \brief Test case changed. */
+	public func void onTestCaseChanged(TestCase testCase)
+		var int index = modelTestCases.indexOf(testCase)
+		if index != -1
+			modelTestCases.notifyContentChanged(index, index)
+		end
+	end
+	
+	/** \brief Add text to logs. */
+	public func void addLogs(String text)
+		console.addMessage(text)
+		
+		var RangeModel model = scrollPanelLogs.getVerticalScrollBar().getModel()
+		var bool atBottom = model.getValue() >= model.getMaximum() - model.getPageSize()
+		
+		var String content = modelLogs.getText()
+		if content.getLength() > 0
+			content = content + "\n"
+		end
+		content = content + text
+		modelLogs.setText(content)
+		
+		if atBottom
+			scrollPanelLogs.getHorizontalScrollBar().getModel().setValue(0)
+			model.setValue(model.getMaximum() - model.getPageSize())
+		end
+	end
+end
