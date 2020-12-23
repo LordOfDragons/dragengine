@@ -31,6 +31,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Basic implementation of application class for use by testing applications.
+ * \version 1.5
  * 
  * Creates a Desktop and WindowTesting instance. Subclass can add TestSuite to the window.
  * Using the window the tests can be run.

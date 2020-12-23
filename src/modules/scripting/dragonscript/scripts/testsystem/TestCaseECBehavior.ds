@@ -30,6 +30,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Base class for testing BehaviorElementClass behaviors.
+ * \version 1.5
  * 
  * This class helps to test ECBehavior subclasses by providing the boiler plate code required
  * to set up such tests. In particular this base class does the following:
@@ -100,9 +101,7 @@ abstract class TestCaseECBehavior extends TestCase
 			super.dispose()
 		end
 		
-		/**
-		 * Overrides BehaviorElementClass.createElement() to store element aside
-		 */
+		/** \brief Store element aside. */
 		protected func Element createElement()
 			var Element element = super.createElement()
 			test.setElement(element cast BehaviorElement)

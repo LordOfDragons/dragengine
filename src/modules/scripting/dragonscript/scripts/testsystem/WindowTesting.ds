@@ -30,6 +30,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Window for running tests.
+ * \version 1.5
  * 
  * Provides default UI for running tests. To use this window create instance of window
  * and add test suites.
@@ -589,7 +590,7 @@ class WindowTesting extends Window
 		console.addMessage(text)
 		
 		var RangeModel model = scrollPanelLogs.getVerticalScrollBar().getModel()
-		var bool atBottom = model.getValue() >= model.getMaximum() - model.getPageSize()
+		var bool atBottom = model.getValue() >= model.getMaximum()
 		
 		var String content = modelLogs.getText()
 		if content.getLength() > 0
@@ -600,7 +601,7 @@ class WindowTesting extends Window
 		
 		if atBottom
 			scrollPanelLogs.getHorizontalScrollBar().getModel().setValue(0)
-			model.setValue(model.getMaximum() - model.getPageSize())
+			model.setValue(model.getMaximum())
 		end
 	end
 end

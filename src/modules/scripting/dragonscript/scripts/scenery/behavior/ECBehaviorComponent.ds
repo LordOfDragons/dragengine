@@ -398,7 +398,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * If \em model, \em skin, \em rig, \em occlusionMesh or \em audioModel are null the
 	 * respective path is not set.
 	 */
-	public  func void setCommonPath( String directory, String model, String skin, \
+	public  func void setAllPath( String directory, String model, String skin, \
 	String rig, String occlusionMesh, String audioModel )
 		this.setCommonPath( directory, model, skin, rig )
 		if occlusionMesh != null

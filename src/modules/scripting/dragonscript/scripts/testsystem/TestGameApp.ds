@@ -26,6 +26,7 @@ pin Dragengine.Gui
 
 /**
  * \brief BaseGameApp for use by tests.
+ * \version 1.5
  * 
  * This class has to nullify all side effects of using BaseGameApp which interferes with
  * the regular application handling. This is a bit complicated but ensures tests can run

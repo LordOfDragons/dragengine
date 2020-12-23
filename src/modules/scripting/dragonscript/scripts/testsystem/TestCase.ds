@@ -22,6 +22,7 @@
 
 namespace Dragengine.TestSystem
 
+pin Dragengine.Scenery
 
 
 /**
@@ -74,15 +75,15 @@ abstract class TestCase
 	/**
 	 * \brief Create test case.
 	 */
-	public func new( String id, UnicodeString name )
+	public func new(String id, UnicodeString name)
 		if id == null
-			throw ENullPointer.new( "id" )
+			throw ENullPointer.new("id")
 		end
 		if id.empty()
-			throw EInvalidParam.new( "id is empty" )
+			throw EInvalidParam.new("id is empty")
 		end
 		if name == null
-			throw ENullPointer.new( "name" )
+			throw ENullPointer.new("name")
 		end
 		
 		this.pID = id
@@ -104,8 +105,8 @@ abstract class TestCase
 	 * 
 	 * For use only by TestSuite.
 	 */
-	public func void setTestSuite( TestSuite testSuite )
-		this.pTestSuite.set( testSuite )
+	public func void setTestSuite(TestSuite testSuite)
+		this.pTestSuite.set(testSuite)
 	end
 	
 	/** \brief Identifier. */
@@ -124,7 +125,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Set if test case is enabled. */
-	public func void setEnabled( bool enabled )
+	public func void setEnabled(bool enabled)
 		this.pEnabled = enabled
 	end
 	
@@ -134,9 +135,9 @@ abstract class TestCase
 	end
 	
 	/** \brief Set test state. */
-	public func void setState( State state )
+	public func void setState(State state)
 		if state == null
-			throw ENullPointer.new( "state" )
+			throw ENullPointer.new("state")
 		end
 		
 		this.pState = state
@@ -148,7 +149,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Set exception if test case failed. */
-	public func void setException( Exception exception )
+	public func void setException(Exception exception)
 		this.pException = exception
 	end
 	
@@ -165,7 +166,7 @@ abstract class TestCase
 	 * Once this method returns false the test finishes with state set to passed.
 	 * To fail the test throw an exception.
 	 */
-	abstract public func bool run( TestSuite testSuite )
+	abstract public func bool run(TestSuite testSuite)
 	
 	/** \brief Tear down after test finished. */
 	public func void tearDown()
@@ -174,49 +175,49 @@ abstract class TestCase
 	
 	
 	/** \brief Fail test if \em found does not equal \em expected. */
-	protected func void assertEquals( Object found, Object expected )
+	protected func void assertEquals(Object found, Object expected)
 		if found == expected
 			return
 		end
-		if found != null and found.equals( expected )
+		if found != null and found.equals(expected)
 			return
 		end
-		throw AssertEqualsException.new( expected, found )
+		throw AssertEqualsException.new(expected, found)
 	end
 	
 	/** \brief Fail test if \em found equals \em expected. */
-	protected func void assertDiffers( Object found, Object shouldNot )
+	protected func void assertDiffers(Object found, Object shouldNot)
 		if found == null and shouldNot != null
 			return
 		end
-		if found != null and not found.equals( shouldNot )
+		if found != null and not found.equals(shouldNot)
 			return
 		end
-		throw AssertDiffersException.new( found )
+		throw AssertDiffersException.new(found)
 	end
 	
 	/** \brief Fail test if \em found is not true. */
-	protected func void assertTrue( bool found )
-		this.assertEquals( found, true )
+	protected func void assertTrue(bool found)
+		this.assertEquals(found, true)
 	end
 	
 	/** \brief Fail test if \em found is not false. */
-	protected func void assertFalse( bool found )
-		this.assertEquals( found, false )
+	protected func void assertFalse(bool found)
+		this.assertEquals(found, false)
 	end
 	
 	/** \brief Fail test if \em found is not null. */
-	protected func void assertNull( Object found )
-		this.assertEquals( found, null )
+	protected func void assertNull(Object found)
+		this.assertEquals(found, null)
 	end
 	
 	/** \brief Fail test if \em found is not null. */
-	protected func void assertNotNull( Object found )
-		this.assertDiffers( found, null )
+	protected func void assertNotNull(Object found)
+		this.assertDiffers(found, null)
 	end
 	
 	/** \brief Fail test if \em ablock does not throw an exception. */
-	protected func void assertThrows( Block ablock )
+	protected func void assertThrows(Block ablock)
 		try
 			ablock.run()
 			
@@ -225,5 +226,53 @@ abstract class TestCase
 		end
 		
 		AssertThrowsException.new()
+	end
+	
+	/** \brief Fail test if vectors are not equal within range of 1mm. */
+	protected func void assertDVector(DVector expected, DVector found)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range. */
+	protected func void assertDVector(DVector expected, DVector found, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range of 1mm. */
+	protected func void assertVector(Vector expected, Vector found)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range. */
+	protected func void assertVector(DVector expected, DVector found, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if quaternions are not equal within range of 1mm. */
+	protected func void assertQuaternion(Quaternion expected, Quaternion found)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if quaternions are not equal within range. */
+	protected func void assertQuaternion(Quaternion expected, Quaternion found, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
 	end
 end
