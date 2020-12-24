@@ -57,9 +57,9 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeActionContextMenuReference pActionInheritMenu;
 	igdeActionReference pActionInheritAdd;
 	igdeActionReference pActionInheritRemove;
+	igdeActionReference pActionInheritRemoveAll;
 	igdeActionReference pActionPropertyValueSet;
 	igdeActionReference pActionPropertyValueRemove;
 	igdeActionReference pActionPropertyValueClear;
@@ -85,11 +85,11 @@ private:
 	igdeWidgetReference pListHideTags;
 	igdeWidgetReference pListPartialHideTags;
 	
-	igdeComboBoxReference pCBInherits;
-	igdeButtonReference pBtnMenuInherits;
+	igdeListBoxReference pListInherits;
 	igdeComboBoxFilterReference pInheritCBClass;
 	igdeButtonReference pBtnJumpToInheritClass;
 	igdeTextFieldReference pInheritEditPropertyPrefix;
+	igdeButtonReference pBtnInheritPropertyPrefixReset;
 	
 	
 	
@@ -141,9 +141,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionInheritMenu() const{ return pActionInheritMenu; }
 	inline igdeAction *GetActionInheritAdd() const{ return pActionInheritAdd; }
 	inline igdeAction *GetActionInheritRemove() const{ return pActionInheritRemove; }
+	inline igdeAction *GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
 	inline igdeAction *GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
 	inline igdeAction *GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
 	inline igdeAction *GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }

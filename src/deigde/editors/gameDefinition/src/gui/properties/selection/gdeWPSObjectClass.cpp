@@ -84,6 +84,7 @@
 #include "../../../undosys/objectClass/texproperty/gdeUOCTPCFPSetExtension.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCAddInherit.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCRemoveInherit.h"
+#include "../../../undosys/objectClass/inherit/gdeUOCRemoveAllInherits.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetName.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetPropertyPrefix.h"
 
@@ -96,14 +97,17 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoReference.h>
@@ -453,27 +457,21 @@ public:
 
 
 
-class cComboInherits : public cBaseComboBoxListener {
-public:
-	cComboInherits( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox&, gdeObjectClass* ){
-		pPanel.UpdateInherit();
-		return NULL;
-	}
-};
-
-class cActionInheritMenu : public igdeActionContextMenu {
+class cListInherits : public igdeListBoxListener{
 	gdeWPSObjectClass &pPanel;
-public:
-	cActionInheritMenu( gdeWPSObjectClass &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Inherits menu" ), pPanel( panel ){ }
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
-		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, pPanel.GetActionInheritAdd() );
-		helper.MenuCommand( contextMenu, pPanel.GetActionInheritRemove() );
+public:
+	cListInherits( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnSelectionChanged( igdeListBox* ){
+		pPanel.UpdateInherit();
+	}
+	
+	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( menu, pPanel.GetActionInheritAdd() );
+		helper.MenuCommand( menu, pPanel.GetActionInheritRemove() );
+		helper.MenuCommand( menu, pPanel.GetActionInheritRemoveAll() );
 	}
 };
 
@@ -483,8 +481,17 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add inherit" ){ }
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		const gdeObjectClassList &objectClasses = pPanel.GetGameDefinition()->GetObjectClasses();
+		const int count = objectClasses.GetCount();
+		decStringList proposals;
+		int i;
+		for( i=0; i<count; i++ ){
+			proposals.Add( objectClasses.GetAt( i )->GetName() );
+		}
+		proposals.SortAscending();
+		
 		decString name( "Name" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Inherit", "Name:", name ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals ) ){
 			return NULL;
 		}
 		
@@ -522,6 +529,20 @@ public:
 	}
 };
 
+class cActionInheritRemoveAll : public cBaseAction {
+public:
+	cActionInheritRemoveAll( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all inherits" ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		return objectClass->GetInherits().GetCount() > 0 ? new gdeUOCRemoveAllInherits( objectClass ) : NULL;
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetInherit() != NULL );
+	}
+};
+
 class cComboInheritName : public cBaseComboBoxListener {
 public:
 	cComboInheritName( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
@@ -545,6 +566,25 @@ public:
 			return NULL;
 		}
 		return new gdeUOCInheritSetPropertyPrefix( objectClass, inherit, textField.GetText() );
+	}
+};
+
+class cActionInheritResetPropertyPrefix : public cBaseAction {
+public:
+	cActionInheritResetPropertyPrefix( gdeWPSObjectClass &panel ) : cBaseAction( panel, "R", NULL,
+		"Reset property prefix to default property prefix of inherited object class" ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		gdeOCInherit * const inherit = pPanel.GetInherit();
+		if( inherit ){
+			const gdeObjectClass * const ioc = pPanel.GetGameDefinition()->FindObjectClass( inherit->GetName() );
+			if( ioc ){
+				if( inherit->GetPropertyPrefix() != ioc->GetDefaultInheritPropertyPrefix() ){
+					return new gdeUOCInheritSetPropertyPrefix( objectClass, inherit, ioc->GetDefaultInheritPropertyPrefix() );
+				}
+			}
+		}
+		return NULL;
 	}
 };
 
@@ -641,7 +681,7 @@ public:
 		
 		decString value;
 		objectClass->NamedPropertyDefaultValue( key, value );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Set Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Set Property Value", "Value:", value ) ){
 			return NULL;
 		}
 		
@@ -724,7 +764,7 @@ public:
 		
 		const decString &key = listBox->GetItemAt( index )->GetText();
 		decString value( objectClass->GetPropertyValues().GetAt( key, "" ) );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Edit Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Edit Property Value", "Value:", value ) ){
 			return;
 		}
 		
@@ -764,7 +804,7 @@ pGameDefinition( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainerReference content, groupBox, form, frameLine;
 	
 	pListener = new gdeWPSObjectClassListener( *this );
 	
@@ -773,9 +813,9 @@ pGameDefinition( NULL )
 	
 	
 	// actions
-	pActionInheritMenu.TakeOver( new cActionInheritMenu( *this ) );
 	pActionInheritAdd.TakeOver( new cActionInheritAdd( *this ) );
 	pActionInheritRemove.TakeOver( new cActionInheritRemove( *this ) );
+	pActionInheritRemoveAll.TakeOver( new cActionInheritRemoveAll( *this ) );
 	
 	pActionPropertyValueSet.TakeOver( new cActionPropertyValueSet( *this ) );
 	pActionPropertyValueRemove.TakeOver( new cActionPropertyValueRemove( *this ) );
@@ -809,6 +849,29 @@ pGameDefinition( NULL )
 	helper.Button( frameLine, pBtnJumpToCategory, new cActionJumpToCategory( *this ), true );
 	
 	
+	// inherits
+	helper.GroupBoxFlow( content, groupBox, "Inherits:" );
+	
+	helper.ListBox( groupBox, 5, "Inherited object classes", pListInherits, new cListInherits( *this ) );
+	pListInherits->SetDefaultSorter();
+	
+	form.TakeOver( new igdeContainerForm( env ) );
+	groupBox->AddChild( form );
+	
+	helper.FormLineStretchFirst( form, "Name:", "Name of class to inherit", frameLine );
+	helper.ComboBoxFilter( frameLine, true, "Name of class to inherit",
+		pInheritCBClass, new cComboInheritName( *this ) );
+	pInheritCBClass->SetDefaultSorter();
+	pInheritCBClass->SetFilterCaseInsentive( true );
+	helper.Button( frameLine, pBtnJumpToInheritClass, new cActionInheritJumpToClass( *this ), true );
+	
+	helper.FormLineStretchFirst( form, "Property Prefix:",
+		"Prefix to apply to inherited property names", frameLine );
+	helper.EditString( frameLine, "Prefix to apply to inherited property names",
+		pInheritEditPropertyPrefix, new cTextInheritPropertyPrefix( *this ) );
+	helper.Button( frameLine, pBtnInheritPropertyPrefixReset, new cActionInheritResetPropertyPrefix( *this ), true );
+	
+	
 	// properties
 	helper.GroupBoxFlow( content, groupBox, "Properties:" );
 	pEditProperties.TakeOver( new cEditProperties( *this ) );
@@ -816,7 +879,7 @@ pGameDefinition( NULL )
 	
 	
 	// property values
-	helper.GroupBoxFlow( content, groupBox, "Property Values:", false, true );
+	helper.GroupBoxFlow( content, groupBox, "Property Values:", true );
 	
 	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBox( frameLine, true, "Property value to set", pCBPropertyValuesKeys, NULL );
@@ -838,25 +901,6 @@ pGameDefinition( NULL )
 	pEditTextureProperties.TakeOver( new cEditTextureProperties( *this ) );
 	groupBox->AddChild( pEditTextureProperties );
 	
-	
-	// inherits
-	helper.GroupBox( content, groupBox, "Inherits:", true );
-	
-	helper.FormLineStretchFirst( groupBox, "Inherit:", "Inherit to edit", frameLine );
-	helper.ComboBox( frameLine, "Inherit to edit", pCBInherits, new cComboInherits( *this ) );
-	pCBInherits->SetDefaultSorter();
-	helper.Button( frameLine, pBtnMenuInherits, pActionInheritMenu );
-	pActionInheritMenu->SetWidget( pBtnMenuInherits );
-	
-	helper.FormLineStretchFirst( groupBox, "Name:", "Name of class to inherit", frameLine );
-	helper.ComboBoxFilter( frameLine, true, "Name of class to inherit",
-		pInheritCBClass, new cComboInheritName( *this ) );
-	pInheritCBClass->SetDefaultSorter();
-	pInheritCBClass->SetFilterCaseInsentive( true );
-	helper.Button( frameLine, pBtnJumpToInheritClass, new cActionInheritJumpToClass( *this ), true );
-	
-	helper.EditString( groupBox, "Property Prefix:", "Prefix to apply to inherited property names",
-		pInheritEditPropertyPrefix, new cTextInheritPropertyPrefix( *this ) );
 	
 	// tagging
 	helper.GroupBoxFlow( content, groupBox, "Hide Tags:", false, true );
@@ -946,7 +990,7 @@ gdeOCInherit *gdeWPSObjectClass::GetInherit() const{
 		return NULL;
 	}
 	
-	const igdeListItem * const selection = pCBInherits->GetSelectedItem();
+	const igdeListItem * const selection = pListInherits->GetSelectedItem();
 	return selection ? ( gdeOCInherit* )selection->GetData() : NULL;
 }
 
@@ -1070,7 +1114,6 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pChkIsGhost->SetEnabled( enabled );
 	pChkCanInstantiate->SetEnabled( enabled );
 	pCBCategory->SetEnabled( enabled );
-	pActionInheritMenu->Update();
 	pActionPropertyValueSet->Update();
 	
 	UpdateProperties();
@@ -1149,7 +1192,7 @@ void gdeWPSObjectClass::UpdateInherits(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	gdeOCInherit * const activeInherit = GetInherit();
 	
-	pCBInherits->RemoveAllItems();
+	pListInherits->RemoveAllItems();
 	
 	if( objectClass ){
 		const gdeOCInheritList &list = objectClass->GetInherits();
@@ -1160,15 +1203,14 @@ void gdeWPSObjectClass::UpdateInherits(){
 		for( i=0; i<count; i++ ){
 			gdeOCInherit * const inherit = list.GetAt( i );
 			text.Format( "%s: '%s'", inherit->GetName().GetString(), inherit->GetPropertyPrefix().GetString() );
-			pCBInherits->AddItem( text, NULL, inherit );
+			pListInherits->AddItem( text, NULL, inherit );
 		}
-		
-		pCBInherits->SortItems();
+		pListInherits->SortItems();
 	}
 	
-	pCBInherits->SetSelectionWithData( activeInherit );
-	if( ! pCBInherits->GetSelectedItem() && pCBInherits->GetItemCount() > 0 ){
-		pCBInherits->SetSelection( 0 );
+	pListInherits->SetSelectionWithData( activeInherit );
+	if( ! pListInherits->GetSelectedItem() && pListInherits->GetItemCount() > 0 ){
+		pListInherits->SetSelection( 0 );
 	}
 	
 	UpdateInherit();
@@ -1194,7 +1236,7 @@ void gdeWPSObjectClass::UpdateInherit(){
 }
 
 void gdeWPSObjectClass::SelectInherit( gdeOCInherit *inherit ){
-	pCBInherits->SetSelectionWithData( inherit );
+	pListInherits->SetSelectionWithData( inherit );
 }
 
 void gdeWPSObjectClass::UpdateHideTags(){
