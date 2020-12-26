@@ -23,14 +23,13 @@
 #define _GDEVAOFORCEFIELD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
 #include <dragengine/resources/forcefield/deForceFieldReference.h>
 
 class gdeViewActiveObject;
 class gdeOCForceField;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
-
-class deDebugDrawer;
 
 
 /**
@@ -44,7 +43,7 @@ private:
 	
 	deForceFieldReference pForceField;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

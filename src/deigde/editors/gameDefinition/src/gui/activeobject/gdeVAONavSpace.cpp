@@ -59,8 +59,6 @@
 gdeVAONavSpace::gdeVAONavSpace( gdeViewActiveObject &view, gdeOCNavigationSpace *ocnavspace ) :
 pView( view ),
 pOCNavSpace( ocnavspace ),
-pDDSpace( NULL ),
-pDDBlocker( NULL ),
 pDDSSpace( NULL ),
 pDDSBlocker( NULL )
 {
@@ -127,11 +125,11 @@ void gdeVAONavSpace::pCleanUp(){
 	}
 	if( pDDSpace ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDSpace );
-		pDDSpace->FreeReference();
+		pDDSpace = NULL;
 	}
 	if( pDDBlocker ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDBlocker );
-		pDDBlocker->FreeReference();
+		pDDBlocker = NULL;
 	}
 	
 	if( pOCNavSpace ){
@@ -145,11 +143,11 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDDSpace = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDSpace.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDSpace->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDSpace );
 	
-	pDDBlocker = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDBlocker.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDBlocker->SetXRay( false );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDBlocker );
 	

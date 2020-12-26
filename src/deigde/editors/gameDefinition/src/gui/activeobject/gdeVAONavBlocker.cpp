@@ -53,7 +53,6 @@ gdeVAONavBlocker::gdeVAONavBlocker( gdeViewActiveObject &view,
 gdeOCNavigationBlocker *ocnavblocker ) :
 pView( view ),
 pOCNavBlocker( ocnavblocker ),
-pDebugDrawer( NULL ),
 pDDSBlocker( NULL )
 {
 	if( ! ocnavblocker ){
@@ -113,7 +112,7 @@ void gdeVAONavBlocker::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCNavBlocker ){
@@ -127,7 +126,7 @@ void gdeVAONavBlocker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( false );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	

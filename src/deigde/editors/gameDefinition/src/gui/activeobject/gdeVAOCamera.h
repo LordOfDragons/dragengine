@@ -23,13 +23,12 @@
 #define _GDEVAOCAMERA_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
 
 class gdeViewActiveObject;
 class gdeOCCamera;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
-
-class deDebugDrawer;
 
 
 
@@ -42,7 +41,7 @@ private:
 	
 	gdeOCCamera *pOCCamera;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

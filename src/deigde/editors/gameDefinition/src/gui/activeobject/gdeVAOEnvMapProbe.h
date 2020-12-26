@@ -23,13 +23,12 @@
 #define _GDEVAOENVMAPPROBE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/probe/deEnvMapProbeReference.h>
 
 class gdeViewActiveObject;
 class gdeOCEnvMapProbe;
 class igdeWDebugDrawerShape;
-
-class deDebugDrawer;
-class deEnvMapProbe;
 
 
 
@@ -42,9 +41,9 @@ private:
 	
 	gdeOCEnvMapProbe *pOCEnvMapProbe;
 	
-	deEnvMapProbe *pEnvMapProbe;
+	deEnvMapProbeReference pEnvMapProbe;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWDebugDrawerShape *pDDSReflection;
 	igdeWDebugDrawerShape *pDDSInfluence;

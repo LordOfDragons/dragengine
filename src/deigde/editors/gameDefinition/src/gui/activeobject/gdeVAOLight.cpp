@@ -60,8 +60,6 @@
 gdeVAOLight::gdeVAOLight( gdeViewActiveObject &view, gdeOCLight *oclight ) :
 pView( view ),
 pOCLight( oclight ),
-pLight( NULL ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -119,8 +117,7 @@ void gdeVAOLight::AttachResources(){
 	}
 	
 	const decVector &position = pOCLight->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCLight->GetRotation() * DEG2RAD ) );
+	const decQuaternion orientation( decQuaternion::CreateFromEuler( pOCLight->GetRotation() * DEG2RAD ) );
 	const decString &bone = pOCLight->GetBoneName();
 	
 	deColliderAttachment *attachment = NULL;
@@ -214,7 +211,7 @@ void gdeVAOLight::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCLight ){
@@ -228,7 +225,7 @@ void gdeVAOLight::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -249,7 +246,7 @@ void gdeVAOLight::pCreateLight(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	pLight = engine.GetLightManager()->CreateLight();
+	pLight.TakeOver( engine.GetLightManager()->CreateLight() );
 	pLight->SetType( pOCLight->GetType() );
 	pLight->SetHintMovement( pOCLight->GetHintMovement() );
 	pLight->SetHintParameter( pOCLight->GetHintParameter() );
@@ -309,11 +306,8 @@ void gdeVAOLight::pUpdateDDShapeColor(){
 
 
 void gdeVAOLight::pReleaseResources(){
-	deWorld &world = *pView.GetGameDefinition()->GetWorld();
-	
 	if( pLight ){
-		world.RemoveLight( pLight );
-		pLight->FreeReference();
+		pView.GetGameDefinition()->GetWorld()->RemoveLight( pLight );
 		pLight = NULL;
 	}
 }

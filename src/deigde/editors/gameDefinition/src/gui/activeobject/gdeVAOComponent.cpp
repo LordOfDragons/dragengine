@@ -280,7 +280,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// create component if model and skin are present
 	if( model && skin ){
-		pComponent = engine.GetComponentManager()->CreateComponent( model, skin );
+		pComponent.TakeOver( engine.GetComponentManager()->CreateComponent( model, skin ) );
 		pView.GetGameDefinition()->GetWorld()->AddComponent( pComponent );
 	}
 	if( pComponent ){

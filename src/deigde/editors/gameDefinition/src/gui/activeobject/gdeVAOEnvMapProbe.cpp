@@ -57,8 +57,6 @@
 gdeVAOEnvMapProbe::gdeVAOEnvMapProbe( gdeViewActiveObject &view, gdeOCEnvMapProbe *ocenvMapProbe ) :
 pView( view ),
 pOCEnvMapProbe( ocenvMapProbe ),
-pEnvMapProbe( NULL ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSReflection( NULL ),
 pDDSInfluence( NULL ),
@@ -136,7 +134,7 @@ void gdeVAOEnvMapProbe::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCEnvMapProbe ){
@@ -150,7 +148,7 @@ void gdeVAOEnvMapProbe::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -175,7 +173,7 @@ void gdeVAOEnvMapProbe::pCreateDebugDrawer(){
 void gdeVAOEnvMapProbe::pCreateEnvMapProbe(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	pEnvMapProbe = engine.GetEnvMapProbeManager()->CreateEnvMapProbe();
+	pEnvMapProbe.TakeOver( engine.GetEnvMapProbeManager()->CreateEnvMapProbe() );
 	pEnvMapProbe->SetPosition( pOCEnvMapProbe->GetPosition() );
 	pEnvMapProbe->SetOrientation( decQuaternion::CreateFromEuler(
 		pOCEnvMapProbe->GetRotation() * DEG2RAD ) );
@@ -269,7 +267,6 @@ void gdeVAOEnvMapProbe::pReleaseResources(){
 	
 	if( pEnvMapProbe ){
 		world.RemoveEnvMapProbe( pEnvMapProbe );
-		pEnvMapProbe->FreeReference();
 		pEnvMapProbe = NULL;
 	}
 	

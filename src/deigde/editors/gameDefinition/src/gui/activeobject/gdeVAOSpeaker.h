@@ -23,13 +23,12 @@
 #define _GDEVAOSPEAKER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
 
 class gdeViewActiveObject;
 class gdeOCSpeaker;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
-
-class deDebugDrawer;
 
 
 
@@ -42,7 +41,7 @@ private:
 	
 	gdeOCSpeaker *pOCSpeaker;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

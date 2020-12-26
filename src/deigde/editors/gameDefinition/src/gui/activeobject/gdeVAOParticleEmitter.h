@@ -23,15 +23,14 @@
 #define _GDEVAOPARTICLEEMITTER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/particle/deParticleEmitterReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
 
 class gdeViewActiveObject;
 class gdeOCParticleEmitter;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
-
-class deDebugDrawer;
-class deParticleEmitter;
-class deParticleEmitterInstance;
 
 
 
@@ -44,10 +43,10 @@ private:
 	
 	gdeOCParticleEmitter *pOCParticleEmitter;
 	
-	deParticleEmitter *pEmitter;
-	deParticleEmitterInstance *pInstance;
+	deParticleEmitterReference pEmitter;
+	deParticleEmitterInstanceReference pInstance;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

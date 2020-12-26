@@ -23,6 +23,8 @@
 #define _GDEVAOLIGHT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/light/deLightReference.h>
 
 class gdeViewActiveObject;
 class gdeOCLight;
@@ -30,8 +32,6 @@ class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 class deComponent;
-class deDebugDrawer;
-class deLight;
 
 
 
@@ -46,9 +46,9 @@ private:
 	
 	gdeOCLight *pOCLight;
 	
-	deLight *pLight;
+	deLightReference pLight;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

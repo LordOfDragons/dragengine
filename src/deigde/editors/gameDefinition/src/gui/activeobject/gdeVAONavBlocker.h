@@ -23,11 +23,11 @@
 #define _GDEVAONAVBLOCKER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
 
 class gdeViewActiveObject;
 class gdeOCNavigationBlocker;
 
-class deDebugDrawer;
 class igdeWDebugDrawerShape;
 
 
@@ -41,7 +41,7 @@ private:
 	
 	gdeOCNavigationBlocker *pOCNavBlocker;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;
 	
 	
