@@ -1256,21 +1256,38 @@ void gdeViewActiveObject::pOCReattachAllObjects(){
 
 
 void gdeViewActiveObject::pCenterOnObjectClass( igdeCamera &camera ){
-	decVector compMinExtend, compMaxExtend;
-	const int count = pOCComponents.GetCount();
+	decVector resMinExtend, resMaxExtend;
 	decVector boxMinExtend, boxMaxExtend;
+	bool first = true;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->GetExtends( compMinExtend, compMaxExtend );
+	const int componentCount = pOCComponents.GetCount();
+	for( i=0; i<componentCount; i++ ){
+		( ( gdeVAOComponent* )pOCComponents.GetAt( i ) )->GetExtends( resMinExtend, resMaxExtend );
 		
-		if( i == 0 ){
-			boxMinExtend = compMinExtend;
-			boxMaxExtend = compMaxExtend;
+		if( first ){
+			boxMinExtend = resMinExtend;
+			boxMaxExtend = resMaxExtend;
+			first = false;
 			
 		}else{
-			boxMinExtend.SetSmallest( compMinExtend );
-			boxMaxExtend.SetLargest( compMaxExtend );
+			boxMinExtend.SetSmallest( resMinExtend );
+			boxMaxExtend.SetLargest( resMaxExtend );
+		}
+	}
+	
+	const int billboardCount = pOCBillboards.GetCount();
+	for( i=0; i<billboardCount; i++ ){
+		( ( gdeVAOBillboard* )pOCBillboards.GetAt( i ) )->GetExtends( resMinExtend, resMaxExtend );
+		
+		if( first ){
+			boxMinExtend = resMinExtend;
+			boxMaxExtend = resMaxExtend;
+			first = false;
+			
+		}else{
+			boxMinExtend.SetSmallest( resMinExtend );
+			boxMaxExtend.SetLargest( resMaxExtend );
 		}
 	}
 	
