@@ -2182,11 +2182,11 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	
 	switch( objectClass.GetScaleMode() ){
 	case gdeObjectClass::esmFixed:
-		break; // default, would be "fixed"
+		writer.WriteDataTagString( "scaleMode", "fixed" );
+		break;
 		
 	case gdeObjectClass::esmUniform:
-		writer.WriteDataTagString( "scaleMode", "uniform" );
-		break;
+		break; // default, would be "uniform"
 		
 	case gdeObjectClass::esmFree:
 		writer.WriteDataTagString( "scaleMode", "free" );
