@@ -296,18 +296,15 @@ class Label extends Widget implements TextModelListener
 		//      long as the width is not smaller potentially forcing different height.
 		var TextLayout textLayout = TextLayout.new( this.pModel.getText(), font )
 		var BorderSize padding = this.getPadding()
+		var int maxWidth = this.pMaxWidth
 		
 		if this.pWordWrap
+			maxWidth = width - padding.getWidth()
 			if this.pMaxWidth > 0
-				textLayout.setMaximalWidth( DEMath.min( width - padding.getWidth(), this.pMaxWidth ) )
-				
-			else
-				textLayout.setMaximalWidth( width - padding.getWidth() )
+				maxWidth = DEMath.min( maxWidth, this.pMaxWidth )
 			end
-			
-		else
-			textLayout.setMaximalWidth( this.pMaxWidth )
 		end
+		textLayout.setMaximalWidth( DEMath.max( maxWidth, 0 ) )
 		
 		textLayout.layoutText()
 		
