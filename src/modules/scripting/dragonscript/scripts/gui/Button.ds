@@ -404,13 +404,11 @@ class Button extends Container
 		
 		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
 		
-		this.pWidgetImage = DisplayImage.new()
-		this.pWidgetImage.setDesignerSelector( "Image." + this.getDesignerSelector() )
+		this.pWidgetImage = DisplayImage.new( null, "Image." + this.getDesignerSelector() )
 		this.addWidget( this.pWidgetImage )
 		this.pWidgetImage.setVisible( false )
 		
-		this.pWidgetText = Label.new( this.pText )
-		this.pWidgetText.setDesignerSelector( "Label." + this.getDesignerSelector() )
+		this.pWidgetText = Label.new( this.pText, "Label." + this.getDesignerSelector() )
 		this.addWidget( this.pWidgetText )
 		this.pWidgetText.setVisible( not this.pText.empty() )
 	end

@@ -189,15 +189,13 @@ class CheckBox extends ToggleButton
 		
 		// image and text
 		this.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x ), block Panel p
-			var DisplayImage widgetImage = DisplayImage.new()
+			var DisplayImage widgetImage = DisplayImage.new( null, "Image." + this.getDesignerSelector() )
 			widgetImage.setEnabled( enabled )
 			p.addWidget( widgetImage )
 			widgetImage.setVisible( false )
 			this.setWidgetImage( widgetImage )
 			
-			var Label widgetText = Label.new( text, Label.middleLeft )
-			widgetText.setFont( this.getFont() )
-			widgetText.setTextColor( this.getTextColor() )
+			var Label widgetText = Label.new( text, "Label." + this.getDesignerSelector() )
 			widgetText.setEnabled( enabled )
 			p.addWidget( widgetText )
 			widgetText.setVisible( not text.empty() )

@@ -213,6 +213,10 @@
 		<image parameter='disabled.imageCheck'>../modern/checkbox/checked_disabled.png</image>
 	</designer>
 	
+	<designer name='Label.CheckBox' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
 	<designer name='OptionBox' type='OptionBox'>
 		<borderSize parameter='normal.padding' all='5'/>
 		<image parameter='normal.imageBox'>../modern/optionbox/optionbox_normal.png</image>
@@ -220,6 +224,10 @@
 		<image parameter='focused.imageBox'>../modern/optionbox/optionbox_focused.png</image>
 		<image parameter='hover.imageBox'>../modern/optionbox/optionbox_hover.png</image>
 		<image parameter='disabled.imageSelect'>../modern/optionbox/selected_disabled.png</image>
+	</designer>
+	
+	<designer name='Label.OptionBox' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
 	
 	<designer name='ProgressBar' type='ProgressBar'>
