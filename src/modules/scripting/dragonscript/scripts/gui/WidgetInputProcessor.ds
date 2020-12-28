@@ -38,6 +38,24 @@ class WidgetInputProcessor extends DefaultInputProcessor
 	
 	/** \brief Create input processor. */
 	public func new( Widget widget )
+		this.setWidget( widget )
+	end
+	
+	
+	
+	/**
+	 * \brief Widget to send input event to.
+	 * \version 1.5
+	 */
+	public func Widget getWidget()
+		return this.pWidget
+	end
+	
+	/**
+	 * \brief Set widget to send input event to.
+	 * \version 1.5
+	 */
+	public func void setWidget( Widget widget )
 		if widget == null
 			throw EInvalidParam.new()
 		end
