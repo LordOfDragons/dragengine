@@ -22,8 +22,8 @@ if envLibrary[ 'OSWindows' ]:
 	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
 	staticFileName = 'lib/lib{}.a'.format( libLinkName )
 else:
-	libFileName = envLibrary.subst( 'lib64/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
-	staticFileName = envLibrary.subst( 'lib64/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
+	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
 
 # check if system libjpeg is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
@@ -87,6 +87,11 @@ def jpegBuild( target, source, env ):
 	
 	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required otherwise depending on the platform the install
+	# directory is sometimes 'lib' and sometimes 'lib64' causing problems
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
 	cmdline.append('.')
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
