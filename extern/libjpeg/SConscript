@@ -75,7 +75,10 @@ def jpegBuild( target, source, env ):
 	cmdline.append('-DENABLE_STATIC=On')
 	cmdline.append('-DWITH_TURBOJPEG=Off')
 	
-	if 'CROSSCOMPILE_HOST' in env:
+	if env['OSWindows']:
+		# libjpeg fails if system name is not this value
+		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
+	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
 	
 	cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
