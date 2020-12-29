@@ -1286,7 +1286,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epASetAParam:
-		pPanelASetVariable->UpdateAction();
+		pPanelASetAParam->UpdateAction();
 		break;
 		
 	case epAActorCmd:
@@ -1302,7 +1302,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epATrigger:
-		pPanelASetVariable->UpdateAction();
+		pPanelATrigger->UpdateAction();
 		break;
 		
 	case epAActorAdd:
