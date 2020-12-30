@@ -387,6 +387,8 @@ class Mesh:
 	# add texture coordinates sets
 	def initAddTexCoordSets(self):
 		if hasattr(self.mesh, "uv_textures"):
+			if not self.mesh.uv_textures:
+				raise 'At least 1 UV-Texture required'
 			if len(self.mesh.uv_textures) == 1:
 				self.texCoordSets.append(Mesh.TexCoordSet(
 					0, self.mesh.uv_textures[0], self.mesh.uv_layers[0]))
@@ -400,6 +402,8 @@ class Mesh:
 						self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets),
 							self.mesh.uv_textures[i], self.mesh.uv_layers[i]))
 		else:
+			if not self.mesh.uv_layers:
+				raise 'At least 1 UV-Layer required'
 			if len(self.mesh.uv_layers) == 1:
 				self.texCoordSets.append(Mesh.TexCoordSet(0, None, self.mesh.uv_layers[0]))
 			else:
