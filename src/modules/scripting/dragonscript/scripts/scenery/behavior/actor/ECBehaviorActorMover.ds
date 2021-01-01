@@ -399,6 +399,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		private var ECBehaviorNavigator.Instance pNavigator
 		private var ECBehaviorRideOn.Instance pRideOn
 		private var ECBehaviorRidable.Instance pRidable
+		private var ECBehaviorCollider.Instance pRidableCollider
 		private var ECBehaviorConversationActor.Instance pConversationActor
 		
 		private var DVector pGoalPosition
@@ -440,6 +441,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		public func void dispose()
 			this.pConversationActor = null
 			this.pRidable = null
+			this.pRidableCollider = null
 			this.pRideOn = null
 			this.pNavigator = null
 			this.pLocomotion = null
@@ -511,8 +513,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/** \brief Set goal to move to. */
 		public func void setGoalPosition( DVector goal )
-			if this.pRidable != null
-				goal = this.pRidable.getCollider().getCollider().getInverseMatrix() * goal
+			if this.pRidableCollider != null
+				goal = this.pRidableCollider.getCollider().getInverseMatrix() * goal
 			end
 			
 			if goal.equals( this.pGoalPosition )
@@ -672,8 +674,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var DVector actorPosition = this.getElement().getPosition()
 			var DVector goalPosition = this.pGoalPosition
 			var Collider ridableCollider
-			if this.pRidable != null
-				ridableCollider = this.pRidable.getCollider().getCollider()
+			if this.pRidableCollider != null
+				ridableCollider = this.pRidableCollider.getCollider()
 				goalPosition = ridableCollider.getMatrix() * goalPosition
 			end
 			
@@ -774,8 +776,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			end
 			
 			var DVector point = this.pPath.getAt( this.pNextPathPoint )
-			if this.pRidable != null
-				point = this.pRidable.getCollider().getCollider().getMatrix() * point
+			if this.pRidableCollider != null
+				point = this.pRidableCollider.getCollider().getMatrix() * point
 			end
 			return point
 		end
@@ -790,8 +792,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				return null
 			end
 			
-			if this.pRidable != null
-				return this.pRidable.getCollider().getCollider().getMatrix().transformNormal( this.pNextPlaneNormal )
+			if this.pRidableCollider != null
+				return this.pRidableCollider.getCollider().getMatrix().transformNormal( this.pNextPlaneNormal )
 				
 			else
 				return this.pNextPlaneNormal
@@ -811,8 +813,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var DVector point = this.pPath.getAt( this.pNextPathPoint )
 			var DVector normal = this.pNextPlaneNormal
 			
-			if this.pRidable != null
-				var DMatrix matrix = this.pRidable.getCollider().getCollider().getMatrix()
+			if this.pRidableCollider != null
+				var DMatrix matrix = this.pRidableCollider.getCollider().getMatrix()
 				point = matrix * point
 				normal = matrix.transformNormal( normal )
 			end
@@ -828,6 +830,14 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Rideable collider the actor is standing upon or \em null.
+		 * \version 1.5
+		 */
+		public func ECBehaviorCollider.Instance getRidableCollider()
+			return this.pRidableCollider
+		end
+		
+		/**
 		 * \brief Ridable changed.
 		 * 
 		 * Called by RidableChanged. If overwritten do not forget to super-call.
@@ -836,14 +846,16 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var ECBehaviorRidable.Instance ridable = this.pRideOn.getRidable()
 			var DMatrix matrix = DMatrix.new()
 			
-			if this.pRidable != null
-				matrix = this.pRidable.getCollider().getCollider().getMatrix()
+			if this.pRidableCollider != null
+				matrix = this.pRidableCollider.getCollider().getMatrix()
 			end
 			
 			this.pRidable = ridable
+			this.pRidableCollider = null
 			
 			if ridable != null
-				matrix = matrix * ridable.getCollider().getCollider().getInverseMatrix()
+				this.pRidableCollider = ridable.getCollider()
+				matrix = matrix * this.pRidableCollider.getCollider().getInverseMatrix()
 			end
 			
 			if this.pGoalPosition != null
@@ -890,8 +902,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var DVector nextNormal
 			var float distance
 			
-			if this.pRidable != null
-				var Collider collider = this.pRidable.getCollider().getCollider()
+			if this.pRidableCollider != null
+				var Collider collider = this.pRidableCollider.getCollider()
 				matrix = collider.getMatrix()
 				invMatrix = collider.getInverseMatrix()
 			end
@@ -1000,8 +1012,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			end
 			
 			var DVector nextCorner = this.pPath.getAt( this.pNextPathPoint )
-			if this.pRidable != null
-				nextCorner = this.pRidable.getCollider().getCollider().getMatrix() * nextCorner
+			if this.pRidableCollider != null
+				nextCorner = this.pRidableCollider.getCollider().getMatrix() * nextCorner
 			end
 			
 			return this.pRemainingDistance + ( nextCorner - this.getElement().getPosition() ).getLength()
@@ -1042,8 +1054,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			var float elevation
 			var float distance
 			
-			if this.pRidable != null
-				var Collider collider = this.pRidable.getCollider().getCollider()
+			if this.pRidableCollider != null
+				var Collider collider = this.pRidableCollider.getCollider()
 				matrix = collider.getMatrix()
 				invMatrix = collider.getInverseMatrix()
 			end
@@ -1190,6 +1202,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 					this.pElementResolver = ElementResolver.new()
 					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
 						this.pRidable = behavior
+						this.pRidableCollider = behavior.getCollider()
 					end )
 					this.setRequiresEnterFrame( true )
 				end
