@@ -244,8 +244,8 @@ class ECBehaviorSky extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorSky getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorSky
+		return eclass.findBehavior( block ECBehaviorSky each
+			return true
 		end ) cast ECBehaviorSky
 	end
 	
@@ -256,8 +256,8 @@ class ECBehaviorSky extends DefaultECBehavior
 	 * of type ECBehaviorSky.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

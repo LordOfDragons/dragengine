@@ -529,8 +529,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * of type ECBehaviorColliderAI.
 	 */
 	static public func ECBehaviorColliderAI getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorColliderAI
+		return eclass.findBehavior( block ECBehaviorColliderAI each
+			return true
 		end ) cast ECBehaviorColliderAI
 	end
 	
@@ -541,8 +541,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * of type ECBehaviorColliderAI.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

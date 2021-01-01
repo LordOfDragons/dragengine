@@ -61,7 +61,7 @@ class BehaviorElement extends Element
 		this.pRequiresThink = false
 		this.pRequiresAttachToParent = true
 		
-		eclass.forEachBehavior( block ECBehavior each
+		eclass.forEachBehaviorDirect( block ECBehavior each
 			this.pInstances.add( each.createInstance( this ) )
 		end )
 	end
@@ -106,29 +106,44 @@ class BehaviorElement extends Element
 	/**
 	 * \brief Visit behavior instances with block.
 	 * 
-	 * Block is required to have one parameter ECBehaviorInstance.
+	 * Block is required to have one parameter of type ECBehaviorInstance or subclass
+	 * thereof. Block is called only for instances castable to block parameter type.
 	 */
 	public func void forEachInstance( Block ablock )
-		this.pInstances.forEach( ablock )
+		this.pInstances.forEachCastable( ablock )
 	end
 	
 	/**
 	 * \brief Visit behavior instances with block in reverse order.
 	 * 
-	 * Block is required to have one parameter ECBehaviorInstance.
+	 * Block is required to have one parameter ECBehaviorInstance or subclass thereof.
+	 * Block is called only for instances castable to block parameter type.
 	 */
 	public func void forEachInstanceReverse( Block ablock )
-		this.pInstances.forEachReverse( ablock )
+		this.pInstances.forEachReverseCastable( ablock )
 	end
 	
 	/**
 	 * \brief Find behavior instance with block.
 	 * 
-	 * Block is required to have one parameter ECBehaviorInstance and returning true if the
-	 * right instance is found otherwise false.
+	 * Block is required to have one parameter ECBehaviorInstance or subclass thereof and
+	 * returning true if the right instance is found otherwise false. Block is called
+	 * only for instances castable to block parameter type.
 	 */
 	public func ECBehaviorInstance findInstance( Block ablock )
-		return this.pInstances.find( ablock ) cast ECBehaviorInstance
+		return this.pInstances.findCastable( ablock ) cast ECBehaviorInstance
+	end
+	
+	/**
+	 * \brief Collect behavior instance with block into Array.
+	 * \version 1.5
+	 * 
+	 * Block is required to have one parameter ECBehaviorInstance or subclass thereof and
+	 * returning true for instances to collect. Block is called only for instances castable
+	 * to block parameter type.
+	 */
+	public func Array collectInstances( Block ablock )
+		return this.pInstances.collectCastable( ablock )
 	end
 	
 	

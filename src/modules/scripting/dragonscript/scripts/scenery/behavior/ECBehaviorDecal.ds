@@ -214,8 +214,8 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorDecal
+		return eclass.findBehavior( block ECBehaviorDecal each
+			return true
 		end ) cast ECBehaviorDecal
 	end
 	
@@ -227,8 +227,7 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 */
 	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorDecal each
-			return each castable ECBehaviorDecal and \
-				( each cast ECBehaviorDecal ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorDecal
 	end
 	
@@ -239,13 +238,9 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorDecal
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorDecal each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -258,8 +253,8 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -270,9 +265,8 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * of type ECBehaviorDecal.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -283,13 +277,9 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

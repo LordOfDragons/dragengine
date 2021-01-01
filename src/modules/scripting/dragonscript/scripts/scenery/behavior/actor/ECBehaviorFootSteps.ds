@@ -753,8 +753,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * of type ECBehaviorFootSteps.
 	 */
 	static public func ECBehaviorFootSteps getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorFootSteps
+		return eclass.findBehavior( block ECBehaviorFootSteps each
+			return true
 		end ) cast ECBehaviorFootSteps
 	end
 	
@@ -765,8 +765,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * of type ECBehaviorFootSteps.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

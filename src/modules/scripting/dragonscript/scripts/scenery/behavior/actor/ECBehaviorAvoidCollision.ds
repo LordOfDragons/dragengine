@@ -605,11 +605,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * for all ECBehaviorAvoidedByActor instances present in the element.
 		 */
 		public func void avoidBehaviorElement( BehaviorElement element )
-			// try to avoid the actor. for performance reasons we do not use getAllInstancesIn
-			element.forEachInstance( block ECBehaviorInstance each
-				if each castable ECBehaviorAvoidedByActor.Instance
-					this.avoidAvoidedByActor( each cast ECBehaviorAvoidedByActor.Instance )
-				end
+			// try to avoid the actor
+			element.forEachInstance( block ECBehaviorAvoidedByActor.Instance each
+				this.avoidAvoidedByActor( each )
 			end )
 		end
 		
@@ -1268,8 +1266,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * of type ECBehaviorAvoidCollision.
 	 */
 	static public func ECBehaviorAvoidCollision getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAvoidCollision
+		return eclass.findBehavior( block ECBehaviorAvoidCollision each
+			return true
 		end ) cast ECBehaviorAvoidCollision
 	end
 	
@@ -1280,8 +1278,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * of type ECBehaviorAvoidCollision.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

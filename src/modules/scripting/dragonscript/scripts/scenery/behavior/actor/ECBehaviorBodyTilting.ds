@@ -370,8 +370,8 @@ class ECBehaviorBodyTilting extends DefaultECBehavior
 	 * of type ECBehaviorBodyTilting.
 	 */
 	static public func ECBehaviorBodyTilting getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorBodyTilting
+		return eclass.findBehavior( block ECBehaviorBodyTilting each
+			return true
 		end ) cast ECBehaviorBodyTilting
 	end
 	
@@ -382,8 +382,8 @@ class ECBehaviorBodyTilting extends DefaultECBehavior
 	 * of type ECBehaviorBodyTilting.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

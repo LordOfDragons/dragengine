@@ -351,8 +351,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorInteractPrompt.
 	 */
 	static public func ECBehaviorInteractPrompt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorInteractPrompt
+		return eclass.findBehavior( block ECBehaviorInteractPrompt each
+			return true
 		end ) cast ECBehaviorInteractPrompt
 	end
 	
@@ -364,8 +364,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 */
 	static public func ECBehaviorInteractPrompt getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorInteractPrompt each
-			return each castable ECBehaviorInteractPrompt and \
-				( each cast ECBehaviorInteractPrompt ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorInteractPrompt
 	end
 	
@@ -376,13 +375,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorInteractPrompt
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorInteractPrompt each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -395,8 +390,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -407,9 +402,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorInteractPrompt.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -420,13 +414,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -438,13 +428,9 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllEnabledInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance and ( each cast Instance ).getEnabled()
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return each.getEnabled()
 		end )
-		return list
 	end
 	
 	
