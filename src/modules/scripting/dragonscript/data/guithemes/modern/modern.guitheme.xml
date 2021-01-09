@@ -345,6 +345,8 @@
 	- 'WindowPlayerChoice' -> WindowPlayerChoice
 	- 'PlayerChoice' -> PanelPlayerChoice
 	- 'PlayerChoiceEntry' -> PanelPlayerChoiceEntry
+	- 'Label.PlayerChoiceEntry' -> PanelPlayerChoiceEntry Label
+	- 'Image.PlayerChoiceEntry' -> PanelPlayerChoiceEntry DisplayImage
 	-->
 	<designer name='PlayerChoiceEntry' type='PlayerChoiceEntry'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
@@ -354,8 +356,6 @@
 			<color parameter='color' r='0' g='0' b='0' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
-		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
-		<font parameter='normal.font' size='31'>fonts/subtitle.defont</font>
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0.5' a='0.5'/>
@@ -364,6 +364,11 @@
 			<color parameter='color' r='0' g='0' b='0.5' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
+	</designer>
+	
+	<designer name='Label.PlayerChoiceEntry' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
+		<font parameter='normal.font' size='31'>fonts/subtitle.defont</font>
 	</designer>
 	
 	<!--

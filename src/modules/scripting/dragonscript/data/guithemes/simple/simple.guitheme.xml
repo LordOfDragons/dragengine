@@ -275,22 +275,28 @@
 	- "Window.PlayerChoice" -> WindowPlayerChoice
 	- "PlayerChoice" -> PanelPlayerChoice
 	- "PlayerChoiceEntry" -> PanelPlayerChoiceEntry
+	- 'Label.PlayerChoiceEntry' -> PanelPlayerChoiceEntry Label
+	- 'Image.PlayerChoiceEntry' -> PanelPlayerChoiceEntry DisplayImage
 	-->
 	<designer name='PlayerChoiceEntry' type='PlayerChoiceEntry'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0' a='0.5'/>
 		</canvasCreator>
-		<canvasCreator parameter='hover.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0' g='0' b='0.5' a='0.5'/>
-		</canvasCreator>
 		<border parameter='normal.border' type='Line'>
 			<color parameter='color' r='0' g='0' b='0' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0.5' a='0.5'/>
+		</canvasCreator>
 		<border parameter='hover.border' type='Line'>
 			<color parameter='color' r='0' g='0' b='0.5' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
+	</designer>
+	
+	<designer name='Label.PlayerChoiceEntry' extendNamed='Label'>
 		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
 		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
 	</designer>
@@ -429,7 +435,7 @@
 	- 'Panel.InteractPromptEntry.Bindings': Bindings panel
 	-->
 	<designer name='InteractPrompt' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0' b='0' a='0.5'/>
 			</colorMatrix>

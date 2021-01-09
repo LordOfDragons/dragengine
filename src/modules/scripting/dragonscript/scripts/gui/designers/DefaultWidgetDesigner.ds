@@ -101,7 +101,7 @@ class DefaultWidgetDesigner implements WidgetDesigner
 				this.setMousePointerFactory( value cast MousePointerFactory )
 				
 			else
-				throw EInvalidParam.new()
+				throw EInvalidParam.new( "unknown state parameter: " + name )
 			end
 		end
 		
@@ -391,12 +391,12 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	public func void setParameter( String name, Object value )
 		var int delimiter = name.find( '.' )
 		if delimiter == -1
-			throw EInvalidParam.new()
+			throw EInvalidParam.new( "unknown parameter: " + name )
 		end
 		
 		var StateDesign stateDesign = this.getNamedStateDesign( name.substring( 0, delimiter ) )
 		if stateDesign == null
-			throw EInvalidParam.new()
+			throw EInvalidParam.new( "unknown state: " + name.substring( 0, delimiter ) )
 		end
 		
 		stateDesign.setParameter( name.substring( delimiter + 1 ), value )
@@ -446,6 +446,8 @@ class DefaultWidgetDesigner implements WidgetDesigner
 	protected func StateDesign widgetStateFindDesign( Widget widget )
 		var StateDesign design = this.pDesignNormal
 		
+		widget = this.getStateTrackWidget( widget )
+		
 		if widget.isFullEnabled()
 			if widget.isMouseInside()
 				design = design.copyDesign()
@@ -466,5 +468,26 @@ class DefaultWidgetDesigner implements WidgetDesigner
 		end
 		
 		return design
+	end
+	
+	/**
+	 * \brief Find state track widget.
+	 * \version 1.5
+	 * 
+	 * Finds the widget highest up in the parent widget chain with getStateChangeNotifyChildren()
+	 * set to true. If not found returns \em widget.
+	 */
+	public func Widget getStateTrackWidget( Widget widget )
+		var Container parent = widget.getParent()
+		
+		while true
+			parent = widget.getParent()
+			if parent == null or not parent.getStateChangeNotifyChildren()
+				break
+			end
+			widget = parent
+		end
+		
+		return widget
 	end
 end

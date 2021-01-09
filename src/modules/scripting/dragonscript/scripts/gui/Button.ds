@@ -70,16 +70,17 @@ class Button extends Container
 	public func new()
 		this.pPressed = false
 		this.pHasGrab = false
-		
 		this.pText = ""
-		
 		this.pActionListeners = Array.new()
 		
-		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		this.setDesignerSelector( "Button" )
-		this.setCanFocus( true )
-		
-		this.createContentWidgets()
+		this.runWhileBlockingLayout( block
+			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+			this.setDesignerSelector( "Button" )
+			this.setCanFocus( true )
+			this.setStateChangeNotifyChildren( true )
+			
+			this.createContentWidgets()
+		end )
 	end
 	
 	/** \brief Create text button. */
@@ -334,7 +335,6 @@ class Button extends Container
 	 */
 	public func void onMouseEnter( MouseEvent event )
 		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
 			super.onMouseEnter( event )
 			this.updateWidgetImage()
 		end )
@@ -348,7 +348,6 @@ class Button extends Container
 	 */
 	public func void onMouseLeave( MouseEvent event )
 		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
 			super.onMouseLeave( event )
 			this.updateWidgetImage()
 		end )
