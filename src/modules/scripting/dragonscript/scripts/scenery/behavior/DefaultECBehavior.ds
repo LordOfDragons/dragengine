@@ -37,9 +37,10 @@ pin Dragengine.Utils
  * This is typically used in behavior element constructors to store the instances for
  * directly accessed behaviors without finding them.
  */
-abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentify
+abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatiblePersistency
 	private var String pID
 	private var int pInstanceIndex
+	private var String pUseBehaviorID
 	
 	
 	
@@ -47,6 +48,7 @@ abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentif
 	protected func new( BehaviorElementClass eclass )
 		this.pID = ""
 		this.pInstanceIndex = -1
+		this.useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Create default composeable behavior. */
@@ -57,6 +59,7 @@ abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentif
 		
 		this.pID = id
 		this.pInstanceIndex = -1
+		this.useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Dispose of behavior. */
@@ -83,6 +86,8 @@ abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentif
 		this.pInstanceIndex = instanceIndex
 	end
 	
+	
+	
 	/**
 	 * \brief Unique identifier of behavior.
 	 * \version 1.5
@@ -91,10 +96,97 @@ abstract public class DefaultECBehavior implements ECBehavior, ECBehaviorIdentif
 	 * will be stored while persisting BehaviorElement instances. This allows to assign
 	 * restored behavior instance data to the corrent behavior instance if present.
 	 * 
-	 * The implementation in this class combines the fully qualified class name with the
-	 * behavior identifier like this: "fqcn:id".
+	 * The default implementation returns "<class-name>:<identifier>" or "<class-name>" if
+	 * identifier is empty string (constructor calls useClassNameAsBehaviorID()). If two or
+	 * more behaviors share the same class name you have to make sure getBehaviorID() returns
+	 * unique names. This can be done using one of these possible ways:
+	 * <ul>
+	 * <li>Overwrite getBehaviorID()</li>
+	 * <li>Call useFullyQualifiedClassNameAsBehaviorID() in the constructor</li>
+	 * <li>Call setBehaviorID(String) in the constructor</li>
+	 * </ul>
 	 */
 	public func String getBehaviorID()
-		return this.className() + ":" + this.pID
+		return this.pUseBehaviorID
+	end
+	
+	/**
+	 * \brief Set behavior identifier.
+	 * \version 1.5
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void setBehaviorID( String identifier )
+		if identifier == null
+			throw ENullPointer.new( "identifier is null" )
+		end
+		if identifier.empty()
+			throw EInvalidParam.new( "identifier is empty string" )
+		end
+		
+		this.pUseBehaviorID = identifier
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<class-name>:<identifier>".
+	 * \version 1.5
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useClassNameAsBehaviorID()
+		this.pUseBehaviorID = this.className().split( '.' ).getAt( -1 ) cast String
+		if not this.pID.empty()
+			this.pUseBehaviorID = this.pUseBehaviorID + ":" + this.pID
+		end
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<fully-qualified-class-name>:<identifier>".
+	 * \version 1.5
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useFullyQualifiedClassNameAsBehaviorID()
+		this.pUseBehaviorID = this.className()
+		if not this.pID.empty()
+			this.pUseBehaviorID = this.pUseBehaviorID + ":" + this.pID
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Behavior supports loading instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Returns true if thie behavior supports loading instance data of another behavior
+	 * matching behavior identifier. Called for all behaviors if BehaviorElement encountered
+	 * an instance data block with a behavior identifier not matching any behavior instances.
+	 * 
+	 * Default implementation returns false.
+	 */
+	public func bool supportsBehaviorID( String identifier )
+		return false
+	end
+	
+	/**
+	 * \brief Load instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Called if supportsBehaviorID(String) returns true for \em identifier. BehaviorElement
+	 * requests behavior to load the supported instance data block into \em instance.
+	 * 
+	 * Default implementation throws EInvalidAction exception.
+	 */
+	public func void loadSupportedData( String identifier, PersistencyEnvironment env, \
+	FileReader reader, ECBehaviorInstance instance )
+		throw EInvalidAction.new( "not supported" )
 	end
 end

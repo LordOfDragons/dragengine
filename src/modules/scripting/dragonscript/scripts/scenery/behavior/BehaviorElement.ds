@@ -451,6 +451,44 @@ class BehaviorElement extends Element
 				each.readFromFile( env, reader )
 			end )
 			
+		case 1
+			var BehaviorElementClass eclass = this.getClass() cast BehaviorElementClass
+			
+			var Dictionary map = Dictionary.new()
+			this.pInstances.forEach( block int index, ECBehaviorInstance each
+				map.setAt( ( eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency ).getBehaviorID(), each )
+			end )
+			
+			var MemoryFile behaviorData = MemoryFile.new( "behaviorData" )
+			var int i, dataLength, count = reader.readShort()
+			var ECBehaviorInstance instance
+			var String identifier
+			
+			for i = 0 to count
+				identifier = reader.readString8()
+				instance = map.getAt( identifier, null ) cast ECBehaviorInstance
+				dataLength = reader.readInt()
+				
+				if instance != null
+					behaviorData.getWriter( false ).writeData( reader, dataLength )
+					instance.readFromFile( env, behaviorData.getReader() )
+					
+				elif this.pInstances.find( block int index, ECBehaviorInstance each
+					var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency
+					if bcp.supportsBehaviorID( identifier )
+						behaviorData.getWriter( false ).writeData( reader, dataLength )
+						bcp.loadSupportedData( identifier, env, behaviorData.getReader(), each )
+						return true
+						
+					else
+						return false
+					end
+					
+				end ) == null
+					reader.movePosition( dataLength )
+				end
+			end
+			
 		else
 			throw EInvalidParam.new( "unsupported version" )
 		end
@@ -458,32 +496,17 @@ class BehaviorElement extends Element
 	
 	/** \brief Write element to file. */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		// TODO add support to persist behaviors in a backwards and future expansion compatible
-		//      way. right now the layout of the behaviors can not change without breaking
-		//      compatibility.
-		//      
-		//      to solve this ECBehaviorIdentify has been added with DefaultECBehavior
-		//      implementing the getBehaviorID() method. modify the saving like this:
-		//      
-		//      eclass = this.getClass() cast BehaviorElementClass
-		//      forEach instance
-		//         write instance data into MemoryFile
-		//         writeString8( ( eclass.getBehaviorAt( each.getInstanceIndex() ) cast ECBehaviorIdentify ).getBehaviorID() )
-		//         writeInt( size of memory file content )
-		//         write memory file content
-		//      
-		//      while restoring iterate first over all behavior instance and create a
-		//      dictionary with getBehaviorID() as key and ECBehaviorInstance as value.
-		//      then read the instance block and match them against the dictionary.
-		//      if a match is found make instance read the data. if no match is found
-		//      use data length to skip over the block
-		//      
-		//      this new persistency layout becomes version 1
-		//      
-		writer.writeByte( 0 ) // version
+		var BehaviorElementClass eclass = this.getClass() cast BehaviorElementClass
+		var MemoryFile behaviorData = MemoryFile.new( "behaviorData" )
 		
-		this.pInstances.forEach( block ECBehaviorInstance each
-			each.writeToFile( env, writer )
+		writer.writeByte( 1 ) // version
+		writer.writeShort( this.pInstances.getCount() )
+		
+		this.pInstances.forEach( block int index, ECBehaviorInstance each
+			each.writeToFile( env, behaviorData.getWriter( false ) )
+			writer.writeString8( ( eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency ).getBehaviorID() )
+			writer.writeInt( behaviorData.getSize() )
+			writer.writeData( behaviorData.getReader() )
 		end )
 	end
 	
