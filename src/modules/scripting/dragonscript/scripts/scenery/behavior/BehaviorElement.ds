@@ -459,10 +459,10 @@ class BehaviorElement extends Element
 				map.setAt( ( eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency ).getBehaviorID(), each )
 			end )
 			
-			var MemoryFile behaviorData = MemoryFile.new( "behaviorData" )
 			var int i, dataLength, count = reader.readShort()
 			var ECBehaviorInstance instance
 			var String identifier
+			//var int nextPosition
 			
 			for i = 0 to count
 				identifier = reader.readString8()
@@ -470,14 +470,24 @@ class BehaviorElement extends Element
 				dataLength = reader.readInt()
 				
 				if instance != null
-					behaviorData.getWriter( false ).writeData( reader, dataLength )
-					instance.readFromFile( env, behaviorData.getReader() )
+					//nextPosition = reader.getPosition() + dataLength
+					instance.readFromFile( env, reader )
+					/*
+					if reader.getPosition() != nextPosition
+						throw EInvalidAction.new( "next file position mismatch after reading behavior " + identifier )
+					end
+					*/
 					
 				elif this.pInstances.find( block int index, ECBehaviorInstance each
 					var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency
 					if bcp.supportsBehaviorID( identifier )
-						behaviorData.getWriter( false ).writeData( reader, dataLength )
-						bcp.loadSupportedData( identifier, env, behaviorData.getReader(), each )
+						//nextPosition = reader.getPosition() + dataLength
+						bcp.loadSupportedData( identifier, env, reader, each )
+						/*
+						if reader.getPosition() != nextPosition
+							throw EInvalidAction.new( "next file position mismatch after compatibility reading behavior " + identifier )
+						end
+						*/
 						return true
 						
 					else
