@@ -71,7 +71,7 @@ pTaskDistribute( NULL )
 	
 	
 	igdeContainerReference content;
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esNone, 5 ) );
+	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	// build information
 	igdeContainerReference groupBox;
@@ -89,17 +89,22 @@ pTaskDistribute( NULL )
 	helper.EditString( groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL );
 	pEditDelgaDirCount->SetEditable( false );
 	
-	// logs
-	helper.GroupBoxStaticFlow( content, groupBox, "Logs:", true );
+	// logs and info line
+	igdeContainerReference containerLogs;
+	containerLogs.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	
+	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
 	
 	helper.EditString( groupBox, "Building logs.", pEditLogs, 80, 12, NULL );
 	pEditLogs->SetEditable( false );
 	
 	// info line
 	groupBox.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 5 ) );
-	content->AddChild( groupBox );
+	containerLogs->AddChild( groupBox );
 	
 	helper.Button( groupBox, pActionShowInFSManager );
+	
+	content->AddChild( containerLogs );
 	
 	// button line
 	igdeContainerReference buttonBar;
