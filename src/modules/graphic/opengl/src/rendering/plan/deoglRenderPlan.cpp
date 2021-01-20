@@ -1963,6 +1963,8 @@ void deoglRenderPlan::pBuildSkyLightPlan(){
 	const int skyCount = GetSkyInstanceCount();
 	int i, j;
 	
+	RemoveAllSkyLights(); // just to make sure
+	
 	for( i=0; i<skyCount; i++ ){
 		deoglRSkyInstance &instance = *GetSkyInstanceAt( i );
 		const int layerCount = instance.GetLayerCount();
