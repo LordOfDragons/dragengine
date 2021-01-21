@@ -52,6 +52,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTBufferObject.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -602,11 +603,11 @@ const decVector &minExtend, const decVector &maxExtend ){
 	position.z = ( minExtend.z + maxExtend.z ) * 0.5f;
 	position = ( camPos - referencePosition ).ToVector() + ( matLig * position );
 	
-	scale.x = 1.0f / ( maxExtend.x - minExtend.x );
-	scale.y = 1.0f / ( maxExtend.y - minExtend.y );
-	scale.z = 1.0f / ( maxExtend.z - minExtend.z );
+	scale.x = 2.0f / ( maxExtend.x - minExtend.x );
+	scale.y = 2.0f / ( maxExtend.y - minExtend.y );
+	scale.z = 2.0f / ( maxExtend.z - minExtend.z );
 	
-	matrixCamera = decMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() ) * decMatrix::CreateScale( scale * 2.0f );
+	matrixCamera = decMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() ) * decMatrix::CreateScale( scale );
 	matrixCamera2 = matrixCamera.Invert() * decMatrix::CreateTranslation( ( referencePosition - camPos ).ToVector() ) * plan.GetOcclusionTestMatrix();
 	DEBUG_PRINT_TIMER( "Prepare" );
 	

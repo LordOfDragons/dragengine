@@ -225,6 +225,16 @@ void main( void ){
 	calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, pClipNear, inputMinExtend, inputMaxExtend );
 	
 #ifdef FRUSTUM_TEST
+	/*
+	// NOTE this optimization incorrectly discards a shadow caster causing sun light sometimes
+	//      leaking through. mostly seen with hallway and facade meshes. the box seems to fail
+	//      the occlusion map test. can be reproduced by looking along a hallway with a wall
+	//      behind the camera. the shortened box seems. in this case the z coordinate of the
+	//      failing hallway enclosing box is for example [-0.876 .. -0.706] causing the discard.
+	//      the camera occlusion test has [-1.054 .. -0.773] for the same box.
+	// 
+	// TODO verify the calculation and see if the optimization can be made to work correctly
+	
 	vec3 testCenter = vec3( ( testMinExtend.xy + testMaxExtend.xy ) * vec2( 0.5 ), testMinExtend.z );
 	vec4 lambda;
 	lambda.x = dot( testCenter, pFrustumNormal1 );
@@ -234,6 +244,7 @@ void main( void ){
 	lambda = lambda * pFrustumTestMul + pFrustumTestAdd;
 	lambda.xy = min( lambda.xy, lambda.zw );
 	testMaxExtend.z = min( testMinExtend.z + min( lambda.x, lambda.y ), testMaxExtend.z );
+	*/
 	
 	calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, pClipNear2, testMinExtend, testMaxExtend );
 	
