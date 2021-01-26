@@ -52,6 +52,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../light/deoglLightBoundaryMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
+#include "../occlusiontest/deoglOcclusionTracing.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
@@ -113,6 +114,7 @@ pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
 pOcclusionTest( NULL ),
+pOcclusionTracing( NULL ),
 pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
@@ -953,6 +955,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
 	pOcclusionTest = new deoglOcclusionTest( *this );
+	pOcclusionTracing = new deoglOcclusionTracing( *this );
 	pLightBoundarybox = new deoglLightBoundaryMap( *this, pConfiguration.GetShadowMapSize() >> 1 );
 	
 	pRenderers = new deoglRTRenderers( *this );
@@ -1880,6 +1883,10 @@ void deoglRenderThread::pCleanUpThread(){
 		if( pOccQueryMgr ){
 			delete pOccQueryMgr;
 			pOccQueryMgr = NULL;
+		}
+		if( pOcclusionTracing ){
+			delete pOcclusionTracing;
+			pOcclusionTracing = NULL;
 		}
 		if( pOcclusionTest ){
 			delete pOcclusionTest;

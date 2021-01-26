@@ -45,6 +45,7 @@ class deoglExtensions;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
 class deoglOcclusionTest;
+class deoglOcclusionTracing;
 class deoglRCanvas;
 class deoglRenderCache;
 class deoglRRenderWindow;
@@ -123,6 +124,7 @@ private:
 	deoglLightBoundaryMap *pLightBoundarybox;
 	deoglOcclusionQueryManager *pOccQueryMgr;
 	deoglOcclusionTest *pOcclusionTest;
+	deoglOcclusionTracing *pOcclusionTracing;
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
@@ -302,6 +304,9 @@ public:
 	
 	/** \brief Occlusion test. */
 	inline deoglOcclusionTest &GetOcclusionTest() const{ return *pOcclusionTest; }
+	
+	/** \brief Occlusion tracing. */
+	inline deoglOcclusionTracing &GetOcclusionTracing() const{ return *pOcclusionTracing; }
 	
 	/** \brief Light boundary box having at least the given size. */
 	deoglLightBoundaryMap &GetLightBoundaryMap( int size );
