@@ -522,13 +522,24 @@ void igdeWOSOComponent::pLoadResources(){
 		rl.LoadAudioModel( pathAudioModel );
 	}
 	
-	const int textureCount = pGDComponent.GetTextureList().GetCount();
+	int textureCount = pGDComponent.GetTextureList().GetCount();
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		const igdeGDCCTexture &gdctexture = *pGDComponent.GetTextureList().GetAt( i );
 		
 		if( ! gdctexture.GetPathSkin().IsEmpty() ){
 			rl.LoadTextureSkin( gdctexture.GetPathSkin() );
+		}
+	}
+	
+	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
+	if( gdclass ){
+		textureCount = gdclass->GetComponentTextures().GetCount();
+		for( i=0; i<textureCount; i++ ){
+			const igdeGDCCTexture &gdctexture = *gdclass->GetComponentTextures().GetAt( i );
+			if( ! gdctexture.GetPathSkin().IsEmpty() ){
+				rl.LoadTextureSkin( gdctexture.GetPathSkin() );
+			}
 		}
 	}
 	
@@ -776,6 +787,7 @@ void igdeWOSOComponent::pUpdateTextures(){
 		return;
 	}
 	
+	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
 	const deModel &model = *pComponent->GetModel();
 	const int textureCount = model.GetTextureCount();
 	deEngine &engine = GetEngine();
@@ -783,8 +795,11 @@ void igdeWOSOComponent::pUpdateTextures(){
 	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt( i );
-		igdeGDCCTexture * const gdctexture =
-			pGDComponent.GetTextureList().GetNamed( model.GetTextureAt( i )->GetName() );
+		const decString &name = model.GetTextureAt( i )->GetName();
+		const igdeGDCCTexture *gdctexture = pGDComponent.GetTextureList().GetNamed( name );
+		if( ! gdctexture && gdclass ){
+			gdctexture = gdclass->GetComponentTextures().GetNamed( name );
+		}
 		
 		deDynamicSkinReference gdctDynamicSkin;
 		deSkin *useSkin = NULL;
@@ -876,12 +891,12 @@ void igdeWOSOComponent::pDestroyComponent(){
 	
 	if( pAddedToWorld ){
 		GetWrapper().GetWorld()->RemoveComponent( pComponent );
+		pAddedToWorld = false;
 	}
 	
 	( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( NULL );
 	
 	pComponent = NULL;
-	pAddedToWorld = false;
 }
 
 void igdeWOSOComponent::AttachToCollider(){

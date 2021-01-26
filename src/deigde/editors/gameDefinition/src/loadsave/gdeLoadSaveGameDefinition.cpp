@@ -2369,7 +2369,7 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	if( ! component.GetAffectsAudio() ){
 		writer.WriteDataTagBool( "affectsAudio", component.GetAffectsAudio() );
 	}
-	if( ! component.GetLightShadowIgnore() ){
+	if( component.GetLightShadowIgnore() ){
 		writer.WriteDataTagBool( "lightShadowIgnore", component.GetLightShadowIgnore() );
 	}
 	

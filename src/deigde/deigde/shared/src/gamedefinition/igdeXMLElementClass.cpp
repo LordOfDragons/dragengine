@@ -522,7 +522,7 @@ igdeGDClass &gdClass, const char *basePath ){
 		return;
 	}
 	
-	igdeGDCCTextureList &textures = pGetLoadedComponent( gdClass ).GetTextureList();
+	igdeGDCCTextureList &textures = gdClass.GetComponentTextures();
 	igdeCodecPropertyString codec;
 	deObjectReference refTexture;
 	deObject* object;
@@ -573,13 +573,17 @@ igdeGDClass &gdClass, const char *basePath ){
 	}
 }
 
+/*
 igdeGDCComponent &igdeXMLElementClass::pGetLoadedComponent( igdeGDClass &gdClass ){
 	if( gdClass.GetComponentList().GetCount() > 0 ){
 		return *gdClass.GetComponentList().GetAt( 0 );
 	}
 	
-	deObjectReference component;
-	component.TakeOver( new igdeGDCComponent );
-	gdClass.AddComponent( ( igdeGDCComponent* )( deObject* )component );
-	return ( igdeGDCComponent& )( deObject& )component;
+	deObjectReference refComponent;
+	refComponent.TakeOver( new igdeGDCComponent );
+	
+	igdeGDCComponent &component = ( igdeGDCComponent& )( deObject& )refComponent;
+	gdClass.AddComponent( &component );
+	return component;
 }
+*/

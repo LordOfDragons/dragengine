@@ -101,13 +101,30 @@ void meUObjectAddUsedTextures::Redo(){
 	
 	if( pTextureList.GetTextureCount() == 0 ){
 		const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( pObject->GetGDClass() );
-		const igdeGDCCTextureList * const gdctexlist = gdcomponent ? &gdcomponent->GetTextureList() : NULL;
+		
+		const igdeGDCCTextureList *gdctexlist = NULL;
+		const igdeGDCCTextureList *gdccomptex = NULL;
+		
+		if( gdcomponent ){
+			gdctexlist = &gdcomponent->GetTextureList();
+		}
+		if( pObject->GetGDClass() ){
+			gdccomptex = &pObject->GetGDClass()->GetComponentTextures();
+		}
 		
 		count = pTextureNameList.GetCount();
 		for( i=0; i<count; i++ ){
 			const decString &textureName = pTextureNameList.GetAt( i );
-			meHelpers::CreateTexture( texture, pObject, textureName,
-				gdctexlist ? gdctexlist->GetNamed( textureName ) : NULL );
+			
+			igdeGDCCTexture *gdctex = NULL;
+			if( gdctexlist ){
+				gdctex = gdctexlist->GetNamed( textureName );
+			}
+			if( ! gdctex && gdccomptex ){
+				gdctex = gdccomptex->GetNamed( textureName );
+			}
+			
+			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
 			pTextureList.AddTexture( ( meObjectTexture* )( deObject* )texture );
 		}
 	}

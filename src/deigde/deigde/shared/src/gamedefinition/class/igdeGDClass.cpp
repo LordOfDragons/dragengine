@@ -133,6 +133,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		}
 		
 		pPathEClass = gdclass.pPathEClass;
+		pComponentTextures.SetToDeepCopyFrom( gdclass.pComponentTextures );
 		
 	}catch( const deException & ){
 		if( snappoint ){

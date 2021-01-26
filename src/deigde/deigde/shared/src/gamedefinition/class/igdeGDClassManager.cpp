@@ -28,6 +28,7 @@
 #include "igdeGDClassReference.h"
 #include "igdeGDClassManager.h"
 #include "component/igdeGDCComponent.h"
+#include "component/igdeGDCCTexture.h"
 #include "light/igdeGDCLight.h"
 #include "particleemitter/igdeGDCParticleEmitter.h"
 #include "forcefield/igdeGDCForceField.h"
@@ -263,6 +264,18 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 			}
 			gdclassExisting->ResolveInheritClasses( *this );
 			
+			const igdeGDCCTextureList &eclassCompTextures = eclass.GetComponentTextures();
+			igdeGDCCTextureList &compTextures = gdclassExisting->GetComponentTextures();
+			const int count = eclassCompTextures.GetCount();
+			for( j=0; j<count; j++ ){
+				igdeGDCCTexture * const texture = eclassCompTextures.GetAt( j );
+				igdeGDCCTexture * const existingTexture = compTextures.GetNamed( texture->GetName() );
+				if( existingTexture ){
+					compTextures.Remove( existingTexture );
+				}
+				compTextures.Add( texture );
+			}
+			
 			/*
 			const igdeGDCComponentList &components = eclass.GetComponentList();
 			const int componentCount = components.GetCount();
@@ -301,10 +314,11 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				
 				gdClass->SetCategory( firstInheritClass->GetCategory() );
 				
+				/*
 				// certain element classes (like triggers) do not define any component but the
 				// element class loader always adds one component. if the inheritClass class has a
 				// component without any linked parameter then we consider the element class
-				// having no componet and we copy the inheritClass component
+				// having no component and we copy the inheritClass component
 				if( firstInheritClass->GetComponentList().GetCount() > 0 ){
 					const igdeGDCComponent &component = *firstInheritClass->GetComponentList().GetAt( 0 );
 					bool hasComponent = false;
@@ -322,6 +336,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 						gdClass->AddComponent( ( igdeGDCComponent* )( deObject* )refCopy );
 					}
 				}
+				*/
 			}
 		}
 		

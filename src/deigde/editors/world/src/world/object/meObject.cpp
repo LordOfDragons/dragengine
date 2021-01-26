@@ -2244,10 +2244,9 @@ void meObject::pUpdateComponent(){
 		}
 		
 		bool componentVisible = pWObject->GetVisible();
-		if( pWObject->GetGDClass() && pWObject->GetGDClass()->GetComponentList().GetCount() > 0 ){
-			if( pWObject->GetGDClass()->GetComponentList().GetAt( 0 )->GetPartialHide() ){
-				componentVisible = ! pWObject->GetPartiallyHidden();
-			}
+		const igdeGDCComponent * const gdccomponent = meHelpers::FindFirstComponent( pWObject->GetGDClass() );
+		if( gdccomponent && gdccomponent->GetPartialHide() ){
+			componentVisible = ! pWObject->GetPartiallyHidden();
 		}
 		pEngComponentBroken->SetVisible( componentVisible );
 		
