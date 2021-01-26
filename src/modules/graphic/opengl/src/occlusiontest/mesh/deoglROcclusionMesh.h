@@ -33,6 +33,7 @@ class deOcclusionMesh;
 class deoglRenderThread;
 class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
+class deoglBVH;
 
 
 
@@ -76,6 +77,8 @@ public:
 	deoglSharedSPBRTIGroupList pRTIGroupsSingle;
 	deoglSharedSPBRTIGroupList pRTIGroupsDouble;
 	
+	deoglBVH *pBVH;
+	
 	
 	
 public:
@@ -94,6 +97,9 @@ public:
 	/*@{*/
 	/** \brief Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** \brief Filename for debugging. */
+	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief VBO block. */
 	deoglSharedVBOBlock *GetVBOBlock();
@@ -138,7 +144,7 @@ public:
 	
 	/**
 	 * \brief Double sided face count.
-	 * \details Located after the double sided faces.
+	 * \details Located after the single sided faces.
 	 */
 	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
@@ -152,6 +158,14 @@ public:
 	
 	/** \brief Render task instance groups for double sided fgaces. */
 	inline deoglSharedSPBRTIGroupList &GetRTIGroupDouble(){ return pRTIGroupsDouble; }
+	
+	
+	
+	/** \brief BVH or NULL. */
+	deoglBVH *GetBVH() const{ return pBVH; }
+	
+	/** \brief Build BVH if not build yet. */
+	void PrepareBVH();
 	/*@}*/
 	
 	

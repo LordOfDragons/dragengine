@@ -35,6 +35,7 @@
 #include "../../vbo/deoglSharedVBOListList.h"
 #include "../../vbo/deoglSharedVBO.h"
 #include "../../vbo/deoglVBOAttribute.h"
+#include "../../utils/bvh/deoglBVH.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
@@ -53,7 +54,8 @@ deoglROcclusionMesh::deoglROcclusionMesh( deoglRenderThread &renderThread,
 const deOcclusionMesh &occlusionmesh ) :
 pRenderThread( renderThread ),
 pFilename( occlusionmesh.GetFilename() ),
-pSharedSPBListUBO( NULL )
+pSharedSPBListUBO( NULL ),
+pBVH( NULL )
 {
 	pVBOBlock = NULL;
 	
@@ -118,6 +120,53 @@ deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
 
 
 
+void deoglROcclusionMesh::PrepareBVH(){
+	if( pBVH ){
+		return;
+	}
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	const int faceCount = pSingleSidedFaceCount + pDoubleSidedFaceCount;
+	
+	if( faceCount > 0 ){
+		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+		unsigned short *corners = pCorners;
+		int i;
+		
+		for( i=0; i<faceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			const sVertex &v1 = pVertices[ *(corners++) ];
+			const sVertex &v2 = pVertices[ *(corners++) ];
+			const sVertex &v3 = pVertices[ *(corners++) ];
+			
+			primitive.minExtend = v1.position.Smallest( v2.position ).Smallest( v3.position );
+			primitive.maxExtend = v1.position.Largest( v2.position ).Largest( v3.position );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		pBVH = new deoglBVH;
+		pBVH->Build( primitives, faceCount );
+		
+	}catch( const deException & ){
+		if( pBVH ){
+			delete pBVH;
+			pBVH = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -146,6 +195,9 @@ public:
 };
 
 void deoglROcclusionMesh::pCleanUp(){
+	if( pBVH ){
+		delete pBVH;
+	}
 	if( pCorners ){
 		delete [] pCorners;
 	}
