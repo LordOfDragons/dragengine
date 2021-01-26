@@ -157,7 +157,7 @@ void deoglDynamicTBOUInt32::Update(){
 	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint32_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
 	
 	if( ! pTBO ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pTBO ) );
+		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
 		if( ! pTBO ){
 			DETHROW( deeOutOfMemory );
 		}
@@ -254,7 +254,7 @@ void deoglDynamicTBOUInt32::pCleanUp(){
 	consumption.DecrementCount();
 	
 	if( pTBO ){
-		pglDeleteBuffers( 1, &pTBO );
+		glDeleteTextures( 1, &pTBO );
 	}
 	if( pVBO ){
 		pglDeleteBuffers( 1, &pVBO );
