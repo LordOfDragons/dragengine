@@ -148,7 +148,7 @@ void deoglROcclusionMesh::PrepareBVH(){
 	
 	try{
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, faceCount );
+		pBVH->Build( primitives, faceCount, 12 );
 		
 	}catch( const deException & ){
 		if( pBVH ){
@@ -166,38 +166,36 @@ void deoglROcclusionMesh::PrepareBVH(){
 	}
 	
 #if 0
-	if(true){
-		struct PrintBVH{
-			deoglRTLogger &logger;
-			const sVertex *vertices;
-			const unsigned short *corners;
-			PrintBVH(deoglRTLogger &logger, const sVertex *vertices, const unsigned short *corners) :
-			logger(logger), vertices(vertices), corners(corners){
-			}
-			void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
-				logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),
-					node.GetMinExtend().x, node.GetMinExtend().y, node.GetMinExtend().z,
-					node.GetMaxExtend().x, node.GetMaxExtend().y, node.GetMaxExtend().z);
-				if(node.GetPrimitiveCount() == 0){
-					Print(prefix + "L ", bvh, bvh.GetNodeAt(node.GetFirstIndex()));
-					Print(prefix + "R ", bvh, bvh.GetNodeAt(node.GetFirstIndex()+1));
-				}else{
-					for(int i=0; i<node.GetPrimitiveCount(); i++){
-						const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
-						const decVector v1 = vertices[corners[index*3]].position;
-						const decVector v2 = vertices[corners[index*3+1]].position;
-						const decVector v3 = vertices[corners[index*3+2]].position;
-						logger.LogInfoFormat("%sP%03d (%g,%g,%g) (%g,%g,%g) (%g,%g,%g)", prefix.GetString(),
-							i, v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
-					}
+	struct PrintBVH{
+		deoglRTLogger &logger;
+		const sVertex *vertices;
+		const unsigned short *corners;
+		PrintBVH(deoglRTLogger &logger, const sVertex *vertices, const unsigned short *corners) :
+		logger(logger), vertices(vertices), corners(corners){
+		}
+		void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
+			logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),
+				node.GetMinExtend().x, node.GetMinExtend().y, node.GetMinExtend().z,
+				node.GetMaxExtend().x, node.GetMaxExtend().y, node.GetMaxExtend().z);
+			if(node.GetPrimitiveCount() == 0){
+				Print(prefix + "L ", bvh, bvh.GetNodeAt(node.GetFirstIndex()));
+				Print(prefix + "R ", bvh, bvh.GetNodeAt(node.GetFirstIndex()+1));
+			}else{
+				for(int i=0; i<node.GetPrimitiveCount(); i++){
+					const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
+					const decVector v1 = vertices[corners[index*3]].position;
+					const decVector v2 = vertices[corners[index*3+1]].position;
+					const decVector v3 = vertices[corners[index*3+2]].position;
+					logger.LogInfoFormat("%sP%03d (%g,%g,%g) (%g,%g,%g) (%g,%g,%g)", prefix.GetString(),
+						i, v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
 				}
 			}
-		};
-		deoglRTLogger &logger = pRenderThread.GetLogger();
-		logger.LogInfoFormat("OccMesh BVH: %s", pFilename.GetString());
-		if(pBVH->GetRootNode()){
-			PrintBVH(logger, pVertices, pCorners).Print("", *pBVH, *pBVH->GetRootNode());
 		}
+	};
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	logger.LogInfoFormat("OccMesh BVH: %s", pFilename.GetString());
+	if(pBVH->GetRootNode()){
+		PrintBVH(logger, pVertices, pCorners).Print("", *pBVH, *pBVH->GetRootNode());
 	}
 #endif
 }

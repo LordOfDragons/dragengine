@@ -33,6 +33,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/bvh/deoglBVHNode.h"
+#include "../utils/collision/deoglCollisionBox.h"
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
@@ -55,9 +56,14 @@ pOccMeshSize( 0 ),
 pOccMeshInstances( NULL ),
 pOccMeshInstanceCount( 0 ),
 pOccMeshInstanceSize( 0 ),
+pBVHBuildPrimitives( NULL ),
+pBVHBuildPrimitiveSize( 0 ),
 pTBONodeBox( renderThread, 4 ),
-pTBOIndex( renderThread, 4 ),
-pTBOPrimitiveData( renderThread, 4 )
+pTBOIndex( renderThread, 2 ),
+pTBOInstance( renderThread, 1 ),
+pTBOMatrix( renderThread, 4 ),
+pTBOFace( renderThread, 4 ),
+pBVHInstanceRootNode( 0 )
 {
 }
 
@@ -75,9 +81,12 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 	pOccMeshInstanceCount = 0;
 	pOccMeshCount = 0;
 	
-	pTBOPrimitiveData.Clear();
+	pTBOFace.Clear();
+	pTBOMatrix.Clear();
+	pTBOInstance.Clear();
 	pTBOIndex.Clear();
 	pTBONodeBox.Clear();
+	pBVHInstanceRootNode = 0;
 	
 	pPosition = pGrid2World( pWorld2Grid( position ) );
 	pFindComponents( world );
@@ -92,6 +101,9 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 //////////////////////
 
 void deoglOcclusionTracing::pCleanUp(){
+	if( pBVHBuildPrimitives ){
+		delete [] pBVHBuildPrimitives;
+	}
 	if( pOccMeshInstances ){
 		delete [] pOccMeshInstances;
 	}
@@ -144,12 +156,16 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 		// prepare BVH first just in case something goes wrong
 		occlusionMesh->PrepareBVH();
 		
+		if( ! occlusionMesh->GetBVH()->GetRootNode() ){
+			return; // empty occlusion mesh
+		}
+		
 		// add occlusion mesh to list of encountered occlusion meshes
 		if( pOccMeshCount == pOccMeshSize ){
-			const int newSize = pOccMeshSize + 10;
+			const int newSize = pOccMeshCount + 10;
 			sOccMesh * const newArray = new sOccMesh[ newSize ];
 			if( pOccMeshes ){
-				memcpy( newArray, pOccMeshes, sizeof( sOccMesh ) * newSize );
+				memcpy( newArray, pOccMeshes, sizeof( sOccMesh ) * pOccMeshCount );
 				delete [] pOccMeshes;
 			}
 			pOccMeshes = newArray;
@@ -158,7 +174,7 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 		
 		sOccMesh &occMesh = pOccMeshes[ pOccMeshCount++ ];
 		occMesh.occlusionMesh = occlusionMesh;
-		occMesh.indexFaces = pTBOPrimitiveData.GetPixelCount() / 3;
+		occMesh.indexFaces = pTBOFace.GetPixelCount() / 3;
 		occMesh.indexNodes = pTBOIndex.GetPixelCount();
 		
 		// add faces to TBOs using primitive mapping from BVH
@@ -175,9 +191,9 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 			const int faceIndex = primitives[ i ];
 			const unsigned short * const faceCorners = corners + 3 * faceIndex;
 			const float doubleSided = faceIndex < singleSidedFaceCount ? 0.0f : 1.0f;
-			pTBOPrimitiveData.AddVec4( vertices[ faceCorners[ 0 ] ].position, doubleSided );
-			pTBOPrimitiveData.AddVec4( vertices[ faceCorners[ 1 ] ].position, doubleSided );
-			pTBOPrimitiveData.AddVec4( vertices[ faceCorners[ 2 ] ].position, doubleSided );
+			pTBOFace.AddVec4( vertices[ faceCorners[ 0 ] ].position, doubleSided );
+			pTBOFace.AddVec4( vertices[ faceCorners[ 1 ] ].position, doubleSided );
+			pTBOFace.AddVec4( vertices[ faceCorners[ 2 ] ].position, doubleSided );
 		}
 		
 		// add BVH to TBOs
@@ -190,17 +206,17 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 			pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
 			
 			if( node.GetPrimitiveCount() == 0 ){
-				pTBOIndex.AddVec4( occMesh.indexNodes + node.GetFirstIndex(), 0, 0, 0 );
+				pTBOIndex.AddVec2( occMesh.indexNodes + node.GetFirstIndex(), 0 );
 				
 			}else{
-				pTBOIndex.AddVec4( occMesh.indexFaces + node.GetFirstIndex(), node.GetPrimitiveCount(), 0, 0 );
+				pTBOIndex.AddVec2( occMesh.indexFaces + node.GetFirstIndex(), node.GetPrimitiveCount() );
 			}
 		}
 	}
 	
 	// add instance to TBO
 	if( pOccMeshInstanceCount == pOccMeshInstanceSize ){
-		const int newSize = pOccMeshInstanceSize + 10;
+		const int newSize = pOccMeshInstanceCount + 10;
 		sOccMeshInstance * const newArray = new sOccMeshInstance[ newSize ];
 		if( pOccMeshInstances ){
 			memcpy( newArray, pOccMeshInstances, sizeof( sOccMeshInstance ) * pOccMeshInstanceCount );
@@ -212,10 +228,9 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 	
 	sOccMeshInstance &occMeshInst = pOccMeshInstances[ pOccMeshInstanceCount++ ];
 	occMeshInst.indexMesh = indexOccMesh;
+	occMeshInst.indexInstance = 0;
+	occMeshInst.indexMatrix = 0;
 	occMeshInst.matrix = matrix;
-	
-	occMeshInst.indexMatrix = pTBOPrimitiveData.GetPixelCount() / 3;
-	pTBOPrimitiveData.AddMat3x4( matrix );
 }
 
 #if 0
@@ -275,32 +290,101 @@ void deoglOcclusionTracing::pFinish(){
 	//   maxExtend(1:RGB). one component has to be wasted in each pixel due to format
 	//   restrictions. contains package nodes of all mesh BVH then nodes of instance BVH.
 	//   
-	// - TBOIndex: RGBA32UI (stride 1 pixel)
-	//   stores packaged indicies.
+	// - TBOIndex: RG32UI (stride 1 pixel)
+	//   stores bvh node indiced.
 	//   1) all mesh bvh indices. firstIndex(R) primitiveCount(G). if leaf node points to mesh
-	//      faces in TBOPrimitiveData (absolute index). otherwise points to first child node
-	//      in TBONodeBox/TBOIndex (absolute index).
-	//   2) all instance bvh indices. firstIndex(R) primitiveCount(G) matrixIndex(B) dataIndex(A).
-	//      points to next node in TBONodeBox/TBOIndex (absolute index). for child nodes stays
-	//      in instance BVH. for leaf nodes switches to mesh BVH traversal. firstIndex is
-	//      absolute index. matrixIndex points to instance matrices in TBOPrimitiveData
-	//      (absolute index) and becomes "current BVH transformation matrix". dataIndex points
-	//      to first mesh primitive data (absolute index)
+	//      faces in TBOPrimitiveData (absolute strided index). otherwise points to first child
+	//      node in TBONodeBox/TBOIndex (absolute strided index).
+	//   2) all instance bvh indices. firstIndex(R) primitiveCount(G). points to next node in
+	//      TBONodeBox/TBOIndex (absolute strided index). for child nodes stays in instance BVH.
+	//      for leaf nodes switches to mesh BVH traversal. points into TBOInstance and TBOMatrix.
 	// 
-	// - TBOPrimitiveData: RGBA16F (stride 3 pixels)
-	//   stores packaged primitive data.
-	//   1) all mesh face vertices. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) doubleSided(0:A).
-	//      vertices are transformed by "current BVH transformation matrix". face is doubleSided
-	//      if doubleSided has value 1 or single sided if value is 0.
-	//   2) all instance matrices. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
+	// - TBOInstance: R32UI (stride 1 pixel)
+	//   stores instance offsets. bvhIndex(R) is the absolute strided index into TBONodeBox
+	//   and TBOIndex with the mesh bvh root node.
+	//   
+	// - TBOMatrix: RGBA16F (stride 3 pixels)
+	//   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
+	//   
+	// - TBOFace: RGBA16F (stride 3 pixels)
+	//   stores mesh faces. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) doubleSided(0:A).
+	//   vertices are transformed by "current BVH transformation matrix". face is doubleSided
+	//   if doubleSided has value 1 or single sided if value is 0.
 	//   
 	// requires uniforms:
 	// 
 	// - uint IndexRootNode: index into TBONodeBox/TBOIndex containing instance BVH root node.
 	
+	// build instance bvh
+	if( pOccMeshInstanceCount > pBVHBuildPrimitiveSize ){
+		deoglBVH::sBuildPrimitive * const newArray = new deoglBVH::sBuildPrimitive[ pOccMeshInstanceCount ];
+		if( pBVHBuildPrimitives ){
+			delete [] pBVHBuildPrimitives;
+		}
+		pBVHBuildPrimitives = newArray;
+		pBVHBuildPrimitiveSize = pOccMeshInstanceCount;
+	}
+	
+	int i;
+	for( i=0; i<pOccMeshInstanceCount; i++ ){
+		deoglBVH::sBuildPrimitive &primitive = pBVHBuildPrimitives[ i ];
+		const sOccMeshInstance &instance = pOccMeshInstances[ i ];
+		const sOccMesh &mesh = pOccMeshes[ instance.indexMesh ];
+		const deoglBVH &bvh = *mesh.occlusionMesh->GetBVH();
+		const deoglBVHNode &rootNode = *bvh.GetRootNode();
+		
+		const decVector &minExtend = rootNode.GetMinExtend();
+		const decVector &maxExtend = rootNode.GetMaxExtend();
+		const decVector center( ( minExtend + maxExtend ) * 0.5f );
+		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
+		deoglCollisionBox box( instance.matrix * center, halfSize, instance.matrix.ToQuaternion() );
+		deoglCollisionBox enclosing;
+		box.GetEnclosingBox( &enclosing );
+		
+		primitive.center = enclosing.GetCenter();
+		primitive.minExtend = primitive.center - enclosing.GetHalfSize();
+		primitive.maxExtend = primitive.center + enclosing.GetHalfSize();
+	}
+	
+	pBVHInstances.Build( pBVHBuildPrimitives, pOccMeshInstanceCount, 4 );
+	
+	// add to TBOs using primitive mapping from BVH
+	const int * const primitives = pBVHInstances.GetPrimitives();
+	
+	for( i=0; i<pOccMeshInstanceCount; i++ ){
+		sOccMeshInstance &instance = pOccMeshInstances[ primitives[ i ] ];
+		instance.indexMatrix = pTBOMatrix.GetPixelCount() / 3;
+		pTBOMatrix.AddMat3x4( instance.matrix );
+		
+		instance.indexInstance = pTBOInstance.GetPixelCount();
+		pTBOInstance.AddInt( pOccMeshes[ instance.indexMesh ].indexNodes );
+	}
+	
+	// add BVH to TBOs
+	const int nodeCount = pBVHInstances.GetNodeCount();
+	const deoglBVHNode * const nodes = pBVHInstances.GetNodes();
+	
+	pBVHInstanceRootNode = pTBOIndex.GetPixelCount();
+	
+	for( i=0; i<nodeCount; i++ ){
+		const deoglBVHNode &node = nodes[ i ];
+		pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
+		pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
+		
+		if( node.GetPrimitiveCount() == 0 ){
+			pTBOIndex.AddVec2( pBVHInstanceRootNode + node.GetFirstIndex(), 0 );
+			
+		}else{
+			pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
+		}
+	}
+	
+	// update TBOs
 	pTBONodeBox.Update();
 	pTBOIndex.Update();
-	pTBOPrimitiveData.Update();
+	pTBOInstance.Update();
+	pTBOMatrix.Update();
+	pTBOFace.Update();
 	
 	// DEBUG
 	if(false){
@@ -315,14 +399,48 @@ void deoglOcclusionTracing::pFinish(){
 		logger.LogInfoFormat("OcclusionTracing: %d Instances", pOccMeshInstanceCount);
 		for(i=0; i<pOccMeshInstanceCount; i++){
 			const decDVector p(pPosition + pOccMeshInstances[i].matrix.GetPosition());
-			logger.LogInfoFormat("- %d: indexMatrix=%d indexMesh=%d position=(%g,%g,%g)", i,
-				pOccMeshInstances[i].indexMatrix, pOccMeshInstances[i].indexMesh, p.x, p.y, p.z);
+			logger.LogInfoFormat("- %d: indexMatrix=%d indexMesh=%d indexInstance=%d position=(%g,%g,%g)",
+				i, pOccMeshInstances[i].indexMatrix, pOccMeshInstances[i].indexMesh,
+				pOccMeshInstances[i].indexInstance, p.x, p.y, p.z);
 		}
+		logger.LogInfoFormat("OcclusionTracing: Root Node %d", pBVHInstanceRootNode);
 		logger.LogInfo("OcclusionTracing: TBONodeBox");
 		pTBONodeBox.DebugPrint();
 		logger.LogInfo("OcclusionTracing: TBOIndex");
 		pTBOIndex.DebugPrint();
-		logger.LogInfo("OcclusionTracing: TBOPrimitiveData");
-		pTBOPrimitiveData.DebugPrint();
+		logger.LogInfo("OcclusionTracing: TBOInstance");
+		pTBOInstance.DebugPrint();
+		logger.LogInfo("OcclusionTracing: TBOMatrix");
+		pTBOMatrix.DebugPrint();
+		logger.LogInfo("OcclusionTracing: TBOFace");
+		pTBOFace.DebugPrint();
+		
+		struct PrintBVH{
+			deoglRTLogger &logger;
+			const sOccMeshInstance *instances;
+			PrintBVH(deoglRTLogger &logger, const sOccMeshInstance *instances) : logger(logger), instances(instances){
+			}
+			void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
+				logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),
+					node.GetMinExtend().x, node.GetMinExtend().y, node.GetMinExtend().z,
+					node.GetMaxExtend().x, node.GetMaxExtend().y, node.GetMaxExtend().z);
+				if(node.GetPrimitiveCount() == 0){
+					Print(prefix + "L ", bvh, bvh.GetNodeAt(node.GetFirstIndex()));
+					Print(prefix + "R ", bvh, bvh.GetNodeAt(node.GetFirstIndex()+1));
+				}else{
+					for(int i=0; i<node.GetPrimitiveCount(); i++){
+						const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
+						const decVector p(instances[index].matrix.GetPosition());
+						const decVector r(instances[index].matrix.GetEulerAngles() * RAD2DEG);
+						logger.LogInfoFormat("%sP%03d position=(%g,%g,%g) rotation=(%g,%g,%g) mesh=%d",
+							prefix.GetString(), i, p.x, p.y, p.z, r.x, r.y, r.z, instances[index].indexMesh);
+					}
+				}
+			}
+		};
+		logger.LogInfo("OccMesh Instance BVH");
+		if(pBVHInstances.GetRootNode()){
+			PrintBVH(logger, pOccMeshInstances).Print("", pBVHInstances, *pBVHInstances.GetRootNode());
+		}
 	}
 }
