@@ -288,7 +288,7 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 	case 1:
 		for( i=0; i<pDataCount; i++ ){
 			const float v1 = convertHalfToFloat( *(data++) );
-			logger.LogInfoFormat( "%05d: [%g]", pixel++, v1 );
+			logger.LogInfoFormat( "%5d: [%11.4f]", pixel++, v1 );
 		}
 		break;
 		
@@ -296,7 +296,7 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 		for( i=0; i<pDataCount; i+=2 ){
 			const float v1 = convertHalfToFloat( *(data++) );
 			const float v2 = convertHalfToFloat( *(data++) );
-			logger.LogInfoFormat( "%05d: [%g | %g]", pixel++, v1, v2 );
+			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f]", pixel++, v1, v2 );
 		}
 		break;
 		
@@ -305,7 +305,7 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 			const float v1 = convertHalfToFloat( *(data++) );
 			const float v2 = convertHalfToFloat( *(data++) );
 			const float v3 = convertHalfToFloat( *(data++) );
-			logger.LogInfoFormat( "%05d: [%g | %g | %g]", pixel++, v1, v2, v3 );
+			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3 );
 		}
 		break;
 		
@@ -315,7 +315,7 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 			const float v2 = convertHalfToFloat( *(data++) );
 			const float v3 = convertHalfToFloat( *(data++) );
 			const float v4 = convertHalfToFloat( *(data++) );
-			logger.LogInfoFormat( "%05d: [%g | %g | %g | %g]", pixel++, v1, v2, v3, v4 );
+			logger.LogInfoFormat( "%5d: [%11.4f | %11.4f | %11.4f | %11.4f]", pixel++, v1, v2, v3, v4 );
 		}
 		break;
 	}

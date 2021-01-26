@@ -175,29 +175,26 @@ void deoglBVH::pBuildNode( const sBuildPrimitive *primitives, int primitiveCount
 		return;
 	}
 	
-	// create two child nodes. pAddNode potentially moves memory.
+	// create two child nodes. pAddNode potentially moves memory
+	const int indexLeftNode = pNodeCount;
 	pAddNode(); // add left node
 	pAddNode(); // add right node
-	deoglBVHNode &leftNode = pNodes[ pNodeCount - 2 ];
-	deoglBVHNode &rightNode = pNodes[ pNodeCount - 1 ];
 	
 	// distribute primitives across children
 	int walkerLeft = nodeFirstIndex;
 	int walkerRight = nodeFirstIndex + nodePrimitiveCount - 1;
-	int next = walkerLeft;
 	
 	if( nodeSize.x > nodeSize.y && nodeSize.x > nodeSize.z ){
 		// split across X axis
 		const float splitCenter = ( minExtend.x + maxExtend.x ) * 0.5f;
-		while( next <= walkerRight ){
-			const int temp = pPrimitives[ next ];
+		while( walkerLeft <= walkerRight ){
+			const int temp = pPrimitives[ walkerLeft ];
 			
-			if( primitives[ pPrimitives[ next ] ].center.x < splitCenter ){
-				pPrimitives[ next++ ] = pPrimitives[ walkerLeft ];
-				pPrimitives[ walkerLeft++ ] = temp;
+			if( primitives[ temp ].center.x < splitCenter ){
+				walkerLeft++;
 				
 			}else{
-				pPrimitives[ next++ ] = pPrimitives[ walkerRight ];
+				pPrimitives[ walkerLeft ] = pPrimitives[ walkerRight ];
 				pPrimitives[ walkerRight-- ] = temp;
 			}
 		}
@@ -205,15 +202,14 @@ void deoglBVH::pBuildNode( const sBuildPrimitive *primitives, int primitiveCount
 	}else if( nodeSize.y > nodeSize.z ){
 		// split across Y axis
 		const float splitCenter = ( minExtend.y + maxExtend.y ) * 0.5f;
-		while( next <= walkerRight ){
-			const int temp = pPrimitives[ next ];
+		while( walkerLeft <= walkerRight ){
+			const int temp = pPrimitives[ walkerLeft ];
 			
-			if( primitives[ pPrimitives[ next ] ].center.y < splitCenter ){
-				pPrimitives[ next++ ] = pPrimitives[ walkerLeft ];
-				pPrimitives[ walkerLeft++ ] = temp;
+			if( primitives[ temp ].center.y < splitCenter ){
+				walkerLeft++;
 				
 			}else{
-				pPrimitives[ next++ ] = pPrimitives[ walkerRight ];
+				pPrimitives[ walkerLeft ] = pPrimitives[ walkerRight ];
 				pPrimitives[ walkerRight-- ] = temp;
 			}
 		}
@@ -221,21 +217,23 @@ void deoglBVH::pBuildNode( const sBuildPrimitive *primitives, int primitiveCount
 	}else{
 		// split across Z axis
 		const float splitCenter = ( minExtend.z + maxExtend.z ) * 0.5f;
-		while( next <= walkerRight ){
-			const int temp = pPrimitives[ next ];
+		while( walkerLeft <= walkerRight ){
+			const int temp = pPrimitives[ walkerLeft ];
 			
-			if( primitives[ pPrimitives[ next ] ].center.z < splitCenter ){
-				pPrimitives[ next++ ] = pPrimitives[ walkerLeft ];
-				pPrimitives[ walkerLeft++ ] = temp;
+			if( primitives[ temp ].center.z < splitCenter ){
+				walkerLeft++;
 				
 			}else{
-				pPrimitives[ next++ ] = pPrimitives[ walkerRight ];
+				pPrimitives[ walkerLeft ] = pPrimitives[ walkerRight ];
 				pPrimitives[ walkerRight-- ] = temp;
 			}
 		}
 	}
 	
 	// update primitive indices of child nodes
+	deoglBVHNode &leftNode = pNodes[ indexLeftNode ];
+	deoglBVHNode &rightNode = pNodes[ indexLeftNode + 1 ];
+	
 	leftNode.SetFirstIndex( nodeFirstIndex );
 	leftNode.SetPrimitiveCount( walkerLeft - nodeFirstIndex );
 	rightNode.SetFirstIndex( nodeFirstIndex + leftNode.GetPrimitiveCount() );
@@ -248,11 +246,12 @@ void deoglBVH::pBuildNode( const sBuildPrimitive *primitives, int primitiveCount
 		return;
 	}
 	
-	// otherwise continue building with the child nodes
+	// otherwise continue building with the child nodes. since pAddNode potentially
+	// moved memory we can not use leftNode and rightNode reference from here on
 	pNodes[ node ].SetFirstIndex( pNodeCount - 2 );
 	pNodes[ node ].SetPrimitiveCount( 0 );
 	
 	maxDepth--;
-	pBuildNode( primitives, primitiveCount, pNodeCount - 2, maxDepth );
-	pBuildNode( primitives, primitiveCount, pNodeCount - 1, maxDepth );
+	pBuildNode( primitives, primitiveCount, indexLeftNode, maxDepth );
+	pBuildNode( primitives, primitiveCount, indexLeftNode + 1, maxDepth );
 }

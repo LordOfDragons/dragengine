@@ -208,7 +208,7 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 	case 1:
 		for( i=0; i<pDataCount; i++ ){
 			const uint32_t v1 = *(data++);
-			logger.LogInfoFormat( "%05d: [%d]", pixel++, v1 );
+			logger.LogInfoFormat( "%5d: [%11d]", pixel++, v1 );
 		}
 		break;
 		
@@ -216,7 +216,7 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 		for( i=0; i<pDataCount; i+=2 ){
 			const uint32_t v1 = *(data++);
 			const uint32_t v2 = *(data++);
-			logger.LogInfoFormat( "%05d: [%d | %d]", pixel++, v1, v2 );
+			logger.LogInfoFormat( "%5d: [%11d | %11d]", pixel++, v1, v2 );
 		}
 		break;
 		
@@ -225,7 +225,7 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 			const uint32_t v1 = *(data++);
 			const uint32_t v2 = *(data++);
 			const uint32_t v3 = *(data++);
-			logger.LogInfoFormat( "%05d: [%d | %d | %d]", pixel++, v1, v2, v3 );
+			logger.LogInfoFormat( "%5d: [%11d | %11d | %11d]", pixel++, v1, v2, v3 );
 		}
 		break;
 		
@@ -235,7 +235,7 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 			const uint32_t v2 = *(data++);
 			const uint32_t v3 = *(data++);
 			const uint32_t v4 = *(data++);
-			logger.LogInfoFormat( "%05d: [%d | %d | %d | %d]", pixel++, v1, v2, v3, v4 );
+			logger.LogInfoFormat( "%5d: [%11d | %11d | %11d | %11d]", pixel++, v1, v2, v3, v4 );
 		}
 		break;
 	}
