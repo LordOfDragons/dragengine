@@ -37,7 +37,7 @@
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
-
+#include <dragengine/common/utils/decTimer.h>
 
 
 // Class deoglOcclusionTest
@@ -76,7 +76,13 @@ deoglOcclusionTracing::~deoglOcclusionTracing(){
 // Management
 ///////////////
 
+// #define DO_TIMING 1
+
 void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &position ){
+	#ifdef DO_TIMING
+	decTimer timer;
+	#endif
+	
 	pBVHInstances.Clear();
 	pOccMeshInstanceCount = 0;
 	pOccMeshCount = 0;
@@ -93,6 +99,10 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 	pAddOcclusionMeshes();
 	
 	pFinish();
+	
+	#ifdef DO_TIMING
+	pRenderThread.GetLogger().LogInfoFormat("OcclusionTracing: Elapsed %.1fys", timer.GetElapsedTime() * 1e6f);
+	#endif
 }
 
 
@@ -337,7 +347,9 @@ void deoglOcclusionTracing::pFinish(){
 		const decVector &maxExtend = rootNode.GetMaxExtend();
 		const decVector center( ( minExtend + maxExtend ) * 0.5f );
 		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
-		deoglCollisionBox box( instance.matrix * center, halfSize, instance.matrix.ToQuaternion() );
+		deoglCollisionBox box( instance.matrix * center,
+			instance.matrix.GetScale().Multiply( halfSize ), \
+			instance.matrix.Normalized().ToQuaternion() );
 		deoglCollisionBox enclosing;
 		box.GetEnclosingBox( &enclosing );
 		
@@ -431,7 +443,7 @@ void deoglOcclusionTracing::pFinish(){
 					for(int i=0; i<node.GetPrimitiveCount(); i++){
 						const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
 						const decVector p(instances[index].matrix.GetPosition());
-						const decVector r(instances[index].matrix.GetEulerAngles() * RAD2DEG);
+						const decVector r(instances[index].matrix.Normalized().GetEulerAngles() * RAD2DEG);
 						logger.LogInfoFormat("%sP%03d position=(%g,%g,%g) rotation=(%g,%g,%g) mesh=%d",
 							prefix.GetString(), i, p.x, p.y, p.z, r.x, r.y, r.z, instances[index].indexMesh);
 					}
