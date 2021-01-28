@@ -148,7 +148,18 @@ void deoglROcclusionMesh::PrepareBVH(){
 	
 	try{
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, faceCount, 12 );
+		pBVH->Build( primitives, faceCount, 4 );
+		
+		/*
+		some measured timings from processing a bunch of occlusion meshes:
+		12 => 2065ys
+		8 => 2031ys
+		4 => 1965ys
+		1 => 2612ys
+		
+		using 4 here since it seems to be the fastest. but up to 8 seems fine too.
+		maybe this can be changed on a per-mesh basis if required.
+		*/
 		
 	}catch( const deException & ){
 		if( pBVH ){

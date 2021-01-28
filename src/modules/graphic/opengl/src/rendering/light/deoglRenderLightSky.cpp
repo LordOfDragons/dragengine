@@ -56,7 +56,6 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
-#include "../../occlusiontest/deoglOcclusionTracing.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
@@ -160,7 +159,6 @@ pDebugInfoSolidShadowOcclusion( NULL ),
 pDebugInfoSolidShadowOcclusionStart( NULL ),
 pDebugInfoSolidShadowOcclusionVBO( NULL ),
 pDebugInfoSolidShadowOcclusionTest( NULL ),
-pDebugInfoSolidShadowOcclusionTracing( NULL ),
 pDebugInfoSolidShadowVBOs( NULL ),
 pDebugInfoSolidShadowClear( NULL ),
 pDebugInfoSolidShadowSplit( NULL ),
@@ -225,9 +223,6 @@ pDebugInfoTransparentLight( NULL )
 		pDebugInfoSolidShadowOcclusionTest = new deoglDebugInformation( "Test", colorText, colorBgSub3 );
 		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionTest );
 		
-		pDebugInfoSolidShadowOcclusionTracing = new deoglDebugInformation( "Tracing", colorText, colorBgSub3 );
-		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionTracing );
-		
 		pDebugInfoSolidShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowVBOs );
 		
@@ -290,8 +285,6 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid ){
 	DebugTimersReset( plan, false );
 	
 	//RenderAO( plan );
-	RenderOcclusionTracing( plan );
-	
 	RestoreFBO( plan );
 	
 	int i;
@@ -363,18 +356,6 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	// render probes
 //	rengeom.RenderSkyLOProbes( &plan, plan.GetCollideList(), plan.GetCameraMatrix() );
 #endif
-}
-
-void deoglRenderLightSky::RenderOcclusionTracing( deoglRenderPlan &plan ){
-		return;
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglOcclusionTracing &occtracing = renderThread.GetOcclusionTracing();
-	
-	DebugTimer4Reset( plan, false );
-	
-	occtracing.Update( *plan.GetWorld(), plan.GetCameraPosition() );
-	
-	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionTracing, false );
 }
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlan &plan, bool solid,
@@ -1039,7 +1020,6 @@ void deoglRenderLightSky::ResetDebugInfo(){
 	pDebugInfoSolidShadowOcclusionStart->Clear();
 	pDebugInfoSolidShadowOcclusionVBO->Clear();
 	pDebugInfoSolidShadowOcclusionTest->Clear();
-	pDebugInfoSolidShadowOcclusionTracing->Clear();
 	pDebugInfoSolidShadowVBOs->Clear();
 	pDebugInfoSolidShadowClear->Clear();
 	pDebugInfoSolidShadowSplit->Clear();
@@ -1120,9 +1100,6 @@ void deoglRenderLightSky::pCleanUp(){
 	}
 	if( pDebugInfoSolidShadowOcclusionTest ){
 		pDebugInfoSolidShadowOcclusionTest->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusionTracing ){
-		pDebugInfoSolidShadowOcclusionTracing->FreeReference();
 	}
 	if( pDebugInfoSolidShadowVBOs ){
 		pDebugInfoSolidShadowVBOs->FreeReference();

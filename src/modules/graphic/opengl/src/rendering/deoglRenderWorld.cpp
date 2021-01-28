@@ -45,6 +45,7 @@
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../occlusiontest/deoglOcclusionTracing.h"
 #include "../particle/deoglParticleSorter.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -394,6 +395,10 @@ DEBUG_RESET_TIMER
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
 		}
+		
+		DBG_ENTER("OcclusionTracing")
+		renderThread.GetOcclusionTracing().Update( *plan.GetWorld(), plan.GetCameraPosition() );
+		DBG_EXIT("OcclusionTracing")
 		
 		DBG_ENTER("RenderLights")
 		renderers.GetLight().RenderLights( plan, true );

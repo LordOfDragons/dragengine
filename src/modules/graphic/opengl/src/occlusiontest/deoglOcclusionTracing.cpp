@@ -29,15 +29,17 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../rendering/deoglRenderOcclusion.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTFramebuffer.h"
+#include "../renderthread/deoglRTRenderers.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionBox.h"
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/utils/decTimer.h>
 
 
 // Class deoglOcclusionTest
@@ -63,7 +65,13 @@ pTBOIndex( renderThread, 2 ),
 pTBOInstance( renderThread, 1 ),
 pTBOMatrix( renderThread, 4 ),
 pTBOFace( renderThread, 4 ),
-pBVHInstanceRootNode( 0 )
+pTBOVertex( renderThread, 4 ),
+pBVHInstanceRootNode( 0 ),
+pElapsedProbeUpdate( 0.0f ),
+pProbeUpdateInterval( 0.1f ),
+pTexProbeOcclusion( renderThread ),
+pTexProbeDistance( renderThread ),
+pFBOProbe( renderThread, false )
 {
 }
 
@@ -87,6 +95,7 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 	pOccMeshInstanceCount = 0;
 	pOccMeshCount = 0;
 	
+	pTBOVertex.Clear();
 	pTBOFace.Clear();
 	pTBOMatrix.Clear();
 	pTBOInstance.Clear();
@@ -97,8 +106,8 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 	pPosition = pGrid2World( pWorld2Grid( position ) );
 	pFindComponents( world );
 	pAddOcclusionMeshes();
-	
-	pFinish();
+	pWriteTBOs();
+	pUpdateProbes();
 	
 	#ifdef DO_TIMING
 	pRenderThread.GetLogger().LogInfoFormat("OcclusionTracing: Elapsed %.1fys", timer.GetElapsedTime() * 1e6f);
@@ -184,26 +193,34 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 		
 		sOccMesh &occMesh = pOccMeshes[ pOccMeshCount++ ];
 		occMesh.occlusionMesh = occlusionMesh;
-		occMesh.indexFaces = pTBOFace.GetPixelCount() / 3;
+		occMesh.indexVertices = pTBOVertex.GetPixelCount();
+		occMesh.indexFaces = pTBOFace.GetPixelCount();
 		occMesh.indexNodes = pTBOIndex.GetPixelCount();
+		
+		// add vertices to TBO in mesh order
+		const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh->GetVertices();
+		const int vertexCount = occlusionMesh->GetVertexCount();
+		int i;
+		
+		for( i=0; i<vertexCount; i++ ){
+			pTBOVertex.AddVec4( vertices[ i ].position, 0.0f );
+		}
 		
 		// add faces to TBOs using primitive mapping from BVH
 		const deoglBVH &bvh = *occlusionMesh->GetBVH();
 		const int * const primitives = bvh.GetPrimitives();
 		const int primitiveCount = bvh.GetPrimitiveCount();
 		
-		const deoglROcclusionMesh::sVertex * const vertices = occlusionMesh->GetVertices();
 		const int singleSidedFaceCount = occlusionMesh->GetSingleSidedFaceCount();
 		const unsigned short * const corners = occlusionMesh->GetCorners();
-		int i;
 		
 		for( i=0; i<primitiveCount; i++ ){
 			const int faceIndex = primitives[ i ];
 			const unsigned short * const faceCorners = corners + 3 * faceIndex;
-			const float doubleSided = faceIndex < singleSidedFaceCount ? 0.0f : 1.0f;
-			pTBOFace.AddVec4( vertices[ faceCorners[ 0 ] ].position, doubleSided );
-			pTBOFace.AddVec4( vertices[ faceCorners[ 1 ] ].position, doubleSided );
-			pTBOFace.AddVec4( vertices[ faceCorners[ 2 ] ].position, doubleSided );
+			const uint32_t doubleSided = faceIndex < singleSidedFaceCount ? 0 : 1;
+			pTBOFace.AddVec4( occMesh.indexVertices + faceCorners[ 0 ],
+				occMesh.indexVertices + faceCorners[ 1 ],
+				occMesh.indexVertices + faceCorners[ 2 ], doubleSided );
 		}
 		
 		// add BVH to TBOs
@@ -283,19 +300,19 @@ bool deoglOcclusionTracing::pAddFace( const decVector& v1, const decVector& v2, 
 }
 #endif
 
-void deoglOcclusionTracing::pFinish(){
+void deoglOcclusionTracing::pWriteTBOs(){
 	// build BVH from mesh instances. each mesh instance then uses the occlusion mesh bvh
 	// with the matrix to do the local tracing. this allows creating occlusion mesh BVH
 	// once and then copy it to GPU as required.
 	// 
-	// NOTE texture formats are restricted so something like RGB16F doesn't even exist.
+	// NOTE texture formats are restricted so something like RGB32F doesn't even exist.
 	//      furthermore 3-component versions exists only with OGL 4.0 onwards
 	// 
-	// NOTE use depth 4 for instance BVH and depth 12 for mesh BVH
+	// NOTE 16-bit floating point has too little precision causing problems.
 	// 
 	// requires these TBO to be build:
 	// 
-	// - TBONodeBox: RGBA16F (stride 2 pixels)
+	// - TBONodeBox: RGBA32F (stride 2 pixels)
 	//   stores bounding box of all bvh nodes. each node uses two pixels: minExtend(0:RGB)
 	//   maxExtend(1:RGB). one component has to be wasted in each pixel due to format
 	//   restrictions. contains package nodes of all mesh BVH then nodes of instance BVH.
@@ -313,13 +330,15 @@ void deoglOcclusionTracing::pFinish(){
 	//   stores instance offsets. bvhIndex(R) is the absolute strided index into TBONodeBox
 	//   and TBOIndex with the mesh bvh root node.
 	//   
-	// - TBOMatrix: RGBA16F (stride 3 pixels)
+	// - TBOMatrix: RGBA32F (stride 3 pixels)
 	//   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
 	//   
-	// - TBOFace: RGBA16F (stride 3 pixels)
-	//   stores mesh faces. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) doubleSided(0:A).
-	//   vertices are transformed by "current BVH transformation matrix". face is doubleSided
-	//   if doubleSided has value 1 or single sided if value is 0.
+	// - TBOFace: RGBA32UI (stride 1 pixel)
+	//   stores mesh faces. vertex1(R) vertex2(G) vertex3(B) doubleSided(A). indices into
+	//   TBOVertex. face is doubleSided if doubleSided has value 1 or single sided if value is 0.
+	//   
+	// - TBOVertex: RGBA32F (stride 1 pixel)
+	//   stores mesh vertices. vertices are transformed by "current BVH transformation matrix"
 	//   
 	// requires uniforms:
 	// 
@@ -358,7 +377,7 @@ void deoglOcclusionTracing::pFinish(){
 		primitive.maxExtend = primitive.center + enclosing.GetHalfSize();
 	}
 	
-	pBVHInstances.Build( pBVHBuildPrimitives, pOccMeshInstanceCount, 4 );
+	pBVHInstances.Build( pBVHBuildPrimitives, pOccMeshInstanceCount, 12 );
 	
 	// add to TBOs using primitive mapping from BVH
 	const int * const primitives = pBVHInstances.GetPrimitives();
@@ -397,8 +416,10 @@ void deoglOcclusionTracing::pFinish(){
 	pTBOInstance.Update();
 	pTBOMatrix.Update();
 	pTBOFace.Update();
+	pTBOVertex.Update();
 	
 	// DEBUG
+	//if(pPosition.IsEqualTo(decDVector(-4.619,2.139,34.115),1.0)){
 	if(false){
 		deoglRTLogger &logger = pRenderThread.GetLogger();
 		int i;
@@ -426,6 +447,8 @@ void deoglOcclusionTracing::pFinish(){
 		pTBOMatrix.DebugPrint();
 		logger.LogInfo("OcclusionTracing: TBOFace");
 		pTBOFace.DebugPrint();
+		logger.LogInfo("OcclusionTracing: pTBOVertex");
+		pTBOVertex.DebugPrint();
 		
 		struct PrintBVH{
 			deoglRTLogger &logger;
@@ -455,4 +478,55 @@ void deoglOcclusionTracing::pFinish(){
 			PrintBVH(logger, pOccMeshInstances).Print("", pBVHInstances, *pBVHInstances.GetRootNode());
 		}
 	}
+}
+
+void deoglOcclusionTracing::pUpdateProbes(){
+	pElapsedProbeUpdate += pTimerProbeUpdate.GetElapsedTime();
+	if( pElapsedProbeUpdate < pProbeUpdateInterval ){
+		return;
+	}
+	
+	// keep only the remainder. this avoids updates to pile up if framerate drops or staggers
+	pElapsedProbeUpdate = fmodf( pElapsedProbeUpdate, pProbeUpdateInterval );
+	
+	// TODO update probe grid
+	
+	pPrepareTexturesAndFBO();
+	
+// 	pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionTraceProbes( *this );
+}
+
+void deoglOcclusionTracing::pPrepareTexturesAndFBO(){
+	if( pTexProbeOcclusion.GetTexture() && pTexProbeDistance.GetTexture() ){
+		return;
+	}
+	
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	pRenderThread.GetFramebuffer().Activate( &pFBOProbe );
+	
+	pFBOProbe.DetachAllImages();
+	
+	if( ! pTexProbeOcclusion.GetTexture() ){
+		pTexProbeOcclusion.SetFBOFormat( 1, true );
+		pTexProbeOcclusion.SetSize( 256, 256 );
+		pTexProbeOcclusion.CreateTexture();
+	}
+	pFBOProbe.AttachColorTexture( 0, &pTexProbeOcclusion );
+	
+	/*
+	if( ! pTexProbeDistance.GetTexture() ){
+		pTexProbeDistance.SetFBOFormat( 2, true );
+		pTexProbeDistance.SetSize( 255, 255 );
+		pTexProbeDistance.CreateTexture();
+	}
+	pFBOProbe.AttachColorTexture( 1, &pTexProbeDistance );
+	*/
+	
+	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1/*2*/, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBOProbe.Verify();
+	
+	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

@@ -104,10 +104,14 @@ public:
 	
 	/** \brief Add four float values. */
 	void AddVec4( float value1, float value2, float value3, float value4 );
+	void AddVec4( const decVector &value, float value4 );
 	void AddVec4( const decVector4 &value );
 	
 	/** \brief Add 4x3 matrix in colon major order adding 12 float. */
 	void AddMat4x3( const decMatrix &value );
+	
+	/** \brief Add 4x3 matrix in row major order adding 12 float. */
+	void AddMat3x4( const decMatrix &value );
 	
 	/** \brief Add 3x3 matrix in colon major order adding 9 float. */
 	void AddMat3x3( const decMatrix &value );

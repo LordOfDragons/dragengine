@@ -45,6 +45,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../occlusiontest/deoglOcclusionMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
+#include "../occlusiontest/deoglOcclusionTracing.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -158,6 +159,10 @@ enum eSPTestTFB{
 	spttfbFrustumTestMul
 };
 
+enum eSPTracing{
+	sptBVHInstanceRootNode
+};
+
 static const int vCubeFaces[] = {
 	deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
 	deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
@@ -185,6 +190,8 @@ pShaderOccTestTFB( NULL ),
 pShaderOccTestTFBDual( NULL ),
 pShaderOccTestTFBSun( NULL ),
 pShaderOccMapCube( NULL ),
+pShaderOccTracing( NULL ),
+pShaderOccTracingDebug( NULL ),
 
 pRenderParamBlock( NULL ),
 pOccMapFrustumParamBlock( NULL ),
@@ -248,6 +255,13 @@ pAddToRenderTask( NULL )
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 		}
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing" );
+		pShaderOccTracing = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "DEBUG_TRACING", "1" );
+		pShaderOccTracingDebug = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
@@ -1306,6 +1320,49 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	}
 }
 
+void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tracing ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	renderThread.GetFramebuffer().Activate( &tracing.GetFBOProbe() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, 256, 256 ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	tsmgr.EnableTBO( 0, tracing.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, tracing.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 2, tracing.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 3, tracing.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 4, tracing.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 5, tracing.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 5 );
+	
+// 	renderThread.GetShader().ActivateShader( pShaderOccTracingDebug );
+// 	deoglShaderCompiled &shader = *pShaderOccTracingDebug->GetCompiled();
+	
+	renderThread.GetShader().ActivateShader( pShaderOccTracing );
+	deoglShaderCompiled &shader = *pShaderOccTracing->GetCompiled();
+	
+	shader.SetParameterInt( sptBVHInstanceRootNode, tracing.GetBVHInstanceRootNode() );
+	
+	const GLfloat clearOcclusion[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearOcclusion[ 0 ] ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	
+	tsmgr.DisableAllStages();
+}
+
 
 
 // Private Functions
@@ -1341,6 +1398,12 @@ void deoglRenderOcclusion::pCleanUp(){
 	}
 	if( pShaderOccMapCube ){
 		pShaderOccMapCube->RemoveUsage();
+	}
+	if( pShaderOccTracing ){
+		pShaderOccTracing->RemoveUsage();
+	}
+	if( pShaderOccTracingDebug ){
+		pShaderOccTracingDebug->RemoveUsage();
 	}
 	
 	if( pAddToRenderTask ){

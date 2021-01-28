@@ -139,6 +139,14 @@ void deoglDynamicTBOFloat32::AddVec4( float value1, float value2, float value3, 
 	pDataFloat[ pDataCount++ ] = value4;
 }
 
+void deoglDynamicTBOFloat32::AddVec4( const decVector &value, float value4 ){
+	pEnlarge( 4 );
+	pDataFloat[ pDataCount++ ] = value.x;
+	pDataFloat[ pDataCount++ ] = value.y;
+	pDataFloat[ pDataCount++ ] = value.z;
+	pDataFloat[ pDataCount++ ] = value4;
+}
+
 void deoglDynamicTBOFloat32::AddVec4( const decVector4 &value ){
 	pEnlarge( 4 );
 	pDataFloat[ pDataCount++ ] = value.x;
@@ -164,6 +172,25 @@ void deoglDynamicTBOFloat32::AddMat4x3( const decMatrix &value ){
 	
 	pDataFloat[ pDataCount++ ] = value.a14;
 	pDataFloat[ pDataCount++ ] = value.a24;
+	pDataFloat[ pDataCount++ ] = value.a34;
+}
+
+void deoglDynamicTBOFloat32::AddMat3x4( const decMatrix &value ){
+	pEnlarge( 12 );
+	
+	pDataFloat[ pDataCount++ ] = value.a11;
+	pDataFloat[ pDataCount++ ] = value.a12;
+	pDataFloat[ pDataCount++ ] = value.a13;
+	pDataFloat[ pDataCount++ ] = value.a14;
+	
+	pDataFloat[ pDataCount++ ] = value.a21;
+	pDataFloat[ pDataCount++ ] = value.a22;
+	pDataFloat[ pDataCount++ ] = value.a23;
+	pDataFloat[ pDataCount++ ] = value.a24;
+	
+	pDataFloat[ pDataCount++ ] = value.a31;
+	pDataFloat[ pDataCount++ ] = value.a32;
+	pDataFloat[ pDataCount++ ] = value.a33;
 	pDataFloat[ pDataCount++ ] = value.a34;
 }
 

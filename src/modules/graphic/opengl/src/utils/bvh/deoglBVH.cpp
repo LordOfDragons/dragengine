@@ -163,6 +163,14 @@ void deoglBVH::pBuildNode( const sBuildPrimitive *primitives, int primitiveCount
 		maxExtend.SetLargest( nodePrimitive.maxExtend );
 	}
 	
+	// make sure boundaries have at least a minimum thickness or else ray casting code
+	// can fail to detect the box. slightly enlarging the box is fine enough and makes
+	// hitting boxes more robust
+	const float margin = 1e-5f; // 0.01mm
+	const decVector enlarge( decVector().Largest( decVector( margin, margin, margin ) - ( maxExtend - minExtend ) ) * 0.5f );
+	minExtend -= enlarge;
+	maxExtend += enlarge;
+	
 	pNodes[ node ].SetExtends( minExtend, maxExtend );
 	
 	const decVector nodeSize( maxExtend - minExtend );

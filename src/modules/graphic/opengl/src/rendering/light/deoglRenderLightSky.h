@@ -60,7 +60,6 @@ private:
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusionStart;
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusionVBO;
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusionTest;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusionTracing;
 	deoglDebugInformation *pDebugInfoSolidShadowVBOs;
 	deoglDebugInformation *pDebugInfoSolidShadowClear;
 	deoglDebugInformation *pDebugInfoSolidShadowSplit;
@@ -95,9 +94,6 @@ public:
 	
 	/** \brief Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
-	
-	/** \brief Render occlusion tracing. */
-	void RenderOcclusionTracing( deoglRenderPlan &plan );
 	
 	/** \brief Render sky light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanSkyLight &planSkyLight );

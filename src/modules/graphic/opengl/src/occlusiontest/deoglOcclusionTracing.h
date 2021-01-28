@@ -23,12 +23,15 @@
 #define _DEOGLOCCLUSIONTRACING_H_
 
 #include "../collidelist/deoglCollideList.h"
-#include "../utils/bvh/deoglBVH.h"
-#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../framebuffer/deoglFramebuffer.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../texture/texture2d/deoglTexture.h"
+#include "../utils/bvh/deoglBVH.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decTimer.h>
 
 class deoglRenderThread;
 class deoglDynamicTBO;
@@ -48,6 +51,7 @@ public:
 		deoglROcclusionMesh *occlusionMesh;
 		int indexNodes;
 		int indexFaces;
+		int indexVertices;
 	};
 	
 	/** \brief Occlusion mesh instance. */
@@ -80,13 +84,21 @@ private:
 	deoglBVH::sBuildPrimitive *pBVHBuildPrimitives;
 	int pBVHBuildPrimitiveSize;
 	
-	deoglDynamicTBOFloat16 pTBONodeBox;
+	deoglDynamicTBOFloat32 pTBONodeBox;
 	deoglDynamicTBOUInt32 pTBOIndex;
 	deoglDynamicTBOUInt32 pTBOInstance;
-	deoglDynamicTBOFloat16 pTBOMatrix;
-	deoglDynamicTBOFloat16 pTBOFace;
+	deoglDynamicTBOFloat32 pTBOMatrix;
+	deoglDynamicTBOUInt32 pTBOFace;
+	deoglDynamicTBOFloat32 pTBOVertex;
 	int pBVHInstanceRootNode;
 	
+	decTimer pTimerProbeUpdate;
+	float pElapsedProbeUpdate;
+	float pProbeUpdateInterval;
+	
+	deoglTexture pTexProbeOcclusion;
+	deoglTexture pTexProbeDistance;
+	deoglFramebuffer pFBOProbe;
 	
 	
 public:
@@ -104,7 +116,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief TBO for BVH node boundaries. */
-	inline const deoglDynamicTBOFloat16 &GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** \brief TBO for BVH node indices. */
 	inline const deoglDynamicTBOUInt32 &GetTBOIndex() const{ return pTBOIndex; }
@@ -113,13 +125,25 @@ public:
 	inline const deoglDynamicTBOUInt32 &GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** \brief TBO for instance matrices. */
-	inline const deoglDynamicTBOFloat16 &GetTBOMatrix() const{ return pTBOMatrix; }
+	inline const deoglDynamicTBOFloat32 &GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** \brief TBO for mesh faces. */
-	inline const deoglDynamicTBOFloat16 &GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt32 &GetTBOFace() const{ return pTBOFace; }
+	
+	/** \brief TBO for mesh vertices. */
+	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** \brief Index of bvh instance root node. */
 	inline int GetBVHInstanceRootNode() const{ return pBVHInstanceRootNode; }
+	
+	/** \brief Occlusion probe texture. */
+	inline const deoglTexture &GetTextureProbeOcclusion() const{ return pTexProbeOcclusion; }
+	
+	/** \brief Distance probe texture. */
+	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
+	
+	/** \brief Probe fbo. */
+	inline deoglFramebuffer &GetFBOProbe(){ return pFBOProbe; }
 	
 	/** \brief Update. */
 	void Update( deoglRWorld &world, const decDVector &position );
@@ -135,7 +159,9 @@ private:
 	void pAddOcclusionMeshes();
 	void pAddOcclusionMesh( const decMatrix &matrix, deoglROcclusionMesh *occlusionMesh );
 // 	bool pAddFace( const decVector &v1, const decVector &v2, const decVector &v3, bool doubleSided );
-	void pFinish();
+	void pWriteTBOs();
+	void pUpdateProbes();
+	void pPrepareTexturesAndFBO();
 };
 
 #endif
