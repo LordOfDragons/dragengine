@@ -8,6 +8,7 @@
 #include "renderthread/deoglRenderThread.h"
 #include "renderthread/deoglRTLogger.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/string/decString.h>
 
