@@ -183,6 +183,9 @@ public:
 	/** \brief Set texture format suitable for attaching as FBO render target. */
 	void SetFBOFormat( int channels, bool useFloat );
 	
+	/** \brief Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatFloat32( int channels );
+	
 	/** \brief Set texture format suitable for rendering to an integral texture using an FBO. */
 	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
 	

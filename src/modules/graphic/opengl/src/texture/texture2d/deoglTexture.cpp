@@ -834,6 +834,24 @@ void deoglTexture::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
+void deoglTexture::SetFBOFormatFloat32( int channels ){
+	if( channels == 1 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR32F );
+		
+	}else if( channels == 2 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG32F );
+		
+	}else if( channels == 3 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
+		
+	}else if( channels == 4 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA32F );
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
 void deoglTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned ){
 	if( bpp == 8 ){
 		if( channels == 1 ){

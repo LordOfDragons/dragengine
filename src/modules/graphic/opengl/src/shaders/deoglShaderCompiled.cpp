@@ -263,6 +263,26 @@ void deoglShaderCompiled::SetParameterInt( int index, int p1, int p2, int p3, in
 	}
 }
 
+void deoglShaderCompiled::SetParameterPoint2( int index, const decPoint &point ){
+	if( index < 0 || index >= pParameterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pParameters[ index ] != -1 ){
+		OGL_CHECK( pRenderThread, pglUniform2i( pParameters[ index ], point.x, point.y ) );
+	}
+}
+
+void deoglShaderCompiled::SetParameterPoint3( int index, const decPoint3 &point ){
+	if( index < 0 || index >= pParameterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pParameters[ index ] != -1 ){
+		OGL_CHECK( pRenderThread, pglUniform3i( pParameters[ index ], point.x, point.y, point.z ) );
+	}
+}
+
 
 
 void deoglShaderCompiled::SetParameterColor3( int index, const decColor &color ){

@@ -113,6 +113,9 @@ public:
 	void SetParameterInt( int index, int p1, int p2, int p3 );
 	void SetParameterInt( int index, int p1, int p2, int p3, int p4 );
 	
+	void SetParameterPoint2( int index, const decPoint &point );
+	void SetParameterPoint3( int index, const decPoint3 &point );
+	
 	/** Sets a 3-color parameter. */
 	void SetParameterColor3( int index, const decColor &color );
 	/** Sets a 4-color parameter. */

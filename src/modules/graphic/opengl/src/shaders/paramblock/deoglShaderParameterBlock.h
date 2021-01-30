@@ -187,7 +187,9 @@ public:
 	/** \brief Set data for int type parameter. */
 	void SetParameterDataInt( int parameter, int value );
 	void SetParameterDataIVec2( int parameter, int value1, int value2 );
+	void SetParameterDataIVec2( int parameter, const decPoint &point );
 	void SetParameterDataIVec3( int parameter, int value1, int value2, int value3 );
+	void SetParameterDataIVec3( int parameter, const decPoint3 &value );
 	void SetParameterDataIVec4( int parameter, int value1, int value2, int value3, int value4 );
 	
 	/** \brief Set data for bool type parameter. */
