@@ -53,6 +53,8 @@ private:
 	deoglShaderProgram *pShaderOccTestTFBDual;
 	deoglShaderProgram *pShaderOccTestTFBSun;
 	deoglShaderProgram *pShaderOccMapCube;
+	
+	deoglShaderProgram *pShaderOccTracingGenRays;
 	deoglShaderProgram *pShaderOccTracing;
 	deoglShaderProgram *pShaderOccTracingDebug;
 	
@@ -101,8 +103,7 @@ public:
 	/** Debug render plan occlusion map. */
 	void DebugOcclusionMap( deoglRenderPlan &plan );
 	
-	/**
-	 * Render occlusion meshes into a cube map. The position is relative to the reference position. */
+	/** Render occlusion meshes into a cube map. The position is relative to the reference position. */
 	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
 		const decDVector &position, float imageDistance, float viewDistance );
 	

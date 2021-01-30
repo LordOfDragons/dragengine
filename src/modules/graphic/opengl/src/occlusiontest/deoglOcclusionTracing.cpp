@@ -50,8 +50,14 @@
 
 deoglOcclusionTracing::deoglOcclusionTracing( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
-pProbeSpacing( 1.0f ),
+pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 pProbeCount( 32, 4, 32 ),
+pProbeOrigin( pProbeSpacing.Multiply( decVector( pProbeCount - decPoint3( 1, 1, 1 ) ) * -0.5f ) ),
+pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
+pRaysPerProbe( 64 ),
+pMaxUpdateProbeCount( 256 ), // keep at power of two
+pProbesPerLine( 4 ), // 16 for 4k probes
+pSampleImageSize( 0, 0 ),
 pOccMeshes( NULL ),
 pOccMeshCount( 0 ),
 pOccMeshSize( 0 ),
@@ -67,12 +73,20 @@ pTBOMatrix( renderThread, 4 ),
 pTBOFace( renderThread, 4 ),
 pTBOVertex( renderThread, 4 ),
 pBVHInstanceRootNode( 0 ),
-pElapsedProbeUpdate( 0.0f ),
-pProbeUpdateInterval( 0.1f ),
+pElapsedUpdateProbe( 0.0f ),
+pUpdateProbeInterval( 0.1f ),
+pUpdateProbes( NULL ),
+pUpdateProbeCount( 0 ),
+pUBOTracing( NULL ),
+pTexRayOrigin( renderThread ),
+pTexRayDirection( renderThread ),
+pFBORay( renderThread, false ),
 pTexProbeOcclusion( renderThread ),
 pTexProbeDistance( renderThread ),
 pFBOProbe( renderThread, false )
 {
+	pUpdateProbes = new int[ pMaxUpdateProbeCount ];
+	pUBOTracing = new deoglSPBlockUBO( renderThread );
 }
 
 deoglOcclusionTracing::~deoglOcclusionTracing(){
@@ -85,6 +99,54 @@ deoglOcclusionTracing::~deoglOcclusionTracing(){
 ///////////////
 
 // #define DO_TIMING 1
+
+decDVector deoglOcclusionTracing::WorldClosestGrid(const decDVector &position ) const{
+	decDVector result( ( double )pProbeSpacing.x * floor( position.x / ( double )pProbeSpacing.x ),
+		( double )pProbeSpacing.y * floor( position.y / ( double )pProbeSpacing.y ),
+		( double )pProbeSpacing.z * floor( position.z / ( double )pProbeSpacing.z ) );
+	
+	const decDVector halfGrid( decDVector( pProbeSpacing ) * 0.5 );
+	if( position.x - result.x >= halfGrid.x ){
+		result.x += ( double )pProbeSpacing.x;
+	}
+	if( position.y - result.y >= halfGrid.y ){
+		result.y += ( double )pProbeSpacing.y;
+	}
+	if( position.z - result.z >= halfGrid.z ){
+		result.z += ( double )pProbeSpacing.z;
+	}
+	
+	return result;
+}
+
+decPoint3 deoglOcclusionTracing::ProbeIndex2GridCoord( int index ) const{
+	decPoint3 coord;
+	coord.y = index / pStrideProbeCount;
+	index -= pStrideProbeCount * coord.y;
+	coord.z = index / pProbeCount.x;
+	coord.x = index - pProbeCount.x * coord.z;
+	return coord;
+}
+
+int deoglOcclusionTracing::GridCoord2ProbeIndex( const decPoint3 &coord ) const{
+	return pStrideProbeCount * coord.y + pProbeCount.x * coord.z + coord.x;
+}
+
+decVector deoglOcclusionTracing::Grid2Local( const decPoint3 &coord ) const{
+	return decVector( pProbeSpacing.x * coord.x, pProbeSpacing.y * coord.y, pProbeSpacing.z * coord.z ) + pProbeOrigin;
+}
+
+/*
+decPoint3 deoglOcclusionTracing::World2Grid( const decDVector &p ) const{
+	return decPoint3( p.x / pProbeSpacing.x + 0.5, p.y / pProbeSpacing.y + 0.5, p.z / pProbeSpacing.z + 0.5 );
+}
+
+decDVector deoglOcclusionTracing::Grid2World( const decPoint3 &p ) const{
+	return decDVector( pProbeSpacing.x * p.x, pProbeSpacing.y * p.y, pProbeSpacing.z * p.z );
+}
+*/
+
+
 
 void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &position ){
 	#ifdef DO_TIMING
@@ -103,11 +165,13 @@ void deoglOcclusionTracing::Update( deoglRWorld &world, const decDVector &positi
 	pTBONodeBox.Clear();
 	pBVHInstanceRootNode = 0;
 	
-	pPosition = pGrid2World( pWorld2Grid( position ) );
+	pUpdateProbeCount = 0;
+	
+	pUpdatePosition( position );
 	pFindComponents( world );
 	pAddOcclusionMeshes();
 	pWriteTBOs();
-	pUpdateProbes();
+	pTraceProbes();
 	
 	#ifdef DO_TIMING
 	pRenderThread.GetLogger().LogInfoFormat("OcclusionTracing: Elapsed %.1fys", timer.GetElapsedTime() * 1e6f);
@@ -129,20 +193,21 @@ void deoglOcclusionTracing::pCleanUp(){
 	if( pOccMeshes ){
 		delete [] pOccMeshes;
 	}
+	if( pUpdateProbes ){
+		delete [] pUpdateProbes;
+	}
+	if( pUBOTracing ){
+		pUBOTracing->FreeReference();
+	}
 }
 
-decPoint3 deoglOcclusionTracing::pWorld2Grid( const decDVector &position ) const{
-	const double factor = 1.0 / pProbeSpacing;
-	return decPoint3( position * factor + decDVector( 0.5, 0.5, 0.5 ) );
-}
-
-decDVector deoglOcclusionTracing::pGrid2World( const decPoint3 &position ) const{
-	return decDVector( position ) * pProbeSpacing;
+void deoglOcclusionTracing::pUpdatePosition( const decDVector &position ){
+	pPosition = WorldClosestGrid( position );
 }
 
 void deoglOcclusionTracing::pFindComponents( deoglRWorld &world ){
-	const decDVector size( pProbeSpacing * pProbeCount.x, pProbeSpacing * pProbeCount.y, pProbeSpacing * pProbeCount.z );
-	deoglDCollisionBox colbox( pPosition, size * 0.5 );
+	deoglDCollisionBox colbox( pPosition, decDVector( ( double )pProbeSpacing.x * pProbeCount.x * 0.5,
+		( double )pProbeSpacing.y * pProbeCount.y * 0.5, ( double )pProbeSpacing.z * pProbeCount.z * 0.5 ) );
 	
 	pCollideList.Clear();
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
@@ -480,23 +545,171 @@ void deoglOcclusionTracing::pWriteTBOs(){
 	}
 }
 
-void deoglOcclusionTracing::pUpdateProbes(){
-	pElapsedProbeUpdate += pTimerProbeUpdate.GetElapsedTime();
-	if( pElapsedProbeUpdate < pProbeUpdateInterval ){
-		return;
+void deoglOcclusionTracing::pTraceProbes(){
+	pElapsedUpdateProbe += pTimerUpdateProbe.GetElapsedTime();
+	if( pElapsedUpdateProbe < pUpdateProbeInterval ){
+// 		return; // how to use this properly? we track snapped position already
 	}
 	
 	// keep only the remainder. this avoids updates to pile up if framerate drops or staggers
-	pElapsedProbeUpdate = fmodf( pElapsedProbeUpdate, pProbeUpdateInterval );
+	pElapsedUpdateProbe = fmodf( pElapsedUpdateProbe, pUpdateProbeInterval );
 	
-	// TODO update probe grid
+	// TODO update/relocate grid
 	
-	pPrepareTexturesAndFBO();
-	
-// 	pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionTraceProbes( *this );
+	pFindProbesToUpdate();
+	pPrepareRayTexturesAndFBO();
+	pPrepareProbeTexturesAndFBO();
+	pPrepareUBOState();
+	pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionTraceProbes( *this );
 }
 
-void deoglOcclusionTracing::pPrepareTexturesAndFBO(){
+static decVector deoglOcclusionTracing_SphericalFibonacci( float i, float n ){
+	const float PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
+	#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
+	const float phi = TWO_PI * madfrac( i, PHI - 1.0f );
+	const float cosTheta = 1.0f - ( 2.0f * i + 1.0f ) * ( 1.0f / n );
+	const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
+	return decVector( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
+	#undef madfrac
+}
+
+void deoglOcclusionTracing::pFindProbesToUpdate(){
+	// TODO update probe grid. for the time being 8x4x8
+	pUpdateProbeCount = 256;
+	
+	decPoint3 gi;
+	int i = 0;
+	for( gi.y=0; gi.y<4; gi.y++ ){
+		for( gi.z=12; gi.z<20; gi.z++ ){
+			for( gi.x=12; gi.x<20; gi.x++ ){
+				pUpdateProbes[ i++ ] = GridCoord2ProbeIndex( gi );
+			}
+		}
+	}
+	
+	// determine the required sample image size
+	pSampleImageSize.x = pProbesPerLine * pRaysPerProbe;
+	pSampleImageSize.y = ( pMaxUpdateProbeCount - 1 ) / pProbesPerLine + 1;
+	//pSampleImageSize.y = ( pProbeCount.x * pProbeCount.y * pProbeCount.z - 1 ) / pProbesPerLine + 1;
+}
+
+void deoglOcclusionTracing::pInitSphericalFibonacci(){
+	int i;
+	for( i=0; i<pRaysPerProbe; i++ ){
+		pSphericalFibonacci[ i ] = deoglOcclusionTracing_SphericalFibonacci( i, pRaysPerProbe );
+	}
+}
+
+void deoglOcclusionTracing::pPrepareUBOState(){
+	deoglSPBlockUBO &ubo = *pUBOTracing;
+	
+	if( ubo.GetParameterCount() == 0 ){
+		ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		ubo.SetParameterCount( eutpRayDirection + 1 );
+		ubo.GetParameterAt( eutpSampleImageScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		ubo.GetParameterAt( eutpProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpRaysPerProbe ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpProbesPerLine ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpBVHInstanceRootNode ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpGridProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+		ubo.GetParameterAt( eutpGridProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		ubo.GetParameterAt( eutpProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, 64 ); // ivec4: max-count / 4
+		ubo.GetParameterAt( eutpProbePosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 256 ); // vec3
+		ubo.GetParameterAt( eutpRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 64 ); // vec3
+		ubo.MapToStd140();
+		ubo.SetBindingPoint( 0 );
+		
+		pInitSphericalFibonacci();
+	}
+	
+	int i, j, count;
+	
+	ubo.MapBuffer();
+	try{
+		ubo.SetParameterDataVec2( eutpSampleImageScale, 1.0f / ( float )( pSampleImageSize.x - 1 ),
+			1.0f / ( float )( pSampleImageSize.y - 1 ) );
+		ubo.SetParameterDataInt( eutpProbeCount, pMaxUpdateProbeCount );
+		ubo.SetParameterDataInt( eutpRaysPerProbe, pRaysPerProbe );
+		ubo.SetParameterDataInt( eutpProbesPerLine, pProbesPerLine );
+		ubo.SetParameterDataInt( eutpBVHInstanceRootNode, pBVHInstanceRootNode );
+		ubo.SetParameterDataIVec3( eutpGridProbeCount, pProbeCount );
+		ubo.SetParameterDataVec3( eutpGridProbeSpacing, pProbeSpacing );
+		
+		count = pUpdateProbeCount / 4;
+		for( i=0, j=0; i<count; i++, j+=4 ){
+			ubo.SetParameterDataArrayIVec4( eutpProbeIndex, i,
+				j < pUpdateProbeCount ? pUpdateProbes[ j ] : 0,
+				j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ] : 0,
+				j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ] : 0,
+				j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ] : 0 );
+		}
+		
+		for( i=0; i<pUpdateProbeCount; i++ ){
+			ubo.SetParameterDataArrayVec3( eutpProbePosition, i,
+				Grid2Local( ProbeIndex2GridCoord( pUpdateProbes[ i ] ) ) );
+		}
+		
+		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+		for( i=0; i<pRaysPerProbe; i++ ){
+			ubo.SetParameterDataArrayVec3( eutpRayDirection, i, randomOrientation * pSphericalFibonacci[ i ] );
+		}
+		
+		// DEBUG
+		/*{
+			for( i=0; i<pRaysPerProbe; i++ ){
+				float pc = TWO_PI * i / pRaysPerProbe;
+				decVector dir( sinf( pc ), 0.0f, cos( pc ) );
+				ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
+			}
+			for( i=0; i<pUpdateProbeCount; i++ ){
+				ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
+			}
+		}*/
+		// DEBUG
+		
+	}catch( const deException & ){
+		ubo.UnmapBuffer();
+		throw;
+	}
+	ubo.UnmapBuffer();
+}
+
+void deoglOcclusionTracing::pPrepareRayTexturesAndFBO(){
+	if( pTexRayOrigin.GetTexture() && pTexRayDirection.GetTexture()
+	&& pTexRayOrigin.GetWidth() == pSampleImageSize.x && pTexRayOrigin.GetHeight() == pSampleImageSize.y ){
+		return;
+	}
+	
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	pRenderThread.GetFramebuffer().Activate( &pFBORay );
+	
+	pFBORay.DetachAllImages();
+	
+	if( ! pTexRayOrigin.GetTexture() ){
+		pTexRayOrigin.SetFBOFormatFloat32( 4 );
+		pTexRayOrigin.SetSize( pSampleImageSize.x, pSampleImageSize.y );
+		pTexRayOrigin.CreateTexture();
+	}
+	pFBORay.AttachColorTexture( 0, &pTexRayOrigin );
+	
+	if( ! pTexRayDirection.GetTexture() ){
+		pTexRayDirection.SetFBOFormatFloat32( 4 );
+		pTexRayDirection.SetSize( pSampleImageSize.x, pSampleImageSize.y );
+		pTexRayDirection.CreateTexture();
+	}
+	pFBORay.AttachColorTexture( 1, &pTexRayDirection );
+	
+	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 2, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBORay.Verify();
+	
+	pRenderThread.GetFramebuffer().Activate( oldfbo );
+}
+
+void deoglOcclusionTracing::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeOcclusion.GetTexture() && pTexProbeDistance.GetTexture() ){
 		return;
 	}

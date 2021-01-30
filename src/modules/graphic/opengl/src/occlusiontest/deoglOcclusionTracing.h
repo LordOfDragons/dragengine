@@ -24,6 +24,7 @@
 
 #include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../tbo/deoglDynamicTBOUInt32.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -62,15 +63,34 @@ public:
 		int indexInstance;
 	};
 	
+	/** \brief UBO Parameters. */
+	enum eUBOTracingParameter{
+		eutpSampleImageScale, // vec2: scale factor for sample image size
+		eutpProbeCount, // int: count of probes to update
+		eutpRaysPerProbe, // int: count of rays per probe
+		eutpProbesPerLine, // int: count of probes per line
+		eutpBVHInstanceRootNode, // int
+		eutpGridProbeCount, // ivec3: count of probes in grid
+		eutpGridProbeSpacing, // vec3: spacing of probes in grid
+		eutpProbeIndex, // ivec4[]: group of 4 probes to trace
+		eutpProbePosition, // vec3[]: probe position and ray origin
+		eutpRayDirection // vec3[]: ray direction
+	};
 	
 private:
 	deoglRenderThread &pRenderThread;
 	
-	float pProbeSpacing;
+	decDVector pPosition;
+	decVector pProbeSpacing;
 	decPoint3 pProbeCount;
+	decVector pProbeOrigin;
+	int pStrideProbeCount;
+	int pRaysPerProbe;
+	int pMaxUpdateProbeCount;
+	int pProbesPerLine;
+	decPoint pSampleImageSize;
 	
 	deoglCollideList pCollideList;
-	decDVector pPosition;
 	
 	sOccMesh *pOccMeshes;
 	int pOccMeshCount;
@@ -92,9 +112,17 @@ private:
 	deoglDynamicTBOFloat32 pTBOVertex;
 	int pBVHInstanceRootNode;
 	
-	decTimer pTimerProbeUpdate;
-	float pElapsedProbeUpdate;
-	float pProbeUpdateInterval;
+	decTimer pTimerUpdateProbe;
+	float pElapsedUpdateProbe;
+	float pUpdateProbeInterval;
+	int *pUpdateProbes;
+	int pUpdateProbeCount;
+	
+	decVector pSphericalFibonacci[ 64 ];
+	deoglSPBlockUBO *pUBOTracing;
+	deoglTexture pTexRayOrigin;
+	deoglTexture pTexRayDirection;
+	deoglFramebuffer pFBORay;
 	
 	deoglTexture pTexProbeOcclusion;
 	deoglTexture pTexProbeDistance;
@@ -115,6 +143,38 @@ public:
 	
 	/** @name Management */
 	/*@{*/
+	/** \brief Position. */
+	inline const decDVector &GetPosition() const{ return pPosition; }
+	
+	/** \brief Probe spacing. */
+	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
+	
+	/** \brief Probe count. */
+	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
+	
+	/** \brief Rays per probe. */
+	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
+	
+	/** \brief Size of sample image. */
+	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
+	
+	/** \brief Probes per line. */
+	inline int GetProbesPerLine() const{ return pProbesPerLine; }
+	
+	/** \brief World position closest to grid. */
+	decDVector WorldClosestGrid( const decDVector &position ) const;
+	
+	/** \brief Grid coordinates for probe index. */
+	decPoint3 ProbeIndex2GridCoord( int index ) const;
+	
+	/** \brief Probe index for grid coordinates. */
+	int GridCoord2ProbeIndex( const decPoint3 &coord ) const;
+	
+	/** \brief Probe index for grid coordinates. */
+	decVector Grid2Local( const decPoint3 &coord ) const;
+	
+	
+	
 	/** \brief TBO for BVH node boundaries. */
 	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
 	
@@ -136,6 +196,28 @@ public:
 	/** \brief Index of bvh instance root node. */
 	inline int GetBVHInstanceRootNode() const{ return pBVHInstanceRootNode; }
 	
+	/** \brief List of index of probes to update. */
+	inline int *GetUpdateProbes() const{ return pUpdateProbes; }
+	
+	/** \brief Count of probes to update. */
+	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
+	
+	
+	
+	/** \brief UBO Tracing parameters. */
+	inline deoglSPBlockUBO *GetUBOTracing(){ return pUBOTracing; }
+	
+	/** \brief Ray origin texture. */
+	inline const deoglTexture &GetTextureRayOrigin() const{ return pTexRayOrigin; }
+	
+	/** \brief Ray direction texture. */
+	inline const deoglTexture &GetTextureRayDirection() const{ return pTexRayDirection; }
+	
+	/** \brief Ray FBO. */
+	inline deoglFramebuffer &GetFBORay(){ return pFBORay; }
+	
+	
+	
 	/** \brief Occlusion probe texture. */
 	inline const deoglTexture &GetTextureProbeOcclusion() const{ return pTexProbeOcclusion; }
 	
@@ -153,15 +235,18 @@ public:
 	
 private:
 	void pCleanUp();
-	decPoint3 pWorld2Grid( const decDVector &position ) const;
-	decDVector pGrid2World( const decPoint3 &position ) const;
 	void pFindComponents( deoglRWorld &world );
 	void pAddOcclusionMeshes();
 	void pAddOcclusionMesh( const decMatrix &matrix, deoglROcclusionMesh *occlusionMesh );
 // 	bool pAddFace( const decVector &v1, const decVector &v2, const decVector &v3, bool doubleSided );
 	void pWriteTBOs();
-	void pUpdateProbes();
-	void pPrepareTexturesAndFBO();
+	void pUpdatePosition( const decDVector &position );
+	void pTraceProbes();
+	void pFindProbesToUpdate();
+	void pInitSphericalFibonacci();
+	void pPrepareUBOState();
+	void pPrepareRayTexturesAndFBO();
+	void pPrepareProbeTexturesAndFBO();
 };
 
 #endif

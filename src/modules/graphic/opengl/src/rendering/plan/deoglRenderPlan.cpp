@@ -51,6 +51,7 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
+#include "../../occlusiontest/deoglOcclusionTracing.h"
 #include "../../particle/deoglRParticleEmitter.h"
 #include "../../particle/deoglRParticleEmitterInstance.h"
 #include "../../particle/deoglRParticleEmitterInstanceType.h"
@@ -531,6 +532,9 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	pCurTransparencyLayer = 0;
 	
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
+	
+	// occlusion tracing
+	pRenderThread.GetOcclusionTracing().Update( *pWorld, pCameraPosition );
 }
 
 void deoglRenderPlan::pPlanSky(){

@@ -396,10 +396,6 @@ DEBUG_RESET_TIMER
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
 		}
 		
-		DBG_ENTER("OcclusionTracing")
-		renderThread.GetOcclusionTracing().Update( *plan.GetWorld(), plan.GetCameraPosition() );
-		DBG_EXIT("OcclusionTracing")
-		
 		DBG_ENTER("RenderLights")
 		renderers.GetLight().RenderLights( plan, true );
 		DBG_EXIT("RenderLights")
