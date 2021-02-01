@@ -26,9 +26,12 @@ const float epsilon = 1e-6;
 
 
 void main( void ){
-	vec3 texelDirection = octahedralDecode(
-		( gl_FragCoord.xy - vec2( vOffset ) + vec2( 0.5 ) )
-			* ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
+	// this fragement shader is run for the entire map including the 1 pixel border around it.
+	// by clamping the texture coordinates the border is updated like the pixels around the
+	// map border. this avoids creating complicated copy shaders.
+	ivec2 tc = clamp( ivec2( gl_FragCoord.xy ) - vOffset, ivec2( 0 ), ivec2( vOffset ) );
+	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) )
+		* ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
 	
 	float weight, sumWeight = 0.0;
 	vec4 rayCast;
