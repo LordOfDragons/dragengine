@@ -72,6 +72,13 @@ public:
 		eutpBVHInstanceRootNode, // int
 		eutpGridProbeCount, // ivec3: count of probes in grid
 		eutpGridProbeSpacing, // vec3: spacing of probes in grid
+		eutpOcclusionMapSize, // int: size of occlusion map
+		eutpDistanceMapSize, // int: size of distance map
+		eutpOcclusionMapScale, // vec2: scale factor for occlusion map
+		eutpDistanceMapScale, // vec2: scale factor for distance map
+		eutpMaxProbeDistance, // float
+		eutpDepthSharpness, // float
+		eutpHysteresis, // float
 		eutpProbeIndex, // ivec4[]: group of 4 probes to trace
 		eutpProbePosition, // vec3[]: probe position and ray origin
 		eutpRayDirection // vec3[]: ray direction
@@ -89,6 +96,11 @@ private:
 	int pMaxUpdateProbeCount;
 	int pProbesPerLine;
 	decPoint pSampleImageSize;
+	int pOcclusionMapSize;
+	int pDistanceMapSize;
+	float pMaxProbeDistance;
+	float pDepthSharpness;
+	float pHysteresis;
 	
 	deoglCollideList pCollideList;
 	
@@ -124,9 +136,12 @@ private:
 	deoglTexture pTexRayDirection;
 	deoglFramebuffer pFBORay;
 	
+	int pSizeTexOcclusion;
+	int pSizeTexDistance;
 	deoglTexture pTexProbeOcclusion;
 	deoglTexture pTexProbeDistance;
-	deoglFramebuffer pFBOProbe;
+	deoglFramebuffer pFBOProbeOcclusion;
+	deoglFramebuffer pFBOProbeDistance;
 	
 	
 public:
@@ -157,6 +172,12 @@ public:
 	
 	/** \brief Size of sample image. */
 	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
+	
+	/** \brief Size of occlusion map. */
+	inline int GetOcclusionMapSize() const{ return pOcclusionMapSize; }
+	
+	/** \brief Size of distance map. */
+	inline int GetDistanceMapSize() const{ return pDistanceMapSize; }
 	
 	/** \brief Probes per line. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
@@ -218,14 +239,23 @@ public:
 	
 	
 	
+	/** \brief Size of occlusion texture of one probe. */
+	inline int GetSizeTexOcclusion() const{ return pSizeTexOcclusion; }
+	
+	/** \brief Size of distance texture of one probe. */
+	inline int GetSizeTexDistance() const{ return pSizeTexDistance; }
+	
 	/** \brief Occlusion probe texture. */
 	inline const deoglTexture &GetTextureProbeOcclusion() const{ return pTexProbeOcclusion; }
 	
 	/** \brief Distance probe texture. */
 	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
-	/** \brief Probe fbo. */
-	inline deoglFramebuffer &GetFBOProbe(){ return pFBOProbe; }
+	/** \brief Probe fbo occlusion. */
+	inline deoglFramebuffer &GetFBOProbeOcclusion(){ return pFBOProbeOcclusion; }
+	
+	/** \brief Probe fbo distance. */
+	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
 	
 	/** \brief Update. */
 	void Update( deoglRWorld &world, const decDVector &position );

@@ -55,8 +55,10 @@ private:
 	deoglShaderProgram *pShaderOccMapCube;
 	
 	deoglShaderProgram *pShaderOccTracingGenRays;
-	deoglShaderProgram *pShaderOccTracing;
+	deoglShaderProgram *pShaderOccTracingTraceRays;
 	deoglShaderProgram *pShaderOccTracingDebug;
+	deoglShaderProgram *pShaderOccTracingUpdateOcclusion;
+	deoglShaderProgram *pShaderOccTracingUpdateDistance;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;

@@ -58,6 +58,11 @@ pRaysPerProbe( 64 ),
 pMaxUpdateProbeCount( 256 ), // keep at power of two
 pProbesPerLine( 4 ), // 16 for 4k probes
 pSampleImageSize( 0, 0 ),
+pOcclusionMapSize( 8 ),
+pDistanceMapSize( 16 ),
+pMaxProbeDistance( 4.0f ),
+pDepthSharpness( 50.0f ),
+pHysteresis( 0.98f ),
 pOccMeshes( NULL ),
 pOccMeshCount( 0 ),
 pOccMeshSize( 0 ),
@@ -81,9 +86,12 @@ pUBOTracing( NULL ),
 pTexRayOrigin( renderThread ),
 pTexRayDirection( renderThread ),
 pFBORay( renderThread, false ),
+pSizeTexOcclusion( 8 ),
+pSizeTexDistance( 16 ),
 pTexProbeOcclusion( renderThread ),
 pTexProbeDistance( renderThread ),
-pFBOProbe( renderThread, false )
+pFBOProbeOcclusion( renderThread, false ),
+pFBOProbeDistance( renderThread, false )
 {
 	pUpdateProbes = new int[ pMaxUpdateProbeCount ];
 	pUBOTracing = new deoglSPBlockUBO( renderThread );
@@ -206,6 +214,8 @@ void deoglOcclusionTracing::pUpdatePosition( const decDVector &position ){
 }
 
 void deoglOcclusionTracing::pFindComponents( deoglRWorld &world ){
+	// TODO dont use the box enclosing the probes. this potentially misses collisions right
+	//      beyond the boundary. box needs to be enlarged by maximum tracing distance
 	deoglDCollisionBox colbox( pPosition, decDVector( ( double )pProbeSpacing.x * pProbeCount.x * 0.5,
 		( double )pProbeSpacing.y * pProbeCount.y * 0.5, ( double )pProbeSpacing.z * pProbeCount.z * 0.5 ) );
 	
@@ -450,7 +460,7 @@ void deoglOcclusionTracing::pWriteTBOs(){
 	for( i=0; i<pOccMeshInstanceCount; i++ ){
 		sOccMeshInstance &instance = pOccMeshInstances[ primitives[ i ] ];
 		instance.indexMatrix = pTBOMatrix.GetPixelCount() / 3;
-		pTBOMatrix.AddMat3x4( instance.matrix );
+		pTBOMatrix.AddMat3x4( instance.matrix.QuickInvert() );
 		
 		instance.indexInstance = pTBOInstance.GetPixelCount();
 		pTBOInstance.AddInt( pOccMeshes[ instance.indexMesh ].indexNodes );
@@ -557,7 +567,7 @@ void deoglOcclusionTracing::pTraceProbes(){
 	// TODO update/relocate grid
 	
 	pFindProbesToUpdate();
-	pPrepareRayTexturesAndFBO();
+	//pPrepareRayTexturesAndFBO();
 	pPrepareProbeTexturesAndFBO();
 	pPrepareUBOState();
 	pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionTraceProbes( *this );
@@ -613,6 +623,13 @@ void deoglOcclusionTracing::pPrepareUBOState(){
 		ubo.GetParameterAt( eutpBVHInstanceRootNode ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		ubo.GetParameterAt( eutpGridProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 		ubo.GetParameterAt( eutpGridProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		ubo.GetParameterAt( eutpOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		ubo.GetParameterAt( eutpOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		ubo.GetParameterAt( eutpDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		ubo.GetParameterAt( eutpMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		ubo.GetParameterAt( eutpDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		ubo.GetParameterAt( eutpHysteresis ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		ubo.GetParameterAt( eutpProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, 64 ); // ivec4: max-count / 4
 		ubo.GetParameterAt( eutpProbePosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 256 ); // vec3
 		ubo.GetParameterAt( eutpRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 64 ); // vec3
@@ -626,11 +643,22 @@ void deoglOcclusionTracing::pPrepareUBOState(){
 	
 	ubo.MapBuffer();
 	try{
-		ubo.SetParameterDataVec2( eutpSampleImageScale, 1.0f / ( float )( pSampleImageSize.x - 1 ),
-			1.0f / ( float )( pSampleImageSize.y - 1 ) );
+		const int occlusionMapWidth = ( pSizeTexOcclusion + 2 ) * pProbeCount.x * pProbeCount.y + 2;
+		const int occlusionMapHeight = ( pSizeTexOcclusion + 2 ) * pProbeCount.z + 2;
+		const int distanceMapWidth = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
+		const int distanceMapHeight = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2;
+		
+		ubo.SetParameterDataVec2( eutpSampleImageScale, 1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
 		ubo.SetParameterDataInt( eutpProbeCount, pMaxUpdateProbeCount );
 		ubo.SetParameterDataInt( eutpRaysPerProbe, pRaysPerProbe );
 		ubo.SetParameterDataInt( eutpProbesPerLine, pProbesPerLine );
+		ubo.SetParameterDataInt( eutpOcclusionMapSize, pOcclusionMapSize );
+		ubo.SetParameterDataInt( eutpDistanceMapSize, pDistanceMapSize );
+		ubo.SetParameterDataVec2( eutpOcclusionMapScale, 1.0f / ( float )occlusionMapWidth, 1.0f / ( float )occlusionMapHeight );
+		ubo.SetParameterDataVec2( eutpDistanceMapScale, 1.0f / ( float )distanceMapWidth, 1.0f / ( float )distanceMapHeight );
+		ubo.SetParameterDataFloat( eutpMaxProbeDistance, pMaxProbeDistance );
+		ubo.SetParameterDataFloat( eutpDepthSharpness, pDepthSharpness );
+		ubo.SetParameterDataFloat( eutpHysteresis, pHysteresis );
 		ubo.SetParameterDataInt( eutpBVHInstanceRootNode, pBVHInstanceRootNode );
 		ubo.SetParameterDataIVec3( eutpGridProbeCount, pProbeCount );
 		ubo.SetParameterDataVec3( eutpGridProbeSpacing, pProbeSpacing );
@@ -715,31 +743,44 @@ void deoglOcclusionTracing::pPrepareProbeTexturesAndFBO(){
 	}
 	
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	pRenderThread.GetFramebuffer().Activate( &pFBOProbe );
-	
-	pFBOProbe.DetachAllImages();
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	const GLfloat clear[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	
 	if( ! pTexProbeOcclusion.GetTexture() ){
+		const int width = ( pSizeTexOcclusion + 2 ) * pProbeCount.x * pProbeCount.y + 2;
+		const int height = ( pSizeTexOcclusion + 2 ) * pProbeCount.z + 2;
+		
 		pTexProbeOcclusion.SetFBOFormat( 1, true );
-		pTexProbeOcclusion.SetSize( 256, 256 );
+		pTexProbeOcclusion.SetSize( width, height );
 		pTexProbeOcclusion.CreateTexture();
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOcclusion );
+		pFBOProbeOcclusion.DetachAllImages();
+		pFBOProbeOcclusion.AttachColorTexture( 0, &pTexProbeOcclusion );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOProbeOcclusion.Verify();
+		
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );
 	}
-	pFBOProbe.AttachColorTexture( 0, &pTexProbeOcclusion );
 	
-	/*
 	if( ! pTexProbeDistance.GetTexture() ){
+		const int width = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
+		const int height = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2;
+		
 		pTexProbeDistance.SetFBOFormat( 2, true );
-		pTexProbeDistance.SetSize( 255, 255 );
+		pTexProbeDistance.SetSize( width, height );
 		pTexProbeDistance.CreateTexture();
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
+		pFBOProbeDistance.DetachAllImages();
+		pFBOProbeDistance.AttachColorTexture( 0, &pTexProbeDistance );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOProbeDistance.Verify();
+		
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );
 	}
-	pFBOProbe.AttachColorTexture( 1, &pTexProbeDistance );
-	*/
-	
-	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1/*2*/, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	
-	pFBOProbe.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

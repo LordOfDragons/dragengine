@@ -60,6 +60,17 @@ float bvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrigin, in ve
 bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out RayCastResult result ){
 	vec3 invRayDirection = 1.0 / rayDirection;
 	
+	// early exit. if the ray misses the root box node skip the mesh entirely.
+	// we do the test here and not in rayCastInstance since otherwise we have
+	// to calculate invRayDirection twice
+	int tcNodeBox = rootNode * 2;
+	vec3 minExtend = texelFetch( tboNodeBox, tcNodeBox ).xyz;
+	vec3 maxExtend = texelFetch( tboNodeBox, tcNodeBox + 1 ).xyz;
+	if( bvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) < 0.0 ){
+		return false;
+	}
+	
+	// continue ray casting against mesh faces
 	int stack[ 13 ];
 	stack[ 0 ] = -1;
 	int stackPosition = 1;
@@ -73,10 +84,10 @@ bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out 
 		ivec2 index = ivec2( texelFetch( tboIndex, curNode ).xy ); // firstIndex, primitiveCount
 		
 		if( index.y == 0 ){ // node
-			int tcNodeBox = index.x * 2;
+			tcNodeBox = index.x * 2;
 			
-			vec3 minExtend = texelFetch( tboNodeBox, tcNodeBox++ ).xyz;
-			vec3 maxExtend = texelFetch( tboNodeBox, tcNodeBox++ ).xyz;
+			minExtend = texelFetch( tboNodeBox, tcNodeBox++ ).xyz;
+			maxExtend = texelFetch( tboNodeBox, tcNodeBox++ ).xyz;
 			float leftHit = bvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
 			minExtend = texelFetch( tboNodeBox, tcNodeBox++ ).xyz;
@@ -209,25 +220,20 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 			for( i=0; i<index.y; i++, tcMatrix+=3 ){
 				int bvhIndex = int( texelFetch( tboInstance, tcInstance++ ).x );
 				
-				int tcMeshNode = bvhIndex * 2;
-				vec3 minExtend = texelFetch( tboNodeBox, tcMeshNode++ ).xyz;
-				vec3 maxExtend = texelFetch( tboNodeBox, tcMeshNode ).xyz;
+				vec4 mrow1 = texelFetch( tboMatrix, tcMatrix );
+				vec4 mrow2 = texelFetch( tboMatrix, tcMatrix + 1 );
+				vec4 mrow3 = texelFetch( tboMatrix, tcMatrix + 2 );
+				//mat4 matrix = transpose( mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) ) );
 				
-				if( bvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) >= 0.0 ){
-					vec4 mrow1 = texelFetch( tboMatrix, tcMatrix );
-					vec4 mrow2 = texelFetch( tboMatrix, tcMatrix + 1 );
-					vec4 mrow3 = texelFetch( tboMatrix, tcMatrix + 2 );
-					mat4 matrix = transpose( mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) ) );
-					
-					mat4 invMatrix = inverse( matrix );
-					vec3 meshRayOrigin = vec3( invMatrix * vec4( rayOrigin, 1.0 ) );
-					vec3 meshRayDirection = vec3( invMatrix * vec4( rayDirection, 0.0 ) );
-					
-					if( rayCastMesh( bvhIndex, meshRayOrigin, meshRayDirection, meshResult ) ){
-						if( meshResult.distance < result.distance ){
-							result = meshResult;
-							hasHit = true;
-						}
+				//mat4 invMatrix = inverse( matrix );
+				mat4 invMatrix = transpose( mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) ) );
+				vec3 meshRayOrigin = vec3( invMatrix * vec4( rayOrigin, 1.0 ) );
+				vec3 meshRayDirection = vec3( invMatrix * vec4( rayDirection, 0.0 ) );
+				
+				if( rayCastMesh( bvhIndex, meshRayOrigin, meshRayDirection, meshResult ) ){
+					if( meshResult.distance < result.distance ){
+						result = meshResult;
+						hasHit = true;
 					}
 				}
 			}
