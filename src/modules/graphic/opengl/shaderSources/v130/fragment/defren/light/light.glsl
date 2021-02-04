@@ -164,9 +164,10 @@ uniform lowp sampler2D texAOSolidity;
 #endif
 
 #ifdef SKY_LIGHT
+#ifdef ENABLE_OCCTRACING
 	#include "v130/shared/defren/light/occtracing.glsl"
 #endif
-
+#endif
 
 
 // Inputs
@@ -1097,7 +1098,11 @@ void main( void ){
 	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
 	#ifdef AMBIENT_LIGHTING
 		#ifdef SKY_LIGHT
-			vec3 finalColorAmbient = pLightColor/*pLightColorAmbient*/ * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
+			#ifdef ENABLE_OCCTRACING
+				vec3 finalColorAmbient = pLightColor/*pLightColorAmbient*/ * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
+			#else
+				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+			#endif
 		#else
 // 			vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
 			vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
@@ -1188,7 +1193,9 @@ void main( void ){
 	//	finalColorAmbient *= vec3( aoSolidity.g );
 	//#endif
 	#ifdef SKY_LIGHT
-		lightColor = max( lightColor, finalColorAmbient );
+		#ifdef ENABLE_OCCTRACING
+			lightColor = max( lightColor, finalColorAmbient );
+		#endif
 	#endif
 	
 	// final light contribution
@@ -1196,7 +1203,7 @@ void main( void ){
 	
 	vec3 finalColorSubSurface = lightColor;
 	#ifdef AMBIENT_LIGHTING
-		#ifndef SKY_LIGHT
+		#if ! defined SKY_LIGHT || ! defined ENABLE_OCCTRACING
 			finalColorSubSurface += finalColorAmbient;
 		#endif
 	#endif

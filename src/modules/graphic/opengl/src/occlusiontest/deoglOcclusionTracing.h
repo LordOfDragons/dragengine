@@ -40,6 +40,9 @@ class deoglROcclusionMesh;
 class deoglRWorld;
 
 
+// #define ENABLE_OCCTRACING
+
+
 /**
  * \brief Occlusion tracing.
  * 

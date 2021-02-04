@@ -670,6 +670,11 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.AddDefine( "SMA2_PYRAMID", "1" );
 		break;
 	}
+	
+	// occlusion tracing
+	#ifdef ENABLE_OCCTRACING
+	defines.AddDefine( "ENABLE_OCCTRACING", "1" );
+	#endif
 }
 
 void deoglLightShader::GenerateVertexSC(){

@@ -867,7 +867,11 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 		// ambient intensity. light color ambient is set to ambient intensity only
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
+			#ifdef ENABLE_OCCTRACING
 			paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+			#else
+			paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
+			#endif
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );

@@ -534,7 +534,9 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
 	
 	// occlusion tracing
+	#ifdef ENABLE_OCCTRACING
 	pRenderThread.GetOcclusionTracing().Update( *pWorld, pCameraPosition );
+	#endif
 }
 
 void deoglRenderPlan::pPlanSky(){

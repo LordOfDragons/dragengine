@@ -641,7 +641,6 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
-	const deoglOcclusionTracing &occtracing = GetRenderThread().GetOcclusionTracing();
 	
 	pLightPB->MapBuffer();
 	try{
@@ -656,6 +655,9 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// occlusion tracing
+		#ifdef ENABLE_OCCTRACING
+		const deoglOcclusionTracing &occtracing = GetRenderThread().GetOcclusionTracing();
+		
 		const decDMatrix matrix( plan.GetInverseCameraMatrix()
 			* decDMatrix::CreateTranslation( -( occtracing.GetPosition() + occtracing.GetProbeOrigin() ) ) );
 		
@@ -674,6 +676,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutOTDistanceMapScale, occtracing.GetDistanceMapScale() );
 		pLightPB->SetParameterDataFloat( deoglLightShader::erutOTNormalBias, occtracing.GetNormalBias() );
 		pLightPB->SetParameterDataFloat( deoglLightShader::erutOTEnergyPreservation, occtracing.GetEnergyPreservation() );
+		#endif
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();
