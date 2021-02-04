@@ -7,14 +7,14 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pOTMatrix; // transform from view space to tracing space
 	mat3 pOTMatrixNormal; // transform from view space to tracing space
 	ivec3 pOTProbeCount; // probe count
-	int pOTOcclusionMapSize;
-	ivec3 pOTProbeClamp; // maximum probe index to clamp to
-	int pOTDistanceMapSize;
-	vec3 pOTProbeSpacing;
-	vec3 pOTProbeSpacingInv;
-	vec3 pOTProbeOrigin;
-	float pOTNormalBias;
-	vec2 pOTOcclusionMapScale;
-	vec2 pOTDistanceMapScale;
-	float pOTEnergyPreservation;
+	int pOTOcclusionMapSize; // occlusion map size in pixels
+	ivec3 pOTProbeClamp; // maximum probe grid coordinate to clamp to
+	int pOTDistanceMapSize; // distance map size in pixels
+	vec3 pOTProbeSpacing; // probe grid spacing
+	vec3 pOTProbeSpacingInv; // 1 / grid spacing
+	vec3 pOTProbeOrigin; // position of (0,0,0) probe coordinate relative to center
+	float pOTNormalBias; // normal bias
+	vec2 pOTOcclusionMapScale; // occlusion map pixel to texture coordinate scaling
+	vec2 pOTDistanceMapScale; // distance map pixel to texture coordinate scaling
+	float pOTEnergyPreservation; // energy preservation factor
 };
