@@ -31,8 +31,8 @@ void main( void ){
 	// is moving the texture coordinate to sample if in the border area. this is not as fast
 	// as a copy but better than running extra shader passes.
 	// 
-	// the original paper says nothing about how the copy is done and the example code is
-	// missing for the copy shader. so coming up with an own way to do it. basic idea is
+	// the original paper does not outline how this is done. found a schematics somewhere
+	// else on the internet. so I had to come up with my own way to do it. basic idea is
 	// to flip texture coordinates to get the right ones.
 	// 
 	// 1) if the pixel U coordinate is on the edge flip the V coordinate.

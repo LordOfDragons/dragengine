@@ -29,8 +29,6 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 	// distance from floor(currentVertex) position
 	vec3 alpha = clamp( pOTProbeSpacingInv * ( position - basePosition ), vec3( 0.0 ), vec3( 1.0 ) );
 	
-	// normal is not transformed since tracing space has the same orientation as world space
-	
 	// iterate over adjacent probe cage
 	int i;
 	for( i=0; i<8; i++ ){
@@ -43,9 +41,8 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		vec3 viewVector = probePosition - position;
 		vec3 viewDir = normalize( viewVector );
 		
-		// ws_o = rayOrigin. but this does not work. we are shading fragments. there exists
-		// no ray origin. ray origin is actually probe position so what probe position to
-		// use? this paper and example implementation is a huge mess from one end  to the other
+		// ws_o = rayOrigin. where is this coming from? we are shading here scene fragments.
+		// rayOrigin belongs to probe shading
 		vec3 probeToPoint = -viewVector + ( normal /*+ 3.0 * ws_o*/ ) * pOTNormalBias;
 		
 		vec3 trilinear = mix( vec3( 1.0 ) - alpha, alpha, offset );
