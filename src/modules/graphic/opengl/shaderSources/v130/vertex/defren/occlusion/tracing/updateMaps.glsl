@@ -52,18 +52,18 @@ void main( void ){
 	
 	// map layout: (probeCount.x * probeCount.y) x pGridProbeCount.z
 	#ifdef MAP_OCCLUSION
-		#define mapProbeSizeBorder pOcclusionMapSize + 2
+		int mapProbeSizeBorder = pOcclusionMapSize + 2;
 		#define mapProbeScale pOcclusionMapScale
 	#else
-		#define mapProbeSizeBorder pDistanceMapSize + 2
+		int mapProbeSizeBorder = pDistanceMapSize + 2;
 		#define mapProbeScale pDistanceMapScale
 	#endif
 	int groupOffset = pGridProbeCount.x * probeGrid.y + probeGrid.x;
-	vOffset.x = groupOffset * mapProbeSizeBorder + 2;
-	vOffset.y = probeGrid.z * mapProbeSizeBorder + 2;
+	vOffset.x = groupOffset * mapProbeSizeBorder + 1;
+	vOffset.y = probeGrid.z * mapProbeSizeBorder + 1;
 	
 	vec2 realSize = vec2( mapProbeSizeBorder ) * mapProbeScale;
-	vec2 realOffset = vec2( vOffset - ivec2( 1 ) ) * mapProbeScale * vec2( 2.0 ) + realSize + vec2( -1.0 );
+	vec2 realOffset = vec2( vOffset ) * mapProbeScale * vec2( 2.0 ) + realSize + vec2( -1.0 );
 	
 	gl_Position = vec4( vec3( inPosition.xy * realSize + realOffset, 0.0 ), 1.0 );
 }

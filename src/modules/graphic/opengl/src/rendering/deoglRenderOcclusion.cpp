@@ -1422,6 +1422,8 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tr
 	// update probes: occlusion map
 	renderThread.GetFramebuffer().Activate( &tracing.GetFBOProbeOcclusion() );
 	
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, tracing.GetTextureProbeOcclusion().GetWidth(),
 		tracing.GetTextureProbeOcclusion().GetHeight() ) );

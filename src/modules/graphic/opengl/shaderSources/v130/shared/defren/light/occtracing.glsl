@@ -1,0 +1,95 @@
+#include "v130/shared/octahedral.glsl"
+
+uniform mediump sampler2D texOTOcclusion;
+uniform mediump sampler2D texOTDistance;
+
+
+// dir is required to be normalized
+vec2 occtraceTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in int mapSize ){
+	vec2 tc = octahedralEncode( dir ); // range [-1..1]
+	tc = ( tc + vec2( 1.0f ) ) * 0.5f; // range [0..1]
+	tc *= vec2( mapSize - 1 ); // range [0..mapSize-1]
+	tc += vec2( 1 ); // offset by full map border
+	tc += vec2( pOTProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
+	return tc * mapScale;
+}
+
+
+// calculate occlusion to apply to fragment
+float occtraceOcclusion( in vec3 position, in vec3 normal ){
+	position = vec3( pOTMatrix * vec4( position, 1.0 ) );
+	normal = pOTMatrixNormal * normal;
+	
+	ivec3 baseCoord = clamp( ivec3( pOTProbeSpacingInv * position ), ivec3( 0 ), pOTProbeClamp );
+	
+	vec3 basePosition = pOTProbeSpacing * vec3( baseCoord );
+	float sumOcclusion = 0.0;
+	float sumWeight = 0.0;
+	
+	// distance from floor(currentVertex) position
+	vec3 alpha = clamp( pOTProbeSpacingInv * ( position - basePosition ), vec3( 0.0 ), vec3( 1.0 ) );
+	
+	// normal is not transformed since tracing space has the same orientation as world space
+	
+	// iterate over adjacent probe cage
+	int i;
+	for( i=0; i<8; i++ ){
+		// offset = 0 or 1 along each axis
+		ivec3 offset = ivec3( i, i >> 1, i >> 2 ) & ivec3( 1 );
+		ivec3 probeCoord = clamp( baseCoord + offset, ivec3( 0 ), pOTProbeClamp );
+// 		int probeIndex = occtraceGridToProbeIndex( probeCoord );
+		vec3 probePosition = pOTProbeSpacing * vec3( probeCoord );
+		
+		vec3 viewVector = probePosition - position;
+		vec3 viewDir = normalize( viewVector );
+		
+		// ws_o = rayOrigin. but this does not work. we are shading fragments. there exists
+		// no ray origin. ray origin is actually probe position so what probe position to
+		// use? this paper and example implementation is a huge mess from one end  to the other
+		vec3 probeToPoint = -viewVector + ( normal /*+ 3.0 * ws_o*/ ) * pOTNormalBias;
+		
+		vec3 trilinear = mix( vec3( 1.0 ) - alpha, alpha, offset );
+		float weight = 1.0;
+		
+		// smooth backface test
+		{
+		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 );
+		weight *= value * value + 0.2;
+		}
+		
+		// moment visibility test
+		{
+		vec2 texCoord = occtraceTCFromDirection( -normalize( -probeToPoint ), probeCoord, pOTDistanceMapScale, pOTDistanceMapSize );
+		float distToProbe = length( probeToPoint );
+		
+		vec2 temp = texture( texOTDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
+		float mean = temp.x;
+		float variance = abs( mean * mean - temp.y );
+		
+		float chebyshevWeight = max( distToProbe - mean, 0.0 );
+		chebyshevWeight = variance / ( variance + chebyshevWeight * chebyshevWeight );
+		chebyshevWeight = max( chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.0 );
+		
+		weight *= distToProbe <= mean ? 1.0 : chebyshevWeight;
+		}
+		
+		// avoid zero weight
+		weight = max( 0.000001, weight );
+		
+		vec2 texCoord = occtraceTCFromDirection( normal, probeCoord, pOTOcclusionMapScale, pOTOcclusionMapSize );
+		
+		float probeOcclusion = texture( texOTOcclusion, texCoord ).r;
+		
+		const float crushThreshold = 0.2;
+		if( weight < crushThreshold ){
+			weight *= weight * weight * ( 1.0 / ( crushThreshold * crushThreshold ) ); 
+		}
+		
+		// trilinear weights
+		weight *= trilinear.x * trilinear.y * trilinear.z;
+		sumOcclusion += weight * probeOcclusion;
+		sumWeight += weight;
+	}
+	
+	return ( sumOcclusion / sumWeight ) * pOTEnergyPreservation;
+}

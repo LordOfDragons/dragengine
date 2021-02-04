@@ -26,10 +26,39 @@ const float epsilon = 1e-6;
 
 
 void main( void ){
-	// this fragement shader is run for the entire map including the 1 pixel border around it.
-	// by clamping the texture coordinates the border is updated like the pixels around the
-	// map border. this avoids creating complicated copy shaders.
-	ivec2 tc = clamp( ivec2( gl_FragCoord.xy ) - vOffset, ivec2( 0 ), ivec2( vOffset ) );
+	// this fragement shader is run for the entire map including the 1 pixel border around it
+	// to avoid running extra shader passes to copy border pixels. what is done here instead
+	// is moving the texture coordinate to sample if in the border area. this is not as fast
+	// as a copy but better than running extra shader passes.
+	// 
+	// the original paper says nothing about how the copy is done and the example code is
+	// missing for the copy shader. so coming up with an own way to do it. basic idea is
+	// to flip texture coordinates to get the right ones.
+	// 
+	// 1) if the pixel U coordinate is on the edge flip the V coordinate.
+	// 2) if the pixel V coordinate is on the edge flip the U coordinate.
+	// 3) if the pixel U coordinate is on the edge move it 1 pixel away from the edge
+	// 4) if the pixel V coordinate is on the edge move it 1 pixel away from the edge
+	// 
+	// this sequence of actions works for pixels on the edge as well as corner pixels.
+	// 
+	// to use only 2 branches instead of 4 the isOnEdge result for the second block
+	// is flipped in the first
+	ivec2 tc = ivec2( gl_FragCoord.xy ) - vOffset;
+	ivec2 edgeValues = ivec2( 0, mapProbeSize + 1 ); // mapProbeSize + 2 - 1
+	bvec4 isOnEdge = equal( tc.xxyy, edgeValues.xyxy );
+	
+	if( any( isOnEdge.xy ) ){
+		tc.y = edgeValues.y - tc.y;
+		tc.x += isOnEdge.x ? 1 : -1;
+		isOnEdge.zw = isOnEdge.wz;
+	}
+	if( any( isOnEdge.zw ) ){
+		tc.x = edgeValues.y - tc.x;
+		tc.y += isOnEdge.z ? 1 : -1;
+	}
+	
+	// from here on updating works as if borders do not exist
 	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) )
 		* ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
 	

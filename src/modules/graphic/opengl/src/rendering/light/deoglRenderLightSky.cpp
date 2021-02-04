@@ -56,6 +56,7 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
+#include "../../occlusiontest/deoglOcclusionTracing.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
@@ -468,6 +469,16 @@ deoglRenderPlanSkyLight &planSkyLight ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
 	}
 	
+	target = lightShader->GetTextureTarget( deoglLightShader::ettOTOcclusion );
+	if( target != -1 ){
+		tsmgr.EnableTexture( target, renderThread.GetOcclusionTracing().GetTextureProbeOcclusion(), GetSamplerClampLinear() );
+	}
+	
+	target = lightShader->GetTextureTarget( deoglLightShader::ettOTDistance );
+	if( target != -1 ){
+		tsmgr.EnableTexture( target, renderThread.GetOcclusionTracing().GetTextureProbeDistance(), GetSamplerClampLinear() );
+	}
+	
 	// set the ao texture
 	//tsmgr.EnableTexture( 5, *defren.GetTemporaryTexture(), deoglTextureStageManager::etfNearest, GL_CLAMP );
 	
@@ -852,9 +863,11 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 	// set values
 	paramBlock.MapBuffer();
 	try{
+		// occlusion tracing requires light color target to contain light intensity and
+		// ambient intensity. light color ambient is set to ambient intensity only
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
+			paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );

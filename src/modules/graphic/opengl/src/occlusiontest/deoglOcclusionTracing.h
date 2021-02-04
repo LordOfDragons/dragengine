@@ -89,6 +89,7 @@ private:
 	
 	decDVector pPosition;
 	decVector pProbeSpacing;
+	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
 	decVector pProbeOrigin;
 	int pStrideProbeCount;
@@ -101,6 +102,8 @@ private:
 	float pMaxProbeDistance;
 	float pDepthSharpness;
 	float pHysteresis;
+	float pNormalBias;
+	float pEnergyPreservation;
 	
 	deoglCollideList pCollideList;
 	
@@ -143,6 +146,9 @@ private:
 	deoglFramebuffer pFBOProbeOcclusion;
 	deoglFramebuffer pFBOProbeDistance;
 	
+	decVector2 pOcclusionMapScale;
+	decVector2 pDistanceMapScale;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -164,8 +170,14 @@ public:
 	/** \brief Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
 	
+	/** \brief Inverse probe spacing. */
+	inline const decVector &GetProbeSpacingInverse() const{ return pProbeSpacingInv; }
+	
 	/** \brief Probe count. */
 	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
+	
+	/** \brief Probe origin. */
+	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }
 	
 	/** \brief Rays per probe. */
 	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
@@ -179,8 +191,22 @@ public:
 	/** \brief Size of distance map. */
 	inline int GetDistanceMapSize() const{ return pDistanceMapSize; }
 	
+	/** \brief Occlusion map scale. */
+	inline const decVector2 &GetOcclusionMapScale() const{ return pOcclusionMapScale; }
+	
+	/** \brief Distance map scale. */
+	inline const decVector2 &GetDistanceMapScale() const{ return pDistanceMapScale; }
+	
+	/** \brief Normal bias. */
+	inline float GetNormalBias() const{ return pNormalBias; }
+	
+	/** \brief Energey conversation. */
+	inline float GetEnergyPreservation() const{ return pEnergyPreservation; }
+	
 	/** \brief Probes per line. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
+	
+	
 	
 	/** \brief World position closest to grid. */
 	decDVector WorldClosestGrid( const decDVector &position ) const;
@@ -246,9 +272,11 @@ public:
 	inline int GetSizeTexDistance() const{ return pSizeTexDistance; }
 	
 	/** \brief Occlusion probe texture. */
+	inline deoglTexture &GetTextureProbeOcclusion(){ return pTexProbeOcclusion; }
 	inline const deoglTexture &GetTextureProbeOcclusion() const{ return pTexProbeOcclusion; }
 	
 	/** \brief Distance probe texture. */
+	inline deoglTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
 	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
 	/** \brief Probe fbo occlusion. */

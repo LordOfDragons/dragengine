@@ -163,6 +163,10 @@ uniform lowp sampler2D texAOSolidity;
 	#endif
 #endif
 
+#ifdef SKY_LIGHT
+	#include "v130/shared/defren/light/occtracing.glsl"
+#endif
+
 
 
 // Inputs
@@ -1092,8 +1096,12 @@ void main( void ){
 	//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
 	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
 	#ifdef AMBIENT_LIGHTING
-// 		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
-		vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+		#ifdef SKY_LIGHT
+			vec3 finalColorAmbient = pLightColor/*pLightColorAmbient*/ * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
+		#else
+// 			vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+			vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+		#endif
 	#endif
 	
 	// distance and spot attenuation
@@ -1179,13 +1187,18 @@ void main( void ){
 	//#ifdef AMBIENT_LIGHTING
 	//	finalColorAmbient *= vec3( aoSolidity.g );
 	//#endif
+	#ifdef SKY_LIGHT
+		lightColor = max( lightColor, finalColorAmbient );
+	#endif
 	
 	// final light contribution
 	finalColorSurface *= lightColor;
 	
 	vec3 finalColorSubSurface = lightColor;
 	#ifdef AMBIENT_LIGHTING
-		finalColorSubSurface += finalColorAmbient;
+		#ifndef SKY_LIGHT
+			finalColorSubSurface += finalColorAmbient;
+		#endif
 	#endif
 	
 	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );

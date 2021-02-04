@@ -67,7 +67,9 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texShadow1Ambient", // ettShadow1Ambient
 	"texShadow2Ambient", // ettShadow2Ambient
 	"texLightDepth1", // ettLightDepth1
-	"texLightDepth2" // ettLightDepth2
+	"texLightDepth2", // ettLightDepth2
+	"texOTOcclusion", // ettOTOcclusion
+	"texOTDistance" // ettOTDistance
 };
 
 static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] = {
@@ -283,6 +285,21 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		spb->GetParameterAt( erutPosTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
+		// occlusion tracing
+		spb->GetParameterAt( erutOTMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+		spb->GetParameterAt( erutOTMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		spb->GetParameterAt( erutOTProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+		spb->GetParameterAt( erutOTOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		spb->GetParameterAt( erutOTProbeClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
+		spb->GetParameterAt( erutOTDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		spb->GetParameterAt( erutOTProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutOTProbeSpacingInv ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutOTProbeOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutOTNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		spb->GetParameterAt( erutOTOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutOTDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutOTEnergyPreservation ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );
@@ -747,6 +764,11 @@ void deoglLightShader::UpdateTextureTargets(){
 		if( pConfig.GetTextureShadow2Solid() ){
 			pTextureTargets[ ettLightDepth2 ] = textureUnitNumber++;
 		}
+	}
+	
+	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmSky ){
+		pTextureTargets[ ettOTOcclusion ] = textureUnitNumber++;
+		pTextureTargets[ ettOTDistance ] = textureUnitNumber++;
 	}
 	
 	pUsedTextureTargetCount = textureUnitNumber;

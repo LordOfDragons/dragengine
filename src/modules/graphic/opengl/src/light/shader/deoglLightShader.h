@@ -63,6 +63,8 @@ public:
 		ettShadow2Ambient,
 		ettLightDepth1,
 		ettLightDepth2,
+		ettOTOcclusion,
+		ettOTDistance,
 		ETT_COUNT
 	};
 	
@@ -71,6 +73,22 @@ public:
 		erutPosTransform,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,
+		
+		// occlusion tracing
+		erutOTMatrix,
+		erutOTMatrixNormal,
+		erutOTProbeCount,
+		erutOTOcclusionMapSize,
+		erutOTProbeClamp,
+		erutOTDistanceMapSize,
+		erutOTProbeSpacing,
+		erutOTProbeSpacingInv,
+		erutOTProbeOrigin,
+		erutOTNormalBias,
+		erutOTOcclusionMapScale,
+		erutOTDistanceMapScale,
+		erutOTEnergyPreservation,
+		
 		ERUT_COUNT
 	};
 	

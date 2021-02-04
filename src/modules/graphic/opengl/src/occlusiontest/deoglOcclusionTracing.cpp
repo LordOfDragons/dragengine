@@ -51,6 +51,7 @@
 deoglOcclusionTracing::deoglOcclusionTracing( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
+pProbeSpacingInv( 1.0f / pProbeSpacing.x, 1.0f / pProbeSpacing.y, 1.0f / pProbeSpacing.z ),
 pProbeCount( 32, 4, 32 ),
 pProbeOrigin( pProbeSpacing.Multiply( decVector( pProbeCount - decPoint3( 1, 1, 1 ) ) * -0.5f ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
@@ -63,6 +64,8 @@ pDistanceMapSize( 16 ),
 pMaxProbeDistance( 4.0f ),
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.98f ),
+pNormalBias( 0.25f ),
+pEnergyPreservation( 0.85f ),
 pOccMeshes( NULL ),
 pOccMeshCount( 0 ),
 pOccMeshSize( 0 ),
@@ -91,7 +94,12 @@ pSizeTexDistance( 16 ),
 pTexProbeOcclusion( renderThread ),
 pTexProbeDistance( renderThread ),
 pFBOProbeOcclusion( renderThread, false ),
-pFBOProbeDistance( renderThread, false )
+pFBOProbeDistance( renderThread, false ),
+
+pOcclusionMapScale( 1.0f / ( ( pSizeTexOcclusion + 2 ) * pProbeCount.x * pProbeCount.y + 2 ),
+	1.0f / ( ( pSizeTexOcclusion + 2 ) * pProbeCount.z + 2 ) ),
+pDistanceMapScale( 1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2 ),
+	1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.z + 2 ) )
 {
 	pUpdateProbes = new int[ pMaxUpdateProbeCount ];
 	pUBOTracing = new deoglSPBlockUBO( renderThread );
@@ -109,9 +117,9 @@ deoglOcclusionTracing::~deoglOcclusionTracing(){
 // #define DO_TIMING 1
 
 decDVector deoglOcclusionTracing::WorldClosestGrid(const decDVector &position ) const{
-	decDVector result( ( double )pProbeSpacing.x * floor( position.x / ( double )pProbeSpacing.x ),
-		( double )pProbeSpacing.y * floor( position.y / ( double )pProbeSpacing.y ),
-		( double )pProbeSpacing.z * floor( position.z / ( double )pProbeSpacing.z ) );
+	decDVector result( ( double )pProbeSpacing.x * floor( position.x * ( double )pProbeSpacingInv.x ),
+		( double )pProbeSpacing.y * floor( position.y * ( double )pProbeSpacingInv.y ),
+		( double )pProbeSpacing.z * floor( position.z * ( double )pProbeSpacingInv.z ) );
 	
 	const decDVector halfGrid( decDVector( pProbeSpacing ) * 0.5 );
 	if( position.x - result.x >= halfGrid.x ){
@@ -643,19 +651,14 @@ void deoglOcclusionTracing::pPrepareUBOState(){
 	
 	ubo.MapBuffer();
 	try{
-		const int occlusionMapWidth = ( pSizeTexOcclusion + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int occlusionMapHeight = ( pSizeTexOcclusion + 2 ) * pProbeCount.z + 2;
-		const int distanceMapWidth = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int distanceMapHeight = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2;
-		
 		ubo.SetParameterDataVec2( eutpSampleImageScale, 1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
 		ubo.SetParameterDataInt( eutpProbeCount, pMaxUpdateProbeCount );
 		ubo.SetParameterDataInt( eutpRaysPerProbe, pRaysPerProbe );
 		ubo.SetParameterDataInt( eutpProbesPerLine, pProbesPerLine );
 		ubo.SetParameterDataInt( eutpOcclusionMapSize, pOcclusionMapSize );
 		ubo.SetParameterDataInt( eutpDistanceMapSize, pDistanceMapSize );
-		ubo.SetParameterDataVec2( eutpOcclusionMapScale, 1.0f / ( float )occlusionMapWidth, 1.0f / ( float )occlusionMapHeight );
-		ubo.SetParameterDataVec2( eutpDistanceMapScale, 1.0f / ( float )distanceMapWidth, 1.0f / ( float )distanceMapHeight );
+		ubo.SetParameterDataVec2( eutpOcclusionMapScale, pOcclusionMapScale );
+		ubo.SetParameterDataVec2( eutpDistanceMapScale, pDistanceMapScale );
 		ubo.SetParameterDataFloat( eutpMaxProbeDistance, pMaxProbeDistance );
 		ubo.SetParameterDataFloat( eutpDepthSharpness, pDepthSharpness );
 		ubo.SetParameterDataFloat( eutpHysteresis, pHysteresis );
