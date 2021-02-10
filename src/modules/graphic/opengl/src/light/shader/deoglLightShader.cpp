@@ -27,6 +27,7 @@
 #include "deoglLightShaderManager.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../extensions/deoglExtensions.h"
+#include "../../occlusiontest/deoglOcclusionTracing.h"  // required for ENABLE_OCCTRACING
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTShader.h"

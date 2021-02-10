@@ -1415,8 +1415,8 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tr
 	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
 	
-// 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracing.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+// 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracing.GetUpdateProbeCount() ) );
 	
 	
 	// update probes: occlusion map

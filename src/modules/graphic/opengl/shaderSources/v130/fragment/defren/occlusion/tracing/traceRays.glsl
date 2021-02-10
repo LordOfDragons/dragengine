@@ -6,9 +6,6 @@ precision highp int;
 #include "v130/shared/defren/occtracing.glsl"
 
 
-flat in int vOffset;
-flat in vec3 vProbePosition;
-
 out vec4 outPosition;
 
 const float STEP_BACK_DISTANCE = 0.01;
@@ -24,7 +21,9 @@ const vec2 TC2PCOORD_ADD = vec2(0, PI * -0.5);
 void main( void ){
 	ivec2 tc = ivec2( gl_FragCoord.xy );
 	
+	
 	#ifdef DEBUG_TRACING
+	{
 	vec2 pc = vec2(tc) * TC2PCOORD_MUL + TC2PCOORD_ADD;
 	float r = cos(pc.y);
 	vec3 dir = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
@@ -35,21 +34,35 @@ void main( void ){
 	}else{
 		outPosition = vec4( 0.0, 0.0, 0.0, 250.0 );
 	}
+	return;
+	}
+	#endif
 	
-	#else
+	
+	// calculate probe position and index from offset. the quad covers an entire block
+	// of probes including not used ones at the end. skip those
+	int rowProbeIndex = tc.x / pRaysPerProbe;
+	int probeIndex = pProbesPerLine * tc.y + rowProbeIndex;
+	if( probeIndex >= pProbeCount ){
+		discard;
+	}
+	
+	int firstRayOffset = pRaysPerProbe * rowProbeIndex;
+	vec3 position = pProbePosition[ probeIndex ];
+	
+	// trace ray
 	RayCastResult result;
-	vec3 direction = pRayDirection[ tc.x - vOffset ];
-	if( rayCastInstance( pBVHInstanceRootNode, vProbePosition, direction, result ) ){
-		outPosition = vec4( vProbePosition, result.distance );
+	vec3 direction = pRayDirection[ tc.x - firstRayOffset ];
+	if( rayCastInstance( pBVHInstanceRootNode, position, direction, result ) ){
+		outPosition = vec4( position, result.distance );
 		outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
 		// original DDGI code steps back using "hitNormal * 0.01"
 		// // outPosition.xyz += direction * result.distance;
 		// // outPosition.xyz += hitNormal * STEP_BACK_DISTANCE;
 	}else{
-		outPosition = vec4( vProbePosition, 10000.0 );
+		outPosition = vec4( position, 10000.0 );
 	}
 	
-	#endif
 	
 	#if RENDERDOC_DEBUG
 	const float PI = 3.14159265;
