@@ -136,7 +136,7 @@ private:
 	int *pUpdateProbes;
 	int pUpdateProbeCount;
 	
-	decVector pSphericalFibonacci[ 64 ];
+	decVector *pSphericalFibonacci;
 	deoglSPBlockUBO *pUBOTracing;
 	deoglTexture pTexRayOrigin;
 	deoglTexture pTexRayDirection;

@@ -85,12 +85,13 @@ pElapsedUpdateProbe( 0.0f ),
 pUpdateProbeInterval( 0.1f ),
 pUpdateProbes( NULL ),
 pUpdateProbeCount( 0 ),
+pSphericalFibonacci( NULL ),
 pUBOTracing( NULL ),
 pTexRayOrigin( renderThread ),
 pTexRayDirection( renderThread ),
 pFBORay( renderThread, false ),
-pSizeTexOcclusion( 8 ),
-pSizeTexDistance( 16 ),
+pSizeTexOcclusion( pOcclusionMapSize ),
+pSizeTexDistance( pDistanceMapSize ),
 pTexProbeOcclusion( renderThread ),
 pTexProbeDistance( renderThread ),
 pFBOProbeOcclusion( renderThread, false ),
@@ -101,6 +102,7 @@ pOcclusionMapScale( 1.0f / ( ( pSizeTexOcclusion + 2 ) * pProbeCount.x * pProbeC
 pDistanceMapScale( 1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2 ),
 	1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.z + 2 ) )
 {
+	pSphericalFibonacci = new decVector[ pRaysPerProbe ];
 	pUpdateProbes = new int[ pMaxUpdateProbeCount ];
 	pUBOTracing = new deoglSPBlockUBO( renderThread );
 }
@@ -214,6 +216,9 @@ void deoglOcclusionTracing::pCleanUp(){
 	}
 	if( pUBOTracing ){
 		pUBOTracing->FreeReference();
+	}
+	if( pSphericalFibonacci ){
+		delete [] pSphericalFibonacci;
 	}
 }
 
@@ -638,9 +643,9 @@ void deoglOcclusionTracing::pPrepareUBOState(){
 		ubo.GetParameterAt( eutpMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		ubo.GetParameterAt( eutpDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		ubo.GetParameterAt( eutpHysteresis ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		ubo.GetParameterAt( eutpProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, 64 ); // ivec4: max-count / 4
-		ubo.GetParameterAt( eutpProbePosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 256 ); // vec3
-		ubo.GetParameterAt( eutpRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 64 ); // vec3
+		ubo.GetParameterAt( eutpProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, pMaxUpdateProbeCount / 4 ); // ivec4
+		ubo.GetParameterAt( eutpProbePosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, pMaxUpdateProbeCount ); // vec3
+		ubo.GetParameterAt( eutpRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, pRaysPerProbe ); // vec3
 		ubo.MapToStd140();
 		ubo.SetBindingPoint( 0 );
 		
