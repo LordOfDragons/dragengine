@@ -7,9 +7,9 @@ uniform mediump sampler2D texOTDistance;
 // dir is required to be normalized
 vec2 occtraceTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in int mapSize ){
 	vec2 tc = octahedralEncode( dir ); // range [-1..1]
-	tc = ( tc + vec2( 1.0f ) ) * 0.5f; // range [0..1]
-	tc *= vec2( mapSize - 1 ); // range [0..mapSize-1]
-	tc += vec2( 1 ); // offset by full map border
+	tc = ( tc + vec2( 1.0 ) ) * 0.5; // range [0..1]
+	tc *= vec2( mapSize ); // range [0..mapSize] (left border of left pixel to right border of right pixel)
+	tc += vec2( 2 ); // offset by full map border and probe map border
 	tc += vec2( pOTProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
 	return tc * mapScale;
 }
@@ -56,7 +56,7 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		
 		// moment visibility test
 		{
-		vec2 texCoord = occtraceTCFromDirection( -normalize( -probeToPoint ), probeCoord, pOTDistanceMapScale, pOTDistanceMapSize );
+		vec2 texCoord = occtraceTCFromDirection( normalize( probeToPoint ), probeCoord, pOTDistanceMapScale, pOTDistanceMapSize );
 		float distToProbe = length( probeToPoint );
 		
 		vec2 temp = texture( texOTDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
