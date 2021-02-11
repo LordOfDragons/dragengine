@@ -13,7 +13,7 @@ UBOLAYOUT uniform TracingParameters{
 	float pMaxProbeDistance;
 	float pDepthSharpness;
 	float pHysteresis;
-	ivec4 pProbeIndex[ 64 ]; // max probe update count / 4
-	vec3 pProbePosition[ 256 ]; // max probe update count
-	vec3 pRayDirection[ 64 ]; // ray count
+	ivec4 pProbeIndex[ PROBE_INDEX_COUNT ];
+	vec3 pProbePosition[ MAX_PROBE_UPDATE_COUNT ];
+	vec3 pRayDirection[ RAYS_PER_PROBE ];
 };

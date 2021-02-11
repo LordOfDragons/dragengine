@@ -598,13 +598,17 @@ static decVector deoglOcclusionTracing_SphericalFibonacci( float i, float n ){
 
 void deoglOcclusionTracing::pFindProbesToUpdate(){
 	// TODO update probe grid. for the time being 8x4x8
-	pUpdateProbeCount = 256;
+	pUpdateProbeCount = pMaxUpdateProbeCount;
+	
+	const decPoint3 spread( 8, 4, 8 ); // 16, 4, 16
+	const decPoint3 gis( ( pProbeCount - spread ) / 2 );
+	const decPoint3 gie( gis + spread );
 	
 	decPoint3 gi;
 	int i = 0;
-	for( gi.y=0; gi.y<4; gi.y++ ){
-		for( gi.z=12; gi.z<20; gi.z++ ){
-			for( gi.x=12; gi.x<20; gi.x++ ){
+	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
+		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
+			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
 				pUpdateProbes[ i++ ] = GridCoord2ProbeIndex( gi );
 			}
 		}
@@ -657,7 +661,7 @@ void deoglOcclusionTracing::pPrepareUBOState(){
 	ubo.MapBuffer();
 	try{
 		ubo.SetParameterDataVec2( eutpSampleImageScale, 1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
-		ubo.SetParameterDataInt( eutpProbeCount, pMaxUpdateProbeCount );
+		ubo.SetParameterDataInt( eutpProbeCount, pUpdateProbeCount );
 		ubo.SetParameterDataInt( eutpRaysPerProbe, pRaysPerProbe );
 		ubo.SetParameterDataInt( eutpProbesPerLine, pProbesPerLine );
 		ubo.SetParameterDataInt( eutpOcclusionMapSize, pOcclusionMapSize );

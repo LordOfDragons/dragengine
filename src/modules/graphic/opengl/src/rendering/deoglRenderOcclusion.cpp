@@ -267,24 +267,33 @@ pAddToRenderTask( NULL )
 			defines.RemoveAllDefines();
 		}
 		
+		
+		
+		const deoglOcclusionTracing &tracing = renderThread.GetOcclusionTracing();
 // 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Generate Rays" );
 // 		pShaderOccTracingGenRays = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "RAYS_PER_PROBE", tracing.GetRaysPerProbe() );
+		defines.AddDefine( "MAX_PROBE_UPDATE_COUNT", tracing.GetMaxUpdateProbeCount() );
+		defines.AddDefine( "PROBE_INDEX_COUNT", tracing.GetMaxUpdateProbeCount() / 4 );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Trace Rays" );
 		pShaderOccTracingTraceRays = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.AddDefine( "DEBUG_TRACING", "1" );
 		pShaderOccTracingDebug = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		defines.RemoveDefine( "DEBUG_TRACING" );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Update Maps" );
 		defines.AddDefine( "MAP_OCCLUSION", "1" );
 		pShaderOccTracingUpdateOcclusion = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		defines.RemoveDefine( "MAP_OCCLUSION" );
 		
 		defines.AddDefine( "MAP_DISTANCE", "1" );
 		pShaderOccTracingUpdateDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
+		
+		
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );

@@ -185,6 +185,9 @@ public:
 	/** \brief Rays per probe. */
 	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
 	
+	/** \brief Maximum probe update count. */
+	inline int GetMaxUpdateProbeCount() const{ return pMaxUpdateProbeCount; }
+	
 	/** \brief Size of sample image. */
 	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
 	
