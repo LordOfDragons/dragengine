@@ -51,7 +51,11 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		// smooth backface test
 		{
 		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 );
-		weight *= value * value + 0.2;
+		//weight *= value * value + 0.2;
+		
+		// deviating from the paper here. the 0.2 addition term creates additional
+		// light leaks. removing this term reduces the light leaks in dark rooms
+		weight *= value * value;
 		}
 		
 		// moment visibility test

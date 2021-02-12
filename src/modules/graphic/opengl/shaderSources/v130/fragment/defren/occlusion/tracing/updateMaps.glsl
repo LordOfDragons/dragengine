@@ -83,6 +83,13 @@ void main( void ){
 		// if ray misses hit distance is set to 10000. in this case max probe distance
 		// has to be used. this works with the min code below so no extra code required
 		#ifdef MAP_DISTANCE
+		// here we deviate from the paper. ignoring misses to influence the result
+		// removes the most glaring light leaks. small (but glaring) ones still remain
+		if( rayCast.w > 9999.0 ){
+			continue;
+		}
+		
+		// back to paper here
 		rayProbeDistance = min( rayCast.w, pMaxProbeDistance );
 		#endif
 		
@@ -113,5 +120,13 @@ void main( void ){
 		#endif
 		
 		outValue.a = 1.0 - pHysteresis;
+		
+	#ifdef MAP_DISTANCE
+	// by deviating from the paper above we need to handle the case of no hit being scored
+	// at all otherwise the probe turns black which is wrong for occlusion handling
+	}else{
+		outValue.x = pMaxProbeDistance;
+		outValue.y = pMaxProbeDistance * pMaxProbeDistance;
+	#endif
 	}
 }
