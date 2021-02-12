@@ -58,9 +58,14 @@ void main( void ){
 		tc.y += isOnEdge.z ? 1 : -1;
 	}
 	
-	// from here on updating works as if borders do not exist
-	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) )
-		* ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
+	// from here on updating works as if borders do not exist. keep in mind though
+	// the texture coordinate starts at the left-top border. for this reason 1 has
+	// to be subtracted to end up at the first map pixel
+	tc -= ivec2( 1 ); // move to first map pixel
+	
+	// the texture coordinates have to be shifted to sample at the center of the
+	// pixel. for this reason the 0.5 shift is used together with mapProbeSize.
+	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
 	
 	float weight, sumWeight = 0.0;
 	vec4 rayCast;
