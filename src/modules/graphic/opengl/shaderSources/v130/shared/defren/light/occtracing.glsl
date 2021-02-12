@@ -79,7 +79,7 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		
 		const float crushThreshold = 0.2;
 		if( weight < crushThreshold ){
-			weight *= weight * weight * ( 1.0 / ( crushThreshold * crushThreshold ) ); 
+			weight *= weight * weight / ( crushThreshold * crushThreshold );
 		}
 		
 		// trilinear weights
