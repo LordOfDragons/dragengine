@@ -600,8 +600,8 @@ void deoglOcclusionTracing::pFindProbesToUpdate(){
 	// TODO update probe grid. for the time being 8x4x8
 	pUpdateProbeCount = pMaxUpdateProbeCount;
 	
-	const decPoint3 spread( 16, 4, 16 );
-	//const decPoint3 spread( 8, 4, 8 );
+	//const decPoint3 spread( 16, 4, 16 );
+	const decPoint3 spread( 8, 4, 8 );
 	const decPoint3 gis( ( pProbeCount - spread ) / 2 );
 	const decPoint3 gie( gis + spread );
 	
