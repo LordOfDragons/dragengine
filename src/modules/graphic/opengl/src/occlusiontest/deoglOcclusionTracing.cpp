@@ -53,7 +53,8 @@ pRenderThread( renderThread  ),
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 pProbeSpacingInv( 1.0f / pProbeSpacing.x, 1.0f / pProbeSpacing.y, 1.0f / pProbeSpacing.z ),
 pProbeCount( 32, 4, 32 ),
-pProbeOrigin( pProbeSpacing.Multiply( decVector( pProbeCount - decPoint3( 1, 1, 1 ) ) * -0.5f ) ),
+pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
+pProbeOrigin( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) * -0.5f ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
 pMaxRaysPerProbe( 256 ),
@@ -127,7 +128,7 @@ int deoglOcclusionTracing::GridCoord2ProbeIndex( const decPoint3 &coord ) const{
 }
 
 decVector deoglOcclusionTracing::Grid2Local( const decPoint3 &coord ) const{
-	return decVector( pProbeSpacing.x * coord.x, pProbeSpacing.y * coord.y, pProbeSpacing.z * coord.z ) + pProbeOrigin;
+	return pProbeSpacing.Multiply( decVector( coord ) ) + pProbeOrigin;
 }
 
 /*

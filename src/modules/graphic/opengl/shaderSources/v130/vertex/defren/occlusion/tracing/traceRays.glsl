@@ -1,9 +1,6 @@
 precision highp float;
 precision highp int;
 
-#include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/occtracing.glsl"
-
 in vec3 inPosition;
 
 void main( void ){

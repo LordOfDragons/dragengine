@@ -295,12 +295,14 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		spb->GetParameterAt( erutOTProbeClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 		spb->GetParameterAt( erutOTDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		spb->GetParameterAt( erutOTProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutOTEnabled ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
 		spb->GetParameterAt( erutOTProbeSpacingInv ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutOTProbeOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutOTNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		spb->GetParameterAt( erutOTOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutOTDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutOTEnergyPreservation ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		spb->GetParameterAt( erutOTGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );

@@ -14,6 +14,11 @@ vec2 occtraceTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale
 	return tc * mapScale;
 }
 
+// shifted grid coordinates to local grid coordinates. the pOTGridCoordShift value
+// contains "probeCount - shift" to reduce the calculation
+ivec3 occtraceGridShiftToLocal( in ivec3 shifted ){
+	return ( shifted + pOTGridCoordShift ) % pOTProbeCount;
+}
 
 // calculate occlusion to apply to fragment
 float occtraceOcclusion( in vec3 position, in vec3 normal ){
@@ -35,8 +40,9 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		// offset = 0 or 1 along each axis
 		ivec3 offset = ivec3( i, i >> 1, i >> 2 ) & ivec3( 1 );
 		ivec3 probeCoord = clamp( baseCoord + offset, ivec3( 0 ), pOTProbeClamp );
-// 		int probeIndex = occtraceGridToProbeIndex( probeCoord );
 		vec3 probePosition = pOTProbeSpacing * vec3( probeCoord );
+		
+		probeCoord = occtraceGridShiftToLocal( probeCoord );
 		
 		vec3 viewVector = probePosition - position;
 		vec3 viewDir = normalize( viewVector );

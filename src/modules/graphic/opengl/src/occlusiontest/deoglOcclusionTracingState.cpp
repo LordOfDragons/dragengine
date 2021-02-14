@@ -78,7 +78,17 @@ deoglOcclusionTracingState::~deoglOcclusionTracingState(){
 
 // #define DO_TIMING 1
 
-decDVector deoglOcclusionTracingState::WorldClosestGrid(const decDVector &position ) const{
+decPoint3 deoglOcclusionTracingState::World2Grid( const decDVector &position ) const{
+	return ( position - pPosition - decDVector( pTracing.GetProbeOrigin() ) )
+		.Multiply( pTracing.GetProbeSpacingInverse() ).Round();
+}
+
+decDVector deoglOcclusionTracingState::Grid2World( const decPoint3 &grid ) const{
+	return pPosition + decDVector( pTracing.GetProbeOrigin() )
+		+ decDVector( grid ).Multiply( pTracing.GetProbeSpacing() );
+}
+
+decDVector deoglOcclusionTracingState::WorldClosestGrid( const decDVector &position ) const{
 	const decVector &probeSpacing = pTracing.GetProbeSpacing();
 	const decVector &probeSpacingInv = pTracing.GetProbeSpacingInverse();
 	decDVector result( ( double )probeSpacing.x * floor( position.x * ( double )probeSpacingInv.x ),
@@ -97,6 +107,24 @@ decDVector deoglOcclusionTracingState::WorldClosestGrid(const decDVector &positi
 	}
 	
 	return result;
+}
+
+decPoint3 deoglOcclusionTracingState::LocalGrid2ShiftedGrid( const decPoint3 &coord ) const{
+	const decPoint3 &probeCount = pTracing.GetProbeCount();
+	decPoint3 shifted( coord + pGridCoordShift );
+	shifted.x %= probeCount.x;
+	shifted.y %= probeCount.y;
+	shifted.z %= probeCount.z;
+	return shifted;
+}
+
+decPoint3 deoglOcclusionTracingState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
+	const decPoint3 &probeCount = pTracing.GetProbeCount();
+	decPoint3 local( coord - pGridCoordShift + probeCount );
+	local.x %= probeCount.x;
+	local.y %= probeCount.y;
+	local.z %= probeCount.z;
+	return local;
 }
 
 
@@ -155,14 +183,49 @@ void deoglOcclusionTracingState::pInitProbes(){
 		probe.age = 0;
 		probe.valid = false;
 		probe.coord = pTracing.ProbeIndex2GridCoord( i );
-		probe.position = pTracing.Grid2Local( probe.coord );
 	}
 }
 
 void deoglOcclusionTracingState::pUpdatePosition( const decDVector &position ){
-	// if position changes rotate tracing space and invalidate rotated out probes
-	// TODO
-	pPosition = WorldClosestGrid( position );
+	// find world position closest to the next grid position. if the position is
+	// the same no updating is required
+	const decDVector closestPosition( WorldClosestGrid( position ) );
+	if( closestPosition.IsEqualTo( pPosition ) ){
+		return;
+	}
+	
+	// invalidate probes shifted out
+	const decPoint3 gridOffset( ( closestPosition - pPosition )
+		.Multiply( pTracing.GetProbeSpacingInverse() ).Round() );
+	
+	const int realProbeCount = pTracing.GetRealProbeCount();
+	const decPoint3 &probeCount = pTracing.GetProbeCount();
+	int i;
+	
+	for( i=0; i<realProbeCount; i++ ){
+		sProbe &probe = pProbes[ i ];
+		const decPoint3 coord( LocalGrid2ShiftedGrid( probe.coord ) - gridOffset );
+		if( coord >= decPoint3() && coord < probeCount ){
+			continue;
+		}
+		
+		probe.age = 0;
+		probe.blendFactor = 1.0f;
+		probe.valid = false;
+	}
+	
+	// set the new tracing position
+	pPosition = closestPosition;
+	
+	// update shift
+	pGridCoordShift -= gridOffset;
+	pGridCoordShift.x %= probeCount.x;
+	pGridCoordShift.y %= probeCount.y;
+	pGridCoordShift.z %= probeCount.z;
+	pGridCoordShift += probeCount;
+	pGridCoordShift.x %= probeCount.x;
+	pGridCoordShift.y %= probeCount.y;
+	pGridCoordShift.z %= probeCount.z;
 }
 
 void deoglOcclusionTracingState::pTraceProbes(){
@@ -173,8 +236,6 @@ void deoglOcclusionTracingState::pTraceProbes(){
 	
 	// keep only the remainder. this avoids updates to pile up if framerate drops or staggers
 	pElapsedUpdateProbe = fmodf( pElapsedUpdateProbe, pUpdateProbeInterval );
-	
-	// TODO update/relocate grid
 	
 	pAgeProbes();
 	pFindProbesToUpdate();
@@ -205,7 +266,7 @@ void deoglOcclusionTracingState::pFindProbesToUpdate(){
 	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
 		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
 			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
-				sProbe &probe = pProbes[ pTracing.GridCoord2ProbeIndex( gi ) ];
+				sProbe &probe = pProbes[ pTracing.GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ];
 				
 				if( probe.valid ){
 					probe.blendFactor = 1.0f - pTracing.GetHysteresis();
@@ -261,7 +322,8 @@ void deoglOcclusionTracingState::pPrepareUBOState(){
 		
 		for( i=0; i<pUpdateProbeCount; i++ ){
 			ubo.SetParameterDataArrayVec4( deoglOcclusionTracing::eutpProbePosition, i,
-				pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
+				pTracing.Grid2Local( LocalGrid2ShiftedGrid( pUpdateProbes[ i ]->coord ) ),
+				pUpdateProbes[ i ]->blendFactor );
 		}
 		
 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),

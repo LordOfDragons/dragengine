@@ -42,7 +42,6 @@ public:
 	/** \brief Probe parameters. */
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
-		decVector position; //<! Local position
 		int index; //<! Grid index
 		float blendFactor; //<! 1-hysteresis modified
 		int age; //<! Age in update runs since probe has been last updated
@@ -56,6 +55,7 @@ private:
 	decDVector pPosition;
 	sProbe *pProbes;
 	decPoint pSampleImageSize;
+	decPoint3 pGridCoordShift;
 	
 	deoglCollideList pCollideList;
 	
@@ -96,8 +96,27 @@ public:
 	/** \brief Size of sample image. */
 	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
 	
+	/**
+	 * \brief Grid coordinate shift (wrapping around).
+	 * 
+	 * Shift is in the range from 0 to probeCount-1.
+	 */
+	inline const decPoint3 &GetGridCoordShift() const{ return pGridCoordShift; }
+	
+	/** \brief Grid coordinates closest to world position unclamped. */
+	decPoint3 World2Grid( const decDVector &position ) const;
+	
 	/** \brief World position closest to grid. */
+	decDVector Grid2World( const decPoint3 &grid ) const;
+	
+	/** \brief World coordinate of closest grid location. */
 	decDVector WorldClosestGrid( const decDVector &position ) const;
+	
+	/** \brief Local grid coordinates to shifted grid coordinates. */
+	decPoint3 LocalGrid2ShiftedGrid( const decPoint3 &coord ) const;
+	
+	/** \brief Shifted grid coordinates to local grid coordinates. */
+	decPoint3 ShiftedGrid2LocalGrid( const decPoint3 &coord ) const;
 	
 	/** \brief Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }

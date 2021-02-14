@@ -82,12 +82,14 @@ public:
 		erutOTProbeClamp,
 		erutOTDistanceMapSize,
 		erutOTProbeSpacing,
+		erutOTEnabled,
 		erutOTProbeSpacingInv,
-		erutOTProbeOrigin,
 		erutOTNormalBias,
+		erutOTProbeOrigin,
+		erutOTEnergyPreservation,
 		erutOTOcclusionMapScale,
 		erutOTDistanceMapScale,
-		erutOTEnergyPreservation,
+		erutOTGridCoordShift,
 		
 		ERUT_COUNT
 	};

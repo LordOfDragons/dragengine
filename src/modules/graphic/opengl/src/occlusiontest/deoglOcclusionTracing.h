@@ -40,7 +40,7 @@ class deoglROcclusionMesh;
 class deoglRWorld;
 
 
-// #define ENABLE_OCCTRACING
+#define ENABLE_OCCTRACING
 
 
 /**
@@ -92,6 +92,7 @@ private:
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
+	decPoint3 pGridCoordClamp;
 	decVector pProbeOrigin;
 	int pStrideProbeCount;
 	int pRealProbeCount;
@@ -163,6 +164,9 @@ public:
 	
 	/** \brief Probe count. */
 	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
+	
+	/** \brief Grid coordinate clamp. */
+	inline const decPoint3 &GetGridCoordClamp() const{ return pGridCoordClamp; }
 	
 	/** \brief Probe origin. */
 	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }

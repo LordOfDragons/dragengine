@@ -658,26 +658,32 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		// occlusion tracing
 		const deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
 		if( tracingState ){
-			const deoglOcclusionTracing &occtracing = tracingState->GetTracing();
+			const deoglOcclusionTracing &tracing = tracingState->GetTracing();
 			
 			const decDMatrix matrix( plan.GetInverseCameraMatrix()
-				* decDMatrix::CreateTranslation( -( tracingState->GetPosition() + occtracing.GetProbeOrigin() ) ) );
+				* decDMatrix::CreateTranslation( -( tracingState->GetPosition() + tracing.GetProbeOrigin() ) ) );
 			
+			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, true );
 			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutOTMatrix, matrix );
 			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutOTMatrixNormal, matrix.GetRotationMatrix() );
 			
-			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeCount, occtracing.GetProbeCount() );
-			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeClamp, occtracing.GetProbeCount() - decPoint3( 1, 1, 1 ) );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacing, occtracing.GetProbeSpacing() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacingInv, occtracing.GetProbeSpacingInverse() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeOrigin, occtracing.GetProbeOrigin() );
+			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeCount, tracing.GetProbeCount() );
+			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeClamp, tracing.GetGridCoordClamp() );
+			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacing, tracing.GetProbeSpacing() );
+			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacingInv, tracing.GetProbeSpacingInverse() );
+			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeOrigin, tracing.GetProbeOrigin() );
+			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTGridCoordShift,
+				tracing.GetProbeCount() - tracingState->GetGridCoordShift() );
 			
-			pLightPB->SetParameterDataInt( deoglLightShader::erutOTOcclusionMapSize, occtracing.GetOcclusionMapSize() );
-			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTOcclusionMapScale, occtracing.GetOcclusionMapScale() );
-			pLightPB->SetParameterDataInt( deoglLightShader::erutOTDistanceMapSize, occtracing.GetDistanceMapSize() );
-			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTDistanceMapScale, occtracing.GetDistanceMapScale() );
-			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTNormalBias, occtracing.GetNormalBias() );
-			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTEnergyPreservation, occtracing.GetEnergyPreservation() );
+			pLightPB->SetParameterDataInt( deoglLightShader::erutOTOcclusionMapSize, tracing.GetOcclusionMapSize() );
+			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTOcclusionMapScale, tracing.GetOcclusionMapScale() );
+			pLightPB->SetParameterDataInt( deoglLightShader::erutOTDistanceMapSize, tracing.GetDistanceMapSize() );
+			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTDistanceMapScale, tracing.GetDistanceMapScale() );
+			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTNormalBias, tracing.GetNormalBias() );
+			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTEnergyPreservation, tracing.GetEnergyPreservation() );
+			
+		}else{
+			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, false );
 		}
 		
 	}catch( const deException & ){

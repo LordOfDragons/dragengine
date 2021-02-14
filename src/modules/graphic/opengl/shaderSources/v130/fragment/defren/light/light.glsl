@@ -1099,7 +1099,10 @@ void main( void ){
 	#ifdef AMBIENT_LIGHTING
 		#ifdef SKY_LIGHT
 			#ifdef ENABLE_OCCTRACING
-				vec3 finalColorAmbient = pLightColorAmbient * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
+				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+				if( pOTEnabled ){
+					finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
+				}
 			#else
 				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 			#endif
@@ -1194,7 +1197,9 @@ void main( void ){
 	//#endif
 	#ifdef SKY_LIGHT
 		#ifdef ENABLE_OCCTRACING
-			lightColor = max( lightColor, finalColorAmbient );
+			if( pOTEnabled ){
+				lightColor = max( lightColor, finalColorAmbient );
+			}
 		#endif
 	#endif
 	
@@ -1203,7 +1208,9 @@ void main( void ){
 	
 	vec3 finalColorSubSurface = lightColor;
 	#ifdef AMBIENT_LIGHTING
-		#if ! defined SKY_LIGHT || ! defined ENABLE_OCCTRACING
+		#ifndef SKY_LIGHT
+			// note: if enabled also for other light sources skipp too if
+			// ifdef ENABLE_OCCTRACING and pOTEnabled = true
 			finalColorSubSurface += finalColorAmbient;
 		#endif
 	#endif
