@@ -8,7 +8,7 @@ in vec3 inPosition;
 
 out ivec2 vRayOffset;
 out ivec2 vOffset;
-out vec3 vProbePosition;
+out float vBlendFactor;
 
 
 // NOTE findMSB exists since GLSL 4.0
@@ -45,7 +45,7 @@ ivec3 probeIndexToGridCoord( in int index ){
 void main( void ){
 	vRayOffset.x = ( gl_InstanceID % pProbesPerLine ) * pRaysPerProbe;
 	vRayOffset.y = gl_InstanceID / pProbesPerLine;
-	vProbePosition = pProbePosition[ gl_InstanceID ];
+	vBlendFactor = pProbePosition[ gl_InstanceID ].w;
 	
 	int probeIndex = pProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );

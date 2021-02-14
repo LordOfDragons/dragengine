@@ -11,7 +11,7 @@ uniform sampler2D texRayCast;
 
 flat in ivec2 vRayOffset;
 flat in ivec2 vOffset;
-flat in vec3 vProbePosition;
+flat in float vBlendFactor;
 
 out vec4 outValue;
 
@@ -119,7 +119,7 @@ void main( void ){
 		outValue.xy /= sumWeight;
 		#endif
 		
-		outValue.a = 1.0 - pHysteresis;
+		outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
 		
 	#ifdef MAP_DISTANCE
 	// by deviating from the paper above we need to handle the case of no hit being scored

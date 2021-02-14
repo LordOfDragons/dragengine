@@ -71,17 +71,16 @@ public:
 		eutpSampleImageScale, // vec2: scale factor for sample image size
 		eutpProbeCount, // int: count of probes to update
 		eutpRaysPerProbe, // int: count of rays per probe
-		eutpProbesPerLine, // int: count of probes per line
-		eutpBVHInstanceRootNode, // int
 		eutpGridProbeCount, // ivec3: count of probes in grid
+		eutpProbesPerLine, // int: count of probes per line
 		eutpGridProbeSpacing, // vec3: spacing of probes in grid
-		eutpOcclusionMapSize, // int: size of occlusion map
-		eutpDistanceMapSize, // int: size of distance map
+		eutpBVHInstanceRootNode, // int
 		eutpOcclusionMapScale, // vec2: scale factor for occlusion map
 		eutpDistanceMapScale, // vec2: scale factor for distance map
+		eutpOcclusionMapSize, // int: size of occlusion map
+		eutpDistanceMapSize, // int: size of distance map
 		eutpMaxProbeDistance, // float
 		eutpDepthSharpness, // float
-		eutpHysteresis, // float
 		eutpProbeIndex, // ivec4[]: group of 4 probes to trace
 		eutpProbePosition, // vec3[]: probe position and ray origin
 		eutpRayDirection // vec3[]: ray direction
@@ -90,16 +89,16 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decDVector pPosition;
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
 	decVector pProbeOrigin;
 	int pStrideProbeCount;
+	int pRealProbeCount;
+	int pMaxRaysPerProbe;
 	int pRaysPerProbe;
 	int pMaxUpdateProbeCount;
 	int pProbesPerLine;
-	decPoint pSampleImageSize;
 	int pOcclusionMapSize;
 	int pDistanceMapSize;
 	float pMaxProbeDistance;
@@ -130,25 +129,11 @@ private:
 	deoglDynamicTBOFloat32 pTBOVertex;
 	int pBVHInstanceRootNode;
 	
-	decTimer pTimerUpdateProbe;
-	float pElapsedUpdateProbe;
-	float pUpdateProbeInterval;
-	int *pUpdateProbes;
-	int pUpdateProbeCount;
-	
 	decVector *pSphericalFibonacci;
 	deoglSPBlockUBO *pUBOTracing;
-	deoglTexture pTexRayOrigin;
-	deoglTexture pTexRayDirection;
-	deoglFramebuffer pFBORay;
 	
 	int pSizeTexOcclusion;
 	int pSizeTexDistance;
-	deoglTexture pTexProbeOcclusion;
-	deoglTexture pTexProbeDistance;
-	deoglFramebuffer pFBOProbeOcclusion;
-	deoglFramebuffer pFBOProbeDistance;
-	
 	decVector2 pOcclusionMapScale;
 	decVector2 pDistanceMapScale;
 	
@@ -167,8 +152,8 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	/** \brief Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** \brief Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
@@ -182,14 +167,20 @@ public:
 	/** \brief Probe origin. */
 	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }
 	
+	/** \brief Probe stride. */
+	inline int GetStrideProbeCount() const{ return pStrideProbeCount; }
+	
+	/** \brief Real probe count. */
+	inline int GetRealProbeCount() const{ return pRealProbeCount; }
+	
+	/** \brief Maximum rays per probe. */
+	inline int GetMaxRaysPerProbe() const{ return pMaxRaysPerProbe; }
+	
 	/** \brief Rays per probe. */
 	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
 	
 	/** \brief Maximum probe update count. */
 	inline int GetMaxUpdateProbeCount() const{ return pMaxUpdateProbeCount; }
-	
-	/** \brief Size of sample image. */
-	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
 	
 	/** \brief Size of occlusion map. */
 	inline int GetOcclusionMapSize() const{ return pOcclusionMapSize; }
@@ -203,6 +194,15 @@ public:
 	/** \brief Distance map scale. */
 	inline const decVector2 &GetDistanceMapScale() const{ return pDistanceMapScale; }
 	
+	/** \brief Max probe distance. */
+	inline float GetMaxProbeDistance() const{ return pMaxProbeDistance; }
+	
+	/** \brief Depth sharpness. */
+	inline float GetDepthSharpness() const{ return pDepthSharpness; }
+	
+	/** \brief Hysteresis. */
+	inline float GetHysteresis() const{ return pHysteresis; }
+	
 	/** \brief Normal bias. */
 	inline float GetNormalBias() const{ return pNormalBias; }
 	
@@ -213,9 +213,6 @@ public:
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
 	
 	
-	
-	/** \brief World position closest to grid. */
-	decDVector WorldClosestGrid( const decDVector &position ) const;
 	
 	/** \brief Grid coordinates for probe index. */
 	decPoint3 ProbeIndex2GridCoord( int index ) const;
@@ -249,25 +246,13 @@ public:
 	/** \brief Index of bvh instance root node. */
 	inline int GetBVHInstanceRootNode() const{ return pBVHInstanceRootNode; }
 	
-	/** \brief List of index of probes to update. */
-	inline int *GetUpdateProbes() const{ return pUpdateProbes; }
-	
-	/** \brief Count of probes to update. */
-	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
 	
+	/** \brief Spherical fibonacci constants. */
+	inline const decVector *GetSphericalFibonacci() const{ return pSphericalFibonacci; }
 	
-	/** \brief UBO Tracing parameters. */
-	inline deoglSPBlockUBO *GetUBOTracing(){ return pUBOTracing; }
-	
-	/** \brief Ray origin texture. */
-	inline const deoglTexture &GetTextureRayOrigin() const{ return pTexRayOrigin; }
-	
-	/** \brief Ray direction texture. */
-	inline const deoglTexture &GetTextureRayDirection() const{ return pTexRayDirection; }
-	
-	/** \brief Ray FBO. */
-	inline deoglFramebuffer &GetFBORay(){ return pFBORay; }
+	/** \brief UBO Tracing parameters preparing it if not created yet. */
+	deoglSPBlockUBO &GetUBOTracing();
 	
 	
 	
@@ -277,40 +262,20 @@ public:
 	/** \brief Size of distance texture of one probe. */
 	inline int GetSizeTexDistance() const{ return pSizeTexDistance; }
 	
-	/** \brief Occlusion probe texture. */
-	inline deoglTexture &GetTextureProbeOcclusion(){ return pTexProbeOcclusion; }
-	inline const deoglTexture &GetTextureProbeOcclusion() const{ return pTexProbeOcclusion; }
-	
-	/** \brief Distance probe texture. */
-	inline deoglTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
-	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
-	
-	/** \brief Probe fbo occlusion. */
-	inline deoglFramebuffer &GetFBOProbeOcclusion(){ return pFBOProbeOcclusion; }
-	
-	/** \brief Probe fbo distance. */
-	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
-	
-	/** \brief Update. */
-	void Update( deoglRWorld &world, const decDVector &position );
+	/** \brief Prepare ray tracing information. */
+	void PrepareRayTracing( deoglRWorld &world, const decDVector &position );
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pFindComponents( deoglRWorld &world );
-	void pAddOcclusionMeshes();
+	void pFindComponents( deoglRWorld &world, const decDVector &position );
+	void pAddOcclusionMeshes( const decDVector &position );
 	void pAddOcclusionMesh( const decMatrix &matrix, deoglROcclusionMesh *occlusionMesh );
 // 	bool pAddFace( const decVector &v1, const decVector &v2, const decVector &v3, bool doubleSided );
-	void pWriteTBOs();
-	void pUpdatePosition( const decDVector &position );
-	void pTraceProbes();
-	void pFindProbesToUpdate();
+	void pWriteTBOs( const decDVector &position );
 	void pInitSphericalFibonacci();
-	void pPrepareUBOState();
-	void pPrepareRayTexturesAndFBO();
-	void pPrepareProbeTexturesAndFBO();
 };
 
 #endif

@@ -46,6 +46,7 @@
 #include "../occlusiontest/deoglOcclusionMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/deoglOcclusionTracing.h"
+#include "../occlusiontest/deoglOcclusionTracingState.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -200,7 +201,6 @@ pShaderOccTestTFBSun( NULL ),
 pShaderOccMapCube( NULL ),
 pShaderOccTracingGenRays( NULL ),
 pShaderOccTracingTraceRays( NULL ),
-pShaderOccTracingDebug( NULL ),
 pShaderOccTracingUpdateOcclusion( NULL ),
 pShaderOccTracingUpdateDistance( NULL ),
 
@@ -273,16 +273,12 @@ pAddToRenderTask( NULL )
 // 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Generate Rays" );
 // 		pShaderOccTracingGenRays = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "RAYS_PER_PROBE", tracing.GetRaysPerProbe() );
+		defines.AddDefine( "MAX_RAYS_PER_PROBE", tracing.GetMaxRaysPerProbe() );
 		defines.AddDefine( "MAX_PROBE_UPDATE_COUNT", tracing.GetMaxUpdateProbeCount() );
-		defines.AddDefine( "PROBE_INDEX_COUNT", tracing.GetMaxUpdateProbeCount() / 4 );
+		defines.AddDefine( "MAX_PROBE_INDEX_COUNT", tracing.GetMaxUpdateProbeCount() / 4 );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Trace Rays" );
 		pShaderOccTracingTraceRays = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "DEBUG_TRACING", "1" );
-		pShaderOccTracingDebug = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "DEBUG_TRACING" );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Update Maps" );
 		defines.AddDefine( "MAP_OCCLUSION", "1" );
@@ -1352,7 +1348,8 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	}
 }
 
-void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tracing ){
+void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingState &tracingState ){
+	deoglOcclusionTracing &tracing = tracingState.GetTracing();
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1400,12 +1397,11 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tr
 	
 	
 	// trace rays
-	const decPoint &sampleImageSize = tracing.GetSampleImageSize();
+	const decPoint &sampleImageSize = tracingState.GetSampleImageSize();
 	
 	defren.Resize( sampleImageSize.x, sampleImageSize.y );
 	defren.ActivateFBOColor( false, false );
 	
-// 	OGL_CHECK( renderThread, glViewport( 0, 0, 256, 256 ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	
@@ -1417,45 +1413,43 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracing &tr
 	tsmgr.EnableTBO( 5, tracing.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 5 );
 	
-// 	renderThread.GetShader().ActivateShader( pShaderOccTracingDebug );
 	renderThread.GetShader().ActivateShader( pShaderOccTracingTraceRays );
-	tracing.GetUBOTracing()->Activate();
+	tracing.GetUBOTracing().Activate();
 	
 	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-// 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracing.GetUpdateProbeCount() ) );
 	
 	
 	// update probes: occlusion map
-	renderThread.GetFramebuffer().Activate( &tracing.GetFBOProbeOcclusion() );
+	renderThread.GetFramebuffer().Activate( &tracingState.GetFBOProbeOcclusion() );
 	
 	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glViewport( 0, 0, tracing.GetTextureProbeOcclusion().GetWidth(),
-		tracing.GetTextureProbeOcclusion().GetHeight() ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, tracingState.GetTextureProbeOcclusion().GetWidth(),
+		tracingState.GetTextureProbeOcclusion().GetHeight() ) );
 	
 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 0 );
 	
 	renderThread.GetShader().ActivateShader( pShaderOccTracingUpdateOcclusion );
-	tracing.GetUBOTracing()->Activate();
+	tracing.GetUBOTracing().Activate();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracing.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracingState.GetUpdateProbeCount() ) );
 	
 	
 	// update probes: distance map
-	renderThread.GetFramebuffer().Activate( &tracing.GetFBOProbeDistance() );
+	renderThread.GetFramebuffer().Activate( &tracingState.GetFBOProbeDistance() );
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, tracing.GetTextureProbeDistance().GetWidth(),
-		tracing.GetTextureProbeDistance().GetHeight() ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, tracingState.GetTextureProbeDistance().GetWidth(),
+		tracingState.GetTextureProbeDistance().GetHeight() ) );
 	
 	renderThread.GetShader().ActivateShader( pShaderOccTracingUpdateDistance );
-	tracing.GetUBOTracing()->Activate();
+	tracing.GetUBOTracing().Activate();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracing.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracingState.GetUpdateProbeCount() ) );
 	
 	
 	// clean up
@@ -1504,9 +1498,6 @@ void deoglRenderOcclusion::pCleanUp(){
 	}
 	if( pShaderOccTracingTraceRays ){
 		pShaderOccTracingTraceRays->RemoveUsage();
-	}
-	if( pShaderOccTracingDebug ){
-		pShaderOccTracingDebug->RemoveUsage();
 	}
 	if( pShaderOccTracingUpdateOcclusion ){
 		pShaderOccTracingUpdateOcclusion->RemoveUsage();

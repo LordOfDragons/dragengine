@@ -44,6 +44,8 @@
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../delayedoperation/deoglDelayedDeletion.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../light/deoglRLight.h"
@@ -52,6 +54,7 @@
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
 #include "../../occlusiontest/deoglOcclusionTracing.h"
+#include "../../occlusiontest/deoglOcclusionTracingState.h"
 #include "../../particle/deoglRParticleEmitter.h"
 #include "../../particle/deoglRParticleEmitterInstance.h"
 #include "../../particle/deoglRParticleEmitterInstanceType.h"
@@ -108,7 +111,9 @@ extern float extDebugCompTBO;
 ////////////////////////////
 
 deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread ),
+pOcclusionTracingState( NULL )
+{
 	pWorld = NULL;
 	
 	pIsRendering = false;
@@ -191,6 +196,23 @@ pRenderThread( renderThread ){
 	pDebugTiming = false;
 }
 
+class deoglRenderPlanDeletion : public deoglDelayedDeletion{
+public:
+	deoglOcclusionTracingState *occlusionTracingState;
+	
+	deoglRenderPlanDeletion() : occlusionTracingState( NULL ){
+	}
+	
+	virtual ~deoglRenderPlanDeletion(){
+	}
+	
+	virtual void DeleteObjects( deoglRenderThread& ){
+		if( occlusionTracingState ){
+			delete occlusionTracingState;
+		}
+	}
+};
+
 deoglRenderPlan::~deoglRenderPlan(){
 	//RemoveAllMaskedPlans();
 	if( pMaskedPlans ){
@@ -244,6 +266,21 @@ deoglRenderPlan::~deoglRenderPlan(){
 	if( pEnvMaps ){
 		delete [] pEnvMaps;
 	}
+	
+	// delayed deletion of opengl containing objects
+	deoglRenderPlanDeletion *delayedDeletion = NULL;
+	
+	try{
+		delayedDeletion = new deoglRenderPlanDeletion;
+		delayedDeletion->occlusionTracingState = pOcclusionTracingState;
+		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
+		
+	}catch( const deException &e ){
+		if( delayedDeletion ){
+			delete delayedDeletion;
+		}
+		pRenderThread.GetLogger().LogException( e );
+	}
 }
 
 
@@ -257,6 +294,10 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 	}
 	
 	pWorld = world;
+	
+	if( pOcclusionTracingState ){
+		pOcclusionTracingState->Invalidate();
+	}
 	
 	if( pHTView ){
 		delete pHTView;
@@ -533,10 +574,7 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
 	
-	// occlusion tracing
-	#ifdef ENABLE_OCCTRACING
-	pRenderThread.GetOcclusionTracing().Update( *pWorld, pCameraPosition );
-	#endif
+	pPlanOcclusionTracing();
 }
 
 void deoglRenderPlan::pPlanSky(){
@@ -764,6 +802,16 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 	if( pDebug ){
 		pDebug->IncrementOccTestCount( occtest.GetInputDataCount() );
 	}
+}
+
+void deoglRenderPlan::pPlanOcclusionTracing(){
+#ifdef ENABLE_OCCTRACING
+	if( ! pOcclusionTracingState ){
+		pOcclusionTracingState = new deoglOcclusionTracingState( pRenderThread.GetOcclusionTracing() );
+	}
+	
+	pOcclusionTracingState->Update( *pWorld, pCameraPosition );
+#endif
 }
 
 void deoglRenderPlan::pPlanLODLevels(){

@@ -36,6 +36,7 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
+#include "../occlusiontest/deoglOcclusionTracingState.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -239,8 +240,7 @@ class deoglRCameraDeletion : public deoglDelayedDeletion{
 public:
 	deoglTexture *textureToneMapParams;
 	
-	deoglRCameraDeletion() :
-	textureToneMapParams( NULL ){
+	deoglRCameraDeletion() : textureToneMapParams( NULL ){
 	}
 	
 	virtual ~deoglRCameraDeletion(){
@@ -258,9 +258,7 @@ void deoglRCamera::pCleanUp(){
 	
 	RemoveAllEffects();
 	
-	if( pPlan ){
-		delete pPlan;
-	}
+	delete pPlan;
 	
 	// delayed deletion of opengl containing objects
 	deoglRCameraDeletion *delayedDeletion = NULL;

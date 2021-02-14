@@ -56,7 +56,7 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
-#include "../../occlusiontest/deoglOcclusionTracing.h"
+#include "../../occlusiontest/deoglOcclusionTracingState.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
@@ -469,14 +469,17 @@ deoglRenderPlanSkyLight &planSkyLight ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettOTOcclusion );
-	if( target != -1 ){
-		tsmgr.EnableTexture( target, renderThread.GetOcclusionTracing().GetTextureProbeOcclusion(), GetSamplerClampLinear() );
-	}
-	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettOTDistance );
-	if( target != -1 ){
-		tsmgr.EnableTexture( target, renderThread.GetOcclusionTracing().GetTextureProbeDistance(), GetSamplerClampLinear() );
+	deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
+	if( tracingState ){
+		target = lightShader->GetTextureTarget( deoglLightShader::ettOTOcclusion );
+		if( target != -1 ){
+			tsmgr.EnableTexture( target, tracingState->GetTextureProbeOcclusion(), GetSamplerClampLinear() );
+		}
+		
+		target = lightShader->GetTextureTarget( deoglLightShader::ettOTDistance );
+		if( target != -1 ){
+			tsmgr.EnableTexture( target, tracingState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+		}
 	}
 	
 	// set the ao texture
@@ -867,16 +870,24 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 		// ambient intensity. light color ambient is set to ambient intensity only
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
-			#ifdef ENABLE_OCCTRACING
-			paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-			#else
-			paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-			#endif
+			if( plan.GetOcclusionTracingState() ){
+				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+				
+			}else{
+				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
+			}
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+			if( plan.GetOcclusionTracingState() ){
+				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) * 0.5f );
+				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+				
+			}else{
+				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+			}
 		}
 		
 		// NOTE sky light is currently using a special handling which has to be replaced with the

@@ -1099,7 +1099,7 @@ void main( void ){
 	#ifdef AMBIENT_LIGHTING
 		#ifdef SKY_LIGHT
 			#ifdef ENABLE_OCCTRACING
-				vec3 finalColorAmbient = pLightColor/*pLightColorAmbient*/ * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
+				vec3 finalColorAmbient = pLightColorAmbient * vec3( occtraceOcclusion( position, normal ) * aoSolidity.g );
 			#else
 				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 			#endif

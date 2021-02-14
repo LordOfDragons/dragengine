@@ -35,7 +35,7 @@ class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglRSkyLayer;
 class deoglRSkyInstanceLayer;
-class deoglOcclusionTracing;
+class deoglOcclusionTracingState;
 
 
 /**
@@ -56,7 +56,6 @@ private:
 	
 	deoglShaderProgram *pShaderOccTracingGenRays;
 	deoglShaderProgram *pShaderOccTracingTraceRays;
-	deoglShaderProgram *pShaderOccTracingDebug;
 	deoglShaderProgram *pShaderOccTracingUpdateOcclusion;
 	deoglShaderProgram *pShaderOccTracingUpdateDistance;
 	
@@ -110,7 +109,7 @@ public:
 		const decDVector &position, float imageDistance, float viewDistance );
 	
 	/** \brief Sample occlusion trace probes. */
-	void RenderOcclusionTraceProbes( deoglOcclusionTracing &tracing );
+	void RenderOcclusionTraceProbes( deoglOcclusionTracingState &tracingState );
 	/*@}*/
 	
 private:

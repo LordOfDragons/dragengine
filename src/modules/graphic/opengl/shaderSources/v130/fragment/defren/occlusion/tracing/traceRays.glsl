@@ -48,7 +48,7 @@ void main( void ){
 	}
 	
 	int firstRayOffset = pRaysPerProbe * rowProbeIndex;
-	vec3 position = pProbePosition[ probeIndex ];
+	vec3 position = pProbePosition[ probeIndex ].xyz;
 	
 	// trace ray
 	RayCastResult result;
