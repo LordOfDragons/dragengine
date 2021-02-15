@@ -353,6 +353,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	}
 	
 	renderCanvas.ClearAllDebugInfoPlanPrepare( *this );
+	pRenderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI->Clear();
 	
 	CleanUp(); // just to make sure everything is clean
 	

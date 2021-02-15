@@ -866,8 +866,6 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 	// set values
 	paramBlock.MapBuffer();
 	try{
-		// occlusion tracing requires light color target to contain light intensity and
-		// ambient intensity. light color ambient is set to ambient intensity only
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
 			if( plan.GetOcclusionTracingState() ){
@@ -881,6 +879,10 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
 		if( target != -1 ){
 			if( plan.GetOcclusionTracingState() ){
+				// this one is a bit tricky. occlusion is the percentage of hits over a full
+				// sphere. full light intensity is though usually acquired if half the sphere
+				// is lit since the other half is typically underneath the surface. the occlusion
+				// tracing stores the occlusion factor 1 for 50% occlusion hits and above.
 				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) * 0.5f );
 				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );

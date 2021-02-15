@@ -263,6 +263,7 @@ void deoglOcclusionTracingState::pTraceProbes( const decMatrix &matrixView, floa
 void deoglOcclusionTracingState::pAgeProbes(){
 	const int probeCount = pTracing.GetRealProbeCount();
 	int i;
+	
 	for( i=0; i<probeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.age++;
@@ -274,7 +275,7 @@ void deoglOcclusionTracingState::pAgeProbes(){
 void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY ){
 	// prepare weighting probes
 	const float weightDistanceLimit = pTracing.GetProbeSpacing().z * 8.0f;
-	const decVector2 viewAngleBorder( decVector2( fovX, fovY ) * ( 0.5f * DEG2RAD ) );
+	const decVector2 viewAngleBorder( decVector2( fovX, fovY ) * 0.5f );
 	const decVector2 weightViewAngleLimit( viewAngleBorder * 0.25f ); // 25% from center
 	const int realProbeCount = pTracing.GetRealProbeCount();
 	const float weightAgeLimit = 30.0f;
@@ -309,15 +310,22 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit, 1.0f, 0.25f );
 	}
 	
-	// add invalid probes inside the view. they are always added up to the maximum
-	// number of allowed update probes. bin invalid probes outside the view.
+	// add invalid probes inside the view. they are always added up to the maximum number of
+	// allowed update probes. invalid probes outside the view and valid probes are binned
 	pUpdateProbeCount = 0;
 	
 	for( i=0; i<realProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
-		if( ! probe.valid ){
+		if( probe.valid ){
+			pBinWeightedProbe( &probe, probe.weightDistance * probe.weightViewAngle.x
+				* probe.weightViewAngle.y * probe.weightAge );
+			
+		}else{
 			if( probe.insideView ){
 				pAddUpdateProbe( &probe );
+				if( pUpdateProbeCount >= pTracing.GetMaxUpdateProbeCount() ){
+					break;
+				}
 				
 			}else{
 				pBinWeightedProbe( &probe, probe.weightDistance
@@ -326,34 +334,22 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 		}
 	}
 	
-	// add valid probes. they are first added using weights to the right bin. then the
-	// top rated probes are added as update probe up to the desired update probe count.
+	// add top rated probes as update probe up to the desired update probe count.
 	// this only fills up the reminaing counts unless already above the limit
 	const int maxUpdateCount = 256; //pTracing.GetMaxUpdateProbeCount();
 	
 	if( pUpdateProbeCount < maxUpdateCount ){
-		for( i=0; i<realProbeCount; i++ ){
-			sProbe &probe = pProbes[ i ];
-			if( probe.valid ){
-				pBinWeightedProbe( &probe, probe.weightDistance * probe.weightViewAngle.x
-					* probe.weightViewAngle.y * probe.weightAge );
-			}
-		}
-		
-		// add the first N binned probes to the list of probes to update
 		int j;
 		for( i=0; i<pWeightedProbeBinCount; i++ ){
 			sProbe ** const binProbes = pWeightedProbes + pWeightedProbeBinSize * i;
 			
 			for( j=0; j<pWeightedProbeBinProbeCounts[ i ]; j++ ){
 				pAddUpdateProbe( binProbes[ j ] );
-				
 				if( pUpdateProbeCount >= maxUpdateCount ){
 					break;
 				}
 			}
 		}
-		
 	}
 	
 	/*
@@ -439,18 +435,20 @@ void deoglOcclusionTracingState::pPrepareUBOState(){
 		ubo.SetParameterDataIVec3( deoglOcclusionTracing::eutpGridProbeCount, pTracing.GetProbeCount() );
 		ubo.SetParameterDataVec3( deoglOcclusionTracing::eutpGridProbeSpacing, pTracing.GetProbeSpacing() );
 		
-		count = pUpdateProbeCount / 4;
-		for( i=0, j=0; i<count; i++, j+=4 ){
-			ubo.SetParameterDataArrayIVec4( deoglOcclusionTracing::eutpProbeIndex, i,
-				j < pUpdateProbeCount ? pUpdateProbes[ j ]->index : 0,
-				j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ]->index : 0,
-				j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ]->index : 0,
-				j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ]->index : 0 );
-		}
-		
-		for( i=0; i<pUpdateProbeCount; i++ ){
-			ubo.SetParameterDataArrayVec4( deoglOcclusionTracing::eutpProbePosition, i,
-				pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
+		if( pUpdateProbeCount > 0 ){
+			count = ( pUpdateProbeCount - 1 ) / 4 + 1;
+			for( i=0, j=0; i<count; i++, j+=4 ){
+				ubo.SetParameterDataArrayIVec4( deoglOcclusionTracing::eutpProbeIndex, i,
+					j < pUpdateProbeCount ? pUpdateProbes[ j ]->index : 0,
+					j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ]->index : 0,
+					j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ]->index : 0,
+					j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ]->index : 0 );
+			}
+			
+			for( i=0; i<pUpdateProbeCount; i++ ){
+				ubo.SetParameterDataArrayVec4( deoglOcclusionTracing::eutpProbePosition, i,
+					pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
+			}
 		}
 		
 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),

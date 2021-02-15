@@ -52,7 +52,7 @@ deoglOcclusionTracing::deoglOcclusionTracing( deoglRenderThread &renderThread ) 
 pRenderThread( renderThread  ),
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 pProbeSpacingInv( 1.0f / pProbeSpacing.x, 1.0f / pProbeSpacing.y, 1.0f / pProbeSpacing.z ),
-pProbeCount( 32, 4, 32 ),
+pProbeCount( 32, 8, 32 ),
 pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
 pProbeOrigin( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) * -0.5f ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
@@ -65,9 +65,12 @@ pOcclusionMapSize( 8 ),
 pDistanceMapSize( 16 ),
 pMaxProbeDistance( 4.0f ),
 pDepthSharpness( 50.0f ),
-pHysteresis( 0.98f ),
+pHysteresis( 0.9f ), // 0.98 (paper)
 pNormalBias( 0.25f ),
 pEnergyPreservation( 0.85f ),
+pMaxDetectionRange( 10.0f ),
+pDetectionBox( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) * 0.5f )
+	+ decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
 pOccMeshes( NULL ),
 pOccMeshCount( 0 ),
 pOccMeshSize( 0 ),
@@ -233,11 +236,7 @@ void deoglOcclusionTracing::pCleanUp(){
 }
 
 void deoglOcclusionTracing::pFindComponents( deoglRWorld &world, const decDVector &position ){
-	// TODO dont use the box enclosing the probes. this potentially misses collisions right
-	//      beyond the boundary. box needs to be enlarged by maximum tracing distance
-	deoglDCollisionBox colbox( position, decDVector( ( double )pProbeSpacing.x * pProbeCount.x * 0.5,
-		( double )pProbeSpacing.y * pProbeCount.y * 0.5, ( double )pProbeSpacing.z * pProbeCount.z * 0.5 ) );
-	
+	deoglDCollisionBox colbox( position, pDetectionBox );
 	pCollideList.Clear();
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
 }

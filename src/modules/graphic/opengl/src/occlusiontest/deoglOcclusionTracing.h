@@ -108,6 +108,8 @@ private:
 	float pNormalBias;
 	float pEnergyPreservation;
 	
+	float pMaxDetectionRange;
+	decVector pDetectionBox;
 	deoglCollideList pCollideList;
 	
 	sOccMesh *pOccMeshes;

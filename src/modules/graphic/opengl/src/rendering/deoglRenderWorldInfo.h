@@ -39,6 +39,7 @@ public:
 	deoglDebugInformation *infoSolidGeometry;
 	deoglDebugInformation *infoReflection;
 	deoglDebugInformation *infoSSR;
+	deoglDebugInformation *infoGI;
 	deoglDebugInformation *infoSolidGeometryLights;
 	deoglDebugInformation *infoTransparent;
 	deoglDebugInformation *infoToneMapping;

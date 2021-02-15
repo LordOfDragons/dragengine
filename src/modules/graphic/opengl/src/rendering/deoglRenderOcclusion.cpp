@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "deoglRenderWorld.h"
 #include "deoglRenderGeometry.h"
 #include "deoglRenderOcclusion.h"
 #include "debug/deoglRenderDebug.h"
@@ -37,6 +38,8 @@
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugInformation.h"
+#include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
 #include "../light/deoglRLight.h"
@@ -49,6 +52,7 @@
 #include "../occlusiontest/deoglOcclusionTracingState.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
+#include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTShader.h"
@@ -1353,7 +1357,11 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
 	
+	if( debugInfo.GetVisible() ){
+		GetDebugTimerAt( 0 ).Reset();
+	}
 	
 	// set common states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -1455,6 +1463,13 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();
+	
+	if( debugInfo.GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+	}
 }
 
 

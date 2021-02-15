@@ -50,6 +50,7 @@ infoPassMasked( NULL ),
 infoSolidGeometry( NULL ),
 infoReflection( NULL ),
 infoSSR( NULL ),
+infoGI( NULL ),
 infoSolidGeometryLights( NULL ),
 infoTransparent( NULL ),
 infoToneMapping( NULL ),
@@ -102,6 +103,9 @@ infoTransparentVolumetric( NULL )
 		
 		infoSSR = new deoglDebugInformation( "SSR", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSSR );
+		
+		infoGI = new deoglDebugInformation( "GI", colorText, colorBgSub );
+		infoWorld->GetChildren().Add( infoGI );
 		
 		infoSolidGeometryLights = new deoglDebugInformation( "Solid Lights", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSolidGeometryLights );
@@ -208,6 +212,7 @@ void deoglRenderWorldInfo::ClearAll(){
 	infoSolidGeometry->Clear();
 	infoReflection->Clear();
 	infoSSR->Clear();
+	//infoGI->Clear(); // not done here since this happens during prepare
 	infoSolidGeometryLights->Clear();
 	infoTransparent->Clear();
 	infoToneMapping->Clear();
@@ -283,6 +288,9 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	if( infoSSR ){
 		infoSSR->FreeReference();
+	}
+	if( infoGI ){
+		infoGI->FreeReference();
 	}
 	if( infoSolidGeometryLights ){
 		infoSolidGeometryLights->FreeReference();
