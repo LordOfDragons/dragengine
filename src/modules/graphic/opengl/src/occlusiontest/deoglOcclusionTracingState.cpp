@@ -51,6 +51,11 @@ pElapsedUpdateProbe( 0.0f ),
 pUpdateProbeInterval( 0.1f ),
 pUpdateProbes( NULL ),
 pUpdateProbeCount( 0 ),
+pWeightedProbes( NULL ),
+pWeightedProbeBinSize( tracing.GetRealProbeCount() / 20 ),
+pWeightedProbeBinCount( 20 ),
+pWeightedProbeBinClamp( pWeightedProbeBinCount - 1 ),
+pWeightedProbeBinProbeCounts( NULL ),
 pTexProbeOcclusion( tracing.GetRenderThread() ),
 pTexProbeDistance( tracing.GetRenderThread() ),
 pFBOProbeOcclusion( tracing.GetRenderThread(), false ),
@@ -60,6 +65,8 @@ pClearMaps( true )
 	try{
 		pInitProbes();
 		pUpdateProbes = new sProbe*[ tracing.GetMaxUpdateProbeCount() ];
+		pWeightedProbes = new sProbe*[ tracing.GetRealProbeCount() ];
+		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -129,17 +136,20 @@ decPoint3 deoglOcclusionTracingState::ShiftedGrid2LocalGrid( const decPoint3 &co
 
 
 
-void deoglOcclusionTracingState::Update( deoglRWorld &world, const decDVector &position ){
+void deoglOcclusionTracingState::Update( deoglRWorld &world, const decDVector &cameraPosition,
+const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	#ifdef DO_TIMING
 	decTimer timer;
 	#endif
 	
 	pUpdateProbeCount = 0;
 	
-	pUpdatePosition( position );
+	pUpdatePosition( cameraPosition );
 	
 	pTracing.PrepareRayTracing( world, pPosition );
-	pTraceProbes();
+	
+	const decMatrix matrixView( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix );
+	pTraceProbes( matrixView, fovX, fovY );
 	
 	#ifdef DO_TIMING
 	pRenderThread.GetLogger().LogInfoFormat("OcclusionTracing: Elapsed %.1fys", timer.GetElapsedTime() * 1e6f);
@@ -168,6 +178,12 @@ void deoglOcclusionTracingState::Invalidate(){
 void deoglOcclusionTracingState::pCleanUp(){
 	if( pUpdateProbes ){
 		delete [] pUpdateProbes;
+	}
+	if( pWeightedProbes ){
+		delete [] pWeightedProbes;
+	}
+	if( pWeightedProbeBinProbeCounts ){
+		delete [] pWeightedProbeBinProbeCounts;
 	}
 }
 
@@ -228,7 +244,7 @@ void deoglOcclusionTracingState::pUpdatePosition( const decDVector &position ){
 	pGridCoordShift.z %= probeCount.z;
 }
 
-void deoglOcclusionTracingState::pTraceProbes(){
+void deoglOcclusionTracingState::pTraceProbes( const decMatrix &matrixView, float fovX, float fovY ){
 	pElapsedUpdateProbe += pTimerUpdateProbe.GetElapsedTime();
 	if( pElapsedUpdateProbe < pUpdateProbeInterval ){
 // 		return; // how to use this properly? we track snapped position already
@@ -238,7 +254,7 @@ void deoglOcclusionTracingState::pTraceProbes(){
 	pElapsedUpdateProbe = fmodf( pElapsedUpdateProbe, pUpdateProbeInterval );
 	
 	pAgeProbes();
-	pFindProbesToUpdate();
+	pFindProbesToUpdate( matrixView, fovX, fovY );
 	pPrepareProbeTexturesAndFBO();
 	pPrepareUBOState();
 	pTracing.GetRenderThread().GetRenderers().GetOcclusion().RenderOcclusionTraceProbes( *this );
@@ -248,11 +264,99 @@ void deoglOcclusionTracingState::pAgeProbes(){
 	const int probeCount = pTracing.GetRealProbeCount();
 	int i;
 	for( i=0; i<probeCount; i++ ){
-		pProbes[ i ].age++;
+		sProbe &probe = pProbes[ i ];
+		probe.age++;
+		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
+		probe.position = pTracing.Grid2Local( probe.shiftedCoord );
 	}
 }
 
-void deoglOcclusionTracingState::pFindProbesToUpdate(){
+void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY ){
+	// prepare weighting probes
+	const float weightDistanceLimit = pTracing.GetProbeSpacing().z * 8.0f;
+	const decVector2 viewAngleBorder( decVector2( fovX, fovY ) * ( 0.5f * DEG2RAD ) );
+	const decVector2 weightViewAngleLimit( viewAngleBorder * 0.25f ); // 25% from center
+	const int realProbeCount = pTracing.GetRealProbeCount();
+	const float weightAgeLimit = 30.0f;
+	int i = 0;
+	
+	for( i=0; i<pWeightedProbeBinCount; i++ ){
+		pWeightedProbeBinProbeCounts[ i ] = 0;
+	}
+	
+	for( i=0; i<realProbeCount; i++ ){
+		sProbe &probe = pProbes[ i ];
+		
+		// geometric weight considers distance from field center and view orientation
+		const decVector view( matrixView * probe.position );
+		const float length = view.Length();
+		
+		if( length > FLOAT_SAFE_EPSILON ){
+			const decVector2 angle( acosf( view.z / length ), asinf( view.y / length ) );
+			
+			probe.weightDistance = decMath::linearStep( length, 0.0f, weightDistanceLimit, 1.0f, 0.25f );
+			probe.weightViewAngle.x = decMath::linearStep( angle.x, weightViewAngleLimit.x, PI, 1.0f, 0.25f );
+			probe.weightViewAngle.y = decMath::linearStep( angle.y, weightViewAngleLimit.y, PI, 1.0f, 0.25f );
+			probe.insideView = angle < viewAngleBorder;
+			
+		}else{
+			probe.weightDistance = 1.0f;
+			probe.weightViewAngle.Set( 1.0f, 1.0f );
+			probe.insideView = true;
+		}
+		
+		// age weight
+		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit, 1.0f, 0.25f );
+	}
+	
+	// add invalid probes inside the view. they are always added up to the maximum
+	// number of allowed update probes. bin invalid probes outside the view.
+	pUpdateProbeCount = 0;
+	
+	for( i=0; i<realProbeCount; i++ ){
+		sProbe &probe = pProbes[ i ];
+		if( ! probe.valid ){
+			if( probe.insideView ){
+				pAddUpdateProbe( &probe );
+				
+			}else{
+				pBinWeightedProbe( &probe, probe.weightDistance
+					* probe.weightViewAngle.x * probe.weightViewAngle.y );
+			}
+		}
+	}
+	
+	// add valid probes. they are first added using weights to the right bin. then the
+	// top rated probes are added as update probe up to the desired update probe count.
+	// this only fills up the reminaing counts unless already above the limit
+	const int maxUpdateCount = 256; //pTracing.GetMaxUpdateProbeCount();
+	
+	if( pUpdateProbeCount < maxUpdateCount ){
+		for( i=0; i<realProbeCount; i++ ){
+			sProbe &probe = pProbes[ i ];
+			if( probe.valid ){
+				pBinWeightedProbe( &probe, probe.weightDistance * probe.weightViewAngle.x
+					* probe.weightViewAngle.y * probe.weightAge );
+			}
+		}
+		
+		// add the first N binned probes to the list of probes to update
+		int j;
+		for( i=0; i<pWeightedProbeBinCount; i++ ){
+			sProbe ** const binProbes = pWeightedProbes + pWeightedProbeBinSize * i;
+			
+			for( j=0; j<pWeightedProbeBinProbeCounts[ i ]; j++ ){
+				pAddUpdateProbe( binProbes[ j ] );
+				
+				if( pUpdateProbeCount >= maxUpdateCount ){
+					break;
+				}
+			}
+		}
+		
+	}
+	
+	/*
 	// TODO update probe grid. for the time being 8x4x8
 	pUpdateProbeCount = 256; //pMaxUpdateProbeCount;
 	
@@ -262,7 +366,6 @@ void deoglOcclusionTracingState::pFindProbesToUpdate(){
 	const decPoint3 gie( gis + spread );
 	
 	decPoint3 gi;
-	int i = 0;
 	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
 		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
 			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
@@ -282,10 +385,35 @@ void deoglOcclusionTracingState::pFindProbesToUpdate(){
 			}
 		}
 	}
+	*/
 	
 	// determine the required sample image size
 	pSampleImageSize.x = pTracing.GetProbesPerLine() * pTracing.GetRaysPerProbe();
 	pSampleImageSize.y = ( pUpdateProbeCount - 1 ) / pTracing.GetProbesPerLine() + 1;
+}
+
+void deoglOcclusionTracingState::pBinWeightedProbe( sProbe *probe, float weight ){
+	int index = pWeightedProbeBinClamp - decMath::clamp( ( int )( weight * pWeightedProbeBinClamp ), 0, pWeightedProbeBinClamp );
+	for( ; index<pWeightedProbeBinCount; index++ ){
+		if( pWeightedProbeBinProbeCounts[ index ] < pWeightedProbeBinSize ){
+			pWeightedProbes[ pWeightedProbeBinSize * index + pWeightedProbeBinProbeCounts[ index ]++ ] = probe;
+			return;
+		}
+	}
+}
+
+void deoglOcclusionTracingState::pAddUpdateProbe( sProbe *probe ){
+	if( probe->valid ){
+		probe->blendFactor = 1.0f - pTracing.GetHysteresis();
+		
+	}else{
+		probe->blendFactor = 1.0f; // force full update
+	}
+	
+	probe->age = 0;
+	probe->valid = true;
+	
+	pUpdateProbes[ pUpdateProbeCount++ ] = probe;
 }
 
 void deoglOcclusionTracingState::pPrepareUBOState(){
@@ -322,8 +450,7 @@ void deoglOcclusionTracingState::pPrepareUBOState(){
 		
 		for( i=0; i<pUpdateProbeCount; i++ ){
 			ubo.SetParameterDataArrayVec4( deoglOcclusionTracing::eutpProbePosition, i,
-				pTracing.Grid2Local( LocalGrid2ShiftedGrid( pUpdateProbes[ i ]->coord ) ),
-				pUpdateProbes[ i ]->blendFactor );
+				pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
 		}
 		
 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),

@@ -810,7 +810,8 @@ void deoglRenderPlan::pPlanOcclusionTracing(){
 		pOcclusionTracingState = new deoglOcclusionTracingState( pRenderThread.GetOcclusionTracing() );
 	}
 	
-	pOcclusionTracingState->Update( *pWorld, pCameraPosition );
+	pOcclusionTracingState->Update( *pWorld, pCameraPosition,
+		pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
 #endif
 }
 

@@ -46,6 +46,12 @@ public:
 		float blendFactor; //<! 1-hysteresis modified
 		int age; //<! Age in update runs since probe has been last updated
 		bool valid; //<! Probe has been updated at least once
+		decPoint3 shiftedCoord;
+		decVector position;
+		float weightDistance;
+		decVector2 weightViewAngle;
+		float weightAge;
+		bool insideView;
 	};
 	
 	
@@ -64,6 +70,12 @@ private:
 	float pUpdateProbeInterval;
 	sProbe **pUpdateProbes;
 	int pUpdateProbeCount;
+	
+	sProbe **pWeightedProbes;
+	int pWeightedProbeBinSize;
+	int pWeightedProbeBinCount;
+	int pWeightedProbeBinClamp;
+	int *pWeightedProbeBinProbeCounts;
 	
 	deoglTexture pTexProbeOcclusion;
 	deoglTexture pTexProbeDistance;
@@ -136,7 +148,8 @@ public:
 	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
 	
 	/** \brief Update. */
-	void Update( deoglRWorld &world, const decDVector &position );
+	void Update( deoglRWorld &world, const decDVector &cameraPosition,
+		const decDMatrix &cameraMatrix, float fovX, float fovY );
 	
 	/** \brief Invalid all probes. */
 	void Invalidate();
@@ -148,9 +161,11 @@ private:
 	void pCleanUp();
 	void pInitProbes();
 	void pUpdatePosition( const decDVector &position );
-	void pTraceProbes();
+	void pTraceProbes( const decMatrix &matrixView, float fovX, float fovY );
 	void pAgeProbes();
-	void pFindProbesToUpdate();
+	void pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY);
+	void pBinWeightedProbe( sProbe *probe, float weight );
+	void pAddUpdateProbe( sProbe *probe );
 	void pPrepareUBOState();
 	void pPrepareProbeTexturesAndFBO();
 };

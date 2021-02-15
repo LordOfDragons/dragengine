@@ -40,7 +40,7 @@ class deoglROcclusionMesh;
 class deoglRWorld;
 
 
-#define ENABLE_OCCTRACING
+// #define ENABLE_OCCTRACING
 
 
 /**
