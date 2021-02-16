@@ -14,7 +14,7 @@ UBOLAYOUT uniform RenderParameters{
 	bool pOTEnabled;
 	vec3 pOTProbeSpacingInv; // 1 / grid spacing
 	float pOTNormalBias; // normal bias
-	vec3 pOTProbeOrigin; // position of (0,0,0) probe coordinate relative to center
+	vec3 pOTPositionClamp; // clamp position after transformation
 	float pOTEnergyPreservation; // energy preservation factor
 	vec2 pOTOcclusionMapScale; // occlusion map pixel to texture coordinate scaling
 	vec2 pOTDistanceMapScale; // distance map pixel to texture coordinate scaling

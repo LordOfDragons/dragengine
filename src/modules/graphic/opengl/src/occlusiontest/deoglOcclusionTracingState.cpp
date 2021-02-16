@@ -451,13 +451,32 @@ void deoglOcclusionTracingState::pPrepareUBOState(){
 			}
 		}
 		
-		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
-			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
-		const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();
+// 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+// 			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+		//const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();
+		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
+		const float sf_n = ( float )pTracing.GetRaysPerProbe();
+		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
+		
 		for( i=0; i<raysPerProbe; i++ ){
-			ubo.SetParameterDataArrayVec3( deoglOcclusionTracing::eutpRayDirection,
-				i, randomOrientation * sphericalFibonnaci[ i ] );
+			const float sf_i = ( float )i;
+			const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
+			const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
+			const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
+			const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
+			
+			// the paper uses random rotation matrix. this results though in huge flickering
+			// even if smoothed using hystersis which is close to epiletic attack. disabling
+			// the random rotation keeps the result stable. it is most probably not as smooth
+			// as it could be with random rotation but avoids the unsupportable flickering
+			//ubo.SetParameterDataArrayVec3( deoglOcclusionTracing::eutpRayDirection, i, randomOrientation * sf );
+			ubo.SetParameterDataArrayVec3( deoglOcclusionTracing::eutpRayDirection, i, sf );
+			
+			/*ubo.SetParameterDataArrayVec3( deoglOcclusionTracing::eutpRayDirection,
+				i, randomOrientation * sphericalFibonnaci[ i ] );*/
 		}
+		
+		#undef madfrac
 		
 		// DEBUG
 		/*{

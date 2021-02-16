@@ -85,7 +85,7 @@ public:
 		erutOTEnabled,
 		erutOTProbeSpacingInv,
 		erutOTNormalBias,
-		erutOTProbeOrigin,
+		erutOTPositionClamp,
 		erutOTEnergyPreservation,
 		erutOTOcclusionMapScale,
 		erutOTDistanceMapScale,

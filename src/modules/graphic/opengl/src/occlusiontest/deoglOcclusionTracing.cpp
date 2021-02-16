@@ -55,6 +55,7 @@ pProbeSpacingInv( 1.0f / pProbeSpacing.x, 1.0f / pProbeSpacing.y, 1.0f / pProbeS
 pProbeCount( 32, 8, 32 ),
 pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
 pProbeOrigin( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) * -0.5f ) ),
+pPositionClamp( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) ) ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
 pMaxRaysPerProbe( 256 ),

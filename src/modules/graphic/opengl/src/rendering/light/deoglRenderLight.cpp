@@ -671,7 +671,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeClamp, tracing.GetGridCoordClamp() );
 			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacing, tracing.GetProbeSpacing() );
 			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacingInv, tracing.GetProbeSpacingInverse() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeOrigin, tracing.GetProbeOrigin() );
+			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTPositionClamp, tracing.GetPositionClamp() );
 			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTGridCoordShift,
 				tracing.GetProbeCount() - tracingState->GetGridCoordShift() );
 			

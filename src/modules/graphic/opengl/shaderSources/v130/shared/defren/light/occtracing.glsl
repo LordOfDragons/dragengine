@@ -22,7 +22,9 @@ ivec3 occtraceGridShiftToLocal( in ivec3 shifted ){
 
 // calculate occlusion to apply to fragment
 float occtraceOcclusion( in vec3 position, in vec3 normal ){
-	position = vec3( pOTMatrix * vec4( position, 1.0 ) );
+	vec3 unclampedPosition = vec3( pOTMatrix * vec4( position, 1.0 ) );
+	position = clamp( unclampedPosition, vec3( 0.0 ), pOTPositionClamp );
+	
 	normal = pOTMatrixNormal * normal;
 	
 	ivec3 baseCoord = clamp( ivec3( pOTProbeSpacingInv * position ), ivec3( 0 ), pOTProbeClamp );
@@ -98,5 +100,12 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 		sumWeight += weight;
 	}
 	
-	return ( sumOcclusion / sumWeight ) * pOTEnergyPreservation;
+	// outside the grid of probes the occlusion is not known. the clamping above extends the
+	// outer most probe result. the blend factor below fades out into non-occlusion over a
+	// short distance.
+	// 
+	// this can be later on improved by using probe cascades
+	float blendBorder = min( length( unclampedPosition - position ) / 2.0, 1.0 );
+	
+	return mix( ( sumOcclusion / sumWeight ), 1.0, blendBorder ) * pOTEnergyPreservation;
 }

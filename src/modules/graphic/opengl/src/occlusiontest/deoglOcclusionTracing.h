@@ -94,6 +94,7 @@ private:
 	decPoint3 pProbeCount;
 	decPoint3 pGridCoordClamp;
 	decVector pProbeOrigin;
+	decVector pPositionClamp;
 	int pStrideProbeCount;
 	int pRealProbeCount;
 	int pMaxRaysPerProbe;
@@ -172,6 +173,9 @@ public:
 	
 	/** \brief Probe origin. */
 	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }
+	
+	/** \brief Local position clamp. */
+	inline const decVector &GetPositionClamp() const{ return pPositionClamp; }
 	
 	/** \brief Probe stride. */
 	inline int GetStrideProbeCount() const{ return pStrideProbeCount; }
