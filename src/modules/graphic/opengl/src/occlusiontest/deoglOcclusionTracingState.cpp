@@ -307,7 +307,7 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 		}
 		
 		// age weight
-		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit, 1.0f, 0.25f );
+		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit, 0.1f, 1.0f );
 	}
 	
 	// add invalid probes inside the view. they are always added up to the maximum number of
