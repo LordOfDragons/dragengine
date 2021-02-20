@@ -90,7 +90,7 @@ To clear only archive files run
 
     scons -c archive
 
-Clearing only removes files not directories. This is the default SCons behavior.
+Clearing only removes files not directories. This is the way SCons behaves.
 
 When running SCons as user it is recommended to use "prefix" parameter to define
 the installation directory otherwise installing files fails with permission
@@ -98,7 +98,7 @@ denied errors. It is not recommended to run SCons as root unless you intent to
 install files directly into the system.
 
 Package maintainers requiring sandboxing to build packages can use the SCons
-sandbox support to placed installed files in a different location than the
+sandbox support to place installed files in a different location than the
 "prefix" parameter defines like this:
 
     scons --install-sandbox=path/to/sandbox
