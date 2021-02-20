@@ -60,6 +60,11 @@ respective with_system_* parameter to 'yes' (to force using the library from hos
 system and fail if not found) or 'no' (to force compile from in-tree version) or
 'auto' (use from system if found otherwise fall back to in-tree version).
 
+The default installation prefix is "/usr". To change the installation prefix use
+"custom.py" or use
+
+    scons prefix=/usr/local
+
 To build distribution archives run
 
     scons archive
@@ -75,6 +80,30 @@ The installers will be located under "installer/build"
 In general all compiling takes place inside "build" directories underneath the
 respective SConscript files. To make a full clean you can delete all directories
 named "build" safely
+
+Every target can be cleared by appending "-c" to the command line. For example
+to clear build files run
+
+    scons -c
+
+To clear only archive files run
+
+    scons -c archive
+
+Clearing only removes files not directories. This is the default SCons behavior.
+
+When running SCons as user it is recommended to use "prefix" parameter to define
+the installation directory otherwise installing files fails with permission
+denied errors. It is not recommended to run SCons as root unless you intent to
+install files directly into the system.
+
+Package maintainers requiring sandboxing to build packages can use the SCons
+sandbox support to placed installed files in a different location than the
+"prefix" parameter defines like this:
+
+    scons --install-sandbox=path/to/sandbox
+
+See the __debian__ branch for an example of how this is used.
 
 
 # Build Dependencies
