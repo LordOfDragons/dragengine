@@ -23,6 +23,20 @@ the license. They can use any license they see fit.
 In a nutshell this means: __If you create a game, no matter if commercial or not__
 __, you do not have to worry about licensing at all.__
 
+# GIT Branches
+
+The __master__ branch is the current development branch with the most recent work.
+It is potentially unstable and should be only used by developers working on
+bleeding edge software build against the upcoming release.
+
+The __stable__ branch is the stable branch pointing to the latest release. This
+branch is for public use by distribution builders and developers working on
+software to work with the latest stable release.
+
+All other branches are internal feature development and platform support branches
+not intended for public use. If you want to work on these branches please get in
+contact with the development team first.
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
