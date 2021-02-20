@@ -46,25 +46,30 @@ function create_games_directory()
 
 function uninstall_files()
 {
+	echo ">>> Unregister Mime-Types..."
+	if [ -f /usr/share/mime/packages/dragengine-dragengine.xml ]; then
+		xdg-mime uninstall /usr/share/mime/packages/dragengine-dragengine.xml
+	fi
+	
 	echo ">>> Removing files"
-	rm -f "/usr/bin/delauncher-console"
-	rm -f "/usr/bin/delauncher-gui"
-	rm -f "/usr/lib/libDEFOX-*.so"
-	rm -f "/usr/lib/libdragengine.so"
-	rm -f "/usr/lib/libdragengine.so.*"
-	rm -f "/usr/share/applications/dragengine-delauncher-gui.desktop"
-	rm -f "/usr/share/icons/hicolor/*/apps/dragengine-delauncher-gui.png"
-	rm -f "/usr/share/icons/hicolor/*/mimetypes/dragengine-delga.png"
-	rm -f "/usr/share/icons/hicolor/*/mimetypes/dragengine-game.png"
-	rm -f "/usr/share/kservices5/dragengine-delauncher-gui-install.desktop"
-	rm -f "/usr/share/man/man1/delauncher-console.1"
-	rm -f "/usr/share/man/man1/delauncher-gui.1"
-	rm -f "/usr/share/mime/packages/dragengine-dragengine.xml"
-	rm -f "/usr/share/pixmaps/dragengine-delauncher-gui.png"
+	rm -f /usr/bin/delauncher-console
+	rm -f /usr/bin/delauncher-gui
+	rm -f /usr/lib/libDEFOX-*.so
+	rm -f /usr/lib/libdragengine.so
+	rm -f /usr/lib/libdragengine.so.*
+	rm -f /usr/share/applications/dragengine-delauncher-gui.desktop
+	rm -f /usr/share/icons/hicolor/*/apps/dragengine-delauncher-gui.png
+	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-delga.png
+	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-game.png
+	rm -f /usr/share/kservices5/dragengine-delauncher-gui-install.desktop
+	rm -f /usr/share/man/man1/delauncher-console.1
+	rm -f /usr/share/man/man1/delauncher-gui.1
+	rm -f /usr/share/mime/packages/dragengine-dragengine.xml
+	rm -f /usr/share/pixmaps/dragengine-delauncher-gui.png
 	
 	echo ">>> Removing directories"
-	rm -rf "/usr/lib/dragengine"
-	rm -rf "/usr/share/dragengine"
+	rm -rf /usr/lib/dragengine
+	rm -rf /usr/share/dragengine
 }
 
 

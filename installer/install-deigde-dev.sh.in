@@ -12,7 +12,7 @@ function unpack_payload()
 function uninstall_files()
 {
 	echo ">>> Removing directories"
-	rm -rf "/usr/include/deigde"
+	rm -rf /usr/include/deigde
 }
 
 
@@ -27,10 +27,10 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 	echo "./install-deigde-dev.sh"
 	echo "   install igde development"
 	echo ""
-	echo "./install-igde-dev.sh {--help | -h}"
+	echo "./install-deigde-dev.sh {--help | -h}"
 	echo "   this help information"
 	echo ""
-	echo "./install-igde-dev.sh --uninstall"
+	echo "./install-deigde-dev.sh --uninstall"
 	echo "   uninstall igde development"
 	exit 0
 fi

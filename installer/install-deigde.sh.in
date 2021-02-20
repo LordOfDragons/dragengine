@@ -19,22 +19,30 @@ function register_mimetypes()
 
 function uninstall_files()
 {
+	echo ">>> Unregister Mime-Types..."
+	if [ -f /usr/share/mime/packages/dragonscript-dragonscript.xml ]; then
+		xdg-mime uninstall /usr/share/mime/packages/dragonscript-dragonscript.xml
+	fi
+	if [ -f /usr/share/mime/packages/dragengine-deigde.xml ]; then
+		xdg-mime uninstall /usr/share/mime/packages/dragengine-deigde.xml
+	fi
+	
 	echo ">>> Removing files"
-	rm -f "/usr/bin/deigde"
-	rm -f "/usr/lib/libdeigdeshared.so"
-	rm -f "/usr/lib/libdeigdeshared.so.*"
-	rm -f "/usr/share/applications/dragengine-deigde.desktop"
-	rm -f "/usr/share/icons/hicolor/*/apps/dragengine-deigde.png"
-	rm -f "/usr/share/icons/hicolor/*/mimetypes/dragengine-deigde.png"
-	rm -f "/usr/share/katepart5/syntax/dragonscript.xml"
-	rm -f "/usr/share/man/man1/deigde.1"
-	rm -f "/usr/share/mime/packages/dragengine-deigde.xml"
-	rm -f "/usr/share/mime/packages/dragonscript-dragonscript.xml"
-	rm -f "/usr/share/pixmaps/dragengine-deigde.png"
+	rm -f /usr/bin/deigde
+	rm -f /usr/lib/libdeigdeshared.so
+	rm -f /usr/lib/libdeigdeshared.so.*
+	rm -f /usr/share/applications/dragengine-deigde.desktop
+	rm -f /usr/share/icons/hicolor/*/apps/dragengine-deigde.png
+	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-deigde.png
+	rm -f /usr/share/katepart5/syntax/dragonscript.xml
+	rm -f /usr/share/man/man1/deigde.1
+	rm -f /usr/share/mime/packages/dragengine-deigde.xml
+	rm -f /usr/share/mime/packages/dragonscript-dragonscript.xml
+	rm -f /usr/share/pixmaps/dragengine-deigde.png
 	
 	echo ">>> Removing directories"
-	rm -rf "/usr/lib/deigde"
-	rm -rf "/usr/share/deigde"
+	rm -rf /usr/lib/deigde
+	rm -rf /usr/share/deigde
 }
 
 
@@ -49,10 +57,10 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 	echo "./install-deigde.sh"
 	echo "   install igde"
 	echo ""
-	echo "./install-igde.sh {--help | -h}"
+	echo "./install-deigde.sh {--help | -h}"
 	echo "   this help information"
 	echo ""
-	echo "./install-igde.sh --uninstall"
+	echo "./install-deigde.sh --uninstall"
 	echo "   uninstall igde"
 	exit 0
 fi

@@ -12,7 +12,7 @@ function unpack_payload()
 function uninstall_files()
 {
 	echo ">>> Removing directories"
-	rm -rf "/usr/include/dragengine"
+	rm -rf /usr/include/dragengine
 }
 
 
