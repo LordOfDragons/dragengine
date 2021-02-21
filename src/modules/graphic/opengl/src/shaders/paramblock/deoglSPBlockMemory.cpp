@@ -70,7 +70,15 @@ void deoglSPBlockMemory::Activate(){
 	DETHROW( deeInvalidParam );
 }
 
+void deoglSPBlockMemory::Activate( int ){
+	DETHROW( deeInvalidParam );
+}
+
 void deoglSPBlockMemory::Deactivate(){
+	DETHROW( deeInvalidParam );
+}
+
+void deoglSPBlockMemory::Deactivate( int ){
 	DETHROW( deeInvalidParam );
 }
 

@@ -76,8 +76,14 @@ public:
 	/** \brief Activate buffer. */
 	virtual void Activate();
 	
+	/** \brief Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint );
+	
 	/** \brief Deactivate buffer. */
 	virtual void Deactivate();
+	
+	/** \brief Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint );
 	
 	/** \brief Map buffer discarding content. */
 	virtual void MapBuffer();

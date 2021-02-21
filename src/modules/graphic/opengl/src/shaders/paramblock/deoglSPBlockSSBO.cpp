@@ -96,8 +96,20 @@ void deoglSPBlockSSBO::Activate(){
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, pSSBO ) );
 }
 
+void deoglSPBlockSSBO::Activate( int bindingPoint ){
+	if( ! pSSBO || IsBufferMapped() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, pSSBO ) );
+}
+
 void deoglSPBlockSSBO::Deactivate(){
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, 0 ) );
+}
+
+void deoglSPBlockSSBO::Deactivate( int bindingPoint ){
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, 0 ) );
 }
 
 void deoglSPBlockSSBO::MapBuffer(){

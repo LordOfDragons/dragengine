@@ -89,8 +89,20 @@ void deoglSPBlockUBO::Activate(){
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, pUBO ) );
 }
 
+void deoglSPBlockUBO::Activate( int bindingPoint ){
+	if( ! pUBO || IsBufferMapped() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, pUBO ) );
+}
+
 void deoglSPBlockUBO::Deactivate(){
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, 0 ) );
+}
+
+void deoglSPBlockUBO::Deactivate( int bindingPoint ){
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, 0 ) );
 }
 
 void deoglSPBlockUBO::MapBuffer(){
