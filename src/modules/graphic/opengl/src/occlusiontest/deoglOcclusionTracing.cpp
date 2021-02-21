@@ -183,6 +183,7 @@ deoglSPBlockUBO &deoglOcclusionTracing::GetUBOTracing(){
 		ubo.GetParameterAt( eutpDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		ubo.GetParameterAt( eutpMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		ubo.GetParameterAt( eutpDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		ubo.GetParameterAt( eutpFieldOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		ubo.GetParameterAt( eutpProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, pMaxUpdateProbeCount / 4 ); // ivec4
 		ubo.GetParameterAt( eutpProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, pMaxUpdateProbeCount ); // vec4
 		ubo.GetParameterAt( eutpRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, pRaysPerProbe ); // vec3
@@ -249,8 +250,11 @@ void deoglOcclusionTracing::pAddOcclusionMeshes( const decDVector &position ){
 	
 	for( i=0; i<count; i++ ){
 		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
-		if( component.GetOcclusionMesh() && ! component.GetDynamicOcclusionMesh() ){
-			pAddOcclusionMesh( ( component.GetMatrix() * matrix ).ToMatrix(), component.GetOcclusionMesh() );
+		if( component.GetOcclusionMesh() ){
+			if( ! component.GetDynamicOcclusionMesh() ){
+				component.GetOcclusionMesh()->PrepareRayTraceField();
+				if(false) pAddOcclusionMesh( ( component.GetMatrix() * matrix ).ToMatrix(), component.GetOcclusionMesh() );
+			}
 		}
 	}
 }

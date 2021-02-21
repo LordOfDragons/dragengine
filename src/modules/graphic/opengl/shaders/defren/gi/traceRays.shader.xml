@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Trace Rays</name>
+	
+	<version>130</version>
+	
+	<texture name='tboNodeBox' target='0'/>
+	<texture name='tboIndex' target='1'/>
+	<texture name='tboFace' target='2'/>
+	<texture name='tboVertex' target='3'/>
+	
+	<uniformBlock name='GIFieldParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outResult' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/traceRays.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/traceRays.glsl</sourceCode>
+</shader>

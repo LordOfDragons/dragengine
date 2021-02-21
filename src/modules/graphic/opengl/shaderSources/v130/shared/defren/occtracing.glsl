@@ -17,6 +17,8 @@ UBOLAYOUT uniform TracingParameters{
 	float pMaxProbeDistance;
 	float pDepthSharpness;
 	
+	vec3 pFieldOrigin;
+	
 	ivec4 pProbeIndex[ MAX_PROBE_INDEX_COUNT ];
 	
 	vec4 pProbePosition[ MAX_PROBE_UPDATE_COUNT ]; // position(xyz), blendFactor(w)

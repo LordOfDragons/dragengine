@@ -26,6 +26,7 @@
 #include "deoglROcclusionMesh.h"
 #include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../gi/deoglRayTraceField.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -56,7 +57,8 @@ const deOcclusionMesh &occlusionmesh ) :
 pRenderThread( renderThread ),
 pFilename( occlusionmesh.GetFilename() ),
 pSharedSPBListUBO( NULL ),
-pBVH( NULL )
+pBVH( NULL ),
+pRayTraceField( NULL )
 {
 	pVBOBlock = NULL;
 	
@@ -213,6 +215,24 @@ void deoglROcclusionMesh::PrepareBVH(){
 
 
 
+void deoglROcclusionMesh::PrepareRayTraceField(){
+	if( pRayTraceField || ( pSingleSidedFaceCount == 0 && pDoubleSidedFaceCount == 0 ) ){
+		return;
+	}
+	
+	PrepareBVH();
+	if( ! pBVH->GetRootNode() ){
+		return;
+	}
+	const deoglBVHNode &rootNode = *pBVH->GetRootNode();
+	
+	pRayTraceField = new deoglRayTraceField( pRenderThread );
+	pRayTraceField->Init( rootNode.GetMinExtend(), rootNode.GetMaxExtend() );
+	pRayTraceField->RenderField( *this );
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -229,7 +249,7 @@ public:
 	virtual ~deoglROcclusionMeshDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		if( sharedSPBListUBO ){
 			delete sharedSPBListUBO;
 		}

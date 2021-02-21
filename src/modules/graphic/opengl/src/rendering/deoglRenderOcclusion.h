@@ -56,6 +56,7 @@ private:
 	
 	deoglShaderProgram *pShaderOccTracingGenRays;
 	deoglShaderProgram *pShaderOccTracingTraceRays;
+	deoglShaderProgram *pShaderOccTracingTraceRaysStatic;
 	deoglShaderProgram *pShaderOccTracingUpdateOcclusion;
 	deoglShaderProgram *pShaderOccTracingUpdateDistance;
 	

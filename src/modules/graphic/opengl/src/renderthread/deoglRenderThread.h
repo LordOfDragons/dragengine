@@ -42,6 +42,7 @@ class deoglDeferredRendering;
 class deoglDelayedOperations;
 class deoglEnvMapSlotManager;
 class deoglExtensions;
+class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
 class deoglOcclusionTest;
@@ -125,6 +126,7 @@ private:
 	deoglOcclusionQueryManager *pOccQueryMgr;
 	deoglOcclusionTest *pOcclusionTest;
 	deoglOcclusionTracing *pOcclusionTracing;
+	deoglGI *pGI;
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
@@ -307,6 +309,9 @@ public:
 	
 	/** \brief Occlusion tracing. */
 	inline deoglOcclusionTracing &GetOcclusionTracing() const{ return *pOcclusionTracing; }
+	
+	/** \brief Global illumination. */
+	inline deoglGI &GetGI() const{ return *pGI; }
 	
 	/** \brief Light boundary box having at least the given size. */
 	deoglLightBoundaryMap &GetLightBoundaryMap( int size );

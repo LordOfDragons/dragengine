@@ -63,8 +63,6 @@ private:
 	decPoint pSampleImageSize;
 	decPoint3 pGridCoordShift;
 	
-	deoglCollideList pCollideList;
-	
 	decTimer pTimerUpdateProbe;
 	float pElapsedUpdateProbe;
 	float pUpdateProbeInterval;

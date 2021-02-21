@@ -12,6 +12,7 @@ uniform sampler2D texRayCast;
 flat in ivec2 vRayOffset;
 flat in ivec2 vOffset;
 flat in float vBlendFactor;
+flat in vec3 vProbePosition;
 
 out vec4 outValue;
 
@@ -93,7 +94,11 @@ void main( void ){
 		rayProbeDistance = min( rayCast.w, pMaxProbeDistance );
 		#endif
 		
-		weight = max( dot( texelDirection, pRayDirection[ i ] ), 0.0 );
+		// for dynamic ray-tracing only the pRayDirection[i] can be used. by using though
+		// also the ray cast fields this is not possible anymore since the rays deviate
+		// from this direction
+		//weight = max( dot( texelDirection, pRayDirection[ i ] ), 0.0 );
+		weight = max( dot( texelDirection, normalize( rayCast.xyz - vProbePosition ) ), 0.0 );
 		#ifdef MAP_DISTANCE
 		weight = pow( weight, pDepthSharpness );
 		#endif

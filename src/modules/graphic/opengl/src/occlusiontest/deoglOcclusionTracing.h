@@ -81,6 +81,7 @@ public:
 		eutpDistanceMapSize, // int: size of distance map
 		eutpMaxProbeDistance, // float
 		eutpDepthSharpness, // float
+		eutpFieldOrigin, // vec3
 		eutpProbeIndex, // ivec4[]: group of 4 probes to trace
 		eutpProbePosition, // vec3[]: probe position and ray origin
 		eutpRayDirection // vec3[]: ray direction
@@ -221,6 +222,9 @@ public:
 	
 	/** \brief Probes per line. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
+	
+	/** \brief Collide list. */
+	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
 	
 	
 	

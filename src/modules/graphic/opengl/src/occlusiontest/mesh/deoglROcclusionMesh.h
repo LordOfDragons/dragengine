@@ -34,6 +34,7 @@ class deoglRenderThread;
 class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
 class deoglBVH;
+class deoglRayTraceField;
 
 
 
@@ -78,6 +79,7 @@ public:
 	deoglSharedSPBRTIGroupList pRTIGroupsDouble;
 	
 	deoglBVH *pBVH;
+	deoglRayTraceField *pRayTraceField;
 	
 	
 	
@@ -162,10 +164,18 @@ public:
 	
 	
 	/** \brief BVH or NULL. */
-	deoglBVH *GetBVH() const{ return pBVH; }
+	inline deoglBVH *GetBVH() const{ return pBVH; }
 	
 	/** \brief Build BVH if not build yet. */
 	void PrepareBVH();
+	
+	
+	
+	/** \brief Ray trace field or NULL. */
+	inline deoglRayTraceField *GetRayTraceField() const{ return pRayTraceField; }
+	
+	/** \brief Prepare ray trace field. */
+	void PrepareRayTraceField();
 	/*@}*/
 	
 	

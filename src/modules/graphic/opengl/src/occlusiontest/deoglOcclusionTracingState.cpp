@@ -281,10 +281,6 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 	const float weightAgeLimit = 30.0f;
 	int i = 0;
 	
-	for( i=0; i<pWeightedProbeBinCount; i++ ){
-		pWeightedProbeBinProbeCounts[ i ] = 0;
-	}
-	
 	for( i=0; i<realProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		
@@ -307,11 +303,16 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 		}
 		
 		// age weight
-		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit, 0.1f, 1.0f );
+		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit );
+// 			probe.weightDistance = 1.0f;
+// 			probe.weightViewAngle.Set( 1.0f, 1.0f );
 	}
 	
 	// add invalid probes inside the view. they are always added up to the maximum number of
 	// allowed update probes. invalid probes outside the view and valid probes are binned
+	for( i=0; i<pWeightedProbeBinCount; i++ ){
+		pWeightedProbeBinProbeCounts[ i ] = 0;
+	}
 	pUpdateProbeCount = 0;
 	
 	for( i=0; i<realProbeCount; i++ ){
@@ -404,10 +405,9 @@ void deoglOcclusionTracingState::pAddUpdateProbe( sProbe *probe ){
 		
 	}else{
 		probe->blendFactor = 1.0f; // force full update
+		probe->valid = true;
 	}
-	
 	probe->age = 0;
-	probe->valid = true;
 	
 	pUpdateProbes[ pUpdateProbeCount++ ] = probe;
 }
@@ -431,6 +431,7 @@ void deoglOcclusionTracingState::pPrepareUBOState(){
 		ubo.SetParameterDataVec2( deoglOcclusionTracing::eutpDistanceMapScale, pTracing.GetDistanceMapScale() );
 		ubo.SetParameterDataFloat( deoglOcclusionTracing::eutpMaxProbeDistance, pTracing.GetMaxProbeDistance() );
 		ubo.SetParameterDataFloat( deoglOcclusionTracing::eutpDepthSharpness, pTracing.GetDepthSharpness() );
+		ubo.SetParameterDataVec3( deoglOcclusionTracing::eutpFieldOrigin, 0.0f, 0.0f, 0.0f );
 		ubo.SetParameterDataInt( deoglOcclusionTracing::eutpBVHInstanceRootNode, pTracing.GetBVHInstanceRootNode() );
 		ubo.SetParameterDataIVec3( deoglOcclusionTracing::eutpGridProbeCount, pTracing.GetProbeCount() );
 		ubo.SetParameterDataVec3( deoglOcclusionTracing::eutpGridProbeSpacing, pTracing.GetProbeSpacing() );
