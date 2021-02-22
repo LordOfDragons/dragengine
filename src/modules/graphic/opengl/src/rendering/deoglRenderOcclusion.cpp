@@ -1390,6 +1390,12 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	
 	
 	// trace dynamic rays
+	// 
+	// BVH node count can be 0. in this case pBVHInstanceRootNode is set to -1 instead
+	// of the index of the root node. the scripts can deal with this. it is required
+	// for the scripts to run even if the BVH is empty since the ray result pixels
+	// have to be correctly initialized with the ray direction otherwise the probe
+	// update shader fails to work correctly
 	const decPoint &sampleImageSize = tracingState.GetSampleImageSize();
 	
 	defren.Resize( sampleImageSize.x, sampleImageSize.y );
@@ -1399,14 +1405,6 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	
-	tsmgr.EnableTBO( 0, tracing.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 1, tracing.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 2, tracing.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 3, tracing.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 4, tracing.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 5, tracing.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 5 );
-	
 	renderThread.GetShader().ActivateShader( pShaderOccTracingTraceRays );
 	tracing.GetUBOTracing().Activate();
 	
@@ -1415,6 +1413,14 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	
 	const GLfloat clearDepth = 1.0f;
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+	
+	tsmgr.EnableTBO( 0, tracing.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, tracing.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 2, tracing.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 3, tracing.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 4, tracing.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 5, tracing.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 5 );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
@@ -1434,6 +1440,10 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	const int count = collideList.GetComponentCount();
 	int i;
 	
+	// TODO the same ray trace field can be used by multiple components with different matrices.
+	//      this could be batched to switch textures only one and to potentially render all
+	//      instances using the same field using an instanced render call. this would require
+	//      storing the matrices in an UBO/SSBO to tap from using instance id
 	for( i=0; i<count; i++ ){
 		const deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
 		if( component.GetOcclusionMesh() ){

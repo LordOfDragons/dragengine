@@ -1208,11 +1208,11 @@ void main( void ){
 	
 	vec3 finalColorSubSurface = lightColor;
 	#ifdef AMBIENT_LIGHTING
-		#ifndef SKY_LIGHT
-			// note: if enabled also for other light sources skipp too if
+		//#ifndef SKY_LIGHT
+			// note: if enabled also for other light sources skip too if
 			// ifdef ENABLE_OCCTRACING and pOTEnabled = true
 			finalColorSubSurface += finalColorAmbient;
-		#endif
+		//#endif
 	#endif
 	
 	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );

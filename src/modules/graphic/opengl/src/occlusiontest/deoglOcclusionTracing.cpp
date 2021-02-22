@@ -207,7 +207,7 @@ void deoglOcclusionTracing::PrepareRayTracing( deoglRWorld &world, const decDVec
 	pTBOInstance.Clear();
 	pTBOIndex.Clear();
 	pTBONodeBox.Clear();
-	pBVHInstanceRootNode = 0;
+	pBVHInstanceRootNode = -1;
 	
 	pFindComponents( world, position );
 	pAddOcclusionMeshes( position );
@@ -491,20 +491,23 @@ void deoglOcclusionTracing::pWriteTBOs( const decDVector &position ){
 	
 	// add BVH to TBOs
 	const int nodeCount = pBVHInstances.GetNodeCount();
-	const deoglBVHNode * const nodes = pBVHInstances.GetNodes();
 	
-	pBVHInstanceRootNode = pTBOIndex.GetPixelCount();
-	
-	for( i=0; i<nodeCount; i++ ){
-		const deoglBVHNode &node = nodes[ i ];
-		pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
-		pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
+	if( nodeCount > 0 ){
+		const deoglBVHNode * const nodes = pBVHInstances.GetNodes();
 		
-		if( node.GetPrimitiveCount() == 0 ){
-			pTBOIndex.AddVec2( pBVHInstanceRootNode + node.GetFirstIndex(), 0 );
+		pBVHInstanceRootNode = pTBOIndex.GetPixelCount();
+		
+		for( i=0; i<nodeCount; i++ ){
+			const deoglBVHNode &node = nodes[ i ];
+			pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
+			pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
 			
-		}else{
-			pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
+			if( node.GetPrimitiveCount() == 0 ){
+				pTBOIndex.AddVec2( pBVHInstanceRootNode + node.GetFirstIndex(), 0 );
+				
+			}else{
+				pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
+			}
 		}
 	}
 	

@@ -93,8 +93,38 @@ void deoglRayTraceField::Init( const decVector &minExtend, const decVector &maxE
 	pSize = maxExtend - minExtend;
 	
 	// choose the resolution to obtain roughly a 1m spacing between probes
+	// 
+	// NOTE we have to be careful to not exceed the maximum texture resolution
+	//      supported by the opengl implementation. the maximum texture size
+	//      should be used to determine the maximum resolution supported given
+	//      a specific map size.
+	//      
+	//      another solution is using array textures to store the vertical
+	//      resolution. typically this is a lot smaller than the horizontal
+	//      resolution and allows to use larger textures.
+	//      
+	//      another solution is to split up the field into smaller fields.
+	//      this is actually not a bad solution since large meshes are reduced
+	//      into smaller fields which can be culled better.
+	//      
+	//      for the ground floor mesh (roughly 40x3x20 meters in size) a
+	//      desiresSpacing spacing of 0.25 works while 0.125 already exceeds
+	//      the texture size limits
+	// 
+	// NOTE a field of 32x16x32 probes requires a texture of size 1024x1024 (2MB).
+	//      a field of 64x16*64 probes requires a texture of size 2048x2048 (8MB).
+	//      a field of 128x16x128 probes requires a texture of size 4096x4096 (32MB).
+	//      
+	//      for the beginning using a limit of 32x16x32 keeps the texture size down
+	//      to 1024 and the memory consumption to 2MB.
+	//      
+	//      this can be later on optimized by using an algorithm on the GPU which
+	//      distributes a fixed set of probes on an uneven grid to optimize the
+	//      coverage and quality. for this to work requires an additional R16UI
+	//      texture which stores for an even grid the index of the probe to use. 
 	const float desiresSpacing = 1.0f;
-	const decPoint3 cellCount( decPoint3( 1, 1, 1 ).Largest( ( pSize / desiresSpacing ).Round() ) );
+	const decPoint3 maxCellCount( decPoint3( 32, 16, 32 ) - decPoint3( 3, 3, 3 ) );
+	const decPoint3 cellCount( decPoint3( 1, 1, 1 ).Largest( ( pSize / desiresSpacing ).Round() ).Smallest( maxCellCount ) );
 	
 	pSpacing.x = pSize.x / ( float )cellCount.x;
 	pSpacing.y = pSize.y / ( float )cellCount.y;

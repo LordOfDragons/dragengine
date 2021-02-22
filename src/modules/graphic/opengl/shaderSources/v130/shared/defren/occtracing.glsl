@@ -7,7 +7,7 @@ UBOLAYOUT uniform TracingParameters{
 	int pProbesPerLine;
 	
 	vec3 pGridProbeSpacing;
-	int pBVHInstanceRootNode;
+	int pBVHInstanceRootNode; // index to root node or -1 if BVH is empty
 	
 	vec2 pOcclusionMapScale;
 	vec2 pDistanceMapScale;

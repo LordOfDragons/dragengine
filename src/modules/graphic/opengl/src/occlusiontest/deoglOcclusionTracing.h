@@ -257,7 +257,7 @@ public:
 	/** \brief TBO for mesh vertices. */
 	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
 	
-	/** \brief Index of bvh instance root node. */
+	/** \brief Index of bvh instance root node or -1 if there are no instances. */
 	inline int GetBVHInstanceRootNode() const{ return pBVHInstanceRootNode; }
 	
 	

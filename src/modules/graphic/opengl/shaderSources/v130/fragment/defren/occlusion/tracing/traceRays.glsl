@@ -166,7 +166,7 @@ void main( void ){
 		*/
 		
 	#else
-		if( rayCastInstance( pBVHInstanceRootNode, position, direction, result ) ){
+		if( pBVHInstanceRootNode != -1 && rayCastInstance( pBVHInstanceRootNode, position, direction, result ) ){
 			outPosition = vec4( position, result.distance );
 			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
 			// original DDGI code steps back using "hitNormal * 0.01"
