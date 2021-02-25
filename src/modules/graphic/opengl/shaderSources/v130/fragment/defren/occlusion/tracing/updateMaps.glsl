@@ -132,6 +132,7 @@ void main( void ){
 	}else{
 		outValue.x = pMaxProbeDistance;
 		outValue.y = pMaxProbeDistance * pMaxProbeDistance;
+		outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
 	#endif
 	}
 }

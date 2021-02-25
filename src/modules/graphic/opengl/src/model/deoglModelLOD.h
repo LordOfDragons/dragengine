@@ -34,6 +34,7 @@ class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglSharedVBOBlock;
 class deoglSharedSPBRTIGroupList;
+class deoglBVH;
 
 class deGraphicOpenGl;
 class deModel;
@@ -116,6 +117,10 @@ public:
 	
 	float pMaxError;
 	float pAvgError;
+	
+	deoglBVH *pBVH;
+	
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -236,6 +241,14 @@ public:
 	void LoadFromCache( decBaseFileReader &reader );
 	/** \brief Save to cache file. */
 	void SaveToCache( decBaseFileWriter &writer );
+	
+	
+	
+	/** \brief BVH or NULL. */
+	inline deoglBVH *GetBVH() const{ return pBVH; }
+	
+	/** \brief Build BVH if not build yet. */
+	void PrepareBVH();
 	/*@}*/
 	
 private:

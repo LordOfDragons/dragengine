@@ -646,6 +646,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	pLightPB->MapBuffer();
 	try{
 		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 		
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
 			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
@@ -665,7 +666,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			
 			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, true );
 			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutOTMatrix, matrix );
-			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutOTMatrixNormal, matrix.GetRotationMatrix() );
+			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutOTMatrixNormal, matrix.GetRotationMatrix().QuickInvert() );
 			
 			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeCount, tracing.GetProbeCount() );
 			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeClamp, tracing.GetGridCoordClamp() );

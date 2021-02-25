@@ -169,7 +169,7 @@ void main( void ){
 	
 #ifdef USE_SHEETS
 	//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1.0 );
-	//vec4 view2 = vec4( cross( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), up ), 1.0 );
+	//vec4 view2 = vec4( normalize( cross( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ), up ) ), 1.0 );
 	vec4 view2 = vec4( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), 1.0 );
 	vec3 v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
 	vec3 v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
@@ -200,7 +200,7 @@ void main( void ){
 	
 #ifdef USE_SHEETS
 	//view2 = vec4( cross( ribbonAxis2, up ), 1.0 );
-	//view2 = vec4( cross( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), up ), 1.0 );
+	//view2 = vec4( normalize( cross( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ), up ) ), 1.0 );
 	view2 = vec4( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), 1.0 );
 	v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
 	v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;

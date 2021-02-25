@@ -353,7 +353,7 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 		}
 	}
 	
-	/*
+// 	/*
 	// TODO update probe grid. for the time being 8x4x8
 	pUpdateProbeCount = 256; //pMaxUpdateProbeCount;
 	
@@ -363,6 +363,7 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 	const decPoint3 gie( gis + spread );
 	
 	decPoint3 gi;
+	i = 0;
 	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
 		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
 			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
@@ -382,7 +383,7 @@ void deoglOcclusionTracingState::pFindProbesToUpdate( const decMatrix &matrixVie
 			}
 		}
 	}
-	*/
+// 	*/
 	
 	// determine the required sample image size
 	pSampleImageSize.x = pTracing.GetProbesPerLine() * pTracing.GetRaysPerProbe();

@@ -46,6 +46,8 @@
 #include "../vbo/deoglVBOAttribute.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../vbo/writer/deoglVBOWriterModel.h"
+#include "../utils/bvh/deoglBVH.h"
+#include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionDetection.h"
 
 #include <dragengine/common/exceptions.h>
@@ -74,7 +76,8 @@ deoglModelLOD::deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &e
 pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
-pIBOType( deoglVBOLayout::eitUnsignedShort )
+pIBOType( deoglVBOLayout::eitUnsignedShort ),
+pBVH( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -158,7 +161,8 @@ deoglModelLOD::deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReade
 pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
-pIBOType( deoglVBOLayout::eitUnsignedShort )
+pIBOType( deoglVBOLayout::eitUnsignedShort ),
+pBVH( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -734,10 +738,69 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 
 
 
+void deoglModelLOD::PrepareBVH(){
+	if( pBVH ){
+		return;
+	}
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	
+	if( pFaceCount > 0 ){
+		primitives = new deoglBVH::sBuildPrimitive[ pFaceCount ];
+		int i;
+		
+		for( i=0; i<pFaceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			
+			/*
+			// this works only if octree has been prepare yet. but the octree does
+			// apply some enlaring we do not want to use here
+			primitive.minExtend = pFaces[ i ].GetMinExtend();
+			primitive.maxExtend = pFaces[ i ].GetMaxExtend();
+			primitive.center = pFaces[ i ].GetCenter();
+			*/
+			
+			const deoglModelFace &face = pFaces[ i ];
+			const oglModelPosition &v1 = pPositions[ pVertices[ face.GetVertex1() ].position ];
+			const oglModelPosition &v2 = pPositions[ pVertices[ face.GetVertex2() ].position ];
+			const oglModelPosition &v3 = pPositions[ pVertices[ face.GetVertex3() ].position ];
+			
+			primitive.minExtend = v1.position.Smallest( v2.position ).Smallest( v3.position );
+			primitive.maxExtend = v1.position.Largest( v2.position ).Largest( v3.position );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		pBVH = new deoglBVH;
+		pBVH->Build( primitives, pFaceCount, 8 );
+		
+	}catch( const deException & ){
+		if( pBVH ){
+			delete pBVH;
+			pBVH = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+}
+
+
+
 // Private functions
 //////////////////////
 
 void deoglModelLOD::pCleanUp(){
+	if( pBVH ){
+		delete pBVH;
+	}
+	
 	if( pVBOBlockWithWeight ){
 		pVBOBlockWithWeight->GetVBO()->RemoveBlock( pVBOBlockWithWeight );
 		pVBOBlockWithWeight->FreeReference();

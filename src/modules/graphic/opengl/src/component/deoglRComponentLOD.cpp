@@ -688,6 +688,10 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 // Private Functions
 //////////////////////
 
+deoglModelLOD &deoglRComponentLOD::GetModelLOD() const{
+	return pComponent.GetModel()->GetLODAt( pLODIndex );
+}
+
 void deoglRComponentLOD::PrepareWeights(){
 	if( pDirtyModelWeights ){
 		oglMatrix3x4 *weights = NULL;

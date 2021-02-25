@@ -89,6 +89,7 @@ private:
 	float pCameraViewDistance;
 	float pCameraAdaptedIntensity;
 	decVector4 pDepthToPosition;
+	decVector2 pDepthSampleOffset;
 	int pViewportX;
 	int pViewportY;
 	int pViewportWidth;
@@ -326,6 +327,9 @@ public:
 	
 	/** \brief Depth to position transformation factors. */
 	inline const decVector4 &GetDepthToPosition() const{ return pDepthToPosition; }
+	
+	/** \brief Depth sample offset. */
+	inline const decVector2 &GetDepthSampleOffset() const{ return pDepthSampleOffset; }
 	
 	
 	

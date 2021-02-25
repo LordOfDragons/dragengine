@@ -35,6 +35,7 @@ uniform samplerBuffer tboVertex;
 
 // ray cast result
 struct RayCastResult{
+	//vec3 hitPoint;
 	float distance;
 	int face;
 	vec3 tc;
@@ -158,6 +159,7 @@ bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out 
 		curNode = stack[ --stackPosition ];
 	}
 	
+	//result.hitPoint = rayOrigin + rayDirection * result.distance;
 	return hasHit;
 }
 
@@ -217,20 +219,32 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 			RayCastResult meshResult;
 			int i;
 			
-			for( i=0; i<index.y; i++, tcMatrix+=3 ){
+			for( i=0; i<index.y; i++ ){
 				int bvhIndex = int( texelFetch( tboInstance, tcInstance++ ).x );
 				
-				vec4 mrow1 = texelFetch( tboMatrix, tcMatrix );
-				vec4 mrow2 = texelFetch( tboMatrix, tcMatrix + 1 );
-				vec4 mrow3 = texelFetch( tboMatrix, tcMatrix + 2 );
-				//mat4 matrix = transpose( mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) ) );
+				vec4 mrow1 = texelFetch( tboMatrix, tcMatrix++ );
+				vec4 mrow2 = texelFetch( tboMatrix, tcMatrix++ );
+				vec4 mrow3 = texelFetch( tboMatrix, tcMatrix++ );
 				
-				//mat4 invMatrix = inverse( matrix );
-				mat4 invMatrix = transpose( mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) ) );
-				vec3 meshRayOrigin = vec3( invMatrix * vec4( rayOrigin, 1.0 ) );
-				vec3 meshRayDirection = vec3( invMatrix * vec4( rayDirection, 0.0 ) );
+				// the inverse matrix needs to be transposed to be usable for right-side
+				// multiplication. by switching to left-side multiplication the transpose
+				// can be avoided which is faster
+				mat4 invMatrix = mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) );
+				vec3 meshRayOrigin = vec3( vec4( rayOrigin, 1.0 ) * invMatrix );
 				
-				if( rayCastMesh( bvhIndex, meshRayOrigin, meshRayDirection, meshResult ) ){
+				// for normal transformation the correct matrix to use is
+				// transpose(inverse(mat3(invMatrix))). since we normalize the direction
+				// we can avoid doing all this
+				vec3 meshRayDirection = vec3( vec4( rayDirection, 0.0 ) * invMatrix );
+				
+				if( rayCastMesh( bvhIndex, meshRayOrigin, normalize( meshRayDirection ), meshResult ) ){
+					// we can not use directly the distance since it is possible the matrix
+					// contains scaling. we have to calculate the hit point in tracing space
+					// and from there the distance can be calculated as difference between the
+					// hit point and the ray origin which can be shortened. we just need to
+					// know the amount of scaling used since rayDirection has unit length
+					meshResult.distance /= length( meshRayDirection );
+					
 					if( meshResult.distance < result.distance ){
 						result = meshResult;
 						hasHit = true;

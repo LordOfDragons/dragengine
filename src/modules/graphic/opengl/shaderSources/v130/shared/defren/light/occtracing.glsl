@@ -25,7 +25,7 @@ float occtraceOcclusion( in vec3 position, in vec3 normal ){
 	vec3 unclampedPosition = vec3( pOTMatrix * vec4( position, 1.0 ) );
 	position = clamp( unclampedPosition, vec3( 0.0 ), pOTPositionClamp );
 	
-	normal = pOTMatrixNormal * normal;
+	normal = normal * pOTMatrixNormal; // reverse order does transpose()
 	
 	ivec3 baseCoord = clamp( ivec3( pOTProbeSpacingInv * position ), ivec3( 0 ), pOTProbeClamp );
 	

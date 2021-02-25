@@ -36,6 +36,7 @@
 
 class deoglRenderThread;
 class deoglDynamicTBO;
+class deoglRComponentLOD;
 class deoglROcclusionMesh;
 class deoglRWorld;
 
@@ -53,9 +54,12 @@ public:
 	/** \brief Occlusion meshes. */
 	struct sOccMesh{
 		deoglROcclusionMesh *occlusionMesh;
+		deoglRComponentLOD *modelStatic;
 		int indexNodes;
 		int indexFaces;
 		int indexVertices;
+		
+		void Clear();
 	};
 	
 	/** \brief Occlusion mesh instance. */
@@ -285,6 +289,8 @@ public:
 private:
 	void pCleanUp();
 	void pFindComponents( deoglRWorld &world, const decDVector &position );
+	void pAddStaticModels( const decDVector &position );
+	void pAddStaticModel( const decMatrix &matrix, deoglRComponentLOD &lod );
 	void pAddOcclusionMeshes( const decDVector &position );
 	void pAddOcclusionMesh( const decMatrix &matrix, deoglROcclusionMesh *occlusionMesh );
 // 	bool pAddFace( const decVector &v1, const decVector &v2, const decVector &v3, bool doubleSided );

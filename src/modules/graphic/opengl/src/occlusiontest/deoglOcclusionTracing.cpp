@@ -29,6 +29,10 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../model/deoglModelLOD.h"
+#include "../model/deoglRModel.h"
+#include "../model/face/deoglModelFace.h"
+#include "../model/texture/deoglModelTexture.h"
 #include "../rendering/deoglRenderOcclusion.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -40,6 +44,16 @@
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+// Struct deoglOcclusionTracing::sOccMesh
+///////////////////////////////////////////
+
+void deoglOcclusionTracing::sOccMesh::Clear(){
+	occlusionMesh = NULL;
+	modelStatic = NULL;
+}
+
 
 
 // Class deoglOcclusionTest
@@ -210,7 +224,8 @@ void deoglOcclusionTracing::PrepareRayTracing( deoglRWorld &world, const decDVec
 	pBVHInstanceRootNode = -1;
 	
 	pFindComponents( world, position );
-	pAddOcclusionMeshes( position );
+	//pAddOcclusionMeshes( position );
+	pAddStaticModels( position );
 	pWriteTBOs( position );
 }
 
@@ -243,6 +258,130 @@ void deoglOcclusionTracing::pFindComponents( deoglRWorld &world, const decDVecto
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
 }
 
+void deoglOcclusionTracing::pAddStaticModels( const decDVector &position ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
+		if( ! component.GetModel() || component.GetLODCount() == 0 ){
+			continue;
+		}
+		if( component.GetRenderMode() != deoglRComponent::ermStatic ){
+			continue;
+		}
+		
+		const deoglRModel::sExtends &extends = component.GetModel()->GetWeightlessExtends();
+		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
+			continue; // skip small models to improve performance
+		}
+		
+		deoglRComponentLOD &lod = component.GetLODAt( component.GetLODCount() - 1 );
+		//component.PrepareRayTraceField();
+		pAddStaticModel( ( component.GetMatrix() * matrix ).ToMatrix(), lod );
+	}
+}
+
+void deoglOcclusionTracing::pAddStaticModel( const decMatrix &matrix, deoglRComponentLOD &lod ){
+	// find model
+	int indexOccMesh;
+	for( indexOccMesh=0; indexOccMesh<pOccMeshCount; indexOccMesh++ ){
+		if( pOccMeshes[ indexOccMesh ].modelStatic == &lod ){
+			break;
+		}
+	}
+	
+	// if model does not exist add it
+	if( indexOccMesh == pOccMeshCount ){
+		// prepare BVH first just in case something goes wrong
+		deoglModelLOD &modelLOD = lod.GetModelLOD();
+		modelLOD.PrepareBVH();
+		
+		if( ! modelLOD.GetBVH()->GetRootNode() ){
+			return; // empty model
+		}
+		
+		// add model to list of encountered models
+		if( pOccMeshCount == pOccMeshSize ){
+			const int newSize = pOccMeshCount + 10;
+			sOccMesh * const newArray = new sOccMesh[ newSize ];
+			if( pOccMeshes ){
+				memcpy( newArray, pOccMeshes, sizeof( sOccMesh ) * pOccMeshCount );
+				delete [] pOccMeshes;
+			}
+			pOccMeshes = newArray;
+			pOccMeshSize = newSize;
+		}
+		
+		sOccMesh &occMesh = pOccMeshes[ pOccMeshCount++ ];
+		occMesh.Clear();
+		occMesh.modelStatic = &lod;
+		occMesh.indexVertices = pTBOVertex.GetPixelCount();
+		occMesh.indexFaces = pTBOFace.GetPixelCount();
+		occMesh.indexNodes = pTBOIndex.GetPixelCount();
+		
+		// add vertices to TBO in mesh order
+		const oglModelPosition * const positions = modelLOD.GetPositions();
+		const int positionPoint = modelLOD.GetPositionCount();
+		int i;
+		
+		for( i=0; i<positionPoint; i++ ){
+			pTBOVertex.AddVec4( positions[ i ].position, 0.0f );
+		}
+		
+		// add faces to TBOs using primitive mapping from BVH
+		const deoglBVH &bvh = *modelLOD.GetBVH();
+		const oglModelVertex * const vertices = modelLOD.GetVertices();
+		const deoglModelFace * const faces = modelLOD.GetFaces();
+		const int * const primitives = bvh.GetPrimitives();
+		const int primitiveCount = bvh.GetPrimitiveCount();
+		
+		for( i=0; i<primitiveCount; i++ ){
+			const deoglModelFace &face = faces[ primitives[ i ] ];
+			pTBOFace.AddVec4( occMesh.indexVertices + vertices[ face.GetVertex1() ].position,
+				occMesh.indexVertices + vertices[ face.GetVertex2() ].position,
+				occMesh.indexVertices + vertices[ face.GetVertex3() ].position,
+				modelLOD.GetTextureAt( face.GetTexture() ).GetDoubleSided() ? 0 : 1 );
+		}
+		
+		// add BVH to TBOs
+		const int nodeCount = bvh.GetNodeCount();
+		const deoglBVHNode * const nodes = bvh.GetNodes();
+		
+		for( i=0; i<nodeCount; i++ ){
+			const deoglBVHNode &node = nodes[ i ];
+			pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
+			pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
+			
+			if( node.GetPrimitiveCount() == 0 ){
+				pTBOIndex.AddVec2( occMesh.indexNodes + node.GetFirstIndex(), 0 );
+				
+			}else{
+				pTBOIndex.AddVec2( occMesh.indexFaces + node.GetFirstIndex(), node.GetPrimitiveCount() );
+			}
+		}
+	}
+	
+	// add instance to TBO
+	if( pOccMeshInstanceCount == pOccMeshInstanceSize ){
+		const int newSize = pOccMeshInstanceCount + 10;
+		sOccMeshInstance * const newArray = new sOccMeshInstance[ newSize ];
+		if( pOccMeshInstances ){
+			memcpy( newArray, pOccMeshInstances, sizeof( sOccMeshInstance ) * pOccMeshInstanceCount );
+			delete [] pOccMeshInstances;
+		}
+		pOccMeshInstances = newArray;
+		pOccMeshInstanceSize = newSize;
+	}
+	
+	sOccMeshInstance &occMeshInst = pOccMeshInstances[ pOccMeshInstanceCount++ ];
+	occMeshInst.indexMesh = indexOccMesh;
+	occMeshInst.indexInstance = 0;
+	occMeshInst.indexMatrix = 0;
+	occMeshInst.matrix = matrix;
+}
+
 void deoglOcclusionTracing::pAddOcclusionMeshes( const decDVector &position ){
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
 	const int count = pCollideList.GetComponentCount();
@@ -253,7 +392,7 @@ void deoglOcclusionTracing::pAddOcclusionMeshes( const decDVector &position ){
 		if( component.GetOcclusionMesh() ){
 			if( ! component.GetDynamicOcclusionMesh() ){
 				component.GetOcclusionMesh()->PrepareRayTraceField();
-				if(false) pAddOcclusionMesh( ( component.GetMatrix() * matrix ).ToMatrix(), component.GetOcclusionMesh() );
+				if(true) pAddOcclusionMesh( ( component.GetMatrix() * matrix ).ToMatrix(), component.GetOcclusionMesh() );
 			}
 		}
 	}
@@ -290,6 +429,7 @@ void deoglOcclusionTracing::pAddOcclusionMesh( const decMatrix &matrix, deoglROc
 		}
 		
 		sOccMesh &occMesh = pOccMeshes[ pOccMeshCount++ ];
+		occMesh.Clear();
 		occMesh.occlusionMesh = occlusionMesh;
 		occMesh.indexVertices = pTBOVertex.GetPixelCount();
 		occMesh.indexFaces = pTBOFace.GetPixelCount();
@@ -456,12 +596,17 @@ void deoglOcclusionTracing::pWriteTBOs( const decDVector &position ){
 	for( i=0; i<pOccMeshInstanceCount; i++ ){
 		deoglBVH::sBuildPrimitive &primitive = pBVHBuildPrimitives[ i ];
 		const sOccMeshInstance &instance = pOccMeshInstances[ i ];
-		const sOccMesh &mesh = pOccMeshes[ instance.indexMesh ];
-		const deoglBVH &bvh = *mesh.occlusionMesh->GetBVH();
-		const deoglBVHNode &rootNode = *bvh.GetRootNode();
+		const sOccMesh &occMesh = pOccMeshes[ instance.indexMesh ];
+		const deoglBVHNode *rootNode = NULL;
+		if( occMesh.occlusionMesh != NULL ){
+			rootNode = occMesh.occlusionMesh->GetBVH()->GetRootNode();
+			
+		}else if( occMesh.modelStatic != NULL ){
+			rootNode = occMesh.modelStatic->GetModelLOD().GetBVH()->GetRootNode();
+		}
 		
-		const decVector &minExtend = rootNode.GetMinExtend();
-		const decVector &maxExtend = rootNode.GetMaxExtend();
+		const decVector &minExtend = rootNode->GetMinExtend();
+		const decVector &maxExtend = rootNode->GetMaxExtend();
 		const decVector center( ( minExtend + maxExtend ) * 0.5f );
 		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
 		deoglCollisionBox box( instance.matrix * center,
@@ -487,6 +632,8 @@ void deoglOcclusionTracing::pWriteTBOs( const decDVector &position ){
 		
 		instance.indexInstance = pTBOInstance.GetPixelCount();
 		pTBOInstance.AddInt( pOccMeshes[ instance.indexMesh ].indexNodes );
+		if(pOccMeshes[instance.indexMesh].modelStatic) printf("instance %d: %s\n", i,
+			pOccMeshes[instance.indexMesh].modelStatic->GetComponent().GetModel()->GetFilename().GetString());
 	}
 	
 	// add BVH to TBOs
@@ -526,9 +673,14 @@ void deoglOcclusionTracing::pWriteTBOs( const decDVector &position ){
 		int i;
 		logger.LogInfoFormat("OcclusionTracing: %d OcclusionMeshes", pOccMeshCount);
 		for(i=0; i<pOccMeshCount; i++){
+			const char * filename = "-";
+			if( pOccMeshes[i].occlusionMesh != NULL ){
+				filename = pOccMeshes[i].occlusionMesh->GetFilename();
+			}else if( pOccMeshes[i].modelStatic != NULL ){
+				filename = pOccMeshes[i].modelStatic->GetComponent().GetModel()->GetFilename();
+			}
 			logger.LogInfoFormat("- %d: indexNodes=%d indexFaces=%d path=%s", i,
-				pOccMeshes[i].indexNodes, pOccMeshes[i].indexFaces,
-				pOccMeshes[i].occlusionMesh->GetFilename().GetString());
+				pOccMeshes[i].indexNodes, pOccMeshes[i].indexFaces,filename );
 		}
 		logger.LogInfoFormat("OcclusionTracing: %d Instances", pOccMeshInstanceCount);
 		for(i=0; i<pOccMeshInstanceCount; i++){

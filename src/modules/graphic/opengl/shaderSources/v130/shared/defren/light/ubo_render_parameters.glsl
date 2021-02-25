@@ -1,11 +1,12 @@
 UBOLAYOUT uniform RenderParameters{
 	vec4 pPosTransform;
+	vec2 pDepthSampleOffset;
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;
 	
 	// occlusion tracing
 	mat4x3 pOTMatrix; // transform from view space to tracing space
-	mat3 pOTMatrixNormal; // transform from view space to tracing space
+	mat3 pOTMatrixNormal; // transform from view space to tracing space (requires transpose)
 	ivec3 pOTProbeCount; // probe count
 	int pOTOcclusionMapSize; // occlusion map size in pixels
 	ivec3 pOTProbeClamp; // maximum probe grid coordinate to clamp to

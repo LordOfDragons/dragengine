@@ -1426,7 +1426,7 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 	
 	
 	// trace static rays
-// #if 0
+#if 0
 	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_LESS ) );
 	
@@ -1468,7 +1468,7 @@ void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingStat
 			}
 		}
 	}
-// #endif
+#endif
 	
 	
 	// update probes: occlusion map

@@ -163,12 +163,6 @@ uniform lowp sampler2D texAOSolidity;
 	#endif
 #endif
 
-#ifdef SKY_LIGHT
-#ifdef ENABLE_OCCTRACING
-	#include "v130/shared/defren/light/occtracing.glsl"
-#endif
-#endif
-
 
 // Inputs
 ///////////
@@ -245,6 +239,18 @@ const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
+
+
+
+// Includes using definitions above
+/////////////////////////////////////
+
+#ifdef SKY_LIGHT
+	#ifdef ENABLE_OCCTRACING
+		#include "v130/shared/defren/light/occtracing.glsl"
+		#include "v130/shared/defren/light/normal_from_depth.glsl"
+	#endif
+#endif
 
 
 
@@ -645,10 +651,11 @@ void main( void ){
 	
 	// determine position of fragment to light
 	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
+		float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
 	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
+		float depth = texelFetch( texDepth, tc, 0 ).r;
 	#endif
+	vec3 position = vec3( depth );
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
 		position.xy = vScreenCoord * pPosTransform.zw * position.zz;
@@ -1101,7 +1108,10 @@ void main( void ){
 			#ifdef ENABLE_OCCTRACING
 				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 				if( pOTEnabled ){
-					finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
+					// normal is not a geometry normal but a modified normal. for tracing
+					// we need though a geometry normal. this can be derived from depth
+					//finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
+					finalColorAmbient *= vec3( occtraceOcclusion( position, normalFromDepth( tc, depth, position ) ) );
 				}
 			#else
 				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );

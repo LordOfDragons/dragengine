@@ -110,6 +110,9 @@ public:
 	/** \brief LOD index. */
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
+	/** \brief Get ModelLOD. */
+	deoglModelLOD &GetModelLOD() const;
+	
 	
 	
 	/** \brief Weights for debuging purpose. */

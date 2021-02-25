@@ -389,6 +389,11 @@ void deoglRenderPlan::pBarePrepareRender(){
 		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
 		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
 		
+		// depth sample offset is required to reconstruct depth from nearby depth samples.
+		// offset is relative to 1 fragment texel step
+		pDepthSampleOffset.x = 2.0f / ( float )pViewportWidth;
+		pDepthSampleOffset.y = 2.0f / ( float )pViewportHeight;
+		
 		/* non-infinite projection matrix
 		const int q = pCameraViewDistance / ( pCameraViewDistance - pCameraImageDistance );
 		pDepthToPosition.x = q * pCameraImageDistance;
@@ -1505,6 +1510,7 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pProjectionMatrix = plan.pProjectionMatrix;
 	pFrustumMatrix = plan.pFrustumMatrix;
 	pDepthToPosition = plan.pDepthToPosition;
+	pDepthSampleOffset = plan.pDepthSampleOffset;
 	
 	pDirtyProjMat = false;
 }
