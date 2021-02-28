@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "deoglRenderLight.h"
 #include "deoglRenderGI.h"
 #include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
@@ -63,6 +64,7 @@
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../vao/deoglVAO.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -96,7 +98,7 @@ enum eUBORenderLightParameters{
 ////////////////////////////
 
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread ),
+deoglRenderLightBase( renderThread ),
 
 pShaderFieldTraceRays( NULL ),
 pShaderTraceRays( NULL ),
@@ -153,6 +155,25 @@ deoglRenderGI::~deoglRenderGI(){
 // Rendering
 //////////////
 
+deoglGIState *deoglRenderGI::GetUpdateGIState( const deoglRenderPlan &plan ) const{
+	if( plan.GetUseGIState() && ! plan.GetUseConstGIState() ){
+		return plan.GetGIState();
+	}
+	return NULL;
+}
+
+deoglGIState * deoglRenderGI::GetRenderGIState( const deoglRenderPlan &plan ) const{
+	if( plan.GetUseGIState() ){
+		if( plan.GetUseConstGIState() ){
+			return plan.GetUseConstGIState();
+			
+		}else{
+			return plan.GetGIState();
+		}
+	}
+	return NULL;
+}
+
 void deoglRenderGI::TraceRays( deoglRayTraceField &field ){
 	// NOTE old FBO is restored because field FBO can be dropped after this call
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -193,7 +214,8 @@ void deoglRenderGI::TraceRays( deoglRayTraceField &field ){
 }
 
 void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
-	if( ! plan.GetGIState() ){
+	deoglGIState * const giState = GetUpdateGIState( plan );
+	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -201,7 +223,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const deoglGIState &giState = *plan.GetGIState();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIRays &rays = gi.GetRays();
 	deoglGIBVH &bvh = gi.GetBVH();
@@ -212,12 +233,13 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	
 	// prepare
-	const decDVector &cameraPosition = plan.GetCameraPosition();
 	bvh.Clear();
-	bvh.FindComponents( *plan.GetWorld(), cameraPosition, giState.GetDetectionBox() );
-	bvh.AddStaticComponents( cameraPosition );
+	bvh.FindComponents( *plan.GetWorld(), giState->GetPosition(), giState->GetDetectionBox() );
+	bvh.AddStaticComponents( giState->GetPosition() );
 	bvh.BuildBVH();
-	//bvh.DebugPrint( cameraPosition );
+	//bvh.DebugPrint( giState.GetPosition() );
+	
+	giState->PrepareUBOState(); // has to be done here since it is shared
 	
 	
 	// set common states
@@ -238,7 +260,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	// for the scripts to run even if the BVH is empty since the ray result pixels
 	// have to be correctly initialized with the ray direction otherwise the probe
 	// update shader fails to work correctly
-	const decPoint &sampleImageSize = giState.GetSampleImageSize();
+	const decPoint &sampleImageSize = giState->GetSampleImageSize();
 	
 	renderThread.GetFramebuffer().Activate( &rays.GetFBORayResult() );
 	
@@ -285,7 +307,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 }
 
 void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
-	const deoglGIState * const giState = plan.GetGIState();
+	const deoglGIState * const giState = GetRenderGIState( plan );
 	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
@@ -323,7 +345,8 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 }
 
 void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
-	if( ! plan.GetGIState() ){
+	deoglGIState * const giState = GetUpdateGIState( plan );
+	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -331,7 +354,6 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglGIState &giState = *plan.GetGIState();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIRays &rays = gi.GetRays();
 	
@@ -360,27 +382,27 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	
 	// update probes: irradiance map
-	renderThread.GetFramebuffer().Activate( &giState.GetFBOProbeIrradiance() );
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, giState.GetTextureProbeIrradiance().GetWidth(),
-		giState.GetTextureProbeIrradiance().GetHeight() ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
+		giState->GetTextureProbeIrradiance().GetHeight() ) );
 	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
 	gi.GetUBO().Activate();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
 	
 	// update probes: distance map
-	renderThread.GetFramebuffer().Activate( &giState.GetFBOProbeDistance() );
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, giState.GetTextureProbeDistance().GetWidth(),
-		giState.GetTextureProbeDistance().GetHeight() ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeDistance().GetWidth(),
+		giState->GetTextureProbeDistance().GetHeight() ) );
 	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeDistance );
 	gi.GetUBO().Activate();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
 	
 	// clean up
@@ -395,8 +417,56 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	}
 }
 
-void deoglRenderGI::RenderLight( deoglRenderPlan &plan ){
-	// TODO
+void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
+	deoglGIState * const giState = GetRenderGIState( plan );
+	if( ! giState ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	if( debugInfo.GetVisible() ){
+		GetDebugTimerAt( 0 ).Reset();
+	}
+	
+	RestoreFBO( plan );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	if( solid ){
+		OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
+		
+	}else{
+		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
+	}
+	
+	renderThread.GetShader().ActivateShader( pShaderLight );
+	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	GetUBORenderLight().Activate();
+	
+	tsmgr.EnableTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 7, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.DisableStagesAbove( 7 );
+	
+	defren.RenderFSQuadVAO();
+	
+	// clean up
+	if( debugInfo.GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+	}
 }
 
 
@@ -424,7 +494,7 @@ void deoglRenderGI::pCleanUp(){
 void deoglRenderGI::pCreateUBORenderLight(){
 	deoglRenderThread &renderThread = GetRenderThread();
 	pUBORenderLight.TakeOver( new deoglSPBlockUBO( renderThread ) );
-	deoglSPBlockUBO &ubo = ( deoglSPBlockUBO& )( deObject& )pUBORenderLight;
+	deoglSPBlockUBO &ubo = GetUBORenderLight();
 	
 	ubo.SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 	ubo.SetParameterCount( euprlGridCoordShift + 1 );

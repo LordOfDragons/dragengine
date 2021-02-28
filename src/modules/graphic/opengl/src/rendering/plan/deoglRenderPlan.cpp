@@ -112,6 +112,8 @@ extern float extDebugCompTBO;
 
 deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pUseGIState( true ),
+pUseConstGIState( NULL ),
 pGIState( NULL )
 {
 	pWorld = NULL;
@@ -812,6 +814,10 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 
 void deoglRenderPlan::pPlanGI(){
 #ifdef ENABLE_GI
+	if( pUseConstGIState || ! pUseGIState ){
+		return;
+	}
+	
 	if( ! pGIState ){
 		pGIState = new deoglGIState( pRenderThread );
 	}
@@ -1164,7 +1170,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		if( updateEnvmap ){
 			updateEnvmap->AddReference(); // guard reference
 			try{
-				updateEnvmap->Update();
+				updateEnvmap->Update( *this );
 				
 			}catch( const deException & ){
 				updateEnvmap->FreeReference();
@@ -1571,6 +1577,14 @@ void deoglRenderPlan::SetRenderDebugPass( bool render ){
 
 void deoglRenderPlan::SetNoReflections( bool noReflections ){
 	pNoReflections = noReflections;
+}
+
+void deoglRenderPlan::SetUseGIState( bool useGIState ){
+	pUseGIState = useGIState;
+}
+
+void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
+	pUseConstGIState = giState;
 }
 
 

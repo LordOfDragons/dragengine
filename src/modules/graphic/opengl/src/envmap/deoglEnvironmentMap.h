@@ -248,9 +248,9 @@ public:
 	/** Prepare for rendering. */
 	void PrepareForRender();
 	/** Updates the environment map if dirty. */
-	void Update();
+	void Update( deoglRenderPlan &parentPlan );
 	/** Render an environment cube map. */
-	void RenderEnvCubeMap();
+	void RenderEnvCubeMap( deoglRenderPlan &parentPlan );
 	/** Retrieves the environment map or NULL if not existing. */
 	inline deoglCubeMap *GetEnvironmentMap() const{ return pEnvMap; }
 	/** Retrieves the environment depth map or NULL if not existing. */

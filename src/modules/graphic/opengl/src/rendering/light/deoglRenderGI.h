@@ -22,7 +22,7 @@
 #ifndef _DEOGLRENDERGI_H_
 #define _DEOGLRENDERGI_H_
 
-#include "../deoglRenderBase.h"
+#include "deoglRenderLightBase.h"
 
 #include <dragengine/deObjectReference.h>
 
@@ -30,12 +30,13 @@
 class deoglRayTraceField;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
+class deoglGIState;
 
 
 /**
  * \brief GI Renderer.
  */
-class deoglRenderGI : public deoglRenderBase{
+class deoglRenderGI : public deoglRenderLightBase{
 private:
 	deoglShaderProgram *pShaderFieldTraceRays;
 	deoglShaderProgram *pShaderTraceRays;
@@ -44,6 +45,7 @@ private:
 	deoglShaderProgram *pShaderLight;
 	
 	deObjectReference pUBORenderLight;
+	deObjectReference pUBORenderLightSSS;
 	
 	
 	
@@ -61,6 +63,15 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
+	/** \brief Render light UBO. */
+	inline deoglSPBlockUBO &GetUBORenderLight() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORenderLight; }
+	
+	/** \brief GI state to update or NULL. */
+	deoglGIState *GetUpdateGIState( const deoglRenderPlan &plan ) const;
+	
+	/** \brief GI state to render or NULL. */
+	deoglGIState *GetRenderGIState( const deoglRenderPlan &plan ) const;
+	
 	/** \brief Trace rays for field. */
 	void TraceRays( deoglRayTraceField &field );
 	
@@ -74,7 +85,7 @@ public:
 	void UpdateProbes( deoglRenderPlan &plan );
 	
 	/** \brief Render light. */
-	void RenderLight( deoglRenderPlan &plan );
+	void RenderLight( deoglRenderPlan &plan, bool solid );
 	/*@}*/
 	
 	

@@ -185,6 +185,95 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
 }
 
+void deoglGIState::PrepareUBOState() const{
+	const deoglGI &gi = pRenderThread.GetGI();
+	const deoglGIRays &rays = gi.GetRays();
+	deoglSPBlockUBO &ubo = gi.GetUBO();
+	int i, j, count;
+	
+	ubo.MapBuffer();
+	try{
+		const int raysPerProbe = rays.GetRaysPerProbe();
+		
+		ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
+			1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
+		ubo.SetParameterDataInt( deoglGI::eupProbeCount, pUpdateProbeCount );
+		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
+		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, rays.GetProbesPerLine() );
+		ubo.SetParameterDataInt( deoglGI::eupOcclusionMapSize, pIrradianceMapSize );
+		ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pDistanceMapSize );
+		ubo.SetParameterDataVec2( deoglGI::eupOcclusionMapScale, pIrradianceMapScale );
+		ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pDistanceMapScale );
+		ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
+		ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pDepthSharpness );
+		ubo.SetParameterDataVec3( deoglGI::eupFieldOrigin, 0.0f, 0.0f, 0.0f );
+		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
+		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pProbeCount );
+		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
+		
+		if( pUpdateProbeCount > 0 ){
+			count = ( pUpdateProbeCount - 1 ) / 4 + 1;
+			for( i=0, j=0; i<count; i++, j+=4 ){
+				ubo.SetParameterDataArrayIVec4( deoglGI::eupProbeIndex, i,
+					j < pUpdateProbeCount ? pUpdateProbes[ j ]->index : 0,
+					j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ]->index : 0,
+					j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ]->index : 0,
+					j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ]->index : 0 );
+			}
+			
+			for( i=0; i<pUpdateProbeCount; i++ ){
+				ubo.SetParameterDataArrayVec4( deoglGI::eupProbePosition, i,
+					pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
+			}
+		}
+		
+// 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+// 			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+		//const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();
+		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
+		const float sf_n = ( float )raysPerProbe;
+		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
+		
+		for( i=0; i<raysPerProbe; i++ ){
+			const float sf_i = ( float )i;
+			const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
+			const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
+			const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
+			const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
+			
+			// the paper uses random rotation matrix. this results though in huge flickering
+			// even if smoothed using hystersis which is close to epiletic attack. disabling
+			// the random rotation keeps the result stable. it is most probably not as smooth
+			// as it could be with random rotation but avoids the unsupportable flickering
+			//ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, randomOrientation * sf );
+			ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, sf );
+			
+			/*ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection,
+				i, randomOrientation * sphericalFibonnaci[ i ] );*/
+		}
+		
+		#undef madfrac
+		
+		// DEBUG
+		/*{
+			for( i=0; i<pRaysPerProbe; i++ ){
+				float pc = TWO_PI * i / pRaysPerProbe;
+				decVector dir( sinf( pc ), 0.0f, cos( pc ) );
+				ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
+			}
+			for( i=0; i<pUpdateProbeCount; i++ ){
+				ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
+			}
+		}*/
+		// DEBUG
+		
+	}catch( const deException & ){
+		ubo.UnmapBuffer();
+		throw;
+	}
+	ubo.UnmapBuffer();
+}
+
 void deoglGIState::Invalidate(){
 	int i;
 	
@@ -280,7 +369,6 @@ void deoglGIState::pPrepareTraceProbes( const decMatrix &matrixView, float fovX,
 	pAgeProbes();
 	pFindProbesToUpdate( matrixView, fovX, fovY );
 	pPrepareProbeTexturesAndFBO();
-	pPrepareUBOState();
 }
 
 void deoglGIState::pAgeProbes(){
@@ -435,95 +523,6 @@ void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 	pUpdateProbes[ pUpdateProbeCount++ ] = probe;
 }
 
-void deoglGIState::pPrepareUBOState(){
-	const deoglGI &gi = pRenderThread.GetGI();
-	const deoglGIRays &rays = gi.GetRays();
-	deoglSPBlockUBO &ubo = gi.GetUBO();
-	int i, j, count;
-	
-	ubo.MapBuffer();
-	try{
-		const int raysPerProbe = rays.GetRaysPerProbe();
-		
-		ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
-			1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
-		ubo.SetParameterDataInt( deoglGI::eupProbeCount, pUpdateProbeCount );
-		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
-		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, rays.GetProbesPerLine() );
-		ubo.SetParameterDataInt( deoglGI::eupOcclusionMapSize, pIrradianceMapSize );
-		ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pDistanceMapSize );
-		ubo.SetParameterDataVec2( deoglGI::eupOcclusionMapScale, pIrradianceMapScale );
-		ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pDistanceMapScale );
-		ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
-		ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pDepthSharpness );
-		ubo.SetParameterDataVec3( deoglGI::eupFieldOrigin, 0.0f, 0.0f, 0.0f );
-		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
-		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pProbeCount );
-		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
-		
-		if( pUpdateProbeCount > 0 ){
-			count = ( pUpdateProbeCount - 1 ) / 4 + 1;
-			for( i=0, j=0; i<count; i++, j+=4 ){
-				ubo.SetParameterDataArrayIVec4( deoglGI::eupProbeIndex, i,
-					j < pUpdateProbeCount ? pUpdateProbes[ j ]->index : 0,
-					j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ]->index : 0,
-					j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ]->index : 0,
-					j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ]->index : 0 );
-			}
-			
-			for( i=0; i<pUpdateProbeCount; i++ ){
-				ubo.SetParameterDataArrayVec4( deoglGI::eupProbePosition, i,
-					pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
-			}
-		}
-		
-// 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
-// 			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
-		//const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();
-		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
-		const float sf_n = ( float )raysPerProbe;
-		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
-		
-		for( i=0; i<raysPerProbe; i++ ){
-			const float sf_i = ( float )i;
-			const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
-			const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
-			const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
-			const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
-			
-			// the paper uses random rotation matrix. this results though in huge flickering
-			// even if smoothed using hystersis which is close to epiletic attack. disabling
-			// the random rotation keeps the result stable. it is most probably not as smooth
-			// as it could be with random rotation but avoids the unsupportable flickering
-			//ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, randomOrientation * sf );
-			ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, sf );
-			
-			/*ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection,
-				i, randomOrientation * sphericalFibonnaci[ i ] );*/
-		}
-		
-		#undef madfrac
-		
-		// DEBUG
-		/*{
-			for( i=0; i<pRaysPerProbe; i++ ){
-				float pc = TWO_PI * i / pRaysPerProbe;
-				decVector dir( sinf( pc ), 0.0f, cos( pc ) );
-				ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
-			}
-			for( i=0; i<pUpdateProbeCount; i++ ){
-				ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
-			}
-		}*/
-		// DEBUG
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
-	}
-	ubo.UnmapBuffer();
-}
-
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture() && ! pClearMaps ){
 		return;
@@ -569,8 +568,8 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
-		const GLfloat clearOcclusion[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOcclusion[ 0 ] ) );
+		const GLfloat clearIrradiance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearIrradiance[ 0 ] ) );
 		
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
 		const GLfloat clearDistance[ 4 ] = { 4.0f, 4.0f, 4.0f, 16.0f };

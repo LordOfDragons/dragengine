@@ -336,7 +336,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 		if( solid && ! mask ){
 			pRenderGI->UpdateProbes( plan );
 		}
-		pRenderGI->RenderLight( plan );
+		pRenderGI->RenderLight( plan, solid );
 	}
 	
 	DebugTimer2Reset( plan, false );

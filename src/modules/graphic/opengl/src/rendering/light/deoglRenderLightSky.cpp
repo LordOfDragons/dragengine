@@ -25,6 +25,7 @@
 
 #include "deoglRenderLight.h"
 #include "deoglRenderLightSky.h"
+#include "deoglRenderGI.h"
 #include "deoglRLSVisitorCollectElements.h"
 #include "../deoglRenderGeometry.h"
 #include "../deoglRenderWorld.h"
@@ -868,30 +869,26 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 	// set values
 	paramBlock.MapBuffer();
 	try{
+		const bool hasGIState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) != NULL;
+		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
-			/*if( plan.GetOcclusionTracingState() ){
+			if( hasGIState ){
 				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 				
-			}else{*/
+			}else{
 				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-			//}
+			}
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
 		if( target != -1 ){
-			/*if( plan.GetOcclusionTracingState() ){
-				// this one is a bit tricky. occlusion is the percentage of hits over a full
-				// sphere. full light intensity is though usually acquired if half the sphere
-				// is lit since the other half is typically underneath the surface. the occlusion
-				// tracing stores the occlusion factor 1 for 50% occlusion hits and above.
-				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) * 0.5f );
-				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+			if( hasGIState ){
+				paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
 				
-			}else{*/
+			}else{
 				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
-			//}
+			}
 		}
 		
 		// NOTE sky light is currently using a special handling which has to be replaced with the

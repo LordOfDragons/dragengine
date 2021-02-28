@@ -230,6 +230,9 @@ public:
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
 		const decDMatrix &cameraMatrix, float fovX, float fovY );
 	
+	/** \brief Prepare UBO state. */
+	void PrepareUBOState() const;
+	
 	/** \brief Invalid all probes. */
 	void Invalidate();
 	/*@}*/
@@ -245,7 +248,6 @@ private:
 	void pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY);
 	void pBinWeightedProbe( sProbe *probe, float weight );
 	void pAddUpdateProbe( sProbe *probe );
-	void pPrepareUBOState();
 	void pPrepareProbeTexturesAndFBO();
 };
 

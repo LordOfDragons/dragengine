@@ -15,6 +15,8 @@ precision highp int;
 uniform HIGHP sampler2D texDepth;
 uniform lowp sampler2D texDiffuse;
 uniform lowp sampler2D texNormal;
+uniform lowp sampler2D texReflectivity;
+uniform lowp sampler2D texRoughness;
 uniform lowp sampler2D texAOSolidity;
 
 uniform lowp sampler2D texGIIrradiance;
@@ -32,6 +34,7 @@ in vec2 vScreenCoord;
 
 out vec4 outColor;
 out float outLuminance;
+out vec4 outSubSurface;
 
 
 // constants
@@ -232,4 +235,7 @@ void main( void ){
 	
 	outLuminance = dot( finalColor, lumiFactors );
 	outColor = vec4( finalColor * diffuse.rgb, diffuse.a );
+	outSubSurface = vec4( 0.0 );
+	
+/*XXX*/ //if(tc.y < 322) outColor.rgb = vec3( texelFetch(texGIIrradiance, tc+ivec2(320*3,0), 0).rgb );
 }

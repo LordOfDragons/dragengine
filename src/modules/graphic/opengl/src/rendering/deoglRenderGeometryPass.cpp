@@ -239,17 +239,19 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	QUICK_DEBUG_START( 16, 19 )
-	GetRenderThread().GetRenderers().GetSky().RenderSky( plan );
+	renderThread.GetRenderers().GetSky().RenderSky( plan );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
 	QUICK_DEBUG_END
 	
 	
 	// trace global illumination rays if in main render pass
-	if( ! mask && plan.GetGIState() ){
-		renderThread.GetRenderers().GetLight().GetRenderGI().TraceRays( plan );
-		
-		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	if( ! mask ){
+		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+		if( renderGI.GetUpdateGIState( plan ) ){
+			renderGI.TraceRays( plan );
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+		}
 	}
 	
 	

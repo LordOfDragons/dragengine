@@ -103,6 +103,8 @@ private:
 	bool pIgnoreDynamicComponents;
 	bool pRenderDebugPass;
 	bool pNoReflections;
+	bool pUseGIState;
+	deoglGIState *pUseConstGIState;
 	
 	bool pUseLayerMask;
 	decLayerMask pLayerMask;
@@ -411,6 +413,18 @@ public:
 	
 	/** \brief Set if no reflections are used. */
 	void SetNoReflections( bool noReflections );
+	
+	/** \brief Use GI state. */
+	inline bool GetUseGIState() const{ return pUseGIState; }
+	
+	/** \brief Set use GI state. */
+	void SetUseGIState( bool useGIState );
+	
+	/** \brief Use constant GI state. */
+	inline deoglGIState *GetUseConstGIState() const{ return pUseConstGIState; }
+	
+	/** \brief Set use const GI state. */
+	void SetUseConstGIState( deoglGIState *giState );
 	
 	
 	

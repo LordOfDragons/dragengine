@@ -40,6 +40,8 @@
 #include "../rendering/deoglRenderReflection.h"
 #include "../rendering/deoglRenderSky.h"
 #include "../rendering/deoglRenderWorld.h"
+#include "../rendering/light/deoglRenderGI.h"
+#include "../rendering/light/deoglRenderLight.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/task/deoglAddToRenderTask.h"
 #include "../rendering/task/deoglRenderTask.h"
@@ -540,7 +542,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 	UpdateConvexVolumeList();
 }
 
-void deoglEnvironmentMap::Update(){
+void deoglEnvironmentMap::Update( deoglRenderPlan &parentPlan ){
 	if( ! pDirty ){
 		return;
 	}
@@ -599,11 +601,11 @@ void deoglEnvironmentMap::Update(){
 			pRenderThread.GetLogger().LogInfoFormat( "EnvMap Update: %p position=(%f,%f,%f) size=%i face=%i",
 				this, pPosition.x, pPosition.y, pPosition.z, pSize, pNextUpdateFace );
 		}
-		RenderEnvCubeMap();
+		RenderEnvCubeMap( parentPlan );
 	}
 }
 
-void deoglEnvironmentMap::RenderEnvCubeMap(){
+void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	int renderTime[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	decTimer timer;
 	
@@ -631,6 +633,11 @@ void deoglEnvironmentMap::RenderEnvCubeMap(){
 	
 	plan.SetUseLayerMask( true );
 	plan.SetLayerMask( pLayerMask );
+	
+	// use the parent plan gi state but without modifying it. allows to use GI with
+	// no extra cost and witout messing up parent GI state
+	plan.SetUseConstGIState( pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) );
+	plan.SetUseGIState( plan.GetUseConstGIState() != NULL );
 	
 	// TODO we need to find a way to figure out what adapted intensity to use here.
 	//      in the case of regular rendering the lower camera intensity is used which
