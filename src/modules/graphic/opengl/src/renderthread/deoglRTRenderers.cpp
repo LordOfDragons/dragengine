@@ -31,7 +31,6 @@
 #include "../rendering/deoglRenderDevMode.h"
 #include "../rendering/deoglRenderGeometry.h"
 #include "../rendering/deoglRenderGeometryPass.h"
-#include "../rendering/deoglRenderGI.h"
 #include "../rendering/deoglRenderOcclusion.h"
 #include "../rendering/deoglRenderParticles.h"
 #include "../rendering/deoglRenderReflection.h"
@@ -64,7 +63,6 @@ pLight( NULL ),
 pOcclusion( NULL ),
 pParticles( NULL ),
 pReflection( NULL ),
-pGI( NULL ),
 pSky( NULL ),
 pToneMap( NULL ),
 pTransparencyCounter( NULL ),
@@ -89,7 +87,6 @@ pWorld( NULL )
 		pDebugDrawer = new deoglRenderDebugDrawer( renderThread );
 		pDevMode = new deoglRenderDevMode( renderThread );
 		pReflection = new deoglRenderReflection( renderThread );
-		pGI = new deoglRenderGI( renderThread );
 		pToneMap = new deoglRenderToneMap( renderThread );
 		
 		pCanvas->AddTopLevelDebugInfo();
@@ -123,7 +120,6 @@ void deoglRTRenderers::DevModeDebugInfoChanged(){
 	pOcclusion->DevModeDebugInfoChanged();
 	pParticles->DevModeDebugInfoChanged();
 	pReflection->DevModeDebugInfoChanged();
-	pGI->DevModeDebugInfoChanged();
 	pSky->DevModeDebugInfoChanged();
 	pToneMap->DevModeDebugInfoChanged();
 	pTransparentPasses->DevModeDebugInfoChanged();
@@ -148,9 +144,6 @@ void deoglRTRenderers::pCleanUp(){
 	}
 	if( pToneMap ){
 		delete pToneMap;
-	}
-	if( pGI ){
-		delete pGI;
 	}
 	if( pReflection ){
 		delete pReflection;

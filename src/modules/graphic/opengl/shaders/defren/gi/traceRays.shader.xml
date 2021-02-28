@@ -6,14 +6,19 @@
 	
 	<texture name='tboNodeBox' target='0'/>
 	<texture name='tboIndex' target='1'/>
-	<texture name='tboFace' target='2'/>
-	<texture name='tboVertex' target='3'/>
+	<texture name='tboInstance' target='2'/>
+	<texture name='tboMatrix' target='3'/>
+	<texture name='tboFace' target='4'/>
+	<texture name='tboVertex' target='5'/>
 	
-	<uniformBlock name='GIFieldParameters' target='0'/>
+	<uniformBlock name='GIParameters' target='0'/>
 	
 	<attribute name='inPosition' target='0'/>
 	
-	<output name='outResult' target='0'/>
+	<output name='outPosition' target='0'/>
+	<output name='outNormal' target='1'/>
+	<output name='outDiffuse' target='2'/>
+	<output name='outLight' target='3'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/gi/traceRays.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/gi/traceRays.glsl</sourceCode>

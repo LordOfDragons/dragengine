@@ -339,10 +339,11 @@ void deoglOcclusionTracing::pAddStaticModel( const decMatrix &matrix, deoglRComp
 		
 		for( i=0; i<primitiveCount; i++ ){
 			const deoglModelFace &face = faces[ primitives[ i ] ];
+			//const uint32_t doubleSided = modelLOD.GetTextureAt( face.GetTexture() ).GetDoubleSided() ? 0 : 1;
+			const uint32_t doubleSided = 1; // always double sided to allow disable probe
 			pTBOFace.AddVec4( occMesh.indexVertices + vertices[ face.GetVertex1() ].position,
 				occMesh.indexVertices + vertices[ face.GetVertex2() ].position,
-				occMesh.indexVertices + vertices[ face.GetVertex3() ].position,
-				modelLOD.GetTextureAt( face.GetTexture() ).GetDoubleSided() ? 0 : 1 );
+				occMesh.indexVertices + vertices[ face.GetVertex3() ].position, doubleSided );
 		}
 		
 		// add BVH to TBOs

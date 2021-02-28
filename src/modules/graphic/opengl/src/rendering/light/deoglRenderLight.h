@@ -30,11 +30,13 @@ class deoglRenderLightParticles;
 class deoglRenderLightPoint;
 class deoglRenderLightSky;
 class deoglRenderLightSpot;
+class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglRTRenderers;
+class deoglRenderPlanMasked;
 
 
 /**
@@ -55,6 +57,7 @@ private:
 	deoglRenderLightSky *pRenderLightSky;
 	deoglRenderLightPoint *pRenderLightPoint;
 	deoglRenderLightParticles *pRenderLightParticles;
+	deoglRenderGI *pRenderGI;
 	
 	deoglSPBlockUBO *pLightPB;
 	deoglSPBlockUBO *pShadowPB;
@@ -101,6 +104,9 @@ public:
 	/** \brief Renderer for particle lights. */
 	inline deoglRenderLightParticles &GetRenderLightParticles() const{ return *pRenderLightParticles; }
 	
+	/** \brief Renderer for global illumination. */
+	inline deoglRenderGI &GetRenderGI() const{ return *pRenderGI; }
+	
 	
 	
 	/** \brief Light render parameter block. */
@@ -127,7 +133,7 @@ public:
 	
 	
 	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
 	/**
 	 * \brief Render ambient occlusion.

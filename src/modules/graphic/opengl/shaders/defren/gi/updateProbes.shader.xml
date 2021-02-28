@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Update Probes</name>
+	
+	<version>130</version>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	<texture name='texLight' target='2'/>
+	
+	<uniformBlock name='GIParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outValue' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/updateProbes.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/updateProbes.glsl</sourceCode>
+</shader>

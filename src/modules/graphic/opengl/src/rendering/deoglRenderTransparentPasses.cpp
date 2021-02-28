@@ -293,7 +293,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			RenderTransparentGeometryPass( plan, mask );
 			
 			if( ! plan.GetDisableLights() ){
-				renderThread.GetRenderers().GetLight().RenderLights( plan, false );
+				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask );
 				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentLights, true );
 			}
 			

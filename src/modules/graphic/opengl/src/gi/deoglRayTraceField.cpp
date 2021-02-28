@@ -29,7 +29,8 @@
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../rendering/deoglRenderGI.h"
+#include "../rendering/light/deoglRenderLight.h"
+#include "../rendering/light/deoglRenderGI.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -53,8 +54,7 @@ pInverseSpacing( 1.0f, 1.0f, 1.0f ),
 pProbeSize( 8 ), // equals 64 rays
 pProbesPerLine( 128 ), // equals image width of 1024
 pTexRays( renderThread ),
-pFBORays( NULL ),
-pUBO( NULL )
+pFBORays( NULL )
 {
 	try{
 		pUBO.TakeOver( new deoglSPBlockUBO( renderThread ) );
@@ -157,10 +157,11 @@ decVector deoglRayTraceField::Coord2Position( const decPoint3 &coord ) const{
 
 
 void deoglRayTraceField::RenderField( deoglROcclusionMesh &occlusionMesh ){
-	pRenderThread.GetGI().PrepareRayTracing( occlusionMesh );
+	return;
+// 	pRenderThread.GetGI().PrepareRayTracing( occlusionMesh );
 	pPrepareRayTexFBO();
 	pPrepareUBOState();
-	pRenderThread.GetRenderers().GetGI().TraceRays( *this );
+	pRenderThread.GetRenderers().GetLight().GetRenderGI().TraceRays( *this );
 	DropFBO();
 }
 

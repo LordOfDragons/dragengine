@@ -40,7 +40,7 @@ class deoglFramebuffer;
 class deoglGraphicContext;
 class deoglHTView;
 class deoglOcclusionMap;
-class deoglOcclusionTracingState;
+class deoglGIState;
 class deoglRenderPlanEnvMap;
 class deoglPlanVisitorCullElements;
 class deoglRenderCacheLight;
@@ -168,7 +168,7 @@ private:
 	deoglOcclusionMap *pOcclusionMap;
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
-	deoglOcclusionTracingState *pOcclusionTracingState;
+	deoglGIState *pGIState;
 	
 	deoglRenderPlanDebug *pDebug;
 	bool pDebugTiming;
@@ -553,8 +553,8 @@ public:
 	/** \brief Set occlusion test matrix. */
 	void SetOcclusionTestMatrix( const decMatrix &matrix );
 	
-	/** \brief Occlusion tracing state or NULL. */
-	inline deoglOcclusionTracingState *GetOcclusionTracingState() const{ return pOcclusionTracingState; }
+	/** \brief Global illumination state or NULL. */
+	inline deoglGIState *GetGIState() const{ return pGIState; }
 	
 	
 	
@@ -667,7 +667,7 @@ private:
 	void pPlanOcclusionTesting();
 	void pPlanCollideList( deoglDCollisionFrustum *frustum );
 	void pPlanOcclusionTestInputData();
-	void pPlanOcclusionTracing();
+	void pPlanGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
 	void pPlanVisibility( deoglDCollisionFrustum *frustum );

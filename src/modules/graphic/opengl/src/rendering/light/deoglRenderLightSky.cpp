@@ -469,6 +469,7 @@ deoglRenderPlanSkyLight &planSkyLight ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
 	}
 	
+	/*
 	deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
 	if( tracingState ){
 		target = lightShader->GetTextureTarget( deoglLightShader::ettOTOcclusion );
@@ -481,6 +482,7 @@ deoglRenderPlanSkyLight &planSkyLight ){
 			tsmgr.EnableTexture( target, tracingState->GetTextureProbeDistance(), GetSamplerClampLinear() );
 		}
 	}
+	*/
 	
 	// set the ao texture
 	//tsmgr.EnableTexture( 5, *defren.GetTemporaryTexture(), deoglTextureStageManager::etfNearest, GL_CLAMP );
@@ -868,17 +870,17 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 	try{
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
-			if( plan.GetOcclusionTracingState() ){
+			/*if( plan.GetOcclusionTracingState() ){
 				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 				
-			}else{
+			}else{*/
 				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-			}
+			//}
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
 		if( target != -1 ){
-			if( plan.GetOcclusionTracingState() ){
+			/*if( plan.GetOcclusionTracingState() ){
 				// this one is a bit tricky. occlusion is the percentage of hits over a full
 				// sphere. full light intensity is though usually acquired if half the sphere
 				// is lit since the other half is typically underneath the surface. the occlusion
@@ -887,9 +889,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
 				
-			}else{
+			}else{*/
 				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
-			}
+			//}
 		}
 		
 		// NOTE sky light is currently using a special handling which has to be replaced with the

@@ -28,6 +28,7 @@
 #include "deoglRenderLightSky.h"
 #include "deoglRenderLightPoint.h"
 #include "deoglRenderLightParticles.h"
+#include "deoglRenderGI.h"
 #include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
@@ -142,6 +143,7 @@ pRenderLightSpot( NULL ),
 pRenderLightSky( NULL ),
 pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
+pRenderGI( NULL ),
 
 pLightPB( NULL ),
 pShadowPB( NULL ),
@@ -182,6 +184,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
 		pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
 		pRenderLightParticles = new deoglRenderLightParticles( renderThread );
+		pRenderGI = new deoglRenderGI( renderThread );
 		
 		
 		
@@ -280,7 +283,7 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
@@ -321,10 +324,20 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	PrepareRenderParamBlockLight( plan );
+	if( plan.GetGIState() ){
+		pRenderGI->PrepareUBORenderLight( plan );
+	}
 	
 	pRenderLightSky->RenderLights( plan, solid );
 	pRenderLightPoint->RenderLights( plan, solid );
 	pRenderLightSpot->RenderLights( plan, solid );
+	
+	if( plan.GetGIState() ){
+		if( solid && ! mask ){
+			pRenderGI->UpdateProbes( plan );
+		}
+		pRenderGI->RenderLight( plan );
+	}
 	
 	DebugTimer2Reset( plan, false );
 	
@@ -657,6 +670,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// occlusion tracing
+		/*
 		const deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
 		if( tracingState ){
 			const deoglOcclusionTracing &tracing = tracingState->GetTracing();
@@ -684,8 +698,9 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTEnergyPreservation, tracing.GetEnergyPreservation() );
 			
 		}else{
+		*/
 			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, false );
-		}
+		//}
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();
@@ -735,6 +750,7 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 	pRenderLightSky->DevModeDebugInfoChanged();
 	pRenderLightPoint->DevModeDebugInfoChanged();
 	pRenderLightSpot->DevModeDebugInfoChanged();
+	pRenderGI->DevModeDebugInfoChanged();
 }
 
 
@@ -743,6 +759,9 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLight::pCleanUp(){
+	if( pRenderGI ){
+		delete pRenderGI;
+	}
 	if( pRenderLightParticles ){
 		delete pRenderLightParticles;
 	}

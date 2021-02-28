@@ -31,7 +31,6 @@ class deoglRenderDepthPass;
 class deoglRenderDevMode;
 class deoglRenderGeometry;
 class deoglRenderGeometryPass;
-class deoglRenderGI;
 class deoglRenderLight;
 class deoglRenderOcclusion;
 class deoglRenderParticles;
@@ -60,7 +59,6 @@ private:
 	deoglRenderOcclusion *pOcclusion;
 	deoglRenderParticles *pParticles;
 	deoglRenderReflection *pReflection;
-	deoglRenderGI *pGI;
 	deoglRenderSky *pSky;
 	deoglRenderToneMap *pToneMap;
 	deoglRenderTranspCounting *pTransparencyCounter;
@@ -115,9 +113,6 @@ public:
 	
 	/** \brief Reflection renderer. */
 	inline deoglRenderReflection &GetReflection() const{ return *pReflection; }
-	
-	/** \brief GI renderer. */
-	inline deoglRenderGI &GetGI() const{ return *pGI; }
 	
 	/** \brief Sky renderer. */
 	inline deoglRenderSky &GetSky() const{ return *pSky; }

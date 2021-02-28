@@ -35,10 +35,10 @@ uniform samplerBuffer tboVertex;
 
 // ray cast result
 struct RayCastResult{
-	//vec3 hitPoint;
 	float distance;
 	int face;
 	vec3 tc;
+	vec3 normal;
 };
 
 
@@ -150,6 +150,7 @@ bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out 
 						result.distance = uvt.z;
 						result.face = index.x + i;
 						result.tc = uvt.wxy;
+						result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
 						hasHit = true;
 					}
 				}
@@ -246,6 +247,12 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 					meshResult.distance /= length( meshRayDirection );
 					
 					if( meshResult.distance < result.distance ){
+						// transform hit normal back. this requires the following matrix:
+						//    matNor = transpose( inverse( mat3( matrix ) ) )
+						// we have inverse(mat3(matrix)) already and the transpose we can also
+						// skip by changing order
+						meshResult.normal = normalize( meshResult.normal * mat3( invMatrix ) );
+						
 						result = meshResult;
 						hasHit = true;
 					}

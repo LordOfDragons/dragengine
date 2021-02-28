@@ -22,7 +22,9 @@
 #ifndef _DEOGLRENDERGI_H_
 #define _DEOGLRENDERGI_H_
 
-#include "deoglRenderBase.h"
+#include "../deoglRenderBase.h"
+
+#include <dragengine/deObjectReference.h>
 
 
 class deoglRayTraceField;
@@ -35,7 +37,13 @@ class deoglShaderProgram;
  */
 class deoglRenderGI : public deoglRenderBase{
 private:
+	deoglShaderProgram *pShaderFieldTraceRays;
 	deoglShaderProgram *pShaderTraceRays;
+	deoglShaderProgram *pShaderUpdateProbeIrradiance;
+	deoglShaderProgram *pShaderUpdateProbeDistance;
+	deoglShaderProgram *pShaderLight;
+	
+	deObjectReference pUBORenderLight;
 	
 	
 	
@@ -55,12 +63,25 @@ public:
 	/*@{*/
 	/** \brief Trace rays for field. */
 	void TraceRays( deoglRayTraceField &field );
+	
+	/** \brief Trace rays. */
+	void TraceRays( deoglRenderPlan &plan );
+	
+	/** \brief Prepare render light UBO. */
+	void PrepareUBORenderLight( deoglRenderPlan &plan );
+	
+	/** \brief Update probes. */
+	void UpdateProbes( deoglRenderPlan &plan );
+	
+	/** \brief Render light. */
+	void RenderLight( deoglRenderPlan &plan );
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
+	void pCreateUBORenderLight();
 };
 
 #endif

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<version>130</version>
+	
+	<name>DefRen Light GI</name>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	<texture name='texAOSolidity' target='3'/>
+	<texture name='texGIIrradiance' target='4'/>
+	<texture name='texGIDistance' target='5'/>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='GIParameters' target='1'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	<output name='outLuminance' target='1'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/light/gi.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/light/gi.glsl</sourceCode>
+</shader>

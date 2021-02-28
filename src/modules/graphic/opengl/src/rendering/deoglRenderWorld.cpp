@@ -397,7 +397,7 @@ DEBUG_RESET_TIMER
 		}
 		
 		DBG_ENTER("RenderLights")
-		renderers.GetLight().RenderLights( plan, true );
+		renderers.GetLight().RenderLights( plan, true, mask );
 		DBG_EXIT("RenderLights")
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
 #if 0

@@ -30,6 +30,7 @@
 #include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
+#include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
@@ -243,6 +244,14 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	QUICK_DEBUG_END
 	
 	
+	// trace global illumination rays if in main render pass
+	if( ! mask && plan.GetGIState() ){
+		renderThread.GetRenderers().GetLight().GetRenderGI().TraceRays( plan );
+		
+		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	}
+	
 	
 	// activate material fbo and clear all color attachments except color and depth buffer
 	defren.ActivateFBOMaterialColor();
@@ -279,7 +288,9 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// render geometry
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );

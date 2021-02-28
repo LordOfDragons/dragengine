@@ -22,12 +22,18 @@
 #ifndef _DEOGLGI_H_
 #define _DEOGLGI_H_
 
+#include "deoglGIBVH.h"
+#include "deoglGIRays.h"
+#include "../framebuffer/deoglFramebuffer.h"
+#include "../texture/deoglRenderbuffer.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../tbo/deoglDynamicTBOFloat32.h"
-#include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../texture/texture2d/deoglTexture.h"
 
 class deoglRenderThread;
 class deoglROcclusionMesh;
+
+
+//#define ENABLE_GI 1
 
 
 /**
@@ -38,13 +44,24 @@ class deoglROcclusionMesh;
 class deoglGI{
 public:
 	/** \brief UBO Parameters. */
-	enum eUBOTracingParameter{
-		eutpProbeCount,
-		eutpProbesPerLine,
-		eutpProbeSize,
-		eutpResolution,
-		eutpSpacing,
-		eutpOrigin
+	enum eUBOParameters{
+		eupSampleImageScale, // vec2: scale factor for sample image size
+		eupProbeCount, // int: count of probes to update
+		eupRaysPerProbe, // int: count of rays per probe
+		eupGridProbeCount, // ivec3: count of probes in grid
+		eupProbesPerLine, // int: count of probes per line
+		eupGridProbeSpacing, // vec3: spacing of probes in grid
+		eupBVHInstanceRootNode, // int
+		eupOcclusionMapScale, // vec2: scale factor for occlusion map
+		eupDistanceMapScale, // vec2: scale factor for distance map
+		eupOcclusionMapSize, // int: size of occlusion map
+		eupDistanceMapSize, // int: size of distance map
+		eupMaxProbeDistance, // float
+		eupDepthSharpness, // float
+		eupFieldOrigin, // vec3
+		eupProbeIndex, // ivec4[]: group of 4 probes to trace
+		eupProbePosition, // vec3[]: probe position and ray origin
+		eupRayDirection // vec3[]: ray direction
 	};
 	
 	
@@ -52,13 +69,10 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pRaysPerProbe;
-	deoglSPBlockUBO *pUBOTracing;
+	deoglGIBVH pBVH;
+	deoglGIRays pRays;
 	
-	deoglDynamicTBOFloat32 pTBONodeBox;
-	deoglDynamicTBOUInt32 pTBOIndex;
-	deoglDynamicTBOUInt32 pTBOFace;
-	deoglDynamicTBOFloat32 pTBOVertex;
+	deObjectReference pUBO;
 	
 	
 	
@@ -74,40 +88,28 @@ public:
 	
 	
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** \brief Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Rays per probe. */
-	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
+	/** \brief BVH. */
+	inline deoglGIBVH &GetBVH(){ return pBVH; }
+	inline const deoglGIBVH &GetBVH() const{ return pBVH; }
 	
-	/** \brief UBO Tracing parameters preparing it if not created yet. */
-	deoglSPBlockUBO &GetUBOTracing();
+	/** \brief Rays. */
+	inline deoglGIRays &GetRays(){ return pRays; }
+	inline const deoglGIRays &GetRays() const{ return pRays; }
 	
-	/** \brief TBO for BVH node boundaries. */
-	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
-	
-	/** \brief TBO for BVH node indices. */
-	inline const deoglDynamicTBOUInt32 &GetTBOIndex() const{ return pTBOIndex; }
-	
-	/** \brief TBO for mesh faces. */
-	inline const deoglDynamicTBOUInt32 &GetTBOFace() const{ return pTBOFace; }
-	
-	/** \brief TBO for mesh vertices. */
-	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
-	
-	
-	
-	/** \brief Prepare ray tracing information. */
-	void PrepareRayTracing( deoglROcclusionMesh &occlusionMesh );
+	/** \brief UBO. */
+	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pWriteTBOs();
+	void pCreateUBO();
 };
 
 #endif
