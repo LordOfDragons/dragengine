@@ -28,6 +28,8 @@
 #include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
+#include "../task/deoglRenderTask.h"
+#include "../task/deoglAddToRenderTaskGIMaterial.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -104,7 +106,10 @@ pShaderFieldTraceRays( NULL ),
 pShaderTraceRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
-pShaderLight( NULL )
+pShaderLight( NULL ),
+
+pRenderTask( NULL ),
+pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglGI &gi = renderThread.GetGI();
@@ -139,6 +144,11 @@ pShaderLight( NULL )
 		// render light
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
+		
+		
+		// render task for GI material
+		pRenderTask = new deoglRenderTask;
+		pAddToRenderTask = new deoglAddToRenderTaskGIMaterial( renderThread, *pRenderTask );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -289,8 +299,14 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.EnableTBO( 3, bvh.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 4, bvh.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 5, bvh.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 5 );
+	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 7 );
 	
+		// render doc debug
+		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
+		// end render doc debug
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	
@@ -474,6 +490,13 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 //////////////////////
 
 void deoglRenderGI::pCleanUp(){
+	if( pAddToRenderTask ){
+		delete pAddToRenderTask;
+	}
+	if( pRenderTask ){
+		delete pRenderTask;
+	}
+	
 	if( pShaderLight ){
 		pShaderLight->RemoveUsage();
 	}

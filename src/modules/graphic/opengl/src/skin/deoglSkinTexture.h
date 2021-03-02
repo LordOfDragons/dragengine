@@ -121,6 +121,7 @@ public:
 		estComponentShadowDistanceCube,
 		estComponentEnvMap,
 		estComponentLuminance,
+		estComponentGIMaterial,
 		
 		estBillboardGeometry,
 		estBillboardDepth,

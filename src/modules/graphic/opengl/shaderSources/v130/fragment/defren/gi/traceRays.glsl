@@ -3,6 +3,7 @@ precision highp int;
 
 #include "v130/shared/octahedral.glsl"
 #include "v130/shared/raycasting.glsl"
+#include "v130/shared/raycasting_material.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 
@@ -47,6 +48,43 @@ void main( void ){
 	}
 	#endif
 	
+// 	#if RENDERDOC_DEBUG
+	{
+	const float PI = 3.14159265;
+	const vec2 TC2PCOORD_MUL = vec2(PI * 2.0 / 512.0, PI / 256.0);
+	const vec2 TC2PCOORD_ADD = vec2(0, PI * -0.5);
+	
+	vec2 pc = vec2(tc.x % 512, tc.y) * TC2PCOORD_MUL + TC2PCOORD_ADD;
+	float r = cos(pc.y);
+	vec3 direction = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
+	
+	//vec3 pp = vec3(0,-0.4*(int(tc.x)/512),0);
+	//vec3 pp = vec3(2*(int(tc.x)/512),0,0);
+	vec3 pp = vec3(0,0,-1*(tc.x/512));
+	
+	RayCastResult result;
+	if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
+		outPosition = vec4( pp, result.distance );
+		outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
+		outNormal = vec4( result.normal, 0.0 );
+		
+		vec3 matDiffuse, matReflectivity, matEmissivity;
+		float matRoughness;
+		rayCastSampleMaterial(result, matDiffuse, matReflectivity, matRoughness, matEmissivity);
+		
+		outDiffuse = vec4( matDiffuse, 1 );
+		outLight = vec3( matEmissivity );
+		
+	}else{
+		outPosition = vec4( pp, 10000.0 );
+		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
+		outDiffuse = vec4( 1.0, 1.0, 1.0, 0.0 );
+		outLight = vec3( 0.0 );
+	}
+	return;
+	}
+// 	#endif
+	
 	
 	// calculate probe position and index from offset. the quad covers an entire block
 	// of probes including not used ones at the end. skip those
@@ -80,32 +118,4 @@ void main( void ){
 	outLight = vec3( 0.0 );
 	
 	gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );
-	
-	
-	#if RENDERDOC_DEBUG
-	{
-	const float PI = 3.14159265;
-	const vec2 TC2PCOORD_MUL = vec2(PI * 2.0 / 64.0, PI / 32.0);
-	const vec2 TC2PCOORD_ADD = vec2(0, PI * -0.5);
-
-	vec2 pc = vec2(tc.x % 64, tc.y) * TC2PCOORD_MUL + TC2PCOORD_ADD;
-	float r = cos(pc.y);
-	direction = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
-
-	//vec3 pp = vec3(0,-0.4*(int(tc.x)/64),0);
-	//vec3 pp = vec3(2*(int(tc.x)/64),0,0);
-	vec3 pp = vec3(0,0,-1*(tc.x/64));
-
-	if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
-		outPosition = vec4( pp, result.distance );
-		outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
-		outNormal = vec4( result.normal, 0.0 );
-	}else{
-		outPosition = vec4( pp, 10000.0 );
-		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
-	}
-	outDiffuse = vec4( 1.0, 1.0, 1.0, 0.0 );
-	outLight = vec3( 0.0 );
-	}
-	#endif
 }

@@ -14,29 +14,39 @@
 //      tboNodeBox/tboIndex (absolute strided index). for child nodes stays in instance BVH.
 //      for leaf nodes switches to mesh BVH traversal. points into tboInstance and tboMatrix.
 // 
-// - tboInstance: R32UI (stride 1 pixel)
+// - tboInstance: RG32UI (stride 1 pixel)
 //   stores instance offsets. bvhIndex(R) is the absolute strided index into tboNodeBox
-//   and tboIndex with the mesh bvh root node.
+//   and tboIndex with the mesh bvh root node.materialIndex(G) is the absolute strided
+//   index into TBOMaterial of the first instance material.
 //   
 // - tboMatrix: RGBA16F (stride 3 pixels)
 //   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
 //   
 // - tboFace: RGBA16F (stride 3 pixels)
-//   stores mesh faces. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) doubleSided(0:A).
-//   vertices are transformed by "current BVH transformation matrix". face is doubleSided
-//   if doubleSided has value 1 or single sided if value is 0.
+//   stores mesh faces. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) materialIndex(0:A).
+//   vertices are transformed by "current BVH transformation matrix". materialIndex is
+//   relative to instance.
+// 
+// - tboVertex: RGBA32F (stride 1 pixel)
+//   stores mesh vertices. vertices are transformed by "current BVH transformation matrix"
+// 
+// - tboTexCoord: RG16F (stride 3 pixel)
+//   stores mesh texture coordinates. same unstrided index as TBOFace.
+//
 uniform samplerBuffer tboNodeBox;
 uniform usamplerBuffer tboIndex;
 uniform usamplerBuffer tboInstance;
 uniform samplerBuffer tboMatrix;
 uniform usamplerBuffer tboFace;
 uniform samplerBuffer tboVertex;
+uniform samplerBuffer tboTexCoord;
 
 
 // ray cast result
 struct RayCastResult{
 	float distance;
 	int face;
+	int material;
 	vec3 tc;
 	vec3 normal;
 };
@@ -133,9 +143,10 @@ bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out 
 				// check single sided and parallelity. parallelity check (det != 0) has to be
 				// present always or division fails. single sided is tested using (det < 0).
 				// if corners.w is 1 the face is double sided. if corners is 0 the face is single sided.
-				//if( det < 0.0 || ( corners.w == 1 && det > 0.0 ) ){
-				//if( any( lessThan( vec2( det, -det ) * vec2( 1, corners.w ), vec2( 0.0 ) ) ) ){
-				if( det < 0.0 || det * corners.w > 0.0 ){
+				// //if( det < 0.0 || ( corners.w == 1 && det > 0.0 ) ){
+				// //if( any( lessThan( vec2( det, -det ) * vec2( 1, corners.w ), vec2( 0.0 ) ) ) ){
+				// if( det < 0.0 || det * corners.w > 0.0 ){
+				if( det != 0.0 ){
 					vec3 tv = rayOrigin - v1;
 					vec3 qv = cross( tv, e0 );
 					
@@ -149,6 +160,7 @@ bool rayCastMesh( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out 
 					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < result.distance ){
 						result.distance = uvt.z;
 						result.face = index.x + i;
+						result.material = corners.w;
 						result.tc = uvt.wxy;
 						result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
 						hasHit = true;
@@ -221,7 +233,7 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 			int i;
 			
 			for( i=0; i<index.y; i++ ){
-				int bvhIndex = int( texelFetch( tboInstance, tcInstance++ ).x );
+				ivec2 indices = ivec2( texelFetch( tboInstance, tcInstance++ ).xy );
 				
 				vec4 mrow1 = texelFetch( tboMatrix, tcMatrix++ );
 				vec4 mrow2 = texelFetch( tboMatrix, tcMatrix++ );
@@ -238,7 +250,7 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 				// we can avoid doing all this
 				vec3 meshRayDirection = vec3( vec4( rayDirection, 0.0 ) * invMatrix );
 				
-				if( rayCastMesh( bvhIndex, meshRayOrigin, normalize( meshRayDirection ), meshResult ) ){
+				if( rayCastMesh( indices.x, meshRayOrigin, normalize( meshRayDirection ), meshResult ) ){
 					// we can not use directly the distance since it is possible the matrix
 					// contains scaling. we have to calculate the hit point in tracing space
 					// and from there the distance can be calculated as difference between the
@@ -251,9 +263,12 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 						//    matNor = transpose( inverse( mat3( matrix ) ) )
 						// we have inverse(mat3(matrix)) already and the transpose we can also
 						// skip by changing order
-						meshResult.normal = normalize( meshResult.normal * mat3( invMatrix ) );
+						result.distance = meshResult.distance;
+						result.normal = normalize( meshResult.normal * mat3( invMatrix ) );
+						result.material = indices.y + meshResult.material;
+						result.face = meshResult.face;
+						result.tc = meshResult.tc;
 						
-						result = meshResult;
 						hasHit = true;
 					}
 				}
@@ -264,4 +279,13 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 	}
 	
 	return hasHit;
+}
+
+// Calculate texture coordinates of hit face.
+vec2 rayCastFaceTexCoord( in RayCastResult result ){
+	int baseIndex = result.face * 3;
+	vec2 tc1 = texelFetch( tboTexCoord, baseIndex ).xy;
+	vec2 tc2 = texelFetch( tboTexCoord, baseIndex + 1 ).xy;
+	vec2 tc3 = texelFetch( tboTexCoord, baseIndex + 2 ).xy;
+	return tc1 * result.tc.x + tc2 * result.tc.y + tc3 * result.tc.z;
 }

@@ -69,6 +69,7 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texShadow2Ambient", // ettShadow2Ambient
 	"texLightDepth1", // ettLightDepth1
 	"texLightDepth2", // ettLightDepth2
+	"texPosition", // ettPosition
 	"texOTOcclusion", // ettOTOcclusion
 	"texOTDistance" // ettOTDistance
 };
@@ -607,6 +608,9 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetLuminanceOnly() ){
 		defines.AddDefine( "LUMINANCE_ONLY", "1" );
 	}
+	if( pConfig.GetGIRay() ){
+		defines.AddDefine( "GI_RAY", "1" );
+	}
 	
 	switch( pConfig.GetShadowTapMode() ){
 	case deoglLightShaderConfig::estmPcf4:
@@ -720,12 +724,20 @@ void deoglLightShader::UpdateTextureTargets(){
 	}
 	pUsedTextureTargetCount = 0;
 	
-	pTextureTargets[ ettDepth ] = textureUnitNumber++;
-	pTextureTargets[ ettDiffuse ] = textureUnitNumber++;
-	pTextureTargets[ ettNormal ] = textureUnitNumber++;
-	pTextureTargets[ ettReflectivity ] = textureUnitNumber++;
-	pTextureTargets[ ettRoughness ] = textureUnitNumber++;
-	pTextureTargets[ ettAOSolidity ] = textureUnitNumber++;
+	if( pConfig.GetGIRay() ){
+		pTextureTargets[ ettPosition ] = textureUnitNumber++;
+		pTextureTargets[ ettDiffuse ] = textureUnitNumber++;
+		pTextureTargets[ ettNormal ] = textureUnitNumber++;
+		
+	}else{
+		pTextureTargets[ ettDepth ] = textureUnitNumber++;
+		pTextureTargets[ ettDiffuse ] = textureUnitNumber++;
+		pTextureTargets[ ettNormal ] = textureUnitNumber++;
+		pTextureTargets[ ettReflectivity ] = textureUnitNumber++;
+		pTextureTargets[ ettRoughness ] = textureUnitNumber++;
+		pTextureTargets[ ettAOSolidity ] = textureUnitNumber++;
+	}
+	
 	if( pConfig.GetSubSurface() ){
 		pTextureTargets[ ettSubSurface ] = textureUnitNumber++;
 	}

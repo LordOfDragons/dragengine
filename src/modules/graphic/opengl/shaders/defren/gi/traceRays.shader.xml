@@ -10,6 +10,8 @@
 	<texture name='tboMatrix' target='3'/>
 	<texture name='tboFace' target='4'/>
 	<texture name='tboVertex' target='5'/>
+	<texture name='tboTexCoord' target='6'/>
+	<texture name='tboMaterial' target='7'/>
 	
 	<uniformBlock name='GIParameters' target='0'/>
 	

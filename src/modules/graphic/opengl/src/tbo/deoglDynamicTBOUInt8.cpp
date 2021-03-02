@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglDynamicTBOUInt32.h"
+#include "deoglDynamicTBOUInt8.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -34,13 +34,13 @@
 
 
 
-// Class deoglDynamicTBOUInt32
+// Class deoglDynamicTBOUInt8
 ////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBOUInt32::deoglDynamicTBOUInt32( deoglRenderThread &renderThread, int componentCount ) :
+deoglDynamicTBOUInt8::deoglDynamicTBOUInt8( deoglRenderThread &renderThread, int componentCount ) :
 pRenderThread( renderThread ),
 pComponentCount( componentCount ),
 pVBO( 0 ),
@@ -70,7 +70,7 @@ pMemoryGPU( 0 )
 	}
 }
 
-deoglDynamicTBOUInt32::~deoglDynamicTBOUInt32(){
+deoglDynamicTBOUInt8::~deoglDynamicTBOUInt8(){
 	pCleanUp();
 }
 
@@ -79,7 +79,7 @@ deoglDynamicTBOUInt32::~deoglDynamicTBOUInt32(){
 // Management
 ///////////////
 
-int deoglDynamicTBOUInt32::GetPixelCount() const{
+int deoglDynamicTBOUInt8::GetPixelCount() const{
 	int count = pDataCount / pComponentCount;
 	if( pDataCount % pComponentCount != 0 ){
 		count++;
@@ -87,51 +87,51 @@ int deoglDynamicTBOUInt32::GetPixelCount() const{
 	return count;
 }
 
-void deoglDynamicTBOUInt32::Clear(){
+void deoglDynamicTBOUInt8::Clear(){
 	pDataCount = 0;
 }
 
-void deoglDynamicTBOUInt32::AddBool( bool value ){
+void deoglDynamicTBOUInt8::AddBool( bool value ){
 	if( value ){
-		AddInt( ( uint32_t )~1 );
+		AddInt( ( uint8_t )~1 );
 		
 	}else{
 		AddInt( 0 );
 	}
 }
 
-void deoglDynamicTBOUInt32::AddInt( uint32_t value ){
+void deoglDynamicTBOUInt8::AddInt( uint8_t value ){
 	pEnlarge( 1 );
 	pDataUInt[ pDataCount++ ] = value;
 }
 
-void deoglDynamicTBOUInt32::AddVec2( uint32_t value1, uint32_t value2 ){
+void deoglDynamicTBOUInt8::AddVec2( uint8_t value1, uint8_t value2 ){
 	pEnlarge( 2 );
 	pDataUInt[ pDataCount++ ] = value1;
 	pDataUInt[ pDataCount++ ] = value2;
 }
 
-void deoglDynamicTBOUInt32::AddVec2( const decPoint &value ){
+void deoglDynamicTBOUInt8::AddVec2( const decPoint &value ){
 	pEnlarge( 2 );
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.y;
+	pDataUInt[ pDataCount++ ] = ( uint8_t )value.x;
+	pDataUInt[ pDataCount++ ] = ( uint8_t )value.y;
 }
 
-void deoglDynamicTBOUInt32::AddVec3( uint32_t value1, uint32_t value2, uint32_t value3 ){
+void deoglDynamicTBOUInt8::AddVec3( uint8_t value1, uint8_t value2, uint8_t value3 ){
 	pEnlarge( 3 );
 	pDataUInt[ pDataCount++ ] = value1;
 	pDataUInt[ pDataCount++ ] = value2;
 	pDataUInt[ pDataCount++ ] = value3;
 }
 
-void deoglDynamicTBOUInt32::AddVec3( const decPoint3 &value ){
+void deoglDynamicTBOUInt8::AddVec3( const decPoint3 &value ){
 	pEnlarge( 3 );
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.y;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.z;
+	pDataUInt[ pDataCount++ ] = ( uint8_t )value.x;
+	pDataUInt[ pDataCount++ ] = ( uint8_t )value.y;
+	pDataUInt[ pDataCount++ ] = ( uint8_t )value.z;
 }
 
-void deoglDynamicTBOUInt32::AddVec4( uint32_t value1, uint32_t value2, uint32_t value3, uint32_t value4 ){
+void deoglDynamicTBOUInt8::AddVec4( uint8_t value1, uint8_t value2, uint8_t value3, uint8_t value4 ){
 	pEnlarge( 4 );
 	pDataUInt[ pDataCount++ ] = value1;
 	pDataUInt[ pDataCount++ ] = value2;
@@ -139,7 +139,7 @@ void deoglDynamicTBOUInt32::AddVec4( uint32_t value1, uint32_t value2, uint32_t 
 	pDataUInt[ pDataCount++ ] = value4;
 }
 
-void deoglDynamicTBOUInt32::Update(){
+void deoglDynamicTBOUInt8::Update(){
 	if( pDataCount == 0 ){
 		return;
 	}
@@ -153,8 +153,8 @@ void deoglDynamicTBOUInt32::Update(){
 	consumption.DecrementGPU( pMemoryGPU );
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint32_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint32_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint8_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint8_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
 	
 	if( ! pTBO ){
 		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
@@ -167,19 +167,19 @@ void deoglDynamicTBOUInt32::Update(){
 		
 		switch( pComponentCount ){
 		case 1:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R32UI, pVBO ) );
+			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R8UI, pVBO ) );
 			break;
 			
 		case 2:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG32UI, pVBO ) );
+			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG8UI, pVBO ) );
 			break;
 			
 		case 3:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB32UI, pVBO ) );
+			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB8UI, pVBO ) );
 			break;
 			
 		case 4:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32UI, pVBO ) );
+			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA8UI, pVBO ) );
 			break;
 		}
 		
@@ -188,16 +188,16 @@ void deoglDynamicTBOUInt32::Update(){
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
 	
-	pMemoryGPU = sizeof( uint32_t ) * pDataCount;
+	pMemoryGPU = sizeof( uint8_t ) * pDataCount;
 	
 	consumption.IncrementTBOGPU( pMemoryGPU );
 	consumption.IncrementGPU( pMemoryGPU );
 }
 
-void deoglDynamicTBOUInt32::DebugPrint(){
+void deoglDynamicTBOUInt8::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	logger.LogInfoFormat( "TBO %d-UInt32:", pComponentCount );
-	uint32_t *data = pDataUInt;
+	logger.LogInfoFormat( "TBO %d-UInt8:", pComponentCount );
+	uint8_t *data = pDataUInt;
 	int i, pixel = 0;
 	
 	while( pDataCount % pComponentCount != 0 ){
@@ -207,35 +207,35 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 	switch( pComponentCount ){
 	case 1:
 		for( i=0; i<pDataCount; i++ ){
-			const uint32_t v1 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11d]", pixel++, v1 );
+			const uint8_t v1 = *(data++);
+			logger.LogInfoFormat( "%5d: [%3d]", pixel++, v1 );
 		}
 		break;
 		
 	case 2:
 		for( i=0; i<pDataCount; i+=2 ){
-			const uint32_t v1 = *(data++);
-			const uint32_t v2 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11d | %11d]", pixel++, v1, v2 );
+			const uint8_t v1 = *(data++);
+			const uint8_t v2 = *(data++);
+			logger.LogInfoFormat( "%5d: [%3d | %3d]", pixel++, v1, v2 );
 		}
 		break;
 		
 	case 3:
 		for( i=0; i<pDataCount; i+=3 ){
-			const uint32_t v1 = *(data++);
-			const uint32_t v2 = *(data++);
-			const uint32_t v3 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11d | %11d | %11d]", pixel++, v1, v2, v3 );
+			const uint8_t v1 = *(data++);
+			const uint8_t v2 = *(data++);
+			const uint8_t v3 = *(data++);
+			logger.LogInfoFormat( "%5d: [%3d | %3d | %3d]", pixel++, v1, v2, v3 );
 		}
 		break;
 		
 	case 4:
 		for( i=0; i<pDataCount; i+=4 ){
-			const uint32_t v1 = *(data++);
-			const uint32_t v2 = *(data++);
-			const uint32_t v3 = *(data++);
-			const uint32_t v4 = *(data++);
-			logger.LogInfoFormat( "%5d: [%11d | %11d | %11d | %11d]", pixel++, v1, v2, v3, v4 );
+			const uint8_t v1 = *(data++);
+			const uint8_t v2 = *(data++);
+			const uint8_t v3 = *(data++);
+			const uint8_t v4 = *(data++);
+			logger.LogInfoFormat( "%5d: [%3d | %3d | %3d | %3d]", pixel++, v1, v2, v3, v4 );
 		}
 		break;
 	}
@@ -246,7 +246,7 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 // Private Functions
 //////////////////////
 
-void deoglDynamicTBOUInt32::pCleanUp(){
+void deoglDynamicTBOUInt8::pCleanUp(){
 	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
 	consumption.DecrementTBOGPU( pMemoryGPU );
 	consumption.DecrementTBOCount();
@@ -264,16 +264,16 @@ void deoglDynamicTBOUInt32::pCleanUp(){
 	}
 }
 
-void deoglDynamicTBOUInt32::pEnlarge( int count ){
+void deoglDynamicTBOUInt8::pEnlarge( int count ){
 	if( pDataCount + count <= pDataSize ){
 		return;
 	}
 	
 	const int newSize = pDataCount + count + 50;
-	uint32_t * const newArray = new uint32_t[ newSize ];
+	uint8_t * const newArray = new uint8_t[ newSize ];
 	
 	if( pDataUInt ){
-		memcpy( newArray, pDataUInt, sizeof( uint32_t ) * pDataCount );
+		memcpy( newArray, pDataUInt, sizeof( uint8_t ) * pDataCount );
 		delete [] pDataUInt;
 	}
 	

@@ -219,13 +219,22 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	config.SetHWDepthCompare( true );
 	config.SetDecodeInShadow( false );
 	
-	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+	switch( shaderType ){
+	case estGIRayNoShadow:
+	case estGIRaySolid:
+		config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+		config.SetSubSurface( false );
+		break;
+		
+	default:
+		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	}
+	
 	config.SetTextureNoise( false );
 	
 	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
 	config.SetFullScreenQuad( true );
-	
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	
 	switch( shaderType ){
 	case estNoShadow:
@@ -238,6 +247,15 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 		
 	case estSolid:
 		config.SetAmbientLighting( true );
+		config.SetTextureShadow1Solid( true );
+		break;
+		
+	case estGIRayNoShadow:
+		config.SetAmbientLighting( false );
+		break;
+		
+	case estGIRaySolid:
+		config.SetAmbientLighting( false );
 		config.SetTextureShadow1Solid( true );
 		break;
 	}

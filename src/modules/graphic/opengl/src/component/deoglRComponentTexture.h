@@ -60,6 +60,7 @@ private:
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	deoglSkinState *pUseSkinState;
+	deoglRDynamicSkin *pUseDynamicSkin;
 	bool pUseDoubleSided;
 	bool pUseDecal;
 	
@@ -79,6 +80,7 @@ private:
 	deoglTexUnitsConfig *pTUCOutlineGeometry;
 	deoglTexUnitsConfig *pTUCOutlineCounter;
 	deoglTexUnitsConfig *pTUCLuminance;
+	deoglTexUnitsConfig *pTUCGIMaterial;
 	
 	bool pValidParamBlockDepth;
 	bool pValidParamBlockGeometry;
@@ -98,6 +100,7 @@ private:
 	bool pDirtyTUCOutlineGeometry;
 	bool pDirtyTUCOutlineCounter;
 	bool pDirtyTUCLuminance;
+	bool pDirtyTUCGIMaterial;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -170,6 +173,9 @@ public:
 	
 	/** \brief Skin state to use. */
 	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	
+	/** \brief Dynamic skin to use. */
+	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	
 	/** \brief Texture to use is double sided. */
 	inline bool GetUseDoubleSided() const{ return pUseDoubleSided; }
@@ -296,6 +302,13 @@ public:
 	 *          - deoglSkinTexture::estComponentLuminance
 	 */
 	deoglTexUnitsConfig *GetTUCLuminance();
+	
+	/**
+	 * \brief Texture units configuration for GI material type shaders or \em NULL if empty.
+	 * \details This texture units configuration works for the shader types:
+	 *          - deoglSkinTexture::estComponentGIMaterial
+	 */
+	deoglTexUnitsConfig *GetTUCGIMaterial();
 	
 	/**
 	 * \brief Obtain texture units configuration for a shader type.

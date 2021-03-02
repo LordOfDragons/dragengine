@@ -63,6 +63,7 @@ public:
 		ettShadow2Ambient,
 		ettLightDepth1,
 		ettLightDepth2,
+		ettPosition,
 		ettOTOcclusion,
 		ettOTDistance,
 		ETT_COUNT

@@ -27,6 +27,7 @@
 
 class deoglComponentList;
 class deoglRenderPlan;
+class deoglGIState;
 
 
 
@@ -89,6 +90,9 @@ public:
 	
 	/** \brief Restore depth texture binding from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTextureDepthSmooth();
+	
+	/** \brief Restore GI Rays frame buffer configuration. */
+	void RestoreFBOGIRays( deoglGIState &giState );
 	
 	
 	

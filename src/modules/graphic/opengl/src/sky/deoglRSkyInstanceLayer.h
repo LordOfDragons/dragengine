@@ -51,6 +51,12 @@ public:
 		/** \brief Solid shadow. */
 		estSolid,
 		
+		/** \brief No shadow casting. */
+		estGIRayNoShadow,
+		
+		/** \brief Solid shadow. */
+		estGIRaySolid,
+		
 		/** Number of shaders. */
 		EST_COUNT
 	};

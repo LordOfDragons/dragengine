@@ -39,7 +39,8 @@
 deoglGI::deoglGI( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pBVH( renderThread ),
-pRays( renderThread )
+pRays( renderThread ),
+pMaterials( renderThread )
 {
 	try{
 		pCreateUBO();

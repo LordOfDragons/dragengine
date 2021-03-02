@@ -24,6 +24,7 @@
 
 #include "deoglGIBVH.h"
 #include "deoglGIRays.h"
+#include "deoglGIMaterials.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/deoglRenderbuffer.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
@@ -71,6 +72,7 @@ private:
 	
 	deoglGIBVH pBVH;
 	deoglGIRays pRays;
+	deoglGIMaterials pMaterials;
 	
 	deObjectReference pUBO;
 	
@@ -100,6 +102,10 @@ public:
 	/** \brief Rays. */
 	inline deoglGIRays &GetRays(){ return pRays; }
 	inline const deoglGIRays &GetRays() const{ return pRays; }
+	
+	/** \brief Materials. */
+	inline deoglGIMaterials &GetMaterials(){ return pMaterials; }
+	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
 	
 	/** \brief UBO. */
 	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }

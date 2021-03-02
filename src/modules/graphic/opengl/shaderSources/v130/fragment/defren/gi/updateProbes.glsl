@@ -71,20 +71,13 @@ void main( void ){
 	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
 	
 	float weight, sumWeight = 0.0;
-	vec4 rayPosition;
-	vec3 rayNormal;
-	ivec2 rayTC;
 	int i;
-	
-	#ifdef MAP_DISTANCE
-	float rayProbeDistance;
-	#endif
 	
 	outValue = vec4( 0.0 );
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
-		rayTC = vRayOffset + ivec2( i, 0 );
-		rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
+		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
+		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
 		
 		// if ray misses hit distance is set to 10000. in this case max probe distance
 		// has to be used. this works with the min code below so no extra code required
@@ -92,38 +85,42 @@ void main( void ){
 		// here we deviate from the paper. ignoring misses to influence the result
 		// removes the most glaring light leaks. small (but glaring) ones still remain
 		if( rayPosition.w > 9999.0 ){
-			continue;
+			continue;  // remove this for true GI
 		}
 		
 		// back to paper here
-		rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
+		float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
 		#endif
 		
 		// for dynamic ray-tracing only the pRayDirection[i] can be used. by using though
 		// also the ray cast fields this is not possible anymore since the rays deviate
 		// from this direction
 		//weight = max( dot( texelDirection, pRayDirection[ i ] ), 0.0 );
-		weight = max( dot( texelDirection, normalize( rayPosition.xyz - vProbePosition ) ), 0.0 );
+		vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
+		weight = max( dot( texelDirection, rayDirection ), 0.0 );
 		#ifdef MAP_DISTANCE
 		weight = pow( weight, pGIDepthSharpness );
 		#endif
 		
 		if( weight >= epsilon ){
-			#ifdef MAP_IRRADIANCE
-			if( rayPosition.w > 9999.0 ){
-				//outValue.x += weight; // 1 * weight
-				//outValue.rgb += texelFetch( texLight, rayTC, 0 ).xyz * weight;
-				outValue.rgb += vec3( weight );
+			if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+				// ray hits front face
+				#ifdef MAP_IRRADIANCE
+				if( rayPosition.w > 9999.0 ){
+					//outValue.x += weight; // 1 * weight
+					//outValue.rgb += texelFetch( texLight, rayTC, 0 ).xyz * weight;
+					outValue.rgb += vec3( weight );
+				}
+				
+				#else
+				outValue.x += rayProbeDistance * weight;
+				outValue.y += rayProbeDistance * rayProbeDistance * weight;
+				#endif
+				
+			}else{
+				// ray hits back face. disable the probe to prevent problems. probe can
+				// be disabled by setting mean, mean squared and irradiance to 0
 			}
-			
-			#else
-			//rayNormal = texelFetch( texNormal, rayTC, 0 ).xyz;
-			// TODO back-face: disable probe by setting mean/mean-squared both to 0
-			
-			outValue.x += rayProbeDistance * weight;
-			outValue.y += rayProbeDistance * rayProbeDistance * weight;
-			#endif
-			
 			sumWeight += weight;
 		}
 	}
@@ -135,15 +132,14 @@ void main( void ){
 		outValue.xy /= sumWeight;
 		#endif
 		
-		outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
-		
 	#ifdef MAP_DISTANCE
 	// by deviating from the paper above we need to handle the case of no hit being scored
 	// at all otherwise the probe turns black which is wrong for occlusion handling
 	}else{
-		outValue.x = pGIMaxProbeDistance;
-		outValue.y = pGIMaxProbeDistance * pGIMaxProbeDistance;
-		outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
+		//outValue.xy = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
+		outValue.xy = vec2( 0.0 );
 	#endif
 	}
+	
+	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
 }

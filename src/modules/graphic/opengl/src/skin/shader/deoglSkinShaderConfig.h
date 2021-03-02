@@ -155,6 +155,7 @@ public:
 	bool pOutline;
 	bool pOutlineThicknessScreen;
 	bool pLuminanceOnly;
+	bool pGIMaterial;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -417,6 +418,12 @@ public:
 	
 	/** \brief Set luminance only. */
 	void SetLuminanceOnly( bool luminanceOnly );
+	
+	/** \brief GI material. */
+	inline bool GetGIMaterial() const{ return pGIMaterial; }
+	
+	/** \brief Set GI material. */
+	void SetGIMaterial( bool gimaterial );
 	
 	
 	

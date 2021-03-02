@@ -31,6 +31,8 @@ class deoglRayTraceField;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglGIState;
+class deoglRenderTask;
+class deoglAddToRenderTaskGIMaterial;
 
 
 /**
@@ -46,6 +48,9 @@ private:
 	
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;
+	
+	deoglRenderTask *pRenderTask;
+	deoglAddToRenderTaskGIMaterial *pAddToRenderTask;
 	
 	
 	
@@ -71,6 +76,14 @@ public:
 	
 	/** \brief GI state to render or NULL. */
 	deoglGIState *GetRenderGIState( const deoglRenderPlan &plan ) const;
+	
+	/** \brief Render task for GI material. */
+	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
+	
+	/** \brief Add to render task for GI material. */
+	inline deoglAddToRenderTaskGIMaterial &GetAddToRenderTask() const{ return *pAddToRenderTask; }
+	
+	
 	
 	/** \brief Trace rays for field. */
 	void TraceRays( deoglRayTraceField &field );

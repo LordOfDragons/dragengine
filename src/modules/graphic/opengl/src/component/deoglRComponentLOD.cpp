@@ -688,8 +688,9 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 // Private Functions
 //////////////////////
 
-deoglModelLOD &deoglRComponentLOD::GetModelLOD() const{
-	return pComponent.GetModel()->GetLODAt( pLODIndex );
+deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
+	const deoglRModel * const model = pComponent.GetModel();
+	return model ? &model->GetLODAt( pLODIndex ) : NULL;
 }
 
 void deoglRComponentLOD::PrepareWeights(){

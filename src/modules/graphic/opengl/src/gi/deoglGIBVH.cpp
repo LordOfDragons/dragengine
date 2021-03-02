@@ -28,6 +28,7 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../component/deoglRComponentTexture.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
@@ -36,6 +37,8 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../skin/deoglRSkin.h"
+#include "../skin/deoglSkinTexture.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionBox.h"
@@ -64,10 +67,12 @@ pPrimitiveSize( 0 ),
 pIndexRootNode( 0 ),
 pTBONodeBox( renderThread, 4 ),
 pTBOIndex( renderThread, 2 ),
-pTBOInstance( renderThread, 1 ),
+pTBOInstance( renderThread, 2 ),
 pTBOMatrix( renderThread, 4 ),
 pTBOFace( renderThread, 4 ),
-pTBOVertex( renderThread, 4 ){
+pTBOVertex( renderThread, 4 ),
+pTBOTexCoord( renderThread, 2 ),
+pTBOMaterial( renderThread, 4 ){
 }
 
 deoglGIBVH::~deoglGIBVH(){
@@ -93,11 +98,13 @@ void deoglGIBVH::Clear(){
 	pModelCount = 0;
 	pIndexRootNode = -1;
 	pTBOVertex.Clear();
+	pTBOTexCoord.Clear();
 	pTBOFace.Clear();
 	pTBOMatrix.Clear();
 	pTBOInstance.Clear();
 	pTBOIndex.Clear();
 	pTBONodeBox.Clear();
+	pTBOMaterial.Clear();
 }
 
 void deoglGIBVH::FindComponents( deoglRWorld &world, const decDVector &position,
@@ -141,12 +148,12 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 		}
 	}
 	
+	deoglModelLOD &modelLOD = *lod.GetModelLOD();
+	
 	// if model does not exist add it
 	if( indexModel == pModelCount ){
 		// prepare BVH first just in case something goes wrong
-		deoglModelLOD &modelLOD = lod.GetModelLOD();
 		modelLOD.PrepareBVH();
-		
 		if( ! modelLOD.GetBVH()->GetRootNode() ){
 			return; // empty model
 		}
@@ -166,6 +173,7 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 		
 		// add faces to TBOs using primitive mapping from BVH
 		const deoglBVH &bvh = *modelLOD.GetBVH();
+		const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
 		const oglModelVertex * const vertices = modelLOD.GetVertices();
 		const deoglModelFace * const faces = modelLOD.GetFaces();
 		const int * const primitives = bvh.GetPrimitives();
@@ -173,17 +181,34 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 		
 		for( i=0; i<primitiveCount; i++ ){
 			const deoglModelFace &face = faces[ primitives[ i ] ];
-			//const uint32_t doubleSided = modelLOD.GetTextureAt( face.GetTexture() ).GetDoubleSided() ? 0 : 1;
-			const uint32_t doubleSided = 1; // always double sided to allow disable probe
-			pTBOFace.AddVec4( bvhModel.indexVertices + vertices[ face.GetVertex1() ].position,
-				bvhModel.indexVertices + vertices[ face.GetVertex2() ].position,
-				bvhModel.indexVertices + vertices[ face.GetVertex3() ].position, doubleSided );
+			const oglModelVertex &v1 = vertices[ face.GetVertex1() ];
+			const oglModelVertex &v2 = vertices[ face.GetVertex2() ];
+			const oglModelVertex &v3 = vertices[ face.GetVertex3() ];
+			
+			pTBOFace.AddVec4( bvhModel.indexVertices + v1.position, bvhModel.indexVertices + v2.position,
+				bvhModel.indexVertices + v3.position, face.GetTexture() );
+			
+			pTBOTexCoord.AddVec2( texCoords[ v1.texcoord ] );
+			pTBOTexCoord.AddVec2( texCoords[ v2.texcoord ] );
+			pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
 		}
 		
 		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
 	}
 	
-	pAddComponent( indexModel, matrix );
+	// add materials
+	deoglRComponent &component = lod.GetComponent();
+	const int textureCount = component.GetTextureCount();
+	const int indexMaterial = pTBOMaterial.GetPixelCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		const deoglRComponentTexture &texture = component.GetTextureAt( i );
+		pAddMaterial( texture, 0 ); // TODO
+	}
+	
+	// add component
+	pAddComponent( indexModel, indexMaterial, matrix );
 }
 
 void deoglGIBVH::BuildBVH(){
@@ -205,7 +230,7 @@ void deoglGIBVH::BuildBVH(){
 		const deoglBVHNode *rootNode = NULL;
 		
 		if( model.component != NULL ){
-			rootNode = model.component->GetModelLOD().GetBVH()->GetRootNode();
+			rootNode = model.component->GetModelLOD()->GetBVH()->GetRootNode();
 			
 		}else{
 			DETHROW( deeInvalidParam );
@@ -238,7 +263,7 @@ void deoglGIBVH::BuildBVH(){
 		pTBOMatrix.AddMat3x4( component.matrix.QuickInvert() );
 		
 		component.indexInstance = pTBOInstance.GetPixelCount();
-		pTBOInstance.AddInt( pModels[ component.indexModel ].indexNodes );
+		pTBOInstance.AddVec2( pModels[ component.indexModel ].indexNodes, component.indexMaterial );
 	}
 	
 	// add BVH to TBOs
@@ -270,6 +295,8 @@ void deoglGIBVH::BuildBVH(){
 	pTBOMatrix.Update();
 	pTBOFace.Update();
 	pTBOVertex.Update();
+	pTBOTexCoord.Update();
+	pTBOMaterial.Update();
 }
 
 void deoglGIBVH::DebugPrint( const decDVector &position ){
@@ -287,9 +314,10 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	logger.LogInfoFormat("GIBVH: %d Components", pComponentCount);
 	for(i=0; i<pComponentCount; i++){
 		const decDVector p(position + pComponents[i].matrix.GetPosition());
-		logger.LogInfoFormat("- %d: indexMatrix=%d indexModel=%d indexInstance=%d position=(%g,%g,%g)",
-			i, pComponents[i].indexMatrix, pComponents[i].indexModel,
-			pComponents[i].indexInstance, p.x, p.y, p.z);
+		logger.LogInfoFormat("- %d: indexMatrix=%d indexModel=%d indexInstance=%d"
+			" indexMaterial=%d position=(%g,%g,%g)", i, pComponents[i].indexMatrix,
+			pComponents[i].indexModel, pComponents[i].indexInstance,
+			pComponents[i].indexMaterial, p.x, p.y, p.z);
 	}
 	logger.LogInfoFormat("GIBVH: Root Node %d", pIndexRootNode);
 	logger.LogInfo("GIBVH: TBONodeBox");
@@ -304,6 +332,10 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	pTBOFace.DebugPrint();
 	logger.LogInfo("GIBVH: pTBOVertex");
 	pTBOVertex.DebugPrint();
+	logger.LogInfo("GIBVH: pTBOTexCoord");
+	pTBOTexCoord.DebugPrint();
+	logger.LogInfo("GIBVH: pTBOMaterial");
+	pTBOMaterial.DebugPrint();
 	
 	struct PrintBVH{
 		deoglRTLogger &logger;
@@ -359,7 +391,8 @@ deoglGIBVH::sModel &deoglGIBVH::pAddModel(){
 	return model;
 }
 
-deoglGIBVH::sComponent &deoglGIBVH::pAddComponent( int indexModel, const decMatrix &matrix ){
+deoglGIBVH::sComponent &deoglGIBVH::pAddComponent( int indexModel, int indexMaterial,
+const decMatrix &matrix ){
 	if( pComponentCount == pComponentSize ){
 		const int newSize = pComponentCount + 10;
 		sComponent * const newArray = new sComponent[ newSize ];
@@ -373,10 +406,92 @@ deoglGIBVH::sComponent &deoglGIBVH::pAddComponent( int indexModel, const decMatr
 	
 	sComponent &component = pComponents[ pComponentCount++ ];
 	component.indexModel = indexModel;
+	component.indexMaterial = indexMaterial;
 	component.indexInstance = 0;
 	component.indexMatrix = 0;
 	component.matrix = matrix;
 	return component;
+}
+
+void deoglGIBVH::pAddMaterial( const deoglRComponentTexture &texture, int materialIndex ){
+	deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+	if( ! skinTexture ){
+		return;
+	}
+	
+	pAddMaterial( *skinTexture, texture.GetUseSkinState(), texture.GetUseDynamicSkin(), materialIndex );
+}
+
+void deoglGIBVH::pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
+deoglRDynamicSkin *dynamicSkin, int materialIndex ){
+	// collect values
+	decColor colorTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorTint )
+		.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
+	colorTint.r = powf( decMath::max( colorTint.r, 0.0f ), 2.2f );
+	colorTint.g = powf( decMath::max( colorTint.g, 0.0f ), 2.2f );
+	colorTint.b = powf( decMath::max( colorTint.b, 0.0f ), 2.2f );
+	
+	const float colorGamma = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorGamma )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetColorGamma() );
+	
+	const float roughnessRemapLower = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapLower )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapLower() );
+	const float roughnessRemapUpper = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapUpper )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapUpper() );
+	const float roughnessGamma = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessGamma )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessGamma() );
+	
+	decColor emissivityIntensity( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityTint )
+		.ResolveColor( skinState, dynamicSkin, skinTexture.GetEmissivityTint() ) );
+	emissivityIntensity.r = powf( decMath::max( emissivityIntensity.r, 0.0f ), 2.2f );
+	emissivityIntensity.g = powf( decMath::max( emissivityIntensity.g, 0.0f ), 2.2f );
+	emissivityIntensity.b = powf( decMath::max( emissivityIntensity.b, 0.0f ), 2.2f );
+	
+	emissivityIntensity *= decMath::max( 0.0f, skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityIntensity )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetEmissivityIntensity() ) );
+	
+	/*
+	decColor envRoomEmissivityTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEnvironmentRoomEmissivityTint )
+		.ResolveColor( skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityTint() ) );
+	envRoomEmissivityTint.r = powf( decMath::max( envRoomEmissivityTint.r, 0.0f ), 2.2f );
+	envRoomEmissivityTint.g = powf( decMath::max( envRoomEmissivityTint.g, 0.0f ), 2.2f );
+	envRoomEmissivityTint.b = powf( decMath::max( envRoomEmissivityTint.b, 0.0f ), 2.2f );
+	
+	const float envRoomEmissivityIntensity = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEnvironmentRoomEmissivityIntensity )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityIntensity() );
+	
+	decColor envRoomEmissivity( envRoomEmissivityTint * decMath::max( envRoomEmissivityIntensity, 0.0f ) );
+	*/
+	
+	const float reflectivityMultiplier = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empReflectivityMultiplier )
+		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetReflectivityMultiplier() );
+	
+	const bool variationU = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationU )
+		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationU() );
+	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
+		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
+	
+	// pack into values and add them
+	#define BITS_MASK(bits) ((1<<bits)-1)
+	#define PACK_I(value, bits, shift) (uint32_t)(decMath::clamp(value, 0, BITS_MASK(bits)) << shift)
+	#define PACK(value, bits, shift) PACK_I((int)((value)*BITS_MASK(bits) + 0.5f), bits, shift)
+	#define PACK_M(value, lower, upper, bits, shift) PACK((value-lower)/(upper-lower), bits, shift)
+	#define PACK_G(value, bits, shift) PACK_M(value, 0.4, 2.2, bits, shift)
+	#define PACK_B(value, bit) (uint32_t)((value) ? (1<<bit) : 0)
+	
+	pTBOMaterial.AddVec4(
+		PACK( colorTint.r, 8, 24 ) | PACK( roughnessRemapLower, 8, 16 ) | PACK( emissivityIntensity.r, 16, 0 ),
+		PACK( colorTint.g, 8, 24 ) | PACK( roughnessRemapUpper, 8, 16 ) | PACK( emissivityIntensity.g, 16, 0 ),
+		PACK( colorTint.b, 8, 24 ) | PACK_G( roughnessGamma, 8, 16 ) | PACK( emissivityIntensity.b, 16, 0 ),
+		PACK_G( colorGamma, 8, 24 ) | PACK( reflectivityMultiplier, 8, 16 )
+			| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
+	
+	#undef PACK_B
+	#undef PACK_G
+	#undef PACK_M
+	#undef PACK
+	#undef PACK_I
+	#undef BITS_MASK
 }
 
 void deoglGIBVH::pAddBVH( const deoglBVH &bvh, int rootIndexNodes, int rootIndexFaces ){

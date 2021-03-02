@@ -51,6 +51,9 @@
 #include "../../debug/debugSnapshot.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../light/volume/deoglLightVolume.h"
@@ -61,6 +64,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTShader.h"
@@ -274,7 +278,7 @@ deoglRenderLightSky::~deoglRenderLightSky(){
 // Rendering
 //////////////
 
-void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid ){
+void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
 	if( ! solid ){
 // 		return;
 	}
@@ -291,7 +295,7 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid ){
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		RenderLight( plan, solid, *plan.GetSkyLightAt( i ) );
+		RenderLight( plan, solid, mask, *plan.GetSkyLightAt( i ) );
 	}
 	
 	if( solid ){
@@ -361,7 +365,7 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 }
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanSkyLight &planSkyLight ){
+deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
@@ -497,6 +501,48 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	}else{
 		DebugTimer2SampleCount( plan, *pDebugInfoTransparentLight, 1, true );
 	}
+	
+	// GI rays
+	if( ! mask && solid ){
+		deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+		if( giState ){
+			RestoreFBOGIRays( *giState );
+			
+			lightShader = NULL;
+			if( useShadow ){
+				lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid );
+				
+			}else if( skyLayer.GetHasLightDirect() ){
+				lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRayNoShadow );
+			}
+			
+			if( lightShader ){
+				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+				
+				GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+				spbLight->Activate();
+				spbInstance->Activate();
+				
+				int target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+				if( target != -1 ){
+					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerShadowClampLinear() );
+				}
+				
+				target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+				if( target != -1 ){
+					tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
+				}
+				
+				target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
+				if( target != -1 ){
+					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
+				}
+				
+				defren.RenderFSQuadVAO();
+			}
+		}
+	}
+	
 	// debug
 	//ogl.GetRenderDebug().DisplayArrayTextureLayer( plan, shadowMapper.GetSolidDepthArrayTexture(), 0 );
 	//ogl.GetRenderDebug().DisplayArrayTextureLayer( plan, shadowMapper.GetSolidDepthArrayTexture(), 1 );

@@ -328,7 +328,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 		pRenderGI->PrepareUBORenderLight( plan );
 	}
 	
-	pRenderLightSky->RenderLights( plan, solid );
+	pRenderLightSky->RenderLights( plan, solid, mask );
 	pRenderLightPoint->RenderLights( plan, solid );
 	pRenderLightSpot->RenderLights( plan, solid );
 	

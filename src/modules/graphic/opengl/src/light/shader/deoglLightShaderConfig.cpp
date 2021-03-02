@@ -66,6 +66,7 @@ void deoglLightShaderConfig::Reset(){
 	pFullScreenQuad = false;
 	pSubSurface = false;
 	pLuminanceOnly = false;
+	pGIRay = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -145,6 +146,10 @@ void deoglLightShaderConfig::SetSubSurface( bool subSurface ){
 
 void deoglLightShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
 	pLuminanceOnly = luminanceOnly;
+}
+
+void deoglLightShaderConfig::SetGIRay( bool giRay ){
+	pGIRay = giRay;
 }
 
 
@@ -253,6 +258,9 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pLuminanceOnly ){
 		string.Append( " luminanceOnly" );
 	}
+	if( pGIRay ){
+		string.Append( " giRay" );
+	}
 	
 	if( pTextureShadow1Solid ){
 		string.Append( " shadow1Solid" );
@@ -299,6 +307,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pFullScreenQuad = config.pFullScreenQuad;
 	pSubSurface = config.pSubSurface;
 	pLuminanceOnly = config.pLuminanceOnly;
+	pGIRay = config.pGIRay;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;
@@ -332,6 +341,7 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pFullScreenQuad == config.pFullScreenQuad
 		&& pSubSurface == config.pSubSurface
 		&& pLuminanceOnly == config.pLuminanceOnly
+		&& pGIRay == config.pGIRay
 		
 		&& pTextureNoise == config.pTextureNoise
 		&& pTextureColor == config.pTextureColor

@@ -236,6 +236,4 @@ void main( void ){
 	outLuminance = dot( finalColor, lumiFactors );
 	outColor = vec4( finalColor * diffuse.rgb, diffuse.a );
 	outSubSurface = vec4( 0.0 );
-	
-/*XXX*/ //if(tc.y < 322) outColor.rgb = vec3( texelFetch(texGIIrradiance, tc+ivec2(320*3,0), 0).rgb );
 }

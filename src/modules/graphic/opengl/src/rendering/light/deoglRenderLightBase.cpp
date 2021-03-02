@@ -23,7 +23,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "deoglRenderLight.h"
 #include "deoglRenderLightBase.h"
+#include "deoglRenderGI.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -34,11 +36,16 @@
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -197,6 +204,34 @@ void deoglRenderLightBase::RestoreDRTextureDepthSmooth(){
 	
 	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 0 );
+}
+
+void deoglRenderLightBase::RestoreFBOGIRays( deoglGIState &giState ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	deoglGIRays &giRays = renderThread.GetGI().GetRays();
+	renderThread.GetFramebuffer().Activate( &giRays.GetFBORayLight() );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
+	
+	const decPoint &sampleImageSize = giState.GetSampleImageSize();
+	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+	
+	tsmgr.EnableTexture( 0, giRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, giRays.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, giRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
 }
 
 

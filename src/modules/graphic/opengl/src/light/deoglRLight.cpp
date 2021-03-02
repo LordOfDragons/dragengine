@@ -956,6 +956,8 @@ deoglLightShaderConfig &config ){
 		case estLumSolid1:
 		case estLumSolid1NoAmbient:
 		case estLumSolid2:
+		case estGIRaySolid1:
+		case estGIRaySolid2:
 			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 			break;
 			
@@ -1009,6 +1011,8 @@ deoglLightShaderConfig &config ){
 		case estLumSolid1:
 		case estLumSolid1NoAmbient:
 		case estLumSolid2:
+		case estGIRaySolid1:
+		case estGIRaySolid2:
 			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 			break;
 			
@@ -1050,10 +1054,12 @@ deoglLightShaderConfig &config ){
 	
 	switch( shaderType ){
 	case estNoShadow:
+	case estGIRayNoShadow:
 		break;
 		
 	case estSolid1:
 	case estLumSolid1:
+	case estGIRaySolid1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Ambient( true );
 		break;
@@ -1076,6 +1082,7 @@ deoglLightShaderConfig &config ){
 		
 	case estSolid2:
 	case estLumSolid2:
+	case estGIRaySolid2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadow1Ambient( true );
@@ -1101,6 +1108,17 @@ deoglLightShaderConfig &config ){
 		
 	default:
 		return false;
+	}
+	
+	switch( shaderType ){
+	case estGIRayNoShadow:
+	case estGIRaySolid1:
+	case estGIRaySolid2:
+		config.SetGIRay( true );
+		break;
+		
+	default:
+		break;
 	}
 	
 	return true;

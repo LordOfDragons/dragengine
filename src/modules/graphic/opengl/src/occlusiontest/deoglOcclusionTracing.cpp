@@ -295,7 +295,7 @@ void deoglOcclusionTracing::pAddStaticModel( const decMatrix &matrix, deoglRComp
 	// if model does not exist add it
 	if( indexOccMesh == pOccMeshCount ){
 		// prepare BVH first just in case something goes wrong
-		deoglModelLOD &modelLOD = lod.GetModelLOD();
+		deoglModelLOD &modelLOD = *lod.GetModelLOD();
 		modelLOD.PrepareBVH();
 		
 		if( ! modelLOD.GetBVH()->GetRootNode() ){
@@ -603,7 +603,7 @@ void deoglOcclusionTracing::pWriteTBOs( const decDVector &position ){
 			rootNode = occMesh.occlusionMesh->GetBVH()->GetRootNode();
 			
 		}else if( occMesh.modelStatic != NULL ){
-			rootNode = occMesh.modelStatic->GetModelLOD().GetBVH()->GetRootNode();
+			rootNode = occMesh.modelStatic->GetModelLOD()->GetBVH()->GetRootNode();
 		}
 		
 		const decVector &minExtend = rootNode->GetMinExtend();

@@ -96,6 +96,15 @@ public:
 		/** \brief Luminance only double solid. */
 		estLumSolid2,
 		
+		/** \brief GI rays no shadow casting. */
+		estGIRayNoShadow,
+		
+		/** \brief GI rays single solid shadow. */
+		estGIRaySolid1,
+		
+		/** \brief GI rays double solid shadow. */
+		estGIRaySolid2,
+		
 		/** \brief Number of shaders. */
 		EST_COUNT
 	};

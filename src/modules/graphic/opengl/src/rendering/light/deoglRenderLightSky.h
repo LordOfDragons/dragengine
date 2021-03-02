@@ -90,13 +90,14 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
 	/** \brief Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
 	/** \brief Render sky light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanSkyLight &planSkyLight );
+	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+		deoglRenderPlanSkyLight &planSkyLight );
 	
 	/** \brief Render shadows maps. */
 	void RenderShadows( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );

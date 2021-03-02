@@ -73,12 +73,19 @@ precision highp int;
 	#define SAMPLER_SHADOWCUBE samplerCube
 #endif
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+#ifdef GI_RAY
+	uniform HIGHP sampler2D texPosition;
+	uniform lowp sampler2D texDiffuse;
+	uniform lowp sampler2D texNormal;
+#else
+	uniform HIGHP sampler2D texDepth;
+	uniform lowp sampler2D texDiffuse;
+	uniform lowp sampler2D texNormal;
+	uniform lowp sampler2D texReflectivity;
+	uniform lowp sampler2D texRoughness;
+	uniform lowp sampler2D texAOSolidity;
+#endif
+
 #ifdef WITH_SUBSURFACE
 	uniform mediump sampler2D texSubSurface;
 #endif
@@ -645,22 +652,28 @@ void main( void ){
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	if( diffuse.a == 0.0 ){
-		discard;
-	}
+	#ifndef GI_RAY
+		if( diffuse.a == 0.0 ){
+			discard;
+		}
+	#endif
 	
 	// determine position of fragment to light
-	#ifdef DECODE_IN_DEPTH
-		float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
+	#ifdef GI_RAY
+		vec3 position = texelFetch( texPosition, tc, 0 ).rgb;
 	#else
-		float depth = texelFetch( texDepth, tc, 0 ).r;
-	#endif
-	vec3 position = vec3( depth );
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord * pPosTransform.zw * position.zz;
-	#else
-		position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+		#ifdef DECODE_IN_DEPTH
+			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
+		#else
+			float depth = texelFetch( texDepth, tc, 0 ).r;
+		#endif
+		vec3 position = vec3( depth );
+		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+		#ifdef FULLSCREENQUAD
+			position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+		#else
+			position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+		#endif
 	#endif
 	
 	// calculate light direction and distance
@@ -990,58 +1003,63 @@ void main( void ){
 		#endif
 	#endif
 	
-	// diffuse term = color_diff * color_light * max( dot( normal, lightDir ), 0 )
-	// specular term = ( ( ap + 2 ) / 8 ) * pow( max( dot( normal, halfDir ), 0 ), ap )
-	//                   * fresnel( color_reflectivity, lightDir, halfDir )
-	//                   * color_light * max( dot( normal, lightDir ), 0 )
-	// 
-	// vec3 halfDir = normalize( lightDir - position );
-	// vec3 lightTerm = colorLight * vec3( max( dot( normal, lightDir ), 0.0 ) );
-	// float specNormTerm = ( ap + 2.0 ) / 8.0;
-	// float specPowTerm = pow( max( dot( normal, halfDir ), 0.0 ), ap );
-	// vec3 specFresnelTerm = mix( colorSpecular, vec3( 1.0 ), vec3( pow( 1.0 - dot( lightDir, halfDir ), 5.0 ) ) );
-	// vec3 specularTerm = vec3( specNormTerm * specPowTerm ) * specFresnelTerm;
-	// vec3 fragmentColor = ( colorDiffuse + specularTerm ) * lightTerm;
-	// 
-	// calculation of the ap term using a (pseudo) linear roughness value. roughness value is 0 for sharp reflection
-	// all the way to 1 for fully diffuse reflection. roughness is considered to be 1 minus the beckmann roughness.
-	// the original formula is ap = 2 / roughness**2 - 2. to avoid a division by zero a small max ap factor is used.
-	// this factor clamps the ap value to a given maximum value. a value of 0.00002 for the max ap factor clamps the
-	// ap to roughly 100000. this is enough for a fully sharp reflection. to avoid a near flat line result at the
-	// fully diffuse end of the ap spectrum a min ap factor is used. the smallest physically reasonable ap values
-	// are in the range from 0.1 to 2. a min ap factor of 2-0.5 = 1.5 keeps the smallest ap to 0.5 which looks nice.
-	// 
-	// roughness = clamp( texture-input( 0=sharp .. 1=diffuse ), 0.0, 1.0 )
-	// float ap = 2.0 / ( specularity.g * specularity.g + maxAP ) - minAP
-	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
-	vec3 roughness = texelFetch( texRoughness, tc, 0 ).rgb;
-	vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
-	
-	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
-	// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
-	// aoSolidity.gb the combined ao
-	aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
-	diffuse.a *= aoSolidity.b;
-	
-	
-	// specular term
-	//roughness.r = max( roughness.r, 0.1 );
-	float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.0001 ) + 1.0;
-	vec3 halfDir = normalize( lightDir - normalize( position ) );
-	float specNormTerm = ( ap + 2.0 ) / 8.0;
-	float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99999 ), ap ); // 0.99999 prevents infinity overshoot on near 0-angle ray
-	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
-	
-	#ifdef AMBIENT_LIGHTING
-// 		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+	#ifdef GI_RAY
+		vec3 finalColorSurface = vec3( 0.0 );
+		
+	#else
+		// diffuse term = color_diff * color_light * max( dot( normal, lightDir ), 0 )
+		// specular term = ( ( ap + 2 ) / 8 ) * pow( max( dot( normal, halfDir ), 0 ), ap )
+		//                   * fresnel( color_reflectivity, lightDir, halfDir )
+		//                   * color_light * max( dot( normal, lightDir ), 0 )
+		// 
+		// vec3 halfDir = normalize( lightDir - position );
+		// vec3 lightTerm = colorLight * vec3( max( dot( normal, lightDir ), 0.0 ) );
+		// float specNormTerm = ( ap + 2.0 ) / 8.0;
+		// float specPowTerm = pow( max( dot( normal, halfDir ), 0.0 ), ap );
+		// vec3 specFresnelTerm = mix( colorSpecular, vec3( 1.0 ), vec3( pow( 1.0 - dot( lightDir, halfDir ), 5.0 ) ) );
+		// vec3 specularTerm = vec3( specNormTerm * specPowTerm ) * specFresnelTerm;
+		// vec3 fragmentColor = ( colorDiffuse + specularTerm ) * lightTerm;
+		// 
+		// calculation of the ap term using a (pseudo) linear roughness value. roughness value is 0 for sharp reflection
+		// all the way to 1 for fully diffuse reflection. roughness is considered to be 1 minus the beckmann roughness.
+		// the original formula is ap = 2 / roughness**2 - 2. to avoid a division by zero a small max ap factor is used.
+		// this factor clamps the ap value to a given maximum value. a value of 0.00002 for the max ap factor clamps the
+		// ap to roughly 100000. this is enough for a fully sharp reflection. to avoid a near flat line result at the
+		// fully diffuse end of the ap spectrum a min ap factor is used. the smallest physically reasonable ap values
+		// are in the range from 0.1 to 2. a min ap factor of 2-0.5 = 1.5 keeps the smallest ap to 0.5 which looks nice.
+		// 
+		// roughness = clamp( texture-input( 0=sharp .. 1=diffuse ), 0.0, 1.0 )
+		// float ap = 2.0 / ( specularity.g * specularity.g + maxAP ) - minAP
+		vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
+		vec3 roughness = texelFetch( texRoughness, tc, 0 ).rgb;
+		vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
+		
+		// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
+		// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
+		// aoSolidity.gb the combined ao
+		aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
+		diffuse.a *= aoSolidity.b;
+		
+		
+		// specular term
+		//roughness.r = max( roughness.r, 0.1 );
+		float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.0001 ) + 1.0;
+		vec3 halfDir = normalize( lightDir - normalize( position ) );
+		float specNormTerm = ( ap + 2.0 ) / 8.0;
+		float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99999 ), ap ); // 0.99999 prevents infinity overshoot on near 0-angle ray
+		vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
+		
+		#ifdef AMBIENT_LIGHTING
+			//float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+		#endif
+		dotval = max( dotval, 0.0 );
+		
+		#ifdef SHADOW_CASTING
+		specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
+		#endif
+		vec3 finalColorSurface = clamp( vec3( specNormTerm * specPowTerm ) * specFresnelTerm, vec3( 0.0 ), vec3( 1.0 ) );
+			// clamp prevents overshoot on near 0 roughness (specNormTerm)
 	#endif
-	dotval = max( dotval, 0.0 );
-	
-	#ifdef SHADOW_CASTING
-	specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
-	#endif
-	vec3 finalColorSurface = clamp( vec3( specNormTerm * specPowTerm ) * specFresnelTerm, vec3( 0.0 ), vec3( 1.0 ) );
-		// clamp prevents overshoot on near 0 roughness (specNormTerm)
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
 	vec3 lightColor = pLightColor;
@@ -1070,55 +1088,59 @@ void main( void ){
 		vec3 absorptionLightColor = lightColor;
 	#endif
 	
-	#ifdef PARTICLE_LIGHT
-		lightColor *= vec3( dotval );
-	#else
-// 		lightColor *= vec3( dotval );
-		lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+	#ifndef GI_RAY
+		#ifdef PARTICLE_LIGHT
+			lightColor *= vec3( dotval );
+		#else
+	 		//lightColor *= vec3( dotval );
+			lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+		#endif
 	#endif
 	#ifdef SHADOW_CASTING
 		lightColor *= shadowColor;
 	#endif
 	
-	// apply ambient occlusion to the direct lighting. this is done by comparing the ambient occlusion angle
-	// with the lighting angle. the ambient occlusion angle can be calculated using the relation ao = 1 - cos(angle).
-	// this works because the ao value can be considered the ratio between a free sphere cap and the entire half
-	// sphere. since a sphere cap is defined by an angle around the sphere direction the ao value can be directly
-	// related to an angle with a simple calculation. this allows to add self-shadowing with next to no extra cost
-	// 
-	// with SSAO the result is tricky and more wrong than right in some cases. due to this only the texture-ao is
-	// used for self-shadowing since this one is guaranteed to be well calculated and usually on a small scale
-	// 
-	lightColor *= vec3( clamp( ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0, pAOSelfShadow.x, 1.0 ) );
-	//lightColor *= vec3( smoothstep( pAOSelfShadow.x, 1.0, ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0 ) );
-	//  problem with smoothstep undefined if pAOSelfShadow.x == 1.0 which is the case for disabling self-shadowing
-	
-	// ambient lighting. this uses the better ambient lighting trick. there the calculation would be like this:
-	//   color += diffuse * ambient * mix( 0.25, 1, clamp( d, 0, 1 ) )
-	// where d is:
-	//   dnl = dot( normal, lightdir )
-	//   d = squared( dnl * 0.5 + 0.5 )
-	// this can be rewritten a bit like this:
-	//   d = dnl * 0.5 * dnl * 0.5 + 2 * dnl * 0.5 * 0.5 + 0.5 * 0.5
-	//   d = dnl * dnl * 0.25 + dnl * 0.5 + 0.25
-	//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
-	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
-	#ifdef AMBIENT_LIGHTING
-		#ifdef SKY_LIGHT
-			#ifdef ENABLE_OCCTRACING
-				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
-				if( pOTEnabled ){
-					// normal is not a geometry normal but a modified normal. for tracing
-					// we need though a geometry normal. this can be derived from depth
-					//finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
-					finalColorAmbient *= vec3( occtraceOcclusion( position, normalFromDepth( tc, depth, position ) ) );
-				}
+	#ifndef GI_RAY
+		// apply ambient occlusion to the direct lighting. this is done by comparing the ambient occlusion angle
+		// with the lighting angle. the ambient occlusion angle can be calculated using the relation ao = 1 - cos(angle).
+		// this works because the ao value can be considered the ratio between a free sphere cap and the entire half
+		// sphere. since a sphere cap is defined by an angle around the sphere direction the ao value can be directly
+		// related to an angle with a simple calculation. this allows to add self-shadowing with next to no extra cost
+		// 
+		// with SSAO the result is tricky and more wrong than right in some cases. due to this only the texture-ao is
+		// used for self-shadowing since this one is guaranteed to be well calculated and usually on a small scale
+		// 
+		lightColor *= vec3( clamp( ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0, pAOSelfShadow.x, 1.0 ) );
+		//lightColor *= vec3( smoothstep( pAOSelfShadow.x, 1.0, ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0 ) );
+		//  problem with smoothstep undefined if pAOSelfShadow.x == 1.0 which is the case for disabling self-shadowing
+		
+		// ambient lighting. this uses the better ambient lighting trick. there the calculation would be like this:
+		//   color += diffuse * ambient * mix( 0.25, 1, clamp( d, 0, 1 ) )
+		// where d is:
+		//   dnl = dot( normal, lightdir )
+		//   d = squared( dnl * 0.5 + 0.5 )
+		// this can be rewritten a bit like this:
+		//   d = dnl * 0.5 * dnl * 0.5 + 2 * dnl * 0.5 * 0.5 + 0.5 * 0.5
+		//   d = dnl * dnl * 0.25 + dnl * 0.5 + 0.25
+		//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
+		// this calculation is moved up since we need the dot product without clamping for the ambient lighting
+		#ifdef AMBIENT_LIGHTING
+			#ifdef SKY_LIGHT
+				#ifdef ENABLE_OCCTRACING
+					vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+					if( pOTEnabled ){
+						// normal is not a geometry normal but a modified normal. for tracing
+						// we need though a geometry normal. this can be derived from depth
+						//finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
+						finalColorAmbient *= vec3( occtraceOcclusion( position, normalFromDepth( tc, depth, position ) ) );
+					}
+				#else
+					vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+				#endif
 			#else
+	// 			vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
 				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 			#endif
-		#else
-// 			vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
-			vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
 		#endif
 	#endif
 	

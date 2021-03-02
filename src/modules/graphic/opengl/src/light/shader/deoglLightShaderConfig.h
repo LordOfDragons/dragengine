@@ -123,6 +123,7 @@ public:
 	bool pFullScreenQuad;
 	bool pSubSurface;
 	bool pLuminanceOnly;
+	bool pGIRay;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -255,6 +256,12 @@ public:
 	
 	/** \brief Set luminance only. */
 	void SetLuminanceOnly( bool luminanceOnly );
+	
+	/** \brief GI ray. */
+	inline bool GetGIRay() const{ return pGIRay; }
+	
+	/** \brief Set GI ray. */
+	void SetGIRay( bool giRay );
 	
 	
 	

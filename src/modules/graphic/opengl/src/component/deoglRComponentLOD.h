@@ -110,8 +110,8 @@ public:
 	/** \brief LOD index. */
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
-	/** \brief Get ModelLOD. */
-	deoglModelLOD &GetModelLOD() const;
+	/** \brief Get ModelLOD or NULL. */
+	deoglModelLOD *GetModelLOD() const;
 	
 	
 	
