@@ -90,17 +90,18 @@ void deoglAddToRenderTaskGIMaterial::SetSkinShaderType( deoglSkinTexture::eShade
 
 void deoglAddToRenderTaskGIMaterial::Reset(){
 	pSkinShaderType = deoglSkinTexture::estComponentGIMaterial;
+	pMaterialMapCount = 0;
 }
 
-void deoglAddToRenderTaskGIMaterial::AddComponentFaces( deoglRComponentLOD &lod, int texture ){
+deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deoglRComponentLOD &lod, int texture ){
 	deoglRComponentTexture &componentTexture = lod.GetComponent().GetTextureAt( texture );
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
-		return;
+		return NULL;
 	}
 	
 	if( pFilterReject( skinTexture ) ){
-		return;
+		return NULL;
 	}
 	
 	// hack style test for a camera renderable
@@ -116,41 +117,14 @@ void deoglAddToRenderTaskGIMaterial::AddComponentFaces( deoglRComponentLOD &lod,
 			
 			if( skinStateRenderable.GetHostRenderable() != -1 ){
 				if( dynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() ){
-					return;
+					return NULL;
 				}
 			}
 		}
 	}
 	
 	// obtain render task texture
-	// TODO we need only deoglRenderTaskTexture. VAO and instance are not required.
-	//      the deoglRenderTaskTexture ends up in the material atlas
-	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ) );
-	
-	if( deoglSkinShader::USE_SHARED_SPB ){
-		deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
-		
-		deoglRenderTaskInstanceGroup &rtiGroup = componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetGroup();
-		if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-			pRenderTask.AddInstanceGroup( &rtiGroup );
-		}
-		
-		deoglRenderTaskInstance *rti = rtvao->GetInstanceForIndex( rtiGroup.GetIndex() );
-		if( ! rti ){
-			rti = pRenderTask.InstanceFromPool();
-			rti->SetGroup( &rtiGroup );
-			rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-			rtvao->AddInstance( rti );
-		}
-		
-		rti->AddSubInstance( spbElement->GetIndex(), lod.GetComponent().GetSpecialFlags() );
-		
-	}else{
-		deoglRenderTaskInstance * const rti = pRenderTask.InstanceFromPool();
-		rti->SetParameterBlock( componentTexture.GetParamBlockFor( pSkinShaderType ) );
-		rtvao->AddInstance( rti );
-	}
+	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForShaderType( pSkinShaderType ) );
 }
 
 
@@ -168,10 +142,8 @@ bool deoglAddToRenderTaskGIMaterial::pFilterReject( const deoglSkinTexture *skin
 	return false;
 }
 
-deoglRenderTaskVAO *deoglAddToRenderTaskGIMaterial::pGetTaskVAO(
-deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ) const{
-	deoglVAO * const vao = pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad();
-	
+deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::pGetTaskTexture(
+deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	// retrieve the shader and texture units configuration to use
 	deoglShaderProgram *shader = NULL;
 	int spbInstanceIndexBase = -1;
@@ -216,19 +188,9 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ) const{
 		renderTaskTexture->SetTUC( tuc );
 		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
 		renderTaskTexture->SetTexture( skinTexture );
+		renderTaskTexture->SetMaterialIndex( pMaterialMapCount++ );
 		renderTaskShader->AddTexture( renderTaskTexture );
 	}
 	
-	// obtain render task vao
-	if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddVAO( vao );
-	}
-	deoglRenderTaskVAO *renderTaskVAO = renderTaskTexture->GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
-	if( ! renderTaskVAO ){
-		renderTaskVAO = pRenderTask.VAOFromPool();
-		renderTaskVAO->SetVAO( vao );
-		renderTaskTexture->AddVAO( renderTaskVAO );
-	}
-	
-	return renderTaskVAO;
+	return renderTaskTexture;
 }

@@ -45,14 +45,16 @@ private:
 	
 	int pMaxMaterialMapSize;
 	int pMaxMaterialsPerRow;
+	int pMaxRowsPerImage;
 	
 	int pMaterialMapSize;
 	int pMaterialsPerRow;
+	int pRowsPerImage;
 	int pMaxMaterialCount;
 	
 	int pMaterialCount;
 	
-	deoglTexture pTexColorTransparency;
+	deoglTexture pTexDiffuseTransparency;
 	deoglTexture pTexReflectivityRoughness;
 	deoglTexture pTexEmissivity;
 	deoglFramebuffer pFBOMaterial;
@@ -82,11 +84,17 @@ public:
 	/** \brief Maximum count of materials per row. */
 	inline int GetMaxMaterialsPerRow() const{ return pMaxMaterialsPerRow; }
 	
+	/** \brief Maximum count of rows per image. */
+	inline int GetMaxRowsPerImage() const{ return pMaxRowsPerImage; }
+	
 	/** \brief Current material map size. */
 	inline int GetMaterialMapSize() const{ return pMaterialMapSize; }
 	
 	/** \brief Current count of materials per row. */
 	inline int GetMaterialsPerRow() const{ return pMaterialsPerRow; }
+	
+	/** \brief Current count of rows per image. */
+	inline int GetRowsPerImage() const{ return pRowsPerImage; }
 	
 	/** \brief Current maximum count of materials. */
 	inline int GetMaxMaterialCount() const{ return pMaxMaterialCount; }
@@ -96,13 +104,13 @@ public:
 	/** \brief Material count. */
 	inline int GetMaterialCount() const{ return pMaterialCount; }
 	
-	/** \brief Add material. */
-	void AddMaterial();
+	/** \brief Set material count. */
+	void SetMaterialCount( int count );
 	
 	
 	
-	/** \brief Color/Transparency texture. */
-	inline deoglTexture &GetTextureColorTransparency(){ return pTexColorTransparency; }
+	/** \brief Diffuse/Transparency texture. */
+	inline deoglTexture &GetTextureDiffuseTransparency(){ return pTexDiffuseTransparency; }
 	
 	/** \brief Reflectivity/Roughness texture. */
 	inline deoglTexture &GetTextureReflectivityRoughness(){ return pTexReflectivityRoughness; }

@@ -52,6 +52,8 @@ private:
 	int pHasVAOCount;
 	int pHasVAOSize;
 	
+	int pMaterialIndex;
+	
 	
 	
 public:
@@ -104,6 +106,12 @@ public:
 	inline deoglRenderTaskTexture *GetNextTexture() const{ return pNextTexture; }
 	/** Sets the next texture to render or NULL if this is the last one. */
 	void SetNextTexture( deoglRenderTaskTexture *texture );
+	
+	/** \brief Material index. */
+	inline int GetMaterialIndex() const{ return pMaterialIndex; }
+	
+	/** \brief Set material index. */
+	void SetMaterialIndex( int materialIndex );
 	/*@}*/
 	
 	/** \name Linked List */

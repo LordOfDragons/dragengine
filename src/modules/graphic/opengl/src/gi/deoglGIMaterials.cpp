@@ -41,11 +41,13 @@ deoglGIMaterials::deoglGIMaterials( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pMaxMaterialMapSize( 64 ),
 pMaxMaterialsPerRow( 32 ),
+pMaxRowsPerImage( 32 ),
 pMaterialMapSize( pMaxMaterialMapSize ),
 pMaterialsPerRow( pMaxMaterialsPerRow ),
-pMaxMaterialCount( pMaxMaterialsPerRow * pMaxMaterialsPerRow ),
+pRowsPerImage( pMaxRowsPerImage ),
+pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
 pMaterialCount( 0 ),
-pTexColorTransparency( renderThread ),
+pTexDiffuseTransparency( renderThread ),
 pTexReflectivityRoughness( renderThread ),
 pTexEmissivity( renderThread ),
 pFBOMaterial( renderThread, false )
@@ -68,7 +70,19 @@ deoglGIMaterials::~deoglGIMaterials(){
 // Management
 ///////////////
 
-void deoglGIMaterials::AddMaterial(){
+void deoglGIMaterials::SetMaterialCount( int count ){
+	if( count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pMaterialCount = decMath::min( count, 16383 );
+	
+	while( pMaterialCount > pMaxMaterialCount ){
+		pMaterialMapSize /= 2;
+		pMaterialsPerRow *= 2;
+		pRowsPerImage *= 2;
+		pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+	}
 }
 
 
@@ -82,11 +96,11 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
 	const GLenum buffers[ 3 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	
-	const int size = pMaterialMapSize * pMaterialsPerRow;
+	const int size = pMaterialMapSize * pRowsPerImage;
 	
-	pTexColorTransparency.SetFBOFormat( 4, false );
-	pTexColorTransparency.SetSize( size, size );
-	pTexColorTransparency.CreateTexture();
+	pTexDiffuseTransparency.SetFBOFormat( 4, false );
+	pTexDiffuseTransparency.SetSize( size, size );
+	pTexDiffuseTransparency.CreateTexture();
 	
 	pTexReflectivityRoughness.SetFBOFormat( 4, false );
 	pTexReflectivityRoughness.SetSize( size, size );
@@ -97,7 +111,7 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	pTexEmissivity.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.AttachColorTexture( 0, &pTexColorTransparency );
+	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuseTransparency );
 	pFBOMaterial.AttachColorTexture( 1, &pTexReflectivityRoughness );
 	pFBOMaterial.AttachColorTexture( 2, &pTexEmissivity );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );

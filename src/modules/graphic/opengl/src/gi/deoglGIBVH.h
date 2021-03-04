@@ -38,6 +38,7 @@ class deoglRSkin;
 class deoglSkinTexture;
 class deoglSkinState;
 class deoglRDynamicSkin;
+class deoglRenderTaskTexture;
 
 
 /**
@@ -276,9 +277,9 @@ public:
 private:
 	sModel &pAddModel();
 	sComponent &pAddComponent( int indexModel, int indexMaterial, const decMatrix &matrix );
-	void pAddMaterial( const deoglRComponentTexture &texture, int materialIndex );
+	void pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture );
 	void pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin, int materialIndex );
+		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture );
 	void pAddBVH( const deoglBVH &bvh, int rootIndexNodes, int rootIndexFaces );
 };
 

@@ -32,7 +32,6 @@ class deoglCollideListComponent;
 class deoglRComponentLOD;
 class deoglRenderTask;
 class deoglRenderTaskTexture;
-class deoglRenderTaskVAO;
 class deoglRenderThread;
 class deoglShaderProgram;
 class deoglSkinShader;
@@ -41,7 +40,6 @@ class deoglSkinTexture;
 class deoglSPBlockUBO;
 class deoglTexture;
 class deoglTexUnitsConfig;
-class deoglVAO;
 
 
 /**
@@ -55,6 +53,7 @@ private:
 	
 	deoglRenderTask &pRenderTask;
 	deoglSkinTexture::eShaderTypes pSkinShaderType;
+	int pMaterialMapCount;
 	
 	
 	
@@ -83,6 +82,9 @@ public:
 	/** \brief Reset render task parameters. */
 	void Reset();
 	
+	/** \brief Material map index count. */
+	inline int GetMaterialMapCount() const{ return pMaterialMapCount; }
+	
 	
 	
 	/**
@@ -90,7 +92,7 @@ public:
 	 * 
 	 * Component is supposed to be updated, and model, skin and parent world exist.
 	 */
-	void AddComponentFaces( deoglRComponentLOD &component, int texture );
+	deoglRenderTaskTexture *AddComponentTexture( deoglRComponentLOD &component, int texture );
 	/*@}*/
 	
 	
@@ -98,7 +100,7 @@ public:
 private:
 	bool pFilterReject( const deoglSkinTexture *skinTexture ) const;
 	
-	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ) const;
+	deoglRenderTaskTexture *pGetTaskTexture( deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc );
 };
 
 #endif

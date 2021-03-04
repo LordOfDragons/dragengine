@@ -1998,7 +1998,12 @@ void deoglSkinShader::GenerateVertexSC(){
 			break;
 			
 		default:
-			unitSourceCodePath = deoglSkinShaderManager::euscpVertexGeometry;
+			if( pConfig.GetGIMaterial() ){
+				unitSourceCodePath = deoglSkinShaderManager::euscpVertexGIMaterialMap;
+				
+			}else{
+				unitSourceCodePath = deoglSkinShaderManager::euscpVertexGeometry;
+			}
 		}
 	}
 	
@@ -2059,7 +2064,12 @@ void deoglSkinShader::GenerateFragmentSC(){
 		break;
 		
 	default:
-		unitSourceCodePath = deoglSkinShaderManager::euscpFragmentGeometry;
+		if( pConfig.GetGIMaterial() ){
+			unitSourceCodePath = deoglSkinShaderManager::euscpFragmentGIMaterialMap;
+			
+		}else{
+			unitSourceCodePath = deoglSkinShaderManager::euscpFragmentGeometry;
+		}
 	}
 	
 	pSources->SetPathFragmentSourceCode( pRenderThread.GetShader().
@@ -2229,6 +2239,10 @@ void deoglSkinShader::UpdateUniformTargets(){
 	}
 	
 	// instance parameters
+	if( pConfig.GetGIMaterial() ){
+		return;
+	}
+	
 	if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle ){
 		pInstanceUniformTargets[ eiutMatrixModel ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutSamplesParams ] = pUsedInstanceUniformTargetCount++;
@@ -2406,21 +2420,26 @@ void deoglSkinShader::InitShaderParameters(){
 	
 	// global uniforms that are not particular to this shader
 	// this is currently all a large hack until the right code is in place
-	parameterList.Add( "pAmbient" ); // erutAmbient
-	parameterList.Add( "pMatrixVP" ); // erutMatrixVP
-	parameterList.Add( "pMatrixV" ); // erutMatrixV
-	parameterList.Add( "pMatrixVn" ); // erutMatrixVn
-	parameterList.Add( "pMatrixEnvMap" ); // erutMatrixEnvMap
-	parameterList.Add( "pDepthTransform" ); // erutDepthTransform
-	parameterList.Add( "pEnvMapLodLevel" ); // erutEnvMapLodLevel
-	parameterList.Add( "pViewport" ); // erutViewport
-	parameterList.Add( "pClipPlane" ); // erutClipPlane
-	parameterList.Add( "pScreenSpace" ); // erutScreenSpace
-	parameterList.Add( "pDepthOffset" ); // erutDepthOffset
-	parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
-	parameterList.Add( "pFadeRange" ); // erutFadeRange
-	parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
-	parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
+	if( pConfig.GetGIMaterial() ){
+		parameterList.Add( "pQuadParams" );
+		
+	}else{
+		parameterList.Add( "pAmbient" ); // erutAmbient
+		parameterList.Add( "pMatrixVP" ); // erutMatrixVP
+		parameterList.Add( "pMatrixV" ); // erutMatrixV
+		parameterList.Add( "pMatrixVn" ); // erutMatrixVn
+		parameterList.Add( "pMatrixEnvMap" ); // erutMatrixEnvMap
+		parameterList.Add( "pDepthTransform" ); // erutDepthTransform
+		parameterList.Add( "pEnvMapLodLevel" ); // erutEnvMapLodLevel
+		parameterList.Add( "pViewport" ); // erutViewport
+		parameterList.Add( "pClipPlane" ); // erutClipPlane
+		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
+		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
+		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
+		parameterList.Add( "pFadeRange" ); // erutFadeRange
+		parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
+		parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
+	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){
 		if( pTextureUniformTargets[ i ] != -1 ){
@@ -2459,6 +2478,9 @@ void deoglSkinShader::InitShaderParameters(){
 		}
 		*/
 		
+	}else if( pConfig.GetGIMaterial() ){
+		inputList.Add( "inPosition", 0 );
+		
 	}else{
 		inputList.Add( "inPosition", 0 );
 		inputList.Add( "inRealNormal", 1 );
@@ -2486,27 +2508,30 @@ void deoglSkinShader::InitShaderParameters(){
 			outputList.Add( "outLuminance", 0 );
 			outputList.Add( "outNormal", 1 );
 			
+		}else if( pConfig.GetGIMaterial() ){
+			outputList.Add( "outDiffuse", 0 );
+			outputList.Add( "outReflectivity", 1 );
+			outputList.Add( "outEmissivity", 2 );
+			
+		}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
+		&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
+			outputList.Add( "outColor", 0 );
+			
 		}else{
-			if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
-			&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-				outputList.Add( "outColor", 0 );
+			if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
+				outputList.Add( "outDiffuse", 0 );
+				outputList.Add( "outNormal", 1 );
+				outputList.Add( "outReflectivity", 2 );
+				outputList.Add( "outRoughness", 3 );
+				outputList.Add( "outAOSolidity", 4 );
+				outputList.Add( "outSubSurface", 5 );
+				outputList.Add( "outColor", 6 );
 				
 			}else{
-				if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-					outputList.Add( "outDiffuse", 0 );
-					outputList.Add( "outNormal", 1 );
-					outputList.Add( "outReflectivity", 2 );
-					outputList.Add( "outRoughness", 3 );
-					outputList.Add( "outAOSolidity", 4 );
-					outputList.Add( "outSubSurface", 5 );
-					outputList.Add( "outColor", 6 );
-					
-				}else{
-					outputList.Add( "outDiffuse", 0 );
-					outputList.Add( "outNormal", 1 );
-					outputList.Add( "outReflectivity", 2 );
-					outputList.Add( "outColor", 3 );
-				}
+				outputList.Add( "outDiffuse", 0 );
+				outputList.Add( "outNormal", 1 );
+				outputList.Add( "outReflectivity", 2 );
+				outputList.Add( "outColor", 3 );
 			}
 		}
 	}

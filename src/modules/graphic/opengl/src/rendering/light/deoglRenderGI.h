@@ -94,6 +94,9 @@ public:
 	/** \brief Prepare render light UBO. */
 	void PrepareUBORenderLight( deoglRenderPlan &plan );
 	
+	/** \brief Render materials. */
+	void RenderMaterials( deoglRenderPlan &plan );
+	
 	/** \brief Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
 	

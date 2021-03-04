@@ -33,6 +33,11 @@
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
 #include "../model/texture/deoglModelTexture.h"
+#include "../rendering/light/deoglRenderLight.h"
+#include "../rendering/light/deoglRenderGI.h"
+#include "../rendering/task/deoglRenderTask.h"
+#include "../rendering/task/deoglRenderTaskTexture.h"
+#include "../rendering/task/deoglAddToRenderTaskGIMaterial.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -197,6 +202,8 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 	}
 	
 	// add materials
+	deoglAddToRenderTaskGIMaterial &addToRenderTask =
+		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
 	deoglRComponent &component = lod.GetComponent();
 	const int textureCount = component.GetTextureCount();
 	const int indexMaterial = pTBOMaterial.GetPixelCount();
@@ -204,7 +211,7 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 	
 	for( i=0; i<textureCount; i++ ){
 		const deoglRComponentTexture &texture = component.GetTextureAt( i );
-		pAddMaterial( texture, 0 ); // TODO
+		pAddMaterial( texture, addToRenderTask.AddComponentTexture( lod, i ) );
 	}
 	
 	// add component
@@ -413,17 +420,20 @@ const decMatrix &matrix ){
 	return component;
 }
 
-void deoglGIBVH::pAddMaterial( const deoglRComponentTexture &texture, int materialIndex ){
+void deoglGIBVH::pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture ){
 	deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-	if( ! skinTexture ){
-		return;
+	if( skinTexture ){
+		pAddMaterial( *skinTexture, texture.GetUseSkinState(), texture.GetUseDynamicSkin(), renderTaskTexture );
+		
+	}else{
+		// TODO we have to add the texture even if not containing maps. in this case
+		//      the materialIndex has to be 0 (aka not set)
+		pTBOMaterial.AddVec4( 0, 0, 0, 0 );
 	}
-	
-	pAddMaterial( *skinTexture, texture.GetUseSkinState(), texture.GetUseDynamicSkin(), materialIndex );
 }
 
 void deoglGIBVH::pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-deoglRDynamicSkin *dynamicSkin, int materialIndex ){
+deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 	// collect values
 	decColor colorTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorTint )
 		.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
@@ -470,6 +480,8 @@ deoglRDynamicSkin *dynamicSkin, int materialIndex ){
 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationU() );
 	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
+	
+	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) + 1 : 0;
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)

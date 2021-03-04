@@ -29,6 +29,8 @@
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../task/deoglRenderTask.h"
+#include "../task/deoglRenderTaskShader.h"
+#include "../task/deoglRenderTaskTexture.h"
 #include "../task/deoglAddToRenderTaskGIMaterial.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../component/deoglRComponent.h"
@@ -43,6 +45,7 @@
 #include "../../gi/deoglGIBVH.h"
 #include "../../gi/deoglGIRays.h"
 #include "../../gi/deoglGIState.h"
+#include "../../gi/deoglGIMaterials.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../extensions/deoglExtensions.h"
@@ -65,6 +68,7 @@
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
+#include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../vao/deoglVAO.h"
 #include "../../world/deoglRWorld.h"
 
@@ -89,6 +93,10 @@ enum eUBORenderLightParameters{
 	euprlOcclusionMapScale,
 	euprlDistanceMapScale,
 	euprlGridCoordShift
+};
+
+enum eSPMaterial{
+	espmQuadParams
 };
 
 
@@ -234,6 +242,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
+	deoglGIMaterials &materials = gi.GetMaterials();
 	deoglGIRays &rays = gi.GetRays();
 	deoglGIBVH &bvh = gi.GetBVH();
 	
@@ -243,13 +252,22 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	
 	// prepare
+	pRenderTask->Clear();
+	pAddToRenderTask->Reset();
+	
 	bvh.Clear();
 	bvh.FindComponents( *plan.GetWorld(), giState->GetPosition(), giState->GetDetectionBox() );
 	bvh.AddStaticComponents( giState->GetPosition() );
 	bvh.BuildBVH();
 	//bvh.DebugPrint( giState.GetPosition() );
 	
+	materials.SetMaterialCount( pAddToRenderTask->GetMaterialMapCount() );
+	
 	giState->PrepareUBOState(); // has to be done here since it is shared
+	
+	
+	// render materials
+	RenderMaterials( plan );
 	
 	
 	// set common states
@@ -358,6 +376,105 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 		throw;
 	}
 	ubo.UnmapBuffer();
+}
+
+void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
+	deoglGIState * const giState = GetUpdateGIState( plan );
+	if( ! giState ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglGI &gi = renderThread.GetGI();
+	deoglGIMaterials &materials = gi.GetMaterials();
+	const int width = materials.GetTextureDiffuseTransparency().GetWidth();
+	const int height = materials.GetTextureDiffuseTransparency().GetHeight();
+	
+	if( debugInfo.GetVisible() ){
+		GetDebugTimerAt( 0 ).Reset();
+	}
+	
+	
+	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	
+	tsmgr.EnableTexture( 0, materials.GetTextureDiffuseTransparency(), GetSamplerRepeatLinear() );
+	tsmgr.EnableTexture( 1, materials.GetTextureReflectivityRoughness(), GetSamplerRepeatLinear() );
+	tsmgr.EnableTexture( 2, materials.GetTextureEmissivity(), GetSamplerRepeatLinear() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	const GLfloat clearDiffTransp[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
+	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };
+	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTransp[ 0 ] ) );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 1 ] ) );
+	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 2 ] ) );
+	
+	const int rtShaderCount = pRenderTask->GetShaderCount();
+	if( rtShaderCount == 0 ){
+		return;
+	}
+	
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	const int mapsPerRow = materials.GetMaterialsPerRow();
+	const int rowsPerImage = materials.GetRowsPerImage();
+	const float scaleU = 1.0f / ( float )mapsPerRow;
+	const float scaleV = 1.0f / ( float )rowsPerImage;
+	const float offsetScaleU = 2.0f / ( float )mapsPerRow;
+	const float offsetScaleV = 2.0f / ( float )rowsPerImage;
+	const float offsetBaseU = offsetScaleU * 0.5f - 1.0f;
+	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
+	int i;
+	
+	for( i=0; i<rtShaderCount; i++ ){
+		const deoglRenderTaskShader &rtShader = *pRenderTask->GetShaderAt( i );
+		deoglShaderCompiled &shader = *rtShader.GetShader()->GetCompiled();
+		
+		renderThread.GetShader().ActivateShader( rtShader.GetShader() );
+		
+		deoglRenderTaskTexture *rtTexture = rtShader.GetRootTexture();
+		
+		while( rtTexture ){
+			rtTexture->GetTUC()->Apply();
+			
+			const int matMapIndex = rtTexture->GetMaterialIndex();
+			const decPoint matMapCoord( matMapIndex % mapsPerRow, matMapIndex / mapsPerRow );
+			
+			const float offsetU = offsetScaleU * ( float )matMapCoord.x + offsetBaseU;
+			const float offsetV = offsetScaleV * ( float )matMapCoord.y + offsetBaseV;
+			
+			shader.SetParameterFloat( espmQuadParams, scaleU, scaleV, offsetU, offsetV );
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+			
+			rtTexture = rtTexture->GetNextTexture();
+		}
+		
+	}
+	
+	// clean up
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	tsmgr.DisableAllStages();
+	
+	if( debugInfo.GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+	}
 }
 
 void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
