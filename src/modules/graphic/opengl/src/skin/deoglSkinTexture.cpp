@@ -1977,15 +1977,12 @@ void deoglSkinTexture::pCreateMipMaps(){
 			continue;
 		}
 		
-		// notes:
-		// - solidity: better would be maximum filtered instead of box filtered mip maps
 		switch( ( deoglSkinChannel::eChannelTypes )i ){
 		case deoglSkinChannel::ectColor:
 		case deoglSkinChannel::ectTransparency:
 		case deoglSkinChannel::ectColorOmnidirCube:
 		case deoglSkinChannel::ectColorOmnidirEquirect:
 		case deoglSkinChannel::ectColorTintMask:
-		case deoglSkinChannel::ectSolidity:  // better max?
 		case deoglSkinChannel::ectHeight:
 		case deoglSkinChannel::ectEmissivity:
 		case deoglSkinChannel::ectRefractDistort:
@@ -1998,6 +1995,45 @@ void deoglSkinTexture::pCreateMipMaps(){
 		case deoglSkinChannel::ectAbsorption:
 		case deoglSkinChannel::ectRimEmissivity:
 			pbMipMap->CreateMipMaps();
+			break;
+			
+		case deoglSkinChannel::ectSolidity:
+			// solidity is a tricky problem, especially with masked solidity. shaders use 35%
+			// solidity as threshold to discard fragments. by using box filtering 0 values are
+			// pulled towards 1 values and quickly end up above the 35% threshold. especially
+			// with solidity textures placing holes near borders (for example to create blinds)
+			// this causes the holes to vanish and can break shadow casting and GI handling
+			// which rely on high LOD levels. there are now three possible solutions:
+			// 
+			// 1) use maximum filter. this favors solid geometry over holes.
+			// 2) use minimum filter. this favors holes over solid geometry.
+			// 3) use textureQueryLod in shader to figure out mip-map level used and pull
+			//    the threshold from 35% closer to for example 95%.
+			// 
+			// the third solution has the problem of the function existing only since opengl 4.0
+			// and what threshold to pull towards and in what speed.
+			// 
+			// the other two solutions are more practical and work also for opengl 3.3 GPUs.
+			// the main problem here is what to favor. in general filling up holes over distance
+			// is more visible since color texture is shown inside holes where it is not supposed
+			// to show. this produces visible artifacts and requires carefully made textures
+			// to hide these problems. by favoring holes geometry vanishes quicker which is
+			// also noticable but does not add artifacts. favoring holes also helps with solidity
+			// textures using holes at the border (like blinders). also vanishing solidity
+			// geometry quicker improves performance. for vegetation it is a problem since
+			// leaves vanish quicker.
+			// 
+			// one solution could be to limit the maximum mip-map level while creating mip-maps.
+			// this avoids the extreme situations and should allow both types of geometry to
+			// work better.
+			// 
+			// chosen as solution here is favoring holes and limiting mip-map level
+			pbMipMap->ReducePixelBufferCount( 3 ); // minimum 8x8
+			if( pbMipMap->GetPixelBufferCount() == 0 ){
+				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+				break;
+			}
+			pbMipMap->CreateMipMapsMin();
 			break;
 			
 		case deoglSkinChannel::ectNormal:
