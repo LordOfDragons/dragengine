@@ -483,7 +483,7 @@ deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 	
 	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) : 0;
 	
-	const bool ignoreMaterial = skinTexture.GetHasTransparency() || skinTexture.GetHasSolidity();
+	const bool ignoreMaterial = skinTexture.GetHasTransparency(); // || skinTexture.GetHasSolidity();
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)

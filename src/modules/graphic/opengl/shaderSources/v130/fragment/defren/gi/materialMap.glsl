@@ -55,9 +55,9 @@ in vec2 vTexCoord;
 // Outputs
 ////////////
 
-out vec4 outDiffuse; // diffuse.rgb, tintMask
-out vec4 outReflectivity; // reflectivity.rgb, roughness
-out vec3 outEmissivity; // emissivity.rgb
+out vec4 outDiffuse; // diffuse=rgb, tintMask=a
+out vec4 outReflectivity; // reflectivity=rgb, roughness=a
+out vec4 outEmissivity; // emissivity=rgb, solidity=a
 
 
 
@@ -65,6 +65,7 @@ out vec3 outEmissivity; // emissivity.rgb
 //////////////////
 
 void main( void ){
+	// texture property "color"
 	#ifdef TEXTURE_COLOR
 		#ifdef TEXTURE_TRANSPARENCY
 			outDiffuse.rgb = TEXTURE( texColor, vTexCoord ).rgb;
@@ -82,22 +83,39 @@ void main( void ){
 		#endif
 	#endif
 	
+	// texture property "color.tint.mask"
 	#ifdef TEXTURE_COLOR_TINT_MASK
 		outDiffuse.a = TEXTURE( texColorTintMask, vTexCoord ).r;
 	#else
 		outDiffuse.a = 1.0;
 	#endif
 	
+	// texture property "reflectivity"
 	#ifdef TEXTURE_REFLECTIVITY
 		outReflectivity.rgb = TEXTURE( texReflectivity, vTexCoord ).rgb;
 	#else
 		outReflectivity.rgb = vec3( 0.0 );
 	#endif
 	
+	// texture property "roughness"
 	#ifdef TEXTURE_ROUGHNESS
 		outReflectivity.a = TEXTURE( texRoughness, vTexCoord ).r;
 	#else
 		outReflectivity.a = 1.0;
+	#endif
+	
+	// texture property "emissivity"
+	#ifdef TEXTURE_EMISSIVITY
+		outEmissivity.rgb = TEXTURE( texEmissivity, vTexCoord ).rgb;
+	#else
+		outEmissivity.rgb = vec3( 0.0 );
+	#endif
+	
+	// texture property "solidity"
+	#ifdef TEXTURE_SOLIDITY
+		outEmissivity.a = TEXTURE( texSolidity, vTexCoord ).r;
+	#else
+		outEmissivity.a = 1.0;
 	#endif
 	
 	// environment room replaces the diffuse component.
@@ -118,17 +136,11 @@ void main( void ){
 		#endif
 	#endif
 	
-	#ifdef TEXTURE_EMISSIVITY
-		outEmissivity = TEXTURE( texEmissivity, vTexCoord ).rgb;
-	#else
-		outEmissivity = vec3( 0.0 );
-	#endif
-	
 	#ifdef TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef TEXTURE_ENVROOM_MASK
-			outEmissivity += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb * vec3( envRoomMask );
+			outEmissivity.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb * vec3( envRoomMask );
 		#else
-			outEmissivity += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb;
+			outEmissivity.rgb += textureLod( texEnvRoomEmissivity, envRoomDir, 0.0 ).rgb;
 		#endif
 	#endif
 }

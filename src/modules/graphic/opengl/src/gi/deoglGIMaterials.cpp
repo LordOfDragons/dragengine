@@ -32,7 +32,7 @@
 
 
 // Class deoglGIMaterials
-//////////////////////
+///////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -47,8 +47,8 @@ pMaterialsPerRow( pMaxMaterialsPerRow ),
 pRowsPerImage( pMaxRowsPerImage ),
 pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
 pMaterialCount( 0 ),
-pTexDiffuseTintMask( renderThread ),
-pTexReflectivityRoughness( renderThread ),
+pTexDiffuse( renderThread ),
+pTexReflectivity( renderThread ),
 pTexEmissivity( renderThread ),
 pFBOMaterial( renderThread, false )
 {
@@ -106,21 +106,21 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
 	
-	pTexDiffuseTintMask.SetFBOFormat( 4, false );
-	pTexDiffuseTintMask.SetSize( size, size );
-	pTexDiffuseTintMask.CreateTexture();
+	pTexDiffuse.SetFBOFormat( 4, false );
+	pTexDiffuse.SetSize( size, size );
+	pTexDiffuse.CreateTexture();
 	
-	pTexReflectivityRoughness.SetFBOFormat( 4, false );
-	pTexReflectivityRoughness.SetSize( size, size );
-	pTexReflectivityRoughness.CreateTexture();
+	pTexReflectivity.SetFBOFormat( 4, false );
+	pTexReflectivity.SetSize( size, size );
+	pTexReflectivity.CreateTexture();
 	
-	pTexEmissivity.SetFBOFormat( 3, true );
+	pTexEmissivity.SetFBOFormat( 4, true );
 	pTexEmissivity.SetSize( size, size );
 	pTexEmissivity.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuseTintMask );
-	pFBOMaterial.AttachColorTexture( 1, &pTexReflectivityRoughness );
+	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuse );
+	pFBOMaterial.AttachColorTexture( 1, &pTexReflectivity );
 	pFBOMaterial.AttachColorTexture( 2, &pTexEmissivity );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
@@ -131,7 +131,7 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	
 	const GLfloat clearDiffTintMask[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
 	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };
-	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTintMask[ 0 ] ) );
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 1 ] ) );

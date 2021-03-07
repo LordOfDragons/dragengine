@@ -1042,8 +1042,8 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
 	addToRenderTask.SetForceDoubleSided( true );
-	addToRenderTask.SetFilterHoles( true );
-	addToRenderTask.SetWithHoles( false );
+	//addToRenderTask.SetFilterHoles( true );
+	//addToRenderTask.SetWithHoles( false );
 	addToRenderTask.AddComponents( collideList );
 	
 	renderTask.PrepareForRender( renderThread );

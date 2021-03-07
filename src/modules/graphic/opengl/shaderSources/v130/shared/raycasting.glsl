@@ -85,19 +85,22 @@ uniform samplerBuffer tboTexCoord;
 uniform usamplerBuffer tboMaterial;
 
 // material atlas textures
-uniform sampler2D texMaterialDiffuse; // diffuse.rgb, tintMask
-uniform sampler2D texMaterialReflectivity; // reflectivity.rgb, roughness
-uniform sampler2D texMaterialEmissivity; // emissivity.rgb
+uniform sampler2D texMaterialDiffuse; // diffuse=rgb, tintMask=a
+uniform sampler2D texMaterialReflectivity; // reflectivity=rgb, roughness=a
+uniform sampler2D texMaterialEmissivity; // emissivity=rgb, solidity=a
 
 
 // ray cast result
 struct RayCastResult{
 	float distance;
 	int face;
-	int material;
-	uvec4 materialParams; // encoded
-	vec3 tc;
 	vec3 normal;
+	vec2 tc;
+	int material;
+	int materialMapIndex;
+	uvec4 materialParams; // encoded
+	ivec2 materialTC;
+	vec3 emissivity; // tapped material emissivity
 };
 
 
@@ -112,6 +115,17 @@ float bvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrigin, in ve
 	t = min( tmax.xx, tmax.yz );
 	return min( t.x, t.y ) > t0 ? t0 : -1.0;
 }
+
+
+// Calculate texture coordinates of hit face.
+vec2 rayCastFaceTexCoord( in int face, in vec3 barycentric ){
+	int baseIndex = face * 3;
+	vec2 tc1 = texelFetch( tboTexCoord, baseIndex ).xy;
+	vec2 tc2 = texelFetch( tboTexCoord, baseIndex + 1 ).xy;
+	vec2 tc3 = texelFetch( tboTexCoord, baseIndex + 2 ).xy;
+	return tc1 * barycentric.x + tc2 * barycentric.y + tc3 * barycentric.z;
+}
+
 
 
 // Perform ray cast against mesh BVH starting at absolute strided index.
@@ -215,13 +229,29 @@ in vec3 rayOrigin, in vec3 rayDirection, out RayCastResult result ){
 							continue; // ignore this material
 						}
 						
-						result.distance = uvt.z;
-						result.face = index.x + i;
-						result.material = materialIndex;
-						result.materialParams = materialParams;
-						result.tc = uvt.wxy;
-						result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
-						hasHit = true;
+						int faceIndex = index.x + i;
+						vec2 tc = rayCastFaceTexCoord( faceIndex, uvt.wxy );
+						
+						int materialMapIndex = int( materialParams.a & uint( 0x3fff ) );
+						ivec2 materialTC = ivec2( materialMapIndex % pGIMaterialMapsPerRow,
+							materialMapIndex / pGIMaterialMapsPerRow );
+						materialTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
+						materialTC += ivec2( tc * vec2( pGIMaterialMapSize ) ) % ivec2( pGIMaterialMapSize );
+						
+						vec4 emissivity = texelFetch( texMaterialEmissivity, materialTC, 0 );
+						
+						if( emissivity.a > 0.5 ){ // solidity
+							result.distance = uvt.z;
+							result.face = faceIndex;
+							result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
+							result.tc = tc;
+							result.material = materialIndex;
+							result.materialMapIndex = materialMapIndex;
+							result.materialParams = materialParams;
+							result.materialTC = materialTC;
+							result.emissivity = emissivity.rgb;
+							hasHit = true;
+						}
 					}
 				}
 			}
@@ -322,12 +352,14 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 						// we have inverse(mat3(matrix)) already and the transpose we can also
 						// skip by changing order
 						result.distance = meshResult.distance;
-						result.normal = normalize( meshResult.normal * mat3( invMatrix ) );
-						result.material = meshResult.material;
-						result.materialParams = meshResult.materialParams;
 						result.face = meshResult.face;
+						result.normal = normalize( meshResult.normal * mat3( invMatrix ) );
 						result.tc = meshResult.tc;
-						
+						result.material = meshResult.material;
+						result.materialMapIndex = meshResult.materialMapIndex;
+						result.materialParams = meshResult.materialParams;
+						result.materialTC = meshResult.materialTC;
+						result.emissivity = meshResult.emissivity;
 						hasHit = true;
 					}
 				}
@@ -340,21 +372,9 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 	return hasHit;
 }
 
-// Calculate texture coordinates of hit face.
-vec2 rayCastFaceTexCoord( in RayCastResult result ){
-	int baseIndex = result.face * 3;
-	vec2 tc1 = texelFetch( tboTexCoord, baseIndex ).xy;
-	vec2 tc2 = texelFetch( tboTexCoord, baseIndex + 1 ).xy;
-	vec2 tc3 = texelFetch( tboTexCoord, baseIndex + 2 ).xy;
-	return tc1 * result.tc.x + tc2 * result.tc.y + tc3 * result.tc.z;
-}
-
 // Sample material parameters using result
 void rayCastSampleMaterial( in RayCastResult result, out vec3 diffuse, out float tintMask,
 out vec3 reflectivity, out float roughness, out vec3 emissivity ){
-	// calculate texture coordinates and material index from hit face
-	vec2 texCoord = rayCastFaceTexCoord( result );
-	
 	// get material parameters
 	uvec4 matParams = result.materialParams; //texelFetch( tboMaterial, result.material );
 	
@@ -366,20 +386,15 @@ out vec3 reflectivity, out float roughness, out vec3 emissivity ){
 		+ vec4( 0.0, 0.0, 0.4, 0.0 );
 	vec3 emissivityIntensity = vec3( matParams.rgb & uvec3( 0xffff ) ) * vec3( 1.0 / 65535.0 );
 	//bvec2 variation = notEqual( matParams.aa & uvec2( 0x8000, 0x4000 ), uvec2( 0 ) );
-	int materialMapIndex = int( matParams.a & uint( 0x3fff ) );
 	
 	// sample material map from atlas
-	ivec2 matMapTC = ivec2( materialMapIndex % pGIMaterialMapsPerRow, materialMapIndex / pGIMaterialMapsPerRow );
-	matMapTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
-	matMapTC += ivec2( texCoord * vec2( pGIMaterialMapSize ) ) % ivec2( pGIMaterialMapSize );
-	
-	vec4 temp = texelFetch( texMaterialDiffuse, matMapTC, 0 );
+	vec4 temp = texelFetch( texMaterialDiffuse, result.materialTC, 0 );
 	diffuse = temp.rgb;
 	tintMask = temp.a;
 	
-	temp = texelFetch( texMaterialReflectivity, matMapTC, 0 );
+	temp = texelFetch( texMaterialReflectivity, result.materialTC, 0 );
 	reflectivity = temp.rgb;
 	roughness = temp.a;
 	
-	emissivity = texelFetch( texMaterialEmissivity, matMapTC, 0 ).rgb;
+	emissivity = texelFetch( texMaterialEmissivity, result.materialTC, 0 ).rgb;
 }

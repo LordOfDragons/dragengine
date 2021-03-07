@@ -54,8 +54,8 @@ private:
 	
 	int pMaterialCount;
 	
-	deoglTexture pTexDiffuseTintMask;
-	deoglTexture pTexReflectivityRoughness;
+	deoglTexture pTexDiffuse;
+	deoglTexture pTexReflectivity;
 	deoglTexture pTexEmissivity;
 	deoglFramebuffer pFBOMaterial;
 	
@@ -109,15 +109,31 @@ public:
 	
 	
 	
-	/** \brief Diffuse/TintMask texture. */
-	inline deoglTexture &GetTextureDiffuseTintMask(){ return pTexDiffuseTintMask; }
-	inline const deoglTexture &GetTextureDiffuseTintMask() const{ return pTexDiffuseTintMask; }
+	/**
+	 * \brief Diffuse texture.
+	 * 
+	 * Stores texture property "color" as RGB and texture property "color.tint.mask" as A.
+	 * Color is combined with texture property "envroom" if present. For environment
+	 * rooms the back face is used as texture.
+	 */
+	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
-	/** \brief Reflectivity/Roughness texture. */
-	inline deoglTexture &GetTextureReflectivityRoughness(){ return pTexReflectivityRoughness; }
-	inline const deoglTexture &GetTextureReflectivityRoughness() const{ return pTexReflectivityRoughness; }
+	/**
+	 * \brief Reflectivity texture.
+	 * 
+	 * Stores texture property "reflectivity" as RGB and texture property "roughness" as A.
+	 */
+	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
-	/** \brief Emissivity texture. */
+	/**
+	 * \brief Emissivity texture.
+	 * 
+	 * Stores texture property "emissivity" as RGB and texture property "solidity" as A.
+	 * Emissivity is combined with "envroom.emissivity" if present. For environment
+	 * rooms the back face is used as texture.
+	 */
 	inline deoglTexture &GetTextureEmissivity(){ return pTexEmissivity; }
 	inline const deoglTexture &GetTextureEmissivity() const{ return pTexEmissivity; }
 	

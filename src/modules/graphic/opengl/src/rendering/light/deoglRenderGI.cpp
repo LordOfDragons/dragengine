@@ -320,8 +320,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
 	
-	tsmgr.EnableTexture( 8, materials.GetTextureDiffuseTintMask(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 9, materials.GetTextureReflectivityRoughness(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 8, materials.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 9, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 10, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
 	
 	tsmgr.DisableStagesAbove( 10 );
@@ -400,8 +400,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIMaterials &materials = gi.GetMaterials();
-	const int width = materials.GetTextureDiffuseTintMask().GetWidth();
-	const int height = materials.GetTextureDiffuseTintMask().GetHeight();
+	const int width = materials.GetTextureDiffuse().GetWidth();
+	const int height = materials.GetTextureDiffuse().GetHeight();
 	
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -415,8 +415,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	
-	tsmgr.EnableTexture( 0, materials.GetTextureDiffuseTintMask(), GetSamplerRepeatLinear() );
-	tsmgr.EnableTexture( 1, materials.GetTextureReflectivityRoughness(), GetSamplerRepeatLinear() );
+	tsmgr.EnableTexture( 0, materials.GetTextureDiffuse(), GetSamplerRepeatLinear() );
+	tsmgr.EnableTexture( 1, materials.GetTextureReflectivity(), GetSamplerRepeatLinear() );
 	tsmgr.EnableTexture( 2, materials.GetTextureEmissivity(), GetSamplerRepeatLinear() );
 	tsmgr.DisableStagesAbove( 2 );
 	
