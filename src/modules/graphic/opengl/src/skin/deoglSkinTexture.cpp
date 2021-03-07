@@ -85,7 +85,7 @@
 
 #define ENABLE_CACHE_LOGGING		false
 
-#define CACHE_FILE_VERSION			2
+#define CACHE_FILE_VERSION			1
 
 enum eShaderConfigurationTypes{
 	esctGeometry,
