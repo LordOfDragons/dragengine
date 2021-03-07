@@ -80,6 +80,7 @@ public:
 		// global illumination ray
 		erutGIRayMatrix,
 		erutGIRayMatrixNormal,
+		erutGICameraProjection,
 		
 		// occlusion tracing
 		erutOTMatrix,

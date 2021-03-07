@@ -742,11 +742,6 @@ void main( void ){
 				#endif
 			}
 			
-			// prevent the test depth from reaching 0 or below. if this happens the test
-			// result incorrectly considers the fragment not in shadows even if it is.
-			// it is not enough to clamp to 0. it has to be larger than 0.
-			shapos1.q = max( shapos1.q, 0.0001 );
-			
 			#define shapos2 shapos1
 		#endif
 		
@@ -918,8 +913,18 @@ void main( void ){
 				#ifdef SMA1_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow1SolidDepth, pShadow1Solid, shapos1 ) );
 				#elif defined GI_RAY
-					if( any( lessThan( shapos1.xy, vec2( 0.0 ) ) ) || any( greaterThan( shapos1.xy, vec2( 1.0 ) ) ) ){
+					// the main shadow map array is only guaranteed to hold valid data for
+					// pixels falling into the view frustum. outside this volume data is
+					// potentially culled for performance reason. use GI shadow map instead
+					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
+					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
 						shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+						
+						// prevent the test depth from reaching 0 or below. if this happens the test
+						// result incorrectly considers the fragment not in shadows even if it is.
+						// it is not enough to clamp to 0. it has to be larger than 0.
+						shapos1.q = max( shapos1.q, 0.0001 );
+						
 					}else{
 						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
 					}

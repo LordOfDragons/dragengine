@@ -7,6 +7,7 @@ UBOLAYOUT uniform RenderParameters{
 	// global illumination rays
 	mat4x3 pGIRayMatrix; // transform from GI space to camera space
 	mat3 pGIRayMatrixNormal; // transform from GI space to camera space (requires transpose)
+	mat4 pGICameraProjection;
 	
 	// occlusion tracing
 	mat4x3 pOTMatrix; // transform from view space to tracing space

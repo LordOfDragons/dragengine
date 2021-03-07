@@ -297,6 +297,7 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		// gloal illumination
 		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		spb->GetParameterAt( erutGICameraProjection ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
 		
 		// occlusion tracing
 		spb->GetParameterAt( erutOTMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3

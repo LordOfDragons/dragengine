@@ -679,6 +679,8 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
 			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
 				matrix.GetRotationMatrix().QuickInvert() );
+			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
+				plan.GetProjectionMatrix() );
 		}
 		
 		// occlusion tracing
