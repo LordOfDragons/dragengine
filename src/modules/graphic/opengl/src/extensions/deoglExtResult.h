@@ -245,6 +245,15 @@ extern GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv;
 
 
 
+// opengl version 2.0
+///////////////////////
+
+extern PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate;
+extern PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate;
+extern PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate;
+
+
+
 // GL_ARB_vertex_program . opengl version 2.0
 ///////////////////////////////////////////////
 

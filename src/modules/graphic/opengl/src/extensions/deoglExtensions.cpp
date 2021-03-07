@@ -672,6 +672,11 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglEndQuery, "glEndQuery" );
 	pGetRequiredFunction( (void**)&pglGetQueryObjectuiv, "glGetQueryObjectuiv" );
 	
+	// opengl version 2.0
+	pGetRequiredFunction( (void**)&pglStencilOpSeparate, "glStencilOpSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilFuncSeparate, "glStencilFuncSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilMaskSeparate, "glStencilMaskSeparate" );
+	
 	// GL_ARB_vertex_program . opengl version 2.0
 	pGetRequiredFunction( (void**)&pglVertexAttribPointer, "glVertexAttribPointer" );
 	pGetRequiredFunction( (void**)&pglEnableVertexAttribArray, "glEnableVertexAttribArray" );

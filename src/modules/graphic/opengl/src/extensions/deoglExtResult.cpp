@@ -107,6 +107,15 @@ GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv = NULL;
 
 
 
+// opengl version 2.0
+///////////////////////
+
+GLAPI PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate = NULL;
+GLAPI PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate = NULL;
+GLAPI PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate = NULL;
+
+
+
 // GL_ARB_vertex_program . opengl version 2.0
 ///////////////////////////////////////////////
 
