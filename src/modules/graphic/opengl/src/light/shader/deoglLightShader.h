@@ -64,6 +64,7 @@ public:
 		ettLightDepth1,
 		ettLightDepth2,
 		ettPosition,
+		ettGIShadowMap,
 		ettOTOcclusion,
 		ettOTDistance,
 		ETT_COUNT
@@ -75,6 +76,10 @@ public:
 		erutDepthSampleOffset,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,
+		
+		// global illumination ray
+		erutGIRayMatrix,
+		erutGIRayMatrixNormal,
 		
 		// occlusion tracing
 		erutOTMatrix,
@@ -122,6 +127,8 @@ public:
 		
 		eiutShadowDepthTransform,
 		eiutShadowDepthTransform2,
+		
+		eiutGIShadowMatrix,
 		
 		EIUT_COUNT
 	};

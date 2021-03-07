@@ -60,6 +60,8 @@ public:
 		eupMaxProbeDistance, // float
 		eupDepthSharpness, // float
 		eupFieldOrigin, // vec3
+		eupMaterialMapsPerRow, // int
+		eupMaterialMapSize, // int
 		eupProbeIndex, // ivec4[]: group of 4 probes to trace
 		eupProbePosition, // vec3[]: probe position and ray origin
 		eupRayDirection // vec3[]: ray direction

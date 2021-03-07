@@ -227,6 +227,20 @@ void deoglGIState::PrepareUBOState() const{
 			}
 		}
 		
+		// material
+		/*
+		const int materialMapSize = gi.GetMaterials().GetMaterialMapSize();
+		const int materialTexWidth = gi.GetMaterials().GetTextureDiffuseTintMask().GetWidth();
+		const int materialTexHeight = gi.GetMaterials().GetTextureDiffuseTintMask().GetHeight();
+		const float materialScaleU = ( float )materialMapSize / ( float )materialTexWidth;
+		const float materialScaleV = ( float )materialMapSize / ( float )materialTexHeight;
+		//const float materialClamp = ( 1.0f / ( float )materialMapSize ) * 0.5f;
+		ubo.SetParameterDataVec2( deoglGI::eupMaterialMapTCScale, materialScaleU, materialScaleV );
+		*/
+		ubo.SetParameterDataInt( deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow() );
+		ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
+		
+		// ray direction
 // 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
 // 			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
 		//const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();

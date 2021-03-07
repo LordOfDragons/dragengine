@@ -1,16 +1,17 @@
 precision highp float;
 precision highp int;
 
-#include "v130/shared/octahedral.glsl"
-#include "v130/shared/raycasting.glsl"
-#include "v130/shared/raycasting_material.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+
+#include "v130/shared/octahedral.glsl"
+#include "v130/shared/raycasting.glsl"
 
 
 out vec4 outPosition;
 out vec4 outNormal;
 out vec4 outDiffuse;
+out vec4 outReflectivity;
 out vec3 outLight;
 
 
@@ -42,7 +43,8 @@ void main( void ){
 		outPosition = vec4( 0.0, 0.0, 0.0, 250.0 );
 		outNormal vec4( 0.0, 0.0, 1.0, 0.0 );
 	}
-	outDiffuse = vec4( 1.0, 1.0, 1.0, 0.0 );
+	outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+	outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 	outLight = vec3( 0.0 );
 	return;
 	}
@@ -69,16 +71,18 @@ void main( void ){
 		outNormal = vec4( result.normal, 0.0 );
 		
 		vec3 matDiffuse, matReflectivity, matEmissivity;
-		float matRoughness;
-		rayCastSampleMaterial(result, matDiffuse, matReflectivity, matRoughness, matEmissivity);
+		float matTintMask, matRoughness;
+		rayCastSampleMaterial(result, matDiffuse, matTintMask, matReflectivity, matRoughness, matEmissivity);
 		
-		outDiffuse = vec4( matDiffuse, 1 );
+		outDiffuse = vec4( matDiffuse, matTintMask );
+		outReflectivity = vec4( matReflectivity, matRoughness );
 		outLight = vec3( matEmissivity );
 		
 	}else{
 		outPosition = vec4( pp, 10000.0 );
 		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
-		outDiffuse = vec4( 1.0, 1.0, 1.0, 0.0 );
+		outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+		outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 		outLight = vec3( 0.0 );
 	}
 	return;
@@ -114,7 +118,8 @@ void main( void ){
 		outPosition = vec4( position + direction, 10000.0 );
 		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
 	}
-	outDiffuse = vec4( 1.0, 1.0, 1.0, 0.0 );
+	outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+	outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 	outLight = vec3( 0.0 );
 	
 	gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );

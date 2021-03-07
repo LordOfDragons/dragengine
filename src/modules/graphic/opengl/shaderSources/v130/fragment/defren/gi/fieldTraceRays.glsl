@@ -1,10 +1,14 @@
 precision highp float;
 precision highp int;
 
-#include "v130/shared/octahedral.glsl"
-#include "v130/shared/raycasting.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_field.glsl"
+
+const int pGIMaterialMapsPerRow = 32; // dummy
+const int pGIMaterialMapSize = 64; // dummy
+
+#include "v130/shared/octahedral.glsl"
+#include "v130/shared/raycasting.glsl"
 
 
 out float outResult;
@@ -37,7 +41,7 @@ void main( void ){
 		+ vec2( 0.5 ) ) * ( 2.0 / float( pGIFieldProbeSize ) ) - vec2( 1.0 ) );
 	
 	RayCastResult result;
-	if( rayCastMesh( 0, position, direction, result ) ){
+	if( rayCastMesh( 0, 0, position, direction, result ) ){
 		outResult = result.distance;
 	}else{
 		outResult = 10000.0;

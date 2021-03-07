@@ -96,6 +96,7 @@
 #include "../../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglRenderableDepthTexture.h"
+#include "../../texture/texture2d/deoglRenderableDepthTextureManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../utils/convexhull/deoglConvexHull2D.h"
 #include "../../visitors/deoglVolumeShape.h"
@@ -152,8 +153,10 @@ deoglRenderLightBase( renderThread ),
 
 pColList2( NULL ),
 pShaderAO( NULL ),
+pShaderClearDepth( NULL ),
 
 pSolidShadowMap( NULL ),
+pSolidGIShadowMap( NULL ),
 
 pDebugInfoSolid( NULL ),
 pDebugInfoTransparent( NULL ),
@@ -179,10 +182,10 @@ pDebugInfoTransparentDetail( NULL ),
 pDebugInfoTransparentLight( NULL )
 {
 // 	const deoglConfiguration &config = renderThread.GetConfiguration();
-// 	deoglShaderManager &shamgr = renderThread.GetShader().GetShaderManager();
+	deoglShaderManager &shamgr = renderThread.GetShader().GetShaderManager();
 // 	bool useEncodeDepth = config.GetUseEncodeDepth();
-// 	deoglShaderSources *sources;
-// 	deoglShaderDefines defines;
+	deoglShaderSources *sources;
+	deoglShaderDefines defines;
 	
 	try{
 // 		sources = shamgr.GetSourcesNamed( "DefRen AO Sky" );
@@ -191,6 +194,11 @@ pDebugInfoTransparentLight( NULL )
 // 		}
 // 		pShaderAO = shamgr.GetProgramWith( sources, defines );
 // 		defines.RemoveAllDefines();
+		
+		sources = shamgr.GetSourcesNamed( "DefRen Clear Depth" );
+		pShaderClearDepth = shamgr.GetProgramWith( sources, defines );
+		
+		
 		
 		pColList2 = new deoglCollideList;
 		
@@ -399,7 +407,7 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 #endif
 	if( useShadow && solid ){
 		passCount = planSkyLight.GetShadowLayerCount();
-		RenderShadows( plan, planSkyLight );
+		RenderShadows( plan, solid, mask, planSkyLight );
 		RestoreFBO( plan );
 		DebugTimer2SampleCount( plan, *pDebugInfoSolidShadow, 1, true );
 	}
@@ -538,6 +546,11 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
 				}
 				
+				target = lightShader->GetTextureTarget( deoglLightShader::ettGIShadowMap );
+				if( target != -1 ){
+					tsmgr.EnableTexture( target, *pSolidGIShadowMap->GetTexture(), GetSamplerShadowClampLinear() );
+				}
+				
 				defren.RenderFSQuadVAO();
 			}
 		}
@@ -564,11 +577,15 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 
 
 
-void deoglRenderLightSky::RenderShadows( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight ){
+void deoglRenderLightSky::RenderShadows( deoglRenderPlan &plan, bool solid,
+deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	
 	RenderShadowMap( plan, planSkyLight, shadowMapper );
+	if( solid && ! mask ){
+		RenderGIShadowMap( plan, planSkyLight, shadowMapper );
+	}
 	
 	// activate stencil as we had to disable it for rendering the shadow maps
 	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
@@ -657,7 +674,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	SetCullMode( false );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
@@ -665,6 +681,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	if( pglClipControl && defren.GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
 	}
+	
+	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
+	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
+	OGL_CHECK( renderThread, glStencilMask( 0xff ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
 	
 	// get shadow map
 	const int shadowMapSize = plan.GetShadowSkySize();
@@ -677,16 +700,15 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 	if( ! pSolidShadowMap ){
 		pSolidShadowMap = renderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith(
-			shadowMapSize, shadowMapSize, layerCount, deoglPixelBuffer::epfDepth );
+			shadowMapSize, shadowMapSize, layerCount, deoglPixelBuffer::epfDepthStencil );
 	}
 	
 	// clear shadow map
 	shadowMapper.SetForeignSolidDepthArrayTexture( pSolidShadowMap->GetTexture() );
-	const GLfloat clearDepth = ( GLfloat )1.0f; // sky light uses linear depth
 	
 	if( ! bugClearEntireArrTex ){
-		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount );
-		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 		DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
 	}
 	
@@ -745,12 +767,16 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 				* decMatrix::CreateScale( sl.scale * 2.0f );
 		}
 		
+		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
+		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+		
 		// activate shadow map. since objects mostly reside in only one shadow texture
 		// we attach the individual layers instead of the entire texture. avoids the
 		// need for a geometry program to be used.
-		shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i );
+		shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
 		if( bugClearEntireArrTex ){
-			OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitClear, true );
 		}
 		
@@ -826,6 +852,22 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		
 		addToRenderTask.SetForceDoubleSided( false );
 		
+		// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
+		// casting. the idea here is to consider back facing fragments hit before any front facing
+		// fragments to belong to the outer hull of a map. this is similar to a fragment blocking
+		// the sky light right at the near end of the shadow map. by clearing back facing fragments
+		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
+		// issues on front facing fragments but makes underground scenes safe
+		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
+		
+		renderThread.GetShader().ActivateShader( pShaderClearDepth );
+		
+		pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
+		
+		defren.RenderFSQuadVAO();
+		
+		// debug
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
 			const decQuaternion rot = matLig.ToQuaternion();
 			const float sx = ( sl.maxExtend.x - sl.minExtend.x ) * 0.5f;
@@ -893,6 +935,137 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture(*pSolidShadowMap->GetTexture(), s, true);
 	}
 #endif
+}
+
+void deoglRenderLightSky::RenderGIShadowMap( deoglRenderPlan &plan,
+deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+	if( ! giState ){
+		return;
+	}
+	
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	deoglCollideList &collideList = planSkyLight.GetGICollideList();
+	UpdateComponentVBO( collideList );
+	
+	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * planSkyLight.GetLayer()->GetMatrix() );
+	
+	// opengl states
+	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // lequal, sky light uses linear depth
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glCullFace( GL_BACK ) );
+	
+	if( pglClipControl && defren.GetUseInverseDepth() ){
+		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
+	}
+	
+	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
+	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
+	OGL_CHECK( renderThread, glStencilMask( 0xff ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+	
+	// get shadow map
+	const int shadowMapSize = 1024;
+	
+	if( pSolidGIShadowMap && pSolidGIShadowMap->GetWidth() != shadowMapSize ){
+		pSolidGIShadowMap->SetInUse( false );
+		pSolidGIShadowMap = NULL;
+	}
+	if( ! pSolidGIShadowMap ){
+		pSolidGIShadowMap = renderThread.GetTexture().GetRenderableDepthTexture()
+			.GetTextureWith( shadowMapSize, shadowMapSize, true, false );
+	}
+	
+	// clear shadow map
+	shadowMapper.SetForeignSolidDepthTexture( pSolidGIShadowMap->GetTexture() );
+	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
+	
+	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+	
+	// render shadow map. only solid content without holes is rendered at the highest lod level
+	deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetGIShadowLayer();
+	
+	const decVector position( ( sl.minExtend + sl.maxExtend ) * 0.5f );
+	sl.position = ( giState->GetPosition() - plan.GetWorld()->GetReferencePosition() ).ToVector() + ( matLig * position );
+	sl.scale.x = 1.0f / ( sl.maxExtend.x - sl.minExtend.x );
+	sl.scale.y = 1.0f / ( sl.maxExtend.y - sl.minExtend.y );
+	sl.scale.z = 1.0f / ( sl.maxExtend.z - sl.minExtend.z );
+	
+	deoglLODCalculator().SetComponentLODMax( collideList );
+	
+	// the calculation here is a bit complicated. the fragment position is transformed from
+	// GI space to camera space to allow the same light shader code to light it. the GI shadow
+	// map though is calculated relative to GI space. the GI and camera space are slightly
+	// different from each other. for this reason we have to convert the position first from
+	// camera spaces back to GI space. from there we can convert to light space
+	// 
+	// NOTE the rotation is not the problem but the position. the sl.position calculation
+	//      above uses for camera plan->GetCameraPosition() instead of giState->GetPosition().
+	//      this offset has to be corrected
+	const decDMatrix matrixCamera( decDMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() ) );
+	
+	sl.matrix = ( plan.GetInverseCameraMatrix() * matrixCamera ).ToMatrix()
+		* decMatrix::CreateTranslation( -sl.minExtend ) * decMatrix::CreateScale( sl.scale );
+	
+	const decMatrix matrixGI( matrixCamera.ToMatrix() * decMatrix::CreateScale( sl.scale * 2.0f ) );
+	
+	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	renderParamBlock->MapBuffer();
+	try{
+		renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
+		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
+		renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixGI.GetRotationMatrix().QuickInvert() );
+		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
+		
+	}catch( const deException & ){
+		renderParamBlock->UnmapBuffer();
+		throw;
+	}
+	renderParamBlock->UnmapBuffer();
+	
+	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renderParamBlock );
+	
+	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
+	addToRenderTask.Reset();
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoShadowNone( true );
+	addToRenderTask.SetForceDoubleSided( true );
+	addToRenderTask.SetFilterHoles( true );
+	addToRenderTask.SetWithHoles( false );
+	addToRenderTask.AddComponents( collideList );
+	
+	renderTask.PrepareForRender( renderThread );
+	renderThread.GetRenderers().GetGeometry().RenderTask( renderTask );
+	
+	// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
+	// casting. the idea here is to consider back facing fragments hit before any front facing
+	// fragments to belong to the outer hull of a map. this is similar to a fragment blocking
+	// the sky light right at the near end of the shadow map. by clearing back facing fragments
+	// to 0 artifacts for back faces are eliminated altogether. this though won't help with
+	// issues on front facing fragments but makes underground scenes safe
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderClearDepth );
+	
+	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
+	
+	defren.RenderFSQuadVAO();
+	
+	// clean up
+	shadowMapper.DropForeignTextures();
 }
 
 
@@ -977,7 +1150,7 @@ int shadowMapSize, int passCount ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	
 	// set values
-	decMatrix matrix[ 4 ];
+	decMatrix matrix[ 4 ], giMatrix;
 	float layerBorder[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float scaleZ[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	
@@ -1018,6 +1191,11 @@ int shadowMapSize, int passCount ){
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
 					DETHROW( deeInvalidParam );
 				}
+		}
+		
+		// only properly set up if plan has GI
+		if( GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) ){
+			giMatrix = planSkyLight.GetGIShadowLayer().matrix;
 		}
 	}
 	
@@ -1074,6 +1252,11 @@ int shadowMapSize, int passCount ){
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
 		if( target != -1 ){
 			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
+		}
+		
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
+		if( target != -1 ){
+			paramBlock.SetParameterDataMat4x4( target, giMatrix );
 		}
 		
 	}catch( const deException & ){
@@ -1139,7 +1322,14 @@ void deoglRenderLightSky::pCleanUp(){
 		pSolidShadowMap->SetInUse( false );
 		pSolidShadowMap = NULL;
 	}
+	if( pSolidShadowMap ){
+		pSolidShadowMap->SetInUse( false );
+		pSolidShadowMap = NULL;
+	}
 	
+	if( pShaderClearDepth ){
+		pShaderClearDepth->RemoveUsage();
+	}
 	if( pShaderAO ){
 		pShaderAO->RemoveUsage();
 	}

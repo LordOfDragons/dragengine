@@ -77,6 +77,7 @@ precision highp int;
 	uniform HIGHP sampler2D texPosition;
 	uniform lowp sampler2D texDiffuse;
 	uniform lowp sampler2D texNormal;
+	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
 #else
 	uniform HIGHP sampler2D texDepth;
 	uniform lowp sampler2D texDiffuse;
@@ -91,52 +92,55 @@ precision highp int;
 #endif
 #ifdef TEXTURE_SHADOW1_SOLID
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow1SolidDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1SolidDepth;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow1SolidDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1SolidDepth;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW1_TRANSPARENT
 	#ifdef SMA1_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow1TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1TransparentDepth;
 		uniform lowp samplerCube texShadow1TransparentColor;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow1TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1TransparentDepth;
 		uniform lowp sampler2D texShadow1TransparentColor;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_SOLID
 	#ifdef SMA2_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow2SolidDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2SolidDepth;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow2SolidDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2SolidDepth;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_TRANSPARENT
 	#ifdef SMA2_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow2TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2TransparentDepth;
 		uniform lowp samplerCube texShadow2TransparentColor;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow2TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2TransparentDepth;
 		uniform lowp sampler2D texShadow2TransparentColor;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW1_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow1Ambient;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow1Ambient;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow2Ambient;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow2Ambient;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_NOISE
 	uniform lowp sampler2D texNoise;
+#endif
+#ifdef GI_RAY
+	uniform HIGHP sampler2DShadow texGIShadowMap;
 #endif
 
 #ifdef TEXTURE_COLOR
@@ -660,7 +664,7 @@ void main( void ){
 	
 	// determine position of fragment to light
 	#ifdef GI_RAY
-		vec3 position = texelFetch( texPosition, tc, 0 ).rgb;
+		vec3 position = vec3( pGIRayMatrix * vec4( texelFetch( texPosition, tc, 0 ).rgb, 1.0 ) );
 	#else
 		#ifdef DECODE_IN_DEPTH
 			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
@@ -738,6 +742,11 @@ void main( void ){
 				#endif
 			}
 			
+			// prevent the test depth from reaching 0 or below. if this happens the test
+			// result incorrectly considers the fragment not in shadows even if it is.
+			// it is not enough to clamp to 0. it has to be larger than 0.
+			shapos1.q = max( shapos1.q, 0.0001 );
+			
 			#define shapos2 shapos1
 		#endif
 		
@@ -813,6 +822,10 @@ void main( void ){
 		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
 	#else
 		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
+	#endif
+	
+	#ifdef GI_RAY
+		normal = normal * pGIRayMatrixNormal; // requires matrix transpose done by reversed order
 	#endif
 	
 	if( dot( normal, normal ) < 0.0001 ){
@@ -895,11 +908,21 @@ void main( void ){
 		}else{
 			shadow = clamp( dotval * shadowThresholdInv + 1.0, 0.0, 1.0 );
 		#else
-			shadow = 1.0;
+			// force back facing fragments into shadow. not only does this avoid the need to
+			// sample the shadow maps but it also avoids light leaking problems. this does
+			// not affect ambient shadows
+			if( dotval > 0.0 ){
+				shadow = 1.0;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow1SolidDepth, pShadow1Solid, shapos1 ) );
+				#elif defined GI_RAY
+					if( any( lessThan( shapos1.xy, vec2( 0.0 ) ) ) || any( greaterThan( shapos1.xy, vec2( 1.0 ) ) ) ){
+						shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+					}else{
+						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
+					}
 				#else
 					shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
 				#endif
@@ -911,6 +934,9 @@ void main( void ){
 					shadow = min( shadow, evaluateShadow2D( texShadow2SolidDepth, pShadow2Solid, ES2D( shapos2 ) ) );
 				#endif
 			#endif
+			}else{
+				shadow = 0.0;
+			}
 			
 			#ifdef AMBIENT_LIGHTING
 				// temporary until sky light is improved. required since pLightAmbientRatio is
@@ -1003,63 +1029,70 @@ void main( void ){
 		#endif
 	#endif
 	
+	
+	
+	// diffuse term = color_diff * color_light * max( dot( normal, lightDir ), 0 )
+	// specular term = ( ( ap + 2 ) / 8 ) * pow( max( dot( normal, halfDir ), 0 ), ap )
+	//                   * fresnel( color_reflectivity, lightDir, halfDir )
+	//                   * color_light * max( dot( normal, lightDir ), 0 )
+	// 
+	// vec3 halfDir = normalize( lightDir - position );
+	// vec3 lightTerm = colorLight * vec3( max( dot( normal, lightDir ), 0.0 ) );
+	// float specNormTerm = ( ap + 2.0 ) / 8.0;
+	// float specPowTerm = pow( max( dot( normal, halfDir ), 0.0 ), ap );
+	// vec3 specFresnelTerm = mix( colorSpecular, vec3( 1.0 ), vec3( pow( 1.0 - dot( lightDir, halfDir ), 5.0 ) ) );
+	// vec3 specularTerm = vec3( specNormTerm * specPowTerm ) * specFresnelTerm;
+	// vec3 fragmentColor = ( colorDiffuse + specularTerm ) * lightTerm;
+	// 
+	// calculation of the ap term using a (pseudo) linear roughness value. roughness value is 0 for sharp reflection
+	// all the way to 1 for fully diffuse reflection. roughness is considered to be 1 minus the beckmann roughness.
+	// the original formula is ap = 2 / roughness**2 - 2. to avoid a division by zero a small max ap factor is used.
+	// this factor clamps the ap value to a given maximum value. a value of 0.00002 for the max ap factor clamps the
+	// ap to roughly 100000. this is enough for a fully sharp reflection. to avoid a near flat line result at the
+	// fully diffuse end of the ap spectrum a min ap factor is used. the smallest physically reasonable ap values
+	// are in the range from 0.1 to 2. a min ap factor of 2-0.5 = 1.5 keeps the smallest ap to 0.5 which looks nice.
+	// 
+	// roughness = clamp( texture-input( 0=sharp .. 1=diffuse ), 0.0, 1.0 )
+	// float ap = 2.0 / ( specularity.g * specularity.g + maxAP ) - minAP
 	#ifdef GI_RAY
-		vec3 finalColorSurface = vec3( 0.0 );
+		vec4 reflRough = texelFetch( texReflectivity, tc, 0 );
+		vec3 reflectivity = reflRough.rgb;
+		vec3 roughness = vec3( reflRough.a, 0.0, 0.0 );
 		
 	#else
-		// diffuse term = color_diff * color_light * max( dot( normal, lightDir ), 0 )
-		// specular term = ( ( ap + 2 ) / 8 ) * pow( max( dot( normal, halfDir ), 0 ), ap )
-		//                   * fresnel( color_reflectivity, lightDir, halfDir )
-		//                   * color_light * max( dot( normal, lightDir ), 0 )
-		// 
-		// vec3 halfDir = normalize( lightDir - position );
-		// vec3 lightTerm = colorLight * vec3( max( dot( normal, lightDir ), 0.0 ) );
-		// float specNormTerm = ( ap + 2.0 ) / 8.0;
-		// float specPowTerm = pow( max( dot( normal, halfDir ), 0.0 ), ap );
-		// vec3 specFresnelTerm = mix( colorSpecular, vec3( 1.0 ), vec3( pow( 1.0 - dot( lightDir, halfDir ), 5.0 ) ) );
-		// vec3 specularTerm = vec3( specNormTerm * specPowTerm ) * specFresnelTerm;
-		// vec3 fragmentColor = ( colorDiffuse + specularTerm ) * lightTerm;
-		// 
-		// calculation of the ap term using a (pseudo) linear roughness value. roughness value is 0 for sharp reflection
-		// all the way to 1 for fully diffuse reflection. roughness is considered to be 1 minus the beckmann roughness.
-		// the original formula is ap = 2 / roughness**2 - 2. to avoid a division by zero a small max ap factor is used.
-		// this factor clamps the ap value to a given maximum value. a value of 0.00002 for the max ap factor clamps the
-		// ap to roughly 100000. this is enough for a fully sharp reflection. to avoid a near flat line result at the
-		// fully diffuse end of the ap spectrum a min ap factor is used. the smallest physically reasonable ap values
-		// are in the range from 0.1 to 2. a min ap factor of 2-0.5 = 1.5 keeps the smallest ap to 0.5 which looks nice.
-		// 
-		// roughness = clamp( texture-input( 0=sharp .. 1=diffuse ), 0.0, 1.0 )
-		// float ap = 2.0 / ( specularity.g * specularity.g + maxAP ) - minAP
 		vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
 		vec3 roughness = texelFetch( texRoughness, tc, 0 ).rgb;
 		vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
-		
-		// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
-		// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
-		// aoSolidity.gb the combined ao
+	#endif
+	
+	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
+	// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
+	// aoSolidity.gb the combined ao
+	#ifndef GI_RAY
 		aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
 		diffuse.a *= aoSolidity.b;
-		
-		
-		// specular term
-		//roughness.r = max( roughness.r, 0.1 );
-		float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.0001 ) + 1.0;
-		vec3 halfDir = normalize( lightDir - normalize( position ) );
-		float specNormTerm = ( ap + 2.0 ) / 8.0;
-		float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99999 ), ap ); // 0.99999 prevents infinity overshoot on near 0-angle ray
-		vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
-		
-		#ifdef AMBIENT_LIGHTING
-			//float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
-		#endif
-		dotval = max( dotval, 0.0 );
-		
-		#ifdef SHADOW_CASTING
-		specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
-		#endif
-		vec3 finalColorSurface = clamp( vec3( specNormTerm * specPowTerm ) * specFresnelTerm, vec3( 0.0 ), vec3( 1.0 ) );
-			// clamp prevents overshoot on near 0 roughness (specNormTerm)
 	#endif
+	
+	// specular term
+	//roughness.r = max( roughness.r, 0.1 );
+	float ap = 426.0 * ( 1.0 - roughness.r ) / ( 90.0 * roughness.r * roughness.r + roughness.r + 0.0001 ) + 1.0;
+	vec3 halfDir = normalize( lightDir - normalize( position ) );
+	float specNormTerm = ( ap + 2.0 ) / 8.0;
+	float specPowTerm = pow( clamp( dot( normal, halfDir ), 0.0, 0.99999 ), ap ); // 0.99999 prevents infinity overshoot on near 0-angle ray
+	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
+	
+	#ifdef AMBIENT_LIGHTING
+		//float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+	#endif
+	dotval = max( dotval, 0.0 );
+	
+	#ifdef SHADOW_CASTING
+	specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
+	#endif
+	vec3 finalColorSurface = clamp( vec3( specNormTerm * specPowTerm ) * specFresnelTerm, vec3( 0.0 ), vec3( 1.0 ) );
+		// clamp prevents overshoot on near 0 roughness (specNormTerm)
+	
+	
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
 	vec3 lightColor = pLightColor;

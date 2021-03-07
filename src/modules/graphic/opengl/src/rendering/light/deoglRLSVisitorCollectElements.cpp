@@ -34,6 +34,7 @@
 #include "../../sky/deoglRSkyLayer.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../utils/convexhull/deoglConvexHull2D.h"
+#include "../../utils/collision/deoglCollisionBox.h"
 #include "../../utils/collision/deoglDCollisionVolume.h"
 #include "../../utils/collision/deoglDCollisionSphere.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
@@ -240,6 +241,130 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack ){
 	pSplitCount = 0;
 }
 
+void deoglRLSVisitorCollectElements::InitFromGIBox( const decDVector &position,
+const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack ){
+	decDVector planeNormal, planePosition;
+	deoglDCollisionFrustum volumeFrustum;
+	deoglConvexHull2D frustumHull;
+	
+	// parameters required for the calculations later on
+	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * skyLayer.GetMatrix() );
+	
+	pMatrixLightSpace = decDMatrix::CreateTranslation( -position ) * decDMatrix( matLig.Invert() );
+	
+	deoglCollisionBox giBox( decVector(), detectionBox, matLig.Invert().ToQuaternion() );
+	
+	deoglCollisionBox giBoxAABB;
+	giBox.GetEnclosingBox( &giBoxAABB );
+	
+	pFrustumBoxMinExtend = giBoxAABB.GetCenter() - giBoxAABB.GetHalfSize();
+	pFrustumBoxMaxExtend = giBoxAABB.GetCenter() + giBoxAABB.GetHalfSize();
+	
+	// init the boundary box volume. this will be used to visit the octree with.
+	// backtrack is used to catch shadow casters behind box
+	pVolumeShadowBox.SetFromExtends( decDVector( pFrustumBoxMinExtend )
+		- decDVector( 0.0, 0.0, backtrack ), decDVector( pFrustumBoxMaxExtend ) );
+	pVolumeShadowBox.SetCenter( position + decDVector( matLig * pVolumeShadowBox.GetCenter().ToVector() ) );
+	pVolumeShadowBox.SetOrientation( matLig.ToQuaternion() );
+	
+	deoglDCollisionBox aabb;
+	pVolumeShadowBox.GetEnclosingBox( &aabb );
+	pBoundaryBoxMinExtend = aabb.GetCenter() - aabb.GetHalfSize();
+	pBoundaryBoxMaxExtend = aabb.GetCenter() + aabb.GetHalfSize();
+	
+	// for the box test we could use a box instead of planes but this requires extra code.
+	// we are only interested in planes facing away from the light. only these planes can
+	// potentially cull objects located behind the box. since the GI box is axis aligned
+	// with the world the planes are simple to calculate. normals have to point inside
+	// 
+	// NOTE this all has been disabled since in the case of GI box culling components
+	//      outside is not so well defined and more is better than less here
+	pFrustumPlaneCount = 0;
+	pEdgeCount = 0;
+	
+#if 0
+	pShaftFar = pFrustumBoxMaxExtend.z;
+	pAxisX = pVolumeShadowBox.GetAxisX().ToVector();
+	pAxisY = pVolumeShadowBox.GetAxisY().ToVector();
+	pAxisZ = pVolumeShadowBox.GetAxisZ().ToVector();
+	pAbsAxisX = pAxisX.Absolute();
+	
+	pFrustumPlaneCount = 0;
+	
+#if 0
+	planeNormal = pMatrixLightSpace.TransformRight(); // left plane
+	planePosition = pMatrixLightSpace.Transform( -detectionBox.x, 0.0, 0.0 );
+	if( planeNormal.z < 0.0 ){
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+		
+	}else{
+		planeNormal = -planeNormal; // right plane
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+	}
+	
+	planeNormal = pMatrixLightSpace.TransformUp(); // bottom plane
+	planePosition = pMatrixLightSpace.Transform( 0.0, -detectionBox.y, 0.0 );
+	if( planeNormal.z < 0.0 ){
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+		
+	}else{
+		planeNormal = -planeNormal; // top plane
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+	}
+	
+	planeNormal = pMatrixLightSpace.TransformNormal( decDVector( 0.0, 0.0, 1.0 ) ); // near plane
+	planePosition = pMatrixLightSpace.Transform( 0.0, 0.0, -detectionBox.z );
+	if( planeNormal.z < 0.0 ){
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+		
+	}else{
+		planeNormal = -planeNormal; // far plane
+		pFrustumPlaneNormal[ pFrustumPlaneCount ] = planeNormal.ToVector();
+		pFrustumPlaneNormalAbs[ pFrustumPlaneCount ] = pFrustumPlaneNormal[ pFrustumPlaneCount ].Absolute();
+		pFrustumPlaneDistance[ pFrustumPlaneCount++ ] = ( float )( planeNormal * planePosition );
+	}
+#endif
+	
+	// calculate the convex hull of the box projected to the shadow map plane. each edge in
+	// the hull becomes a plane to test components against. the planes are oriented perpendicular
+	// to the light direction. this way a simple 2d convex hull test can be used. there will be
+	// between 4 to 6 planes to test
+	pEdgeCount = 0;
+#if 0
+	int i;
+	for( i=0; i<5; i++ ){
+		frustumHull.AddPoint( frustumPoints[ i ].x, frustumPoints[ i ].y );
+	}
+	
+	frustumHull.CalculateHull();
+	
+	pEdgeCount = frustumHull.GetHullPointCount();
+	
+	for( i=0; i<pEdgeCount; i++ ){
+		const decVector2 edgeStart = frustumHull.GetHullPointVectorAt( i );
+		const decVector2 edge = ( frustumHull.GetHullPointVectorAt( ( i + 1 ) % pEdgeCount ) - edgeStart ).Normalized();
+		
+		pEdgeNormal[ i ].Set( -edge.y, edge.x );
+		pEdgeNormalAbs[ i ].Set( fabs( -edge.y ), fabs( edge.x ) );
+		pEdgeDistance[ i ] = pEdgeNormal[ i ] * edgeStart;
+	}
+#endif
+	
+	// reset the split count to 0
+	pSplitCount = 0;
+#endif
+}
+
 void deoglRLSVisitorCollectElements::AddSplit( const decVector &minExtend,
 const decVector &maxExtend, const decVector2 &sizeThreshold ){
 	if( pSplitCount == 4 ){
@@ -325,6 +450,10 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 		return false;
 	}
 	
+	if( pFrustumPlaneCount == 0 && pEdgeCount == 0 ){
+		return true; // GI box
+	}
+	
 	// calculate the parameters needed for the tests
 	float distance1, distance2;
 	deoglDCollisionBox cbox;
@@ -373,6 +502,10 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	// test if the axis aligned box hits the axis aligned boundary box
 	if( ! deoglDCollisionDetection::AABoxHitsAABox( pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend, minExtend, maxExtend ) ){
 		return false;
+	}
+	
+	if( pFrustumPlaneCount == 0 && pEdgeCount == 0 ){
+		return true; // GI box
 	}
 	
 	// calculate the parameters needed for the tests

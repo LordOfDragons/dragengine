@@ -146,7 +146,7 @@ public:
 	void DropForeignTextures();
 	
 	/** \brief Activate shadow texture (depth only) with the given size for solid shadow casting. */
-	void ActivateSolidTexture( int size, bool useFloatDepth );
+	void ActivateSolidTexture( int size, bool useFloatDepth, bool withStencil = false );
 	
 	/** \brief Activate shadow texture (depth and color) with the given size for transparent shadow casting. */
 	void ActivateTransparentTexture( int size, bool useFloatDepth );
@@ -227,10 +227,10 @@ public:
 	void DropForeignArrayTextures();
 	
 	/** \brief Activate shadow array texture (depth) with the given size for solid shadow casting. */
-	void ActivateSolidArrayTexture( int size, int layerCount );
+	void ActivateSolidArrayTexture( int size, int layerCount, bool withStencil = false );
 	
 	/** \brief Activate layer of a shadow array texture (depth) with the given size for solid shadow casting. */
-	void ActivateSolidArrayTextureLayer( int size, int layerCount, int layer );
+	void ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil = false );
 	
 	/** \brief Activate shadow array texture (depth) with the given size for transparent shadow casting. */
 	void ActivateTransparentArrayTexture( int size, int layerCount );

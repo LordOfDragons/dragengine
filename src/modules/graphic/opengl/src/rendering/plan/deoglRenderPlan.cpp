@@ -581,8 +581,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	pCurTransparencyLayer = 0;
 	
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
-	
-	   pPlanGI();
 }
 
 void deoglRenderPlan::pPlanSky(){
@@ -2012,6 +2010,9 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// aggressively if the memory becomes scarce. for this to work
 	// we need though first a framework to keep track of statically
 	// spend GPU memory.
+	
+	// plan global illumination. this has to come before plaing lights
+	pPlanGI();
 	
 	// determine if we need transparency
 	pCheckTransparency();

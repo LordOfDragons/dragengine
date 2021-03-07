@@ -66,6 +66,11 @@ private:
 	int pShadowLayerCount;
 	sShadowLayer pShadowLayers[ 4 ];
 	
+	deoglCollideList pGICollideList;
+	decVector pGIBoxMinExtend;
+	decVector pGIBoxMaxExtend;
+	sShadowLayer pGIShadowLayer;
+	
 	
 	
 public:
@@ -114,6 +119,22 @@ public:
 	
 	
 	
+	/** \brief GI collide list with potentially shadow casting elements. */
+	inline deoglCollideList &GetGICollideList(){ return pGICollideList; }
+	inline const deoglCollideList &GetGICollideList() const{ return pGICollideList; }
+	
+	/** \brief GI box min extend. */
+	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
+	
+	/** \brief GI box max extend. */
+	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
+	
+	/** \brief GI shadow layer. */
+	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
+	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
+	
+	
+	
 	/** \brief Clear. */
 	void Clear();
 	
@@ -131,14 +152,11 @@ public:
 	
 	
 private:
-	/** \brief Determine shadow parameters. */
 	void pDetermineShadowParameters( deoglRenderPlan &plan );
-	
-	/** \brief Calculate shadow layer parameters. */
 	void pCalcShadowLayerParams( deoglRenderPlan &plan );
-	
-	/** \brief Collect elements for shadow casting. */
 	void pCollectElements( deoglRenderPlan &plan );
+	void pGICalcShadowLayerParams( deoglRenderPlan &plan );
+	void pGICollectElements( deoglRenderPlan &plan );
 	/*@}*/
 };
 

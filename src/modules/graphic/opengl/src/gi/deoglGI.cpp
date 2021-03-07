@@ -107,6 +107,8 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupFieldOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, maxProbeCount / 4 ); // ivec4
 	ubo.GetParameterAt( eupProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, maxProbeCount ); // vec4
 	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, raysPerProbe ); // vec3

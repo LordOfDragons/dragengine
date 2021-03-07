@@ -70,6 +70,7 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texLightDepth1", // ettLightDepth1
 	"texLightDepth2", // ettLightDepth2
 	"texPosition", // ettPosition
+	"texGIShadowMap", // ettGIShadowMap
 	"texOTOcclusion", // ettOTOcclusion
 	"texOTDistance" // ettOTDistance
 };
@@ -98,7 +99,9 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	"pShadow2Transparent", // eiutShadow2Transparent
 	
 	"pShadowDepthTransform", // eiutShadowDepthTransform
-	"pShadowDepthTransform2" // eiutShadowDepthTransform2
+	"pShadowDepthTransform2", // eiutShadowDepthTransform2
+	
+	"pGIShadowMatrix" // eiutGIShadowMatrix
 };
 
 static const char *vLightUniformTargetNames[ deoglLightShader::ELUT_COUNT ] = {
@@ -146,7 +149,9 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow2Transparent ( vec3 )
 	
 	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform ( vec2 )
-	{ deoglSPBParameter::evtFloat, 2, 1 } // pShadowDepthTransform2 ( vec2 )
+	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform2 ( vec2 )
+	
+	{ deoglSPBParameter::evtFloat, 4, 4 } // pGIShadowMatrix ( mat4 )
 };
 
 static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_COUNT ] = {
@@ -288,6 +293,10 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
+		// gloal illumination
+		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
 		
 		// occlusion tracing
 		spb->GetParameterAt( erutOTMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
@@ -728,6 +737,8 @@ void deoglLightShader::UpdateTextureTargets(){
 		pTextureTargets[ ettPosition ] = textureUnitNumber++;
 		pTextureTargets[ ettDiffuse ] = textureUnitNumber++;
 		pTextureTargets[ ettNormal ] = textureUnitNumber++;
+		pTextureTargets[ ettReflectivity ] = textureUnitNumber++;
+		pTextureTargets[ ettRoughness ] = textureUnitNumber++;
 		
 	}else{
 		pTextureTargets[ ettDepth ] = textureUnitNumber++;
@@ -785,6 +796,10 @@ void deoglLightShader::UpdateTextureTargets(){
 		if( pConfig.GetTextureShadow2Solid() ){
 			pTextureTargets[ ettLightDepth2 ] = textureUnitNumber++;
 		}
+	}
+	
+	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmSky ){
+		pTextureTargets[ ettGIShadowMap ] = textureUnitNumber++;
 	}
 	
 	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmSky ){
@@ -847,6 +862,10 @@ void deoglLightShader::UpdateUniformTargets(){
 		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutShadowDepthTransform2 ] = pUsedInstanceUniformTargetCount++;
+		}
+		
+		if( modeSky ){
+			pInstanceUniformTargets[ eiutGIShadowMatrix ] = pUsedInstanceUniformTargetCount++;
 		}
 	}
 	

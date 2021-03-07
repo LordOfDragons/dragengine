@@ -222,11 +222,14 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	switch( shaderType ){
 	case estGIRayNoShadow:
 	case estGIRaySolid:
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloat );
 		config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 		config.SetSubSurface( false );
+		config.SetGIRay( true );
 		break;
 		
 	default:
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
 		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	}

@@ -46,6 +46,7 @@ pRBufDepth( renderThread ),
 pTexPosition( renderThread ),
 pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
+pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
 pFBOResult( renderThread, false ),
 pFBOLight( renderThread, false )
@@ -78,8 +79,8 @@ void deoglGIRays::pCleanUp(){
 
 void deoglGIRays::pCreateFBORay(){
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	const GLenum buffers[ 4 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = pProbeCount / pProbesPerLine;
@@ -100,6 +101,10 @@ void deoglGIRays::pCreateFBORay(){
 	pTexDiffuse.SetSize( width, height );
 	pTexDiffuse.CreateTexture();
 	
+	pTexReflectivity.SetFBOFormat( 4, false );
+	pTexReflectivity.SetSize( width, height );
+	pTexReflectivity.CreateTexture();
+	
 	pTexLight.SetFBOFormat( 3, true );
 	pTexLight.SetSize( width, height );
 	pTexLight.CreateTexture();
@@ -109,8 +114,9 @@ void deoglGIRays::pCreateFBORay(){
 	pFBOResult.AttachColorTexture( 0, &pTexPosition );
 	pFBOResult.AttachColorTexture( 1, &pTexNormal );
 	pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
-	pFBOResult.AttachColorTexture( 3, &pTexLight );
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 4, buffers ) );
+	pFBOResult.AttachColorTexture( 3, &pTexReflectivity );
+	pFBOResult.AttachColorTexture( 4, &pTexLight );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOResult.Verify();
 	

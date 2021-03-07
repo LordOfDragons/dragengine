@@ -56,9 +56,14 @@ public:
 	
 	/** Set lod level of all components to 0. */
 	void SetComponentLOD0( deoglCollideList &collideList );
+	
+	/** Set lod level of all components to highest. */
+	void SetComponentLODMax( deoglCollideList &collideList );
+	
 	/** Calculates projective lod levels for all components. */
 	void SetComponentLODProjection( deoglCollideList &collideList, const decDVector &position,
 		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight );
+	
 	/** Calculates orthographic lod levels for all components. */
 	void SetComponentLODOrtho( deoglCollideList &collideList, float boxWidth, float boxHeight,
 		int screenWidth, int screenHeight );

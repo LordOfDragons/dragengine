@@ -4,6 +4,10 @@ UBOLAYOUT uniform RenderParameters{
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;
 	
+	// global illumination rays
+	mat4x3 pGIRayMatrix; // transform from GI space to camera space
+	mat3 pGIRayMatrixNormal; // transform from GI space to camera space (requires transpose)
+	
 	// occlusion tracing
 	mat4x3 pOTMatrix; // transform from view space to tracing space
 	mat3 pOTMatrixNormal; // transform from view space to tracing space (requires transpose)

@@ -27,6 +27,7 @@
 class deoglCollideList;
 class deoglLightShader;
 class deoglRenderableArrayTexture;
+class deoglRenderableDepthTexture;
 class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
@@ -45,8 +46,10 @@ class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
 	deoglShaderProgram *pShaderAO;
+	deoglShaderProgram *pShaderClearDepth;
 	
 	deoglRenderableArrayTexture *pSolidShadowMap;
+	deoglRenderableDepthTexture *pSolidGIShadowMap;
 	
 	
 	
@@ -100,10 +103,15 @@ public:
 		deoglRenderPlanSkyLight &planSkyLight );
 	
 	/** \brief Render shadows maps. */
-	void RenderShadows( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );
+	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+		deoglRenderPlanSkyLight &planSkyLight );
 	
 	/** \brief Render shadow map. */
 	void RenderShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
+		deoglShadowMapper &shadowMapper );
+	
+	/** \brief Render GI shadow map. */
+	void RenderGIShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
 		deoglShadowMapper &shadowMapper );
 	
 	/** \brief Update light shader parameter block. */

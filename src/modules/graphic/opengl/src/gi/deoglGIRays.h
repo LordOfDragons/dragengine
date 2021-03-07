@@ -47,6 +47,7 @@ private:
 	deoglTexture pTexPosition;
 	deoglTexture pTexNormal;
 	deoglTexture pTexDiffuse;
+	deoglTexture pTexReflectivity;
 	deoglTexture pTexLight;
 	deoglFramebuffer pFBOResult;
 	deoglFramebuffer pFBOLight;
@@ -87,8 +88,11 @@ public:
 	/** \brief Normal texture. */
 	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
 	
-	/** \brief Diffuse texture. */
+	/** \brief Diffuse/TintMask texture. */
 	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	
+	/** \brief Reflectivity/Roughness texture. */
+	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
 	
 	/** \brief Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }

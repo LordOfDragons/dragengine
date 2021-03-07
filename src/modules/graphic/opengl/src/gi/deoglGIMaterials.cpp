@@ -47,7 +47,7 @@ pMaterialsPerRow( pMaxMaterialsPerRow ),
 pRowsPerImage( pMaxRowsPerImage ),
 pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
 pMaterialCount( 0 ),
-pTexDiffuseTransparency( renderThread ),
+pTexDiffuseTintMask( renderThread ),
 pTexReflectivityRoughness( renderThread ),
 pTexEmissivity( renderThread ),
 pFBOMaterial( renderThread, false )
@@ -77,6 +77,14 @@ void deoglGIMaterials::SetMaterialCount( int count ){
 	
 	pMaterialCount = decMath::min( count, 16383 );
 	
+	// by resetting the highest texture size is used if the count. if reset is not used
+	// the size is reduced if the count grows too large and stays at this level.
+	// theoretically this can lead to some fluctuations in calculated GI if the textures
+	// have unfortunate properties
+	pMaterialMapSize = pMaxMaterialMapSize;
+	pMaterialsPerRow = pMaxMaterialsPerRow;
+	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+	
 	while( pMaterialCount > pMaxMaterialCount ){
 		pMaterialMapSize /= 2;
 		pMaterialsPerRow *= 2;
@@ -98,9 +106,9 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
 	
-	pTexDiffuseTransparency.SetFBOFormat( 4, false );
-	pTexDiffuseTransparency.SetSize( size, size );
-	pTexDiffuseTransparency.CreateTexture();
+	pTexDiffuseTintMask.SetFBOFormat( 4, false );
+	pTexDiffuseTintMask.SetSize( size, size );
+	pTexDiffuseTintMask.CreateTexture();
 	
 	pTexReflectivityRoughness.SetFBOFormat( 4, false );
 	pTexReflectivityRoughness.SetSize( size, size );
@@ -111,12 +119,23 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	pTexEmissivity.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuseTransparency );
+	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuseTintMask );
 	pFBOMaterial.AttachColorTexture( 1, &pTexReflectivityRoughness );
 	pFBOMaterial.AttachColorTexture( 2, &pTexEmissivity );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOMaterial.Verify();
+	
+	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	
+	const GLfloat clearDiffTintMask[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
+	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };
+	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	
+	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTintMask[ 0 ] ) );
+	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 1 ] ) );
+	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 2 ] ) );
 	
 	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

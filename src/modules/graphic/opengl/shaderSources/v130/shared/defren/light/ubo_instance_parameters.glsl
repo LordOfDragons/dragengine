@@ -33,5 +33,9 @@ UBOLAYOUT uniform InstanceParameters{
 		#ifdef SKY_LIGHT
 			vec2 pShadowDepthTransform2;
 		#endif
+		
+		#ifdef SKY_LIGHT
+			mat4 pGIShadowMatrix;
+		#endif
 	#endif
 };

@@ -102,7 +102,7 @@ class deoglRenderTaskTexture;
  *   - roughness.gamma:         8         => 8
  *   - reflectivity.multiplier: 8         => 8
  *   - emissivity.intensity:    16 16 16  => 48
- *   - variation:*:             1 1       => 2
+ *   - ignore:                  1         => 1
  *   
  *   also store the index of the material in the material texture atlas as 14 bits value.
  *   this allows to combine it with variation.* bits to fill up 16 bits. 14 bits allows
@@ -128,8 +128,8 @@ class deoglRenderTaskTexture;
  *   - alpha:
  *     - 8: color.gamma
  *     - 8: reflectivity.multiplier
- *     - 1: variation.u
- *     - 1: variation.v
+ *     - 1: ignore material
+ *     - 1: (reserved)
  *     - 14: material atlas index
  *   
  *   the layout is chosen like this to allow GLSL to decompose the data using few instructions.

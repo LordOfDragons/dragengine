@@ -231,7 +231,16 @@ void deoglRenderLightBase::RestoreFBOGIRays( deoglGIState &giState ){
 	tsmgr.EnableTexture( 0, giRays.GetTexturePosition(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, giRays.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 2, giRays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 2 );
+	tsmgr.EnableTexture( 3, giRays.GetTextureReflectivity(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 3 );
+	
+		// render doc debug
+		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
+		// end render doc debug
+		
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		renderThread.GetDeferredRendering().ActivateFBOColor( false,false );
 }
 
 

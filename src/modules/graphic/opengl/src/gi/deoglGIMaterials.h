@@ -54,7 +54,7 @@ private:
 	
 	int pMaterialCount;
 	
-	deoglTexture pTexDiffuseTransparency;
+	deoglTexture pTexDiffuseTintMask;
 	deoglTexture pTexReflectivityRoughness;
 	deoglTexture pTexEmissivity;
 	deoglFramebuffer pFBOMaterial;
@@ -109,14 +109,17 @@ public:
 	
 	
 	
-	/** \brief Diffuse/Transparency texture. */
-	inline deoglTexture &GetTextureDiffuseTransparency(){ return pTexDiffuseTransparency; }
+	/** \brief Diffuse/TintMask texture. */
+	inline deoglTexture &GetTextureDiffuseTintMask(){ return pTexDiffuseTintMask; }
+	inline const deoglTexture &GetTextureDiffuseTintMask() const{ return pTexDiffuseTintMask; }
 	
 	/** \brief Reflectivity/Roughness texture. */
 	inline deoglTexture &GetTextureReflectivityRoughness(){ return pTexReflectivityRoughness; }
+	inline const deoglTexture &GetTextureReflectivityRoughness() const{ return pTexReflectivityRoughness; }
 	
 	/** \brief Emissivity texture. */
 	inline deoglTexture &GetTextureEmissivity(){ return pTexEmissivity; }
+	inline const deoglTexture &GetTextureEmissivity() const{ return pTexEmissivity; }
 	
 	/** \brief Material FBO. */
 	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }

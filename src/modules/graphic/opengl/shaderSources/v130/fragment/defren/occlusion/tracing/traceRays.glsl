@@ -1,6 +1,9 @@
 precision highp float;
 precision highp int;
 
+const int pGIMaterialMapsPerRow = 32; // dummy
+const int pGIMaterialMapSize = 64; // dummy
+
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/occtracing.glsl"
 #include "v130/shared/raycasting.glsl"

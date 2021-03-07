@@ -28,9 +28,11 @@
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
+#include "../../gi/deoglGIState.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
+#include "../../utils/collision/deoglCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
@@ -77,6 +79,7 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 void deoglRenderPlanSkyLight::Clear(){
 	pLayer = NULL;
 	pCollideList.Clear();
+	pGICollideList.Clear();
 }
 
 void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstanceLayer *layer ){
@@ -87,11 +90,16 @@ void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
 	pShadowLayerCount = 4;
 	
 	pDetermineShadowParameters( plan );
-	
-	if( pUseShadow ){
-		pCalcShadowLayerParams( plan );
-		pCollectElements( plan );
+	if( ! pUseShadow ){
+		return;
 	}
+	
+	pGICalcShadowLayerParams( plan );
+	pGICollectElements( plan ); // has to come before pCollectElements due to
+		// deoglRComponent::SetSkyShadowSplitMask overwriting mask
+	
+	pCalcShadowLayerParams( plan );
+	pCollectElements( plan );
 }
 
 void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
@@ -99,9 +107,14 @@ void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
 	// this has to be done when sky lights are really visible.
 	const int count = pCollideList.GetComponentCount();
 	int i;
-	
 	for( i=0; i<count; i++ ){
 		pCollideList.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
+	}
+	
+	// the same for GI. this does touch various components two times but this is not a problem
+	const int count2 = pGICollideList.GetComponentCount();
+	for( i=0; i<count2; i++ ){
+		pGICollideList.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
 	}
 }
 
@@ -131,9 +144,9 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters( deoglRenderPlan &plan 
 	*/
 	
 	// temporary hack to deal with slow shadow casting for the video capturing
-	if( pLayer->GetLightIntensity() < 0.1f ){
-		pUseShadow = false;
-	}
+// 	if( pLayer->GetLightIntensity() < 0.1f ){
+// 		pUseShadow = false;
+// 	}
 }
 
 void deoglRenderPlanSkyLight::pCalcShadowLayerParams( deoglRenderPlan& plan ){
@@ -371,4 +384,44 @@ void deoglRenderPlanSkyLight::pCollectElements( deoglRenderPlan &plan ){
 	
 	pFrustumBoxMinExtend = collectElements.GetFrustumBoxMinExtend();
 	pFrustumBoxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
+}
+
+void deoglRenderPlanSkyLight::pGICalcShadowLayerParams( deoglRenderPlan &plan ){
+	const deoglGIState * const giState = plan.GetGIState();
+	if( ! giState ){
+		return;
+	}
+	
+	const deoglConfiguration &config = plan.GetRenderThread().GetConfiguration();
+	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * pLayer->GetMatrix() );
+	
+	pGIShadowLayer.frustumNear = 0.0f;
+	pGIShadowLayer.frustumFar = 1.0f;
+	pGIShadowLayer.layerBorder = 1.0f;
+	pGIShadowLayer.zscale = config.GetDistShadowScale();
+	pGIShadowLayer.zoffset = config.GetDistShadowBias();
+	
+	deoglCollisionBox colBoxGI( decVector(), giState->GetDetectionBox(), matLig.Invert().ToQuaternion() );
+	
+	deoglCollisionBox enclosingBox;
+	colBoxGI.GetEnclosingBox( &enclosingBox );
+	
+	pGIShadowLayer.minExtend = enclosingBox.GetCenter() - enclosingBox.GetHalfSize();
+	pGIShadowLayer.maxExtend = enclosingBox.GetCenter() + enclosingBox.GetHalfSize();
+}
+
+void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
+	const deoglGIState * const giState = plan.GetGIState();
+	if( ! pLayer || ! giState ){
+		return;
+	}
+	
+	deoglRLSVisitorCollectElements collectElements( pGICollideList );
+	collectElements.InitFromGIBox( giState->GetPosition(), giState->GetDetectionBox(), *pLayer, 2000.0f );
+	collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
+	collectElements.SetLayerMask( plan.GetLayerMask() );
+	collectElements.VisitWorldOctree( plan.GetWorld()->GetOctree() );
+	
+	pGIBoxMinExtend = collectElements.GetFrustumBoxMinExtend();
+	pGIBoxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
 }

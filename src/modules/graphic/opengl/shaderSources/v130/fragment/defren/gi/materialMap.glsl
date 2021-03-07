@@ -55,7 +55,7 @@ in vec2 vTexCoord;
 // Outputs
 ////////////
 
-out vec4 outDiffuse; // diffuse.rgb, transparency
+out vec4 outDiffuse; // diffuse.rgb, tintMask
 out vec4 outReflectivity; // reflectivity.rgb, roughness
 out vec3 outEmissivity; // emissivity.rgb
 
@@ -68,17 +68,24 @@ void main( void ){
 	#ifdef TEXTURE_COLOR
 		#ifdef TEXTURE_TRANSPARENCY
 			outDiffuse.rgb = TEXTURE( texColor, vTexCoord ).rgb;
-			outDiffuse.a = TEXTURE( texTransparency, vTexCoord ).r;
+			//outDiffuse.a = TEXTURE( texTransparency, vTexCoord ).r;
 		#else
-			outDiffuse = TEXTURE( texColor, vTexCoord );
+			//outDiffuse = TEXTURE( texColor, vTexCoord );
+			outDiffuse.rgb = TEXTURE( texColor, vTexCoord ).rgb;
 		#endif
 	#else
 		#ifdef TEXTURE_TRANSPARENCY
 			outDiffuse.rgb = vec3( 0.0 );
-			outDiffuse.a = TEXTURE( texTransparency, vTexCoord ).r;
+			//outDiffuse.a = TEXTURE( texTransparency, vTexCoord ).r;
 		#else
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 1.0 );
 		#endif
+	#endif
+	
+	#ifdef TEXTURE_COLOR_TINT_MASK
+		outDiffuse.a = TEXTURE( texColorTintMask, vTexCoord ).r;
+	#else
+		outDiffuse.a = 1.0;
 	#endif
 	
 	#ifdef TEXTURE_REFLECTIVITY
@@ -110,12 +117,6 @@ void main( void ){
 			outDiffuse.rgb = envRoomColor;
 		#endif
 	#endif
-	
-// 	#ifdef TEXTURE_COLOR_TINT_MASK
-// 		outDiffuse.rgb = mix( outDiffuse.rgb, outDiffuse.rgb * pColorTint, TEXTURE( texColorTintMask, vTexCoord ).r );
-// 	#else
-// 		outDiffuse.rgb *= pColorTint;
-// 	#endif
 	
 	#ifdef TEXTURE_EMISSIVITY
 		outEmissivity = TEXTURE( texEmissivity, vTexCoord ).rgb;

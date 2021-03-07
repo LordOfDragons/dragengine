@@ -141,6 +141,10 @@ public:
 	/** \brief Init visitor from frustum. */
 	void InitFromFrustum( deoglRenderPlan &plan, deoglRSkyInstanceLayer &skyLayer, float backtrack );
 	
+	/** \brief Init visitor from box. */
+	void InitFromGIBox( const decDVector &position, const decVector &detectionBox,
+		deoglRSkyInstanceLayer &skyLayer, float backtrack );
+	
 	/** \brief Add split to check. */
 	void AddSplit( const decVector &minExtend, const decVector &maxExtend, const decVector2 &sizeThreshold );
 	

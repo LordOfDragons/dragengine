@@ -319,7 +319,12 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.EnableTBO( 5, bvh.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 7 );
+	
+	tsmgr.EnableTexture( 8, materials.GetTextureDiffuseTintMask(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 9, materials.GetTextureReflectivityRoughness(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 10, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
+	
+	tsmgr.DisableStagesAbove( 10 );
 	
 		// render doc debug
 		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
@@ -384,19 +389,23 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	const int rtShaderCount = pRenderTask->GetShaderCount();
+	if( rtShaderCount == 0 ){
+		return;
+	}
+	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIMaterials &materials = gi.GetMaterials();
-	const int width = materials.GetTextureDiffuseTransparency().GetWidth();
-	const int height = materials.GetTextureDiffuseTransparency().GetHeight();
+	const int width = materials.GetTextureDiffuseTintMask().GetWidth();
+	const int height = materials.GetTextureDiffuseTintMask().GetHeight();
 	
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
 	}
-	
 	
 	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
 	
@@ -406,23 +415,10 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	
-	tsmgr.EnableTexture( 0, materials.GetTextureDiffuseTransparency(), GetSamplerRepeatLinear() );
+	tsmgr.EnableTexture( 0, materials.GetTextureDiffuseTintMask(), GetSamplerRepeatLinear() );
 	tsmgr.EnableTexture( 1, materials.GetTextureReflectivityRoughness(), GetSamplerRepeatLinear() );
 	tsmgr.EnableTexture( 2, materials.GetTextureEmissivity(), GetSamplerRepeatLinear() );
 	tsmgr.DisableStagesAbove( 2 );
-	
-	const GLfloat clearDiffTransp[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
-	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };
-	const GLfloat clearEmiss[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTransp[ 0 ] ) );
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 1 ] ) );
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 2 ] ) );
-	
-	const int rtShaderCount = pRenderTask->GetShaderCount();
-	if( rtShaderCount == 0 ){
-		return;
-	}
 	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );

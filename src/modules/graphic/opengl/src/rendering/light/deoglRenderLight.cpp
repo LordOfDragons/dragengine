@@ -40,6 +40,7 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../light/shader/deoglLightShader.h"
@@ -668,6 +669,17 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
 			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+		
+		// global illumination
+		const deoglGIState * const giState = plan.GetGIState();
+		if( giState ){
+			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetPosition() )
+				* plan.GetCameraMatrix() );
+			
+			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
+			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
+				matrix.GetRotationMatrix().QuickInvert() );
+		}
 		
 		// occlusion tracing
 		/*

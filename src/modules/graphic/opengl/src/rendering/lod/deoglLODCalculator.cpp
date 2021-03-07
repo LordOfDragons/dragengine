@@ -81,6 +81,16 @@ void deoglLODCalculator::SetComponentLOD0( deoglCollideList &collideList ){
 	}
 }
 
+void deoglLODCalculator::SetComponentLODMax( deoglCollideList &collideList ){
+	const int componentCount = collideList.GetComponentCount();
+	int i;
+	
+	for( i=0; i<componentCount; i++ ){
+		deoglCollideListComponent &c = *collideList.GetComponentAt( i );
+		c.SetLODLevel( c.GetComponent()->GetLODCount() - 1 );
+	}
+}
+
 void deoglLODCalculator::SetComponentLODProjection( deoglCollideList &collideList, const decDVector &position,
 const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight ){
 	// test lod levels starting with the smallest one for the first lod level which still

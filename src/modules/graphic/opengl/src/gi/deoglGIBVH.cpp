@@ -476,12 +476,14 @@ deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 	const float reflectivityMultiplier = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empReflectivityMultiplier )
 		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetReflectivityMultiplier() );
 	
-	const bool variationU = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationU )
-		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationU() );
-	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
-		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
+// 	const bool variationU = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationU )
+// 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationU() );
+// 	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
+// 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
 	
-	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) + 1 : 0;
+	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) : 0;
+	
+	const bool ignoreMaterial = skinTexture.GetHasTransparency() || skinTexture.GetHasSolidity();
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)
@@ -496,7 +498,8 @@ deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 		PACK( colorTint.g, 8, 24 ) | PACK( roughnessRemapUpper, 8, 16 ) | PACK( emissivityIntensity.g, 16, 0 ),
 		PACK( colorTint.b, 8, 24 ) | PACK_G( roughnessGamma, 8, 16 ) | PACK( emissivityIntensity.b, 16, 0 ),
 		PACK_G( colorGamma, 8, 24 ) | PACK( reflectivityMultiplier, 8, 16 )
-			| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
+			| PACK_B( ignoreMaterial, 15 ) | PACK_I( materialIndex, 14, 0 ) );
+			//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
 	
 	#undef PACK_B
 	#undef PACK_G
