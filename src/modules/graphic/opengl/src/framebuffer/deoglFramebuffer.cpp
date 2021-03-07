@@ -808,7 +808,7 @@ void deoglFramebuffer::AttachStencilArrayTextureLayerLevel( deoglArrayTexture *t
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttStencil.DoesNotMatch( image, eatArrayTextureLayer, level, pAttStencil.layer ) ){
-		DetachDepthImage();
+		DetachStencilImage();
 		
 		OGL_CHECK( pRenderThread, pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, image, level, layer ) );
 		
