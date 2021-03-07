@@ -136,6 +136,10 @@ pAddToRenderTask( NULL )
 		defines.AddDefine( "GI_PROBE_COUNT", rays.GetProbeCount() );
 		defines.AddDefine( "GI_RAYS_PER_PROBE", rays.GetRaysPerProbe() );
 		
+		#ifdef GI_RENDERDOC_DEBUG
+		defines.AddDefine( "GI_RENDERDOC_DEBUG", true );
+		#endif
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
 		
@@ -326,10 +330,10 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	tsmgr.DisableStagesAbove( 10 );
 	
-		// render doc debug
+	#ifdef GI_RENDERDOC_DEBUG
 		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
 		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
-		// end render doc debug
+	#endif
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	

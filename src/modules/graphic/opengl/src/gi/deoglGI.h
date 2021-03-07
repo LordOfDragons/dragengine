@@ -35,6 +35,7 @@ class deoglROcclusionMesh;
 
 
 //#define ENABLE_GI 1
+//#define GI_RENDERDOC_DEBUG 1
 
 
 /**

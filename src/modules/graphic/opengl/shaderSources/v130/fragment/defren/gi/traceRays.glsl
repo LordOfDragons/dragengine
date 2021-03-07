@@ -50,44 +50,44 @@ void main( void ){
 	}
 	#endif
 	
-// 	#if RENDERDOC_DEBUG
+	#if GI_RENDERDOC_DEBUG
 	{
-	const float PI = 3.14159265;
-	const vec2 TC2PCOORD_MUL = vec2(PI * 2.0 / 512.0, PI / 256.0);
-	const vec2 TC2PCOORD_ADD = vec2(0, PI * -0.5);
-	
-	vec2 pc = vec2(tc.x % 512, tc.y) * TC2PCOORD_MUL + TC2PCOORD_ADD;
-	float r = cos(pc.y);
-	vec3 direction = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
-	
-	//vec3 pp = vec3(0,-0.4*(int(tc.x)/512),0);
-	//vec3 pp = vec3(2*(int(tc.x)/512),0,0);
-	vec3 pp = vec3(0,0,-1*(tc.x/512));
-	
-	RayCastResult result;
-	if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
-		outPosition = vec4( pp, result.distance );
-		outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
-		outNormal = vec4( result.normal, 0.0 );
+		const float PI = 3.14159265;
+		const vec2 TC2PCOORD_MUL = vec2(PI * 2.0 / 512.0, PI / 256.0);
+		const vec2 TC2PCOORD_ADD = vec2(0, PI * -0.5);
 		
-		vec3 matDiffuse, matReflectivity, matEmissivity;
-		float matTintMask, matRoughness;
-		rayCastSampleMaterial(result, matDiffuse, matTintMask, matReflectivity, matRoughness, matEmissivity);
+		vec2 pc = vec2(tc.x % 512, tc.y) * TC2PCOORD_MUL + TC2PCOORD_ADD;
+		float r = cos(pc.y);
+		vec3 direction = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
 		
-		outDiffuse = vec4( matDiffuse, matTintMask );
-		outReflectivity = vec4( matReflectivity, matRoughness );
-		outLight = vec3( matEmissivity );
+		//vec3 pp = vec3(0,-0.4*(int(tc.x)/512),0);
+		//vec3 pp = vec3(2*(int(tc.x)/512),0,0);
+		vec3 pp = vec3(0,0,-1*(tc.x/512));
 		
-	}else{
-		outPosition = vec4( pp, 10000.0 );
-		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
-		outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
-		outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
-		outLight = vec3( 0.0 );
+		RayCastResult result;
+		if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
+			outPosition = vec4( pp, result.distance );
+			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
+			outNormal = vec4( result.normal, 0.0 );
+			
+			vec3 matDiffuse, matReflectivity, matEmissivity;
+			float matTintMask, matRoughness;
+			rayCastSampleMaterial(result, matDiffuse, matTintMask, matReflectivity, matRoughness, matEmissivity);
+			
+			outDiffuse = vec4( matDiffuse, matTintMask );
+			outReflectivity = vec4( matReflectivity, matRoughness );
+			outLight = vec3( matEmissivity );
+			
+		}else{
+			outPosition = vec4( pp, 10000.0 );
+			outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
+			outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+			outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
+			outLight = vec3( 0.0 );
+		}
+		return;
 	}
-	return;
-	}
-// 	#endif
+	#endif
 	
 	
 	// calculate probe position and index from offset. the quad covers an entire block

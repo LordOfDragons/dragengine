@@ -234,13 +234,13 @@ void deoglRenderLightBase::RestoreFBOGIRays( deoglGIState &giState ){
 	tsmgr.EnableTexture( 3, giRays.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 3 );
 	
-		// render doc debug
+	#ifdef GI_RENDERDOC_DEBUG
 		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
 		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
-		// end render doc debug
 		
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		renderThread.GetDeferredRendering().ActivateFBOColor( false,false );
+	#endif
 }
 
 
