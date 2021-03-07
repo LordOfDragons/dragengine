@@ -1912,11 +1912,38 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			}
 			
 			const int maxMipMapLevel = decMath::max( pixBufCount - 1, 0 );
+			
+			int expectedMaxMipMaxLevel = maxMipMapLevel;
+			if( i == deoglSkinChannel::ectSolidity ){
+				expectedMaxMipMaxLevel = decMath::clamp(
+					( int )( floorf( log2f( ( height > width ) ? height : width ) ) ) - 3, 0, 100 );
+			}
+			
+			if( maxMipMapLevel < expectedMaxMipMaxLevel ){
+				reader->FreeReference();
+				reader = NULL;
+				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+				
+				if( enableCacheLogging ){
+					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cached Mip-Map Count lower."
+						" (skin='%s' texture='%s' channel='%s' id='%s')",
+						skin.GetFilename().GetString(), pName.GetString(),
+						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
+						pChannels[ i ]->GetCacheID().GetString() );
+				}
+				
+				continue;
+			}
+			
 			pixelBufferMipMap = new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel );
 			
 			for( j=0; j<pixBufCount; j++ ){
 				deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( j );
 				reader->Read( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
+			}
+			
+			if( maxMipMapLevel > expectedMaxMipMaxLevel ){
+				pixelBufferMipMap->ReducePixelBufferCount( maxMipMapLevel - expectedMaxMipMaxLevel );
 			}
 			
 			pChannels[ i ]->SetPixelBufferMipMap( pixelBufferMipMap );
