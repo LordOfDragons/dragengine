@@ -71,10 +71,10 @@ void main( void ){
 			outNormal = vec4( result.normal, 0.0 );
 			
 			vec3 matDiffuse, matReflectivity, matEmissivity;
-			float matTintMask, matRoughness;
-			rayCastSampleMaterial(result, matDiffuse, matTintMask, matReflectivity, matRoughness, matEmissivity);
+			float matRoughness;
+			rayCastSampleMaterial(result, matDiffuse, matReflectivity, matRoughness, matEmissivity);
 			
-			outDiffuse = vec4( matDiffuse, matTintMask );
+			outDiffuse = vec4( matDiffuse, 1.0 );
 			outReflectivity = vec4( matReflectivity, matRoughness );
 			outLight = vec3( matEmissivity );
 			
@@ -112,15 +112,24 @@ void main( void ){
 		// // outPosition.xyz += direction * result.distance;
 		// // outPosition.xyz += hitNormal * STEP_BACK_DISTANCE;
 		outNormal = vec4( result.normal, 0.0 );
+		
+		vec3 matDiffuse, matReflectivity, matEmissivity;
+		float matRoughness;
+		rayCastSampleMaterial( result, matDiffuse, matReflectivity, matRoughness, matEmissivity );
+		
+		outDiffuse = vec4( matDiffuse, 1.0 );
+		outReflectivity = vec4( matReflectivity, matRoughness );
+		outLight = vec3( matEmissivity );
+		
 	}else{
 		// we can not store simply the position here since later code calculates the
 		// ray direction using this hit point. anything can go here in the end
 		outPosition = vec4( position + direction, 10000.0 );
 		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
+		outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+		outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
+		outLight = vec3( 0.0 );
 	}
-	outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
-	outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
-	outLight = vec3( 0.0 );
 	
 	gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );
 }

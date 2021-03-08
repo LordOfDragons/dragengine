@@ -186,6 +186,9 @@ public:
 	/** \brief Updates the actual texture parameters to use. */
 	void UpdateUseSkin();
 	
+	/** \brief Calculate instance texture coordinate transformation matrix. */
+	decTexMatrix2 CalcTexCoordMatrix() const;
+	
 	
 	
 	/** \brief Shader parameter block for a shader type. */

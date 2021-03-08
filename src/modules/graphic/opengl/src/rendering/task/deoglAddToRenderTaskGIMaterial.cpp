@@ -136,7 +136,7 @@ bool deoglAddToRenderTaskGIMaterial::pFilterReject( const deoglSkinTexture *skin
 	if( ! skinTexture ){
 		return true;
 	}
-	if( skinTexture->GetHasSolidity() || skinTexture->GetHasTransparency() ){
+	if( /*skinTexture->GetHasSolidity() ||*/ skinTexture->GetHasTransparency() ){
 		return true;
 	}
 	return false;

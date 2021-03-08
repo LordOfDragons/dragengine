@@ -323,12 +323,13 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.EnableTBO( 5, bvh.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2().GetTBO(), GetSamplerClampNearest() );
 	
-	tsmgr.EnableTexture( 8, materials.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 9, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 10, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 9, materials.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 10, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 11, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
 	
-	tsmgr.DisableStagesAbove( 10 );
+	tsmgr.DisableStagesAbove( 11 );
 	
 	#ifdef GI_RENDERDOC_DEBUG
 		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );

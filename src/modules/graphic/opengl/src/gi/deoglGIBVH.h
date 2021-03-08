@@ -72,14 +72,14 @@ class deoglRenderTaskTexture;
  * - TBOInstance: RG32UI (stride 1 pixel)
  *   stores instance offsets. bvhIndex(R) is the absolute strided index into TBONodeBox
  *   and TBOIndex with the mesh bvh root node. materialIndex(G) is the absolute strided
- *   index into TBOMaterial of the first instance material.
+ *   index into TBOMaterial* of the first instance material.
  *   
  * - TBOMatrix: RGBA32F (stride 3 pixels)
  *   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
  *   
  * - TBOFace: RGBA32UI (stride 1 pixel)
  *   stores mesh faces. vertex1(R) vertex2(G) vertex3(B) textureIndex(A). indices into
- *   TBOVertex. textureIndex is relative index into TBOMaterial.
+ *   TBOVertex. textureIndex is relative index into TBOMaterial*.
  *   
  * - TBOVertex: RGBA32F (stride 1 pixel)
  *   stores mesh vertices. vertices are transformed by "current BVH transformation matrix"
@@ -101,7 +101,6 @@ class deoglRenderTaskTexture;
  *   - roughness.remap.*:       8 8       => 16
  *   - roughness.gamma:         8         => 8
  *   - reflectivity.multiplier: 8         => 8
- *   - emissivity.intensity:    16 16 16  => 48
  *   - ignore:                  1         => 1
  *   
  *   also store the index of the material in the material texture atlas as 14 bits value.
@@ -116,21 +115,21 @@ class deoglRenderTaskTexture;
  *   - red:
  *     - 8: color.tint.r
  *     - 8: roughness.remap.lower
- *     - 16: emissivity.intensity.r
+ *     - 1: ignore material
+ *     - 1: tex-coord clamp
+ *     - 14: material atlas index
  *   - green:
  *     - 8: color.tint.g
  *     - 8: roughness.remap.upper
- *     - 16: emissivity.intensity.g
+ *     - 16: (reserved)
  *   - blue:
  *     - 8: color.tint.b
  *     - 8: roughness.gamma
- *     - 16: emissivity.intensity.b
+ *     - 16: (reserved)
  *   - alpha:
  *     - 8: color.gamma
  *     - 8: reflectivity.multiplier
- *     - 1: ignore material
- *     - 1: (reserved)
- *     - 14: material atlas index
+ *     - 16: (reserved)
  *   
  *   the layout is chosen like this to allow GLSL to decompose the data using few instructions.
  *   - vec4 colorGamma = vec4(values >> 24)
@@ -139,18 +138,19 @@ class deoglRenderTaskTexture;
  *   - vec4 roughnessGammaReflMul = vec4((values >> 16) & 0xff)
  *                                  * vec4(1.0/255.0, 1.0/255.0, 1.8/255.0, 1.0/255.0)
  *                                  + vec4(0, 0, 0.4, 0);
- *   - vec3 emissivity = vec3(values.rgb & 0xffff) * vec3(1.0 / 65535.0);
- *   - bvec2 variation = notEqual(values.aa & uvec2(0x8000, 0x4000), uvec2(0));
+ *   - bvec2 flags = notEqual(values.aa & uvec2(0x8000, 0x4000), uvec2(0));
  *   - int materialIndex = int(values.a & 0x3fff);
  *   
- *   this uses 128 bits.
+ *   this uses 96 bits (48 unused)
  *   
  *   possible compacting to gain more free bits can be done like this:
- *   - emissivity.intensity => 16:scale * 565:color (24 bits instead of 32)
- *   - emissivity.intensity => 11_11_10 (16 bit instead of 32)
  *   - color.tint => 565 (16 bits instead of 24)
  *   
- *   maximum saving 24 bits less. this requires though a new layout
+ * - TBOMaterial2: RGBA16F (stride 3 pixel)
+ *   contains material parameters requiring floating point values to be stored:
+ *   - pixel 1: texCoordMatrix.row1(rgb) unused(a)
+ *   - pixel 2: texCoordMatrix.row2(rgb) unused(a)
+ *   - pixel 3: emissivity(rgb) unused(a)
  *   
  * requires uniforms:
  * 
@@ -204,6 +204,7 @@ private:
 	deoglDynamicTBOFloat32 pTBOVertex;
 	deoglDynamicTBOFloat16 pTBOTexCoord;
 	deoglDynamicTBOUInt32 pTBOMaterial;
+	deoglDynamicTBOFloat16 pTBOMaterial2;
 	
 	
 	
@@ -251,6 +252,9 @@ public:
 	/** \brief TBO for material parameters. */
 	inline const deoglDynamicTBOUInt32 &GetTBOMaterial() const{ return pTBOMaterial; }
 	
+	/** \brief TBO for material float parameters. */
+	inline const deoglDynamicTBOFloat16 &GetTBOMaterial2() const{ return pTBOMaterial2; }
+	
 	
 	
 	/** \brief Clear BVH. */
@@ -279,7 +283,8 @@ private:
 	sComponent &pAddComponent( int indexModel, int indexMaterial, const decMatrix &matrix );
 	void pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture );
 	void pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture );
+		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
+		const decTexMatrix2 &texCoordMatrix );
 	void pAddBVH( const deoglBVH &bvh, int rootIndexNodes, int rootIndexFaces );
 };
 

@@ -32,7 +32,6 @@
 // 
 // - tboTexCoord: RG16F (stride 3 pixel)
 //   stores mesh texture coordinates. same unstrided index as TBOFace.
-//
 uniform samplerBuffer tboNodeBox;
 uniform usamplerBuffer tboIndex;
 uniform usamplerBuffer tboInstance;
@@ -82,7 +81,14 @@ uniform samplerBuffer tboTexCoord;
 //     - 1: ignore material
 //     - 1: (8reserved)
 //     - 14: material atlas index
+//
+// - tboMaterial2: RGBA16F (stride 3 pixel)
+//   contains material parameters requiring floating point values to be stored:
+//   - pixel 1: texCoordMatrix.row1(rgb) unused(a)
+//   - pixel 2: texCoordMatrix.row2(rgb) unused(a)
+//   - pixel 3: emissivity(rgb) unused(a)
 uniform usamplerBuffer tboMaterial;
+uniform samplerBuffer tboMaterial2;
 
 // material atlas textures
 uniform sampler2D texMaterialDiffuse; // diffuse=rgb, tintMask=a
@@ -225,22 +231,32 @@ in vec3 rayOrigin, in vec3 rayDirection, out RayCastResult result ){
 						int materialIndex = rootMaterial + corners.w;
 						uvec4 materialParams = texelFetch( tboMaterial, materialIndex );
 						
-						if( ( materialParams.a & uint( 0x8000 ) ) != 0 ){
+						bvec2 matFlags = notEqual( materialParams.rr & uvec2( 0x8000, 0x4000 ), uvec2( 0 ) );
+						if( matFlags.x ){
 							continue; // ignore this material
 						}
 						
 						int faceIndex = index.x + i;
 						vec2 tc = rayCastFaceTexCoord( faceIndex, uvt.wxy );
 						
-						int materialMapIndex = int( materialParams.a & uint( 0x3fff ) );
+						int material2Base = materialIndex * 3;
+						vec4 tempMat2a = texelFetch( tboMaterial2, material2Base );
+						vec4 tempMat2b = texelFetch( tboMaterial2, material2Base + 1 );
+						tc = vec2( vec3( tc, 1.0 ) * mat2x3( tempMat2a.xyz, tempMat2b.xyz ) );
+						
+						int materialMapIndex = int( materialParams.r & uint( 0x3fff ) );
 						ivec2 materialTC = ivec2( materialMapIndex % pGIMaterialMapsPerRow,
 							materialMapIndex / pGIMaterialMapsPerRow );
 						materialTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
-						materialTC += ivec2( tc * vec2( pGIMaterialMapSize ) ) % ivec2( pGIMaterialMapSize );
+						
+						ivec2 realMatTC = ivec2( tc * vec2( pGIMaterialMapSize ) );
+						materialTC += matFlags.y
+							? clamp( realMatTC, ivec2( 0 ), ivec2( pGIMaterialMapSize - 1 ) )
+							: realMatTC % ivec2( pGIMaterialMapSize );
 						
 						vec4 emissivity = texelFetch( texMaterialEmissivity, materialTC, 0 );
 						
-						if( emissivity.a > 0.5 ){ // solidity
+						if( emissivity.a > 0.35 ){ // solidity
 							result.distance = uvt.z;
 							result.face = faceIndex;
 							result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
@@ -373,7 +389,7 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 }
 
 // Sample material parameters using result
-void rayCastSampleMaterial( in RayCastResult result, out vec3 diffuse, out float tintMask,
+void rayCastSampleMaterial( in RayCastResult result, out vec3 diffuse,
 out vec3 reflectivity, out float roughness, out vec3 emissivity ){
 	// get material parameters
 	uvec4 matParams = result.materialParams; //texelFetch( tboMaterial, result.material );
@@ -384,17 +400,21 @@ out vec3 reflectivity, out float roughness, out vec3 emissivity ){
 	vec4 roughnessGammaReflMul = vec4( ( matParams >> 16 ) & uvec4( 0xff ) )
 		* vec4( 1.0 / 255.0, 1.0 / 255.0, 1.8 / 255.0, 1.0 / 255.0 )
 		+ vec4( 0.0, 0.0, 0.4, 0.0 );
-	vec3 emissivityIntensity = vec3( matParams.rgb & uvec3( 0xffff ) ) * vec3( 1.0 / 65535.0 );
-	//bvec2 variation = notEqual( matParams.aa & uvec2( 0x8000, 0x4000 ), uvec2( 0 ) );
+	
+	int material2Base = result.material * 3;
+	vec4 emissivityIntensity = texelFetch( tboMaterial2, material2Base + 2 );
 	
 	// sample material map from atlas
 	vec4 temp = texelFetch( texMaterialDiffuse, result.materialTC, 0 );
-	diffuse = temp.rgb;
-	tintMask = temp.a;
+	diffuse = pow( temp.rgb, vec3( colorGamma.a ) );
+	diffuse = mix( diffuse, diffuse * colorGamma.rgb, temp.a );
 	
 	temp = texelFetch( texMaterialReflectivity, result.materialTC, 0 );
-	reflectivity = temp.rgb;
-	roughness = temp.a;
+	reflectivity = temp.rgb * vec3( roughnessGammaReflMul.a );
 	
-	emissivity = texelFetch( texMaterialEmissivity, result.materialTC, 0 ).rgb;
+	roughness = pow( temp.a, roughnessGammaReflMul.z );
+	roughness = roughness * roughnessGammaReflMul.x + roughnessGammaReflMul.y;
+	roughness = clamp( roughness, 0.0, 1.0 );
+	
+	emissivity = result.emissivity * emissivityIntensity.rgb;
 }

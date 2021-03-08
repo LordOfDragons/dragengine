@@ -77,7 +77,8 @@ pTBOMatrix( renderThread, 4 ),
 pTBOFace( renderThread, 4 ),
 pTBOVertex( renderThread, 4 ),
 pTBOTexCoord( renderThread, 2 ),
-pTBOMaterial( renderThread, 4 ){
+pTBOMaterial( renderThread, 4 ),
+pTBOMaterial2( renderThread, 4 ){
 }
 
 deoglGIBVH::~deoglGIBVH(){
@@ -110,6 +111,7 @@ void deoglGIBVH::Clear(){
 	pTBOIndex.Clear();
 	pTBONodeBox.Clear();
 	pTBOMaterial.Clear();
+	pTBOMaterial2.Clear();
 }
 
 void deoglGIBVH::FindComponents( deoglRWorld &world, const decDVector &position,
@@ -304,6 +306,7 @@ void deoglGIBVH::BuildBVH(){
 	pTBOVertex.Update();
 	pTBOTexCoord.Update();
 	pTBOMaterial.Update();
+	pTBOMaterial2.Update();
 }
 
 void deoglGIBVH::DebugPrint( const decDVector &position ){
@@ -343,6 +346,8 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	pTBOTexCoord.DebugPrint();
 	logger.LogInfo("GIBVH: pTBOMaterial");
 	pTBOMaterial.DebugPrint();
+	logger.LogInfo("GIBVH: pTBOMaterial2");
+	pTBOMaterial2.DebugPrint();
 	
 	struct PrintBVH{
 		deoglRTLogger &logger;
@@ -423,17 +428,22 @@ const decMatrix &matrix ){
 void deoglGIBVH::pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture ){
 	deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
 	if( skinTexture ){
-		pAddMaterial( *skinTexture, texture.GetUseSkinState(), texture.GetUseDynamicSkin(), renderTaskTexture );
+		pAddMaterial( *skinTexture, texture.GetUseSkinState(), texture.GetUseDynamicSkin(),
+			renderTaskTexture, texture.CalcTexCoordMatrix() );
 		
 	}else{
 		// TODO we have to add the texture even if not containing maps. in this case
 		//      the materialIndex has to be 0 (aka not set)
 		pTBOMaterial.AddVec4( 0, 0, 0, 0 );
+		pTBOMaterial2.AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTBOMaterial2.AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTBOMaterial2.AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
 	}
 }
 
 void deoglGIBVH::pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
+deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
+const decTexMatrix2 &texCoordMatrix ){
 	// collect values
 	decColor colorTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorTint )
 		.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
@@ -484,6 +494,7 @@ deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) : 0;
 	
 	const bool ignoreMaterial = skinTexture.GetHasTransparency(); // || skinTexture.GetHasSolidity();
+	const bool texCoordClamp = skinTexture.GetTexCoordClamp();
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)
@@ -494,12 +505,17 @@ deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture ){
 	#define PACK_B(value, bit) (uint32_t)((value) ? (1<<bit) : 0)
 	
 	pTBOMaterial.AddVec4(
-		PACK( colorTint.r, 8, 24 ) | PACK( roughnessRemapLower, 8, 16 ) | PACK( emissivityIntensity.r, 16, 0 ),
-		PACK( colorTint.g, 8, 24 ) | PACK( roughnessRemapUpper, 8, 16 ) | PACK( emissivityIntensity.g, 16, 0 ),
-		PACK( colorTint.b, 8, 24 ) | PACK_G( roughnessGamma, 8, 16 ) | PACK( emissivityIntensity.b, 16, 0 ),
-		PACK_G( colorGamma, 8, 24 ) | PACK( reflectivityMultiplier, 8, 16 )
-			| PACK_B( ignoreMaterial, 15 ) | PACK_I( materialIndex, 14, 0 ) );
+		PACK( colorTint.r, 8, 24 ) | PACK( roughnessRemapLower, 8, 16 )
+			| PACK_B( ignoreMaterial, 15 ) | PACK_B( texCoordClamp, 14 )
+			| PACK_I( materialIndex, 14, 0 ),
+		PACK( colorTint.g, 8, 24 ) | PACK( roughnessRemapUpper, 8, 16 ),
+		PACK( colorTint.b, 8, 24 ) | PACK_G( roughnessGamma, 8, 16 ),
+		PACK_G( colorGamma, 8, 24 ) | PACK( reflectivityMultiplier, 8, 16 ) );
 			//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
+	
+	pTBOMaterial2.AddVec4( texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f );
+	pTBOMaterial2.AddVec4( texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f );
+	pTBOMaterial2.AddVec4( emissivityIntensity.r, emissivityIntensity.g, emissivityIntensity.b, 0.0f );
 	
 	#undef PACK_B
 	#undef PACK_G

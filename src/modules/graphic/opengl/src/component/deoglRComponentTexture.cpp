@@ -438,6 +438,55 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	}
 }
 
+decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
+	deoglRDynamicSkin *useDynamicSkin = NULL;
+	deoglSkinState *useSkinState = NULL;
+	
+	if( pSkinState ){
+		useSkinState = pSkinState;
+		if( pDynamicSkin ){
+			useDynamicSkin = pDynamicSkin;
+			
+		}else{
+			useDynamicSkin = pComponent.GetDynamicSkin();
+		}
+		
+	}else{
+		// for texture with no own skin
+		useSkinState = pComponent.GetSkinState();
+		useDynamicSkin = pComponent.GetDynamicSkin();
+	}
+	
+	decTexMatrix2 matrix( pTransform );
+	
+	const deoglSkinTextureProperty &propertyOffset =
+		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordOffset );
+	const deoglSkinTextureProperty &propertyScale =
+		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordScale );
+	const deoglSkinTextureProperty &propertyRotate =
+		pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordRotate );
+	
+	const decVector2 offset( propertyOffset.ResolveVector2(
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordOffset() ) );
+	const decVector2 scale( propertyScale.ResolveVector2(
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordScale() ) );
+	const float rotate = propertyRotate.ResolveAsFloat(
+		useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordRotate() );
+	
+	const bool hasOffset = ! decVector2().IsEqualTo( offset );
+	const bool hasScale = ! decVector2( 1.0f, 1.0f ).IsEqualTo( scale );
+	const bool hasRotate = fabsf( rotate ) > FLOAT_SAFE_EPSILON;
+	
+	if( hasScale || hasRotate ){
+		matrix = decTexMatrix2::CreateCenterSRT( scale, rotate * TWO_PI, offset ) * matrix;
+		
+	}else if( hasOffset ){
+		matrix = decTexMatrix2::CreateTranslation( offset ) * matrix;
+	}
+	
+	return matrix;
+}
+
 
 
 deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
@@ -1006,34 +1055,7 @@ int element, deoglSkinShader &skinShader ){
 	// per texture properties
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
 	if( target != -1 ){
-		decTexMatrix2 matrix( pTransform );
-		
-		const deoglSkinTextureProperty &propertyOffset =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordOffset );
-		const deoglSkinTextureProperty &propertyScale =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordScale );
-		const deoglSkinTextureProperty &propertyRotate =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordRotate );
-		
-		const decVector2 offset( propertyOffset.ResolveVector2(
-			useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordOffset() ) );
-		const decVector2 scale( propertyScale.ResolveVector2(
-			useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordScale() ) );
-		const float rotate = propertyRotate.ResolveAsFloat(
-			useSkinState, useDynamicSkin, pUseSkinTexture->GetTexCoordRotate() );
-		
-		const bool hasOffset = ! decVector2().IsEqualTo( offset );
-		const bool hasScale = ! decVector2( 1.0f, 1.0f ).IsEqualTo( scale );
-		const bool hasRotate = fabsf( rotate ) > FLOAT_SAFE_EPSILON;
-		
-		if( hasScale || hasRotate ){
-			matrix = decTexMatrix2::CreateCenterSRT( scale, rotate * TWO_PI, offset ) * matrix;
-			
-		}else if( hasOffset ){
-			matrix = decTexMatrix2::CreateTranslation( offset ) * matrix;
-		}
-		
-		paramBlock.SetParameterDataMat3x2( target, element, matrix );
+		paramBlock.SetParameterDataMat3x2( target, element, CalcTexCoordMatrix() );
 	}
 	
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );

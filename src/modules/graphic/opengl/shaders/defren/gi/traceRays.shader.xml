@@ -12,10 +12,11 @@
 	<texture name='tboVertex' target='5'/>
 	<texture name='tboTexCoord' target='6'/>
 	<texture name='tboMaterial' target='7'/>
+	<texture name='tboMaterial2' target='8'/>
 	
-	<texture name='texMaterialDiffuse' target='8'/>
-	<texture name='texMaterialReflectivity' target='9'/>
-	<texture name='texMaterialEmissivity' target='10'/>
+	<texture name='texMaterialDiffuse' target='9'/>
+	<texture name='texMaterialReflectivity' target='10'/>
+	<texture name='texMaterialEmissivity' target='11'/>
 	
 	<uniformBlock name='GIParameters' target='0'/>
 	

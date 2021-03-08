@@ -108,8 +108,8 @@ void main( void ){
 				#ifdef MAP_IRRADIANCE
 				if( rayPosition.w > 9999.0 ){
 					//outValue.x += weight; // 1 * weight
-					//outValue.rgb += texelFetch( texLight, rayTC, 0 ).xyz * weight;
-					outValue.rgb += vec3( weight );
+					outValue.rgb += texelFetch( texLight, rayTC, 0 ).xyz * weight;
+					//outValue.rgb += vec3( weight );
 				}
 				
 				#else

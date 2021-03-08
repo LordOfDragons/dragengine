@@ -757,6 +757,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetTextureColorTintMask( hasChanTex[ deoglSkinChannel::ectColorTintMask ] );
 			config.SetTextureReflectivity( hasChanTex[ deoglSkinChannel::ectReflectivity ] );
 			config.SetTextureRoughness( hasChanTex[ deoglSkinChannel::ectRoughness ] );
+			config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
 			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
 			config.SetTextureEnvRoom( hasChanTex[ deoglSkinChannel::ectEnvironmentRoom ] );
 			config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
