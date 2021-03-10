@@ -80,7 +80,25 @@ vec3 giIlluminate( in vec3 position, in vec3 normal ){
 	float sumWeight = 0.0;
 	
 	// distance from floor(currentVertex) position
-	vec3 alpha = clamp( pGIProbeSpacingInv * ( position - basePosition ), vec3( 0.0 ), vec3( 1.0 ) );
+	//vec3 alpha = clamp( pGIProbeSpacingInv * ( position - basePosition ), vec3( 0.0 ), vec3( 1.0 ) );
+	
+	// here something can go wrong. in the paper all probes are used which causes leaking.
+	// by disabling probes (inside walls) or samples thereof (rays hitting geometry from
+	// the outside) annoying artifacts can happen. "alpha" value contains 0 if the position
+	// aligns with the base probe coordinate in one or more axes. basically this means one
+	// or more fragment coordinates fall on probe grid. if this happens "trilinear" calculated
+	// in the loop can contain 0 in one or more components. this causes weight to drop to 0.
+	// now what happens is that disabled probes have 0 weight but good trilinear value.
+	// on the other hand the enabled probes which should be used end up with >0 weight but
+	// trilinear contains 0 components killing off the weight. all probes end up with 0 weight
+	// and a problem is born.
+	// 
+	// the main problem here is disabling probes or samples thereof. but this is required
+	// to remove the annoying artifacts. to solve this the alpha value used for calculating
+	// trilinear value is slightly nudged off the grid if it happens to be on it. this does
+	// affect only the rare case of fragments ending up in the bad spot
+	//alpha = mix( alpha, alpha + vec3( 0.001 ), lessThan( abs( alpha ), vec3( 0.001 ) ) );
+	vec3 alpha = clamp( pGIProbeSpacingInv * ( position - basePosition ), vec3( 0.01 ), vec3( 0.99 ) );
 	
 	// iterate over adjacent probe cage
 	int i;
@@ -95,8 +113,11 @@ vec3 giIlluminate( in vec3 position, in vec3 normal ){
 		vec3 viewVector = probePosition - position;
 		vec3 viewDir = normalize( viewVector );
 		
-		// ws_o = rayOrigin. where is this coming from? we are shading here scene fragments.
-		// rayOrigin belongs to probe shading
+		// in the original paper code something really strange is going on. they use
+		// ws_o (or w_o) to offset. the code calculates ws_o in front of the for-loop
+		// as "rayOrigin - position", which would be "viewDir" but outside the for-loop
+		// there exists no rayOrigin. which of the cage probes is the ray origin?
+		// this term makes no sense
 		vec3 probeToPoint = -viewVector + ( normal /*+ 3.0 * ws_o*/ ) * pGINormalBias;
 		
 		vec3 trilinear = mix( vec3( 1.0 ) - alpha, alpha, offset );

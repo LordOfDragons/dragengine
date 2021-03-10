@@ -106,11 +106,10 @@ void main( void ){
 	RayCastResult result;
 	if( pGIBVHInstanceRootNode != -1
 	&& rayCastInstance( pGIBVHInstanceRootNode, position, direction, result ) ){
-		outPosition = vec4( position, result.distance );
-		outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
-		// original DDGI code steps back using "hitNormal * 0.01"
-		// // outPosition.xyz += direction * result.distance;
-		// // outPosition.xyz += hitNormal * STEP_BACK_DISTANCE;
+		outPosition.xyz = position + direction * result.distance;
+		outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
+		
+		outPosition.w = length( outPosition.xyz - position );
 		outNormal = vec4( result.normal, 0.0 );
 		
 		vec3 matDiffuse, matReflectivity, matEmissivity;

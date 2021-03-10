@@ -241,9 +241,12 @@ void deoglGIState::PrepareUBOState() const{
 		ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
 		
 		// ray direction
-// 		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
-// 			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
-		//const decVector * const sphericalFibonnaci = pTracing.GetSphericalFibonacci();
+// #define GI_USE_RANDOM_DIRECTION 1
+		#ifdef  GI_USE_RANDOM_DIRECTION
+		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+		#endif
+		
 		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
 		const float sf_n = ( float )raysPerProbe;
 		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
@@ -260,10 +263,11 @@ void deoglGIState::PrepareUBOState() const{
 			// the random rotation keeps the result stable. it is most probably not as smooth
 			// as it could be with random rotation but avoids the unsupportable flickering
 			//ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, randomOrientation * sf );
+			#ifdef GI_USE_RANDOM_DIRECTION
+			ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, randomOrientation * sf );
+			#else
 			ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection, i, sf );
-			
-			/*ubo.SetParameterDataArrayVec3( deoglGI::eupRayDirection,
-				i, randomOrientation * sphericalFibonnaci[ i ] );*/
+			#endif
 		}
 		
 		#undef madfrac

@@ -40,7 +40,8 @@ deoglGI::deoglGI( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pBVH( renderThread ),
 pRays( renderThread ),
-pMaterials( renderThread )
+pMaterials( renderThread ),
+pDebugShowProbes( false )
 {
 	try{
 		pCreateUBO();
@@ -59,6 +60,11 @@ deoglGI::~deoglGI(){
 
 // Management
 ///////////////
+
+void deoglGI::SetDebugShowProbes( bool show ){
+	pDebugShowProbes = show;
+}
+
 
 
 // Private Functions

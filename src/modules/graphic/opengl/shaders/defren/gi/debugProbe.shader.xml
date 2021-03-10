@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Debug Probe</name>
+	
+	<version>130</version>
+	
+	<texture name='texGIIrradiance' target='0'/>
+	<texture name='texGIDistance' target='1'/>
+	
+	<parameter name='pMatrixMVP'/> <!-- 0 -->
+	<parameter name='pProbeCoord'/> <!-- 1 -->
+	<parameter name='pProbePosition'/> <!-- 2 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/debugProbe.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/debugProbe.glsl</sourceCode>
+</shader>

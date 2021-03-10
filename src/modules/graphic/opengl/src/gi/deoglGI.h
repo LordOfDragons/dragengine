@@ -79,6 +79,8 @@ private:
 	
 	deObjectReference pUBO;
 	
+	bool pDebugShowProbes;
+	
 	
 	
 public:
@@ -112,6 +114,12 @@ public:
 	
 	/** \brief UBO. */
 	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }
+	
+	/** \brief Debug show probes. */
+	inline bool GetDebugShowProbes() const{ return pDebugShowProbes; }
+	
+	/** \brief Set debug show probes. */
+	void SetDebugShowProbes( bool show );
 	/*@}*/
 	
 	

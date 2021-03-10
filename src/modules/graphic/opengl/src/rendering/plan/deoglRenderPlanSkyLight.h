@@ -56,12 +56,14 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
+	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
 	
 	deoglCollideList pCollideList;
 	decVector pFrustumBoxMinExtend;
 	decVector pFrustumBoxMaxExtend;
 	
+	bool pUseLight;
 	bool pUseShadow;
 	int pShadowLayerCount;
 	sShadowLayer pShadowLayers[ 4 ];
@@ -87,11 +89,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Sky instance. */
+	inline deoglRSkyInstance *GetSky() const{ return pSky; }
+	
 	/** \brief Sky layer. */
 	inline deoglRSkyInstanceLayer *GetLayer() const{ return pLayer; }
 	
 	/** \brief Set sky layer. */
-	void SetLayer( deoglRSkyInstanceLayer *layer );
+	void SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
 	
 	
@@ -106,6 +111,9 @@ public:
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	
+	
+	/** \brief Use light. */
+	inline bool GetUseLight() const{ return pUseLight; }
 	
 	/** \brief Use shadow casting. */
 	inline bool GetUseShadow() const{ return pUseShadow; }

@@ -109,6 +109,7 @@ static const char *vLightUniformTargetNames[ deoglLightShader::ELUT_COUNT ] = {
 	"pLightRange", // elutLightRange
 	"pLightColorAmbient", // elutLightColorAmbient
 	"pLightAmbientRatio", // elutLightAmbientRatio
+	"pLightGIAmbientIntensity", // elutLightGIAmbientIntensity
 	"pLightAttenuationCoefficient", // elutLightAttenuationCoefficient
 	"pLightDampingCoefficient", // elutLightDampingCoefficient
 	"pLightDampingThreshold", // elutLightDampingThreshold
@@ -159,6 +160,7 @@ static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_
 	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightRange ( float )
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightColorAmbient ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAmbientRatio ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightGIAmbientRatio ( float )
 	
 	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAttenuationCoefficient ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightDampingCoefficient ( float )
@@ -879,6 +881,7 @@ void deoglLightShader::UpdateUniformTargets(){
 		pLightUniformTargets[ elutLightRange ] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[ elutLightColorAmbient ] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[ elutLightAmbientRatio ] = pUsedLightUniformTargetCount++;
+		pLightUniformTargets[ elutLightGIAmbientRatio ] = pUsedLightUniformTargetCount++;
 	}
 	
 	pLightUniformTargets[ elutLightAttenuationCoefficient ] = pUsedLightUniformTargetCount++;

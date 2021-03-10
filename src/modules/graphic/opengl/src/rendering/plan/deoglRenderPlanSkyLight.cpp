@@ -47,7 +47,9 @@
 
 deoglRenderPlanSkyLight::deoglRenderPlanSkyLight( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pSky( NULL ),
 pLayer( NULL ),
+pUseLight( true ),
 pUseShadow( false ),
 pShadowLayerCount( 0 ){
 }
@@ -77,12 +79,16 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 
 
 void deoglRenderPlanSkyLight::Clear(){
+	pSky = NULL;
 	pLayer = NULL;
 	pCollideList.Clear();
 	pGICollideList.Clear();
+	pUseLight = false;
+	pUseShadow = false;
 }
 
-void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstanceLayer *layer ){
+void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer ){
+	pSky = sky;
 	pLayer = layer;
 }
 
@@ -124,6 +130,7 @@ void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderPlanSkyLight::pDetermineShadowParameters( deoglRenderPlan &plan ){
+	pUseLight = true;
 	pUseShadow = plan.GetRenderThread().GetConfiguration().GetDebugUseShadow();
 	
 	// if array-texture support is missing no shadows for the time being
@@ -142,6 +149,23 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters( deoglRenderPlan &plan 
 		pUseShadow = false;
 	}
 	*/
+	
+	// if the total light contribution is a lot smaller than the total ambient only light
+	// contribution of the entire sky this layer can be skipped to improve performance.
+	// for example in a sky with a sun and moon light the sun typically has 16 intensity
+	// and 4 ambient intensity for a total of 20 intensity. the moon light has typically
+	// 0.009 intensity and 0.001 ambient intensity for a total of 0.01 intensity. during
+	// the day the total moon light (0.01) is a lot less than the sun ambient light (4).
+	// while it is possible the sun light is totally blocked and the moon light might
+	// be visible this is barely every a use case worth wasting time. in the outlined
+	// case the moon light is 0.25% . in general while rendering an intensity difference
+	// of 1% can be barely noticed. but most of the time one light dominates so right
+	// now a threshold of 10% is used. if the need arises for changing this value
+	// a module parameter can be introduced
+	if( pLayer->GetTotalLightIntensity() < pSky->GetTotalSkyAmbientIntensity() * 0.1f ){
+		pUseLight = false;
+		pUseShadow = false;
+	}
 	
 	// temporary hack to deal with slow shadow casting for the video capturing
 // 	if( pLayer->GetLightIntensity() < 0.1f ){

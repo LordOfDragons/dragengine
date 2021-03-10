@@ -34,6 +34,7 @@
 #include "debug/deoglRenderDebugDrawer.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
+#include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
@@ -503,6 +504,7 @@ DEBUG_RESET_TIMER
 		
 		if( plan.GetRenderDebugPass() ){
 			RenderDebugDrawers( plan );
+			renderers.GetLight().GetRenderGI().RenderDebugOverlay( plan );
 			
 			//pRenderDebugging( info );
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );

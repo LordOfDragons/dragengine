@@ -1797,8 +1797,8 @@ deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt( int index ) const{
 	return pSkyLights[ index ];
 }
 
-deoglRenderPlanSkyLight *deoglRenderPlan::AddSkyLight( deoglRSkyInstanceLayer *layer ){
-	if( ! layer ) {
+deoglRenderPlanSkyLight *deoglRenderPlan::AddSkyLight( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer ){
+	if( ! sky || ! layer ) {
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -1819,7 +1819,7 @@ deoglRenderPlanSkyLight *deoglRenderPlan::AddSkyLight( deoglRSkyInstanceLayer *l
 	}
 	
 	deoglRenderPlanSkyLight * const planSkyLight = pSkyLights[ pSkyLightCount++ ];
-	planSkyLight->SetLayer( layer );
+	planSkyLight->SetLayer( sky, layer );
 	return planSkyLight;
 }
 
@@ -2046,7 +2046,7 @@ void deoglRenderPlan::pBuildSkyLightPlan(){
 		for( j=0; j<layerCount; j++ ){
 			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt( j );
 			if( skyLayer.GetHasLightDirect() || skyLayer.GetHasLightAmbient() ){
-				AddSkyLight( &skyLayer )->Init( *this );
+				AddSkyLight( &instance, &skyLayer )->Init( *this );
 			}
 		}
 	}

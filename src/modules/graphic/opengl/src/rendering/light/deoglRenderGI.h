@@ -45,6 +45,7 @@ private:
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
 	deoglShaderProgram *pShaderLight;
+	deoglShaderProgram *pShaderDebugProbe;
 	
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;
@@ -102,6 +103,9 @@ public:
 	
 	/** \brief Render light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid );
+	
+	/** \brief Debug overlay. */
+	void RenderDebugOverlay( deoglRenderPlan &plan );
 	/*@}*/
 	
 	

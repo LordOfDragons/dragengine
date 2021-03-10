@@ -55,6 +55,7 @@ private:
 	int pLayerCount;
 	
 	float pTotalSkyLightIntensity;
+	float pTotalSkyAmbientIntensity;
 	decColor pTotalSkyLightColor;
 	
 	float pEnvMapTimer;
@@ -146,6 +147,9 @@ public:
 	
 	/** \brief Total sky light intensity. */
 	inline float GetTotalSkyLightIntensity() const{ return pTotalSkyLightIntensity; }
+	
+	/** \brief Total sky ambient only light intensity. */
+	inline float GetTotalSkyAmbientIntensity() const{ return pTotalSkyAmbientIntensity; }
 	
 	/** \brief Total sky light color. */
 	inline const decColor &GetTotalSkyLightColor() const{ return pTotalSkyLightColor; }

@@ -78,18 +78,19 @@ void main( void ){
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
 		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
+		bool rayMisses = rayPosition.w > 9999.0;
 		
 		// if ray misses hit distance is set to 10000. in this case max probe distance
 		// has to be used. this works with the min code below so no extra code required
 		#ifdef MAP_DISTANCE
-		// here we deviate from the paper. ignoring misses to influence the result
-		// removes the most glaring light leaks. small (but glaring) ones still remain
-		if( rayPosition.w > 9999.0 ){
-			continue;  // remove this for true GI
-		}
-		
-		// back to paper here
-		float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
+			// here we deviate from the paper. ignoring misses to influence the result
+			// removes the most glaring light leaks
+			if( rayMisses ){
+				continue;
+			}
+			
+			// back to paper here
+			float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
 		#endif
 		
 		// for dynamic ray-tracing only the pRayDirection[i] can be used. by using though
@@ -99,42 +100,39 @@ void main( void ){
 		vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
 		weight = max( dot( texelDirection, rayDirection ), 0.0 );
 		#ifdef MAP_DISTANCE
-		weight = pow( weight, pGIDepthSharpness );
+			weight = pow( weight, pGIDepthSharpness );
 		#endif
 		
 		if( weight >= epsilon ){
-			if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
-				// ray hits front face
-				#ifdef MAP_IRRADIANCE
-				if( rayPosition.w > 9999.0 ){
-					//outValue.x += weight; // 1 * weight
-					outValue.rgb += texelFetch( texLight, rayTC, 0 ).xyz * weight;
-					//outValue.rgb += vec3( weight );
+			#ifdef MAP_IRRADIANCE
+				// rayMisses is required since ray normal is only valid if ray hits something
+				if( rayMisses || dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+					// ray misses or hits front facing geometry. ray misses are handled
+					// the same since sky lighting is applied to missing rays too
+					outValue.rgb += texelFetch( texLight, rayTC, 0 ).rgb * weight;
 				}
-				
-				#else
-				outValue.x += rayProbeDistance * weight;
-				outValue.y += rayProbeDistance * rayProbeDistance * weight;
-				#endif
-				
-			}else{
-				// ray hits back face. disable the probe to prevent problems. probe can
-				// be disabled by setting mean, mean squared and irradiance to 0
-			}
+			#else
+				// ray misses is already handled above so only front facing check here
+				if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+					// ray hits front facing geometry
+					outValue.xy += rayProbeDistance * weight;
+					outValue.y += rayProbeDistance * rayProbeDistance * weight;
+				}
+			#endif
 			sumWeight += weight;
 		}
 	}
 	
 	if( sumWeight > epsilon ){
 		#ifdef MAP_IRRADIANCE
-		outValue.rgb /= sumWeight;
+			outValue.rgb /= sumWeight;
 		#else
-		outValue.xy /= sumWeight;
+			outValue.xy /= sumWeight;
 		#endif
 		
 	#ifdef MAP_DISTANCE
 	// by deviating from the paper above we need to handle the case of no hit being scored
-	// at all otherwise the probe turns black which is wrong for occlusion handling
+	// at all otherwise the probe turns black
 	}else{
 		//outValue.xy = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
 		outValue.xy = vec2( 0.0 );

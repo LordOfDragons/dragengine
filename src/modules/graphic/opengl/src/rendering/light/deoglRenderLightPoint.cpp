@@ -2003,6 +2003,11 @@ deoglRenderPlan &plan, deoglRLight &light ){
 			paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
 		}
 		
+		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+		}
+		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAttenuationCoefficient );
 		if( target != -1 ){
 			paramBlock.SetParameterDataFloat( target, light.GetAttenuationCoefficient() );

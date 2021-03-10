@@ -150,6 +150,9 @@ public:
 	/** \brief Intensity of the diffuse sky light. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
+	/** \brief Total light intensity. */
+	inline float GetTotalLightIntensity() const{ return pLightIntensity + pAmbientIntensity; }
+	
 	/** \brief Layer has direct light. */
 	bool GetHasLightDirect() const;
 	

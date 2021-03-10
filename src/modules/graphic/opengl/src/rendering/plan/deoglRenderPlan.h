@@ -628,7 +628,7 @@ public:
 	deoglRenderPlanSkyLight *GetSkyLightAt( int index ) const;
 	
 	/** \brief Add sky light. */
-	deoglRenderPlanSkyLight *AddSkyLight( deoglRSkyInstanceLayer *layer );
+	deoglRenderPlanSkyLight *AddSkyLight( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
 	/** \brief Remove sky lights. */
 	void RemoveAllSkyLights();

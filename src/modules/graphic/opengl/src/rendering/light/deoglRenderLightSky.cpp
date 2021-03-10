@@ -374,6 +374,10 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlan &plan, bool solid,
 deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
+	if( ! planSkyLight.GetUseLight() ){
+		return;
+	}
+	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
@@ -1108,6 +1112,12 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 			}else{
 				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
 			}
+		}
+		
+		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target,
+				ambientIntensity / decMath::max( lightIntensity + ambientIntensity, 0.1f ) );
 		}
 		
 		// NOTE sky light is currently using a special handling which has to be replaced with the

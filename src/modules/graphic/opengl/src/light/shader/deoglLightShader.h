@@ -140,6 +140,7 @@ public:
 		elutLightRange,
 		elutLightColorAmbient,
 		elutLightAmbientRatio,
+		elutLightGIAmbientRatio,
 		elutLightAttenuationCoefficient,
 		elutLightDampingCoefficient,
 		elutLightDampingThreshold,

@@ -664,7 +664,20 @@ void main( void ){
 	
 	// determine position of fragment to light
 	#ifdef GI_RAY
-		vec3 position = vec3( pGIRayMatrix * vec4( texelFetch( texPosition, tc, 0 ).rgb, 1.0 ) );
+		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
+		if( positionDistance.a > 9999.0 ){
+			// ray hits nothing. for sky lights this adds the ambient light contribution.
+			// for all other light sources do not light the ray
+			#ifdef SKY_LIGHT
+				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
+				outLuminance = dot( lightColor, lumiFactors );
+				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
+				return;
+			#else
+				discard;
+			#endif
+		}
+		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
 		#ifdef DECODE_IN_DEPTH
 			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );

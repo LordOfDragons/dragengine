@@ -66,6 +66,8 @@
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
+#include "../../shapes/deoglShape.h"
+#include "../../shapes/deoglShapeManager.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -99,6 +101,12 @@ enum eSPMaterial{
 	espmQuadParams
 };
 
+enum eSPDebugProbe{
+	spdpMatrixMVP,
+	spdpProbeCoord,
+	spdpProbePosition
+};
+
 
 
 // Class deoglRenderGI
@@ -115,6 +123,7 @@ pShaderTraceRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
 pShaderLight( NULL ),
+pShaderDebugProbe( NULL ),
 
 pRenderTask( NULL ),
 pAddToRenderTask( NULL )
@@ -151,9 +160,14 @@ pAddToRenderTask( NULL )
 		
 		defines.AddDefine( "MAP_DISTANCE", "1" );
 		pShaderUpdateProbeDistance = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		defines.RemoveDefine( "MAP_DISTANCE" );
+		
+		// debug
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
+		pShaderDebugProbe = shaderManager.GetProgramWith( sources, defines );
 		
 		// render light
+		defines.RemoveAllDefines();
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
@@ -603,6 +617,75 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	}
 }
 
+void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
+	deoglGIState * const giState = GetRenderGIState( plan );
+	if( ! giState ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglGI &gi = renderThread.GetGI();
+	if( ! gi.GetDebugShowProbes() ){
+		return;
+	}
+	
+	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition() ) * plan.GetCameraMatrix() );
+	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
+	
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglShape &shapeSphere = *renderThread.GetBufferObject().GetShapeManager()
+		.GetShapeAt( deoglRTBufferObject::esSphere );
+	
+	const decVector &probeSpacing = giState->GetProbeSpacing();
+	const decVector &probeOrigin = giState->GetProbeOrigin();
+	const decPoint3 &probeCount = giState->GetProbeCount();
+	const float sphereRadius = 0.1f;
+	decPoint3 probeIndex;
+	
+	defren.ActivatePostProcessFBO( true );
+	
+	shapeSphere.ActivateVAO();
+	
+	deoglShaderCompiled &shader = *pShaderDebugProbe->GetCompiled();
+	shader.Activate();
+	
+	gi.GetUBO().Activate();
+	
+	tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.DisableStagesAbove( 1 );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	SetCullMode( plan.GetFlipCulling() );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	for( probeIndex.y=0; probeIndex.y<probeCount.y; probeIndex.y++ ){
+		for( probeIndex.z=0; probeIndex.z<probeCount.z; probeIndex.z++ ){
+			for( probeIndex.x=0; probeIndex.x<probeCount.x; probeIndex.x++ ){
+				const decPoint3 localProbeIndex( giState->ShiftedGrid2LocalGrid( probeIndex ) );
+				const decVector probePosition( probeOrigin + probeSpacing.Multiply( decVector( probeIndex ) ) );
+				const decDMatrix matrixMVP( decDMatrix::CreateScale( sphereRadius, sphereRadius, sphereRadius )
+					* decDMatrix::CreateTranslation( probePosition ) * matrixCP );
+				
+				shader.SetParameterDMatrix4x4( spdpMatrixMVP, matrixMVP );
+				shader.SetParameterInt( spdpProbeCoord, localProbeIndex.x, localProbeIndex.y, localProbeIndex.z );
+				shader.SetParameterVector3( spdpProbePosition, probePosition );
+				
+				shapeSphere.RenderFaces();
+			}
+		}
+	}
+	
+	pglBindVertexArray( 0 );
+	tsmgr.DisableStage( 0 );
+}
+
+
 
 // Private Functions
 //////////////////////
@@ -615,6 +698,9 @@ void deoglRenderGI::pCleanUp(){
 		delete pRenderTask;
 	}
 	
+	if( pShaderDebugProbe ){
+		pShaderDebugProbe->RemoveUsage();
+	}
 	if( pShaderLight ){
 		pShaderLight->RemoveUsage();
 	}
