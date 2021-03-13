@@ -7,12 +7,11 @@ precision highp int;
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/octahedral.glsl"
 
-uniform ivec3 pProbeCoord;
-uniform vec3 pProbePosition;
-
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
 
+in flat ivec3 vProbeCoord;
+in flat vec3 vProbePosition;
 in vec3 vDirection;
 
 out vec3 outColor;
@@ -28,7 +27,7 @@ vec2 giTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in i
 
 void main( void ){
 	vec2 texCoord = giTCFromDirection( normalize( vDirection ),
-		pProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 	vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
 	irradiance /= vec3( 4.0 ); // squash HDRR a bit
 	outColor = irradiance;

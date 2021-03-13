@@ -8,8 +8,7 @@
 	<texture name='texGIDistance' target='1'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->
-	<parameter name='pProbeCoord'/> <!-- 1 -->
-	<parameter name='pProbePosition'/> <!-- 2 -->
+	<parameter name='pGIGridCoordShift'/> <!-- 1 -->
 	
 	<attribute name='inPosition' target='0'/>
 	
