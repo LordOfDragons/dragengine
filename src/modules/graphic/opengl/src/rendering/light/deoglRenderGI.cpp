@@ -72,6 +72,7 @@
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../vao/deoglVAO.h"
+#include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
@@ -103,8 +104,12 @@ enum eSPMaterial{
 
 enum eSPDebugProbe{
 	spdpMatrixMVP,
-	spdpProbeCoord,
-	spdpProbePosition
+	spdpGIGridCoordShift
+};
+
+enum eSPDebugProbeOffset{
+	spdpoMatrixMVP,
+	spdpoGIGridCoordShift
 };
 
 
@@ -122,8 +127,10 @@ pShaderFieldTraceRays( NULL ),
 pShaderTraceRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
+pShaderMoveProbes( NULL ),
 pShaderLight( NULL ),
 pShaderDebugProbe( NULL ),
+pShaderDebugProbeOffset( NULL ),
 
 pRenderTask( NULL ),
 pAddToRenderTask( NULL )
@@ -162,9 +169,16 @@ pAddToRenderTask( NULL )
 		pShaderUpdateProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
+		// move probes
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
+		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
+		
 		// debug
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
 		pShaderDebugProbe = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Offset" );
+		pShaderDebugProbeOffset = shaderManager.GetProgramWith( sources, defines );
 		
 		// render light
 		defines.RemoveAllDefines();
@@ -565,6 +579,61 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	}
 }
 
+void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
+	deoglGIState * const giState = GetUpdateGIState( plan );
+	if( ! giState ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglGI &gi = renderThread.GetGI();
+	deoglGIRays &rays = gi.GetRays();
+	
+	if( debugInfo.GetVisible() ){
+		GetDebugTimerAt( 0 ).Reset();
+	}
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	//OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	tsmgr.EnableTexture( 0, rays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
+		giState->GetTextureProbeOffset().GetHeight() ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
+	gi.GetUBO().Activate();
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	
+	// clean up
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	tsmgr.DisableAllStages();
+	
+	if( debugInfo.GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+	}
+}
+
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	deoglGIState * const giState = GetRenderGIState( plan );
 	if( ! giState ){
@@ -629,7 +698,9 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition() ) * plan.GetCameraMatrix() );
+	const decPoint3 &probeCount = giState->GetProbeCount();
+	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
+		+ decDVector( giState->GetProbeOrigin() ) ) * plan.GetCameraMatrix() );
 	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -637,18 +708,15 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	deoglShape &shapeSphere = *renderThread.GetBufferObject().GetShapeManager()
 		.GetShapeAt( deoglRTBufferObject::esSphere );
 	
-	const decVector &probeSpacing = giState->GetProbeSpacing();
-	const decVector &probeOrigin = giState->GetProbeOrigin();
-	const decPoint3 &probeCount = giState->GetProbeCount();
-	const float sphereRadius = 0.1f;
-	decPoint3 probeIndex;
-	
 	defren.ActivatePostProcessFBO( true );
 	
+	// probe
 	shapeSphere.ActivateVAO();
 	
 	deoglShaderCompiled &shader = *pShaderDebugProbe->GetCompiled();
 	shader.Activate();
+	shader.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
+	shader.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
 	
 	gi.GetUBO().Activate();
 	
@@ -664,23 +732,30 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	SetCullMode( plan.GetFlipCulling() );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
-	for( probeIndex.y=0; probeIndex.y<probeCount.y; probeIndex.y++ ){
-		for( probeIndex.z=0; probeIndex.z<probeCount.z; probeIndex.z++ ){
-			for( probeIndex.x=0; probeIndex.x<probeCount.x; probeIndex.x++ ){
-				const decPoint3 localProbeIndex( giState->ShiftedGrid2LocalGrid( probeIndex ) );
-				const decVector probePosition( probeOrigin + probeSpacing.Multiply( decVector( probeIndex ) ) );
-				const decDMatrix matrixMVP( decDMatrix::CreateScale( sphereRadius, sphereRadius, sphereRadius )
-					* decDMatrix::CreateTranslation( probePosition ) * matrixCP );
-				
-				shader.SetParameterDMatrix4x4( spdpMatrixMVP, matrixMVP );
-				shader.SetParameterInt( spdpProbeCoord, localProbeIndex.x, localProbeIndex.y, localProbeIndex.z );
-				shader.SetParameterVector3( spdpProbePosition, probePosition );
-				
-				shapeSphere.RenderFaces();
-			}
-		}
-	}
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLES,
+		shapeSphere.GetVBOBlock()->GetOffset() + shapeSphere.GetPointOffsetFaces(),
+		shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
 	
+	// offset
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	deoglShaderCompiled &shader2 = *pShaderDebugProbeOffset->GetCompiled();
+	shader2.Activate();
+	shader2.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
+	shader2.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+	
+	gi.GetUBO().Activate();
+	
+	tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 0 );
+	
+	//OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
+	
+	
+	// clean up
 	pglBindVertexArray( 0 );
 	tsmgr.DisableStage( 0 );
 }
@@ -698,6 +773,9 @@ void deoglRenderGI::pCleanUp(){
 		delete pRenderTask;
 	}
 	
+	if( pShaderDebugProbeOffset ){
+		pShaderDebugProbeOffset->RemoveUsage();
+	}
 	if( pShaderDebugProbe ){
 		pShaderDebugProbe->RemoveUsage();
 	}
@@ -712,6 +790,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderUpdateProbeIrradiance ){
 		pShaderUpdateProbeIrradiance->RemoveUsage();
+	}
+	if( pShaderMoveProbes ){
+		pShaderMoveProbes->RemoveUsage();
 	}
 	if( pShaderUpdateProbeDistance ){
 		pShaderUpdateProbeDistance->RemoveUsage();

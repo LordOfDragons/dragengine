@@ -66,7 +66,7 @@ pDistanceMapSize( 16 ),
 pMaxProbeDistance( 4.0f ),
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.9f ), // 0.98 (paper)
-pNormalBias( 0.25f ),
+pNormalBias( 0.05f ), //0.25f ),
 pEnergyPreservation( 0.85f ),
 
 pSizeTexIrradiance( pIrradianceMapSize ),
@@ -89,8 +89,10 @@ pWeightedProbeBinClamp( pWeightedProbeBinCount - 1 ),
 pWeightedProbeBinProbeCounts( NULL ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
+pTexProbeOffset( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
+pFBOProbeOffset( renderThread, false ),
 pClearMaps( true )
 {
 	try{
@@ -239,6 +241,15 @@ void deoglGIState::PrepareUBOState() const{
 		*/
 		ubo.SetParameterDataInt( deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow() );
 		ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
+		
+		// move probes. probe can move at most 50% inside the grid acording to the paper.
+		// to be on the safe side use 49%. the minimum distance to the surface is set to
+		// 35% of the smallest spacing. this is rather random value with the aim to
+		// increase the visible surface captured by probes but without approaching the
+		// maximum offset too much.
+		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f );
+		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
+			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.35f );
 		
 		// ray direction
 // #define GI_USE_RANDOM_DIRECTION 1
@@ -542,7 +553,8 @@ void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 }
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
-	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture() && ! pClearMaps ){
+	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
+	&& pTexProbeOffset.GetTexture() && ! pClearMaps ){
 		return;
 	}
 	
@@ -581,6 +593,22 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pFBOProbeDistance.Verify();
 	}
 	
+	if( ! pTexProbeOffset.GetTexture() ){
+		const int width = pProbeCount.x * pProbeCount.y;
+		const int height = pProbeCount.z;
+		
+		pTexProbeOffset.SetFBOFormat( 3, true );
+		pTexProbeOffset.SetSize( width, height );
+		pTexProbeOffset.CreateTexture();
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
+		pFBOProbeOffset.DetachAllImages();
+		pFBOProbeOffset.AttachColorTexture( 0, &pTexProbeOffset );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOProbeOffset.Verify();
+	}
+	
 	if( pClearMaps ){
 		OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -592,6 +620,10 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
 		const GLfloat clearDistance[ 4 ] = { 4.0f, 4.0f, 4.0f, 16.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
+		const GLfloat clearOffset[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOffset[ 0 ] ) );
 	}
 	
 	pRenderThread.GetFramebuffer().Activate( oldfbo );

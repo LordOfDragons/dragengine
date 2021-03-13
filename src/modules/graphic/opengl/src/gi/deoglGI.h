@@ -63,6 +63,8 @@ public:
 		eupFieldOrigin, // vec3
 		eupMaterialMapsPerRow, // int
 		eupMaterialMapSize, // int
+		eupMoveMaxOffset, // vec3
+		eupMoveMinDistToSurface, // float
 		eupProbeIndex, // ivec4[]: group of 4 probes to trace
 		eupProbePosition, // vec3[]: probe position and ray origin
 		eupRayDirection // vec3[]: ray direction

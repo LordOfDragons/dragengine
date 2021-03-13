@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Debug Probe Offset</name>
+	
+	<version>130</version>
+	
+	<texture name='texGIOffset' target='0'/>
+	
+	<parameter name='pMatrixMVP'/> <!-- 0 -->
+	<parameter name='pGIGridCoordShift'/> <!-- 1 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/debugProbeOffset.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/debugProbeOffset.glsl</sourceCode>
+</shader>

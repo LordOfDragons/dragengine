@@ -22,6 +22,9 @@ UBOLAYOUT uniform GIParameters{
 	int pGIMaterialMapsPerRow;
 	int pGIMaterialMapSize;
 	
+	vec3 pGIMoveMaxOffset;
+	float pGIMoveMinDistToSurface;
+	
 	ivec4 pGIProbeIndex[ GI_PROBE_INDEX_COUNT ];
 	
 	vec4 pGIProbePosition[ GI_PROBE_COUNT ]; // position(xyz), blendFactor(w)

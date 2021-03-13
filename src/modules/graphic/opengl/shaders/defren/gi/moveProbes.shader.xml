@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Move Probes</name>
+	
+	<version>130</version>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	
+	<uniformBlock name='GIParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outOffset' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/moveProbes.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/moveProbes.glsl</sourceCode>
+</shader>

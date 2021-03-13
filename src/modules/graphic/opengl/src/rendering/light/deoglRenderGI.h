@@ -44,8 +44,10 @@ private:
 	deoglShaderProgram *pShaderTraceRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
+	deoglShaderProgram *pShaderMoveProbes;
 	deoglShaderProgram *pShaderLight;
 	deoglShaderProgram *pShaderDebugProbe;
+	deoglShaderProgram *pShaderDebugProbeOffset;
 	
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;
@@ -100,6 +102,9 @@ public:
 	
 	/** \brief Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
+	
+	/** \brief Move probes. */
+	void MoveProbes( deoglRenderPlan &plan );
 	
 	/** \brief Render light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid );

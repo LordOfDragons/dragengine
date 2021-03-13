@@ -102,8 +102,10 @@ private:
 	
 	deoglTexture pTexProbeIrradiance;
 	deoglTexture pTexProbeDistance;
+	deoglTexture pTexProbeOffset;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
+	deoglFramebuffer pFBOProbeOffset;
 	bool pClearMaps;
 	
 	
@@ -220,11 +222,18 @@ public:
 	inline deoglTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
 	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
+	/** \brief Probe offset texture. */
+	inline deoglTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
+	inline const deoglTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
+	
 	/** \brief Probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
 	
 	/** \brief Probe fbo distance. */
 	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
+	
+	/** \brief Probe offset fbo. */
+	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
 	/** \brief Update. */
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
