@@ -365,11 +365,14 @@ bool rayCastInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, 
 					if( meshResult.distance < result.distance ){
 						// transform hit normal back. this requires the following matrix:
 						//    matNor = transpose( inverse( mat3( matrix ) ) )
-						// we have inverse(mat3(matrix)) already and the transpose we can also
-						// skip by changing order
+						// we have invMatrix which is inverse(matrix) but without transpose.
+						// so invMatrix is actually equal to transpose(inverse(matrix)).
+						// this is neat since now mat3(invMatrix) is actually matNor.
+						// since the transpose cancelled out it is not required to reverse
+						// the operation order to get the transpose
 						result.distance = meshResult.distance;
 						result.face = meshResult.face;
-						result.normal = normalize( meshResult.normal * mat3( invMatrix ) );
+						result.normal = normalize( mat3( invMatrix ) * meshResult.normal );
 						result.tc = meshResult.tc;
 						result.material = meshResult.material;
 						result.materialMapIndex = meshResult.materialMapIndex;
