@@ -33,6 +33,7 @@ class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglTexture;
 class deoglRTRenderers;
+class deoglRenderPlanMasked;
 
 
 
@@ -44,8 +45,10 @@ public:
 	struct sShadowDepthMaps{
 		deoglTexture *shadow1Solid;
 		deoglTexture *shadow1Transp;
+		deoglTexture *shadow1TranspColor;
 		deoglTexture *shadow2Solid;
 		deoglTexture *shadow2Transp;
+		deoglTexture *shadow2TranspColor;
 		deoglTexture *shadow1Ambient;
 		deoglTexture *shadow2Ambient;
 		sShadowDepthMaps();
@@ -108,10 +111,15 @@ public:
 	void CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLight &light );
 	
 	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
 	/** \brief Render light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light );
+	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+		deoglRLight &light );
+	
+	/** \brief Activate textures for lighting. */
+	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadow maps. */
 	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,

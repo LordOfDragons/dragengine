@@ -923,12 +923,12 @@ deoglLightShaderConfig &config ){
 	
 	config.Reset();
 	
-	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
-	
 	switch( shaderType ){
 	case estLumSolid1:
 	case estLumSolid1NoAmbient:
 	case estLumSolid2:
+	case estGIRaySolid1:
+	case estGIRaySolid2:
 		break;
 		
 	default:
@@ -1059,7 +1059,6 @@ deoglLightShaderConfig &config ){
 		
 	case estSolid1:
 	case estLumSolid1:
-	case estGIRaySolid1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Ambient( true );
 		break;
@@ -1082,7 +1081,6 @@ deoglLightShaderConfig &config ){
 		
 	case estSolid2:
 	case estLumSolid2:
-	case estGIRaySolid2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadow1Ambient( true );
@@ -1106,6 +1104,15 @@ deoglLightShaderConfig &config ){
 		config.SetTextureShadow2Ambient( true );
 		break;
 		
+	case estGIRaySolid1:
+		config.SetTextureShadow1Solid( true );
+		break;
+		
+	case estGIRaySolid2:
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow2Solid( true );
+		break;
+		
 	default:
 		return false;
 	}
@@ -1115,10 +1122,12 @@ deoglLightShaderConfig &config ){
 	case estGIRaySolid1:
 	case estGIRaySolid2:
 		config.SetGIRay( true );
+		config.SetFullScreenQuad( true );
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloat );
 		break;
 		
 	default:
-		break;
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
 	}
 	
 	return true;

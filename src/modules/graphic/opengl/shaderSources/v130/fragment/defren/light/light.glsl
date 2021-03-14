@@ -925,7 +925,7 @@ void main( void ){
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow1SolidDepth, pShadow1Solid, shapos1 ) );
-				#elif defined GI_RAY
+				#elif defined GI_RAY && defined SKY_LIGHT
 					// the main shadow map array is only guaranteed to hold valid data for
 					// pixels falling into the view frustum. outside this volume data is
 					// potentially culled for performance reason. use GI shadow map instead

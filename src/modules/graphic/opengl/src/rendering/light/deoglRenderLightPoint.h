@@ -33,7 +33,7 @@ class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRTRenderers;
-
+class deoglRenderPlanMasked;
 
 
 /**
@@ -44,8 +44,10 @@ public:
 	struct sShadowDepthMaps{
 		deoglCubeMap *shadow1Solid;
 		deoglCubeMap *shadow1Transp;
+		deoglCubeMap *shadow1TranspColor;
 		deoglCubeMap *shadow2Solid;
 		deoglCubeMap *shadow2Transp;
+		deoglCubeMap *shadow2TranspColor;
 		deoglCubeMap *shadow1Ambient;
 		deoglCubeMap *shadow2Ambient;
 		
@@ -130,10 +132,14 @@ public:
 	void CalculateBoxBoundary( deoglRLight &light );
 	
 	/** \brief Renders lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
 	/** \brief Render point light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light );
+	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask, deoglRLight &light );
+	
+	/** \brief Activate textures for lighting. */
+	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadows for a point light. */
 	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,

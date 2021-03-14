@@ -25,6 +25,7 @@
 
 #include "deoglRenderLight.h"
 #include "deoglRenderLightPoint.h"
+#include "deoglRenderGI.h"
 #include "../deoglRenderGeometry.h"
 #include "../deoglRenderOcclusion.h"
 #include "../defren/deoglDeferredRendering.h"
@@ -47,6 +48,9 @@
 #include "../../extensions/deoglExtensions.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGIState.h"
 #include "../../light/deoglLightBoundaryMap.h"
 #include "../../light/deoglRLight.h"
 #include "../../light/shader/deoglLightShader.h"
@@ -594,7 +598,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRLight &light ){
 
 
 
-void deoglRenderLightPoint::RenderLights( deoglRenderPlan &plan, bool solid ){
+void deoglRenderLightPoint::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
 DEBUG_RESET_TIMER_TOTAL
 	deoglCollideList &clist = plan.GetCollideList();
 	const int lightCount = clist.GetLightCount();
@@ -616,7 +620,7 @@ DEBUG_RESET_TIMER_TOTAL
 			light.SetVisible( false );
 			
 		}else{
-			RenderLight( plan, solid, light );
+			RenderLight( plan, solid, mask, light );
 		}
 	}
 	
@@ -632,11 +636,11 @@ DEBUG_PRINT_TIMER_TOTAL
 
 
 
-void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light ){
+void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid,
+deoglRenderPlanMasked *mask, deoglRLight &light ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool useShadowCubeEncodeDepth = config.GetUseShadowCubeEncodeDepth();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
@@ -874,6 +878,13 @@ void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid, deog
 // 		// DEBUG DEBUG this should NOT be needed
 	}
 	
+	if( ! mask && solid ){
+		// disable ambient if GI is used. uses faster shader but does not prevent
+		// rendering ambient maps since they are used for more than shading
+		texAmbient1 = NULL;
+		texAmbient2 = NULL;
+	}
+	
 DEBUG_RESET_TIMER
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -952,22 +963,77 @@ DEBUG_RESET_TIMER
 	
 	UpdateLightParamBlock( *lightShader, *spbLight, plan, light );
 	
-	sShadowDepthMaps shadowDepthmaps;
-	shadowDepthmaps.shadow1Solid = texSolidDepth1;
-	shadowDepthmaps.shadow1Transp = texTranspDepth1;
-	shadowDepthmaps.shadow2Solid = texSolidDepth2;
-	shadowDepthmaps.shadow1Ambient = texAmbient1;
-	shadowDepthmaps.shadow2Ambient = texAmbient2;
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, light, shadowDepthmaps );
+	sShadowDepthMaps shadowDepthMaps;
+	shadowDepthMaps.shadow1Solid = texSolidDepth1;
+	shadowDepthMaps.shadow1Transp = texTranspDepth1;
+	shadowDepthMaps.shadow1TranspColor = texTranspColor1;
+	shadowDepthMaps.shadow2Solid = texSolidDepth2;
+	shadowDepthMaps.shadow2Transp = texTranspDepth2;
+	shadowDepthMaps.shadow2TranspColor = texTranspColor2;
+	shadowDepthMaps.shadow1Ambient = texAmbient1;
+	shadowDepthMaps.shadow2Ambient = texAmbient2;
+	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, light, shadowDepthMaps );
 	
 	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
 	spbLight->Activate();
 	spbInstance->Activate();
 	
-	// set textures
+	ActivateTextures( light, *lightShader, shadowDepthMaps );
+	
+	// render the light
+	pglBindVertexArray( light.GetLightVolume()->GetVAO() );
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
+	pglBindVertexArray( 0 );
+	
+	if( solid ){
+		DebugTimer2SampleCount( plan, *pDebugInfoSolidLight, 1, true );
+		
+	}else{
+		DebugTimer2SampleCount( plan, *pDebugInfoTransparentLight, 1, true );
+	}
+	
+	// GI rays
+	if( ! mask && solid ){
+		deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+		if( giState ){
+			RestoreFBOGIRays( *giState );
+			
+			lightShader = NULL;
+			if( useShadow ){
+				if( texSolidDepth2 ){
+					lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid2 );
+					
+				}else{
+					lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid1 );
+				}
+				
+			}else{
+				lightShader = light.GetShaderFor( deoglRLight::estGIRayNoShadow );
+			}
+			
+			if( lightShader ){
+				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+				
+				GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+				spbLight->Activate();
+				spbInstance->Activate();
+				
+				ActivateTextures( light, *lightShader, shadowDepthMaps );
+				
+				defren.RenderFSQuadVAO();
+			}
+		}
+	}
+DEBUG_PRINT_TIMER( "Render" );
+}
+
+void deoglRenderLightPoint::ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+const sShadowDepthMaps &shadowDepthMaps ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	int target;
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettColorCubemap );
+	target = shader.GetTextureTarget( deoglLightShader::ettColorCubemap );
 	if( target != -1 ){
 		deoglTexUnitConfig tuc;
 		
@@ -989,7 +1055,7 @@ DEBUG_RESET_TIMER
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettColorEquirect );
+	target = shader.GetTextureTarget( deoglLightShader::ettColorEquirect );
 	if( target != -1 ){
 		deoglTexUnitConfig tuc;
 		
@@ -1014,93 +1080,80 @@ DEBUG_RESET_TIMER
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+	target = shader.GetTextureTarget( deoglLightShader::ettNoise );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
-		if( texSolidDepth1->GetFormat()->GetIsDepth() ){
-			tsmgr.EnableCubeMap( target, *texSolidDepth1, GetSamplerShadowClampLinear() );
+		if( shadowDepthMaps.shadow1Solid->GetFormat()->GetIsDepth() ){
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Solid, GetSamplerShadowClampLinear() );
 			
 		}else{
-			tsmgr.EnableCubeMap( target, *texSolidDepth1, GetSamplerClampLinear() );
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Solid, GetSamplerClampLinear() );
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1TransparentDepth );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentDepth );
 	if( target != -1 ){
-		if( texTranspDepth1->GetFormat()->GetIsDepth() ){
-			tsmgr.EnableCubeMap( target, *texTranspDepth1, GetSamplerShadowClampLinear() );
+		if( shadowDepthMaps.shadow1Transp->GetFormat()->GetIsDepth() ){
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Transp, GetSamplerShadowClampLinear() );
 			
 		}else{
-			tsmgr.EnableCubeMap( target, *texTranspDepth1, GetSamplerClampLinear() );
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Transp, GetSamplerClampLinear() );
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1TransparentColor );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentColor );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texTranspColor1, GetSamplerClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1TranspColor, GetSamplerClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
 	if( target != -1 ){
-		if( texSolidDepth2->GetFormat()->GetIsDepth() ){
-			tsmgr.EnableCubeMap( target, *texSolidDepth2, GetSamplerShadowClampLinear() );
+		if( shadowDepthMaps.shadow2Solid->GetFormat()->GetIsDepth() ){
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Solid, GetSamplerShadowClampLinear() );
 			
 		}else{
-			tsmgr.EnableCubeMap( target, *texSolidDepth2, GetSamplerClampLinear() );
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Solid, GetSamplerClampLinear() );
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2TransparentDepth );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentDepth );
 	if( target != -1 ){
-		if( texTranspDepth2->GetFormat()->GetIsDepth() ){
-			tsmgr.EnableCubeMap( target, *texTranspDepth2, GetSamplerShadowClampLinear() );
+		if( shadowDepthMaps.shadow2Transp->GetFormat()->GetIsDepth() ){
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Transp, GetSamplerShadowClampLinear() );
 			
 		}else{
-			tsmgr.EnableCubeMap( target, *texTranspDepth2, GetSamplerClampLinear() );
+			tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Transp, GetSamplerClampLinear() );
 		}
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2TransparentColor );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentColor );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texTranspColor2, GetSamplerClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2TranspColor, GetSamplerClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1Ambient );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow1Ambient );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texAmbient1, GetSamplerShadowClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Ambient, GetSamplerShadowClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2Ambient );
+	target = shader.GetTextureTarget( deoglLightShader::ettShadow2Ambient );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texAmbient2, GetSamplerShadowClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Ambient, GetSamplerShadowClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
+	target = shader.GetTextureTarget( deoglLightShader::ettLightDepth1 );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texSolidDepth1, GetSamplerClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Solid, GetSamplerClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth2 );
+	target = shader.GetTextureTarget( deoglLightShader::ettLightDepth2 );
 	if( target != -1 ){
-		tsmgr.EnableCubeMap( target, *texSolidDepth2, GetSamplerClampLinear() );
+		tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Solid, GetSamplerClampLinear() );
 	}
-	
-	// render the light
-	pglBindVertexArray( light.GetLightVolume()->GetVAO() );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
-	pglBindVertexArray( 0 );
-	
-	if( solid ){
-		DebugTimer2SampleCount( plan, *pDebugInfoSolidLight, 1, true );
-		
-	}else{
-		DebugTimer2SampleCount( plan, *pDebugInfoTransparentLight, 1, true );
-	}
-DEBUG_PRINT_TIMER( "Render" );
 }
 
 void deoglRenderLightPoint::RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
@@ -1988,6 +2041,8 @@ deoglRenderPlan &plan, deoglRLight &light ){
 	// set values
 	paramBlock.MapBuffer();
 	try{
+		const bool hasGIState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) != NULL;
+		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
 			paramBlock.SetParameterDataVec3( target, lightColor * light.GetIntensity() );
@@ -2000,7 +2055,12 @@ deoglRenderPlan &plan, deoglRLight &light ){
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+			if( hasGIState ){
+				paramBlock.SetParameterDataFloat( target, 0.0f );
+				
+			}else{
+				paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+			}
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );

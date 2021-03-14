@@ -330,8 +330,8 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 	}
 	
 	pRenderLightSky->RenderLights( plan, solid, mask );
-	pRenderLightPoint->RenderLights( plan, solid );
-	pRenderLightSpot->RenderLights( plan, solid );
+	pRenderLightPoint->RenderLights( plan, solid, mask );
+	pRenderLightSpot->RenderLights( plan, solid, mask );
 	
 	if( plan.GetGIState() ){
 		if( solid && ! mask ){
@@ -672,7 +672,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// global illumination
-		const deoglGIState * const giState = plan.GetGIState();
+		const deoglGIState * const giState = pRenderGI->GetRenderGIState( plan );
 		if( giState ){
 			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetPosition() )
 				* plan.GetCameraMatrix() );

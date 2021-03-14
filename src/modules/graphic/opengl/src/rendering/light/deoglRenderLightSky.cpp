@@ -1160,7 +1160,8 @@ int shadowMapSize, int passCount ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	
 	// set values
-	decMatrix matrix[ 4 ], giMatrix;
+	decMatrix matrix[ 4 ], giMatrixShadow;
+	deoglGIState * const giState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
 	float layerBorder[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float scaleZ[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	
@@ -1204,8 +1205,8 @@ int shadowMapSize, int passCount ){
 		}
 		
 		// only properly set up if plan has GI
-		if( GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) ){
-			giMatrix = planSkyLight.GetGIShadowLayer().matrix;
+		if( giState ){
+			giMatrixShadow = planSkyLight.GetGIShadowLayer().matrix;
 		}
 	}
 	
@@ -1264,9 +1265,10 @@ int shadowMapSize, int passCount ){
 			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
 		}
 		
+		// global illumination
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, giMatrix );
+			paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
 		}
 		
 	}catch( const deException & ){
