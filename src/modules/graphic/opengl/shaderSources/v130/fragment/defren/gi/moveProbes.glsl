@@ -85,8 +85,11 @@ void main( void ){
 		outOffset /= float( countOffsets );
 		
 		// averaging the offsets has the tendency to shorten the offset if multiple
-		// rays contribute. reduce this effect by enlaring the offset with larger counts
-		outOffset *= 1.0 + 0.05 * ( countOffsets - 1 );
+		// rays contribute. reduce this effect by enlaring the offset with larger
+		// counts. a base scaling is always applied to reduce the chance of moving
+		// the probe again in the future
+		//outOffset *= 1.0 + 0.05 * ( countOffsets - 1 );
+		outOffset *= 1.0 + 0.05 * countOffsets;
 	}
 	
 	outOffset = clamp( outOffset, -pGIMoveMaxOffset, pGIMoveMaxOffset );
