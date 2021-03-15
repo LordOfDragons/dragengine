@@ -31,6 +31,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
+class deoglRenderPlan;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRWorld;
@@ -264,16 +265,16 @@ public:
 	void FindComponents( deoglRWorld &world, const decDVector &position, const decVector &detectionBox );
 	
 	/** \brief Add static components. */
-	void AddStaticComponents( const decDVector &position );
+	void AddStaticComponents( deoglRenderPlan &plan, const decDVector &position );
 	
 	/** \brief Add static component. */
-	void AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD &lod );
+	void AddStaticComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
 	
 	/** \brief Add dynamic components. */
-	void AddDynamicComponents( const decDVector &position );
+	void AddDynamicComponents( deoglRenderPlan &plan, const decDVector &position );
 	
 	/** \brief Add dynamic component. */
-	void AddDynamicComponent( const decMatrix &matrix, deoglRComponentLOD &lod );
+	void AddDynamicComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
 	
 	/** \brief Build BVH. */
 	void BuildBVH();

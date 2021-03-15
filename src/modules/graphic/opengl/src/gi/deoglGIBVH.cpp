@@ -121,7 +121,7 @@ const decVector &detectionBox ){
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
 }
 
-void deoglGIBVH::AddStaticComponents( const decDVector &position ){
+void deoglGIBVH::AddStaticComponents( deoglRenderPlan &plan, const decDVector &position ){
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
 	const int count = pCollideList.GetComponentCount();
 	int i;
@@ -145,11 +145,14 @@ void deoglGIBVH::AddStaticComponents( const decDVector &position ){
 			continue; // catches more cases than GetRenderMode() can catch
 		}
 		//component.PrepareRayTraceField();
-		AddStaticComponent( ( component.GetMatrix() * matrix ).ToMatrix(), lod );
+		AddStaticComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), lod );
 	}
 }
 
-void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD &lod ){
+void deoglGIBVH::AddStaticComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
+	// update renderables in case this component is not visible
+	lod.GetComponent().UpdateRenderables( plan );
+	
 	// find model
 	int indexModel;
 	for( indexModel=0; indexModel<pModelCount; indexModel++ ){
@@ -225,7 +228,7 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 	pAddComponent( indexModel, indexMaterial, matrix );
 }
 
-void deoglGIBVH::AddDynamicComponents( const decDVector &position ){
+void deoglGIBVH::AddDynamicComponents( deoglRenderPlan &plan, const decDVector &position ){
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
 	const int count = pCollideList.GetComponentCount();
 	int i;
@@ -249,11 +252,14 @@ void deoglGIBVH::AddDynamicComponents( const decDVector &position ){
 			continue; // catches more cases than GetRenderMode() can catch
 		}
 		//component.PrepareRayTraceField();
-		AddDynamicComponent( ( component.GetMatrix() * matrix ).ToMatrix(), lod );
+		AddDynamicComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), lod );
 	}
 }
 
-void deoglGIBVH::AddDynamicComponent( const decMatrix &matrix, deoglRComponentLOD &lod ){
+void deoglGIBVH::AddDynamicComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
+	// update renderables in case this component is not visible
+	lod.GetComponent().UpdateRenderables( plan );
+	
 	// prepare BVH
 	lod.PrepareBVH();
 	if( ! lod.GetBVH()->GetRootNode() ){
