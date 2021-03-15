@@ -109,18 +109,16 @@ meUObjectTextureSetSkin::~meUObjectTextureSetSkin(){
 ///////////////
 
 void meUObjectTextureSetSkin::Undo(){
-	int t;
-	
-	for( t=0; t<pTextureCount; t++ ){
-		pTextures[ t ].texture->SetSkinPath( pTextures[ t ].oldskin.GetString() );
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ].texture->SetSkinPath( pTextures[ i ].oldskin );
 	}
 }
 
 void meUObjectTextureSetSkin::Redo(){
-	int t;
-	
-	for( t=0; t<pTextureCount; t++ ){
-		pTextures[ t ].texture->SetSkinPath( pTextures[ t ].newskin.GetString() );
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ].texture->SetSkinPath( pTextures[ i ].newskin );
 	}
 }
 
@@ -135,7 +133,6 @@ void meUObjectTextureSetSkin::pCleanUp(){
 			pTextureCount--;
 			pTextures[ pTextureCount ].texture->FreeReference();
 		}
-		
 		delete [] pTextures;
 	}
 }

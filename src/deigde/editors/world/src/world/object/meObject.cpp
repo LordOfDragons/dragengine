@@ -1362,7 +1362,7 @@ void meObject::UpdateComponentTextures(){
 	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = component->GetTextureAt( i );
-		const char * const textureName = engModel->GetTextureAt( i )->GetName();
+		const decString &textureName = engModel->GetTextureAt( i )->GetName();
 		meObjectTexture * const texture = GetTextureNamed( textureName );
 		
 		deSkin *useSkin = componentTexture.GetSkin();
