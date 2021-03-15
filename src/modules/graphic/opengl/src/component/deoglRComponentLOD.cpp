@@ -48,6 +48,8 @@
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../utils/bvh/deoglBVH.h"
+#include "../utils/bvh/deoglBVHNode.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -88,8 +90,6 @@ pVBOPointCount( 0 ),
 pVBOPointSize( 0 ),
 
 pVBO( 0 ),
-pSolidFaceCount( 0 ),
-pFaceCount( 0 ),
 pVAO( NULL ),
 pVBOLayout( NULL ),
 pVBOBlock( NULL ),
@@ -119,7 +119,9 @@ pTBOWeightMatrices( 0 ),
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
-pFBOCalcNormalTangent( NULL )
+pFBOCalcNormalTangent( NULL ),
+
+pBVH( NULL )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentLOD );
 }
@@ -703,6 +705,8 @@ void deoglRComponentLOD::PrepareWeights(){
 			if( weightsCount > 0 ){
 				weights = new oglMatrix3x4[ weightsCount ];
 			}
+			// NOTE weights count can be 0 if a higher level LOD has all weightless vertices.
+			//      this case can be optimized to using static rendering
 		}
 		
 		if( pWeights ){
@@ -756,7 +760,10 @@ void deoglRComponentLOD::PreparePositions(){
 	}
 	
 	if( pDirtyDataPositions ){
-		if( pWeights && pPositions && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
+		// pWeights can not be checked to be non-NULL since higher level LODs can contain
+		// all weightless vertices although lower level LODs have weighted vertices. in this
+		// situation all vertices are copied non-transformed
+		if( pPositions && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 			
 			#ifdef SPECIAL_DEBUG_ON
@@ -869,6 +876,66 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 
 
 
+void deoglRComponentLOD::PrepareBVH(){
+	// TODO do not update if not dirty
+	
+	// calculate positions. we have to do this on the CPU. for this reason updating the
+	// BVH should be done always on the highest LOD level to reduce work load
+	PreparePositions();
+	
+	const deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
+	const oglModelVertex * const vertices = modelLOD.GetVertices();
+	const deoglModelFace * const faces = modelLOD.GetFaces();
+	const int faceCount = modelLOD.GetFaceCount();
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	
+	if( faceCount > 0 ){
+		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+		int i;
+		
+		for( i=0; i<faceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			
+			const deoglModelFace &face = faces[ i ];
+			const oglVector &v1 = pPositions[ vertices[ face.GetVertex1() ].position ];
+			const oglVector &v2 = pPositions[ vertices[ face.GetVertex2() ].position ];
+			const oglVector &v3 = pPositions[ vertices[ face.GetVertex3() ].position ];
+			
+			primitive.minExtend.x = decMath::min( v1.x, v2.x, v3.x );
+			primitive.minExtend.y = decMath::min( v1.y, v2.y, v3.y );
+			primitive.minExtend.z = decMath::min( v1.z, v2.z, v3.z );
+			primitive.maxExtend.x = decMath::max( v1.x, v2.x, v3.x );
+			primitive.maxExtend.y = decMath::max( v1.y, v2.y, v3.y );
+			primitive.maxExtend.z = decMath::max( v1.z, v2.z, v3.z );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		if( ! pBVH ){
+			pBVH = new deoglBVH;
+		}
+		pBVH->Build( primitives, faceCount, 8 );
+		
+	}catch( const deException & ){
+		if( pBVH ){
+			delete pBVH;
+			pBVH = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -926,6 +993,9 @@ public:
 };
 
 void deoglRComponentLOD::pCleanUp(){
+	if( pBVH ){
+		delete pBVH;
+	}
 	if( pVBOLayout ){
 		delete pVBOLayout;
 	}
@@ -1323,6 +1393,19 @@ void deoglRComponentLOD::pTransformVertices( const deoglModelLOD &modelLOD ){
 	const oglModelPosition * const positions = modelLOD.GetPositions();
 	const int positionCount = modelLOD.GetPositionCount();
 	int i;
+	
+	if( ! pWeights ){
+		// happens if higher LOD has only weightless vertices while lower LOD has weighted
+		// vertices. this extra check avoids potential bugs if pWeights is incorrectly NULL
+		for( i=0; i<positionCount; i++ ){
+			const decVector &orgpos = positions[ i ].position;
+			oglVector &trpos = pPositions[ i ];
+			trpos.x = orgpos.x;
+			trpos.y = orgpos.y;
+			trpos.z = orgpos.z;
+		}
+		return;
+	}
 	
 	for( i=0; i<positionCount; i++ ){
 		const oglModelPosition &modelPosition = positions[ i ];

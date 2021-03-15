@@ -290,6 +290,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	bvh.Clear();
 	bvh.FindComponents( *plan.GetWorld(), giState->GetPosition(), giState->GetDetectionBox() );
 	bvh.AddStaticComponents( giState->GetPosition() );
+	bvh.AddDynamicComponents( giState->GetPosition() );
 	bvh.BuildBVH();
 	//bvh.DebugPrint( giState.GetPosition() );
 	

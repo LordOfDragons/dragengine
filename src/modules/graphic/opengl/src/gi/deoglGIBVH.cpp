@@ -131,16 +131,19 @@ void deoglGIBVH::AddStaticComponents( const decDVector &position ){
 		if( ! component.GetModel() || component.GetLODCount() == 0 ){
 			continue;
 		}
-		if( component.GetRenderMode() != deoglRComponent::ermStatic ){
+		/*if( component.GetRenderMode() != deoglRComponent::ermStatic ){
 			continue;
-		}
+		}*/
 		
-		const deoglRModel::sExtends &extends = component.GetModel()->GetWeightlessExtends();
+		const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
 		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
 			continue; // skip small models to improve performance
 		}
 		
 		deoglRComponentLOD &lod = component.GetLODAt( component.GetLODCount() - 1 );
+		if( lod.GetModelLOD()->GetWeightsCount() > 0 ){
+			continue; // catches more cases than GetRenderMode() can catch
+		}
 		//component.PrepareRayTraceField();
 		AddStaticComponent( ( component.GetMatrix() * matrix ).ToMatrix(), lod );
 	}
@@ -150,7 +153,9 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 	// find model
 	int indexModel;
 	for( indexModel=0; indexModel<pModelCount; indexModel++ ){
-		if( pModels[ indexModel ].component == &lod ){
+		if( pModels[ indexModel ].component == &lod
+		&& pModels[ indexModel ].component->GetModelLOD()->GetWeightsCount() == 0 ){
+		//&& pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
 			break;
 		}
 	}
@@ -220,6 +225,98 @@ void deoglGIBVH::AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD
 	pAddComponent( indexModel, indexMaterial, matrix );
 }
 
+void deoglGIBVH::AddDynamicComponents( const decDVector &position ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
+		if( ! component.GetModel() || component.GetLODCount() == 0 ){
+			continue;
+		}
+		/*if( component.GetRenderMode() != deoglRComponent::ermDynamic ){
+			continue;
+		}*/
+		
+		const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
+		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
+			continue; // skip small models to improve performance
+		}
+		
+		deoglRComponentLOD &lod = component.GetLODAt( component.GetLODCount() - 1 );
+		if( lod.GetModelLOD()->GetWeightsCount() == 0 ){
+			continue; // catches more cases than GetRenderMode() can catch
+		}
+		//component.PrepareRayTraceField();
+		AddDynamicComponent( ( component.GetMatrix() * matrix ).ToMatrix(), lod );
+	}
+}
+
+void deoglGIBVH::AddDynamicComponent( const decMatrix &matrix, deoglRComponentLOD &lod ){
+	// prepare BVH
+	lod.PrepareBVH();
+	if( ! lod.GetBVH()->GetRootNode() ){
+		return; // empty model
+	}
+	
+	// add model to list of encountered models
+	const int indexModel = pModelCount;
+	sModel &bvhModel = pAddModel();
+	bvhModel.component = &lod;
+	
+	// add vertices to TBO in mesh order
+	deoglModelLOD &modelLOD = *lod.GetModelLOD();
+			modelLOD.PrepareBVH();
+	const oglVector * const positions = lod.GetPositions();
+	const int positionPoint = modelLOD.GetPositionCount();
+	int i;
+	
+	for( i=0; i<positionPoint; i++ ){
+		const oglVector &position = positions[ i ];
+		pTBOVertex.AddVec4( position.x, position.y, position.z, 0.0f );
+	}
+	
+	// add faces to TBOs using primitive mapping from BVH
+	const deoglBVH &bvh = *lod.GetBVH();
+	const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
+	const oglModelVertex * const vertices = modelLOD.GetVertices();
+	const deoglModelFace * const faces = modelLOD.GetFaces();
+	const int * const primitives = bvh.GetPrimitives();
+	const int primitiveCount = bvh.GetPrimitiveCount();
+	
+	for( i=0; i<primitiveCount; i++ ){
+		const deoglModelFace &face = faces[ primitives[ i ] ];
+		const oglModelVertex &v1 = vertices[ face.GetVertex1() ];
+		const oglModelVertex &v2 = vertices[ face.GetVertex2() ];
+		const oglModelVertex &v3 = vertices[ face.GetVertex3() ];
+		
+		pTBOFace.AddVec4( bvhModel.indexVertices + v1.position, bvhModel.indexVertices + v2.position,
+			bvhModel.indexVertices + v3.position, face.GetTexture() );
+		
+		pTBOTexCoord.AddVec2( texCoords[ v1.texcoord ] );
+		pTBOTexCoord.AddVec2( texCoords[ v2.texcoord ] );
+		pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
+	}
+	
+	pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+	
+	// add materials
+	deoglAddToRenderTaskGIMaterial &addToRenderTask =
+		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
+	deoglRComponent &component = lod.GetComponent();
+	const int textureCount = component.GetTextureCount();
+	const int indexMaterial = pTBOMaterial.GetPixelCount();
+	
+	for( i=0; i<textureCount; i++ ){
+		const deoglRComponentTexture &texture = component.GetTextureAt( i );
+		pAddMaterial( texture, addToRenderTask.AddComponentTexture( lod, i ) );
+	}
+	
+	// add component
+	pAddComponent( indexModel, indexMaterial, matrix );
+}
+
 void deoglGIBVH::BuildBVH(){
 	// build instance bvh
 	if( pComponentCount > pPrimitiveSize ){
@@ -239,7 +336,13 @@ void deoglGIBVH::BuildBVH(){
 		const deoglBVHNode *rootNode = NULL;
 		
 		if( model.component != NULL ){
-			rootNode = model.component->GetModelLOD()->GetBVH()->GetRootNode();
+			//if( model.component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
+			if( model.component->GetModelLOD()->GetWeightsCount() == 0 ){
+				rootNode = model.component->GetModelLOD()->GetBVH()->GetRootNode();
+				
+			}else{
+				rootNode = model.component->GetBVH()->GetRootNode();
+			}
 			
 		}else{
 			DETHROW( deeInvalidParam );

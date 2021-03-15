@@ -269,6 +269,12 @@ public:
 	/** \brief Add static component. */
 	void AddStaticComponent( const decMatrix &matrix, deoglRComponentLOD &lod );
 	
+	/** \brief Add dynamic components. */
+	void AddDynamicComponents( const decDVector &position );
+	
+	/** \brief Add dynamic component. */
+	void AddDynamicComponent( const decMatrix &matrix, deoglRComponentLOD &lod );
+	
 	/** \brief Build BVH. */
 	void BuildBVH();
 	
