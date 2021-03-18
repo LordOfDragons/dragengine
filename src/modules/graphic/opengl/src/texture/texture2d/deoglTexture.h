@@ -50,8 +50,7 @@ public:
 	
 	GLuint pTexture;
 	
-	int pWidth;
-	int pHeight;
+	decPoint pSize;
 	const deoglCapsTextureFormat *pFormat;
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
@@ -83,13 +82,19 @@ public:
 	
 	
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{ return pSize.x; }
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{ return pSize.y; }
+	
+	/** \brief Size. */
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size in pixels destroying opengl texture if present. */
 	void SetSize( int width, int height );
+	
+	/** \brief Set size in pixels destroying opengl texture if present. */
+	void SetSize( const decPoint &size );
 	
 	
 	

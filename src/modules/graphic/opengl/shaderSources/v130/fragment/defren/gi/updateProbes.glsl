@@ -68,30 +68,23 @@ void main( void ){
 	
 	// the texture coordinates have to be shifted to sample at the center of the
 	// pixel. for this reason the 0.5 shift is used together with mapProbeSize.
-	vec3 texelDirection = octahedralDecode( ( vec2( tc ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
+	vec3 texelDirection = octahedralDecode(
+		( vec2( tc ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1.0 ) );
 	
 	float weight, sumWeight = 0.0;
 	int i;
 	
 	outValue = vec4( 0.0 );
 	
+	#ifdef MAP_DISTANCE
+	int rayCount = 0, rayBackCount = 0;
+	//int rayFrontCount = 0, rayMissCount = 0;
+	#endif
+	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
 		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
 		bool rayMisses = rayPosition.w > 9999.0;
-		
-		// if ray misses hit distance is set to 10000. in this case max probe distance
-		// has to be used. this works with the min code below so no extra code required
-		#ifdef MAP_DISTANCE
-			// here we deviate from the paper. ignoring misses to influence the result
-			// removes the most glaring light leaks
-			if( rayMisses ){
-				continue;
-			}
-			
-			// back to paper here
-			float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
-		#endif
 		
 		// for dynamic ray-tracing only the pRayDirection[i] can be used. by using though
 		// also the ray cast fields this is not possible anymore since the rays deviate
@@ -103,24 +96,48 @@ void main( void ){
 			weight = pow( weight, pGIDepthSharpness );
 		#endif
 		
-		if( weight >= epsilon ){
-			#ifdef MAP_IRRADIANCE
-				// rayMisses is required since ray normal is only valid if ray hits something
-				if( rayMisses || dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
-					// ray misses or hits front facing geometry. ray misses are handled
-					// the same since sky lighting is applied to missing rays too
-					outValue.rgb += texelFetch( texLight, rayTC, 0 ).rgb * weight;
-				}
-			#else
-				// ray misses is already handled above so only front facing check here
-				if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
-					// ray hits front facing geometry
-					outValue.xy += rayProbeDistance * weight;
-					outValue.y += rayProbeDistance * rayProbeDistance * weight;
-				}
-			#endif
-			sumWeight += weight;
+		if( weight < epsilon ){
+			continue;
 		}
+		
+		#ifdef MAP_DISTANCE
+			rayCount++;
+			
+			// here we deviate from the paper. ignoring misses to influence the result
+			// removes the most glaring light leaks
+			if( rayMisses ){
+				//rayMissCount++;
+				continue;
+			}
+		#endif
+		
+		sumWeight += weight;
+		
+		#ifdef MAP_IRRADIANCE
+			// rayMisses is required since ray normal is only valid if ray hits something
+			if( rayMisses || dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+				// ray misses or hits front facing geometry. ray misses are handled
+				// the same since sky lighting is applied to missing rays too
+				outValue.rgb += texelFetch( texLight, rayTC, 0 ).rgb * weight;
+			}
+			
+		#else
+			// ray misses is already handled above so only front facing check here
+			if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+				// ray hits front facing geometry
+				//rayFrontCount++;
+				
+				// if ray misses hit distance is set to 10000. in this case max probe distance
+				// has to be used. this works with the min code below so no extra code required
+				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
+				
+				outValue.x += rayProbeDistance * weight;
+				outValue.y += rayProbeDistance * rayProbeDistance * weight;
+				
+			}else{
+				rayBackCount++;
+			}
+		#endif
 	}
 	
 	if( sumWeight > epsilon ){
@@ -128,6 +145,29 @@ void main( void ){
 			outValue.rgb /= sumWeight;
 		#else
 			outValue.xy /= sumWeight;
+			
+			// this is taken from the paper code update probe offset. there it is used
+			// to disable the probe (although I have no clue how this "disable" works).
+			// the idea is that if at least 35% of all probe rays hit a backface the
+			// probe is likely outside geometry.
+			// 
+			// in this case here we want to counter the effect of probes outside
+			// geometry grazing room corners. in this situation some rays hit back faces
+			// of the room while some fly close by the corner and hit nothing. in this
+			// situation mean/meanSquared are not 0 and light leaks in.
+			// 
+			// the 35% rule can though be also applied to only the rays affecting this
+			// probe map texel. this is not as optimal as applying the rule to all rays
+			// but it helps to remedy out such cases. the rule can not remedy all such
+			// cases especially if front faces are visible. but such situations should
+			// usually not happen since geometry outside rooms or in walls should not
+			// see front faces at all
+			//
+			// this extra check increases the shader run cost roughly by 50%. for example
+			// with 256 rays the cost raises from 80ys to 120ys in average
+			if( float( rayBackCount ) / float( rayCount ) > 0.35 ){
+				outValue.xy = vec2( 0.0 );
+			}
 		#endif
 		
 	#ifdef MAP_DISTANCE
@@ -140,4 +180,5 @@ void main( void ){
 	}
 	
 	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
+// 		outValue.a = 1;
 }

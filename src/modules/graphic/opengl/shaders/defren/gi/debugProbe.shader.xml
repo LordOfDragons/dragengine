@@ -6,6 +6,7 @@
 	
 	<texture name='texGIIrradiance' target='0'/>
 	<texture name='texGIDistance' target='1'/>
+	<texture name='texGIProbeOffset' target='2'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->
 	<parameter name='pGIGridCoordShift'/> <!-- 1 -->

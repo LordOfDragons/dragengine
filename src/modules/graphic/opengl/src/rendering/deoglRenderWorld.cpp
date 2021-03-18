@@ -510,6 +510,10 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );
 		}
 		
+		if( ! mask ){
+			renderers.GetLight().GetRenderGI().MoveProbes( plan );
+		}
+		
 		// effects
 		RenderEffects( plan );
 		DebugTimer2Sample( plan, *pDebugInfo.infoPostProcessing, true );

@@ -17,7 +17,11 @@ UBOLAYOUT uniform GIParameters{
 	float pGIMaxProbeDistance;
 	float pGIDepthSharpness;
 	
+	vec3 pGIGridOrigin;
+	ivec3 pGIGridCoordUnshift;
+	
 	vec3 pGIFieldOrigin;
+	float pGIBlendUpdateProbe;
 	
 	int pGIMaterialMapsPerRow;
 	int pGIMaterialMapSize;

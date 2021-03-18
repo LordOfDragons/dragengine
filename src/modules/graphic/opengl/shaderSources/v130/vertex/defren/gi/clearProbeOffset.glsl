@@ -7,8 +7,6 @@ precision highp int;
 in vec3 inPosition;
 
 out int vInstanceID;
-out ivec3 vProbeCoord;
-
 
 ivec3 probeIndexToGridCoord( in int index ){
 	int stride = pGIGridProbeCount.x * pGIGridProbeCount.z;
@@ -19,9 +17,9 @@ void main( void ){
 	vInstanceID = gl_InstanceID;
 	
 	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry
-	vProbeCoord = probeIndexToGridCoord( probeIndex );
+	ivec3 probeCoord = probeIndexToGridCoord( probeIndex );
 	
-	ivec2 texCoord = ivec2( pGIGridProbeCount.x * vProbeCoord.y + vProbeCoord.x, vProbeCoord.z );
+	ivec2 texCoord = ivec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z );
 	
 	vec2 scale = vec2( 1.0 ) / vec2( pGIGridProbeCount.x * pGIGridProbeCount.y, pGIGridProbeCount.z );
 	#define realSize scale

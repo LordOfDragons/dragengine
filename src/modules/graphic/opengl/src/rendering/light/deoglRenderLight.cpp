@@ -336,7 +336,6 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 	if( plan.GetGIState() ){
 		if( solid && ! mask ){
 			pRenderGI->UpdateProbes( plan );
-			pRenderGI->MoveProbes( plan );
 		}
 		pRenderGI->RenderLight( plan, solid );
 	}

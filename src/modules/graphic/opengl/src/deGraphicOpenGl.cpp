@@ -77,6 +77,7 @@
 #include "parameters/defren/deoglPTranspLayerLimit.h"
 #include "parameters/defren/deoglPAsyncRenderSkipSyncTimeRatio.h"
 #include "parameters/defren/deoglPFrameRateLimit.h"
+#include "parameters/gi/deoglPGIQuality.h"
 #include "parameters/light/deoglPLightCutOffIntensity.h"
 #include "parameters/lod/deoglPLODMaxErrorPerLevel.h"
 #include "parameters/lod/deoglPLODMaxPixelError.h"
@@ -610,6 +611,8 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPSSAORadiusLimit( *this ) );
 	pParameters.AddParameter( new deoglPSSAOMipMapBase( *this ) );
 	pParameters.AddParameter( new deoglPSSAOTurnCount( *this ) );
+	
+	pParameters.AddParameter( new deoglPGIQuality( *this ) );
 	
 	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapSize( *this ) );

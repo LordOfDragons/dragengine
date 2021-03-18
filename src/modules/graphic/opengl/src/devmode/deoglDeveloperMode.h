@@ -89,6 +89,9 @@ private:
 	bool pDebugInfoSync;
 	int pDebugInfoDetails;
 	
+	bool pGIShowProbes;
+	bool pGIShowProbeOffsets;
+	
 	deoglTexture *pTextureDebugImage;
 	deoglFramebuffer *pFBODebugImage;
 	bool pDebugImageUsed;
@@ -173,6 +176,11 @@ public:
 	
 	
 	
+	inline bool GetGIShowProbes() const{ return pGIShowProbes; }
+	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
+	
+	
+	
 	/** Retrieves the debug image texture or NULL if not existing. */
 	inline deoglTexture *GetTextureDebugImage() const{ return pTextureDebugImage; }
 	/**
@@ -242,6 +250,12 @@ private:
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName );
 };
 
 #endif

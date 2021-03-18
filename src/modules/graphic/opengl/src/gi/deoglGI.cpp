@@ -40,8 +40,7 @@ deoglGI::deoglGI( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pBVH( renderThread ),
 pRays( renderThread ),
-pMaterials( renderThread ),
-pDebugShowProbes( false )
+pMaterials( renderThread )
 {
 	try{
 		pCreateUBO();
@@ -60,10 +59,6 @@ deoglGI::~deoglGI(){
 
 // Management
 ///////////////
-
-void deoglGI::SetDebugShowProbes( bool show ){
-	pDebugShowProbes = show;
-}
 
 
 
@@ -112,7 +107,10 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo.GetParameterAt( eupGridOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo.GetParameterAt( eupGridCoordUnshift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	ubo.GetParameterAt( eupFieldOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo.GetParameterAt( eupBlendUpdateProbe ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMoveMaxOffset ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3

@@ -23,6 +23,11 @@ uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
 
 
+// includes to come after defining fixed position samplers
+#define pGIGridProbeCount pGIProbeCount
+#include "v130/shared/defren/gi/probe_offset.glsl"
+
+
 // inputs
 ///////////
 
@@ -109,6 +114,8 @@ vec3 giIlluminate( in vec3 position, in vec3 normal ){
 		vec3 probePosition = pGIProbeSpacing * vec3( probeCoord );
 		
 		probeCoord = giGridShiftToLocal( probeCoord );
+		
+		probePosition += gipoProbeOffset( probeCoord );
 		
 		vec3 viewVector = probePosition - position;
 		vec3 viewDir = normalize( viewVector );

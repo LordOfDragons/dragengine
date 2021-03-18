@@ -24,12 +24,14 @@
 
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
 class deoglRenderThread;
 class deoglRWorld;
+class deoglPixelBuffer;
 
 
 /**
@@ -43,11 +45,12 @@ public:
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
 		int index; //<! Grid index
-		float blendFactor; //<! 1-hysteresis modified
+		int flags;
 		int age; //<! Age in update runs since probe has been last updated
 		bool valid; //<! Probe has been updated at least once
 		decPoint3 shiftedCoord;
 		decVector position;
+		decVector offset;
 		float weightDistance;
 		decVector2 weightViewAngle;
 		float weightAge;
@@ -106,7 +109,9 @@ private:
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
+	deoglPixelBuffer *pPixBufProbeOffset;
 	bool pClearMaps;
+	bool pProbesHaveMoved;
 	
 	
 	
@@ -244,6 +249,12 @@ public:
 	
 	/** \brief Invalid all probes. */
 	void Invalidate();
+	
+	/** \brief Probe moved. */
+	void ProbesMoved();
+	
+	/** \brief Update probe offsets from probe offset texture. */
+	void UpdateProbeOffsetFromTexture();
 	/*@}*/
 	
 	

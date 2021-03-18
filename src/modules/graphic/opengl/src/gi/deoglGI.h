@@ -25,10 +25,7 @@
 #include "deoglGIBVH.h"
 #include "deoglGIRays.h"
 #include "deoglGIMaterials.h"
-#include "../framebuffer/deoglFramebuffer.h"
-#include "../texture/deoglRenderbuffer.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../texture/texture2d/deoglTexture.h"
 
 class deoglRenderThread;
 class deoglROcclusionMesh;
@@ -60,7 +57,10 @@ public:
 		eupDistanceMapSize, // int: size of distance map
 		eupMaxProbeDistance, // float
 		eupDepthSharpness, // float
+		eupGridOrigin, // vec3
+		eupGridCoordUnshift, // ivec3
 		eupFieldOrigin, // vec3
+		eupBlendUpdateProbe, // float
 		eupMaterialMapsPerRow, // int
 		eupMaterialMapSize, // int
 		eupMoveMaxOffset, // vec3
@@ -80,8 +80,6 @@ private:
 	deoglGIMaterials pMaterials;
 	
 	deObjectReference pUBO;
-	
-	bool pDebugShowProbes;
 	
 	
 	
@@ -116,12 +114,6 @@ public:
 	
 	/** \brief UBO. */
 	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }
-	
-	/** \brief Debug show probes. */
-	inline bool GetDebugShowProbes() const{ return pDebugShowProbes; }
-	
-	/** \brief Set debug show probes. */
-	void SetDebugShowProbes( bool show );
 	/*@}*/
 	
 	

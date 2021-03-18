@@ -4,7 +4,7 @@
 	
 	<version>130</version>
 	
-	<texture name='texGIOffset' target='0'/>
+	<texture name='texGIProbeOffset' target='0'/>
 	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->
 	<parameter name='pGIGridCoordShift'/> <!-- 1 -->

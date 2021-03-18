@@ -597,6 +597,8 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 		GetDebugTimerAt( 0 ).Reset();
 	}
 	
+	
+	// calculate new offset
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
@@ -605,23 +607,25 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	//OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	tsmgr.EnableTexture( 0, rays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 2 );
 	
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
 		giState->GetTextureProbeOffset().GetHeight() ) );
 	
+	tsmgr.EnableTexture( 0, rays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 1 );
+	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
 	gi.GetUBO().Activate();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	
+	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
+	
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -674,7 +678,8 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	
 	tsmgr.EnableTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 7, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-	tsmgr.DisableStagesAbove( 7 );
+	tsmgr.EnableTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 8 );
 	
 	defren.RenderFSQuadVAO();
 	
@@ -694,8 +699,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglGI &gi = renderThread.GetGI();
-	if( ! gi.GetDebugShowProbes() ){
+	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
+	if( ! devmode.GetEnabled() || ! devmode.GetGIShowProbes() ){
 		return;
 	}
 	
@@ -703,6 +708,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
 		+ decDVector( giState->GetProbeOrigin() ) ) * plan.GetCameraMatrix() );
 	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
+	deoglGI &gi = renderThread.GetGI();
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -723,7 +729,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-	tsmgr.DisableStagesAbove( 1 );
+	tsmgr.EnableTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
@@ -738,22 +745,24 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
 	
 	// offset
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	deoglShaderCompiled &shader2 = *pShaderDebugProbeOffset->GetCompiled();
-	shader2.Activate();
-	shader2.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
-	shader2.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
-	
-	gi.GetUBO().Activate();
-	
-	tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 0 );
-	
-	//OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
+	if( devmode.GetGIShowProbeOffsets() ){
+		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+		
+		deoglShaderCompiled &shader2 = *pShaderDebugProbeOffset->GetCompiled();
+		shader2.Activate();
+		shader2.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
+		shader2.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		
+		gi.GetUBO().Activate();
+		
+		tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 0 );
+		
+		//OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
+	}
 	
 	
 	// clean up

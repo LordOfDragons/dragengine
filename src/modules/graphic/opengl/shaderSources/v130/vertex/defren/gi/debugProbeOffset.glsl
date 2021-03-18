@@ -5,8 +5,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
-
-uniform HIGHP sampler2D texGIOffset;
+#include "v130/shared/defren/gi/probe_offset.glsl"
 
 uniform mat4 pMatrixMVP;
 uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
@@ -28,17 +27,14 @@ void main( void ){
 	ivec3 probeCoord = giIndexToCoord( gl_InstanceID );
 	vec3 probePosition = pGIGridProbeSpacing * vec3( probeCoord );
 	
-	probeCoord = giGridShiftToLocal( probeCoord );
-	ivec2 texCoord = ivec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z );
-	vec3 probeOffset = texelFetch( texGIOffset, texCoord, 0 ).rgb;
-	
 	// first vertex is (-1,1), second is (1,1)
 	if( inPosition.x < 0.0 ){
 		vColor = vec3( 0.0, 0.0, 1.0 );
-		gl_Position = pMatrixMVP * vec4( probePosition, 1.0 );
 		
 	}else{
 		vColor = vec3( 1.0, 0.0, 0.0 );
-		gl_Position = pMatrixMVP * vec4( probePosition + probeOffset, 1.0 );
+		probePosition += gipoProbeOffset( giGridShiftToLocal( probeCoord ) );
 	}
+	
+	gl_Position = pMatrixMVP * vec4( probePosition, 1.0 );
 }

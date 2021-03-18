@@ -93,7 +93,9 @@ pTexProbeOffset( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
-pClearMaps( true )
+pPixBufProbeOffset( NULL ),
+pClearMaps( true ),
+pProbesHaveMoved( false )
 {
 	try{
 		pInitProbes();
@@ -182,6 +184,11 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 
 void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
 const decDMatrix &cameraMatrix, float fovX, float fovY ){
+	if( pProbesHaveMoved ){
+		pProbesHaveMoved = false;
+		UpdateProbeOffsetFromTexture();
+	}
+	
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
@@ -208,7 +215,10 @@ void deoglGIState::PrepareUBOState() const{
 		ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pDistanceMapScale );
 		ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
 		ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pDepthSharpness );
+		ubo.SetParameterDataVec3( deoglGI::eupGridOrigin, pProbeOrigin );
+		ubo.SetParameterDataIVec3( deoglGI::eupGridCoordUnshift, pGridCoordShift );
 		ubo.SetParameterDataVec3( deoglGI::eupFieldOrigin, 0.0f, 0.0f, 0.0f );
+		ubo.SetParameterDataFloat( deoglGI::eupBlendUpdateProbe, 1.0f - pHysteresis );
 		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
 		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pProbeCount );
 		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
@@ -224,8 +234,9 @@ void deoglGIState::PrepareUBOState() const{
 			}
 			
 			for( i=0; i<pUpdateProbeCount; i++ ){
+				const sProbe &probe = *pUpdateProbes[ i ];
 				ubo.SetParameterDataArrayVec4( deoglGI::eupProbePosition, i,
-					pUpdateProbes[ i ]->position, pUpdateProbes[ i ]->blendFactor );
+					probe.position + probe.offset, ( float )probe.flags );
 			}
 		}
 		
@@ -309,11 +320,44 @@ void deoglGIState::Invalidate(){
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.age = 0;
-		probe.blendFactor = 1.0f;
+		probe.flags = 0x1;
+		probe.offset.SetZero();
 		probe.valid = false;
 	}
 	
 	pClearMaps = true;
+	pProbesHaveMoved = false;
+}
+
+void deoglGIState::ProbesMoved(){
+	pProbesHaveMoved = true;
+}
+
+void deoglGIState::UpdateProbeOffsetFromTexture(){
+	if( ! pPixBufProbeOffset ){
+		pPixBufProbeOffset = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3,
+			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(), 1 );
+	}
+	
+	// this call is slow (>5ms) if used right after rendering the probe offset update
+	// shader. by delaying the read-back to the next GI update cycle reduces the
+	// time consumption to <300ys, which is acceptable
+// 	decTimer timer;
+	pTexProbeOffset.GetPixels( *pPixBufProbeOffset );
+// 	printf( "GetPixels: %d\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	
+	const deoglPixelBuffer::sFloat3 * const pixels = pPixBufProbeOffset->GetPointerFloat3();
+	const int stride = pTexProbeOffset.GetWidth();
+	int i;
+	
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		sProbe &probe = *pUpdateProbes[ i ];
+		const int x = pProbeCount.x * probe.coord.y + probe.coord.x;
+		const int y = probe.coord.z;
+		
+		const deoglPixelBuffer::sFloat3 &pixel = pixels[ stride * y + x ];
+		probe.offset.Set( pixel.r, pixel.g, pixel.b );
+	}
 }
 
 
@@ -322,6 +366,9 @@ void deoglGIState::Invalidate(){
 //////////////////////
 
 void deoglGIState::pCleanUp(){
+	if( pPixBufProbeOffset ){
+		delete pPixBufProbeOffset;
+	}
 	if( pUpdateProbes ){
 		delete [] pUpdateProbes;
 	}
@@ -340,8 +387,9 @@ void deoglGIState::pInitProbes(){
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.index = i;
-		probe.blendFactor = 1.0f;
+		probe.flags = 0x0; // force full update
 		probe.age = 0;
+		probe.offset.SetZero();
 		probe.valid = false;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
@@ -368,7 +416,8 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		}
 		
 		probe.age = 0;
-		probe.blendFactor = 1.0f;
+		probe.flags = 0x0; // force full update
+		probe.offset.SetZero();
 		probe.valid = false;
 	}
 	
@@ -453,7 +502,7 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 		pWeightedProbeBinProbeCounts[ i ] = 0;
 	}
 	pUpdateProbeCount = 0;
-	
+#if 0
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		if( probe.valid ){
@@ -491,8 +540,8 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 			}
 		}
 	}
+#endif
 	
-// 	/*
 	// TODO update probe grid. for the time being 8x4x8
 	pUpdateProbeCount = 256; //pMaxUpdateProbeCount;
 	
@@ -509,10 +558,11 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ];
 				
 				if( probe.valid ){
-					probe.blendFactor = 1.0f - pHysteresis;
+					probe.flags = 0x1; // regular update
 					
 				}else{
-					probe.blendFactor = 1.0f; // force full update
+					probe.flags = 0x0; // force full update
+					probe.offset.SetZero();
 				}
 				
 				probe.age = 0;
@@ -522,7 +572,7 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 			}
 		}
 	}
-// 	*/
+	
 	
 	// determine the required sample image size
 	pSampleImageSize.x = rays.GetProbesPerLine() * rays.GetRaysPerProbe();
@@ -541,10 +591,11 @@ void deoglGIState::pBinWeightedProbe( sProbe *probe, float weight ){
 
 void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 	if( probe->valid ){
-		probe->blendFactor = 1.0f - pHysteresis;
+		probe->flags = 0x1; // regular update
 		
 	}else{
-		probe->blendFactor = 1.0f; // force full update
+		probe->flags = 0x0; // force full update
+		probe->offset.SetZero();
 		probe->valid = true;
 	}
 	probe->age = 0;
@@ -554,7 +605,7 @@ void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && ! pClearMaps ){
+	&& pTexProbeOffset.GetTexture() && ! pClearMaps && pPixBufProbeOffset ){
 		return;
 	}
 	

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Clear Probe Offset</name>
+	
+	<version>130</version>
+	
+	<uniformBlock name='GIParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outOffset' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/clearProbeOffset.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/clearProbeOffset.glsl</sourceCode>
+</shader>

@@ -14,6 +14,8 @@
 	<texture name='texGIIrradiance' target='6'/>
 	<texture name='texGIDistance' target='7'/>
 	
+	<texture name='texGIProbeOffset' target='8'/>
+	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='GIParameters' target='1'/>
 	

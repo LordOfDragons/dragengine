@@ -44,9 +44,11 @@ ivec3 probeIndexToGridCoord( in int index ){
 
 
 void main( void ){
+	int flags = int( pGIProbePosition[ gl_InstanceID ].w );
+	
 	vRayOffset.x = ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe;
 	vRayOffset.y = gl_InstanceID / pGIProbesPerLine;
-	vBlendFactor = pGIProbePosition[ gl_InstanceID ].w;
+	vBlendFactor = ( flags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0f;
 	vProbePosition = pGIProbePosition[ gl_InstanceID ].xyz;
 	
 	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry

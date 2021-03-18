@@ -62,6 +62,16 @@ public:
 		eemmMultipleBoxProjection
 	};
 	
+	enum eGIQuality{
+		egiqVeryLow,
+		egiqLow,
+		egiqMedium,
+		egiqHigh,
+		egiqVeryHigh
+	};
+	
+	
+	
 private:
 	bool pDirty;
 	
@@ -168,6 +178,8 @@ private:
 	bool pDisableCubeMapLinearFiltering;
 	
 	int pMaxSPBIndexCount;
+	
+	eGIQuality pGIQuality;
 	
 	decStringSet pDisableExtensions;
 	
@@ -528,6 +540,9 @@ public:
 	
 	/** \brief Set maximum shared parameter buffer index count. */
 	void SetMaxSPBIndexCount( int count );
+	
+	inline eGIQuality GetGIQuality() const{ return pGIQuality; }
+	void SetGIQuality( eGIQuality quality );
 	
 	/** \brief OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
