@@ -324,8 +324,11 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
 	
+	const bool hasGIStateUpdate = pRenderGI->GetUpdateGIState( plan ) != NULL;
+	const bool hasGIStateRender = pRenderGI->GetRenderGIState( plan ) != NULL;
+	
 	PrepareRenderParamBlockLight( plan );
-	if( plan.GetGIState() ){
+	if( hasGIStateRender ){
 		pRenderGI->PrepareUBORenderLight( plan );
 	}
 	
@@ -333,10 +336,13 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 	pRenderLightPoint->RenderLights( plan, solid, mask );
 	pRenderLightSpot->RenderLights( plan, solid, mask );
 	
-	if( plan.GetGIState() ){
-		if( solid && ! mask ){
-			pRenderGI->UpdateProbes( plan );
+	if( solid && ! mask && hasGIStateUpdate ){
+		if( hasGIStateRender ){
+			pRenderGI->RenderLightGIRay( plan );
 		}
+		pRenderGI->UpdateProbes( plan );
+	}
+	if( hasGIStateRender ){
 		pRenderGI->RenderLight( plan, solid );
 	}
 	

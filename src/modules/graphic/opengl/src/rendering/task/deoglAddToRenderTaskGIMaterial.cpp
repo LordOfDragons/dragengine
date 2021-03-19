@@ -36,6 +36,8 @@
 #include "../../component/deoglRComponent.h"
 #include "../../component/deoglRComponentLOD.h"
 #include "../../component/deoglRComponentTexture.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIMaterials.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../model/texture/deoglModelTexture.h"
@@ -90,7 +92,6 @@ void deoglAddToRenderTaskGIMaterial::SetSkinShaderType( deoglSkinTexture::eShade
 
 void deoglAddToRenderTaskGIMaterial::Reset(){
 	pSkinShaderType = deoglSkinTexture::estComponentGIMaterial;
-	pMaterialMapCount = 0;
 }
 
 deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deoglRComponentLOD &lod, int texture ){
@@ -188,8 +189,11 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 		renderTaskTexture->SetTUC( tuc );
 		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
 		renderTaskTexture->SetTexture( skinTexture );
-		renderTaskTexture->SetMaterialIndex( pMaterialMapCount++ );
 		renderTaskShader->AddTexture( renderTaskTexture );
+	}
+	
+	if( tuc->GetMaterialIndex() == -1 ){
+		pRenderThread.GetGI().GetMaterials().AddTUC( tuc );
 	}
 	
 	return renderTaskTexture;

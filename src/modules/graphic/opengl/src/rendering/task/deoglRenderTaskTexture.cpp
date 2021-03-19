@@ -52,9 +52,7 @@ pLLNext( NULL ),
 
 pHasVAO( NULL ),
 pHasVAOCount( 0 ),
-pHasVAOSize( 0 ),
-
-pMaterialIndex( -1 ){
+pHasVAOSize( 0 ){
 }
 
 deoglRenderTaskTexture::~deoglRenderTaskTexture(){
@@ -79,7 +77,6 @@ void deoglRenderTaskTexture::Reset(){
 	pVAOCount = 0;
 	
 	pNextTexture = NULL;
-	pMaterialIndex = -1;
 }
 
 
@@ -199,10 +196,6 @@ deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOForIndex( int vaoIndex ){
 
 void deoglRenderTaskTexture::SetNextTexture( deoglRenderTaskTexture *texture ){
 	pNextTexture = texture;
-}
-
-void deoglRenderTaskTexture::SetMaterialIndex( int materialIndex ){
-	pMaterialIndex = materialIndex;
 }
 
 

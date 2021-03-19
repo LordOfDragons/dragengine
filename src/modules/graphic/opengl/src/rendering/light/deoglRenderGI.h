@@ -46,6 +46,7 @@ private:
 	deoglShaderProgram *pShaderUpdateProbeDistance;
 	deoglShaderProgram *pShaderMoveProbes;
 	deoglShaderProgram *pShaderLight;
+	deoglShaderProgram *pShaderLightGIRay;
 	deoglShaderProgram *pShaderDebugProbe;
 	deoglShaderProgram *pShaderDebugProbeOffset;
 	
@@ -108,6 +109,9 @@ public:
 	
 	/** \brief Render light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid );
+	
+	/** \brief Render light. */
+	void RenderLightGIRay( deoglRenderPlan &plan );
 	
 	/** \brief Debug overlay. */
 	void RenderDebugOverlay( deoglRenderPlan &plan );

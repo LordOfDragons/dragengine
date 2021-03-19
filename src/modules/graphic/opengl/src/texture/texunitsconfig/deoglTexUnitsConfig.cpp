@@ -28,6 +28,8 @@
 #include "../deoglTextureStageManager.h"
 #include "../cubemap/deoglCubeMap.h"
 #include "../texture2d/deoglTexture.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIMaterials.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../rendering/deoglRenderReflection.h"
@@ -55,6 +57,7 @@ pUnits( NULL ),
 pUnitCount( 0 ),
 pRenderTaskTrackingNumber( 0 ),
 pRenderTaskTUCIndex( 0 ),
+pMaterialIndex( -1 ),
 pUsageCount( 1 ),
 pHashCode( 0 ),
 pLLPrev( NULL ),
@@ -130,6 +133,12 @@ void deoglTexUnitsConfig::SetRenderTaskTUCIndex( int tucIndex ){
 
 
 
+void deoglTexUnitsConfig::SetMaterialIndex( int index ){
+	pMaterialIndex = index;
+}
+
+
+
 bool deoglTexUnitsConfig::Equals( const deoglTexUnitsConfig &tuc ) const{
 	if( pHashCode != tuc.pHashCode || pUnitCount != tuc.pUnitCount ){
 		return false;
@@ -176,6 +185,9 @@ void deoglTexUnitsConfig::RemoveUsage(){
 	pUsageCount--;
 	
 	if( pUsageCount == 0 ){
+		// we keep the material slot index even if not used anymore. this avoids cached
+		// ray-casting results to use suddenly use wrong material
+		//pRenderThread.GetGI().GetMaterials().RemoveTUC( this );
 		pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
 	}
 }

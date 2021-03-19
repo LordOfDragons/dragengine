@@ -53,7 +53,6 @@ private:
 	
 	deoglRenderTask &pRenderTask;
 	deoglSkinTexture::eShaderTypes pSkinShaderType;
-	int pMaterialMapCount;
 	
 	
 	
@@ -81,9 +80,6 @@ public:
 	
 	/** \brief Reset render task parameters. */
 	void Reset();
-	
-	/** \brief Material map index count. */
-	inline int GetMaterialMapCount() const{ return pMaterialMapCount; }
 	
 	
 	

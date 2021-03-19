@@ -12,12 +12,19 @@ precision highp int;
 // samplers
 /////////////
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+#ifdef GI_RAY
+	uniform HIGHP sampler2D texPosition;
+	uniform lowp sampler2D texDiffuse;
+	uniform lowp sampler2D texNormal;
+	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
+#else
+	uniform HIGHP sampler2D texDepth;
+	uniform lowp sampler2D texDiffuse;
+	uniform lowp sampler2D texNormal;
+	uniform lowp sampler2D texReflectivity;
+	uniform lowp sampler2D texRoughness;
+	uniform lowp sampler2D texAOSolidity;
+#endif
 
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
@@ -52,7 +59,9 @@ out vec4 outSubSurface;
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
-#include "v130/shared/defren/light/normal_from_depth.glsl"
+#ifndef GI_RAY
+	#include "v130/shared/defren/light/normal_from_depth.glsl"
+#endif
 
 
 // dir is required to be normalized
@@ -195,53 +204,61 @@ void main( void ){
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	if( diffuse.a == 0.0 ){
-		discard;
-	}
+	#ifndef GI_RAY
+		if( diffuse.a == 0.0 ){
+			discard;
+		}
+	#endif
 	
 	// determine position of fragment to light
-	#ifdef DECODE_IN_DEPTH
-		float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
+	#ifdef GI_RAY
+		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
+		if( positionDistance.a > 9999.0 ){
+			discard; // ray hits nothing
+		}
+		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
-		float depth = texelFetch( texDepth, tc, 0 ).r;
-	#endif
-	vec3 position = vec3( depth );
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
-	
-	// fetch normal. we can not use gbuffer normal here since it is bend potentially causing
-	// troubles. derive instead the normal from the depth buffer
-	/*
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
+		#ifdef DECODE_IN_DEPTH
+			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
+		#else
+			float depth = texelFetch( texDepth, tc, 0 ).r;
+		#endif
+		vec3 position = vec3( depth );
+		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+		position.xy = vScreenCoord * pPosTransform.zw * position.zz;
 	#endif
 	
-	if( dot( normal, normal ) < 0.0001 ){
-		normal = lightDir; // 0-normal means always point towards light source
+	// fetch normal
+	#ifdef GI_RAY
+		#ifdef MATERIAL_NORMAL_INTBASIC
+			vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
+			//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
+		#elif defined MATERIAL_NORMAL_SPHEREMAP
+			vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
+			float f = dot( fenc, fenc );
+			float g = sqrt( 1.0 - f * 0.25 );
+			vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
+		#else
+			vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
+		#endif
 		
-	}else{
-		normal = clamp( normal, vec3( -1.0 ), vec3( 1.0 ) ); // some shader writes broken normals (or missing clear?). temporary fix
-		normal = normalize( normal );
-	}
-	*/
-	vec3 normal = normalFromDepth( tc, depth, position );
+		normal = normalize( normal * pGIRayMatrixNormal ); // requires matrix transpose done by reversed order
+		
+	#else
+		// we can not use gbuffer normal here since it is bend potentially causing
+		// troubles. derive instead the normal from the depth buffer
+		vec3 normal = normalFromDepth( tc, depth, position );
+	#endif
 	
 	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding
 	// if both are used. the result is stored in aoSolidity.g . this way aoSolidity.r contains
 	// the pure texture-ao and aoSolidity.gb the combined ao
-	vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
-	
-	aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
-	diffuse.a *= aoSolidity.b;
-	
+	#ifndef GI_RAY
+		vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
+		
+		aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
+		diffuse.a *= aoSolidity.b;
+	#endif
 	
 	// apply ambient occlusion to the direct lighting. this is done by comparing the ambient
 	// occlusion angle with the lighting angle. the ambient occlusion angle can be calculated
@@ -259,7 +276,9 @@ void main( void ){
 	// global illumination
 	vec3 finalColor = giIlluminate( position, normal );
 	
-	finalColor *= vec3( aoSolidity.g ); // texture AO and SSAO
+	#ifndef GI_RAY
+		finalColor *= vec3( aoSolidity.g ); // texture AO and SSAO
+	#endif
 	
 	outLuminance = dot( finalColor, lumiFactors );
 	outColor = vec4( finalColor * diffuse.rgb, diffuse.a );

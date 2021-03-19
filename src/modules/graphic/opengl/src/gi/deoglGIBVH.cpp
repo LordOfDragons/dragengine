@@ -44,6 +44,7 @@
 #include "../renderthread/deoglRTRenderers.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionBox.h"
@@ -600,7 +601,7 @@ const decTexMatrix2 &texCoordMatrix ){
 // 	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
 // 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
 	
-	const int materialIndex = renderTaskTexture ? decMath::min( renderTaskTexture->GetMaterialIndex(), 16383 ) : 0;
+	const int materialIndex = renderTaskTexture ? decMath::clamp( renderTaskTexture->GetTUC()->GetMaterialIndex(), 0, 16383 ) : 0;
 	
 	const bool ignoreMaterial = skinTexture.GetHasTransparency(); // || skinTexture.GetHasSolidity();
 	const bool texCoordClamp = skinTexture.GetTexCoordClamp();

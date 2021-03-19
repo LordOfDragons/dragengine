@@ -27,12 +27,15 @@
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;
+class deoglTexUnitsConfig;
+
 
 
 /**
- * \brief Global illumination materials.
+ * Global illumination materials.
  * 
  * Materials are stored in texture atlas similar to light maps hence materials maps are square
  * in size and of small size. The default material map size is 64x64 with 32 material maps
@@ -52,7 +55,7 @@ private:
 	int pRowsPerImage;
 	int pMaxMaterialCount;
 	
-	int pMaterialCount;
+	decPointerList pTUCs;
 	
 	deoglTexture pTexDiffuse;
 	deoglTexture pTexReflectivity;
@@ -64,10 +67,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create global illumination ray tracing. */
+	/** Create global illumination ray tracing. */
 	deoglGIMaterials( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up global illumination ray tracing. */
+	/** Clean up global illumination ray tracing. */
 	~deoglGIMaterials();
 	/*@}*/
 	
@@ -75,42 +78,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Maximum material map size. */
+	/** Maximum material map size. */
 	inline int GetMaxMaterialMapSize() const{ return pMaxMaterialMapSize; }
 	
-	/** \brief Maximum count of materials per row. */
+	/** Maximum count of materials per row. */
 	inline int GetMaxMaterialsPerRow() const{ return pMaxMaterialsPerRow; }
 	
-	/** \brief Maximum count of rows per image. */
+	/** Maximum count of rows per image. */
 	inline int GetMaxRowsPerImage() const{ return pMaxRowsPerImage; }
 	
-	/** \brief Current material map size. */
+	/** Current material map size. */
 	inline int GetMaterialMapSize() const{ return pMaterialMapSize; }
 	
-	/** \brief Current count of materials per row. */
+	/** Current count of materials per row. */
 	inline int GetMaterialsPerRow() const{ return pMaterialsPerRow; }
 	
-	/** \brief Current count of rows per image. */
+	/** Current count of rows per image. */
 	inline int GetRowsPerImage() const{ return pRowsPerImage; }
 	
-	/** \brief Current maximum count of materials. */
+	/** Current maximum count of materials. */
 	inline int GetMaxMaterialCount() const{ return pMaxMaterialCount; }
 	
 	
 	
-	/** \brief Material count. */
-	inline int GetMaterialCount() const{ return pMaterialCount; }
-	
-	/** \brief Set material count. */
-	void SetMaterialCount( int count );
+	/** Add texture units configuration. Assigns material slot to "tuc". */
+	void AddTUC( deoglTexUnitsConfig *tuc );
 	
 	
 	
 	/**
-	 * \brief Diffuse texture.
+	 * Diffuse texture.
 	 * 
 	 * Stores texture property "color" as RGB and texture property "color.tint.mask" as A.
 	 * Color is combined with texture property "envroom" if present. For environment
@@ -120,7 +120,7 @@ public:
 	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
 	/**
-	 * \brief Reflectivity texture.
+	 * Reflectivity texture.
 	 * 
 	 * Stores texture property "reflectivity" as RGB and texture property "roughness" as A.
 	 */
@@ -128,7 +128,7 @@ public:
 	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
 	/**
-	 * \brief Emissivity texture.
+	 * Emissivity texture.
 	 * 
 	 * Stores texture property "emissivity" as RGB and texture property "solidity" as A.
 	 * Emissivity is combined with "envroom.emissivity" if present. For environment
@@ -137,7 +137,7 @@ public:
 	inline deoglTexture &GetTextureEmissivity(){ return pTexEmissivity; }
 	inline const deoglTexture &GetTextureEmissivity() const{ return pTexEmissivity; }
 	
-	/** \brief Material FBO. */
+	/** Material FBO. */
 	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }
 	/*@}*/
 	
@@ -146,6 +146,7 @@ public:
 private:
 	void pCleanUp();
 	void pCreateFBOMaterial();
+	void pEnlarge();
 };
 
 #endif

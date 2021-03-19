@@ -33,7 +33,8 @@ class deoglTexUnitConfig;
 
 
 /**
- * @brief Texture Units Configuration.
+ * Texture Units Configuration.
+ * 
  * Stores the configuration of up to 8 texture units. This class does not check
  * for errors. The user of the texture units configuration is responsible to
  * ensure a correct setup. The hash code is calculated from the opengl texture
@@ -51,76 +52,115 @@ public:
 	unsigned int pRenderTaskTrackingNumber;
 	int pRenderTaskTUCIndex;
 	
+	int pMaterialIndex;
+	
 	int pUsageCount;
 	unsigned int pHashCode;
 	deoglTexUnitsConfig *pLLPrev;
 	deoglTexUnitsConfig *pLLNext;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new texture units configuration. */
+	/** Create texture units configuration. */
 	deoglTexUnitsConfig( deoglRenderThread &renderThread );
-	/** Cleans up the texture units configuration. */
+	
+	/** Clean up texture units configuration. */
 	~deoglTexUnitsConfig();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves the number of units. */
+	/** Count of units. */
 	inline int GetUnitCount() const{ return pUnitCount; }
-	/** Sets the number of units. Disabled all units. */
+	
+	/** Set count of units. Disabled all units. */
 	void SetUnitCount( int count );
-	/** Retrieves the texture units pointer for fast access without index checking. */
+	
+	/** Texture units pointer for fast access without index checking. */
 	inline deoglTexUnitConfig *GetUnits() const{ return pUnits; }
-	/** Retrieves a texture unit. */
+	
+	/** Texture unit. */
 	deoglTexUnitConfig &GetUnitAt( int index ) const;
-	/** Sets the units. */
+	
+	/** Set units. */
 	void SetUnits( const deoglTexUnitConfig *units, int unitCount );
 	
-	/** Apply the texture units configuration. */
+	/** Apply texture units configuration. */
 	void Apply();
 	
-	/** Retrieves the render task tracking number. */
+	
+	
+	/** Render task tracking number. */
 	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	/** Sets the render task tracking number. */
+	
+	/** Set render task tracking number. */
 	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	/** Retrieves the render task texture units configuration index. */
+	
+	/** Render task texture units configuration index. */
 	inline int GetRenderTaskTUCIndex() const{ return pRenderTaskTUCIndex; }
-	/** Sets the render task texture units configuration index. */
+	
+	/** Set render task texture units configuration index. */
 	void SetRenderTaskTUCIndex( int tucIndex );
 	
-	/** Determines if this object matches another one. */
+	
+	
+	/** \brief Material index or -1. */
+	inline int GetMaterialIndex() const{ return pMaterialIndex; }
+	
+	/** \brief Set material index or -1. */
+	void SetMaterialIndex( int index );
+	
+	
+	
+	/** Texture units configuration matches another one. */
 	bool Equals( const deoglTexUnitsConfig &tuc ) const;
-	/** Determines if this object matches another one. */
+	
+	/** Texture units configuration matches another one. */
 	bool Equals( const deoglTexUnitConfig *units, int unitCount ) const;
 	
-	/** Retrieves the usage count. */
+	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
-	/** Increments the usage count by one. */
+	
+	/** Increment usage count by one. */
 	void AddUsage();
+	
 	/**
-	 * Decreases the usage count by one. If the usage count reaches 0 the object is removed
+	 * Decrease usage count by one. If the usage count reaches 0 the object is removed
 	 * from the texture units configuration manager and deleted.
 	 */
 	void RemoveUsage();
-	/** Retrieves the hash code. */
+	
+	
+	
+	/** Hash code. */
 	inline unsigned int GetHashCode() const{ return pHashCode; }
+	
 	/** Calculate hash code. */
 	void CalcHashCode();
-	/** Calculates the hash code for a set of unit configurations. */
+	
+	/** Calculate hash code for set of unit configurations. */
 	static unsigned int CalcHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount );
 	
-	/** Retrieves the previous entry in the linked list. */
+	
+	
+	/** Previous entry in the linked list. */
 	inline deoglTexUnitsConfig *GetLLPrev() const{ return pLLPrev; }
-	/** Sets the previous entry in the linked list. */
+	
+	/** Set previous entry in the linked list. */
 	void SetLLPrev( deoglTexUnitsConfig *entry );
-	/** Retrieves the next entry in the linked list. */
+	
+	/** Next entry in the linked list. */
 	inline deoglTexUnitsConfig *GetLLNext() const{ return pLLNext; }
-	/** Sets the next entry in the linked list. */
+	
+	/** Set next entry in the linked list. */
 	void SetLLNext( deoglTexUnitsConfig *entry );
 	/*@}*/
 };

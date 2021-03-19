@@ -129,6 +129,7 @@ pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
 pShaderLight( NULL ),
+pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
 pShaderDebugProbeOffset( NULL ),
 
@@ -161,11 +162,11 @@ pAddToRenderTask( NULL )
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", "1" );
+		defines.AddDefine( "MAP_IRRADIANCE", true );
 		pShaderUpdateProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
-		defines.AddDefine( "MAP_DISTANCE", "1" );
+		defines.AddDefine( "MAP_DISTANCE", true );
 		pShaderUpdateProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
@@ -184,6 +185,10 @@ pAddToRenderTask( NULL )
 		defines.RemoveAllDefines();
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "GI_RAY", true );
+		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "GI_RAY" );
 		
 		
 		// render task for GI material
@@ -293,8 +298,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	bvh.AddDynamicComponents( plan, giState->GetPosition() );
 	bvh.BuildBVH();
 	//bvh.DebugPrint( giState.GetPosition() );
-	
-	materials.SetMaterialCount( pAddToRenderTask->GetMaterialMapCount() );
 	
 	giState->PrepareUBOState(); // has to be done here since it is shared
 	
@@ -479,9 +482,14 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		deoglRenderTaskTexture *rtTexture = rtShader.GetRootTexture();
 		
 		while( rtTexture ){
-			rtTexture->GetTUC()->Apply();
+			deoglTexUnitsConfig &tuc = *rtTexture->GetTUC();
+			const int matMapIndex = tuc.GetMaterialIndex();
+			if( matMapIndex < 1 ){ // no slot (-1), fallback slot (0)
+				continue;
+			}
 			
-			const int matMapIndex = rtTexture->GetMaterialIndex();
+			tuc.Apply();
+			
 			const decPoint matMapCoord( matMapIndex % mapsPerRow, matMapIndex / mapsPerRow );
 			
 			const float offsetU = offsetScaleU * ( float )matMapCoord.x + offsetBaseU;
@@ -583,7 +591,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = GetUpdateGIState( plan );
 	if( ! giState ){
-		DETHROW( deeInvalidParam );
+		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -679,6 +687,44 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 7, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 8 );
+	
+	defren.RenderFSQuadVAO();
+	
+	// clean up
+	if( debugInfo.GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+	}
+}
+
+void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
+	deoglGIState * const giStateRender = GetRenderGIState( plan );
+	deoglGIState * const giStateUpdate = GetUpdateGIState( plan );
+	if( ! giStateRender || ! giStateUpdate ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	if( debugInfo.GetVisible() ){
+		GetDebugTimerAt( 0 ).Reset();
+	}
+	
+	RestoreFBOGIRays( *giStateUpdate );
+	
+	renderThread.GetShader().ActivateShader( pShaderLightGIRay );
+	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	GetUBORenderLight().Activate();
+	
+	tsmgr.EnableTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 7, giStateRender->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 8, giStateRender->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
 	defren.RenderFSQuadVAO();
@@ -791,6 +837,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderLight ){
 		pShaderLight->RemoveUsage();
+	}
+	if( pShaderLightGIRay ){
+		pShaderLightGIRay->RemoveUsage();
 	}
 	if( pShaderFieldTraceRays ){
 		pShaderFieldTraceRays->RemoveUsage();

@@ -27,6 +27,8 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
+#include "../renderthread/deoglRTLogger.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,13 +48,14 @@ pMaterialMapSize( pMaxMaterialMapSize ),
 pMaterialsPerRow( pMaxMaterialsPerRow ),
 pRowsPerImage( pMaxRowsPerImage ),
 pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
-pMaterialCount( 0 ),
 pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
 pTexEmissivity( renderThread ),
 pFBOMaterial( renderThread, false )
 {
 	try{
+		pTUCs.Add( NULL ); // index 0 is fallback
+		
 		pCreateFBOMaterial();
 		
 	}catch( const deException & ){
@@ -70,28 +73,30 @@ deoglGIMaterials::~deoglGIMaterials(){
 // Management
 ///////////////
 
-void deoglGIMaterials::SetMaterialCount( int count ){
-	if( count < 0 ){
+void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
+	if( ! tuc || tuc->GetMaterialIndex() != -1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMaterialCount = decMath::min( count, 16383 );
+	const int index = pTUCs.GetCount();
+	if( index > 16383 ){
+		// fallback. not nice but better than causing troubles
+		tuc->SetMaterialIndex( 0 );
+		return;
+	}
 	
-	// by resetting the highest texture size is used if the count. if reset is not used
-	// the size is reduced if the count grows too large and stays at this level.
-	// theoretically this can lead to some fluctuations in calculated GI if the textures
-	// have unfortunate properties
-	pMaterialMapSize = pMaxMaterialMapSize;
-	pMaterialsPerRow = pMaxMaterialsPerRow;
-	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+	pTUCs.Add( tuc );
+	tuc->SetMaterialIndex( index );
 	
-	while( pMaterialCount > pMaxMaterialCount ){
-		pMaterialMapSize /= 2;
-		pMaterialsPerRow *= 2;
-		pRowsPerImage *= 2;
-		pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+	if( ( pTUCs.GetCount() - 1 ) % 10 == 0 ){
+		pRenderThread.GetLogger().LogInfoFormat( "GIMaterials: Reached %d materials", pTUCs.GetCount() - 1 );
+	}
+	
+	if( pTUCs.GetCount() > pMaxMaterialCount ){
+		pEnlarge();
 	}
 }
+
 
 
 // Private Functions
@@ -138,4 +143,15 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 2 ] ) );
 	
 	pRenderThread.GetFramebuffer().Activate( oldfbo );
+}
+
+void deoglGIMaterials::pEnlarge(){
+	if( pMaxMaterialCount >= 16383 ){
+		DETHROW( deeInvalidParam ); // we should never end up here
+	}
+	
+	pMaterialMapSize /= 2;
+	pMaterialsPerRow *= 2;
+	pRowsPerImage *= 2;
+	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
 }
