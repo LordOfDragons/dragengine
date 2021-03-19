@@ -31,6 +31,7 @@
 #include "deoglShaderProgram.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "deoglShaderManager.h"
+#include "deoglShaderSourceLocation.h"
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -373,8 +374,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_tessellation_control" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleTCP ) );
@@ -405,8 +407,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_tessellation_evaluation" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleTEP ) );
@@ -448,8 +451,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_geometry" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_ALL_SHADERS
@@ -496,8 +500,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pPreprocessor.LogSourceLocationMap();
-				pOutputShaderToFile( "error" );
+				//pOutputShaderToFile( "failed_vertex" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_SHADERS
@@ -561,8 +566,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pPreprocessor.LogSourceLocationMap();
-				pOutputShaderToFile( "error" );
+				//pOutputShaderToFile( "failed_fragment" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_SHADERS
@@ -791,454 +797,10 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 
 
 #ifdef ANDROID
-static void specialHack( deoglRenderThread &renderThread, deoglShaderPreprocessor &preprocessor ){
-return;
-	
-	// SPECIAL HACK
-	const char * const hack1 =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-	in vec3 inPosition;\n\
-	in vec3 inNormal;\n\
-		in vec4 inTangent;\n\
-	in vec2 inTexCoord;\n\
-	out vec2 vTCColor;\n\
-		out vec2 vTCNormal;\n\
-		out vec2 vTCReflectivity;\n\
-	out vec3 vNormal;\n\
-		out vec3 vTangent;\n\
-		out vec3 vBitangent;\n\
-		out vec3 vReflectDir;\n\
-void transformPosition( out vec3 position ){\n\
-		position = inPosition;\n\
-		position = pMatrixModel * vec4( position, 1.0 );\n\
-			gl_Position = pMatrixVP * vec4( position, 1.0 );\n\
-}\n\
-void transformNormal(){\n\
-			vNormal = normalize( inNormal );\n\
-				vTangent = normalize( vec3( inTangent ) );\n\
-				vBitangent = cross( vNormal, vTangent );\n\
-				vTangent = cross( vBitangent, vNormal ) * vec3( inTangent.w );\n\
-			mat3 matrixNormal = pMatrixNormal * pMatrixVn;\n\
-		vNormal = normalize( vNormal * matrixNormal );\n\
-			vTangent = vTangent * matrixNormal;\n\
-			vBitangent = vBitangent * matrixNormal;\n\
-			if( dot( vTangent, vTangent ) > 0.00001 ){\n\
-				vTangent = normalize( vTangent );\n\
-			}\n\
-			if( dot( vBitangent, vBitangent ) > 0.00001 ){\n\
-				vBitangent = normalize( vBitangent );\n\
-			}\n\
-}\n\
-void main( void ){\n\
-	vec3 position;\n\
-	transformPosition( position );\n\
-		vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );\n\
-	vTCColor = tc; \n\
-		vTCNormal = tc; \n\
-		vTCReflectivity = tc; \n\
-	transformNormal();\n\
-				vReflectDir = pMatrixV * vec4( position, 1.0 );\n\
-}\n\
-";
-	
-	const char * const hack2 =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform TextureParameters{\n\
-	vec4 pValueColorTransparency; \n\
-	vec4 pValueNormal; \n\
-	vec4 pValueReflectivityRoughness; \n\
-	vec2 pValueRefractionDistort; \n\
-	float pValueSolidity; \n\
-	float pValueAO; \n\
-	vec3 pTexColorTint; \n\
-	float pTexColorGamma; \n\
-	float pTexColorSolidityMultiplier; \n\
-	float pTexAOSolidityMultiplier; \n\
-	float pTexSolidityMultiplier; \n\
-	float pTexAbsorptionRange; \n\
-	vec2 pTexHeightRemap; \n\
-	float pTexNormalStrength; \n\
-	float pTexNormalSolidityMultiplier; \n\
-	vec2 pTexRoughnessRemap; \n\
-	float pTexRoughnessGamma; \n\
-	float pTexRoughnessSolidityMultiplier; \n\
-	vec2 pTexEnvRoomSize; \n\
-	float pTexRefractionDistortStrength; \n\
-	float pTexReflectivitySolidityMultiplier; \n\
-	vec3 pTexEnvRoomEmissivityIntensity; \n\
-	float pTexTransparencyMultiplier; \n\
-	vec3 pTexEmissivityIntensity; \n\
-	float pTexThickness; \n\
-	vec2 pTexVariationEnableScale; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-#define pColorTint pTexColorTint\n\
-#define pColorGamma pTexColorGamma\n\
-#define pColorSolidityMultiplier pTexColorSolidityMultiplier\n\
-#define pAOSolidityMultiplier pTexAOSolidityMultiplier\n\
-#define pTransparencyMultiplier pTexTransparencyMultiplier\n\
-#define pSolidityMultiplier pTexSolidityMultiplier\n\
-#define pHeightRemap pTexHeightRemap\n\
-#define pNormalStrength pTexNormalStrength\n\
-#define pNormalSolidityMultiplier pTexNormalSolidityMultiplier\n\
-#define pRoughnessRemap pTexRoughnessRemap\n\
-#define pRoughnessGamma pTexRoughnessGamma\n\
-#define pRoughnessSolidityMultiplier pTexRoughnessSolidityMultiplier\n\
-#define pReflectivitySolidityMultiplier pTexReflectivitySolidityMultiplier\n\
-#define pRefractionDistortStrength pTexRefractionDistortStrength\n\
-#define pEmissivityIntensity pTexEmissivityIntensity\n\
-#define pEnvRoomSize pTexEnvRoomSize\n\
-#define pEnvRoomEmissivityIntensity pTexEnvRoomEmissivityIntensity\n\
-#define pVariationEnableScale pTexVariationEnableScale\n\
-#define SAMPLER_2D sampler2D\n\
-	#define TEXTURE(s,tc) texture(s, tc)\n\
-uniform SAMPLER_2D texColor;\n\
-	uniform SAMPLER_2D texNormal;\n\
-	uniform SAMPLER_2D texReflectivity;\n\
-		uniform sampler2D texEnvMap;\n\
-in vec2 vTCColor;\n\
-in vec2 vTCNormal;\n\
-in vec2 vTCReflectivity;\n\
-in vec3 vNormal;\n\
-	in vec3 vTangent;\n\
-	in vec3 vBitangent;\n\
-	in vec3 vReflectDir;\n\
-		layout(location=0) out vec4 outDiffuse; \n\
-		layout(location=1) out vec4 outNormal; \n\
-		layout(location=2) out vec4 outReflectivity; \n\
-layout(location=3) out vec4 outColor; \n\
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); \n\
-const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );\n\
-#define reliefMapping(tc,normal)\n\
-void main( void ){\n\
-	vec4 outRoughness;\n\
-	vec4 outAOSolidity;\n\
-	vec4 outSubSurface;\n\
-		vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); \n\
-			vec2 tcReliefMapped = vTCColor;\n\
-		reliefMapping( tcReliefMapped, realNormal );\n\
-#define tcColor tcReliefMapped\n\
-#define tcNormal tcReliefMapped\n\
-#define tcReflectivity tcReliefMapped\n\
-	vec4 color = TEXTURE( texColor, tcColor );\n\
-	color.a *= pTransparencyMultiplier; \n\
-		float solidity = 1.0;\n\
-		vec4 normal = TEXTURE( texNormal, tcNormal );\n\
-		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );\n\
-		float ao = 1.0;\n\
-		vec4 reflectivity = TEXTURE( texReflectivity, tcReflectivity );\n\
-		float roughness = reflectivity.w;\n\
-		color.rgb = pow( color.rgb, vec3( pColorGamma ) );\n\
-			color.rgb *= pColorTint;\n\
-	color.a *= solidity;\n\
-		outDiffuse = color;\n\
-		outColor = color * pAmbient;\n\
-	ao = pow( ao, pColorGamma ); \n\
-		normal.xyz = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );\n\
-		normal.xyz = ( normal.xyz - realNormal ) * vec3( pNormalStrength ) + realNormal;\n\
-		normal.w *= abs( pNormalStrength );\n\
-	if( dot( normal.xyz, normal.xyz ) < 1e-6 ){\n\
-		normal = vec4( 0.0, 0.0, 1.0, 0.0 );\n\
-	}\n\
-	normal.xyz = normalize( normal.xyz );\n\
-			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );\n\
-		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );\n\
-		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );\n\
-			roughness = clamp( roughness * pRoughnessRemap.x + pRoughnessRemap.y, 0.0, 1.0 );\n\
-		roughness = min( roughness + normal.w * pNorRoughCorrStrength, 1.0 ); \n\
-		vec3 fragmentDirection = normalize( vReflectDir );\n\
-		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );\n\
-		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );\n\
-		vec3 fresnelReduction = mix( reflectivity.rgb, vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );\n\
-		fresnelReduction *= vec3( clamp( ( acos( 1.0 - ao ) + roughness * 1.5707963 - acos( reflectDot ) + 0.01 ) / max( roughness * 3.14159265, 0.01 ), 0.0, 1.0 ) );\n\
-		vec3 fresnelFactor = vec3( clamp( pow( 1.0 - reflectDot, 5.0 ), 0.0, 1.0 ) );\n\
-		vec3 envMapReflectivity = mix( reflectivity.rgb, vec3( 1.0 ), vec3( fresnelFactor ) ) * fresnelReduction * vec3( solidity );\n\
-		if( pSkinDoesReflections ){\n\
-			float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );\n\
-				envMapDir = normalize( envMapDir );\n\
-				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );\n\
-			vec3 reflectedColor = textureLod( texEnvMap, tcEnvMap, envMapLodLevel ).rgb;\n\
-			outColor.rgb += reflectedColor * envMapReflectivity;\n\
-		}\n\
-		outReflectivity = vec4( reflectivity.rgb, color.a );\n\
-		outRoughness = vec4( roughness, 1.0, 1.0, color.a );\n\
-		outAOSolidity = vec4( ao, 1.0, solidity, color.a );\n\
-		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );\n\
-		}\n\
-";
-	
-	if( strcmp( preprocessor.GetSources(), hack1 ) == 0 ){
-		renderThread.GetLogger().LogInfo( "Sources match hack1" );
-		
-	}else if( strcmp( preprocessor.GetSources(), hack2 ) == 0 ){
-		renderThread.GetLogger().LogInfo( "Sources match hack2" );
-		
-		const char * const replaceHack =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform TextureParameters{\n\
-	vec4 pValueColorTransparency; \n\
-	vec4 pValueNormal; \n\
-	vec4 pValueReflectivityRoughness; \n\
-	vec2 pValueRefractionDistort; \n\
-	float pValueSolidity; \n\
-	float pValueAO; \n\
-	vec3 pTexColorTint; \n\
-	float pTexColorGamma; \n\
-	float pTexColorSolidityMultiplier; \n\
-	float pTexAOSolidityMultiplier; \n\
-	float pTexSolidityMultiplier; \n\
-	float pTexAbsorptionRange; \n\
-	vec2 pTexHeightRemap; \n\
-	float pTexNormalStrength; \n\
-	float pTexNormalSolidityMultiplier; \n\
-	vec2 pTexRoughnessRemap; \n\
-	float pTexRoughnessGamma; \n\
-	float pTexRoughnessSolidityMultiplier; \n\
-	vec2 pTexEnvRoomSize; \n\
-	float pTexRefractionDistortStrength; \n\
-	float pTexReflectivitySolidityMultiplier; \n\
-	vec3 pTexEnvRoomEmissivityIntensity; \n\
-	float pTexTransparencyMultiplier; \n\
-	vec3 pTexEmissivityIntensity; \n\
-	float pTexThickness; \n\
-	vec2 pTexVariationEnableScale; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-#define pColorTint pTexColorTint\n\
-#define pColorGamma pTexColorGamma\n\
-#define pColorSolidityMultiplier pTexColorSolidityMultiplier\n\
-#define pAOSolidityMultiplier pTexAOSolidityMultiplier\n\
-#define pTransparencyMultiplier pTexTransparencyMultiplier\n\
-#define pSolidityMultiplier pTexSolidityMultiplier\n\
-#define pHeightRemap pTexHeightRemap\n\
-#define pNormalStrength pTexNormalStrength\n\
-#define pNormalSolidityMultiplier pTexNormalSolidityMultiplier\n\
-#define pRoughnessRemap pTexRoughnessRemap\n\
-#define pRoughnessGamma pTexRoughnessGamma\n\
-#define pRoughnessSolidityMultiplier pTexRoughnessSolidityMultiplier\n\
-#define pReflectivitySolidityMultiplier pTexReflectivitySolidityMultiplier\n\
-#define pRefractionDistortStrength pTexRefractionDistortStrength\n\
-#define pEmissivityIntensity pTexEmissivityIntensity\n\
-#define pEnvRoomSize pTexEnvRoomSize\n\
-#define pEnvRoomEmissivityIntensity pTexEnvRoomEmissivityIntensity\n\
-#define pVariationEnableScale pTexVariationEnableScale\n\
-#define SAMPLER_2D sampler2D\n\
-	#define TEXTURE(s,tc) texture(s, tc)\n\
-uniform SAMPLER_2D texColor;\n\
-	uniform SAMPLER_2D texNormal;\n\
-	uniform SAMPLER_2D texReflectivity;\n\
-		uniform sampler2D texEnvMap;\n\
-in vec2 vTCColor;\n\
-in vec2 vTCNormal;\n\
-in vec2 vTCReflectivity;\n\
-in vec3 vNormal;\n\
-	in vec3 vTangent;\n\
-	in vec3 vBitangent;\n\
-	in vec3 vReflectDir;\n\
-		layout(location=0) out vec4 outDiffuse; \n\
-		layout(location=1) out vec4 outNormal; \n\
-		layout(location=2) out vec4 outReflectivity; \n\
-layout(location=3) out vec4 outColor; \n\
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); \n\
-const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );\n\
-#define reliefMapping(tc,normal)\n\
-void main( void ){\n\
-// 	vec4 outRoughness;\n\
-// 	vec4 outAOSolidity;\n\
-// 	vec4 outSubSurface;\n\
-		vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); \n\
-			vec2 tcReliefMapped = vTCColor;\n\
-		reliefMapping( tcReliefMapped, realNormal );\n\
-#define tcColor tcReliefMapped\n\
-#define tcNormal tcReliefMapped\n\
-#define tcReflectivity tcReliefMapped\n\
-	vec4 color = TEXTURE( texColor, tcColor );\n\
-	color.a *= pTransparencyMultiplier; \n\
-		float solidity = 1.0;\n\
-		vec4 normal = TEXTURE( texNormal, tcNormal );\n\
-		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );\n\
-		float ao = 1.0;\n\
-		vec4 reflectivity = TEXTURE( texReflectivity, tcReflectivity );\n\
-		float roughness = reflectivity.w;\n\
-		color.rgb = pow( color.rgb, vec3( pColorGamma ) );\n\
-			color.rgb *= pColorTint;\n\
-	color.a *= solidity;\n\
-		outDiffuse = color;\n\
-		outColor = color * pAmbient;\n\
-	ao = pow( ao, pColorGamma /*float(pColorGamma)*/ ); \n\
-/*		normal.xyz = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );\n\
-		normal.xyz = ( normal.xyz - realNormal ) * vec3( pNormalStrength ) + realNormal;\n\
-		normal.w *= abs( pNormalStrength );\n\
-	if( dot( normal.xyz, normal.xyz ) < 1e-6 ){\n\
-		normal = vec4( 0.0, 0.0, 1.0, 0.0 );\n\
-	}\n\
-	normal.xyz = normalize( normal.xyz );\n\
-			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );\n\
-		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );\n\
-		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );\n\
-			roughness = clamp( roughness * pRoughnessRemap.x + pRoughnessRemap.y, 0.0, 1.0 );\n\
-		roughness = min( roughness + normal.w * pNorRoughCorrStrength, 1.0 ); \n\
-		vec3 fragmentDirection = normalize( vReflectDir );\n\
-		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );\n\
-		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );\n\
-		vec3 fresnelReduction = mix( reflectivity.rgb, vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );\n\
-		fresnelReduction *= vec3( clamp( ( acos( 1.0 - ao ) + roughness * 1.5707963 - acos( reflectDot ) + 0.01 ) / max( roughness * 3.14159265, 0.01 ), 0.0, 1.0 ) );\n\
-		vec3 fresnelFactor = vec3( clamp( pow( 1.0 - reflectDot, 5.0 ), 0.0, 1.0 ) );\n\
-		vec3 envMapReflectivity = mix( reflectivity.rgb, vec3( 1.0 ), vec3( fresnelFactor ) ) * fresnelReduction * vec3( solidity );\n\
-		if( pSkinDoesReflections ){\n\
-			float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );\n\
-				envMapDir = normalize( envMapDir );\n\
-				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );\n\
-			vec3 reflectedColor = textureLod( texEnvMap, tcEnvMap, envMapLodLevel ).rgb;\n\
-			outColor.rgb += reflectedColor * envMapReflectivity;\n\
-		}\n\
-*/		outReflectivity = vec4( reflectivity.rgb, color.a );\n\
-// 		outRoughness = vec4( roughness, 1.0, 1.0, color.a );\n\
-// 		outAOSolidity = vec4( ao, 1.0, solidity, color.a );\n\
-// 		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );\n\
-		}\n\
-";
-		
-		preprocessor.Clear();
-		preprocessor.SourcesAppend( replaceHack, false );
-	}
-}
-
 void deoglShaderLanguage::pAppendPreprocessSourcesBuffer(
 const char *inputFile, const char *data, const deoglShaderBindingList *outputList ){
 	if( ! outputList ){
 		pPreprocessor.SourcesAppendProcessed( data, inputFile );
-		specialHack( pRenderThread, pPreprocessor );
 		return;
 	}
 	
@@ -1316,7 +878,6 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 	tempSources += tempTemp;
 	
 	pPreprocessor.SourcesAppendProcessed( tempSources.GetString(), inputFile );
-	specialHack( pRenderThread, pPreprocessor );
 }
 
 #else
@@ -1426,6 +987,32 @@ void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
 		}
 	}
 #endif
+}
+
+void deoglShaderLanguage::pLogFailedShaderSources(){
+	pRenderThread.GetLogger().LogError( ">>> Sources >>>" );
+	
+	const decStringList lines( decString( pPreprocessor.GetSources() ).Split( "\n" ) );
+	int i, count = lines.GetCount();
+	decString lastMapping;
+	
+	for( i=0; i<count; i++ ){
+		const deoglShaderSourceLocation * const location = pPreprocessor.ResolveSourceLocation( i + 1 );
+		int mapLine = -1;
+		
+		if( location ){
+			mapLine = location->GetInputLine();
+			
+			if( location->GetInputFile() != lastMapping ){
+				pRenderThread.GetLogger().LogErrorFormat( "@@@ %s", location->GetInputFile().GetString() );
+				lastMapping = location->GetInputFile();
+			}
+		}
+		
+		pRenderThread.GetLogger().LogErrorFormat( "%d[%d]: %s", i + 1, mapLine, lines.GetAt( i ).GetString() );
+	}
+	
+	pRenderThread.GetLogger().LogError( "<<< End Sources <<<" );
 }
 
 void deoglShaderLanguage::pPrintErrorLog(){
