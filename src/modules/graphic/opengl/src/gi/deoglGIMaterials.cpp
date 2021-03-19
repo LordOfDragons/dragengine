@@ -97,6 +97,13 @@ void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
 	}
 }
 
+deoglTexUnitsConfig *deoglGIMaterials::GetTUC( int materialIndex ) const{
+	if( materialIndex < 1 || materialIndex >= pTUCs.GetCount() ){
+		return NULL;
+	}
+	return ( deoglTexUnitsConfig* )pTUCs.GetAt( materialIndex );
+}
+
 
 
 // Private Functions
@@ -111,15 +118,15 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
 	
-	pTexDiffuse.SetFBOFormat( 4, false );
+	pTexDiffuse.SetFBOFormat( 4, false ); // change to "diffuse + solidity"
 	pTexDiffuse.SetSize( size, size );
 	pTexDiffuse.CreateTexture();
 	
-	pTexReflectivity.SetFBOFormat( 4, false );
+	pTexReflectivity.SetFBOFormat( 4, false ); // perhaps RGBA4 to use 50% memory
 	pTexReflectivity.SetSize( size, size );
 	pTexReflectivity.CreateTexture();
 	
-	pTexEmissivity.SetFBOFormat( 4, true );
+	pTexEmissivity.SetFBOFormat( 4, true ); // annoying. we only need RGB16F and A1
 	pTexEmissivity.SetSize( size, size );
 	pTexEmissivity.CreateTexture();
 	
@@ -154,4 +161,6 @@ void deoglGIMaterials::pEnlarge(){
 	pMaterialsPerRow *= 2;
 	pRowsPerImage *= 2;
 	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+	
+	// scale images down
 }

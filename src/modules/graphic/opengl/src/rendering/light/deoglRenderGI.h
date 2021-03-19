@@ -101,6 +101,9 @@ public:
 	/** \brief Render materials. */
 	void RenderMaterials( deoglRenderPlan &plan );
 	
+	/** \brief Render all materials. */
+// 	void RenderAllMaterials();
+	
 	/** \brief Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
 	

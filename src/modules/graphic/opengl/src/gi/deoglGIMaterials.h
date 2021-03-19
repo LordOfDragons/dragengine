@@ -107,6 +107,9 @@ public:
 	/** Add texture units configuration. Assigns material slot to "tuc". */
 	void AddTUC( deoglTexUnitsConfig *tuc );
 	
+	/** Texture units configuration assigned to slot or NULL. */
+	deoglTexUnitsConfig *GetTUC( int materialIndex ) const;
+	
 	
 	
 	/**
