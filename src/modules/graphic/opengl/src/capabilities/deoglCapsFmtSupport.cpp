@@ -214,10 +214,11 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseTex2DFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Textures!",
@@ -251,10 +252,10 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 10 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
-		eutfDepth, eutfDepth16 };
+	const int required[ 14 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S, eutfDepth, eutfDepth16 };
 	
-	for( p=0; p<10; p++ ){
+	for( p=0; p<14; p++ ){
 		if( ! pUseTexCubeFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for Cube-Textures!",
@@ -288,10 +289,11 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseArrTexFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Array-Textures!",
@@ -327,10 +329,11 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseFBOTex2DFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Textures!",
@@ -353,7 +356,8 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
 	// find a format to use for the list of possible types
 	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
 		if( ! pUseFBOTexCubeFormats[ vTestProgram[ p ].target ] ){
-			pUseFBOTexCubeFormats[ vTestProgram[ p ].target ] = pFoundFBOTexCubeFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
+			pUseFBOTexCubeFormats[ vTestProgram[ p ].target ] =
+				pFoundFBOTexCubeFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
 		}
 	}
 	
@@ -364,10 +368,10 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
-		eutfDepth, eutfDepth16 };
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S, eutfDepth, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseFBOTexCubeFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO Cube-Textures!",
@@ -390,7 +394,8 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 	// find a format to use for the list of possible types
 	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
 		if( ! pUseFBOArrTexFormats[ vTestProgram[ p ].target ] ){
-			pUseFBOArrTexFormats[ vTestProgram[ p ].target ] = pFoundFBOArrTexFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
+			pUseFBOArrTexFormats[ vTestProgram[ p ].target ] =
+				pFoundFBOArrTexFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
 		}
 	}
 	
@@ -402,10 +407,11 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 	
 	// verify that all required formats are found
 	#ifndef ANDROID
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseFBOArrTexFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Array-Textures!",
@@ -428,7 +434,8 @@ void deoglCapsFmtSupport::pDetectRenBufFormats( GLuint fbo ){
 	// find a format to use for the list of possible types
 	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
 		if( ! pUseRenBufFormats[ vTestProgram[ p ].target ] ){
-			pUseRenBufFormats[ vTestProgram[ p ].target ] = pFoundRenBufFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
+			pUseRenBufFormats[ vTestProgram[ p ].target ] =
+				pFoundRenBufFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
 		}
 	}
 	
@@ -439,10 +446,11 @@ void deoglCapsFmtSupport::pDetectRenBufFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F, eutfRGBA8, eutfRGBA16F,
+	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<11; p++ ){
+	for( p=0; p<15; p++ ){
 		if( ! pUseRenBufFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for Renderbuffers!",

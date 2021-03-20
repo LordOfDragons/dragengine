@@ -53,6 +53,8 @@ public:
 		eutfR16I,
 		eutfR8UI,
 		eutfR16UI,
+		eutfR8_S,
+		eutfR16_S,
 		
 		eutfRG8,
 		eutfRG16,
@@ -63,6 +65,8 @@ public:
 		eutfRG16I,
 		eutfRG8UI,
 		eutfRG16UI,
+		eutfRG8_S,
+		eutfRG16_S,
 		
 		eutfR3G3B2,
 		eutfRGB4,
@@ -77,6 +81,8 @@ public:
 		eutfRGB16I,
 		eutfRGB8UI,
 		eutfRGB16UI,
+		eutfRGB8_S,
+		eutfRGB16_S,
 		
 		eutfRGBA2,
 		eutfRGBA4,
@@ -91,6 +97,8 @@ public:
 		eutfRGBA16I,
 		eutfRGBA8UI,
 		eutfRGBA16UI,
+		eutfRGBA8_S,
+		eutfRGBA16_S,
 		
 		eutfDepth,
 		eutfDepth_Stencil,

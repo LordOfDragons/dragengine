@@ -95,6 +95,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfR8UI, "R 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfR16I, "R 16 Integral" },
 	{ deoglCapsFmtSupport::eutfR16UI, "R 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfR8_S, "R 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfR16_S, "R 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfRG8, "RG 8" },
 	{ deoglCapsFmtSupport::eutfRG16, "RG 16" },
@@ -105,6 +107,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRG8UI, "RG 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRG16I, "RG 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRG16UI, "RG 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRG8_S, "RG 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRG16_S, "RG 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfR3G3B2, "RGB 3-3-2" },
 	{ deoglCapsFmtSupport::eutfRGB4, "RGB 4" },
@@ -119,6 +123,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRGB8UI, "RGB 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRGB16I, "RGB 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRGB16UI, "RGB 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRGB8_S, "RGB 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRGB16_S, "RGB 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfRGBA2, "RGBA 2" },
 	{ deoglCapsFmtSupport::eutfRGBA4, "RGBA 4" },
@@ -133,6 +139,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRGBA8UI, "RGBA 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRGBA16I, "RGBA 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRGBA16UI, "RGBA 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRGBA8_S, "RGBA 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRGBA16_S, "RGBA 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfDepth, "Depth" },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, "Packed Depth/Stencil" },
