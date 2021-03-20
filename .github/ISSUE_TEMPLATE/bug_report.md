@@ -21,7 +21,9 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Log Files**
-Always append log files. Without log files the team has little chance to help you. You find the log files in these locations (all log files have the extension ".log"):
+Always add log files. Without log files the team has little chance to help you. You can post them for example to https://pastebin.com and add the links.
+
+You find the log files in these locations (all log files have the extension ".log"):
 
 Drag[en]gine related (playing games, developing games):
 - Linux: ~/.config/delauncher/logs
