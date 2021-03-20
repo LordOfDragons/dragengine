@@ -838,7 +838,7 @@ void deoglRenderLight::pCleanUp(){
 	}
 	
 	if( pDebugInfoSolid ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoSolid );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoSolid );
 		pDebugInfoSolid->FreeReference();
 	}
 	if( pDebugInfoSolidCopyDepth ){
@@ -852,7 +852,7 @@ void deoglRenderLight::pCleanUp(){
 	}
 	
 	if( pDebugInfoTransparent ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoTransparent );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoTransparent );
 		pDebugInfoTransparent->FreeReference();
 	}
 	if( pDebugInfoTransparentCopyDepth ){

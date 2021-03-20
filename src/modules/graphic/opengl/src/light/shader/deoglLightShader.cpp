@@ -549,6 +549,10 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
 		break;
 		
+	case deoglLightShaderConfig::emnmFloatBasic:
+		defines.AddDefine( "MATERIAL_NORMAL_FLOATBASIC", "1" );
+		break;
+		
 	case deoglLightShaderConfig::emnmSpheremap:
 		defines.AddDefine( "MATERIAL_NORMAL_SPHEREMAP", "1" );
 		break;

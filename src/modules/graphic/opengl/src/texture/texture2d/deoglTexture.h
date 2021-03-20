@@ -194,6 +194,9 @@ public:
 	/** \brief Set texture format suitable for rendering to an integral texture using an FBO. */
 	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
 	
+	/** \brief Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatSNorm( int channels, int bpp );
+	
 	/** \brief Set depth texture format suitable for attaching as FBO render target. */
 	void SetDepthFormat( bool packedStencil, bool useFloat );
 	/*@}*/

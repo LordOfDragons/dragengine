@@ -87,6 +87,9 @@ public:
 		/** \brief Basic encoding for 3-component int textures. */
 		emnmIntBasic,
 		
+		/** \brief Basic encoding for 3-component float textures. */
+		emnmFloatBasic,
+		
 		/** \brief Spheremap encoding for fitting normals into a 2-component int texture. */
 		emnmSpheremap
 	};

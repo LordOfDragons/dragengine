@@ -9,8 +9,8 @@ precision highp int;
 
 
 out vec4 outPosition;
-out vec4 outNormal;
-out vec4 outDiffuse;
+out vec3 outNormal;
+out vec3 outDiffuse;
 out vec4 outReflectivity;
 out vec3 outLight;
 
@@ -38,12 +38,12 @@ void main( void ){
 	RayCastResult result;
 	if( rayCastInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, result ) ){
 		outPosition = vec4( dir * result.distance, result.distance );
-		outNormal = vec4( result.normal, 0.0 );
+		outNormal = result.normal;
 	}else{
 		outPosition = vec4( 0.0, 0.0, 0.0, 250.0 );
-		outNormal vec4( 0.0, 0.0, 1.0, 0.0 );
+		outNormal vec3( 0.0, 0.0, 1.0 );
 	}
-	outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+	outDiffuse = vec3( 1.0, 1.0, 1.0 );
 	outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 	outLight = vec3( 0.0 );
 	return;
@@ -68,20 +68,20 @@ void main( void ){
 		if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
 			outPosition = vec4( pp, result.distance );
 			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
-			outNormal = vec4( result.normal, 0.0 );
+			outNormal = result.normal;
 			
 			vec3 matDiffuse, matReflectivity, matEmissivity;
 			float matRoughness;
 			rayCastSampleMaterial(result, matDiffuse, matReflectivity, matRoughness, matEmissivity);
 			
-			outDiffuse = vec4( matDiffuse, 1.0 );
+			outDiffuse = matDiffuse;
 			outReflectivity = vec4( matReflectivity, matRoughness );
 			outLight = vec3( matEmissivity );
 			
 		}else{
 			outPosition = vec4( pp, 10000.0 );
-			outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
-			outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+			outNormal = vec3( 0.0, 0.0, 1.0 );
+			outDiffuse = vec3( 1.0, 1.0, 1.0 );
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 			outLight = vec3( 0.0 );
 		}
@@ -110,13 +110,13 @@ void main( void ){
 		outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
 		
 		outPosition.w = length( outPosition.xyz - position );
-		outNormal = vec4( result.normal, 0.0 );
+		outNormal = result.normal;
 		
 		vec3 matDiffuse, matReflectivity, matEmissivity;
 		float matRoughness;
 		rayCastSampleMaterial( result, matDiffuse, matReflectivity, matRoughness, matEmissivity );
 		
-		outDiffuse = vec4( matDiffuse, 1.0 );
+		outDiffuse = matDiffuse;
 		outReflectivity = vec4( matReflectivity, matRoughness );
 		outLight = vec3( matEmissivity );
 		
@@ -124,8 +124,8 @@ void main( void ){
 		// we can not store simply the position here since later code calculates the
 		// ray direction using this hit point. anything can go here in the end
 		outPosition = vec4( position + direction, 10000.0 );
-		outNormal = vec4( 0.0, 0.0, 1.0, 0.0 );
-		outDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+		outNormal = vec3( 0.0, 0.0, 1.0 );
+		outDiffuse = vec3( 1.0, 1.0, 1.0 );
 		outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
 		outLight = vec3( 0.0 );
 	}

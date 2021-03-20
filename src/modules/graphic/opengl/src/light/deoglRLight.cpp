@@ -1127,7 +1127,7 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	default:
-		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloatBasic );
 	}
 	
 	return true;

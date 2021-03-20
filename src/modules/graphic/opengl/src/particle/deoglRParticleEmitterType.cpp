@@ -384,7 +384,7 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	
 	config.Reset();
 	
-	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
+	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloatBasic );
 	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	
 	config.SetLightMode( deoglLightShaderConfig::elmParticle );

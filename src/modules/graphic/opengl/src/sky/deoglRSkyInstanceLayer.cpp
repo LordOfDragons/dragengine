@@ -229,7 +229,7 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 		break;
 		
 	default:
-		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
+		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloatBasic );
 		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	}

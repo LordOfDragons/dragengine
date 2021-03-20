@@ -53,7 +53,7 @@ void deoglLightShaderConfig::Reset(){
 	pShadowTapMode = estmSingle;
 	pShadowMappingAlgorithm1 = esma2D;
 	pShadowMappingAlgorithm2 = esma2D;
-	pMaterialNormalMode = emnmIntBasic;
+	pMaterialNormalMode = emnmFloatBasic;
 	pParticleMode = epmParticle;
 	
 	pDecodeInDepth = false;

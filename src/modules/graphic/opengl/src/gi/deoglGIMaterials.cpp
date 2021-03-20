@@ -74,11 +74,20 @@ deoglGIMaterials::~deoglGIMaterials(){
 ///////////////
 
 void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
-	if( ! tuc || tuc->GetMaterialIndex() != -1 ){
+	if( ! tuc || tuc->GetMaterialIndex() != -1 || tuc->GetUsageCount() == 0 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int index = pTUCs.GetCount();
+	int index = pFirstUnusedMaterial();
+	if( index != -1 ){
+		deoglTexUnitsConfig * const unusedTuc = ( deoglTexUnitsConfig* )pTUCs.GetAt( index );
+		unusedTuc->SetMaterialIndex( -1 );
+		pTUCs.SetAt( index, tuc );
+		tuc->SetMaterialIndex( index );
+		return;
+	}
+	
+	index = pTUCs.GetCount();
 	if( index > 16383 ){
 		// fallback. not nice but better than causing troubles
 		tuc->SetMaterialIndex( 0 );
@@ -118,6 +127,18 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
 	
+	// GPU RAM consumption (size 2048 squared):
+	// - diffuse: 16M
+	// - reflectivity: 16M
+	// - emissivity: 32M
+	// total: 67M
+	// 
+	// by using smaller format:
+	// - diffuse (RGBA4 or RGB555A1): 8M
+	// - reflectivity (RGBA4): 8M
+	// - emissivity (RG11B10): 16M
+	// - solidity (R8): 4M
+	// total: 37M
 	pTexDiffuse.SetFBOFormat( 4, false ); // change to "diffuse + solidity"
 	pTexDiffuse.SetSize( size, size );
 	pTexDiffuse.CreateTexture();
@@ -163,4 +184,17 @@ void deoglGIMaterials::pEnlarge(){
 	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
 	
 	// scale images down
+}
+
+int deoglGIMaterials::pFirstUnusedMaterial() const{
+	const int count = pTUCs.GetCount();
+	int i;
+	
+	for( i=1; i<count; i++ ){
+		if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetUsageCount() == 0 ){
+			return i;
+		}
+	}
+	
+	return -1;
 }

@@ -481,7 +481,7 @@ void main( void ){
 	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#ifdef MATERIAL_NORMAL_INTBASIC
+			#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
 				outNormal = vec4( 0.0, 0.0, 0.0, 0.0 );
 			#endif
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
@@ -564,7 +564,7 @@ void main( void ){
 		normal.xyz = normalize( normal.xyz );
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			#ifdef WITH_OUTLINE
-				#ifdef MATERIAL_NORMAL_INTBASIC
+				#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
 					outNormal = vec4( 0.5, 0.5, 0.5, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
 				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
 					outNormal = vec4( 0.5, 0.5, 0.0, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
@@ -572,7 +572,7 @@ void main( void ){
 					outNormal = vec4( 0.0, 0.0, 0.0, color.a ); // vec4( 0.0, 0.0, -1.0, color.a );
 				#endif
 			#else
-				#ifdef MATERIAL_NORMAL_INTBASIC
+				#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
 					outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
 				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
 					float f = sqrt( 8.0001 - 7.9999 * normal.z );

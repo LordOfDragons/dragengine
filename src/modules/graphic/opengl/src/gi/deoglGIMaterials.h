@@ -150,6 +150,7 @@ private:
 	void pCleanUp();
 	void pCreateFBOMaterial();
 	void pEnlarge();
+	int pFirstUnusedMaterial() const;
 };
 
 #endif

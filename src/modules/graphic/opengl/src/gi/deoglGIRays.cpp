@@ -93,11 +93,11 @@ void deoglGIRays::pCreateFBORay(){
 	pTexPosition.SetSize( width, height );
 	pTexPosition.CreateTexture();
 	
-	pTexNormal.SetFBOFormat( 4, true );
+	pTexNormal.SetFBOFormatSNorm( 3, 8 );
 	pTexNormal.SetSize( width, height );
 	pTexNormal.CreateTexture();
 	
-	pTexDiffuse.SetFBOFormat( 4, false );
+	pTexDiffuse.SetFBOFormat( 3, false );
 	pTexDiffuse.SetSize( width, height );
 	pTexDiffuse.CreateTexture();
 	

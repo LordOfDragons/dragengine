@@ -930,6 +930,59 @@ void deoglTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned
 	}
 }
 
+void deoglTexture::SetFBOFormatSNorm( int channels, int bpp ){
+	switch( bpp ){
+	case 8:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	case 16:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
 void deoglTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
 	if( packedStencil ){
 		if( useFloat ){
