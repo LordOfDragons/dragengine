@@ -219,6 +219,8 @@ const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
 	//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 #endif
 
+#include "v130/shared/normal.glsl"
+
 
 // functions required to be define last because they are based on stuff defined above
 #ifdef WITH_VARIATIONS
@@ -481,9 +483,7 @@ void main( void ){
 	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
-				outNormal = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#endif
+			outNormal = vec4( normalZeroMaterial, 0.0 );
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
 			outRoughness = vec4( 0.0, 1.0, 1.0, 0.0 );
 		#endif
@@ -564,22 +564,9 @@ void main( void ){
 		normal.xyz = normalize( normal.xyz );
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			#ifdef WITH_OUTLINE
-				#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
-					outNormal = vec4( 0.5, 0.5, 0.5, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					outNormal = vec4( 0.5, 0.5, 0.0, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#else
-					outNormal = vec4( 0.0, 0.0, 0.0, color.a ); // vec4( 0.0, 0.0, -1.0, color.a );
-				#endif
+				outNormal = vec4( normalZeroMaterial, color.a );
 			#else
-				#if defined MATERIAL_NORMAL_INTBASIC || defined MATERIAL_NORMAL_FLOATBASIC
-					outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					float f = sqrt( 8.0001 - 7.9999 * normal.z );
-					outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
-				#else
-					outNormal = vec4( normal.xyz, color.a );
-				#endif
+				outNormal = vec4( normalEncodeMaterial( normal.xyz ), color.a );
 				#ifdef SOLIDITY_MULTIPLIER
 					outNormal.a *= pNormalSolidityMultiplier;
 				#endif

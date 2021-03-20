@@ -263,6 +263,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	#endif
 #endif
 
+#include "v130/shared/normal.glsl"
 
 
 // Macros to increase readability and extendibility
@@ -820,18 +821,7 @@ void main( void ){
 	#endif
 	
 	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );
-	#elif defined MATERIAL_NORMAL_FLOATBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 );
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
+	vec3 normal = normalLoadMaterial( texNormal, tc );
 	
 	#ifdef GI_RAY
 		normal = normal * pGIRayMatrixNormal; // requires matrix transpose done by reversed order
