@@ -41,7 +41,9 @@ If applicable, add screenshots to help explain your problem.
 **Hardware Information**
 Add information relevant for the problem hence for graphic problems add GPU information, for sound problems sound card related information.
 
-For Linux please add also the output of "glxinfo -B". For Windows please add the output of an appropriate tool, for example https://github.com/gkv311/wglinfo/releases .
+For Linux please add also the output of "glxinfo -B".
+
+For Windows please add the output of an appropriate tool, for example https://github.com/gkv311/wglinfo/releases .
 
 Optionally append hardware listing information of appropriate tools you have at hand. Anything is better than nothing.
 
