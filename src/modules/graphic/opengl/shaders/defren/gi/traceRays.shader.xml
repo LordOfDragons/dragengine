@@ -4,19 +4,18 @@
 	
 	<version>130</version>
 	
-	<texture name='tboNodeBox' target='0'/>
-	<texture name='tboIndex' target='1'/>
-	<texture name='tboInstance' target='2'/>
-	<texture name='tboMatrix' target='3'/>
-	<texture name='tboFace' target='4'/>
-	<texture name='tboVertex' target='5'/>
-	<texture name='tboTexCoord' target='6'/>
-	<texture name='tboMaterial' target='7'/>
-	<texture name='tboMaterial2' target='8'/>
-	
-	<texture name='texMaterialDiffuse' target='9'/>
-	<texture name='texMaterialReflectivity' target='10'/>
-	<texture name='texMaterialEmissivity' target='11'/>
+	<texture name='tboGIRayCastNodeBox' target='0'/>
+	<texture name='tboGIRayCastIndex' target='1'/>
+	<texture name='tboGIRayCastInstance' target='2'/>
+	<texture name='tboGIRayCastMatrix' target='3'/>
+	<texture name='tboGIRayCastFace' target='4'/>
+	<texture name='tboGIRayCastVertex' target='5'/>
+	<texture name='tboGIRayCastTexCoord' target='6'/>
+	<texture name='tboGIRayCastMaterial' target='7'/>
+	<texture name='tboGIRayCastMaterial2' target='8'/>
+	<texture name='tboGIRayCastMaterialDiffuse' target='9'/>
+	<texture name='tboGIRayCastMaterialReflectivity' target='10'/>
+	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
 	
 	<uniformBlock name='GIParameters' target='0'/>
 	

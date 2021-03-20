@@ -157,12 +157,11 @@ decVector deoglRayTraceField::Coord2Position( const decPoint3 &coord ) const{
 
 
 void deoglRayTraceField::RenderField( deoglROcclusionMesh &occlusionMesh ){
-	return;
-// 	pRenderThread.GetGI().PrepareRayTracing( occlusionMesh );
-	pPrepareRayTexFBO();
-	pPrepareUBOState();
-	pRenderThread.GetRenderers().GetLight().GetRenderGI().TraceRays( *this );
-	DropFBO();
+// // 	pRenderThread.GetGI().PrepareRayTracing( occlusionMesh );
+// 	pPrepareRayTexFBO();
+// 	pPrepareUBOState();
+// 	pRenderThread.GetRenderers().GetLight().GetRenderGI().TraceRays( *this );
+// 	DropFBO();
 }
 
 void deoglRayTraceField::DropFBO(){

@@ -36,7 +36,6 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../occlusiontest/deoglOcclusionTracingState.h"
 
 #include <dragengine/common/exceptions.h>
 

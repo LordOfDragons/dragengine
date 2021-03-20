@@ -44,8 +44,6 @@
 #include "../../light/deoglRLight.h"
 #include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../light/shader/deoglLightShader.h"
-#include "../../occlusiontest/deoglOcclusionTracing.h"
-#include "../../occlusiontest/deoglOcclusionTracingState.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -688,39 +686,6 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
 				plan.GetProjectionMatrix() );
 		}
-		
-		// occlusion tracing
-		/*
-		const deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
-		if( tracingState ){
-			const deoglOcclusionTracing &tracing = tracingState->GetTracing();
-			
-			const decDMatrix matrix( plan.GetInverseCameraMatrix()
-				* decDMatrix::CreateTranslation( -( tracingState->GetPosition() + tracing.GetProbeOrigin() ) ) );
-			
-			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, true );
-			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutOTMatrix, matrix );
-			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutOTMatrixNormal, matrix.GetRotationMatrix().QuickInvert() );
-			
-			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeCount, tracing.GetProbeCount() );
-			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTProbeClamp, tracing.GetGridCoordClamp() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacing, tracing.GetProbeSpacing() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTProbeSpacingInv, tracing.GetProbeSpacingInverse() );
-			pLightPB->SetParameterDataVec3( deoglLightShader::erutOTPositionClamp, tracing.GetPositionClamp() );
-			pLightPB->SetParameterDataIVec3( deoglLightShader::erutOTGridCoordShift,
-				tracing.GetProbeCount() - tracingState->GetGridCoordShift() );
-			
-			pLightPB->SetParameterDataInt( deoglLightShader::erutOTOcclusionMapSize, tracing.GetOcclusionMapSize() );
-			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTOcclusionMapScale, tracing.GetOcclusionMapScale() );
-			pLightPB->SetParameterDataInt( deoglLightShader::erutOTDistanceMapSize, tracing.GetDistanceMapSize() );
-			pLightPB->SetParameterDataVec2( deoglLightShader::erutOTDistanceMapScale, tracing.GetDistanceMapScale() );
-			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTNormalBias, tracing.GetNormalBias() );
-			pLightPB->SetParameterDataFloat( deoglLightShader::erutOTEnergyPreservation, tracing.GetEnergyPreservation() );
-			
-		}else{
-		*/
-			pLightPB->SetParameterDataBool( deoglLightShader::erutOTEnabled, false );
-		//}
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();

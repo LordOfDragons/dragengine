@@ -5,7 +5,9 @@ precision highp int;
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 
 #include "v130/shared/octahedral.glsl"
-#include "v130/shared/raycasting.glsl"
+
+#include "v130/shared/defren/gi/raycast_material.glsl"
+#include "v130/shared/defren/gi/raycast_trace.glsl"
 
 
 out vec4 outPosition;
@@ -35,8 +37,8 @@ void main( void ){
 	float r = cos(pc.y);
 	vec3 dir = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
 	
-	RayCastResult result;
-	if( rayCastInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, result ) ){
+	GIRayCastResult result;
+	if( giRayCastTraceInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, result ) ){
 		outPosition = vec4( dir * result.distance, result.distance );
 		outNormal = result.normal;
 	}else{
@@ -64,15 +66,17 @@ void main( void ){
 		//vec3 pp = vec3(2*(int(tc.x)/512),0,0);
 		vec3 pp = vec3(0,0,-1*(tc.x/512));
 		
-		RayCastResult result;
-		if( rayCastInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
+		GIRayCastResult result;
+		if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
 			outPosition = vec4( pp, result.distance );
 			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
 			outNormal = result.normal;
 			
 			vec3 matDiffuse, matReflectivity, matEmissivity;
 			float matRoughness;
-			rayCastSampleMaterial(result, matDiffuse, matReflectivity, matRoughness, matEmissivity);
+			
+			giRayCastMaterialAll( result.material, rayCastFaceTexCoord( result.face, result.barycentric ),
+				matDiffuse, matReflectivity, matRoughness, matEmissivity );
 			
 			outDiffuse = matDiffuse;
 			outReflectivity = vec4( matReflectivity, matRoughness );
@@ -103,9 +107,9 @@ void main( void ){
 	
 	// trace ray
 	vec3 direction = pGIRayDirection[ tc.x - firstRayOffset ];
-	RayCastResult result;
+	GIRayCastResult result;
 	if( pGIBVHInstanceRootNode != -1
-	&& rayCastInstance( pGIBVHInstanceRootNode, position, direction, result ) ){
+	&& giRayCastTraceInstance( pGIBVHInstanceRootNode, position, direction, result ) ){
 		outPosition.xyz = position + direction * result.distance;
 		outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
 		
@@ -114,7 +118,9 @@ void main( void ){
 		
 		vec3 matDiffuse, matReflectivity, matEmissivity;
 		float matRoughness;
-		rayCastSampleMaterial( result, matDiffuse, matReflectivity, matRoughness, matEmissivity );
+		
+		giRayCastMaterialAll( result.material, giRayCastFaceTexCoord( result.face, result.barycentric ),
+			matDiffuse, matReflectivity, matRoughness, matEmissivity );
 		
 		outDiffuse = matDiffuse;
 		outReflectivity = vec4( matReflectivity, matRoughness );

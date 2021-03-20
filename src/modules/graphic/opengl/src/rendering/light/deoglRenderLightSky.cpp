@@ -60,7 +60,6 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
-#include "../../occlusiontest/deoglOcclusionTracingState.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
@@ -485,21 +484,6 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	if( target != -1 ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
 	}
-	
-	/*
-	deoglOcclusionTracingState * const tracingState = plan.GetOcclusionTracingState();
-	if( tracingState ){
-		target = lightShader->GetTextureTarget( deoglLightShader::ettOTOcclusion );
-		if( target != -1 ){
-			tsmgr.EnableTexture( target, tracingState->GetTextureProbeOcclusion(), GetSamplerClampLinear() );
-		}
-		
-		target = lightShader->GetTextureTarget( deoglLightShader::ettOTDistance );
-		if( target != -1 ){
-			tsmgr.EnableTexture( target, tracingState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-		}
-	}
-	*/
 	
 	// set the ao texture
 	//tsmgr.EnableTexture( 5, *defren.GetTemporaryTexture(), deoglTextureStageManager::etfNearest, GL_CLAMP );

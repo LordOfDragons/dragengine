@@ -53,7 +53,6 @@
 #include "../gi/deoglGI.h"
 #include "../light/deoglLightBoundaryMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
-#include "../occlusiontest/deoglOcclusionTracing.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
@@ -115,7 +114,6 @@ pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
 pOcclusionTest( NULL ),
-pOcclusionTracing( NULL ),
 pGI( NULL ),
 pRenderCache( NULL ),
 pShadowMapper( NULL ),
@@ -957,7 +955,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
 	pOcclusionTest = new deoglOcclusionTest( *this );
-	pOcclusionTracing = new deoglOcclusionTracing( *this );
 	pGI = new deoglGI( *this );
 	pLightBoundarybox = new deoglLightBoundaryMap( *this, pConfiguration.GetShadowMapSize() >> 1 );
 	
@@ -1890,10 +1887,6 @@ void deoglRenderThread::pCleanUpThread(){
 		if( pGI ){
 			delete pGI;
 			pGI = NULL;
-		}
-		if( pOcclusionTracing ){
-			delete pOcclusionTracing;
-			pOcclusionTracing = NULL;
 		}
 		if( pOcclusionTest ){
 			delete pOcclusionTest;

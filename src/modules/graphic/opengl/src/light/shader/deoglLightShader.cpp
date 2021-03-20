@@ -27,7 +27,6 @@
 #include "deoglLightShaderManager.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../extensions/deoglExtensions.h"
-#include "../../occlusiontest/deoglOcclusionTracing.h"  // required for ENABLE_OCCTRACING
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTShader.h"
@@ -300,23 +299,6 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
 		spb->GetParameterAt( erutGICameraProjection ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-		
-		// occlusion tracing
-		spb->GetParameterAt( erutOTMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( erutOTMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutOTProbeCount ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-		spb->GetParameterAt( erutOTOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		spb->GetParameterAt( erutOTProbeClamp ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
-		spb->GetParameterAt( erutOTDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		spb->GetParameterAt( erutOTProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutOTEnabled ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
-		spb->GetParameterAt( erutOTProbeSpacingInv ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutOTPositionClamp ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutOTNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		spb->GetParameterAt( erutOTOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutOTDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutOTEnergyPreservation ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		spb->GetParameterAt( erutOTGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );

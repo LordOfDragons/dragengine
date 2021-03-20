@@ -35,7 +35,6 @@ class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglRSkyLayer;
 class deoglRSkyInstanceLayer;
-class deoglOcclusionTracingState;
 
 
 /**
@@ -53,12 +52,6 @@ private:
 	deoglShaderProgram *pShaderOccTestTFBDual;
 	deoglShaderProgram *pShaderOccTestTFBSun;
 	deoglShaderProgram *pShaderOccMapCube;
-	
-	deoglShaderProgram *pShaderOccTracingGenRays;
-	deoglShaderProgram *pShaderOccTracingTraceRays;
-	deoglShaderProgram *pShaderOccTracingTraceRaysStatic;
-	deoglShaderProgram *pShaderOccTracingUpdateOcclusion;
-	deoglShaderProgram *pShaderOccTracingUpdateDistance;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;
@@ -108,9 +101,6 @@ public:
 	/** Render occlusion meshes into a cube map. The position is relative to the reference position. */
 	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
 		const decDVector &position, float imageDistance, float viewDistance );
-	
-	/** \brief Sample occlusion trace probes. */
-	void RenderOcclusionTraceProbes( deoglOcclusionTracingState &tracingState );
 	/*@}*/
 	
 private:

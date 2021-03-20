@@ -82,23 +82,6 @@ public:
 		erutGIRayMatrixNormal,
 		erutGICameraProjection,
 		
-		// occlusion tracing
-		erutOTMatrix,
-		erutOTMatrixNormal,
-		erutOTProbeCount,
-		erutOTOcclusionMapSize,
-		erutOTProbeClamp,
-		erutOTDistanceMapSize,
-		erutOTProbeSpacing,
-		erutOTEnabled,
-		erutOTProbeSpacingInv,
-		erutOTNormalBias,
-		erutOTPositionClamp,
-		erutOTEnergyPreservation,
-		erutOTOcclusionMapScale,
-		erutOTDistanceMapScale,
-		erutOTGridCoordShift,
-		
 		ERUT_COUNT
 	};
 	

@@ -27,7 +27,6 @@
 #include <dragengine/deObjectReference.h>
 
 
-class deoglRayTraceField;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglGIState;
@@ -40,7 +39,6 @@ class deoglAddToRenderTaskGIMaterial;
  */
 class deoglRenderGI : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderFieldTraceRays;
 	deoglShaderProgram *pShaderTraceRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
@@ -88,9 +86,6 @@ public:
 	inline deoglAddToRenderTaskGIMaterial &GetAddToRenderTask() const{ return *pAddToRenderTask; }
 	
 	
-	
-	/** \brief Trace rays for field. */
-	void TraceRays( deoglRayTraceField &field );
 	
 	/** \brief Trace rays. */
 	void TraceRays( deoglRenderPlan &plan );

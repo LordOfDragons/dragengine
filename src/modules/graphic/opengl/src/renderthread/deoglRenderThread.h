@@ -46,7 +46,6 @@ class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
 class deoglOcclusionTest;
-class deoglOcclusionTracing;
 class deoglRCanvas;
 class deoglRenderCache;
 class deoglRRenderWindow;
@@ -125,7 +124,6 @@ private:
 	deoglLightBoundaryMap *pLightBoundarybox;
 	deoglOcclusionQueryManager *pOccQueryMgr;
 	deoglOcclusionTest *pOcclusionTest;
-	deoglOcclusionTracing *pOcclusionTracing;
 	deoglGI *pGI;
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
@@ -306,9 +304,6 @@ public:
 	
 	/** \brief Occlusion test. */
 	inline deoglOcclusionTest &GetOcclusionTest() const{ return *pOcclusionTest; }
-	
-	/** \brief Occlusion tracing. */
-	inline deoglOcclusionTracing &GetOcclusionTracing() const{ return *pOcclusionTracing; }
 	
 	/** \brief Global illumination. */
 	inline deoglGI &GetGI() const{ return *pGI; }

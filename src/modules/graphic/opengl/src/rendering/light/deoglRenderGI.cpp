@@ -40,7 +40,6 @@
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
-#include "../../gi/deoglRayTraceField.h"
 #include "../../gi/deoglGI.h"
 #include "../../gi/deoglGIBVH.h"
 #include "../../gi/deoglGIRays.h"
@@ -123,7 +122,6 @@ enum eSPDebugProbeOffset{
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
-pShaderFieldTraceRays( NULL ),
 pShaderTraceRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
@@ -144,9 +142,6 @@ pAddToRenderTask( NULL )
 	
 	try{
 		pCreateUBORenderLight();
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Field Trace Rays" );
-		pShaderFieldTraceRays = shaderManager.GetProgramWith( sources, defines );
 		
 		// trace rays
 		defines.AddDefine( "GI_PROBE_INDEX_COUNT", rays.GetProbeCount() / 4 );
@@ -229,6 +224,7 @@ deoglGIState * deoglRenderGI::GetRenderGIState( const deoglRenderPlan &plan ) co
 	return NULL;
 }
 
+#if 0
 void deoglRenderGI::TraceRays( deoglRayTraceField &field ){
 	// NOTE old FBO is restored because field FBO can be dropped after this call
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -267,6 +263,7 @@ void deoglRenderGI::TraceRays( deoglRayTraceField &field ){
 	tsmgr.DisableAllStages();
 	renderThread.GetFramebuffer().Activate( oldfbo );
 }
+#endif
 
 void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglGIState * const giState = GetUpdateGIState( plan );
@@ -901,9 +898,6 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderLightGIRay ){
 		pShaderLightGIRay->RemoveUsage();
-	}
-	if( pShaderFieldTraceRays ){
-		pShaderFieldTraceRays->RemoveUsage();
 	}
 	if( pShaderTraceRays ){
 		pShaderTraceRays->RemoveUsage();

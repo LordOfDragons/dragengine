@@ -46,7 +46,6 @@
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../occlusiontest/deoglOcclusionTracing.h"
 #include "../particle/deoglParticleSorter.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"

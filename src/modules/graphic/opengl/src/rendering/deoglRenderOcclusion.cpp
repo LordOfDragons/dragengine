@@ -46,12 +46,8 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../extensions/deoglExtensions.h"
-#include "../gi/deoglGI.h"
-#include "../gi/deoglRayTraceField.h"
 #include "../occlusiontest/deoglOcclusionMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
-#include "../occlusiontest/deoglOcclusionTracing.h"
-#include "../occlusiontest/deoglOcclusionTracingState.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
@@ -167,24 +163,6 @@ enum eSPTestTFB{
 	spttfbFrustumTestMul
 };
 
-enum eSPTracingGenRays{
-	sptgrRaysPerProbe,
-	sptgrProbeCount,
-	sptgrProbeSpacing,
-	sptgrProbesPerLine,
-	sptgrRandomOrientation
-};
-
-enum eSPTracing{
-	sptBVHInstanceRootNode
-};
-
-enum eSPTracingStatic{
-	sptsGIFieldMatrixT2F,
-	sptsGIFieldMatrixT2FNor,
-	sptsGIFieldMatrixF2T
-};
-
 static const int vCubeFaces[] = {
 	deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
 	deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
@@ -212,11 +190,6 @@ pShaderOccTestTFB( NULL ),
 pShaderOccTestTFBDual( NULL ),
 pShaderOccTestTFBSun( NULL ),
 pShaderOccMapCube( NULL ),
-pShaderOccTracingGenRays( NULL ),
-pShaderOccTracingTraceRays( NULL ),
-pShaderOccTracingTraceRaysStatic( NULL ),
-pShaderOccTracingUpdateOcclusion( NULL ),
-pShaderOccTracingUpdateDistance( NULL ),
 
 pRenderParamBlock( NULL ),
 pOccMapFrustumParamBlock( NULL ),
@@ -280,33 +253,6 @@ pAddToRenderTask( NULL )
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 		}
-		
-		
-		
-		const deoglOcclusionTracing &tracing = renderThread.GetOcclusionTracing();
-// 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Generate Rays" );
-// 		pShaderOccTracingGenRays = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "MAX_RAYS_PER_PROBE", tracing.GetMaxRaysPerProbe() );
-		defines.AddDefine( "MAX_PROBE_UPDATE_COUNT", tracing.GetMaxUpdateProbeCount() );
-		defines.AddDefine( "MAX_PROBE_INDEX_COUNT", tracing.GetMaxUpdateProbeCount() / 4 );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Trace Rays" );
-		pShaderOccTracingTraceRays = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Trace Rays Static" );
-		defines.AddDefine( "WITH_GI_FIELD", true );
-		pShaderOccTracingTraceRaysStatic = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "WITH_GI_FIELD" );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Tracing Update Maps" );
-		defines.AddDefine( "MAP_OCCLUSION", "1" );
-		pShaderOccTracingUpdateOcclusion = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "MAP_OCCLUSION" );
-		
-		defines.AddDefine( "MAP_DISTANCE", "1" );
-		pShaderOccTracingUpdateDistance = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -1367,155 +1313,6 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	}
 }
 
-void deoglRenderOcclusion::RenderOcclusionTraceProbes( deoglOcclusionTracingState &tracingState ){
-	deoglOcclusionTracing &tracing = tracingState.GetTracing();
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
-	
-	if( debugInfo.GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
-	}
-	
-	// set common states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	
-	// trace dynamic rays
-	// 
-	// BVH node count can be 0. in this case pBVHInstanceRootNode is set to -1 instead
-	// of the index of the root node. the scripts can deal with this. it is required
-	// for the scripts to run even if the BVH is empty since the ray result pixels
-	// have to be correctly initialized with the ray direction otherwise the probe
-	// update shader fails to work correctly
-	const decPoint &sampleImageSize = tracingState.GetSampleImageSize();
-	
-	defren.Resize( sampleImageSize.x, sampleImageSize.y );
-	defren.ActivateFBOColor( true, false );
-	
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderOccTracingTraceRays );
-	tracing.GetUBOTracing().Activate();
-	
-	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
-	
-	const GLfloat clearDepth = 1.0f;
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-	
-	tsmgr.EnableTBO( 0, tracing.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 1, tracing.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 2, tracing.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 3, tracing.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 4, tracing.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 5, tracing.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 5 );
-	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	
-	
-	// trace static rays
-#if 0
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LESS ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderOccTracingTraceRaysStatic );
-	deoglShaderCompiled &shaderStatic = *pShaderOccTracingTraceRaysStatic->GetCompiled();
-	
-	tracing.GetUBOTracing().Activate();
-	
-	const deoglCollideList &collideList = tracing.GetCollideList();
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -tracingState.GetPosition() ) );
-	const int count = collideList.GetComponentCount();
-	int i;
-	
-	// TODO the same ray trace field can be used by multiple components with different matrices.
-	//      this could be batched to switch textures only one and to potentially render all
-	//      instances using the same field using an instanced render call. this would require
-	//      storing the matrices in an UBO/SSBO to tap from using instance id
-	for( i=0; i<count; i++ ){
-		const deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
-		if( component.GetOcclusionMesh() ){
-			if( ! component.GetDynamicOcclusionMesh() ){
-				deoglRayTraceField * const rtfield = component.GetOcclusionMesh()->GetRayTraceField();
-				if( rtfield ){
-					rtfield->GetUBO().Activate( 1 );
-					
-					const decMatrix matrixF2T( decMatrix::CreateTranslation( rtfield->GetOrigin() )
-						* decMatrix( component.GetMatrix() * matrix ) );
-					const decMatrix matrixT2F( matrixF2T.QuickInvert() );
-					const decMatrix matrixT2FNor( matrixT2F.GetRotationMatrix().QuickInvert() );
-					
-					shaderStatic.SetParameterMatrix4x3( sptsGIFieldMatrixF2T, matrixF2T );
-					shaderStatic.SetParameterMatrix4x3( sptsGIFieldMatrixT2F, matrixT2F );
-					shaderStatic.SetParameterMatrix3x3( sptsGIFieldMatrixT2FNor, matrixT2FNor );
-					
-					tsmgr.EnableTexture( 0, rtfield->GetTextureRays(), GetSamplerClampNearest() );
-					
-					OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-				}
-			}
-		}
-	}
-#endif
-	
-	
-	// update probes: occlusion map
-	renderThread.GetFramebuffer().Activate( &tracingState.GetFBOProbeOcclusion() );
-	
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glViewport( 0, 0, tracingState.GetTextureProbeOcclusion().GetWidth(),
-		tracingState.GetTextureProbeOcclusion().GetHeight() ) );
-	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 0 );
-	
-	renderThread.GetShader().ActivateShader( pShaderOccTracingUpdateOcclusion );
-	tracing.GetUBOTracing().Activate();
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracingState.GetUpdateProbeCount() ) );
-	
-	
-	// update probes: distance map
-	renderThread.GetFramebuffer().Activate( &tracingState.GetFBOProbeDistance() );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, tracingState.GetTextureProbeDistance().GetWidth(),
-		tracingState.GetTextureProbeDistance().GetHeight() ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderOccTracingUpdateDistance );
-	tracing.GetUBOTracing().Activate();
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, tracingState.GetUpdateProbeCount() ) );
-	
-	
-	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	tsmgr.DisableAllStages();
-	
-	if( debugInfo.GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
-		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
-	}
-}
-
 
 
 // Private Functions
@@ -1551,21 +1348,6 @@ void deoglRenderOcclusion::pCleanUp(){
 	}
 	if( pShaderOccMapCube ){
 		pShaderOccMapCube->RemoveUsage();
-	}
-	if( pShaderOccTracingGenRays ){
-		pShaderOccTracingGenRays->RemoveUsage();
-	}
-	if( pShaderOccTracingTraceRays ){
-		pShaderOccTracingTraceRays->RemoveUsage();
-	}
-	if( pShaderOccTracingTraceRaysStatic ){
-		pShaderOccTracingTraceRaysStatic->RemoveUsage();
-	}
-	if( pShaderOccTracingUpdateOcclusion ){
-		pShaderOccTracingUpdateOcclusion->RemoveUsage();
-	}
-	if( pShaderOccTracingUpdateDistance ){
-		pShaderOccTracingUpdateDistance->RemoveUsage();
 	}
 	
 	if( pAddToRenderTask ){
