@@ -6,8 +6,8 @@ precision highp int;
 
 #include "v130/shared/octahedral.glsl"
 
-#include "v130/shared/defren/gi/raycast_material.glsl"
-#include "v130/shared/defren/gi/raycast_trace.glsl"
+#include "v130/shared/defren/gi/raycast/sample_material.glsl"
+#include "v130/shared/defren/gi/raycast/trace_ray.glsl"
 
 
 out vec4 outPosition;

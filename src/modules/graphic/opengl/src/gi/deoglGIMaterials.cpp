@@ -132,22 +132,15 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	// - reflectivity: 16M
 	// - emissivity: 32M
 	// total: 67M
-	// 
-	// by using smaller format:
-	// - diffuse (RGBA4 or RGB555A1): 8M
-	// - reflectivity (RGBA4): 8M
-	// - emissivity (RG11B10): 16M
-	// - solidity (R8): 4M
-	// total: 37M
-	pTexDiffuse.SetFBOFormat( 4, false ); // change to "diffuse + solidity"
+	pTexDiffuse.SetFBOFormat( 4, false );
 	pTexDiffuse.SetSize( size, size );
 	pTexDiffuse.CreateTexture();
 	
-	pTexReflectivity.SetFBOFormat( 4, false ); // perhaps RGBA4 to use 50% memory
+	pTexReflectivity.SetFBOFormat( 4, false );
 	pTexReflectivity.SetSize( size, size );
 	pTexReflectivity.CreateTexture();
 	
-	pTexEmissivity.SetFBOFormat( 4, true ); // annoying. we only need RGB16F and A1
+	pTexEmissivity.SetFBOFormat( 4, true );
 	pTexEmissivity.SetSize( size, size );
 	pTexEmissivity.CreateTexture();
 	

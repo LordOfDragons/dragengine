@@ -11,35 +11,42 @@
 //   - reflectivity.multiplier: 8         => 8
 //   - emissivity.intensity:    16 16 16  => 48
 //   - ignore:                  1         => 1
+//   - texCoord.clamp:          1         => 1
+//   - has solidity:            1         => 1
 //   
-//   also store the index of the material in the material texture atlas as 14 bits value.
-//   this allows to combine it with variation.* bits to fill up 16 bits. 14 bits allows
-//   for a maximum of 16383 materials. this equals a 128x128 atlas size or 16 pixel material
-//   maps as the worst case
+//   also store the index of the material in the material texture atlas as 16 bits value.
+//   14 bits allows for a maximum of 16383 materials. this equals a 128x128 atlas size or
+//   16 pixel material maps as the worst case. still using 16 bits to simplify layout.
 //   
 //   gamma is limited to the range from 0.4 to 2.2 mapped to 8 bits. this maps pixel value
 //   85 precisely to gamma value 1.
 //   
-//   pixel has a total of 128 bits. this leads to the following possible layout.
+//   this is a total of 83 bits. unfortunately TBOs do not allow for RGB format until
+//   opengl 4.3 or higher. this way 96 bits could be used to reduce the wasted space.
+//   
+//   the following layout is used:
 //   - red:
-//     - 8: color.tint.r
-//     - 8: roughness.remap.lower
-//     - 16: emissivity.intensity.r
-//   - green:
-//     - 8: color.tint.g
-//     - 8: roughness.remap.upper
-//     - 16: emissivity.intensity.g
-//   - blue:
-//     - 8: color.tint.b
-//     - 8: roughness.gamma
-//     - 16: emissivity.intensity.b
-//   - alpha:
-//     - 8: color.gamma
-//     - 8: reflectivity.multiplier
+//     - 16: material atlas index
+//     - 13: (reserved)
 //     - 1: ignore material
-//     - 1: (8reserved)
-//     - 14: material atlas index
-//
+//     - 1: tex-coord clamp
+//     - 1: has solidity
+//   - green:
+//     - 24: color.tint.rgb
+//     - 8: color.gamma
+//   - blue:
+//     - 8: roughness.remap.lower
+//     - 8: roughness.remap.upper
+//     - 8: roughness.gamma
+//     - 8: reflectivity.multiplier
+//   - alpha:
+//     - 32: (reserved)
+//   
+//   for ray casting material index and flags are required. this allows to reduce sampling
+//   in the ray caster to 1 32-bit component to increase performance.
+//   - bvec3 flags = notEqual(uvec3(values.r) & uvec3(0x4, 0x2, 0x1), uvec3(0));
+//   - int materialIndex = int(values.r >> 16);
+// 
 // - tboMaterial2: RGBA16F (stride 3 pixel)
 //   contains material parameters requiring floating point values to be stored:
 //   - pixel 1: texCoordMatrix.row1(rgb) unused(a)
@@ -55,8 +62,9 @@ uniform sampler2D tboGIRayCastMaterialEmissivity; // emissivity=rgb, solidity=a
 
 
 // Material parameter flag constants
-const uint giRayCastMatFlagIgnore = uint( 0x8000 );
-const uint giRayCastMatFlagClampTC = uint( 0x4000 );
+const uint giRayCastMatFlagIgnore = uint( 0x1 );
+const uint giRayCastMatFlagClampTC = uint( 0x2 );
+const uint giRayCastMatFlagHasSolidity = uint( 0x4 );
 
 
 // Sample material parameters.
@@ -67,10 +75,10 @@ uvec4 giRayCastMaterialParams( in int material ){
 }
 
 
-// Sample material flags.
+// Sample material cast parameters. Contains material index and flags.
 // 
 // - material: RayResult.material
-uint giRayCastMaterialFlags( in int material ){
+uint giRayCastMaterialCastParams( in int material ){
 	return texelFetch( tboGIRayCastMaterial, material ).r;
 }
 
@@ -78,9 +86,9 @@ uint giRayCastMaterialFlags( in int material ){
 // Retrieve color.tint and color.gamma texture property from material parameters.
 // Returns vector vec4(color.tint.rgb, color.gamma).
 // 
-// - params: giRayCastMaterialParams(RayResult.material)
-vec4 giRayCastMaterialColorTintGamma( in uvec4 params ){
-	return vec4( params >> 24 )
+// - params: giRayCastMaterialParams(RayResult.material).g
+vec4 giRayCastMaterialColorTintGamma( in uint params ){
+	return vec4( ( uvec4( params ) >> uvec4( 24, 16, 8, 0 ) ) & uvec4( 0xff ) )
 		* vec4( 1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 1.8 / 255.0 )
 		+ vec4( 0.0, 0.0, 0.0, 0.4 );
 }
@@ -91,9 +99,9 @@ vec4 giRayCastMaterialColorTintGamma( in uvec4 params ){
 // Returns vector vec4(roughness.remap.lower, roughness.remap.upper,
 // roughness.gamma, reflectivity.multiplier).
 // 
-// - params: giRayCastMaterialParams(RayResult.material)
-vec4 giRayCastMaterialRoughnessGammaReflMul( in uvec4 params ){
-	return vec4( ( params >> 16 ) & uvec4( 0xff ) )
+// - params: giRayCastMaterialParams(RayResult.material).b
+vec4 giRayCastMaterialRoughnessGammaReflMul( in uint params ){
+	return vec4( ( uvec4( params ) >> uvec4( 24, 16, 8, 0 ) ) & uvec4( 0xff ) )
 		* vec4( 1.0 / 255.0, 1.0 / 255.0, 1.8 / 255.0, 1.0 / 255.0 )
 		+ vec4( 0.0, 0.0, 0.4, 0.0 );
 }
@@ -112,17 +120,17 @@ vec2 giRayCastTCTransform( in int material, in vec2 texCoord ){
 
 // Calculate material texture coordinates from face texture coordinates.
 // 
-// - params: giRayCastMaterialParams(RayResult.material)
+// - params: giRayCastMaterialParams(RayResult.material).r
 // - texCoord: giRayCastTCTransform(RayResult.material,
 //                giRayCastFaceTexCoord(RayResult.face, RayResult.barycentric))
-ivec2 giRayCastMaterialTC( in uvec4 params, in vec2 texCoord ){
-	int mapIndex = int( params.r & uint( 0x3fff ) );
+ivec2 giRayCastMaterialTC( in uint params, in vec2 texCoord ){
+	int mapIndex = int( params >> 16 );
 	
 	ivec2 matTC = ivec2( mapIndex % pGIMaterialMapsPerRow, mapIndex / pGIMaterialMapsPerRow );
 	matTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
 	
 	ivec2 realMatTC = ivec2( texCoord * vec2( pGIMaterialMapSize ) );
-	matTC += ( ( params.r & giRayCastMatFlagClampTC ) != 0 )
+	matTC += ( ( params & giRayCastMatFlagClampTC ) != 0 )
 		? clamp( realMatTC, ivec2( 0 ), ivec2( pGIMaterialMapSize - 1 ) )
 		: realMatTC % ivec2( pGIMaterialMapSize );
 	
@@ -132,9 +140,9 @@ ivec2 giRayCastMaterialTC( in uvec4 params, in vec2 texCoord ){
 
 // Sample material color.
 // 
-// - params: giRayCastMaterialParams(RayResult.material)
+// - params: giRayCastMaterialParams(RayResult.material).g
 // - texCoord: giRayCastMaterialTC(...)
-vec3 giRayCastSampleColor( in uvec4 params, in ivec2 texCoord ){
+vec3 giRayCastSampleColor( in uint params, in ivec2 texCoord ){
 	vec4 temp = texelFetch( tboGIRayCastMaterialDiffuse, texCoord, 0 );
 	vec4 colorTintGamma = giRayCastMaterialColorTintGamma( params );
 	vec3 color = pow( temp.rgb, vec3( colorTintGamma.a ) );
@@ -144,9 +152,9 @@ vec3 giRayCastSampleColor( in uvec4 params, in ivec2 texCoord ){
 
 // Sample material reflectivity and roughness.
 // 
-// - params: giRayCastMaterialParams(RayResult.material)
+// - params: giRayCastMaterialParams(RayResult.material).b
 // - texCoord: giRayCastMaterialTC(...)
-void giRayCastSampleReflectivityRoughness( in uvec4 params, in ivec2 texCoord,
+void giRayCastSampleReflectivityRoughness( in uint params, in ivec2 texCoord,
 out vec3 reflectivity, out float roughness ){
 	vec4 temp = texelFetch( tboGIRayCastMaterialReflectivity, texCoord, 0 );
 	vec4 roughnessGammaReflMul = giRayCastMaterialRoughnessGammaReflMul( params );
@@ -172,12 +180,12 @@ vec3 giRayCastMaterialEmissivity( in int material, in ivec2 texCoord ){
 // Sample all material properties.
 // 
 // - material: RayResult.material
-// - params: giRayCastMaterialParams(RayResult.material)
+// - params: giRayCastMaterialParams(RayResult.material).gb
 // - texCoord: giRayCastMaterialTC(...)
-void giRayCastMaterialAll( in int material, in uvec4 params, in ivec2 texCoord,
+void giRayCastMaterialAll( in int material, in uvec2 params, in ivec2 texCoord,
 out vec3 color, out vec3 reflectivity, out float roughness, out vec3 emissivity ){
-	color = giRayCastSampleColor( params, texCoord );
-	giRayCastSampleReflectivityRoughness( params, texCoord, reflectivity, roughness );
+	color = giRayCastSampleColor( params.r, texCoord );
+	giRayCastSampleReflectivityRoughness( params.g, texCoord, reflectivity, roughness );
 	emissivity = giRayCastMaterialEmissivity( material, texCoord );
 }
 
@@ -187,10 +195,10 @@ out vec3 color, out vec3 reflectivity, out float roughness, out vec3 emissivity 
 // - texCoord: giRayCastFaceTexCoord(RayResult.face, RayResult.barycentric)
 void giRayCastMaterialAll( in int material, in vec2 texCoord, out vec3 color,
 out vec3 reflectivity, out float roughness, out vec3 emissivity ){
-	uvec4 params = giRayCastMaterialParams( material );
-	ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform( material, texCoord ) );
+	uvec3 params = texelFetch( tboGIRayCastMaterial, material ).rgb;
+	ivec2 matTC = giRayCastMaterialTC( params.r, giRayCastTCTransform( material, texCoord ) );
 	
-	color = giRayCastSampleColor( params, matTC );
-	giRayCastSampleReflectivityRoughness( params, matTC, reflectivity, roughness );
+	color = giRayCastSampleColor( params.g, matTC );
+	giRayCastSampleReflectivityRoughness( params.b, matTC, reflectivity, roughness );
 	emissivity = giRayCastMaterialEmissivity( material, matTC );
 }

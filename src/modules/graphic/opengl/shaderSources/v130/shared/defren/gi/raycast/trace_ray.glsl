@@ -84,11 +84,12 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 	// early exit. if the ray misses the root box node skip the mesh entirely.
 	// we do the test here and not in giRayCastTraceInstance since otherwise we have
 	// to calculate invRayDirection twice
-	int tcNodeBox = rootNode * 2;
-	vec3 minExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox ).xyz;
-	vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox + 1 ).xyz;
+	{
+	vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
+	vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
 	if( giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) < 0.0 ){
 		return false;
+	}
 	}
 	
 	// continue ray casting against mesh faces
@@ -104,38 +105,12 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 	while( curNode > -1 ){
 		ivec2 index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
 		
-		if( index.y == 0 ){ // node
-			tcNodeBox = index.x * 2;
+		if( index.y == 0 ){
+#include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
 			
-			minExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			maxExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			float leftHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
-			
-			minExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			maxExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox ).xyz;
-			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
-			
-			if( leftHit >= 0.0 && rightHit >= 0.0 ){
-				if( leftHit > rightHit ){
-					curNode = index.x + 1; // right node
-					stack[ stackPosition++ ] = index.x; // left node
-					
-				}else{
-					curNode = index.x; // left node
-					stack[ stackPosition++ ] = index.x + 1; // right node
-				}
-				continue;
-				
-			}else if( leftHit >= 0.0 ){
-				curNode = index.x; // left node
-				continue;
-				
-			}else if( rightHit >= 0.0 ){
-				curNode = index.x + 1; // right node
-				continue;
-			}
-			
-		}else{ // leaf
+		}else{
+#include "v130/shared/defren/gi/raycast/inline_bvh_model.glsl"
+			/*
 			int i, tcFace = index.x;
 			
 			for( i=0; i<index.y; i++ ){
@@ -169,19 +144,21 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 					
 					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < result.distance ){
 						int material = rootMaterial + corners.w;
-						uvec4 params = giRayCastMaterialParams( material );
+						uint params = giRayCastMaterialCastParams( material );
 						
-						if( ( params.r & giRayCastMatFlagIgnore ) != 0 ){
+						if( ( params & giRayCastMatFlagIgnore ) != 0 ){
 							continue;
 						}
 						
 						int face = index.x + i;
 						
-						ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform(
-							material, giRayCastFaceTexCoord( face, uvt.wxy ) ) );
-						
-						if( texelFetch( tboGIRayCastMaterialEmissivity, matTC, 0 ).a < 0.35 ){ // solidity
-							continue;
+						if( ( params & giRayCastMatFlagHasSolidity ) != 0 ){
+							ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform(
+								material, giRayCastFaceTexCoord( face, uvt.wxy ) ) );
+							
+							if( texelFetch( tboGIRayCastMaterialEmissivity, matTC, 0 ).a < 0.35 ){ // solidity
+								continue;
+							}
 						}
 						
 						result.barycentric = uvt.wxy;
@@ -193,6 +170,7 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 					}
 				}
 			}
+			*/
 		}
 		
 		curNode = stack[ --stackPosition ];
@@ -221,86 +199,11 @@ bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDire
 	while( curNode > -1 ){
 		ivec2 index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
 		
-		if( index.y == 0 ){ // node
-			int tcNodeBox = index.x * 2;
+		if( index.y == 0 ){
+#include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
 			
-			vec3 minExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			float leftHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
-			
-			minExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox++ ).xyz;
-			maxExtend = texelFetch( tboGIRayCastNodeBox, tcNodeBox ).xyz;
-			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
-			
-			if( leftHit >= 0.0 && rightHit >= 0.0 ){
-				if( leftHit > rightHit ){
-					curNode = index.x + 1; // right node
-					stack[ stackPosition++ ] = index.x; // left node
-					
-				}else{
-					curNode = index.x; // left node
-					stack[ stackPosition++ ] = index.x + 1; // right node
-				}
-				continue;
-				
-			}else if( leftHit >= 0.0 ){
-				curNode = index.x; // left node
-				continue;
-				
-			}else if( rightHit >= 0.0 ){
-				curNode = index.x + 1; // right node
-				continue;
-			}
-			
-		}else{ // leaf
-			int tcMatrix = index.x * 3;
-			int tcInstance = index.x;
-			GIRayCastResult meshResult;
-			int i;
-			
-			for( i=0; i<index.y; i++ ){
-				ivec2 indices = ivec2( texelFetch( tboGIRayCastInstance, tcInstance++ ).xy );
-				
-				vec4 mrow1 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
-				vec4 mrow2 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
-				vec4 mrow3 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
-				
-				// the inverse matrix needs to be transposed to be usable for right-side
-				// multiplication. by switching to left-side multiplication the transpose
-				// can be avoided which is faster
-				mat4 invMatrix = mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) );
-				vec3 meshRayOrigin = vec3( vec4( rayOrigin, 1.0 ) * invMatrix );
-				
-				// for normal transformation the correct matrix to use is
-				// transpose(inverse(mat3(invMatrix))). since we normalize the direction
-				// we can avoid doing all this
-				vec3 meshRayDirection = vec3( vec4( rayDirection, 0.0 ) * invMatrix );
-				
-				if( giRayCastTraceMesh( indices.x, indices.y, meshRayOrigin, normalize( meshRayDirection ), meshResult ) ){
-					// we can not use directly the distance since it is possible the matrix
-					// contains scaling. we have to calculate the hit point in tracing space
-					// and from there the distance can be calculated as difference between the
-					// hit point and the ray origin which can be shortened. we just need to
-					// know the amount of scaling used since rayDirection has unit length
-					meshResult.distance /= length( meshRayDirection );
-					
-					if( meshResult.distance < result.distance ){
-						// transform hit normal back. this requires the following matrix:
-						//    matNor = transpose( inverse( mat3( matrix ) ) )
-						// we have invMatrix which is inverse(matrix) but without transpose.
-						// so invMatrix is actually equal to transpose(inverse(matrix)).
-						// this is neat since now mat3(invMatrix) is actually matNor.
-						// since the transpose cancelled out it is not required to reverse
-						// the operation order to get the transpose
-						result.barycentric = meshResult.barycentric;
-						result.distance = meshResult.distance;
-						result.face = meshResult.face;
-						result.material = meshResult.material;
-						result.normal = normalize( mat3( invMatrix ) * meshResult.normal );
-						hasHit = true;
-					}
-				}
-			}
+		}else{
+#include "v130/shared/defren/gi/raycast/inline_bvh_instances.glsl"
 		}
 		
 		curNode = stack[ --stackPosition ];

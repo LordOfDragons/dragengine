@@ -17,6 +17,17 @@ precision highp int;
 	uniform lowp sampler2D texDiffuse;
 	uniform lowp sampler2D texNormal;
 	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
+	
+	// NOTE transfer:
+	// params = giRayCastMaterialParams(ray.material)
+	// tc = giRayCastMaterialTC(params, ray.tc)
+	// texDiffuse: vec3 giRayCastSampleColor(params.g, tc)
+	// texReflectivity: giRayCastSampleReflectivityRoughness(params.b, tc, out reflectivity, out roughness)
+	// 
+	// hence these values have to be stored in the ray:
+	// - int ray.material => requires R16UI
+	// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
+	
 #else
 	uniform HIGHP sampler2D texDepth;
 	uniform lowp sampler2D texDiffuse;

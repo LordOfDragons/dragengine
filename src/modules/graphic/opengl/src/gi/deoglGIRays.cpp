@@ -78,6 +78,17 @@ void deoglGIRays::pCleanUp(){
 }
 
 void deoglGIRays::pCreateFBORay(){
+	// memory consumption:
+	// case 1: 64 rays per probe => 512x1024
+	// case 2: 256 rays per probe => 2048x1024
+	// 
+	// depth buffer, position, normal and light: (52M,13M) [52428800, 13107200]
+	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
+	// material and texcoord: (12M, 3M) [12582912, 3145728]
+	// 
+	// total 1: (67M, 17M) [67108864, 16777216]
+	// total 2: (65M, 16M) [65011712, 16252928]
+	// 
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
 	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };

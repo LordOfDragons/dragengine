@@ -103,44 +103,41 @@ class deoglRenderTaskTexture;
  *   - roughness.gamma:         8         => 8
  *   - reflectivity.multiplier: 8         => 8
  *   - ignore:                  1         => 1
+ *   - texCoord.clamp:          1         => 1
+ *   - has solidity:            1         => 1
  *   
- *   also store the index of the material in the material texture atlas as 14 bits value.
- *   this allows to combine it with variation.* bits to fill up 16 bits. 14 bits allows
- *   for a maximum of 16383 materials. this equals a 128x128 atlas size or 16 pixel material
- *   maps as the worst case
+ *   also store the index of the material in the material texture atlas as 16 bits value.
+ *   14 bits allows for a maximum of 16383 materials. this equals a 128x128 atlas size or
+ *   16 pixel material maps as the worst case. still using 16 bits to simplify layout.
  *   
  *   gamma is limited to the range from 0.4 to 2.2 mapped to 8 bits. this maps pixel value
  *   85 precisely to gamma value 1.
  *   
- *   pixel has a total of 128 bits. this leads to the following possible layout.
- *   - red:
- *     - 8: color.tint.r
- *     - 8: roughness.remap.lower
- *     - 1: ignore material
- *     - 1: tex-coord clamp
- *     - 14: material atlas index
- *   - green:
- *     - 8: color.tint.g
- *     - 8: roughness.remap.upper
- *     - 16: (reserved)
- *   - blue:
- *     - 8: color.tint.b
- *     - 8: roughness.gamma
- *     - 16: (reserved)
- *   - alpha:
- *     - 8: color.gamma
- *     - 8: reflectivity.multiplier
- *     - 16: (reserved)
+ *   this is a total of 83 bits. unfortunately TBOs do not allow for RGB format until
+ *   opengl 4.3 or higher. this way 96 bits could be used to reduce the wasted space.
  *   
- *   the layout is chosen like this to allow GLSL to decompose the data using few instructions.
- *   - vec4 colorGamma = vec4(values >> 24)
- *                       * vec4(1.0/255.0, 1.0/255.0, 1.0/255.0, 1.8/255.0)
- *                       + vec4(0, 0, 0, 0.4);
- *   - vec4 roughnessGammaReflMul = vec4((values >> 16) & 0xff)
- *                                  * vec4(1.0/255.0, 1.0/255.0, 1.8/255.0, 1.0/255.0)
- *                                  + vec4(0, 0, 0.4, 0);
- *   - bvec2 flags = notEqual(values.aa & uvec2(0x8000, 0x4000), uvec2(0));
- *   - int materialIndex = int(values.a & 0x3fff);
+ *   the following layout is used:
+ *   - red:
+ *     - 16: material atlas index
+ *     - 13: (reserved)
+ *     - 1: has solidity
+ *     - 1: tex-coord clamp
+ *     - 1: ignore material
+ *   - green:
+ *     - 24: color.tint.rgb
+ *     - 8: color.gamma
+ *   - blue:
+ *     - 8: roughness.remap.lower
+ *     - 8: roughness.remap.upper
+ *     - 8: roughness.gamma
+ *     - 8: reflectivity.multiplier
+ *   - alpha:
+ *     - 32: (reserved)
+ *   
+ *   for ray casting material index and flags are required. this allows to reduce sampling
+ *   in the ray caster to 1 32-bit component to increase performance.
+ *   - bvec3 flags = notEqual(uvec3(values.r) & uvec3(0x4, 0x2, 0x1), uvec3(0));
+ *   - int materialIndex = int(values.r >> 16);
  *   
  *   this uses 96 bits (48 unused)
  *   

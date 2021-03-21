@@ -603,8 +603,9 @@ const decTexMatrix2 &texCoordMatrix ){
 	
 	const int materialIndex = renderTaskTexture ? decMath::clamp( renderTaskTexture->GetTUC()->GetMaterialIndex(), 0, 16383 ) : 0;
 	
-	const bool ignoreMaterial = skinTexture.GetHasTransparency(); // || skinTexture.GetHasSolidity();
+	const bool ignoreMaterial = skinTexture.GetHasTransparency();
 	const bool texCoordClamp = skinTexture.GetTexCoordClamp();
+	const bool hasSolidity = skinTexture.GetHasSolidity();
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)
@@ -614,14 +615,25 @@ const decTexMatrix2 &texCoordMatrix ){
 	#define PACK_G(value, bits, shift) PACK_M(value, 0.4, 2.2, bits, shift)
 	#define PACK_B(value, bit) (uint32_t)((value) ? (1<<bit) : 0)
 	
-	pTBOMaterial.AddVec4(
-		PACK( colorTint.r, 8, 24 ) | PACK( roughnessRemapLower, 8, 16 )
-			| PACK_B( ignoreMaterial, 15 ) | PACK_B( texCoordClamp, 14 )
-			| PACK_I( materialIndex, 14, 0 ),
-		PACK( colorTint.g, 8, 24 ) | PACK( roughnessRemapUpper, 8, 16 ),
-		PACK( colorTint.b, 8, 24 ) | PACK_G( roughnessGamma, 8, 16 ),
-		PACK_G( colorGamma, 8, 24 ) | PACK( reflectivityMultiplier, 8, 16 ) );
-			//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
+	const uint32_t red = PACK_I( materialIndex, 16, 16 )
+		| PACK_B( ignoreMaterial, 0 )
+		| PACK_B( texCoordClamp, 1 )
+		| PACK_B( hasSolidity, 2 );
+	
+	const uint32_t green = PACK( colorTint.r, 8, 24 )
+		| PACK( colorTint.g, 8, 16 )
+		| PACK( colorTint.b, 8, 8 )
+		| PACK_G( colorGamma, 8, 0 );
+	
+	const uint32_t blue = PACK( roughnessRemapLower, 8, 24 )
+		| PACK( roughnessRemapUpper, 8, 16 )
+		| PACK_G( roughnessGamma, 8, 8 )
+		| PACK( reflectivityMultiplier, 8, 0 );
+	
+	const uint32_t alpha = 0;
+	//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
+	
+	pTBOMaterial.AddVec4( red, green, blue, alpha );
 	
 	pTBOMaterial2.AddVec4( texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f );
 	pTBOMaterial2.AddVec4( texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f );
