@@ -102,6 +102,9 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 	result.distance = 1000000.0;
 	bool hasHit = false;
 	
+	// see giRayCastTraceInstance() for the information on why the code looks like this here
+	
+	/*
 	while( curNode > -1 ){
 		ivec2 index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
 		
@@ -110,70 +113,29 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 			
 		}else{
 #include "v130/shared/defren/gi/raycast/inline_bvh_model.glsl"
-			/*
-			int i, tcFace = index.x;
-			
-			for( i=0; i<index.y; i++ ){
-				ivec4 corners = ivec4( texelFetch( tboGIRayCastFace, tcFace++ ) );
-				
-				vec3 v1 = texelFetch( tboGIRayCastVertex, corners.x ).xyz;
-				vec3 v2 = texelFetch( tboGIRayCastVertex, corners.y ).xyz;
-				vec3 v3 = texelFetch( tboGIRayCastVertex, corners.z ).xyz;
-				
-				vec3 e0 = v2 - v1;
-				vec3 e1 = v3 - v1;
-				vec3 pv = cross( rayDirection, e1 );
-				float det = dot( e0, pv );
-				
-				// check single sided and parallelity. parallelity check (det != 0) has to be
-				// present always or division fails. single sided is tested using (det < 0).
-				// if corners.w is 1 the face is double sided. if corners is 0 the face is single sided.
-				// //if( det < 0.0 || ( corners.w == 1 && det > 0.0 ) ){
-				// //if( any( lessThan( vec2( det, -det ) * vec2( 1, corners.w ), vec2( 0.0 ) ) ) ){
-				// if( det < 0.0 || det * corners.w > 0.0 ){
-				if( det != 0.0 ){
-					vec3 tv = rayOrigin - v1;
-					vec3 qv = cross( tv, e0 );
-					
-					vec4 uvt; // barycentric coordinates
-					uvt.x = dot( tv, pv );
-					uvt.y = dot( rayDirection, qv );
-					uvt.z = dot( e1, qv );
-					uvt.xyz /= det;
-					uvt.w = 1.0 - uvt.x - uvt.y;
-					
-					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < result.distance ){
-						int material = rootMaterial + corners.w;
-						uint params = giRayCastMaterialCastParams( material );
-						
-						if( ( params & giRayCastMatFlagIgnore ) != 0 ){
-							continue;
-						}
-						
-						int face = index.x + i;
-						
-						if( ( params & giRayCastMatFlagHasSolidity ) != 0 ){
-							ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform(
-								material, giRayCastFaceTexCoord( face, uvt.wxy ) ) );
-							
-							if( texelFetch( tboGIRayCastMaterialEmissivity, matTC, 0 ).a < 0.35 ){ // solidity
-								continue;
-							}
-						}
-						
-						result.barycentric = uvt.wxy;
-						result.distance = uvt.z;
-						result.face = face;
-						result.material = material;
-						result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
-						hasHit = true;
-					}
-				}
-			}
-			*/
 		}
 		
 		curNode = stack[ --stackPosition ];
+	}
+	*/
+	
+	while( curNode > -1 ){
+		// node pass
+		ivec2 index;
+		while( curNode > -1 ){
+			index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
+			if( index.y > 0 ){
+				break;
+			}
+#include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+		
+		// face pass
+		if( curNode > -1 ){
+#include "v130/shared/defren/gi/raycast/inline_bvh_model.glsl"
+			curNode = stack[ --stackPosition ];
+		}
 	}
 	
 	//result.hitPoint = rayOrigin + rayDirection * result.distance;
@@ -196,6 +158,31 @@ bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDire
 	result.distance = 1000000.0;
 	bool hasHit = false;
 	
+	// shaders run in wavefronts. each wavefront contains a group of threads. all these
+	// threads are processed in lock-step. for branches this means first all threads
+	// run through the if-branch where the condition is true then all threads run through
+	// the else-branch where the condition is false. in the naive implementation in the
+	// commented out part it takes only one thread to end up in the leaf-branch (which
+	// is expensive) to block all other threads in the node-branch (which is cheap).
+	// 
+	// to improve the performance the branch processing has to be decoupled. in the code
+	// used below a while-loop is used to add a kind of "soft-barrier". all threads have
+	// to process nodes until they have found a node containing instances. this will
+	// cause threads having found such a node quicker than others to wait until the last
+	// one of them found a node but this is a small wait since node processing is fast.
+	// once the last thread exited the while loop the "soft-barrier" finishes and all
+	// thread continue to the next step.
+	// 
+	// in this step all threads having found a node with instance processe the instances.
+	// here too some threads will be finished faster than others and have to wait for
+	// the last one. altghough this part of the processing is expensive all threads
+	// usually have instances to process and thus the bad situation of primitive processing
+	// threads blocking node processing threads is reduced.
+	// 
+	// this modification improves performance by factor 2 or more depending on how the
+	// BVH is structured
+	
+	/*
 	while( curNode > -1 ){
 		ivec2 index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
 		
@@ -207,6 +194,26 @@ bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDire
 		}
 		
 		curNode = stack[ --stackPosition ];
+	}
+	*/
+	
+	while( curNode > -1 ){
+		// node pass
+		ivec2 index;
+		while( curNode > -1 ){
+			index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy );
+			if( index.y > 0 ){
+				break;
+			}
+#include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+		
+		// instance pass
+		if( curNode > -1 ){
+#include "v130/shared/defren/gi/raycast/inline_bvh_instances.glsl"
+			curNode = stack[ --stackPosition ];
+		}
 	}
 	
 	return hasHit;

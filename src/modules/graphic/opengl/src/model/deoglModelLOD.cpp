@@ -773,7 +773,7 @@ void deoglModelLOD::PrepareBVH(){
 	
 	try{
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, pFaceCount, 8 );
+		pBVH->Build( primitives, pFaceCount, 12 );
 		
 	}catch( const deException & ){
 		if( pBVH ){
