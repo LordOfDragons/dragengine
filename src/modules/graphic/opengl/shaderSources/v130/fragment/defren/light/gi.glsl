@@ -70,9 +70,8 @@ out vec4 outSubSurface;
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
-#ifdef GI_RAY
-	#include "v130/shared/normal.glsl"
-#else
+#include "v130/shared/normal.glsl"
+#ifndef GI_RAY
 	#include "v130/shared/defren/light/normal_from_depth.glsl"
 #endif
 
@@ -94,11 +93,12 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 }
 
 // calculate illumination to apply to fragment
-vec3 giIlluminate( in vec3 position, in vec3 normal ){
+vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	vec3 unclampedPosition = vec3( pGIMatrix * vec4( position, 1.0 ) );
 	position = clamp( unclampedPosition, vec3( 0.0 ), pGIPositionClamp );
 	
-	normal = normal * pGIMatrixNormal; // reverse order does transpose()
+	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
+	bendNormal = normalize( bendNormal * pGIMatrixNormal ); // reverse order does transpose()
 	
 	ivec3 baseCoord = clamp( ivec3( pGIProbeSpacingInv * position ), ivec3( 0 ), pGIProbeClamp );
 	
@@ -181,7 +181,7 @@ vec3 giIlluminate( in vec3 position, in vec3 normal ){
 		// avoid zero weight
 		weight = max( 0.000001, weight );
 		
-		vec2 texCoord = giTCFromDirection( normal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		vec2 texCoord = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 		
 		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
 		
@@ -244,12 +244,14 @@ void main( void ){
 	// fetch normal
 	#ifdef GI_RAY
 		// requires matrix transpose done by reversed order
-		vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) * pGIRayMatrixNormal );
+		vec3 normal = normalLoadMaterial( texNormal, tc ) * pGIRayMatrixNormal;
+		#define bendNormal normal
 		
 	#else
 		// we can not use gbuffer normal here since it is bend potentially causing
 		// troubles. derive instead the normal from the depth buffer
 		vec3 normal = normalFromDepth( tc, depth, position );
+		vec3 bendNormal = normalLoadMaterial( texNormal, tc );
 	#endif
 	
 	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding
@@ -276,7 +278,7 @@ void main( void ){
 // 	lightColor *= vec3( clamp( ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0, pAOSelfShadow.x, 1.0 ) );
 	
 	// global illumination
-	vec3 finalColor = giIlluminate( position, normal );
+	vec3 finalColor = giIlluminate( position, normal, bendNormal );
 	
 	#ifndef GI_RAY
 		finalColor *= vec3( aoSolidity.g ); // texture AO and SSAO
