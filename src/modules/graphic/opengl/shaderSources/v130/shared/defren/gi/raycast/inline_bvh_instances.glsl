@@ -32,7 +32,8 @@
 				vec3 meshRayDirection = vec3( vec4( rayDirection, 0.0 ) * invMatrix );
 				
 				GIRayCastResult meshResult;
-				if( giRayCastTraceMesh( indices.x, indices.y, meshRayOrigin, normalize( meshRayDirection ), meshResult ) ){
+				if( giRayCastTraceMesh( indices.x, indices.y, meshRayOrigin,
+						normalize( meshRayDirection ), result.distance, meshResult ) ){
 					// we can not use directly the distance since it is possible the matrix
 					// contains scaling. we have to calculate the hit point in tracing space
 					// and from there the distance can be calculated as difference between the

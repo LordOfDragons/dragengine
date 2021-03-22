@@ -19,7 +19,7 @@
 			maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 3 ).xyz;
 			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
-			if( leftHit >= 0.0 && rightHit >= 0.0 ){
+			if( leftHit < result.distance && rightHit < result.distance ){
 				if( leftHit > rightHit ){
 					curNode = index.x + 1; // right node
 					stack[ stackPosition++ ] = index.x; // left node
@@ -30,11 +30,11 @@
 				}
 				continue;
 				
-			}else if( leftHit >= 0.0 ){
+			}else if( leftHit < result.distance ){
 				curNode = index.x; // left node
 				continue;
 				
-			}else if( rightHit >= 0.0 ){
+			}else if( rightHit < result.distance ){
 				curNode = index.x + 1; // right node
 				continue;
 			}

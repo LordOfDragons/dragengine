@@ -51,6 +51,10 @@ struct GIRayCastResult{
 };
 
 
+// constants
+const float giRayCastNoHitDistance = 1000000.0;
+
+
 // Node intersection test
 float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrigin, in vec3 invRayDirection ){
 	vec3 tbottom = ( minExtend - rayOrigin ) * invRayDirection;
@@ -60,7 +64,7 @@ float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrig
 	vec2 t = max( tmin.xx, tmin.yz );
 	float t0 = max( max( t.x, t.y ), 0.0 );
 	t = min( tmax.xx, tmax.yz );
-	return min( t.x, t.y ) > t0 ? t0 : -1.0;
+	return min( t.x, t.y ) > t0 ? t0 : giRayCastNoHitDistance;
 }
 
 
@@ -77,8 +81,8 @@ vec2 giRayCastFaceTexCoord( in int face, in vec3 barycentric ){
 // Perform ray cast against mesh BVH starting at absolute strided index.
 // 
 // Returns true if hit is found otherwise false.
-bool giRayCastTraceMesh( in int rootNode, in int rootMaterial,
-in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
+bool giRayCastTraceMesh( in int rootNode, in int rootMaterial, in vec3 rayOrigin,
+in vec3 rayDirection, in float distanceLimit, out GIRayCastResult result ){
 	vec3 invRayDirection = 1.0 / rayDirection;
 	
 	// early exit. if the ray misses the root box node skip the mesh entirely.
@@ -87,7 +91,7 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 	{
 	vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
 	vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
-	if( giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) < 0.0 ){
+	if( giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) >= distanceLimit ){
 		return false;
 	}
 	}
@@ -99,7 +103,7 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 	
 	int curNode = rootNode;
 	
-	result.distance = 1000000.0;
+	result.distance = distanceLimit;
 	bool hasHit = false;
 	
 	// see giRayCastTraceInstance() for the information on why the code looks like this here
@@ -146,7 +150,8 @@ in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
 // Perform ray cast against instance BVH starting at absolute strided index.
 // 
 // Returns true if hit is found otherwise false.
-bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection, out GIRayCastResult result ){
+bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection,
+out GIRayCastResult result ){
 	vec3 invRayDirection = 1.0 / rayDirection;
 	
 	int stack[ 13 ];
@@ -155,7 +160,7 @@ bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDire
 	
 	int curNode = rootNode;
 	
-	result.distance = 1000000.0;
+	result.distance = giRayCastNoHitDistance;
 	bool hasHit = false;
 	
 	// shaders run in wavefronts. each wavefront contains a group of threads. all these
