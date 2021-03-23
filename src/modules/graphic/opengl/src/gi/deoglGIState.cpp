@@ -25,7 +25,7 @@
 
 #include "deoglGI.h"
 #include "deoglGIState.h"
-#include "deoglGIRays.h"
+#include "deoglGITraceRays.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
@@ -95,11 +95,13 @@ pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
 pPixBufProbeOffset( NULL ),
 pClearMaps( true ),
-pProbesHaveMoved( false )
+pProbesHaveMoved( false ),
+
+pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
 		pInitProbes();
-		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetRays().GetProbeCount() ];
+		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		pWeightedProbes = new sProbe*[ pRealProbeCount ];
 		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
 		
@@ -196,19 +198,19 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 
 void deoglGIState::PrepareUBOState() const{
 	const deoglGI &gi = pRenderThread.GetGI();
-	const deoglGIRays &rays = gi.GetRays();
+	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	deoglSPBlockUBO &ubo = gi.GetUBO();
 	int i, j, count;
 	
 	ubo.MapBuffer();
 	try{
-		const int raysPerProbe = rays.GetRaysPerProbe();
+		const int raysPerProbe = traceRays.GetRaysPerProbe();
 		
 		ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
 			1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
 		ubo.SetParameterDataInt( deoglGI::eupProbeCount, pUpdateProbeCount );
 		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
-		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, rays.GetProbesPerLine() );
+		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine() );
 		ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pIrradianceMapSize );
 		ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pDistanceMapSize );
 		ubo.SetParameterDataVec2( deoglGI::eupIrradianceMapScale, pIrradianceMapScale );
@@ -261,6 +263,9 @@ void deoglGIState::PrepareUBOState() const{
 		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f );
 		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
 			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.35f );
+		
+		// rays
+		ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pRays.GetRayMapScale() );
 		
 		// ray direction
 // #define GI_USE_RANDOM_DIRECTION 1
@@ -462,7 +467,7 @@ void deoglGIState::pAgeProbes(){
 
 void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY ){
 	// prepare weighting probes
-	const deoglGIRays &rays = pRenderThread.GetGI().GetRays();
+	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
 	const float weightDistanceLimit = pProbeSpacing.z * 8.0f;
 	const decVector2 viewAngleBorder( decVector2( fovX, fovY ) * 0.5f );
 	const decVector2 weightViewAngleLimit( viewAngleBorder * 0.25f ); // 25% from center
@@ -543,12 +548,11 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 #endif
 	
 	// TODO update probe grid. for the time being 8x4x8
-	pUpdateProbeCount = 256; //pMaxUpdateProbeCount;
-	
 	//const decPoint3 spread( 16, 4, 16 );
 	const decPoint3 spread( 8, 4, 8 );
 	const decPoint3 gis( ( pProbeCount - spread ) / 2 );
 	const decPoint3 gie( gis + spread );
+	pUpdateProbeCount = spread.x * spread.y * spread.z;
 	
 	decPoint3 gi;
 	i = 0;
@@ -575,8 +579,8 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 	
 	
 	// determine the required sample image size
-	pSampleImageSize.x = rays.GetProbesPerLine() * rays.GetRaysPerProbe();
-	pSampleImageSize.y = ( pUpdateProbeCount - 1 ) / rays.GetProbesPerLine() + 1;
+	pSampleImageSize.x = traceRays.GetProbesPerLine() * traceRays.GetRaysPerProbe();
+	pSampleImageSize.y = ( pUpdateProbeCount - 1 ) / traceRays.GetProbesPerLine() + 1;
 }
 
 void deoglGIState::pBinWeightedProbe( sProbe *probe, float weight ){

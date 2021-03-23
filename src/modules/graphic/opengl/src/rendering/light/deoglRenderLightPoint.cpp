@@ -996,7 +996,7 @@ DEBUG_RESET_TIMER
 	if( ! mask && solid ){
 		deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
 		if( giState ){
-			RestoreFBOGIRays( *giState );
+			RestoreFBOGITraceRays( *giState );
 			
 			lightShader = NULL;
 			if( useShadow ){

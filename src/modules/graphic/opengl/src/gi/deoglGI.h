@@ -23,7 +23,7 @@
 #define _DEOGLGI_H_
 
 #include "deoglGIBVH.h"
-#include "deoglGIRays.h"
+#include "deoglGITraceRays.h"
 #include "deoglGIMaterials.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
@@ -65,6 +65,7 @@ public:
 		eupMaterialMapSize, // int
 		eupMoveMaxOffset, // vec3
 		eupMoveMinDistToSurface, // float
+		eupRayMapScale, // vec2: scale factor for ray map
 		eupProbeIndex, // ivec4[]: group of 4 probes to trace
 		eupProbePosition, // vec3[]: probe position and ray origin
 		eupRayDirection // vec3[]: ray direction
@@ -76,7 +77,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglGIBVH pBVH;
-	deoglGIRays pRays;
+	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
 	deObjectReference pUBO;
@@ -104,9 +105,9 @@ public:
 	inline deoglGIBVH &GetBVH(){ return pBVH; }
 	inline const deoglGIBVH &GetBVH() const{ return pBVH; }
 	
-	/** \brief Rays. */
-	inline deoglGIRays &GetRays(){ return pRays; }
-	inline const deoglGIRays &GetRays() const{ return pRays; }
+	/** \brief Trace rays. */
+	inline deoglGITraceRays &GetTraceRays(){ return pTraceRays; }
+	inline const deoglGITraceRays &GetTraceRays() const{ return pTraceRays; }
 	
 	/** \brief Materials. */
 	inline deoglGIMaterials &GetMaterials(){ return pMaterials; }

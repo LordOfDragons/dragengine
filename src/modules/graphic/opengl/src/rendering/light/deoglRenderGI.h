@@ -40,6 +40,7 @@ class deoglAddToRenderTaskGIMaterial;
 class deoglRenderGI : public deoglRenderLightBase{
 private:
 	deoglShaderProgram *pShaderTraceRays;
+	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
 	deoglShaderProgram *pShaderMoveProbes;
@@ -89,6 +90,9 @@ public:
 	
 	/** \brief Trace rays. */
 	void TraceRays( deoglRenderPlan &plan );
+	
+	/** \brief Update rays. */
+	void UpdateRays( deoglRenderPlan &plan );
 	
 	/** \brief Prepare render light UBO. */
 	void PrepareUBORenderLight( deoglRenderPlan &plan );

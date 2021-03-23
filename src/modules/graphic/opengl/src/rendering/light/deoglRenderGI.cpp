@@ -42,7 +42,7 @@
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
 #include "../../gi/deoglGIBVH.h"
-#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGITraceRays.h"
 #include "../../gi/deoglGIState.h"
 #include "../../gi/deoglGIMaterials.h"
 #include "../../model/deoglModelLOD.h"
@@ -123,6 +123,7 @@ deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
 pShaderTraceRays( NULL ),
+pShaderUpdateRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
@@ -136,7 +137,7 @@ pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglGI &gi = renderThread.GetGI();
-	const deoglGIRays &rays = gi.GetRays();
+	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
@@ -144,9 +145,9 @@ pAddToRenderTask( NULL )
 		pCreateUBORenderLight();
 		
 		// trace rays
-		defines.AddDefine( "GI_PROBE_INDEX_COUNT", rays.GetProbeCount() / 4 );
-		defines.AddDefine( "GI_PROBE_COUNT", rays.GetProbeCount() );
-		defines.AddDefine( "GI_RAYS_PER_PROBE", rays.GetRaysPerProbe() );
+		defines.AddDefine( "GI_PROBE_INDEX_COUNT", traceRays.GetProbeCount() / 4 );
+		defines.AddDefine( "GI_PROBE_COUNT", traceRays.GetProbeCount() );
+		defines.AddDefine( "GI_RAYS_PER_PROBE", traceRays.GetRaysPerProbe() );
 		
 		#ifdef GI_RENDERDOC_DEBUG
 		defines.AddDefine( "GI_RENDERDOC_DEBUG", true );
@@ -154,6 +155,9 @@ pAddToRenderTask( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Rays" );
+		pShaderUpdateRays = shaderManager.GetProgramWith( sources, defines );
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
@@ -277,7 +281,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIMaterials &materials = gi.GetMaterials();
-	deoglGIRays &rays = gi.GetRays();
+	deoglGITraceRays &traceRays = gi.GetTraceRays();
 	deoglGIBVH &bvh = gi.GetBVH();
 	
 	if( debugInfo.GetVisible() ){
@@ -305,6 +309,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	// set common states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -323,9 +328,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	// update shader fails to work correctly
 	const decPoint &sampleImageSize = giState->GetSampleImageSize();
 	
-	renderThread.GetFramebuffer().Activate( &rays.GetFBORayResult() );
+	renderThread.GetFramebuffer().Activate( &traceRays.GetFBORayResult() );
 	
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	
@@ -377,6 +381,50 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		}
 		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
 	}
+}
+
+void deoglRenderGI::UpdateRays( deoglRenderPlan &plan ){
+#if 0
+	deoglGIState * const giState = GetUpdateGIState( plan );
+	if( ! giState ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglGI &gi = renderThread.GetGI();
+	deoglGITraceRays &traceRays = gi.GetTraceRays();
+	deoglGIRays &rays = giState->GetRays();
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	
+	// update probes: irradiance map
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
+		giState->GetTextureProbeIrradiance().GetHeight() ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
+	gi.GetUBO().Activate();
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+#endif
 }
 
 void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
@@ -584,7 +632,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
-	deoglGIRays &rays = gi.GetRays();
+	deoglGITraceRays &traceRays = gi.GetTraceRays();
 	
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -604,9 +652,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	tsmgr.EnableTexture( 0, rays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, rays.GetTextureLight(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 2 );
 	
 	
@@ -657,7 +705,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
-	deoglGIRays &rays = gi.GetRays();
+	deoglGITraceRays &traceRays = gi.GetTraceRays();
 	
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -681,8 +729,8 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
 		giState->GetTextureProbeOffset().GetHeight() ) );
 	
-	tsmgr.EnableTexture( 0, rays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 1 );
 	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
@@ -774,7 +822,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 		GetDebugTimerAt( 0 ).Reset();
 	}
 	
-	RestoreFBOGIRays( *giStateUpdate );
+	RestoreFBOGITraceRays( *giStateUpdate );
 	
 	renderThread.GetShader().ActivateShader( pShaderLightGIRay );
 	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
@@ -901,6 +949,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderTraceRays ){
 		pShaderTraceRays->RemoveUsage();
+	}
+	if( pShaderUpdateRays ){
+		pShaderUpdateRays->RemoveUsage();
 	}
 	if( pShaderUpdateProbeIrradiance ){
 		pShaderUpdateProbeIrradiance->RemoveUsage();

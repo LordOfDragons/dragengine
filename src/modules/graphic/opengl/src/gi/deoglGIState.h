@@ -22,6 +22,7 @@
 #ifndef _DEOGLGISTATE_H_
 #define _DEOGLGISTATE_H_
 
+#include "deoglGIRays.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
@@ -112,6 +113,8 @@ private:
 	deoglPixelBuffer *pPixBufProbeOffset;
 	bool pClearMaps;
 	bool pProbesHaveMoved;
+	
+	deoglGIRays pRays;
 	
 	
 	
@@ -255,6 +258,12 @@ public:
 	
 	/** Update probe offsets from probe offset texture. */
 	void UpdateProbeOffsetFromTexture();
+	
+	
+	
+	/** Rays. */
+	inline deoglGIRays &GetRays(){ return pRays; }
+	inline const deoglGIRays &GetRays() const{ return pRays; }
 	/*@}*/
 	
 	

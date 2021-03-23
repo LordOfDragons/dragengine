@@ -37,7 +37,7 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
-#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGITraceRays.h"
 #include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -206,12 +206,12 @@ void deoglRenderLightBase::RestoreDRTextureDepthSmooth(){
 	tsmgr.DisableStagesAbove( 0 );
 }
 
-void deoglRenderLightBase::RestoreFBOGIRays( deoglGIState &giState ){
+void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	deoglGIRays &giRays = renderThread.GetGI().GetRays();
-	renderThread.GetFramebuffer().Activate( &giRays.GetFBORayLight() );
+	deoglGITraceRays &giTraceRays = renderThread.GetGI().GetTraceRays();
+	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBORayLight() );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
@@ -228,10 +228,10 @@ void deoglRenderLightBase::RestoreFBOGIRays( deoglGIState &giState ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	
-	tsmgr.EnableTexture( 0, giRays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, giRays.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, giRays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, giRays.GetTextureReflectivity(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 0, giTraceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, giTraceRays.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, giTraceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 3, giTraceRays.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 3 );
 	
 	#ifdef GI_RENDERDOC_DEBUG

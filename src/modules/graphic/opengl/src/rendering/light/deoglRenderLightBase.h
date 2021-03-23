@@ -92,7 +92,7 @@ public:
 	void RestoreDRTextureDepthSmooth();
 	
 	/** \brief Restore GI Rays frame buffer configuration. */
-	void RestoreFBOGIRays( deoglGIState &giState );
+	void RestoreFBOGITraceRays( deoglGIState &giState );
 	
 	
 	

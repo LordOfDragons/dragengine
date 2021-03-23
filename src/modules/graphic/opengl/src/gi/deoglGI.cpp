@@ -39,7 +39,7 @@
 deoglGI::deoglGI( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pBVH( renderThread ),
-pRays( renderThread ),
+pTraceRays( renderThread ),
 pMaterials( renderThread )
 {
 	try{
@@ -89,8 +89,8 @@ void deoglGI::pCreateUBO(){
 	// - base size: 80
 	// - rays:      1'024 (64), 4096 (256)
 	// - probes:    5'120 (256), 20'480 (1024), 40'960 (2048), 81'920 (4096)
-	const int maxProbeCount = pRays.GetProbeCount();
-	const int raysPerProbe = pRays.GetRaysPerProbe();
+	const int maxProbeCount = pTraceRays.GetProbeCount();
+	const int raysPerProbe = pTraceRays.GetRaysPerProbe();
 	
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	ubo.SetParameterCount( eupRayDirection + 1 );
@@ -115,6 +115,7 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMoveMaxOffset ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.GetParameterAt( eupMoveMinDistToSurface ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo.GetParameterAt( eupRayMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, maxProbeCount / 4 ); // ivec4
 	ubo.GetParameterAt( eupProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, maxProbeCount ); // vec4
 	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, raysPerProbe ); // vec3

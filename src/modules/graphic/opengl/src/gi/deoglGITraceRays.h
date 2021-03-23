@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLGIRAYS_H_
-#define _DEOGLGIRAYS_H_
+#ifndef _DEOGLGITRACERAYS_H_
+#define _DEOGLGITRACERAYS_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/deoglRenderbuffer.h"
@@ -33,26 +33,22 @@ class deoglSPBlockUBO;
 
 
 /**
- * Global illumination rays.
+ * Stores temporary result of tracing global illumination rays.
  */
-class deoglGIRays{
+class deoglGITraceRays{
 private:
 	deoglRenderThread &pRenderThread;
 	
 	int pRaysPerProbe;
 	int pProbesPerLine;
 	int pProbeCount;
-	decVector2 pRayMapScale;
 	
 	deoglTexture pTexPosition;
 	deoglTexture pTexNormal;
-	deoglTexture pTexMaterial;
-	deoglTexture pTexTexCoord;
 	deoglTexture pTexDiffuse;
 	deoglTexture pTexReflectivity;
 	deoglTexture pTexLight;
 	deoglFramebuffer pFBOResult;
-	deoglFramebuffer pFBOMaterial;
 	deoglFramebuffer pFBOLight;
 	
 	
@@ -61,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIRays( deoglRenderThread &renderThread, int raysPerProbe, int probeCount );
+	deoglGITraceRays( deoglRenderThread &renderThread );
 	
 	/** Clean up global illumination ray tracing. */
-	~deoglGIRays();
+	~deoglGITraceRays();
 	/*@}*/
 	
 	
@@ -77,20 +73,11 @@ public:
 	/** Rays per probe. */
 	inline int GetRaysPerProbe() const{ return pRaysPerProbe; }
 	
-	/** Set rays per probe. */
-	void SetRaysPerProbe( int raysPerProbe );
-	
 	/** Probes per line in result textures. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
 	
-	/** Probe count. */
+	/** Probe count in result textures. */
 	inline int GetProbeCount() const{ return pProbeCount; }
-	
-	/** Set probe count. FBO and textures are valid only after this call. */
-	void SetProbeCount( int count );
-	
-	/** Ray map scale. */
-	inline const decVector2 &GetRayMapScale() const{ return pRayMapScale; }
 	
 	
 	
@@ -99,12 +86,6 @@ public:
 	
 	/** Normal texture. */
 	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
-	
-	/** Material texture. */
-	inline deoglTexture &GetTextureMaterial(){ return pTexMaterial; }
-	
-	/** Texture coordinate texture. */
-	inline deoglTexture &GetTextureTexCoord(){ return pTexTexCoord; }
 	
 	/** Diffuse/TintMask texture. */
 	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
@@ -115,21 +96,18 @@ public:
 	/** Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }
 	
-	/** Result FBO. */
-	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
+	/** Ray tracing result FBO. */
+	inline deoglFramebuffer &GetFBORayResult(){ return pFBOResult; }
 	
-	/** Material FBO. */
-	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }
-	
-	/** Light FBO. */
-	inline deoglFramebuffer &GetFBOLight(){ return pFBOLight; }
+	/** Ray light FBO. */
+	inline deoglFramebuffer &GetFBORayLight(){ return pFBOLight; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pCreateFBO();
+	void pCreateFBORay();
 };
 
 #endif
