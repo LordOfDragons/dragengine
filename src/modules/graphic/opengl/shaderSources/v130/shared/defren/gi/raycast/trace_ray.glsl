@@ -151,7 +151,7 @@ in vec3 rayDirection, in float distanceLimit, out GIRayCastResult result ){
 // 
 // Returns true if hit is found otherwise false.
 bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection,
-out GIRayCastResult result ){
+in float distanceLimit, out GIRayCastResult result ){
 	vec3 invRayDirection = 1.0 / rayDirection;
 	
 	int stack[ 13 ];
@@ -160,7 +160,7 @@ out GIRayCastResult result ){
 	
 	int curNode = rootNode;
 	
-	result.distance = giRayCastNoHitDistance;
+	result.distance = distanceLimit;
 	bool hasHit = false;
 	
 	// shaders run in wavefronts. each wavefront contains a group of threads. all these

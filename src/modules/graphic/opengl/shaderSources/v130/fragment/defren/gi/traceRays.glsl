@@ -38,7 +38,7 @@ void main( void ){
 	vec3 dir = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
 	
 	GIRayCastResult result;
-	if( giRayCastTraceInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, result ) ){
+	if( giRayCastTraceInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, giRayCastNoHitDistance, result ) ){
 		outPosition = vec4( dir * result.distance, result.distance );
 		outNormal = result.normal;
 	}else{
@@ -67,7 +67,7 @@ void main( void ){
 		vec3 pp = vec3(0,0,-1*(tc.x/512));
 		
 		GIRayCastResult result;
-		if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, result ) ){
+		if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
 			outPosition = vec4( pp, result.distance );
 			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
 			outNormal = result.normal;
@@ -108,8 +108,8 @@ void main( void ){
 	// trace ray
 	vec3 direction = pGIRayDirection[ tc.x - firstRayOffset ];
 	GIRayCastResult result;
-	if( pGIBVHInstanceRootNode != -1
-	&& giRayCastTraceInstance( pGIBVHInstanceRootNode, position, direction, result ) ){
+	if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
+			position, direction, giRayCastNoHitDistance, result ) ){
 		outPosition.xyz = position + direction * result.distance;
 		outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
 		
@@ -136,5 +136,5 @@ void main( void ){
 		outLight = vec3( 0.0 );
 	}
 	
-	gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );
+	//gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );
 }
