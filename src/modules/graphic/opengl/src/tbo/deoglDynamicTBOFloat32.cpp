@@ -87,6 +87,13 @@ int deoglDynamicTBOFloat32::GetPixelCount() const{
 	return count;
 }
 
+int deoglDynamicTBOFloat32::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBOFloat32::Clear(){
 	pDataCount = 0;
 }
@@ -221,6 +228,166 @@ void deoglDynamicTBOFloat32::AddMat3x2( const decMatrix &value ){
 	
 	pDataFloat[ pDataCount++ ] = value.a13;
 	pDataFloat[ pDataCount++ ] = value.a23;
+}
+
+void deoglDynamicTBOFloat32::SetBoolAt( int offset, bool value ){
+	SetFloatAt( offset, value ? 1.0f : 0.0f );
+}
+
+void deoglDynamicTBOFloat32::SetFloatAt( int offset, float value ){
+	if( offset < 0 || offset >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value;
+}
+
+void deoglDynamicTBOFloat32::SetVec2At( int offset, float value1, float value2 ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value1;
+	pDataFloat[ offset + 1 ] = value2;
+}
+
+void deoglDynamicTBOFloat32::SetVec2At( int offset, const decVector2 &value ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.x;
+	pDataFloat[ offset + 1 ] = value.y;
+}
+
+void deoglDynamicTBOFloat32::SetVec3At( int offset, float value1, float value2, float value3 ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value1;
+	pDataFloat[ offset + 1 ] = value2;
+	pDataFloat[ offset + 2 ] = value3;
+}
+
+void deoglDynamicTBOFloat32::SetVec3At( int offset, const decVector &value ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.x;
+	pDataFloat[ offset + 1 ] = value.y;
+	pDataFloat[ offset + 2 ] = value.z;
+}
+
+void deoglDynamicTBOFloat32::SetVec4At( int offset, float value1, float value2,
+float value3, float value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value1;
+	pDataFloat[ offset + 1 ] = value2;
+	pDataFloat[ offset + 2 ] = value3;
+	pDataFloat[ offset + 3 ] = value4;
+}
+
+void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector &value, float value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.x;
+	pDataFloat[ offset + 1 ] = value.y;
+	pDataFloat[ offset + 2 ] = value.z;
+	pDataFloat[ offset + 3 ] = value4;
+}
+
+void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector4 &value ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.x;
+	pDataFloat[ offset + 1 ] = value.y;
+	pDataFloat[ offset + 2 ] = value.z;
+	pDataFloat[ offset + 3 ] = value.w;
+}
+
+void deoglDynamicTBOFloat32::SetMat4x3At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 11 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.a11;
+	pDataFloat[ offset + 1 ] = value.a21;
+	pDataFloat[ offset + 2 ] = value.a31;
+	
+	pDataFloat[ offset + 3 ] = value.a12;
+	pDataFloat[ offset + 4 ] = value.a22;
+	pDataFloat[ offset + 5 ] = value.a32;
+	
+	pDataFloat[ offset + 6 ] = value.a13;
+	pDataFloat[ offset + 7 ] = value.a23;
+	pDataFloat[ offset + 8 ] = value.a33;
+	
+	pDataFloat[ offset + 9 ] = value.a14;
+	pDataFloat[ offset + 10 ] = value.a24;
+	pDataFloat[ offset + 11 ] = value.a34;
+}
+
+void deoglDynamicTBOFloat32::SetMat3x4At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 11 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.a11;
+	pDataFloat[ offset + 1 ] = value.a12;
+	pDataFloat[ offset + 2 ] = value.a13;
+	pDataFloat[ offset + 3 ] = value.a14;
+	
+	pDataFloat[ offset + 4 ] = value.a21;
+	pDataFloat[ offset + 5 ] = value.a22;
+	pDataFloat[ offset + 6 ] = value.a23;
+	pDataFloat[ offset + 7] = value.a24;
+	
+	pDataFloat[ offset + 8 ] = value.a31;
+	pDataFloat[ offset + 9 ] = value.a32;
+	pDataFloat[ offset + 10 ] = value.a33;
+	pDataFloat[ offset + 11 ] = value.a34;
+}
+
+void deoglDynamicTBOFloat32::SetMat3x3At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 8 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.a11;
+	pDataFloat[ offset + 1 ] = value.a21;
+	pDataFloat[ offset + 2 ] = value.a31;
+	
+	pDataFloat[ offset + 3 ] = value.a12;
+	pDataFloat[ offset + 4 ] = value.a22;
+	pDataFloat[ offset + 5 ] = value.a32;
+	
+	pDataFloat[ offset + 6 ] = value.a13;
+	pDataFloat[ offset + 7 ] = value.a23;
+	pDataFloat[ offset + 8 ] = value.a33;
+}
+
+void deoglDynamicTBOFloat32::SetMat3x2At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 5 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = value.a11;
+	pDataFloat[ offset + 1 ] = value.a21;
+	
+	pDataFloat[ offset + 2 ] = value.a12;
+	pDataFloat[ offset + 3 ] = value.a22;
+	
+	pDataFloat[ offset + 4 ] = value.a13;
+	pDataFloat[ offset + 5 ] = value.a23;
 }
 
 void deoglDynamicTBOFloat32::Update(){

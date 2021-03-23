@@ -87,6 +87,13 @@ int deoglDynamicTBOUInt8::GetPixelCount() const{
 	return count;
 }
 
+int deoglDynamicTBOUInt8::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBOUInt8::Clear(){
 	pDataCount = 0;
 }
@@ -137,6 +144,68 @@ void deoglDynamicTBOUInt8::AddVec4( uint8_t value1, uint8_t value2, uint8_t valu
 	pDataUInt[ pDataCount++ ] = value2;
 	pDataUInt[ pDataCount++ ] = value3;
 	pDataUInt[ pDataCount++ ] = value4;
+}
+
+void deoglDynamicTBOUInt8::SetBoolAt( int offset, bool value ){
+	SetIntAt( offset, value ? ( uint8_t )~1 : 0 );
+}
+
+void deoglDynamicTBOUInt8::SetIntAt( int offset, uint8_t value ){
+	if( offset < 0 || offset >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value;
+}
+
+void deoglDynamicTBOUInt8::SetVec2At( int offset, uint8_t value1, uint8_t value2 ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+}
+
+void deoglDynamicTBOUInt8::SetVec2At( int offset, const decPoint &value ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint8_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint8_t )value.y;
+}
+
+void deoglDynamicTBOUInt8::SetVec3At( int offset, uint8_t value1, uint8_t value2, uint8_t value3 ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+}
+
+void deoglDynamicTBOUInt8::SetVec3At( int offset, const decPoint3 &value ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint8_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint8_t )value.y;
+	pDataUInt[ offset + 2 ] = ( uint8_t )value.z;
+}
+
+void deoglDynamicTBOUInt8::SetVec4At( int offset, uint8_t value1, uint8_t value2,
+uint8_t value3, uint8_t value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+	pDataUInt[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOUInt8::Update(){

@@ -87,6 +87,13 @@ int deoglDynamicTBOUInt16::GetPixelCount() const{
 	return count;
 }
 
+int deoglDynamicTBOUInt16::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBOUInt16::Clear(){
 	pDataCount = 0;
 }
@@ -137,6 +144,68 @@ void deoglDynamicTBOUInt16::AddVec4( uint16_t value1, uint16_t value2, uint16_t 
 	pDataUInt[ pDataCount++ ] = value2;
 	pDataUInt[ pDataCount++ ] = value3;
 	pDataUInt[ pDataCount++ ] = value4;
+}
+
+void deoglDynamicTBOUInt16::SetBoolAt( int offset, bool value ){
+	SetIntAt( offset, value ? ( uint16_t )~1 : 0 );
+}
+
+void deoglDynamicTBOUInt16::SetIntAt( int offset, uint16_t value ){
+	if( offset < 0 || offset >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value;
+}
+
+void deoglDynamicTBOUInt16::SetVec2At( int offset, uint16_t value1, uint16_t value2 ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+}
+
+void deoglDynamicTBOUInt16::SetVec2At( int offset, const decPoint &value ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint16_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint16_t )value.y;
+}
+
+void deoglDynamicTBOUInt16::SetVec3At( int offset, uint16_t value1, uint16_t value2, uint16_t value3 ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+}
+
+void deoglDynamicTBOUInt16::SetVec3At( int offset, const decPoint3 &value ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint16_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint16_t )value.y;
+	pDataUInt[ offset + 2 ] = ( uint16_t )value.z;
+}
+
+void deoglDynamicTBOUInt16::SetVec4At( int offset, uint16_t value1, uint16_t value2,
+uint16_t value3, uint16_t value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+	pDataUInt[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOUInt16::Update(){

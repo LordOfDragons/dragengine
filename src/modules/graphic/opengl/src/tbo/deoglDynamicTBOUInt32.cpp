@@ -87,17 +87,19 @@ int deoglDynamicTBOUInt32::GetPixelCount() const{
 	return count;
 }
 
+int deoglDynamicTBOUInt32::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBOUInt32::Clear(){
 	pDataCount = 0;
 }
 
 void deoglDynamicTBOUInt32::AddBool( bool value ){
-	if( value ){
-		AddInt( ( uint32_t )~1 );
-		
-	}else{
-		AddInt( 0 );
-	}
+	AddInt( value ? ( uint32_t )~1 : 0 );
 }
 
 void deoglDynamicTBOUInt32::AddInt( uint32_t value ){
@@ -139,6 +141,68 @@ void deoglDynamicTBOUInt32::AddVec4( uint32_t value1, uint32_t value2, uint32_t 
 	pDataUInt[ pDataCount++ ] = value4;
 }
 
+void deoglDynamicTBOUInt32::SetBoolAt( int offset, bool value ){
+	SetIntAt( offset, value ? ( uint32_t )~1 : 0 );
+}
+
+void deoglDynamicTBOUInt32::SetIntAt( int offset, uint32_t value ){
+	if( offset < 0 || offset >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value;
+}
+
+void deoglDynamicTBOUInt32::SetVec2At( int offset, uint32_t value1, uint32_t value2 ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+}
+
+void deoglDynamicTBOUInt32::SetVec2At( int offset, const decPoint &value ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint32_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint32_t )value.y;
+}
+
+void deoglDynamicTBOUInt32::SetVec3At( int offset, uint32_t value1, uint32_t value2, uint32_t value3 ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+}
+
+void deoglDynamicTBOUInt32::SetVec3At( int offset, const decPoint3 &value ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = ( uint32_t )value.x;
+	pDataUInt[ offset + 1 ] = ( uint32_t )value.y;
+	pDataUInt[ offset + 2 ] = ( uint32_t )value.z;
+}
+
+void deoglDynamicTBOUInt32::SetVec4At( int offset, uint32_t value1, uint32_t value2,
+uint32_t value3, uint32_t value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataUInt[ offset ] = value1;
+	pDataUInt[ offset + 1 ] = value2;
+	pDataUInt[ offset + 2 ] = value3;
+	pDataUInt[ offset + 3 ] = value4;
+}
+
 void deoglDynamicTBOUInt32::Update(){
 	if( pDataCount == 0 ){
 		return;
@@ -153,8 +217,12 @@ void deoglDynamicTBOUInt32::Update(){
 	consumption.DecrementGPU( pMemoryGPU );
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint32_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint32_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( uint32_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( uint32_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
 	
 	if( ! pTBO ){
 		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );

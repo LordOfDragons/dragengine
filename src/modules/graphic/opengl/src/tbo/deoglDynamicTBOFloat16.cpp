@@ -87,17 +87,19 @@ int deoglDynamicTBOFloat16::GetPixelCount() const{
 	return count;
 }
 
+int deoglDynamicTBOFloat16::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBOFloat16::Clear(){
 	pDataCount = 0;
 }
 
 void deoglDynamicTBOFloat16::AddBool( bool value ){
-	if( value ){
-		AddFloat( 1.0f );
-		
-	}else{
-		AddFloat( 0.0f );
-	}
+	AddFloat( value ? 1.0f : 0.0f );
 }
 
 void deoglDynamicTBOFloat16::AddFloat( float value ){
@@ -221,6 +223,166 @@ void deoglDynamicTBOFloat16::AddMat3x2( const decMatrix &value ){
 	
 	pDataFloat[ pDataCount++ ] = convertFloatToHalf( value.a13 );
 	pDataFloat[ pDataCount++ ] = convertFloatToHalf( value.a23 );
+}
+
+void deoglDynamicTBOFloat16::SetBoolAt( int offset, bool value ){
+	SetFloatAt( offset, value ? 1.0f : 0.0f );
+}
+
+void deoglDynamicTBOFloat16::SetFloatAt( int offset, float value ){
+	if( offset < 0 || offset >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value );
+}
+
+void deoglDynamicTBOFloat16::SetVec2At( int offset, float value1, float value2 ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value1 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value2 );
+}
+
+void deoglDynamicTBOFloat16::SetVec2At( int offset, const decVector2 &value ){
+	if( offset < 0 || offset + 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.x );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.y );
+}
+
+void deoglDynamicTBOFloat16::SetVec3At( int offset, float value1, float value2, float value3 ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value1 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value2 );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value3 );
+}
+
+void deoglDynamicTBOFloat16::SetVec3At( int offset, const decVector &value ){
+	if( offset < 0 || offset + 2 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.x );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.y );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.z );
+}
+
+void deoglDynamicTBOFloat16::SetVec4At( int offset, float value1, float value2,
+float value3, float value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value1 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value2 );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value3 );
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value4 );
+}
+
+void deoglDynamicTBOFloat16::SetVec4At( int offset, const decVector &value, float value4 ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.x );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.y );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.z );
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value4 );
+}
+
+void deoglDynamicTBOFloat16::SetVec4At( int offset, const decVector4 &value ){
+	if( offset < 0 || offset + 3 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.x );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.y );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.z );
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value.w );
+}
+
+void deoglDynamicTBOFloat16::SetMat4x3At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 11 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.a11 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.a21 );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.a31 );
+	
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value.a12 );
+	pDataFloat[ offset + 4 ] = convertFloatToHalf( value.a22 );
+	pDataFloat[ offset + 5 ] = convertFloatToHalf( value.a32 );
+	
+	pDataFloat[ offset + 6 ] = convertFloatToHalf( value.a13 );
+	pDataFloat[ offset + 7 ] = convertFloatToHalf( value.a23 );
+	pDataFloat[ offset + 8 ] = convertFloatToHalf( value.a33 );
+	
+	pDataFloat[ offset + 9 ] = convertFloatToHalf( value.a14 );
+	pDataFloat[ offset + 10 ] = convertFloatToHalf( value.a24 );
+	pDataFloat[ offset + 11 ] = convertFloatToHalf( value.a34 );
+}
+
+void deoglDynamicTBOFloat16::SetMat3x4At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 11 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.a11 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.a12 );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.a13 );
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value.a14 );
+	
+	pDataFloat[ offset + 4 ] = convertFloatToHalf( value.a21 );
+	pDataFloat[ offset + 5 ] = convertFloatToHalf( value.a22 );
+	pDataFloat[ offset + 6 ] = convertFloatToHalf( value.a23 );
+	pDataFloat[ offset + 7] = convertFloatToHalf( value.a24 );
+	
+	pDataFloat[ offset + 8 ] = convertFloatToHalf( value.a31 );
+	pDataFloat[ offset + 9 ] = convertFloatToHalf( value.a32 );
+	pDataFloat[ offset + 10 ] = convertFloatToHalf( value.a33 );
+	pDataFloat[ offset + 11 ] = convertFloatToHalf( value.a34 );
+}
+
+void deoglDynamicTBOFloat16::SetMat3x3At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 8 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.a11 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.a21 );
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.a31 );
+	
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value.a12 );
+	pDataFloat[ offset + 4 ] = convertFloatToHalf( value.a22 );
+	pDataFloat[ offset + 5 ] = convertFloatToHalf( value.a32 );
+	
+	pDataFloat[ offset + 6 ] = convertFloatToHalf( value.a13 );
+	pDataFloat[ offset + 7 ] = convertFloatToHalf( value.a23 );
+	pDataFloat[ offset + 8 ] = convertFloatToHalf( value.a33 );
+}
+
+void deoglDynamicTBOFloat16::SetMat3x2At( int offset, const decMatrix &value ){
+	if( offset < 0 || offset + 5 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pDataFloat[ offset ] = convertFloatToHalf( value.a11 );
+	pDataFloat[ offset + 1 ] = convertFloatToHalf( value.a21 );
+	
+	pDataFloat[ offset + 2 ] = convertFloatToHalf( value.a12 );
+	pDataFloat[ offset + 3 ] = convertFloatToHalf( value.a22 );
+	
+	pDataFloat[ offset + 4 ] = convertFloatToHalf( value.a13 );
+	pDataFloat[ offset + 5 ] = convertFloatToHalf( value.a23 );
 }
 
 void deoglDynamicTBOFloat16::Update(){

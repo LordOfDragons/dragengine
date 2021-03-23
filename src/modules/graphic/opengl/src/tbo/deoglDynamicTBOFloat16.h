@@ -31,9 +31,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Dynamic TBO.
- * 
- * Stores a dynamic texture buffer object destined to be filled and rendered often.
+* Stores a dynamic texture buffer object destined to be filled and rendered often.
  * The data is first assembled into an array of float or half-float values. Once
  * done the written data is uploaded to the VBO. The VBO grows with the needed
  * size but never shrinks. This way the usage is as fast as possible.
@@ -56,10 +54,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create dynamic tbo. */
+	/** Create dynamic tbo. */
 	deoglDynamicTBOFloat16( deoglRenderThread &renderThread, int componentCount );
 	
-	/** \brief Clean up dynamic tbo. */
+	/** Clean up dynamic tbo. */
 	~deoglDynamicTBOFloat16();
 	/*@}*/
 	
@@ -67,66 +65,96 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Component count. */
+	/** Component count. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief TBO. */
+	/** TBO. */
 	inline GLuint GetTBO() const{ return pTBO; }
 	
-	/** \brief Count of data entries. */
+	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }
 	
-	/** \brief Get pixel count. */
+	/** Get pixel count. */
 	int GetPixelCount() const;
 	
-	/** \brief Clear TBO. */
+	/** Data point offset at start of pixel. */
+	int GetPixelOffset( int pixel ) const;
+	
+	/** Clear TBO. */
 	void Clear();
 	
-	/**
-	 * \brief Add boolean value.
-	 * 
-	 * True adds 1 and False 0.
-	 */
+	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool( bool value );
 	
-	/** \brief Add float value. */
+	/** Add float value. */
 	void AddFloat( float value );
 	
-	/** \brief Add two float values. */
+	/** Add two float values. */
 	void AddVec2( float value1, float value2 );
 	void AddVec2( const decVector2 &value );
 	
-	/** \brief Add three float values. */
+	/** Add three float values. */
 	void AddVec3( float value1, float value2, float value3 );
 	void AddVec3( const decVector &value );
 	
-	/** \brief Add four float values. */
+	/** Add four float values. */
 	void AddVec4( float value1, float value2, float value3, float value4 );
 	void AddVec4( const decVector &value, float value4 );
 	void AddVec4( const decVector4 &value );
 	
-	/** \brief Add 4x3 matrix in colon major order adding 12 float. */
+	/** Add 4x3 matrix in colon major order adding 12 float. */
 	void AddMat4x3( const decMatrix &value );
 	
-	/** \brief Add 4x3 matrix in row major order adding 12 float. */
+	/** Add 4x3 matrix in row major order adding 12 float. */
 	void AddMat3x4( const decMatrix &value );
 	
-	/** \brief Add 3x3 matrix in colon major order adding 9 float. */
+	/** Add 3x3 matrix in colon major order adding 9 float. */
 	void AddMat3x3( const decMatrix &value );
 	
-	/** \brief Add 3x2 matrix in colon major order adding 6 float. */
+	/** Add 3x2 matrix in colon major order adding 6 float. */
 	void AddMat3x2( const decMatrix &value );
 	
-	/** \brief Update TBO with added data. */
+	/** Set boolean value at offset in components. True adds 1 and False 0. */
+	void SetBoolAt( int offset, bool value );
+	
+	/** Set float value at offset in components. */
+	void SetFloatAt( int offset, float value );
+	
+	/** Set two float values at offset in components. */
+	void SetVec2At( int offset, float value1, float value2 );
+	void SetVec2At( int offset, const decVector2 &value );
+	
+	/** Set three float values at offset in components. */
+	void SetVec3At( int offset, float value1, float value2, float value3 );
+	void SetVec3At( int offset, const decVector &value );
+	
+	/** Set four float values at offset in components. */
+	void SetVec4At( int offset, float value1, float value2, float value3, float value4 );
+	void SetVec4At( int offset, const decVector &value, float value4 );
+	void SetVec4At( int offset, const decVector4 &value );
+	
+	/** Set 4x3 matrix in colon major order adding 12 float at offset in components. */
+	void SetMat4x3At( int offset, const decMatrix &value );
+	
+	/** Set 4x3 matrix in row major order adding 12 float at offset in components. */
+	void SetMat3x4At( int offset, const decMatrix &value );
+	
+	/** Set 3x3 matrix in colon major order adding 9 float at offset in components. */
+	void SetMat3x3At( int offset, const decMatrix &value );
+	
+	/** Set 3x2 matrix in colon major order adding 6 float at offset in components. */
+	void SetMat3x2At( int offset, const decMatrix &value );
+	
+	/** Update TBO with added data. */
 	void Update();
 	
-	/** \brief GPU memory consumption. */
+	/** GPU memory consumption. */
 	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
 	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint();
 	/*@}*/
 	

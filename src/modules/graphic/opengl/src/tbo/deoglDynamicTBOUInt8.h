@@ -81,6 +81,9 @@ public:
 	/** \brief Get pixel count. */
 	int GetPixelCount() const;
 	
+	/** Data point offset at start of pixel. */
+	int GetPixelOffset( int pixel ) const;
+	
 	/** \brief Clear TBO. */
 	void Clear();
 	
@@ -104,6 +107,23 @@ public:
 	
 	/** \brief Add four integer values. */
 	void AddVec4( uint8_t value1, uint8_t value2, uint8_t value3, uint8_t value4 );
+	
+	/** Set boolean value at offset in components. True adds 1 and False 0. */
+	void SetBoolAt( int offset, bool value );
+	
+	/** Set integer value at offset in components. */
+	void SetIntAt( int offset, uint8_t value );
+	
+	/** Set two integer values at offset in components. */
+	void SetVec2At( int offset, uint8_t value1, uint8_t value2 );
+	void SetVec2At( int offset, const decPoint &value );
+	
+	/** Set three integer values at offset in components. */
+	void SetVec3At( int offset, uint8_t value1, uint8_t value2, uint8_t value3 );
+	void SetVec3At( int offset, const decPoint3 &value );
+	
+	/** Set four integer values at offset in components. */
+	void SetVec4At( int offset, uint8_t value1, uint8_t value2, uint8_t value3, uint8_t value4 );
 	
 	/** \brief Update TBO with added data. */
 	void Update();

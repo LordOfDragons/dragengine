@@ -81,6 +81,9 @@ public:
 	/** \brief Get pixel count. */
 	int GetPixelCount() const;
 	
+	/** Data point offset at start of pixel. */
+	int GetPixelOffset( int pixel ) const;
+	
 	/** \brief Clear TBO. */
 	void Clear();
 	
@@ -118,6 +121,37 @@ public:
 	
 	/** \brief Add 3x2 matrix in colon major order adding 6 float. */
 	void AddMat3x2( const decMatrix &value );
+	
+	/** Set boolean value at offset in components. True adds 1 and False 0. */
+	void SetBoolAt( int offset, bool value );
+	
+	/** Set float value at offset in components. */
+	void SetFloatAt( int offset, float value );
+	
+	/** Set two float values at offset in components. */
+	void SetVec2At( int offset, float value1, float value2 );
+	void SetVec2At( int offset, const decVector2 &value );
+	
+	/** Set three float values at offset in components. */
+	void SetVec3At( int offset, float value1, float value2, float value3 );
+	void SetVec3At( int offset, const decVector &value );
+	
+	/** Set four float values at offset in components. */
+	void SetVec4At( int offset, float value1, float value2, float value3, float value4 );
+	void SetVec4At( int offset, const decVector &value, float value4 );
+	void SetVec4At( int offset, const decVector4 &value );
+	
+	/** Set 4x3 matrix in colon major order adding 12 float at offset in components. */
+	void SetMat4x3At( int offset, const decMatrix &value );
+	
+	/** Set 4x3 matrix in row major order adding 12 float at offset in components. */
+	void SetMat3x4At( int offset, const decMatrix &value );
+	
+	/** Set 3x3 matrix in colon major order adding 9 float at offset in components. */
+	void SetMat3x3At( int offset, const decMatrix &value );
+	
+	/** Set 3x2 matrix in colon major order adding 6 float at offset in components. */
+	void SetMat3x2At( int offset, const decMatrix &value );
 	
 	/** \brief Update TBO with added data. */
 	void Update();
