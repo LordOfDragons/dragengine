@@ -35,13 +35,13 @@ class deoglPixelBuffer;
 
 
 /**
- * \brief Global illumination state.
+ * Global illumination state.
  * 
  * Stores the state of global illumination. Typically every camera owns one state.
  */
 class deoglGIState{
 public:
-	/** \brief Probe parameters. */
+	/** Probe parameters. */
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
 		int index; //<! Grid index
@@ -118,10 +118,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create global illumination state. */
+	/** Create global illumination state. */
 	deoglGIState( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up global illumination state. */
+	/** Clean up global illumination state. */
 	~deoglGIState();
 	/*@}*/
 	
@@ -129,131 +129,131 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Probe spacing. */
+	/** Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
 	
-	/** \brief Probe spacing inverse. */
+	/** Probe spacing inverse. */
 	inline const decVector &GetProbeSpacingInverse() const{ return pProbeSpacingInv; }
 	
-	/** \brief Probe count. */
+	/** Probe count. */
 	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
 	
-	/** \brief Grid coord clamp. */
+	/** Grid coord clamp. */
 	inline const decPoint3 &GetGridCoordClamp() const{ return pGridCoordClamp; }
 	
-	/** \brief Probe origin. */
+	/** Probe origin. */
 	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }
 	
-	/** \brief Position clamp. */
+	/** Position clamp. */
 	inline const decVector &GetPositionClamp() const{ return pPositionClamp; }
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Size of sample image. */
+	/** Size of sample image. */
 	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
 	
 	/**
-	 * \brief Grid coordinate shift (wrapping around).
+	 * Grid coordinate shift (wrapping around).
 	 * 
 	 * Shift is in the range from 0 to probeCount-1.
 	 */
 	inline const decPoint3 &GetGridCoordShift() const{ return pGridCoordShift; }
 	
-	/** \brief Detection box. */
+	/** Detection box. */
 	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
 	
 	
 	
-	/** \brief Grid coordinates for probe index. */
+	/** Grid coordinates for probe index. */
 	decPoint3 ProbeIndex2GridCoord( int index ) const;
 	
-	/** \brief Probe index for grid coordinates. */
+	/** Probe index for grid coordinates. */
 	int GridCoord2ProbeIndex( const decPoint3 &coord ) const;
 	
-	/** \brief Probe index for grid coordinates. */
+	/** Probe index for grid coordinates. */
 	decVector Grid2Local( const decPoint3 &coord ) const;
 	
 	
 	
-	/** \brief Grid coordinates closest to world position unclamped. */
+	/** Grid coordinates closest to world position unclamped. */
 	decPoint3 World2Grid( const decDVector &position ) const;
 	
-	/** \brief World position closest to grid. */
+	/** World position closest to grid. */
 	decDVector Grid2World( const decPoint3 &grid ) const;
 	
-	/** \brief World coordinate of closest grid location. */
+	/** World coordinate of closest grid location. */
 	decDVector WorldClosestGrid( const decDVector &position ) const;
 	
-	/** \brief Local grid coordinates to shifted grid coordinates. */
+	/** Local grid coordinates to shifted grid coordinates. */
 	decPoint3 LocalGrid2ShiftedGrid( const decPoint3 &coord ) const;
 	
-	/** \brief Shifted grid coordinates to local grid coordinates. */
+	/** Shifted grid coordinates to local grid coordinates. */
 	decPoint3 ShiftedGrid2LocalGrid( const decPoint3 &coord ) const;
 	
 	
 	
-	/** \brief Irradiance map size. */
+	/** Irradiance map size. */
 	inline int GetIrradianceMapSize() const{ return pIrradianceMapSize; }
 	
-	/** \brief Distance map size. */
+	/** Distance map size. */
 	inline int GetDistanceMapSize() const{ return pDistanceMapSize; }
 	
-	/** \brief Irradiance map scale. */
+	/** Irradiance map scale. */
 	inline const decVector2 &GetIrradianceMapScale() const{ return pIrradianceMapScale; }
 	
-	/** \brief Distance map scale. */
+	/** Distance map scale. */
 	inline const decVector2 &GetDistanceMapScale() const{ return pDistanceMapScale; }
 	
-	/** \brief Normal bias. */
+	/** Normal bias. */
 	inline float GetNormalBias() const{ return pNormalBias; }
 	
-	/** \brief Energy preservation. */
+	/** Energy preservation. */
 	inline float GetEnergyPreservation() const{ return pEnergyPreservation; }
 	
-	/** \brief Count of probes to update. */
+	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
 	
 	
-	/** \brief Irradiance probe texture. */
+	/** Irradiance probe texture. */
 	inline deoglTexture &GetTextureProbeIrradiance(){ return pTexProbeIrradiance; }
 	inline const deoglTexture &GetTextureProbeIrradiance() const{ return pTexProbeIrradiance; }
 	
-	/** \brief Distance probe texture. */
+	/** Distance probe texture. */
 	inline deoglTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
 	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
-	/** \brief Probe offset texture. */
+	/** Probe offset texture. */
 	inline deoglTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
-	/** \brief Probe fbo irradiance. */
+	/** Probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
 	
-	/** \brief Probe fbo distance. */
+	/** Probe fbo distance. */
 	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
 	
-	/** \brief Probe offset fbo. */
+	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
 		const decDMatrix &cameraMatrix, float fovX, float fovY );
 	
-	/** \brief Prepare UBO state. */
+	/** Prepare UBO state. */
 	void PrepareUBOState() const;
 	
-	/** \brief Invalid all probes. */
+	/** Invalid all probes. */
 	void Invalidate();
 	
-	/** \brief Probe moved. */
+	/** Probe moved. */
 	void ProbesMoved();
 	
-	/** \brief Update probe offsets from probe offset texture. */
+	/** Update probe offsets from probe offset texture. */
 	void UpdateProbeOffsetFromTexture();
 	/*@}*/
 	

@@ -101,9 +101,9 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupProbesPerLine ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupGridProbeSpacing ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.GetParameterAt( eupBVHInstanceRootNode ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	ubo.GetParameterAt( eupOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	ubo.GetParameterAt( eupIrradianceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-	ubo.GetParameterAt( eupOcclusionMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo.GetParameterAt( eupIrradianceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupDistanceMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMaxProbeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupDepthSharpness ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float

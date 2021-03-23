@@ -209,9 +209,9 @@ void deoglGIState::PrepareUBOState() const{
 		ubo.SetParameterDataInt( deoglGI::eupProbeCount, pUpdateProbeCount );
 		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
 		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, rays.GetProbesPerLine() );
-		ubo.SetParameterDataInt( deoglGI::eupOcclusionMapSize, pIrradianceMapSize );
+		ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pIrradianceMapSize );
 		ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pDistanceMapSize );
-		ubo.SetParameterDataVec2( deoglGI::eupOcclusionMapScale, pIrradianceMapScale );
+		ubo.SetParameterDataVec2( deoglGI::eupIrradianceMapScale, pIrradianceMapScale );
 		ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pDistanceMapScale );
 		ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
 		ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pDepthSharpness );

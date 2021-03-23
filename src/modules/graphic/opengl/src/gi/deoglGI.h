@@ -51,9 +51,9 @@ public:
 		eupProbesPerLine, // int: count of probes per line
 		eupGridProbeSpacing, // vec3: spacing of probes in grid
 		eupBVHInstanceRootNode, // int
-		eupOcclusionMapScale, // vec2: scale factor for occlusion map
+		eupIrradianceMapScale, // vec2: scale factor for irradiance map
 		eupDistanceMapScale, // vec2: scale factor for distance map
-		eupOcclusionMapSize, // int: size of occlusion map
+		eupIrradianceMapSize, // int: size of irradiance map
 		eupDistanceMapSize, // int: size of distance map
 		eupMaxProbeDistance, // float
 		eupDepthSharpness, // float
