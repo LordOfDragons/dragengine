@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglComponentNotifier.h"
+#include "deoglComponentListener.h"
 #include "deoglComponentTestForTouch.h"
 #include "deoglRComponent.h"
 #include "deoglRComponentTexture.h"
@@ -170,7 +170,7 @@ pLLWorldNext( NULL )
 	pRenderEnvMapFadeFactor = 1.0f;
 	pDirtyRenderEnvMap = true;
 	
-	pNotifierIndex = 0;
+	pListenerIndex = 0;
 	
 	pEnvMap = NULL;
 	
@@ -221,6 +221,7 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	pDirtyRenderEnvMap = true;
 	pFirstRender = true;
+	NotifyParentWorldChanged();
 }
 
 
@@ -278,12 +279,12 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 	
 	// light shadow matching potentially changed
 	const deoglLightList list( pLightList );
-	const int count = list.GetCount();
-	int i;
-	
+	int i, count = list.GetCount();
 	for( i=0; i<count; i++ ){
 		list.GetAt( i )->TestComponent( this );
 	}
+	
+	NotifyLayerMaskChanged();
 }
 
 
@@ -434,6 +435,8 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 		//	ResetStatic();
 		}
 	}
+	
+	NotifyOcclusionMeshChanged();
 }
 
 deoglSharedSPBElement *deoglRComponent::GetOccMeshSharedSPBElement(){
@@ -1081,14 +1084,14 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	
 	pRenderStatic = isStatic;
 	
-	const int count = pLightList.GetCount();
-	int i;
-	
+	int i, count = pLightList.GetCount();
 	for( i=0; i<count; i++ ){
 		deoglRLight &light = *pLightList.GetAt( i );
 		light.RemoveComponent( this );
 		light.AddComponent( this );
 	}
+	
+	NotifyRenderStaticChanged();
 }
 
 void deoglRComponent::ResetRenderStatic(){
@@ -1285,14 +1288,13 @@ void deoglRComponent::PrepareQuickDispose(){
 	
 	pLightList.RemoveAll();
 	
-	const int count = pDecals.GetCount();
-	int i;
+	int i, count = pDecals.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareQuickDispose();
 	}
 	pDecals.RemoveAll();
 	
-	pNotifiers.RemoveAll();
+	pListeners.RemoveAll();
 }
 
 
@@ -1305,7 +1307,7 @@ int deoglRComponent::GetLODCount() const{
 }
 
 deoglRComponentLOD &deoglRComponent::GetLODAt( int index ) const{
-	return *( ( deoglRComponentLOD* )pLODs.GetAt( index ) );
+	return *( ( deoglRComponentLOD* )pLODs.GetAt( index < 0 ? pLODs.GetCount() + index : index ) );
 }
 
 void deoglRComponent::RemoveAllLODs(){
@@ -1489,39 +1491,71 @@ void deoglRComponent::OcclusionTestInvisible(){
 // Notifiers
 //////////////
 
-void deoglRComponent::AddNotifier( deoglComponentNotifier *notifier ){
+void deoglRComponent::AddListener( deoglComponentListener *notifier ){
 	if( ! notifier ){
 		DETHROW( deeInvalidParam );
 	}
-	pNotifiers.Add( notifier );
+	pListeners.Add( notifier );
 }
 
-void deoglRComponent::RemoveNotifier( deoglComponentNotifier *notifier ){
-	const int index = pNotifiers.IndexOf( notifier );
+void deoglRComponent::RemoveListener( deoglComponentListener *notifier ){
+	const int index = pListeners.IndexOf( notifier );
 	if( index == -1 ){
 		return;
 	}
 	
-	pNotifiers.Remove( notifier );
+	pListeners.Remove( notifier );
 	
-	if( pNotifierIndex >= index ){
-		pNotifierIndex--;
+	if( pListenerIndex >= index ){
+		pListenerIndex--;
 	}
 }
 
 void deoglRComponent::NotifyBoundariesChanged(){
-	pNotifierIndex = 0;
-	while( pNotifierIndex < pNotifiers.GetCount() ){
-		( ( deoglComponentNotifier* )pNotifiers.GetAt( pNotifierIndex ) )->BoundariesChanged();
-		pNotifierIndex++;
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->BoundariesChanged( *this );
+		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyComponentDestroyed(){
-	pNotifierIndex = 0;
-	while( pNotifierIndex < pNotifiers.GetCount() ){
-		( ( deoglComponentNotifier* )pNotifiers.GetAt( pNotifierIndex ) )->ComponentDestroyed();
-		pNotifierIndex++;
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ComponentDestroyed( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyParentWorldChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ParentWorldChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyLayerMaskChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->LayerMaskChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyRenderStaticChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->RenderStaticChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyOcclusionMeshChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->OcclusionMeshChanged( *this );
+		pListenerIndex++;
 	}
 }
 
@@ -1589,6 +1623,8 @@ public:
 };
 
 void deoglRComponent::pCleanUp(){
+	NotifyComponentDestroyed();
+	
 	SetParentWorld( NULL );
 	
 	RemoveAllTextures();
@@ -1596,8 +1632,7 @@ void deoglRComponent::pCleanUp(){
 	
 	pRemoveFromAllLights();
 	
-	NotifyComponentDestroyed();
-	pNotifiers.RemoveAll();
+	pListeners.RemoveAll();
 	
 	if( pDynamicOcclusionMesh ){
 		delete pDynamicOcclusionMesh;

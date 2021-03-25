@@ -36,7 +36,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/component/deComponent.h>
 
-class deoglComponentNotifier;
+class deoglComponentListener;
 class deoglDynamicOcclusionMesh;
 class deoglEnvironmentMap;
 class deoglRCamera;
@@ -63,16 +63,16 @@ class deComponent;
 
 
 /**
- * \brief Render component.
+ * Render component.
  */
 class deoglRComponent : public deObject, public deoglOcclusionTestListener{
 public:
-	/** \brief Render modes. */
+	/** Render modes. */
 	enum eRenderModes{
-		/** \brief Render as static model. */
+		/** Render as static model. */
 		ermStatic,
 		
-		/** \brief Render as dynamic model. */
+		/** Render as dynamic model. */
 		ermDynamic
 	};
 	
@@ -157,8 +157,8 @@ public:
 	
 	int pSkyShadowSplitMask;
 	
-	decObjectOrderedSet pNotifiers;
-	int pNotifierIndex;
+	decObjectOrderedSet pListeners;
+	int pListenerIndex;
 	
 	deoglEnvironmentMap *pRenderEnvMap;
 	deoglEnvironmentMap *pRenderEnvMapFade;
@@ -178,10 +178,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render component. */
+	/** Create render component. */
 	deoglRComponent( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render component. */
+	/** Clean up render component. */
 	virtual ~deoglRComponent();
 	/*@}*/
 	
@@ -189,188 +189,188 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Parent world or \em NULL if not part of a world. */
+	/** Parent world or \em NULL if not part of a world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
-	/** \brief Octree node or \em NULL if not inserted into the parent world octree. */
+	/** Octree node or \em NULL if not inserted into the parent world octree. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
-	 * \brief Set octree node or \em NULL if not inserted into the parent world octree.
+	 * Set octree node or \em NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by deoglWorldOctree.
 	 */
 	void SetOctreeNode( deoglWorldOctree *octreeNode );
 	
-	/** \brief Update octree position. */
+	/** Update octree position. */
 	void UpdateOctreeNode();
 	
 	
 	
-	/** \brief Component is visible. */
+	/** Component is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set component is visible. */
+	/** Set component is visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Movement hint. */
+	/** Movement hint. */
 	inline deComponent::eMovementHints GetMovementHint() const{ return pMovementHint; }
 	
-	/** \brief Set movement hint. */
+	/** Set movement hint. */
 	void SetMovementHint( deComponent::eMovementHints hint );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
-	/** \brief Update VBO. */
+	/** Update VBO. */
 	void UpdateVBO();
 	
 	
 	
-	/** \brief Set renderables dirty. */
+	/** Set renderables dirty. */
 	void SetDirtyRendereables();
 	
-	/** \brief Update renderables in the component if existing */
+	/** Update renderables in the component if existing */
 	void UpdateRenderables( deoglRenderPlan &plan );
 	
-	/** \brief Add plans for renderables in the component if existing and requiring one. */
+	/** Add plans for renderables in the component if existing and requiring one. */
 	void AddSkinStateRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Transformation matrix. */
+	/** Transformation matrix. */
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Inverse transformation matrix. */
+	/** Inverse transformation matrix. */
 	inline const decDMatrix &GetInverseMatrix() const{ return pInverseMatrix; }
 	
-	/** \brief Set matrices. */
+	/** Set matrices. */
 	void SetMatrix( const decDMatrix &matrix );
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/**
-	 * \brief Update extends of dirty.
+	 * Update extends of dirty.
 	 * \warning Requires UpdateBoneMatrices() to be called first.
 	 */
 	void UpdateExtends( deComponent &component );
 	
 	
 	
-	/** \brief Marked flag. */
+	/** Marked flag. */
 	inline bool GetMarked() const{ return pMarked; }
 	
-	/** \brief Set marked flag. */
+	/** Set marked flag. */
 	inline void SetMarked( bool marked ){ pMarked = marked; }
 	
-	/** \brief Sort distance. */
+	/** Sort distance. */
 	inline float GetSortDistance() const{ return pSortDistance; }
 	
-	/** \brief Set sort distance. */
+	/** Set sort distance. */
 	void SetSortDistance( float distance );
 	
 	
 	
-	/** \brief Model or \em NULL if not set. */
+	/** Model or \em NULL if not set. */
 	inline deoglRModel *GetModel() const{ return pModel; }
 	
-	/** \brief Set model or \em NULL if not set. */
+	/** Set model or \em NULL if not set. */
 	void SetModel( deoglRModel *model );
 	
-	/** \brief Skin or \em NULL if not set. */
+	/** Skin or \em NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if not set. */
+	/** Set skin or \em NULL if not set. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	void RigChanged();
 	
-	/** \brief Dynamic skin or \em NULL if not set. */
+	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if not set. */
+	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
-	/** \brief Occlusion mesh or \em NULL if not set. */
+	/** Occlusion mesh or \em NULL if not set. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
-	/** \brief Set occlusion mesh or \em NULL if not set. */
+	/** Set occlusion mesh or \em NULL if not set. */
 	void SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh );
 	
-	/** \brief Dynamic occlusion mesh or \em NULL if not set. */
+	/** Dynamic occlusion mesh or \em NULL if not set. */
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
 	
-	/** \brief Occlusion mesh shared shader parameter block element. */
+	/** Occlusion mesh shared shader parameter block element. */
 	deoglSharedSPBElement *GetOccMeshSharedSPBElement();
 	
-	/** \brief Shared SPB render task instance group. */
+	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup( bool doubleSided );
 	
-	/** \brief Mesh changed. */
+	/** Mesh changed. */
 	void MeshChanged();
 	
 	
 	
-	/** \brief Model skin to mappings. */
+	/** Model skin to mappings. */
 	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
-	/** \brief Skin state. */
+	/** Skin state. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
-	/** \brief Skin rendered. */
+	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	/** \brief Init skin state calculated properties. */
+	/** Init skin state calculated properties. */
 	void InitSkinStateCalculatedProperties( const deComponent &component );
 	
-	/** \brief Update skin state calculated properties bone information. */
+	/** Update skin state calculated properties bone information. */
 	void UpdateSkinStateCalculatedPropertiesBones( const deComponent &component );
 	
 	
 	
-	/** \brief Shader parameter block for a occlusion meshes (both static and dynamic). */
+	/** Shader parameter block for a occlusion meshes (both static and dynamic). */
 	deoglSPBlockUBO *GetParamBlockOccMesh();
 	
-	/** \brief Mark occlusion mesh shader parameter block dirty. */
+	/** Mark occlusion mesh shader parameter block dirty. */
 	void MarkOccMeshParamBlockDirty();
 	
-	/** \brief Update occlusion mesh instance parameter block. */
+	/** Update occlusion mesh instance parameter block. */
 	void UpdateOccmeshInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element );
 	
 	
 	
 	/**
-	 * \brief Special shader parameter block.
+	 * Special shader parameter block.
 	 * 
 	 * Has to be updated by caller.
 	 */
 	deoglSPBlockUBO *GetParamBlockSpecial();
 	
 	/**
-	 * \brief Update cube face visibility.
+	 * Update cube face visibility.
 	 * 
 	 * Calculates for each face of a cube map if the object is potentially visible.
 	 * Used to optimize rendering cube maps by not rendering objects on cube map faces
@@ -379,24 +379,24 @@ public:
 	void UpdateCubeFaceVisibility( const decDVector &cubePosition );
 	
 	/**
-	 * \brief Object is visible in cube map face.
+	 * Object is visible in cube map face.
 	 * 
 	 * Only valid after UpdateCubeFaceVisibility() has been called.
 	 */
 	bool GetCubeFaceVisible( int cubeFace ) const;
 	
 	/**
-	 * \brief Special flags for use with render task.
+	 * Special flags for use with render task.
 	 * 
 	 * Call appropriate flags update method to update the special flags before use.
 	 */
 	inline int GetSpecialFlags() const{ return pSpecialFlags; }
 	
-	/** \brief Set special flags from cube map visibility. */
+	/** Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
 	
 	/**
-	 * \brief Update special shader parameter block.
+	 * Update special shader parameter block.
 	 * 
 	 * Depending on the usage these calls are required before using this call.
 	 * - UpdateCubeFaceVisibility(): for use by geometry shader cube rendering.
@@ -405,137 +405,137 @@ public:
 	
 	
 	
-	/** \brief Bone matrices. */
+	/** Bone matrices. */
 	inline oglMatrix3x4 *GetBoneMatrices() const{ return pBoneMatrices; }
 	
-	/** \brief Number of bone matrices. */
+	/** Number of bone matrices. */
 	inline int GetBoneMatrixCount() const{ return pBoneMatrixCount; }
 	
-	/** \brief Update the bone matrices if required. */
+	/** Update the bone matrices if required. */
 	void UpdateBoneMatrices( deComponent &component );
 	
 	
 	
-	/** \brief Point offset. */
+	/** Point offset. */
 	int GetPointOffset( int lodLevel ) const;
 	
-	/** \brief Index offset. */
+	/** Index offset. */
 	int GetIndexOffset( int lodLevel ) const;
 	
-	/** \brief VAO for the vertices of the given lod level. */
+	/** VAO for the vertices of the given lod level. */
 	deoglVAO *GetVAO( int lodLevel );
 	
-	/** \brief Invalidate VAO. */
+	/** Invalidate VAO. */
 	void InvalidateVAO();
 	
 	
 	
-	/** \brief Update skin. */
+	/** Update skin. */
 	void UpdateSkin( float elapsed );
 	
 	
 	
-	/** \brief Lit. */
+	/** Lit. */
 	inline bool GetLit() const{ return pLit; }
 	
-	/** \brief Set lit. */
+	/** Set lit. */
 	void SetLit( bool lit );
 	
-	/** \brief Occluded. */
+	/** Occluded. */
 	inline bool GetOccluded() const{ return pOccluded; }
 	
-	/** \brief Set occluded. */
+	/** Set occluded. */
 	void SetOccluded( bool occluded );
 	
-	/** \brief Camera is inside component boundaries. */
+	/** Camera is inside component boundaries. */
 	inline bool GetCameraInside() const{ return pCameraInside; }
 	
-	/** \brief Test if camera is inside component boundaries. */
+	/** Test if camera is inside component boundaries. */
 	void TestCameraInside( const decDVector &position );
 	
 	
 	
 	
-	/** \brief Render mode. */
+	/** Render mode. */
 	inline eRenderModes GetRenderMode() const{ return pRenderMode; }
 	
-	/** \brief Component has no transparent faces. */
+	/** Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
 	
-	/** \brief Component has no transparent outline. */
+	/** Component has no transparent outline. */
 	inline bool GetOutlineSolid() const{ return pOutlineSolid; }
 	
-	/** \brief Component is render static right now. */
+	/** Component is render static right now. */
 	inline bool GetRenderStatic() const{ return pRenderStatic; }
 	
-	/** \brief Component is render visible. */
+	/** Component is render visible. */
 	inline bool GetRenderVisible() const{ return pRenderVisible; }
 	
-	/** \brief Set if component is render visible. */
+	/** Set if component is render visible. */
 	void SetRenderVisible( bool visible );
 	
-	/** \brief Set render static. */
+	/** Set render static. */
 	void SetRenderStatic( bool isStatic );
 	
-	/** \brief Reset render static. */
+	/** Reset render static. */
 	void ResetRenderStatic();
 	
-	/** \brief Light list. */
+	/** Light list. */
 	inline deoglLightList &GetLightList(){ return pLightList; }
 	inline const deoglLightList &GetLightList() const{ return pLightList; }
 	
 	
 	
-	/** \brief Sky shadow split mask. */
+	/** Sky shadow split mask. */
 	inline int GetSkyShadowSplitMask() const{ return pSkyShadowSplitMask; }
 	
-	/** \brief Set sky shadow split mask. */
+	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask( int mask );
 	
 	
 	
-	/** \brief Render environment map or NULL if not used. */
+	/** Render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
-	/** \brief Set render environment map or NULL if not assigned yet. */
+	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Fading render environment map or NULL if not used. */
+	/** Fading render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
-	/** \brief Set fading render environment map or NULL if not used. */
+	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade( deoglEnvironmentMap *envmap );
 	
-	/** \brief Render environment map fade per time. */
+	/** Render environment map fade per time. */
 	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
 	
-	/** \brief Set render environment map fade per time. */
+	/** Set render environment map fade per time. */
 	void SetRenderEnvMapFadePerTime( float fadePerTime );
 	
-	/** \brief Render environment map fade factor. */
+	/** Render environment map fade factor. */
 	inline float GetRenderEnvMapFadeFactor() const{ return pRenderEnvMapFadeFactor; }
 	
-	/** \brief Set render environment map fade factor. */
+	/** Set render environment map fade factor. */
 	void SetRenderEnvMapFadeFactor( float factor );
 	
-	/** \brief World environment map layout changed. */
+	/** World environment map layout changed. */
 	void WorldEnvMapLayoutChanged();
 	
-	/** \brief Update render environment map. */
+	/** Update render environment map. */
 	void UpdateRenderEnvMap();
 	
-	/** \brief Invalidate render environment map. */
+	/** Invalidate render environment map. */
 	void InvalidateRenderEnvMap();
 	
-	/** \brief Invalidate render environment map. */
+	/** Invalidate render environment map. */
 	void InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap );
 	
-	/** \brief The world reference point changed. */
+	/** The world reference point changed. */
 	void WorldReferencePointChanged();
 	
 	
 	
-	/** \brief Prepare for quick disposal of component. */
+	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
 	/*@}*/
 	
@@ -543,22 +543,22 @@ public:
 	
 	/** \name LODs */
 	/*@{*/
-	/** \brief Number of lods. */
+	/** Number of lods. */
 	int GetLODCount() const;
 	
-	/** \brief LOD by index. */
+	/** LOD by index. Negative index counts from the end */
 	deoglRComponentLOD &GetLODAt( int index ) const;
 	
-	/** \brief Remove all LODs. */
+	/** Remove all LODs. */
 	void RemoveAllLODs();
 	
-	/** \brief Add LOD. */
+	/** Add LOD. */
 	void AddLOD( deoglRComponentLOD *lod );
 	
-	/** \brief LOD error scaling factor. */
+	/** LOD error scaling factor. */
 	inline float GetLODErrorScaling() const{ return pLODErrorScaling; }
 	
-	/** \brief Set LOD error scaling factor. */
+	/** Set LOD error scaling factor. */
 	void SetLODErrorScaling( float errorScaling );
 	/*@}*/
 	
@@ -566,28 +566,28 @@ public:
 	
 	/** \name Textures */
 	/*@{*/
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	int GetTextureCount() const;
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglRComponentTexture &GetTextureAt( int index );
 	
-	/** \brief Remove all textures. */
+	/** Remove all textures. */
 	void RemoveAllTextures();
 	
-	/** \brief Add texture. */
+	/** Add texture. */
 	void AddTexture( deoglRComponentTexture *texture );
 	
-	/** \brief Mark texture use skins dirty. */
+	/** Mark texture use skins dirty. */
 	void MarkTextureUseSkinDirty();
 	
-	/** \brief Invalidate parameter blocks of all textures. */
+	/** Invalidate parameter blocks of all textures. */
 	void InvalidateAllTexturesParamBlocks();
 	
-	/** \brief Mark parameter blocks of all textures dirty. */
+	/** Mark parameter blocks of all textures dirty. */
 	void MarkAllTexturesParamBlocksDirty();
 	
-	/** \brief Marks texture units configurations of all textures dirty. */
+	/** Marks texture units configurations of all textures dirty. */
 	void MarkAllTexturesTUCsDirty();
 	/*@}*/
 	
@@ -595,14 +595,14 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** \brief Number of decals. */
+	/** Number of decals. */
 	int GetDecalCount() const;
 	
-	/** \brief Decal at index. */
+	/** Decal at index. */
 	deoglRDecal *GetDecalAt( int index );
 	
 	/**
-	 * \brief Synchronize decal references.
+	 * Synchronize decal references.
 	 * 
 	 * Updates the decal list to match the decal list of \em component. Calls
 	 * SetParentComponent() only on decals not part of component already. This avoids
@@ -612,7 +612,7 @@ public:
 	 */
 	void SyncDecalReferences( const deComponent &engComponent );
 	
-	/** \brief Mark parameter blocks of all attached decals dirty. */
+	/** Mark parameter blocks of all attached decals dirty. */
 	void MarkAllDecalTexturesParamBlocksDirty();
 	/*@}*/
 	
@@ -620,39 +620,51 @@ public:
 	
 	/** \name Culling */
 	/*@{*/
-	/** \brief  Cull sphere center. */
+	/**  Cull sphere center. */
 	const decDVector &GetCullSphereCenter();
 	
-	/** \brief Cull sphere radius. */
+	/** Cull sphere radius. */
 	float GetCullSphereRadius();
 	
-	/** \brief Set culling parameters dirty. */
+	/** Set culling parameters dirty. */
 	void SetDirtyCulling();
 	
-	/** \brief Start occlusion test. */
+	/** Start occlusion test. */
 	void StartOcclusionTest( const decDVector &cameraPosition );
 	
-	/** \brief Occlusion test finished with a result of invisible for the element. */
+	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();
 	/*@}*/
 	
 	
 	
-	/** \name Notifiers */
+	/** \name Listeners */
 	/*@{*/
-	/** \brief Add a notifier. */
-	void AddNotifier( deoglComponentNotifier *notifier );
+	/** Add a listener. */
+	void AddListener( deoglComponentListener *listener );
 	
-	/** \brief Remove notifier if existing. */
-	void RemoveNotifier( deoglComponentNotifier *notifier );
+	/** Remove listener if existing. */
+	void RemoveListener( deoglComponentListener *listener );
 	
-	/** \brief Notify all that the boundaries changed. */
+	/** Notify all that the boundaries changed. */
 	void NotifyBoundariesChanged();
 	
-	/** \brief Notify all that this component has been destroyed. */
+	/** Notify all that this component has been destroyed. */
 	void NotifyComponentDestroyed();
 	
-	/** \brief Notify all lights that their light volume has to be updated. */
+	/** Notify all component changed parent world. */
+	void NotifyParentWorldChanged();
+	
+	/** Notify all component changed layer mask. */
+	void NotifyLayerMaskChanged();
+	
+	/** Notify all component changed render static. */
+	void NotifyRenderStaticChanged();
+	
+	/** Notify all occlusion mesh geometry changed. */
+	void NotifyOcclusionMeshChanged();
+	
+	/** Notify all lights that their light volume has to be updated. */
 	void NotifyLightsDirtyLightVolume();
 	/*@}*/
 	
@@ -661,29 +673,29 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );
 	
 	
 	
-	/** \brief Linked list world previous. */
+	/** Linked list world previous. */
 	inline deoglRComponent *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
-	/** \brief Set linked list world previous. */
+	/** Set linked list world previous. */
 	void SetLLWorldPrev( deoglRComponent *component );
 	
-	/** \brief Linked list world next. */
+	/** Linked list world next. */
 	inline deoglRComponent *GetLLWorldNext() const{ return pLLWorldNext; }
 	
-	/** \brief Set linked list world next. */
+	/** Set linked list world next. */
 	void SetLLWorldNext( deoglRComponent *component );
 	/*@}*/
 	

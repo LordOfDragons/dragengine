@@ -27,14 +27,18 @@
 #include "deoglGIState.h"
 #include "deoglGITraceRays.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../model/deoglRModel.h"
+#include "../model/deoglModelLOD.h"
 #include "../rendering/deoglRenderOcclusion.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../world/deoglRWorld.h"
+#include "../utils/collision/deoglDCollisionBox.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -97,6 +101,7 @@ pPixBufProbeOffset( NULL ),
 pClearMaps( true ),
 pProbesHaveMoved( false ),
 
+pInstances( renderThread ),
 pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
@@ -121,6 +126,79 @@ deoglGIState::~deoglGIState(){
 ///////////////
 
 // #define DO_TIMING 1
+
+deoglGIState::eContentClassification deoglGIState::ClassifyComponent( const deoglRComponent &component ) const{
+	if( ! component.GetModel() || component.GetLODCount() == 0 ){
+		return eccIgnore;
+	}
+	
+	const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
+	if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
+		return eccIgnore; // skip small models to improve performance
+	}
+	
+	// weight check catches more cases than GetRenderStatic() or GetRenderMode() can
+	return component.GetRenderStatic() && component.GetLODAt( -1 ).GetModelLOD()->GetWeightsCount() == 0 ? eccStatic: eccDynamic;
+}
+
+deoglGIState::eContentClassification deoglGIState::ClassifyOcclusionMesh( const deoglRComponent &component ) const{
+	if( ! component.GetOcclusionMesh() && ! component.GetDynamicOcclusionMesh() ){
+		return eccIgnore;
+	}
+	
+	return component.GetRenderStatic() && component.GetOcclusionMesh()
+		&& ! component.GetDynamicOcclusionMesh() ? eccStatic : eccDynamic;
+}
+
+void deoglGIState::FindContent( deoglRWorld &world ){
+	deoglDCollisionBox colbox( pPosition, pDetectionBox );
+	pCollideList.Clear();
+	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
+}
+
+void deoglGIState::FilterStaticOcclusionMeshes(){
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	pCollideListFiltered.Clear();
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
+		if( ClassifyOcclusionMesh( *component ) == eccStatic ){
+			pCollideListFiltered.AddComponent( component );
+		}
+	}
+}
+
+void deoglGIState::FilterComponents(){
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	pCollideListFiltered.Clear();
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
+		if( ClassifyComponent( *component ) != eccIgnore ){
+			pCollideListFiltered.AddComponent( component );
+		}
+	}
+}
+
+void deoglGIState::FilterStaticComponents(){
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	pCollideListFiltered.Clear();
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
+		if( ClassifyComponent( *component ) == eccStatic ){
+			pCollideListFiltered.AddComponent( component );
+		}
+	}
+}
+
+
 
 decPoint3 deoglGIState::ProbeIndex2GridCoord( int index ) const{
 	decPoint3 coord;
@@ -191,9 +269,28 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 		UpdateProbeOffsetFromTexture();
 	}
 	
+	// prepare probes for tracing
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
+	
+	// find content and update instance tracking. only static components are tracked.
+	// this is used to update per-ray distance limitation to speed up ray-tracing
+	FindContent( world );
+	
+	FilterStaticComponents();
+	
+	bool invalidateRayLimits = false;
+	invalidateRayLimits |= pInstances.RemoveComponents( pCollideListFiltered );
+	invalidateRayLimits |= pInstances.AddComponents( pCollideListFiltered );
+	invalidateRayLimits |= pInstances.AnyComponentChanged();
+	
+	if( invalidateRayLimits ){
+		int i;
+		for( i=0; i<pRealProbeCount; i++ ){
+			pProbes[ i ].rayLimitsValid = false;
+		}
+	}
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -328,6 +425,7 @@ void deoglGIState::Invalidate(){
 		probe.flags = 0x1;
 		probe.offset.SetZero();
 		probe.valid = false;
+		probe.rayLimitsValid = false;
 	}
 	
 	pClearMaps = true;
@@ -396,6 +494,7 @@ void deoglGIState::pInitProbes(){
 		probe.age = 0;
 		probe.offset.SetZero();
 		probe.valid = false;
+		probe.rayLimitsValid = false;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
 }

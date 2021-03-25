@@ -40,10 +40,12 @@ class deoglSkinTexture;
 class deoglSkinState;
 class deoglRDynamicSkin;
 class deoglRenderTaskTexture;
+class deoglGIInstance;
+class deoglGIInstances;
 
 
 /**
- * \brief Global illumination BVH.
+ * Global illumination BVH.
  * 
  * build BVH from mesh instances. each mesh instance then uses the occlusion mesh bvh
  * with the matrix to do the local tracing. this allows creating occlusion mesh BVH
@@ -156,7 +158,7 @@ class deoglRenderTaskTexture;
  */
 class deoglGIBVH{
 private:
-	/** \brief Model. */
+	/** Model. */
 	struct sModel{
 		deoglRComponentLOD *component;
 		int indexNodes;
@@ -164,7 +166,7 @@ private:
 		int indexVertices;
 	};
 	
-	/** \brief Component. */
+	/** Component. */
 	struct sComponent{
 		decMatrix matrix;
 		int indexModel;
@@ -178,7 +180,6 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	float pMaxDetectionRange;
-	deoglCollideList pCollideList;
 	
 	sModel *pModels;
 	int pModelCount;
@@ -209,10 +210,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create global illumination BVH. */
+	/** Create global illumination BVH. */
 	deoglGIBVH( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up global illumination BVH. */
+	/** Clean up global illumination BVH. */
 	~deoglGIBVH();
 	/*@}*/
 	
@@ -220,31 +221,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Collide list. */
-	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
-	
-	/** \brief Index of bvh component root node or -1 if there are no components. */
+	/** Index of bvh component root node or -1 if there are no components. */
 	inline int GetIndexRootNode() const{ return pIndexRootNode; }
 	
-	/** \brief TBO for BVH node boundaries. */
+	/** TBO for BVH node boundaries. */
 	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
 	
-	/** \brief TBO for BVH node indices. */
+	/** TBO for BVH node indices. */
 	inline const deoglDynamicTBOUInt32 &GetTBOIndex() const{ return pTBOIndex; }
 	
-	/** \brief TBO for instance data. */
+	/** TBO for instance data. */
 	inline const deoglDynamicTBOUInt32 &GetTBOInstance() const{ return pTBOInstance; }
 	
-	/** \brief TBO for instance matrices. */
+	/** TBO for instance matrices. */
 	inline const deoglDynamicTBOFloat32 &GetTBOMatrix() const{ return pTBOMatrix; }
 	
-	/** \brief TBO for mesh faces. */
+	/** TBO for mesh faces. */
 	inline const deoglDynamicTBOUInt32 &GetTBOFace() const{ return pTBOFace; }
 	
-	/** \brief TBO for mesh vertices. */
+	/** TBO for mesh vertices. */
 	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
 	
-	/** \brief TBO for mesh texture coordinates. */
+	/** TBO for mesh texture coordinates. */
 	inline const deoglDynamicTBOFloat16 &GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** \brief TBO for material parameters. */
@@ -255,28 +253,22 @@ public:
 	
 	
 	
-	/** \brief Clear BVH. */
+	/** Clear BVH. */
 	void Clear();
 	
-	/** \brief Find components. */
-	void FindComponents( deoglRWorld &world, const decDVector &position, const decVector &detectionBox );
+	/** Add components. */
+	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
 	
-	/** \brief Add static components. */
-	void AddStaticComponents( deoglRenderPlan &plan, const decDVector &position );
+	/** \brief Add components. */
+	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
 	
-	/** \brief Add static component. */
-	void AddStaticComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
+	/** Add component. */
+	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
 	
-	/** \brief Add dynamic components. */
-	void AddDynamicComponents( deoglRenderPlan &plan, const decDVector &position );
-	
-	/** \brief Add dynamic component. */
-	void AddDynamicComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
-	
-	/** \brief Build BVH. */
+	/** Build BVH. */
 	void BuildBVH();
 	
-	/** \brief Debug print BVH. */
+	/** Debug print BVH. */
 	void DebugPrint( const decDVector &position );
 	/*@}*/
 	

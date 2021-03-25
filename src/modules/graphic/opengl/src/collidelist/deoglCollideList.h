@@ -150,6 +150,9 @@ public:
 	/** Sort components by distance. */
 	void SortComponentsByDistance( const decVector &pos, const decVector &view );
 	
+	/** Mark components. */
+	void MarkComponents( bool marked );
+	
 	/** Log components. */
 	void LogComponents() const;
 	/*@}*/

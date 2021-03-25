@@ -24,7 +24,10 @@
 #include <string.h>
 
 #include "deoglGIBVH.h"
+#include "deoglGIInstance.h"
+#include "deoglGIInstances.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../collidelist/deoglCollideList.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
@@ -115,80 +118,66 @@ void deoglGIBVH::Clear(){
 	pTBOMaterial2.Clear();
 }
 
-void deoglGIBVH::FindComponents( deoglRWorld &world, const decDVector &position,
-const decVector &detectionBox ){
-	deoglDCollisionBox colbox( position, detectionBox );
-	pCollideList.Clear();
-	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
-}
-
-void deoglGIBVH::AddStaticComponents( deoglRenderPlan &plan, const decDVector &position ){
+void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances ){
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
-	const int count = pCollideList.GetComponentCount();
+	const int count = instances.GetInstanceCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
-		if( ! component.GetModel() || component.GetLODCount() == 0 ){
-			continue;
+		const deoglGIInstance &instance = instances.GetInstanceAt( i );
+		if( instance.GetComponent() ){
+			deoglRComponent &component = *instance.GetComponent();
+			AddComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), component.GetLODAt( -1 ) );
 		}
-		/*if( component.GetRenderMode() != deoglRComponent::ermStatic ){
-			continue;
-		}*/
-		
-		const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
-		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
-			continue; // skip small models to improve performance
-		}
-		
-		deoglRComponentLOD &lod = component.GetLODAt( component.GetLODCount() - 1 );
-		if( lod.GetModelLOD()->GetWeightsCount() > 0 ){
-			continue; // catches more cases than GetRenderMode() can catch
-		}
-		//component.PrepareRayTraceField();
-		AddStaticComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), lod );
 	}
 }
 
-void deoglGIBVH::AddStaticComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
+void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position,
+const deoglCollideList &list ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const int count = list.GetComponentCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *list.GetComponentAt( i )->GetComponent();
+		AddComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), component.GetLODAt( -1 ) );
+	}
+}
+
+void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
+	deoglRComponent &component = lod.GetComponent();
+	const bool dynamic = component.GetRenderMode() == deoglRComponent::ermDynamic;
+	int indexModel;
+	
 	// update renderables in case this component is not visible
 	lod.GetComponent().UpdateRenderables( plan );
 	
-	// find model
-	int indexModel;
-	for( indexModel=0; indexModel<pModelCount; indexModel++ ){
-		if( pModels[ indexModel ].component == &lod
-		&& pModels[ indexModel ].component->GetModelLOD()->GetWeightsCount() == 0 ){
-		//&& pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
-			break;
-		}
-	}
-	
-	deoglModelLOD &modelLOD = *lod.GetModelLOD();
-	
-	// if model does not exist add it
-	if( indexModel == pModelCount ){
-		// prepare BVH first just in case something goes wrong
-		modelLOD.PrepareBVH();
-		if( ! modelLOD.GetBVH()->GetRootNode() ){
+	if( dynamic ){
+		// prepare BVH
+		lod.PrepareBVH();
+		if( ! lod.GetBVH()->GetRootNode() ){
 			return; // empty model
 		}
 		
 		// add model to list of encountered models
+		indexModel = pModelCount;
 		sModel &bvhModel = pAddModel();
 		bvhModel.component = &lod;
 		
 		// add vertices to TBO in mesh order
-		const oglModelPosition * const positions = modelLOD.GetPositions();
+		deoglModelLOD &modelLOD = *lod.GetModelLOD();
+				modelLOD.PrepareBVH();
+		const oglVector * const positions = lod.GetPositions();
 		const int positionPoint = modelLOD.GetPositionCount();
 		int i;
 		
 		for( i=0; i<positionPoint; i++ ){
-			pTBOVertex.AddVec4( positions[ i ].position, 0.0f );
+			const oglVector &position = positions[ i ];
+			pTBOVertex.AddVec4( position.x, position.y, position.z, 0.0f );
 		}
 		
 		// add faces to TBOs using primitive mapping from BVH
-		const deoglBVH &bvh = *modelLOD.GetBVH();
+		const deoglBVH &bvh = *lod.GetBVH();
 		const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
 		const oglModelVertex * const vertices = modelLOD.GetVertices();
 		const deoglModelFace * const faces = modelLOD.GetFaces();
@@ -210,110 +199,72 @@ void deoglGIBVH::AddStaticComponent( deoglRenderPlan &plan, const decMatrix &mat
 		}
 		
 		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
-	}
-	
-	// add materials
-	deoglAddToRenderTaskGIMaterial &addToRenderTask =
-		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
-	deoglRComponent &component = lod.GetComponent();
-	const int textureCount = component.GetTextureCount();
-	const int indexMaterial = pTBOMaterial.GetPixelCount();
-	int i;
-	
-	for( i=0; i<textureCount; i++ ){
-		const deoglRComponentTexture &texture = component.GetTextureAt( i );
-		pAddMaterial( texture, addToRenderTask.AddComponentTexture( lod, i ) );
-	}
-	
-	// add component
-	pAddComponent( indexModel, indexMaterial, matrix );
-}
-
-void deoglGIBVH::AddDynamicComponents( deoglRenderPlan &plan, const decDVector &position ){
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
-		if( ! component.GetModel() || component.GetLODCount() == 0 ){
-			continue;
-		}
-		/*if( component.GetRenderMode() != deoglRComponent::ermDynamic ){
-			continue;
-		}*/
 		
-		const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
-		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
-			continue; // skip small models to improve performance
+	}else{
+		// find model
+		for( indexModel=0; indexModel<pModelCount; indexModel++ ){
+			if( pModels[ indexModel ].component == &lod
+			&& pModels[ indexModel ].component->GetModelLOD()->GetWeightsCount() == 0 ){
+			//&& pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
+				break;
+			}
 		}
 		
-		deoglRComponentLOD &lod = component.GetLODAt( component.GetLODCount() - 1 );
-		if( lod.GetModelLOD()->GetWeightsCount() == 0 ){
-			continue; // catches more cases than GetRenderMode() can catch
-		}
-		//component.PrepareRayTraceField();
-		AddDynamicComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), lod );
-	}
-}
-
-void deoglGIBVH::AddDynamicComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
-	// update renderables in case this component is not visible
-	lod.GetComponent().UpdateRenderables( plan );
-	
-	// prepare BVH
-	lod.PrepareBVH();
-	if( ! lod.GetBVH()->GetRootNode() ){
-		return; // empty model
-	}
-	
-	// add model to list of encountered models
-	const int indexModel = pModelCount;
-	sModel &bvhModel = pAddModel();
-	bvhModel.component = &lod;
-	
-	// add vertices to TBO in mesh order
-	deoglModelLOD &modelLOD = *lod.GetModelLOD();
+		deoglModelLOD &modelLOD = *lod.GetModelLOD();
+		
+		// if model does not exist add it
+		if( indexModel == pModelCount ){
+			// prepare BVH first just in case something goes wrong
 			modelLOD.PrepareBVH();
-	const oglVector * const positions = lod.GetPositions();
-	const int positionPoint = modelLOD.GetPositionCount();
-	int i;
-	
-	for( i=0; i<positionPoint; i++ ){
-		const oglVector &position = positions[ i ];
-		pTBOVertex.AddVec4( position.x, position.y, position.z, 0.0f );
+			if( ! modelLOD.GetBVH()->GetRootNode() ){
+				return; // empty model
+			}
+			
+			// add model to list of encountered models
+			sModel &bvhModel = pAddModel();
+			bvhModel.component = &lod;
+			
+			// add vertices to TBO in mesh order
+			const oglModelPosition * const positions = modelLOD.GetPositions();
+			const int positionPoint = modelLOD.GetPositionCount();
+			int i;
+			
+			for( i=0; i<positionPoint; i++ ){
+				pTBOVertex.AddVec4( positions[ i ].position, 0.0f );
+			}
+			
+			// add faces to TBOs using primitive mapping from BVH
+			const deoglBVH &bvh = *modelLOD.GetBVH();
+			const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
+			const oglModelVertex * const vertices = modelLOD.GetVertices();
+			const deoglModelFace * const faces = modelLOD.GetFaces();
+			const int * const primitives = bvh.GetPrimitives();
+			const int primitiveCount = bvh.GetPrimitiveCount();
+			
+			for( i=0; i<primitiveCount; i++ ){
+				const deoglModelFace &face = faces[ primitives[ i ] ];
+				const oglModelVertex &v1 = vertices[ face.GetVertex1() ];
+				const oglModelVertex &v2 = vertices[ face.GetVertex2() ];
+				const oglModelVertex &v3 = vertices[ face.GetVertex3() ];
+				
+				pTBOFace.AddVec4( bvhModel.indexVertices + v1.position, bvhModel.indexVertices + v2.position,
+					bvhModel.indexVertices + v3.position, face.GetTexture() );
+				
+				pTBOTexCoord.AddVec2( texCoords[ v1.texcoord ] );
+				pTBOTexCoord.AddVec2( texCoords[ v2.texcoord ] );
+				pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
+			}
+			
+			pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+		}
 	}
-	
-	// add faces to TBOs using primitive mapping from BVH
-	const deoglBVH &bvh = *lod.GetBVH();
-	const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
-	const oglModelVertex * const vertices = modelLOD.GetVertices();
-	const deoglModelFace * const faces = modelLOD.GetFaces();
-	const int * const primitives = bvh.GetPrimitives();
-	const int primitiveCount = bvh.GetPrimitiveCount();
-	
-	for( i=0; i<primitiveCount; i++ ){
-		const deoglModelFace &face = faces[ primitives[ i ] ];
-		const oglModelVertex &v1 = vertices[ face.GetVertex1() ];
-		const oglModelVertex &v2 = vertices[ face.GetVertex2() ];
-		const oglModelVertex &v3 = vertices[ face.GetVertex3() ];
-		
-		pTBOFace.AddVec4( bvhModel.indexVertices + v1.position, bvhModel.indexVertices + v2.position,
-			bvhModel.indexVertices + v3.position, face.GetTexture() );
-		
-		pTBOTexCoord.AddVec2( texCoords[ v1.texcoord ] );
-		pTBOTexCoord.AddVec2( texCoords[ v2.texcoord ] );
-		pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
-	}
-	
-	pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
 	
 	// add materials
 	deoglAddToRenderTaskGIMaterial &addToRenderTask =
 		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
-	deoglRComponent &component = lod.GetComponent();
 	const int textureCount = component.GetTextureCount();
 	const int indexMaterial = pTBOMaterial.GetPixelCount();
+	int i;
 	
 	for( i=0; i<textureCount; i++ ){
 		const deoglRComponentTexture &texture = component.GetTextureAt( i );

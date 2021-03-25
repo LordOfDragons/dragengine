@@ -19,37 +19,41 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLCOMPONENTNOTIFIER_H_
-#define _DEOGLCOMPONENTNOTIFIER_H_
-
-#include <dragengine/deObject.h>
+#include "deoglComponentListener.h"
 
 
 
-/**
- * \brief Render component notifier.
- */
-class deoglComponentNotifier : public deObject{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create component notifier. */
-	deoglComponentNotifier();
-	
-	/** \brief Clean up component notifier. */
-	virtual ~deoglComponentNotifier();
-	/*@}*/
-	
-	
-	
-	/** \name Notifications */
-	/*@{*/
-	/** \brief Component is has been destroyed. */
-	virtual void ComponentDestroyed();
-	
-	/** \brief Component geometry changed or dislocated. */
-	virtual void BoundariesChanged();
-	/*@}*/
-};
+// Class deoglComponentNotifier
+/////////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+deoglComponentListener::deoglComponentListener(){
+}
+
+deoglComponentListener::~deoglComponentListener(){
+}
+
+
+
+// Notifications
+//////////////////
+
+void deoglComponentListener::ComponentDestroyed( deoglRComponent& ){
+}
+
+void deoglComponentListener::ParentWorldChanged( deoglRComponent& ){
+}
+
+void deoglComponentListener::LayerMaskChanged( deoglRComponent& ){
+}
+
+void deoglComponentListener::RenderStaticChanged( deoglRComponent& ){
+}
+
+void deoglComponentListener::BoundariesChanged( deoglRComponent& ){
+}
+
+void deoglComponentListener::OcclusionMeshChanged( deoglRComponent& ){
+}

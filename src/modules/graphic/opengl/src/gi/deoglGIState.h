@@ -23,6 +23,8 @@
 #define _DEOGLGISTATE_H_
 
 #include "deoglGIRays.h"
+#include "deoglGIInstances.h"
+#include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
@@ -31,8 +33,8 @@
 #include <dragengine/common/utils/decTimer.h>
 
 class deoglRenderThread;
+class deoglRComponent;
 class deoglRWorld;
-class deoglPixelBuffer;
 
 
 /**
@@ -42,6 +44,13 @@ class deoglPixelBuffer;
  */
 class deoglGIState{
 public:
+	/** Content classification. */
+	enum eContentClassification {
+		eccIgnore,
+		eccStatic,
+		eccDynamic
+	};
+	
 	/** Probe parameters. */
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
@@ -49,6 +58,7 @@ public:
 		int flags;
 		int age; //<! Age in update runs since probe has been last updated
 		bool valid; //<! Probe has been updated at least once
+		bool rayLimitsValid; //<! Ray-Tracing distance limits are valid
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
@@ -73,6 +83,8 @@ private:
 	
 	float pMaxDetectionRange;
 	decVector pDetectionBox;
+	deoglCollideList pCollideList;
+	deoglCollideList pCollideListFiltered;
 	
 	int pIrradianceMapSize;
 	int pDistanceMapSize;
@@ -114,6 +126,7 @@ private:
 	bool pClearMaps;
 	bool pProbesHaveMoved;
 	
+	deoglGIInstances pInstances;
 	deoglGIRays pRays;
 	
 	
@@ -166,8 +179,34 @@ public:
 	 */
 	inline const decPoint3 &GetGridCoordShift() const{ return pGridCoordShift; }
 	
+	
+	
 	/** Detection box. */
 	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
+	
+	/** Collide list. */
+	inline deoglCollideList &GetCollideList(){ return pCollideList; }
+	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
+	
+	/** Filtered collide list. */
+	inline deoglCollideList &GetCollideListFiltered(){ return pCollideListFiltered; }
+	inline const deoglCollideList &GetCollideListFiltered() const{ return pCollideListFiltered; }
+	
+	/** Classify content. */
+	eContentClassification ClassifyComponent( const deoglRComponent &component ) const;
+	eContentClassification ClassifyOcclusionMesh( const deoglRComponent &component ) const;
+	
+	/** Find content affecting GI state. */
+	void FindContent( deoglRWorld &world );
+	
+	/** Filter static occlusion meshes into filtered collider list. */
+	void FilterStaticOcclusionMeshes();
+	
+	/** Filter components into filtered collider list. */
+	void FilterComponents();
+	
+	/** Filter static components into filtered collider list. */
+	void FilterStaticComponents();
 	
 	
 	
@@ -260,6 +299,10 @@ public:
 	void UpdateProbeOffsetFromTexture();
 	
 	
+	
+	/** Instances. */
+	inline deoglGIInstances &GetInstances(){ return pInstances; }
+	inline const deoglGIInstances &GetInstances() const{ return pInstances; }
 	
 	/** Rays. */
 	inline deoglGIRays &GetRays(){ return pRays; }
