@@ -920,8 +920,15 @@ void main( void ){
 					// the main shadow map array is only guaranteed to hold valid data for
 					// pixels falling into the view frustum. outside this volume data is
 					// potentially culled for performance reason. use GI shadow map instead
-					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
-					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
+					// 
+					// NOTE this is not working reliably. most probably the view based optimization
+					//      is not working properly using the GI view. this causes rays to switch
+					//      between receiving sky light or not when slightly rotating the view.
+					//      the problematic hits are located behind the camera. for this reason
+					//      the GI-ShadowMap is always used although the quality is inferior than
+					//      using the view shadow map
+// 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
+// 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
 						shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
 						
 						// prevent the test depth from reaching 0 or below. if this happens the test
@@ -929,9 +936,9 @@ void main( void ){
 						// it is not enough to clamp to 0. it has to be larger than 0.
 						shapos1.q = max( shapos1.q, 0.0001 );
 						
-					}else{
-						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
-					}
+// 					}else{
+// 						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
+// 					}
 				#else
 					shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
 				#endif
