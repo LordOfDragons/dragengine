@@ -1675,11 +1675,30 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	// shading configuration definitions
-	if( pConfig.GetMaterialNormalMode() == deoglSkinShaderConfig::emnmIntBasic ){
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+	switch( pConfig.GetMaterialNormalModeDec() ){
+	case deoglSkinShaderConfig::emnmIntBasic:
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
+		break;
 		
-	}else if( pConfig.GetMaterialNormalMode() == deoglSkinShaderConfig::emnmSpheremap ){
-		defines.AddDefine( "MATERIAL_NORMAL_SPHEREMAP", "1" );
+	case deoglSkinShaderConfig::emnmSpheremap:
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", "1" );
+		break;
+		
+	default:
+		break;
+	}
+	
+	switch( pConfig.GetMaterialNormalModeEnc() ){
+	case deoglSkinShaderConfig::emnmIntBasic:
+		defines.AddDefine( "MATERIAL_NORMAL_ENC_INTBASIC", "1" );
+		break;
+		
+	case deoglSkinShaderConfig::emnmSpheremap:
+		defines.AddDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", "1" );
+		break;
+		
+	default:
+		break;
 	}
 	
 	// texture usage definitions

@@ -113,7 +113,8 @@ public:
 	eShadowTapModes pShadowTapMode;
 	eShadowMappingAlgorithms pShadowMappingAlgorithm1;
 	eShadowMappingAlgorithms pShadowMappingAlgorithm2;
-	eMaterialNormalModes pMaterialNormalMode;
+	eMaterialNormalModes pMaterialNormalModeDec;
+	eMaterialNormalModes pMaterialNormalModeEnc;
 	eParticleModes pParticleMode;
 	
 	bool pDecodeInDepth;
@@ -187,10 +188,16 @@ public:
 	void SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm );
 	
 	/** \brief Material normal mode. */
-	inline eMaterialNormalModes GetMaterialNormalMode() const{ return pMaterialNormalMode; }
+	inline eMaterialNormalModes GetMaterialNormalModeDec() const{ return pMaterialNormalModeDec; }
 	
 	/** \brief Set material normal mode. */
-	void SetMaterialNormalMode( eMaterialNormalModes materialNormalMode );
+	void SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode );
+	
+	/** \brief Material normal mode. */
+	inline eMaterialNormalModes GetMaterialNormalModeEnc() const{ return pMaterialNormalModeEnc; }
+	
+	/** \brief Set material normal mode. */
+	void SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode );
 	
 	/** \brief Particle mode. */
 	inline eParticleModes GetParticleMode() const{ return pParticleMode; }

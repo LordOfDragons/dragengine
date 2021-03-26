@@ -51,7 +51,8 @@ void deoglSkinShaderConfig::Reset(){
 	pShaderMode = esmGeometry;
 	pGeometryMode = egmComponent;
 	pDepthMode = edmProjection;
-	pMaterialNormalMode = emnmIntBasic;
+	pMaterialNormalModeDec = emnmIntBasic;
+	pMaterialNormalModeEnc = emnmFloat;
 	pParticleMode = epmParticle;
 	pTessellationMode = etmNone;
 	pDepthTestMode = edtmNone;
@@ -151,8 +152,12 @@ void deoglSkinShaderConfig::SetDepthMode( eDepthModes mode ){
 	pDepthMode = mode;
 }
 
-void deoglSkinShaderConfig::SetMaterialNormalMode( eMaterialNormalModes mode ){
-	pMaterialNormalMode = mode;
+void deoglSkinShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes mode ){
+	pMaterialNormalModeDec = mode;
+}
+
+void deoglSkinShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes mode ){
+	pMaterialNormalModeEnc = mode;
 }
 
 void deoglSkinShaderConfig::SetParticleMode( eParticleModes mode ){
@@ -513,10 +518,17 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 		default: string.Append( " ?" );
 	}
 	
-	switch( pMaterialNormalMode ){
+	switch( pMaterialNormalModeDec ){
 		case emnmFloat: string.Append( " matnorFloat" ); break;
 		case emnmIntBasic: string.Append( " matnorIntBasic" ); break;
 		case emnmSpheremap: string.Append( " matnorSpheremap" ); break;
+		default: string.Append( " ?" );
+	}
+	
+	switch( pMaterialNormalModeEnc ){
+		case emnmFloat: string.Append( "/matnorFloat" ); break;
+		case emnmIntBasic: string.Append( "/matnorIntBasic" ); break;
+		case emnmSpheremap: string.Append( "/matnorSpheremap" ); break;
 		default: string.Append( " ?" );
 	}
 	
@@ -786,7 +798,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pShaderMode = config.pShaderMode;
 	pGeometryMode = config.pGeometryMode;
 	pDepthMode = config.pDepthMode;
-	pMaterialNormalMode = config.pMaterialNormalMode;
+	pMaterialNormalModeDec = config.pMaterialNormalModeDec;
+	pMaterialNormalModeEnc = config.pMaterialNormalModeEnc;
 	pParticleMode = config.pParticleMode;
 	pTessellationMode = config.pTessellationMode;
 	pDepthTestMode = config.pDepthTestMode;
@@ -878,7 +891,8 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 	return pShaderMode == config.pShaderMode
 		&& pGeometryMode == config.pGeometryMode
 		&& pDepthMode == config.pDepthMode
-		&& pMaterialNormalMode == config.pMaterialNormalMode
+		&& pMaterialNormalModeDec == config.pMaterialNormalModeDec
+		&& pMaterialNormalModeEnc == config.pMaterialNormalModeEnc
 		&& pParticleMode == config.pParticleMode
 		&& pTessellationMode == config.pTessellationMode
 		&& pDepthTestMode == config.pDepthTestMode

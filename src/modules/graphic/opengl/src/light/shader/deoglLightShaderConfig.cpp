@@ -53,7 +53,8 @@ void deoglLightShaderConfig::Reset(){
 	pShadowTapMode = estmSingle;
 	pShadowMappingAlgorithm1 = esma2D;
 	pShadowMappingAlgorithm2 = esma2D;
-	pMaterialNormalMode = emnmFloatBasic;
+	pMaterialNormalModeDec = emnmFloatBasic;
+	pMaterialNormalModeEnc = emnmFloat;
 	pParticleMode = epmParticle;
 	
 	pDecodeInDepth = false;
@@ -98,8 +99,12 @@ void deoglLightShaderConfig::SetShadowMappingAlgorithm2( eShadowMappingAlgorithm
 	pShadowMappingAlgorithm2 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetMaterialNormalMode( eMaterialNormalModes materialNormalMode ){
-	pMaterialNormalMode = materialNormalMode;
+void deoglLightShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode ){
+	pMaterialNormalModeDec = materialNormalMode;
+}
+
+void deoglLightShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode ){
+	pMaterialNormalModeEnc = materialNormalMode;
 }
 
 void deoglLightShaderConfig::SetParticleMode( eParticleModes mode ){
@@ -206,10 +211,11 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	const char * const materialNormalModeStrings[] = { "matnorFloat", "matnorIntBasic", "matnorSpheremap" };
 	const char * const particleModeStrings[] = { "particle", "ribbon", "beam" };
 	
-	string.Format( "(%s %s %s %s sma1=%s sma2=%s",
+	string.Format( "(%s %s %s/%s %s sma1=%s sma2=%s",
 		lightModeStrings[ pLightMode ],
 		shadowTapModeStrings[ pShadowTapMode ],
-		materialNormalModeStrings[ pMaterialNormalMode ],
+		materialNormalModeStrings[ pMaterialNormalModeDec ],
+		materialNormalModeStrings[ pMaterialNormalModeEnc ],
 		particleModeStrings[ pParticleMode ],
 		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm1 ],
 		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm2 ] );
@@ -294,7 +300,8 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pShadowTapMode = config.pShadowTapMode;
 	pShadowMappingAlgorithm1 = config.pShadowMappingAlgorithm1;
 	pShadowMappingAlgorithm2 = config.pShadowMappingAlgorithm2;
-	pMaterialNormalMode = config.pMaterialNormalMode;
+	pMaterialNormalModeDec = config.pMaterialNormalModeDec;
+	pMaterialNormalModeEnc = config.pMaterialNormalModeEnc;
 	pParticleMode = config.pParticleMode;
 	
 	pDecodeInDepth = config.pDecodeInDepth;
@@ -328,7 +335,8 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pShadowTapMode == config.pShadowTapMode
 		&& pShadowMappingAlgorithm1 == config.pShadowMappingAlgorithm1
 		&& pShadowMappingAlgorithm2 == config.pShadowMappingAlgorithm2
-		&& pMaterialNormalMode == config.pMaterialNormalMode
+		&& pMaterialNormalModeDec == config.pMaterialNormalModeDec
+		&& pMaterialNormalModeEnc == config.pMaterialNormalModeEnc
 		&& pParticleMode == config.pParticleMode
 		
 		&& pDecodeInDepth == config.pDecodeInDepth

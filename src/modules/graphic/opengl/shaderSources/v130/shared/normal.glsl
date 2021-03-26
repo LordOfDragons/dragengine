@@ -93,19 +93,19 @@ vec2 normalEncodeSphereMap( in vec3 normal ){
 
 
 // load normal using method decided by using one of these preprocessor definitions
-// - MATERIAL_NORMAL_FLOATBASIC: normalLoadShiftedFloat
-// - MATERIAL_NORMAL_INTBASIC: normalLoadShiftedInt
-// - MATERIAL_NORMAL_SPHEREMAP: normalLoadSphere
+// - MATERIAL_NORMAL_DEC_FLOATBASIC: normalLoadShiftedFloat
+// - MATERIAL_NORMAL_DEC_INTBASIC: normalLoadShiftedInt
+// - MATERIAL_NORMAL_DEC_SPHEREMAP: normalLoadSphere
 // - none of the above: normalLoadDirect
 // normal is potentially not normalized.
 vec3 normalLoadMaterial( in sampler2D sampler, in ivec2 texCoord ){
-	#ifdef MATERIAL_NORMAL_FLOATBASIC
+	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	
-	#elif defined MATERIAL_NORMAL_INTBASIC
+	#elif defined MATERIAL_NORMAL_DEC_INTBASIC
 	return normalLoadShiftedInt( sampler, texCoord );
 	
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
+	#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
 	return normalLoadSphereMap( sampler, texCoord );
 	
 	#else
@@ -114,13 +114,13 @@ vec3 normalLoadMaterial( in sampler2D sampler, in ivec2 texCoord ){
 }
 
 vec3 normalLoadMaterial( in sampler2D sampler, in vec2 texCoord ){
-	#ifdef MATERIAL_NORMAL_FLOATBASIC
+	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	
-	#elif defined MATERIAL_NORMAL_INTBASIC
+	#elif defined MATERIAL_NORMAL_DEC_INTBASIC
 	return normalLoadShiftedInt( sampler, texCoord );
 	
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
+	#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
 	return normalLoadSphereMap( sampler, texCoord );
 	
 	#else
@@ -129,19 +129,19 @@ vec3 normalLoadMaterial( in sampler2D sampler, in vec2 texCoord ){
 }
 
 // encode normal using method decided by using one of these preprocessor definitions
-// - MATERIAL_NORMAL_FLOATBASIC: normalEncodeShiftedFloat
-// - MATERIAL_NORMAL_INTBASIC: normalEncodeShiftedInt
-// - MATERIAL_NORMAL_SPHEREMAP: normalEncodeSphereMap
+// - MATERIAL_NORMAL_ENC_FLOATBASIC: normalEncodeShiftedFloat
+// - MATERIAL_NORMAL_ENC_INTBASIC: normalEncodeShiftedInt
+// - MATERIAL_NORMAL_ENC_SPHEREMAP: normalEncodeSphereMap
 // - none of the above: normal unmodified
 // normal has to be normalized. encoded value is padded to vec3 with 0
 vec3 normalEncodeMaterial( in vec3 normal ){
-	#ifdef MATERIAL_NORMAL_FLOATBASIC
+	#ifdef MATERIAL_NORMAL_ENC_FLOATBASIC
 	return normalEncodeShiftedFloat( normal );
 	
-	#elif defined MATERIAL_NORMAL_INTBASIC
+	#elif defined MATERIAL_NORMAL_ENC_INTBASIC
 	return normalEncodeShiftedInt( normal );
 	
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
+	#elif defined MATERIAL_NORMAL_ENC_SPHEREMAP
 	return vec3( normalEncodeSphereMap( normal ), 0.0 );
 	
 	#else
@@ -159,15 +159,28 @@ const vec3 normalZeroDirect = vec3( 0.0 );
 
 // zero-normal encoded using respective method. some methods can not represent a true
 // zero normal. in this case (0,0,-1) is used. constant is padded to vec3 with 0
-#ifdef MATERIAL_NORMAL_FLOATBASIC
-const vec3 normalZeroMaterial = normalZeroShiftedFloat;
+#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
+const vec3 normalZeroMaterialDec = normalZeroShiftedFloat;
 
-#elif defined MATERIAL_NORMAL_INTBASIC
-const vec3 normalZeroMaterial = normalZeroShiftedInt;
+#elif defined MATERIAL_NORMAL_DEC_INTBASIC
+const vec3 normalZeroMaterialDec = normalZeroShiftedInt;
 
-#elif defined MATERIAL_NORMAL_SPHEREMAP
-const vec3 normalZeroMaterial = vec3( normalZeroSphereMap, 0.0 );
+#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
+const vec3 normalZeroMaterialDec = vec3( normalZeroSphereMap, 0.0 );
 
 #else
-const vec3 normalZeroMaterial = normalZeroDirect;
+const vec3 normalZeroMaterialDec = normalZeroDirect;
+#endif
+
+#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
+const vec3 normalZeroMaterialEnc = normalZeroShiftedFloat;
+
+#elif defined MATERIAL_NORMAL_DEC_INTBASIC
+const vec3 normalZeroMaterialEnc = normalZeroShiftedInt;
+
+#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
+const vec3 normalZeroMaterialEnc = vec3( normalZeroSphereMap, 0.0 );
+
+#else
+const vec3 normalZeroMaterialEnc = normalZeroDirect;
 #endif

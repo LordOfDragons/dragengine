@@ -127,7 +127,8 @@ public:
 	eShaderModes pShaderMode;
 	eGeometryModes pGeometryMode;
 	eDepthModes pDepthMode;
-	eMaterialNormalModes pMaterialNormalMode;
+	eMaterialNormalModes pMaterialNormalModeDec;
+	eMaterialNormalModes pMaterialNormalModeEnc;
 	eParticleModes pParticleMode;
 	eTessallationModes pTessellationMode;
 	eDepthTestModes pDepthTestMode;
@@ -254,10 +255,16 @@ public:
 	void SetDepthMode( eDepthModes mode );
 	
 	/** \brief Material normal mode. */
-	inline eMaterialNormalModes GetMaterialNormalMode() const{ return pMaterialNormalMode; }
+	inline eMaterialNormalModes GetMaterialNormalModeDec() const{ return pMaterialNormalModeDec; }
 	
 	/** \brief Set material normal mode. */
-	void SetMaterialNormalMode( eMaterialNormalModes mode );
+	void SetMaterialNormalModeDec( eMaterialNormalModes mode );
+	
+	/** \brief Material normal mode. */
+	inline eMaterialNormalModes GetMaterialNormalModeEnc() const{ return pMaterialNormalModeEnc; }
+	
+	/** \brief Set material normal mode. */
+	void SetMaterialNormalModeEnc( eMaterialNormalModes mode );
 	
 	/** \brief Particle mode. */
 	inline eParticleModes GetParticleMode() const{ return pParticleMode; }

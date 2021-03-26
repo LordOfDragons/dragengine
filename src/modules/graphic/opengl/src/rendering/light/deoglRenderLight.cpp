@@ -196,7 +196,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();

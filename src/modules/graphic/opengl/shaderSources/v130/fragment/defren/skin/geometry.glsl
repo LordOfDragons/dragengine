@@ -483,7 +483,7 @@ void main( void ){
 	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
-			outNormal = vec4( normalZeroMaterial, 0.0 );
+			outNormal = vec4( normalZeroMaterialEnc, 0.0 );
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
 			outRoughness = vec4( 0.0, 1.0, 1.0, 0.0 );
 		#endif
@@ -564,7 +564,7 @@ void main( void ){
 		normal.xyz = normalize( normal.xyz );
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			#ifdef WITH_OUTLINE
-				outNormal = vec4( normalZeroMaterial, color.a );
+				outNormal = vec4( normalZeroMaterialEnc, color.a );
 			#else
 				outNormal = vec4( normalEncodeMaterial( normal.xyz ), color.a );
 				#ifdef SOLIDITY_MULTIPLIER

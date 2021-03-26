@@ -730,6 +730,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetLuminanceOnly( luminanceOnly );
 	config.SetGIMaterial( giMaterial );
 	
+	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
 	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
 	config.SetInverseDepth( defren.GetUseInverseDepth() );
 	if( ! luminanceOnly && ! giMaterial ){
@@ -746,7 +747,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	switch( shaderConfigInfo.type ){
 	case esctGeometry:
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetMaterialNormalMode( deoglSkinShaderConfig::emnmIntBasic );
+		config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
 		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
 		config.SetAmbientLightProbe( isParticle && ! realTranspParticle );
 		config.SetBillboard( shaderConfigInfo.billboard );
@@ -1050,7 +1051,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetOutline( true );
 		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetMaterialNormalMode( deoglSkinShaderConfig::emnmIntBasic );
+		config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
 		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
 		
 		config.SetTextureNormal( hasChanTex[ deoglSkinChannel::ectNormal ] );

@@ -1123,11 +1123,11 @@ deoglLightShaderConfig &config ){
 	case estGIRaySolid2:
 		config.SetGIRay( true );
 		config.SetFullScreenQuad( true );
-		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloat );
+		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
 		break;
 		
 	default:
-		config.SetMaterialNormalMode( deoglLightShaderConfig::emnmFloatBasic );
+		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
 	}
 	
 	return true;

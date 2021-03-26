@@ -303,7 +303,7 @@ deoglRenderBase( renderThread )
 			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
 		}
 		defines.AddDefine( "FULLSCREENQUAD", "1" );
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		pShaderRenderEnvMaps = shaderManager.GetProgramWith( sources, defines );
 		*/
 		
@@ -399,7 +399,7 @@ deoglRenderBase( renderThread )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", "1" );
 		}
@@ -440,7 +440,7 @@ deoglRenderBase( renderThread )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", "1" );
 		}
@@ -479,7 +479,7 @@ deoglRenderBase( renderThread )
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
