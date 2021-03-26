@@ -185,9 +185,6 @@ void deoglTexUnitsConfig::RemoveUsage(){
 	pUsageCount--;
 	
 	if( pUsageCount == 0 ){
-		// we keep the material slot index even if not used anymore. this avoids cached
-		// ray-casting results to use suddenly use wrong material
-		//pRenderThread.GetGI().GetMaterials().RemoveTUC( this );
 		pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
 	}
 }
