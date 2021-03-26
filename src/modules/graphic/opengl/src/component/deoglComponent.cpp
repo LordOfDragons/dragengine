@@ -975,7 +975,11 @@ void deoglComponent::pSyncDecals(){
 }
 
 void deoglComponent::pCheckRequiresUpdateEverySync(){
-	pRequiresUpdateEverySync = pSkinStateController->RequiresSyncEveryFrameUpdate();
+	// if render static is false a timer is running until render static is set to true.
+	// this time runs only while Update() is called
+	pRequiresUpdateEverySync = ! pRComponent->GetRenderStatic();
+	
+	pRequiresUpdateEverySync |= pSkinStateController->RequiresSyncEveryFrameUpdate();
 	if( pRequiresUpdateEverySync ){
 		return;
 	}
