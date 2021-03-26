@@ -1283,6 +1283,9 @@ void deoglRComponent::WorldReferencePointChanged(){
 
 
 void deoglRComponent::PrepareQuickDispose(){
+	NotifyComponentDestroyed(); // important, otherwise listeners segfault
+	pListeners.RemoveAll();
+	
 	pParentWorld = NULL;
 	pOctreeNode = NULL;
 	
@@ -1293,8 +1296,6 @@ void deoglRComponent::PrepareQuickDispose(){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareQuickDispose();
 	}
 	pDecals.RemoveAll();
-	
-	pListeners.RemoveAll();
 }
 
 
@@ -1491,20 +1492,20 @@ void deoglRComponent::OcclusionTestInvisible(){
 // Notifiers
 //////////////
 
-void deoglRComponent::AddListener( deoglComponentListener *notifier ){
-	if( ! notifier ){
+void deoglRComponent::AddListener( deoglComponentListener *listener ){
+	if( ! listener ){
 		DETHROW( deeInvalidParam );
 	}
-	pListeners.Add( notifier );
+	pListeners.Add( listener );
 }
 
-void deoglRComponent::RemoveListener( deoglComponentListener *notifier ){
-	const int index = pListeners.IndexOf( notifier );
+void deoglRComponent::RemoveListener( deoglComponentListener *listener ){
+	const int index = pListeners.IndexOf( listener );
 	if( index == -1 ){
 		return;
 	}
 	
-	pListeners.Remove( notifier );
+	pListeners.Remove( listener );
 	
 	if( pListenerIndex >= index ){
 		pListenerIndex--;
