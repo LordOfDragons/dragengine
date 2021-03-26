@@ -80,10 +80,13 @@ void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
 	
 	int index = pFirstUnusedMaterial();
 	if( index != -1 ){
-		deoglTexUnitsConfig * const unusedTuc = ( deoglTexUnitsConfig* )pTUCs.GetAt( index );
-		unusedTuc->SetMaterialIndex( -1 );
+		deoglTexUnitsConfig &unusedTuc = *( ( deoglTexUnitsConfig* )pTUCs.GetAt( index ) );
+		unusedTuc.SetMaterialIndex( -1 );
+		unusedTuc.RemoveUsage(); // potentially deleted now
+		
 		pTUCs.SetAt( index, tuc );
 		tuc->SetMaterialIndex( index );
+		tuc->AddUsage();
 		return;
 	}
 	
@@ -96,6 +99,7 @@ void deoglGIMaterials::AddTUC( deoglTexUnitsConfig *tuc ){
 	
 	pTUCs.Add( tuc );
 	tuc->SetMaterialIndex( index );
+	tuc->AddUsage();
 	
 	if( ( pTUCs.GetCount() - 1 ) % 10 == 0 ){
 		pRenderThread.GetLogger().LogInfoFormat( "GIMaterials: Reached %d materials", pTUCs.GetCount() - 1 );
@@ -119,6 +123,13 @@ deoglTexUnitsConfig *deoglGIMaterials::GetTUC( int materialIndex ) const{
 //////////////////////
 
 void deoglGIMaterials::pCleanUp(){
+	const int count = pTUCs.GetCount();
+	int i;
+	for( i=1; i<count; i++ ){
+		deoglTexUnitsConfig &tuc = *( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) );
+		tuc.SetMaterialIndex( -1 );
+		tuc.RemoveUsage(); // potentially deleted now
+	}
 }
 
 void deoglGIMaterials::pCreateFBOMaterial(){
@@ -184,7 +195,7 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 	int i;
 	
 	for( i=1; i<count; i++ ){
-		if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetUsageCount() == 0 ){
+		if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetUsageCount() == 1 ){
 			return i;
 		}
 	}

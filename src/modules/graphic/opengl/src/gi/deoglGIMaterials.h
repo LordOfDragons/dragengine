@@ -41,6 +41,10 @@ class deoglTexUnitsConfig;
  * in size and of small size. The default material map size is 64x64 with 32 material maps
  * per row. This is a total of 1024 materials. If the number of materials becomes larger the
  * map size is reduced by factor 2 quadrupling the maximum number of materials.
+ * 
+ * This class keeps a usage reference to all stored TUCs to avoid accessing deleted ones.
+ * This keeps TUCs alive if nobody uses them anymore. These slots can be reclaimed if an
+ * unused slot is requested.
  */
 class deoglGIMaterials{
 private:
