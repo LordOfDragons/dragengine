@@ -375,6 +375,8 @@ void deoglSkinState::pSharedInit(){
 	pOwnerComponent = NULL;
 	pOwnerComponentTexture = 0;
 	pOwnerBillboard = NULL;
+	pOwnerDecal = NULL;
+	pOwnerLight = NULL;
 	
 	pTime = 0.0f;
 	
