@@ -269,28 +269,16 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 		UpdateProbeOffsetFromTexture();
 	}
 	
+	// track changes in instances has to be done first
+	pTrackInstanceChanges( world );
+	
 	// prepare probes for tracing
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
 	
-	// find content and update instance tracking. only static components are tracked.
-	// this is used to update per-ray distance limitation to speed up ray-tracing
-	FindContent( world );
-	
-	FilterStaticComponents();
-	
-	bool invalidateRayLimits = false;
-	invalidateRayLimits |= pInstances.RemoveComponents( pCollideListFiltered );
-	invalidateRayLimits |= pInstances.AddComponents( pCollideListFiltered );
-	invalidateRayLimits |= pInstances.AnyComponentChanged();
-	
-	if( invalidateRayLimits ){
-		int i;
-		for( i=0; i<pRealProbeCount; i++ ){
-			pProbes[ i ].rayLimitsValid = false;
-		}
-	}
+	// synchronize tracked instances using new position
+	pSyncTrackedInstances( world );
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -459,7 +447,11 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		const int y = probe.coord.z;
 		
 		const deoglPixelBuffer::sFloat3 &pixel = pixels[ stride * y + x ];
-		probe.offset.Set( pixel.r, pixel.g, pixel.b );
+		const decVector offset( pixel.r, pixel.g, pixel.b );
+		if( ! offset.IsEqualTo( probe.offset, 0.001f ) ){
+			probe.rayLimitsValid = false;
+		}
+		probe.offset = offset;
 	}
 }
 
@@ -497,6 +489,55 @@ void deoglGIState::pInitProbes(){
 		probe.rayLimitsValid = false;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
+}
+
+void deoglGIState::pInvalidateAllRayLimits(){
+	int i;
+	for( i=0; i<pRealProbeCount; i++ ){
+		pProbes[ i ].rayLimitsValid = false;
+	}
+}
+
+void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
+	FindContent( world );
+	
+	FilterStaticComponents();
+	
+	/*{
+		const int count = pCollideListFiltered.GetComponentCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			if( pCollideListFiltered.GetComponentAt(i)->GetComponent() ){
+				if( pCollideListFiltered.GetComponentAt(i)->GetComponent()->GetModel() ){
+					pRenderThread.GetLogger().LogInfoFormat( "FILTERED: %d %s", i,
+						pCollideListFiltered.GetComponentAt(i)->GetComponent()->GetModel()->GetFilename().GetString());
+				}
+			}
+		}
+	}*/
+	
+	bool invalidateRayLimits = pInstances.AnyChanged();
+	invalidateRayLimits |= pInstances.RemoveComponents( pCollideListFiltered );
+	invalidateRayLimits |= pInstances.AddComponents( pCollideListFiltered );
+	
+	if( invalidateRayLimits ){
+// 		pRenderThread.GetLogger().LogInfo( "GIState.TrackInstanceChanges: invalidate all ray limits" );
+		pInvalidateAllRayLimits();
+	}
+	
+// 	pRenderThread.GetLogger().LogInfo( "pTrackInstanceChanges" );
+// 	pInstances.DebugPrint();
+}
+
+void deoglGIState::pSyncTrackedInstances( deoglRWorld &world ){
+	FindContent( world );
+	
+	FilterStaticComponents();
+	
+	pInstances.RemoveComponents( pCollideListFiltered );
+	pInstances.AddComponents( pCollideListFiltered );
+	
+	pInstances.ClearAllChanged();
 }
 
 void deoglGIState::pUpdatePosition( const decDVector &position ){

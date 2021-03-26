@@ -314,6 +314,9 @@ public:
 private:
 	void pCleanUp();
 	void pInitProbes();
+	void pInvalidateAllRayLimits();
+	void pTrackInstanceChanges( deoglRWorld &world );
+	void pSyncTrackedInstances( deoglRWorld &world );
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY );
 	void pAgeProbes();

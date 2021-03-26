@@ -42,6 +42,8 @@ private:
 	public:
 		cComponentListener( deoglGIInstance &instance );
 		virtual void ComponentDestroyed( deoglRComponent &component );
+		virtual void ParentWorldChanged( deoglRComponent &component );
+		virtual void LayerMaskChanged( deoglRComponent &component );
 		virtual void BoundariesChanged( deoglRComponent &component );
 		virtual void OcclusionMeshChanged( deoglRComponent &component );
 	};

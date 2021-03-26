@@ -37,13 +37,22 @@ deoglGIInstance::cComponentListener::cComponentListener( deoglGIInstance &instan
 pInstance( instance ){
 }
 
-void deoglGIInstance::cComponentListener::ComponentDestroyed( deoglRComponent& c){
-	printf("ComponentDestroyed %p\n", &c);
-	pInstance.SetChanged( true );
+void deoglGIInstance::cComponentListener::ComponentDestroyed( deoglRComponent&c ){
 	pInstance.Clear();
+	pInstance.SetChanged( true );
 }
 
-void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
+void deoglGIInstance::cComponentListener::ParentWorldChanged( deoglRComponent& ){
+	pInstance.Clear();
+	pInstance.SetChanged( true );
+}
+
+void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent& ){
+	pInstance.Clear();
+	pInstance.SetChanged( true );
+}
+
+void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent&c ){
 	pInstance.SetChanged( true );
 }
 

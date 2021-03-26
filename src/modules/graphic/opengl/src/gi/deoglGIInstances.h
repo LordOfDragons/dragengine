@@ -82,6 +82,9 @@ public:
 	/** One or more occlusion meshes have changed. */
 	bool AnyOcclusionMeshChanged() const;
 	
+	/** Clear changed flag of all instances. */
+	void ClearAllChanged();
+	
 	/** Add components if not present. Returns true if components have been added. */
 	bool AddComponents( deoglCollideList &list );
 	
@@ -102,6 +105,9 @@ public:
 	
 	/** Mark occlusion meshes. */
 	void MarkOcclusionMeshes( bool marked );
+	
+	/** Debug print. */
+	void DebugPrint();
 	/*@}*/
 	
 	
