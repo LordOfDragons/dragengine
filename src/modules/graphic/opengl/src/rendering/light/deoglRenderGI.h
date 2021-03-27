@@ -40,6 +40,8 @@ class deoglAddToRenderTaskGIMaterial;
 class deoglRenderGI : public deoglRenderLightBase{
 private:
 	deoglShaderProgram *pShaderTraceRays;
+	deoglShaderProgram *pShaderTraceRaysDistance;
+	deoglShaderProgram *pShaderTraceRaysDistanceOccMesh;
 	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;

@@ -123,6 +123,8 @@ deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
 pShaderTraceRays( NULL ),
+pShaderTraceRaysDistance( NULL ),
+pShaderTraceRaysDistanceOccMesh( NULL ),
 pShaderUpdateRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
@@ -155,6 +157,15 @@ pAddToRenderTask( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "GI_RAYCAST_DISTANCE_ONLY", true );
+		pShaderTraceRaysDistance = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "GI_RAYCAST_OCCMESH_ONLY", true );
+		pShaderTraceRaysDistanceOccMesh = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "GI_RAYCAST_OCCMESH_ONLY" );
+		
+		defines.RemoveDefine( "GI_RAYCAST_DISTANCE_ONLY" );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Rays" );
 		pShaderUpdateRays = shaderManager.GetProgramWith( sources, defines );
@@ -279,6 +290,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglDebugInformation &debugInfo = *renderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI;
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const decPoint &sampleImageSize = giState->GetSampleImageSize();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIMaterials &materials = gi.GetMaterials();
 	deoglGITraceRays &traceRays = gi.GetTraceRays();
@@ -287,6 +299,76 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
 	}
+	
+	
+	// if any ray limit are invalid update them now and store the result aside
+	//if( giState->GetRayLimitProbeCount() > 0 ){
+		// prepare BVH and render task. we do not need the render task since we do not
+		// render materials but building the BVH needs render task texture so we have
+		// to properly do it here
+		pRenderTask->Clear();
+		pAddToRenderTask->Reset();
+		
+		bvh.Clear();
+// 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
+		bvh.AddOcclusionMeshes( plan, giState->GetPosition(), giState->GetInstances() );
+		bvh.BuildBVH();
+		
+		giState->PrepareUBOStateRayLimit(); // has to be done here since it is shared
+		
+		// render ray limits into temporary texture. this is done like this since ray
+		// tracing in fragment shader is time critcal and by packing traced rays and
+		// rendering them in one quad is faster than rendering smaller quads all across
+		// the texture. with compute shaders this is not required
+		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+		
+		renderThread.GetFramebuffer().Activate( &traceRays.GetFBODistance() );
+		
+		OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+		
+		const GLfloat clearDistance[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
+		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		
+		if( bvh.GetIndexRootNode() != -1 ){
+			// render only if BVH has nodes. if not clearing sets the right distance
+			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+			OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+			OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+			OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+			
+			OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+			
+			//renderThread.GetShader().ActivateShader( pShaderTraceRaysDistance );
+			renderThread.GetShader().ActivateShader( pShaderTraceRaysDistanceOccMesh );
+			gi.GetUBO().Activate();
+			
+			tsmgr.EnableTBO( 0, bvh.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 1, bvh.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 2, bvh.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 3, bvh.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 4, bvh.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 5, bvh.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
+			tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
+// 			tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
+// 			tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2().GetTBO(), GetSamplerClampNearest() );
+// 			tsmgr.DisableStagesAbove( 8 );
+			tsmgr.DisableStagesAbove( 6 );
+			
+			#ifdef GI_RENDERDOC_DEBUG
+				OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
+				OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
+			#endif
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		}
+		
+		// TODO update ray limit texture with result from temporary texture
+		
+	//}
 	
 	
 	// prepare
@@ -324,9 +406,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	// for the scripts to run even if the BVH is empty since the ray result pixels
 	// have to be correctly initialized with the ray direction otherwise the probe
 	// update shader fails to work correctly
-	const decPoint &sampleImageSize = giState->GetSampleImageSize();
-	
-	renderThread.GetFramebuffer().Activate( &traceRays.GetFBORayResult() );
+	renderThread.GetFramebuffer().Activate( &traceRays.GetFBOResult() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
@@ -334,13 +414,13 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderTraceRays );
 	gi.GetUBO().Activate();
 	
-	const GLfloat clearDepth = 1.0f;
+// 	const GLfloat clearDepth = 1.0f;
 	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearLight[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+// 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 1 ] ) );
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearDiffuse[ 2 ] ) );
@@ -947,6 +1027,12 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderTraceRays ){
 		pShaderTraceRays->RemoveUsage();
+	}
+	if( pShaderTraceRaysDistance ){
+		pShaderTraceRaysDistance->RemoveUsage();
+	}
+	if( pShaderTraceRaysDistanceOccMesh ){
+		pShaderTraceRaysDistanceOccMesh->RemoveUsage();
 	}
 	if( pShaderUpdateRays ){
 		pShaderUpdateRays->RemoveUsage();

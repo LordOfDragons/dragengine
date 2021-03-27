@@ -36,6 +36,8 @@
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
 #include "../model/texture/deoglModelTexture.h"
+#include "../occlusiontest/mesh/deoglDynamicOcclusionMesh.h"
+#include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../rendering/light/deoglRenderLight.h"
 #include "../rendering/light/deoglRenderGI.h"
 #include "../rendering/task/deoglRenderTask.h"
@@ -275,6 +277,129 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	pAddComponent( indexModel, indexMaterial, matrix );
 }
 
+void deoglGIBVH::AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const int count = instances.GetInstanceCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglGIInstance &instance = instances.GetInstanceAt( i );
+		if( instance.GetOcclusionMesh() ){
+			deoglRComponent &component = *instance.GetOcclusionMesh();
+			AddOcclusionMesh( plan, ( component.GetMatrix() * matrix ).ToMatrix(), component );
+		}
+	}
+}
+
+void deoglGIBVH::AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const int count = list.GetComponentCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *list.GetComponentAt( i )->GetComponent();
+		AddOcclusionMesh( plan, ( component.GetMatrix() * matrix ).ToMatrix(), component );
+	}
+}
+
+void deoglGIBVH::AddOcclusionMesh( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponent &component ){
+	deoglDynamicOcclusionMesh * const dynOccMesh = component.GetDynamicOcclusionMesh();
+	int indexModel;
+	
+	if( dynOccMesh ){
+		// prepare BVH
+		dynOccMesh->PrepareBVH();
+		if( ! dynOccMesh->GetBVH()->GetRootNode() ){
+			return; // empty model
+		}
+		
+		// add occlusion mesh to list of encountered models
+		indexModel = pModelCount;
+		sModel &bvhModel = pAddModel();
+		bvhModel.occlusionMesh = &component;
+		
+		// add vertices to TBO in mesh order
+		const decVector * const vertices = dynOccMesh->GetVertices();
+		deoglROcclusionMesh &occMesh = *component.GetOcclusionMesh();
+		const int vertexCount = occMesh.GetVertexCount();
+		int i;
+		
+		for( i=0; i<vertexCount; i++ ){
+			pTBOVertex.AddVec4( vertices[ i ], 0.0f );
+		}
+		
+		// add faces to TBOs using primitive mapping from BVH
+		const int singleSidedFaceCount = occMesh.GetSingleSidedFaceCount();
+		const unsigned short * const corners = occMesh.GetCorners();
+		const deoglBVH &bvh = *dynOccMesh->GetBVH();
+		const int * const primitives = bvh.GetPrimitives();
+		const int primitiveCount = bvh.GetPrimitiveCount();
+		
+		for( i=0; i<primitiveCount; i++ ){
+			const int face = primitives[ i ];
+			const unsigned short * const fc = corners + face * 3;
+			
+			pTBOFace.AddVec4( bvhModel.indexVertices + fc[ 0 ], bvhModel.indexVertices + fc[ 1 ],
+				bvhModel.indexVertices + fc[ 2 ], face < singleSidedFaceCount ? 0.0 : 1.0 );
+		}
+		
+		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+		
+	}else{
+		// find model
+		for( indexModel=0; indexModel<pModelCount; indexModel++ ){
+			if( pModels[ indexModel ].occlusionMesh == &component
+			&& ! pModels[ indexModel ].occlusionMesh->GetDynamicOcclusionMesh() ){
+				break;
+			}
+		}
+		
+		// if model does not exist add it
+		if( indexModel == pModelCount ){
+			deoglROcclusionMesh &occMesh = *component.GetOcclusionMesh();
+			
+			// prepare BVH first just in case something goes wrong
+			occMesh.PrepareBVH();
+			if( ! occMesh.GetBVH()->GetRootNode() ){
+				return; // empty model
+			}
+			
+			// add occlusion mesh to list of encountered models
+			sModel &bvhModel = pAddModel();
+			bvhModel.occlusionMesh = &component;
+			
+			// add vertices to TBO in mesh order
+			const deoglROcclusionMesh::sVertex * const vertices = occMesh.GetVertices();
+			const int vertexCount = occMesh.GetVertexCount();
+			int i;
+			
+			for( i=0; i<vertexCount; i++ ){
+				pTBOVertex.AddVec4( vertices[ i ].position, 0.0f );
+			}
+			
+			// add faces to TBOs using primitive mapping from BVH
+			const unsigned short * const corners = occMesh.GetCorners();
+			const int singleSidedFaceCount = occMesh.GetSingleSidedFaceCount();
+			const deoglBVH &bvh = *occMesh.GetBVH();
+			const int * const primitives = bvh.GetPrimitives();
+			const int primitiveCount = bvh.GetPrimitiveCount();
+			
+			for( i=0; i<primitiveCount; i++ ){
+				const int face = primitives[ i ];
+				const unsigned short * const fc = corners + face * 3;
+				
+				pTBOFace.AddVec4( bvhModel.indexVertices + fc[ 0 ], bvhModel.indexVertices + fc[ 1 ],
+					bvhModel.indexVertices + fc[ 2 ], face < singleSidedFaceCount ? 0.0 : 1.0 );
+			}
+			
+			pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+		}
+	}
+	
+	// add component
+	pAddComponent( indexModel, 0, matrix );
+}
+
 void deoglGIBVH::BuildBVH(){
 	// build instance bvh
 	if( pComponentCount > pPrimitiveSize ){
@@ -300,6 +425,14 @@ void deoglGIBVH::BuildBVH(){
 				
 			}else{
 				rootNode = model.component->GetBVH()->GetRootNode();
+			}
+			
+		}else if( model.occlusionMesh != NULL ){
+			if( model.occlusionMesh->GetDynamicOcclusionMesh() ){
+				rootNode = model.occlusionMesh->GetDynamicOcclusionMesh()->GetBVH()->GetRootNode();
+				
+			}else{
+				rootNode = model.occlusionMesh->GetOcclusionMesh()->GetBVH()->GetRootNode();
 			}
 			
 		}else{
@@ -378,6 +511,8 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 		const char * filename = "-";
 		if( pModels[i].component != NULL ){
 			filename = pModels[i].component->GetComponent().GetModel()->GetFilename();
+		}else if( pModels[i].occlusionMesh != NULL ){
+			filename = pModels[i].occlusionMesh->GetOcclusionMesh()->GetFilename();
 		}
 		logger.LogInfoFormat("- %d: indexNodes=%d indexFaces=%d path=%s", i,
 			pModels[i].indexNodes, pModels[i].indexFaces,filename );
@@ -458,6 +593,7 @@ deoglGIBVH::sModel &deoglGIBVH::pAddModel(){
 	
 	sModel &model = pModels[ pModelCount++ ];
 	model.component = NULL;
+	model.occlusionMesh = NULL;
 	model.indexVertices = pTBOVertex.GetPixelCount();
 	model.indexFaces = pTBOFace.GetPixelCount();
 	model.indexNodes = pTBOIndex.GetPixelCount();

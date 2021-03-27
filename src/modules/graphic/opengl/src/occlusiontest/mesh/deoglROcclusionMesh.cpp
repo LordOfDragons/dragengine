@@ -149,19 +149,12 @@ void deoglROcclusionMesh::PrepareBVH(){
 	}
 	
 	try{
+		// occlusion meshes usually have lower face counts than models. testing different
+		// max depth values resulted in 6-8 showing best performance, above 8 somewhat
+		// worse performance and below 6 more worse performance. using 6 max depth now
+		// since this seems to be the best overall choice
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, faceCount, 4 );
-		
-		/*
-		some measured timings from processing a bunch of occlusion meshes:
-		12 => 2065ys
-		8 => 2031ys
-		4 => 1965ys
-		1 => 2612ys
-		
-		using 4 here since it seems to be the fastest. but up to 8 seems fine too.
-		maybe this can be changed on a per-mesh basis if required.
-		*/
+		pBVH->Build( primitives, faceCount, 6 );
 		
 	}catch( const deException & ){
 		if( pBVH ){

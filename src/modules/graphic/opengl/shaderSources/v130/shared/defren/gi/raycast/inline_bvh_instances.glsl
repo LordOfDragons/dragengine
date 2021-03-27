@@ -42,18 +42,21 @@
 					meshResult.distance /= length( meshRayDirection );
 					
 					if( meshResult.distance < result.distance ){
-						// transform hit normal back. this requires the following matrix:
-						//    matNor = transpose( inverse( mat3( matrix ) ) )
-						// we have invMatrix which is inverse(matrix) but without transpose.
-						// so invMatrix is actually equal to transpose(inverse(matrix)).
-						// this is neat since now mat3(invMatrix) is actually matNor.
-						// since the transpose cancelled out it is not required to reverse
-						// the operation order to get the transpose
-						result.barycentric = meshResult.barycentric;
+						#ifndef GI_RAYCAST_DISTANCE_ONLY
+							// transform hit normal back. this requires the following matrix:
+							//    matNor = transpose( inverse( mat3( matrix ) ) )
+							// we have invMatrix which is inverse(matrix) but without transpose.
+							// so invMatrix is actually equal to transpose(inverse(matrix)).
+							// this is neat since now mat3(invMatrix) is actually matNor.
+							// since the transpose cancelled out it is not required to reverse
+							// the operation order to get the transpose
+							result.barycentric = meshResult.barycentric;
+							result.face = meshResult.face;
+							result.material = meshResult.material;
+							result.normal = normalize( mat3( invMatrix ) * meshResult.normal );
+						#endif
+						
 						result.distance = meshResult.distance;
-						result.face = meshResult.face;
-						result.material = meshResult.material;
-						result.normal = normalize( mat3( invMatrix ) * meshResult.normal );
 						hasHit = true;
 					}
 				}

@@ -772,6 +772,12 @@ void deoglModelLOD::PrepareBVH(){
 	}
 	
 	try{
+		// models have variable face count. the highest lod level typically used for ray tracing
+		// should have low face count. if models are not optimized this can result in higher
+		// face counts which is bad for performance. in tests a max depth of 12 (more can not
+		// be used in shader ray tracing) seems to be the best solution. if low face count can
+		// be guaranteed (for example auto-decimation) then lower max depth can be better.
+		// occlusion meshes use 6 here
 		pBVH = new deoglBVH;
 		pBVH->Build( primitives, pFaceCount, 12 );
 		

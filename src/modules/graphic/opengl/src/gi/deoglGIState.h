@@ -35,6 +35,7 @@
 class deoglRenderThread;
 class deoglRComponent;
 class deoglRWorld;
+class deoglSPBlockUBO;
 
 
 /**
@@ -109,6 +110,8 @@ private:
 	float pUpdateProbeInterval;
 	sProbe **pUpdateProbes;
 	int pUpdateProbeCount;
+	sProbe **pRayLimitProbes;
+	int pRayLimitProbeCount;
 	
 	sProbe **pWeightedProbes;
 	int pWeightedProbeBinSize;
@@ -259,6 +262,9 @@ public:
 	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
+	/** Count of probes to ray limit update. */
+	inline int GetRayLimitProbeCount() const{ return pRayLimitProbeCount; }
+	
 	
 	
 	/** Irradiance probe texture. */
@@ -288,6 +294,9 @@ public:
 	
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
+	
+	/** Prepare UBO state for ray limit rendering. */
+	void PrepareUBOStateRayLimit() const;
 	
 	/** Invalid all probes. */
 	void Invalidate();
@@ -323,7 +332,9 @@ private:
 	void pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY);
 	void pBinWeightedProbe( sProbe *probe, float weight );
 	void pAddUpdateProbe( sProbe *probe );
+	void pPrepareRayLimitProbes();
 	void pPrepareProbeTexturesAndFBO();
+	void pPrepareUBOShared( deoglSPBlockUBO &ubo ) const;
 };
 
 #endif

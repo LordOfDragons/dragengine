@@ -916,7 +916,7 @@ void deoglRComponentLOD::PrepareBVH(){
 		if( ! pBVH ){
 			pBVH = new deoglBVH;
 		}
-		pBVH->Build( primitives, faceCount, 8 );
+		pBVH->Build( primitives, faceCount, 12 );
 		
 	}catch( const deException & ){
 		if( pBVH ){

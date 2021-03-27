@@ -32,6 +32,7 @@
 
 class deoglRenderThread;
 class deoglRenderPlan;
+class deoglRComponent;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRWorld;
@@ -161,6 +162,7 @@ private:
 	/** Model. */
 	struct sModel{
 		deoglRComponentLOD *component;
+		deoglRComponent *occlusionMesh;
 		int indexNodes;
 		int indexFaces;
 		int indexVertices;
@@ -264,6 +266,15 @@ public:
 	
 	/** Add component. */
 	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
+	
+	/** Add occlusion meshes. */
+	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
+	
+	/** \brief Add occlusion meshes. */
+	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
+	
+	/** Add occlusion mesh. */
+	void AddOcclusionMesh( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponent &component );
 	
 	/** Build BVH. */
 	void BuildBVH();

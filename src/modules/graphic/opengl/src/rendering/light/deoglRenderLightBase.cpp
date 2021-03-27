@@ -211,7 +211,7 @@ void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	deoglGITraceRays &giTraceRays = renderThread.GetGI().GetTraceRays();
-	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBORayLight() );
+	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBOLight() );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );

@@ -39,7 +39,7 @@
 
 deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
-pRaysPerProbe( 64 ),
+pRaysPerProbe( 256 ),
 pProbesPerLine( 8 ),
 pProbeCount( 2048 ), // 2048 would be the maximum in UBO size
 pTexPosition( renderThread ),
@@ -48,6 +48,7 @@ pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
 pFBOResult( renderThread, false ),
+pFBODistance( renderThread, false ),
 pFBOLight( renderThread, false )
 {
 	try{
@@ -83,7 +84,6 @@ void deoglGITraceRays::pCreateFBORay(){
 	// 
 	// position, normal and light: (36M, 9M) [35651584, 8912896]
 	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
-	// material and texcoord: (12M, 3M) [12582912, 3145728]
 	// 
 	// total: (63M, 16M) [62914560, 15728640]
 	// 
@@ -123,6 +123,12 @@ void deoglGITraceRays::pCreateFBORay(){
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOResult.Verify();
+	
+	pRenderThread.GetFramebuffer().Activate( &pFBODistance );
+	pFBODistance.AttachColorTexture( 0, &pTexPosition );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBODistance.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOLight );
 	pFBOLight.AttachColorTexture( 0, &pTexLight );

@@ -6,15 +6,24 @@ precision highp int;
 
 #include "v130/shared/octahedral.glsl"
 
+// if GI_RAYCAST_DISTANCE_ONLY is used for occlusion mesh only material casting is not required
 #include "v130/shared/defren/gi/raycast/sample_material.glsl"
+
 #include "v130/shared/defren/gi/raycast/trace_ray.glsl"
 
 
-out vec4 outPosition;
-out vec3 outNormal;
-out vec3 outDiffuse;
-out vec4 outReflectivity;
-out vec3 outLight;
+#ifdef GI_RAYCAST_DISTANCE_ONLY
+	// redirecting name to reuse the same texture
+	out float outPosition;
+	#define outDistance outPosition
+	
+#else
+	out vec4 outPosition;
+	out vec3 outNormal;
+	out vec3 outDiffuse;
+	out vec4 outReflectivity;
+	out vec3 outLight;
+#endif
 
 
 const float STEP_BACK_DISTANCE = 0.01;
@@ -67,28 +76,39 @@ void main( void ){
 		vec3 pp = vec3(0,0,-1*(tc.x/512));
 		
 		GIRayCastResult result;
-		if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
-			outPosition = vec4( pp, result.distance );
-			outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
-			outNormal = result.normal;
+		
+		#ifdef GI_RAYCAST_DISTANCE_ONLY
+			if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
+				outDistance = result.distance;
+				
+			}else{
+				outDistance = 10000.0;
+			}
 			
-			vec3 matDiffuse, matReflectivity, matEmissivity;
-			float matRoughness;
-			
-			giRayCastMaterialAll( result.material, rayCastFaceTexCoord( result.face, result.barycentric ),
-				matDiffuse, matReflectivity, matRoughness, matEmissivity );
-			
-			outDiffuse = matDiffuse;
-			outReflectivity = vec4( matReflectivity, matRoughness );
-			outLight = vec3( matEmissivity );
-			
-		}else{
-			outPosition = vec4( pp, 10000.0 );
-			outNormal = vec3( 0.0, 0.0, 1.0 );
-			outDiffuse = vec3( 1.0, 1.0, 1.0 );
-			outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
-			outLight = vec3( 0.0 );
-		}
+		#else
+			if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
+				outPosition = vec4( pp, result.distance );
+				outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
+				outNormal = result.normal;
+				
+				vec3 matDiffuse, matReflectivity, matEmissivity;
+				float matRoughness;
+				
+				giRayCastMaterialAll( result.material, giRayCastFaceTexCoord( result.face, result.barycentric ),
+					matDiffuse, matReflectivity, matRoughness, matEmissivity );
+				
+				outDiffuse = matDiffuse;
+				outReflectivity = vec4( matReflectivity, matRoughness );
+				outLight = vec3( matEmissivity );
+				
+			}else{
+				outPosition = vec4( pp, 10000.0 );
+				outNormal = vec3( 0.0, 0.0, 1.0 );
+				outDiffuse = vec3( 1.0, 1.0, 1.0 );
+				outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
+				outLight = vec3( 0.0 );
+			}
+		#endif
 		return;
 	}
 	#endif
@@ -108,33 +128,44 @@ void main( void ){
 	// trace ray
 	vec3 direction = pGIRayDirection[ tc.x - firstRayOffset ];
 	GIRayCastResult result;
-	if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
-			position, direction, giRayCastNoHitDistance, result ) ){
-		outPosition.xyz = position + direction * result.distance;
-		outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
-		
-		outPosition.w = length( outPosition.xyz - position );
-		outNormal = result.normal;
-		
-		vec3 matDiffuse, matReflectivity, matEmissivity;
-		float matRoughness;
-		
-		giRayCastMaterialAll( result.material, giRayCastFaceTexCoord( result.face, result.barycentric ),
-			matDiffuse, matReflectivity, matRoughness, matEmissivity );
-		
-		outDiffuse = matDiffuse;
-		outReflectivity = vec4( matReflectivity, matRoughness );
-		outLight = vec3( matEmissivity );
-		
-	}else{
-		// we can not store simply the position here since later code calculates the
-		// ray direction using this hit point. anything can go here in the end
-		outPosition = vec4( position + direction, 10000.0 );
-		outNormal = vec3( 0.0, 0.0, 1.0 );
-		outDiffuse = vec3( 1.0, 1.0, 1.0 );
-		outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
-		outLight = vec3( 0.0 );
-	}
 	
+	#ifdef GI_RAYCAST_DISTANCE_ONLY
+		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
+				position, direction, giRayCastNoHitDistance, result ) ){
+			outDistance = result.distance;
+			
+		}else{
+			outDistance = 10000.0;
+		}
+		
+	#else
+		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
+				position, direction, giRayCastNoHitDistance, result ) ){
+			outPosition.xyz = position + direction * result.distance;
+			outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
+			
+			outPosition.w = length( outPosition.xyz - position );
+			outNormal = result.normal;
+			
+			vec3 matDiffuse, matReflectivity, matEmissivity;
+			float matRoughness;
+			
+			giRayCastMaterialAll( result.material, giRayCastFaceTexCoord( result.face, result.barycentric ),
+				matDiffuse, matReflectivity, matRoughness, matEmissivity );
+			
+			outDiffuse = matDiffuse;
+			outReflectivity = vec4( matReflectivity, matRoughness );
+			outLight = vec3( matEmissivity );
+			
+		}else{
+			// we can not store simply the position here since later code calculates the
+			// ray direction using this hit point. anything can go here in the end
+			outPosition = vec4( position + direction, 10000.0 );
+			outNormal = vec3( 0.0, 0.0, 1.0 );
+			outDiffuse = vec3( 1.0, 1.0, 1.0 );
+			outReflectivity = vec4( 0.0, 0.0, 0.0, 1.0 );
+			outLight = vec3( 0.0 );
+		}
+	#endif
 	//gl_FragDepth = min( outPosition.w / 1000.0, 1.0 );
 }

@@ -49,6 +49,7 @@ private:
 	deoglTexture pTexReflectivity;
 	deoglTexture pTexLight;
 	deoglFramebuffer pFBOResult;
+	deoglFramebuffer pFBODistance;
 	deoglFramebuffer pFBOLight;
 	
 	
@@ -81,7 +82,7 @@ public:
 	
 	
 	
-	/** Position texture. */
+	/** Position texture (also used for distance using a component only). */
 	inline deoglTexture &GetTexturePosition(){ return pTexPosition; }
 	
 	/** Normal texture. */
@@ -96,11 +97,14 @@ public:
 	/** Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }
 	
-	/** Ray tracing result FBO. */
-	inline deoglFramebuffer &GetFBORayResult(){ return pFBOResult; }
+	/** Result FBO. */
+	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
 	
-	/** Ray light FBO. */
-	inline deoglFramebuffer &GetFBORayLight(){ return pFBOLight; }
+	/** Distance FBO. */
+	inline deoglFramebuffer &GetFBODistance(){ return pFBODistance; }
+	
+	/** Light FBO. */
+	inline deoglFramebuffer &GetFBOLight(){ return pFBOLight; }
 	/*@}*/
 	
 	

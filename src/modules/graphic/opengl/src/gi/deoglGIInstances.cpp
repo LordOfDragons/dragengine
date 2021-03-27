@@ -212,7 +212,7 @@ bool deoglGIInstances::AddOcclusionMeshes( deoglCollideList &list ){
 					}
 				}
 				const decDVector p( component.GetMatrix().GetPosition() );
-				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddOcclusionMeshe: %d (%g,%g,%g) occmesh=%s",
+				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
 					index, p.x, p.y, p.z, component.GetOcclusionMesh() ? component.GetOcclusionMesh()->GetFilename().GetString() : "-" );
 			}
 		}

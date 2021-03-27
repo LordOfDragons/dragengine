@@ -23,13 +23,9 @@
 #define _DEOGLGIRAYS_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../texture/deoglRenderbuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-#include <dragengine/deObjectReference.h>
-
 class deoglRenderThread;
-class deoglSPBlockUBO;
 
 
 /**
@@ -44,16 +40,8 @@ private:
 	int pProbeCount;
 	decVector2 pRayMapScale;
 	
-	deoglTexture pTexPosition;
-	deoglTexture pTexNormal;
-	deoglTexture pTexMaterial;
-	deoglTexture pTexTexCoord;
-	deoglTexture pTexDiffuse;
-	deoglTexture pTexReflectivity;
-	deoglTexture pTexLight;
-	deoglFramebuffer pFBOResult;
-	deoglFramebuffer pFBOMaterial;
-	deoglFramebuffer pFBOLight;
+	deoglTexture pTexDistanceLimit;
+	deoglFramebuffer pFBODistanceLimit;
 	
 	
 	
@@ -94,35 +82,11 @@ public:
 	
 	
 	
-	/** Position texture. */
-	inline deoglTexture &GetTexturePosition(){ return pTexPosition; }
+	/** Distance limit texture. */
+	inline deoglTexture &GetTextureDistanceLimit(){ return pTexDistanceLimit; }
 	
-	/** Normal texture. */
-	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
-	
-	/** Material texture. */
-	inline deoglTexture &GetTextureMaterial(){ return pTexMaterial; }
-	
-	/** Texture coordinate texture. */
-	inline deoglTexture &GetTextureTexCoord(){ return pTexTexCoord; }
-	
-	/** Diffuse/TintMask texture. */
-	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
-	
-	/** Reflectivity/Roughness texture. */
-	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
-	
-	/** Light texture. */
-	inline deoglTexture &GetTextureLight(){ return pTexLight; }
-	
-	/** Result FBO. */
-	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
-	
-	/** Material FBO. */
-	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }
-	
-	/** Light FBO. */
-	inline deoglFramebuffer &GetFBOLight(){ return pFBOLight; }
+	/** Distance limit FBO. */
+	inline deoglFramebuffer &GetFBODistanceLimit(){ return pFBODistanceLimit; }
 	/*@}*/
 	
 	
