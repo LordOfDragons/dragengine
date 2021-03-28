@@ -277,6 +277,11 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 	pDisableExtension[ extension ] = true;
 	
 	switch( extension ){
+	case ext_ARB_compute_shader:
+		pglDispatchCompute = NULL;
+		pglDispatchComputeIndirect = NULL;
+		break;
+		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
 		break;
@@ -925,15 +930,25 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
-	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p1 ){
-		pHasExtension[ ext_ARB_shader_storage_buffer_object ] = ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
-	}
+	pHasExtension[ ext_ARB_shader_storage_buffer_object ] &= ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
 	if( pHasExtension[ ext_ARB_shader_storage_buffer_object ] ){
 		#ifdef ANDROID
 		pglShaderStorageBlockBinding = eglShaderStorageBlockBinding;
 		#else
 		pGetOptionalFunction( (void**)&pglShaderStorageBlockBinding,
 			"glShaderStorageBlockBinding", ext_ARB_shader_storage_buffer_object );
+		#endif
+	}
+	
+	// GL_ARB_compute_shader : opengl version 4.3
+	pHasExtension[ ext_ARB_compute_shader ] &= ! pDisableExtension[ ext_ARB_compute_shader ];
+	if( pHasExtension[ ext_ARB_compute_shader ] ){
+		#ifdef ANDROID
+		pglDispatchCompute = eglDispatchCompute;
+		pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+		#else
+		pGetOptionalFunction( (void**)&pglDispatchCompute, "glDispatchCompute", ext_ARB_compute_shader );
+		pGetOptionalFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect", ext_ARB_compute_shader );
 		#endif
 	}
 	

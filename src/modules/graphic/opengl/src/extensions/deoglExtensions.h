@@ -315,6 +315,7 @@ public:
 		ext_ARB_clip_control,
 		ext_ARB_shader_storage_buffer_object,
 		ext_ARB_shader_image_load_store,
+		ext_ARB_compute_shader,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

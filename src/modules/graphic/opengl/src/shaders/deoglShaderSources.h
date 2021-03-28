@@ -34,7 +34,6 @@ class decXmlElementTag;
 
 
 /**
- * @brief Shader Source Code.
  * Stores the source code of a shader program. Typically this is a vertex program source
  * code and a fragment program source code. The Name is used to reference shader sources.
  */
@@ -45,6 +44,7 @@ private:
 	
 	decString pVersion;
 	
+	decString pPathSCCompute;
 	decString pPathSCTessellationControl;
 	decString pPathSCTessellationEvaluation;
 	decString pPathSCGeometry;
@@ -96,11 +96,11 @@ public:
 	inline deoglShaderBindingList &GetOutputList(){ return pOutputList; }
 	inline const deoglShaderBindingList &GetOutputList() const{ return pOutputList; }
 	
-	/** \brief Uniform block binding list. */
+	/** Uniform block binding list. */
 	inline deoglShaderBindingList &GetUniformBlockList(){ return pUniformBlockList; }
 	inline const deoglShaderBindingList &GetUniformBlockList() const{ return pUniformBlockList; }
 	
-	/** \brief Shader storage block binding list. */
+	/** Shader storage block binding list. */
 	inline deoglShaderBindingList &GetShaderStorageBlockList(){ return pShaderStorageBlockList; }
 	inline const deoglShaderBindingList &GetShaderStorageBlockList() const{ return pShaderStorageBlockList; }
 	
@@ -111,13 +111,21 @@ public:
 	inline decStringList &GetFeedbackList(){ return pFeedbackList; }
 	inline const decStringList &GetFeedbackList() const{ return pFeedbackList; }
 	
-	/** \brief Retrieves the path to the tessellation control unit source code file or an empty string if not used. */
+	/** Path to compute unit source code file or empty string. */
+	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }
+	
+	/** Set path to compute unit source code file or empty string. */
+	void SetPathComputeSourceCode( const char *path );
+	
+	/** Retrieves the path to the tessellation control unit source code file or an empty string if not used. */
 	inline const decString &GetPathTessellationControlSourceCode() const{ return pPathSCTessellationControl; }
-	/** \brief Sets the path to the tessellation control unit source code file or an empty string if not used. */
+	
+	/** Sets the path to the tessellation control unit source code file or an empty string if not used. */
 	void SetPathTessellationControlSourceCode( const char *path );
-	/** \brief Retrieves the path to the tessellation evaluation unit source code file or an empty string if not used. */
+	
+	/** Retrieves the path to the tessellation evaluation unit source code file or an empty string if not used. */
 	inline const decString &GetPathTessellationEvaluationSourceCode() const{ return pPathSCTessellationEvaluation; }
-	/** \brief Sets the path to the tessellation evaluation unit source code file or an empty string if not used. */
+	/** Sets the path to the tessellation evaluation unit source code file or an empty string if not used. */
 	void SetPathTessellationEvaluationSourceCode( const char *path );
 	/** Retrieves the path to the geometry unit source code file or an empty string if not used. */
 	inline const decString &GetPathGeometrySourceCode() const{ return pPathSCGeometry; }

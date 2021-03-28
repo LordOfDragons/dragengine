@@ -41,6 +41,7 @@ private:
 	deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
 	
+	deoglShaderUnitSourceCode *pSCCompute;
 	deoglShaderUnitSourceCode *pSCTessellationControl;
 	deoglShaderUnitSourceCode *pSCTessellationEvaluation;
 	deoglShaderUnitSourceCode *pSCGeometry;
@@ -72,13 +73,21 @@ public:
 	/** Retrieves the defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
 	
-	/** \brief Retrieves the tessellation control source code or NULL if not used. */
+	/** Compute source code or NULL. */
+	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
+	
+	/** Set compute source code or NULL. */
+	void SetComputeCode( deoglShaderUnitSourceCode *sourceCode );
+	
+	/** Retrieves the tessellation control source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationControlSourceCode() const{ return pSCTessellationControl; }
-	/** \brief Sets the tessellation control source code or NULL if not used. */
+	
+	/** Sets the tessellation control source code or NULL if not used. */
 	void SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode );
-	/** \brief Retrieves the tessellation evaluation source code or NULL if not used. */
+	
+	/** Retrieves the tessellation evaluation source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationEvaluationSourceCode() const{ return pSCTessellationEvaluation; }
-	/** \brief Sets the tessellation evaluation source code or NULL if not used. */
+	/** Sets the tessellation evaluation source code or NULL if not used. */
 	void SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	/** Retrieves the geometry source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetGeometrySourceCode() const{ return pSCGeometry; }

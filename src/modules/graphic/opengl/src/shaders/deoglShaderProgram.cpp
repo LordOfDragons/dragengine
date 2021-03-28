@@ -41,6 +41,7 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -61,6 +62,7 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deogl
 		DETHROW( deeInvalidParam );
 	}
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -88,6 +90,10 @@ deoglShaderProgram::~deoglShaderProgram(){
 
 // Management
 ///////////////
+
+void deoglShaderProgram::SetComputeCode( deoglShaderUnitSourceCode *sourceCode ){
+	pSCCompute = sourceCode;
+}
 
 void deoglShaderProgram::SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCTessellationControl = sourceCode;

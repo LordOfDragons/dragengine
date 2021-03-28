@@ -685,6 +685,13 @@ extern GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC pglShaderStorageBlockBinding;
 
 
 
+// GL_ARB_compute_shader : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLDISPATCHCOMPUTEPROC pglDispatchCompute;
+extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
+
+
 
 // GL_ARB_clip_control : opengl version 4.5
 /////////////////////////////////////////////

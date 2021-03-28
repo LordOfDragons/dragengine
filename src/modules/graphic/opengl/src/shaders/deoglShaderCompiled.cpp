@@ -39,6 +39,7 @@
 deoglShaderCompiled::deoglShaderCompiled( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread )
 {
+	pHandleC = 0;
 	pHandleTCP = 0;
 	pHandleTEP = 0;
 	pHandleGP = 0;
@@ -78,6 +79,9 @@ deoglShaderCompiled::~deoglShaderCompiled(){
 	if( pHandleTCP ){
 		pglDeleteShader( pHandleTCP );
 	}
+	if( pHandleC ){
+		pglDeleteShader( pHandleC );
+	}
 }
 
 
@@ -87,6 +91,15 @@ deoglShaderCompiled::~deoglShaderCompiled(){
 
 void deoglShaderCompiled::Activate(){
 	OGL_CHECK( pRenderThread, pglUseProgram( pHandleShader ) );
+}
+
+void deoglShaderCompiled::CreateComputeProgram(){
+	if( ! pHandleC ){
+		pHandleC = pglCreateShader( GL_COMPUTE_SHADER );
+		if( ! pHandleC ){
+			DETHROW( deeOutOfMemory );
+		}
+	}
 }
 
 void deoglShaderCompiled::CreateTessellationControlProgram(){

@@ -41,6 +41,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	GLuint pHandleShader;
+	GLuint pHandleC;
 	GLuint pHandleTCP;
 	GLuint pHandleTEP;
 	GLuint pHandleGP;
@@ -61,15 +62,19 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Activates the program. */
 	void Activate();
 	
-	/** \brief Create tessellation control program if not existing. */
+	/** Create compute program if not existing. */
+	void CreateComputeProgram();
+	
+	/** Create tessellation control program if not existing. */
 	void CreateTessellationControlProgram();
-	/** \brief Create tessellation evaluation program if not existing. */
+	
+	/** Create tessellation evaluation program if not existing. */
 	void CreateTessellationEvaluationProgram();
 	/** Create geometry program if not existing. */
 	void CreateGeometryProgram();
@@ -78,11 +83,16 @@ public:
 	/** Create fragment program if not existing. */
 	void CreateFragmentProgram();
 	
-	/** \Retrieves the shader handle. */
+	/** Retrieves the shader handle. */
 	inline GLuint GetHandleShader() const{ return pHandleShader; }
-	/** \brief Retrieves the tessellation control program object handle. */
+	
+	/** Compute program object handle. */
+	inline GLuint GetHandleC() const{ return pHandleC; }
+	
+	/** Retrieves the tessellation control program object handle. */
 	inline GLuint GetHandleTCP() const{ return pHandleTCP; }
-	/** \brief Retrieves the tessellation evaluation program object handle. */
+	
+	/** Retrieves the tessellation evaluation program object handle. */
 	inline GLuint GetHandleTEP() const{ return pHandleTEP; }
 	/** Retrieves the geometry program object handle. */
 	inline GLuint GetHandleGP() const{ return pHandleGP; }
@@ -90,7 +100,7 @@ public:
 	inline GLuint GetHandleVP() const{ return pHandleVP; }
 	/** Retrieves the fragment program object handle. */
 	inline GLuint GetHandleFP() const{ return pHandleFP; }
-	/** \brief Determines if the shader has tessellation. */
+	/** Determines if the shader has tessellation. */
 	bool GetHasTessellation() const;
 	/*@}*/
 	
@@ -166,7 +176,7 @@ public:
 	void SetParameterTexMatrix3x2( int index, const decTexMatrix2 &matrix );
 	
 	/**
-	 * \brief Set color matrix parameters.
+	 * Set color matrix parameters.
 	 * \details The left most 4x4 part is set to the first parameter and the
 	 *          right most colon to the second parameter.
 	 */

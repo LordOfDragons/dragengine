@@ -289,6 +289,7 @@ deoglShaderLanguage::~deoglShaderLanguage(){
 
 deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &program ){
 	const deoglShaderSources &sources = *program.GetSources();
+	deoglShaderUnitSourceCode * const scCompute = program.GetComputeSourceCode();
 	deoglShaderUnitSourceCode * const scTessellationControl = program.GetTessellationControlSourceCode();
 	deoglShaderUnitSourceCode * const scTessellationEvaluation = program.GetTessellationEvaluationSourceCode();
 	deoglShaderUnitSourceCode * const scGeometry = program.GetGeometrySourceCode();
@@ -305,6 +306,7 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	const decStringList &parameterList = sources.GetParameterList();
 	const decStringList &feedbackList = sources.GetFeedbackList();
 	GLuint handleShader = 0;
+	GLuint handleC = 0;
 	GLuint handleTCP = 0;
 	GLuint handleTEP = 0;
 	GLuint handleGP = 0;
@@ -315,6 +317,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	
 	#ifdef PRINT_COMPILING
 	decString debugText( "compiling " );
+	if( scCompute ){
+		debugText.AppendFormat( " comp(%s)", scCompute->GetFilePath() );
+	}
 	if( scTessellationControl ){
 		debugText.AppendFormat( " tc(%s)", scTessellationControl->GetFilePath() );
 	}
@@ -348,6 +353,39 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		
 		// retrieve the shader handle
 		handleShader = compiled->GetHandleShader();
+		
+		// compile compute program if existing
+		if( scCompute ){
+			compiled->CreateComputeProgram();
+			handleC = compiled->GetHandleC();
+			if( ! handleC ){
+				DETHROW( deeInvalidAction );
+			}
+			
+			pPreparePreprocessor( program.GetDefines() );
+			
+			if( scCompute ){
+				pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
+			}
+			
+			if( ! pCompileObject( handleC ) ){
+				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
+				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				
+				if( scCompute ){
+					pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
+				}
+				
+				if( pErrorLog ){
+					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
+				}
+				//pOutputShaderToFile( "failed_compute" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
+				DETHROW( deeInvalidParam );
+			}
+			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleC ) );
+		}
 		
 		// compile the tessellation control program if existing
 		if( scTessellationControl ){
@@ -637,6 +675,10 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		#endif
 		if( ! pLinkShader( handleShader ) ){
 			pRenderThread.GetLogger().LogErrorFormat( "Shader linking failed (%s):", sources.GetFilename().GetString() );
+			
+			if( scCompute ){
+				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
+			}
 			
 			if( scTessellationControl ){
 				pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
