@@ -11,9 +11,13 @@ precision highp int;
 
 #include "v130/shared/defren/gi/raycast/trace_ray.glsl"
 
+#ifdef GI_USE_RAY_LIMIT
+	#include "v130/shared/defren/gi/raycast/distance_limit.glsl"
+#endif
+
 
 #ifdef GI_RAYCAST_DISTANCE_ONLY
-	// redirecting name to reuse the same texture
+	// redirecting name to reuse the same shader definition
 	out float outPosition;
 	#define outDistance outPosition
 	
@@ -117,16 +121,17 @@ void main( void ){
 	// calculate probe position and index from offset. the quad covers an entire block
 	// of probes including not used ones at the end. skip those
 	int rowProbeIndex = tc.x / pGIRaysPerProbe;
-	int probeIndex = pGIProbesPerLine * tc.y + rowProbeIndex;
-	if( probeIndex >= pGIProbeCount ){
+	int instanceID = pGIProbesPerLine * tc.y + rowProbeIndex;
+	if( instanceID >= pGIProbeCount ){
 		discard;
 	}
 	
 	int firstRayOffset = pGIRaysPerProbe * rowProbeIndex;
-	vec3 position = pGIProbePosition[ probeIndex ].xyz;
+	vec3 position = pGIProbePosition[ instanceID ].xyz;
 	
 	// trace ray
-	vec3 direction = pGIRayDirection[ tc.x - firstRayOffset ];
+	int rayIndex = tc.x - firstRayOffset;
+	vec3 direction = pGIRayDirection[ rayIndex ];
 	GIRayCastResult result;
 	
 	#ifdef GI_RAYCAST_DISTANCE_ONLY
@@ -139,8 +144,14 @@ void main( void ){
 		}
 		
 	#else
-		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
-				position, direction, giRayCastNoHitDistance, result ) ){
+		#ifdef GI_USE_RAY_LIMIT
+			float distLimit = giRayCastDistanceLimit( instanceID, rayIndex ) + 0.1;
+		#else
+			float distLimit = giRayCastNoHitDistance;
+		#endif
+		
+		if( pGIBVHInstanceRootNode != -1
+		&& giRayCastTraceInstance( pGIBVHInstanceRootNode, position, direction, distLimit, result ) ){
 			outPosition.xyz = position + direction * result.distance;
 			outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
 			

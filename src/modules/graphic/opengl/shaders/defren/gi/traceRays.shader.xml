@@ -16,6 +16,7 @@
 	<texture name='tboGIRayCastMaterialDiffuse' target='9'/>
 	<texture name='tboGIRayCastMaterialReflectivity' target='10'/>
 	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
+	<texture name='texGIRayCastDistanceLimit' target='12'/>
 	
 	<uniformBlock name='GIParameters' target='0'/>
 	

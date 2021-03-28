@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Copy Ray Limits</name>
+	
+	<version>130</version>
+	
+	<texture name='texDistance' target='0'/>
+	
+	<uniformBlock name='GIParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outDistanceLimit' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/copyRayLimits.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/copyRayLimits.glsl</sourceCode>
+</shader>

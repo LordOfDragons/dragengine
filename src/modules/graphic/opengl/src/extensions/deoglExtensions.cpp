@@ -135,6 +135,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_clip_control",
 	"GL_ARB_shader_storage_buffer_object",
 	"GL_ARB_shader_image_load_store",
+	"GL_ARB_compute_shader",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -167,7 +168,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback2",
 	"GL_NV_transform_feedback3",
 	
-	"GL_KHR_debug",
+	"GL_KHR_debug"
 };
 
 

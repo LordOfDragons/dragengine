@@ -125,6 +125,7 @@ deoglRenderLightBase( renderThread ),
 pShaderTraceRays( NULL ),
 pShaderTraceRaysDistance( NULL ),
 pShaderTraceRaysDistanceOccMesh( NULL ),
+pShaderCopyRayLimits( NULL ),
 pShaderUpdateRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
@@ -156,7 +157,11 @@ pAddToRenderTask( NULL )
 		#endif
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
+		#ifdef GI_USE_RAY_LIMIT
+			defines.AddDefine( "GI_USE_RAY_LIMIT", true );
+		#endif
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "GI_USE_RAY_LIMIT" );
 		
 		defines.AddDefine( "GI_RAYCAST_DISTANCE_ONLY", true );
 		pShaderTraceRaysDistance = shaderManager.GetProgramWith( sources, defines );
@@ -166,6 +171,9 @@ pAddToRenderTask( NULL )
 		defines.RemoveDefine( "GI_RAYCAST_OCCMESH_ONLY" );
 		
 		defines.RemoveDefine( "GI_RAYCAST_DISTANCE_ONLY" );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Ray Limits" );
+		pShaderCopyRayLimits = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Rays" );
 		pShaderUpdateRays = shaderManager.GetProgramWith( sources, defines );
@@ -301,6 +309,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	}
 	
 	
+#ifdef GI_USE_RAY_LIMIT
+	deoglGIRays &rays = giState->GetRays();
+	
 	// if any ray limit are invalid update them now and store the result aside
 	//if( giState->GetRayLimitProbeCount() > 0 ){
 		// prepare BVH and render task. we do not need the render task since we do not
@@ -333,16 +344,16 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		const GLfloat clearDistance[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
 		
+		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+		
+		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		
 		if( bvh.GetIndexRootNode() != -1 ){
 			// render only if BVH has nodes. if not clearing sets the right distance
-			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-			OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-			OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-			OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-			
-			OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-			
 			//renderThread.GetShader().ActivateShader( pShaderTraceRaysDistance );
 			renderThread.GetShader().ActivateShader( pShaderTraceRaysDistanceOccMesh );
 			gi.GetUBO().Activate();
@@ -366,10 +377,22 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		}
 		
-		// TODO update ray limit texture with result from temporary texture
+		// update ray limit texture with result from temporary texture
+		renderThread.GetFramebuffer().Activate( &rays.GetFBODistanceLimit() );
 		
+		const decPoint &distLimSize = rays.GetTextureDistanceLimit().GetSize();
+		OGL_CHECK( renderThread, glViewport( 0, 0, distLimSize.x, distLimSize.y ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, distLimSize.x, distLimSize.y ) );
+		
+		renderThread.GetShader().ActivateShader( pShaderCopyRayLimits );
+		gi.GetUBO().Activate();
+		
+		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 0 );
+		
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetRayLimitProbeCount() ) );
 	//}
-	
+#endif
 	
 	// prepare
 	pRenderTask->Clear();
@@ -435,12 +458,13 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2().GetTBO(), GetSamplerClampNearest() );
-	
 	tsmgr.EnableTexture( 9, materials.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 10, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 11, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
-	
-	tsmgr.DisableStagesAbove( 11 );
+	tsmgr.DisableStagesAbove( 12 );
+	#ifdef GI_USE_RAY_LIMIT
+		tsmgr.EnableTexture( 12, rays.GetTextureDistanceLimit(), GetSamplerClampNearest() );
+	#endif
 	
 	#ifdef GI_RENDERDOC_DEBUG
 		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
@@ -1033,6 +1057,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderTraceRaysDistanceOccMesh ){
 		pShaderTraceRaysDistanceOccMesh->RemoveUsage();
+	}
+	if( pShaderCopyRayLimits ){
+		pShaderCopyRayLimits->RemoveUsage();
 	}
 	if( pShaderUpdateRays ){
 		pShaderUpdateRays->RemoveUsage();

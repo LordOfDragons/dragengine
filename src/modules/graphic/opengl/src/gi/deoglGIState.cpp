@@ -111,7 +111,10 @@ pRays( renderThread, 64, pRealProbeCount )
 		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		pWeightedProbes = new sProbe*[ pRealProbeCount ];
 		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
-		pRayLimitProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+		
+		#ifdef GI_USE_RAY_LIMIT
+			pRayLimitProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+		#endif
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -284,7 +287,10 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
-	pPrepareRayLimitProbes();
+	
+	#ifdef GI_USE_RAY_LIMIT
+		pPrepareRayLimitProbes();
+	#endif
 	
 	// synchronize tracked instances using new position
 	pSyncTrackedInstances( world );
@@ -401,7 +407,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		const deoglPixelBuffer::sFloat3 &pixel = pixels[ stride * y + x ];
 		const decVector offset( pixel.r, pixel.g, pixel.b );
 		
-		if( offset.IsEqualTo( probe.offset, 0.05f ) ){ // 0.1f
+		if( offset.IsEqualTo( probe.offset, 0.05f ) ){
 			continue; // update offset only if it moved far enough to justify an expensive update
 		}
 		
@@ -459,8 +465,11 @@ void deoglGIState::pInvalidateAllRayLimits(){
 void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 	FindContent( world );
 	
-// 	FilterStaticComponents();
-	FilterStaticOcclusionMeshes();
+	#ifdef GI_USE_RAY_LIMIT
+		FilterStaticOcclusionMeshes();
+	#else
+// 		FilterStaticComponents();
+	#endif
 	
 	/*{
 		const int count = pCollideListFiltered.GetComponentCount();
@@ -475,15 +484,21 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 		}
 	}*/
 	
-	bool invalidateRayLimits = pInstances.AnyChanged();
-// 	invalidateRayLimits |= pInstances.RemoveComponents( pCollideListFiltered );
-// 	invalidateRayLimits |= pInstances.AddComponents( pCollideListFiltered );
-	invalidateRayLimits |= pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
-	invalidateRayLimits |= pInstances.AddOcclusionMeshes( pCollideListFiltered );
+	bool invalidateCaches = pInstances.AnyChanged();
+	#ifdef GI_USE_RAY_LIMIT
+		invalidateCaches |= pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
+		invalidateCaches |= pInstances.AddOcclusionMeshes( pCollideListFiltered );
+	#else
+// 		invalidateCaches |= pInstances.RemoveComponents( pCollideListFiltered );
+// 		invalidateCaches |= pInstances.AddComponents( pCollideListFiltered );
+	#endif
 	
-	if( invalidateRayLimits ){
+	if( invalidateCaches ){
 // 		pRenderThread.GetLogger().LogInfo( "GIState.TrackInstanceChanges: invalidate all ray limits" );
-		pInvalidateAllRayLimits();
+		#ifdef GI_USE_RAY_LIMIT
+			pInvalidateAllRayLimits();
+		#else
+		#endif
 	}
 	
 // 	pRenderThread.GetLogger().LogInfo( "pTrackInstanceChanges" );
@@ -493,13 +508,18 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 void deoglGIState::pSyncTrackedInstances( deoglRWorld &world ){
 	FindContent( world );
 	
-// 	FilterStaticComponents();
-	FilterStaticOcclusionMeshes();
-	
-// 	pInstances.RemoveComponents( pCollideListFiltered );
-// 	pInstances.AddComponents( pCollideListFiltered );
-	pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
-	pInstances.AddOcclusionMeshes( pCollideListFiltered );
+	#ifdef GI_USE_RAY_LIMIT
+		FilterStaticOcclusionMeshes();
+		
+		pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
+		pInstances.AddOcclusionMeshes( pCollideListFiltered );
+		
+	#else
+// 		FilterStaticComponents();
+// 		
+// 		pInstances.RemoveComponents( pCollideListFiltered );
+// 		pInstances.AddComponents( pCollideListFiltered );
+	#endif
 	
 	pInstances.ClearAllChanged();
 }

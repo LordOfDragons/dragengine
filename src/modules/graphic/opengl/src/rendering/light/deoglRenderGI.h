@@ -42,6 +42,7 @@ private:
 	deoglShaderProgram *pShaderTraceRays;
 	deoglShaderProgram *pShaderTraceRaysDistance;
 	deoglShaderProgram *pShaderTraceRaysDistanceOccMesh;
+	deoglShaderProgram *pShaderCopyRayLimits;
 	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;

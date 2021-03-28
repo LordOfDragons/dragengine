@@ -811,7 +811,7 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 }
 
 void deoglRenderPlan::pPlanGI(){
-#ifdef ENABLE_GI
+#ifdef GI_ENABLE
 	if( pUseConstGIState || ! pUseGIState ){
 		return;
 	}

@@ -110,36 +110,44 @@ void deoglGIRays::pCreateFBO(){
 	// distance limit: (4MB, 1MB) [4194304, 1048576]
 	// 
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	#ifdef GI_USE_RAY_LIMIT
+		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	#endif
 	
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = pProbeCount / pProbesPerLine;
 	
-	bool updateFBODistanceLimit = false;
+	#ifdef GI_USE_RAY_LIMIT
+		bool updateFBODistanceLimit = false;
+	#endif
 	
 	pRayMapScale.x = 1.0f / ( float )width;
 	pRayMapScale.y = 1.0f / ( float )height;
 	
 	// create/resize textures
-	if( ! pTexDistanceLimit.GetTexture() ){
-		pTexDistanceLimit.SetFBOFormat( 1, true );
-		updateFBODistanceLimit = true;
-	}
-	pTexDistanceLimit.SetSize( width, height );
-	pTexDistanceLimit.CreateTexture();
+	#ifdef GI_USE_RAY_LIMIT
+		if( ! pTexDistanceLimit.GetTexture() ){
+			pTexDistanceLimit.SetFBOFormat( 1, true );
+			updateFBODistanceLimit = true;
+		}
+		pTexDistanceLimit.SetSize( width, height );
+		pTexDistanceLimit.CreateTexture();
+	#endif
 	
 	// update framebuffer if required and clear textures
-	pRenderThread.GetFramebuffer().Activate( &pFBODistanceLimit );
-	
-	if( updateFBODistanceLimit ){
-		pFBODistanceLimit.AttachColorTexture( 0, &pTexDistanceLimit );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBODistanceLimit.Verify();
-	}
-	
-	const GLfloat clearDistanceLimit[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
-	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistanceLimit[ 0 ] ) );
+	#ifdef GI_USE_RAY_LIMIT
+		pRenderThread.GetFramebuffer().Activate( &pFBODistanceLimit );
+		
+		if( updateFBODistanceLimit ){
+			pFBODistanceLimit.AttachColorTexture( 0, &pTexDistanceLimit );
+			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+			OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+			pFBODistanceLimit.Verify();
+		}
+		
+		const GLfloat clearDistanceLimit[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistanceLimit[ 0 ] ) );
+	#endif
 	
 	// clean up
 	pRenderThread.GetFramebuffer().Activate( oldfbo );
