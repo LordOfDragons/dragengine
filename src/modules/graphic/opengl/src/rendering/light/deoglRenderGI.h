@@ -42,7 +42,10 @@ private:
 	deoglShaderProgram *pShaderTraceRays;
 	deoglShaderProgram *pShaderTraceRaysDistance;
 	deoglShaderProgram *pShaderTraceRaysDistanceOccMesh;
+	deoglShaderProgram *pShaderTraceRaysCache;
 	deoglShaderProgram *pShaderCopyRayLimits;
+	deoglShaderProgram *pShaderCopyRayCache;
+	deoglShaderProgram *pShaderCopyRayCacheRev;
 	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
@@ -127,6 +130,9 @@ public:
 private:
 	void pCleanUp();
 	void pCreateUBORenderLight();
+	void pSharedTraceRays( deoglRenderPlan &plan );
+	void pClearTraceRays();
+	void pInitTraceTextures();
 };
 
 #endif

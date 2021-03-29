@@ -145,18 +145,18 @@ bool deoglGIInstances::AddComponents( deoglCollideList &list ){
 			NextFreeSlot().SetComponent( &component );
 			anyAdded = true;
 			
-// 			{ // debug
-// 				int j, index = -1;
-// 				for( j=0; j<pInstances.GetCount(); j++ ){
-// 					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
-// 						index = j;
-// 						break;
-// 					}
-// 				}
-// 				const decDVector p( component.GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s",
-// 					index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-" );
-// 			}
+			/*{ // debug
+				int j, index = -1;
+				for( j=0; j<pInstances.GetCount(); j++ ){
+					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
+						index = j;
+						break;
+					}
+				}
+				const decDVector p( component.GetMatrix().GetPosition() );
+				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s",
+					index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-" );
+			}*/
 		}
 	}
 	
@@ -174,12 +174,12 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
 		if( instance.GetComponent() && instance.GetComponent()->GetMarked() ){
-// 			{ // debug
-// 				const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
-// 					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
-// 						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
-// 			}
+			/*{ // debug
+				const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
+				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
+					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
+						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
+			}*/
 			
 			instance.Clear();
 			anyRemoved = true;
@@ -203,18 +203,18 @@ bool deoglGIInstances::AddOcclusionMeshes( deoglCollideList &list ){
 			NextFreeSlot().SetOcclusionMesh( &component );
 			anyAdded = true;
 			
-			if( true ){ // debug
-				int j, index = -1;
-				for( j=0; j<pInstances.GetCount(); j++ ){
-					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetOcclusionMesh() == &component ){
-						index = j;
-						break;
-					}
-				}
-				const decDVector p( component.GetMatrix().GetPosition() );
-				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
-					index, p.x, p.y, p.z, component.GetOcclusionMesh() ? component.GetOcclusionMesh()->GetFilename().GetString() : "-" );
-			}
+// 			{ // debug
+// 				int j, index = -1;
+// 				for( j=0; j<pInstances.GetCount(); j++ ){
+// 					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetOcclusionMesh() == &component ){
+// 						index = j;
+// 						break;
+// 					}
+// 				}
+// 				const decDVector p( component.GetMatrix().GetPosition() );
+// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
+// 					index, p.x, p.y, p.z, component.GetOcclusionMesh() ? component.GetOcclusionMesh()->GetFilename().GetString() : "-" );
+// 			}
 		}
 	}
 	
@@ -232,12 +232,12 @@ bool deoglGIInstances::RemoveOcclusionMeshes( deoglCollideList &list ){
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
 		if( instance.GetOcclusionMesh() && instance.GetOcclusionMesh()->GetMarked() ){
-			if( true ){ // debug
-				const decDVector p( instance.GetOcclusionMesh()->GetMatrix().GetPosition() );
-				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
-					i, p.x, p.y, p.z, instance.GetOcclusionMesh()->GetOcclusionMesh()
-						? instance.GetOcclusionMesh()->GetOcclusionMesh()->GetFilename().GetString() : "-" );
-			}
+// 			{ // debug
+// 				const decDVector p( instance.GetOcclusionMesh()->GetMatrix().GetPosition() );
+// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
+// 					i, p.x, p.y, p.z, instance.GetOcclusionMesh()->GetOcclusionMesh()
+// 						? instance.GetOcclusionMesh()->GetOcclusionMesh()->GetFilename().GetString() : "-" );
+// 			}
 			
 			instance.Clear();
 			anyRemoved = true;

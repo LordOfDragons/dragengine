@@ -60,6 +60,10 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 	pInstance.SetChanged( true );
 }
 
+void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
+	pInstance.SetChanged( true );
+}
+
 
 
 // Class deoglGIInstance

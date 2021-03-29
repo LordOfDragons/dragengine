@@ -95,6 +95,7 @@ pDirtyBoneMatrices( true ),
 pDirtyLODErrorScaling( true ),
 pDirtyMesh( true ),
 pDirtySkinStateCalculatedProperties( true ),
+pDirtyStaticTexture( true ),
 
 pDynamicSkinRequiresSync( true ),
 pTextureDynamicSkinRequiresSync( true ),
@@ -296,6 +297,11 @@ void deoglComponent::SyncToRender(){
 		#endif
 	}
 	
+	if( pDirtyStaticTexture ){
+		pRComponent->UpdateStaticTextures();
+		pDirtyStaticTexture = false;
+	}
+	
 	// decals
 	pSyncDecals();
 }
@@ -354,11 +360,13 @@ deoglComponentTexture &deoglComponent::GetTextureAt( int index ){
 
 void deoglComponent::DynamicSkinRequiresSync(){
 	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
 	pRequiresSync();
 }
 
 void deoglComponent::TextureDynamicSkinRequiresSync(){
 	pTextureDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
 	pRequiresSync();
 }
 
@@ -424,6 +432,7 @@ void deoglComponent::ModelChanged(){
 	pDirtyOctreeNode = true;
 	pDirtyCullSphere = true;
 	pDirtyResetStatic = true;
+	pDirtyStaticTexture = true;
 	
 	pRequiresSync();
 }
@@ -434,6 +443,7 @@ void deoglComponent::SkinChanged(){
 	pDirtySkinStateController = true;
 	pDirtyRenderables = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pDirtyStaticTexture = true;
 	
 	pRequiresSync();
 }
@@ -458,6 +468,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtySkinStateController = true;
 	pDirtyRenderables = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pDirtyStaticTexture = true;
 	
 	pRequiresSync();
 }
@@ -542,6 +553,7 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtySkinStateController = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pDirtyStaticTexture = true;
 	
 	pRequiresSync();
 }
@@ -566,6 +578,7 @@ void deoglComponent::DynamicSkinChanged(){
 	
 	pDirtyResetStatic = true;
 	pDirtyRenderables = true;
+	pDirtyStaticTexture = true;
 	
 	pRequiresSync();
 }

@@ -14,6 +14,9 @@ precision highp int;
 #ifdef GI_USE_RAY_LIMIT
 	#include "v130/shared/defren/gi/raycast/distance_limit.glsl"
 #endif
+#ifdef GI_USE_RAY_CACHE
+	#include "v130/shared/defren/gi/raycast/ray_cache_distance.glsl"
+#endif
 
 
 #ifdef GI_RAYCAST_DISTANCE_ONLY
@@ -54,7 +57,12 @@ void main( void ){
 	if( giRayCastTraceInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, giRayCastNoHitDistance, result ) ){
 		outPosition = vec4( dir * result.distance, result.distance );
 		outNormal = result.normal;
+		
 	}else{
+		#ifdef GI_USE_RAY_CACHE
+			discard;
+		#endif
+		
 		outPosition = vec4( 0.0, 0.0, 0.0, 250.0 );
 		outNormal vec3( 0.0, 0.0, 1.0 );
 	}
@@ -106,6 +114,10 @@ void main( void ){
 				outLight = vec3( matEmissivity );
 				
 			}else{
+				#ifdef GI_USE_RAY_CACHE
+					discard;
+				#endif
+				
 				outPosition = vec4( pp, 10000.0 );
 				outNormal = vec3( 0.0, 0.0, 1.0 );
 				outDiffuse = vec3( 1.0, 1.0, 1.0 );
@@ -146,6 +158,8 @@ void main( void ){
 	#else
 		#ifdef GI_USE_RAY_LIMIT
 			float distLimit = giRayCastDistanceLimit( instanceID, rayIndex ) + 0.1;
+		#elif defined GI_USE_RAY_CACHE
+			float distLimit = giRayCastCacheDistance( instanceID, rayIndex );
 		#else
 			float distLimit = giRayCastNoHitDistance;
 		#endif
@@ -169,6 +183,10 @@ void main( void ){
 			outLight = vec3( matEmissivity );
 			
 		}else{
+			#ifdef GI_USE_RAY_CACHE
+				discard;
+			#endif
+			
 			// we can not store simply the position here since later code calculates the
 			// ray direction using this hit point. anything can go here in the end
 			outPosition = vec4( position + direction, 10000.0 );

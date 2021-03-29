@@ -62,6 +62,9 @@ public:
 	
 	/** Occlusion mesh geometry changed. */
 	virtual void OcclusionMeshChanged( deoglRComponent &component );
+	
+	/** Textures changed. */
+	virtual void TexturesChanged( deoglRComponent &component );
 	/*@}*/
 };
 

@@ -91,6 +91,7 @@ public:
 	deoglRModel *pModel;
 	deoglRSkin *pSkin;
 	deoglRDynamicSkin *pDynamicSkin;
+	bool pStaticTextures;
 	
 	deoglROcclusionMesh *pOcclusionMesh;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
@@ -589,6 +590,12 @@ public:
 	
 	/** Marks texture units configurations of all textures dirty. */
 	void MarkAllTexturesTUCsDirty();
+	
+	/** Update static textures. */
+	void UpdateStaticTextures();
+	
+	/** Textures are static. */
+	inline bool GetStaticTextures() const{ return pStaticTextures; }
 	/*@}*/
 	
 	
@@ -663,6 +670,9 @@ public:
 	
 	/** Notify all occlusion mesh geometry changed. */
 	void NotifyOcclusionMeshChanged();
+	
+	/** Notify all textures changed. */
+	void NotifyTexturesChanged();
 	
 	/** Notify all lights that their light volume has to be updated. */
 	void NotifyLightsDirtyLightVolume();

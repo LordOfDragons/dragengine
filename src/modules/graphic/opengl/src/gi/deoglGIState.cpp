@@ -88,6 +88,8 @@ pUpdateProbes( NULL ),
 pUpdateProbeCount( 0 ),
 pRayLimitProbes( NULL ),
 pRayLimitProbeCount( 0 ),
+pRayCacheProbes( NULL ),
+pRayCacheProbeCount( 0 ),
 pWeightedProbes( NULL ),
 pWeightedProbeBinSize( pRealProbeCount / 20 ),
 pWeightedProbeBinCount( 20 ),
@@ -111,9 +113,11 @@ pRays( renderThread, 64, pRealProbeCount )
 		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		pWeightedProbes = new sProbe*[ pRealProbeCount ];
 		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
-		
 		#ifdef GI_USE_RAY_LIMIT
 			pRayLimitProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+		#endif
+		#ifdef GI_USE_RAY_CACHE
+			pRayCacheProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		#endif
 		
 	}catch( const deException & ){
@@ -143,8 +147,9 @@ deoglGIState::eContentClassification deoglGIState::ClassifyComponent( const deog
 		return eccIgnore; // skip small models to improve performance
 	}
 	
-	// weight check catches more cases than GetRenderStatic() or GetRenderMode() can
-	return component.GetRenderStatic()
+	// weight check catches more cases than GetRenderStatic() or GetRenderMode() can.
+	// static textures is checked to avoid cached rays with changing textures
+	return component.GetRenderStatic() && component.GetStaticTextures()
 		&& component.GetMovementHint() == deComponent::emhStationary
 		&& component.GetLODAt( -1 ).GetModelLOD()->GetWeightsCount() == 0
 			? eccStatic: eccDynamic;
@@ -204,6 +209,20 @@ void deoglGIState::FilterStaticComponents(){
 	for( i=0; i<count; i++ ){
 		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
 		if( ClassifyComponent( *component ) == eccStatic ){
+			pCollideListFiltered.AddComponent( component );
+		}
+	}
+}
+
+void deoglGIState::FilterDynamicComponents(){
+	const int count = pCollideList.GetComponentCount();
+	int i;
+	
+	pCollideListFiltered.Clear();
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
+		if( ClassifyComponent( *component ) == eccDynamic ){
 			pCollideListFiltered.AddComponent( component );
 		}
 	}
@@ -291,6 +310,9 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	#ifdef GI_USE_RAY_LIMIT
 		pPrepareRayLimitProbes();
 	#endif
+	#ifdef GI_USE_RAY_CACHE
+		pPrepareRayCacheProbes();
+	#endif
 	
 	// synchronize tracked instances using new position
 	pSyncTrackedInstances( world );
@@ -362,6 +384,39 @@ void deoglGIState::PrepareUBOStateRayLimit() const{
 	ubo.UnmapBuffer();
 }
 
+void deoglGIState::PrepareUBOStateRayCache() const{
+	deoglSPBlockUBO &ubo = pRenderThread.GetGI().GetUBO();
+	
+	ubo.MapBuffer();
+	try{
+		pPrepareUBOShared( ubo );
+		
+		if( pRayCacheProbeCount > 0 ){
+			const int count = ( pRayCacheProbeCount - 1 ) / 4 + 1;
+			int i, j;
+			
+			for( i=0, j=0; i<count; i++, j+=4 ){
+				ubo.SetParameterDataArrayIVec4( deoglGI::eupProbeIndex, i,
+					j < pRayCacheProbeCount ? pRayCacheProbes[ j ]->index : 0,
+					j + 1 < pRayCacheProbeCount ? pRayCacheProbes[ j + 1 ]->index : 0,
+					j + 2 < pRayCacheProbeCount ? pRayCacheProbes[ j + 2 ]->index : 0,
+					j + 3 < pRayCacheProbeCount ? pRayCacheProbes[ j + 3 ]->index : 0 );
+			}
+			
+			for( i=0; i<pRayCacheProbeCount; i++ ){
+				const sProbe &probe = *pRayCacheProbes[ i ];
+				ubo.SetParameterDataArrayVec4( deoglGI::eupProbePosition, i,
+					probe.position + probe.offset, ( float )probe.flags );
+			}
+		}
+		
+	}catch( const deException & ){
+		ubo.UnmapBuffer();
+		throw;
+	}
+	ubo.UnmapBuffer();
+}
+
 void deoglGIState::Invalidate(){
 	int i;
 	
@@ -372,6 +427,7 @@ void deoglGIState::Invalidate(){
 		probe.offset.SetZero();
 		probe.valid = false;
 		probe.rayLimitsValid = false;
+		probe.rayCacheValid = false;
 	}
 	
 	pClearMaps = true;
@@ -413,6 +469,14 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		
 		probe.offset = offset;
 		probe.rayLimitsValid = false;
+		probe.rayCacheValid = false;
+	}
+}
+
+void deoglGIState::ValidatedRayCaches(){
+	int i;
+	for( i=0; i<pRayCacheProbeCount; i++ ){
+		pRayCacheProbes[ i ]->rayCacheValid = true;
 	}
 }
 
@@ -424,6 +488,9 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 void deoglGIState::pCleanUp(){
 	if( pPixBufProbeOffset ){
 		delete pPixBufProbeOffset;
+	}
+	if( pRayCacheProbes ){
+		delete [] pRayCacheProbes;
 	}
 	if( pRayLimitProbes ){
 		delete [] pRayLimitProbes;
@@ -451,6 +518,7 @@ void deoglGIState::pInitProbes(){
 		probe.offset.SetZero();
 		probe.valid = false;
 		probe.rayLimitsValid = false;
+		probe.rayCacheValid = false;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
 }
@@ -462,13 +530,20 @@ void deoglGIState::pInvalidateAllRayLimits(){
 	}
 }
 
+void deoglGIState::pInvalidateAllRayCaches(){
+	int i;
+	for( i=0; i<pRealProbeCount; i++ ){
+		pProbes[ i ].rayCacheValid = false;
+	}
+}
+
 void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 	FindContent( world );
 	
 	#ifdef GI_USE_RAY_LIMIT
 		FilterStaticOcclusionMeshes();
 	#else
-// 		FilterStaticComponents();
+		FilterStaticComponents();
 	#endif
 	
 	/*{
@@ -477,7 +552,8 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 		for( i=0; i<count; i++ ){
 			if( pCollideListFiltered.GetComponentAt(i)->GetComponent() ){
 				if( pCollideListFiltered.GetComponentAt(i)->GetComponent()->GetModel() ){
-					pRenderThread.GetLogger().LogInfoFormat( "FILTERED: %d %s", i,
+					const decDVector p( pCollideListFiltered.GetComponentAt(i)->GetComponent()->GetMatrix().GetPosition() );
+					pRenderThread.GetLogger().LogInfoFormat( "FILTERED: %d (%g,%g,%g) %s", i, p.x, p.y, p.z,
 						pCollideListFiltered.GetComponentAt(i)->GetComponent()->GetModel()->GetFilename().GetString());
 				}
 			}
@@ -489,8 +565,8 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 		invalidateCaches |= pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
 		invalidateCaches |= pInstances.AddOcclusionMeshes( pCollideListFiltered );
 	#else
-// 		invalidateCaches |= pInstances.RemoveComponents( pCollideListFiltered );
-// 		invalidateCaches |= pInstances.AddComponents( pCollideListFiltered );
+		invalidateCaches |= pInstances.RemoveComponents( pCollideListFiltered );
+		invalidateCaches |= pInstances.AddComponents( pCollideListFiltered );
 	#endif
 	
 	if( invalidateCaches ){
@@ -498,6 +574,7 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 		#ifdef GI_USE_RAY_LIMIT
 			pInvalidateAllRayLimits();
 		#else
+			pInvalidateAllRayCaches();
 		#endif
 	}
 	
@@ -515,10 +592,10 @@ void deoglGIState::pSyncTrackedInstances( deoglRWorld &world ){
 		pInstances.AddOcclusionMeshes( pCollideListFiltered );
 		
 	#else
-// 		FilterStaticComponents();
-// 		
-// 		pInstances.RemoveComponents( pCollideListFiltered );
-// 		pInstances.AddComponents( pCollideListFiltered );
+		FilterStaticComponents();
+		
+		pInstances.RemoveComponents( pCollideListFiltered );
+		pInstances.AddComponents( pCollideListFiltered );
 	#endif
 	
 	pInstances.ClearAllChanged();
@@ -549,6 +626,7 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		probe.offset.SetZero();
 		probe.valid = false;
 		probe.rayLimitsValid = false;
+		probe.rayCacheValid = false;
 	}
 	
 	// set the new tracing position
@@ -740,6 +818,23 @@ void deoglGIState::pPrepareRayLimitProbes(){
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		if( ! pUpdateProbes[ i ]->rayLimitsValid ){
 			pRayLimitProbes[ pRayLimitProbeCount++ ] = pUpdateProbes[ i ];
+		}
+	}
+}
+
+void deoglGIState::pPrepareRayCacheProbes(){
+	const int raysPerProbe = pRenderThread.GetGI().GetTraceRays().GetRaysPerProbe();
+	if( raysPerProbe != pRays.GetRaysPerProbe() ){
+		pInvalidateAllRayCaches();
+		pRays.SetRaysPerProbe( raysPerProbe );
+	}
+	
+	pRayCacheProbeCount = 0;
+	
+	int i;
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		if( ! pUpdateProbes[ i ]->rayCacheValid ){
+			pRayCacheProbes[ pRayCacheProbeCount++ ] = pUpdateProbes[ i ];
 		}
 	}
 }

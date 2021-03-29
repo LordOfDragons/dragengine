@@ -116,6 +116,8 @@ pOctreeNode( NULL ),
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
 
+pStaticTextures( true ),
+
 pOccMeshSharedSPBElement( NULL ),
 pDirtyOccMeshSharedSPBElement( true ),
 pOccMeshSharedSPBDoubleSided( NULL ),
@@ -1387,6 +1389,37 @@ void deoglRComponent::MarkAllTexturesTUCsDirty(){
 	}
 }
 
+void deoglRComponent::UpdateStaticTextures(){
+	pStaticTextures = true;
+	
+	if( ! pModel ){
+		return;
+	}
+	
+	const int count = pTextures.GetCount();
+	int i;
+	
+	if( pDirtyTextureUseSkin ){
+		for( i=0; i<count; i++ ){
+			( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->UpdateUseSkin();
+		}
+		pDirtyTextureUseSkin = false;
+	}
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		deoglSkinState * const skinState = texture.GetUseSkinState();
+		if( ! skinState ){
+			continue;
+		}
+		
+		if( skinState->GetVideoPlayerCount() > 0 || skinState->GetCalculatedPropertyCount() > 0 ){
+			pStaticTextures = false;
+			break;
+		}
+	}
+}
+
 
 
 // Decals
@@ -1556,6 +1589,18 @@ void deoglRComponent::NotifyOcclusionMeshChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){
 		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->OcclusionMeshChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyTexturesChanged(){
+	// TODO works in games but not in the editor since it changes textures after adding it
+	//      to the game world. maybe add a static timer like for render static?
+// 	pStaticTextures = false;
+	
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->TexturesChanged( *this );
 		pListenerIndex++;
 	}
 }

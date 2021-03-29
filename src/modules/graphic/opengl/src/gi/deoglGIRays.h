@@ -40,6 +40,13 @@ private:
 	int pProbeCount;
 	decVector2 pRayMapScale;
 	
+	deoglTexture pTexDistance;
+	deoglTexture pTexNormal;
+	deoglTexture pTexDiffuse;
+	deoglTexture pTexReflectivity;
+	deoglTexture pTexLight;
+	deoglFramebuffer pFBOResult;
+	
 	deoglTexture pTexDistanceLimit;
 	deoglFramebuffer pFBODistanceLimit;
 	
@@ -79,6 +86,26 @@ public:
 	
 	/** Ray map scale. */
 	inline const decVector2 &GetRayMapScale() const{ return pRayMapScale; }
+	
+	
+	
+	/** Distance texture. */
+	inline deoglTexture &GetTextureDistance(){ return pTexDistance; }
+	
+	/** Normal texture. */
+	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
+	
+	/** Diffuse/TintMask texture. */
+	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	
+	/** Reflectivity/Roughness texture. */
+	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	
+	/** Light texture. */
+	inline deoglTexture &GetTextureLight(){ return pTexLight; }
+	
+	/** Result FBO. */
+	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
 	
 	
 	

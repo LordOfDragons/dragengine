@@ -79,6 +79,7 @@ public:
 	bool pDirtyLODErrorScaling;
 	bool pDirtyMesh;
 	bool pDirtySkinStateCalculatedProperties;
+	bool pDirtyStaticTexture;
 	
 	bool pDynamicSkinRequiresSync;
 	bool pTextureDynamicSkinRequiresSync;

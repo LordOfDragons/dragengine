@@ -60,6 +60,7 @@ public:
 		int age; //<! Age in update runs since probe has been last updated
 		bool valid; //<! Probe has been updated at least once
 		bool rayLimitsValid; //<! Ray-Tracing distance limits are valid
+		bool rayCacheValid; //<! Ray-Tracing ray cache is valid
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
@@ -112,6 +113,8 @@ private:
 	int pUpdateProbeCount;
 	sProbe **pRayLimitProbes;
 	int pRayLimitProbeCount;
+	sProbe **pRayCacheProbes;
+	int pRayCacheProbeCount;
 	
 	sProbe **pWeightedProbes;
 	int pWeightedProbeBinSize;
@@ -211,6 +214,9 @@ public:
 	/** Filter static components into filtered collider list. */
 	void FilterStaticComponents();
 	
+	/** Filter dynamic components into filtered collider list. */
+	void FilterDynamicComponents();
+	
 	
 	
 	/** Grid coordinates for probe index. */
@@ -265,6 +271,9 @@ public:
 	/** Count of probes to ray limit update. */
 	inline int GetRayLimitProbeCount() const{ return pRayLimitProbeCount; }
 	
+	/** Count of probes to ray cache update. */
+	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
+	
 	
 	
 	/** Irradiance probe texture. */
@@ -298,6 +307,9 @@ public:
 	/** Prepare UBO state for ray limit rendering. */
 	void PrepareUBOStateRayLimit() const;
 	
+	/** Prepare UBO state for ray cache rendering. */
+	void PrepareUBOStateRayCache() const;
+	
 	/** Invalid all probes. */
 	void Invalidate();
 	
@@ -306,6 +318,9 @@ public:
 	
 	/** Update probe offsets from probe offset texture. */
 	void UpdateProbeOffsetFromTexture();
+	
+	/** Validate ray caches marked for update. */
+	void ValidatedRayCaches();
 	
 	
 	
@@ -324,6 +339,7 @@ private:
 	void pCleanUp();
 	void pInitProbes();
 	void pInvalidateAllRayLimits();
+	void pInvalidateAllRayCaches();
 	void pTrackInstanceChanges( deoglRWorld &world );
 	void pSyncTrackedInstances( deoglRWorld &world );
 	void pUpdatePosition( const decDVector &position );
@@ -333,6 +349,7 @@ private:
 	void pBinWeightedProbe( sProbe *probe, float weight );
 	void pAddUpdateProbe( sProbe *probe );
 	void pPrepareRayLimitProbes();
+	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();
 	void pPrepareUBOShared( deoglSPBlockUBO &ubo ) const;
 };

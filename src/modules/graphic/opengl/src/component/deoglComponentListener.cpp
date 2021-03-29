@@ -57,3 +57,6 @@ void deoglComponentListener::BoundariesChanged( deoglRComponent& ){
 
 void deoglComponentListener::OcclusionMeshChanged( deoglRComponent& ){
 }
+
+void deoglComponentListener::TexturesChanged( deoglRComponent& ){
+}

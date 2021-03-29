@@ -46,6 +46,7 @@ private:
 		virtual void LayerMaskChanged( deoglRComponent &component );
 		virtual void BoundariesChanged( deoglRComponent &component );
 		virtual void OcclusionMeshChanged( deoglRComponent &component );
+		virtual void TexturesChanged( deoglRComponent &component );
 	};
 	
 	deoglRComponent *pComponent;

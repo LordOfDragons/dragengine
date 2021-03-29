@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglGI.h"
 #include "deoglGIRays.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -43,6 +44,12 @@ pRaysPerProbe( raysPerProbe ),
 pProbesPerLine( 8 ),
 pProbeCount( probeCount ),
 pRayMapScale( 1.0f, 1.0f ),
+pTexDistance( renderThread ),
+pTexNormal( renderThread ),
+pTexDiffuse( renderThread ),
+pTexReflectivity( renderThread ),
+pTexLight( renderThread ),
+pFBOResult( renderThread, false ),
 pTexDistanceLimit( renderThread ),
 pFBODistanceLimit( renderThread, false )
 {
@@ -109,9 +116,14 @@ void deoglGIRays::pCreateFBO(){
 	// 
 	// distance limit: (4MB, 1MB) [4194304, 1048576]
 	// 
+	// distance, normal and light: (23M, 6M) [23068672, 5767168]
+	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
+	// total: (37M, 9M) [37748736, 9437184]
+	// 
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	#ifdef GI_USE_RAY_LIMIT
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	#if defined GI_USE_RAY_LIMIT || defined GI_USE_RAY_CACHE
+	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	#endif
 	
 	const int width = pProbesPerLine * pRaysPerProbe;
@@ -134,6 +146,38 @@ void deoglGIRays::pCreateFBO(){
 		pTexDistanceLimit.CreateTexture();
 	#endif
 	
+	#ifdef GI_USE_RAY_CACHE
+		if( ! pTexDistance.GetTexture() ){
+			pTexDistance.SetFBOFormat( 1, true );
+		}
+		pTexDistance.SetSize( width, height );
+		pTexDistance.CreateTexture();
+		
+		if( ! pTexNormal.GetTexture() ){
+			pTexNormal.SetFBOFormatSNorm( 3, 8 );
+		}
+		pTexNormal.SetSize( width, height );
+		pTexNormal.CreateTexture();
+		
+		if( ! pTexDiffuse.GetTexture() ){
+			pTexDiffuse.SetFBOFormat( 3, false );
+		}
+		pTexDiffuse.SetSize( width, height );
+		pTexDiffuse.CreateTexture();
+		
+		if( ! pTexReflectivity.GetTexture() ){
+			pTexReflectivity.SetFBOFormat( 4, false );
+		}
+		pTexReflectivity.SetSize( width, height );
+		pTexReflectivity.CreateTexture();
+		
+		if( ! pTexLight.GetTexture() ){
+			pTexLight.SetFBOFormat( 3, true );
+		}
+		pTexLight.SetSize( width, height );
+		pTexLight.CreateTexture();
+	#endif
+	
 	// update framebuffer if required and clear textures
 	#ifdef GI_USE_RAY_LIMIT
 		pRenderThread.GetFramebuffer().Activate( &pFBODistanceLimit );
@@ -147,6 +191,34 @@ void deoglGIRays::pCreateFBO(){
 		
 		const GLfloat clearDistanceLimit[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistanceLimit[ 0 ] ) );
+	#endif
+	
+	#ifdef GI_USE_RAY_CACHE
+		pRenderThread.GetFramebuffer().Activate( &pFBOResult );
+		
+		pFBOResult.AttachColorTexture( 0, &pTexDistance );
+		pFBOResult.AttachColorTexture( 1, &pTexNormal );
+		pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
+		pFBOResult.AttachColorTexture( 3, &pTexReflectivity );
+		pFBOResult.AttachColorTexture( 4, &pTexLight );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOResult.Verify();
+		
+		const GLfloat clearDistance[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		
+		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 1.0f, 0.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 0 ] ) );
+		
+		const GLfloat clearDiffuse[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearDiffuse[ 0 ] ) );
+		
+		const GLfloat clearReflectivity[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 3, &clearReflectivity[ 0 ] ) );
+		
+		const GLfloat clearLight[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 4, &clearLight[ 0 ] ) );
 	#endif
 	
 	// clean up

@@ -43,7 +43,7 @@ class deoglTexUnitsConfig;
 
 
 /**
- * \brief Render component texture.
+ * Render component texture.
  */
 class deoglRComponentTexture : public deObject{
 private:
@@ -102,13 +102,15 @@ private:
 	bool pDirtyTUCLuminance;
 	bool pDirtyTUCGIMaterial;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component texture. */
+	/** Create component texture. */
 	deoglRComponentTexture( deoglRComponent &component, int index );
 	
-	/** \brief Clean up component texture. */
+	/** Clean up component texture. */
 	virtual ~deoglRComponentTexture();
 	/*@}*/
 	
@@ -116,86 +118,86 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglRComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief Texture index. */
+	/** Texture index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTransform( const decTexMatrix2 &matrix );
 	
 	
 	
-	/** \brief Skin or \em NULL if there is none. */
+	/** Skin or \em NULL if there is none. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if there is none. */
+	/** Set skin or \em NULL if there is none. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Dynamic skin or \em NULL if there is none. */
+	/** Dynamic skin or \em NULL if there is none. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if there is none. */
+	/** Set dynamic skin or \em NULL if there is none. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
-	/** \brief Skin state or \em NULL if there is none. */
+	/** Skin state or \em NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * \brief Set skin state or \em NULL if there is none.
+	 * Set skin state or \em NULL if there is none.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void SetSkinState( deoglSkinState *skinState );
 	
-	/** \brief Check if skin has dynamic channels. */
+	/** Check if skin has dynamic channels. */
 	void CheckSkinDynamicChannels();
 	
 	/**
-	 * \brief Update skin state depending on skin and dynamic skin.
+	 * Update skin state depending on skin and dynamic skin.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void UpdateSkinState();
 	
-	/** \brief Skin to use. */
+	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
-	/** \brief Skin texture number to use. */
+	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	
-	/** \brief Skin texture to use. */
+	/** Skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
-	/** \brief Skin state to use. */
+	/** Skin state to use. */
 	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
 	
-	/** \brief Dynamic skin to use. */
+	/** Dynamic skin to use. */
 	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	
-	/** \brief Texture to use is double sided. */
+	/** Texture to use is double sided. */
 	inline bool GetUseDoubleSided() const{ return pUseDoubleSided; }
 	
-	/** \brief Texture has to be rendered as decal. */
+	/** Texture has to be rendered as decal. */
 	inline bool GetUseDecal() const{ return pUseDecal; }
 	
-	/** \brief Updates the actual texture parameters to use. */
+	/** Updates the actual texture parameters to use. */
 	void UpdateUseSkin();
 	
-	/** \brief Calculate instance texture coordinate transformation matrix. */
+	/** Calculate instance texture coordinate transformation matrix. */
 	decTexMatrix2 CalcTexCoordMatrix() const;
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
+	/** Shader parameter block for a shader type. */
 	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
 	
 	/**
-	 * \brief Depth shader parameter block or \em NULL if there is no valid skin texture.
+	 * Depth shader parameter block or \em NULL if there is no valid skin texture.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentDepth
 	 *          - deoglSkinTexture::estComponentDepthClipPlane
@@ -208,30 +210,30 @@ public:
 	deoglSPBlockUBO *GetParamBlockDepth();
 	
 	/**
-	 * \brief Geometry shader parameter block or \em NULL if there is no valid skin texture.
+	 * Geometry shader parameter block or \em NULL if there is no valid skin texture.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentGeometry
 	 */
 	deoglSPBlockUBO *GetParamBlockGeometry();
 	
 	/**
-	 * \brief Environment map shader parameter block or NULL if there is no valid skin texture.
+	 * Environment map shader parameter block or NULL if there is no valid skin texture.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estEnvMap
 	 */
 	deoglSPBlockUBO *GetParamBlockEnvMap();
 	
-	/** \brief Shared shader parameter block element. */
+	/** Shared shader parameter block element. */
 	deoglSharedSPBElement *GetSharedSPBElement();
 	
-	/** \brief Shared SPB render task instance group. */
+	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup( int lodLevel );
 	
-	/** \brief Texture units configuration for the given shader type. */
+	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
 	
 	/**
-	 * \brief Texture units configuration for depth type shaders or \em NULL if empty.
+	 * Texture units configuration for depth type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentDepth
 	 *          - deoglSkinTexture::estComponentDepthClipPlane
@@ -239,14 +241,14 @@ public:
 	deoglTexUnitsConfig *GetTUCDepth();
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders or \em NULL if empty.
+	 * Texture units configuration for geometry type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentGeometry
 	 */
 	deoglTexUnitsConfig *GetTUCGeometry();
 	
 	/**
-	 * \brief Texture units configuration for counter type shaders or \em NULL if empty.
+	 * Texture units configuration for counter type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentCounter
 	 *          - deoglSkinTexture::estComponentCounterClipPlane
@@ -254,7 +256,7 @@ public:
 	deoglTexUnitsConfig *GetTUCCounter();
 	
 	/**
-	 * \brief Texture units configuration for shadow type shaders or \em NULL if empty.
+	 * Texture units configuration for shadow type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types
 	 *          - deoglSkinTexture::estComponentShadowProjection
 	 *          - deoglSkinTexture::estComponentShadowOrthogonal
@@ -263,28 +265,28 @@ public:
 	deoglTexUnitsConfig *GetTUCShadow();
 	
 	/**
-	 * \brief Texture units configuration for shadow cube type shaders or \em NULL if empty.
+	 * Texture units configuration for shadow cube type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types
 	 *          - deoglSkinTexture::estComponentShadowDistanceCube
 	 */
 	deoglTexUnitsConfig *GetTUCShadowCube();
 	
 	/**
-	 * \brief Texture units configuration for the environment map shader or \em NULL if empty.
+	 * Texture units configuration for the environment map shader or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estEnvMap
 	 */
 	deoglTexUnitsConfig *GetTUCEnvMap();
 	
 	/**
-	 * \brief Texture units configuration for outline geometry type shaders or \em NULL if empty.
+	 * Texture units configuration for outline geometry type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estOutlineGeometry
 	 */
 	deoglTexUnitsConfig *GetTUCOutlineGeometry();
 	
 	/**
-	 * \brief Texture units configuration for outline depth type shaders or \em NULL if empty.
+	 * Texture units configuration for outline depth type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estOutlineDepth
 	 *          - deoglSkinTexture::estOutlineDepthClipPlane
@@ -292,7 +294,7 @@ public:
 	deoglTexUnitsConfig *GetTUCOutlineDepth();
 	
 	/**
-	 * \brief Texture units configuration for outline counter type shaders or \em NULL if empty.
+	 * Texture units configuration for outline counter type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estOutlineCounter
 	 *          - deoglSkinTexture::estOutlineCounterClipPlane
@@ -300,36 +302,36 @@ public:
 	deoglTexUnitsConfig *GetTUCOutlineCounter();
 	
 	/**
-	 * \brief Texture units configuration for luminance type shaders or \em NULL if empty.
+	 * Texture units configuration for luminance type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentLuminance
 	 */
 	deoglTexUnitsConfig *GetTUCLuminance();
 	
 	/**
-	 * \brief Texture units configuration for GI material type shaders or \em NULL if empty.
+	 * Texture units configuration for GI material type shaders or \em NULL if empty.
 	 * \details This texture units configuration works for the shader types:
 	 *          - deoglSkinTexture::estComponentGIMaterial
 	 */
 	deoglTexUnitsConfig *GetTUCGIMaterial();
 	
 	/**
-	 * \brief Obtain texture units configuration for a shader type.
+	 * Obtain texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Marks texture units configurations dirty. */
+	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
 	/**
-	 * \brief Update instance parameter shader parameter block.
+	 * Update instance parameter shader parameter block.
 	 * 
 	 * Parameter block has to be mapped while calling this method.
 	 * Caller is responsible to properly unmap in case of exceptions.
@@ -337,7 +339,7 @@ public:
 	void UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 		int element, deoglSkinShader &skinShader );
 	
-	/** \brief Prepare skin state renderables if dirty. */
+	/** Prepare skin state renderables if dirty. */
 	void PrepareSkinStateRenderables();
 	/*@}*/
 };

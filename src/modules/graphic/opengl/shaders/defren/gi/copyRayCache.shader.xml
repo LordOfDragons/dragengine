@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Copy Ray Cache</name>
+	
+	<version>130</version>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	<texture name='texDiffuse' target='2'/>
+	<texture name='texReflectivity' target='3'/>
+	<texture name='texLight' target='4'/>
+	
+	<uniformBlock name='GIParameters' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outPosition' target='0'/>
+	<output name='outNormal' target='1'/>
+	<output name='outDiffuse' target='2'/>
+	<output name='outReflectivity' target='3'/>
+	<output name='outLight' target='4'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/copyRayCache.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/copyRayCache.glsl</sourceCode>
+</shader>
