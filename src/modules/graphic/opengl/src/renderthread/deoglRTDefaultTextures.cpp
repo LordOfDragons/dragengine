@@ -50,6 +50,10 @@ pEmissivity( NULL ),
 pAO( NULL ),
 pSolidity( NULL ),
 pEnvRoomMask( NULL ),
+pShadowMap( NULL ),
+pShadowMapColor( NULL ),
+pShadowCube( NULL ),
+pShadowCubeColor( NULL ),
 
 pWeights( NULL ),
 pMaskOpaque( NULL ),
@@ -73,6 +77,7 @@ pEnvRoomMaskArray( NULL )
 		pCreateTextureMaskOpaque( renderThread );
 		pCreateTextureNoise2D( renderThread );
 		//pCreateWeightsTexture( renderThread );
+		pCreateShadowTextures( renderThread );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -139,6 +144,18 @@ void deoglRTDefaultTextures::pCleanUp(){
 		delete pWeights;
 	}
 	
+	if( pShadowCubeColor ){
+		delete pShadowCubeColor;
+	}
+	if( pShadowCube ){
+		delete pShadowCube;
+	}
+	if( pShadowMapColor ){
+		delete pShadowMapColor;
+	}
+	if( pShadowMap ){
+		delete pShadowMap;
+	}
 	if( pEnvRoomMask ){
 		delete pEnvRoomMask;
 	}
@@ -413,4 +430,36 @@ void deoglRTDefaultTextures::pCreateTextureNoise2D( deoglRenderThread &renderThr
 	pNoise2D->CreateTexture();
 	pNoise2D->SetPixels( pixelBuffer );
 	*/
+}
+
+void deoglRTDefaultTextures::pCreateShadowTextures( deoglRenderThread &renderThread ){
+	// shadow map
+	deoglPixelBuffer pixelBuffer1( deoglPixelBuffer::epfDepth, 1, 1, 1 );
+	pixelBuffer1.SetToFloatColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	pShadowMap = new deoglTexture( renderThread );
+	pShadowMap->SetSize( 1, 1 );
+	pShadowMap->SetDepthFormat( false, false );
+	pShadowMap->SetPixels( pixelBuffer1 );
+	
+	deoglPixelBuffer pixelBuffer1b( deoglPixelBuffer::epfByte3, 1, 1, 1 );
+	pixelBuffer1b.SetToIntColor( 0, 0, 0, 255 );
+	pShadowMapColor = new deoglTexture( renderThread );
+	pShadowMapColor->SetSize( 1, 1 );
+	pShadowMapColor->SetMapingFormat( 3, false, false );
+	pShadowMapColor->SetPixels( pixelBuffer1b );
+	
+	// shadow cube
+	deoglPixelBuffer pixelBuffer2( deoglPixelBuffer::epfDepth, 1, 1, 6 );
+	pixelBuffer2.SetToFloatColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	pShadowCube = new deoglCubeMap( renderThread );
+	pShadowCube->SetSize( 1 );
+	pShadowCube->SetDepthFormat();
+	pShadowCube->SetPixels( pixelBuffer2 );
+	
+	deoglPixelBuffer pixelBuffer2b( deoglPixelBuffer::epfByte3, 1, 1, 6 );
+	pixelBuffer2b.SetToIntColor( 0, 0, 0, 255 );
+	pShadowCubeColor = new deoglCubeMap( renderThread );
+	pShadowCubeColor->SetSize( 1 );
+	pShadowCubeColor->SetMapingFormat( 3, false, false );
+	pShadowCubeColor->SetPixels( pixelBuffer2b );
 }

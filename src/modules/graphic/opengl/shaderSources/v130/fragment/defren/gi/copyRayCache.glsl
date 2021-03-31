@@ -4,6 +4,8 @@ precision highp int;
 #ifndef FROM_TRACE_TO_CACHE
 	#include "v130/shared/ubo_defines.glsl"
 	#include "v130/shared/defren/gi/ubo_gi.glsl"
+	#include "v130/shared/defren/gi/trace_probe.glsl"
+	#include "v130/shared/defren/gi/raycast/ray_cache.glsl"
 #endif
 
 uniform mediump sampler2D texPosition;
@@ -31,7 +33,6 @@ void main( void ){
 	
 	#ifdef FROM_TRACE_TO_CACHE
 		tc += vRayOffset;
-		
 	#else
 		int rowProbeIndex = tc.x / pGIRaysPerProbe;
 		int instanceID = pGIProbesPerLine * tc.y + rowProbeIndex;
@@ -43,14 +44,9 @@ void main( void ){
 		int rayIndex = tc.x - firstRayOffset;
 		
 		// calculate probe index from instance ID. this is the real probe index
-		int probeIndex = pGIProbeIndex[ instanceID >> 2 ][ instanceID & 3 ]; // 4 IDs per array entry
+		int probeIndex = giTraceProbeProbeIndex( instanceID );
 		
-		// calculatee texture coordinate to sample. probes are packed one after the other
-		// starting at the bottom plane going all the way up
-		tc = ivec2( pGIRaysPerProbe * ( probeIndex % pGIProbesPerLine ), probeIndex / pGIProbesPerLine );
-		
-		// offset texture coordinate by ray to query
-		tc.x += rayIndex;
+		tc = giRayCastCacheTCFromProbeIndex( probeIndex, rayIndex );
 	#endif
 	
 	#ifdef FROM_TRACE_TO_CACHE

@@ -147,6 +147,7 @@ const deoglCollideList &list ){
 }
 
 void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
+				decTimer timer1;
 	deoglRComponent &component = lod.GetComponent();
 	const bool dynamic = component.GetRenderMode() == deoglRComponent::ermDynamic;
 	int indexModel;
@@ -155,6 +156,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	lod.GetComponent().UpdateRenderables( plan );
 	
 	if( dynamic ){
+// 				decTimer timer1;
 		// prepare BVH
 		lod.PrepareBVH();
 		if( ! lod.GetBVH()->GetRootNode() ){
@@ -200,19 +202,20 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 			pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
 		}
 		
-		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+// 		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+// 				pRenderThread.GetLogger().LogInfoFormat("> Add Dynamic Model: %d (%s)",
+// 					(int)(timer1.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
 		
 	}else{
 		// find model
+		deoglModelLOD &modelLOD = *lod.GetModelLOD();
+		
 		for( indexModel=0; indexModel<pModelCount; indexModel++ ){
-			if( pModels[ indexModel ].component == &lod
-			&& pModels[ indexModel ].component->GetModelLOD()->GetWeightsCount() == 0 ){
-			//&& pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
+			if( pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic
+			&& pModels[ indexModel ].component->GetModelLOD() == &modelLOD ){
 				break;
 			}
 		}
-		
-		deoglModelLOD &modelLOD = *lod.GetModelLOD();
 		
 		// if model does not exist add it
 		if( indexModel == pModelCount ){
@@ -228,10 +231,10 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 			
 			// add vertices to TBO in mesh order
 			const oglModelPosition * const positions = modelLOD.GetPositions();
-			const int positionPoint = modelLOD.GetPositionCount();
+			const int positionCount = modelLOD.GetPositionCount();
 			int i;
 			
-			for( i=0; i<positionPoint; i++ ){
+			for( i=0; i<positionCount; i++ ){
 				pTBOVertex.AddVec4( positions[ i ].position, 0.0f );
 			}
 			
@@ -262,6 +265,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	}
 	
 	// add materials
+// 				decTimer timer1;
 	deoglAddToRenderTaskGIMaterial &addToRenderTask =
 		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
 	const int textureCount = component.GetTextureCount();
@@ -275,6 +279,9 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	
 	// add component
 	pAddComponent( indexModel, indexMaterial, matrix );
+// 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d (%s)",
+// 					lod.GetModelLOD()->GetFaceCount(), (int)(timer1.GetElapsedTime() * 1e6f),
+// 					component.GetModel()->GetFilename().GetString());
 }
 
 void deoglGIBVH::AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances ){
@@ -419,8 +426,7 @@ void deoglGIBVH::BuildBVH(){
 		const deoglBVHNode *rootNode = NULL;
 		
 		if( model.component != NULL ){
-			//if( model.component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
-			if( model.component->GetModelLOD()->GetWeightsCount() == 0 ){
+			if( model.component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
 				rootNode = model.component->GetModelLOD()->GetBVH()->GetRootNode();
 				
 			}else{
@@ -693,6 +699,7 @@ const decTexMatrix2 &texCoordMatrix ){
 	const bool ignoreMaterial = skinTexture.GetHasTransparency();
 	const bool texCoordClamp = skinTexture.GetTexCoordClamp();
 	const bool hasSolidity = skinTexture.GetHasSolidity();
+	const bool shadowNone = skinTexture.GetShadowNone();
 	
 	// pack into values and add them
 	#define BITS_MASK(bits) ((1<<bits)-1)
@@ -705,7 +712,8 @@ const decTexMatrix2 &texCoordMatrix ){
 	const uint32_t red = PACK_I( materialIndex, 16, 16 )
 		| PACK_B( ignoreMaterial, 0 )
 		| PACK_B( texCoordClamp, 1 )
-		| PACK_B( hasSolidity, 2 );
+		| PACK_B( hasSolidity, 2 )
+		| PACK_B( shadowNone, 3 );
 	
 	const uint32_t green = PACK( colorTint.r, 8, 24 )
 		| PACK( colorTint.g, 8, 16 )

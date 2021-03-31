@@ -206,7 +206,11 @@ pAddToRenderTask( NULL )
 		
 		// move probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
+		#ifdef GI_MOVE_PROBES_RAY_CACHE
+			defines.AddDefine( "WITH_RAY_CACHE", true );
+		#endif
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		// debug
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
@@ -412,8 +416,11 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		pAddToRenderTask->Reset();
 		
 		bvh.Clear();
+			decTimer timer1;
 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
+			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		bvh.BuildBVH();
+			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		
 		giState->PrepareUBOStateRayCache(); // has to be done here since it is shared
 		
@@ -448,7 +455,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetRayCacheProbeCount() ) );
 		
-		giState->ValidatedRayCaches();
+// 		giState->ValidatedRayCaches();
 	}
 	#endif
 	
@@ -457,13 +464,16 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pAddToRenderTask->Reset();
 	
 	bvh.Clear();
+		decTimer timer2;
 	#ifdef GI_USE_RAY_CACHE
 		giState->FilterDynamicComponents();
 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetCollideListFiltered() );
 	#else
 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetCollideList() );
 	#endif
+		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	bvh.BuildBVH();
+		renderThread.GetLogger().LogInfoFormat("Frame BVH Build: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	//bvh.DebugPrint( giState.GetPosition() );
 	
 	giState->PrepareUBOState(); // has to be done here since it is shared
@@ -838,7 +848,6 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGI &gi = renderThread.GetGI();
-	deoglGITraceRays &traceRays = gi.GetTraceRays();
 	
 	if( debugInfo.GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -862,8 +871,15 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
 		giState->GetTextureProbeOffset().GetHeight() ) );
 	
-	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	#ifdef GI_MOVE_PROBES_RAY_CACHE
+		deoglGIRays &rays = giState->GetRays();
+		tsmgr.EnableTexture( 0, rays.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
+	#else
+		deoglGITraceRays &traceRays = gi.GetTraceRays();
+		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	#endif
 	tsmgr.DisableStagesAbove( 1 );
 	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );

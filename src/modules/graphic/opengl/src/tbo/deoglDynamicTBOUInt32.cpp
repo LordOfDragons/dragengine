@@ -337,7 +337,8 @@ void deoglDynamicTBOUInt32::pEnlarge( int count ){
 		return;
 	}
 	
-	const int newSize = pDataCount + count + 50;
+	//const int newSize = pDataCount + count + 50;
+	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
 	uint32_t * const newArray = new uint32_t[ newSize ];
 	
 	if( pDataUInt ){

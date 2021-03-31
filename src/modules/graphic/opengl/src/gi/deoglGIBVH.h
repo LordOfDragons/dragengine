@@ -122,7 +122,8 @@ class deoglGIInstances;
  *   the following layout is used:
  *   - red:
  *     - 16: material atlas index
- *     - 13: (reserved)
+ *     - 12: (reserved)
+ *     - 1: ignore back face
  *     - 1: has solidity
  *     - 1: tex-coord clamp
  *     - 1: ignore material

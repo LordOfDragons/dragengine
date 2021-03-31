@@ -44,6 +44,10 @@ private:
 	deoglTexture *pAO;
 	deoglTexture *pSolidity;
 	deoglTexture *pEnvRoomMask;
+	deoglTexture *pShadowMap;
+	deoglTexture *pShadowMapColor;
+	deoglCubeMap *pShadowCube;
+	deoglCubeMap *pShadowCubeColor;
 	
 	deoglTexture *pWeights;
 	deoglTexture *pMaskOpaque;
@@ -105,6 +109,18 @@ public:
 	/** \brief Default environment room mask texture. */
 	inline deoglTexture *GetEnvRoomMask() const{ return pEnvRoomMask; }
 	
+	/** \brief Default shadow map. */
+	inline deoglTexture *GetShadowMap() const{ return pShadowMap; }
+	
+	/** \brief Default shadow map color. */
+	inline deoglTexture *GetShadowMapColor() const{ return pShadowMapColor; }
+	
+	/** \brief Default shadow cube. */
+	inline deoglCubeMap *GetShadowCube() const{ return pShadowCube; }
+	
+	/** \brief Default shadow cube color. */
+	inline deoglCubeMap *GetShadowCubeColor() const{ return pShadowCubeColor; }
+	
 	/** \brief Default envirnoment map. */
 	inline deoglCubeMap *GetEnvMap() const{ return pEnvMap; }
 	
@@ -160,6 +176,7 @@ private:
 	void pCreateWeightsTexture( deoglRenderThread &renderThread );
 	void pCreateTextureMaskOpaque( deoglRenderThread &renderThread );
 	void pCreateTextureNoise2D( deoglRenderThread &renderThread );
+	void pCreateShadowTextures( deoglRenderThread &renderThread );
 };
 
 #endif

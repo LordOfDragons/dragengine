@@ -1,6 +1,6 @@
 // inline code processing a BVH node with primitives
 // 
-// samples required to be present:
+// samplers required to be present:
 // - samplerBuffer tboGIRayCastFace
 // - samplerBuffer tboGIRayCastVertex
 // - samplerBuffer tboGIRayCastMaterialEmissivity
@@ -61,6 +61,9 @@
 					uvt.w = 1.0 - uvt.x - uvt.y;
 					
 					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < result.distance ){
+						vec3 normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
+						bool frontface = dot( rayDirection, normal ) > 0.0;
+						
 						#ifdef GI_RAYCAST_DISTANCE_ONLY
 							#ifndef GI_RAYCAST_OCCMESH_ONLY
 								// in the distance only case materials with solidity are ignored.
@@ -82,8 +85,10 @@
 						#else
 							int material = rootMaterial + corners.w;
 							uint params = giRayCastMaterialCastParams( material );
+							uint flagsIgnore = frontface ? giRayCastMatFlagIgnore
+								: giRayCastMatFlagIgnore | giRayCastMatFlagIgnoreBackFace;
 							
-							if( ( params & giRayCastMatFlagIgnore ) != 0 ){
+							if( ( params & flagsIgnore ) != 0 ){
 								continue;
 							}
 							
@@ -98,10 +103,62 @@
 								}
 							}
 							
+							/*
+							TODO fix backface after frontface hit problem
+							
+							add to GIRayCastResult value "distanceBack". this is set to maxHitDistance
+							for GI_RAYCAST_DISTANCE_ONLY otherwise sample(texDistance).g
+							
+							on hit face check if face is frontface. if frontface set "distance" value.
+							if backface set "distanceBack" to minimum of hit distance and "distanceBack".
+							
+							at end of ray cast store result of hit frontface. if GI_RAYCAST_DISTANCE_ONLY
+							write out vec2(result.distance, result.distanceBack). otherwise write hit
+							position as it is done now. if result.distance is less than or equal to
+							result.distanceBack write result.distance as it is now otherwise -result.distanceBack.
+							
+							the cached ray thus writes now RG16F instead of R16F with the distance
+							of the closest hit front face and the distance of the closest hit back
+							face in front of the closest front face.
+							
+							for regular ray casting the written out result is always the front face
+							result but with the distance of either the front or back face. since the
+							normal is front face always the back face hit is indicated by negative
+							distance. this has two uses.
+							
+							first the lighting of GI rays can skip now back-face hits too by checking
+							if distance > 9999 or distance < 0 . this avoids spending time on lighting
+							back faces as previously done
+							
+							second irradiance/distance map updating knows if backface is hit by
+							just checking the sign of the samples distance. this avoids needing
+							to sample the normal to figure this out. furthermore the actual
+							distance to use is now abs(distance)
+							
+							this all allows to detect the situation of a solid front face with
+							holes letting through rays which then hit a back face. the ray continues
+							and records the hit with the next front face. 
+							
+							=> actually what we need is to store the distance of the first hit
+							   geometry even if the ray passed through it. the distance has to
+							   be negative if a back face is hit so we can later on detect if
+							   the first encountered surface is front or back facing. the result
+							   always stores the first hit front face result this way but keeping
+							   track of the distance and type of the first encountered surface.
+							   
+							   this should be enough to properly apply the back-face probe disabling
+							   while allowing rays to pass through holed and back facing geometry
+							   to properly detect the distance.
+							   
+							=> we also need to support double-sided model faces. for this add a
+							   new flag to the material parameters. treat hit face as front facing
+							   if dot(rayDirection,normal)<0 or flag is set. this should have no
+							   performance impact
+							*/
 							result.barycentric = uvt.wxy;
 							result.face = face;
 							result.material = material;
-							result.normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
+							result.normal = normal;
 						#endif
 						
 						result.distance = uvt.z;

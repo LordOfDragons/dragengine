@@ -3,6 +3,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+#include "v130/shared/defren/gi/trace_probe.glsl"
 
 in vec3 inPosition;
 
@@ -18,7 +19,7 @@ ivec3 probeIndexToGridCoord( in int index ){
 void main( void ){
 	vInstanceID = gl_InstanceID;
 	
-	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry
+	int probeIndex = giTraceProbeProbeIndex( gl_InstanceID );
 	vProbeCoord = probeIndexToGridCoord( probeIndex );
 	
 	ivec2 texCoord = ivec2( pGIGridProbeCount.x * vProbeCoord.y + vProbeCoord.x, vProbeCoord.z );

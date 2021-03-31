@@ -511,7 +511,8 @@ void deoglDynamicTBOFloat16::pEnlarge( int count ){
 		return;
 	}
 	
-	const int newSize = pDataCount + count + 50;
+	//const int newSize = pDataCount + count + 50;
+	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
 	HALF_FLOAT * const newArray = new HALF_FLOAT[ newSize ];
 	
 	if( pDataFloat ){

@@ -12,7 +12,7 @@
 //   - emissivity.intensity:    16 16 16  => 48
 //   - ignore:                  1         => 1
 //   - texCoord.clamp:          1         => 1
-//   - has solidity:            1         => 1
+//   - has ignore back face:    1         => 1
 //   
 //   also store the index of the material in the material texture atlas as 16 bits value.
 //   14 bits allows for a maximum of 16383 materials. this equals a 128x128 atlas size or
@@ -27,7 +27,8 @@
 //   the following layout is used:
 //   - red:
 //     - 16: material atlas index
-//     - 13: (reserved)
+//     - 12: (reserved)
+//     - 1: ignore back face
 //     - 1: ignore material
 //     - 1: tex-coord clamp
 //     - 1: has solidity
@@ -65,6 +66,7 @@ uniform sampler2D tboGIRayCastMaterialEmissivity; // emissivity=rgb, solidity=a
 const uint giRayCastMatFlagIgnore = uint( 0x1 );
 const uint giRayCastMatFlagClampTC = uint( 0x2 );
 const uint giRayCastMatFlagHasSolidity = uint( 0x4 );
+const uint giRayCastMatFlagIgnoreBackFace = uint( 0x8 );
 
 
 // Sample material parameters.

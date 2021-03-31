@@ -4,6 +4,11 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 
+#ifdef WITH_RAY_CACHE
+	#include "v130/shared/defren/gi/raycast/ray_cache.glsl"
+	#include "v130/shared/defren/gi/trace_probe.glsl"
+#endif
+
 
 uniform sampler2D texPosition;
 uniform sampler2D texNormal;
@@ -20,7 +25,11 @@ ivec3 giGridLocalToShift( in ivec3 local ){
 }
 
 void main( void ){
-	ivec2 rayOffset = ivec2( ( vInstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, vInstanceID / pGIProbesPerLine );
+	#ifdef WITH_RAY_CACHE
+		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( vInstanceID ) );
+	#else
+		ivec2 rayOffset = ivec2( ( vInstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, vInstanceID / pGIProbesPerLine );
+	#endif
 	
 	vec3 probePosition = pGIProbePosition[ vInstanceID ].xyz;
 	
@@ -34,23 +43,34 @@ void main( void ){
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
-		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
 		
-		if( rayPosition.w >= 9999.0 ){
+		#ifdef WITH_RAY_CACHE
+			float rayDistance = texelFetch( texPosition, rayTC, 0 ).r;
+		#else
+			vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
+			#define rayDistance rayPosition.w
+		#endif
+		
+		if( rayDistance >= 9999.0 ){
 			continue; // ray misses. do not move
 		}
 		
-		vec3 rayDirection = rayPosition.xyz - probePosition;
+		#ifdef WITH_RAY_CACHE
+			vec3 rayDirection = pGIRayDirection[ i ] * rayDistance;
+		#else
+			vec3 rayDirection = rayPosition.xyz - probePosition;
+		#endif
+		
 		vec3 hitNormal = texelFetch( texNormal, rayTC, 0 ).xyz;
 		float distToSurface = dot( hitNormal, rayDirection );
 		
 		if( distToSurface < 0.0 ){
 			frontFaceCount++;
 			
-			if( rayPosition.w >= pGIMoveMinDistToSurface ){
+			if( rayDistance >= pGIMoveMinDistToSurface ){
 				continue; // far enough to have no influence
 				
-			}else if( rayPosition.w < 0.001 ){
+			}else if( rayDistance < 0.001 ){
 				// at surface. move along normal
 				outOffset += hitNormal * pGIMoveMinDistToSurface;
 				
@@ -60,13 +80,13 @@ void main( void ){
 				// offset = normalize(rayDirection) * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
-				outOffset += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayPosition.w );
+				outOffset += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
 			}
 			
 		}else{
 			backfaceCount++;
 			
-			if( rayPosition.w >= backFaceMinDistToSurface ){
+			if( rayDistance >= backFaceMinDistToSurface ){
 				continue; // too far away to reach other side. do not move
 				
 			}else{
