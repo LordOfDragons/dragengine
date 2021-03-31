@@ -25,9 +25,11 @@
 #include <stdarg.h>
 
 #include "deLoggerFile.h"
-#include "../common/file/decBaseFileWriter.h"
 #include "../common/exceptions.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/string/decString.h"
+#include "../common/utils/decDateTime.h"
+#include "../threading/deMutexGuard.h"
 
 
 
@@ -60,88 +62,33 @@ deLoggerFile::~deLoggerFile(){
 ///////////////
 
 void deLoggerFile::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int len = strlen( message );
-	decString string;
-	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "II [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "II [%s] %s", source, message );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "II " );
 }
 
 void deLoggerFile::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int len = strlen( message );
-	decString string;
-	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "WW [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "WW [%s] %s", source, message );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "WW " );
 }
 
 void deLoggerFile::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
+	LogPrefix( source, message, "EE " );
+}
+
+void deLoggerFile::LogPrefix( const char *source, const char *message, const char *prefix ){
+	if( ! source || ! message || ! prefix ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const int len = strlen( message );
+	const decDateTime timestamp;
 	decString string;
 	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "EE [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "EE [%s] %s", source, message );
-	}
+	string.Format( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
+		timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
+		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	pWriter->Write( string.GetString(), string.GetLength() );
+	fflush( NULL );
 }
