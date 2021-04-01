@@ -1188,7 +1188,7 @@ void deoglRenderGI::pSharedTraceRays( deoglRenderPlan &plan ){
 }
 
 void deoglRenderGI::pClearTraceRays(){
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	
 	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
