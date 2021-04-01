@@ -883,7 +883,7 @@ void deoglRComponentLOD::PrepareBVH(){
 	// BVH should be done always on the highest LOD level to reduce work load
 	PreparePositions();
 	
-	const deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
+	const deoglModelLOD &modelLOD = *GetModelLOD();
 	const oglModelVertex * const vertices = modelLOD.GetVertices();
 	const deoglModelFace * const faces = modelLOD.GetFaces();
 	const int faceCount = modelLOD.GetFaceCount();

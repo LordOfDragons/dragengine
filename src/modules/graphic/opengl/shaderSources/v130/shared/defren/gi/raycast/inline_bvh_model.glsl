@@ -62,7 +62,7 @@
 					
 					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < result.distance ){
 						vec3 normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
-						bool frontface = dot( rayDirection, normal ) > 0.0;
+						bool frontface = dot( rayDirection, normal ) < 0.0;
 						
 						#ifdef GI_RAYCAST_DISTANCE_ONLY
 							#ifndef GI_RAYCAST_OCCMESH_ONLY
@@ -76,8 +76,11 @@
 								// code above by changing the meaning of corners.w
 								int material = rootMaterial + corners.w;
 								uint params = giRayCastMaterialCastParams( material );
+								uint flagsIgnore = frontface
+									? giRayCastMatFlagIgnore | giRayCastMatFlagHasSolidity
+									: giRayCastMatFlagIgnore | giRayCastMatFlagHasSolidity | giRayCastMatFlagIgnoreBackFace;
 								
-								if( ( params & ( giRayCastMatFlagIgnore | giRayCastMatFlagHasSolidity ) ) != 0 ){
+								if( ( params & flagsIgnore ) != 0 ){
 									continue;
 								}
 							#endif
@@ -85,7 +88,8 @@
 						#else
 							int material = rootMaterial + corners.w;
 							uint params = giRayCastMaterialCastParams( material );
-							uint flagsIgnore = frontface ? giRayCastMatFlagIgnore
+							uint flagsIgnore = frontface
+								? giRayCastMatFlagIgnore
 								: giRayCastMatFlagIgnore | giRayCastMatFlagIgnoreBackFace;
 							
 							if( ( params & flagsIgnore ) != 0 ){

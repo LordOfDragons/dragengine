@@ -202,7 +202,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 			pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
 		}
 		
-// 		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
+		pAddBVH( bvh, bvhModel.indexNodes, bvhModel.indexFaces );
 // 				pRenderThread.GetLogger().LogInfoFormat("> Add Dynamic Model: %d (%s)",
 // 					(int)(timer1.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
 		
@@ -587,7 +587,7 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 
 deoglGIBVH::sModel &deoglGIBVH::pAddModel(){
 	if( pModelCount == pModelSize ){
-		const int newSize = pModelCount + 10;
+		const int newSize = pModelCount * 3 / 2 + 1;
 		sModel * const newArray = new sModel[ newSize ];
 		if( pModels ){
 			memcpy( newArray, pModels, sizeof( sModel ) * pModelCount );
