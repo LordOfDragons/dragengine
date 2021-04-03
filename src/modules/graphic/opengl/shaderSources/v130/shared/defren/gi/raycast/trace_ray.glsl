@@ -5,14 +5,15 @@
 //   maxExtend(1:RGB). one component has to be wasted in each pixel due to format
 //   restrictions. contains package nodes of all mesh BVH then nodes of instance BVH.
 //   
-// - tboGIRayCastIndex: RG32UI (stride 1 pixel)
+// - tboGIRayCastIndex: RG16UI (stride 1 pixel)
 //   stores bvh node indiced.
 //   1) all mesh bvh indices. firstIndex(R) primitiveCount(G). if leaf node points to mesh
-//      faces in TBOPrimitiveData (absolute strided index). otherwise points to first child
-//      node in tboGIRayCastNodeBox/tboGIRayCastIndex (absolute strided index).
+//      faces in TBOPrimitiveData (relative strided index). otherwise points to first child
+//      node in tboGIRayCastNodeBox/tboGIRayCastIndex (relative strided index).
 //   2) all instance bvh indices. firstIndex(R) primitiveCount(G). points to next node in
-//      tboGIRayCastNodeBox/tboGIRayCastIndex (absolute strided index). for child nodes stays in instance BVH.
-//      for leaf nodes switches to mesh BVH traversal. points into tboGIRayCastInstance and tboGIRayCastMatrix.
+//      tboGIRayCastNodeBox/tboGIRayCastIndex (relative strided index). for child nodes
+//      stays in instance BVH. for leaf nodes switches to mesh BVH traversal. points into
+//      tboGIRayCastInstance and tboGIRayCastMatrix.
 // 
 // - tboGIRayCastInstance: RGBA32UI (stride 1 pixel)
 //   stores instance offsets. bvhIndex(R) is the absolute strided index into tboGIRayCastNodeBox
@@ -24,10 +25,9 @@
 // - tboGIRayCastMatrix: RGBA16F (stride 3 pixels)
 //   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
 //   
-// - tboGIRayCastFace: RGBA16F (stride 3 pixels)
-//   stores mesh faces. vertex1(0:RGB) vertex2(1:RGB) vertex3(2:RGB) materialIndex(0:A).
-//   vertices are transformed by "current BVH transformation matrix". materialIndex is
-//   relative to instance.
+// - tboGIRayCastFace: RGBA16UI (stride 3 pixels)
+//   stores mesh faces. vertex1(R) vertex2(G) vertex3(B) textureIndex(A). indices into
+//   tboGIRayCastVertex. textureIndex is relative index into materialIndex.
 // 
 // - tboGIRayCastVertex: RGBA32F (stride 1 pixel)
 //   stores mesh vertices. vertices are transformed by "current BVH transformation matrix"
@@ -240,6 +240,7 @@ in float distanceLimit, out GIRayCastResult result ){
 			if( index.y > 0 ){
 				break;
 			}
+			index.x += rootNode;
 #include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
 			curNode = stack[ --stackPosition ];
 		}

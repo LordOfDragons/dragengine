@@ -26,6 +26,7 @@
 #include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../tbo/deoglDynamicTBOFloat16.h"
 #include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
 #include "../utils/bvh/deoglBVH.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -64,11 +65,11 @@ class deoglGIInstances;
  *   maxExtend(1:RGB). one component has to be wasted in each pixel due to format
  *   restrictions. contains package nodes of all mesh BVH then nodes of instance BVH.
  *   
- * - TBOIndex: RG32UI (stride 1 pixel)
+ * - TBOIndex: RG16UI (stride 1 pixel)
  *   stores bvh node indiced.
  *   1) all mesh bvh indices. firstIndex(R) primitiveCount(G). if leaf node points to mesh
- *      faces in TBOPrimitiveData (absolute strided index). otherwise points to first child
- *      node in TBONodeBox/TBOIndex (absolute strided index).
+ *      faces in TBOPrimitiveData (relative strided index). otherwise points to first child
+ *      node in TBONodeBox/TBOIndex (relative strided index).
  *   2) all instance bvh indices. firstIndex(R) primitiveCount(G). points to next node in
  *      TBONodeBox/TBOIndex (absolute strided index). for child nodes stays in instance BVH.
  *      for leaf nodes switches to mesh BVH traversal. points into TBOInstance and TBOMatrix.
@@ -83,7 +84,7 @@ class deoglGIInstances;
  * - TBOMatrix: RGBA32F (stride 3 pixels)
  *   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
  *   
- * - TBOFace: RGBA32UI (stride 1 pixel)
+ * - TBOFace: RGBA16UI (stride 1 pixel)
  *   stores mesh faces. vertex1(R) vertex2(G) vertex3(B) textureIndex(A). indices into
  *   TBOVertex. textureIndex is relative index into TBOMaterial*.
  *   
@@ -201,10 +202,10 @@ private:
 	int pIndexRootNode;
 	
 	deoglDynamicTBOFloat32 pTBONodeBox;
-	deoglDynamicTBOUInt32 pTBOIndex;
+	deoglDynamicTBOUInt16 pTBOIndex;
 	deoglDynamicTBOUInt32 pTBOInstance;
 	deoglDynamicTBOFloat32 pTBOMatrix;
-	deoglDynamicTBOUInt32 pTBOFace;
+	deoglDynamicTBOUInt16 pTBOFace;
 	deoglDynamicTBOFloat32 pTBOVertex;
 	deoglDynamicTBOFloat16 pTBOTexCoord;
 	deoglDynamicTBOUInt32 pTBOMaterial;
@@ -233,7 +234,7 @@ public:
 	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline const deoglDynamicTBOUInt32 &GetTBOIndex() const{ return pTBOIndex; }
+	inline const deoglDynamicTBOUInt16 &GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for instance data. */
 	inline const deoglDynamicTBOUInt32 &GetTBOInstance() const{ return pTBOInstance; }
@@ -242,7 +243,7 @@ public:
 	inline const deoglDynamicTBOFloat32 &GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** TBO for mesh faces. */
-	inline const deoglDynamicTBOUInt32 &GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt16 &GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
 	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }

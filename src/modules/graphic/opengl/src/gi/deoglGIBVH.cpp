@@ -515,13 +515,7 @@ void deoglGIBVH::BuildBVH(){
 			const deoglBVHNode &node = nodes[ i ];
 			pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
 			pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
-			
-			if( node.GetPrimitiveCount() == 0 ){
-				pTBOIndex.AddVec2( pIndexRootNode + node.GetFirstIndex(), 0 );
-				
-			}else{
-				pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
-			}
+			pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
 		}
 	}
 	
