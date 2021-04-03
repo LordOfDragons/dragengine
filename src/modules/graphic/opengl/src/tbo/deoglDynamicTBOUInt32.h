@@ -73,6 +73,10 @@ public:
 	/** TBO. */
 	inline GLuint GetTBO() const{ return pTBO; }
 	
+	/** Data entries. */
+	inline uint32_t *GetData(){ return pDataUInt; }
+	inline const uint32_t *GetData() const{ return pDataUInt; }
+	
 	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }
 	

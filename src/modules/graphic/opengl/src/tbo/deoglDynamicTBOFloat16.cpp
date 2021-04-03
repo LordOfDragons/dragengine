@@ -53,21 +53,6 @@ pMemoryGPU( 0 )
 	if( componentCount < 1 || componentCount > 4 || componentCount == 3 ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	try{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
 }
 
 deoglDynamicTBOFloat16::~deoglDynamicTBOFloat16(){
@@ -395,12 +380,28 @@ void deoglDynamicTBOFloat16::Update(){
 	}
 	
 	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	consumption.DecrementTBOGPU( pMemoryGPU );
-	consumption.DecrementGPU( pMemoryGPU );
+	
+	if( pVBO ){
+		consumption.DecrementTBOGPU( pMemoryGPU );
+		consumption.DecrementGPU( pMemoryGPU );
+		
+	}else{
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
+		if( ! pVBO ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		consumption.IncrementCount();
+		consumption.IncrementTBOCount();
+	}
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( HALF_FLOAT ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( HALF_FLOAT ) * pDataCount, pDataFloat, GL_STREAM_DRAW ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( HALF_FLOAT ) * pDataCount, NULL, GL_STREAM_DRAW ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( HALF_FLOAT ) * pDataCount, pDataFloat, GL_STREAM_DRAW ) );
 	
 	if( ! pTBO ){
 		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
@@ -489,18 +490,20 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 //////////////////////
 
 void deoglDynamicTBOFloat16::pCleanUp(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	consumption.DecrementTBOGPU( pMemoryGPU );
-	consumption.DecrementTBOCount();
-	consumption.DecrementGPU( pMemoryGPU );
-	consumption.DecrementCount();
-	
 	if( pTBO ){
 		glDeleteTextures( 1, &pTBO );
 	}
+	
 	if( pVBO ){
+		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
+		consumption.DecrementTBOGPU( pMemoryGPU );
+		consumption.DecrementTBOCount();
+		consumption.DecrementGPU( pMemoryGPU );
+		consumption.DecrementCount();
+		
 		pglDeleteBuffers( 1, &pVBO );
 	}
+	
 	if( pDataFloat ){
 		delete [] pDataFloat;
 	}

@@ -31,13 +31,13 @@ class deoglRenderThread;
 
 
 /**
-* Stores a dynamic texture buffer object destined to be filled and rendered often.
+ * Stores a dynamic texture buffer object destined to be filled and rendered often.
  * The data is first assembled into an array of float or half-float values. Once
  * done the written data is uploaded to the VBO. The VBO grows with the needed
  * size but never shrinks. This way the usage is as fast as possible.
  */
 class deoglDynamicTBOFloat16{
-public:
+private:
 	deoglRenderThread &pRenderThread;
 	int pComponentCount;
 	GLuint pVBO;
@@ -73,6 +73,10 @@ public:
 	
 	/** TBO. */
 	inline GLuint GetTBO() const{ return pTBO; }
+	
+	/** Data entries. */
+	inline HALF_FLOAT *GetData(){ return pDataFloat; }
+	inline const HALF_FLOAT *GetData() const{ return pDataFloat; }
 	
 	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }

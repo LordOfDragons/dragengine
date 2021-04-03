@@ -30,8 +30,6 @@ class deoglRenderThread;
 
 
 /**
- * \brief Dynamic TBO.
- * 
  * Stores a dynamic texture buffer object destined to be filled and rendered often.
  * The data is first assembled into an array of float or half-float values. Once
  * done the written data is uploaded to the VBO. The VBO grows with the needed
@@ -55,10 +53,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create dynamic tbo. */
+	/** Create dynamic tbo. */
 	deoglDynamicTBOUInt16( deoglRenderThread &renderThread, int componentCount );
 	
-	/** \brief Clean up dynamic tbo. */
+	/** Clean up dynamic tbo. */
 	~deoglDynamicTBOUInt16();
 	/*@}*/
 	
@@ -66,46 +64,50 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Component count. */
+	/** Component count. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief TBO. */
+	/** TBO. */
 	inline GLuint GetTBO() const{ return pTBO; }
 	
-	/** \brief Count of data entries. */
+	/** Data entries. */
+	inline uint16_t *GetData(){ return pDataUInt; }
+	inline const uint16_t *GetData() const{ return pDataUInt; }
+	
+	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }
 	
-	/** \brief Get pixel count. */
+	/** Get pixel count. */
 	int GetPixelCount() const;
 	
 	/** Data point offset at start of pixel. */
 	int GetPixelOffset( int pixel ) const;
 	
-	/** \brief Clear TBO. */
+	/** Clear TBO. */
 	void Clear();
 	
 	/**
-	 * \brief Add boolean value.
+	 * Add boolean value.
 	 * 
 	 * True adds 1 and False 0.
 	 */
 	void AddBool( bool value );
 	
-	/** \brief Add integer value. */
+	/** Add integer value. */
 	void AddInt( uint16_t value );
 	
-	/** \brief Add two integer values. */
+	/** Add two integer values. */
 	void AddVec2( uint16_t value1, uint16_t value2 );
 	void AddVec2( const decPoint &value );
 	
-	/** \brief Add three integer values. */
+	/** Add three integer values. */
 	void AddVec3( uint16_t value1, uint16_t value2, uint16_t value3 );
 	void AddVec3( const decPoint3 &value );
 	
-	/** \brief Add four integer values. */
+	/** Add four integer values. */
 	void AddVec4( uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 );
 	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
@@ -125,13 +127,13 @@ public:
 	/** Set four integer values at offset in components. */
 	void SetVec4At( int offset, uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 );
 	
-	/** \brief Update TBO with added data. */
+	/** Update TBO with added data. */
 	void Update();
 	
-	/** \brief GPU memory consumption. */
+	/** GPU memory consumption. */
 	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
 	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint();
 	/*@}*/
 	
