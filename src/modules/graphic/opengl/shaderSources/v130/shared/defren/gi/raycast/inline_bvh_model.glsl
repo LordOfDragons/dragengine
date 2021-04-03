@@ -8,13 +8,15 @@
 // variables required to be present in scope before inline:
 // - vec3 rayOrigin
 // - vec3 rayDirection
-// - ivec2 index: sampled node index (firstIndex, primitiveCount)
+// - ivec2 index: sampled node index (firstIndex absolute, primitiveCount)
 // - GIRayCastResult result
 // - bool hasHit
+// - int rootVertex: absolute index of first vertex in TBO
 
 			int i;
 			for( i=0; i<index.y; i++ ){
 				ivec4 corners = ivec4( texelFetch( tboGIRayCastFace, index.x + i ) );
+				corners.xyz += ivec3( rootVertex );
 				
 				vec3 v1 = texelFetch( tboGIRayCastVertex, corners.x ).xyz;
 				vec3 v2 = texelFetch( tboGIRayCastVertex, corners.y ).xyz;

@@ -73,10 +73,12 @@ class deoglGIInstances;
  *      TBONodeBox/TBOIndex (absolute strided index). for child nodes stays in instance BVH.
  *      for leaf nodes switches to mesh BVH traversal. points into TBOInstance and TBOMatrix.
  * 
- * - TBOInstance: RG32UI (stride 1 pixel)
+ * - TBOInstance: RGBA32UI (stride 1 pixel)
  *   stores instance offsets. bvhIndex(R) is the absolute strided index into TBONodeBox
  *   and TBOIndex with the mesh bvh root node. materialIndex(G) is the absolute strided
- *   index into TBOMaterial* of the first instance material.
+ *   index into TBOMaterial* of the first instance material. vertexIndex(B) is the absolute
+ *   strided index into TBOVertex of the first instance vertex. faceIndex(A) is the absolute
+ *   strided index into TBOFace of the first instance face.
  *   
  * - TBOMatrix: RGBA32F (stride 3 pixels)
  *   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
@@ -293,7 +295,7 @@ private:
 	void pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
 		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
 		const decTexMatrix2 &texCoordMatrix );
-	void pAddBVH( const deoglBVH &bvh, int rootIndexNodes, int rootIndexFaces );
+	void pAddBVH( const deoglBVH &bvh );
 };
 
 #endif

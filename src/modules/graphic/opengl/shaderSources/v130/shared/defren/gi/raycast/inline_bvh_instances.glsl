@@ -14,8 +14,6 @@
 			int i, tcMatrix = index.x * 3;
 			
 			for( i=0; i<index.y; i++ ){
-				ivec2 indices = ivec2( texelFetch( tboGIRayCastInstance, index.x + i ).xy );
-				
 				vec4 mrow1 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
 				vec4 mrow2 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
 				vec4 mrow3 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
@@ -32,8 +30,9 @@
 				vec3 meshRayDirection = vec3( vec4( rayDirection, 0.0 ) * invMatrix );
 				
 				GIRayCastResult meshResult;
-				if( giRayCastTraceMesh( indices.x, indices.y, meshRayOrigin,
-						normalize( meshRayDirection ), result.distance, meshResult ) ){
+				
+				if( giRayCastTraceMesh( ivec4( texelFetch( tboGIRayCastInstance, index.x + i ) ),
+				meshRayOrigin, normalize( meshRayDirection ), result.distance, meshResult ) ){
 					// we can not use directly the distance since it is possible the matrix
 					// contains scaling. we have to calculate the hit point in tracing space
 					// and from there the distance can be calculated as difference between the

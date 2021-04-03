@@ -14,10 +14,12 @@
 //      tboGIRayCastNodeBox/tboGIRayCastIndex (absolute strided index). for child nodes stays in instance BVH.
 //      for leaf nodes switches to mesh BVH traversal. points into tboGIRayCastInstance and tboGIRayCastMatrix.
 // 
-// - tboGIRayCastInstance: RG32UI (stride 1 pixel)
+// - tboGIRayCastInstance: RGBA32UI (stride 1 pixel)
 //   stores instance offsets. bvhIndex(R) is the absolute strided index into tboGIRayCastNodeBox
-//   and tboGIRayCastIndex with the mesh bvh root node.materialIndex(G) is the absolute strided
-//   index into TBOMaterial of the first instance material.
+//   and tboGIRayCastIndex with the mesh bvh root node. materialIndex(G) is the absolute strided
+//   index into tboGIRayCastMaterial* of the first instance material. vertexIndex(B) is the absolute
+//   strided index into tboGIRayCastVertex of the first instance vertex. faceIndex(A) is the absolute
+//   strided index into tboGIRayCastFace and tboGIRayCastTexCoord of the first instance face.
 //   
 // - tboGIRayCastMatrix: RGBA16F (stride 3 pixels)
 //   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
@@ -92,9 +94,19 @@ vec2 giRayCastFaceTexCoord( in int face, in vec3 barycentric ){
 
 // Perform ray cast against mesh BVH starting at absolute strided index.
 // 
+// Parameter indices contains indices required to trace rays in the model:
+// - indices.x = root node index
+// - indices.y = root material index
+// - indices.z = root vertex index
+// - indices.w = root face index
+// 
 // Returns true if hit is found otherwise false.
-bool giRayCastTraceMesh( in int rootNode, in int rootMaterial, in vec3 rayOrigin,
-in vec3 rayDirection, in float distanceLimit, out GIRayCastResult result ){
+bool giRayCastTraceMesh( in ivec4 indices, in vec3 rayOrigin, in vec3 rayDirection,
+in float distanceLimit, out GIRayCastResult result ){
+	#define rootNode indices.x
+	#define rootMaterial indices.y
+	#define rootVertex indices.z
+	#define rootFace indices.w
 	vec3 invRayDirection = 1.0 / rayDirection;
 	
 	// early exit. if the ray misses the root box node skip the mesh entirely.
@@ -143,12 +155,14 @@ in vec3 rayDirection, in float distanceLimit, out GIRayCastResult result ){
 			if( index.y > 0 ){
 				break;
 			}
+			index.x += rootNode;
 #include "v130/shared/defren/gi/raycast/inline_bvh_node.glsl"
 			curNode = stack[ --stackPosition ];
 		}
 		
 		// face pass
 		if( curNode > -1 ){
+			index.x += rootFace;
 #include "v130/shared/defren/gi/raycast/inline_bvh_model.glsl"
 			curNode = stack[ --stackPosition ];
 		}
@@ -156,6 +170,10 @@ in vec3 rayDirection, in float distanceLimit, out GIRayCastResult result ){
 	
 	//result.hitPoint = rayOrigin + rayDirection * result.distance;
 	return hasHit;
+	#undef rootNode
+	#undef rootMaterial
+	#undef rootVertex
+	#undef rootFace
 }
 
 
