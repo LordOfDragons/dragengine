@@ -428,6 +428,7 @@ void deoglGIState::Invalidate(){
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
+		probe.countOffsetMoved = 0;
 	}
 	
 	pClearMaps = true;
@@ -457,6 +458,19 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 	
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		sProbe &probe = *pUpdateProbes[ i ];
+		
+		// PROBLEM some probes flicker between two positions and can not make up their mind.
+		//         this causes GI flickering and endless ray cache invalidating.
+		//         
+		//         as a quick fix a counter is used. each time the offset changes the counter
+		//         is incremented. after a certain amount the probe is not allowe to move
+		//         offset anymore. invalidating a probe resets the counter
+		//         
+		//         the root cause is unknown. would be better to find and fix it
+		if( probe.countOffsetMoved >= 5 ){
+			continue;
+		}
+		
 		const int x = pProbeCount.x * probe.coord.y + probe.coord.x;
 		const int y = probe.coord.z;
 		
@@ -470,6 +484,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		probe.offset = offset;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
+		probe.countOffsetMoved++;
 	}
 }
 
@@ -519,6 +534,7 @@ void deoglGIState::pInitProbes(){
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
+		probe.countOffsetMoved = 0;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
 }
@@ -627,6 +643,7 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
+		probe.countOffsetMoved = 0;
 	}
 	
 	// set the new tracing position

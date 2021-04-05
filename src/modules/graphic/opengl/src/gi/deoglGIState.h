@@ -68,6 +68,7 @@ public:
 		decVector2 weightViewAngle;
 		float weightAge;
 		bool insideView;
+		int countOffsetMoved;
 	};
 	
 	

@@ -802,6 +802,14 @@ void deoglModelLOD::PrepareGILocalBVH(){
 	if( primitives ){
 		delete [] primitives;
 	}
+	
+	// check for suboptimal configurations and warn the developer
+	if( pFaceCount > 300 ){
+		pModel.GetRenderThread().GetLogger().LogInfoFormat(
+			"Model(%s,%i): High face count slows down global illumination (%d)."
+			" Consider adding highest LOD variation with less than 300 faces.",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+	}
 }
 
 

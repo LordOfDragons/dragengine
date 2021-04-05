@@ -455,7 +455,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetRayCacheProbeCount() ) );
 		
-// 		giState->ValidatedRayCaches();
+		giState->ValidatedRayCaches(); // comment out for performance test
 	}
 	#endif
 	
