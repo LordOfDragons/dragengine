@@ -215,6 +215,16 @@ void deoglDynamicTBOFloat32::AddMat3x2( const decMatrix &value ){
 	pDataFloat[ pDataCount++ ] = value.a23;
 }
 
+void deoglDynamicTBOFloat32::AddTBO( const deoglDynamicTBOFloat32 &tbo ){
+	if( tbo.pDataCount == 0 ){
+		return;
+	}
+	
+	pEnlarge( tbo.pDataCount );
+	memcpy( pDataFloat + pDataCount, tbo.pDataFloat, sizeof( float ) * tbo.pDataCount );
+	pDataCount += tbo.pDataCount;
+}
+
 void deoglDynamicTBOFloat32::SetBoolAt( int offset, bool value ){
 	SetFloatAt( offset, value ? 1.0f : 0.0f );
 }

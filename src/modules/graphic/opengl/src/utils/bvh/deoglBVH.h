@@ -28,14 +28,14 @@ class deoglBVHNode;
 
 
 /**
- * \brief Bounding volume hierarchie.
+ * Bounding volume hierarchie.
  * 
  * Stores the entire BVH as a list of nodes. Content stored in the nodes is stored elsewhere
  * and referenced by indices. This allows storing the BVH to cache and upload to GPU.
  */
 class deoglBVH{
 public:
-	/** \brief Primitive boundary used for building BVH. */
+	/** Primitive boundary used for building BVH. */
 	struct sBuildPrimitive{
 		decVector minExtend;
 		decVector maxExtend;
@@ -58,10 +58,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bvh. */
+	/** Create bvh. */
 	deoglBVH();
 	
-	/** \brief Clean up bvh. */
+	/** Clean up bvh. */
 	~deoglBVH();
 	/*@}*/
 	
@@ -69,40 +69,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of nodes. */
+	/** Count of nodes. */
 	inline int GetNodeCount() const{ return pNodeCount; }
 	
-	/** \brief Node at index. */
+	/** Node at index. */
 	deoglBVHNode &GetNodeAt( int index ) const;
 	
-	/** \brief Direct access to nodes array. */
+	/** Direct access to nodes array. */
 	inline deoglBVHNode *GetNodes() const{ return pNodes; }
 	
 	
 	
-	/** \brief Count of primitives. */
+	/** Count of primitives. */
 	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
 	
-	/** \brief Primitive at index. */
+	/** Primitive at index. */
 	int GetPrimitiveAt( int index ) const;
 	
-	/** \brief Direct access to primitives array. */
+	/** Direct access to primitives array. */
 	inline int *GetPrimitives() const{ return pPrimitives; }
 	
 	
 	
 	
-	/** \brief Get root node or NULL if empty. */
+	/** Get root node or NULL if empty. */
 	deoglBVHNode *GetRootNode() const;
 	
-	/** \brief Clear tree. */
+	/** Clear tree. */
 	void Clear();
 	
 	/**
-	 * \brief Build tree.
-	 * 
-	 * List of build primitives has to contain the boundary information for each primitive
-	 * in the same order the primitives are indexed. The array can be deleted after build.
+	 * Build tree. List of build primitives has to contain the boundary information
+	 * for each primitive in the same order the primitives are indexed.
+	 * The array can be deleted after build.
 	 */
 	void Build( const sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12 );
 	/*@}*/

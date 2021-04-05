@@ -124,6 +124,9 @@ public:
 	/** Add 3x2 matrix in colon major order adding 6 float. */
 	void AddMat3x2( const decMatrix &value );
 	
+	/** Add content from another dynamic TBO. */
+	void AddTBO( const deoglDynamicTBOFloat32 &tbo );
+	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
 	void SetBoolAt( int offset, bool value );
 	

@@ -110,6 +110,9 @@ public:
 	/** Add four integer values. */
 	void AddVec4( uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 );
 	
+	/** Add content from another dynamic TBO. */
+	void AddTBO( const deoglDynamicTBOUInt16 &tbo );
+	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
 	void SetBoolAt( int offset, bool value );
 	

@@ -34,7 +34,7 @@ class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglSharedVBOBlock;
 class deoglSharedSPBRTIGroupList;
-class deoglBVH;
+class deoglGIBVHLocal;
 
 class deGraphicOpenGl;
 class deModel;
@@ -118,16 +118,16 @@ public:
 	float pMaxError;
 	float pAvgError;
 	
-	deoglBVH *pBVH;
+	deoglGIBVHLocal *pGIBVHLocal;
 	
 	
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model lod. */
+	/** Creates a new model lod. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
-	/** \brief Creates a new model lod from cache. */
+	/** Creates a new model lod from cache. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader );
 	/** Cleans up the model lod. */
 	~deoglModelLOD();
@@ -145,39 +145,39 @@ public:
 	/** Retrieves the VBO block. */
 	deoglSharedVBOBlock *GetVBOBlock();
 	
-	/** \brief Retrieves the position weight VBO block. */
+	/** Retrieves the position weight VBO block. */
 	deoglSharedVBOBlock *GetVBOBlockPositionWeight();
 	
-	/** \brief Retrieves the calculate normal tangent VBO block. */
+	/** Retrieves the calculate normal tangent VBO block. */
 	deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent();
 	
-	/** \brief Retrieves the write skinned vbo VBO block. */
+	/** Retrieves the write skinned vbo VBO block. */
 	deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO();
 	
-	/** \brief Retrieves the vbo block with weight. */
+	/** Retrieves the vbo block with weight. */
 	deoglSharedVBOBlock *GetVBOBlockWithWeight();
 	
-	/** \brief Index buffer object. */
+	/** Index buffer object. */
 	GLuint GetIBO();
 	
-	/** \brief Index buffer object data type. */
+	/** Index buffer object data type. */
 	inline deoglVBOLayout::eIndexTypes GetIBOType() const{ return pIBOType; }
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	const deoglModelTexture &GetTextureAt( int index ) const;
 	
-	/** \brief Texture render task instance group. */
+	/** Texture render task instance group. */
 	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt( int texture ) const;
 	
-	/** \brief Model has double sided textures. */
+	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Model has decal textures. */
+	/** Model has decal textures. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** Retrieves the positions. */
@@ -226,10 +226,10 @@ public:
 	/** Retrieves the texture coordinate set at the given index. */
 	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
 	
-	/** \brief Octree or \em NULL if there is none. */
+	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }
 	
-	/** \brief Prepare octree if not existing already. */
+	/** Prepare octree if not existing already. */
 	void PrepareOctree();
 	
 	/** Retrieves the maximum error in meters compared to LOD 0. */
@@ -237,18 +237,18 @@ public:
 	/** Retrieves the average error in meters compared to LOD 0. */
 	inline float GetAvgError() const{ return pAvgError; }
 	
-	/** \brief Load from cache file. */
+	/** Load from cache file. */
 	void LoadFromCache( decBaseFileReader &reader );
-	/** \brief Save to cache file. */
+	/** Save to cache file. */
 	void SaveToCache( decBaseFileWriter &writer );
 	
 	
 	
-	/** \brief BVH or NULL. */
-	inline deoglBVH *GetBVH() const{ return pBVH; }
+	/** GI Local BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
-	/** \brief Build BVH if not build yet. */
-	void PrepareBVH();
+	/** Prepare GI Local BVH if not build yet. */
+	void PrepareGILocalBVH();
 	/*@}*/
 	
 private:

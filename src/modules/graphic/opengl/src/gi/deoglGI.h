@@ -34,8 +34,9 @@ class deoglROcclusionMesh;
 //#define ENABLE_GI 1
 // #define GI_USE_RAY_LIMIT 1
 #define GI_USE_RAY_CACHE 1
-// #define GI_RENDERDOC_DEBUG 1
 #define GI_MOVE_PROBES_RAY_CACHE 1
+
+// #define GI_RENDERDOC_DEBUG 1
 
 #if defined GI_RENDERDOC_DEBUG && defined GI_USE_RAY_CACHE
 #undef GI_USE_RAY_CACHE

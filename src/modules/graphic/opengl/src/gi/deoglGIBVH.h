@@ -31,19 +31,20 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRenderThread;
-class deoglRenderPlan;
+class deoglGIBVHLocal;
+class deoglGIInstance;
+class deoglGIInstances;
 class deoglRComponent;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
-class deoglRWorld;
-class deoglRSkin;
-class deoglSkinTexture;
-class deoglSkinState;
 class deoglRDynamicSkin;
+class deoglRenderPlan;
 class deoglRenderTaskTexture;
-class deoglGIInstance;
-class deoglGIInstances;
+class deoglRenderThread;
+class deoglRSkin;
+class deoglRWorld;
+class deoglSkinState;
+class deoglSkinTexture;
 
 
 /**
@@ -297,6 +298,7 @@ private:
 		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
 		const decTexMatrix2 &texCoordMatrix );
 	void pAddBVH( const deoglBVH &bvh );
+	void pAddLocalBVH( const deoglGIBVHLocal &localBVH );
 };
 
 #endif

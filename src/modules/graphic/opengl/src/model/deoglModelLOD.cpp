@@ -46,6 +46,7 @@
 #include "../vbo/deoglVBOAttribute.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../vbo/writer/deoglVBOWriterModel.h"
+#include "../gi/deoglGIBVHLocal.h"
 #include "../utils/bvh/deoglBVH.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionDetection.h"
@@ -77,7 +78,7 @@ pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
 pIBOType( deoglVBOLayout::eitUnsignedShort ),
-pBVH( NULL )
+pGIBVHLocal( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -162,7 +163,7 @@ pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
 pIBOType( deoglVBOLayout::eitUnsignedShort ),
-pBVH( NULL )
+pGIBVHLocal( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -738,8 +739,8 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 
 
 
-void deoglModelLOD::PrepareBVH(){
-	if( pBVH ){
+void deoglModelLOD::PrepareGILocalBVH(){
+	if( pGIBVHLocal ){
 		return;
 	}
 	
@@ -778,13 +779,19 @@ void deoglModelLOD::PrepareBVH(){
 		// be used in shader ray tracing) seems to be the best solution. if low face count can
 		// be guaranteed (for example auto-decimation) then lower max depth can be better.
 		// occlusion meshes use 6 here
-		pBVH = new deoglBVH;
-		pBVH->Build( primitives, pFaceCount, 12 );
+		pGIBVHLocal = new deoglGIBVHLocal( pModel.GetRenderThread() );
+		pGIBVHLocal->BuildBVH( primitives, pFaceCount, 12 );
+		
+		if( pGIBVHLocal->GetBVH().GetRootNode() ){
+			pGIBVHLocal->TBOAddVertices( pPositions, pPositionCount );
+			pGIBVHLocal->TBOAddFaces( pFaces, pVertices, pTexCoords );
+			pGIBVHLocal->TBOAddBVH();
+		}
 		
 	}catch( const deException & ){
-		if( pBVH ){
-			delete pBVH;
-			pBVH = NULL;
+		if( pGIBVHLocal ){
+			delete pGIBVHLocal;
+			pGIBVHLocal = NULL;
 		}
 		if( primitives ){
 			delete [] primitives;
@@ -803,8 +810,8 @@ void deoglModelLOD::PrepareBVH(){
 //////////////////////
 
 void deoglModelLOD::pCleanUp(){
-	if( pBVH ){
-		delete pBVH;
+	if( pGIBVHLocal ){
+		delete pGIBVHLocal;
 	}
 	
 	if( pVBOBlockWithWeight ){

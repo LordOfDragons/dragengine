@@ -131,6 +131,16 @@ void deoglDynamicTBOUInt16::AddVec4( uint16_t value1, uint16_t value2, uint16_t 
 	pDataUInt[ pDataCount++ ] = value4;
 }
 
+void deoglDynamicTBOUInt16::AddTBO( const deoglDynamicTBOUInt16 &tbo ){
+	if( tbo.pDataCount == 0 ){
+		return;
+	}
+	
+	pEnlarge( tbo.pDataCount );
+	memcpy( pDataUInt + pDataCount, tbo.pDataUInt, sizeof( uint16_t ) * tbo.pDataCount );
+	pDataCount += tbo.pDataCount;
+}
+
 void deoglDynamicTBOUInt16::SetBoolAt( int offset, bool value ){
 	SetIntAt( offset, value ? ( uint16_t )~1 : 0 );
 }
