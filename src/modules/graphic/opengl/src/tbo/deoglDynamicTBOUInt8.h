@@ -80,8 +80,14 @@ public:
 	/** Count of data entries. */
 	inline int GetDataCount() const{ return pDataCount; }
 	
+	/** Increase count of entries. New entries have undefined content. */
+	void IncreaseDataCount( int byAmount );
+	
 	/** Get pixel count. */
 	int GetPixelCount() const;
+	
+	/** Increase count of pixels. New entries have undefined content. */
+	void IncreasePixelCount( int byAmount );
 	
 	/** Data point offset at start of pixel. */
 	int GetPixelOffset( int pixel ) const;

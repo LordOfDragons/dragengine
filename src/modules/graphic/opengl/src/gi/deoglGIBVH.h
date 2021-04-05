@@ -199,6 +199,8 @@ private:
 	deoglBVH pBVH;
 	deoglBVH::sBuildPrimitive *pPrimitives;
 	int pPrimitiveSize;
+	deoglBVHNode *pRecalcNodes;
+	int pRecalcNodeSize;
 	
 	int pIndexRootNode;
 	
@@ -299,6 +301,10 @@ private:
 		const decTexMatrix2 &texCoordMatrix );
 	void pAddBVH( const deoglBVH &bvh );
 	void pAddLocalBVH( const deoglGIBVHLocal &localBVH );
+	void pAddLocalBVHUpdated( const deoglGIBVHLocal &localBVH, const oglVector *positions );
+	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
+		const deoglBVHNode &node, deoglBVHNode &target );
+	void pEnsureRecalcNodeSize( int size );
 };
 
 #endif

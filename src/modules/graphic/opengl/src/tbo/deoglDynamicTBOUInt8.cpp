@@ -64,12 +64,28 @@ deoglDynamicTBOUInt8::~deoglDynamicTBOUInt8(){
 // Management
 ///////////////
 
+void deoglDynamicTBOUInt8::IncreaseDataCount( int byAmount ){
+	if( byAmount < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( byAmount == 0 ){
+		return;
+	}
+	
+	pEnlarge( byAmount );
+	pDataCount += byAmount;
+}
+
 int deoglDynamicTBOUInt8::GetPixelCount() const{
 	int count = pDataCount / pComponentCount;
 	if( pDataCount % pComponentCount != 0 ){
 		count++;
 	}
 	return count;
+}
+
+void deoglDynamicTBOUInt8::IncreasePixelCount( int byAmount ){
+	pEnlarge( byAmount * pComponentCount );
 }
 
 int deoglDynamicTBOUInt8::GetPixelOffset( int pixel ) const{

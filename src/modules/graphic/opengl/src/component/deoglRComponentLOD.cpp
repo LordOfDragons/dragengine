@@ -48,8 +48,6 @@
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../utils/bvh/deoglBVH.h"
-#include "../utils/bvh/deoglBVHNode.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -119,9 +117,7 @@ pTBOWeightMatrices( 0 ),
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
-pFBOCalcNormalTangent( NULL ),
-
-pBVH( NULL )
+pFBOCalcNormalTangent( NULL )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentLOD );
 }
@@ -876,66 +872,6 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 
 
 
-void deoglRComponentLOD::PrepareBVH(){
-	// TODO do not update if not dirty
-	
-	// calculate positions. we have to do this on the CPU. for this reason updating the
-	// BVH should be done always on the highest LOD level to reduce work load
-	PreparePositions();
-	
-	const deoglModelLOD &modelLOD = *GetModelLOD();
-	const oglModelVertex * const vertices = modelLOD.GetVertices();
-	const deoglModelFace * const faces = modelLOD.GetFaces();
-	const int faceCount = modelLOD.GetFaceCount();
-	
-	deoglBVH::sBuildPrimitive *primitives = NULL;
-	
-	if( faceCount > 0 ){
-		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
-		int i;
-		
-		for( i=0; i<faceCount; i++ ){
-			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
-			
-			const deoglModelFace &face = faces[ i ];
-			const oglVector &v1 = pPositions[ vertices[ face.GetVertex1() ].position ];
-			const oglVector &v2 = pPositions[ vertices[ face.GetVertex2() ].position ];
-			const oglVector &v3 = pPositions[ vertices[ face.GetVertex3() ].position ];
-			
-			primitive.minExtend.x = decMath::min( v1.x, v2.x, v3.x );
-			primitive.minExtend.y = decMath::min( v1.y, v2.y, v3.y );
-			primitive.minExtend.z = decMath::min( v1.z, v2.z, v3.z );
-			primitive.maxExtend.x = decMath::max( v1.x, v2.x, v3.x );
-			primitive.maxExtend.y = decMath::max( v1.y, v2.y, v3.y );
-			primitive.maxExtend.z = decMath::max( v1.z, v2.z, v3.z );
-			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
-		}
-	}
-	
-	try{
-		if( ! pBVH ){
-			pBVH = new deoglBVH;
-		}
-		pBVH->Build( primitives, faceCount, 12 );
-		
-	}catch( const deException & ){
-		if( pBVH ){
-			delete pBVH;
-			pBVH = NULL;
-		}
-		if( primitives ){
-			delete [] primitives;
-		}
-		throw;
-	}
-	
-	if( primitives ){
-		delete [] primitives;
-	}
-}
-
-
-
 // Private Functions
 //////////////////////
 
@@ -993,9 +929,6 @@ public:
 };
 
 void deoglRComponentLOD::pCleanUp(){
-	if( pBVH ){
-		delete pBVH;
-	}
 	if( pVBOLayout ){
 		delete pVBOLayout;
 	}

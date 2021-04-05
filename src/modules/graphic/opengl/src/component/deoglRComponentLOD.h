@@ -34,7 +34,6 @@ class deoglTexture;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglSharedVBOBlock;
-class deoglBVH;
 
 
 /**
@@ -86,8 +85,6 @@ public:
 	GLuint pTBOTransformVertices;
 	deoglTexture *pTexTransformNormTan;
 	deoglFramebuffer *pFBOCalcNormalTangent;
-	
-	deoglBVH *pBVH;
 	
 	
 	
@@ -221,14 +218,6 @@ public:
 	
 	/** \brief Approximately transform vertices, normals and tangents on the GPU. */
 	void GPUApproxTransformVNT();
-	
-	
-	
-	/** \brief BVH or NULL. */
-	inline deoglBVH *GetBVH() const{ return pBVH; }
-	
-	/** \brief Build BVH if not build yet. */
-	void PrepareBVH();
 	/*@}*/
 	
 	

@@ -64,12 +64,28 @@ deoglDynamicTBOFloat32::~deoglDynamicTBOFloat32(){
 // Management
 ///////////////
 
+void deoglDynamicTBOFloat32::IncreaseDataCount( int byAmount ){
+	if( byAmount < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( byAmount == 0 ){
+		return;
+	}
+	
+	pEnlarge( byAmount );
+	pDataCount += byAmount;
+}
+
 int deoglDynamicTBOFloat32::GetPixelCount() const{
 	int count = pDataCount / pComponentCount;
 	if( pDataCount % pComponentCount != 0 ){
 		count++;
 	}
 	return count;
+}
+
+void deoglDynamicTBOFloat32::IncreasePixelCount( int byAmount ){
+	pEnlarge( byAmount * pComponentCount );
 }
 
 int deoglDynamicTBOFloat32::GetPixelOffset( int pixel ) const{

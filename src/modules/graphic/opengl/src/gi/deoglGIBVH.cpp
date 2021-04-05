@@ -76,6 +76,8 @@ pComponentCount( 0 ),
 pComponentSize( 0 ),
 pPrimitives( NULL ),
 pPrimitiveSize( 0 ),
+pRecalcNodes( NULL ),
+pRecalcNodeSize( 0 ),
 pIndexRootNode( 0 ),
 pTBONodeBox( renderThread, 4 ),
 pTBOIndex( renderThread, 2 ),
@@ -89,6 +91,9 @@ pTBOMaterial2( renderThread, 4 ){
 }
 
 deoglGIBVH::~deoglGIBVH(){
+	if( pRecalcNodes ){
+		delete [] pRecalcNodes;
+	}
 	if( pPrimitives ){
 		delete [] pPrimitives;
 	}
@@ -158,92 +163,56 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	
 	//if( component.GetRenderMode() == deoglRComponent::ermDynamic ){ // not catching all
 	if( modelLOD.GetWeightsCount() > 0 ){
-				decTimer timer2;
-		// prepare BVH
-		lod.PrepareBVH();
-		if( ! lod.GetBVH()->GetRootNode() ){
+// 				decTimer timer2;
+		// prepare BVH if not prepared already. for dynamic content the model BVH can be used
+		// but with modified positions and BVH node extends
+		modelLOD.PrepareGILocalBVH();
+		if( ! modelLOD.GetGIBVHLocal()->GetBVH().GetRootNode() ){
 			return; // empty model
 		}
-				pRenderThread.GetLogger().LogInfoFormat("> > Dynamic Prepare BVH: %d (%s)",
-					(int)(timer2.GetElapsedTime() * 1e6f), component.GetModel()->GetFilename().GetString());
+		
+		// prepare dynamic positions if dirty
+		lod.PreparePositions();
 		
 		// add model to list of encountered models
 		indexModel = pModelCount;
-		sModel &bvhModel = pAddModel();
-		bvhModel.component = &lod;
+		pAddModel().component = &lod;
 		
-		// add vertices to TBO in mesh order
-				modelLOD.PrepareGILocalBVH();
-		const oglVector * const positions = lod.GetPositions();
-		const int positionPoint = modelLOD.GetPositionCount();
-		int i;
-		
-		for( i=0; i<positionPoint; i++ ){
-			const oglVector &position = positions[ i ];
-			pTBOVertex.AddVec4( position.x, position.y, position.z, 0.0f );
-		}
-				pRenderThread.GetLogger().LogInfoFormat("> > Dynamic Add Vertices: %d (%s)",
-					(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
-		
-		// add faces to TBOs using primitive mapping from BVH
-		const deoglBVH &bvh = *lod.GetBVH();
-		const decVector2 * const texCoords = modelLOD.GetTextureCoordinates();
-		const oglModelVertex * const vertices = modelLOD.GetVertices();
-		const deoglModelFace * const faces = modelLOD.GetFaces();
-		const int * const primitives = bvh.GetPrimitives();
-		const int primitiveCount = bvh.GetPrimitiveCount();
-		
-		for( i=0; i<primitiveCount; i++ ){
-			const deoglModelFace &face = faces[ primitives[ i ] ];
-			const oglModelVertex &v1 = vertices[ face.GetVertex1() ];
-			const oglModelVertex &v2 = vertices[ face.GetVertex2() ];
-			const oglModelVertex &v3 = vertices[ face.GetVertex3() ];
-			
-			pTBOFace.AddVec4( v1.position, v2.position, v3.position, face.GetTexture() );
-			
-			pTBOTexCoord.AddVec2( texCoords[ v1.texcoord ] );
-			pTBOTexCoord.AddVec2( texCoords[ v2.texcoord ] );
-			pTBOTexCoord.AddVec2( texCoords[ v3.texcoord ] );
-		}
-				pRenderThread.GetLogger().LogInfoFormat("> > Dynamic Add Faces: %d (%s)",
-					(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
-		
-		pAddBVH( bvh );
-				pRenderThread.GetLogger().LogInfoFormat("> > Dynamic Add Nodes: %d (%s)",
-					(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
+		// copy local BVH while updating position and extends at the same time. recalculating
+		// the BVH would be the most optimal solution but this is expensive. the model BVH is
+		// not that far away so it can be reused. this only requires recalculating extends of
+		// each BVH node
+		pAddLocalBVHUpdated( *modelLOD.GetGIBVHLocal(), lod.GetPositions() );
+// 			pRenderThread.GetLogger().LogInfoFormat("> > Dynamic Add Local BVH: %d (%s)",
+// 				(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
 		
 	}else{
-				decTimer timer2;
+// 				decTimer timer2;
 		// find model
 		for( indexModel=0; indexModel<pModelCount; indexModel++ ){
-			//if( pModels[ indexModel ].component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic
 			if( pModels[ indexModel ].component->GetModelLOD() == &modelLOD && modelLOD.GetWeightsCount() == 0 ){
 				break;
 			}
 		}
-// 				pRenderThread.GetLogger().LogInfoFormat("> > Static Find Model: %d (%s)",
-// 					(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
 		
 		// if model does not exist add it
 		if( indexModel == pModelCount ){
-			// prepare BVH first just in case something goes wrong
+			// prepare BVH if not prepared already
 			modelLOD.PrepareGILocalBVH();
 			if( ! modelLOD.GetGIBVHLocal()->GetBVH().GetRootNode() ){
 				return; // empty model
 			}
 			
 			// add model to list of encountered models
-			sModel &bvhModel = pAddModel();
-			bvhModel.component = &lod;
-			
+			pAddModel().component = &lod;
 			pAddLocalBVH( *modelLOD.GetGIBVHLocal() );
 // 				pRenderThread.GetLogger().LogInfoFormat("> > Static Add Local BVH: %d (%s)",
 // 					(int)(timer2.GetElapsedTime() * 1e6f), modelLOD.GetModel().GetFilename().GetString());
 		}
 	}
+// 				const int debugElapsedA = (int)(timer1.GetElapsedTime() * 1e6f);
 	
 	// add materials
-// 				decTimer timer1;
 	deoglAddToRenderTaskGIMaterial &addToRenderTask =
 		pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
 	const int textureCount = component.GetTextureCount();
@@ -254,12 +223,23 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		const deoglRComponentTexture &texture = component.GetTextureAt( i );
 		pAddMaterial( texture, addToRenderTask.AddComponentTexture( lod, i ) );
 	}
+// 				const int debugElapsedB = (int)(timer1.GetElapsedTime() * 1e6f);
 	
 	// add component
 	pAddComponent( indexModel, indexMaterial, matrix );
+// 				const int debugElapsedC = (int)(timer1.GetElapsedTime() * 1e6f);
+// 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d [%d,%d,%d] (%s)",
+// 					lod.GetModelLOD()->GetFaceCount(), debugElapsedA + debugElapsedB + debugElapsedC,
+// 					debugElapsedA, debugElapsedB, debugElapsedC, component.GetModel()->GetFilename().GetString());
 // 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d (%s)",
 // 					lod.GetModelLOD()->GetFaceCount(), (int)(timer1.GetElapsedTime() * 1e6f),
 // 					component.GetModel()->GetFilename().GetString());
+	
+	// performance notes:
+	// debugElapsedC is rather 0. debugElapsedA and debugElapsedA are similar.
+	// debugElapsedA explodes if highest LOD mesh is not low polygon.
+	// basically this means if a global instance TBO cache would be used both
+	// debugElapsedA and debugElapsedB would profit in a similar way which is good
 }
 
 void deoglGIBVH::AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances ){
@@ -399,31 +379,9 @@ void deoglGIBVH::BuildBVH(){
 		deoglBVH::sBuildPrimitive &primitive = pPrimitives[ i ];
 		const sComponent &component = pComponents[ i ];
 		const sModel &model = pModels[ component.indexModel ];
-		const deoglBVHNode *rootNode = NULL;
-		
-		if( model.component != NULL ){
-			//if( model.component->GetComponent().GetRenderMode() == deoglRComponent::ermStatic ){
-			if( model.component->GetModelLOD()->GetWeightsCount() == 0 ){
-				rootNode = model.component->GetModelLOD()->GetGIBVHLocal()->GetBVH().GetRootNode();
-				
-			}else{
-				rootNode = model.component->GetBVH()->GetRootNode();
-			}
-			
-		}else if( model.occlusionMesh != NULL ){
-			if( model.occlusionMesh->GetDynamicOcclusionMesh() ){
-				rootNode = model.occlusionMesh->GetDynamicOcclusionMesh()->GetBVH()->GetRootNode();
-				
-			}else{
-				rootNode = model.occlusionMesh->GetOcclusionMesh()->GetBVH()->GetRootNode();
-			}
-			
-		}else{
-			DETHROW( deeInvalidParam );
-		}
-		
-		const decVector &minExtend = rootNode->GetMinExtend();
-		const decVector &maxExtend = rootNode->GetMaxExtend();
+		const float * const nodeBoxRoot = pTBONodeBox.GetData() + model.indexNodes * 8;
+		const decVector minExtend( nodeBoxRoot[ 0 ], nodeBoxRoot[ 1 ], nodeBoxRoot[ 2 ] );
+		const decVector maxExtend( nodeBoxRoot[ 4 ], nodeBoxRoot[ 5 ], nodeBoxRoot[ 6 ] );
 		const decVector center( ( minExtend + maxExtend ) * 0.5f );
 		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
 		deoglCollisionBox box( component.matrix * center,
@@ -734,4 +692,107 @@ void deoglGIBVH::pAddLocalBVH( const deoglGIBVHLocal &localBVH ){
 	pTBOTexCoord.AddTBO( localBVH.GetTBOTexCoord() );
 	pTBONodeBox.AddTBO( localBVH.GetTBONodeBox() );
 	pTBOIndex.AddTBO( localBVH.GetTBOIndex() );
+}
+
+void deoglGIBVH::pAddLocalBVHUpdated( const deoglGIBVHLocal &localBVH, const oglVector *positions ){
+	pTBOFace.AddTBO( localBVH.GetTBOFace() );
+	pTBOTexCoord.AddTBO( localBVH.GetTBOTexCoord() );
+	pTBOIndex.AddTBO( localBVH.GetTBOIndex() );
+	
+	const int positionCount = localBVH.GetTBOVertex().GetPixelCount();
+	int i;
+	
+	const int baseIndexVertex = pTBOVertex.GetDataCount();
+	pTBOVertex.IncreaseDataCount( positionCount * 4 );
+	float *dataVertex = pTBOVertex.GetData() + baseIndexVertex;
+	for( i=0; i<positionCount; i++, dataVertex+=4 ){
+		const oglVector &position = positions[ i ];
+		dataVertex[ 0 ] = position.x;
+		dataVertex[ 1 ] = position.y;
+		dataVertex[ 2 ] = position.z;
+	}
+	
+	const deoglBVH &bvh = localBVH.GetBVH();
+	const int nodeCount = bvh.GetNodeCount();
+	pEnsureRecalcNodeSize( nodeCount );
+	pUpdateLocalBVHNodeExtends( localBVH, positions, *bvh.GetRootNode(), pRecalcNodes[ 0 ] );
+	
+	const int baseIndexNodeBox = pTBONodeBox.GetDataCount();
+	pTBONodeBox.IncreaseDataCount( nodeCount * 8 );
+	float *dataNodeBox = pTBONodeBox.GetData() + baseIndexNodeBox;
+	for( i=0; i<nodeCount; i++, dataNodeBox+=8 ){
+		const deoglBVHNode &node = pRecalcNodes[ i ];
+		
+		const decVector &minExtend = node.GetMinExtend();
+		dataNodeBox[ 0 ] = minExtend.x;
+		dataNodeBox[ 1 ] = minExtend.y;
+		dataNodeBox[ 2 ] = minExtend.z;
+		
+		const decVector &maxExtend = node.GetMaxExtend();
+		dataNodeBox[ 4 ] = maxExtend.x;
+		dataNodeBox[ 5 ] = maxExtend.y;
+		dataNodeBox[ 6 ] = maxExtend.z;
+	}
+}
+
+void deoglGIBVH::pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH,
+const oglVector *positions, const deoglBVHNode &node, deoglBVHNode &target ){
+	const int primitiveCount = node.GetPrimitiveCount();
+	const int firstIndex = node.GetFirstIndex();
+	const deoglBVH &bvh = localBVH.GetBVH();
+	
+	if( primitiveCount == 0 ){
+		deoglBVHNode &targetLeft = pRecalcNodes[ firstIndex ];
+		deoglBVHNode &targetRight = pRecalcNodes[ firstIndex + 1 ];
+		
+		pUpdateLocalBVHNodeExtends( localBVH, positions, bvh.GetNodes()[ firstIndex ], targetLeft );
+		pUpdateLocalBVHNodeExtends( localBVH, positions, bvh.GetNodes()[ firstIndex + 1 ], targetRight );
+		
+		target.SetExtends( targetLeft.GetMinExtend().Smallest( targetRight.GetMinExtend() ),
+			targetLeft.GetMaxExtend().Largest( targetRight.GetMaxExtend() ) );
+		
+	}else{
+		const int * const primitives = bvh.GetPrimitives();
+		const uint16_t * const faces = localBVH.GetTBOFace().GetData();
+		decVector minExtend, maxExtend;
+		int i;
+		
+		for( i=0; i<primitiveCount; i++ ){
+			const uint16_t * const face = faces + primitives[ i ] * 4;
+			const oglVector &v1 = positions[ face[ 0 ] ];
+			const decVector p1( v1.x, v1.y, v1.z );
+			if( i > 0 ){
+				minExtend.SetSmallest( p1 );
+				maxExtend.SetLargest( p1 );
+				
+			}else{
+				minExtend = maxExtend = p1;
+			}
+			
+			const oglVector &v2 = positions[ face[ 1 ] ];
+			const decVector p2( v2.x, v2.y, v2.z );
+			minExtend.SetSmallest( p2 );
+			maxExtend.SetLargest( p2 );
+			
+			const oglVector &v3 = positions[ face[ 2 ] ];
+			const decVector p3( v3.x, v3.y, v3.z );
+			minExtend.SetSmallest( p3 );
+			maxExtend.SetLargest( p3 );
+		}
+		
+		target.SetExtends( minExtend, maxExtend );
+	}
+}
+
+void deoglGIBVH::pEnsureRecalcNodeSize( int size ){
+	if( size <= pRecalcNodeSize ){
+		return;
+	}
+	
+	deoglBVHNode * const newArray = new deoglBVHNode[ size ];
+	if( pRecalcNodes ){
+		delete [] pRecalcNodes;
+	}
+	pRecalcNodes = newArray;
+	pRecalcNodeSize = size;
 }
