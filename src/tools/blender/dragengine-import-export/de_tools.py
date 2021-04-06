@@ -27,6 +27,7 @@ import bpy
 from .de_tool_aogen import OBJECT_OT_ToolAOGeneration
 from .de_tool_channellayout import OBJECT_OT_DEToolSortActionChannels
 from .de_tool_collapsevertices import TypeDETVertex
+from .de_tool_mirrorvertices import OBJECT_OT_ToolMirrorVertices
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
 from .de_tool_gbuffernormgen import OBJECT_OT_ToolGBufferNormGen
 from .de_tool_loderrorcalc import OBJECT_OT_DEToolLODInfo
@@ -222,6 +223,8 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row.operator(operator="uv.seams_from_islands", text="Seams from Island")
 		row = col.row(align=True)
 		row.operator(operator="dragengine.selectngon", text="Select N-Gon")
+		row = col.row(align=True)
+		row.operator(operator="dragengine.mirror_vertices", text="Mirror Vertices")
 		
 		# generators
 		layout.row(align=True).label(text="Generators:")

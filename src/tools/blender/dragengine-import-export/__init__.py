@@ -67,6 +67,8 @@ if "bpy" in locals():
 		imp.reload( de_tool_rounding )
 	if "de_tool_collapsevertices" in locals():
 		imp.reload( de_tool_collapsevertices )
+	if "de_tool_mirrorvertices" in locals():
+		imp.reload( de_tool_mirrorvertices )
 	if "de_tool_projectuv" in locals():
 		imp.reload( de_tool_projectuv )
 	if "de_tool_transferuv" in locals():
