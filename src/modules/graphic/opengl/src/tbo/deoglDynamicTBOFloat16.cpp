@@ -401,25 +401,8 @@ void deoglDynamicTBOFloat16::Update(){
 		return;
 	}
 	
-	while( pDataCount % pComponentCount != 0 ){
-		AddFloat( 0.0f ); // pad up to size of component count
-	}
-	
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( pVBO ){
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-	}
+	pEnsurePadding();
+	pEnsureVBO();
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
 	
@@ -429,38 +412,34 @@ void deoglDynamicTBOFloat16::Update(){
 	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
 		sizeof( HALF_FLOAT ) * pDataCount, pDataFloat, GL_STREAM_DRAW ) );
 	
-	if( ! pTBO ){
-		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-		if( ! pTBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-		tsmgr.EnableBareTBO( 0, pTBO );
-		
-		switch( pComponentCount ){
-		case 1:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R16F, pVBO ) );
-			break;
-			
-		case 2:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16F, pVBO ) );
-			break;
-			
-		case 4:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16F, pVBO ) );
-			break;
-		}
-		
-		tsmgr.DisableStage( 0 );
-	}
+	pEnsureTBO();
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+}
+
+void deoglDynamicTBOFloat16::Update( int offset, int count ){
+	if( count == 0 ){
+		return;
+	}
 	
-	pMemoryGPU = sizeof( HALF_FLOAT ) * pDataCount;
+	pEnsurePadding();
 	
-	consumption.IncrementTBOGPU( pMemoryGPU );
-	consumption.IncrementGPU( pMemoryGPU );
+	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pEnsureVBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER,
+		sizeof( HALF_FLOAT ) * ( offset * pComponentCount ),
+		sizeof( HALF_FLOAT ) * ( count * pComponentCount ),
+		pDataFloat + ( offset * pComponentCount ) ) );
+	
+	pEnsureTBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
 }
 
 void deoglDynamicTBOFloat16::DebugPrint(){
@@ -469,9 +448,7 @@ void deoglDynamicTBOFloat16::DebugPrint(){
 	HALF_FLOAT *data = pDataFloat;
 	int i, pixel = 0;
 	
-	while( pDataCount % pComponentCount != 0 ){
-		AddFloat( 0.0f ); // pad up to size of component count
-	}
+	pEnsurePadding();
 	
 	switch( pComponentCount ){
 	case 1:
@@ -551,4 +528,63 @@ void deoglDynamicTBOFloat16::pEnlarge( int count ){
 	
 	pDataFloat = newArray;
 	pDataSize = newSize;
+}
+
+void deoglDynamicTBOFloat16::pEnsureVBO(){
+	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
+	
+	if( pVBO ){
+		consumption.DecrementTBOGPU( pMemoryGPU );
+		consumption.DecrementGPU( pMemoryGPU );
+		
+	}else{
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
+		if( ! pVBO ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		consumption.IncrementCount();
+		consumption.IncrementTBOCount();
+	}
+	
+	pMemoryGPU = sizeof( HALF_FLOAT ) * pDataCount;
+	
+	consumption.IncrementTBOGPU( pMemoryGPU );
+	consumption.IncrementGPU( pMemoryGPU );
+}
+
+void deoglDynamicTBOFloat16::pEnsureTBO(){
+	if( pTBO ){
+		return;
+	}
+	
+	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
+	if( ! pTBO ){
+		DETHROW( deeOutOfMemory );
+	}
+	
+	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+	tsmgr.EnableBareTBO( 0, pTBO );
+	
+	switch( pComponentCount ){
+	case 1:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R16F, pVBO ) );
+		break;
+		
+	case 2:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16F, pVBO ) );
+		break;
+		
+	case 4:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16F, pVBO ) );
+		break;
+	}
+	
+	tsmgr.DisableStage( 0 );
+}
+
+void deoglDynamicTBOFloat16::pEnsurePadding(){
+	while( pDataCount % pComponentCount != 0 ){
+		AddFloat( 0.0f ); // pad up to size of component count
+	}
 }

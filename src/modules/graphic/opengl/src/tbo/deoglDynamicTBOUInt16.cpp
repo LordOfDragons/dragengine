@@ -224,66 +224,45 @@ void deoglDynamicTBOUInt16::Update(){
 		return;
 	}
 	
-	while( pDataCount % pComponentCount != 0 ){
-		AddInt( 0 ); // pad up to size of component count
-	}
-	
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( pVBO ){
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-	}
+	pEnsurePadding();
+	pEnsureVBO();
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint16_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( uint16_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
 	
-	if( ! pTBO ){
-		OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-		if( ! pTBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-		tsmgr.EnableBareTBO( 0, pTBO );
-		
-		switch( pComponentCount ){
-		case 1:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R16UI, pVBO ) );
-			break;
-			
-		case 2:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16UI, pVBO ) );
-			break;
-			
-		case 3:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB16UI, pVBO ) );
-			break;
-			
-		case 4:
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16UI, pVBO ) );
-			break;
-		}
-		
-		tsmgr.DisableStage( 0 );
-	}
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( uint16_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
+		sizeof( uint16_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
+	
+	pEnsureTBO();
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+}
+
+void deoglDynamicTBOUInt16::Update( int offset, int count ){
+	if( count == 0 ){
+		return;
+	}
 	
-	pMemoryGPU = sizeof( uint16_t ) * pDataCount;
+	pEnsurePadding();
 	
-	consumption.IncrementTBOGPU( pMemoryGPU );
-	consumption.IncrementGPU( pMemoryGPU );
+	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pEnsureVBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	
+	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER,
+		sizeof( uint16_t ) * ( offset * pComponentCount ),
+		sizeof( uint16_t ) * ( count * pComponentCount ),
+		pDataUInt + ( offset * pComponentCount ) ) );
+	
+	pEnsureTBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
 }
 
 void deoglDynamicTBOUInt16::DebugPrint(){
@@ -292,9 +271,7 @@ void deoglDynamicTBOUInt16::DebugPrint(){
 	uint16_t *data = pDataUInt;
 	int i, pixel = 0;
 	
-	while( pDataCount % pComponentCount != 0 ){
-		AddInt( 0 ); // pad up to size of component count
-	}
+	pEnsurePadding();
 	
 	switch( pComponentCount ){
 	case 1:
@@ -374,4 +351,67 @@ void deoglDynamicTBOUInt16::pEnlarge( int count ){
 	
 	pDataUInt = newArray;
 	pDataSize = newSize;
+}
+
+void deoglDynamicTBOUInt16::pEnsureVBO(){
+	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
+	
+	if( pVBO ){
+		consumption.DecrementTBOGPU( pMemoryGPU );
+		consumption.DecrementGPU( pMemoryGPU );
+		
+	}else{
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
+		if( ! pVBO ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		consumption.IncrementCount();
+		consumption.IncrementTBOCount();
+	}
+	
+	pMemoryGPU = sizeof( uint16_t ) * pDataCount;
+	
+	consumption.IncrementTBOGPU( pMemoryGPU );
+	consumption.IncrementGPU( pMemoryGPU );
+}
+
+void deoglDynamicTBOUInt16::pEnsureTBO(){
+	if( pTBO ){
+		return;
+	}
+	
+	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
+	if( ! pTBO ){
+		DETHROW( deeOutOfMemory );
+	}
+	
+	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+	tsmgr.EnableBareTBO( 0, pTBO );
+	
+	switch( pComponentCount ){
+	case 1:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R16UI, pVBO ) );
+		break;
+		
+	case 2:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16UI, pVBO ) );
+		break;
+		
+	case 3:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB16UI, pVBO ) );
+		break;
+		
+	case 4:
+		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16UI, pVBO ) );
+		break;
+	}
+	
+	tsmgr.DisableStage( 0 );
+}
+
+void deoglDynamicTBOUInt16::pEnsurePadding(){
+	while( pDataCount % pComponentCount != 0 ){
+		AddInt( 0 ); // pad up to size of component count
+	}
 }

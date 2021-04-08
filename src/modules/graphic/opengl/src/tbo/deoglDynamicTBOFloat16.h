@@ -164,6 +164,9 @@ public:
 	/** Update TBO with added data. */
 	void Update();
 	
+	/** Update sub range of TBO with data measured in pixels. */
+	void Update( int offset, int count );
+	
 	/** GPU memory consumption. */
 	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
 	
@@ -176,6 +179,9 @@ public:
 private:
 	void pCleanUp();
 	void pEnlarge( int count );
+	void pEnsureVBO();
+	void pEnsureTBO();
+	void pEnsurePadding();
 };
 
 #endif
