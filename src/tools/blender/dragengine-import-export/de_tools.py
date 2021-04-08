@@ -520,11 +520,12 @@ bpy.types.Object.dragengine_lodmesh = bpy.props.StringProperty(name="LOD-Mesh",
 	description="Mesh to use as next LOD", default="")
 
 bpy.types.Object.dragengine_hasloderror = bpy.props.BoolProperty(name="LOD-Error",
-	description="Use LOD error instead of automatically calculated LOD Error",
+	description="Use Custom LOD error instead of automatically calculated LOD Error ",
 	default=False)
 
 bpy.types.Object.dragengine_loderror = bpy.props.FloatProperty(name="Error",
-	description="Custom LOD error to use", precision=3, default=0.01, min=0.001, soft_max=0.1)
+	description="Custom LOD error to use (relative to base mesh) ",
+	precision=3, default=0.01, min=0.001, soft_max=0.1)
 
 bpy.types.Object.dragengine_navspacetype = bpy.props.EnumProperty(
 	name = "Nav-Space Type", description = "Navigation space type",
