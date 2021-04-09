@@ -22,11 +22,7 @@
 #ifndef _DEOGLDYNAMICTBOUINT32_H_
 #define _DEOGLDYNAMICTBOUINT32_H_
 
-#include <dragengine/common/math/decMath.h>
-
-#include "../deoglBasics.h"
-
-class deoglRenderThread;
+#include "deoglDynamicTBO.h"
 
 
 /**
@@ -35,21 +31,7 @@ class deoglRenderThread;
  * done the written data is uploaded to the VBO. The VBO grows with the needed
  * size but never shrinks. This way the usage is as fast as possible.
  */
-class deoglDynamicTBOUInt32{
-public:
-	deoglRenderThread &pRenderThread;
-	int pComponentCount;
-	GLuint pVBO;
-	GLuint pTBO;
-	
-	uint32_t *pDataUInt;
-	int pDataSize;
-	int pDataCount;
-	
-	int pMemoryGPU;
-	
-	
-	
+class deoglDynamicTBOUInt32 : public deoglDynamicTBO{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -57,43 +39,16 @@ public:
 	deoglDynamicTBOUInt32( deoglRenderThread &renderThread, int componentCount );
 	
 	/** Clean up dynamic tbo. */
-	~deoglDynamicTBOUInt32();
+	virtual ~deoglDynamicTBOUInt32();
 	/*@}*/
 	
 	
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	
-	/** Component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
-	
-	/** TBO. */
-	inline GLuint GetTBO() const{ return pTBO; }
-	
 	/** Data entries. */
-	inline uint32_t *GetData(){ return pDataUInt; }
-	inline const uint32_t *GetData() const{ return pDataUInt; }
-	
-	/** Count of data entries. */
-	inline int GetDataCount() const{ return pDataCount; }
-	
-	/** Increase count of entries. New entries have undefined content. */
-	void IncreaseDataCount( int byAmount );
-	
-	/** Get pixel count. */
-	int GetPixelCount() const;
-	
-	/** Increase count of pixels. New entries have undefined content. */
-	void IncreasePixelCount( int byAmount );
-	
-	/** Data point offset at start of pixel. */
-	int GetPixelOffset( int pixel ) const;
-	
-	/** Clear TBO. */
-	void Clear();
+	inline uint32_t *GetDataUInt(){ return ( uint32_t* )pData; }
+	inline const uint32_t *GetDataUInt() const{ return ( uint32_t* )pData; }
 	
 	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool( bool value );
@@ -112,9 +67,6 @@ public:
 	/** Add four integer values. */
 	void AddVec4( uint32_t value1, uint32_t value2, uint32_t value3, uint32_t value4 );
 	
-	/** Add content from another dynamic TBO. */
-	void AddTBO( const deoglDynamicTBOUInt32 &tbo );
-	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
 	void SetBoolAt( int offset, bool value );
 	
@@ -132,27 +84,12 @@ public:
 	/** Set four integer values at offset in components. */
 	void SetVec4At( int offset, uint32_t value1, uint32_t value2, uint32_t value3, uint32_t value4 );
 	
-	/** Update TBO with added data. */
-	void Update();
-	
-	/** Update sub range of TBO with data measured in pixels. */
-	void Update( int offset, int count );
-	
-	/** GPU memory consumption. */
-	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
-	
 	/** Debug print. */
-	void DebugPrint();
+	virtual void DebugPrint();
+	
+	/** TBO format. */
+	virtual GLenum GetTBOFormat();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	void pEnlarge( int count );
-	void pEnsureVBO();
-	void pEnsureTBO();
-	void pEnsurePadding();
 };
 
 #endif

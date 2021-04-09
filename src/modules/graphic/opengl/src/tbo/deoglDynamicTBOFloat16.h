@@ -22,12 +22,8 @@
 #ifndef _DEOGLDYNAMICTBOFLOAT16_H_
 #define _DEOGLDYNAMICTBOFLOAT16_H_
 
-#include <dragengine/common/math/decMath.h>
-
-#include "../deoglBasics.h"
+#include "deoglDynamicTBO.h"
 #include "../utils/deoglConvertFloatHalf.h"
-
-class deoglRenderThread;
 
 
 /**
@@ -36,21 +32,7 @@ class deoglRenderThread;
  * done the written data is uploaded to the VBO. The VBO grows with the needed
  * size but never shrinks. This way the usage is as fast as possible.
  */
-class deoglDynamicTBOFloat16{
-private:
-	deoglRenderThread &pRenderThread;
-	int pComponentCount;
-	GLuint pVBO;
-	GLuint pTBO;
-	
-	HALF_FLOAT *pDataFloat;
-	int pDataSize;
-	int pDataCount;
-	
-	int pMemoryGPU;
-	
-	
-	
+class deoglDynamicTBOFloat16 : public deoglDynamicTBO{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -58,43 +40,16 @@ public:
 	deoglDynamicTBOFloat16( deoglRenderThread &renderThread, int componentCount );
 	
 	/** Clean up dynamic tbo. */
-	~deoglDynamicTBOFloat16();
+	virtual ~deoglDynamicTBOFloat16();
 	/*@}*/
 	
 	
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	
-	/** Component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
-	
-	/** TBO. */
-	inline GLuint GetTBO() const{ return pTBO; }
-	
 	/** Data entries. */
-	inline HALF_FLOAT *GetData(){ return pDataFloat; }
-	inline const HALF_FLOAT *GetData() const{ return pDataFloat; }
-	
-	/** Count of data entries. */
-	inline int GetDataCount() const{ return pDataCount; }
-	
-	/** Increase count of entries. New entries have undefined content. */
-	void IncreaseDataCount( int byAmount );
-	
-	/** Get pixel count. */
-	int GetPixelCount() const;
-	
-	/** Increase count of pixels. New entries have undefined content. */
-	void IncreasePixelCount( int byAmount );
-	
-	/** Data point offset at start of pixel. */
-	int GetPixelOffset( int pixel ) const;
-	
-	/** Clear TBO. */
-	void Clear();
+	inline HALF_FLOAT *GetDataFloat(){ return ( HALF_FLOAT* )pData; }
+	inline const HALF_FLOAT *GetDataFloat() const{ return ( const HALF_FLOAT* )pData; }
 	
 	/** Add boolean value. True adds 1 and False 0. */
 	void AddBool( bool value );
@@ -127,9 +82,6 @@ public:
 	/** Add 3x2 matrix in colon major order adding 6 float. */
 	void AddMat3x2( const decMatrix &value );
 	
-	/** Add content from another dynamic TBO. */
-	void AddTBO( const deoglDynamicTBOFloat16 &tbo );
-	
 	/** Set boolean value at offset in components. True adds 1 and False 0. */
 	void SetBoolAt( int offset, bool value );
 	
@@ -161,27 +113,12 @@ public:
 	/** Set 3x2 matrix in colon major order adding 6 float at offset in components. */
 	void SetMat3x2At( int offset, const decMatrix &value );
 	
-	/** Update TBO with added data. */
-	void Update();
-	
-	/** Update sub range of TBO with data measured in pixels. */
-	void Update( int offset, int count );
-	
-	/** GPU memory consumption. */
-	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
-	
 	/** Debug print. */
-	void DebugPrint();
+	virtual void DebugPrint();
+	
+	/** TBO format. */
+	virtual GLenum GetTBOFormat();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	void pEnlarge( int count );
-	void pEnsureVBO();
-	void pEnsureTBO();
-	void pEnsurePadding();
 };
 
 #endif

@@ -24,11 +24,8 @@
 #include <string.h>
 
 #include "deoglDynamicTBOFloat32.h"
-#include "../memory/deoglMemoryManager.h"
-#include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../renderthread/deoglRTTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,63 +38,16 @@
 ////////////////////////////
 
 deoglDynamicTBOFloat32::deoglDynamicTBOFloat32( deoglRenderThread &renderThread, int componentCount ) :
-pRenderThread( renderThread ),
-pComponentCount( componentCount ),
-pVBO( 0 ),
-pTBO( 0 ),
-pDataFloat( NULL ),
-pDataSize( 0 ),
-pDataCount( 0 ),
-pMemoryGPU( 0 )
-{
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
-	}
+deoglDynamicTBO( renderThread, componentCount, sizeof( float ) ){
 }
 
 deoglDynamicTBOFloat32::~deoglDynamicTBOFloat32(){
-	pCleanUp();
 }
 
 
 
 // Management
 ///////////////
-
-void deoglDynamicTBOFloat32::IncreaseDataCount( int byAmount ){
-	if( byAmount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( byAmount == 0 ){
-		return;
-	}
-	
-	pEnlarge( byAmount );
-	pDataCount += byAmount;
-}
-
-int deoglDynamicTBOFloat32::GetPixelCount() const{
-	int count = pDataCount / pComponentCount;
-	if( pDataCount % pComponentCount != 0 ){
-		count++;
-	}
-	return count;
-}
-
-void deoglDynamicTBOFloat32::IncreasePixelCount( int byAmount ){
-	pEnlarge( byAmount * pComponentCount );
-}
-
-int deoglDynamicTBOFloat32::GetPixelOffset( int pixel ) const{
-	if( pixel < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pixel * pComponentCount;
-}
-
-void deoglDynamicTBOFloat32::Clear(){
-	pDataCount = 0;
-}
 
 void deoglDynamicTBOFloat32::AddBool( bool value ){
 	if( value ){
@@ -110,135 +60,145 @@ void deoglDynamicTBOFloat32::AddBool( bool value ){
 
 void deoglDynamicTBOFloat32::AddFloat( float value ){
 	pEnlarge( 1 );
-	pDataFloat[ pDataCount++ ] = value;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value;
 }
 
 void deoglDynamicTBOFloat32::AddVec2( float value1, float value2 ){
 	pEnlarge( 2 );
-	pDataFloat[ pDataCount++ ] = value1;
-	pDataFloat[ pDataCount++ ] = value2;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value1;
+	dataFloat[ pDataCount++ ] = value2;
 }
 
 void deoglDynamicTBOFloat32::AddVec2( const decVector2 &value ){
 	pEnlarge( 2 );
-	pDataFloat[ pDataCount++ ] = value.x;
-	pDataFloat[ pDataCount++ ] = value.y;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.x;
+	dataFloat[ pDataCount++ ] = value.y;
 }
 
 void deoglDynamicTBOFloat32::AddVec3( float value1, float value2, float value3 ){
 	pEnlarge( 3 );
-	pDataFloat[ pDataCount++ ] = value1;
-	pDataFloat[ pDataCount++ ] = value2;
-	pDataFloat[ pDataCount++ ] = value3;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value1;
+	dataFloat[ pDataCount++ ] = value2;
+	dataFloat[ pDataCount++ ] = value3;
 }
 
 void deoglDynamicTBOFloat32::AddVec3( const decVector &value ){
 	pEnlarge( 3 );
-	pDataFloat[ pDataCount++ ] = value.x;
-	pDataFloat[ pDataCount++ ] = value.y;
-	pDataFloat[ pDataCount++ ] = value.z;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.x;
+	dataFloat[ pDataCount++ ] = value.y;
+	dataFloat[ pDataCount++ ] = value.z;
 }
 
 void deoglDynamicTBOFloat32::AddVec4( float value1, float value2, float value3, float value4 ){
 	pEnlarge( 4 );
-	pDataFloat[ pDataCount++ ] = value1;
-	pDataFloat[ pDataCount++ ] = value2;
-	pDataFloat[ pDataCount++ ] = value3;
-	pDataFloat[ pDataCount++ ] = value4;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value1;
+	dataFloat[ pDataCount++ ] = value2;
+	dataFloat[ pDataCount++ ] = value3;
+	dataFloat[ pDataCount++ ] = value4;
 }
 
 void deoglDynamicTBOFloat32::AddVec4( const decVector &value, float value4 ){
 	pEnlarge( 4 );
-	pDataFloat[ pDataCount++ ] = value.x;
-	pDataFloat[ pDataCount++ ] = value.y;
-	pDataFloat[ pDataCount++ ] = value.z;
-	pDataFloat[ pDataCount++ ] = value4;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.x;
+	dataFloat[ pDataCount++ ] = value.y;
+	dataFloat[ pDataCount++ ] = value.z;
+	dataFloat[ pDataCount++ ] = value4;
 }
 
 void deoglDynamicTBOFloat32::AddVec4( const decVector4 &value ){
 	pEnlarge( 4 );
-	pDataFloat[ pDataCount++ ] = value.x;
-	pDataFloat[ pDataCount++ ] = value.y;
-	pDataFloat[ pDataCount++ ] = value.z;
-	pDataFloat[ pDataCount++ ] = value.w;
+	
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.x;
+	dataFloat[ pDataCount++ ] = value.y;
+	dataFloat[ pDataCount++ ] = value.z;
+	dataFloat[ pDataCount++ ] = value.w;
 }
 
 void deoglDynamicTBOFloat32::AddMat4x3( const decMatrix &value ){
 	pEnlarge( 12 );
 	
-	pDataFloat[ pDataCount++ ] = value.a11;
-	pDataFloat[ pDataCount++ ] = value.a21;
-	pDataFloat[ pDataCount++ ] = value.a31;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.a11;
+	dataFloat[ pDataCount++ ] = value.a21;
+	dataFloat[ pDataCount++ ] = value.a31;
 	
-	pDataFloat[ pDataCount++ ] = value.a12;
-	pDataFloat[ pDataCount++ ] = value.a22;
-	pDataFloat[ pDataCount++ ] = value.a32;
+	dataFloat[ pDataCount++ ] = value.a12;
+	dataFloat[ pDataCount++ ] = value.a22;
+	dataFloat[ pDataCount++ ] = value.a32;
 	
-	pDataFloat[ pDataCount++ ] = value.a13;
-	pDataFloat[ pDataCount++ ] = value.a23;
-	pDataFloat[ pDataCount++ ] = value.a33;
+	dataFloat[ pDataCount++ ] = value.a13;
+	dataFloat[ pDataCount++ ] = value.a23;
+	dataFloat[ pDataCount++ ] = value.a33;
 	
-	pDataFloat[ pDataCount++ ] = value.a14;
-	pDataFloat[ pDataCount++ ] = value.a24;
-	pDataFloat[ pDataCount++ ] = value.a34;
+	dataFloat[ pDataCount++ ] = value.a14;
+	dataFloat[ pDataCount++ ] = value.a24;
+	dataFloat[ pDataCount++ ] = value.a34;
 }
 
 void deoglDynamicTBOFloat32::AddMat3x4( const decMatrix &value ){
 	pEnlarge( 12 );
 	
-	pDataFloat[ pDataCount++ ] = value.a11;
-	pDataFloat[ pDataCount++ ] = value.a12;
-	pDataFloat[ pDataCount++ ] = value.a13;
-	pDataFloat[ pDataCount++ ] = value.a14;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.a11;
+	dataFloat[ pDataCount++ ] = value.a12;
+	dataFloat[ pDataCount++ ] = value.a13;
+	dataFloat[ pDataCount++ ] = value.a14;
 	
-	pDataFloat[ pDataCount++ ] = value.a21;
-	pDataFloat[ pDataCount++ ] = value.a22;
-	pDataFloat[ pDataCount++ ] = value.a23;
-	pDataFloat[ pDataCount++ ] = value.a24;
+	dataFloat[ pDataCount++ ] = value.a21;
+	dataFloat[ pDataCount++ ] = value.a22;
+	dataFloat[ pDataCount++ ] = value.a23;
+	dataFloat[ pDataCount++ ] = value.a24;
 	
-	pDataFloat[ pDataCount++ ] = value.a31;
-	pDataFloat[ pDataCount++ ] = value.a32;
-	pDataFloat[ pDataCount++ ] = value.a33;
-	pDataFloat[ pDataCount++ ] = value.a34;
+	dataFloat[ pDataCount++ ] = value.a31;
+	dataFloat[ pDataCount++ ] = value.a32;
+	dataFloat[ pDataCount++ ] = value.a33;
+	dataFloat[ pDataCount++ ] = value.a34;
 }
 
 void deoglDynamicTBOFloat32::AddMat3x3( const decMatrix &value ){
 	pEnlarge( 9 );
 	
-	pDataFloat[ pDataCount++ ] = value.a11;
-	pDataFloat[ pDataCount++ ] = value.a21;
-	pDataFloat[ pDataCount++ ] = value.a31;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.a11;
+	dataFloat[ pDataCount++ ] = value.a21;
+	dataFloat[ pDataCount++ ] = value.a31;
 	
-	pDataFloat[ pDataCount++ ] = value.a12;
-	pDataFloat[ pDataCount++ ] = value.a22;
-	pDataFloat[ pDataCount++ ] = value.a32;
+	dataFloat[ pDataCount++ ] = value.a12;
+	dataFloat[ pDataCount++ ] = value.a22;
+	dataFloat[ pDataCount++ ] = value.a32;
 	
-	pDataFloat[ pDataCount++ ] = value.a13;
-	pDataFloat[ pDataCount++ ] = value.a23;
-	pDataFloat[ pDataCount++ ] = value.a33;
+	dataFloat[ pDataCount++ ] = value.a13;
+	dataFloat[ pDataCount++ ] = value.a23;
+	dataFloat[ pDataCount++ ] = value.a33;
 }
 
 void deoglDynamicTBOFloat32::AddMat3x2( const decMatrix &value ){
 	pEnlarge( 6 );
 	
-	pDataFloat[ pDataCount++ ] = value.a11;
-	pDataFloat[ pDataCount++ ] = value.a21;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ pDataCount++ ] = value.a11;
+	dataFloat[ pDataCount++ ] = value.a21;
 	
-	pDataFloat[ pDataCount++ ] = value.a12;
-	pDataFloat[ pDataCount++ ] = value.a22;
+	dataFloat[ pDataCount++ ] = value.a12;
+	dataFloat[ pDataCount++ ] = value.a22;
 	
-	pDataFloat[ pDataCount++ ] = value.a13;
-	pDataFloat[ pDataCount++ ] = value.a23;
-}
-
-void deoglDynamicTBOFloat32::AddTBO( const deoglDynamicTBOFloat32 &tbo ){
-	if( tbo.pDataCount == 0 ){
-		return;
-	}
-	
-	pEnlarge( tbo.pDataCount );
-	memcpy( pDataFloat + pDataCount, tbo.pDataFloat, sizeof( float ) * tbo.pDataCount );
-	pDataCount += tbo.pDataCount;
+	dataFloat[ pDataCount++ ] = value.a13;
+	dataFloat[ pDataCount++ ] = value.a23;
 }
 
 void deoglDynamicTBOFloat32::SetBoolAt( int offset, bool value ){
@@ -250,7 +210,8 @@ void deoglDynamicTBOFloat32::SetFloatAt( int offset, float value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value;
 }
 
 void deoglDynamicTBOFloat32::SetVec2At( int offset, float value1, float value2 ){
@@ -258,8 +219,9 @@ void deoglDynamicTBOFloat32::SetVec2At( int offset, float value1, float value2 )
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value1;
-	pDataFloat[ offset + 1 ] = value2;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value1;
+	dataFloat[ offset + 1 ] = value2;
 }
 
 void deoglDynamicTBOFloat32::SetVec2At( int offset, const decVector2 &value ){
@@ -267,8 +229,9 @@ void deoglDynamicTBOFloat32::SetVec2At( int offset, const decVector2 &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.x;
-	pDataFloat[ offset + 1 ] = value.y;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.x;
+	dataFloat[ offset + 1 ] = value.y;
 }
 
 void deoglDynamicTBOFloat32::SetVec3At( int offset, float value1, float value2, float value3 ){
@@ -276,9 +239,10 @@ void deoglDynamicTBOFloat32::SetVec3At( int offset, float value1, float value2, 
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value1;
-	pDataFloat[ offset + 1 ] = value2;
-	pDataFloat[ offset + 2 ] = value3;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value1;
+	dataFloat[ offset + 1 ] = value2;
+	dataFloat[ offset + 2 ] = value3;
 }
 
 void deoglDynamicTBOFloat32::SetVec3At( int offset, const decVector &value ){
@@ -286,9 +250,10 @@ void deoglDynamicTBOFloat32::SetVec3At( int offset, const decVector &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.x;
-	pDataFloat[ offset + 1 ] = value.y;
-	pDataFloat[ offset + 2 ] = value.z;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.x;
+	dataFloat[ offset + 1 ] = value.y;
+	dataFloat[ offset + 2 ] = value.z;
 }
 
 void deoglDynamicTBOFloat32::SetVec4At( int offset, float value1, float value2,
@@ -297,10 +262,11 @@ float value3, float value4 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value1;
-	pDataFloat[ offset + 1 ] = value2;
-	pDataFloat[ offset + 2 ] = value3;
-	pDataFloat[ offset + 3 ] = value4;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value1;
+	dataFloat[ offset + 1 ] = value2;
+	dataFloat[ offset + 2 ] = value3;
+	dataFloat[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector &value, float value4 ){
@@ -308,10 +274,11 @@ void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector &value, floa
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.x;
-	pDataFloat[ offset + 1 ] = value.y;
-	pDataFloat[ offset + 2 ] = value.z;
-	pDataFloat[ offset + 3 ] = value4;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.x;
+	dataFloat[ offset + 1 ] = value.y;
+	dataFloat[ offset + 2 ] = value.z;
+	dataFloat[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector4 &value ){
@@ -319,10 +286,11 @@ void deoglDynamicTBOFloat32::SetVec4At( int offset, const decVector4 &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.x;
-	pDataFloat[ offset + 1 ] = value.y;
-	pDataFloat[ offset + 2 ] = value.z;
-	pDataFloat[ offset + 3 ] = value.w;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.x;
+	dataFloat[ offset + 1 ] = value.y;
+	dataFloat[ offset + 2 ] = value.z;
+	dataFloat[ offset + 3 ] = value.w;
 }
 
 void deoglDynamicTBOFloat32::SetMat4x3At( int offset, const decMatrix &value ){
@@ -330,21 +298,22 @@ void deoglDynamicTBOFloat32::SetMat4x3At( int offset, const decMatrix &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.a11;
-	pDataFloat[ offset + 1 ] = value.a21;
-	pDataFloat[ offset + 2 ] = value.a31;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.a11;
+	dataFloat[ offset + 1 ] = value.a21;
+	dataFloat[ offset + 2 ] = value.a31;
 	
-	pDataFloat[ offset + 3 ] = value.a12;
-	pDataFloat[ offset + 4 ] = value.a22;
-	pDataFloat[ offset + 5 ] = value.a32;
+	dataFloat[ offset + 3 ] = value.a12;
+	dataFloat[ offset + 4 ] = value.a22;
+	dataFloat[ offset + 5 ] = value.a32;
 	
-	pDataFloat[ offset + 6 ] = value.a13;
-	pDataFloat[ offset + 7 ] = value.a23;
-	pDataFloat[ offset + 8 ] = value.a33;
+	dataFloat[ offset + 6 ] = value.a13;
+	dataFloat[ offset + 7 ] = value.a23;
+	dataFloat[ offset + 8 ] = value.a33;
 	
-	pDataFloat[ offset + 9 ] = value.a14;
-	pDataFloat[ offset + 10 ] = value.a24;
-	pDataFloat[ offset + 11 ] = value.a34;
+	dataFloat[ offset + 9 ] = value.a14;
+	dataFloat[ offset + 10 ] = value.a24;
+	dataFloat[ offset + 11 ] = value.a34;
 }
 
 void deoglDynamicTBOFloat32::SetMat3x4At( int offset, const decMatrix &value ){
@@ -352,20 +321,21 @@ void deoglDynamicTBOFloat32::SetMat3x4At( int offset, const decMatrix &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.a11;
-	pDataFloat[ offset + 1 ] = value.a12;
-	pDataFloat[ offset + 2 ] = value.a13;
-	pDataFloat[ offset + 3 ] = value.a14;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.a11;
+	dataFloat[ offset + 1 ] = value.a12;
+	dataFloat[ offset + 2 ] = value.a13;
+	dataFloat[ offset + 3 ] = value.a14;
 	
-	pDataFloat[ offset + 4 ] = value.a21;
-	pDataFloat[ offset + 5 ] = value.a22;
-	pDataFloat[ offset + 6 ] = value.a23;
-	pDataFloat[ offset + 7] = value.a24;
+	dataFloat[ offset + 4 ] = value.a21;
+	dataFloat[ offset + 5 ] = value.a22;
+	dataFloat[ offset + 6 ] = value.a23;
+	dataFloat[ offset + 7] = value.a24;
 	
-	pDataFloat[ offset + 8 ] = value.a31;
-	pDataFloat[ offset + 9 ] = value.a32;
-	pDataFloat[ offset + 10 ] = value.a33;
-	pDataFloat[ offset + 11 ] = value.a34;
+	dataFloat[ offset + 8 ] = value.a31;
+	dataFloat[ offset + 9 ] = value.a32;
+	dataFloat[ offset + 10 ] = value.a33;
+	dataFloat[ offset + 11 ] = value.a34;
 }
 
 void deoglDynamicTBOFloat32::SetMat3x3At( int offset, const decMatrix &value ){
@@ -373,17 +343,18 @@ void deoglDynamicTBOFloat32::SetMat3x3At( int offset, const decMatrix &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.a11;
-	pDataFloat[ offset + 1 ] = value.a21;
-	pDataFloat[ offset + 2 ] = value.a31;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.a11;
+	dataFloat[ offset + 1 ] = value.a21;
+	dataFloat[ offset + 2 ] = value.a31;
 	
-	pDataFloat[ offset + 3 ] = value.a12;
-	pDataFloat[ offset + 4 ] = value.a22;
-	pDataFloat[ offset + 5 ] = value.a32;
+	dataFloat[ offset + 3 ] = value.a12;
+	dataFloat[ offset + 4 ] = value.a22;
+	dataFloat[ offset + 5 ] = value.a32;
 	
-	pDataFloat[ offset + 6 ] = value.a13;
-	pDataFloat[ offset + 7 ] = value.a23;
-	pDataFloat[ offset + 8 ] = value.a33;
+	dataFloat[ offset + 6 ] = value.a13;
+	dataFloat[ offset + 7 ] = value.a23;
+	dataFloat[ offset + 8 ] = value.a33;
 }
 
 void deoglDynamicTBOFloat32::SetMat3x2At( int offset, const decMatrix &value ){
@@ -391,66 +362,21 @@ void deoglDynamicTBOFloat32::SetMat3x2At( int offset, const decMatrix &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataFloat[ offset ] = value.a11;
-	pDataFloat[ offset + 1 ] = value.a21;
+	float * const dataFloat = ( float* )pData;
+	dataFloat[ offset ] = value.a11;
+	dataFloat[ offset + 1 ] = value.a21;
 	
-	pDataFloat[ offset + 2 ] = value.a12;
-	pDataFloat[ offset + 3 ] = value.a22;
+	dataFloat[ offset + 2 ] = value.a12;
+	dataFloat[ offset + 3 ] = value.a22;
 	
-	pDataFloat[ offset + 4 ] = value.a13;
-	pDataFloat[ offset + 5 ] = value.a23;
-}
-
-void deoglDynamicTBOFloat32::Update(){
-	if( pDataCount == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( GLfloat ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( GLfloat ) * pDataCount, pDataFloat, GL_STREAM_DRAW ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
-}
-
-void deoglDynamicTBOFloat32::Update( int offset, int count ){
-	if( count == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	
-	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER,
-		sizeof( GLfloat ) * ( offset * pComponentCount ),
-		sizeof( GLfloat ) * ( count * pComponentCount ),
-		pDataFloat + ( offset * pComponentCount ) ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+	dataFloat[ offset + 4 ] = value.a13;
+	dataFloat[ offset + 5 ] = value.a23;
 }
 
 void deoglDynamicTBOFloat32::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat( "TBO %d-Float32:", pComponentCount );
-	float *data = pDataFloat;
+	float *data = ( float* )pData;
 	int i, pixel = 0;
 	
 	pEnsurePadding();
@@ -492,119 +418,21 @@ void deoglDynamicTBOFloat32::DebugPrint(){
 	}
 }
 
-
-
-// Private Functions
-//////////////////////
-
-void deoglDynamicTBOFloat32::pCleanUp(){
-	if( pTBO ){
-		glDeleteTextures( 1, &pTBO );
-	}
-	
-	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementTBOCount();
-		consumption.DecrementGPU( pMemoryGPU );
-		consumption.DecrementCount();
-		
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	
-	if( pDataFloat ){
-		delete [] pDataFloat;
-	}
-}
-
-void deoglDynamicTBOFloat32::pEnlarge( int count ){
-	if( pDataCount + count <= pDataSize ){
-		return;
-	}
-	
-	//const int newSize = pDataCount + count + 50;
-	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
-	float * const newArray = new float[ newSize ];
-	
-	if( pDataFloat ){
-		memcpy( newArray, pDataFloat, sizeof( float ) * pDataCount );
-		delete [] pDataFloat;
-	}
-	
-	pDataFloat = newArray;
-	pDataSize = newSize;
-}
-
-void deoglDynamicTBOFloat32::pEnsureVBO(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( pVBO ){
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-	}
-	
-	pMemoryGPU = sizeof( GLfloat ) * pDataCount;
-	
-	consumption.IncrementTBOGPU( pMemoryGPU );
-	consumption.IncrementGPU( pMemoryGPU );
-}
-
-void deoglDynamicTBOFloat32::pEnsureTBO(){
-	if( pTBO ){
-		return;
-	}
-	
-	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-	if( ! pTBO ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	tsmgr.EnableBareTBO( 0, pTBO );
-	
+GLenum deoglDynamicTBOFloat32::GetTBOFormat(){
 	switch( pComponentCount ){
 	case 1:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R32F, pVBO ) );
-		break;
+		return GL_R32F;
 		
 	case 2:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG32F, pVBO ) );
-		break;
+		return GL_RG32F;
 		
 	case 3:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB32F, pVBO ) );
-		break;
+		return GL_RGB32F;
 		
 	case 4:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, pVBO ) );
-		break;
-	}
-	
-	/*
-	to use GL_RGBA16F use HALF_FLOAT and convertFloatToHalf from utils/deoglConvertFloatToHalf.h
-	
-	const int vboDataSize = sizeof( HALF_FLOAT ) * 4
-	HALF_FLOAT * const vboData = ( HALF_FLOAT* )renderThread.GetBufferObject().GetTemporaryVBOData( vboDataSize );
-	HALF_FLOAT *vboDataPtr = vboData;
-	...
-	*( vboDataPtr++ ) = CONVERT_FLOAT_TO_HALF( value );
-	...
-	*/
-	
-	tsmgr.DisableStage( 0 );
-}
-
-void deoglDynamicTBOFloat32::pEnsurePadding(){
-	while( pDataCount % pComponentCount != 0 ){
-		AddFloat( 0.0f ); // pad up to size of component count
+		return GL_RGBA32F;
+		
+	default:
+		DETHROW( deeInvalidParam );
 	}
 }

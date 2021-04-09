@@ -24,11 +24,8 @@
 #include <string.h>
 
 #include "deoglDynamicTBOUInt32.h"
-#include "../memory/deoglMemoryManager.h"
-#include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../renderthread/deoglRTTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,22 +38,10 @@
 ////////////////////////////
 
 deoglDynamicTBOUInt32::deoglDynamicTBOUInt32( deoglRenderThread &renderThread, int componentCount ) :
-pRenderThread( renderThread ),
-pComponentCount( componentCount ),
-pVBO( 0 ),
-pTBO( 0 ),
-pDataUInt( NULL ),
-pDataSize( 0 ),
-pDataCount( 0 ),
-pMemoryGPU( 0 )
-{
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
-	}
+deoglDynamicTBO( renderThread, componentCount, sizeof( uint32_t ) ){
 }
 
 deoglDynamicTBOUInt32::~deoglDynamicTBOUInt32(){
-	pCleanUp();
 }
 
 
@@ -64,92 +49,59 @@ deoglDynamicTBOUInt32::~deoglDynamicTBOUInt32(){
 // Management
 ///////////////
 
-void deoglDynamicTBOUInt32::IncreaseDataCount( int byAmount ){
-	if( byAmount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( byAmount == 0 ){
-		return;
-	}
-	
-	pEnlarge( byAmount );
-	pDataCount += byAmount;
-}
-
-int deoglDynamicTBOUInt32::GetPixelCount() const{
-	int count = pDataCount / pComponentCount;
-	if( pDataCount % pComponentCount != 0 ){
-		count++;
-	}
-	return count;
-}
-
-void deoglDynamicTBOUInt32::IncreasePixelCount( int byAmount ){
-	pEnlarge( byAmount * pComponentCount );
-}
-
-int deoglDynamicTBOUInt32::GetPixelOffset( int pixel ) const{
-	if( pixel < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pixel * pComponentCount;
-}
-
-void deoglDynamicTBOUInt32::Clear(){
-	pDataCount = 0;
-}
-
 void deoglDynamicTBOUInt32::AddBool( bool value ){
 	AddInt( value ? ( uint32_t )~1 : 0 );
 }
 
 void deoglDynamicTBOUInt32::AddInt( uint32_t value ){
 	pEnlarge( 1 );
-	pDataUInt[ pDataCount++ ] = value;
+	
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = value;
 }
 
 void deoglDynamicTBOUInt32::AddVec2( uint32_t value1, uint32_t value2 ){
 	pEnlarge( 2 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
+	
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
 }
 
 void deoglDynamicTBOUInt32::AddVec2( const decPoint &value ){
 	pEnlarge( 2 );
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.y;
+	
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = ( uint32_t )value.x;
+	dataUInt[ pDataCount++ ] = ( uint32_t )value.y;
 }
 
 void deoglDynamicTBOUInt32::AddVec3( uint32_t value1, uint32_t value2, uint32_t value3 ){
 	pEnlarge( 3 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
-	pDataUInt[ pDataCount++ ] = value3;
+	
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
+	dataUInt[ pDataCount++ ] = value3;
 }
 
 void deoglDynamicTBOUInt32::AddVec3( const decPoint3 &value ){
 	pEnlarge( 3 );
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.y;
-	pDataUInt[ pDataCount++ ] = ( uint32_t )value.z;
+	
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = ( uint32_t )value.x;
+	dataUInt[ pDataCount++ ] = ( uint32_t )value.y;
+	dataUInt[ pDataCount++ ] = ( uint32_t )value.z;
 }
 
 void deoglDynamicTBOUInt32::AddVec4( uint32_t value1, uint32_t value2, uint32_t value3, uint32_t value4 ){
 	pEnlarge( 4 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
-	pDataUInt[ pDataCount++ ] = value3;
-	pDataUInt[ pDataCount++ ] = value4;
-}
-
-void deoglDynamicTBOUInt32::AddTBO( const deoglDynamicTBOUInt32 &tbo ){
-	if( tbo.pDataCount == 0 ){
-		return;
-	}
 	
-	pEnlarge( tbo.pDataCount );
-	memcpy( pDataUInt + pDataCount, tbo.pDataUInt, sizeof( uint32_t ) * tbo.pDataCount );
-	pDataCount += tbo.pDataCount;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
+	dataUInt[ pDataCount++ ] = value3;
+	dataUInt[ pDataCount++ ] = value4;
 }
 
 void deoglDynamicTBOUInt32::SetBoolAt( int offset, bool value ){
@@ -161,7 +113,8 @@ void deoglDynamicTBOUInt32::SetIntAt( int offset, uint32_t value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = value;
 }
 
 void deoglDynamicTBOUInt32::SetVec2At( int offset, uint32_t value1, uint32_t value2 ){
@@ -169,8 +122,9 @@ void deoglDynamicTBOUInt32::SetVec2At( int offset, uint32_t value1, uint32_t val
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
 }
 
 void deoglDynamicTBOUInt32::SetVec2At( int offset, const decPoint &value ){
@@ -178,8 +132,9 @@ void deoglDynamicTBOUInt32::SetVec2At( int offset, const decPoint &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = ( uint32_t )value.x;
-	pDataUInt[ offset + 1 ] = ( uint32_t )value.y;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = ( uint32_t )value.x;
+	dataUInt[ offset + 1 ] = ( uint32_t )value.y;
 }
 
 void deoglDynamicTBOUInt32::SetVec3At( int offset, uint32_t value1, uint32_t value2, uint32_t value3 ){
@@ -187,9 +142,10 @@ void deoglDynamicTBOUInt32::SetVec3At( int offset, uint32_t value1, uint32_t val
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
-	pDataUInt[ offset + 2 ] = value3;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
+	dataUInt[ offset + 2 ] = value3;
 }
 
 void deoglDynamicTBOUInt32::SetVec3At( int offset, const decPoint3 &value ){
@@ -197,9 +153,10 @@ void deoglDynamicTBOUInt32::SetVec3At( int offset, const decPoint3 &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = ( uint32_t )value.x;
-	pDataUInt[ offset + 1 ] = ( uint32_t )value.y;
-	pDataUInt[ offset + 2 ] = ( uint32_t )value.z;
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = ( uint32_t )value.x;
+	dataUInt[ offset + 1 ] = ( uint32_t )value.y;
+	dataUInt[ offset + 2 ] = ( uint32_t )value.z;
 }
 
 void deoglDynamicTBOUInt32::SetVec4At( int offset, uint32_t value1, uint32_t value2,
@@ -208,62 +165,17 @@ uint32_t value3, uint32_t value4 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
-	pDataUInt[ offset + 2 ] = value3;
-	pDataUInt[ offset + 3 ] = value4;
-}
-
-void deoglDynamicTBOUInt32::Update(){
-	if( pDataCount == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( uint32_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( uint32_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
-}
-
-void deoglDynamicTBOUInt32::Update( int offset, int count ){
-	if( count == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	
-	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER,
-		sizeof( uint32_t ) * ( offset * pComponentCount ),
-		sizeof( uint32_t ) * ( count * pComponentCount ),
-		pDataUInt + ( offset * pComponentCount ) ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+	uint32_t * const dataUInt = ( uint32_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
+	dataUInt[ offset + 2 ] = value3;
+	dataUInt[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOUInt32::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat( "TBO %d-UInt32:", pComponentCount );
-	uint32_t *data = pDataUInt;
+	uint32_t *data = ( uint32_t* )pData;
 	int i, pixel = 0;
 	
 	pEnsurePadding();
@@ -305,108 +217,21 @@ void deoglDynamicTBOUInt32::DebugPrint(){
 	}
 }
 
-
-
-// Private Functions
-//////////////////////
-
-void deoglDynamicTBOUInt32::pCleanUp(){
-	if( pTBO ){
-		glDeleteTextures( 1, &pTBO );
-	}
-	
-	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementTBOCount();
-		consumption.DecrementGPU( pMemoryGPU );
-		consumption.DecrementCount();
-		
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	
-	if( pDataUInt ){
-		delete [] pDataUInt;
-	}
-}
-
-void deoglDynamicTBOUInt32::pEnlarge( int count ){
-	if( pDataCount + count <= pDataSize ){
-		return;
-	}
-	
-	//const int newSize = pDataCount + count + 50;
-	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
-	uint32_t * const newArray = new uint32_t[ newSize ];
-	
-	if( pDataUInt ){
-		memcpy( newArray, pDataUInt, sizeof( uint32_t ) * pDataCount );
-		delete [] pDataUInt;
-	}
-	
-	pDataUInt = newArray;
-	pDataSize = newSize;
-}
-
-void deoglDynamicTBOUInt32::pEnsureVBO(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( pVBO ){
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-	}
-	
-	pMemoryGPU = sizeof( uint32_t ) * pDataCount;
-	
-	consumption.IncrementTBOGPU( pMemoryGPU );
-	consumption.IncrementGPU( pMemoryGPU );
-}
-
-void deoglDynamicTBOUInt32::pEnsureTBO(){
-	if( pTBO ){
-		return;
-	}
-	
-	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-	if( ! pTBO ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	tsmgr.EnableBareTBO( 0, pTBO );
-	
+GLenum deoglDynamicTBOUInt32::GetTBOFormat(){
 	switch( pComponentCount ){
 	case 1:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R32UI, pVBO ) );
-		break;
+		return GL_R32UI;
 		
 	case 2:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG32UI, pVBO ) );
-		break;
+		return GL_RG32UI;
 		
 	case 3:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB32UI, pVBO ) );
-		break;
+		return GL_RGB32UI;
 		
 	case 4:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32UI, pVBO ) );
-		break;
-	}
-	
-	tsmgr.DisableStage( 0 );
-}
-
-void deoglDynamicTBOUInt32::pEnsurePadding(){
-	while( pDataCount % pComponentCount != 0 ){
-		AddInt( 0 ); // pad up to size of component count
+		return GL_RGBA32UI;
+		
+	default:
+		DETHROW( deeInvalidParam );
 	}
 }

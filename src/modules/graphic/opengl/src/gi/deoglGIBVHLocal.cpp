@@ -121,7 +121,7 @@ void deoglGIBVHLocal::TBOAddBVH(){
 void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 	const deoglBVHNode * const nodes = pBVH.GetNodes();
 	const int nodeCount = pBVH.GetNodeCount();
-	float *nodeBox = pTBONodeBox.GetData();
+	float *nodeBox = pTBONodeBox.GetDataFloat();
 	int i;
 	
 	for( i=0; i<nodeCount; i++, nodeBox+=8 ){
@@ -160,8 +160,8 @@ void deoglGIBVHLocal::pUpdateBVHExtends( deoglBVHNode &node ){
 		
 	}else{
 		const int * const primitives = pBVH.GetPrimitives();
-		const float * const vertices = pTBOVertex.GetData();
-		const uint16_t * const faces = pTBOFace.GetData();
+		const float * const vertices = pTBOVertex.GetDataFloat();
+		const uint16_t * const faces = pTBOFace.GetDataUInt();
 		decVector minExtend, maxExtend;
 		int i;
 		

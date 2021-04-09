@@ -24,11 +24,8 @@
 #include <string.h>
 
 #include "deoglDynamicTBOUInt16.h"
-#include "../memory/deoglMemoryManager.h"
-#include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../renderthread/deoglRTTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,63 +38,16 @@
 ////////////////////////////
 
 deoglDynamicTBOUInt16::deoglDynamicTBOUInt16( deoglRenderThread &renderThread, int componentCount ) :
-pRenderThread( renderThread ),
-pComponentCount( componentCount ),
-pVBO( 0 ),
-pTBO( 0 ),
-pDataUInt( NULL ),
-pDataSize( 0 ),
-pDataCount( 0 ),
-pMemoryGPU( 0 )
-{
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
-	}
+deoglDynamicTBO( renderThread, componentCount, sizeof( uint16_t ) ){
 }
 
 deoglDynamicTBOUInt16::~deoglDynamicTBOUInt16(){
-	pCleanUp();
 }
 
 
 
 // Management
 ///////////////
-
-void deoglDynamicTBOUInt16::IncreaseDataCount( int byAmount ){
-	if( byAmount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( byAmount == 0 ){
-		return;
-	}
-	
-	pEnlarge( byAmount );
-	pDataCount += byAmount;
-}
-
-int deoglDynamicTBOUInt16::GetPixelCount() const{
-	int count = pDataCount / pComponentCount;
-	if( pDataCount % pComponentCount != 0 ){
-		count++;
-	}
-	return count;
-}
-
-void deoglDynamicTBOUInt16::IncreasePixelCount( int byAmount ){
-	pEnlarge( byAmount * pComponentCount );
-}
-
-int deoglDynamicTBOUInt16::GetPixelOffset( int pixel ) const{
-	if( pixel < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pixel * pComponentCount;
-}
-
-void deoglDynamicTBOUInt16::Clear(){
-	pDataCount = 0;
-}
 
 void deoglDynamicTBOUInt16::AddBool( bool value ){
 	if( value ){
@@ -110,51 +60,53 @@ void deoglDynamicTBOUInt16::AddBool( bool value ){
 
 void deoglDynamicTBOUInt16::AddInt( uint16_t value ){
 	pEnlarge( 1 );
-	pDataUInt[ pDataCount++ ] = value;
+	
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = value;
 }
 
 void deoglDynamicTBOUInt16::AddVec2( uint16_t value1, uint16_t value2 ){
 	pEnlarge( 2 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
+	
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
 }
 
 void deoglDynamicTBOUInt16::AddVec2( const decPoint &value ){
 	pEnlarge( 2 );
-	pDataUInt[ pDataCount++ ] = ( uint16_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint16_t )value.y;
+	
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = ( uint16_t )value.x;
+	dataUInt[ pDataCount++ ] = ( uint16_t )value.y;
 }
 
 void deoglDynamicTBOUInt16::AddVec3( uint16_t value1, uint16_t value2, uint16_t value3 ){
 	pEnlarge( 3 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
-	pDataUInt[ pDataCount++ ] = value3;
+	
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
+	dataUInt[ pDataCount++ ] = value3;
 }
 
 void deoglDynamicTBOUInt16::AddVec3( const decPoint3 &value ){
 	pEnlarge( 3 );
-	pDataUInt[ pDataCount++ ] = ( uint16_t )value.x;
-	pDataUInt[ pDataCount++ ] = ( uint16_t )value.y;
-	pDataUInt[ pDataCount++ ] = ( uint16_t )value.z;
+	
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = ( uint16_t )value.x;
+	dataUInt[ pDataCount++ ] = ( uint16_t )value.y;
+	dataUInt[ pDataCount++ ] = ( uint16_t )value.z;
 }
 
 void deoglDynamicTBOUInt16::AddVec4( uint16_t value1, uint16_t value2, uint16_t value3, uint16_t value4 ){
 	pEnlarge( 4 );
-	pDataUInt[ pDataCount++ ] = value1;
-	pDataUInt[ pDataCount++ ] = value2;
-	pDataUInt[ pDataCount++ ] = value3;
-	pDataUInt[ pDataCount++ ] = value4;
-}
-
-void deoglDynamicTBOUInt16::AddTBO( const deoglDynamicTBOUInt16 &tbo ){
-	if( tbo.pDataCount == 0 ){
-		return;
-	}
 	
-	pEnlarge( tbo.pDataCount );
-	memcpy( pDataUInt + pDataCount, tbo.pDataUInt, sizeof( uint16_t ) * tbo.pDataCount );
-	pDataCount += tbo.pDataCount;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ pDataCount++ ] = value1;
+	dataUInt[ pDataCount++ ] = value2;
+	dataUInt[ pDataCount++ ] = value3;
+	dataUInt[ pDataCount++ ] = value4;
 }
 
 void deoglDynamicTBOUInt16::SetBoolAt( int offset, bool value ){
@@ -166,7 +118,8 @@ void deoglDynamicTBOUInt16::SetIntAt( int offset, uint16_t value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = value;
 }
 
 void deoglDynamicTBOUInt16::SetVec2At( int offset, uint16_t value1, uint16_t value2 ){
@@ -174,8 +127,9 @@ void deoglDynamicTBOUInt16::SetVec2At( int offset, uint16_t value1, uint16_t val
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
 }
 
 void deoglDynamicTBOUInt16::SetVec2At( int offset, const decPoint &value ){
@@ -183,8 +137,9 @@ void deoglDynamicTBOUInt16::SetVec2At( int offset, const decPoint &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = ( uint16_t )value.x;
-	pDataUInt[ offset + 1 ] = ( uint16_t )value.y;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = ( uint16_t )value.x;
+	dataUInt[ offset + 1 ] = ( uint16_t )value.y;
 }
 
 void deoglDynamicTBOUInt16::SetVec3At( int offset, uint16_t value1, uint16_t value2, uint16_t value3 ){
@@ -192,9 +147,10 @@ void deoglDynamicTBOUInt16::SetVec3At( int offset, uint16_t value1, uint16_t val
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
-	pDataUInt[ offset + 2 ] = value3;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
+	dataUInt[ offset + 2 ] = value3;
 }
 
 void deoglDynamicTBOUInt16::SetVec3At( int offset, const decPoint3 &value ){
@@ -202,9 +158,10 @@ void deoglDynamicTBOUInt16::SetVec3At( int offset, const decPoint3 &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = ( uint16_t )value.x;
-	pDataUInt[ offset + 1 ] = ( uint16_t )value.y;
-	pDataUInt[ offset + 2 ] = ( uint16_t )value.z;
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = ( uint16_t )value.x;
+	dataUInt[ offset + 1 ] = ( uint16_t )value.y;
+	dataUInt[ offset + 2 ] = ( uint16_t )value.z;
 }
 
 void deoglDynamicTBOUInt16::SetVec4At( int offset, uint16_t value1, uint16_t value2,
@@ -213,62 +170,17 @@ uint16_t value3, uint16_t value4 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pDataUInt[ offset ] = value1;
-	pDataUInt[ offset + 1 ] = value2;
-	pDataUInt[ offset + 2 ] = value3;
-	pDataUInt[ offset + 3 ] = value4;
-}
-
-void deoglDynamicTBOUInt16::Update(){
-	if( pDataCount == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( uint16_t ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER,
-		sizeof( uint16_t ) * pDataCount, pDataUInt, GL_STREAM_DRAW ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
-}
-
-void deoglDynamicTBOUInt16::Update( int offset, int count ){
-	if( count == 0 ){
-		return;
-	}
-	
-	pEnsurePadding();
-	
-	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEnsureVBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-	
-	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER,
-		sizeof( uint16_t ) * ( offset * pComponentCount ),
-		sizeof( uint16_t ) * ( count * pComponentCount ),
-		pDataUInt + ( offset * pComponentCount ) ) );
-	
-	pEnsureTBO();
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+	uint16_t * const dataUInt = ( uint16_t* )pData;
+	dataUInt[ offset ] = value1;
+	dataUInt[ offset + 1 ] = value2;
+	dataUInt[ offset + 2 ] = value3;
+	dataUInt[ offset + 3 ] = value4;
 }
 
 void deoglDynamicTBOUInt16::DebugPrint(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfoFormat( "TBO %d-UInt16:", pComponentCount );
-	uint16_t *data = pDataUInt;
+	uint16_t *data = ( uint16_t* )pData;
 	int i, pixel = 0;
 	
 	pEnsurePadding();
@@ -310,108 +222,21 @@ void deoglDynamicTBOUInt16::DebugPrint(){
 	}
 }
 
-
-
-// Private Functions
-//////////////////////
-
-void deoglDynamicTBOUInt16::pCleanUp(){
-	if( pTBO ){
-		glDeleteTextures( 1, &pTBO );
-	}
-	
-	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementTBOCount();
-		consumption.DecrementGPU( pMemoryGPU );
-		consumption.DecrementCount();
-		
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	
-	if( pDataUInt ){
-		delete [] pDataUInt;
-	}
-}
-
-void deoglDynamicTBOUInt16::pEnlarge( int count ){
-	if( pDataCount + count <= pDataSize ){
-		return;
-	}
-	
-	//const int newSize = pDataCount + count + 50;
-	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
-	uint16_t * const newArray = new uint16_t[ newSize ];
-	
-	if( pDataUInt ){
-		memcpy( newArray, pDataUInt, sizeof( uint16_t ) * pDataCount );
-		delete [] pDataUInt;
-	}
-	
-	pDataUInt = newArray;
-	pDataSize = newSize;
-}
-
-void deoglDynamicTBOUInt16::pEnsureVBO(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( pVBO ){
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-	}
-	
-	pMemoryGPU = sizeof( uint16_t ) * pDataCount;
-	
-	consumption.IncrementTBOGPU( pMemoryGPU );
-	consumption.IncrementGPU( pMemoryGPU );
-}
-
-void deoglDynamicTBOUInt16::pEnsureTBO(){
-	if( pTBO ){
-		return;
-	}
-	
-	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-	if( ! pTBO ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	tsmgr.EnableBareTBO( 0, pTBO );
-	
+GLenum deoglDynamicTBOUInt16::GetTBOFormat(){
 	switch( pComponentCount ){
 	case 1:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_R16UI, pVBO ) );
-		break;
+		return GL_R16UI;
 		
 	case 2:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RG16UI, pVBO ) );
-		break;
+		return GL_RG16UI;
 		
 	case 3:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB16UI, pVBO ) );
-		break;
+		return GL_RGB16UI;
 		
 	case 4:
-		OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16UI, pVBO ) );
-		break;
-	}
-	
-	tsmgr.DisableStage( 0 );
-}
-
-void deoglDynamicTBOUInt16::pEnsurePadding(){
-	while( pDataCount % pComponentCount != 0 ){
-		AddInt( 0 ); // pad up to size of component count
+		return GL_RGBA16UI;
+		
+	default:
+		DETHROW( deeInvalidParam );
 	}
 }

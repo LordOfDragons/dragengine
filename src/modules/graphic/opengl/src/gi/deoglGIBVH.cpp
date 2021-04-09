@@ -379,7 +379,7 @@ void deoglGIBVH::BuildBVH(){
 		deoglBVH::sBuildPrimitive &primitive = pPrimitives[ i ];
 		const sComponent &component = pComponents[ i ];
 		const sModel &model = pModels[ component.indexModel ];
-		const float * const nodeBoxRoot = pTBONodeBox.GetData() + model.indexNodes * 8;
+		const float * const nodeBoxRoot = pTBONodeBox.GetDataFloat() + model.indexNodes * 8;
 		const decVector minExtend( nodeBoxRoot[ 0 ], nodeBoxRoot[ 1 ], nodeBoxRoot[ 2 ] );
 		const decVector maxExtend( nodeBoxRoot[ 4 ], nodeBoxRoot[ 5 ], nodeBoxRoot[ 6 ] );
 		const decVector center( ( minExtend + maxExtend ) * 0.5f );
@@ -704,7 +704,7 @@ void deoglGIBVH::pAddLocalBVHUpdated( const deoglGIBVHLocal &localBVH, const ogl
 	
 	const int baseIndexVertex = pTBOVertex.GetDataCount();
 	pTBOVertex.IncreaseDataCount( positionCount * 4 );
-	float *dataVertex = pTBOVertex.GetData() + baseIndexVertex;
+	float *dataVertex = pTBOVertex.GetDataFloat() + baseIndexVertex;
 	for( i=0; i<positionCount; i++, dataVertex+=4 ){
 		const oglVector &position = positions[ i ];
 		dataVertex[ 0 ] = position.x;
@@ -719,7 +719,7 @@ void deoglGIBVH::pAddLocalBVHUpdated( const deoglGIBVHLocal &localBVH, const ogl
 	
 	const int baseIndexNodeBox = pTBONodeBox.GetDataCount();
 	pTBONodeBox.IncreaseDataCount( nodeCount * 8 );
-	float *dataNodeBox = pTBONodeBox.GetData() + baseIndexNodeBox;
+	float *dataNodeBox = pTBONodeBox.GetDataFloat() + baseIndexNodeBox;
 	for( i=0; i<nodeCount; i++, dataNodeBox+=8 ){
 		const deoglBVHNode &node = pRecalcNodes[ i ];
 		
@@ -753,7 +753,7 @@ const oglVector *positions, const deoglBVHNode &node, deoglBVHNode &target ){
 		
 	}else{
 		const int * const primitives = bvh.GetPrimitives();
-		const uint16_t * const faces = localBVH.GetTBOFace().GetData();
+		const uint16_t * const faces = localBVH.GetTBOFace().GetDataUInt();
 		decVector minExtend, maxExtend;
 		int i;
 		
