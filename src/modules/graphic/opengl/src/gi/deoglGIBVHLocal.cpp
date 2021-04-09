@@ -19,14 +19,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "deoglGI.h"
+#include "deoglGIBVH.h"
 #include "deoglGIBVHLocal.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/face/deoglModelFace.h"
+#include "../renderthread/deoglRenderThread.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../tbo/deoglDynamicTBOFloat16.h"
 #include "../tbo/deoglDynamicTBOUInt32.h"
 #include "../tbo/deoglDynamicTBOUInt16.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOShared.h"
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -37,6 +43,7 @@
 ////////////////////////////
 
 deoglGIBVHLocal::deoglGIBVHLocal( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ),
 pTBONodeBox( NULL ),
 pTBOIndex( NULL ),
 pTBOFace( NULL ),
@@ -66,6 +73,7 @@ deoglGIBVHLocal::~deoglGIBVHLocal(){
 ///////////////
 
 void deoglGIBVHLocal::Clear(){
+	DropBlocks();
 	pBVH.Clear();
 	pTBOVertex->Clear();
 	pTBOTexCoord->Clear();
@@ -159,10 +167,77 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 
 
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockNodeBox(){
+	if( ! pBlockNodeBox ){
+		pBlockNodeBox.TakeOver( pRenderThread.GetGI().GetBVH()
+			.GetSharedTBONodeBox()->AddBlock( pTBONodeBox ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockNodeBox;
+}
+
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockIndex(){
+	if( ! pBlockIndex ){
+		pBlockIndex.TakeOver( pRenderThread.GetGI().GetBVH()
+			.GetSharedTBONodeBox()->AddBlock( pTBOIndex ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockIndex;
+}
+
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockFace(){
+	if( ! pBlockFace ){
+		pBlockFace.TakeOver( pRenderThread.GetGI().GetBVH()
+			.GetSharedTBONodeBox()->AddBlock( pTBOFace ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockFace;
+}
+
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockVertex(){
+	if( ! pBlockVertex ){
+		pBlockVertex.TakeOver( pRenderThread.GetGI().GetBVH()
+			.GetSharedTBONodeBox()->AddBlock( pTBOVertex ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex;
+}
+
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockTexCoord(){
+	if( ! pBlockTexCoord ){
+		pBlockTexCoord.TakeOver( pRenderThread.GetGI().GetBVH()
+			.GetSharedTBONodeBox()->AddBlock( pTBOTexCoord ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockTexCoord;
+}
+
+void deoglGIBVHLocal::DropBlocks(){
+	if( pBlockNodeBox ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNodeBox )->Drop();
+		pBlockNodeBox = NULL;
+	}
+	if( pBlockIndex ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockIndex )->Drop();
+		pBlockIndex = NULL;
+	}
+	if( pBlockFace ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockFace )->Drop();
+		pBlockFace = NULL;
+	}
+	if( pBlockVertex ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex )->Drop();
+		pBlockVertex = NULL;
+	}
+	if( pBlockTexCoord ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockTexCoord )->Drop();
+		pBlockTexCoord = NULL;
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
 void deoglGIBVHLocal::pCleanUp(){
+	DropBlocks();
+	
 	if( pTBONodeBox ){
 		pTBONodeBox->FreeReference();
 	}

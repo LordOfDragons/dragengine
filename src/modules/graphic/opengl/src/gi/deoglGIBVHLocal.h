@@ -24,6 +24,7 @@
 
 #include "../utils/bvh/deoglBVH.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglModelFace;
@@ -31,6 +32,8 @@ class deoglRenderThread;
 class deoglDynamicTBOFloat32;
 class deoglDynamicTBOUInt16;
 class deoglDynamicTBOFloat16;
+class deoglDynamicTBOBlock;
+
 struct oglModelPosition;
 struct oglModelVertex;
 
@@ -41,6 +44,7 @@ struct oglModelVertex;
  */
 class deoglGIBVHLocal{
 protected:
+	deoglRenderThread &pRenderThread;
 	deoglBVH pBVH;
 	
 	deoglDynamicTBOFloat32 *pTBONodeBox;
@@ -48,6 +52,12 @@ protected:
 	deoglDynamicTBOUInt16 *pTBOFace;
 	deoglDynamicTBOFloat32 *pTBOVertex;
 	deoglDynamicTBOFloat16 *pTBOTexCoord;
+	
+	deObjectReference pBlockNodeBox;
+	deObjectReference pBlockIndex;
+	deObjectReference pBlockFace;
+	deObjectReference pBlockVertex;
+	deObjectReference pBlockTexCoord;
 	
 	
 	
@@ -125,6 +135,18 @@ public:
 	
 	/** Update TBO nodes extends from BVH node extends. */
 	void TBOBVHUpdateNodeExtends();
+	
+	
+	
+	/** Get block allocating it if absent. */
+	deoglDynamicTBOBlock *GetBlockNodeBox();
+	deoglDynamicTBOBlock *GetBlockIndex();
+	deoglDynamicTBOBlock *GetBlockFace();
+	deoglDynamicTBOBlock *GetBlockVertex();
+	deoglDynamicTBOBlock *GetBlockTexCoord();
+	
+	/** Drop blocks. */
+	void DropBlocks();
 	/*@}*/
 	
 	

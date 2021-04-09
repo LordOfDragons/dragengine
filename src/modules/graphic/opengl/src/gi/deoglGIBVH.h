@@ -46,6 +46,7 @@ class deoglDynamicTBOFloat32;
 class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
 class deoglDynamicTBOUInt16;
+class deoglDynamicTBOShared;
 
 
 /**
@@ -215,6 +216,12 @@ private:
 	deoglDynamicTBOUInt32 *pTBOMaterial;
 	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
+	deoglDynamicTBOShared *pSharedTBONodeBox;
+	deoglDynamicTBOShared *pSharedTBOIndex;
+	deoglDynamicTBOShared *pSharedTBOFace;
+	deoglDynamicTBOShared *pSharedTBOVertex;
+	deoglDynamicTBOShared *pSharedTBOTexCoord;
+	
 	
 	
 public:
@@ -255,11 +262,18 @@ public:
 	/** TBO for mesh texture coordinates. */
 	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
-	/** \brief TBO for material parameters. */
+	/** TBO for material parameters. */
 	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{ return pTBOMaterial; }
 	
-	/** \brief TBO for material float parameters. */
+	/** TBO for material float parameters. */
 	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
+	
+	/** Shared TBOs. */
+	inline deoglDynamicTBOShared *GetSharedTBONodeBox() const{ return pSharedTBONodeBox; }
+	inline deoglDynamicTBOShared *GetSharedTBOIndex() const{ return pSharedTBOIndex; }
+	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
+	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
+	inline deoglDynamicTBOShared *GetSharedTBOTexCoord() const{ return pSharedTBOTexCoord; }
 	
 	
 	
@@ -269,7 +283,7 @@ public:
 	/** Add components. */
 	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
 	
-	/** \brief Add components. */
+	/** Add components. */
 	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
 	
 	/** Add component. */
@@ -278,7 +292,7 @@ public:
 	/** Add occlusion meshes. */
 	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
 	
-	/** \brief Add occlusion meshes. */
+	/** Add occlusion meshes. */
 	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
 	
 	/** Add occlusion mesh. */

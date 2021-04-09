@@ -119,3 +119,9 @@ void deoglDynamicTBOBlock::SetValid( bool valid ){
 		pSharedTBO->MarkDirty();
 	}
 }
+
+void deoglDynamicTBOBlock::Drop(){
+	if( pSharedTBO && ! pEmpty ){
+		pSharedTBO->RemoveBlock( this );
+	}
+}

@@ -105,6 +105,12 @@ public:
 	
 	/** Set if block is valid. */
 	void SetValid( bool valid );
+	
+	/**
+	 * Drop block removing it from owner shared TBO returning it to free memory pool.
+	 * This call is only valid for non-empty blocks. For empty blocks nothing is done.
+	 */
+	void Drop();
 	/*@}*/
 };
 

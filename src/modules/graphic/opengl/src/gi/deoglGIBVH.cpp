@@ -55,6 +55,8 @@
 #include "../tbo/deoglDynamicTBOFloat16.h"
 #include "../tbo/deoglDynamicTBOUInt32.h"
 #include "../tbo/deoglDynamicTBOUInt16.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOShared.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionBox.h"
@@ -91,7 +93,8 @@ pTBOFace( NULL ),
 pTBOVertex( NULL ),
 pTBOTexCoord( NULL ),
 pTBOMaterial( NULL ),
-pTBOMaterial2( NULL ){
+pTBOMaterial2( NULL )
+{
 	try{
 		pTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
 		pTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
@@ -102,6 +105,12 @@ pTBOMaterial2( NULL ){
 		pTBOTexCoord = new deoglDynamicTBOFloat16( renderThread, 2 );
 		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
 		pTBOMaterial2 = new deoglDynamicTBOFloat16( renderThread, 4 );
+		
+		pSharedTBONodeBox = new deoglDynamicTBOShared( pTBONodeBox );
+		pSharedTBOIndex = new deoglDynamicTBOShared( pTBOIndex );
+		pSharedTBOFace = new deoglDynamicTBOShared( pTBOFace );
+		pSharedTBOVertex = new deoglDynamicTBOShared( pTBOVertex );
+		pSharedTBOTexCoord = new deoglDynamicTBOShared( pTBOTexCoord );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -525,6 +534,22 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 //////////////////////
 
 void deoglGIBVH::pCleanUp(){
+	if( pSharedTBONodeBox ){
+		pSharedTBONodeBox->FreeReference();
+	}
+	if( pSharedTBOIndex ){
+		pSharedTBOIndex->FreeReference();
+	}
+	if( pSharedTBOFace ){
+		pSharedTBOFace->FreeReference();
+	}
+	if( pSharedTBOVertex ){
+		pSharedTBOVertex->FreeReference();
+	}
+	if( pSharedTBOTexCoord ){
+		pSharedTBOTexCoord->FreeReference();
+	}
+	
 	if( pTBONodeBox ){
 		pTBONodeBox->FreeReference();
 	}
