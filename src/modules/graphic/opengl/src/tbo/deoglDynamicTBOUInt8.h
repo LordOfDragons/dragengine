@@ -38,12 +38,14 @@ public:
 	/** Create dynamic tbo. */
 	deoglDynamicTBOUInt8( deoglRenderThread &renderThread, int componentCount );
 	
+protected:
 	/** Clean up dynamic tbo. */
 	virtual ~deoglDynamicTBOUInt8();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Data entries. */

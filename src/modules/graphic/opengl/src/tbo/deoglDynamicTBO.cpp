@@ -113,6 +113,20 @@ void deoglDynamicTBO::AddTBO( const deoglDynamicTBO &tbo ){
 	pDataCount += tbo.pDataCount;
 }
 
+void deoglDynamicTBO::SetTBO( int offset, const deoglDynamicTBO &tbo ){
+	if( tbo.pDataTypeSize != pDataTypeSize ){
+		DETHROW( deeInvalidParam );
+	}
+	if( tbo.pDataCount == 0 ){
+		return;
+	}
+	if( offset < 0 || offset + tbo.pDataCount - 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	memcpy( pData + offset * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize );
+}
+
 void deoglDynamicTBO::Update(){
 	if( pDataCount == 0 ){
 		return;

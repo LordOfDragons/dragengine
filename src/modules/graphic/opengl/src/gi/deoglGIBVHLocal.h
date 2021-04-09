@@ -22,16 +22,15 @@
 #ifndef _DEOGLGIBVHLOCAL_H_
 #define _DEOGLGIBVHLOCAL_H_
 
-#include "../tbo/deoglDynamicTBOFloat32.h"
-#include "../tbo/deoglDynamicTBOFloat16.h"
-#include "../tbo/deoglDynamicTBOUInt32.h"
-#include "../tbo/deoglDynamicTBOUInt16.h"
 #include "../utils/bvh/deoglBVH.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglModelFace;
 class deoglRenderThread;
+class deoglDynamicTBOFloat32;
+class deoglDynamicTBOUInt16;
+class deoglDynamicTBOFloat16;
 struct oglModelPosition;
 struct oglModelVertex;
 
@@ -44,11 +43,11 @@ class deoglGIBVHLocal{
 protected:
 	deoglBVH pBVH;
 	
-	deoglDynamicTBOFloat32 pTBONodeBox;
-	deoglDynamicTBOUInt16 pTBOIndex;
-	deoglDynamicTBOUInt16 pTBOFace;
-	deoglDynamicTBOFloat32 pTBOVertex;
-	deoglDynamicTBOFloat16 pTBOTexCoord;
+	deoglDynamicTBOFloat32 *pTBONodeBox;
+	deoglDynamicTBOUInt16 *pTBOIndex;
+	deoglDynamicTBOUInt16 *pTBOFace;
+	deoglDynamicTBOFloat32 *pTBOVertex;
+	deoglDynamicTBOFloat16 *pTBOTexCoord;
 	
 	
 	
@@ -67,24 +66,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 &GetTBONodeBox(){ return pTBONodeBox; }
-	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 &GetTBOIndex(){ return pTBOIndex; }
-	inline const deoglDynamicTBOUInt16 &GetTBOIndex() const{ return pTBOIndex; }
+	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 &GetTBOFace(){ return pTBOFace; }
-	inline const deoglDynamicTBOUInt16 &GetTBOFace() const{ return pTBOFace; }
+	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 &GetTBOVertex(){ return pTBOVertex; }
-	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 &GetTBOTexCoord(){ return pTBOTexCoord; }
-	inline const deoglDynamicTBOFloat16 &GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** BVH. */
 	inline deoglBVH &GetBVH(){ return pBVH; }
@@ -136,6 +130,7 @@ public:
 	
 	
 private:
+	void pCleanUp();
 	void pUpdateBVHExtends( deoglBVHNode &node );
 };
 

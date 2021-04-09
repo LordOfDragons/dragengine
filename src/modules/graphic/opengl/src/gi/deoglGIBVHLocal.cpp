@@ -23,6 +23,11 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/face/deoglModelFace.h"
 #include "../utils/bvh/deoglBVHNode.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
+#include <dragengine/common/exceptions.h>
 
 
 // Class deoglGIBVHLocal
@@ -32,14 +37,27 @@
 ////////////////////////////
 
 deoglGIBVHLocal::deoglGIBVHLocal( deoglRenderThread &renderThread ) :
-pTBONodeBox( renderThread, 4 ),
-pTBOIndex( renderThread, 2 ),
-pTBOFace( renderThread, 4 ),
-pTBOVertex( renderThread, 4 ),
-pTBOTexCoord( renderThread, 2 ){
+pTBONodeBox( NULL ),
+pTBOIndex( NULL ),
+pTBOFace( NULL ),
+pTBOVertex( NULL ),
+pTBOTexCoord( NULL )
+{
+	try{
+		pTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
+		pTBOFace = new deoglDynamicTBOUInt16( renderThread, 4 );
+		pTBOVertex = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBOTexCoord = new deoglDynamicTBOFloat16( renderThread, 2 );
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
 }
 
 deoglGIBVHLocal::~deoglGIBVHLocal(){
+	pCleanUp();
 }
 
 
@@ -49,11 +67,11 @@ deoglGIBVHLocal::~deoglGIBVHLocal(){
 
 void deoglGIBVHLocal::Clear(){
 	pBVH.Clear();
-	pTBOVertex.Clear();
-	pTBOTexCoord.Clear();
-	pTBOFace.Clear();
-	pTBOIndex.Clear();
-	pTBONodeBox.Clear();
+	pTBOVertex->Clear();
+	pTBOTexCoord->Clear();
+	pTBOFace->Clear();
+	pTBOIndex->Clear();
+	pTBONodeBox->Clear();
 }
 
 void deoglGIBVHLocal::BuildBVH( const deoglBVH::sBuildPrimitive *primitives,
@@ -69,7 +87,7 @@ void deoglGIBVHLocal::UpdateBVHExtends(){
 }
 
 void deoglGIBVHLocal::TBOAddVertex( const decVector &position ){
-	pTBOVertex.AddVec4( position, 0.0f );
+	pTBOVertex->AddVec4( position, 0.0f );
 }
 
 void deoglGIBVHLocal::TBOAddVertices( const oglModelPosition *positions, int count ){
@@ -81,11 +99,11 @@ void deoglGIBVHLocal::TBOAddVertices( const oglModelPosition *positions, int cou
 
 void deoglGIBVHLocal::TBOAddFace( int vertex1, int vertex2, int vertex3, int material,
 const decVector2 &texCoord1, const decVector2 &texCoord2, const decVector2 &texCoord3 ){
-	pTBOFace.AddVec4( vertex1, vertex2, vertex3, material );
+	pTBOFace->AddVec4( vertex1, vertex2, vertex3, material );
 	
-	pTBOTexCoord.AddVec2( texCoord1 );
-	pTBOTexCoord.AddVec2( texCoord2 );
-	pTBOTexCoord.AddVec2( texCoord3 );
+	pTBOTexCoord->AddVec2( texCoord1 );
+	pTBOTexCoord->AddVec2( texCoord2 );
+	pTBOTexCoord->AddVec2( texCoord3 );
 }
 
 void deoglGIBVHLocal::TBOAddFaces( const deoglModelFace *faces, const oglModelVertex *vertices,
@@ -112,16 +130,16 @@ void deoglGIBVHLocal::TBOAddBVH(){
 	
 	for( i=0; i<nodeCount; i++ ){
 		const deoglBVHNode &node = nodes[ i ];
-		pTBONodeBox.AddVec4( node.GetMinExtend(), 0.0f );
-		pTBONodeBox.AddVec4( node.GetMaxExtend(), 0.0f );
-		pTBOIndex.AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
+		pTBONodeBox->AddVec4( node.GetMinExtend(), 0.0f );
+		pTBONodeBox->AddVec4( node.GetMaxExtend(), 0.0f );
+		pTBOIndex->AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
 	}
 }
 
 void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 	const deoglBVHNode * const nodes = pBVH.GetNodes();
 	const int nodeCount = pBVH.GetNodeCount();
-	float *nodeBox = pTBONodeBox.GetDataFloat();
+	float *nodeBox = pTBONodeBox->GetDataFloat();
 	int i;
 	
 	for( i=0; i<nodeCount; i++, nodeBox+=8 ){
@@ -144,6 +162,24 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 // Private Functions
 //////////////////////
 
+void deoglGIBVHLocal::pCleanUp(){
+	if( pTBONodeBox ){
+		pTBONodeBox->FreeReference();
+	}
+	if( pTBOIndex ){
+		pTBOIndex->FreeReference();
+	}
+	if( pTBOFace ){
+		pTBOFace->FreeReference();
+	}
+	if( pTBOVertex ){
+		pTBOVertex->FreeReference();
+	}
+	if( pTBOTexCoord ){
+		pTBOTexCoord->FreeReference();
+	}
+}
+
 void deoglGIBVHLocal::pUpdateBVHExtends( deoglBVHNode &node ){
 	const int primitiveCount = node.GetPrimitiveCount();
 	const int firstIndex = node.GetFirstIndex();
@@ -160,8 +196,8 @@ void deoglGIBVHLocal::pUpdateBVHExtends( deoglBVHNode &node ){
 		
 	}else{
 		const int * const primitives = pBVH.GetPrimitives();
-		const float * const vertices = pTBOVertex.GetDataFloat();
-		const uint16_t * const faces = pTBOFace.GetDataUInt();
+		const float * const vertices = pTBOVertex->GetDataFloat();
+		const uint16_t * const faces = pTBOFace->GetDataUInt();
 		decVector minExtend, maxExtend;
 		int i;
 		

@@ -26,10 +26,7 @@
 #include "../texture/deoglRenderbuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-#include <dragengine/deObjectReference.h>
-
 class deoglRenderThread;
-class deoglSPBlockUBO;
 
 
 /**

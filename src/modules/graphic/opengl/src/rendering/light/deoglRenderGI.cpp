@@ -70,6 +70,10 @@
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
+#include "../../tbo/deoglDynamicTBOFloat16.h"
+#include "../../tbo/deoglDynamicTBOFloat32.h"
+#include "../../tbo/deoglDynamicTBOUInt16.h"
+#include "../../tbo/deoglDynamicTBOUInt32.h"
 #include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../world/deoglRWorld.h"
@@ -1212,15 +1216,15 @@ void deoglRenderGI::pInitTraceTextures(){
 	deoglGI &gi = renderThread.GetGI();
 	
 	const deoglGIBVH &bvh = gi.GetBVH();
-	tsmgr.EnableTBO( 0, bvh.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 1, bvh.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 2, bvh.GetTBOInstance().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 3, bvh.GetTBOMatrix().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 4, bvh.GetTBOFace().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 5, bvh.GetTBOVertex().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial().GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2().GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 0, bvh.GetTBONodeBox()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, bvh.GetTBOIndex()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 2, bvh.GetTBOInstance()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 3, bvh.GetTBOMatrix()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 4, bvh.GetTBOFace()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 5, bvh.GetTBOVertex()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2()->GetTBO(), GetSamplerClampNearest() );
 	
 	deoglGIMaterials &materials = gi.GetMaterials();
 	tsmgr.EnableTexture( 9, materials.GetTextureDiffuse(), GetSamplerClampNearest() );

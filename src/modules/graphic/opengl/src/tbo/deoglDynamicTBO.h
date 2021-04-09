@@ -22,9 +22,10 @@
 #ifndef _DEOGLDYNAMICTBO_H_
 #define _DEOGLDYNAMICTBO_H_
 
-#include <dragengine/common/math/decMath.h>
-
 #include "../deoglBasics.h"
+
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/deObject.h>
 
 class deoglRenderThread;
 
@@ -35,7 +36,7 @@ class deoglRenderThread;
  * Once done the written data is uploaded to the VBO. The VBO grows with the needed
  * size but never shrinks. This way the usage is as fast as possible.
  */
-class deoglDynamicTBO{
+class deoglDynamicTBO : public deObject{
 protected:
 	deoglRenderThread &pRenderThread;
 	const int pComponentCount;
@@ -57,13 +58,13 @@ protected:
 	/** Create dynamic tbo. */
 	deoglDynamicTBO( deoglRenderThread &renderThread, int componentCount, int dataTypeSize );
 	
-public:
 	/** Clean up dynamic tbo. */
 	virtual ~deoglDynamicTBO();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -102,6 +103,9 @@ public:
 	
 	/** Add content from another dynamic TBO. */
 	void AddTBO( const deoglDynamicTBO &tbo );
+	
+	/** Set content from another dynamic TBO at offset measured in entries. */
+	void SetTBO( int offset, const deoglDynamicTBO &tbo );
 	
 	/** Update TBO with added data. */
 	void Update();

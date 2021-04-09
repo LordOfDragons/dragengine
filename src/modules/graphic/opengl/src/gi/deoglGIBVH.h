@@ -23,11 +23,8 @@
 #define _DEOGLGIBVH_H_
 
 #include "../collidelist/deoglCollideList.h"
-#include "../tbo/deoglDynamicTBOFloat32.h"
-#include "../tbo/deoglDynamicTBOFloat16.h"
-#include "../tbo/deoglDynamicTBOUInt32.h"
-#include "../tbo/deoglDynamicTBOUInt16.h"
 #include "../utils/bvh/deoglBVH.h"
+#include "../deoglBasics.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -45,6 +42,10 @@ class deoglRSkin;
 class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
+class deoglDynamicTBOFloat32;
+class deoglDynamicTBOFloat16;
+class deoglDynamicTBOUInt32;
+class deoglDynamicTBOUInt16;
 
 
 /**
@@ -204,15 +205,15 @@ private:
 	
 	int pIndexRootNode;
 	
-	deoglDynamicTBOFloat32 pTBONodeBox;
-	deoglDynamicTBOUInt16 pTBOIndex;
-	deoglDynamicTBOUInt32 pTBOInstance;
-	deoglDynamicTBOFloat32 pTBOMatrix;
-	deoglDynamicTBOUInt16 pTBOFace;
-	deoglDynamicTBOFloat32 pTBOVertex;
-	deoglDynamicTBOFloat16 pTBOTexCoord;
-	deoglDynamicTBOUInt32 pTBOMaterial;
-	deoglDynamicTBOFloat16 pTBOMaterial2;
+	deoglDynamicTBOFloat32 *pTBONodeBox;
+	deoglDynamicTBOUInt16 *pTBOIndex;
+	deoglDynamicTBOUInt32 *pTBOInstance;
+	deoglDynamicTBOFloat32 *pTBOMatrix;
+	deoglDynamicTBOUInt16 *pTBOFace;
+	deoglDynamicTBOFloat32 *pTBOVertex;
+	deoglDynamicTBOFloat16 *pTBOTexCoord;
+	deoglDynamicTBOUInt32 *pTBOMaterial;
+	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
 	
 	
@@ -234,31 +235,31 @@ public:
 	inline int GetIndexRootNode() const{ return pIndexRootNode; }
 	
 	/** TBO for BVH node boundaries. */
-	inline const deoglDynamicTBOFloat32 &GetTBONodeBox() const{ return pTBONodeBox; }
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline const deoglDynamicTBOUInt16 &GetTBOIndex() const{ return pTBOIndex; }
+	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for instance data. */
-	inline const deoglDynamicTBOUInt32 &GetTBOInstance() const{ return pTBOInstance; }
+	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** TBO for instance matrices. */
-	inline const deoglDynamicTBOFloat32 &GetTBOMatrix() const{ return pTBOMatrix; }
+	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** TBO for mesh faces. */
-	inline const deoglDynamicTBOUInt16 &GetTBOFace() const{ return pTBOFace; }
+	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline const deoglDynamicTBOFloat32 &GetTBOVertex() const{ return pTBOVertex; }
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline const deoglDynamicTBOFloat16 &GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** \brief TBO for material parameters. */
-	inline const deoglDynamicTBOUInt32 &GetTBOMaterial() const{ return pTBOMaterial; }
+	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{ return pTBOMaterial; }
 	
 	/** \brief TBO for material float parameters. */
-	inline const deoglDynamicTBOFloat16 &GetTBOMaterial2() const{ return pTBOMaterial2; }
+	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
 	
 	
 	
@@ -293,6 +294,7 @@ public:
 	
 	
 private:
+	void pCleanUp();
 	sModel &pAddModel();
 	sComponent &pAddComponent( int indexModel, int indexMaterial, const decMatrix &matrix );
 	void pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture );
