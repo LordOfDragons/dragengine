@@ -38,6 +38,9 @@ class deoglDynamicTBOBlock;
 class deoglDynamicTBOShared : public deObject{
 public:
 	const deObjectReference pTBO;
+	const deObjectReference pTBO2;
+	const int pStride;
+	const int pStride2;
 	decObjectList pBlocks;
 	int pUsedSize;
 	bool pDirty;
@@ -48,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared dynamic TBO. */
-	deoglDynamicTBOShared( deoglDynamicTBO *tbo );
+	deoglDynamicTBOShared( deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1 );
 	
 	/** Cleans up shared dynamic TBO. */
 	virtual ~deoglDynamicTBOShared();
@@ -60,14 +63,19 @@ public:
 	/*@{*/
 	/** TBO. */
 	inline deoglDynamicTBO *GetTBO() const{ return ( deoglDynamicTBO* )( deObject* )pTBO; }
+	inline deoglDynamicTBO *GetTBO2() const{ return ( deoglDynamicTBO* )( deObject* )pTBO2; }
+	
+	/** Stride in pixel for one unit. */
+	inline int GetStride() const{ return pStride; }
+	inline int GetStride2() const{ return pStride2; }
 	
 	/** Prepare TBO data if required. This does not upload the TBO data just prepare it. */
 	void Prepare();
 	
-	/** Used size in pixel. */
+	/** Used size in units. */
 	inline int GetUsedSize() const{ return pUsedSize; }
 	
-	/** Update used sizes in pixel. */
+	/** Update used sizes in units. */
 	void UpdateUsedSizes();
 	
 	/** Mark TBO dirty. */
@@ -83,14 +91,24 @@ public:
 	deoglDynamicTBOBlock *GetBlockAt( int index ) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
-	deoglDynamicTBOBlock *AddBlock( deoglDynamicTBO *tbo );
+	deoglDynamicTBOBlock *AddBlock( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL );
 	
 	/** Remove block returning the space to the pool of free space. */
 	void RemoveBlock( deoglDynamicTBOBlock *block );
 	
-	/** Index of first empty block TBO fits in or NULL if not found. */
+	/**
+	 * Index of first empty block TBO fits in or NULL if not found. If the only empty block
+	 * is the last block the TBO is considered to always fit.
+	 */
 	int FirstMatchingBlock( deoglDynamicTBO *tbo );
 	/*@}*/
+	
+	
+	
+private:
+	deoglDynamicTBOBlock *pAddEmptyBlock();
+	void pEnsureTBOSize();
+	void pWriteBlockToTBO( const deoglDynamicTBOBlock &block );
 };
 
 #endif

@@ -31,6 +31,7 @@
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../gi/deoglGIBVHDynamic.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
@@ -117,7 +118,9 @@ pTBOWeightMatrices( 0 ),
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
-pFBOCalcNormalTangent( NULL )
+pFBOCalcNormalTangent( NULL ),
+
+pGIBVHDynamic( NULL )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentLOD );
 }
@@ -683,6 +686,36 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 
 
 
+void deoglRComponentLOD::PrepareGIDynamicBVH(){
+	deoglModelLOD * const modelLOD = GetModelLOD();
+	if( ! modelLOD ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( ! pGIBVHDynamic ){
+		modelLOD->PrepareGILocalBVH();
+		if( ! modelLOD->GetGIBVHLocal() ){
+			DETHROW( deeInvalidParam );
+		}
+		pGIBVHDynamic = new deoglGIBVHDynamic( *modelLOD->GetGIBVHLocal() );
+	}
+	
+	if( pDirtyDataPositions ){
+		PreparePositions();
+		pGIBVHDynamic->UpdateVertices( pPositions, modelLOD->GetPositionCount() );
+		pGIBVHDynamic->UpdateBVHExtends();
+	}
+}
+
+void deoglRComponentLOD::DropGIDynamicBVH(){
+	if( pGIBVHDynamic ){
+		delete pGIBVHDynamic;
+		pGIBVHDynamic = NULL;
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -929,6 +962,8 @@ public:
 };
 
 void deoglRComponentLOD::pCleanUp(){
+	DropGIDynamicBVH();
+	
 	if( pVBOLayout ){
 		delete pVBOLayout;
 	}

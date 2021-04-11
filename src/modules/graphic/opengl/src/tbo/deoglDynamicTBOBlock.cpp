@@ -82,7 +82,6 @@ void deoglDynamicTBOBlock::SetOffset( int offset ){
 	}
 	
 	pOffset = offset;
-	pValid = false;
 }
 
 void deoglDynamicTBOBlock::SetSize( int size ){
@@ -95,21 +94,19 @@ void deoglDynamicTBOBlock::SetSize( int size ){
 	
 	pSize = size;
 	pData = NULL;
-	pValid = false;
+	pData2 = NULL;
 }
 
-void deoglDynamicTBOBlock::SetData( deoglDynamicTBO *tbo ){
+void deoglDynamicTBOBlock::SetData( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 ){
 	pData = tbo;
+	pData2 = tbo2;
+	SetValid( false );
 }
 
 void deoglDynamicTBOBlock::SetEmpty( bool empty ){
-	if( empty == pEmpty ){
-		return;
-	}
-	
 	pEmpty = empty;
 	pData = NULL;
-	pValid = false;
+	pData2 = NULL;
 }
 
 void deoglDynamicTBOBlock::SetValid( bool valid ){

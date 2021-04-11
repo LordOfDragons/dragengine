@@ -54,6 +54,7 @@ private:
 	deObjectReference pComponentListener;
 	
 	int pIndexMaterial;
+	bool pDynamic;
 	bool pChanged;
 	
 	
@@ -76,19 +77,22 @@ public:
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set component or NULL. */
-	void SetComponent( deoglRComponent *component );
+	void SetComponent( deoglRComponent *component, bool dynamic );
 	
 	/** Occlusion mesh or NULL. */
 	inline deoglRComponent *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL. */
-	void SetOcclusionMesh( deoglRComponent *occlusionMesh );
+	void SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic );
 	
 	/** First material index. */
 	inline int GetIndexMaterial() const{ return pIndexMaterial; }
 	
 	/** Set first material index. */
 	void SetIndexMaterial( int index );
+	
+	/** Slot is dynamic. */
+	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** Instance changed in a way ray cast results are invalidated. */
 	inline bool GetChanged() const{ return pChanged; }

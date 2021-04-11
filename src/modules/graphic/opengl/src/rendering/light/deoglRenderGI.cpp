@@ -340,8 +340,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		pAddToRenderTask->Reset();
 		
 		bvh.Clear();
-// 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
-		bvh.AddOcclusionMeshes( plan, giState->GetPosition(), giState->GetInstances() );
+// 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), false );
+		bvh.AddOcclusionMeshes( plan, giState->GetPosition(), giState->GetInstances(), false );
 		bvh.BuildBVH();
 		
 		giState->PrepareUBOStateRayLimit(); // has to be done here since it is shared
@@ -421,7 +421,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		bvh.Clear();
 			decTimer timer1;
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
+		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), false );
 			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		bvh.BuildBVH();
 			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
@@ -459,7 +459,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetRayCacheProbeCount() ) );
 		
-		giState->ValidatedRayCaches(); // comment out for performance test
+// 		giState->ValidatedRayCaches(); // comment out for performance test
 	}
 	#endif
 	
@@ -470,10 +470,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	bvh.Clear();
 		decTimer timer2;
 	#ifdef GI_USE_RAY_CACHE
-		giState->FilterDynamicComponents();
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetCollideListFiltered() );
+		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), true );
 	#else
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetCollideList() );
+		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
 	#endif
 		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	bvh.BuildBVH();
@@ -803,6 +802,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 2 );
+	
+	
+	// TODO clear invalid probes first. this should include all invalid probes not only updated ones
 	
 	
 	// update probes: irradiance map

@@ -24,8 +24,11 @@
 #include <string.h>
 
 #include "deoglGIInstance.h"
+#include "deoglGIBVHLocal.h"
+#include "deoglGIBVHDynamic.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../model/deoglModelLOD.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -37,7 +40,7 @@ deoglGIInstance::cComponentListener::cComponentListener( deoglGIInstance &instan
 pInstance( instance ){
 }
 
-void deoglGIInstance::cComponentListener::ComponentDestroyed( deoglRComponent&c ){
+void deoglGIInstance::cComponentListener::ComponentDestroyed( deoglRComponent& ){
 	pInstance.Clear();
 	pInstance.SetChanged( true );
 }
@@ -52,7 +55,7 @@ void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent& ){
 	pInstance.SetChanged( true );
 }
 
-void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent&c ){
+void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
 	pInstance.SetChanged( true );
 }
 
@@ -76,6 +79,7 @@ deoglGIInstance::deoglGIInstance() :
 pComponent( NULL ),
 pOcclusionMesh( NULL ),
 pIndexMaterial( 0 ),
+pDynamic( false ),
 pChanged( false ){
 }
 
@@ -88,7 +92,7 @@ deoglGIInstance::~deoglGIInstance(){
 // Management
 ///////////////
 
-void deoglGIInstance::SetComponent( deoglRComponent *component ){
+void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	if( component == pComponent ){
 		return;
 	}
@@ -96,6 +100,7 @@ void deoglGIInstance::SetComponent( deoglRComponent *component ){
 	Clear();
 	
 	pComponent = component;
+	pDynamic = dynamic;
 	pChanged = false;
 	
 	if( component ){
@@ -103,10 +108,25 @@ void deoglGIInstance::SetComponent( deoglRComponent *component ){
 			pComponentListener.TakeOver( new cComponentListener( *this ) );
 		}
 		component->AddListener( ( deoglComponentListener* )( deObject* )pComponentListener );
+		
+		deoglRComponentLOD &lod = component->GetLODAt( -1 );
+		
+		const deoglModelLOD * const modelLOD = lod.GetModelLOD();
+		if( modelLOD ){
+			deoglGIBVHLocal * const bvhLocal = modelLOD->GetGIBVHLocal();
+			if( bvhLocal ){
+				bvhLocal->AddBlockUsage();
+			}
+		}
+		
+		deoglGIBVHDynamic * const bvhDynamic = lod.GetGIBVHDynamic();
+		if( bvhDynamic ){
+			bvhDynamic->AddBlockUsage();
+		}
 	}
 }
 
-void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh ){
+void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic ){
 	if( occlusionMesh == pOcclusionMesh ){
 		return;
 	}
@@ -114,6 +134,7 @@ void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh ){
 	Clear();
 	
 	pOcclusionMesh = occlusionMesh;
+	pDynamic = dynamic;
 	pChanged = false;
 	
 	if( occlusionMesh ){
@@ -134,17 +155,29 @@ void deoglGIInstance::SetChanged( bool changed ){
 
 void deoglGIInstance::Clear(){
 	if( pComponent ){
+		deoglRComponentLOD &lod = pComponent->GetLODAt( -1 );
+		
+		const deoglModelLOD * const modelLOD = lod.GetModelLOD();
+		if( modelLOD ){
+			deoglGIBVHLocal * const bvhLocal = modelLOD->GetGIBVHLocal();
+			if( bvhLocal ){
+				bvhLocal->RemoveBlockUsage();
+			}
+		}
+		
+		deoglGIBVHDynamic * const bvhDynamic = lod.GetGIBVHDynamic();
+		if( bvhDynamic ){
+			bvhDynamic->RemoveBlockUsage();
+		}
+		
 		pComponent->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
 		pComponent = NULL;
 	}
+	
 	if( pOcclusionMesh ){
 		pOcclusionMesh->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
 		pOcclusionMesh = NULL;
 	}
+	
+	pDynamic = false;
 }
-
-
-
-// Private Functions
-//////////////////////
-

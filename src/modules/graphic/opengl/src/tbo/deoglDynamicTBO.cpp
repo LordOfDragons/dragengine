@@ -86,7 +86,7 @@ int deoglDynamicTBO::GetPixelCount() const{
 }
 
 void deoglDynamicTBO::IncreasePixelCount( int byAmount ){
-	pEnlarge( byAmount * pComponentCount );
+	IncreaseDataCount( byAmount * pComponentCount );
 }
 
 int deoglDynamicTBO::GetPixelOffset( int pixel ) const{

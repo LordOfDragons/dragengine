@@ -48,7 +48,8 @@ pTBONodeBox( NULL ),
 pTBOIndex( NULL ),
 pTBOFace( NULL ),
 pTBOVertex( NULL ),
-pTBOTexCoord( NULL )
+pTBOTexCoord( NULL ),
+pBlockUsageCount( 0 )
 {
 	try{
 		pTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
@@ -167,54 +168,34 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 
 
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockNodeBox(){
-	if( ! pBlockNodeBox ){
-		pBlockNodeBox.TakeOver( pRenderThread.GetGI().GetBVH()
-			.GetSharedTBONodeBox()->AddBlock( pTBONodeBox ) );
+deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockNode(){
+	if( ! pBlockNode ){
+		pBlockNode.TakeOver( pRenderThread.GetGI().GetBVH().GetSharedTBONode()
+			->AddBlock( pTBOIndex, pTBONodeBox ) );
 	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockNodeBox;
-}
-
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockIndex(){
-	if( ! pBlockIndex ){
-		pBlockIndex.TakeOver( pRenderThread.GetGI().GetBVH()
-			.GetSharedTBONodeBox()->AddBlock( pTBOIndex ) );
-	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockIndex;
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockNode;
 }
 
 deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockFace(){
 	if( ! pBlockFace ){
-		pBlockFace.TakeOver( pRenderThread.GetGI().GetBVH()
-			.GetSharedTBONodeBox()->AddBlock( pTBOFace ) );
+		pBlockFace.TakeOver( pRenderThread.GetGI().GetBVH().GetSharedTBOFace()
+			->AddBlock( pTBOFace, pTBOTexCoord ) );
 	}
 	return ( deoglDynamicTBOBlock* )( deObject* )pBlockFace;
 }
 
 deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockVertex(){
 	if( ! pBlockVertex ){
-		pBlockVertex.TakeOver( pRenderThread.GetGI().GetBVH()
-			.GetSharedTBONodeBox()->AddBlock( pTBOVertex ) );
+		pBlockVertex.TakeOver( pRenderThread.GetGI().GetBVH().GetSharedTBOVertex()
+			->AddBlock( pTBOVertex ) );
 	}
 	return ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex;
 }
 
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockTexCoord(){
-	if( ! pBlockTexCoord ){
-		pBlockTexCoord.TakeOver( pRenderThread.GetGI().GetBVH()
-			.GetSharedTBONodeBox()->AddBlock( pTBOTexCoord ) );
-	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockTexCoord;
-}
-
 void deoglGIBVHLocal::DropBlocks(){
-	if( pBlockNodeBox ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNodeBox )->Drop();
-		pBlockNodeBox = NULL;
-	}
-	if( pBlockIndex ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockIndex )->Drop();
-		pBlockIndex = NULL;
+	if( pBlockNode ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNode )->Drop();
+		pBlockNode = NULL;
 	}
 	if( pBlockFace ){
 		( ( deoglDynamicTBOBlock* )( deObject* )pBlockFace )->Drop();
@@ -224,9 +205,20 @@ void deoglGIBVHLocal::DropBlocks(){
 		( ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex )->Drop();
 		pBlockVertex = NULL;
 	}
-	if( pBlockTexCoord ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockTexCoord )->Drop();
-		pBlockTexCoord = NULL;
+}
+
+void deoglGIBVHLocal::AddBlockUsage(){
+	pBlockUsageCount++;
+}
+
+void deoglGIBVHLocal::RemoveBlockUsage(){
+	if( pBlockUsageCount == 0 ){
+		return;
+	}
+	
+	pBlockUsageCount--;
+	if( pBlockUsageCount == 0 ){
+		DropBlocks();
 	}
 }
 

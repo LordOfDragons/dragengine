@@ -34,10 +34,12 @@ class deoglTexture;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglSharedVBOBlock;
+class deoglGIBVHDynamic;
+
 
 
 /**
- * \brief Render component LOD.
+ * Render component LOD.
  * 
  * The VAO of the component contains the following bindings:
  * - input 0: vec3 position
@@ -86,15 +88,17 @@ public:
 	deoglTexture *pTexTransformNormTan;
 	deoglFramebuffer *pFBOCalcNormalTangent;
 	
+	deoglGIBVHDynamic *pGIBVHDynamic;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render component lod. */
+	/** Create render component lod. */
 	deoglRComponentLOD( deoglRComponent &component, int lodIndex );
 	
-	/** \brief Clean up render component lod. */
+	/** Clean up render component lod. */
 	virtual ~deoglRComponentLOD();
 	/*@}*/
 	
@@ -102,122 +106,133 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglRComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief LOD index. */
+	/** LOD index. */
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
-	/** \brief Get ModelLOD or NULL. */
+	/** Get ModelLOD or NULL. */
 	deoglModelLOD *GetModelLOD() const;
 	
 	
 	
-	/** \brief Weights for debuging purpose. */
+	/** Weights for debuging purpose. */
 	inline oglMatrix3x4 *GetWeights() const{ return pWeights; }
 	
 	/**
-	 * \brief Retrieves the face normals.
+	 * Retrieves the face normals.
 	 * \details Valid only after calling PrepareNormalsTangents and faces exist.
 	 */
 	inline oglVector *GetFaceNormals() const{ return pFaceNormals; }
 	
 	/**
-	 * \brief Retrieves the positions.
+	 * Retrieves the positions.
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
 	inline oglVector *GetPositions() const{ return pPositions; }
 	
 	/**
-	 * \brief Retrieves the real normals.
+	 * Retrieves the real normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
 	inline oglVector *GetRealNormals() const{ return pRealNormals; }
 	
 	/**
-	 * \brief Retrieves the normals.
+	 * Retrieves the normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
 	inline oglVector *GetNormals() const{ return pNormals; }
 	
 	/**
-	 * \brief Retrieves the tangents.
+	 * Retrieves the tangents.
 	 * \details Valid only after calling PrepareNormalsTangents and tangents exist.
 	 */
 	inline oglVector *GetTangents() const{ return pTangents; }
 	
 	
 	
-	/** \brief Prepare dynamic weights if dirty. */
+	/** Prepare dynamic weights if dirty. */
 	void PrepareWeights();
 	
-	/** \brief Prepare dynamic positions if dirty. */
+	/** Prepare dynamic positions if dirty. */
 	void PreparePositions();
 	
-	/** \brief Prepare dynamic normals and tangents if dirty. */
+	/** Prepare dynamic normals and tangents if dirty. */
 	void PrepareNormalsTangents();
 	
 	
 	
-	/** \brief Number of points. */
+	/** Number of points. */
 	inline int GetPointCount() const{ return pVBOPointCount; }
 	
-	/** \brief VBO data in client memory. */
+	/** VBO data in client memory. */
 	inline deoglVBOpnt *GetVBOData() const{ return pVBOData; }
 	
-	/** \brief Point offset or 0 if not using a shared vao. */
+	/** Point offset or 0 if not using a shared vao. */
 	int GetPointOffset() const;
 	
-	/** \brief Index offset or 0 if not using a shared vao. */
+	/** Index offset or 0 if not using a shared vao. */
 	int GetIndexOffset() const;
 	
-	/** \brief VBO. */
+	/** VBO. */
 	inline GLuint GetVBO() const{ return pVBO; }
 	
-	/** \brief VAO. */
+	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
-	/** \brief Invalidate VAO. */
+	/** Invalidate VAO. */
 	void InvalidateVAO();
 	
-	/** \brief Invalidate VBO. */
+	/** Invalidate VBO. */
 	void InvalidateVBO();
 	
-	/** \brief Update the VBO if required. */
+	/** Update the VBO if required. */
 	void UpdateVBO();
 	
-	/** \brief Free VBO if existing. */
+	/** Free VBO if existing. */
 	void FreeVBO();
 	
 	
 	
-	/** \brief Update VBO on the CPU which is slow slow but accurate. */
+	/** Update VBO on the CPU which is slow slow but accurate. */
 	void UpdateVBOOnCPU();
 	
 	
 	
-	/** \brief Update VBO on the GPU using the accurate but slower method. */
+	/** Update VBO on the GPU using the accurate but slower method. */
 	void UpdateVBOOnGPUAccurate();
 	
-	/** \brief Write weight matrices to the TBO. */
+	/** Write weight matrices to the TBO. */
 	void WriteWeightMatricesTBO();
 	
-	/** \brief Transform vertices on the GPU. */
+	/** Transform vertices on the GPU. */
 	void GPUTransformVertices();
 	
-	/** \brief Calculate normals and tangets on the GPU. */
+	/** Calculate normals and tangets on the GPU. */
 	void GPUCalcNormalTangents();
 	
-	/** \brief Write final VBO from the GPU calculated data to be used by rendering. */
+	/** Write final VBO from the GPU calculated data to be used by rendering. */
 	void GPUWriteRenderVBO();
 	
 	
 	
-	/** \brief Update VBO on the GPU using the fast but approximate method. */
+	/** Update VBO on the GPU using the fast but approximate method. */
 	void UpdateVBOOnGPUApproximate();
 	
-	/** \brief Approximately transform vertices, normals and tangents on the GPU. */
+	/** Approximately transform vertices, normals and tangents on the GPU. */
 	void GPUApproxTransformVNT();
+	
+	
+	
+	/** GI Dynamic BVH or NULL. */
+	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
+	
+	/** Prepare GI Dynamic BVH if not build yet. */
+	void PrepareGIDynamicBVH();
+	
+	/** Drop GI Dynamic BVH if present. */
+	void DropGIDynamicBVH();
 	/*@}*/
 	
 	

@@ -19,19 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLGIBVHLOCAL_H_
-#define _DEOGLGIBVHLOCAL_H_
+#ifndef _DEOGLGIBVHDYNAMIC_H_
+#define _DEOGLGIBVHDYNAMIC_H_
 
-#include "../utils/bvh/deoglBVH.h"
+#include "../deoglBasics.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglModelFace;
-class deoglRenderThread;
+class deoglBVHNode;
+class deoglGIBVHLocal;
 class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOFloat16;
 class deoglDynamicTBOBlock;
 
 struct oglModelPosition;
@@ -39,23 +37,20 @@ struct oglModelVertex;
 
 
 /**
- * Global illumination Local BVH. Stores pre-calculated local BVH data that can be copied
- * to deoglGIBVH directly or transformed.
+ * Global illumination Dynamic BVH. Stores dynamic BVH data relative to a local BVH.
  */
-class deoglGIBVHLocal{
+class deoglGIBVHDynamic{
 protected:
-	deoglRenderThread &pRenderThread;
-	deoglBVH pBVH;
+	deoglGIBVHLocal &pGIBVHLocal;
 	
 	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
 	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
 	
 	deObjectReference pBlockNode;
-	deObjectReference pBlockFace;
 	deObjectReference pBlockVertex;
+	
+	decVector pMinExtend;
+	decVector pMaxExtend;
 	
 	int pBlockUsageCount;
 	
@@ -64,49 +59,32 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create global illumination local BVH. */
-	deoglGIBVHLocal( deoglRenderThread &renderThread );
+	/** Create global illumination dynamic BVH. */
+	deoglGIBVHDynamic( deoglGIBVHLocal &bvhLocal );
 	
-	/** Clean up global illumination local BVH. */
-	~deoglGIBVHLocal();
+	/** Clean up global illumination dynamic BVH. */
+	~deoglGIBVHDynamic();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread(){ return pRenderThread; }
-	inline const deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	
 	/** TBO for BVH node boundaries. */
 	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
-	
-	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
-	
-	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
 	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
 	
-	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
+	/** Local BVH. */
+	inline deoglGIBVHLocal &GetGIBVHLocal(){ return pGIBVHLocal; }
+	inline const deoglGIBVHLocal &GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
-	/** BVH. */
-	inline deoglBVH &GetBVH(){ return pBVH; }
-	inline const deoglBVH &GetBVH() const{ return pBVH; }
+	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** Clear. */
-	void Clear();
-	
-	/**
-	 * Build tree. List of build primitives has to contain the boundary information for each
-	 * primitive in the same order the primitives are indexed. The array can be deleted after
-	 * build. BVH has to be present before faces can be added.
-	 */
-	void BuildBVH( const deoglBVH::sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12 );
+	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/**
 	 * Recalculate BVH node extends. Keeps the BVH structure but adjusts to changing vertex
@@ -119,32 +97,19 @@ public:
 	 */
 	void UpdateBVHExtends();
 	
-	/** Add vertex to TBO. */
-	void TBOAddVertex( const decVector &position );
+	/** Update vertex positions. */
+	void UpdateVertices( const oglModelPosition *positions, int count );
 	
-	/** Add vertices to TBO. */
-	void TBOAddVertices( const oglModelPosition *positions, int count );
-	
-	/** Add face to TBO. */
-	void TBOAddFace( int vertex1, int vertex2, int vertex3, int material,
-		const decVector2 &texCoord1, const decVector2 &texCoord2,
-		const decVector2 &texCoord3 );
-	
-	/** Add faces to TBO. Requires BVH to be build first because it uses primitives as faces. */
-	void TBOAddFaces( const deoglModelFace *faces, const oglModelVertex *vertices,
-		const decVector2 *texCoords );
-	
-	/** Add BVH to TBO. */
-	void TBOAddBVH();
-	
-	/** Update TBO nodes extends from BVH node extends. */
-	void TBOBVHUpdateNodeExtends();
+	/** Update vertex positions. */
+	void UpdateVertices( const oglVector *positions, int count );
 	
 	
 	
-	/** Get block allocating it if absent. */
+	/**
+	 * Get block allocating it if absent.
+	 * \note Block node shares TBO index with local BVH while TBO node box is replaced.
+	 */
 	deoglDynamicTBOBlock *GetBlockNode();
-	deoglDynamicTBOBlock *GetBlockFace();
 	deoglDynamicTBOBlock *GetBlockVertex();
 	
 	/** Drop blocks. */
@@ -165,7 +130,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateBVHExtends( deoglBVHNode &node );
+	void pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend );
+	void pWriteNodeExtend( int index, const decVector &minExtend, const decVector &maxExtend );
 };
 
 #endif

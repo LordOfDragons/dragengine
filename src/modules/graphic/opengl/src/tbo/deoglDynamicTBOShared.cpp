@@ -38,12 +38,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBOShared::deoglDynamicTBOShared( deoglDynamicTBO *tbo ) :
+deoglDynamicTBOShared::deoglDynamicTBOShared( deoglDynamicTBO *tbo, int stride,
+	deoglDynamicTBO *tbo2, int stride2 ) :
 pTBO( tbo ),
+pTBO2( tbo2 ),
+pStride( stride ),
+pStride2( stride2 ),
 pUsedSize( 0 ),
 pDirty( true )
 {
-	if( ! tbo ){
+	if( ! tbo || stride < 1 || stride2 < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 }
@@ -68,26 +72,49 @@ void deoglDynamicTBOShared::Prepare(){
 	}
 	
 	deoglDynamicTBO &tbo = *GetTBO();
-	if( pUsedSize > tbo.GetPixelCount() ){
-		tbo.IncreasePixelCount( pUsedSize - tbo.GetPixelCount() );
-	}
+// 	if( pUsedSize * pStride > tbo.GetPixelCount() ){
+// 		tbo.IncreasePixelCount( pUsedSize * pStride - tbo.GetPixelCount() );
+// 	}
+	
+	deoglDynamicTBO * const tbo2 = GetTBO2();
+// 	if( tbo2 && pUsedSize * pStride2 > tbo2->GetPixelCount() ){
+// 		tbo2->IncreasePixelCount( pUsedSize * pStride2 - tbo2->GetPixelCount() );
+// 	}
 	
 	//const int componentCount = pTBO->GetComponentCount();
-	const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize();
-	uint8_t * const tboData = tbo.GetData();
-	const int count = pBlocks.GetCount();
-	int i;
+// 	const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize() * pStride;
+// 	uint8_t * const tboData = tbo.GetData();
+// 	const int count = pBlocks.GetCount();
+// 	int i;
+// 	
+// 	for( i=0; i<count; i++ ){
+// 		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )pBlocks.GetAt( i ) );
+// 		if( block.GetEmpty() || ! block.GetData() ){
+// 			continue;
+// 		}
+// 		
+// 		//const int offset = block.GetOffset() * componentCount;
+// 		//pTBO->SetTBO( offset, *block.GetData() );
+// 		//pTBO->Update( offset, block.GetSize() );
+// 		memcpy( tboData + block.GetOffset() * stride, block.GetData()->GetData(), block.GetSize() * stride );
+// 	}
 	
-	for( i=0; i<count; i++ ){
-		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )pBlocks.GetAt( i ) );
-		if( block.GetEmpty() || ! block.GetData() ){
-			continue;
-		}
+	tbo.Update();
+	
+	if( tbo2 ){
+// 		const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pStride2;
+// 		uint8_t * const tboData2 = tbo2->GetData();
+// 		
+// 		for( i=0; i<count; i++ ){
+// 			const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )pBlocks.GetAt( i ) );
+// 			if( block.GetEmpty() || ! block.GetData2() ){
+// 				continue;
+// 			}
+// 			
+// 			memcpy( tboData2 + block.GetOffset() * stride2, block.GetData2()->GetData(), block.GetSize() * stride2 );
+// 		}
 		
-		//const int offset = block.GetOffset() * componentCount;
-		//pTBO->SetTBO( offset, *block.GetData() );
-		//pTBO->Update( offset, block.GetSize() );
-		memcpy( tboData + block.GetOffset() * stride, block.GetData()->GetData(), block.GetSize() * stride );
+		tbo2->Update();
 	}
 	
 	pDirty = false;
@@ -124,13 +151,17 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::GetBlockAt( int index ) const{
 	return ( deoglDynamicTBOBlock* )pBlocks.GetAt( index );
 }
 
-deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock( deoglDynamicTBO *tbo ){
+deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 ){
 	if( ! tbo ){
 		DETHROW( deeInvalidParam );
 	}
+	if( tbo2 && tbo2->GetPixelCount() / pStride2 != tbo->GetPixelCount() / pStride ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	const int index = FirstMatchingBlock( tbo );
-	const int tboSize = tbo->GetPixelCount();
+	// find block
+	const int tboSize = tbo->GetPixelCount() / pStride;
+	int index = FirstMatchingBlock( tbo );
 	deoglDynamicTBOBlock *block = NULL;
 	
 	if( index != -1 ){
@@ -145,19 +176,27 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock( deoglDynamicTBO *tbo ){
 			pBlocks.Insert( emptyBlock, index + 1 );
 		}
 		
-		// turn the block into a non-empty block with the requested size
-		block->SetSize( tboSize );
-		block->SetData( tbo );
-		block->SetEmpty( false );
-		
-		UpdateUsedSizes();
-		pDirty = true;
+	}else{
+		block = pAddEmptyBlock();
 	}
 	
-	if( block ){
-		block->AddReference();
-	}
+	// turn the block into a non-empty block with the requested size
+	block->SetSize( tboSize );
+	block->SetEmpty( false );
+	block->SetData( tbo, tbo2 ); // has to come last
 	
+	// update used size. if the size is larger than the TBO size increase the TBO size
+	UpdateUsedSizes();
+	pEnsureTBOSize();
+	
+	// copy the data to the TBO data. this does not yet upload the data
+	pWriteBlockToTBO( *block );
+	
+	// mark shared TBO dirty. this will cause TBO data to be uploaded to the TBO
+	pDirty = true;
+	
+	// return block. caller takes over reference
+	block->AddReference();
 	return block;
 }
 
@@ -168,7 +207,6 @@ void deoglDynamicTBOShared::RemoveBlock( deoglDynamicTBOBlock *block ){
 	}
 	
 	// turn the block into an empty block
-	block->SetData( NULL );
 	block->SetEmpty( true );
 	
 	// if the previous block is empty merge this block with the previous block
@@ -201,20 +239,74 @@ void deoglDynamicTBOShared::RemoveBlock( deoglDynamicTBOBlock *block ){
 	}
 	
 	UpdateUsedSizes();
-	pDirty = true;
 }
 
 int deoglDynamicTBOShared::FirstMatchingBlock( deoglDynamicTBO *tbo ){
-	const int tboSize = tbo->GetPixelCount();
+	const int tboSize = tbo->GetPixelCount() / pStride;
 	const int count = pBlocks.GetCount();
+	const int last = count - 1;
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )pBlocks.GetAt( i ) );
-		if( block.GetEmpty() && block.GetSize() >= tboSize ){
+		if( block.GetEmpty() && ( i == last || block.GetSize() >= tboSize ) ){
 			return i;
 		}
 	}
 	
 	return -1;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+deoglDynamicTBOBlock *deoglDynamicTBOShared::pAddEmptyBlock(){
+	const int count = pBlocks.GetCount();
+	int offset = 0;
+	
+	if( count > 0 ){
+		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )( deObject* )pBlocks.GetAt( count - 1 ) );
+		offset = block.GetOffset() + block.GetSize();
+	}
+	
+	deObjectReference block;
+	block.TakeOver( new deoglDynamicTBOBlock( this, offset, 0 ) );
+	pBlocks.Add( block );
+	
+	return ( deoglDynamicTBOBlock* )( deObject* )block; // valid because pBlocks holds reference
+}
+
+void deoglDynamicTBOShared::pEnsureTBOSize(){
+	deoglDynamicTBO &tbo = *GetTBO();
+	if( pUsedSize * pStride > tbo.GetPixelCount() ){
+		tbo.IncreasePixelCount( pUsedSize * pStride - tbo.GetPixelCount() );
+	}
+	
+	deoglDynamicTBO * const tbo2 = GetTBO2();
+	if( tbo2 && pUsedSize * pStride2 > tbo2->GetPixelCount() ){
+		tbo2->IncreasePixelCount( pUsedSize * pStride2 - tbo2->GetPixelCount() );
+	}
+}
+
+void deoglDynamicTBOShared::pWriteBlockToTBO( const deoglDynamicTBOBlock &block ){
+	// write data to first TBO
+	deoglDynamicTBO &tbo = *GetTBO();
+	const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize() * pStride;
+	uint8_t * const tboData = tbo.GetData();
+	
+	//const int offset = block.GetOffset() * componentCount;
+	//pTBO->SetTBO( offset, *block.GetData() );
+	//pTBO->Update( offset, block.GetSize() );
+	memcpy( tboData + block.GetOffset() * stride, block.GetData()->GetData(), block.GetSize() * stride );
+	
+	// write data to second TBO if present
+	deoglDynamicTBO * const tbo2 = GetTBO2();
+	if( tbo2 ){
+		const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pStride2;
+		uint8_t * const tboData2 = tbo2->GetData();
+		
+		memcpy( tboData2 + block.GetOffset() * stride2, block.GetData2()->GetData(), block.GetSize() * stride2 );
+	}
 }

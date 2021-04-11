@@ -35,7 +35,7 @@ class deoglDynamicTBO;
  * to be used. If invalid the block data has first to be written to the TBO before it
  * can be used. If the block is not empty a data buffer is provided. In this case the
  * owner has to fill the data into the buffer and invalidate the block using
- * SetValid(false). The offset and size of the block are measured in data pixels.
+ * SetValid(false). The offset and size of the block are measured in data units.
  */
 class deoglDynamicTBOBlock : public deObject{
 public:
@@ -43,6 +43,7 @@ public:
 	int pOffset;
 	int pSize;
 	deObjectReference pData;
+	deObjectReference pData2;
 	bool pValid;
 	bool pEmpty;
 	
@@ -74,25 +75,26 @@ public:
 	
 	
 	/**
-	 * Offset to block measured in pixel.
+	 * Offset to block measured in units.
 	 * \warning Can potentially change during block lifetime.
 	 */
 	inline int GetOffset() const{ return pOffset; }
 	
-	/** Set offset to block measured in pixel. */
+	/** Set offset to block measured in units. */
 	void SetOffset( int offset );
 	
-	/** Size of block in pixel. */
+	/** Size of block in units. */
 	inline int GetSize() const{ return pSize; }
 	
-	/** Set size of block in pixel. Also sets data TBO to NULL. */
+	/** Set size of block in units. Also sets data TBO to NULL. */
 	void SetSize( int size );
 	
 	/** TBO containing the data to use for the block or NULL if empty. */
 	inline deoglDynamicTBO *GetData() const{ return ( deoglDynamicTBO* )( deObject* )pData; }
+	inline deoglDynamicTBO *GetData2() const{ return ( deoglDynamicTBO* )( deObject* )pData2; }
 	
 	/** Set TBO containing the data to use for the block or NULL if empty. */
-	void SetData( deoglDynamicTBO *tbo );
+	void SetData( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL );
 	
 	/** Block is empty. */
 	inline bool GetEmpty() const{ return pEmpty; }

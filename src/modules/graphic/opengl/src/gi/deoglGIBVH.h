@@ -26,9 +26,11 @@
 #include "../utils/bvh/deoglBVH.h"
 #include "../deoglBasics.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIBVHLocal;
+class deoglGIBVHDynamic;
 class deoglGIInstance;
 class deoglGIInstances;
 class deoglRComponent;
@@ -170,6 +172,8 @@ private:
 	struct sModel{
 		deoglRComponentLOD *component;
 		deoglRComponent *occlusionMesh;
+		decVector minExtend;
+		decVector maxExtend;
 		int indexNodes;
 		int indexFaces;
 		int indexVertices;
@@ -216,11 +220,13 @@ private:
 	deoglDynamicTBOUInt32 *pTBOMaterial;
 	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
-	deoglDynamicTBOShared *pSharedTBONodeBox;
-	deoglDynamicTBOShared *pSharedTBOIndex;
+	deoglDynamicTBOShared *pSharedTBONode;
 	deoglDynamicTBOShared *pSharedTBOFace;
 	deoglDynamicTBOShared *pSharedTBOVertex;
-	deoglDynamicTBOShared *pSharedTBOTexCoord;
+	
+	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
+	deoglDynamicTBOUInt16 *pBVHTBOIndex;
+	deObjectReference pBlockBVH;
 	
 	
 	
@@ -269,11 +275,9 @@ public:
 	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
 	
 	/** Shared TBOs. */
-	inline deoglDynamicTBOShared *GetSharedTBONodeBox() const{ return pSharedTBONodeBox; }
-	inline deoglDynamicTBOShared *GetSharedTBOIndex() const{ return pSharedTBOIndex; }
+	inline deoglDynamicTBOShared *GetSharedTBONode() const{ return pSharedTBONode; }
 	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
 	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
-	inline deoglDynamicTBOShared *GetSharedTBOTexCoord() const{ return pSharedTBOTexCoord; }
 	
 	
 	
@@ -284,6 +288,9 @@ public:
 	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
 	
 	/** Add components. */
+	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances, bool dynamic );
+	
+	/** Add components. */
 	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
 	
 	/** Add component. */
@@ -291,6 +298,9 @@ public:
 	
 	/** Add occlusion meshes. */
 	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
+	
+	/** Add occlusion meshes. */
+	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances, bool dynamic );
 	
 	/** Add occlusion meshes. */
 	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
@@ -309,6 +319,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pDropBlockBVH();
 	sModel &pAddModel();
 	sComponent &pAddComponent( int indexModel, int indexMaterial, const decMatrix &matrix );
 	void pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture );
@@ -316,10 +327,10 @@ private:
 		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
 		const decTexMatrix2 &texCoordMatrix );
 	void pAddBVH( const deoglBVH &bvh );
-	void pAddLocalBVH( const deoglGIBVHLocal &localBVH );
-	void pAddLocalBVHUpdated( const deoglGIBVHLocal &localBVH, const oglVector *positions );
-	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
-		const deoglBVHNode &node, deoglBVHNode &target );
+	void pAddLocalBVH( sModel &model, deoglGIBVHLocal &localBVH );
+	void pAddDynamicBVH( sModel &model, deoglGIBVHDynamic &dynamicBVH );
+// 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
+// 		const deoglBVHNode &node, deoglBVHNode &target );
 	void pEnsureRecalcNodeSize( int size );
 };
 

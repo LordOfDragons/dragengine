@@ -61,6 +61,10 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
+	/** Classify content. */
+	static bool IsComponentStatic( const deoglRComponent &component );
+	static bool IsOcclusionMeshStatic( const deoglRComponent &component );
+	
 	/** Count of available instance slots. */
 	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
 	
@@ -73,28 +77,28 @@ public:
 	/** First free instance slot creating a new one if all slots are occupied. */
 	deoglGIInstance &NextFreeSlot();
 	
-	/** One or more instances have changed. */
+	/** One or more static instances have changed. */
 	bool AnyChanged() const;
 	
-	/** One or more components have changed. */
+	/** One or more static components have changed. */
 	bool AnyComponentChanged() const;
 	
-	/** One or more occlusion meshes have changed. */
+	/** One or more static occlusion meshes have changed. */
 	bool AnyOcclusionMeshChanged() const;
 	
 	/** Clear changed flag of all instances. */
 	void ClearAllChanged();
 	
-	/** Add components if not present. Returns true if components have been added. */
+	/** Add components if not present. Returns true if static components have been added. */
 	bool AddComponents( deoglCollideList &list );
 	
-	/** Remove components if present. Returns true if components have been removed. */
+	/** Remove components if present. Returns true if static components have been removed. */
 	bool RemoveComponents( deoglCollideList &list );
 	
-	/** Add occlusion meshes if not present already. Returns true if occlusion meshes have been added. */
+	/** Add occlusion meshes if not present already. Returns true if static occlusion meshes have been added. */
 	bool AddOcclusionMeshes( deoglCollideList &list );
 	
-	/** Remove occlusion meshes if present. Returns true if occlusion meshes have been removed. */
+	/** Remove occlusion meshes if present. Returns true if static occlusion meshes have been removed. */
 	bool RemoveOcclusionMeshes( deoglCollideList &list );
 	
 	/** Mark instances. */

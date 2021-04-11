@@ -45,13 +45,6 @@ class deoglSPBlockUBO;
  */
 class deoglGIState{
 public:
-	/** Content classification. */
-	enum eContentClassification {
-		eccIgnore,
-		eccStatic,
-		eccDynamic
-	};
-	
 	/** Probe parameters. */
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
@@ -196,27 +189,16 @@ public:
 	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
 	
 	/** Filtered collide list. */
-	inline deoglCollideList &GetCollideListFiltered(){ return pCollideListFiltered; }
 	inline const deoglCollideList &GetCollideListFiltered() const{ return pCollideListFiltered; }
-	
-	/** Classify content. */
-	eContentClassification ClassifyComponent( const deoglRComponent &component ) const;
-	eContentClassification ClassifyOcclusionMesh( const deoglRComponent &component ) const;
 	
 	/** Find content affecting GI state. */
 	void FindContent( deoglRWorld &world );
 	
-	/** Filter static occlusion meshes into filtered collider list. */
-	void FilterStaticOcclusionMeshes();
+	/** Filter occlusion meshes into filtered collide list. */
+	void FilterOcclusionMeshes();
 	
-	/** Filter components into filtered collider list. */
+	/** Filter components into filtered collide list. */
 	void FilterComponents();
-	
-	/** Filter static components into filtered collider list. */
-	void FilterStaticComponents();
-	
-	/** Filter dynamic components into filtered collider list. */
-	void FilterDynamicComponents();
 	
 	
 	
@@ -341,8 +323,8 @@ private:
 	void pInitProbes();
 	void pInvalidateAllRayLimits();
 	void pInvalidateAllRayCaches();
-	void pTrackInstanceChanges( deoglRWorld &world );
-	void pSyncTrackedInstances( deoglRWorld &world );
+	void pTrackInstanceChanges();
+	void pSyncTrackedInstances();
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY );
 	void pAgeProbes();

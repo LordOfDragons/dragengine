@@ -137,42 +137,13 @@ deoglGIState::~deoglGIState(){
 
 // #define DO_TIMING 1
 
-deoglGIState::eContentClassification deoglGIState::ClassifyComponent( const deoglRComponent &component ) const{
-	if( ! component.GetModel() || component.GetLODCount() == 0 ){
-		return eccIgnore;
-	}
-	
-	const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
-	if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
-		return eccIgnore; // skip small models to improve performance
-	}
-	
-	// weight check catches more cases than GetRenderStatic() or GetRenderMode() can.
-	// static textures is checked to avoid cached rays with changing textures
-	return component.GetRenderStatic() && component.GetStaticTextures()
-		&& component.GetMovementHint() == deComponent::emhStationary
-		&& component.GetLODAt( -1 ).GetModelLOD()->GetWeightsCount() == 0
-			? eccStatic: eccDynamic;
-}
-
-deoglGIState::eContentClassification deoglGIState::ClassifyOcclusionMesh( const deoglRComponent &component ) const{
-	if( ! component.GetOcclusionMesh() ){
-		return eccIgnore;
-	}
-	
-	return component.GetRenderStatic()
-		&& component.GetMovementHint() == deComponent::emhStationary
-		&& ! component.GetDynamicOcclusionMesh()
-			? eccStatic : eccDynamic;
-}
-
 void deoglGIState::FindContent( deoglRWorld &world ){
 	deoglDCollisionBox colbox( pPosition, pDetectionBox );
 	pCollideList.Clear();
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
 }
 
-void deoglGIState::FilterStaticOcclusionMeshes(){
+void deoglGIState::FilterOcclusionMeshes(){
 	const int count = pCollideList.GetComponentCount();
 	int i;
 	
@@ -180,9 +151,12 @@ void deoglGIState::FilterStaticOcclusionMeshes(){
 	
 	for( i=0; i<count; i++ ){
 		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		if( ClassifyOcclusionMesh( *component ) == eccStatic ){
-			pCollideListFiltered.AddComponent( component );
+		
+		if( ! component->GetOcclusionMesh() ){
+			continue;
 		}
+		
+		pCollideListFiltered.AddComponent( component );
 	}
 }
 
@@ -194,37 +168,17 @@ void deoglGIState::FilterComponents(){
 	
 	for( i=0; i<count; i++ ){
 		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		if( ClassifyComponent( *component ) != eccIgnore ){
-			pCollideListFiltered.AddComponent( component );
+		
+		if( ! component->GetModel() || component->GetLODCount() == 0 ){
+			continue;
 		}
-	}
-}
-
-void deoglGIState::FilterStaticComponents(){
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	
-	pCollideListFiltered.Clear();
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		if( ClassifyComponent( *component ) == eccStatic ){
-			pCollideListFiltered.AddComponent( component );
+		
+		const deoglRModel::sExtends &extends = component->GetModel()->GetExtends();
+		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
+			continue; // skip small models to improve performance
 		}
-	}
-}
-
-void deoglGIState::FilterDynamicComponents(){
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	
-	pCollideListFiltered.Clear();
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		if( ClassifyComponent( *component ) == eccDynamic ){
-			pCollideListFiltered.AddComponent( component );
-		}
+		
+		pCollideListFiltered.AddComponent( component );
 	}
 }
 
@@ -299,8 +253,17 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 		UpdateProbeOffsetFromTexture();
 	}
 	
-	// track changes in instances has to be done first
-	pTrackInstanceChanges( world );
+	// find content to track. only static and dynamic content is tracked
+	FindContent( world );
+	
+	#ifdef GI_USE_RAY_LIMIT
+		FilterOcclusionMeshes();
+	#else
+		FilterComponents();
+	#endif
+	
+	// track changes in static instances has to be done first
+	pTrackInstanceChanges();
 	
 	// prepare probes for tracing
 	pUpdateProbeCount = 0;
@@ -314,8 +277,8 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 		pPrepareRayCacheProbes();
 	#endif
 	
-	// synchronize tracked instances using new position
-	pSyncTrackedInstances( world );
+	// synchronize all tracked instances using new position
+	pSyncTrackedInstances();
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -553,15 +516,7 @@ void deoglGIState::pInvalidateAllRayCaches(){
 	}
 }
 
-void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
-	FindContent( world );
-	
-	#ifdef GI_USE_RAY_LIMIT
-		FilterStaticOcclusionMeshes();
-	#else
-		FilterStaticComponents();
-	#endif
-	
+void deoglGIState::pTrackInstanceChanges(){
 	/*{
 		const int count = pCollideListFiltered.GetComponentCount();
 		int i;
@@ -598,18 +553,12 @@ void deoglGIState::pTrackInstanceChanges( deoglRWorld &world ){
 // 	pInstances.DebugPrint();
 }
 
-void deoglGIState::pSyncTrackedInstances( deoglRWorld &world ){
-	FindContent( world );
-	
+void deoglGIState::pSyncTrackedInstances(){
 	#ifdef GI_USE_RAY_LIMIT
-		FilterStaticOcclusionMeshes();
-		
 		pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
 		pInstances.AddOcclusionMeshes( pCollideListFiltered );
 		
 	#else
-		FilterStaticComponents();
-		
 		pInstances.RemoveComponents( pCollideListFiltered );
 		pInstances.AddComponents( pCollideListFiltered );
 	#endif
