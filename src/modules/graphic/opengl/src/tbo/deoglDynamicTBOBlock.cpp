@@ -41,7 +41,6 @@ deoglDynamicTBOBlock::deoglDynamicTBOBlock( deoglDynamicTBOShared *tbo ) :
 pSharedTBO( tbo ),
 pOffset( 0 ),
 pSize( 0 ),
-pValid( false ),
 pEmpty( true )
 {
 	if( ! tbo ){
@@ -53,7 +52,6 @@ deoglDynamicTBOBlock::deoglDynamicTBOBlock( deoglDynamicTBOShared *tbo, int offs
 pSharedTBO( tbo ),
 pOffset( offset ),
 pSize( size ),
-pValid( false ),
 pEmpty( true )
 {
 	if( ! tbo || offset < 0 || size < 0 ){
@@ -100,7 +98,6 @@ void deoglDynamicTBOBlock::SetSize( int size ){
 void deoglDynamicTBOBlock::SetData( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 ){
 	pData = tbo;
 	pData2 = tbo2;
-	SetValid( false );
 }
 
 void deoglDynamicTBOBlock::SetEmpty( bool empty ){
@@ -109,16 +106,40 @@ void deoglDynamicTBOBlock::SetEmpty( bool empty ){
 	pData2 = NULL;
 }
 
-void deoglDynamicTBOBlock::SetValid( bool valid ){
-	pValid = valid;
-	
-	if( ! valid && pSharedTBO ){
-		pSharedTBO->MarkDirty();
-	}
-}
-
 void deoglDynamicTBOBlock::Drop(){
 	if( pSharedTBO && ! pEmpty ){
 		pSharedTBO->RemoveBlock( this );
 	}
+}
+
+void deoglDynamicTBOBlock::WriteToTBO(){
+	if( pEmpty || ! pSharedTBO ){
+		return;
+	}
+	
+	// write data to first TBO
+	if( pData ){
+		deoglDynamicTBO &tbo = *pSharedTBO->GetTBO();
+		const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize() * pSharedTBO->GetStride();
+		uint8_t * const tboData = tbo.GetData();
+		
+		//const int offset = pOffset * componentCount;
+		//pTBO->SetTBO( offset, *pData );
+		//pTBO->Update( offset, pSize );
+		memcpy( tboData + pOffset * stride, ( ( deoglDynamicTBO* )( deObject* )pData )->GetData(), pSize * stride );
+	}
+	
+	// write data to second TBO if present
+	if( pData2 ){
+		deoglDynamicTBO * const tbo2 = pSharedTBO->GetTBO2();
+		if( tbo2 ){
+			const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pSharedTBO->GetStride2();
+			uint8_t * const tboData2 = tbo2->GetData();
+			
+			memcpy( tboData2 + pOffset * stride2, ( ( deoglDynamicTBO* )( deObject* )pData2 )->GetData(), pSize * stride2 );
+		}
+	}
+	
+	// mark shared TBO dirty
+	pSharedTBO->MarkDirty();
 }

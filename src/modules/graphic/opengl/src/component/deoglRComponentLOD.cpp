@@ -687,22 +687,15 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 
 
 void deoglRComponentLOD::PrepareGIDynamicBVH(){
-	deoglModelLOD * const modelLOD = GetModelLOD();
-	if( ! modelLOD ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	if( ! pGIBVHDynamic ){
-		modelLOD->PrepareGILocalBVH();
-		if( ! modelLOD->GetGIBVHLocal() ){
-			DETHROW( deeInvalidParam );
-		}
-		pGIBVHDynamic = new deoglGIBVHDynamic( *modelLOD->GetGIBVHLocal() );
+		deoglModelLOD &modelLOD = GetModelLODRef();
+		modelLOD.PrepareGILocalBVH();
+		pGIBVHDynamic = new deoglGIBVHDynamic( *modelLOD.GetGIBVHLocal() );
 	}
 	
 	if( pDirtyDataPositions ){
 		PreparePositions();
-		pGIBVHDynamic->UpdateVertices( pPositions, modelLOD->GetPositionCount() );
+		pGIBVHDynamic->UpdateVertices( pPositions, GetModelLODRef().GetPositionCount() );
 		pGIBVHDynamic->UpdateBVHExtends();
 	}
 }
@@ -722,6 +715,14 @@ void deoglRComponentLOD::DropGIDynamicBVH(){
 deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
 	const deoglRModel * const model = pComponent.GetModel();
 	return model ? &model->GetLODAt( pLODIndex ) : NULL;
+}
+
+deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
+	const deoglRModel * const model = pComponent.GetModel();
+	if( ! model ){
+		DETHROW( deeInvalidParam );
+	}
+	return model->GetLODAt( pLODIndex );
 }
 
 void deoglRComponentLOD::PrepareWeights(){

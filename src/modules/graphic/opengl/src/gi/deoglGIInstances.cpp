@@ -63,7 +63,7 @@ bool deoglGIInstances::IsComponentStatic( const deoglRComponent &component ){
 	return component.GetRenderStatic()
 		&& component.GetStaticTextures()
 		&& component.GetMovementHint() == deComponent::emhStationary
-		&& component.GetLODAt( -1 ).GetModelLOD()->GetWeightsCount() == 0;
+		&& component.GetLODAt( -1 ).GetModelLODRef().GetWeightsCount() == 0;
 }
 
 bool deoglGIInstances::IsOcclusionMeshStatic( const deoglRComponent &component ){

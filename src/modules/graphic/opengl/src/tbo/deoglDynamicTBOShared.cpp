@@ -190,7 +190,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock( deoglDynamicTBO *tbo, deo
 	pEnsureTBOSize();
 	
 	// copy the data to the TBO data. this does not yet upload the data
-	pWriteBlockToTBO( *block );
+	block->WriteToTBO();
 	
 	// mark shared TBO dirty. this will cause TBO data to be uploaded to the TBO
 	pDirty = true;
@@ -287,26 +287,5 @@ void deoglDynamicTBOShared::pEnsureTBOSize(){
 	deoglDynamicTBO * const tbo2 = GetTBO2();
 	if( tbo2 && pUsedSize * pStride2 > tbo2->GetPixelCount() ){
 		tbo2->IncreasePixelCount( pUsedSize * pStride2 - tbo2->GetPixelCount() );
-	}
-}
-
-void deoglDynamicTBOShared::pWriteBlockToTBO( const deoglDynamicTBOBlock &block ){
-	// write data to first TBO
-	deoglDynamicTBO &tbo = *GetTBO();
-	const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize() * pStride;
-	uint8_t * const tboData = tbo.GetData();
-	
-	//const int offset = block.GetOffset() * componentCount;
-	//pTBO->SetTBO( offset, *block.GetData() );
-	//pTBO->Update( offset, block.GetSize() );
-	memcpy( tboData + block.GetOffset() * stride, block.GetData()->GetData(), block.GetSize() * stride );
-	
-	// write data to second TBO if present
-	deoglDynamicTBO * const tbo2 = GetTBO2();
-	if( tbo2 ){
-		const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pStride2;
-		uint8_t * const tboData2 = tbo2->GetData();
-		
-		memcpy( tboData2 + block.GetOffset() * stride2, block.GetData2()->GetData(), block.GetSize() * stride2 );
 	}
 }

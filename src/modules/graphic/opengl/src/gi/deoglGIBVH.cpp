@@ -195,7 +195,7 @@ const deoglCollideList &list ){
 
 void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod ){
 				decTimer timer1;
-	deoglModelLOD &modelLOD = *lod.GetModelLOD();
+	deoglModelLOD &modelLOD = lod.GetModelLODRef();
 	deoglRComponent &component = lod.GetComponent();
 	int indexModel;
 	
@@ -266,7 +266,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	pAddComponent( indexModel, indexMaterial, matrix );
 // 				const int debugElapsedC = (int)(timer1.GetElapsedTime() * 1e6f);
 // 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d [%d,%d,%d] (%s)",
-// 					lod.GetModelLOD()->GetFaceCount(), debugElapsedA + debugElapsedB + debugElapsedC,
+// 					lod.GetModelLODRef().GetFaceCount(), debugElapsedA + debugElapsedB + debugElapsedC,
 // 					debugElapsedA, debugElapsedB, debugElapsedC, component.GetModel()->GetFilename().GetString());
 			// 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d (%s)",
 			// 					lod.GetModelLOD()->GetFaceCount(), (int)(timer1.GetElapsedTime() * 1e6f),

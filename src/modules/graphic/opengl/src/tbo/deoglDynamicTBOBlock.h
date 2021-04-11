@@ -44,7 +44,6 @@ public:
 	int pSize;
 	deObjectReference pData;
 	deObjectReference pData2;
-	bool pValid;
 	bool pEmpty;
 	
 	
@@ -102,17 +101,14 @@ public:
 	/** Set if block is empty. */
 	void SetEmpty( bool empty );
 	
-	/** Block is valid. */
-	inline bool GetValid() const{ return pValid; }
-	
-	/** Set if block is valid. */
-	void SetValid( bool valid );
-	
 	/**
 	 * Drop block removing it from owner shared TBO returning it to free memory pool.
 	 * This call is only valid for non-empty blocks. For empty blocks nothing is done.
 	 */
 	void Drop();
+	
+	/** Update shared TBO data with TBO data. Call this after altering data in TBO. */
+	void WriteToTBO();
 	/*@}*/
 };
 

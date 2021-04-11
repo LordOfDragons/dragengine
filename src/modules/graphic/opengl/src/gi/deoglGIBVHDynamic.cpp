@@ -76,6 +76,10 @@ void deoglGIBVHDynamic::UpdateBVHExtends(){
 	
 	pCalcNodeExtends( *rootNode, pMinExtend, pMaxExtend );
 	pWriteNodeExtend( 0, pMinExtend, pMaxExtend );
+	
+	if( pBlockNode ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNode )->WriteToTBO();
+	}
 }
 
 void deoglGIBVHDynamic::UpdateVertices( const oglModelPosition *positions, int count ){
@@ -92,6 +96,10 @@ void deoglGIBVHDynamic::UpdateVertices( const oglModelPosition *positions, int c
 		data[ 2 ] = position.z;
 		// data[ 3 ] = 0.0f;
 	}
+	
+	if( pBlockVertex ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex )->WriteToTBO();
+	}
 }
 
 void deoglGIBVHDynamic::UpdateVertices( const oglVector *positions, int count ){
@@ -107,6 +115,10 @@ void deoglGIBVHDynamic::UpdateVertices( const oglVector *positions, int count ){
 		data[ 1 ] = position.y;
 		data[ 2 ] = position.z;
 		// data[ 3 ] = 0.0f;
+	}
+	
+	if( pBlockVertex ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex )->WriteToTBO();
 	}
 }
 

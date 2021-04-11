@@ -108,7 +108,6 @@ public:
 private:
 	deoglDynamicTBOBlock *pAddEmptyBlock();
 	void pEnsureTBOSize();
-	void pWriteBlockToTBO( const deoglDynamicTBOBlock &block );
 };
 
 #endif

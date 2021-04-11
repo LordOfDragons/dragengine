@@ -115,6 +115,9 @@ public:
 	/** Get ModelLOD or NULL. */
 	deoglModelLOD *GetModelLOD() const;
 	
+	/** Get ModelLOD or throws exception. */
+	deoglModelLOD &GetModelLODRef() const;
+	
 	
 	
 	/** Weights for debuging purpose. */
