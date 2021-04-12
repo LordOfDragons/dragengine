@@ -132,7 +132,7 @@ ivec2 giRayCastMaterialTC( in uint params, in vec2 texCoord ){
 	matTC *= ivec2( pGIMaterialMapSize ); // base coord of material map
 	
 	ivec2 realMatTC = ivec2( texCoord * vec2( pGIMaterialMapSize ) );
-	matTC += ( ( params & giRayCastMatFlagClampTC ) != 0 )
+	matTC += ( ( params & giRayCastMatFlagClampTC ) != uint( 0 ) )
 		? clamp( realMatTC, ivec2( 0 ), ivec2( pGIMaterialMapSize - 1 ) )
 		: realMatTC % ivec2( pGIMaterialMapSize );
 	

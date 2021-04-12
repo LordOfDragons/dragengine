@@ -82,7 +82,7 @@
 									? giRayCastMatFlagIgnore | giRayCastMatFlagHasSolidity
 									: giRayCastMatFlagIgnore | giRayCastMatFlagHasSolidity | giRayCastMatFlagIgnoreBackFace;
 								
-								if( ( params & flagsIgnore ) != 0 ){
+								if( ( params & flagsIgnore ) != uint( 0 ) ){
 									continue;
 								}
 							#endif
@@ -94,13 +94,13 @@
 								? giRayCastMatFlagIgnore
 								: giRayCastMatFlagIgnore | giRayCastMatFlagIgnoreBackFace;
 							
-							if( ( params & flagsIgnore ) != 0 ){
+							if( ( params & flagsIgnore ) != uint( 0 ) ){
 								continue;
 							}
 							
 							int face = index.x + i;
 							
-							if( ( params & giRayCastMatFlagHasSolidity ) != 0 ){
+							if( ( params & giRayCastMatFlagHasSolidity ) != uint( 0 ) ){
 								ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform(
 									material, giRayCastFaceTexCoord( face, uvt.wxy ) ) );
 								
