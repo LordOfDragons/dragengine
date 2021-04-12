@@ -981,7 +981,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	deoglGIState * const giState = GetRenderGIState( plan );
 	if( ! giState ){
-		DETHROW( deeInvalidParam );
+		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
