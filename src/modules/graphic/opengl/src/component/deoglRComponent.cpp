@@ -269,7 +269,12 @@ void deoglRComponent::SetVisible( bool visible ){
 }
 
 void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
+	if( hint == pMovementHint ){
+		return;
+	}
+	
 	pMovementHint = hint;
+	NotifyMovementHintChanged();
 }
 
 void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
@@ -1601,6 +1606,14 @@ void deoglRComponent::NotifyTexturesChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){
 		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->TexturesChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRComponent::NotifyMovementHintChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->MovementHintChanged( *this );
 		pListenerIndex++;
 	}
 }

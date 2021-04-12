@@ -77,6 +77,16 @@ void deoglDynamicTBO::IncreaseDataCount( int byAmount ){
 	pDataCount += byAmount;
 }
 
+void deoglDynamicTBO::SetDataCount( int count ){
+	if( count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( count > pDataCount ){
+		pEnlarge( count - pDataCount );
+	}
+	pDataCount = count;
+}
+
 int deoglDynamicTBO::GetPixelCount() const{
 	int count = pDataCount / pComponentCount;
 	if( pDataCount % pComponentCount != 0 ){
@@ -87,6 +97,10 @@ int deoglDynamicTBO::GetPixelCount() const{
 
 void deoglDynamicTBO::IncreasePixelCount( int byAmount ){
 	IncreaseDataCount( byAmount * pComponentCount );
+}
+
+void deoglDynamicTBO::SetPixelCount( int count ){
+	SetDataCount( count * pComponentCount );
 }
 
 int deoglDynamicTBO::GetPixelOffset( int pixel ) const{

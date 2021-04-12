@@ -674,6 +674,9 @@ public:
 	/** Notify all textures changed. */
 	void NotifyTexturesChanged();
 	
+	/** Notify all movement hint changed. */
+	void NotifyMovementHintChanged();
+	
 	/** Notify all lights that their light volume has to be updated. */
 	void NotifyLightsDirtyLightVolume();
 	/*@}*/

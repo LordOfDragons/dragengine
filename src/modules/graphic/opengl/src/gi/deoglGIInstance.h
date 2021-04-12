@@ -29,10 +29,14 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
+class deoglRenderThread;
 class deoglRComponent;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
+class deoglDynamicTBOBlock;
+class deoglDynamicTBOFloat16;
+class deoglDynamicTBOUInt32;
 
 
 /**
@@ -52,9 +56,13 @@ private:
 		virtual void BoundariesChanged( deoglRComponent &component );
 		virtual void OcclusionMeshChanged( deoglRComponent &component );
 		virtual void TexturesChanged( deoglRComponent &component );
+		virtual void RenderStaticChanged( deoglRComponent &component );
+		virtual void MovementHintChanged( deoglRComponent &component );
 	};
 	
 	
+	
+	deoglRenderThread &pRenderThread;
 	
 	deoglRComponent *pComponent;
 	deoglRComponent *pOcclusionMesh;
@@ -72,9 +80,13 @@ private:
 	
 	decPointerList pTUCs;
 	bool pDirtyTUCs;
+	deObjectReference pBlockMaterial;
+	deoglDynamicTBOUInt32 *pTBOMaterial;
+	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
 	bool pDynamic;
 	bool pChanged;
+	bool pRecheckDynamic;
 	
 	
 	
@@ -82,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination instance. */
-	deoglGIInstance();
+	deoglGIInstance( deoglRenderThread &renderThread );
 	
 	/** Clean up global illumination instance. */
 	virtual ~deoglGIInstance();
@@ -138,11 +150,20 @@ public:
 	/** Slot is dynamic. */
 	inline bool GetDynamic() const{ return pDynamic; }
 	
+	/** Set if slot is dynamic. */
+	void SetDynamic( bool dynamic );
+	
 	/** Instance changed in a way ray cast results are invalidated. */
 	inline bool GetChanged() const{ return pChanged; }
 	
 	/** Set instance changed in a way ray cast results are invalidated. */
 	void SetChanged( bool changed );
+	
+	/** Slot dynamic state potentially changed. */
+	inline bool GetRecheckDynamic() const{ return pRecheckDynamic; }
+	
+	/** Set if slot dynamic state potentially changed. */
+	void SetRecheckDynamic( bool recheckDynamic );
 	
 	/** Slot is empty. */
 	inline bool Empty() const{ return pComponent == NULL; }
@@ -172,11 +193,22 @@ public:
 	
 	/** Set TUCs dirty. */
 	void SetDirtyTUCs( bool dirty );
+	
+	/** Material TBOs. */
+	inline deoglDynamicTBOUInt32 *GetTBOMaterial(){ return pTBOMaterial; }
+	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){ return pTBOMaterial2; }
+	
+	/** Get TBO block for materials. */
+	deoglDynamicTBOBlock *GetBlockMaterial();
+	
+	/** Drop TBO blocks. */
+	void DropBlockMaterial();
 	/*@}*/
 	
 	
 	
 private:
+	void pCleanUp();
 	void pInitParameters();
 };
 

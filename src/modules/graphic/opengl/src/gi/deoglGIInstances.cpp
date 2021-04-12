@@ -78,7 +78,7 @@ deoglGIInstance &deoglGIInstances::GetInstanceAt( int slot ) const{
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
 	deObjectReference ref;
-	ref.TakeOver( new deoglGIInstance );
+	ref.TakeOver( new deoglGIInstance( pRenderThread ) );
 	pInstances.Add( ref );
 	
 	return ( deoglGIInstance& )( deObject& )ref;
@@ -103,8 +103,26 @@ bool deoglGIInstances::AnyChanged() const{
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetChanged() && ! instance.GetDynamic() ){
+		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
+		if( ! instance.GetChanged() ){
+			continue;
+		}
+		
+		if( instance.GetRecheckDynamic() ){
+			instance.SetRecheckDynamic( false );
+			
+			if( instance.GetComponent() ){
+				instance.SetDynamic( ! IsComponentStatic( *instance.GetComponent() ) );
+				
+			}else if( instance.GetOcclusionMesh() ){
+				instance.SetDynamic( ! IsOcclusionMeshStatic( *instance.GetOcclusionMesh() ) );
+				
+			}else{
+				instance.SetDynamic( false );
+			}
+		}
+		
+		if( ! instance.GetDynamic() ){
 			return true;
 		}
 	}
@@ -159,26 +177,28 @@ bool deoglGIInstances::AddComponents( deoglCollideList &list ){
 	
 	for( i=0; i<count; i++ ){
 		deoglRComponent &component = *list.GetComponentAt( i )->GetComponent();
-		if( component.GetMarked() ){
-			const bool isStatic = IsComponentStatic( component );
-			NextFreeSlot().SetComponent( &component, ! isStatic );
-			if( isStatic ){
-				anyAdded = true;
-			}
-			
-// 			{ // debug
-// 				int j, index = -1;
-// 				for( j=0; j<pInstances.GetCount(); j++ ){
-// 					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
-// 						index = j;
-// 						break;
-// 					}
-// 				}
-// 				const decDVector p( component.GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
-// 					index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
-// 			}
+		if( ! component.GetMarked() ){
+			continue;
 		}
+		
+		const bool isStatic = IsComponentStatic( component );
+		NextFreeSlot().SetComponent( &component, ! isStatic );
+		if( isStatic ){
+			anyAdded = true;
+		}
+		
+// 		{ // debug
+// 			int j, index = -1;
+// 			for( j=0; j<pInstances.GetCount(); j++ ){
+// 				if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
+// 					index = j;
+// 					break;
+// 				}
+// 			}
+// 			const decDVector p( component.GetMatrix().GetPosition() );
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
+// 				index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
+// 		}
 	}
 	
 	return anyAdded;
@@ -194,18 +214,23 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetComponent() && instance.GetComponent()->GetMarked() ){
-// 			{ // debug
-// 				const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
-// 					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
-// 						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
-// 			}
-			
-			instance.Clear();
-			if( ! instance.GetDynamic() ){
-				anyRemoved = true;
-			}
+		if( ! instance.GetComponent() ){
+			continue;
+		}
+		if( ! instance.GetComponent()->GetMarked() ){
+			continue;
+		}
+		
+// 		{ // debug
+// 			const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
+// 				i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
+// 					? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
+// 		}
+		
+		instance.Clear();
+		if( ! instance.GetDynamic() ){
+			anyRemoved = true;
 		}
 	}
 	

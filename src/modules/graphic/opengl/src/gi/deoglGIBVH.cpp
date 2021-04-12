@@ -109,6 +109,7 @@ pBVHTBOIndex(  NULL )
 		pSharedTBONode = new deoglDynamicTBOShared( pTBOIndex, 1, pTBONodeBox, 2 );
 		pSharedTBOFace = new deoglDynamicTBOShared( pTBOFace, 1, pTBOTexCoord, 3 );
 		pSharedTBOVertex = new deoglDynamicTBOShared( pTBOVertex, 1 );
+		pSharedTBOMaterial = new deoglDynamicTBOShared( pTBOMaterial, 1, pTBOMaterial2, 3 );
 		
 		pBVHTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
 		pBVHTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
@@ -138,11 +139,12 @@ void deoglGIBVH::Clear(){
 	pIndexRootNode = -1;
 	pTBOMatrix->Clear();
 	pTBOInstance->Clear();
-	pTBOMaterial->Clear();
-	pTBOMaterial2->Clear();
 }
 
-		static int vDebugTimeA = 0, vDebugTimeB = 0, vDebugTimeC = 0, vDebugTUCs = 0;
+// #define DO_TIMING_TEST 1
+#ifdef DO_TIMING_TEST
+static int vDebugTimeA = 0, vDebugTimeB = 0, vDebugTimeC = 0, vDebugTUCs = 0;
+#endif
 void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position,
 const deoglGIInstances &instances ){
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
@@ -160,7 +162,9 @@ const deoglGIInstances &instances ){
 
 void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position,
 const deoglGIInstances &instances, bool dynamic ){
-			vDebugTimeA=0; vDebugTimeB=0; vDebugTimeC=0; int vDebugCount=0; vDebugTUCs=0;
+#ifdef DO_TIMING_TEST
+	vDebugTimeA=0; vDebugTimeB=0; vDebugTimeC=0; int vDebugCount=0; vDebugTUCs=0;
+#endif
 	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
 	const int count = instances.GetInstanceCount();
 	int i;
@@ -170,12 +174,16 @@ const deoglGIInstances &instances, bool dynamic ){
 		if( instance.GetComponent() && instance.GetDynamic() == dynamic ){
 			deoglRComponent &component = *instance.GetComponent();
 			AddComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), instance );
-					vDebugCount++;
+#ifdef DO_TIMING_TEST
+			vDebugCount++;
+#endif
 		}
 	}
-				pRenderThread.GetLogger().LogInfoFormat("> Add Components %d: %d [%d,%d,%d] %d",
-					vDebugCount, vDebugTimeA + vDebugTimeB + vDebugTimeC, vDebugTimeA, vDebugTimeB,
-					vDebugTimeC, vDebugTUCs);
+#ifdef DO_TIMING_TEST
+	pRenderThread.GetLogger().LogInfoFormat("> Add Components %d: %d [%d,%d,%d] %d",
+		vDebugCount, vDebugTimeA + vDebugTimeB + vDebugTimeC, vDebugTimeA, vDebugTimeB,
+		vDebugTimeC, vDebugTUCs);
+#endif
 }
 
 void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance ){
@@ -183,7 +191,9 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		return;
 	}
 	
-				decTimer timer1;
+#ifdef DO_TIMING_TEST
+	decTimer timer1;
+#endif
 	deoglRComponent &component = *instance.GetComponent();
 	deoglRComponentLOD &lod = component.GetLODAt( -1 );
 	
@@ -195,12 +205,17 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		// update vertices and BVH extends if dirty
 		lod.PrepareGIDynamicBVH();
 		instance.UpdateExtends();
+		
+		if( ! component.GetStaticTextures() ){
+			instance.SetDirtyTUCs( true );
+		}
 	}
-				//const int debugElapsedA = (int)(timer1.GetElapsedTime() * 1e6f);
-				vDebugTimeA += (int)(timer1.GetElapsedTime() * 1e6f);
+#ifdef DO_TIMING_TEST
+	//const int debugElapsedA = (int)(timer1.GetElapsedTime() * 1e6f);
+	vDebugTimeA += (int)(timer1.GetElapsedTime() * 1e6f);
+#endif
 	
 	// add materials
-	const int indexMaterial = pTBOMaterial->GetPixelCount();
 	const int textureCount = component.GetTextureCount();
 	int i;
 	
@@ -208,32 +223,49 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		instance.SetDirtyTUCs( true ); // safety check
 	}
 	
+	deoglDynamicTBOBlock *blockMaterial;
+	
 	if( instance.GetDirtyTUCs() ){
-					vDebugTUCs++;
+#ifdef DO_TIMING_TEST
+	vDebugTUCs++;
+#endif
 		deoglAddToRenderTaskGIMaterial &addToRenderTask =
 			pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
 		
 		instance.RemoveAllTUCs();
 		instance.SetDirtyTUCs( false );
 		
+		if( instance.GetTBOMaterial()->GetPixelCount() != textureCount ){
+			instance.DropBlockMaterial();
+			instance.GetTBOMaterial()->SetPixelCount( textureCount );
+			instance.GetTBOMaterial2()->SetPixelCount( textureCount * 3 );
+		}
+		
 		for( i=0; i<textureCount; i++ ){
 			deoglRenderTaskTexture * const rttexture = addToRenderTask.AddComponentTexture( lod, i );
 			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTUC() : NULL;
-			pAddMaterial( component.GetTextureAt( i ), tuc );
+			pAddMaterial( instance, i, component.GetTextureAt( i ), tuc );
 			instance.AddTUC( tuc );
 		}
 		
+		blockMaterial = instance.GetBlockMaterial();
+		blockMaterial->WriteToTBO();
+		
 	}else{
-		for( i=0; i<textureCount; i++ ){
-			pAddMaterial( component.GetTextureAt( i ), instance.GetTUCAt( i ) );
-		}
+		blockMaterial = instance.GetBlockMaterial();
 	}
-				//const int debugElapsedB = (int)(timer1.GetElapsedTime() * 1e6f);
-				vDebugTimeB += (int)(timer1.GetElapsedTime() * 1e6f);
+	
+	const int indexMaterial = blockMaterial->GetOffset();
+	
+#ifdef DO_TIMING_TEST
+	//const int debugElapsedB = (int)(timer1.GetElapsedTime() * 1e6f);
+	vDebugTimeB += (int)(timer1.GetElapsedTime() * 1e6f);
+#endif
 	
 	// add component
 	pAddComponent( instance, indexMaterial, matrix );
-						vDebugTimeC += (int)(timer1.GetElapsedTime() * 1e6f);
+#ifdef DO_TIMING_TEST
+	vDebugTimeC += (int)(timer1.GetElapsedTime() * 1e6f);
 // 				const int debugElapsedC = (int)(timer1.GetElapsedTime() * 1e6f);
 // 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d [%d,%d,%d] (%s)",
 // 					lod.GetModelLODRef().GetFaceCount(), debugElapsedA + debugElapsedB + debugElapsedC,
@@ -241,12 +273,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 			// 				pRenderThread.GetLogger().LogInfoFormat("> Add Component %d: %d (%s)",
 			// 					lod.GetModelLOD()->GetFaceCount(), (int)(timer1.GetElapsedTime() * 1e6f),
 			// 					component.GetModel()->GetFilename().GetString());
-	
-	// performance notes:
-	// debugElapsedC is rather 0. debugElapsedA and debugElapsedA are similar.
-	// debugElapsedA explodes if highest LOD mesh is not low polygon.
-	// basically this means if a global instance TBO cache would be used both
-	// debugElapsedA and debugElapsedB would profit in a similar way which is good
+#endif
 }
 
 void deoglGIBVH::AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position,
@@ -461,11 +488,10 @@ void deoglGIBVH::BuildBVH(){
 	pSharedTBONode->Prepare();
 	pSharedTBOFace->Prepare();
 	pSharedTBOVertex->Prepare();
+	pSharedTBOMaterial->Prepare();
 	
 	pTBOInstance->Update();
 	pTBOMatrix->Update();
-	pTBOMaterial->Update();
-	pTBOMaterial2->Update();
 }
 
 void deoglGIBVH::DebugPrint( const decDVector &position ){
@@ -543,6 +569,9 @@ void deoglGIBVH::pCleanUp(){
 	if( pSharedTBOVertex ){
 		pSharedTBOVertex->FreeReference();
 	}
+	if( pSharedTBOMaterial ){
+		pSharedTBOMaterial->FreeReference();
+	}
 	
 	if( pBVHTBONodeBox ){
 		pBVHTBONodeBox->FreeReference();
@@ -619,24 +648,29 @@ int indexMaterial, const decMatrix &matrix ){
 	return component;
 }
 
-void deoglGIBVH::pAddMaterial( const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc ){
+void deoglGIBVH::pAddMaterial( deoglGIInstance &instance, int index,
+const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc ){
 	deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
 	if( skinTexture ){
-		pAddMaterial( *skinTexture, texture.GetUseSkinState(),
+		pAddMaterial( instance, index, *skinTexture, texture.GetUseSkinState(),
 			texture.GetUseDynamicSkin(), tuc, texture.CalcTexCoordMatrix() );
 		
 	}else{
 		// TODO we have to add the texture even if not containing maps. in this case
 		//      the materialIndex has to be 0 (aka not set)
-		pTBOMaterial->AddVec4( 0, 0, 0, 0 );
-		pTBOMaterial2->AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
-		pTBOMaterial2->AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
-		pTBOMaterial2->AddVec4( 0.0f, 0.0f, 0.0f, 0.0f );
+		instance.GetTBOMaterial()->SetVec4At( index * 4, 0, 0, 0, 0 );
+		
+		deoglDynamicTBOFloat16 &tbo = *instance.GetTBOMaterial2();
+		int index2 = index * 12; // 4 components, 3 pixels
+		tbo.SetVec4At( index2, 0.0f, 0.0f, 0.0f, 0.0f );
+		tbo.SetVec4At( index2 + 4, 0.0f, 0.0f, 0.0f, 0.0f );
+		tbo.SetVec4At( index2 + 8, 0.0f, 0.0f, 0.0f, 0.0f );
 	}
 }
 
-void deoglGIBVH::pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-deoglRDynamicSkin *dynamicSkin, deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
+void deoglGIBVH::pAddMaterial( deoglGIInstance &instance, int index,
+const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
+deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	// collect values
 	decColor colorTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorTint )
 		.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
@@ -718,11 +752,13 @@ deoglRDynamicSkin *dynamicSkin, deoglTexUnitsConfig *tuc, const decTexMatrix2 &t
 	const uint32_t alpha = 0;
 	//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
 	
-	pTBOMaterial->AddVec4( red, green, blue, alpha );
+	instance.GetTBOMaterial()->SetVec4At( index * 4, red, green, blue, alpha );
 	
-	pTBOMaterial2->AddVec4( texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f );
-	pTBOMaterial2->AddVec4( texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f );
-	pTBOMaterial2->AddVec4( emissivityIntensity.r, emissivityIntensity.g, emissivityIntensity.b, 0.0f );
+	deoglDynamicTBOFloat16 &tbo = *instance.GetTBOMaterial2();
+	int index2 = index * 12; // 4 components, 3 pixels
+	tbo.SetVec4At( index2, texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f );
+	tbo.SetVec4At( index2 + 4, texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f );
+	tbo.SetVec4At( index2 + 8, emissivityIntensity.r, emissivityIntensity.g, emissivityIntensity.b, 0.0f );
 	
 	#undef PACK_B
 	#undef PACK_G

@@ -209,6 +209,7 @@ private:
 	deoglDynamicTBOShared *pSharedTBONode;
 	deoglDynamicTBOShared *pSharedTBOFace;
 	deoglDynamicTBOShared *pSharedTBOVertex;
+	deoglDynamicTBOShared *pSharedTBOMaterial;
 	
 	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
 	deoglDynamicTBOUInt16 *pBVHTBOIndex;
@@ -264,6 +265,7 @@ public:
 	inline deoglDynamicTBOShared *GetSharedTBONode() const{ return pSharedTBONode; }
 	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
 	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
+	inline deoglDynamicTBOShared *GetSharedTBOMaterial() const{ return pSharedTBOMaterial; }
 	
 	
 	
@@ -304,9 +306,14 @@ private:
 	void pCleanUp();
 	void pDropBlockBVH();
 	sComponent &pAddComponent( const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix );
-	void pAddMaterial( const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
-	void pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin, deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
+	
+	void pAddMaterial( deoglGIInstance &instance, int index,
+		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
+	
+	void pAddMaterial( deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
+		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
+		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
+	
 	void pAddBVH( const deoglBVH &bvh );
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );

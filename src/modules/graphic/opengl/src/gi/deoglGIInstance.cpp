@@ -23,14 +23,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglGI.h"
 #include "deoglGIInstance.h"
 #include "deoglGIBVHLocal.h"
 #include "deoglGIBVHDynamic.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../model/deoglModelLOD.h"
+#include "../renderthread/deoglRenderThread.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../tbo/deoglDynamicTBOShared.h"
 #include "../utils/bvh/deoglBVH.h"
 #include "../utils/bvh/deoglBVHNode.h"
 
@@ -69,7 +74,18 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 	pInstance.SetChanged( true );
+	pInstance.SetRecheckDynamic( true );
 	pInstance.SetDirtyTUCs( true );
+}
+
+void deoglGIInstance::cComponentListener::RenderStaticChanged( deoglRComponent& ){
+	pInstance.SetChanged( true );
+	pInstance.SetRecheckDynamic( true );
+}
+
+void deoglGIInstance::cComponentListener::MovementHintChanged( deoglRComponent& ){
+	pInstance.SetChanged( true );
+	pInstance.SetRecheckDynamic( true );
 }
 
 
@@ -80,7 +96,8 @@ void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIInstance::deoglGIInstance() :
+deoglGIInstance::deoglGIInstance( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ),
 pComponent( NULL ),
 pOcclusionMesh( NULL ),
 pGIBVHLocal( NULL ),
@@ -90,12 +107,24 @@ pIndexFaces( 0 ),
 pIndexVertices( 0 ),
 pHasBVHNodes( false ),
 pDirtyTUCs( true ),
+pTBOMaterial( NULL ),
+pTBOMaterial2( NULL ),
 pDynamic( false ),
-pChanged( false ){
+pChanged( false ),
+pRecheckDynamic( false )
+{
+	try{
+		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
+		pTBOMaterial2 = new deoglDynamicTBOFloat16( renderThread, 4 );
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
 }
 
 deoglGIInstance::~deoglGIInstance(){
-	Clear();
+	pCleanUp();
 }
 
 
@@ -113,6 +142,7 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	pComponent = component;
 	pDynamic = dynamic;
 	pChanged = false;
+	pRecheckDynamic = false;
 	
 	if( ! component ){
 		return;
@@ -163,6 +193,7 @@ void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dyn
 	pOcclusionMesh = occlusionMesh;
 	pDynamic = dynamic;
 	pChanged = false;
+	pRecheckDynamic = false;
 	
 	if( occlusionMesh ){
 		if( ! pComponentListener ){
@@ -179,11 +210,20 @@ void deoglGIInstance::UpdateExtends(){
 	}
 }
 
+void deoglGIInstance::SetDynamic( bool dynamic ){
+	pDynamic = dynamic;
+}
+
 void deoglGIInstance::SetChanged( bool changed ){
 	pChanged = changed;
 }
 
+void deoglGIInstance::SetRecheckDynamic( bool recheckDynamic ){
+	pRecheckDynamic = recheckDynamic;
+}
+
 void deoglGIInstance::Clear(){
+	DropBlockMaterial();
 	RemoveAllTUCs();
 	pDirtyTUCs = false;
 	
@@ -198,6 +238,7 @@ void deoglGIInstance::Clear(){
 	pHasBVHNodes = false;
 	
 	pDynamic = false;
+	pRecheckDynamic = false;
 	
 	if( pComponent ){
 		deoglRComponentLOD &lod = pComponent->GetLODAt( -1 );
@@ -263,10 +304,36 @@ void deoglGIInstance::SetDirtyTUCs( bool dirty ){
 	pDirtyTUCs = dirty;
 }
 
+deoglDynamicTBOBlock *deoglGIInstance::GetBlockMaterial(){
+	if( ! pBlockMaterial ){
+		pBlockMaterial.TakeOver( pRenderThread.GetGI().GetBVH().GetSharedTBOMaterial()
+			->AddBlock( pTBOMaterial, pTBOMaterial2 ) );
+	}
+	return ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial;
+}
+
+void deoglGIInstance::DropBlockMaterial(){
+	if( pBlockMaterial ){
+		( ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial )->Drop();
+		pBlockMaterial = NULL;
+	}
+}
+
 
 
 // Private Functions
 //////////////////////
+
+void deoglGIInstance::pCleanUp(){
+	Clear();
+	
+	if( pTBOMaterial ){
+		pTBOMaterial->FreeReference();
+	}
+	if( pTBOMaterial2 ){
+		pTBOMaterial2->FreeReference();
+	}
+}
 
 void deoglGIInstance::pInitParameters(){
 	if( pGIBVHLocal ){

@@ -89,11 +89,17 @@ public:
 	/** Increase count of entries. New entries have undefined content. */
 	void IncreaseDataCount( int byAmount );
 	
+	/** Set count of entries. New entries have undefined content. */
+	void SetDataCount( int count );
+	
 	/** Get pixel count. */
 	int GetPixelCount() const;
 	
 	/** Increase count of pixels. New entries have undefined content. */
 	void IncreasePixelCount( int byAmount );
+	
+	/** Set count of pixels. New entries have undefined content. */
+	void SetPixelCount( int count );
 	
 	/** Data point offset at start of pixel. */
 	int GetPixelOffset( int pixel ) const;

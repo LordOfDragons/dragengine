@@ -65,6 +65,9 @@ public:
 	
 	/** Textures changed. */
 	virtual void TexturesChanged( deoglRComponent &component );
+	
+	/** Movement hint changed. */
+	virtual void MovementHintChanged( deoglRComponent &component );
 	/*@}*/
 };
 
