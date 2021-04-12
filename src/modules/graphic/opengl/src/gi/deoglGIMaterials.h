@@ -61,9 +61,9 @@ private:
 	
 	decPointerList pTUCs;
 	
-	deoglTexture pTexDiffuse;
-	deoglTexture pTexReflectivity;
-	deoglTexture pTexEmissivity;
+	deoglTexture *pTexDiffuse;
+	deoglTexture *pTexReflectivity;
+	deoglTexture *pTexEmissivity;
 	deoglFramebuffer pFBOMaterial;
 	
 	
@@ -123,16 +123,16 @@ public:
 	 * Color is combined with texture property "envroom" if present. For environment
 	 * rooms the back face is used as texture.
 	 */
-	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
-	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
+	inline deoglTexture &GetTextureDiffuse(){ return *pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return *pTexDiffuse; }
 	
 	/**
 	 * Reflectivity texture.
 	 * 
 	 * Stores texture property "reflectivity" as RGB and texture property "roughness" as A.
 	 */
-	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
-	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
+	inline deoglTexture &GetTextureReflectivity(){ return *pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return *pTexReflectivity; }
 	
 	/**
 	 * Emissivity texture.
@@ -141,13 +141,13 @@ public:
 	 * Emissivity is combined with "envroom.emissivity" if present. For environment
 	 * rooms the back face is used as texture.
 	 */
-	inline deoglTexture &GetTextureEmissivity(){ return pTexEmissivity; }
-	inline const deoglTexture &GetTextureEmissivity() const{ return pTexEmissivity; }
+	inline deoglTexture &GetTextureEmissivity(){ return *pTexEmissivity; }
+	inline const deoglTexture &GetTextureEmissivity() const{ return *pTexEmissivity; }
 	
 	/** Material FBO. */
 	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }
 	/*@}*/
-	
+// 	void DEBUG();
 	
 	
 private:

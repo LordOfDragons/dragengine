@@ -58,6 +58,7 @@ pUnitCount( 0 ),
 pRenderTaskTrackingNumber( 0 ),
 pRenderTaskTUCIndex( 0 ),
 pMaterialIndex( -1 ),
+pMaterialUsageCount( 0 ),
 pUsageCount( 1 ),
 pHashCode( 0 ),
 pLLPrev( NULL ),
@@ -135,6 +136,17 @@ void deoglTexUnitsConfig::SetRenderTaskTUCIndex( int tucIndex ){
 
 void deoglTexUnitsConfig::SetMaterialIndex( int index ){
 	pMaterialIndex = index;
+}
+
+void deoglTexUnitsConfig::AddMaterialUsage(){
+	pMaterialUsageCount++;
+}
+
+void deoglTexUnitsConfig::RemoveMaterialUsage(){
+	if( pMaterialUsageCount == 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	pMaterialUsageCount--;
 }
 
 

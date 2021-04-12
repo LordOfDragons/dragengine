@@ -44,6 +44,7 @@ class deoglRSkin;
 class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
+class deoglTexUnitsConfig;
 class deoglDynamicTBOFloat32;
 class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
@@ -168,21 +169,10 @@ class deoglDynamicTBOShared;
  */
 class deoglGIBVH{
 private:
-	/** Model. */
-	struct sModel{
-		deoglRComponentLOD *component;
-		deoglRComponent *occlusionMesh;
-		decVector minExtend;
-		decVector maxExtend;
-		int indexNodes;
-		int indexFaces;
-		int indexVertices;
-	};
-	
 	/** Component. */
 	struct sComponent{
+		const deoglGIInstance *instance;
 		decMatrix matrix;
-		int indexModel;
 		int indexMatrix;
 		int indexInstance;
 		int indexMaterial;
@@ -193,10 +183,6 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	float pMaxDetectionRange;
-	
-	sModel *pModels;
-	int pModelCount;
-	int pModelSize;
 	
 	sComponent *pComponents;
 	int pComponentCount;
@@ -290,11 +276,8 @@ public:
 	/** Add components. */
 	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances, bool dynamic );
 	
-	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
-	
 	/** Add component. */
-	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponentLOD &lod );
+	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );
 	
 	/** Add occlusion meshes. */
 	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
@@ -320,15 +303,11 @@ public:
 private:
 	void pCleanUp();
 	void pDropBlockBVH();
-	sModel &pAddModel();
-	sComponent &pAddComponent( int indexModel, int indexMaterial, const decMatrix &matrix );
-	void pAddMaterial( const deoglRComponentTexture &texture, deoglRenderTaskTexture *renderTaskTexture );
+	sComponent &pAddComponent( const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix );
+	void pAddMaterial( const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
 	void pAddMaterial( const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin, deoglRenderTaskTexture *renderTaskTexture,
-		const decTexMatrix2 &texCoordMatrix );
+		deoglRDynamicSkin *dynamicSkin, deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
 	void pAddBVH( const deoglBVH &bvh );
-	void pAddLocalBVH( sModel &model, deoglGIBVHLocal &localBVH );
-	void pAddDynamicBVH( sModel &model, deoglGIBVHDynamic &dynamicBVH );
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
 	void pEnsureRecalcNodeSize( int size );

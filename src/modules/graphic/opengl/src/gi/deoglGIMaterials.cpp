@@ -28,6 +28,9 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTRenderers.h"
+#include "../rendering/light/deoglRenderLight.h"
+#include "../rendering/light/deoglRenderGI.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 
 #include <dragengine/common/exceptions.h>
@@ -48,9 +51,9 @@ pMaterialMapSize( pMaxMaterialMapSize ),
 pMaterialsPerRow( pMaxMaterialsPerRow ),
 pRowsPerImage( pMaxRowsPerImage ),
 pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
-pTexDiffuse( renderThread ),
-pTexReflectivity( renderThread ),
-pTexEmissivity( renderThread ),
+pTexDiffuse( NULL ),
+pTexReflectivity( NULL ),
+pTexEmissivity( NULL ),
 pFBOMaterial( renderThread, false )
 {
 	try{
@@ -130,6 +133,16 @@ void deoglGIMaterials::pCleanUp(){
 		tuc.SetMaterialIndex( -1 );
 		tuc.RemoveUsage(); // potentially deleted now
 	}
+	
+	if( pTexDiffuse ){
+		delete pTexDiffuse;
+	}
+	if( pTexReflectivity ){
+		delete pTexReflectivity;
+	}
+	if( pTexEmissivity ){
+		delete pTexEmissivity;
+	}
 }
 
 void deoglGIMaterials::pCreateFBOMaterial(){
@@ -143,22 +156,32 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	// - reflectivity: 16M
 	// - emissivity: 32M
 	// total: 67M
-	pTexDiffuse.SetFBOFormat( 4, false );
-	pTexDiffuse.SetSize( size, size );
-	pTexDiffuse.CreateTexture();
+	if( ! pTexDiffuse ){
+		pTexDiffuse = new deoglTexture( pRenderThread );
+	}
+	pTexDiffuse->SetFBOFormat( 4, false );
+	pTexDiffuse->SetSize( size, size );
+	pTexDiffuse->CreateTexture();
 	
-	pTexReflectivity.SetFBOFormat( 4, false );
-	pTexReflectivity.SetSize( size, size );
-	pTexReflectivity.CreateTexture();
+	if( ! pTexReflectivity ){
+		pTexReflectivity = new deoglTexture( pRenderThread );
+	}
+	pTexReflectivity->SetFBOFormat( 4, false );
+	pTexReflectivity->SetSize( size, size );
+	pTexReflectivity->CreateTexture();
 	
-	pTexEmissivity.SetFBOFormat( 4, true );
-	pTexEmissivity.SetSize( size, size );
-	pTexEmissivity.CreateTexture();
+	if( ! pTexEmissivity ){
+		pTexEmissivity = new deoglTexture( pRenderThread );
+	}
+	pTexEmissivity->SetFBOFormat( 4, true );
+	pTexEmissivity->SetSize( size, size );
+	pTexEmissivity->CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.AttachColorTexture( 0, &pTexDiffuse );
-	pFBOMaterial.AttachColorTexture( 1, &pTexReflectivity );
-	pFBOMaterial.AttachColorTexture( 2, &pTexEmissivity );
+	pFBOMaterial.DetachAllImages(); // if this is ommit FBO becomes invalid. what the ???
+	pFBOMaterial.AttachColorTexture( 0, pTexDiffuse );
+	pFBOMaterial.AttachColorTexture( 1, pTexReflectivity );
+	pFBOMaterial.AttachColorTexture( 2, pTexEmissivity );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOMaterial.Verify();
@@ -182,15 +205,49 @@ void deoglGIMaterials::pEnlarge(){
 		DETHROW( deeInvalidParam ); // we should never end up here
 	}
 	
+	const int mapsPerRows = pMaterialsPerRow;
+	const int rowsPerImage = pRowsPerImage;
+	
 	pMaterialMapSize /= 2;
 	pMaterialsPerRow *= 2;
 	pRowsPerImage *= 2;
 	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
 	
-	// scale images down
+	// scale image
+	deoglTexture * const texDiffuse = pTexDiffuse;
+	deoglTexture * const texReflectivity = pTexReflectivity;
+	deoglTexture * const texEmissivity = pTexEmissivity;
+	
+	pTexDiffuse = NULL;
+	pTexReflectivity = NULL;
+	pTexEmissivity = NULL;
+	
+	try{
+		pCreateFBOMaterial();
+		pRenderThread.GetRenderers().GetLight().GetRenderGI().ResizeMaterials(
+			*texDiffuse, *texReflectivity, *texEmissivity, mapsPerRows, rowsPerImage );
+		
+	}catch( const deException & ){
+		delete texDiffuse;
+		delete texReflectivity;
+		delete texEmissivity;
+		throw;
+	}
+	
+	delete texDiffuse;
+	delete texReflectivity;
+	delete texEmissivity;
 }
 
 int deoglGIMaterials::pFirstUnusedMaterial() const{
+	// if a TUC is found with usage count of 1 it is not used by anymore and has to be
+	// deleted. such TUCs are always returned as first choice to improve memory usage.
+	// 
+	// as second choice TUCs with 0 material usage are returned but only if no empty
+	// slots are present. this allows to reused TUCs if they are still in use by world
+	// content but not in use by GI instances. by doing this only if no free slots are
+	// available instances moving in and out of GI states quickly do not cause TUCs to
+	// be re-added quickly. this favors filling up slots first before reusing such TUCs
 	const int count = pTUCs.GetCount();
 	int i;
 	
@@ -200,5 +257,27 @@ int deoglGIMaterials::pFirstUnusedMaterial() const{
 		}
 	}
 	
+	// as second choice TUCs with 0 material usage are returned but only if no empty
+	// slots are present. this allows to reused TUCs if they are still in use by world
+	// content but not in use by GI instances. by doing this only if no free slots are
+	// available instances moving in and out of GI states quickly do not cause TUCs to
+	// be re-added quickly. this favors filling up slots first before reusing such TUCs
+	if( pTUCs.GetCount() < pMaxMaterialCount ){
+		for( i=1; i<count; i++ ){
+			if( ( ( deoglTexUnitsConfig* )pTUCs.GetAt( i ) )->GetMaterialUsageCount() == 0 ){
+				return i;
+			}
+		}
+	}
+	
 	return -1;
 }
+
+// void deoglGIMaterials::DEBUG(){
+// 	pEnlarge();
+// 	pMaterialMapSize *= 2;
+// 	pMaterialsPerRow /= 2;
+// 	pRowsPerImage /= 2;
+// 	pMaxMaterialCount = pMaxMaterialsPerRow * pMaxRowsPerImage;
+// 	pCreateFBOMaterial();
+// }

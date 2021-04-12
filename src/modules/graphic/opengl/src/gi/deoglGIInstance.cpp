@@ -29,6 +29,10 @@
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../model/deoglModelLOD.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../utils/bvh/deoglBVH.h"
+#include "../utils/bvh/deoglBVHNode.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -65,6 +69,7 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 	pInstance.SetChanged( true );
+	pInstance.SetDirtyTUCs( true );
 }
 
 
@@ -78,7 +83,13 @@ void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 deoglGIInstance::deoglGIInstance() :
 pComponent( NULL ),
 pOcclusionMesh( NULL ),
-pIndexMaterial( 0 ),
+pGIBVHLocal( NULL ),
+pGIBVHDynamic( NULL ),
+pIndexNodes( 0 ),
+pIndexFaces( 0 ),
+pIndexVertices( 0 ),
+pHasBVHNodes( false ),
+pDirtyTUCs( true ),
 pDynamic( false ),
 pChanged( false ){
 }
@@ -103,27 +114,43 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	pDynamic = dynamic;
 	pChanged = false;
 	
-	if( component ){
-		if( ! pComponentListener ){
-			pComponentListener.TakeOver( new cComponentListener( *this ) );
-		}
-		component->AddListener( ( deoglComponentListener* )( deObject* )pComponentListener );
-		
-		deoglRComponentLOD &lod = component->GetLODAt( -1 );
-		
-		const deoglModelLOD * const modelLOD = lod.GetModelLOD();
-		if( modelLOD ){
-			deoglGIBVHLocal * const bvhLocal = modelLOD->GetGIBVHLocal();
-			if( bvhLocal ){
-				bvhLocal->AddBlockUsage();
-			}
-		}
-		
-		deoglGIBVHDynamic * const bvhDynamic = lod.GetGIBVHDynamic();
-		if( bvhDynamic ){
-			bvhDynamic->AddBlockUsage();
-		}
+	if( ! component ){
+		return;
 	}
+	
+	if( ! pComponentListener ){
+		pComponentListener.TakeOver( new cComponentListener( *this ) );
+	}
+	component->AddListener( ( deoglComponentListener* )( deObject* )pComponentListener );
+	
+	deoglRComponentLOD &lod = component->GetLODAt( -1 );
+	
+	if( dynamic ){
+		lod.PrepareGIDynamicBVH();
+		pGIBVHDynamic = lod.GetGIBVHDynamic();
+		if( ! pGIBVHDynamic ){
+			return;
+		}
+		
+		pGIBVHDynamic->AddBlockUsage();
+		
+	}else{
+		deoglModelLOD * const modelLOD = lod.GetModelLOD();
+		if( ! modelLOD ){
+			return;
+		}
+		
+		modelLOD->PrepareGILocalBVH();
+		pGIBVHLocal = modelLOD->GetGIBVHLocal();
+		if( ! pGIBVHLocal ){
+			return;
+		}
+		
+		pGIBVHLocal->AddBlockUsage();
+	}
+	
+	pInitParameters();
+	pDirtyTUCs = true;
 }
 
 void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic ){
@@ -145,8 +172,11 @@ void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dyn
 	}
 }
 
-void deoglGIInstance::SetIndexMaterial( int index ){
-	pIndexMaterial = index;
+void deoglGIInstance::UpdateExtends(){
+	if( pGIBVHDynamic ){
+		pMinExtend = pGIBVHDynamic->GetMinimumExtend();
+		pMaxExtend = pGIBVHDynamic->GetMaximumExtend();
+	}
 }
 
 void deoglGIInstance::SetChanged( bool changed ){
@@ -154,6 +184,21 @@ void deoglGIInstance::SetChanged( bool changed ){
 }
 
 void deoglGIInstance::Clear(){
+	RemoveAllTUCs();
+	pDirtyTUCs = false;
+	
+	pGIBVHLocal = NULL;
+	pGIBVHDynamic = NULL;
+	
+	pIndexNodes = 0;
+	pIndexFaces = 0;
+	pIndexVertices = 0;
+	pMinExtend.SetZero();
+	pMaxExtend.SetZero();
+	pHasBVHNodes = false;
+	
+	pDynamic = false;
+	
 	if( pComponent ){
 		deoglRComponentLOD &lod = pComponent->GetLODAt( -1 );
 		
@@ -178,6 +223,93 @@ void deoglGIInstance::Clear(){
 		pOcclusionMesh->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
 		pOcclusionMesh = NULL;
 	}
+}
+
+
+
+int deoglGIInstance::GetTUCCount() const{
+	return pTUCs.GetCount();
+}
+
+deoglTexUnitsConfig *deoglGIInstance::GetTUCAt( int index ) const{
+	return ( deoglTexUnitsConfig* )pTUCs.GetAt( index );
+}
+
+void deoglGIInstance::RemoveAllTUCs(){
+	const int count = pTUCs.GetCount();
+	int i;
 	
-	pDynamic = false;
+	for( i=0; i<count; i++ ){
+		deoglTexUnitsConfig * const tuc = ( deoglTexUnitsConfig* )pTUCs.GetAt( i );
+		if( tuc ){
+			tuc->RemoveMaterialUsage();
+			tuc->RemoveUsage();
+		}
+	}
+	
+	pTUCs.RemoveAll();
+}
+
+void deoglGIInstance::AddTUC( deoglTexUnitsConfig *tuc ){
+	pTUCs.Add( tuc );
+	
+	if( tuc ){
+		tuc->AddUsage();
+		tuc->AddMaterialUsage();
+	}
+}
+
+void deoglGIInstance::SetDirtyTUCs( bool dirty ){
+	pDirtyTUCs = dirty;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglGIInstance::pInitParameters(){
+	if( pGIBVHLocal ){
+		const deoglDynamicTBOBlock * const blockNode = pGIBVHLocal->GetBlockNode();
+		if( blockNode ){
+			pIndexNodes = blockNode->GetOffset();
+		}
+		
+		const deoglDynamicTBOBlock * const blockFace = pGIBVHLocal->GetBlockFace();
+		if( blockFace ){
+			pIndexFaces = blockFace->GetOffset();
+		}
+		
+		const deoglDynamicTBOBlock * const blockVertex = pGIBVHLocal->GetBlockVertex();
+		if( blockVertex ){
+			pIndexVertices = blockVertex->GetOffset();
+		}
+		
+		const deoglBVHNode * const rootNode = pGIBVHLocal->GetBVH().GetRootNode();
+		if( rootNode ){
+			pHasBVHNodes = true;
+			pMinExtend = rootNode->GetMinExtend();
+			pMaxExtend = rootNode->GetMaxExtend();
+		}
+		
+	}else if( pGIBVHDynamic ){
+		const deoglDynamicTBOBlock * const blockNode = pGIBVHDynamic->GetBlockNode();
+		if( blockNode ){
+			pIndexNodes = blockNode->GetOffset();
+		}
+		
+		const deoglDynamicTBOBlock * const blockFace = pGIBVHDynamic->GetGIBVHLocal().GetBlockFace();
+		if( blockFace ){
+			pIndexFaces = blockFace->GetOffset();
+		}
+		
+		const deoglDynamicTBOBlock * const blockVertex = pGIBVHDynamic->GetBlockVertex();
+		if( blockVertex ){
+			pIndexVertices = blockVertex->GetOffset();
+		}
+		
+		pHasBVHNodes = pGIBVHDynamic->GetGIBVHLocal().GetBVH().GetRootNode() != NULL;
+		pMinExtend = pGIBVHDynamic->GetMinimumExtend();
+		pMaxExtend = pGIBVHDynamic->GetMaximumExtend();
+	}
 }

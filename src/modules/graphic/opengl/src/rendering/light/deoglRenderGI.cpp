@@ -126,6 +126,7 @@ enum eSPDebugProbeOffset{
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
+pShaderResizeMaterials( NULL ),
 pShaderTraceRays( NULL ),
 pShaderTraceRaysDistance( NULL ),
 pShaderTraceRaysDistanceOccMesh( NULL ),
@@ -153,6 +154,10 @@ pAddToRenderTask( NULL )
 	
 	try{
 		pCreateUBORenderLight();
+		
+		// resize materials
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Resize Materials" );
+		pShaderResizeMaterials = shaderManager.GetProgramWith( sources, defines );
 		
 		// trace rays
 		defines.AddDefine( "GI_PROBE_INDEX_COUNT", traceRays.GetProbeCount() / 4 );
@@ -697,14 +702,15 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		}
 		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
 	}
+	
+// 	materials.DEBUG();
 }
 
-#if 0
-void deoglRenderGI::RenderAllMaterials(){
+void deoglRenderGI::ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
+deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGIMaterials &materials = renderThread.GetGI().GetMaterials();
-	const decPoint size( materials.GetTextureDiffuse().GetSize() );
 	
 	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
 	
@@ -712,60 +718,33 @@ void deoglRenderGI::RenderAllMaterials(){
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glViewport( 0, 0, size.x, size.y ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0,
+		materials.GetMaterialMapSize() * materials.GetMaterialsPerRow(),
+		materials.GetMaterialMapSize() * materials.GetRowsPerImage() ) );
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	const int mapsPerRow = materials.GetMaterialsPerRow();
-	const int rowsPerImage = materials.GetRowsPerImage();
-	const float scaleU = 1.0f / ( float )mapsPerRow;
-	const float scaleV = 1.0f / ( float )rowsPerImage;
-	const float offsetScaleU = 2.0f / ( float )mapsPerRow;
-	const float offsetScaleV = 2.0f / ( float )rowsPerImage;
-	const float offsetBaseU = offsetScaleU * 0.5f - 1.0f;
-	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
-	const int count = materials.GetMaxMaterialCount();
-	int i;
+	renderThread.GetShader().ActivateShader( pShaderResizeMaterials );
+	deoglShaderCompiled &shader = *pShaderResizeMaterials->GetCompiled();
 	
-	for( i=0; i<count; i++ ){
-		
-		const deoglRenderTaskShader &rtShader = *pRenderTask->GetShaderAt( i );
-		deoglShaderCompiled &shader = *rtShader.GetShader()->GetCompiled();
-		
-		renderThread.GetShader().ActivateShader( rtShader.GetShader() );
-		
-		deoglRenderTaskTexture *rtTexture = rtShader.GetRootTexture();
-		
-		while( rtTexture ){
-			deoglTexUnitsConfig &tuc = *rtTexture->GetTUC();
-			const int matMapIndex = tuc.GetMaterialIndex();
-			if( matMapIndex < 1 ){ // no slot (-1), fallback slot (0)
-				continue;
-			}
-			
-			tuc.Apply();
-			
-			const decPoint matMapCoord( matMapIndex % mapsPerRow, matMapIndex / mapsPerRow );
-			
-			const float offsetU = offsetScaleU * ( float )matMapCoord.x + offsetBaseU;
-			const float offsetV = offsetScaleV * ( float )matMapCoord.y + offsetBaseV;
-			
-			shader.SetParameterFloat( espmQuadParams, scaleU, scaleV, offsetU, offsetV );
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-			
-			rtTexture = rtTexture->GetNextTexture();
-		}
-		
-	}
+	shader.SetParameterInt( 0, materials.GetMaterialsPerRow(), materials.GetRowsPerImage(),
+		mapsPerRow, rowsPerImage );
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableTexture( 0, texDiffuse, GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 1, texReflectivity, GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 2, texEmissivity, GetSamplerClampLinear() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, mapsPerRow * rowsPerImage ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	renderThread.GetTexture().GetStages().DisableAllStages();
 }
-#endif
 
 void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = GetUpdateGIState( plan );
@@ -1101,6 +1080,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderLightGIRay ){
 		pShaderLightGIRay->RemoveUsage();
+	}
+	if( pShaderResizeMaterials ){
+		pShaderResizeMaterials->RemoveUsage();
 	}
 	if( pShaderTraceRays ){
 		pShaderTraceRays->RemoveUsage();

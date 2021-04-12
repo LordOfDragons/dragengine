@@ -26,8 +26,13 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
+class deoglGIBVHLocal;
+class deoglGIBVHDynamic;
+class deoglTexUnitsConfig;
 
 
 /**
@@ -49,11 +54,25 @@ private:
 		virtual void TexturesChanged( deoglRComponent &component );
 	};
 	
+	
+	
 	deoglRComponent *pComponent;
 	deoglRComponent *pOcclusionMesh;
 	deObjectReference pComponentListener;
 	
-	int pIndexMaterial;
+	deoglGIBVHLocal *pGIBVHLocal;
+	deoglGIBVHDynamic *pGIBVHDynamic;
+	
+	decVector pMinExtend;
+	decVector pMaxExtend;
+	int pIndexNodes;
+	int pIndexFaces;
+	int pIndexVertices;
+	bool pHasBVHNodes;
+	
+	decPointerList pTUCs;
+	bool pDirtyTUCs;
+	
 	bool pDynamic;
 	bool pChanged;
 	
@@ -85,11 +104,36 @@ public:
 	/** Set occlusion mesh or NULL. */
 	void SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic );
 	
-	/** First material index. */
-	inline int GetIndexMaterial() const{ return pIndexMaterial; }
 	
-	/** Set first material index. */
-	void SetIndexMaterial( int index );
+	
+	/** Local GI BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	
+	/** Dynamic GI BVH or NULL. */
+	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
+	
+	/** Local minimum extend for BVH. */
+	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
+	
+	/** Local maximum extend for BVH. */
+	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
+	
+	/** First BVH node index. */
+	inline int GetIndexNodes() const{ return pIndexNodes; }
+	
+	/** First face index. */
+	inline int GetIndexFaces() const{ return pIndexFaces; }
+	
+	/** First vertex index. */
+	inline int GetIndexVertices() const{ return pIndexVertices; }
+	
+	/** BVH has nodes. */
+	inline bool GetHasBVHNodes() const{ return pHasBVHNodes; }
+	
+	/** Update extends. */
+	void UpdateExtends();
+	
+	
 	
 	/** Slot is dynamic. */
 	inline bool GetDynamic() const{ return pDynamic; }
@@ -108,7 +152,32 @@ public:
 	
 	/** Clear instance. */
 	void Clear();
+	
+	
+	
+	/** Count of TUCs. Has to match component texture count. */
+	int GetTUCCount() const;
+	
+	/** Get TUC at index. TUC can be NULL. */
+	deoglTexUnitsConfig *GetTUCAt( int index ) const;
+	
+	/** Remove all TUCs. */
+	void RemoveAllTUCs();
+	
+	/** Add TUC. TUC can be NULL. */
+	void AddTUC( deoglTexUnitsConfig *tuc );
+	
+	/** TUCs are dirty. */
+	inline bool GetDirtyTUCs() const{ return pDirtyTUCs; }
+	
+	/** Set TUCs dirty. */
+	void SetDirtyTUCs( bool dirty );
 	/*@}*/
+	
+	
+	
+private:
+	void pInitParameters();
 };
 
 #endif

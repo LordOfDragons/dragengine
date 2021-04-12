@@ -32,6 +32,7 @@ class deoglShaderProgram;
 class deoglGIState;
 class deoglRenderTask;
 class deoglAddToRenderTaskGIMaterial;
+class deoglTexture;
 
 
 /**
@@ -39,6 +40,7 @@ class deoglAddToRenderTaskGIMaterial;
  */
 class deoglRenderGI : public deoglRenderLightBase{
 private:
+	deoglShaderProgram *pShaderResizeMaterials;
 	deoglShaderProgram *pShaderTraceRays;
 	deoglShaderProgram *pShaderTraceRaysDistance;
 	deoglShaderProgram *pShaderTraceRaysDistanceOccMesh;
@@ -106,8 +108,9 @@ public:
 	/** \brief Render materials. */
 	void RenderMaterials( deoglRenderPlan &plan );
 	
-	/** \brief Render all materials. */
-// 	void RenderAllMaterials();
+	/** \brief Resize materials. */
+	void ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
+		deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage );
 	
 	/** \brief Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );

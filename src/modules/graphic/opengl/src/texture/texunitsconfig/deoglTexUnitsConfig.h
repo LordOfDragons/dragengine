@@ -53,6 +53,7 @@ public:
 	int pRenderTaskTUCIndex;
 	
 	int pMaterialIndex;
+	int pMaterialUsageCount;
 	
 	int pUsageCount;
 	unsigned int pHashCode;
@@ -112,11 +113,20 @@ public:
 	
 	
 	
-	/** \brief Material index or -1. */
+	/** Material index or -1. */
 	inline int GetMaterialIndex() const{ return pMaterialIndex; }
 	
-	/** \brief Set material index or -1. */
+	/** Set material index or -1. */
 	void SetMaterialIndex( int index );
+	
+	/** Material usage count. */
+	inline int GetMaterialUsageCount() const{ return pMaterialUsageCount; }
+	
+	/** Increment material usage count by one. */
+	void AddMaterialUsage();
+	
+	/** Decrease material usage count by one. */
+	void RemoveMaterialUsage();
 	
 	
 	

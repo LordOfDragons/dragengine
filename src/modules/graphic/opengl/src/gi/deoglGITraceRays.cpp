@@ -41,7 +41,7 @@ deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pRaysPerProbe( 64 ),
 pProbesPerLine( 8 ),
-pProbeCount( 2048 ), // 2048 would be the maximum in UBO size
+pProbeCount( 2048 ), // 2048 would be the maximum in smallest UBO size
 pTexPosition( renderThread ),
 pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
