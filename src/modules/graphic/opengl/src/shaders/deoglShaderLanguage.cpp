@@ -254,24 +254,31 @@ pPreprocessor( renderThread )
 	// version. add the required extension declarations
 	if( ext.GetGLESVersion() == deoglExtensions::evglesUnsupported ){
 		// opengl extensions have a "in core" and "core since" version. some drivers seem to
-		// fail if "core since" version is used. using thus "in core" to be on the safe side
+		// fail if "core since" version is used. using thus "in core" to be on the safe side.
+		// 
+		// and again nVidia kills the fun. if "in core" is used extensions which are present
+		// cause shader compilation to fail. looks like nVidia needs "core since" while stuff
+		// like Intel needs "in core". what a huge mess
+		const bool useCoreSince = true;
+		
+		#define GLSL_EXT_CHECK(v,cs,ci) ( (v) < ( useCoreSince ? deoglExtensions:: cs : deoglExtensions:: ci ) )
 		
 		// core since: 3.1 , in core: 4.6
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_uniform_buffer_object )
-		&& ext.GetGLVersion() < deoglExtensions::evgl4p6 ){
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p0
 			pGLSLExtensions.Add( "GL_ARB_uniform_buffer_object" );
 		}
 		
 		// core since: 3.1 , in core: 4.6
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_texture_buffer_object )
-		&& ext.GetGLVersion() < deoglExtensions::evgl4p6 ){
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
 			pGLSLExtensions.Add( "GL_ARB_texture_buffer_object" );
 		}
 		
 		// core since: 4.3 , in core: 4.6
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
-		&& ext.GetGLVersion() < deoglExtensions::evgl4p6 ){
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p3, evgl4p6 ) ){
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
 			pGLSLExtensions.Add( "GL_ARB_shader_storage_buffer_object" );
 		}
