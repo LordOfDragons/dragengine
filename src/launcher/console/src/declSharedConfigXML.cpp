@@ -30,8 +30,8 @@
 #include "game/profile/declGPDisableModuleVersion.h"
 #include "game/profile/declGPDisableModuleVersionList.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/logger/deLogger.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
@@ -39,6 +39,7 @@
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
+#include <dragengine/logger/deLogger.h>
 
 
 
@@ -382,9 +383,11 @@ void declSharedConfigXML::pReadProfileModule( const decXmlElementTag &root, decl
 		}
 		
 		profile.GetModuleList().Add( module );
+		module->FreeReference();
+		module = NULL;
 		
 	}catch( const deException & ){
-		if( module ) module->FreeReference();;
+		if( module ) module->FreeReference();
 		throw;
 	}
 }
@@ -393,28 +396,21 @@ void declSharedConfigXML::pReadProfileModuleParameters( const decXmlElementTag &
 	declGPMParameterList &parametersList = module.GetParameterList();
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	declGPMParameter *parameters;
+	deObjectReference refParams;
 	
 	for( e=0; e<elementCount; e++ ){
 		tag = root.GetElementIfTag( e );
 		
 		if( tag ){
-			if( strcmp( tag->GetName(), "parameter" ) == 0 ){
-				parameters = NULL;
+			if( tag->GetName() == "parameter" ){
 				
-				try{
-					parameters = new declGPMParameter;
-					if( ! parameters ) DETHROW( deeOutOfMemory );
-					
-					parameters->SetName( pGetAttributeString( *tag, "name" ) );
-					parameters->SetValue( pGetCDataString( *tag ) );
-					
-					parametersList.Add( parameters );
-					
-				}catch( const deException & ){
-					if( parameters ) parameters->FreeReference();
-					throw;
-				}
+				refParams.TakeOver( new declGPMParameter );
+				declGPMParameter * const parameters = ( declGPMParameter* )( deObject* )refParams;
+				
+				parameters->SetName( pGetAttributeString( *tag, "name" ) );
+				parameters->SetValue( pGetCDataString( *tag ) );
+				
+				parametersList.Add( parameters );
 			}
 		}
 	}

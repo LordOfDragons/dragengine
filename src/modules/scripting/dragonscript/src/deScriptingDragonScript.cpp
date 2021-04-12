@@ -687,6 +687,9 @@ void deScriptingDragonScript::ShutDown(){
 		// forget about the game class
 		pClsGameObj = NULL;
 		
+		// delete values pending registered to be deleted later
+		DeleteValuesDeleteLater();
+		
 		// delete collision info
 		if( pColInfo ){
 			pColInfo->FreeReference();

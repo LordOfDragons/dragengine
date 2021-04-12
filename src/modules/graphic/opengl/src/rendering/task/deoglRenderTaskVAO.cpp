@@ -154,8 +154,10 @@ void deoglRenderTaskVAO::AddInstance( deoglRenderTaskInstance *instance ){
 		if( index >= pHasInstanceSize ){
 			deoglRenderTaskInstance ** const newArray = new deoglRenderTaskInstance*[ index + 1 ];
 			
-			if( pHasInstanceCount > 0 ){
-				memcpy( newArray, pHasInstance, sizeof( deoglRenderTaskInstance* ) * pHasInstanceCount );
+			if( pHasInstance ){
+				if( pHasInstanceCount > 0 ){
+					memcpy( newArray, pHasInstance, sizeof( deoglRenderTaskInstance* ) * pHasInstanceCount );
+				}
 				delete [] pHasInstance;
 			}
 			

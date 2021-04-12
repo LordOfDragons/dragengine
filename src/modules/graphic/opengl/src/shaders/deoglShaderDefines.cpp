@@ -136,6 +136,8 @@ void deoglShaderDefines::RemoveDefine( const char *name ){
 	int i;
 	for( i=0; i<pDefineCount; i++ ){
 		if( strcmp( pDefines[ i ].name, name ) == 0 ){
+			delete [] pDefines[ i ].name;
+			delete [] pDefines[ i ].value;
 			if( i < pDefineCount - 1 ){
 				pDefines[ i ] = pDefines[ pDefineCount - 1 ];
 			}

@@ -229,7 +229,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 	}
 	
 	if( pSkyLights ){
-		while( pSkyLightCount > 0 ){
+		while( pSkyLightSize > 0 ){
 			pSkyLightSize--;
 			if( pSkyLights[ pSkyLightSize ] ){
 				delete pSkyLights[ pSkyLightSize ];

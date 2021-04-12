@@ -144,7 +144,7 @@ public:
 	virtual ~deoglRDecalDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		if( vboBlock ){
 			vboBlock->GetVBO()->RemoveBlock( vboBlock );
 			vboBlock->FreeReference();

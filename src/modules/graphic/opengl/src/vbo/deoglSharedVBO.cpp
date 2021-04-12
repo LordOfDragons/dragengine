@@ -33,6 +33,7 @@
 #include "../renderthread/deoglRTChoices.h"
 #include "../vao/deoglVAO.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -52,7 +53,6 @@ deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size ){
 	const int attributeCount = layout.GetAttributeCount();
 	deoglRenderThread &renderThread = parentList->GetRenderThread();
 	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
-	deoglSharedVBOBlock *block = NULL;
 	int i;
 	
 	pParentList = parentList;
@@ -95,18 +95,15 @@ deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size ){
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 		// add empty block for the entire vbo space
-		block = new deoglSharedVBOBlock( this, 0, size, 0, 0 );
+		deObjectReference block;
+		block.TakeOver( new deoglSharedVBOBlock( this, 0, size, 0, 0 ) );
 		pBlocks.Add( block );
-		block->FreeReference();
 		
 		consumption.IncrementCount();
 		consumption.IncrementSharedCount();
 		consumption.IncrementIBOCount();
 		
 	}catch( const deException & ){
-		if( block ){
-			block->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -301,19 +298,9 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock( int size, int indexCount ){
 		// if the empty block is larger than the requested size add a new empty block with the
 		// remaining empty space right after this block
 		if( block->GetSize() > size ){
-			deoglSharedVBOBlock *emptyBlock = NULL;
-			
-			try{
-				emptyBlock = new deoglSharedVBOBlock( this, block->GetOffset() + size, block->GetSize() - size );
-				pBlocks.Insert( emptyBlock, index + 1 );
-				emptyBlock->FreeReference();
-				
-			}catch( const deException & ){
-				if( emptyBlock ){
-					emptyBlock->FreeReference();
-				}
-				throw;
-			}
+			deObjectReference emptyBlock;
+			emptyBlock.TakeOver( new deoglSharedVBOBlock( this, block->GetOffset() + size, block->GetSize() - size ) );
+			pBlocks.Insert( emptyBlock, index + 1 );
 		}
 		
 		// turn the block into a non-empty block with the requested size
@@ -333,9 +320,7 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock( int size, int indexCount ){
 }
 
 void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
-	deoglSharedVBOBlock *mergeBlock = NULL;
 	int index = pBlocks.IndexOf( block );
-	
 	if( index == -1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -345,12 +330,12 @@ void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
 	
 	// if the previous block is empty merge this block with the previous block
 	if( index > 0 ){
-		mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index - 1 );
-		
+		deoglSharedVBOBlock * const mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index - 1 );
 		if( mergeBlock->GetEmpty() ){
 			mergeBlock->SetSize( mergeBlock->GetSize() + block->GetSize() );
 			mergeBlock->SetIndexCount( 0 );
 			
+			block->DropVBO();
 			pBlocks.RemoveFrom( index );
 			
 			block = mergeBlock;
@@ -360,12 +345,12 @@ void deoglSharedVBO::RemoveBlock( deoglSharedVBOBlock *block ){
 	
 	// if the next block is empty merge the next block with this block
 	if( index < pBlocks.GetCount() - 1 ){
-		mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index + 1 );
-		
+		deoglSharedVBOBlock * const mergeBlock = ( deoglSharedVBOBlock* )pBlocks.GetAt( index + 1 );
 		if( mergeBlock->GetEmpty() ){
 			block->SetSize( block->GetSize() + mergeBlock->GetSize() );
 			block->SetIndexCount( 0 );
 			
+			mergeBlock->DropVBO();
 			pBlocks.RemoveFrom( index + 1 );
 		}
 	}
@@ -398,6 +383,11 @@ int deoglSharedVBO::IndexOfEmptyBlockWithMinSize( int size ){
 void deoglSharedVBO::pCleanUp(){
 	deoglMemoryConsumptionVBO &consumption = pParentList->GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
 	
+	const int count = pBlocks.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) )->DropVBO();
+	}
 	pBlocks.RemoveAll();
 	
 	consumption.DecrementIBOGPU( pMemoryGPUIBO );

@@ -1029,6 +1029,12 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pDebugInfoPlanPrepareComponents ){
 		pDebugInfoPlanPrepareComponents->FreeReference();
 	}
+	if( pDebugInfoPlanPrepareComponentsVBO ){
+		pDebugInfoPlanPrepareComponentsVBO->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareComponentsRenderables ){
+		pDebugInfoPlanPrepareComponentsRenderables->FreeReference();
+	}
 	if( pDebugInfoPlanPrepareSort ){
 		pDebugInfoPlanPrepareSort->FreeReference();
 	}

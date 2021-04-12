@@ -67,14 +67,13 @@ dedsSoundLevelMeter::~dedsSoundLevelMeter(){
 	// is the case delay the deletion until a safe time
 	if( pSoundLevelMeter && pSoundLevelMeter->GetRefCount() > 0 ){
 		pDS.AddValueDeleteLater( pValCB );
-		pValCB = NULL;
-		pHasCB = false;
 		
 	}else{
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
-		pValCB = NULL;
-		pHasCB = false;
 	}
+	
+	pValCB = NULL;
+	pHasCB = false;
 }
 
 

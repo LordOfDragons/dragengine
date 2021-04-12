@@ -107,6 +107,7 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layou
 		if( list ){
 			delete list;
 		}
+		throw;
 	}
 	
 	return list;

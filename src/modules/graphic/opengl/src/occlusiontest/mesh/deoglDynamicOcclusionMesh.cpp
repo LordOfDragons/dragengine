@@ -239,6 +239,9 @@ void deoglDynamicOcclusionMesh::pCleanUp(){
 		pOcclusionMesh->FreeReference();
 	}
 	
+	if( pVBOData ){
+		delete [] pVBOData;
+	}
 	if( pVertices ){
 		delete [] pVertices;
 	}

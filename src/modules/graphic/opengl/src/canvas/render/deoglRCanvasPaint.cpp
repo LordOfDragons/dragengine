@@ -184,6 +184,10 @@ public:
 };
 
 void deoglRCanvasPaint::pCleanUp(){
+	if( pPoints ){
+		delete [] pPoints;
+	}
+	
 	// delayed deletion of opengl containing objects
 	deoglRCanvasPaintDeletion *delayedDeletion = NULL;
 	

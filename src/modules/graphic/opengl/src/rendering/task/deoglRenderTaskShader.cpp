@@ -164,8 +164,10 @@ void deoglRenderTaskShader::AddTexture( deoglRenderTaskTexture *texture ){
 		if( tucIndex >= pHasTextureSize ){
 			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[ tucIndex + 1 ];
 			
-			if( pHasTextureCount > 0 ){
-				memcpy( newArray, pHasTexture, sizeof( deoglRenderTaskTexture* ) * pHasTextureCount );
+			if( pHasTexture ){
+				if( pHasTextureCount > 0 ){
+					memcpy( newArray, pHasTexture, sizeof( deoglRenderTaskTexture* ) * pHasTextureCount );
+				}
 				delete [] pHasTexture;
 			}
 			

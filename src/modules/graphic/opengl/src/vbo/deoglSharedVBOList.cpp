@@ -28,6 +28,7 @@
 #include "deoglSharedVBOBlock.h"
 #include "deoglVBOAttribute.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -53,7 +54,6 @@ pDrawType( drawType )
 }
 
 deoglSharedVBOList::~deoglSharedVBOList(){
-	pVBOs.RemoveAll();
 }
 
 
@@ -80,41 +80,30 @@ deoglSharedVBOBlock *deoglSharedVBOList::AddData( int size ){
 	
 	const int count = pVBOs.GetCount();
 	deoglSharedVBOBlock *block;
-	deoglSharedVBO *vbo;
 	int i;
 	
 	// if there is a vbo able to host the data add it there
 	for( i=0; i<count; i++ ){
 		block = ( ( deoglSharedVBO* )pVBOs.GetAt( i ) )->AddBlock( size );
-		
 		if( block ){
 			return block;
 		}
 	}
 	
 	// otherwise create a new vbo to add the data there
-	vbo = NULL;
+	deObjectReference vbo;
 	
-	try{
-		if( size > pMaxPointCount ){
-			// a little hack to deal with very large models. often they do not fit into the VBOs
-			// we have so for this case we create an oversized VBO for the time being. has to be
-			// made better later on
-			vbo = new deoglSharedVBO( this, size );
-			
-		}else{
-			vbo = new deoglSharedVBO( this, pMaxPointCount );
-		}
+	if( size > pMaxPointCount ){
+		// a little hack to deal with very large models. often they do not fit into the VBOs
+		// we have so for this case we create an oversized VBO for the time being. has to be
+		// made better later on
+		vbo.TakeOver( new deoglSharedVBO( this, size ) );
 		
-		pVBOs.Add( vbo );
-		vbo->FreeReference();
-		
-	}catch( const deException & ){
-		if( vbo ){
-			vbo->FreeReference();
-		}
-		throw;
+	}else{
+		vbo.TakeOver( new deoglSharedVBO( this, pMaxPointCount ) );
 	}
+	
+	pVBOs.Add( vbo );
 	
 	block = ( ( deoglSharedVBO* )pVBOs.GetAt( pVBOs.GetCount() - 1 ) )->AddBlock( size );
 	if( ! block ){
@@ -131,41 +120,30 @@ deoglSharedVBOBlock *deoglSharedVBOList::AddData( int size, int indexCount ){
 	
 	const int count = pVBOs.GetCount();
 	deoglSharedVBOBlock *block;
-	deoglSharedVBO *vbo;
 	int i;
 	
 	// if there is a vbo able to host the data add it there
 	for( i=0; i<count; i++ ){
 		block = ( ( deoglSharedVBO* )pVBOs.GetAt( i ) )->AddBlock( size, indexCount );
-		
 		if( block ){
 			return block;
 		}
 	}
 	
 	// otherwise create a new vbo to add the data there
-	vbo = NULL;
+	deObjectReference vbo;
 	
-	try{
-		if( size > pMaxPointCount ){
-			// a little hack to deal with very large models. often they do not fit into the VBOs
-			// we have so for this case we create an oversized VBO for the time being. has to be
-			// made better later on
-			vbo = new deoglSharedVBO( this, size );
-			
-		}else{
-			vbo = new deoglSharedVBO( this, pMaxPointCount );
-		}
+	if( size > pMaxPointCount ){
+		// a little hack to deal with very large models. often they do not fit into the VBOs
+		// we have so for this case we create an oversized VBO for the time being. has to be
+		// made better later on
+		vbo.TakeOver( new deoglSharedVBO( this, size ) );
 		
-		pVBOs.Add( vbo );
-		vbo->FreeReference();
-		
-	}catch( const deException & ){
-		if( vbo ){
-			vbo->FreeReference();
-		}
-		throw;
+	}else{
+		vbo.TakeOver( new deoglSharedVBO( this, pMaxPointCount ) );
 	}
+	
+	pVBOs.Add( vbo );
 	
 	block = ( ( deoglSharedVBO* )pVBOs.GetAt( pVBOs.GetCount() - 1 ) )->AddBlock( size, indexCount );
 	if( ! block ){

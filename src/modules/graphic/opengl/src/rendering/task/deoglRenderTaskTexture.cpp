@@ -168,8 +168,10 @@ void deoglRenderTaskTexture::AddVAO( deoglRenderTaskVAO *vao ){
 		if( vaoIndex >= pHasVAOSize ){
 			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ vaoIndex + 1 ];
 			
-			if( pHasVAOCount > 0 ){
-				memcpy( newArray, pHasVAO, sizeof( deoglRenderTaskVAO* ) * pHasVAOCount );
+			if( pHasVAO ){
+				if( pHasVAOCount > 0 ){
+					memcpy( newArray, pHasVAO, sizeof( deoglRenderTaskVAO* ) * pHasVAOCount );
+				}
 				delete [] pHasVAO;
 			}
 			

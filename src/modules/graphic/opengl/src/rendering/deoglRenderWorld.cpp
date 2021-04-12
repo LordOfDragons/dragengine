@@ -1036,6 +1036,9 @@ void deoglRenderWorld::pCleanUp(){
 	if( pRenderCubePB ){
 		pRenderCubePB->FreeReference();
 	}
+	if( pRenderLuminancePB ){
+		pRenderLuminancePB->FreeReference();
+	}
 	if( pRenderPB ){
 		pRenderPB->FreeReference();
 	}

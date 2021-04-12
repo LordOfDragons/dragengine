@@ -2073,6 +2073,11 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
+		if( pChoices ){
+			delete pChoices;
+			pChoices = NULL;
+		}
+		
 		// deprecated
 		if( pEdgeFinder ){
 			delete pEdgeFinder;

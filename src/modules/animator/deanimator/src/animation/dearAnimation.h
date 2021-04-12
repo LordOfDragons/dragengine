@@ -67,8 +67,6 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	
 	void pCreateMoves();
 };
 

@@ -482,6 +482,9 @@ void deoglGIState::pCleanUp(){
 	if( pWeightedProbeBinProbeCounts ){
 		delete [] pWeightedProbeBinProbeCounts;
 	}
+	if( pProbes ){
+		delete [] pProbes;
+	}
 }
 
 void deoglGIState::pInitProbes(){

@@ -1702,8 +1702,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 		pFBOMipMapDepth2 = new deoglFramebuffer*[ fboMipMapCount ];
 		
 		for( pFBOMipMapDepthCount=0; pFBOMipMapDepthCount<fboMipMapCount; pFBOMipMapDepthCount++ ){
-			pFBOMipMapDepth1[ pFBOMipMapCount ] = NULL;
-			pFBOMipMapDepth2[ pFBOMipMapCount ] = NULL;
+			pFBOMipMapDepth1[ pFBOMipMapDepthCount ] = NULL;
+			pFBOMipMapDepth2[ pFBOMipMapDepthCount ] = NULL;
 		}
 		
 		for( i=0; i<fboMipMapCount; i++ ){
@@ -1933,16 +1933,7 @@ void deoglDeferredRendering::pDestroyFBOs(){
 // 		pFBOLuminance = NULL;
 // 	}
 	
-	for( i=0; i<pFBOMipMapCount; i++ ){
-		if( pFBOMipMapTemporary1[ i ] ){
-			delete pFBOMipMapTemporary1[ i ];
-			pFBOMipMapTemporary1[ i ] = NULL;
-		}
-		if( pFBOMipMapTemporary2[ i ] ){
-			delete pFBOMipMapTemporary2[ i ];
-			pFBOMipMapTemporary2[ i ] = NULL;
-		}
-		
+	for( i=0; i<pFBOMipMapDepthCount; i++ ){
 		if( pFBOMipMapDepth1[ i ] ){
 			delete pFBOMipMapDepth1[ i ];
 			pFBOMipMapDepth1[ i ] = NULL;
@@ -1952,24 +1943,30 @@ void deoglDeferredRendering::pDestroyFBOs(){
 			pFBOMipMapDepth2[ i ] = NULL;
 		}
 	}
-	pFBOMipMapCount = 0;
-	
-	if( pFBOMipMapTemporary1 ){
-		delete [] pFBOMipMapTemporary1;
-		pFBOMipMapTemporary1 = NULL;
-	}
-	if( pFBOMipMapTemporary2 ){
-		delete [] pFBOMipMapTemporary2;
-		pFBOMipMapTemporary2 = NULL;
-	}
-	
+	pFBOMipMapDepthCount = 0;
 	if( pFBOMipMapDepth1 ){
 		delete [] pFBOMipMapDepth1;
-		pFBOMipMapDepth1 = NULL;
 	}
 	if( pFBOMipMapDepth2 ){
 		delete [] pFBOMipMapDepth2;
-		pFBOMipMapDepth2 = NULL;
+	}
+	
+	for( i=0; i<pFBOMipMapCount; i++ ){
+		if( pFBOMipMapTemporary1[ i ] ){
+			delete pFBOMipMapTemporary1[ i ];
+			pFBOMipMapTemporary1[ i ] = NULL;
+		}
+		if( pFBOMipMapTemporary2[ i ] ){
+			delete pFBOMipMapTemporary2[ i ];
+			pFBOMipMapTemporary2[ i ] = NULL;
+		}
+	}
+	pFBOMipMapCount = 0;
+	if( pFBOMipMapTemporary1 ){
+		delete [] pFBOMipMapTemporary1;
+	}
+	if( pFBOMipMapTemporary2 ){
+		delete [] pFBOMipMapTemporary2;
 	}
 	
 	for( i=0; i<EFBOMD_COUNT; i++ ){
