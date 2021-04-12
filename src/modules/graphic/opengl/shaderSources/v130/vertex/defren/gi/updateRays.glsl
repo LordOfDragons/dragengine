@@ -6,7 +6,7 @@ precision highp int;
 
 in vec3 inPosition;
 
-out ivec2 vRayOffset;
+flat out ivec2 vRayOffset;
 
 
 void main( void ){

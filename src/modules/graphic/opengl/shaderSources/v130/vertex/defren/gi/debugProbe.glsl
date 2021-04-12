@@ -12,8 +12,8 @@ uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
 
 in vec3 inPosition;
 
-out ivec3 vProbeCoord;
-out vec3 vProbePosition;
+flat out ivec3 vProbeCoord;
+flat out vec3 vProbePosition;
 out vec3 vDirection;
 
 const float sphereScale = 0.05;

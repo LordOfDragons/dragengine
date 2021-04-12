@@ -9,7 +9,7 @@ precision highp int;
 in vec3 inPosition;
 
 #ifdef FROM_TRACE_TO_CACHE
-	out ivec2 vRayOffset;
+	flat out ivec2 vRayOffset;
 #endif
 
 void main( void ){

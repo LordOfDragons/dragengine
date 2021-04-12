@@ -6,8 +6,7 @@ precision highp int;
 
 in vec3 inPosition;
 
-out ivec2 vRayOffset;
-
+flat out ivec2 vRayOffset;
 
 void main( void ){
 	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry

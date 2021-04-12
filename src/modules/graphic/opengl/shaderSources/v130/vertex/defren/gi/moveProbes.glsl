@@ -7,8 +7,8 @@ precision highp int;
 
 in vec3 inPosition;
 
-out int vInstanceID;
-out ivec3 vProbeCoord;
+flat out int vInstanceID;
+flat out ivec3 vProbeCoord;
 
 
 ivec3 probeIndexToGridCoord( in int index ){

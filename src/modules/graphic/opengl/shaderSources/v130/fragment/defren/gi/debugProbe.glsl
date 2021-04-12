@@ -10,8 +10,8 @@ precision highp int;
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
 
-in flat ivec3 vProbeCoord;
-in flat vec3 vProbePosition;
+flat in ivec3 vProbeCoord;
+flat in vec3 vProbePosition;
 in vec3 vDirection;
 
 out vec3 outColor;

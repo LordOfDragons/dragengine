@@ -6,10 +6,10 @@ precision highp int;
 
 in vec3 inPosition;
 
-out ivec2 vRayOffset;
-out ivec2 vOffset;
+flat out ivec2 vRayOffset;
+flat out ivec2 vOffset;
 out float vBlendFactor;
-out vec3 vProbePosition;
+flat out vec3 vProbePosition;
 
 
 // NOTE findMSB exists since GLSL 4.0
