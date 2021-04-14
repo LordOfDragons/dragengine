@@ -48,10 +48,10 @@ pBlockUsageCount( 0 )
 {
 	try{
 		pTBONodeBox = new deoglDynamicTBOFloat32( bvhLocal.GetRenderThread(), 4 );
-		pTBONodeBox->IncreaseDataCount( bvhLocal.GetTBONodeBox()->GetDataCount() );
+		pTBONodeBox->SetDataCount( bvhLocal.GetTBONodeBox()->GetDataCount() );
 		
 		pTBOVertex = new deoglDynamicTBOFloat32( bvhLocal.GetRenderThread(), 4 );
-		pTBOVertex->IncreaseDataCount( bvhLocal.GetTBOVertex()->GetDataCount() );
+		pTBOVertex->SetDataCount( bvhLocal.GetTBOVertex()->GetDataCount() );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -75,7 +75,7 @@ void deoglGIBVHDynamic::UpdateBVHExtends(){
 	}
 	
 	pCalcNodeExtends( *rootNode, pMinExtend, pMaxExtend );
-	pWriteNodeExtend( 0, pMinExtend, pMaxExtend );
+	pWriteNodeExtends( 0, pMinExtend, pMaxExtend );
 	
 	if( pBlockNode ){
 		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNode )->WriteToTBO();
@@ -190,24 +190,22 @@ void deoglGIBVHDynamic::pCalcNodeExtends( const deoglBVHNode &node, decVector &m
 		const deoglBVHNode &nodeLeft = pGIBVHLocal.GetBVH().GetNodeAt( firstIndex );
 		decVector minExtendLeft, maxExtendLeft;
 		pCalcNodeExtends( nodeLeft, minExtendLeft, maxExtendLeft );
-		pWriteNodeExtend( firstIndex, minExtendLeft, maxExtendLeft );
+		      pWriteNodeExtends( firstIndex, minExtendLeft, maxExtendLeft );
 		
 		const deoglBVHNode &nodeRight = pGIBVHLocal.GetBVH().GetNodeAt( firstIndex + 1 );
 		decVector minExtendRight, maxExtendRight;
 		pCalcNodeExtends( nodeRight, minExtendRight, maxExtendRight );
-		pWriteNodeExtend( firstIndex + 1, minExtendRight, maxExtendRight );
+		      pWriteNodeExtends( firstIndex + 1, minExtendRight, maxExtendRight );
 		
 		minExtend = minExtendLeft.Smallest( minExtendRight );
 		maxExtend = maxExtendLeft.Largest( maxExtendRight );
 		
 	}else{
-		const int * const primitives = pGIBVHLocal.GetBVH().GetPrimitives();
+		const uint16_t *face = pGIBVHLocal.GetTBOFace()->GetDataUInt() + firstIndex * 4;
 		const float * const vertices = pTBOVertex->GetDataFloat();
-		const uint16_t * const faces = pGIBVHLocal.GetTBOFace()->GetDataUInt();
 		int i;
 		
-		for( i=0; i<primitiveCount; i++ ){
-			const uint16_t * const face = faces + primitives[ i ] * 4;
+		for( i=0; i<primitiveCount; i++, face+=4 ){
 			const float * const v1 = vertices + face[ 0 ] * 4;
 			const decVector p1( v1[ 0 ], v1[ 1 ], v1[ 2 ] );
 			if( i > 0 ){
@@ -228,10 +226,18 @@ void deoglGIBVHDynamic::pCalcNodeExtends( const deoglBVHNode &node, decVector &m
 			minExtend.SetSmallest( p3 );
 			maxExtend.SetLargest( p3 );
 		}
+		
+		// make sure boundaries have at least a minimum thickness or else ray casting code
+		// can fail to detect the box. slightly enlarging the box is fine enough and makes
+		// hitting boxes more robust
+		const float margin = 1e-5f; // 0.01mm
+		const decVector enlarge( decVector().Largest( decVector( margin, margin, margin ) - ( maxExtend - minExtend ) ) * 0.5f );
+		minExtend -= enlarge;
+		maxExtend += enlarge;
 	}
 }
 
-void deoglGIBVHDynamic::pWriteNodeExtend( int index, const decVector &minExtend, const decVector &maxExtend ){
+void deoglGIBVHDynamic::pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend ){
 	float * const data = pTBONodeBox->GetDataFloat() + index * 8;
 	
 	data[ 0 ] = minExtend.x;

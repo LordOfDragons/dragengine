@@ -137,6 +137,8 @@ pShaderCopyRayCacheRev( NULL ),
 pShaderUpdateRays( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
+pShaderClearProbeIrradiance( NULL ),
+pShaderClearProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
 pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
@@ -163,6 +165,7 @@ pAddToRenderTask( NULL )
 		defines.AddDefine( "GI_PROBE_INDEX_COUNT", traceRays.GetProbeCount() / 4 );
 		defines.AddDefine( "GI_PROBE_COUNT", traceRays.GetProbeCount() );
 		defines.AddDefine( "GI_RAYS_PER_PROBE", traceRays.GetRaysPerProbe() );
+		defines.AddDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		#ifdef GI_RENDERDOC_DEBUG
 		defines.AddDefine( "GI_RENDERDOC_DEBUG", true );
@@ -202,6 +205,16 @@ pAddToRenderTask( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Rays" );
 		pShaderUpdateRays = shaderManager.GetProgramWith( sources, defines );
+		
+		// clear probes
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
+		defines.AddDefine( "MAP_IRRADIANCE", true );
+		pShaderClearProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "MAP_IRRADIANCE" );
+		
+		defines.AddDefine( "MAP_DISTANCE", true );
+		pShaderClearProbeDistance = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
@@ -783,7 +796,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	tsmgr.DisableStagesAbove( 2 );
 	
 	
-	// TODO clear invalid probes first. this should include all invalid probes not only updated ones
+	if( giState->HasClearProbes() ){
+		giState->PrepareUBOClearProbes();
+	}
 	
 	
 	// update probes: irradiance map
@@ -791,6 +806,14 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
 		giState->GetTextureProbeIrradiance().GetHeight() ) );
+	
+	if( giState->HasClearProbes() ){
+		renderThread.GetShader().ActivateShader( pShaderClearProbeIrradiance );
+		gi.GetUBO().Activate();
+		giState->GetUBOClearProbes().Activate();
+		
+		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	}
 	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
 	gi.GetUBO().Activate();
@@ -804,6 +827,14 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeDistance().GetWidth(),
 		giState->GetTextureProbeDistance().GetHeight() ) );
 	
+	if( giState->HasClearProbes() ){
+		renderThread.GetShader().ActivateShader( pShaderClearProbeDistance );
+		gi.GetUBO().Activate();
+		giState->GetUBOClearProbes().Activate();
+		
+		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	}
+	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeDistance );
 	gi.GetUBO().Activate();
 	
@@ -811,6 +842,10 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	
 	// clean up
+	if( giState->HasClearProbes() ){
+		giState->ClearClearProbes();
+	}
+	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();
 	

@@ -51,6 +51,8 @@ private:
 	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
+	deoglShaderProgram *pShaderClearProbeIrradiance;
+	deoglShaderProgram *pShaderClearProbeDistance;
 	deoglShaderProgram *pShaderMoveProbes;
 	deoglShaderProgram *pShaderLight;
 	deoglShaderProgram *pShaderLightGIRay;

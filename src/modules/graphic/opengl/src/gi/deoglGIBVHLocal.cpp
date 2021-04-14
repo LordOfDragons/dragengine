@@ -262,14 +262,12 @@ void deoglGIBVHLocal::pUpdateBVHExtends( deoglBVHNode &node ){
 			nodeLeft.GetMaxExtend().Largest( nodeRight.GetMaxExtend() ) );
 		
 	}else{
-		const int * const primitives = pBVH.GetPrimitives();
+		const uint16_t *face = pTBOFace->GetDataUInt() + firstIndex * 4;
 		const float * const vertices = pTBOVertex->GetDataFloat();
-		const uint16_t * const faces = pTBOFace->GetDataUInt();
 		decVector minExtend, maxExtend;
 		int i;
 		
-		for( i=0; i<primitiveCount; i++ ){
-			const uint16_t * const face = faces + primitives[ i ] * 4;
+		for( i=0; i<primitiveCount; i++, face+=4 ){
 			const float * const v1 = vertices + face[ 0 ] * 4;
 			const decVector p1( v1[ 0 ], v1[ 1 ], v1[ 2 ] );
 			if( i > 0 ){

@@ -131,7 +131,7 @@ public:
 private:
 	void pCleanUp();
 	void pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend );
-	void pWriteNodeExtend( int index, const decVector &minExtend, const decVector &maxExtend );
+	void pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend );
 };
 
 #endif

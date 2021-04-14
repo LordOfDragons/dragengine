@@ -96,6 +96,21 @@ static inline void fSet( GLuint *d, bool v1, bool v2, bool v3, bool v4 ){
 	d[ 2 ] = ( GLuint )v3;  d[ 3 ] = ( GLuint )v4;
 }
 
+static inline void fSet( GLuint *d, unsigned int v ){
+	d[ 0 ] = ( GLuint )v;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+	d[ 2 ] = ( GLuint )v3;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+	d[ 2 ] = ( GLuint )v3;  d[ 3 ] = ( GLuint )v4;
+}
+
 
 
 // Class deoglShaderParameterBlock
@@ -395,6 +410,19 @@ void deoglShaderParameterBlock::SetParameterDataIVec4( int p, int v1, int v2, in
 	SetParameterDataIVec4( p, pElementLower, v1, v2, v3, v4 );
 }
 
+void deoglShaderParameterBlock::SetParameterDataUInt( int p, unsigned int v ){
+	SetParameterDataUInt( p, pElementLower, v );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec2( int p, unsigned int v1, unsigned int v2 ){
+	SetParameterDataUVec2( p, pElementLower, v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec3( int p, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	SetParameterDataUVec3( p, pElementLower, v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec4( int p, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	SetParameterDataUVec4( p, pElementLower, v1, v2, v3, v4 );
+}
+
 void deoglShaderParameterBlock::SetParameterDataBool( int p, bool v ){
 	SetParameterDataBool( p, pElementLower, v );
 }
@@ -521,6 +549,22 @@ void deoglShaderParameterBlock::SetParameterDataArrayIVec4( int p, int a, int v1
 }
 void deoglShaderParameterBlock::SetParameterDataArrayInt( int p, int *values, int count ){
 	SetParameterDataArrayInt( p, pElementLower, values, count );
+}
+
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int a, unsigned int v ){
+	SetParameterDataArrayUInt( p, pElementLower, a, v );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec2( int p, int a, unsigned int v1, unsigned int v2 ){
+	SetParameterDataArrayUVec2( p, pElementLower, a, v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec3( int p, int a, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	SetParameterDataArrayUVec3( p, pElementLower, a, v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec4( int p, int a, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	SetParameterDataArrayUVec4( p, pElementLower, a, v1, v2, v3, v4 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, unsigned int *values, int count ){
+	SetParameterDataArrayUInt( p, pElementLower, values, count );
 }
 
 void deoglShaderParameterBlock::SetParameterDataArrayBool( int p, int a, bool v ){
@@ -760,6 +804,19 @@ void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int e, int v1, int
 }
 void deoglShaderParameterBlock::SetParameterDataIVec4( int p, int e, int v1, int v2, int v3, int v4 ){
 	fSet( pDataInt( pParamInt( p, 4 ), e ), v1, v2, v3, v4 );
+}
+
+void deoglShaderParameterBlock::SetParameterDataUInt( int p, int e, unsigned int v ){
+	fSet( pDataUInt( pParamInt( p, 1 ), e ), v );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec2( int p, int e, unsigned int v1, unsigned int v2 ){
+	fSet( pDataUInt( pParamInt( p, 2 ), e ), v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec3( int p, int e, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	fSet( pDataUInt( pParamInt( p, 3 ), e ), v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec4( int p, int e, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	fSet( pDataUInt( pParamInt( p, 4 ), e ), v1, v2, v3, v4 );
 }
 
 void deoglShaderParameterBlock::SetParameterDataBool( int p, int e, bool v ){
@@ -1026,6 +1083,40 @@ void deoglShaderParameterBlock::SetParameterDataArrayInt( int p, int e, int *val
 	
 	for( i=0; i<count; i++ ){
 		fSet( ( GLint* )( mapped + stride * i ), values[ i ] );
+	}
+}
+
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int e, int a, unsigned int v ){
+	fSet( pDataUInt( pParamInt( p, 1, 1, a ), e, a ), v );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec2( int p, int e, int a,
+unsigned int v1, unsigned int v2 ){
+	fSet( pDataUInt( pParamInt( p, 2, 1, a ), e, a ), v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec3( int p, int e, int a,
+unsigned int v1, unsigned int v2, unsigned int v3 ){
+	fSet( pDataUInt( pParamInt( p, 3, 1, a ), e, a ), v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec4( int p, int e, int a,
+unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	fSet( pDataUInt( pParamInt( p, 4, 1, a ), e, a ), v1, v2, v3, v4 );
+}
+
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int e, unsigned int *values, int count ){
+	if( count == 0 ){
+		return;
+	}
+	if( ! values || count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	const deoglSPBParameter &parameter = pParamInt( p, 1, 1, count - 1 );
+	char * const mapped = pData( parameter, e, 0 );
+	
+	const int stride = parameter.GetArrayStride();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		fSet( ( GLuint* )( mapped + stride * i ), values[ i ] );
 	}
 }
 

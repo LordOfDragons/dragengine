@@ -69,11 +69,11 @@ public:
 		eupGridCoordUnshift, // ivec3
 		eupFieldOrigin, // vec3
 		eupBlendUpdateProbe, // float
-		eupMaterialMapsPerRow, // int
-		eupMaterialMapSize, // int
 		eupMoveMaxOffset, // vec3
 		eupMoveMinDistToSurface, // float
 		eupRayMapScale, // vec2: scale factor for ray map
+		eupMaterialMapsPerRow, // int
+		eupMaterialMapSize, // int
 		eupProbeIndex, // ivec4[]: group of 4 probes to trace
 		eupProbePosition, // vec3[]: probe position and ray origin
 		eupRayDirection // vec3[]: ray direction

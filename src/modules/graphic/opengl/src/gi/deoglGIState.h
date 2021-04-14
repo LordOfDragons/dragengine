@@ -110,6 +110,11 @@ private:
 	sProbe **pRayCacheProbes;
 	int pRayCacheProbeCount;
 	
+	uint32_t *pClearProbes;
+	int pClearProbeCount;
+	bool pHasClearProbes;
+	deObjectReference pUBOClearProbes;
+	
 	sProbe **pWeightedProbes;
 	int pWeightedProbeBinSize;
 	int pWeightedProbeBinCount;
@@ -259,6 +264,20 @@ public:
 	
 	
 	
+	/** Clear clear probes. */
+	void ClearClearProbes();
+	
+	/** Has clear probes. */
+	inline bool HasClearProbes() const{ return pHasClearProbes; }
+	
+	/** Clear probes UBO. */
+	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOClearProbes; }
+	
+	/** Prepare clear probes UBO. */
+	void PrepareUBOClearProbes() const;
+	
+	
+	
 	/** Irradiance probe texture. */
 	inline deoglTexture &GetTextureProbeIrradiance(){ return pTexProbeIrradiance; }
 	inline const deoglTexture &GetTextureProbeIrradiance() const{ return pTexProbeIrradiance; }
@@ -321,6 +340,7 @@ public:
 private:
 	void pCleanUp();
 	void pInitProbes();
+	void pInitUBOClearProbes();
 	void pInvalidateAllRayLimits();
 	void pInvalidateAllRayCaches();
 	void pTrackInstanceChanges();

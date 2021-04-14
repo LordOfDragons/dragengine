@@ -90,6 +90,11 @@ pRayLimitProbes( NULL ),
 pRayLimitProbeCount( 0 ),
 pRayCacheProbes( NULL ),
 pRayCacheProbeCount( 0 ),
+
+pClearProbes( NULL ),
+pClearProbeCount( pRealProbeCount / 32 ),
+pHasClearProbes( false ),
+
 pWeightedProbes( NULL ),
 pWeightedProbeBinSize( pRealProbeCount / 20 ),
 pWeightedProbeBinCount( 20 ),
@@ -110,6 +115,8 @@ pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
 		pInitProbes();
+		pClearProbes = new uint32_t[ pClearProbeCount ];
+		pInitUBOClearProbes();
 		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		pWeightedProbes = new sProbe*[ pRealProbeCount ];
 		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
@@ -242,6 +249,33 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 	local.y %= pProbeCount.y;
 	local.z %= pProbeCount.z;
 	return local;
+}
+
+
+
+void deoglGIState::ClearClearProbes(){
+	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint32_t ) );
+	pHasClearProbes = false;
+}
+
+void deoglGIState::PrepareUBOClearProbes() const{
+	deoglSPBlockUBO &ubo = GetUBOClearProbes();
+	
+	ubo.MapBuffer();
+	try{
+		const int count = pClearProbeCount / 4;
+		int i, j;
+		
+		for( i=0, j=0; i<count; i++, j+=4 ){
+			ubo.SetParameterDataArrayUVec4( 0, i, pClearProbes[ j ],
+				pClearProbes[ j + 1 ], pClearProbes[ j + 2 ], pClearProbes[ j + 3 ] );
+		}
+		
+	}catch( const deException & ){
+		ubo.UnmapBuffer();
+		throw;
+	}
+	ubo.UnmapBuffer();
 }
 
 
@@ -396,6 +430,7 @@ void deoglGIState::Invalidate(){
 	
 	pClearMaps = true;
 	pProbesHaveMoved = false;
+	ClearClearProbes();
 }
 
 void deoglGIState::ProbesMoved(){
@@ -482,6 +517,9 @@ void deoglGIState::pCleanUp(){
 	if( pWeightedProbeBinProbeCounts ){
 		delete [] pWeightedProbeBinProbeCounts;
 	}
+	if( pClearProbes ){
+		delete [] pClearProbes;
+	}
 	if( pProbes ){
 		delete [] pProbes;
 	}
@@ -503,6 +541,16 @@ void deoglGIState::pInitProbes(){
 		probe.countOffsetMoved = 0;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
+}
+
+void deoglGIState::pInitUBOClearProbes(){
+	pUBOClearProbes.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
+	deoglSPBlockUBO &ubo = GetUBOClearProbes();
+	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo.SetParameterCount( 1 );
+	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, pClearProbeCount / 4 ); // uvec4
+	ubo.MapToStd140();
+	ubo.SetBindingPoint( 1 );
 }
 
 void deoglGIState::pInvalidateAllRayLimits(){
@@ -596,6 +644,9 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
 		probe.countOffsetMoved = 0;
+		
+		pClearProbes[ i / 32 ] |= uint32_t( 1 ) << ( i % 32 );
+		pHasClearProbes = true;
 	}
 	
 	// set the new tracing position

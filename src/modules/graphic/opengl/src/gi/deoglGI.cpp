@@ -73,22 +73,22 @@ void deoglGI::pCreateUBO(){
 	deoglSPBlockUBO &ubo = GetUBO();
 	
 	// memory consumption:
+	// - 10 vec4 blocks = 40 components = 160 bytes
+	// - 2048 probe indices = 2048 components = 8192 bytes
+	// - 2048 probe positions = 8192 components = 32768 bytes
+	// - 512 rays = 2048 components = 8192 bytes
 	// 
-	// - 5 * 16 = 80 (fixed size 4-component blocks)
-	// - ( maxProbeCount / 4 ) * 16 (index array)
-	// - maxProbeCount * 16 (probe position array)
-	// - maxRaysPerProbe * 16 (ray direction array)
+	// total 49312 bytes (UBO maximum at minimum 65535)
 	// 
-	// maxProbeCount is guaranteed to be multiple of 4 so index array can be reduced to
-	// - maxProbeCount * 4
+	// for different probe counts (probeCount*20):
+	// - 256 => 5120 bytes
+	// - 512 => 10240 bytes
+	// - 1024 => 20480 bytes
+	// - 2048 => 40960 bytes
+	// - 4096 => 81920 bytes
 	// 
-	// maxRaysPerProbe is guaranteed to be at least 1
-	// 
-	// size = 80 + 16 * ( maxRaysPerProbe + maxProbeCount * 1.25 )
-	// 
-	// - base size: 80
-	// - rays:      1'024 (64), 4096 (256)
-	// - probes:    5'120 (256), 20'480 (1024), 40'960 (2048), 81'920 (4096)
+	// 2048 is the maximum number of probes to update fitting into the minimum UBO size
+	// of 65535 required to be supported. 4096 can be used with larger supported UBO size.
 	const int maxProbeCount = pTraceRays.GetProbeCount();
 	const int raysPerProbe = pTraceRays.GetRaysPerProbe();
 	
@@ -111,11 +111,11 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupGridCoordUnshift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	ubo.GetParameterAt( eupFieldOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.GetParameterAt( eupBlendUpdateProbe ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMoveMaxOffset ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.GetParameterAt( eupMoveMinDistToSurface ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupRayMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, maxProbeCount / 4 ); // ivec4
 	ubo.GetParameterAt( eupProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, maxProbeCount ); // vec4
 	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, raysPerProbe ); // vec3
