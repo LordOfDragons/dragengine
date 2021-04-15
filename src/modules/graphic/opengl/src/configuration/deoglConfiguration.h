@@ -63,6 +63,7 @@ public:
 	};
 	
 	enum eGIQuality{
+		egiqOff,
 		egiqVeryLow,
 		egiqLow,
 		egiqMedium,

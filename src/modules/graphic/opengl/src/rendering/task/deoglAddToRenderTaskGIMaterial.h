@@ -27,18 +27,10 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglCollideList;
-class deoglCollideListComponent;
 class deoglRComponentLOD;
 class deoglRenderTask;
 class deoglRenderTaskTexture;
 class deoglRenderThread;
-class deoglShaderProgram;
-class deoglSkinShader;
-class deoglSkinState;
-class deoglSkinTexture;
-class deoglSPBlockUBO;
-class deoglTexture;
 class deoglTexUnitsConfig;
 
 

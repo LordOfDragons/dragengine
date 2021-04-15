@@ -80,6 +80,7 @@ public:
 	bool pDirtyMesh;
 	bool pDirtySkinStateCalculatedProperties;
 	bool pDirtyStaticTexture;
+	bool pNotifyTexturesChanged;
 	
 	bool pDynamicSkinRequiresSync;
 	bool pTextureDynamicSkinRequiresSync;

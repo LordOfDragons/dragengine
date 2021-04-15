@@ -2011,7 +2011,7 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// we need though first a framework to keep track of statically
 	// spend GPU memory.
 	
-	// plan global illumination. this has to come before plaing lights
+	// plan global illumination
 	pPlanGI();
 	
 	// determine if we need transparency

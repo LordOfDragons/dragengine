@@ -33,8 +33,12 @@
 #include "../../model/deoglRModel.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/face/deoglModelFace.h"
+#include "../../rendering/light/deoglRenderGI.h"
+#include "../../rendering/light/deoglRenderLight.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../rendering/plan/deoglRenderPlanMasked.h"
+#include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -182,6 +186,12 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	pPlan->SetNoRenderedOccMesh( true );
 	
 	pPlan->SetNoReflections( true ); // HACK prevent re-entrant problem for the time being
+	
+	// use the parent plan gi state but without modifying it. allows to use GI with
+	// no extra cost and witout messing up parent GI state. for mirrors this is good
+	// enough since mirrors need to be in view of the parent camera
+	pPlan->SetUseConstGIState( pSkinRendered.GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) );
+	pPlan->SetUseGIState( pPlan->GetUseConstGIState() != NULL );
 	
 	// calculate the frustum for this texture
 	//matrixMVP = ( ownerMatrix * pPlan->GetCameraMatrix() ).ToMatrix() * pPlan->GetProjectionMatrix();

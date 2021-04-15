@@ -282,6 +282,8 @@ void deoglGIState::PrepareUBOClearProbes() const{
 
 void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
 const decDMatrix &cameraMatrix, float fovX, float fovY ){
+// 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
+// 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
 	if( pProbesHaveMoved ){
 		pProbesHaveMoved = false;
 		UpdateProbeOffsetFromTexture();
@@ -422,10 +424,10 @@ void deoglGIState::Invalidate(){
 		probe.age = 0;
 		probe.flags = 0x1;
 		probe.offset.SetZero();
+		probe.countOffsetMoved = 0;
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
-		probe.countOffsetMoved = 0;
 	}
 	
 	pClearMaps = true;
@@ -461,7 +463,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		//         this causes GI flickering and endless ray cache invalidating.
 		//         
 		//         as a quick fix a counter is used. each time the offset changes the counter
-		//         is incremented. after a certain amount the probe is not allowe to move
+		//         is incremented. after a certain amount the probe is not allowed to move
 		//         offset anymore. invalidating a probe resets the counter
 		//         
 		//         the root cause is unknown. would be better to find and fix it
@@ -480,9 +482,9 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		}
 		
 		probe.offset = offset;
+		probe.countOffsetMoved++;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
-		probe.countOffsetMoved++;
 	}
 }
 
@@ -535,10 +537,10 @@ void deoglGIState::pInitProbes(){
 		probe.flags = 0x0; // force full update
 		probe.age = 0;
 		probe.offset.SetZero();
+		probe.countOffsetMoved = 0;
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
-		probe.countOffsetMoved = 0;
 		probe.coord = ProbeIndex2GridCoord( i );
 	}
 }
@@ -640,10 +642,10 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		probe.age = 0;
 		probe.flags = 0x0; // force full update
 		probe.offset.SetZero();
+		probe.countOffsetMoved = 0;
 		probe.valid = false;
 		probe.rayLimitsValid = false;
 		probe.rayCacheValid = false;
-		probe.countOffsetMoved = 0;
 		
 		pClearProbes[ i / 32 ] |= uint32_t( 1 ) << ( i % 32 );
 		pHasClearProbes = true;
@@ -791,6 +793,7 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 				}else{
 					probe.flags = 0x0; // force full update
 					probe.offset.SetZero();
+					probe.countOffsetMoved = 0;
 				}
 				
 				probe.age = 0;
@@ -824,6 +827,7 @@ void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 	}else{
 		probe->flags = 0x0; // force full update
 		probe->offset.SetZero();
+		probe->countOffsetMoved = 0;
 		probe->valid = true;
 	}
 	probe->age = 0;

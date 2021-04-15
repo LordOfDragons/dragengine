@@ -1146,11 +1146,17 @@ void deoglRenderGI::pCleanUp(){
 	if( pShaderUpdateProbeIrradiance ){
 		pShaderUpdateProbeIrradiance->RemoveUsage();
 	}
+	if( pShaderUpdateProbeDistance ){
+		pShaderUpdateProbeDistance->RemoveUsage();
+	}
 	if( pShaderMoveProbes ){
 		pShaderMoveProbes->RemoveUsage();
 	}
-	if( pShaderUpdateProbeDistance ){
-		pShaderUpdateProbeDistance->RemoveUsage();
+	if( pShaderClearProbeIrradiance ){
+		pShaderClearProbeIrradiance->RemoveUsage();
+	}
+	if( pShaderClearProbeDistance ){
+		pShaderClearProbeDistance->RemoveUsage();
 	}
 }
 

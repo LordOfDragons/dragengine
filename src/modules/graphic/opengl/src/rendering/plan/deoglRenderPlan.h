@@ -57,7 +57,7 @@ class deoglRSkyInstanceLayer;
 
 
 /**
- * \brief Render Plan.
+ * Render Plan.
  * 
  * Stores the render plan used to build an efficient method for rendering
  * a particular shot of a world. Furthermore a render plan stores information
@@ -180,10 +180,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render plan. */
+	/** Create render plan. */
 	deoglRenderPlan( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render plan. */
+	/** Clean up render plan. */
 	~deoglRenderPlan();
 	/*@}*/
 	
@@ -191,57 +191,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief World. */
+	/** World. */
 	inline deoglRWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world. */
+	/** Set world. */
 	void SetWorld( deoglRWorld *world );
 	
-	/** \brief Level. */
+	/** Level. */
 	inline int GetLevel() const{ return pLevel; }
 	
-	/** \brief Set level. */
+	/** Set level. */
 	void SetLevel( int level );
 	
 	
 	
-	/** \brief All lights are disabled. */
+	/** All lights are disabled. */
 	inline bool GetDisableLights() const{ return pDisableLights; }
 	
-	/** \brief Shadow map sizes are rescaled relative to the viewport size. */
+	/** Shadow map sizes are rescaled relative to the viewport size. */
 	inline bool GetRescaleShadowMaps() const{ return pRescaleShadowMaps; }
 	
-	/** \brief Set if shadow map sizes are rescaled relative to the viewport size. */
+	/** Set if shadow map sizes are rescaled relative to the viewport size. */
 	void SetRescaleShadowMaps( bool rescale );
 	
-	/** \brief Shadow map size. */
+	/** Shadow map size. */
 	inline int GetShadowMapSize() const{ return pShadowMapSize; }
 	
-	/** \brief Shadow cube size. */
+	/** Shadow cube size. */
 	inline int GetShadowCubeSize() const{ return pShadowCubeSize; }
 	
-	/** \brief Shadow sky size. */
+	/** Shadow sky size. */
 	inline int GetShadowSkySize() const{ return pShadowSkySize; }
 	
-	/** \brief Dominance. */
+	/** Dominance. */
 	inline float GetDominance() const{ return pDominance; }
 	
-	/** \brief Forced shadow map size or 0 to use the default shadow map size. */
+	/** Forced shadow map size or 0 to use the default shadow map size. */
 	inline int GetForceShadowMapSize() const{ return pForceShadowMapSize; }
 	
-	/** \brief Set forced shadow map size or 0 to use the default shadow map size. */
+	/** Set forced shadow map size or 0 to use the default shadow map size. */
 	void SetForceShadowMapSize( int forcedSize );
 	
 	
 	
-	/** \brief Prepare plan for rendering. */
+	/** Prepare plan for rendering. */
 	void PrepareRender();
 	
 	/**
-	 * \brief Prepare whatever can be prepared for a one turn of rendering.
+	 * Prepare whatever can be prepared for a one turn of rendering.
 	 * 
 	 * The PrepareRender function is used to prepare whatever stays
 	 * the same for an entire frame update. This function on the
@@ -256,329 +256,329 @@ public:
 	void PrepareRenderOneTurn();
 	
 	/**
-	 * \brief Plan transparency.
+	 * Plan transparency.
 	 * \details Called after transparency counter is ready and planing is possible.
 	 * \param[in] layerCount Number of transparent layers. How this is calculated is the
 	 *                       responsibility of the caller.
 	 */
 	void PlanTransparency( int layerCount );
 	
-	/** \brief Render using the previously prepared plan. */
+	/** Render using the previously prepared plan. */
 	void Render();
 	
-	/** \brief Clean up after rendering. */
+	/** Clean up after rendering. */
 	void CleanUp();
 	
 	
 	
-	/** \brief Camera or \em NULL. */
+	/** Camera or \em NULL. */
 	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera or \em NULL. */
+	/** Set camera or \em NULL. */
 	void SetCamera( deoglRCamera *camera );
 	
-	/** \brief Camera matrix. */
+	/** Camera matrix. */
 	inline const decDMatrix &GetCameraMatrix() const{ return pCameraMatrix; }
 	
-	/** \brief Inverse camera matrix. */
+	/** Inverse camera matrix. */
 	inline const decDMatrix &GetInverseCameraMatrix() const{ return pCameraInverseMatrix; }
 	
-	/** \brief Set camera matrix including the inverse one. */
+	/** Set camera matrix including the inverse one. */
 	void SetCameraMatrix( const decDMatrix &matrix );
 	
-	/** \brief Projection matrix. */
+	/** Projection matrix. */
 	inline const decDMatrix &GetProjectionMatrix() const{ return pProjectionMatrix; }
 	
-	/** \brief Frustum matrix. */
+	/** Frustum matrix. */
 	inline const decDMatrix &GetFrustumMatrix() const{ return pFrustumMatrix; }
 	
-	/** \brief Reference position camera matrix. */
+	/** Reference position camera matrix. */
 	inline const decDMatrix &GetRefPosCameraMatrix() const{ return pRefPosCameraMatrix; }
 	
-	/** \brief Camera position in world space. */
+	/** Camera position in world space. */
 	inline const decDVector &GetCameraPosition() const{ return pCameraPosition; }
 	
-	/** \brief Camera field of view. */
+	/** Camera field of view. */
 	inline float GetCameraFov() const{ return pCameraFov; }
 	
-	/** \brief Camera field of view ratio. */
+	/** Camera field of view ratio. */
 	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
 	
-	/** \brief Camera image distance. */
+	/** Camera image distance. */
 	inline float GetCameraImageDistance() const{ return pCameraImageDistance; }
 	
-	/** \brief Camera view distance. */
+	/** Camera view distance. */
 	inline float GetCameraViewDistance() const{ return pCameraViewDistance; }
 	
-	/** \brief Set camera parameters. */
+	/** Set camera parameters. */
 	void SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance );
 	
-	/** \brief Camera adapted intensity if camera is NULL. */
+	/** Camera adapted intensity if camera is NULL. */
 	inline float GetCameraAdaptedIntensity() const{ return pCameraAdaptedIntensity; }
 	
-	/** \brief Set camera adapted intensity if camera is NULL. */
+	/** Set camera adapted intensity if camera is NULL. */
 	void SetCameraAdaptedIntensity( float intensity );
 	
-	/** \brief Copy camera parameters from another render plan. */
+	/** Copy camera parameters from another render plan. */
 	void CopyCameraParametersFrom( const deoglRenderPlan &plan );
 	
-	/** \brief Update reference position camera matrix. */
+	/** Update reference position camera matrix. */
 	void UpdateRefPosCameraMatrix();
 	
 	
 	
-	/** \brief Depth to position transformation factors. */
+	/** Depth to position transformation factors. */
 	inline const decVector4 &GetDepthToPosition() const{ return pDepthToPosition; }
 	
-	/** \brief Depth sample offset. */
+	/** Depth sample offset. */
 	inline const decVector2 &GetDepthSampleOffset() const{ return pDepthSampleOffset; }
 	
 	
 	
-	/** \brief Vierwport x. */
+	/** Vierwport x. */
 	inline int GetViewportX() const{ return pViewportX; }
 	
-	/** \brief Vierwport y. */
+	/** Vierwport y. */
 	inline int GetViewportY() const{ return pViewportY; }
 	
-	/** \brief Vierwport width. */
+	/** Vierwport width. */
 	inline int GetViewportWidth() const{ return pViewportWidth; }
 	
-	/** \brief Viewport height. */
+	/** Viewport height. */
 	inline int GetViewportHeight() const{ return pViewportHeight; }
 	
-	/** \brief Ratio between the width and the height. */
+	/** Ratio between the width and the height. */
 	inline float GetAspectRatio() const{ return pAspectRatio; }
 	
-	/** \brief Set viewport parameters. */
+	/** Set viewport parameters. */
 	void SetViewport( int x, int y, int width, int height );
 	
 	
 	
-	/** \brief Target framebuffer object or \em NULL to use the one of the active graphics context. */
+	/** Target framebuffer object or \em NULL to use the one of the active graphics context. */
 	inline deoglFramebuffer *GetFBOTarget() const{ return pFBOTarget; }
 	
-	/** \brief Set target framebuffer object or \em NULL to use the one of the active graphics context. */
+	/** Set target framebuffer object or \em NULL to use the one of the active graphics context. */
 	void SetFBOTarget( deoglFramebuffer *fbo );
 	
-	/** \brief Depth is copied to the target framebuffer object if not \em NULL. */
+	/** Depth is copied to the target framebuffer object if not \em NULL. */
 	inline bool GetFBOTargetCopyDepth() const{ return pFBOTargetCopyDepth; }
 	
-	/** \brief Set if depth is copied to the target framebuffer object if not \em NULL. */
+	/** Set if depth is copied to the target framebuffer object if not \em NULL. */
 	void SetFBOTargetCopyDepth( bool copyDepth );
 	
 	
 	
-	/** \brief Upscale width. */
+	/** Upscale width. */
 	inline int GetUpscaleWidth() const{ return pUpscaleWidth; }
 	
-	/** \brief Upscale height. */
+	/** Upscale height. */
 	inline int GetUpscaleHeight() const{ return pUpscaleHeight; }
 	
-	/** \brief Set upscale size. */
+	/** Set upscale size. */
 	void SetUpscaleSize( int width, int height );
 	
-	/** \brief Upscaling has to be used. */
+	/** Upscaling has to be used. */
 	inline bool GetUseUpscaling() const{ return pUseUpscaling; }
 	
-	/** \brief Set if upscaling has to be used. */
+	/** Set if upscaling has to be used. */
 	void SetUseUpscaling( bool useUpscaling );
 	
-	/** \brief Upside down rendering has to be used. */
+	/** Upside down rendering has to be used. */
 	inline bool GetUpsideDown() const{ return pUpsideDown; }
 	
-	/** \brief Set if upside down rendering has to be used. */
+	/** Set if upside down rendering has to be used. */
 	void SetUpsideDown( bool upsideDown );
 	
-	/** \brief Tone mapping is used. */
+	/** Tone mapping is used. */
 	inline bool GetUseToneMap() const{ return pUseToneMap; }
 	
-	/** \brief Set if tone mapping is used. */
+	/** Set if tone mapping is used. */
 	void SetUseToneMap( bool useToneMap );
 	
-	/** \brief Static components are ignored. */
+	/** Static components are ignored. */
 	inline bool GetIgnoreStaticComponents() const{ return pIgnoreDynamicComponents; }
 	
-	/** \brief Set if static components are ignored. */
+	/** Set if static components are ignored. */
 	void SetIgnoreStaticComponents( bool ignoreStaticComponents );
 	
-	/** \brief Debug pass is rendered. */
+	/** Debug pass is rendered. */
 	inline bool GetRenderDebugPass() const{ return pRenderDebugPass; }
 	
-	/** \brief Set if debug pass is rendered. */
+	/** Set if debug pass is rendered. */
 	void SetRenderDebugPass( bool render );
 	
-	/** \brief No reflections are used. */
+	/** No reflections are used. */
 	inline bool GetNoReflections() const{ return pNoReflections; }
 	
-	/** \brief Set if no reflections are used. */
+	/** Set if no reflections are used. */
 	void SetNoReflections( bool noReflections );
 	
-	/** \brief Use GI state. */
+	/** Use GI state. */
 	inline bool GetUseGIState() const{ return pUseGIState; }
 	
-	/** \brief Set use GI state. */
+	/** Set use GI state. */
 	void SetUseGIState( bool useGIState );
 	
-	/** \brief Use constant GI state. */
+	/** Use constant GI state. */
 	inline deoglGIState *GetUseConstGIState() const{ return pUseConstGIState; }
 	
-	/** \brief Set use const GI state. */
+	/** Set use const GI state. */
 	void SetUseConstGIState( deoglGIState *giState );
 	
 	
 	
-	/** \brief Layer mask is used for culling. */
+	/** Layer mask is used for culling. */
 	inline bool GetUseLayerMask() const{ return pUseLayerMask; }
 	
-	/** \brief Set if layer mask is used for culling. */
+	/** Set if layer mask is used for culling. */
 	void SetUseLayerMask( bool useLayerMask );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	const decLayerMask &GetLayerMask(){ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief Set custom frustum. */
+	/** Set custom frustum. */
 	void SetCustomFrustumBoundaries( const decDVector &position, const decDVector &topLeft,
 		const decDVector &topRight, const decDVector &bottomLeft, const decDVector &bottomRight,
 		double near, double far );
 	
-	/** \brief Custom frustum is used. */
+	/** Custom frustum is used. */
 	inline bool GetUseCustomFrustum() const{ return pUseCustomFrustum; }
 	
-	/** \brief Set if custom frustum is used. */
+	/** Set if custom frustum is used. */
 	void SetUseCustomFrustum( bool useCustomFrustum );
 	
-	/** \brief Custom frustum screen area. */
+	/** Custom frustum screen area. */
 	inline const decBoundary &GetCustomFrustumScreenArea() const{ return pCustomFrustumScreenArea; }
 	
-	/** \brief Set custom frustum screen area. */
+	/** Set custom frustum screen area. */
 	void SetCustomFrustumScreenArea( const decBoundary &area );
 	
 	
 	
-	/** \brief Height terrain view. */
+	/** Height terrain view. */
 	inline deoglHTView *GetHeightTerrainView() const{ return pHTView; }
 	
-	/** \brief Collider list. */
+	/** Collider list. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
 	
 	
 	
-	/** \brief Ignore occlusion meshes if owner component has rendered skins. */
+	/** Ignore occlusion meshes if owner component has rendered skins. */
 	inline bool GetNoRenderedOccMesh(){ return pNoRenderedOccMesh; }
 	
-	/** \brief Set to ignore occlusion meshes if owner component has rendered skins. */
+	/** Set to ignore occlusion meshes if owner component has rendered skins. */
 	void SetNoRenderedOccMesh( bool noRenderedOccMesh );
 	
-	/** \brief Culling flags have to be flipped. */
+	/** Culling flags have to be flipped. */
 	inline bool GetFlipCulling() const{ return pFlipCulling; }
 	
-	/** \brief Set if culling flags have to be flipped. */
+	/** Set if culling flags have to be flipped. */
 	void SetFlipCulling( bool flipCulling );
 	
 	
 	
-	/** \brief Pass is empty. */
+	/** Pass is empty. */
 	inline bool GetEmptyPass() const{ return pEmptyPass; }
 	
-	/** \brief Set if pass is empty. */
+	/** Set if pass is empty. */
 	void SetEmptyPass( bool emptyPass );
 	
 	
 	
-	/** \brief Sky is visible. */
+	/** Sky is visible. */
 	inline bool GetSkyVisible() const{ return pSkyVisible; }
 	
-	/** \brief There are transparent objects. */
+	/** There are transparent objects. */
 	inline bool GetHasTransparency() const{ return pHasTransparency; }
 	
-	/** \brief Stencil pass bits have to be cleared. */
+	/** Stencil pass bits have to be cleared. */
 	inline bool GetClearStencilPassBits() const{ return pClearStencilPassBits; }
 	
-	/** \brief Set if stencil pass bits have to be cleared. */
+	/** Set if stencil pass bits have to be cleared. */
 	void SetClearStencilPassBits( bool clear );
 	
-	/** \brief Clear color target. */
+	/** Clear color target. */
 	inline bool GetClearColor() const{ return pClearColor; }
 	
-	/** \brief Set if color target has to be cleared. */
+	/** Set if color target has to be cleared. */
 	void SetClearColor( bool clear );
 	
 	
 	
-	/** \brief Number of transparency layers. */
+	/** Number of transparency layers. */
 	inline int GetTransparencyLayerCount() const{ return pTransparencyLayerCount; }
 	
-	/** \brief Set number of transparency layers. */
+	/** Set number of transparency layers. */
 	void SetTransparencyLayerCount( int count );
 	
-	/** \brief Current transparency layer number. */
+	/** Current transparency layer number. */
 	inline int GetCurrentTransparencyLayer() const{ return pCurTransparencyLayer; }
 	
-	/** \brief Set current transparency layer number. */
+	/** Set current transparency layer number. */
 	void SetCurrentTransparencyLayer( int layer );
 	
-	/** \brief Render pass number. */
+	/** Render pass number. */
 	inline int GetRenderPassNumber() const{ return pRenderPassNumber; }
 	
-	/** \brief Set render pass number. */
+	/** Set render pass number. */
 	void SetRenderPassNumber( int number );
 	
-	/** \brief Stencil reference value. */
+	/** Stencil reference value. */
 	inline int GetStencilRefValue() const{ return pStencilRefValue; }
 	
-	/** \brief Set stencil reference value. */
+	/** Set stencil reference value. */
 	void SetStencilRefValue( int refValue );
 	
-	/** \brief Previous stencil reference value. */
+	/** Previous stencil reference value. */
 	inline int GetStencilPrevRefValue() const{ return pStencilPrevRefValue; }
 	
-	/** \brief Set previous stencil reference value. */
+	/** Set previous stencil reference value. */
 	void SetStencilPrevRefValue( int refValue );
 	
-	/** \brief Stencil write mask. */
+	/** Stencil write mask. */
 	inline int GetStencilWriteMask() const{ return pStencilWriteMask; }
 	
-	/** \brief Set stencil write mask. */
+	/** Set stencil write mask. */
 	void SetStencilWriteMask( int writeMask );
 	
 	
 	
-	/** \brief Occlusion map. */
+	/** Occlusion map. */
 	inline deoglOcclusionMap *GetOcclusionMap() const{ return pOcclusionMap; }
 	
-	/** \brief Set occlusion map. */
+	/** Set occlusion map. */
 	void SetOcclusionMap( deoglOcclusionMap *map );
 	
-	/** \brief Occlusion map base level. */
+	/** Occlusion map base level. */
 	inline int GetOcclusionMapBaseLevel() const{ return pOcclusionMapBaseLevel; }
 	
-	/** \brief Set occlusion map base level. */
+	/** Set occlusion map base level. */
 	void SetOcclusionMapBaseLevel( int level );
 	
-	/** \brief Occlusion test matrix. */
+	/** Occlusion test matrix. */
 	inline const decMatrix &GetOcclusionTestMatrix() const{ return pOcclusionTestMatrix; }
 	
-	/** \brief Set occlusion test matrix. */
+	/** Set occlusion test matrix. */
 	void SetOcclusionTestMatrix( const decMatrix &matrix );
 	
-	/** \brief Global illumination state or NULL. */
+	/** Global illumination state or NULL. */
 	inline deoglGIState *GetGIState() const{ return pGIState; }
 	
 	
 	
-	/** \brief Debug object or \em NULL if not existing. */
+	/** Debug object or \em NULL if not existing. */
 	inline deoglRenderPlanDebug *GetDebug() const{ return pDebug; }
 	
-	/** \brief Debug timing information is printed. */
+	/** Debug timing information is printed. */
 	inline bool GetDebugTiming() const{ return pDebugTiming; }
 	
-	/** \brief Set if debug timing information is printed. */
+	/** Set if debug timing information is printed. */
 	void SetDebugTiming( bool debugTiming );
 	/*@}*/
 	
@@ -586,16 +586,16 @@ public:
 	
 	/** \name Environment Maps */
 	/*@{*/
-	/** \brief Number of plan environment maps. */
+	/** Number of plan environment maps. */
 	inline int GetEnvMapCount() const{ return pEnvMapCount; }
 	
-	/** \brief Plan environment map at the given index. */
+	/** Plan environment map at the given index. */
 	deoglRenderPlanEnvMap &GetEnvMapAt( int index ) const;
 	
-	/** \brief Remove environment map from the entire render plan without calling any methods on it. */
+	/** Remove environment map from the entire render plan without calling any methods on it. */
 	void RemoveEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Direct environment map fader. */
+	/** Direct environment map fader. */
 	inline deoglEnvMapFader &GetDirectEnvMapFader(){ return pDirectEnvMapFader; }
 	inline const deoglEnvMapFader &GetDirectEnvMapFader() const{ return pDirectEnvMapFader; }
 	/*@}*/
@@ -604,16 +604,16 @@ public:
 	
 	/** \name Lights (deprecated) */
 	/*@{*/
-	/** \brief Number of plan lights. */
+	/** Number of plan lights. */
 	inline int GetLightCount() const{ return pLightCount; }
 	
-	/** \brief Plan light at the given index. */
+	/** Plan light at the given index. */
 	deoglRenderPlanLight *GetLightAt( int index ) const;
 	
-	/** \brief Plan light for the given light. If no plan light exists yet a new one is created. */
+	/** Plan light for the given light. If no plan light exists yet a new one is created. */
 	deoglRenderPlanLight *GetLightFor( deoglRLight *light );
 	
-	/** \brief Remove all plan lights. */
+	/** Remove all plan lights. */
 	void RemoveAllLights();
 	/*@}*/
 	
@@ -621,16 +621,16 @@ public:
 	
 	/** \name Sky lights */
 	/*@{*/
-	/** \brief Number of sky lights. */
+	/** Number of sky lights. */
 	inline int GetSkyLightCount() const{ return pSkyLightCount; }
 	
-	/** \brief Sky light at index. */
+	/** Sky light at index. */
 	deoglRenderPlanSkyLight *GetSkyLightAt( int index ) const;
 	
-	/** \brief Add sky light. */
+	/** Add sky light. */
 	deoglRenderPlanSkyLight *AddSkyLight( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
-	/** \brief Remove sky lights. */
+	/** Remove sky lights. */
 	void RemoveAllSkyLights();
 	/*@}*/
 	
@@ -638,19 +638,19 @@ public:
 	
 	/** \name Sky instances */
 	/*@{*/
-	/** \brief Count of sky instances. */
+	/** Count of sky instances. */
 	int GetSkyInstanceCount() const;
 	
-	/** \brief Sky instance at index. */
+	/** Sky instance at index. */
 	deoglRSkyInstance *GetSkyInstanceAt( int index ) const;
 	
-	/** \brief Remove all sky instances. */
+	/** Remove all sky instances. */
 	void RemoveAllSkyInstances();
 	
-	/** \brief Sky background color. */
+	/** Sky background color. */
 	inline const decColor &GetSkyBgColor() const{ return pSkyBgColor; }
 	
-	/** \brief Set sky background color. */
+	/** Set sky background color. */
 	void SetSkyBgColor( const decColor &color );
 	/*@}*/
 	
@@ -658,16 +658,16 @@ public:
 	
 	/** \name Sub Plans */
 	/*@{*/
-	/** \brief Number of masked plans. */
+	/** Number of masked plans. */
 	inline int GetMaskedPlanCount() const{ return pMaskedPlanCount; }
 	
-	/** \brief Masked plan at the given index. */
+	/** Masked plan at the given index. */
 	deoglRenderPlanMasked *GetMaskedPlanAt( int index ) const;
 	
-	/** \brief Add masked plan for the given render plan. */
+	/** Add masked plan for the given render plan. */
 	deoglRenderPlanMasked *AddMaskedPlanFor( deoglRenderPlan *plan );
 	
-	/** \brief Remove all masked plans. */
+	/** Remove all masked plans. */
 	void RemoveAllMaskedPlans();
 	/*@}*/
 	

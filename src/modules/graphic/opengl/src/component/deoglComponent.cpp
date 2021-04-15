@@ -96,6 +96,7 @@ pDirtyLODErrorScaling( true ),
 pDirtyMesh( true ),
 pDirtySkinStateCalculatedProperties( true ),
 pDirtyStaticTexture( true ),
+pNotifyTexturesChanged( false ),
 
 pDynamicSkinRequiresSync( true ),
 pTextureDynamicSkinRequiresSync( true ),
@@ -301,6 +302,10 @@ void deoglComponent::SyncToRender(){
 		pRComponent->UpdateStaticTextures();
 		pDirtyStaticTexture = false;
 	}
+	if( pNotifyTexturesChanged ){
+		pRComponent->NotifyTexturesChanged();
+		pNotifyTexturesChanged = false;
+	}
 	
 	// decals
 	pSyncDecals();
@@ -361,12 +366,14 @@ deoglComponentTexture &deoglComponent::GetTextureAt( int index ){
 void deoglComponent::DynamicSkinRequiresSync(){
 	pDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	pRequiresSync();
 }
 
 void deoglComponent::TextureDynamicSkinRequiresSync(){
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	pRequiresSync();
 }
 
@@ -433,6 +440,7 @@ void deoglComponent::ModelChanged(){
 	pDirtyCullSphere = true;
 	pDirtyResetStatic = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	
 	pRequiresSync();
 }
@@ -444,6 +452,7 @@ void deoglComponent::SkinChanged(){
 	pDirtyRenderables = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	
 	pRequiresSync();
 }
@@ -469,6 +478,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtyRenderables = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	
 	pRequiresSync();
 }
@@ -554,6 +564,7 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pDirtySkinStateController = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	
 	pRequiresSync();
 }
@@ -579,6 +590,7 @@ void deoglComponent::DynamicSkinChanged(){
 	pDirtyResetStatic = true;
 	pDirtyRenderables = true;
 	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
 	
 	pRequiresSync();
 }
