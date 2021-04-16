@@ -2084,9 +2084,9 @@ deoglRenderPlan &plan, deoglRLight &light ){
 				paramBlock.SetParameterDataFloat( target, 0.0f );
 				
 			}else{
+				paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
 				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
-				paramBlock.SetParameterDataFloat( target, 0.0f );
+				//paramBlock.SetParameterDataFloat( target, 0.0f );
 			}
 		}
 		

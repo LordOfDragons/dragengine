@@ -90,6 +90,7 @@ deoglRenderThread::deoglRenderThread( deGraphicOpenGl &ogl ) :
 pOgl( ogl ),
 
 pAsyncRendering( true ),
+pConfigChanged( true ),
 
 pLeakTracker( *this ),
 
@@ -287,6 +288,7 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
 void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 	OGL_INIT_MAIN_THREAD_CHECK;
 	
+	pConfigChanged = true;
 	pInitialRenderWindow = renderWindow;
 	pUpdateConfigFrameLimiter();
 	
@@ -1065,6 +1067,12 @@ void deoglRenderThread::pInitCapabilities(){
 
 
 void deoglRenderThread::pRenderSingleFrame(){
+	if( pConfigChanged ){
+		pConfigChanged = false;
+		
+		pGI->GetTraceRays().UpdateFromConfig();
+	}
+	
 	//const deoglDeveloperMode &devmode = pDebug->GetDeveloperMode();
 	const bool showDebugInfoModule = pDebugInfoModule->GetVisible();
 	
@@ -1705,6 +1713,7 @@ void deoglRenderThread::pSyncConfiguration(){
 		const bool needResize = ( config.GetDefRenUsePOTs() != pConfiguration.GetDefRenUsePOTs() );
 		
 		pConfiguration = config;
+		pConfigChanged = true;
 		
 		pConfiguration.SetDirty( false );
 		config.SetDirty( false );

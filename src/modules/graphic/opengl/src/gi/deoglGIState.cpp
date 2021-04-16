@@ -289,6 +289,9 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 		UpdateProbeOffsetFromTexture();
 	}
 	
+	// monitor configuration changes
+	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
+	
 	// find content to track. only static and dynamic content is tracked
 	FindContent( world );
 	

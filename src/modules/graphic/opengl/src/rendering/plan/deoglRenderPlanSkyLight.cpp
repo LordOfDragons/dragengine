@@ -24,12 +24,15 @@
 
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
+#include "../light/deoglRenderGI.h"
+#include "../light/deoglRenderLight.h"
 #include "../light/deoglRLSVisitorCollectElements.h"
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
 #include "../../gi/deoglGIState.h"
 #include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../utils/collision/deoglCollisionBox.h"
@@ -411,7 +414,7 @@ void deoglRenderPlanSkyLight::pCollectElements( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams( deoglRenderPlan &plan ){
-	const deoglGIState * const giState = plan.GetGIState();
+	const deoglGIState * const giState = pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
 	if( ! giState ){
 		return;
 	}
@@ -435,7 +438,7 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
-	const deoglGIState * const giState = plan.GetGIState();
+	const deoglGIState * const giState = pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
 	if( ! pLayer || ! giState ){
 		return;
 	}

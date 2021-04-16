@@ -23,8 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglGI.h"
 #include "deoglGITraceRays.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 
@@ -39,7 +41,7 @@
 
 deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
-pRaysPerProbe( 64 ),
+pRaysPerProbe( ConfigRaysPerProbe( renderThread.GetConfiguration() ) ),
 pProbesPerLine( 8 ),
 pProbeCount( 2048 ), // 2048 would be the maximum in smallest UBO size
 pTexPosition( renderThread ),
@@ -68,6 +70,38 @@ deoglGITraceRays::~deoglGITraceRays(){
 
 // Management
 ///////////////
+
+int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
+	switch( config.GetGIQuality() ){
+	case deoglConfiguration::egiqVeryHigh:
+		return 256;
+		
+	case deoglConfiguration::egiqHigh:
+		return 128;
+		
+	case deoglConfiguration::egiqMedium:
+		return 64;
+		
+	case deoglConfiguration::egiqLow:
+		return 32;
+		
+	case deoglConfiguration::egiqVeryLow:
+		return 16;
+		
+	default:
+		return 64;
+	}
+}
+
+void deoglGITraceRays::UpdateFromConfig(){
+	const int raysPerProbe = ConfigRaysPerProbe( pRenderThread.GetConfiguration() );
+	if( raysPerProbe == pRaysPerProbe ){
+		return;
+	}
+	
+	pRaysPerProbe = raysPerProbe;
+	pCreateFBORay();
+}
 
 
 
@@ -115,6 +149,7 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexLight.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOResult );
+	pFBOResult.DetachAllImages(); // important or reattach does nothing
 	pFBOResult.AttachColorTexture( 0, &pTexPosition );
 	pFBOResult.AttachColorTexture( 1, &pTexNormal );
 	pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
@@ -125,12 +160,14 @@ void deoglGITraceRays::pCreateFBORay(){
 	pFBOResult.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBODistance );
+	pFBODistance.DetachAllImages(); // important or reattach does nothing
 	pFBODistance.AttachColorTexture( 0, &pTexPosition );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBODistance.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOLight );
+	pFBOLight.DetachAllImages(); // important or reattach does nothing
 	pFBOLight.AttachColorTexture( 0, &pTexLight );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );

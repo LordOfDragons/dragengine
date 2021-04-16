@@ -96,10 +96,11 @@ private:
 	deGraphicOpenGl &pOgl;
 	
 	bool pAsyncRendering;
+	bool pConfigChanged;
 	
+	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
 	deoglMemoryManager pMemoryManager;
-	deoglConfiguration pConfiguration;
 	decObjectOrderedSet pRRenderWindowList;
 	decObjectOrderedSet pRCaptureCanvasList;
 	deoglRCanvas *pCanvasInputOverlay;

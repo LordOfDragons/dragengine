@@ -25,6 +25,7 @@
 
 #include "deoglGI.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
@@ -90,7 +91,6 @@ void deoglGI::pCreateUBO(){
 	// 2048 is the maximum number of probes to update fitting into the minimum UBO size
 	// of 65535 required to be supported. 4096 can be used with larger supported UBO size.
 	const int maxProbeCount = pTraceRays.GetProbeCount();
-	const int raysPerProbe = pTraceRays.GetRaysPerProbe();
 	
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	ubo.SetParameterCount( eupRayDirection + 1 );
@@ -118,7 +118,7 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, maxProbeCount / 4 ); // ivec4
 	ubo.GetParameterAt( eupProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, maxProbeCount ); // vec4
-	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, raysPerProbe ); // vec3
+	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, GI_MAX_RAYS_PER_PROBE ); // vec3
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 0 );
 }

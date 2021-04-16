@@ -27,6 +27,9 @@
 #include "../texture/texture2d/deoglTexture.h"
 
 class deoglRenderThread;
+class deoglConfiguration;
+
+#define GI_MAX_RAYS_PER_PROBE 256
 
 
 /**
@@ -76,6 +79,12 @@ public:
 	
 	/** Probe count in result textures. */
 	inline int GetProbeCount() const{ return pProbeCount; }
+	
+	/** Get rays per probe matching configuration quality. */
+	static int ConfigRaysPerProbe( const deoglConfiguration &config );
+	
+	/** Update from configuration. */
+	void UpdateFromConfig();
 	
 	
 	

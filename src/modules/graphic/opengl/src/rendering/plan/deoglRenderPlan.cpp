@@ -812,7 +812,8 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 
 void deoglRenderPlan::pPlanGI(){
 #ifdef GI_ENABLE
-	if( pUseConstGIState || ! pUseGIState ){
+	if( pUseConstGIState || ! pUseGIState
+	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return;
 	}
 	

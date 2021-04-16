@@ -164,7 +164,7 @@ pAddToRenderTask( NULL )
 		// trace rays
 		defines.AddDefine( "GI_PROBE_INDEX_COUNT", traceRays.GetProbeCount() / 4 );
 		defines.AddDefine( "GI_PROBE_COUNT", traceRays.GetProbeCount() );
-		defines.AddDefine( "GI_RAYS_PER_PROBE", traceRays.GetRaysPerProbe() );
+		defines.AddDefine( "GI_RAYS_PER_PROBE", GI_MAX_RAYS_PER_PROBE );
 		defines.AddDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		#ifdef GI_RENDERDOC_DEBUG
@@ -271,22 +271,24 @@ deoglRenderGI::~deoglRenderGI(){
 //////////////
 
 deoglGIState *deoglRenderGI::GetUpdateGIState( const deoglRenderPlan &plan ) const{
-	if( plan.GetUseGIState() && ! plan.GetUseConstGIState() ){
+	if( plan.GetUseGIState() && ! plan.GetUseConstGIState()
+	&& GetRenderThread().GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff ){
 		return plan.GetGIState();
 	}
 	return NULL;
 }
 
 deoglGIState * deoglRenderGI::GetRenderGIState( const deoglRenderPlan &plan ) const{
-	if( plan.GetUseGIState() ){
-		if( plan.GetUseConstGIState() ){
-			return plan.GetUseConstGIState();
-			
-		}else{
-			return plan.GetGIState();
-		}
+	if( ! plan.GetUseGIState()
+	|| GetRenderThread().GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
+		return NULL;
+		
+	}else if( plan.GetUseConstGIState() ){
+		return plan.GetUseConstGIState();
+		
+	}else{
+		return plan.GetGIState();
 	}
-	return NULL;
 }
 
 #if 0

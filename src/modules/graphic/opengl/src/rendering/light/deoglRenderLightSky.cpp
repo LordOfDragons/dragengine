@@ -1084,9 +1084,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 				
 			}else{
+				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
 				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 			}
 		}
 		
@@ -1096,9 +1096,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 				paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
 				
 			}else{
+				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
 				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
-				paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
+				//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
 			}
 		}
 		
