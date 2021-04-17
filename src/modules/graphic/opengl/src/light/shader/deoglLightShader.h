@@ -113,6 +113,7 @@ public:
 		eiutShadowDepthTransform2,
 		
 		eiutGIShadowMatrix,
+		eiutGIShadowParams,
 		
 		EIUT_COUNT
 	};

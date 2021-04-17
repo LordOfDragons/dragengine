@@ -1259,6 +1259,15 @@ int shadowMapSize, int passCount ){
 			paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
 		}
 		
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowParams );
+		if( target != -1 ){
+			const int giShadowMapSize = 1024;
+			pixelSize = 1.0f / ( float )giShadowMapSize;
+			noiseScale = config.GetShadowCubePCFSize() / ( float )giShadowMapSize;
+			
+			paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
+		}
+		
 	}catch( const deException & ){
 		paramBlock.UnmapBuffer();
 		throw;

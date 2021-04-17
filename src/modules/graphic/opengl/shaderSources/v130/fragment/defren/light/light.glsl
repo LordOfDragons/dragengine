@@ -34,7 +34,7 @@ precision highp int;
 	#define COLORED_SHADOWS 1
 #endif
 
-#ifdef SKY_LIGHT
+#if defined SKY_LIGHT && ! defined GI_RAY
 	#define USE_ARRAY_FORM 1
 #endif
 
@@ -426,7 +426,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	#define ES2D( tc ) tc
 #else
 	#define ES2DTC vec3
-	#define ES2D( tc ) tc.stp
+	#define ES2D( tc ) (tc).stp
 #endif
 
 // for HW_DEPTH_COMPARE mediump is required
@@ -929,7 +929,9 @@ void main( void ){
 					//      using the view shadow map
 // 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
 // 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
-						shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+						//shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+						shadow = min( shadow, evaluateShadow2D( texGIShadowMap, pGIShadowParams,
+							ES2D( pGIShadowMatrix * vec4( position, 1.0 ) ) ) );
 						
 						// prevent the test depth from reaching 0 or below. if this happens the test
 						// result incorrectly considers the fragment not in shadows even if it is.

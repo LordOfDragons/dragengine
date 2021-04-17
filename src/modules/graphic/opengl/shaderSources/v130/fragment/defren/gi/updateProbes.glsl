@@ -81,16 +81,15 @@ void main( void ){
 	//int rayFrontCount = 0, rayMissCount = 0;
 	#endif
 	
+	#define rayDirection pGIRayDirection[ i ]
+	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
 		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
 		bool rayMisses = rayPosition.w > 9999.0;
 		
-		// for dynamic ray-tracing only the pRayDirection[i] can be used. by using though
-		// also the ray cast fields this is not possible anymore since the rays deviate
-		// from this direction
-		//weight = max( dot( texelDirection, pRayDirection[ i ] ), 0.0 );
-		vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
+		// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
+		//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
 		weight = max( dot( texelDirection, rayDirection ), 0.0 );
 		#ifdef MAP_DISTANCE
 			weight = pow( weight, pGIDepthSharpness );
@@ -180,5 +179,5 @@ void main( void ){
 	}
 	
 	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
-// 		outValue.a = 1;
+// 		outValue.a = 1; // debug only
 }

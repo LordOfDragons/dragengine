@@ -36,6 +36,7 @@ UBOLAYOUT uniform InstanceParameters{
 		
 		#ifdef SKY_LIGHT
 			mat4 pGIShadowMatrix;
+			vec3 pGIShadowParams; // x=pixelSizeU, y=pixelSizeV, z=noiseScale
 		#endif
 	#endif
 };

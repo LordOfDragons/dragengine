@@ -223,7 +223,14 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	case estGIRayNoShadow:
 	case estGIRaySolid:
 		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-		config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+		// regular sky shadow casting uses PCF 9-Tap mode. for GI shadow map resollution
+		// is rather low and rays spread by a large angle. for this reason 1-Tap mode is
+		// a possible solution which is slightly faster (17ys versus 22ys). so what to
+		// choose? difficult to say. the PCF 9-Tap version smoothes shadows more than
+		// the 1-Tap version (which uses HW bilinear filtering by the way). This can help
+		// reduce flickering in GI probes due to the smoothing
+		//config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 		config.SetSubSurface( false );
 		config.SetGIRay( true );
 		break;

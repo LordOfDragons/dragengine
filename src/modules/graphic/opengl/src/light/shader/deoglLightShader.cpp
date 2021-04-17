@@ -100,7 +100,8 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	"pShadowDepthTransform", // eiutShadowDepthTransform
 	"pShadowDepthTransform2", // eiutShadowDepthTransform2
 	
-	"pGIShadowMatrix" // eiutGIShadowMatrix
+	"pGIShadowMatrix", // eiutGIShadowMatrix
+	"pGIShadowParams" // eiutGIShadowParams
 };
 
 static const char *vLightUniformTargetNames[ deoglLightShader::ELUT_COUNT ] = {
@@ -151,7 +152,8 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform ( vec2 )
 	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform2 ( vec2 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4 } // pGIShadowMatrix ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 4 }, // pGIShadowMatrix ( mat4 )
+	{ deoglSPBParameter::evtFloat, 3, 1 } // pGIShadowParams ( vec3 )
 };
 
 static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_COUNT ] = {
@@ -872,6 +874,7 @@ void deoglLightShader::UpdateUniformTargets(){
 		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutGIShadowMatrix ] = pUsedInstanceUniformTargetCount++;
+			pInstanceUniformTargets[ eiutGIShadowParams ] = pUsedInstanceUniformTargetCount++;
 		}
 	}
 	
