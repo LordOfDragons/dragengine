@@ -922,6 +922,11 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 		}
 		debugInfo.IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
 	}
+	
+	defren.ActivatePostProcessFBO( true );
+	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 }
 
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){

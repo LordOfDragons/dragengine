@@ -104,7 +104,7 @@
 								ivec2 matTC = giRayCastMaterialTC( params, giRayCastTCTransform(
 									material, giRayCastFaceTexCoord( face, uvt.wxy ) ) );
 								
-								if( texelFetch( tboGIRayCastMaterialEmissivity, matTC, 0 ).a < 0.35 ){ // solidity
+								if( texelFetch( tboGIRayCastMaterialEmissivity, matTC, 0 ).a < 0.5 /*0.35*/ ){ // solidity
 									continue;
 								}
 							}

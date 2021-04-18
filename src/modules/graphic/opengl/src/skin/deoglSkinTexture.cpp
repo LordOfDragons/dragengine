@@ -2056,13 +2056,18 @@ void deoglSkinTexture::pCreateMipMaps(){
 			// this avoids the extreme situations and should allow both types of geometry to
 			// work better.
 			// 
-			// chosen as solution here is favoring holes and limiting mip-map level
+			// in tests both favor holes and favor geometry did not look that good.
+			// so right now regular mip-mapping is used without limiting the mip-map level
+			#if 0
 			pbMipMap->ReducePixelBufferCount( 3 ); // minimum 8x8
 			if( pbMipMap->GetPixelBufferCount() == 0 ){
 				pChannels[ i ]->SetPixelBufferMipMap( NULL );
 				break;
 			}
-			pbMipMap->CreateMipMapsMin();
+			//pbMipMap->CreateMipMapsMin();
+			pbMipMap->CreateMipMapsMax();
+			#endif
+			pbMipMap->CreateMipMaps();
 			break;
 			
 		case deoglSkinChannel::ectNormal:

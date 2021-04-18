@@ -425,7 +425,7 @@ void deoglGIState::Invalidate(){
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.age = 0;
-		probe.flags = 0x1;
+		probe.flags = GI_PROBE_FLAGS_INIT;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
 		probe.valid = false;
@@ -537,7 +537,7 @@ void deoglGIState::pInitProbes(){
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.index = i;
-		probe.flags = 0x0; // force full update
+		probe.flags = GI_PROBE_FLAGS_INIT;
 		probe.age = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
@@ -643,7 +643,7 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 		}
 		
 		probe.age = 0;
-		probe.flags = 0x0; // force full update
+		probe.flags = GI_PROBE_FLAGS_INIT;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
 		probe.valid = false;
@@ -791,10 +791,14 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ];
 				
 				if( probe.valid ){
-					probe.flags = 0x1; // regular update
+					probe.flags |= GI_PROBE_FLAG_SMOOTH_UPDATE;
+					
+					if( probe.countOffsetMoved == 1 ){
+						probe.flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
+					}
 					
 				}else{
-					probe.flags = 0x0; // force full update
+					probe.flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
 					probe.offset.SetZero();
 					probe.countOffsetMoved = 0;
 				}
@@ -825,12 +829,19 @@ void deoglGIState::pBinWeightedProbe( sProbe *probe, float weight ){
 
 void deoglGIState::pAddUpdateProbe( sProbe *probe ){
 	if( probe->valid ){
-		probe->flags = 0x1; // regular update
+		probe->flags |= GI_PROBE_FLAG_SMOOTH_UPDATE;
+		
+		if( probe->countOffsetMoved == 1 ){
+			// probe moved for the first time. this is usually a large jump from an invalid
+			// or unfortunate position to the first potentially good position. for this
+			// reason an update has to be forced for this first move but not following ones
+			probe->flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
+		}
 		
 	}else{
-		probe->flags = 0x0; // force full update
 		probe->offset.SetZero();
 		probe->countOffsetMoved = 0;
+		probe->flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
 		probe->valid = true;
 	}
 	probe->age = 0;

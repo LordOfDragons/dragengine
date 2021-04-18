@@ -50,6 +50,7 @@
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -928,6 +929,8 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	// overwise prepare for rendering the overlay information
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
 	
