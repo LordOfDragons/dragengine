@@ -24,27 +24,30 @@
 
 #include "deoglDSRenderable.h"
 
+#include <dragengine/common/math/decMath.h>
+
 class deDSRenderableColor;
 class deoglRDSRenderableColor;
 
 
 
 /**
- * \brief Dynamic skin color renderable.
+ * Dynamic skin color renderable.
  */
 class deoglDSRenderableColor : public deoglDSRenderable{
 public:
 	const deDSRenderableColor &pRenderableColor;
 	deoglRDSRenderableColor *pRRenderableColor;
+	decColor pColor;
 	bool pDirty;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable. */
+	/** Create renderable. */
 	deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDSRenderableColor();
 	/*@}*/
 	
@@ -52,16 +55,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable. */
+	/** Renderable. */
 	inline const deDSRenderableColor &GetRenderableColor() const{ return pRenderableColor; }
 	
-	/** \brief Render renderable. */
+	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	

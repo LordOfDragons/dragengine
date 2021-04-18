@@ -90,12 +90,12 @@ int deoglRDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
 
 void deoglRDynamicSkin::AddRenderable( deoglRDSRenderable *renderable ){
 	pRenderables.Add( renderable );
-	TextureConfigurationChanged();
+		TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDynamicSkin::RemoveAllRenderables(){
 	pRenderables.RemoveAll();
-	TextureConfigurationChanged();
+		TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDynamicSkin::TextureConfigurationChanged(){

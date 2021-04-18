@@ -102,7 +102,7 @@ void deoglRDSRenderableValue::SetValue( float value ){
 	pValue = value;
 	pDirty = true;
 	
-	GetDynamicSkin().TextureConfigurationChanged();
+		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableValue::PrepareForRender(){

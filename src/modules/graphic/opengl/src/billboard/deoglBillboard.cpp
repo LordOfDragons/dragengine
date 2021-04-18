@@ -185,13 +185,30 @@ void deoglBillboard::SetParentWorld( deoglWorld *parentWorld ){
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglBillboard::DynamicSkinRequiresSync(){
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglBillboard::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglBillboard::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
 	pRequiresSync();
 }
 
-void deoglBillboard::DropDynamicSkin(){
-	pDynamicSkin = NULL;
+void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
+	DynamicSkinRenderablesChanged();
+}
+
+void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+	DynamicSkinRenderablesChanged();
+}
+
+void deoglBillboard::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
+	// TODO
 }
 
 
@@ -250,12 +267,12 @@ void deoglBillboard::SkinChanged(){
 
 void deoglBillboard::DynamicSkinChanged(){
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyBillboards().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( pBillboard.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )pBillboard.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyBillboards().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
@@ -304,7 +321,7 @@ void deoglBillboard::pCleanUp(){
 		pRBillboard->FreeReference();
 	}
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyBillboards().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }
 

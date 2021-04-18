@@ -71,7 +71,7 @@ void deoglRDSRenderableCamera::SetCamera( deoglRCamera *camera ){
 		camera->AddReference();
 	}
 	
-	GetDynamicSkin().TextureConfigurationChanged();
+		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableCamera::PrepareForRender(){

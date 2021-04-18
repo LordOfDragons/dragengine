@@ -252,11 +252,6 @@ pDebugImageUsed( false )
 	pDebugInfoDetails = edimModule;
 	*/
 	#endif
-	
-	// temporary GI test
-	pEnabled = true;
-	pGIShowProbes = true;
-	pGIShowProbeOffsets = true;
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){

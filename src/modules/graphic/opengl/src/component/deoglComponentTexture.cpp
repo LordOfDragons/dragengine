@@ -140,6 +140,31 @@ void deoglComponentTexture::ClearSkinStateController(){
 
 
 
+// Dynamic skin listener
+//////////////////////////
+
+void deoglComponentTexture::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglComponentTexture::DynamicSkinRenderablesChanged(){
+	pComponent.TextureDynamicSkinRequiresSync();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
+	pComponent.TextureDynamicSkinRequiresSync();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+	pComponent.TextureDynamicSkinRequiresSync();
+}
+
+void deoglComponentTexture::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
+	// TODO
+}
+
+
+
 // Notifications
 //////////////////
 
@@ -154,22 +179,18 @@ void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	
 	// dynamic skin
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( texture.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyComponentTextures().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
 	}
 	
 	pDirtyTexture = true;
-}
-
-void deoglComponentTexture::DropDynamicSkin(){
-	pDynamicSkin = NULL;
 }
 
 
@@ -187,6 +208,6 @@ void deoglComponentTexture::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }

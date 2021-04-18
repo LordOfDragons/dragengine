@@ -377,13 +377,37 @@ void deoglComponent::TextureDynamicSkinRequiresSync(){
 	pRequiresSync();
 }
 
-void deoglComponent::DropDynamicSkin(){
-	pDynamicSkin = NULL;
-}
-
 void deoglComponent::DecalRequiresSync(){
 	pDecalRequiresSync = true;
 	pRequiresSync();
+}
+
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglComponent::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglComponent::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
+	pRequiresSync();
+}
+
+void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
+	DynamicSkinRequiresSync();
+}
+
+void deoglComponent::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+	DynamicSkinRequiresSync();
+}
+
+void deoglComponent::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
+	// TODO
 }
 
 
@@ -573,12 +597,12 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 
 void deoglComponent::DynamicSkinChanged(){
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponents().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( pComponent.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )pComponent.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyComponents().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
@@ -813,7 +837,7 @@ void deoglComponent::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponents().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }
 

@@ -22,6 +22,8 @@
 #ifndef _DEOGLCOMPONENTCOMPONENT_H_
 #define _DEOGLCOMPONENTCOMPONENT_H_
 
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
 class deoglComponent;
 class deoglDynamicSkin;
 class deoglRComponentTexture;
@@ -34,7 +36,7 @@ class deComponentTexture;
 /**
  * \brief Component texture.
  */
-class deoglComponentTexture{
+class deoglComponentTexture : public deoglDynamicSkinListener{
 private:
 	deoglComponent &pComponent;
 	const int pIndex;
@@ -98,13 +100,21 @@ public:
 	
 	
 	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable );
+	/*@}*/
+	
+	
+	
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Texture changed. */
 	void TextureChanged( const deComponentTexture &texture );
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
 	/*@}*/
 	
 private:

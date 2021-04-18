@@ -37,6 +37,10 @@ class deoglRComponent;
 class deoglRWorld;
 class deoglSPBlockUBO;
 
+#define GI_PROBE_FLAGS_INIT 0
+
+#define GI_PROBE_FLAG_SMOOTH_UPDATE 0x1
+
 
 /**
  * Global illumination state.

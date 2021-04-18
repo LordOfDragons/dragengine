@@ -22,6 +22,8 @@
 #ifndef _DEOGLDECAL_H_
 #define _DEOGLDECAL_H_
 
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
 
 class deoglDynamicSkin;
@@ -36,7 +38,7 @@ class deDecal;
 /**
  * \brief Decal peer.
  */
-class deoglDecal : public deBaseGraphicDecal{
+class deoglDecal : public deBaseGraphicDecal, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
@@ -94,14 +96,17 @@ public:
 	
 	/** \brief Set parent component or \em NULL. */
 	void SetParentComponent( deoglComponent *component );
+	/*@}*/
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
-	void DynamicSkinRequiresSync();
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	

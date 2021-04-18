@@ -31,7 +31,7 @@ class deoglRVideoPlayer;
 
 
 /**
- * \brief Render dynamic skin image renderable.
+ * Render dynamic skin image renderable.
  */
 class deoglRDSRenderableVideoFrame : public deoglRDSRenderable{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin image renderable. */
+	/** Create render dynamic skin image renderable. */
 	deoglRDSRenderableVideoFrame( deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up render dynamic skin image renderable. */
+	/** Clean up render dynamic skin image renderable. */
 	virtual ~deoglRDSRenderableVideoFrame();
 	/*@}*/
 	
@@ -51,14 +51,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set video player. */
+	/** Video player. */
+	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	
+	/** Set video player. */
 	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
 	/**
-	 * \brief Get texture to use for rendering or \em NULL if not applicable.
+	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglTexture *GetRenderTexture();

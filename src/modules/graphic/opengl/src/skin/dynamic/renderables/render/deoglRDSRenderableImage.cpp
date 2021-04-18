@@ -70,7 +70,7 @@ void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
 		image->AddReference();
 	}
 	
-	GetDynamicSkin().TextureConfigurationChanged();
+		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableImage::PrepareForRender(){
