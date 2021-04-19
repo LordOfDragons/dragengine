@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "deoglComponent.h"
 #include "deoglRComponent.h"
 #include "deoglRComponentTexture.h"
 #include "../model/deoglModelLOD.h"
@@ -348,7 +349,7 @@ void deoglRComponentTexture::CheckSkinDynamicChannels(){
 	}*/
 }
 
-void deoglRComponentTexture::UpdateSkinState(){
+void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 	// NOTE this is called from the main thread during synchronization
 	
 	// if the component has a dynamic skin but not the texture it is still required to have
@@ -367,13 +368,13 @@ void deoglRComponentTexture::UpdateSkinState(){
 	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin() || pSkin->GetCalculatedPropertyCount() > 0 ) ){
 		if( ! pSkinState ){
 			SetSkinState( new deoglSkinState( pComponent.GetRenderThread(), pComponent, pIndex ) );
-			pComponent.SetDirtyRendereables();
+			component.DirtyRenderableMapping();
 		}
 		
 	}else{
 		if( pSkinState ){
 			SetSkinState( NULL );
-			pComponent.SetDirtyRendereables();
+			component.DirtyRenderableMapping();
 		}
 	}
 }

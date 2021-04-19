@@ -56,7 +56,8 @@ pSkinStateController( NULL ),
 pSkin( NULL ),
 pDynamicSkin( NULL ),
 
-pDirtyTexture( true )
+pDirtyTexture( true ),
+pDynamicSkinRenderablesChanged( true )
 {
 	try{
 		pRTexture = new deoglRComponentTexture( *component.GetRComponent(), index );
@@ -102,7 +103,7 @@ void deoglComponentTexture::SyncToRender(){
 		// other stuff
 		pRTexture->SetTransform( texture.GetTransform() );
 		
-		pRTexture->UpdateSkinState();
+		pRTexture->UpdateSkinState( pComponent );
 		
 		InitSkinState();
 		
@@ -110,6 +111,10 @@ void deoglComponentTexture::SyncToRender(){
 	}
 	
 	pSkinStateController->SyncToRender();
+}
+
+void deoglComponentTexture::SetDynamicSkinRenderablesChanged( bool changed ){
+	pDynamicSkinRenderablesChanged = changed;
 }
 
 
@@ -148,19 +153,17 @@ void deoglComponentTexture::DynamicSkinDestroyed(){
 }
 
 void deoglComponentTexture::DynamicSkinRenderablesChanged(){
-	pComponent.TextureDynamicSkinRequiresSync();
+	pDynamicSkinRenderablesChanged = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
 }
 
-void deoglComponentTexture::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
-	pComponent.TextureDynamicSkinRequiresSync();
+void deoglComponentTexture::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
 }
 
-void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
 	pComponent.TextureDynamicSkinRequiresSync();
-}
-
-void deoglComponentTexture::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
-	// TODO
 }
 
 

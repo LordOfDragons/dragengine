@@ -100,6 +100,7 @@ deoglGIInstance &deoglGIInstances::NextFreeSlot(){
 
 bool deoglGIInstances::AnyChanged() const{
 	const int count = pInstances.GetCount();
+	bool changed = false;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -108,8 +109,12 @@ bool deoglGIInstances::AnyChanged() const{
 			continue;
 		}
 		
+		changed |= ! instance.GetDynamic();
+		
 		if( instance.GetRecheckDynamic() ){
 			instance.SetRecheckDynamic( false );
+			
+			const bool dynamic = instance.GetDynamic();
 			
 			if( instance.GetComponent() ){
 				instance.SetDynamic( ! IsComponentStatic( *instance.GetComponent() ) );
@@ -120,14 +125,12 @@ bool deoglGIInstances::AnyChanged() const{
 			}else{
 				instance.SetDynamic( false );
 			}
-		}
-		
-		if( ! instance.GetDynamic() ){
-			return true;
+			
+			changed |= instance.GetDynamic() != dynamic;
 		}
 	}
 	
-	return false;
+	return changed;
 }
 
 bool deoglGIInstances::AnyComponentChanged() const{

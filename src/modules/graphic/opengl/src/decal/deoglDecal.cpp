@@ -142,10 +142,6 @@ void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderabl
 	DynamicSkinRenderablesChanged();
 }
 
-void deoglDecal::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
-	// TODO
-}
-
 
 
 // Notifications

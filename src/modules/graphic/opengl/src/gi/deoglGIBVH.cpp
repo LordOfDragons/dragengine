@@ -255,15 +255,13 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		blockMaterial = instance.GetBlockMaterial();
 	}
 	
-	const int indexMaterial = blockMaterial->GetOffset();
-	
 #ifdef DO_TIMING_TEST
 	//const int debugElapsedB = (int)(timer1.GetElapsedTime() * 1e6f);
 	vDebugTimeB += (int)(timer1.GetElapsedTime() * 1e6f);
 #endif
 	
 	// add component
-	pAddComponent( instance, indexMaterial, matrix );
+	pAddComponent( instance, blockMaterial->GetOffset(), matrix );
 #ifdef DO_TIMING_TEST
 	vDebugTimeC += (int)(timer1.GetElapsedTime() * 1e6f);
 // 				const int debugElapsedC = (int)(timer1.GetElapsedTime() * 1e6f);

@@ -76,7 +76,7 @@ public:
 	bool pDirtyDynamicSkin;
 	bool pDirtyOcclusionMesh;
 	bool pDirtyOcclusionMeshBones;
-	bool pDirtyRenderables;
+	bool pDirtyRenderableMapping;
 	bool pDirtyBoneMatrices;
 	bool pDirtyLODErrorScaling;
 	bool pDirtyMesh;
@@ -84,7 +84,10 @@ public:
 	bool pDirtyStaticTexture;
 	bool pNotifyTexturesChanged;
 	
+	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
+	
+	bool pTextureDynamicSkinRenderablesChanged;
 	bool pTextureDynamicSkinRequiresSync;
 	bool pDecalRequiresSync;
 	bool pRequiresUpdateEverySync;
@@ -156,8 +159,10 @@ public:
 	/** Dynamic skin needs sync. */
 	void DynamicSkinRequiresSync();
 	
-	/** Texture dynamic skin needs sync. */
+	void TextureDynamicSkinRenderableChanged();
 	void TextureDynamicSkinRequiresSync();
+	
+	void DirtyRenderableMapping();
 	
 	/** Decal needs sync. */
 	void DecalRequiresSync();
@@ -171,7 +176,6 @@ public:
 	virtual void DynamicSkinRenderablesChanged();
 	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
 	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
-	virtual void DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	

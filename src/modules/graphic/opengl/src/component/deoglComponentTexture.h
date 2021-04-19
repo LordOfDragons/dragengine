@@ -48,6 +48,7 @@ private:
 	deoglDynamicSkin *pDynamicSkin;
 	
 	bool pDirtyTexture;
+	bool pDynamicSkinRenderablesChanged;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -83,6 +84,9 @@ public:
 	/** \brief Update render thread counterpart if required. */
 	void SyncToRender();
 	
+	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
+	void SetDynamicSkinRenderablesChanged( bool changed );
+	
 	
 	
 	/** \brief Init skin state. */
@@ -106,7 +110,6 @@ public:
 	virtual void DynamicSkinRenderablesChanged();
 	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
 	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
-	virtual void DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	

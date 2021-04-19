@@ -106,7 +106,6 @@ public:
 	virtual void DynamicSkinRenderablesChanged();
 	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
 	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
-	virtual void DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	

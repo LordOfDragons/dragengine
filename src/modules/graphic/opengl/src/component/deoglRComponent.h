@@ -36,6 +36,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/component/deComponent.h>
 
+class deoglComponent;
 class deoglComponentListener;
 class deoglDynamicOcclusionMesh;
 class deoglEnvironmentMap;
@@ -117,7 +118,6 @@ public:
 	// for world
 	bool pLit;
 	bool pOccluded;
-	bool pDirtyRenderables;
 	bool pDirtyTextureUseSkin;
 	bool pDirtyModelRigMappings;
 	
@@ -243,9 +243,6 @@ public:
 	
 	
 	
-	/** Set renderables dirty. */
-	void SetDirtyRendereables();
-	
 	/** Update renderables in the component if existing */
 	void UpdateRenderables( deoglRenderPlan &plan );
 	
@@ -311,8 +308,11 @@ public:
 	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** Set dynamic skin or \em NULL if not set. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	/**
+	 * Set dynamic skin or \em NULL if not set.
+	 * \note Called from main thread during synchronization.
+	 */
+	void SetDynamicSkin( deoglComponent &component, deoglRDynamicSkin *dynamicSkin );
 	
 	/** Occlusion mesh or \em NULL if not set. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
@@ -594,6 +594,12 @@ public:
 	/** Update static textures. */
 	void UpdateStaticTextures();
 	
+	/** Dynamic skin renderables changed. */
+	void DynamicSkinRenderablesChanged();
+	void TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture );
+	
+	void  UpdateRenderableMapping();
+	
 	/** Textures are static. */
 	inline bool GetStaticTextures() const{ return pStaticTextures; }
 	/*@}*/
@@ -725,7 +731,6 @@ private:
 	void pResizeModelRigMappings();
 	void pCheckRenderModifier( deoglRCamera *oglCamera );
 	void pUpdateRenderMode();
-	void pUpdateRenderables();
 	void pUpdateCullSphere();
 	void pUpdateSolid();
 	

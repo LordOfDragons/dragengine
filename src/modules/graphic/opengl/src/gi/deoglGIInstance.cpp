@@ -211,7 +211,12 @@ void deoglGIInstance::UpdateExtends(){
 }
 
 void deoglGIInstance::SetDynamic( bool dynamic ){
+	if( dynamic == pDynamic ){
+		return;
+	}
+	
 	pDynamic = dynamic;
+	pDirtyTUCs = true;
 }
 
 void deoglGIInstance::SetChanged( bool changed ){

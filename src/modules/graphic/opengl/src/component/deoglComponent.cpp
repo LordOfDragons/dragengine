@@ -90,7 +90,7 @@ pDirtyRig( true ),
 pDirtyDynamicSkin( true ),
 pDirtyOcclusionMesh( true ),
 pDirtyOcclusionMeshBones( true ),
-pDirtyRenderables( true ),
+pDirtyRenderableMapping( true ),
 pDirtyBoneMatrices( true ),
 pDirtyLODErrorScaling( true ),
 pDirtyMesh( true ),
@@ -98,7 +98,9 @@ pDirtySkinStateCalculatedProperties( true ),
 pDirtyStaticTexture( true ),
 pNotifyTexturesChanged( false ),
 
+pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( true ),
+pTextureDynamicSkinRenderablesChanged( true ),
 pTextureDynamicSkinRequiresSync( true ),
 pDecalRequiresSync( true ),
 pRequiresUpdateEverySync( false ),
@@ -201,9 +203,9 @@ void deoglComponent::SyncToRender(){
 		pRComponent->ResetRenderStatic();
 		pDirtyResetStatic = false;
 	}
-	if( pDirtyRenderables ){
-		pRComponent->SetDirtyRendereables();
-		pDirtyRenderables = false;
+	if( pDirtyRenderableMapping ){
+		pRComponent->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
 	}
 	if( pDirtyLODErrorScaling ){
 		const decVector &scaling = pComponent.GetScaling();
@@ -240,6 +242,7 @@ void deoglComponent::SyncToRender(){
 		
 		pSkinStateController->AdvanceTime( skinUpdate );
 		pSkinStateController->SyncToRender();
+		
 		int i;
 		for( i=0; i<pTextureCount; i++ ){
 			pTextures[ i ]->AdvanceTime( skinUpdate );
@@ -370,10 +373,23 @@ void deoglComponent::DynamicSkinRequiresSync(){
 	pRequiresSync();
 }
 
-void deoglComponent::TextureDynamicSkinRequiresSync(){
+void deoglComponent::TextureDynamicSkinRenderableChanged(){
+	pTextureDynamicSkinRenderablesChanged = true;
 	pTextureDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pRequiresSync();
+}
+
+void deoglComponent::TextureDynamicSkinRequiresSync(){
+	pTextureDynamicSkinRequiresSync = true;
+	pNotifyTexturesChanged = true;
+	pRequiresSync();
+}
+
+void deoglComponent::DirtyRenderableMapping(){
+	pDirtyRenderableMapping = true;
 	pRequiresSync();
 }
 
@@ -392,22 +408,25 @@ void deoglComponent::DynamicSkinDestroyed(){
 }
 
 void deoglComponent::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRenderablesChanged = true;
+	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTexturesChanged = true;
+	pRequiresSync();
+}
+
+void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
 	pRequiresSync();
 }
 
-void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
-	DynamicSkinRequiresSync();
-}
-
-void deoglComponent::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
-	DynamicSkinRequiresSync();
-}
-
-void deoglComponent::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
-	// TODO
+void deoglComponent::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pRequiresSync();
 }
 
 
@@ -473,7 +492,7 @@ void deoglComponent::SkinChanged(){
 	pDirtySkin = true;
 	pDirtyResetStatic = true;
 	pDirtySkinStateController = true;
-	pDirtyRenderables = true;
+	pDirtyRenderableMapping = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
@@ -499,7 +518,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtyCullSphere = true;
 	pDirtyResetStatic = true;
 	pDirtySkinStateController = true;
-	pDirtyRenderables = true;
+	pDirtyRenderableMapping = true;
 	pDirtySkinStateCalculatedProperties = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
@@ -582,7 +601,7 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	
 	pTextures[ index ]->TextureChanged( texture );
 	
-	pDirtyRenderables = true;
+	pDirtyRenderableMapping = true;
 	pDirtyResetStatic = true;
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtySkinStateController = true;
@@ -609,10 +628,11 @@ void deoglComponent::DynamicSkinChanged(){
 	}
 	
 	pDirtyDynamicSkin = true;
+	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
 	
 	pDirtyResetStatic = true;
-	pDirtyRenderables = true;
+	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
 	
@@ -935,14 +955,25 @@ void deoglComponent::pSyncSkin(){
 
 void deoglComponent::pSyncDynamicSkin(){
 	if( pDirtyDynamicSkin ){
-		if( pDynamicSkin ){
-			pRComponent->SetDynamicSkin( pDynamicSkin->GetRDynamicSkin() );
-			
-		}else{
-			pRComponent->SetDynamicSkin( NULL );
-		}
-		
+		pRComponent->SetDynamicSkin( *this, pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : NULL );
 		pDirtyDynamicSkin = false;
+	}
+	
+	if( pDynamicSkinRenderablesChanged ){
+		pDynamicSkinRenderablesChanged = false;
+		pRComponent->DynamicSkinRenderablesChanged();
+	}
+	
+	if( pTextureDynamicSkinRenderablesChanged ){
+		pTextureDynamicSkinRenderablesChanged = false;
+		
+		int i;
+		for( i=0; i<pTextureCount; i++ ){
+			if( pTextures[ i ]->GetDynamicSkinRenderablesChanged() ){
+				pTextures[ i ]->SetDynamicSkinRenderablesChanged( false );
+				pRComponent->TextureDynamicSkinRenderablesChanged( *pTextures[ i ]->GetRTexture() );
+			}
+		}
 	}
 	
 	if( pDynamicSkinRequiresSync ){

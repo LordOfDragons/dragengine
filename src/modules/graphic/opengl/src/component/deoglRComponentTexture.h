@@ -40,6 +40,7 @@ class deoglSkinState;
 class deoglSkinTexture;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
+class deoglComponent;
 
 
 /**
@@ -162,7 +163,7 @@ public:
 	 * Update skin state depending on skin and dynamic skin.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void UpdateSkinState();
+	void UpdateSkinState( deoglComponent &component );
 	
 	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }

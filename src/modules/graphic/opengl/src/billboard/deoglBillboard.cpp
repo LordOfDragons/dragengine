@@ -207,10 +207,6 @@ void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable &rende
 	DynamicSkinRenderablesChanged();
 }
 
-void deoglBillboard::DynamicSkinTextureConfigurationChanged( deoglDSRenderable &renderable ){
-	// TODO
-}
-
 
 
 // Notifications

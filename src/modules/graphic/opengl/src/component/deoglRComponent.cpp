@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglComponent.h"
 #include "deoglComponentListener.h"
 #include "deoglComponentTestForTouch.h"
 #include "deoglRComponent.h"
@@ -155,7 +156,6 @@ pLLWorldNext( NULL )
 	
 	pRenderMode = ermStatic;
 	
-	pDirtyRenderables = true;
 	pDirtyTextureUseSkin = true;
 	pDirtyModelRigMappings = true;
 	
@@ -358,7 +358,7 @@ void deoglRComponent::RigChanged(){
 	MarkOccMeshParamBlockDirty();
 }
 
-void deoglRComponent::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
+void deoglRComponent::SetDynamicSkin( deoglComponent &component, deoglRDynamicSkin *dynamicSkin ){
 	// NOTE this is called from the main thread during synchronization
 	if( dynamicSkin == pDynamicSkin ){
 		return;
@@ -381,7 +381,7 @@ void deoglRComponent::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 	for( i=0; i<textureCount; i++ ){
 		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
 		texture.SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
-		texture.UpdateSkinState();
+		texture.UpdateSkinState( component );
 	}
 	
 	// child decals can use the dynamic skin we had so far for their skin state.
@@ -898,9 +898,6 @@ void deoglRComponent::UpdateVBO(){
 
 
 
-void deoglRComponent::SetDirtyRendereables(){
-	pDirtyRenderables = true;
-}
 
 void deoglRComponent::UpdateRenderables( deoglRenderPlan &plan ){
 	int i;
@@ -908,9 +905,6 @@ void deoglRComponent::UpdateRenderables( deoglRenderPlan &plan ){
 	// update render modifiers
 	pCheckRenderModifier( plan.GetCamera() );
 	
-	// update renderables. this is required here as this call sets up properly the
-	// skin state if not done already
-	pUpdateRenderables();
 	
 	// make sure all textures are updated and create the render info if required
 	pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
@@ -1423,6 +1417,80 @@ void deoglRComponent::UpdateStaticTextures(){
 			break;
 		}
 	}
+}
+
+void deoglRComponent::DynamicSkinRenderablesChanged(){
+	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+		return;
+	}
+	
+	// mark all textures dirty that could be affected by the update. textures are safe if they have a
+	// custom texture assigned or if the corresponding skin texture (if existing) is not marked as dynamic.
+	// later on this will be made better by usin notifications so this check is automatic since only
+	// textures listening for dynamic changes are affected.
+	const int textureCount = pTextures.GetCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		if( texture.GetSkin() || ! pSkin ){
+			continue;
+		}
+		
+		const int mapping = pModelSkinMappings.GetAt( i );
+		if( mapping == -1 ){
+			continue;
+		}
+		
+		const deoglSkinTexture &skinTexture = pSkin->GetTextureAt( mapping );
+		if( ! skinTexture.GetDynamicChannels() ){
+			continue;
+		}
+		
+		texture.MarkParamBlocksDirty();
+		texture.MarkTUCsDirty();
+	}
+}
+
+void deoglRComponent::TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture ){
+	deoglSkinState * const skinState = texture.GetSkinState();
+	if( ! skinState || ( ! texture.GetDynamicSkin() && ! pDynamicSkin ) ){
+		return;
+	}
+	
+	texture.MarkParamBlocksDirty();
+	texture.MarkTUCsDirty();
+}
+
+void deoglRComponent::UpdateRenderableMapping(){
+	// udpate mappings of dynamic skin of component itself
+	pSkinState->RemoveAllRenderables();
+	if( pSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	}
+	
+	// update mappings of dynamic skins of component textures if existing
+	const int textureCount = pTextures.GetCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		deoglSkinState * const skinState = texture.GetSkinState();
+		if( ! skinState ){
+			continue;
+		}
+		
+		skinState->RemoveAllRenderables();
+		
+		deoglRDynamicSkin * const dynamicSkin = texture.GetDynamicSkin() ? texture.GetDynamicSkin() : pDynamicSkin;
+		if( texture.GetSkin() && dynamicSkin ){
+			skinState->AddRenderables( *texture.GetSkin(), *dynamicSkin );
+		}
+	}
+	
+	MarkAllTexturesParamBlocksDirty();
+	MarkAllTexturesTUCsDirty();
+	MarkTextureUseSkinDirty(); // required?
 }
 
 
@@ -1943,102 +2011,6 @@ void deoglRComponent::pUpdateRenderMode(){
 		
 	}else{
 		pRenderMode = ermStatic;
-	}
-}
-
-void deoglRComponent::pUpdateRenderables(){
-	const int textureCount = pTextures.GetCount();
-	int i;
-	
-	// TODO this situation here is not blistering at all. usually there happens only one update at the beginning
-	// of the component life time where the renderables are set up. then usually no change happens at all anymore
-	// during the life time of the component. with the current code though a lot of counter checking is done for
-	// all the components having a dynamic skin to verify no change happened. a notification system would be a
-	// better here not only to remove the counter handling but also to remove potential errors.
-	
-	// update dynamic skins to check
-	if( pDynamicSkin && pSkin && pSkin->GetHasRenderables() ){
-		const int updateNumber = pDynamicSkin->Update();
-		
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			
-			pDirtyRenderables = true;
-			
-			// mark all textures dirty that could be affected by the update. textures are safe if they have a
-			// custom texture assigned or if the corresponding skin texture (if existing) is not marked as dynamic.
-			// later on this will be made better by usin notifications so this check is automatic since only
-			// textures listening for dynamic changes are affected.
-			for( i=0; i<textureCount; i++ ){
-				deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-				if( texture.GetSkin() || ! pSkin ){
-					continue;
-				}
-				
-				const int mapping = pModelSkinMappings.GetAt( i );
-				if( mapping == -1 ){
-					continue;
-				}
-				
-				const deoglSkinTexture &skinTexture = pSkin->GetTextureAt( mapping );
-				if( ! skinTexture.GetDynamicChannels() ){
-					continue;
-				}
-				
-				texture.MarkParamBlocksDirty();
-				texture.MarkTUCsDirty();
-			}
-		}
-	}
-	
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		deoglSkinState * const skinState = texture.GetSkinState();
-		if( ! skinState || ( ! texture.GetDynamicSkin() && ! pDynamicSkin ) ){
-			continue;
-		}
-		
-		const int updateNumber = texture.GetDynamicSkin() ? texture.GetDynamicSkin()->Update() : pDynamicSkin->Update();
-		if( updateNumber == skinState->GetUpdateNumber() ){
-			continue;
-		}
-		
-		skinState->SetUpdateNumber( updateNumber );
-		
-		texture.MarkParamBlocksDirty();
-		texture.MarkTUCsDirty();
-		pDirtyRenderables = true;
-	}
-	
-	// update renderable mappings in the dynamic skins
-	if( pDirtyRenderables ){
-		// udpate mappings of dynamic skin of component itself
-		pSkinState->RemoveAllRenderables();
-		if( pSkin && pDynamicSkin ){
-			pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
-		}
-		
-		// update mappings of dynamic skins of component textures if existing
-		for( i=0; i<textureCount; i++ ){
-			deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-			deoglSkinState * const skinState = texture.GetSkinState();
-			if( ! skinState ){
-				continue;
-			}
-			
-			skinState->RemoveAllRenderables();
-			
-			deoglRDynamicSkin * const dynamicSkin = texture.GetDynamicSkin() ? texture.GetDynamicSkin() : pDynamicSkin;
-			if( texture.GetSkin() && dynamicSkin ){
-				skinState->AddRenderables( *texture.GetSkin(), *dynamicSkin );
-			}
-		}
-		
-		MarkAllTexturesParamBlocksDirty();
-		MarkAllTexturesTUCsDirty();
-		MarkTextureUseSkinDirty(); // required?
-		
-		pDirtyRenderables = false;
 	}
 }
 
