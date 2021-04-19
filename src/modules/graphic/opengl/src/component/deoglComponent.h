@@ -81,8 +81,10 @@ public:
 	bool pDirtyLODErrorScaling;
 	bool pDirtyMesh;
 	bool pDirtySkinStateCalculatedProperties;
+	bool pSkinStatePrepareRenderables;
 	bool pDirtyStaticTexture;
 	bool pNotifyTexturesChanged;
+	bool pDirtySolid;
 	
 	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;

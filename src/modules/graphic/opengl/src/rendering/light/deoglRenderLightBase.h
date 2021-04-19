@@ -70,15 +70,6 @@ public:
 	 */
 	void UpdateComponentVBO( const deoglCollideList &list );
 	
-	/**
-	 * \brief Update renderables of all components in the collide list.
-	 * 
-	 * \warning After this call the active FBO, OpengGL states and other rendering configuration
-	 *          like viewport and scissoring can be undefined. Do not call after setting up
-	 *          rendering parameters.
-	 */
-	void UpdateComponentRenderables( deoglRenderPlan &plan, const deoglCollideList &list );
-	
 	/** \brief Transform color by matrix. */
 	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;
 	

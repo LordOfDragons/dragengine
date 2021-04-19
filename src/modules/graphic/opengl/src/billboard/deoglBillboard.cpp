@@ -199,11 +199,11 @@ void deoglBillboard::DynamicSkinRenderablesChanged(){
 	pRequiresSync();
 }
 
-void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
+void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	DynamicSkinRenderablesChanged();
 }
 
-void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
 	DynamicSkinRenderablesChanged();
 }
 

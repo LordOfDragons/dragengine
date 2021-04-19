@@ -29,9 +29,10 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -132,12 +133,14 @@ public:
 	
 	bool pSolid;
 	bool pOutlineSolid;
+	bool pDirtySolid;
 	
 	eRenderModes pRenderMode;
 	float pSortDistance;
 	
 	deoglSkinState *pSkinState;
 	deoglSkinRendered pSkinRendered;
+	bool pDirtyPrepareSkinStateRenderables;
 	
 	decObjectList pTextures;
 	decObjectList pDecals;
@@ -173,6 +176,8 @@ public:
 	
 	deoglRComponent *pLLWorldPrev;
 	deoglRComponent *pLLWorldNext;
+	
+	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
 	
 	
 	
@@ -242,9 +247,6 @@ public:
 	void UpdateVBO();
 	
 	
-	
-	/** Update renderables in the component if existing */
-	void UpdateRenderables( deoglRenderPlan &plan );
 	
 	/** Add plans for renderables in the component if existing and requiring one. */
 	void AddSkinStateRenderPlans( deoglRenderPlan &plan );
@@ -344,11 +346,12 @@ public:
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
-	/** Init skin state calculated properties. */
 	void InitSkinStateCalculatedProperties( const deComponent &component );
-	
-	/** Update skin state calculated properties bone information. */
 	void UpdateSkinStateCalculatedPropertiesBones( const deComponent &component );
+	void UpdateSkinStateCalculatedProperties();
+	
+	void DirtyPrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables();
 	
 	
 	
@@ -466,6 +469,9 @@ public:
 	/** Component has no transparent outline. */
 	inline bool GetOutlineSolid() const{ return pOutlineSolid; }
 	
+	/** Mark solid flags dirty. */
+	void DirtySolid();
+	
 	/** Component is render static right now. */
 	inline bool GetRenderStatic() const{ return pRenderStatic; }
 	
@@ -536,6 +542,9 @@ public:
 	
 	
 	
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
+	void PrepareForRender( deoglRenderPlan &plan );
+	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
 	/*@}*/
@@ -598,7 +607,7 @@ public:
 	void DynamicSkinRenderablesChanged();
 	void TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture );
 	
-	void  UpdateRenderableMapping();
+	void UpdateRenderableMapping();
 	
 	/** Textures are static. */
 	inline bool GetStaticTextures() const{ return pStaticTextures; }
@@ -627,6 +636,9 @@ public:
 	
 	/** Mark parameter blocks of all attached decals dirty. */
 	void MarkAllDecalTexturesParamBlocksDirty();
+	
+	/** Decal requires prepare for render. */
+	void DecalRequiresPrepareForRender();
 	/*@}*/
 	
 	
@@ -716,6 +728,10 @@ public:
 	
 	/** Set linked list world next. */
 	void SetLLWorldNext( deoglRComponent *component );
+	
+	/** World prepare for render linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	
@@ -737,6 +753,8 @@ private:
 	void pResizeBoneMatrices();
 	
 	void pRemoveFromAllLights();
+	
+	void pRequiresPrepareForRender();
 };
 
 #endif

@@ -34,7 +34,7 @@ class deComponentTexture;
 
 
 /**
- * \brief Component texture.
+ * Component texture.
  */
 class deoglComponentTexture : public deoglDynamicSkinListener{
 private:
@@ -53,10 +53,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component texture. */
+	/** Create component texture. */
 	deoglComponentTexture( deoglComponent &component, int index );
 	
-	/** \brief Clean up component texture. */
+	/** Clean up component texture. */
 	~deoglComponentTexture();
 	/*@}*/
 	
@@ -64,24 +64,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief Texture index. */
+	/** Texture index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
-	/** \brief Skin state controller. */
+	/** Skin state controller. */
 	inline deoglSkinStateController *GetSkinStateController() const{ return pSkinStateController; }
 	
-	/** \brief Dynamic skin. */
+	/** Dynamic skin. */
 	inline deoglDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Render component texture. */
+	/** Render component texture. */
 	inline deoglRComponentTexture *GetRTexture() const{ return pRTexture; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
@@ -89,16 +89,13 @@ public:
 	
 	
 	
-	/** \brief Init skin state. */
+	/** Init skin state. */
 	void InitSkinState();
 	
-	/** \brief Advance time. */
+	/** Advance time. */
 	void AdvanceTime( float timeStep );
 	
-	/** \brief Prepare skin state renderables if dirty. */
-	void PrepareSkinStateRenderables();
-	
-	/** \brief Clear skin state controller. */
+	/** Clear skin state controller. */
 	void ClearSkinStateController();
 	/*@}*/
 	
@@ -116,7 +113,7 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Texture changed. */
+	/** Texture changed. */
 	void TextureChanged( const deComponentTexture &texture );
 	/*@}*/
 	

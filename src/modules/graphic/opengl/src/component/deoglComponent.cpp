@@ -95,8 +95,10 @@ pDirtyBoneMatrices( true ),
 pDirtyLODErrorScaling( true ),
 pDirtyMesh( true ),
 pDirtySkinStateCalculatedProperties( true ),
+pSkinStatePrepareRenderables( true ),
 pDirtyStaticTexture( true ),
 pNotifyTexturesChanged( false ),
+pDirtySolid( true ),
 
 pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( true ),
@@ -264,6 +266,17 @@ void deoglComponent::SyncToRender(){
 		pRComponent->InitSkinStateCalculatedProperties( pComponent );
 		pDirtySkinStateCalculatedProperties = false;
 	}
+	if( pSkinStatePrepareRenderables ){
+		pRComponent->DirtyPrepareSkinStateRenderables();
+		pSkinStatePrepareRenderables = false;
+	}
+	
+	pRComponent->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
+	
+	if( pDirtySolid ){
+		pRComponent->DirtySolid();
+		pDirtySolid = false;
+	}
 	
 	// octree, extends and matrices. order is important
 	// - deoglRComponent::UpdateExtends() depends on pRComponent::UpdateBoneMatrices()
@@ -369,6 +382,7 @@ deoglComponentTexture &deoglComponent::GetTextureAt( int index ){
 void deoglComponent::DynamicSkinRequiresSync(){
 	pDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
 	pRequiresSync();
 }
@@ -379,6 +393,7 @@ void deoglComponent::TextureDynamicSkinRenderableChanged(){
 	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	pRequiresSync();
 }
 
@@ -412,7 +427,10 @@ void deoglComponent::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
+	
 	pRequiresSync();
 }
 
@@ -420,12 +438,16 @@ void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
+	
 	pRequiresSync();
 }
 
 void deoglComponent::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
 	pDynamicSkinRequiresSync = true;
+	pSkinStatePrepareRenderables = true;
 	pRequiresSync();
 }
 
@@ -484,6 +506,7 @@ void deoglComponent::ModelChanged(){
 	pDirtyResetStatic = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	
 	pRequiresSync();
 }
@@ -494,8 +517,10 @@ void deoglComponent::SkinChanged(){
 	pDirtySkinStateController = true;
 	pDirtyRenderableMapping = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	
 	pRequiresSync();
 }
@@ -520,8 +545,10 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtySkinStateController = true;
 	pDirtyRenderableMapping = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	
 	pRequiresSync();
 }
@@ -537,6 +564,7 @@ void deoglComponent::RigChanged(){
 	pDirtyMesh = true;
 	pDirtyBoneMatrices = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pSkinStatePrepareRenderables = true;
 	
 	pRequiresSync();
 }
@@ -606,8 +634,10 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtySkinStateController = true;
 	pDirtySkinStateCalculatedProperties = true;
+	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	
 	pRequiresSync();
 }
@@ -630,11 +660,12 @@ void deoglComponent::DynamicSkinChanged(){
 	pDirtyDynamicSkin = true;
 	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
-	
 	pDirtyResetStatic = true;
 	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pDirtySolid = true;
 	
 	pRequiresSync();
 }

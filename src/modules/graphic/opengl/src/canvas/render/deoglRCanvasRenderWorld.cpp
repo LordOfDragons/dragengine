@@ -112,7 +112,8 @@ void deoglRCanvasRenderWorld::PrepareForRender(){
 		pForceToneMapAdaption = false;
 	}
 	
-	pCamera->GetParentWorld()->PrepareForRender();
+	// this is called during DrawCanvasRenderWorld
+	//pCamera->GetParentWorld()->PrepareForRender( pCamera->GetPlan() );
 }
 
 void deoglRCanvasRenderWorld::Render( const deoglRenderCanvasContext &context ){

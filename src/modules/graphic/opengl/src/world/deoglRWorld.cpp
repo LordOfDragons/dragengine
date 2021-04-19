@@ -160,7 +160,7 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor ){
 
 
 
-void deoglRWorld::PrepareForRender(){
+void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 	int i, count;
 	
 	// remove environment map probes marked for removal by deoglWorld. this call can not be done during
@@ -210,6 +210,20 @@ void deoglRWorld::PrepareForRender(){
 		pDirtyNotifySkyChanged = false;
 	}
 	
+	// prepare components
+	decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
+	while( pListPrepareForRenderComponents.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderComponents.GetRoot();
+		deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
+		pListPrepareForRenderComponents.Remove( entry );
+		
+		component.PrepareForRender( plan ); // can potentially re-add the component
+		
+		if( entry == tailComponent ){
+			break; // processed last component. re-added component will come next
+		}
+	}
+	
 	// prepare prop fields
 	count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
@@ -220,6 +234,24 @@ void deoglRWorld::PrepareForRender(){
 	count = pDebugDrawers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderComponent( deoglRComponent *component ){
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! component->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderComponents.Add( &component->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderComponent( deoglRComponent *component ){
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
+	if( component->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderComponents.Remove( &component->GetLLPrepareForRenderWorld() );
 	}
 }
 
@@ -432,6 +464,7 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	pComponentCount++;
 	
 	component->SetParentWorld( this );
+	AddPrepareForRenderComponent( component );
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){
@@ -439,6 +472,7 @@ void deoglRWorld::RemoveComponent( deoglRComponent *component ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderComponent( component );
 	component->SetParentWorld( NULL );
 	component->SetWorldMarkedRemove( false );
 	
@@ -465,6 +499,7 @@ void deoglRWorld::RemoveAllComponents(){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
+		RemovePrepareForRenderComponent( pRootComponent );
 		pRootComponent->SetParentWorld( NULL );
 		pRootComponent->SetWorldMarkedRemove( false );
 		pComponentCount--;

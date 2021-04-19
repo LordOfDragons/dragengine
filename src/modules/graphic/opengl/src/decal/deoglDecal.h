@@ -54,6 +54,7 @@ public:
 	bool pDirtyDynamicSkin;
 	bool pDirtyVisibility;
 	bool pDirtyParamBlocks;
+	bool pDirtyRenderableMapping;
 	
 	bool pDynamicSkinRequiresSync;
 	

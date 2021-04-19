@@ -24,9 +24,10 @@
 
 #include "../envmap/deoglEnvironmentMapList.h"
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
 class deoglEnvironmentMapList;
 class deoglRBillboard;
@@ -48,7 +49,7 @@ class deoglEnvironmentMap;
 
 
 /**
- * \brief Render world.
+ * Render world.
  */
 class deoglRWorld : public deObject{
 private:
@@ -90,15 +91,17 @@ private:
 	
 	deoglWorldOctree *pOctree;
 	
+	decPointerLinkedList pListPrepareForRenderComponents;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render world. */
+	/** Create render world. */
 	deoglRWorld( deoglRenderThread &renderThread, const decDVector &octreeSize );
 	
-	/** \brief Clean up render camera. */
+	/** Clean up render camera. */
 	virtual ~deoglRWorld();
 	/*@}*/
 	
@@ -106,87 +109,93 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Mark sky order dirty. */
+	/** Mark sky order dirty. */
 	void MarkSkyOrderDirty();
 	
-	/** \brief Sky environment map or \em NULL if not existing. */
+	/** Sky environment map or \em NULL if not existing. */
 	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
 	
 	
 	
-	/** \brief Height terrain or \em NULL if not set. */
+	/** Height terrain or \em NULL if not set. */
 	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Set height terrain or \em NULL if not set. */
+	/** Set height terrain or \em NULL if not set. */
 	void SetHeightTerrain( deoglRHeightTerrain *heightTerrain );
 	
 	
 	
 	
-	/** \brief All lights are disabled. */
+	/** All lights are disabled. */
 	inline bool GetDisableLights() const{ return pDisableLights; }
 	
-	/** \brief Set if all lights are disabled. */
+	/** Set if all lights are disabled. */
 	void SetDisableLights( bool disable );
 	
-	/** \brief Ambient light color. */
+	/** Ambient light color. */
 	inline const decColor &GetAmbientLight() const{ return pAmbientLight; }
 	
-	/** \brief Set ambient light color. */
+	/** Set ambient light color. */
 	void SetAmbientLight( const decColor &color );
 	
-	/** \brief Light color matrix. */
+	/** Light color matrix. */
 	inline const decMatrix &GetLightColorMatrix() const{ return pLightColorMatrix; }
 	
-	/** \brief Set light color matrix. */
+	/** Set light color matrix. */
 	void SetLightColorMatrix( const decMatrix &matrix );
 	
 	
 	
-	/** \brief Octree. */
+	/** Octree. */
 	inline deoglWorldOctree &GetOctree() const{ return *pOctree; }
 	
-	/** \brief Visit entire content of the world. */
+	/** Visit entire content of the world. */
 	void VisitAll( deoglWorldOctreeVisitor &visitor );
 	
-	/** \brief Visit content of the world using an axis aligned box. */
+	/** Visit content of the world using an axis aligned box. */
 	void VisitRegion( const decDVector &boxMinExtend, const decDVector &boxMaxExtend,
 		deoglWorldOctreeVisitor &visitor );
 	
 	
 	
-	/** \brief Prepare for rendering. */
-	void PrepareForRender();
+	/** Prepare for rendering. */
+	void PrepareForRender( deoglRenderPlan &plan );
+	
+	/** Add component as require prepare for render if not present. */
+	void AddPrepareForRenderComponent( deoglRComponent *component );
+	
+	/** Remove component as prepare for render if present. */
+	void RemovePrepareForRenderComponent( deoglRComponent *component );
 	/*@}*/
 	
 	
 	
 	/** \name Reference position. */
 	/*@{*/
-	/** \brief Notify all affected elements that the reference position changed. */
+	/** Notify all affected elements that the reference position changed. */
 	void NotifyAllReferencePositionChanged();
 	
-	/** \brief Reference position for world matrices and positions used directly in shaders. */
+	/** Reference position for world matrices and positions used directly in shaders. */
 	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
 	
 	/**
-	 * \brief Set reference position for world matrices and positions used directly in shaders.
+	 * Set reference position for world matrices and positions used directly in shaders.
 	 * \details Notifies all affected elements about the change.
 	 */
 	void SetReferencePosition( const decDVector &position );
 	
 	/**
-	 * \brief Check new reference position against the current reference position.
+	 * Check new reference position against the current reference position.
 	 * \details If positions are further apart than the validity distance in any of the vector
 	 *          components the reference position is updated and all affected elements notified
 	 *          about the change.
 	 */
 	void CheckReferencePosition( const decDVector &position );
 	
-	/** \brief Validity distance for reference position checks. */
+	/** Validity distance for reference position checks. */
 	inline double GetValidReferenceDistance() const{ return pValidReferenceDistance; }
 	
-	/** \brief Set validity distance for reference position checks. */
+	/** Set validity distance for reference position checks. */
 	void SetValidReferenceDistance( double distance );
 	/*@}*/
 	
@@ -194,22 +203,22 @@ public:
 	
 	/** \name Prop fields. */
 	/*@{*/
-	/** \brief Number of prop fields. */
+	/** Number of prop fields. */
 	int GetPropFieldCount() const;
 	
-	/** \brief Prop field at index. */
+	/** Prop field at index. */
 	deoglRPropField *GetPropFieldAt( int index ) const;
 	
-	/** \brief Add prop field. */
+	/** Add prop field. */
 	void AddPropField( deoglRPropField *propField );
 	
-	/** \brief Remove prop field. */
+	/** Remove prop field. */
 	void RemovePropField( deoglRPropField *propField );
 	
-	/** \brief Remove all prop fields. */
+	/** Remove all prop fields. */
 	void RemoveAllPropFields();
 	
-	/** \brief Remove prop fields marked for removal. */
+	/** Remove prop fields marked for removal. */
 	void RemoveRemovalMarkedPropFields();
 	/*@}*/
 	
@@ -217,22 +226,22 @@ public:
 	
 	/** \name Particle emitter instances. */
 	/*@{*/
-	/** \brief Number of particle emitter instances. */
+	/** Number of particle emitter instances. */
 	int GetParticleEmitterInstanceCount() const;
 	
-	/** \brief Particle emitter instance at index. */
+	/** Particle emitter instance at index. */
 	deoglRParticleEmitterInstance *GetParticleEmitterInstanceAt( int index ) const;
 	
-	/** \brief Add particle emitter instance. */
+	/** Add particle emitter instance. */
 	void AddParticleEmitterInstance( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove particle emitter instance. */
+	/** Remove particle emitter instance. */
 	void RemoveParticleEmitterInstance( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove all particle emitter instances. */
+	/** Remove all particle emitter instances. */
 	void RemoveAllParticleEmitterInstances();
 	
-	/** \brief Remove particle emitter instances marked for removal. */
+	/** Remove particle emitter instances marked for removal. */
 	void RemoveRemovalMarkedParticleEmitterInstances();
 	/*@}*/
 	
@@ -240,22 +249,22 @@ public:
 	
 	/** \name Components. */
 	/*@{*/
-	/** \brief Number of components. */
+	/** Number of components. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Root component. */
+	/** Root component. */
 	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void AddComponent( deoglRComponent *component );
 	
-	/** \brief Remove component. */
+	/** Remove component. */
 	void RemoveComponent( deoglRComponent *component );
 	
-	/** \brief Remove all component. */
+	/** Remove all component. */
 	void RemoveAllComponents();
 	
-	/** \brief Remove components marked for removal. */
+	/** Remove components marked for removal. */
 	void RemoveRemovalMarkedComponents();
 	/*@}*/
 	
@@ -263,22 +272,22 @@ public:
 	
 	/** \name Lights. */
 	/*@{*/
-	/** \brief Number of lights. */
+	/** Number of lights. */
 	int GetLightCount() const;
 	
-	/** \brief Light at index. */
+	/** Light at index. */
 	deoglRLight *GetLightAt( int index ) const;
 	
-	/** \brief Add light. */
+	/** Add light. */
 	void AddLight( deoglRLight *light );
 	
-	/** \brief Remove light. */
+	/** Remove light. */
 	void RemoveLight( deoglRLight *light );
 	
-	/** \brief Remove all light. */
+	/** Remove all light. */
 	void RemoveAllLights();
 	
-	/** \brief Remove lights marked for removal. */
+	/** Remove lights marked for removal. */
 	void RemoveRemovalMarkedLights();
 	/*@}*/
 	
@@ -286,23 +295,23 @@ public:
 	
 	/** \name Environment Map Probes. */
 	/*@{*/
-	/** \brief Number of environment map probes. */
+	/** Number of environment map probes. */
 	int GetEnvMapProbeCount() const;
 	
-	/** \brief environment map probe at index. */
+	/** environment map probe at index. */
 	deoglREnvMapProbe *GetEnvMapProbeAt( int index ) const;
 	
-	/** \brief Add environment map probe. */
+	/** Add environment map probe. */
 	void AddEnvMapProbe( deoglREnvMapProbe *envMapProbe );
 	
-	/** \brief Remove environment map probe. */
+	/** Remove environment map probe. */
 	void RemoveEnvMapProbe( deoglREnvMapProbe *envMapProbe );
 	
-	/** \brief Remove all environment map probes. */
+	/** Remove all environment map probes. */
 	void RemoveAllEnvMapProbes();
 	
 	/**
-	 * \brief Remove environment map probes marked for removal.
+	 * Remove environment map probes marked for removal.
 	 * \details Called from the main thread.
 	 */
 	void RemoveRemovalMarkedEnvMapProbes();
@@ -312,35 +321,35 @@ public:
 	
 	/** \name Environment maps */
 	/*@{*/
-	/** \brief Environment map list. */
+	/** Environment map list. */
 	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMapList; }
 	
-	/** \brief Add environment map. */
+	/** Add environment map. */
 	void AddEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove environment map. */
+	/** Remove environment map. */
 	void RemoveEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove all environment maps. */
+	/** Remove all environment maps. */
 	void RemoveAllEnvMaps();
 	
-	/** \brief Number of environment maps that can be updated this frame. */
+	/** Number of environment maps that can be updated this frame. */
 	inline int GetEnvMapUpdateCount() const{ return pEnvMapUpdateCount; }
 	
-	/** \brief Reset env maps update count. */
+	/** Reset env maps update count. */
 	void ResetEnvMapUpdateCount();
 	
-	/** \brief Decrease environment map update count by one. */
+	/** Decrease environment map update count by one. */
 	void DecEnvMapUpdateCount();
 	
-	/** \brief Notify environment maps that the sky changed. */
+	/** Notify environment maps that the sky changed. */
 	void EnvMapsNotifySkyChanged();
 	
-	/** \brief Shared environment map render plan. */
+	/** Shared environment map render plan. */
 	inline deoglRenderPlan *GetEnvMapRenderPlan() const{ return pEnvMapRenderPlan; }
 	
 	/**
-	 * \brief Mark environment map layout dirty.
+	 * Mark environment map layout dirty.
 	 * \details The next time a rendering update is done all components are notified about the change.
 	 */
 	void InvalidateEnvMapLayout();
@@ -350,22 +359,22 @@ public:
 	
 	/** \name Lumimeters. */
 	/*@{*/
-	/** \brief Number of lumimeters. */
+	/** Number of lumimeters. */
 	int GetLumimeterCount() const;
 	
-	/** \brief Lumimeter at index. */
+	/** Lumimeter at index. */
 	deoglRLumimeter *GetLumimeterAt( int index ) const;
 	
-	/** \brief Add lumimeter. */
+	/** Add lumimeter. */
 	void AddLumimeter( deoglRLumimeter *lumimeter );
 	
-	/** \brief Remove lumimeter. */
+	/** Remove lumimeter. */
 	void RemoveLumimeter( deoglRLumimeter *lumimeter );
 	
-	/** \brief Remove all lumimeter. */
+	/** Remove all lumimeter. */
 	void RemoveAllLumimeters();
 	
-	/** \brief Remove lumimeters marked for removal. */
+	/** Remove lumimeters marked for removal. */
 	void RemoveRemovalMarkedLumimeters();
 	/*@}*/
 	
@@ -373,22 +382,22 @@ public:
 	
 	/** \name Billboards. */
 	/*@{*/
-	/** \brief Number of billboards. */
+	/** Number of billboards. */
 	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
-	/** \brief Root billboard. */
+	/** Root billboard. */
 	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
 	
-	/** \brief Add billboard. */
+	/** Add billboard. */
 	void AddBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Remove billboard. */
+	/** Remove billboard. */
 	void RemoveBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Remove all billboard. */
+	/** Remove all billboard. */
 	void RemoveAllBillboards();
 	
-	/** \brief Remove billboards marked for removal. */
+	/** Remove billboards marked for removal. */
 	void RemoveRemovalMarkedBillboards();
 	/*@}*/
 	
@@ -396,22 +405,22 @@ public:
 	
 	/** \name Skies. */
 	/*@{*/
-	/** \brief Number of skys. */
+	/** Number of skys. */
 	int GetSkyCount() const;
 	
-	/** \brief Sky at index. */
+	/** Sky at index. */
 	deoglRSkyInstance *GetSkyAt( int index ) const;
 	
-	/** \brief Add sky. */
+	/** Add sky. */
 	void AddSky( deoglRSkyInstance *sky );
 	
-	/** \brief Remove sky. */
+	/** Remove sky. */
 	void RemoveSky( deoglRSkyInstance *sky );
 	
-	/** \brief Remove all skys. */
+	/** Remove all skys. */
 	void RemoveAllSkies();
 	
-	/** \brief Remove skys marked for removal. */
+	/** Remove skys marked for removal. */
 	void RemoveRemovalMarkedSkies();
 	/*@}*/
 	
@@ -419,22 +428,22 @@ public:
 	
 	/** \name Debug Drawers. */
 	/*@{*/
-	/** \brief Number of debug drawers. */
+	/** Number of debug drawers. */
 	int GetDebugDrawerCount() const;
 	
-	/** \brief Debug drawer at index. */
+	/** Debug drawer at index. */
 	deoglRDebugDrawer *GetDebugDrawerAt( int index ) const;
 	
-	/** \brief Add debug drawer. */
+	/** Add debug drawer. */
 	void AddDebugDrawer( deoglRDebugDrawer *debugDrawer );
 	
-	/** \brief Remove debug drawer. */
+	/** Remove debug drawer. */
 	void RemoveDebugDrawer( deoglRDebugDrawer *debugDrawer );
 	
-	/** \brief Remove all debug drawer. */
+	/** Remove all debug drawer. */
 	void RemoveAllDebugDrawers();
 	
-	/** \brief Remove debug drawers marked for removal. */
+	/** Remove debug drawers marked for removal. */
 	void RemoveRemovalMarkedDebugDrawers();
 	/*@}*/
 	

@@ -59,6 +59,7 @@ pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyVisibility( true ),
 pDirtyParamBlocks( false ),
+pDirtyRenderableMapping( true ),
 
 pDynamicSkinRequiresSync( true ),
 
@@ -103,6 +104,11 @@ void deoglDecal::SyncToRender(){
 	pSyncSkin();
 	pSyncDynamicSkin();
 	
+	if( pDirtyRenderableMapping ){
+		pRDecal->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
+	}
+	
 	if( pDirtyVBO ){
 		pRDecal->SetDirtyVBO();
 		pDirtyVBO = false;
@@ -131,15 +137,19 @@ void deoglDecal::DynamicSkinDestroyed(){
 
 void deoglDecal::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
 	pRequiresSync();
 }
 
-void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable &renderable ){
-	DynamicSkinRenderablesChanged();
+void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pRequiresSync();
 }
 
-void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
-	DynamicSkinRenderablesChanged();
+void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pRequiresSync();
 }
 
 
@@ -163,6 +173,7 @@ void deoglDecal::TransformChanged(){
 
 void deoglDecal::SkinChanged(){
 	pDirtySkin  = true;
+	pDirtyRenderableMapping = true;
 	
 	pRequiresSync();
 }
@@ -181,6 +192,7 @@ void deoglDecal::DynamicSkinChanged(){
 	}
 	
 	pDirtyDynamicSkin = true;
+	pDirtyRenderableMapping = true;
 	pDynamicSkinRequiresSync = true;
 	
 	pRequiresSync();

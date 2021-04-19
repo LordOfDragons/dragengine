@@ -136,9 +136,6 @@ void deoglComponentTexture::AdvanceTime( float timeStep ){
 	pSkinStateController->AdvanceTime( timeStep );
 }
 
-void deoglComponentTexture::PrepareSkinStateRenderables(){
-}
-
 void deoglComponentTexture::ClearSkinStateController(){
 	pSkinStateController->Clear();
 }

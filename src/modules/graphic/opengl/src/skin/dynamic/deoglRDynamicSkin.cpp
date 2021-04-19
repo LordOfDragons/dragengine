@@ -99,9 +99,9 @@ void deoglRDynamicSkin::RemoveAllRenderables(){
 }
 
 void deoglRDynamicSkin::TextureConfigurationChanged(){
-	pUpdateNumber++;
+	pUpdateNumber++; // deprecated
 }
 
 int deoglRDynamicSkin::Update(){
-	return pUpdateNumber;
+	return pUpdateNumber; // deprecated
 }

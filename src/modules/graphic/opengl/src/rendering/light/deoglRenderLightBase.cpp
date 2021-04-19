@@ -91,16 +91,6 @@ void deoglRenderLightBase::UpdateComponentVBO( const deoglCollideList &list ){
 	}
 }
 
-void deoglRenderLightBase::UpdateComponentRenderables( deoglRenderPlan &plan,
-const deoglCollideList &list ){
-	const int count = list.GetComponentCount();
-	int i;
-	
-	for( i=0; i <count; i++ ){
-		list.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
-	}
-}
-
 
 
 decColor deoglRenderLightBase::TransformColor( const decMatrix &matrix, const decColor &color ) const{

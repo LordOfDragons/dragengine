@@ -96,11 +96,12 @@ pDirtySharedSPBElement( true )
 	pUseDynamicSkin = NULL;
 	pUseSkinState = NULL;
 	
+	pDirtyPrepareSkinStateRenderables = true;
+	
 	pVBOBlock = NULL;
 	pPointCount = 0;
 	
 	pDirtyUseTexture = true;
-	pDirtyRenderables = true;
 	pDirtyVBO = true;
 	
 	pParamBlockGeometry = NULL;
@@ -241,18 +242,22 @@ void deoglRDecal::SetVisible( bool visible ){
 
 
 void deoglRDecal::UpdateSkin( float elapsed ){
-	if( pSkinState ){
-		pSkinState->AdvanceTime( elapsed );
+	if( ! pSkinState ){
+		return;
+	}
+	
+	pSkinState->AdvanceTime( elapsed );
+	
+	if( ! pUseSkinTexture ){
+		return;
+	}
+	
+	if( pUseSkinTexture->GetDynamicChannels() ){
+		MarkParamBlocksDirty();
+		MarkTUCsDirty();
 		
-		if( pUseSkinTexture ){
-			if( pUseSkinTexture->GetDynamicChannels() ){
-				MarkParamBlocksDirty();
-				MarkTUCsDirty();
-				
-			}else if( pUseSkinTexture->GetCalculatedProperties() ){
-				MarkParamBlocksDirty();
-			}
-		}
+	}else if( pUseSkinTexture->GetCalculatedProperties() ){
+		MarkParamBlocksDirty();
 	}
 }
 
@@ -276,19 +281,6 @@ void deoglRDecal::UpdateVBO(){
 
 void deoglRDecal::SetDirtyVBO(){
 	pDirtyVBO = true;
-}
-
-void deoglRDecal::UpdateRenderables( deoglRenderPlan &plan ){
-	if( ! pSkinState ){
-		return;
-	}
-	
-	// update renderables. this is required here as this call sets up properly the
-	// skin state if not done already
-	pUpdateRenderables();
-	
-	// make sure all textures are updated and create the render info if required
-	pSkinState->PrepareRenderables( pUseSkin, pUseDynamicSkin );
 }
 
 
@@ -317,6 +309,8 @@ void deoglRDecal::SetSkin( deoglRSkin *skin ){
 	if( pSkinState ){
 		pSkinState->InitCalculatedProperties();
 	}
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -340,6 +334,8 @@ void deoglRDecal::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 	MarkTUCsDirty();
 	
 	UpdateSkinState();
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::SetSkinState( deoglSkinState *skinState ){
@@ -372,11 +368,14 @@ void deoglRDecal::SetSkinState( deoglSkinState *skinState ){
 	pSkinState = skinState;
 	
 	pDirtyUseTexture = true;
+	pDirtyPrepareSkinStateRenderables = true;
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	
 	UpdateSkinState();
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::UpdateUseSkin(){
@@ -444,10 +443,27 @@ void deoglRDecal::UpdateSkinState(){
 	
 	if( changed ){
 		pDirtyUseTexture = true;
-		pDirtyRenderables = true;
+		DirtyPrepareSkinStateRenderables();
 		
 		InvalidateParamBlocks();
 		MarkTUCsDirty();
+		
+		pRequiresPrepareForRender();
+	}
+}
+
+
+
+void deoglRDecal::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyUseTexture = true;
+	
+	pRequiresPrepareForRender();
+}
+
+void deoglRDecal::PrepareSkinStateRenderables(){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
 	}
 }
 
@@ -770,41 +786,50 @@ int element, deoglSkinShader &skinShader ){
 
 
 
+void deoglRDecal::PrepareForRender( deoglRenderPlan &plan ){
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables();
+		pDirtyPrepareSkinStateRenderables = false;
+	}
+}
+
 void deoglRDecal::PrepareQuickDispose(){
 	pParentComponent = NULL;
 }
+
+void deoglRDecal::DynamicSkinRenderablesChanged(){
+	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+		return;
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRDecal::UpdateRenderableMapping(){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	// udpate mappings of dynamic skin of component itself
+	pSkinState->RemoveAllRenderables();
+	if( pSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	}
+	
+	pDirtyUseTexture = true;
+	
+	InvalidateParamBlocks();
+	MarkTUCsDirty();
+	
+	pRequiresPrepareForRender();
+}
+
 
 
 
 // Private Functions
 //////////////////////
-
-void deoglRDecal::pUpdateRenderables(){
-	// NOTE only called if pSkinState is not NULL
-	
-	// check if dynamic skin internal state changed
-	deoglRDynamicSkin &dynamicSkin = *( pDynamicSkin ? pDynamicSkin : pParentComponent->GetDynamicSkin() );
-	const int updateNumber = dynamicSkin.Update();
-	if( updateNumber != pSkinState->GetUpdateNumber() ){
-		pSkinState->SetUpdateNumber( updateNumber );
-		pDirtyRenderables = true;
-	}
-	
-	// update renderable mappings in the dynamic skins
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pUseSkin && pUseDynamicSkin ){
-			pSkinState->AddRenderables( *pUseSkin, *pUseDynamicSkin );
-		}
-		
-		pDirtyUseTexture = true;
-		
-		InvalidateParamBlocks();
-		MarkTUCsDirty();
-		
-		pDirtyRenderables = false;
-	}
-}
 
 // #include <dragengine/common/utils/decTimer.h>
 void deoglRDecal::pCreateMeshComponent(){
@@ -903,4 +928,10 @@ void deoglRDecal::pCreateMeshComponent(){
 	}
 // 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) vbo=%.3fms",
 // 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
+}
+
+void deoglRDecal::pRequiresPrepareForRender(){
+	if( pParentComponent ){
+		pParentComponent->DecalRequiresPrepareForRender();
+	}
 }

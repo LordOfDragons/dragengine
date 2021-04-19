@@ -25,8 +25,9 @@
 #include "../skin/deoglSkinTexture.h"
 #include "../rendering/task/deoglRenderTaskInstanceGroup.h"
 
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
 class deoglRenderPlan;
 class deoglRComponent;
@@ -46,7 +47,7 @@ class deoglVAO;
 
 
 /**
- * \brief Render decal.
+ * Render decal.
  */
 class deoglRDecal : public deObject{
 public:
@@ -68,12 +69,13 @@ public:
 	deoglRDynamicSkin *pUseDynamicSkin;
 	deoglSkinState *pUseSkinState;
 	
+	bool pDirtyPrepareSkinStateRenderables;
+	
 	deoglSharedVBOBlock *pVBOBlock;
 	int pPointCount;
 	
 	bool pDirtyVBO;
 	bool pDirtyUseTexture;
-	bool pDirtyRenderables;
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
@@ -98,13 +100,15 @@ public:
 	bool pDirtyTUCShadow;
 	bool pDirtyTUCEnvMap;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render decal. */
+	/** Create render decal. */
 	deoglRDecal( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render decal. */
+	/** Clean up render decal. */
 	virtual ~deoglRDecal();
 	/*@}*/
 	
@@ -112,74 +116,71 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decVector &position );
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Set orientation. */
+	/** Set orientation. */
 	void SetOrientation( const decQuaternion &orientation );
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
-	/** \brief Set size. */
+	/** Set size. */
 	void SetSize( const decVector &size );
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTransform( const decTexMatrix2 &matrix );
 	
-	/** \brief Decal is visible. */
+	/** Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set decal is visible. */
+	/** Set decal is visible. */
 	void SetVisible( bool visible );
 	
 	
 	
-	/** \brief Update skin. */
+	/** Update skin. */
 	void UpdateSkin( float elapsed );
 	
-	/** \brief Update vbo if required. */
+	/** Update vbo if required. */
 	void UpdateVBO();
 	
-	/** \brief Set vbo dirty. */
+	/** Set vbo dirty. */
 	void SetDirtyVBO();
 	
-	/** \brief Update renderables in the decal if existing */
-	void UpdateRenderables( deoglRenderPlan &plan );
 	
 	
-	
-	/** \brief Skin or \em NULL if not set. */
+	/** Skin or \em NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if not set. */
+	/** Set skin or \em NULL if not set. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Dynamic skin or \em NULL if not set. */
+	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if not set. */
+	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
 	/** Retrieves the skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * \brief Set skin state or \em NULL if there is none.
+	 * Set skin state or \em NULL if there is none.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void SetSkinState( deoglSkinState *skinState );
@@ -198,7 +199,7 @@ public:
 	void UpdateUseSkin();
 	
 	/**
-	 * \brief Update skin state depending on skin and dynamic skin.
+	 * Update skin state depending on skin and dynamic skin.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void UpdateSkinState();
@@ -210,33 +211,40 @@ public:
 	
 	
 	
-	/** \brief Parent component. */
+	void DirtyPrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables();
+	void DynamicSkinRenderablesChanged();
+	void UpdateRenderableMapping();
+	
+	
+	
+	/** Parent component. */
 	inline deoglRComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/**
-	 * \brief Set parent component or \em NULL.
+	 * Set parent component or \em NULL.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void SetParentComponent( deoglRComponent *component );
 	
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
 	inline bool GetComponentMarkedRemove() const{ return pComponentMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
 	void SetComponentMarkedRemove( bool marked );
 	
 	
 	
-	/** \brief Shared shader parameter block element. */
+	/** Shared shader parameter block element. */
 	deoglSharedSPBElement *GetSharedSPBElement();
 	
-	/** \brief Render task instance group. */
+	/** Render task instance group. */
 	inline deoglRenderTaskInstanceGroup &GetRTIGroup(){ return pRTIGroup; }
 	
 	/** Retrieves the shader parameter block for a shader type. */
@@ -283,13 +291,19 @@ public:
 	
 	
 	
-	/** \brief Prepare for quick disposal of decal. */
+	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
+	void PrepareForRender( deoglRenderPlan &plan );
+	
+	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
 	/*@}*/
 	
+	
+	
 private:
-	void pUpdateRenderables();
 	void pCreateMeshComponent();
+	
+	void pRequiresPrepareForRender();
 };
 
 #endif

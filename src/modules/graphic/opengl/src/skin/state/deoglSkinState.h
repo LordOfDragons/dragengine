@@ -192,6 +192,9 @@ public:
 	/** Update calculated property bones. */
 	void UpdateCalculatedPropertiesBones( const deComponent &component );
 	
+	/** Update calculated properties. */
+	void UpdateCalculatedProperties();
+	
 	
 	
 	/** Variation seed. */

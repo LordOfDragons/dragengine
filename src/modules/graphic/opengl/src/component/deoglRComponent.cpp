@@ -131,7 +131,9 @@ pSkinRendered( renderThread, *this ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pLLWorldNext( NULL ),
+
+pLLPrepareForRenderWorld( this )
 {
 	pLODErrorScaling = 1.0f;
 	
@@ -145,6 +147,7 @@ pLLWorldNext( NULL )
 	pDirtyParamBlockOccMesh = true;
 	
 	pSkinState = NULL;
+	pDirtyPrepareSkinStateRenderables = true;
 	pRenderVisible = true;
 	
 	pFirstRender = true;
@@ -161,6 +164,7 @@ pLLWorldNext( NULL )
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pDirtySolid = true;
 	
 	pMarked = false;
 	
@@ -522,8 +526,10 @@ void deoglRComponent::MeshChanged(){
 
 
 void deoglRComponent::InitSkinStateCalculatedProperties( const deComponent &component ){
-	pSkinState->InitCalculatedProperties();
-	pSkinState->CalculatedPropertiesMapBones( component );
+	if( pSkinState ){
+		pSkinState->InitCalculatedProperties();
+		pSkinState->CalculatedPropertiesMapBones( component );
+	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
@@ -537,7 +543,9 @@ void deoglRComponent::InitSkinStateCalculatedProperties( const deComponent &comp
 }
 
 void deoglRComponent::UpdateSkinStateCalculatedPropertiesBones( const deComponent &component ){
-	pSkinState->UpdateCalculatedPropertiesBones( component );
+	if( pSkinState ){
+		pSkinState->UpdateCalculatedPropertiesBones( component );
+	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
@@ -546,6 +554,38 @@ void deoglRComponent::UpdateSkinStateCalculatedPropertiesBones( const deComponen
 		if( texture.GetSkinState() ){
 			texture.GetSkinState()->UpdateCalculatedPropertiesBones( component );
 		}
+	}
+}
+
+void deoglRComponent::UpdateSkinStateCalculatedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateCalculatedProperties();
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		if( texture.GetSkinState() ){
+			texture.GetSkinState()->UpdateCalculatedProperties();
+		}
+	}
+}
+
+void deoglRComponent::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRComponent::PrepareSkinStateRenderables(){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables();
 	}
 }
 
@@ -898,31 +938,6 @@ void deoglRComponent::UpdateVBO(){
 
 
 
-
-void deoglRComponent::UpdateRenderables( deoglRenderPlan &plan ){
-	int i;
-	
-	// update render modifiers
-	pCheckRenderModifier( plan.GetCamera() );
-	
-	
-	// make sure all textures are updated and create the render info if required
-	pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
-	const int textureCount = pTextures.GetCount();
-	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables();
-	}
-	
-	// determine if the component has any transparent faces
-	pUpdateSolid();
-	
-	// update renderables of all attached decals
-	const int decalCount = pDecals.GetCount();
-	for( i=0; i<decalCount; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateRenderables( plan );
-	}
-}
-
 void deoglRComponent::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
 	pSkinState->AddRenderPlans( plan );
 	
@@ -1073,6 +1088,11 @@ void deoglRComponent::TestCameraInside( const decDVector &position ){
 }
 
 
+
+void deoglRComponent::DirtySolid(){
+	pDirtySolid = true;
+	pRequiresPrepareForRender();
+}
 
 void deoglRComponent::SetRenderVisible( bool visible ){
 	pRenderVisible = visible;
@@ -1279,6 +1299,28 @@ void deoglRComponent::WorldReferencePointChanged(){
 	MarkAllTexturesParamBlocksDirty();
 	MarkAllDecalTexturesParamBlocksDirty();
 	MarkOccMeshParamBlockDirty();
+}
+
+
+
+void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
+	pCheckRenderModifier( plan.GetCamera() );
+	
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables();
+		pDirtyPrepareSkinStateRenderables = false;
+	}
+	
+	if( pDirtySolid ){
+		pUpdateSolid();
+		pDirtySolid = false;
+	}
+	
+	const int count = pDecals.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan );
+	}
 }
 
 
@@ -1531,6 +1573,10 @@ void deoglRComponent::SyncDecalReferences( const deComponent &engComponent ){
 		decal->SetParentComponent( this );
 		engDecal = engDecal->GetLLComponentNext();
 	}
+	
+	if( pDecals.GetCount() > 0 ){
+		DecalRequiresPrepareForRender();
+	}
 }
 
 void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
@@ -1540,6 +1586,10 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 	for( i=0; i<count; i++ ){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->MarkParamBlocksDirty();
 	}
+}
+
+void deoglRComponent::DecalRequiresPrepareForRender(){
+	pRequiresPrepareForRender();
 }
 
 
@@ -2117,4 +2167,10 @@ void deoglRComponent::pRemoveFromAllLights(){
 	}
 	
 	pLightList.RemoveAll();
+}
+
+void deoglRComponent::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderComponent( this );
+	}
 }

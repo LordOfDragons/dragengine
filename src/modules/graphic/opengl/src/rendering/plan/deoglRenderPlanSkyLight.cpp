@@ -112,19 +112,6 @@ void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
-	// update renderables of shadow casting components. this does not update the vbo as
-	// this has to be done when sky lights are really visible.
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pCollideList.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
-	}
-	
-	// the same for GI. this does touch various components two times but this is not a problem
-	const int count2 = pGICollideList.GetComponentCount();
-	for( i=0; i<count2; i++ ){
-		pGICollideList.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
-	}
 }
 
 

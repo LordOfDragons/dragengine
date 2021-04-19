@@ -228,10 +228,6 @@ void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dy
 			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender();
 		}
 	}
-	
-	for( i=0; i<pCalculatedPropertyCount; i++ ){
-		pCalculatedProperties[ i ].Update( *this );
-	}
 }
 
 void deoglSkinState::AddRenderPlans( deoglRenderPlan &plan ){
@@ -357,6 +353,13 @@ void deoglSkinState::UpdateCalculatedPropertiesBones( const deComponent &compone
 	int i;
 	for( i=0; i<pCalculatedPropertyCount; i++ ){
 		pCalculatedProperties[ i ].UpdateBones( component );
+	}
+}
+
+void deoglSkinState::UpdateCalculatedProperties(){
+	int i;
+	for( i=0; i<pCalculatedPropertyCount; i++ ){
+		pCalculatedProperties[ i ].Update( *this );
 	}
 }
 

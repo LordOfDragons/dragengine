@@ -198,10 +198,6 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	deoglRComponentLOD &lod = component.GetLODAt( -1 );
 	
 	if( instance.GetDynamic() ){
-		// update renderables in case this component is not visible. required only
-		// for component with dynamic materials
-		component.UpdateRenderables( plan );
-		
 		// update vertices and BVH extends if dirty
 		lod.PrepareGIDynamicBVH();
 		instance.UpdateExtends();

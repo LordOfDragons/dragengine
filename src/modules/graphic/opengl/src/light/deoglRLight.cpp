@@ -839,30 +839,8 @@ void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
 	pShadowCaster->Update();
 	
 //DEBUG_RESET_TIMERS;
-	bool castShadows = pCastShadows; // && plan.GetDisableLights(); // disabled while debugging
-	
 	UpdateConvexVolumeList();
 //DEBUG_PRINT_TIMER( "UpdateConvexVolumeList" );
-	
-	// updating components is only required if we cast shadows
-	if( castShadows ){
-		int c, componentCount;
-		
-//DEBUG_RESET_TIMERS;
-		// update renderables of shadow casting components. this does not
-		// update the vbo as this has to be done when lights are really
-		// visible.
-		componentCount = pStaticComponentList.GetCount();
-		for( c=0; c<componentCount; c++ ){
-			pStaticComponentList.GetAt( c )->UpdateRenderables( plan );
-		}
-		
-		componentCount = pDynamicComponentList.GetCount();
-		for( c=0; c<componentCount; c++ ){
-			pDynamicComponentList.GetAt( c )->UpdateRenderables( plan );
-		}
-//DEBUG_PRINT_TIMER( "PrerenderComponents" );
-	}
 	
 	// make sure the shadow caster is cleared of off dyamic shadow maps
 	//pShadowCaster->GetSolid().DropDynamic();
@@ -874,21 +852,6 @@ void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
 }
 
 void deoglRLight::PrepareForShadowCasting( deoglRenderPlan &plan ){
-	int c, componentCount;
-	
-	componentCount = pStaticComponentList.GetCount();
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *pStaticComponentList.GetAt( c );
-		component.UpdateVBO();
-		component.UpdateRenderables( plan );
-	}
-	
-	componentCount = pDynamicComponentList.GetCount();
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *pDynamicComponentList.GetAt( c );
-		component.UpdateVBO();
-		component.UpdateRenderables( plan );
-	}
 }
 
 

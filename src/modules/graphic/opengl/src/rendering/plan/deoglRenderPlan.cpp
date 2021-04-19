@@ -419,7 +419,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	}
 	
 	// prepare world for rendering
-	pWorld->PrepareForRender();
+	pWorld->PrepareForRender( *this );
 	
 	// update environment maps
 	if( ! pNoReflections ){
@@ -510,8 +510,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 		oglComponent->TestCameraInside( pCameraPosition );
 		oglComponent->UpdateVBO();
 		renderCanvas.SampleDebugInfoPlanPrepareComponentsVBO( *this );
-		oglComponent->UpdateRenderables( *this );
-		renderCanvas.SampleDebugInfoPlanPrepareComponentsRenderables( *this );
 		oglComponent->AddSkinStateRenderPlans( *this );
 	}
 	
