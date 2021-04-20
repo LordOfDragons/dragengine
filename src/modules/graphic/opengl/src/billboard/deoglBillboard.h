@@ -62,9 +62,11 @@ public:
 	bool pDirtyRenderEnvMap;
 	bool pDirtySkin;
 	bool pDirtyDynamicSkin;
+	bool pDirtyRenderableMapping;
 	bool pDirtySkinStateCalculatedProperties;
-	bool pDirtyRenderables;
+	bool pSkinStatePrepareRenderables;
 	
+	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
@@ -115,6 +117,10 @@ public:
 	
 	/** \brief Update. */
 	void Update( float elapsed );
+	
+	
+	
+	void DirtyRenderableMapping();
 	
 	
 	

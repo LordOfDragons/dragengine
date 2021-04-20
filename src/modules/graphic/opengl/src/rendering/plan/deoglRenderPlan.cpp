@@ -516,7 +516,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( i=0; i<billboardCount; i++ ){
 		deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
 		//billboard.TestCameraInside( pCameraPosition );
-		billboard.UpdateRenderables( *this );
 		//renderCanvas.SampleDebugInfoPlanPrepareBillboardsRenderables( *this );
 		billboard.AddSkinStateRenderPlans( *this );
 	}

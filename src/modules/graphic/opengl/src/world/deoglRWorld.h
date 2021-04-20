@@ -92,6 +92,7 @@ private:
 	deoglWorldOctree *pOctree;
 	
 	decPointerLinkedList pListPrepareForRenderComponents;
+	decPointerLinkedList pListPrepareForRenderBillboards;
 	
 	
 	
@@ -166,6 +167,12 @@ public:
 	
 	/** Remove component as prepare for render if present. */
 	void RemovePrepareForRenderComponent( deoglRComponent *component );
+	
+	/** Add billboard as require prepare for render if not present. */
+	void AddPrepareForRenderBillboard( deoglRBillboard *billboard );
+	
+	/** Remove billboard as prepare for render if present. */
+	void RemovePrepareForRenderBillboard( deoglRBillboard *billboard );
 	/*@}*/
 	
 	

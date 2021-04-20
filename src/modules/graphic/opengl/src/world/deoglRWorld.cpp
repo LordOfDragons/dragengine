@@ -224,6 +224,20 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		}
 	}
 	
+	// prepare billboards
+	decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
+	while( pListPrepareForRenderBillboards.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderBillboards.GetRoot();
+		deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
+		pListPrepareForRenderBillboards.Remove( entry );
+		
+		billboard.PrepareForRender( plan ); // can potentially re-add the billboard
+		
+		if( entry == tailBillboard ){
+			break; // processed last billboard. re-added billboard will come next
+		}
+	}
+	
 	// prepare prop fields
 	count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
@@ -252,6 +266,24 @@ void deoglRWorld::RemovePrepareForRenderComponent( deoglRComponent *component ){
 	}
 	if( component->GetLLPrepareForRenderWorld().GetList() ){
 		pListPrepareForRenderComponents.Remove( &component->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderBillboard( deoglRBillboard *billboard ){
+	if( ! billboard ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! billboard->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderBillboards.Add( &billboard->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderBillboard( deoglRBillboard *billboard ){
+	if( ! billboard ){
+		DETHROW( deeInvalidParam );
+	}
+	if( billboard->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderBillboards.Remove( &billboard->GetLLPrepareForRenderWorld() );
 	}
 }
 
@@ -836,6 +868,7 @@ void deoglRWorld::AddBillboard( deoglRBillboard *billboard ){
 	pBillboardCount++;
 	
 	billboard->SetParentWorld( this );
+	AddPrepareForRenderBillboard( billboard );
 }
 
 void deoglRWorld::RemoveBillboard( deoglRBillboard *billboard ){
@@ -843,6 +876,7 @@ void deoglRWorld::RemoveBillboard( deoglRBillboard *billboard ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderBillboard( billboard );
 	billboard->SetParentWorld( NULL );
 	billboard->SetWorldMarkedRemove( false );
 	
@@ -869,6 +903,7 @@ void deoglRWorld::RemoveAllBillboards(){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
+		RemovePrepareForRenderBillboard( pRootBillboard );
 		pRootBillboard->SetParentWorld( NULL );
 		pRootBillboard->SetWorldMarkedRemove( false );
 		pBillboardCount--;

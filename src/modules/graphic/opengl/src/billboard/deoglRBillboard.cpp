@@ -93,7 +93,7 @@ pSkinRendered( renderThread, *this ),
 pSkyShadowSplitMask( 0 ),
 pSortDistance( 0.0f ),
 pOccluded( false ),
-pDirtyRenderables( true ),
+pDirtyPrepareSkinStateRenderables( true ),
 
 pRenderEnvMap( NULL ),
 pRenderEnvMapFade( NULL ),
@@ -136,7 +136,9 @@ pMarked( false ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pLLWorldNext( NULL ),
+
+pLLPrepareForRenderWorld( this )
 {
 	try{
 		pSkinState = new deoglSkinState( renderThread, *this );
@@ -303,16 +305,40 @@ void deoglRBillboard::InitSkinStateCalculatedProperties(){
 	pSkinState->InitCalculatedProperties();
 }
 
-void deoglRBillboard::SetDirtyRendereables(){
-	pDirtyRenderables = true;
+void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateCalculatedProperties();
+	}
 }
 
-void deoglRBillboard::UpdateRenderables( deoglRenderPlan& ){
-	// update renderables. required here to ensure skin state is properly set up
-	pUpdateRenderables();
+void deoglRBillboard::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRBillboard::UpdateRenderableMapping(){
+	pSkinState->RemoveAllRenderables();
+	if( pSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	}
 	
-	// make sure all textures are updated and create the render info if required
-	pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRBillboard::DynamicSkinRenderablesChanged(){
+	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+		return;
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRBillboard::PrepareSkinStateRenderables(){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+	}
 }
 
 void deoglRBillboard::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
@@ -1077,6 +1103,13 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 
+void deoglRBillboard::PrepareForRender( deoglRenderPlan &plan ){
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables();
+		pDirtyPrepareSkinStateRenderables = false;
+	}
+}
+
 void deoglRBillboard::PrepareQuickDispose(){
 	pParentWorld = NULL;
 	pOctreeNode = NULL;
@@ -1213,46 +1246,8 @@ void deoglRBillboard::pUpdateCullSphere(){
 	pCullSphereRadius = ( float )sphere.GetRadius();
 }
 
-void deoglRBillboard::pUpdateRenderables(){
-	// TODO this situation here is not blistering at all. usually there happens only one update
-	// at the beginning of the billboard life time where the renderables are set up. then usually
-	// no change happens at all anymore during the life time of the billboard. with the current
-	// code though a lot of counter checking is done for all the billboards having a dynamic skin
-	// to verify no change happened. a notification system would be a better here not only to
-	// remove the counter handling but also to remove potential errors.
-	
-	// update dynamic skins to check
-	if( pDynamicSkin && pSkin && pSkin->GetHasRenderables() ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			pDirtyRenderables = true;
-			if( pUseSkinTexture && pUseSkinTexture->GetDynamicChannels() ){
-				MarkParamBlocksDirty();
-				MarkTUCsDirty();
-			}
-		}
-	}
-	
-	if( pDynamicSkin ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			MarkParamBlocksDirty();
-			MarkTUCsDirty();
-			pDirtyRenderables = true;
-		}
-	}
-	
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pSkin && pDynamicSkin ){
-			pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
-		}
-		
-		MarkParamBlocksDirty();
-		MarkTUCsDirty();
-		
-		pDirtyRenderables = false;
+void deoglRBillboard::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderBillboard( this );
 	}
 }

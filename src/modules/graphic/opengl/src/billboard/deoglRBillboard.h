@@ -27,6 +27,7 @@
 #include "../skin/rendered/deoglSkinRendered.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -77,7 +78,7 @@ public:
 	int pSkyShadowSplitMask;
 	float pSortDistance;
 	bool pOccluded;
-	bool pDirtyRenderables;
+	bool pDirtyPrepareSkinStateRenderables;
 	
 	deoglEnvironmentMap *pRenderEnvMap;
 	deoglEnvironmentMap *pRenderEnvMapFade;
@@ -127,6 +128,8 @@ public:
 	
 	deoglRBillboard *pLLWorldPrev;
 	deoglRBillboard *pLLWorldNext;
+	
+	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
 	
 	
 	
@@ -192,18 +195,18 @@ public:
 	
 	/** \brief Init skin state calculated properties. */
 	void InitSkinStateCalculatedProperties();
+	void UpdateSkinStateCalculatedProperties();
 	
 	/** \brief Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
+	void DirtyPrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables();
+	void DynamicSkinRenderablesChanged();
+	void UpdateRenderableMapping();
 	
 	
-	/** \brief Set renderables dirty. */
-	void SetDirtyRendereables();
-	
-	/** \brief Update renderables in the component if existing */
-	void UpdateRenderables( deoglRenderPlan &plan );
 	
 	/** \brief Add plans for renderables in the component if existing and requiring one. */
 	void AddSkinStateRenderPlans( deoglRenderPlan &plan );
@@ -515,6 +518,14 @@ public:
 	
 	
 	
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
+	void PrepareForRender( deoglRenderPlan &plan );
+	
+	/** \brief Prepare for quick disposal of component. */
+	void PrepareQuickDispose();
+	
+	
+	
 	/** \brief Linked list world previous. */
 	inline deoglRBillboard *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
@@ -527,10 +538,9 @@ public:
 	/** \brief Set linked list world next. */
 	void SetLLWorldNext( deoglRBillboard *billboard );
 	
-	
-	
-	/** \brief Prepare for quick disposal of component. */
-	void PrepareQuickDispose();
+	/** World prepare for render linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	
@@ -539,7 +549,8 @@ private:
 	void pCleanUp();
 	
 	void pUpdateCullSphere();
-	void pUpdateRenderables();
+	
+	void pRequiresPrepareForRender();
 };
 
 #endif
