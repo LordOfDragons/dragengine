@@ -31,7 +31,7 @@ class deoglRenderableDepthCubeMap;
 
 
 /**
- * \brief Shadow caster ambient map.
+ * Shadow caster ambient map.
  */
 class deoglSCAmbient{
 private:
@@ -54,10 +54,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create ambient caster. */
+	/** Create ambient caster. */
 	deoglSCAmbient( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up ambient caster. */
+	/** Clean up ambient caster. */
 	~deoglSCAmbient();
 	/*@}*/
 	
@@ -66,74 +66,77 @@ public:
 	/** \name Management */
 	/*@{*/
 	
-	/** \brief Static map if present or \em NULL otherwise. */
+	/** Static map if present or \em NULL otherwise. */
 	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
 	
-	/** \brief Request static map with size if absent. */
+	/** Request static map with size if absent. */
 	deoglTexture *ObtainStaticMapWithSize( int size, bool useFloat );
 	
-	/** \brief Static cube map if present or \em NULL otherwise. */
+	/** Static cube map if present or \em NULL otherwise. */
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
 	
-	/** \brief Request static cube map with size if absent. */
+	/** Request static cube map with size if absent. */
 	deoglCubeMap *ObtainStaticCubeMapWithSize( int size );
 	
-	/** \brief Drop static maps if present. */
+	/** Drop static maps if present. */
 	void DropStatic();
 	
-	/** \brief Number of frames elapsed since the last time static map has been used. */
+	/** Number of frames elapsed since the last time static map has been used. */
 	inline int GetLastUseStatic() const{ return pLastUseStatic; }
 	
-	/** \brief Increment last use static map counter by one. */
+	/** Increment last use static map counter by one. */
 	void IncrementLastUseStatic();
 	
-	/** \brief Reset last use static map counter. */
+	/** Reset last use static map counter. */
 	void ResetLastUseStatic();
 	
 	
 	
 	
-	/** \brief Dynamic map if present or \em NULL otherwise. */
+	/** Dynamic map if present or \em NULL otherwise. */
 	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
-	/** \brief Obtain dynamic map with size if absent. */
+	/** Obtain dynamic map with size if absent. */
 	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size );
 	
-	/** \brief Dynamic shadow cube map if present or \em NULL otherwise. */
+	/** Dynamic shadow cube map if present or \em NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
-	/** \brief Obtain dynamic shadow cube map with size if absent. */
+	/** Obtain dynamic shadow cube map with size if absent. */
 	deoglRenderableDepthCubeMap *ObtainDynamicCubeMapWithSize( int size );
 	
-	/** \brief Drop dynamic map if present. */
+	/** Drop dynamic map if present. */
 	void DropDynamic();
 	
 	
 	
-	/** \brief Check if static maps have not been used recently removing them. */
+	/** Check if static maps have not been used recently removing them. */
 	void Update();
 	
-	/** \brief Clear ambient caster. */
+	/** Shadow caster requires update. True if timers are running to drop textures. */
+	bool RequiresUpdate() const;
+	
+	/** Clear ambient caster. */
 	void Clear();
 	
 	
 	
-	/** \brief Plan static map size. */
+	/** Plan static map size. */
 	inline int GetPlanStaticSize() const{ return pPlanStaticSize; }
 	
-	/** \brief Set plan static map size. */
+	/** Set plan static map size. */
 	void SetPlanStaticSize( int size );
 	
-	/** \brief Plan dynamic map size. */
+	/** Plan dynamic map size. */
 	inline int GetPlanDynamicSize() const{ return pPlanDynamicSize; }
 	
-	/** \brief Set plan dynamic map size. */
+	/** Set plan dynamic map size. */
 	void SetPlanDynamicSize( int size );
 	
-	/** \brief Plan transparent map size. */
+	/** Plan transparent map size. */
 	inline int GetPlanTransparentSize() const{ return pPlanTransparentSize; }
 	
-	/** \brief Set plan transparent map size. */
+	/** Set plan transparent map size. */
 	void SetPlanTransparentSize( int size );
 	/*@}*/
 };

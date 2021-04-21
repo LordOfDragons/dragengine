@@ -68,8 +68,6 @@ private:
 	
 	decPoint pVariationSeed;
 	
-	int pUpdateNumber;
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -119,14 +117,6 @@ public:
 	
 	/** Advance time. */
 	void AdvanceTime( float timeStep );
-	
-	
-	
-	/** Update number. */
-	inline int GetUpdateNumber() const{ return pUpdateNumber; }
-	
-	/** Set update number. */
-	void SetUpdateNumber( int updateNumber );
 	
 	
 	

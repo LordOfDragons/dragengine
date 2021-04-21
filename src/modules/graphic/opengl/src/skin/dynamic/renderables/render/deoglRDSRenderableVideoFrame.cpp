@@ -69,8 +69,6 @@ void deoglRDSRenderableVideoFrame::SetVideoPlayer( deoglRVideoPlayer *videoPlaye
 	if( videoPlayer ){
 		videoPlayer->AddReference();
 	}
-	
-		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableVideoFrame::PrepareForRender(){

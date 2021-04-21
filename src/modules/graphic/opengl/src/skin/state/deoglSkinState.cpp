@@ -162,10 +162,6 @@ void deoglSkinState::AdvanceTime( float timeStep ){
 	pTime += timeStep;
 }
 
-void deoglSkinState::SetUpdateNumber( int updateNumber ){
-	pUpdateNumber = updateNumber;
-}
-
 
 
 void deoglSkinState::DropDelayedDeletionObjects(){
@@ -392,6 +388,4 @@ void deoglSkinState::pSharedInit(){
 	
 	pVariationSeed.x = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );
 	pVariationSeed.y = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );
-	
-	pUpdateNumber = 0;
 }

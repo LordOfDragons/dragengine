@@ -944,6 +944,8 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRTDefaultTextures &dt = renderThread.GetDefaultTextures();
+	deoglTexture &dtshadow = renderThread.GetDeferredRendering().GetUseInverseDepth()
+		? *dt.GetShadowMapInverseDepth() : *dt.GetShadowMap();
 	int target;
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettColor );
@@ -1023,12 +1025,12 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow1Solid
-			? *shadowDepthMaps.shadow1Solid : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow1Solid : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentDepth );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow1Transp
-			? *shadowDepthMaps.shadow1Transp : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow1Transp : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentColor );
 	if( target != -1 ){
@@ -1039,12 +1041,12 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow2Solid
-			? *shadowDepthMaps.shadow2Solid : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow2Solid : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentDepth );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow2Transp
-			? *shadowDepthMaps.shadow2Transp : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow2Transp : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentColor );
 	if( target != -1 ){
@@ -1055,13 +1057,13 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1Ambient );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow1Ambient
-			? *shadowDepthMaps.shadow1Ambient : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow1Ambient : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2Ambient );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, shadowDepthMaps.shadow2Ambient
-			? *shadowDepthMaps.shadow2Ambient : *dt.GetShadowMap(), GetSamplerShadowClampLinearInverse() );
+			? *shadowDepthMaps.shadow2Ambient : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettLightDepth1 );

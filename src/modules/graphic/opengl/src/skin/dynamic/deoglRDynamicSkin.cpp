@@ -38,8 +38,7 @@
 ////////////////////////////
 
 deoglRDynamicSkin::deoglRDynamicSkin( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pUpdateNumber( 0 )
+pRenderThread( renderThread )
 {
 	LEAK_CHECK_CREATE( renderThread, DynamicSkin );
 }
@@ -90,18 +89,8 @@ int deoglRDynamicSkin::IndexOfRenderableNamed( const char *name ) const{
 
 void deoglRDynamicSkin::AddRenderable( deoglRDSRenderable *renderable ){
 	pRenderables.Add( renderable );
-		TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDynamicSkin::RemoveAllRenderables(){
 	pRenderables.RemoveAll();
-		TextureConfigurationChanged(); // deprecated
-}
-
-void deoglRDynamicSkin::TextureConfigurationChanged(){
-	pUpdateNumber++; // deprecated
-}
-
-int deoglRDynamicSkin::Update(){
-	return pUpdateNumber; // deprecated
 }

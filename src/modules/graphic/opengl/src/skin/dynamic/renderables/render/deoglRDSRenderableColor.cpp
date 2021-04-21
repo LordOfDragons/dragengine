@@ -100,8 +100,6 @@ void deoglRDSRenderableColor::SetColor( const decColor &color ){
 	
 	pColor = color;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
 void deoglRDSRenderableColor::PrepareForRender(){

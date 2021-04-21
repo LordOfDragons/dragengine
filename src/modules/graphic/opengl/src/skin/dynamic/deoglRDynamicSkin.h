@@ -38,7 +38,6 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	decObjectList pRenderables;
-	int pUpdateNumber;
 	
 	
 	
@@ -78,17 +77,6 @@ public:
 	
 	/** Add renderable. */
 	void AddRenderable( deoglRDSRenderable *renderable );
-	
-	/**
-	 * Texture configuration changed.
-	 * \details Increments the update number for users to know they need to update their
-	 *          texture unit configurations and potentially shaders. This is to be called
-	 *          only by deoglRDSRenderable subclasses.
-	 */
-	void TextureConfigurationChanged();
-	
-	/** Update the dynamic skin if required. Returns the current update number. */
-	int Update();
 	/*@}*/
 };
 

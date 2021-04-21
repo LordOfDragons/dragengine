@@ -115,11 +115,16 @@ pColor( 1.0f, 1.0f, 1.0f ),
 pLightSkin( NULL ),
 pLightCanvas( NULL ),
 pDynamicSkin( NULL ),
-pDirtyRenderables( false ),
 pSkinState( NULL ),
 pUseSkinTexture( NULL ),
+pDirtyPrepareSkinStateRenderables( true ),
+pDirtyPrepareLightCanvas( true ),
 
-pWorldMarkedRemove( false )
+pWorldMarkedRemove( false ),
+pLLWorldPrev( NULL ),
+pLLWorldNext( NULL ),
+
+pLLPrepareForRenderWorld( this )
 {
 	int i;
 	
@@ -311,6 +316,8 @@ void deoglRLight::SetLightCanvas( deoglRCanvasView *canvas ){
 	if( canvas ){
 		canvas->AddReference();
 	}
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -331,10 +338,6 @@ void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 
 void deoglRLight::SetTransform( const decTexMatrix2 &matrix ){
 	pTransform = matrix;
-}
-
-void deoglRLight::SetRenderablesDirty(){
-	pDirtyRenderables = true;
 }
 
 
@@ -406,6 +409,61 @@ bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
 
 
 
+void deoglRLight::InitSkinStateCalculatedProperties(){
+	if( pSkinState ){
+		pSkinState->InitCalculatedProperties();
+	}
+}
+
+void deoglRLight::UpdateSkinStateCalculatedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateCalculatedProperties();
+	}
+}
+
+void deoglRLight::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRLight::PrepareSkinStateRenderables(){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin );
+	}
+}
+
+void deoglRLight::DynamicSkinRenderablesChanged(){
+// 	if( ! pDynamicSkin || ! pLightSkin || ! pLightSkin->GetHasRenderables() ){
+// 		return;
+// 	}
+// 	
+// 	MarkParamBlocksDirty();
+// 	MarkTUCsDirty();
+}
+
+void deoglRLight::UpdateRenderableMapping(){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	// udpate mappings of dynamic skin of component itself
+	pSkinState->RemoveAllRenderables();
+	if( pLightSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pLightSkin, *pDynamicSkin );
+	}
+	
+// 	MarkParamBlocksDirty();
+// 	MarkTUCsDirty();
+// 	MarkUseSkinDirty(); // required?
+}
+
+void deoglRLight::DirtyPrepareLightCanvas(){
+	pDirtyPrepareLightCanvas = true;
+	pRequiresPrepareForRender();
+}
+
+
+
 void deoglRLight::SetMatrix( const decDMatrix &matrix ){
 	pMatrix = matrix;
 	pInverseMatrix = matrix.QuickInvert();
@@ -451,6 +509,7 @@ const decDVector &deoglRLight::GetMaximumExtend(){
 
 void deoglRLight::SetDirtyExtends(){
 	pDirtyExtends = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -506,6 +565,7 @@ deoglDCollisionVolume *deoglRLight::GetCollisionVolume(){
 
 void deoglRLight::SetDirtyCollisionVolume(){
 	pDirtyColVol = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -601,9 +661,13 @@ void deoglRLight::SetLightVolumeDirty(){
 	}else{
 		// we have to create one... TODO
 	}
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::UpdateLightVolume(){
+	// NOTE Can be called indirectly from main thread during synchronization.
+	
 	if( ! pDirtyConvexVolumeList ){
 		return;
 	}
@@ -698,12 +762,15 @@ void deoglRLight::UpdateLightVolume(){
 	
 	// rebuild the light volume using the convex volume list
 	pLightVolume->CreateFrom( *pConvexVolumeList );
+	// we can not update the VBO here because this metho can be potentially called by the
+	// main thread during synchronization over detours
 	
 	// extends are usually dirty now
 	pDirtyExtends = true;
 	pDirtyCollideLists = true;
 	pDirtyColVol = true;
 	pDirtyTouching = true;
+	pRequiresPrepareForRender();
 	
 	// no more dirty
 	pDirtyConvexVolumeList = false;
@@ -826,14 +893,18 @@ void deoglRLight::ClearOptimizer(){
 
 
 void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
-	/*if( pLightSkin ){
-		pLightSkin->PrepareForRender();
-	}*/
-	if( pLightCanvas ){
-		pLightCanvas->PrepareForRender();
+	if( pDirtyPrepareLightCanvas ){
+		if( pLightCanvas ){
+			pLightCanvas->PrepareForRender();
+		}
+		pDirtyPrepareLightCanvas = false;
 	}
 	
-	pUpdateRenderables();
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables();
+		pDirtyPrepareSkinStateRenderables = false;
+	}
+	
 	pCheckTouching();
 	
 	pShadowCaster->Update();
@@ -845,13 +916,15 @@ void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
 	// make sure the shadow caster is cleared of off dyamic shadow maps
 	//pShadowCaster->GetSolid().DropDynamic();
 	
-	// update light volume vbo if existing
+	// update light volume vbo if existing. has to be done here. see UpdateLightVolume()
 	if( pLightVolume ){
 		pLightVolume->UpdateVBO();
 	}
-}
-
-void deoglRLight::PrepareForShadowCasting( deoglRenderPlan &plan ){
+	
+	// force update next frame if required
+	if( pShadowCaster->RequiresUpdate() ){
+		pRequiresPrepareForRender();
+	}
 }
 
 
@@ -1179,6 +1252,7 @@ void deoglRLight::SetVisible( bool visible ){
 
 void deoglRLight::SetDirtyTouching(){
 	pDirtyTouching = true;
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::EnvMapNotifyLightChanged(){
@@ -1463,6 +1537,7 @@ void deoglRLight::LightVolumeImproved(){
 	pDirtyStaticShadows = true;
 	pDirtyDynamicShadows = true;
 	pDirtyTouching = true;
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::ReplaceLightVolume( decConvexVolumeList *list ){
@@ -1495,6 +1570,14 @@ void deoglRLight::ReplaceShadowCaster( deoglShadowCaster *shadowCaster ){
 
 void deoglRLight::SetWorldMarkedRemove( bool marked ){
 	pWorldMarkedRemove = marked;
+}
+
+void deoglRLight::SetLLWorldPrev( deoglRLight *light ){
+	pLLWorldPrev = light;
+}
+
+void deoglRLight::SetLLWorldNext( deoglRLight *light ){
+	pLLWorldNext = light;
 }
 
 
@@ -1840,30 +1923,8 @@ void deoglRLight::pCheckTouching(){
 	pDynamicComponentList.RemoveAllMarked( true );
 }
 
-void deoglRLight::pUpdateRenderables(){
-	if( ! pSkinState ){
-		return;
+void deoglRLight::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderLight( this );
 	}
-	
-	// check if an update is needed
-	if( pDynamicSkin && pLightSkin && pLightSkin->GetHasRenderables() ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			pDirtyRenderables = true;
-		}
-	}
-	
-	// update renderable mappings in the dynamic skins
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pLightSkin && pDynamicSkin ){
-			pSkinState->AddRenderables( *pLightSkin, *pDynamicSkin );
-		}
-		
-		pDirtyRenderables = false;
-	}
-	
-	// prepare renderables
-	pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin );
 }

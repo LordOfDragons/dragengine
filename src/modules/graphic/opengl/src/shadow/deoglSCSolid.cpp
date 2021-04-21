@@ -215,6 +215,10 @@ void deoglSCSolid::Update(){
 	}
 }
 
+bool deoglSCSolid::RequiresUpdate() const{
+	return pHasStatic;
+}
+
 void deoglSCSolid::Clear(){
 	DropStatic();
 	DropDynamic();

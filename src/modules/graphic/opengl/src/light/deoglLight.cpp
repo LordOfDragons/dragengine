@@ -88,6 +88,8 @@ pLight( light ),
 pRLight( NULL ),
 pSkinStateController( NULL ),
 pParentWorld( NULL ),
+pDynamicSkin( NULL ),
+pLightCanvas( NULL ),
 
 pAccumUpdate( 0.0f ),
 
@@ -104,10 +106,20 @@ pDirtyOctree( true ),
 pDirtyShadowParameters( true ),
 pDirtyShadows( true ),
 pDirtySource( true ),
+pDirtyDynamicSkin( false ),
 pDirtyTouching( true ),
 pDirtyTransform( true ),
 pDirtyType( true ),
-pDirtySkinStateController( true )
+pDirtyEnvMapNotifyLightChanged( true ),
+
+pDirtyRenderableMapping( true ),
+pDirtySkinStateController( true ),
+pDynamicSkinRenderablesChanged( true ),
+pDynamicSkinRequiresSync( false ),
+pLightCanvasRequiresSync( false ),
+pRequiresUpdateEverySync( false ),
+
+pLLSyncWorld( this )
 {
 	try{
 		pRLight = new deoglRLight( ogl.GetRenderThread() );
@@ -143,21 +155,6 @@ void deoglLight::SetParentWorld( deoglWorld *world ){
 }
 
 void deoglLight::SyncToRender(){
-	bool requiresDirtyEnvMaps = false;
-	
-	deoglDynamicSkin *dynamicSkin = NULL;
-	if( pLight.GetDynamicSkin() ){
-		dynamicSkin = ( deoglDynamicSkin* )pLight.GetDynamicSkin()->GetPeerGraphic();
-		dynamicSkin->SyncToRender();
-	}
-	
-	deoglCanvasView *lightCanvas = NULL;
-	if( pLight.GetLightCanvas() ){
-		lightCanvas = ( deoglCanvasView* )pLight.GetLightCanvas()->GetPeerGraphic();
-		lightCanvas->SyncToRender();
-	}
-	
-	
 	if( pDirtyLight ){
 		pRLight->SetActive( pLight.GetActivated() );
 		pRLight->SetSpotAngle( pLight.GetSpotAngle() );
@@ -167,7 +164,7 @@ void deoglLight::SyncToRender(){
 		
 		pDirtyLight = false;
 		if( pLight.GetHintMovement() != deLight::emhDynamic ){
-			requiresDirtyEnvMaps = true;
+			pDirtyEnvMapNotifyLightChanged = true;
 		}
 		// TODO use parameter hint
 	}
@@ -178,7 +175,7 @@ void deoglLight::SyncToRender(){
 		
 		pDirtyType = false;
 		if( pLight.GetHintMovement() != deLight::emhDynamic ){
-			requiresDirtyEnvMaps = true;
+			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
@@ -192,7 +189,7 @@ void deoglLight::SyncToRender(){
 		
 		pDirtyLightParameters = false;
 		if( pLight.GetHintMovement() == deLight::emhStationary ){
-			//requiresDirtyEnvMaps = true; // track if changed enough
+			//pDirtyEnvMapNotifyLightChanged = true; // track if changed enough
 		}
 		// TODO use parameter hint
 	}
@@ -211,7 +208,7 @@ void deoglLight::SyncToRender(){
 		
 		pDirtyShadowParameters = false;
 		if( pLight.GetHintMovement() != deLight::emhDynamic ){
-			requiresDirtyEnvMaps = true;
+			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
@@ -220,7 +217,7 @@ void deoglLight::SyncToRender(){
 		
 		pDirtyAttenuation = false;
 		if( pLight.GetHintMovement() != deLight::emhDynamic ){
-			requiresDirtyEnvMaps = true;
+			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
@@ -229,40 +226,11 @@ void deoglLight::SyncToRender(){
 		pDirtyTransform = false;
 	}
 	
-	if( pDirtySource ){
-		if( pLight.GetLightSkin() ){
-			deoglSkin * const skin = ( deoglSkin* )pLight.GetLightSkin()->GetPeerGraphic();
-			pRLight->SetLightSkin( skin->GetRSkin() );
-			
-			if( ! pSkinStateController ){
-				pSkinStateController = new deoglSkinStateController;
-			}
-			
-		}else{
-			pRLight->SetLightSkin( NULL );
-		}
-		
-		if( dynamicSkin ){
-			pRLight->SetDynamicSkin( dynamicSkin->GetRDynamicSkin() );
-			
-		}else{
-			pRLight->SetDynamicSkin( NULL );
-		}
-		
-		if( lightCanvas ){
-			pRLight->SetLightCanvas( lightCanvas->GetRCanvasView() );
-			
-		}else{
-			pRLight->SetLightCanvas( NULL );
-		}
-		
-		pRLight->DropShaders();
-		pRLight->SetRenderablesDirty();
-		
-		pDirtySource = false;
-		if( pLight.GetHintMovement() != deLight::emhDynamic ){
-			requiresDirtyEnvMaps = true;
-		}
+	pSyncSource();
+	
+	if( pDirtyRenderableMapping ){
+		pRLight->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
 	}
 	
 	if( pDirtySkinStateController ){
@@ -284,12 +252,25 @@ void deoglLight::SyncToRender(){
 		pAccumUpdate = 0.0f;
 	}
 	
+	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// and pRComponent->UpdateSkin()
+	if( pDirtySkinStateCalculatedProperties ){
+		pRLight->InitSkinStateCalculatedProperties();
+		pDirtySkinStateCalculatedProperties = false;
+	}
+	if( pSkinStatePrepareRenderables ){
+		pRLight->DirtyPrepareSkinStateRenderables();
+		pSkinStatePrepareRenderables = false;
+	}
+	
+	pRLight->UpdateSkinStateCalculatedProperties(); // has to be done better. only some need this
+	
 	if( pDirtyMatrices ){
 		pRLight->SetMatrix( decDMatrix::CreateWorld( pLight.GetPosition(), pLight.GetOrientation() ) );
 		pDirtyMatrices = false;
 		
 		if( pLight.GetHintMovement() == deLight::emhStationary ){ // jitter: if change is large enough?
-			requiresDirtyEnvMaps = true;
+			pDirtyEnvMapNotifyLightChanged = true;
 		}
 	}
 	
@@ -334,9 +315,70 @@ void deoglLight::SyncToRender(){
 		pDirtyOctree = false;
 	}
 	
-	if( requiresDirtyEnvMaps ){
+	if( pDirtyEnvMapNotifyLightChanged ){
 		pRLight->EnvMapNotifyLightChanged();
+		pDirtyEnvMapNotifyLightChanged = false;
 	}
+}
+
+void deoglLight::DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable ){
+	pDynamicSkinRequiresSync = true;
+	pSkinStatePrepareRenderables = true;
+	
+	pRequiresSync();
+}
+
+void deoglLight::DirtyRenderableMapping(){
+	pDirtyRenderableMapping = true;
+	
+	pRequiresSync();
+}
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglLight::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglLight::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRenderablesChanged = true;
+	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pSkinStatePrepareRenderables = true;
+	
+	pRequiresSync();
+}
+
+void deoglLight::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
+	pDynamicSkinRequiresSync = true;
+	pSkinStatePrepareRenderables = true;
+	
+	pRequiresSync();
+}
+
+void deoglLight::DynamicSkinRequiresSync(){
+	pDynamicSkinRequiresSync = true;
+	pSkinStatePrepareRenderables = true;
+	
+	pRequiresSync();
+}
+
+
+
+// Canvas view listener
+/////////////////////////
+
+void deoglLight::CanvasViewDestroyed(){
+	pLightCanvas = NULL;
+}
+
+void deoglLight::CanvasViewRequiresSync(){
+	pLightCanvasRequiresSync = true;
+	
+	pRequiresSync();
 }
 
 
@@ -464,8 +506,48 @@ void deoglLight::OrientationChanged(){
 }
 
 void deoglLight::SourceChanged(){
+	deoglDynamicSkin * const dynamicSkin = pLight.GetDynamicSkin()
+		? ( deoglDynamicSkin* )pLight.GetDynamicSkin()->GetPeerGraphic() : NULL;
+	
+	if( dynamicSkin != pDynamicSkin ){
+		if( pDynamicSkin ){
+			pDynamicSkin->RemoveListener( this );
+		}
+		
+		pDynamicSkin = dynamicSkin;
+		
+		if( dynamicSkin ){
+			dynamicSkin->AddListener( this );
+		}
+		
+		pDirtyDynamicSkin = true;
+		pDynamicSkinRequiresSync = true;
+		pDynamicSkinRenderablesChanged = true;
+		pDirtySkinStateController = true;
+		pDirtyRenderableMapping = true;
+		pSkinStatePrepareRenderables = true;
+	}
+	
+	deoglCanvasView * const lightCanvas = pLight.GetLightCanvas()
+		? ( deoglCanvasView* )pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
+	
+	if( lightCanvas != pLightCanvas ){
+		if( pLightCanvas ){
+			pLightCanvas->RemoveListener( this );
+		}
+		
+		pLightCanvas = lightCanvas;
+		
+		if( lightCanvas ){
+			lightCanvas->AddListener( this );
+		}
+		
+		pLightCanvasRequiresSync = true;
+	}
+	
 	pDirtySource = true;
-	pDirtySkinStateController = true;
+	
+	pRequiresSync();
 }
 
 void deoglLight::TransformChanged(){
@@ -475,6 +557,8 @@ void deoglLight::TransformChanged(){
 void deoglLight::ActivatedChanged(){
 	pDirtyLight = true;
 	pDirtyOctree = true;
+	pDirtyShadows = true;
+	pDirtyTouching = true;
 }
 
 void deoglLight::HintChanged(){
@@ -500,4 +584,74 @@ void deoglLight::pCleanUp(){
 	if( pRLight ){
 		pRLight->FreeReference();
 	}
+	
+	if( pLightCanvas ){
+		pLightCanvas->RemoveListener( this );
+	}
+	if( pDynamicSkin ){
+		pDynamicSkin->RemoveListener( this );
+	}
+}
+
+void deoglLight::pSyncSource(){
+	if( ! pDirtySource ){
+		return;
+	}
+	
+	// light skin
+	if( pLight.GetLightSkin() ){
+		deoglSkin * const skin = ( deoglSkin* )pLight.GetLightSkin()->GetPeerGraphic();
+		pRLight->SetLightSkin( skin->GetRSkin() );
+		
+		if( ! pSkinStateController ){
+			pSkinStateController = new deoglSkinStateController;
+		}
+		
+	}else{
+		pRLight->SetLightSkin( NULL );
+	}
+	
+	// dynamic skin
+	pRLight->SetDynamicSkin( pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : NULL );
+	
+	if( pDynamicSkinRenderablesChanged ){
+		pDynamicSkinRenderablesChanged = false;
+		pRLight->DynamicSkinRenderablesChanged();
+	}
+	
+	if( pDynamicSkinRequiresSync ){
+		pDynamicSkinRequiresSync = false;
+		if( pDynamicSkin ){
+			pDynamicSkin->SyncToRender();
+		}
+	}
+	
+	// light canvas
+	pRLight->SetLightCanvas( pLightCanvas ? pLightCanvas->GetRCanvasView() : NULL );
+	
+	if( pLightCanvasRequiresSync ){
+		pLightCanvasRequiresSync = false;
+		if( pLightCanvas ){
+			pLightCanvas->SyncToRender();
+		}
+	}
+	
+	// common
+	pRLight->DropShaders();
+	
+	pDirtySource = false;
+	
+	if( pLight.GetHintMovement() != deLight::emhDynamic ){
+		pDirtyEnvMapNotifyLightChanged = true;
+	}
+}
+
+void deoglLight::pCheckRequiresUpdateEverySync(){
+	pRequiresUpdateEverySync |= pSkinStateController->RequiresSyncEveryFrameUpdate();
+}
+
+void deoglLight::pRequiresSync(){
+// 	if( ! pLLSyncWorld.GetList() && pParentWorld ){
+// 		pParentWorld->AddSyncLight( this );
+// 	}
 }

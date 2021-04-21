@@ -75,6 +75,10 @@ void deoglShadowCaster::Update(){
 	pAmbient.Update();
 }
 
+bool deoglShadowCaster::RequiresUpdate() const{
+	return pSolid.RequiresUpdate() || pTransparent.RequiresUpdate() || pAmbient.RequiresUpdate();
+}
+
 
 
 void deoglShadowCaster::Clear(){

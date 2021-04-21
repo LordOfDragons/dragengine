@@ -552,10 +552,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( l=0; l<pSkyLightCount; l++ ){
 		pSkyLights[ l ]->PrepareForRender( *this );
 	}
-	for( l=0; l<lightCount; l++ ){
-		pCollideList.GetLightAt( l )->PrepareForRender( *this );
-	}
-	renderCanvas.SampleDebugInfoPlanPrepareLights( *this );
 	
 	// prepare particles for rendering
 	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();

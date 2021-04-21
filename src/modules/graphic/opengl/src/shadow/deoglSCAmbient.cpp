@@ -215,6 +215,10 @@ void deoglSCAmbient::Update(){
 	}
 }
 
+bool deoglSCAmbient::RequiresUpdate() const{
+	return pHasStatic;
+}
+
 void deoglSCAmbient::Clear(){
 	DropStatic();
 	DropDynamic();

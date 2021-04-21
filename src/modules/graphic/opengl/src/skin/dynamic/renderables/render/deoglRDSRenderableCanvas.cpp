@@ -72,8 +72,6 @@ void deoglRDSRenderableCanvas::SetCanvas( deoglRCanvasView *canvas ){
 	if( canvas ){
 		canvas->AddReference();
 	}
-	
-		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableCanvas::PrepareForRender(){

@@ -238,6 +238,28 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		}
 	}
 	
+	// prepare lights
+	
+	decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
+	while( pListPrepareForRenderLights.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
+		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
+		pListPrepareForRenderLights.Remove( entry );
+		
+		light.PrepareForRender( plan ); // can potentially re-add the light
+		
+		if( entry == tailLight ){
+			break; // processed last light. re-added light will come next
+		}
+	}
+	
+	/*
+	count = pLights.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLight* )pLights.GetAt( i ) )->PrepareForRender( plan );
+	}
+	*/
+	
 	// prepare prop fields
 	count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
@@ -284,6 +306,24 @@ void deoglRWorld::RemovePrepareForRenderBillboard( deoglRBillboard *billboard ){
 	}
 	if( billboard->GetLLPrepareForRenderWorld().GetList() ){
 		pListPrepareForRenderBillboards.Remove( &billboard->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! light->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderLights.Add( &light->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	if( light->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderLights.Remove( &light->GetLLPrepareForRenderWorld() );
 	}
 }
 
@@ -580,6 +620,7 @@ void deoglRWorld::AddLight( deoglRLight *light ){
 	
 	pLights.Add( light );
 	light->SetParentWorld( this );
+	AddPrepareForRenderLight( light );
 }
 
 void deoglRWorld::RemoveLight( deoglRLight *light ){
@@ -588,6 +629,7 @@ void deoglRWorld::RemoveLight( deoglRLight *light ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderLight( light );
 	light->SetParentWorld( NULL );
 	pLights.RemoveFrom( index );
 }
@@ -597,7 +639,9 @@ void deoglRWorld::RemoveAllLights(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		( ( deoglRLight* )pLights.GetAt( i ) )->SetParentWorld( NULL );
+		deoglRLight * const light = ( deoglRLight* )pLights.GetAt( i );
+		RemovePrepareForRenderLight( light );
+		light->SetParentWorld( NULL );
 	}
 	
 	pLights.RemoveAll();

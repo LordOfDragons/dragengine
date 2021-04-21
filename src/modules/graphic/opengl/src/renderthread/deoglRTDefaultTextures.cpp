@@ -51,6 +51,7 @@ pAO( NULL ),
 pSolidity( NULL ),
 pEnvRoomMask( NULL ),
 pShadowMap( NULL ),
+pShadowMapInverseDepth( NULL ),
 pShadowMapColor( NULL ),
 pShadowCube( NULL ),
 pShadowCubeColor( NULL ),
@@ -155,6 +156,9 @@ void deoglRTDefaultTextures::pCleanUp(){
 	}
 	if( pShadowMap ){
 		delete pShadowMap;
+	}
+	if( pShadowMapInverseDepth ){
+		delete pShadowMapInverseDepth;
 	}
 	if( pEnvRoomMask ){
 		delete pEnvRoomMask;
@@ -440,6 +444,12 @@ void deoglRTDefaultTextures::pCreateShadowTextures( deoglRenderThread &renderThr
 	pShadowMap->SetSize( 1, 1 );
 	pShadowMap->SetDepthFormat( false, false );
 	pShadowMap->SetPixels( pixelBuffer1 );
+	
+	pixelBuffer1.SetToFloatColor( 0.0f, 0.0f, 0.0f, 1.0f );
+	pShadowMapInverseDepth = new deoglTexture( renderThread );
+	pShadowMapInverseDepth->SetSize( 1, 1 );
+	pShadowMapInverseDepth->SetDepthFormat( false, false );
+	pShadowMapInverseDepth->SetPixels( pixelBuffer1 );
 	
 	deoglPixelBuffer pixelBuffer1b( deoglPixelBuffer::epfByte3, 1, 1, 1 );
 	pixelBuffer1b.SetToIntColor( 0, 0, 0, 255 );

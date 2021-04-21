@@ -69,8 +69,6 @@ void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
 	if( image ){
 		image->AddReference();
 	}
-	
-		GetDynamicSkin().TextureConfigurationChanged(); // deprecated
 }
 
 void deoglRDSRenderableImage::PrepareForRender(){

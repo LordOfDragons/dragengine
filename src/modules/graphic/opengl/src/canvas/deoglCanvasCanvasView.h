@@ -23,6 +23,7 @@
 #define _DEOGLCANVASCANVASVIEW_H_
 
 #include "deoglCanvas.h"
+#include "deoglCanvasViewListener.h"
 
 class deoglRCanvasCanvasView;
 
@@ -32,7 +33,7 @@ class deCanvasCanvasView;
 /**
  * \brief Canvas view peer.
  */
-class deoglCanvasCanvasView : public deoglCanvas{
+class deoglCanvasCanvasView : public deoglCanvas, deoglCanvasViewListener{
 private:
 	deCanvasCanvasView &pCanvasCanvasView;
 	deoglRCanvasCanvasView *pRCanvasCanvasView;
@@ -62,11 +63,11 @@ public:
 	 */
 	virtual void SyncContentToRender();
 	
-	/** \brief Canvas view requires sync. */
-	void CanvasViewRequiresSync();
+	/** Canvas view has been destroyed. Owner has to drop weak reference to canvas view. */
+	virtual void CanvasViewDestroyed();
 	
-	/** \brief Drop canvas view. */
-	void DropCanvasView();
+	/** Canvas view requires sync. */
+	virtual void CanvasViewRequiresSync();
 	/*@}*/
 	
 	
