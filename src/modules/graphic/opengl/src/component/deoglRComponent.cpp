@@ -1728,6 +1728,14 @@ void deoglRComponent::NotifyTexturesChanged(){
 	}
 }
 
+void deoglRComponent::NotifyTUCChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->TUCChanged( *this );
+		pListenerIndex++;
+	}
+}
+
 void deoglRComponent::NotifyMovementHintChanged(){
 	pListenerIndex = 0;
 	while( pListenerIndex < pListeners.GetCount() ){

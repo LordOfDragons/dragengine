@@ -175,6 +175,7 @@ pDebugInfoSolidShadowSplitLODLevels( NULL ),
 pDebugInfoSolidShadowSplitClear( NULL ),
 pDebugInfoSolidShadowSplitTask( NULL ),
 pDebugInfoSolidShadowSplitRender( NULL ),
+pDebugInfoSolidShadowGI( NULL ),
 pDebugInfoSolidLight( NULL ),
 
 pDebugInfoTransparentDetail( NULL ),
@@ -259,6 +260,9 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoSolidShadowSplitRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitRender );
+		
+		pDebugInfoSolidShadowGI = new deoglDebugInformation( "Shadow GI", colorText, colorBgSub );
+		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadowGI );
 		
 		pDebugInfoSolidLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidLight );
@@ -500,7 +504,7 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	
 	// GI rays
 	if( ! mask && solid ){
-		deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+		deoglGIState * const giState = plan.GetUpdateGIState();
 		if( giState ){
 			RestoreFBOGITraceRays( *giState );
 			
@@ -827,6 +831,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			
 		}else{
 			addToRenderTask.AddComponents( *pColList2 );
+			renderThread.GetLogger().LogInfoFormat("CHECK %d", pColList2->GetComponentCount());
 		}
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
@@ -928,15 +933,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 void deoglRenderLightSky::RenderGIShadowMap( deoglRenderPlan &plan,
 deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){
 		return;
 	}
 	
+	DebugTimer4Reset( plan, true );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	
-	deoglCollideList &collideList = planSkyLight.GetGICollideList();
-	UpdateComponentVBO( collideList );
 	
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * planSkyLight.GetLayer()->GetMatrix() );
 	
@@ -987,8 +990,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	sl.scale.y = 1.0f / ( sl.maxExtend.y - sl.minExtend.y );
 	sl.scale.z = 1.0f / ( sl.maxExtend.z - sl.minExtend.z );
 	
-	deoglLODCalculator().SetComponentLODMax( collideList );
-	
 	// the calculation here is a bit complicated. the fragment position is transformed from
 	// GI space to camera space to allow the same light shader code to light it. the GI shadow
 	// map though is calculated relative to GI space. the GI and camera space are slightly
@@ -1020,21 +1021,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 	renderParamBlock->UnmapBuffer();
 	
-	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renderParamBlock );
-	
-	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
-	addToRenderTask.Reset();
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetForceDoubleSided( true );
-	//addToRenderTask.SetFilterHoles( true );
-	//addToRenderTask.SetWithHoles( false );
-	addToRenderTask.AddComponents( collideList );
-	
-	renderTask.PrepareForRender( renderThread );
+	deoglPersistentRenderTask &renderTask = planSkyLight.GetGIRenderTask();
 	renderThread.GetRenderers().GetGeometry().RenderTask( renderTask );
 	
 	// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
@@ -1054,6 +1041,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	
 	// clean up
 	shadowMapper.DropForeignTextures();
+	DebugTimer4Sample( plan, *pDebugInfoSolidShadowGI, true );
 }
 
 
@@ -1076,7 +1064,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRenderPlanSkyLight &pla
 	// set values
 	paramBlock.MapBuffer();
 	try{
-		const bool hasGIState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) != NULL;
+		const bool hasGIState = plan.GetRenderGIState() != NULL;
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){
@@ -1149,7 +1137,7 @@ int shadowMapSize, int passCount ){
 	
 	// set values
 	decMatrix matrix[ 4 ], giMatrixShadow;
-	deoglGIState * const giState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
+	deoglGIState * const giState = plan.GetRenderGIState();
 	float layerBorder[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float scaleZ[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	
@@ -1295,6 +1283,7 @@ void deoglRenderLightSky::ResetDebugInfo(){
 	pDebugInfoSolidShadowSplitClear->Clear();
 	pDebugInfoSolidShadowSplitTask->Clear();
 	pDebugInfoSolidShadowSplitRender->Clear();
+	pDebugInfoSolidShadowGI->Clear();
 	pDebugInfoSolidLight->Clear();
 	
 	pDebugInfoTransparentLight->Clear();
@@ -1398,6 +1387,9 @@ void deoglRenderLightSky::pCleanUp(){
 	}
 	if( pDebugInfoSolidShadowSplitRender ){
 		pDebugInfoSolidShadowSplitRender->FreeReference();
+	}
+	if( pDebugInfoSolidShadowGI ){
+		pDebugInfoSolidShadowGI->FreeReference();
 	}
 	if( pDebugInfoSolidLight ){
 		pDebugInfoSolidLight->FreeReference();

@@ -71,6 +71,7 @@ private:
 	deoglDebugInformation *pDebugInfoSolidShadowSplitClear;
 	deoglDebugInformation *pDebugInfoSolidShadowSplitTask;
 	deoglDebugInformation *pDebugInfoSolidShadowSplitRender;
+	deoglDebugInformation *pDebugInfoSolidShadowGI;
 	deoglDebugInformation *pDebugInfoSolidLight;
 	
 	deoglDebugInformation *pDebugInfoTransparentDetail;

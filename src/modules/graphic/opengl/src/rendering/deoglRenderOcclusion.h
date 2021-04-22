@@ -91,6 +91,7 @@ public:
 	/** Render occlusion tests with frustum check. */
 	void RenderOcclusionTestsSun( deoglOcclusionMap &occmap, int baselevel, float clipNear, const decMatrix &matrixCamera,
 		float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan );
+	
 	/** Render occlusion tests using dual occlusion maps. */
 	void RenderOcclusionTestsDual( deoglOcclusionMap &occmap, int baselevel, float clipNear, const decMatrix &matrixCamera,
 		deoglOcclusionMap &occmap2, int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );

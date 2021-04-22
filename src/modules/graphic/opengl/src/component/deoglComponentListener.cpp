@@ -61,5 +61,8 @@ void deoglComponentListener::OcclusionMeshChanged( deoglRComponent& ){
 void deoglComponentListener::TexturesChanged( deoglRComponent& ){
 }
 
+void deoglComponentListener::TUCChanged( deoglRComponent& ){
+}
+
 void deoglComponentListener::MovementHintChanged( deoglRComponent& ){
 }

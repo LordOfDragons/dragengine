@@ -31,6 +31,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
 #include "../../gi/deoglGIState.h"
+#include "../../model/deoglRModel.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../sky/deoglRSkyInstance.h"
@@ -39,6 +40,19 @@
 #include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+
+// Class deoglRenderPlanSkyLight::cComponentChangeListener
+////////////////////////////////////////////////////////////
+
+deoglRenderPlanSkyLight::cGIComponentChangeListener::cGIComponentChangeListener( deoglRenderPlanSkyLight &plan ) :
+pPlan( plan ){
+}
+
+void deoglRenderPlanSkyLight::cGIComponentChangeListener::TUCChanged( deoglRComponent &component ){
+	pPlan.GIComponentChangedTUC( component );
+}
 
 
 
@@ -54,7 +68,17 @@ pSky( NULL ),
 pLayer( NULL ),
 pUseLight( true ),
 pUseShadow( false ),
-pShadowLayerCount( 0 ){
+pShadowLayerCount( 0 ),
+pGIRenderTaskAdd( renderThread, pGIRenderTask )
+{
+	pGIRenderTaskAdd.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+	pGIRenderTaskAdd.SetSolid( true );
+	pGIRenderTaskAdd.SetNoShadowNone( true );
+	pGIRenderTaskAdd.SetForceDoubleSided( true );
+	//pGIRenderTaskAdd.SetFilterHoles( true );
+	//pGIRenderTaskAdd.SetWithHoles( false );
+	
+	pGIComponentChangeListener.TakeOver( new cGIComponentChangeListener( *this ) );
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
@@ -79,9 +103,24 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 	return pShadowLayers[ index ];
 }
 
+void deoglRenderPlanSkyLight::GIComponentChangedTUC( deoglRComponent &component ){
+	const int index = pGIComponents.IndexOf( &component );
+	if( index != -1 ){
+		pGIRenderTask.RemoveOwnedBy( &component );
+		pGIComponents.RemoveFrom( index );
+	}
+	component.RemoveListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+}
+
 
 
 void deoglRenderPlanSkyLight::Clear(){
+	cGIComponentChangeListener * const giccl = ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener;
+	int i, count = pGIComponents.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponent* )( deObject* )pGIComponents.GetAt( i ) )->RemoveListener( giccl );
+	}
+	
 	pSky = NULL;
 	pLayer = NULL;
 	pCollideList.Clear();
@@ -95,7 +134,19 @@ void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanc
 	pLayer = layer;
 }
 
+#ifdef DO_SPECIAL_TIMING
+#include "../../renderthread/deoglRTLogger.h"
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("RenderPlanSkyLight.Init: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
+
 void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
+	INIT_SPECIAL_TIMING
 	pShadowLayerCount = 4;
 	
 	pDetermineShadowParameters( plan );
@@ -103,12 +154,19 @@ void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	pGICalcShadowLayerParams( plan );
-	pGICollectElements( plan ); // has to come before pCollectElements due to
-		// deoglRComponent::SetSkyShadowSplitMask overwriting mask
+	if( plan.GetUpdateGIState() ){
+		pGICalcShadowLayerParams( plan );
+		pGICollectElements( plan ); // has to come before pCollectElements due to
+			// deoglRComponent::SetSkyShadowSplitMask overwriting mask
+		SPECIAL_TIMER_PRINT("GI Collect")
+		
+		pGIUpdateRenderTask();
+		SPECIAL_TIMER_PRINT("GI Update Render Task")
+	}
 	
 	pCalcShadowLayerParams( plan );
 	pCollectElements( plan );
+	SPECIAL_TIMER_PRINT("Collect")
 }
 
 void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
@@ -401,7 +459,7 @@ void deoglRenderPlanSkyLight::pCollectElements( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams( deoglRenderPlan &plan ){
-	const deoglGIState * const giState = pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
+	const deoglGIState * const giState = plan.GetRenderGIState();
 	if( ! giState ){
 		return;
 	}
@@ -425,7 +483,7 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
-	const deoglGIState * const giState = pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan );
+	const deoglGIState * const giState = plan.GetRenderGIState();
 	if( ! pLayer || ! giState ){
 		return;
 	}
@@ -434,8 +492,84 @@ void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
 	collectElements.InitFromGIBox( giState->GetPosition(), giState->GetDetectionBox(), *pLayer, 2000.0f );
 	collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
 	collectElements.SetLayerMask( plan.GetLayerMask() );
-	collectElements.VisitWorldOctree( plan.GetWorld()->GetOctree() );
 	
 	pGIBoxMinExtend = collectElements.GetFrustumBoxMinExtend();
 	pGIBoxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
+	
+	// splits are not used for GI shadows but the minimum size restriction is.
+	// to avoid creating another method the AddSplit method is used for this
+	const float splitSizeLimitPixels = 1.0f;
+	const int shadowMapSize = 1024;
+	
+	const decVector boxSize( pGIBoxMaxExtend - pGIBoxMinExtend );
+	const float sizeThresholdX = ( boxSize.x / ( float )shadowMapSize ) * splitSizeLimitPixels;
+	const float sizeThresholdY = ( boxSize.y / ( float )shadowMapSize ) * splitSizeLimitPixels;
+	
+	collectElements.AddSplit( pGIBoxMinExtend, pGIBoxMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
+	
+	// visit world
+	collectElements.VisitWorldOctree( plan.GetWorld()->GetOctree() );
+}
+
+void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
+	int i, count;
+	
+	// remove components no more present in the collide list
+	count = pGIComponents.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponent* )pGIComponents.GetAt( i ) )->SetMarked( false );
+	}
+	
+	pGICollideList.MarkComponents( true );
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *( ( deoglRComponent* )pGIComponents.GetAt( i ) );
+		if( component.GetMarked() ){
+			continue;
+		}
+		
+		pGIRenderTask.RemoveOwnedBy( &component );
+		pGIComponents.RemoveFrom( i );
+		count--;
+		i--;
+		
+		component.RemoveListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		
+// 		{
+// 			const decDVector p(component.GetMatrix().GetPosition());
+// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
+// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
+// 		}
+	}
+	
+	// add components now present in the collide list
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponent* )pGIComponents.GetAt( i ) )->SetMarked( false );
+	}
+	
+	count = pGICollideList.GetComponentCount();
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *pGICollideList.GetComponentAt( i )->GetComponent();
+		
+		component.UpdateVBO(); // TODO move this into component prepare step
+		
+		if( ! component.GetMarked() ){
+			continue;
+		}
+		
+		pGIComponents.Add( &component );
+		
+		pGIRenderTaskAdd.AddComponent( component, -1 );
+		
+		component.AddListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		
+// 		{
+// 			const decDVector p(component.GetMatrix().GetPosition());
+// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Added (%g,%g,%g) %s",
+// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
+// 		}
+	}
+	
+	// prepare task
+	pGIRenderTask.PrepareForRender( pRenderThread );
 }

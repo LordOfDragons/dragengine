@@ -166,6 +166,18 @@ public:
 	/** \brief Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
+	/** Total amount of textures in this shader. */
+	int GetTotalTextureCount() const;
+	
+	/** \brief Total amount of vaos in this shader. */
+	int GetTotalVAOCount() const;
+	
+	/** \brief Total amount of instances in this shader. */
+	int GetTotalInstanceCount() const;
+	
+	/** \brief Total amount of subinstances in this shader. */
+	int GetTotalSubInstanceCount() const;
+	
 	/** \brief Add texture units configuration. */
 	void AddTUC( deoglTexUnitsConfig *tuc );
 	

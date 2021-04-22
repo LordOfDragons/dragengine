@@ -1695,6 +1695,29 @@ void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
 
 
 
+deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
+	if( pUseGIState && ! pUseConstGIState
+	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff ){
+		return pGIState;
+	}
+	return NULL;
+}
+
+deoglGIState *deoglRenderPlan::GetRenderGIState() const{
+	if( ! pUseGIState
+	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
+		return NULL;
+		
+	}else if( pUseConstGIState ){
+		return pUseConstGIState;
+		
+	}else{
+		return pGIState;
+	}
+}
+
+
+
 void deoglRenderPlan::SetDebugTiming( bool debugTiming ){
 	pDebugTiming = debugTiming;
 }

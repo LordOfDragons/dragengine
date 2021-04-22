@@ -692,6 +692,9 @@ public:
 	/** Notify all textures changed. */
 	void NotifyTexturesChanged();
 	
+	/** Notify all TUC changed. */
+	void NotifyTUCChanged();
+	
 	/** Notify all movement hint changed. */
 	void NotifyMovementHintChanged();
 	

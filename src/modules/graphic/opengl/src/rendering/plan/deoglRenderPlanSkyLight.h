@@ -22,9 +22,14 @@
 #ifndef _DEOGLRENDERPLANSKYLIGHT_H_
 #define _DEOGLRENDERPLANSKYLIGHT_H_
 
-#include <dragengine/common/math/decMath.h>
-
+#include "../task/persistent/deoglPersistentRenderTask.h"
+#include "../task/persistent/deoglAddToPersistentRenderTask.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../component/deoglComponentListener.h"
+
+#include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/math/decMath.h>
 
 
 class deoglRenderThread;
@@ -33,9 +38,8 @@ class deoglRSkyInstanceLayer;
 class deoglRenderPlan;
 
 
-
 /**
- * \brief Render plan sky light.
+ * Render plan sky light.
  */
 class deoglRenderPlanSkyLight{
 public:
@@ -55,6 +59,17 @@ public:
 	
 	
 private:
+	class cGIComponentChangeListener : public deoglComponentListener {
+	private:
+		deoglRenderPlanSkyLight &pPlan;
+		
+	public:
+		cGIComponentChangeListener( deoglRenderPlanSkyLight &plan );
+		virtual void TUCChanged( deoglRComponent &component );
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
@@ -72,16 +87,19 @@ private:
 	decVector pGIBoxMinExtend;
 	decVector pGIBoxMaxExtend;
 	sShadowLayer pGIShadowLayer;
-	
+	decObjectList pGIComponents;
+	deoglPersistentRenderTask pGIRenderTask;
+	deoglAddToPersistentRenderTask pGIRenderTaskAdd;
+	deObjectReference pGIComponentChangeListener;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render plan light. */
+	/** Create render plan light. */
 	deoglRenderPlanSkyLight( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render plan light. */
+	/** Clean up render plan light. */
 	~deoglRenderPlanSkyLight();
 	/*@}*/
 	
@@ -89,68 +107,75 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Sky instance. */
+	/** Sky instance. */
 	inline deoglRSkyInstance *GetSky() const{ return pSky; }
 	
-	/** \brief Sky layer. */
+	/** Sky layer. */
 	inline deoglRSkyInstanceLayer *GetLayer() const{ return pLayer; }
 	
-	/** \brief Set sky layer. */
+	/** Set sky layer. */
 	void SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
 	
 	
-	/** \brief Collide list with potentially shadow casting elements. */
+	/** Collide list with potentially shadow casting elements. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
 	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
 	
-	/** \brief Frustum box min extend. */
+	/** Frustum box min extend. */
 	inline const decVector &GetFrustumBoxMinExtend() const{ return pFrustumBoxMinExtend; }
 	
-	/** \brief Frustum box max extend. */
+	/** Frustum box max extend. */
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	
 	
-	/** \brief Use light. */
+	/** Use light. */
 	inline bool GetUseLight() const{ return pUseLight; }
 	
-	/** \brief Use shadow casting. */
+	/** Use shadow casting. */
 	inline bool GetUseShadow() const{ return pUseShadow; }
 	
-	/** \brief Shadow layer count. */
+	/** Shadow layer count. */
 	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
 	
-	/** \brief Shadow layer at index. */
+	/** Shadow layer at index. */
 	sShadowLayer &GetShadowLayerAt( int index );
 	const sShadowLayer &GetShadowLayerAt( int index ) const;
 	
 	
 	
-	/** \brief GI collide list with potentially shadow casting elements. */
+	/** GI collide list with potentially shadow casting elements. */
 	inline deoglCollideList &GetGICollideList(){ return pGICollideList; }
 	inline const deoglCollideList &GetGICollideList() const{ return pGICollideList; }
 	
-	/** \brief GI box min extend. */
+	/** GI box min extend. */
 	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
 	
-	/** \brief GI box max extend. */
+	/** GI box max extend. */
 	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
 	
-	/** \brief GI shadow layer. */
+	/** GI shadow layer. */
 	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
 	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
 	
+	/** GI render task. */
+	inline deoglPersistentRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
+	inline const deoglPersistentRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
+	
+	/** GI component changed TUC. */
+	void GIComponentChangedTUC( deoglRComponent &component );
 	
 	
-	/** \brief Clear. */
+	
+	/** Clear. */
 	void Clear();
 	
-	/** \brief Initialize plan. */
+	/** Initialize plan. */
 	void Init( deoglRenderPlan &plan );
 	
 	/**
-	 * \brief Prepare for render.
+	 * Prepare for render.
 	 * 
 	 * \warning After this call various render states including temporary render targets are
 	 *          potentially invalid. Call this only before doing any kind of rendering.
@@ -165,6 +190,7 @@ private:
 	void pCollectElements( deoglRenderPlan &plan );
 	void pGICalcShadowLayerParams( deoglRenderPlan &plan );
 	void pGICollectElements( deoglRenderPlan &plan );
+	void pGIUpdateRenderTask();
 	/*@}*/
 };
 

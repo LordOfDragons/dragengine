@@ -1241,10 +1241,13 @@ void deoglDeveloperMode::pCmdDebugInfoDetails( const decUnicodeArgumentList &com
 			}else if( detail == "frameLimiter" || detail == "fl" ){
 				value = edimFrameLimiter;
 				
+			}else if( detail == "gi" ){
+				value = edimGI;
+				
 			}else if( detail == "all" ){ // temporary
 				value = edimModule | edimPlanPrepare | edimCanvas | edimWorld | edimSolidGeometry
 					| edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot
-					| edimFrameLimiter;
+					| edimFrameLimiter | edimGI;
 				
 			}else{
 				decString text;
@@ -1303,6 +1306,9 @@ void deoglDeveloperMode::pCmdDebugInfoDetails( const decUnicodeArgumentList &com
 	}
 	if( ( pDebugInfoDetails & edimFrameLimiter ) == edimFrameLimiter ){
 		answer.AppendFromUTF8( " frameLimiter" );
+	}
+	if( ( pDebugInfoDetails & edimGI ) == edimGI ){
+		answer.AppendFromUTF8( " gi" );
 	}
 	answer.AppendCharacter( '\n' );
 }

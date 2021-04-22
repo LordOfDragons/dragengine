@@ -636,7 +636,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state
-	plan.SetUseConstGIState( pRenderThread.GetRenderers().GetLight().GetRenderGI().GetRenderGIState( parentPlan ) );
+	plan.SetUseConstGIState( parentPlan.GetRenderGIState() );
 	plan.SetUseGIState( plan.GetUseConstGIState() != NULL );
 	
 	// TODO we need to find a way to figure out what adapted intensity to use here.

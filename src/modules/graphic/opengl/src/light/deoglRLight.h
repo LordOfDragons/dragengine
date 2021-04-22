@@ -517,6 +517,10 @@ public:
 	/** Set shadow parameters. */
 	void SetShadowParameters( const decVector &shadowOrigin, float shadowGap );
 	
+	/** Shadow caster requires neeed future preparing. */
+	void ShadowCasterRequiresPrepare();
+	
+	
 	
 	
 	/** Range. */

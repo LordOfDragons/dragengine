@@ -190,7 +190,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state. for mirrors this is good
 	// enough since mirrors need to be in view of the parent camera
-	pPlan->SetUseConstGIState( pSkinRendered.GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) );
+	pPlan->SetUseConstGIState( plan.GetRenderGIState() );
 	pPlan->SetUseGIState( pPlan->GetUseConstGIState() != NULL );
 	
 	// calculate the frustum for this texture

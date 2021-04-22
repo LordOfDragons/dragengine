@@ -84,6 +84,7 @@ public:
 	bool pSkinStatePrepareRenderables;
 	bool pDirtyStaticTexture;
 	bool pNotifyTexturesChanged;
+	bool pNotifyTUCChanged;
 	bool pDirtySolid;
 	
 	bool pDynamicSkinRenderablesChanged;

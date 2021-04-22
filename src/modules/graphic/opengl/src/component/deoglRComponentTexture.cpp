@@ -662,6 +662,13 @@ deoglSharedSPBElement *deoglRComponentTexture::GetSharedSPBElement(){
 }
 
 deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLevel ){
+	if( lodLevel < 0 ){
+		lodLevel += pComponent.GetLODCount();
+	}
+	if( lodLevel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	if( lodLevel < pSharedSPBRTIGroup.GetCount() && pSharedSPBRTIGroup.GetAt( lodLevel ) ){
 		return *( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( lodLevel ) );
 	}

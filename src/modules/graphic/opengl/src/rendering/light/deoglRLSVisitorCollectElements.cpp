@@ -282,6 +282,15 @@ const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack
 	pFrustumPlaneCount = 0;
 	pEdgeCount = 0;
 	
+	// store absolute axis. this is required for size rejection. the rest is not required
+	// inside the frustum
+	pAxisX = pVolumeShadowBox.GetAxisX().ToVector();
+	pAxisY = pVolumeShadowBox.GetAxisY().ToVector();
+	pAxisZ = pVolumeShadowBox.GetAxisZ().ToVector();
+	pAbsAxisX.Set( fabsf( pAxisX.x ), fabsf( pAxisX.y ), fabsf( pAxisX.z ) );
+	pAbsAxisY.Set( fabsf( pAxisY.x ), fabsf( pAxisY.y ), fabsf( pAxisY.z ) );
+	pAbsAxisZ.Set( fabsf( pAxisZ.x ), fabsf( pAxisZ.y ), fabsf( pAxisZ.z ) );
+	
 #if 0
 	pShaftFar = pFrustumBoxMaxExtend.z;
 	pAxisX = pVolumeShadowBox.GetAxisX().ToVector();
@@ -504,10 +513,6 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 		return false;
 	}
 	
-	if( pFrustumPlaneCount == 0 && pEdgeCount == 0 ){
-		return true; // GI box
-	}
-	
 	// calculate the parameters needed for the tests
 	float distance1, distance2;
 	deoglDCollisionBox cbox;
@@ -522,6 +527,13 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	nhe.y = pAbsAxisY * che;
 	nhe.z = pAbsAxisZ * che;
 	
+	// GI box uses a simpler test which especially drops the component instead of masking it
+	if( pFrustumPlaneCount == 0 && pEdgeCount == 0 ){
+		splitMask = 1;
+		return decVector2( nhe.x * 2.0f, nhe.y * 2.0f ) > pSplitSizeThreshold[ 0 ];
+	}
+	
+	// otherwise finish box for testing
 	npos = ( pMatrixLightSpace * cbox.GetCenter() ).ToVector();
 	
 	adjustdist = ( pShaftFar - npos.z ) * 0.5f;

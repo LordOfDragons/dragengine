@@ -57,8 +57,7 @@ pDynamicNear( 0.01f ),
 pDynamicFar( 10.0f ),
 pDynamicScale( 2.887585e-2f ),
 pDynamicOffset( 2.887585e-4f ),
-pDynamicCutOff( -0.02 )
-{
+pDynamicCutOff( -0.02 ){
 }
 
 deoglShadowCaster::~deoglShadowCaster(){

@@ -150,6 +150,9 @@ deoglRModel::~deoglRModel(){
 ///////////////
 
 deoglModelLOD &deoglRModel::GetLODAt( int index ) const{
+	if( index < 0 ){
+		index += pLODCount;
+	}
 	if( index < 0 || index >= pLODCount ){
 		DETHROW( deeInvalidParam );
 	}

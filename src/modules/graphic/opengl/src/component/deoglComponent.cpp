@@ -98,6 +98,7 @@ pDirtySkinStateCalculatedProperties( true ),
 pSkinStatePrepareRenderables( true ),
 pDirtyStaticTexture( true ),
 pNotifyTexturesChanged( false ),
+pNotifyTUCChanged( false ),
 pDirtySolid( true ),
 
 pDynamicSkinRenderablesChanged( true ),
@@ -322,6 +323,10 @@ void deoglComponent::SyncToRender(){
 		pRComponent->NotifyTexturesChanged();
 		pNotifyTexturesChanged = false;
 	}
+	if( pNotifyTUCChanged ){
+		pRComponent->NotifyTUCChanged();
+		pNotifyTUCChanged = false;
+	}
 	
 	// decals
 	pSyncDecals();
@@ -393,6 +398,7 @@ void deoglComponent::TextureDynamicSkinRenderableChanged(){
 	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	pRequiresSync();
 }
@@ -429,6 +435,7 @@ void deoglComponent::DynamicSkinRenderablesChanged(){
 	pDirtyStaticTexture = true;
 	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -440,6 +447,7 @@ void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pDirtyStaticTexture = true;
 	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -506,6 +514,7 @@ void deoglComponent::ModelChanged(){
 	pDirtyResetStatic = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -520,6 +529,7 @@ void deoglComponent::SkinChanged(){
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -548,6 +558,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -637,6 +648,7 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true; // actually only if skin or dynamic skin change but not transform
 	pDirtySolid = true;
 	
 	pRequiresSync();
@@ -665,6 +677,7 @@ void deoglComponent::DynamicSkinChanged(){
 	pDirtyStaticTexture = true;
 	pSkinStatePrepareRenderables = true;
 	pNotifyTexturesChanged = true;
+	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
 	pRequiresSync();

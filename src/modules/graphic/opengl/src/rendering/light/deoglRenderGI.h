@@ -36,7 +36,7 @@ class deoglTexture;
 
 
 /**
- * \brief GI Renderer.
+ * GI Renderer.
  */
 class deoglRenderGI : public deoglRenderLightBase{
 private:
@@ -48,7 +48,6 @@ private:
 	deoglShaderProgram *pShaderCopyRayLimits;
 	deoglShaderProgram *pShaderCopyRayCache;
 	deoglShaderProgram *pShaderCopyRayCacheRev;
-	deoglShaderProgram *pShaderUpdateRays;
 	deoglShaderProgram *pShaderUpdateProbeIrradiance;
 	deoglShaderProgram *pShaderUpdateProbeDistance;
 	deoglShaderProgram *pShaderClearProbeIrradiance;
@@ -67,13 +66,23 @@ private:
 	
 	
 	
+	deoglDebugInformation *pDebugInfoGI;
+	deoglDebugInformation *pDebugInfoGITraceRays;
+	deoglDebugInformation *pDebugInfoGIRenderMaterials;
+	deoglDebugInformation *pDebugInfoGIUpdateProbes;
+	deoglDebugInformation *pDebugInfoGIMoveProbes;
+	deoglDebugInformation *pDebugInfoGIRenderLight;
+	deoglDebugInformation *pDebugInfoGIRenderLightGIRay;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderGI( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderGI();
 	/*@}*/
 	
@@ -81,53 +90,55 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Render light UBO. */
+	/** Render light UBO. */
 	inline deoglSPBlockUBO &GetUBORenderLight() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORenderLight; }
 	
-	/** \brief GI state to update or NULL. */
-	deoglGIState *GetUpdateGIState( const deoglRenderPlan &plan ) const;
-	
-	/** \brief GI state to render or NULL. */
-	deoglGIState *GetRenderGIState( const deoglRenderPlan &plan ) const;
-	
-	/** \brief Render task for GI material. */
+	/** Render task for GI material. */
 	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
 	
-	/** \brief Add to render task for GI material. */
+	/** Add to render task for GI material. */
 	inline deoglAddToRenderTaskGIMaterial &GetAddToRenderTask() const{ return *pAddToRenderTask; }
 	
 	
 	
-	/** \brief Trace rays. */
+	/** Trace rays. */
 	void TraceRays( deoglRenderPlan &plan );
 	
-	/** \brief Update rays. */
-	void UpdateRays( deoglRenderPlan &plan );
-	
-	/** \brief Prepare render light UBO. */
+	/** Prepare render light UBO. */
 	void PrepareUBORenderLight( deoglRenderPlan &plan );
 	
-	/** \brief Render materials. */
+	/** Render materials. */
 	void RenderMaterials( deoglRenderPlan &plan );
 	
-	/** \brief Resize materials. */
+	/** Resize materials. */
 	void ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
 		deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage );
 	
-	/** \brief Update probes. */
+	/** Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
 	
-	/** \brief Move probes. */
+	/** Move probes. */
 	void MoveProbes( deoglRenderPlan &plan );
 	
-	/** \brief Render light. */
+	/** Render light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid );
 	
-	/** \brief Render light. */
+	/** Render light. */
 	void RenderLightGIRay( deoglRenderPlan &plan );
 	
-	/** \brief Debug overlay. */
+	/** Debug overlay. */
 	void RenderDebugOverlay( deoglRenderPlan &plan );
+	
+	
+	
+	/** Reset debug information. */
+	void ResetDebugInfo();
+	
+	/** Add top level debug information in the right order. */
+	virtual void AddTopLevelDebugInfo();
+	
+	/** Developer mode debug information changed. */
+	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	
 	

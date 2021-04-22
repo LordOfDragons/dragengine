@@ -325,6 +325,46 @@ int deoglRenderTask::GetTotalPointCount() const{
 	return totalPointCount;
 }
 
+int deoglRenderTask::GetTotalTextureCount() const{
+	int s, totalTextureCount = 0;
+	
+	for( s=0; s<pShaderCount; s++ ){
+		totalTextureCount += ( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) )->GetTextureCount();
+	}
+	
+	return totalTextureCount;
+}
+
+int deoglRenderTask::GetTotalVAOCount() const{
+	int s, totalVAOCount = 0;
+	
+	for( s=0; s<pShaderCount; s++ ){
+		totalVAOCount += ( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) )->GetTotalVAOCount();
+	}
+	
+	return totalVAOCount;
+}
+
+int deoglRenderTask::GetTotalInstanceCount() const{
+	int s, totalInstanceCount = 0;
+	
+	for( s=0; s<pShaderCount; s++ ){
+		totalInstanceCount += ( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) )->GetTotalInstanceCount();
+	}
+	
+	return totalInstanceCount;
+}
+
+int deoglRenderTask::GetTotalSubInstanceCount() const{
+	int s, totalSubInstanceCount = 0;
+	
+	for( s=0; s<pShaderCount; s++ ){
+		totalSubInstanceCount += ( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) )->GetTotalSubInstanceCount();
+	}
+	
+	return totalSubInstanceCount;
+}
+
 
 
 void deoglRenderTask::AddTUC( deoglTexUnitsConfig *tuc ){

@@ -247,7 +247,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// trace global illumination rays if in main render pass
 	if( ! mask ){
 		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
-		if( renderGI.GetUpdateGIState( plan ) ){
+		if( plan.GetUpdateGIState() ){
 			renderGI.TraceRays( plan );
 			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );

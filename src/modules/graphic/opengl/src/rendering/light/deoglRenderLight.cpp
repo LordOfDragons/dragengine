@@ -322,8 +322,8 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRen
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
 	
-	const bool hasGIStateUpdate = pRenderGI->GetUpdateGIState( plan ) != NULL;
-	const bool hasGIStateRender = pRenderGI->GetRenderGIState( plan ) != NULL;
+	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
+	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
 	
 	PrepareRenderParamBlockLight( plan );
 	if( hasGIStateRender ){
@@ -675,7 +675,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
 		
 		// global illumination
-		const deoglGIState * const giState = pRenderGI->GetRenderGIState( plan );
+		const deoglGIState * const giState = plan.GetRenderGIState();
 		if( giState ){
 			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetPosition() )
 				* plan.GetCameraMatrix() );
@@ -709,6 +709,7 @@ void deoglRenderLight::ResetDebugInfo(){
 	pRenderLightSky->ResetDebugInfo();
 	pRenderLightPoint->ResetDebugInfo();
 	pRenderLightSpot->ResetDebugInfo();
+	pRenderGI->ResetDebugInfo();
 }
 
 void deoglRenderLight::AddTopLevelDebugInfo(){
@@ -723,6 +724,8 @@ void deoglRenderLight::AddTopLevelDebugInfo(){
 	pRenderLightSky->AddTopLevelDebugInfoTransparent();
 	pRenderLightPoint->AddTopLevelDebugInfoTransparent();
 	pRenderLightSpot->AddTopLevelDebugInfoTransparent();
+	
+	pRenderGI->AddTopLevelDebugInfo();
 }
 
 void deoglRenderLight::DevModeDebugInfoChanged(){

@@ -567,8 +567,16 @@ public:
 	/** Set occlusion test matrix. */
 	void SetOcclusionTestMatrix( const decMatrix &matrix );
 	
+	
+	
 	/** Global illumination state or NULL. */
 	inline deoglGIState *GetGIState() const{ return pGIState; }
+	
+	/** GI state to update or NULL. */
+	deoglGIState *GetUpdateGIState() const;
+	
+	/** GI state to render or NULL. */
+	deoglGIState *GetRenderGIState() const;
 	
 	
 	

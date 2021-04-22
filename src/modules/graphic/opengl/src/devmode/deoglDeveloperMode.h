@@ -48,6 +48,7 @@ public:
 	static const int edimLightPoint = 0x100;
 	static const int edimLightSpot = 0x200;
 	static const int edimFrameLimiter = 0x400;
+	static const int edimGI = 0x800;
 	
 	
 	

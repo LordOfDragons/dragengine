@@ -907,7 +907,7 @@ deoglRenderPlanMasked *mask, deoglRLight &light ){
 	
 	// GI rays
 	if( ! mask && solid ){
-		deoglGIState * const giState = renderThread.GetRenderers().GetLight().GetRenderGI().GetUpdateGIState( plan );
+		deoglGIState * const giState = plan.GetUpdateGIState();
 		if( giState ){
 			RestoreFBOGITraceRays( *giState );
 			
@@ -1225,6 +1225,8 @@ bool refilterShadow ){
 			sctransp.ResetLastUseStatic();
 		}
 		scambient.ResetLastUseStatic();
+		
+		light.ShadowCasterRequiresPrepare();
 	}
 	
 	// dynamic shadow map with transparency if required
@@ -1689,7 +1691,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 	// set values
 	paramBlock.MapBuffer();
 	try{
-		const bool hasGIState = GetRenderThread().GetRenderers().GetLight().GetRenderGI().GetRenderGIState( plan ) != NULL;
+		const bool hasGIState = plan.GetRenderGIState() != NULL;
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
 		if( target != -1 ){

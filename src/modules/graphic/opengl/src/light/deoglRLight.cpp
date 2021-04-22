@@ -317,7 +317,7 @@ void deoglRLight::SetLightCanvas( deoglRCanvasView *canvas ){
 		canvas->AddReference();
 	}
 	
-	pRequiresPrepareForRender();
+	   pRequiresPrepareForRender();
 }
 
 void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -866,6 +866,10 @@ void deoglRLight::SetShadowParameters( const decVector &shadowOrigin, float shad
 	pShadowCaster->SetShadowOrigin( shadowOrigin );
 	pShadowCaster->SetStaticCutOff( -shadowGap );
 	pShadowCaster->SetDynamicCutOff( -shadowGap );
+}
+
+void deoglRLight::ShadowCasterRequiresPrepare(){
+	pRequiresPrepareForRender();
 }
 
 
