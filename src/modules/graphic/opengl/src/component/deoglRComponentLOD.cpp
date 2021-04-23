@@ -120,7 +120,8 @@ pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
 pFBOCalcNormalTangent( NULL ),
 
-pGIBVHDynamic( NULL )
+pGIBVHDynamic( NULL ),
+pDirtyGIBVHPositions( true )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentLOD );
 }
@@ -170,13 +171,16 @@ int deoglRComponentLOD::GetIndexOffset() const{
 void deoglRComponentLOD::InvalidateVAO(){
 	pDirtyVAO = true;
 	pVBOBlock = NULL;
+	pComponent.DirtyLODVBOs();
 }
 
 void deoglRComponentLOD::InvalidateVBO(){
 	pDirtyDataWeights = true;
 	pDirtyDataPositions = true;
+	pDirtyGIBVHPositions = true;
 	pDirtyDataNorTan = true;
 	pDirtyVBO = true;
+	pComponent.DirtyLODVBOs();
 }
 
 #define SPECIAL_DEBUG_ON 1
@@ -693,10 +697,11 @@ void deoglRComponentLOD::PrepareGIDynamicBVH(){
 		pGIBVHDynamic = new deoglGIBVHDynamic( *modelLOD.GetGIBVHLocal() );
 	}
 	
-	if( pDirtyDataPositions ){
+	if( pDirtyGIBVHPositions ){
 		PreparePositions();
 		pGIBVHDynamic->UpdateVertices( pPositions, GetModelLODRef().GetPositionCount() );
 		pGIBVHDynamic->UpdateBVHExtends();
+		pDirtyGIBVHPositions = false;
 	}
 }
 

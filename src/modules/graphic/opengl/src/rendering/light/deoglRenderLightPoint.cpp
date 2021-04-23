@@ -213,7 +213,6 @@ pDebugInfoTransparent( NULL ),
 
 pDebugInfoSolidDetail( NULL ),
 pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowVBOs( NULL ),
 pDebugInfoSolidShadowClear( NULL ),
 pDebugInfoSolidShadowClearTransp( NULL ),
 pDebugInfoSolidShadowFace( NULL ),
@@ -227,7 +226,6 @@ pDebugInfoSolidLight( NULL ),
 
 pDebugInfoTransparentDetail( NULL ),
 pDebugInfoTransparentShadow( NULL ),
-pDebugInfoTransparentShadowVBOs( NULL ),
 pDebugInfoTransparentShadowClear( NULL ),
 pDebugInfoTransparentShadowClearTransp( NULL ),
 pDebugInfoTransparentShadowFace( NULL ),
@@ -385,9 +383,6 @@ pDebugInfoTransparentLight( NULL )
 		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
-		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowVBOs );
-		
 		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
 		
@@ -424,9 +419,6 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoTransparentShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentShadow );
-		
-		pDebugInfoTransparentShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
-		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowVBOs );
 		
 		pDebugInfoTransparentShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClear );
@@ -1486,21 +1478,6 @@ bool debugSolid ){
 		- plan.GetWorld()->GetReferencePosition() );
 	int cmf;
 	
-	// update component VBOs
-	if( clist1 ){
-		UpdateComponentVBO( *clist1 );
-	}
-	if( clist2 ){
-		UpdateComponentVBO( *clist2 );
-	}
-	
-	if( debugSolid ){
-		DebugTimer3Sample( plan, *pDebugInfoSolidShadowVBOs, true );
-		
-	}else{
-		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowVBOs, true );
-	}
-	
 	// calculate object render cube face special parameter. optimizes rendering by skipping
 	// object faces on cube map faces they are not visible on
 	const decDVector cubePosition( light.GetMatrix().GetPosition() );
@@ -2275,7 +2252,6 @@ void deoglRenderLightPoint::ResetDebugInfo(){
 	pDebugInfoTransparent->Clear();
 	
 	pDebugInfoSolidShadow->Clear();
-	pDebugInfoSolidShadowVBOs->Clear();
 	pDebugInfoSolidShadowClear->Clear();
 	pDebugInfoSolidShadowClearTransp->Clear();
 	pDebugInfoSolidShadowFace->Clear();
@@ -2288,7 +2264,6 @@ void deoglRenderLightPoint::ResetDebugInfo(){
 	pDebugInfoSolidLight->Clear();
 	
 	pDebugInfoTransparentShadow->Clear();
-	pDebugInfoTransparentShadowVBOs->Clear();
 	pDebugInfoTransparentShadowClear->Clear();
 	pDebugInfoTransparentShadowClearTransp->Clear();
 	pDebugInfoTransparentShadowFace->Clear();
@@ -2374,9 +2349,6 @@ void deoglRenderLightPoint::pCleanUp(){
 	if( pDebugInfoSolidShadow ){
 		pDebugInfoSolidShadow->FreeReference();
 	}
-	if( pDebugInfoSolidShadowVBOs ){
-		pDebugInfoSolidShadowVBOs->FreeReference();
-	}
 	if( pDebugInfoSolidShadowClear ){
 		pDebugInfoSolidShadowClear->FreeReference();
 	}
@@ -2413,9 +2385,6 @@ void deoglRenderLightPoint::pCleanUp(){
 	}
 	if( pDebugInfoTransparentShadow ){
 		pDebugInfoTransparentShadow->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowVBOs ){
-		pDebugInfoTransparentShadowVBOs->FreeReference();
 	}
 	if( pDebugInfoTransparentShadowClear ){
 		pDebugInfoTransparentShadowClear->FreeReference();

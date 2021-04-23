@@ -261,26 +261,16 @@ void deoglRDecal::UpdateSkin( float elapsed ){
 	}
 }
 
-void deoglRDecal::UpdateVBO(){
-	if( ! pDirtyVBO ){
+void deoglRDecal::SetDirtyVBO(){
+	if( pDirtyVBO ){
 		return;
 	}
 	
-	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
-		pVBOBlock->FreeReference();
-		pVBOBlock = NULL;
-	}
+	pDirtyVBO = true;
 	
 	if( pParentComponent ){
-		pCreateMeshComponent();
+		pParentComponent->DecalRequiresPrepareForRender();
 	}
-	
-	pDirtyVBO = false;
-}
-
-void deoglRDecal::SetDirtyVBO(){
-	pDirtyVBO = true;
 }
 
 
@@ -787,6 +777,8 @@ int element, deoglSkinShader &skinShader ){
 
 
 void deoglRDecal::PrepareForRender( deoglRenderPlan &plan ){
+	pPrepareVBO();
+	
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables();
 		pDirtyPrepareSkinStateRenderables = false;
@@ -928,6 +920,24 @@ void deoglRDecal::pCreateMeshComponent(){
 	}
 // 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) vbo=%.3fms",
 // 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
+}
+
+void deoglRDecal::pPrepareVBO(){
+	if( ! pDirtyVBO ){
+		return;
+	}
+	
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
+		pVBOBlock = NULL;
+	}
+	
+	if( pParentComponent ){
+		pCreateMeshComponent();
+	}
+	
+	pDirtyVBO = false;
 }
 
 void deoglRDecal::pRequiresPrepareForRender(){

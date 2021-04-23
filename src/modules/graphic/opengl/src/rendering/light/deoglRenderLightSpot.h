@@ -71,7 +71,6 @@ private:
 	
 	deoglDebugInformation *pDebugInfoSolidDetail;
 	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowVBOs;
 	deoglDebugInformation *pDebugInfoSolidShadowClear;
 	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
 	deoglDebugInformation *pDebugInfoSolidShadowTask;
@@ -82,7 +81,6 @@ private:
 	
 	deoglDebugInformation *pDebugInfoTransparentDetail;
 	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowVBOs;
 	deoglDebugInformation *pDebugInfoTransparentShadowClear;
 	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
 	deoglDebugInformation *pDebugInfoTransparentShadowTask;

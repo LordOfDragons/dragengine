@@ -61,15 +61,6 @@ public:
 	/** \brief Populate collider list with components from a component list. */
 	void AddComponentsToColliderList( const deoglComponentList &list );
 	
-	/**
-	 * \brief Update VBOs for all components in the collide list.
-	 * 
-	 * \warning After this call the active FBO, OpengGL states and other rendering configuration
-	 *          like viewport and scissoring can be undefined. Do not call after setting up
-	 *          rendering parameters.
-	 */
-	void UpdateComponentVBO( const deoglCollideList &list );
-	
 	/** \brief Transform color by matrix. */
 	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;
 	

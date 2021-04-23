@@ -156,9 +156,6 @@ public:
 	/** Update skin. */
 	void UpdateSkin( float elapsed );
 	
-	/** Update vbo if required. */
-	void UpdateVBO();
-	
 	/** Set vbo dirty. */
 	void SetDirtyVBO();
 	
@@ -302,6 +299,7 @@ public:
 	
 private:
 	void pCreateMeshComponent();
+	void pPrepareVBO();
 	
 	void pRequiresPrepareForRender();
 };

@@ -167,7 +167,6 @@ pDebugInfoSolidShadowOcclusion( NULL ),
 pDebugInfoSolidShadowOcclusionStart( NULL ),
 pDebugInfoSolidShadowOcclusionVBO( NULL ),
 pDebugInfoSolidShadowOcclusionTest( NULL ),
-pDebugInfoSolidShadowVBOs( NULL ),
 pDebugInfoSolidShadowClear( NULL ),
 pDebugInfoSolidShadowSplit( NULL ),
 pDebugInfoSolidShadowSplitContent( NULL ),
@@ -236,9 +235,6 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoSolidShadowOcclusionTest = new deoglDebugInformation( "Test", colorText, colorBgSub3 );
 		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionTest );
-		
-		pDebugInfoSolidShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
-		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowVBOs );
 		
 		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
@@ -647,10 +643,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 //#endif
 	
-	// update component VBOs.
-	UpdateComponentVBO( collideList );
-	DebugTimer3Sample( plan, *pDebugInfoSolidShadowVBOs, true );
-	
 	// set up lod calculator
 	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
 	lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
@@ -831,7 +823,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			
 		}else{
 			addToRenderTask.AddComponents( *pColList2 );
-			renderThread.GetLogger().LogInfoFormat("CHECK %d", pColList2->GetComponentCount());
 		}
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
@@ -1275,7 +1266,6 @@ void deoglRenderLightSky::ResetDebugInfo(){
 	pDebugInfoSolidShadowOcclusionStart->Clear();
 	pDebugInfoSolidShadowOcclusionVBO->Clear();
 	pDebugInfoSolidShadowOcclusionTest->Clear();
-	pDebugInfoSolidShadowVBOs->Clear();
 	pDebugInfoSolidShadowClear->Clear();
 	pDebugInfoSolidShadowSplit->Clear();
 	pDebugInfoSolidShadowSplitContent->Clear();
@@ -1363,9 +1353,6 @@ void deoglRenderLightSky::pCleanUp(){
 	}
 	if( pDebugInfoSolidShadowOcclusionTest ){
 		pDebugInfoSolidShadowOcclusionTest->FreeReference();
-	}
-	if( pDebugInfoSolidShadowVBOs ){
-		pDebugInfoSolidShadowVBOs->FreeReference();
 	}
 	if( pDebugInfoSolidShadowClear ){
 		pDebugInfoSolidShadowClear->FreeReference();

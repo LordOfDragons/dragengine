@@ -89,6 +89,7 @@ public:
 	deoglFramebuffer *pFBOCalcNormalTangent;
 	
 	deoglGIBVHDynamic *pGIBVHDynamic;
+	bool pDirtyGIBVHPositions;
 	
 	
 	

@@ -508,7 +508,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( c=0; c<componentCount; c++ ){
 		oglComponent = pCollideList.GetComponentAt( c )->GetComponent();
 		oglComponent->TestCameraInside( pCameraPosition );
-		oglComponent->UpdateVBO();
 		renderCanvas.SampleDebugInfoPlanPrepareComponentsVBO( *this );
 		oglComponent->AddSkinStateRenderPlans( *this );
 	}

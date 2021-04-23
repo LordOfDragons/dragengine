@@ -550,9 +550,6 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 	count = pGICollideList.GetComponentCount();
 	for( i=0; i<count; i++ ){
 		deoglRComponent &component = *pGICollideList.GetComponentAt( i )->GetComponent();
-		
-		component.UpdateVBO(); // TODO move this into component prepare step
-		
 		if( ! component.GetMarked() ){
 			continue;
 		}

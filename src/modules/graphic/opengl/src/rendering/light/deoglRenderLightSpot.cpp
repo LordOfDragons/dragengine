@@ -218,7 +218,6 @@ pDebugInfoTransparent( NULL ),
 
 pDebugInfoSolidDetail( NULL ),
 pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowVBOs( NULL ),
 pDebugInfoSolidShadowClear( NULL ),
 pDebugInfoSolidShadowClearTransp( NULL ),
 pDebugInfoSolidShadowTask( NULL ),
@@ -229,7 +228,6 @@ pDebugInfoSolidLight( NULL ),
 
 pDebugInfoTransparentDetail( NULL ),
 pDebugInfoTransparentShadow( NULL ),
-pDebugInfoTransparentShadowVBOs( NULL ),
 pDebugInfoTransparentShadowClear( NULL ),
 pDebugInfoTransparentShadowClearTransp( NULL ),
 pDebugInfoTransparentShadowTask( NULL ),
@@ -291,9 +289,6 @@ pDebugInfoTransparentLight( NULL )
 		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
-		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowVBOs );
-		
 		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
 		
@@ -321,9 +316,6 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoTransparentShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentShadow );
-		
-		pDebugInfoTransparentShadowVBOs = new deoglDebugInformation( "VBOs", colorText, colorBgSub2 );
-		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowVBOs );
 		
 		pDebugInfoTransparentShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClear );
@@ -1370,21 +1362,6 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 	
 	DebugTimer3Reset( plan, false );
 	
-	// update component VBOs
-	if( clist1 ){
-		UpdateComponentVBO( *clist1 );
-	}
-	if( clist2 ){
-		UpdateComponentVBO( *clist2 );
-	}
-	
-	if( debugSolid ){
-		DebugTimer3Sample( plan, *pDebugInfoSolidShadowVBOs, true );
-		
-	}else{
-		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowVBOs, true );
-	}
-	
 	// prevents opengl verifiers from complaining about an error which is none. this problems
 	// is seen on nVidia drivers if the debug mode is enabled. the driver keeps on complaining
 	// about a shader using a shadow-sampler on a non-depth texture. researching the problem
@@ -1948,7 +1925,6 @@ void deoglRenderLightSpot::ResetDebugInfo(){
 	pDebugInfoTransparent->Clear();
 	
 	pDebugInfoSolidShadow->Clear();
-	pDebugInfoSolidShadowVBOs->Clear();
 	pDebugInfoSolidShadowClear->Clear();
 	pDebugInfoSolidShadowClearTransp->Clear();
 	pDebugInfoSolidShadowTask->Clear();
@@ -1958,7 +1934,6 @@ void deoglRenderLightSpot::ResetDebugInfo(){
 	pDebugInfoSolidLight->Clear();
 	
 	pDebugInfoTransparentShadow->Clear();
-	pDebugInfoTransparentShadowVBOs->Clear();
 	pDebugInfoTransparentShadowClear->Clear();
 	pDebugInfoTransparentShadowClearTransp->Clear();
 	pDebugInfoTransparentShadowTask->Clear();
@@ -2022,9 +1997,6 @@ void deoglRenderLightSpot::pCleanUp(){
 	if( pDebugInfoSolidShadow ){
 		pDebugInfoSolidShadow->FreeReference();
 	}
-	if( pDebugInfoSolidShadowVBOs ){
-		pDebugInfoSolidShadowVBOs->FreeReference();
-	}
 	if( pDebugInfoSolidShadowClear ){
 		pDebugInfoSolidShadowClear->FreeReference();
 	}
@@ -2052,9 +2024,6 @@ void deoglRenderLightSpot::pCleanUp(){
 	}
 	if( pDebugInfoTransparentShadow ){
 		pDebugInfoTransparentShadow->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowVBOs ){
-		pDebugInfoTransparentShadowVBOs->FreeReference();
 	}
 	if( pDebugInfoTransparentShadowClear ){
 		pDebugInfoTransparentShadowClear->FreeReference();

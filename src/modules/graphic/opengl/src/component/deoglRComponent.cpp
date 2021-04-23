@@ -118,16 +118,21 @@ pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
 
 pStaticTextures( true ),
+pDirtyModelVBOs( true ),
 
 pOccMeshSharedSPBElement( NULL ),
 pDirtyOccMeshSharedSPBElement( true ),
 pOccMeshSharedSPBDoubleSided( NULL ),
 pOccMeshSharedSPBSingleSided( NULL ),
 
+pDirtyLODVBOs( true ),
+
 pParamBlockSpecial( NULL ),
 pSpecialFlags( 0 ),
 
 pSkinRendered( renderThread, *this ),
+
+pDirtyDecals( false ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
@@ -228,6 +233,8 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	pDirtyRenderEnvMap = true;
 	pFirstRender = true;
 	NotifyParentWorldChanged();
+	
+	pRequiresPrepareForRender();
 }
 
 
@@ -316,6 +323,7 @@ void deoglRComponent::SetModel( deoglRModel *model ){
 	InvalidateVAO();
 	
 	pDirtyModelRigMappings = true;
+	pDirtyModelVBOs = true;
 	MarkTextureUseSkinDirty();
 	
 	if( true ){ // if not using world based shared SPB
@@ -328,6 +336,8 @@ void deoglRComponent::SetModel( deoglRModel *model ){
 	pResizeBoneMatrices();
 	pUpdateRenderMode();
 	NotifyBoundariesChanged();
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRComponent::SetSkin( deoglRSkin *skin ){
@@ -575,18 +585,6 @@ void deoglRComponent::UpdateSkinStateCalculatedProperties(){
 void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
 	pRequiresPrepareForRender();
-}
-
-void deoglRComponent::PrepareSkinStateRenderables(){
-	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
-	}
-	
-	const int textureCount = pTextures.GetCount();
-	int i;
-	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables();
-	}
 }
 
 
@@ -905,37 +903,6 @@ void deoglRComponent::Update( float elapsed ){
 	}
 }
 
-void deoglRComponent::UpdateVBO(){
-	int lodCount = 0;
-	int i;
-	
-	if( pModel ){
-		lodCount = pModel->GetLODCount();
-		for( i=0; i<lodCount; i++ ){
-			pModel->GetLODAt( i ).GetVBOBlock()->Prepare(); // Prepare is deprecated, GetVBOBlock is not!
-		}
-	}
-	
-	if( pRenderMode == ermDynamic ){
-		for( i=0; i<lodCount; i++ ){
-			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->UpdateVBO();
-		}
-		
-	}else{
-		for( i=0; i<lodCount; i++ ){
-			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->FreeVBO();
-		}
-	}
-	
-	const int decalCount = pDecals.GetCount();
-	for( i=0; i<decalCount; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateVBO();
-	}
-	
-	// update render env map if required
-	UpdateRenderEnvMap();
-}
-
 
 
 void deoglRComponent::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
@@ -1087,6 +1054,16 @@ void deoglRComponent::TestCameraInside( const decDVector &position ){
 	pCameraInside = ( relPos >= minExtend && relPos <= maxExtend );
 }
 
+void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
+	if( renderMode == pRenderMode ){
+		return;
+	}
+	
+	pRenderMode = renderMode;
+	pDirtyLODVBOs = true;
+	pRequiresPrepareForRender();
+}
+
 
 
 void deoglRComponent::DirtySolid(){
@@ -1226,55 +1203,7 @@ void deoglRComponent::SetRenderEnvMapFadeFactor( float factor ){
 
 void deoglRComponent::WorldEnvMapLayoutChanged(){
 	pDirtyRenderEnvMap = true;
-}
-
-void deoglRComponent::UpdateRenderEnvMap(){
-	if( ! pDirtyRenderEnvMap ){
-		return;
-	}
-	
-	if( ! pParentWorld ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	// for the time being we simply pick the environment map that is closest to the component position.
-	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
-	// first test.
-	// 
-	// for the time being we choose no region but visit all environment maps existing in the world.
-	// a more optimal solution would be to search in an area somewhat larger than the distance to the
-	// currently used environment map. the new environment map has to be closer than the current one
-	// to be better. if no environment map exists yet a full search could be done.
-	// 
-	// better solutions could be using grid like connection between environment maps. this way the next
-	// best environment map can be searched by following the grid.
-	// 
-	// for the time being the center of the bounding box is used as the reference point. for large
-	// components we've got the problem of what environment map to use. this though has to be solved
-	// later on most probably by splitting up the component into smaller components.
-	deoglFindBestEnvMap visitor;
-	decDVector position;
-	
-	position = ( pMinExtend + pMaxExtend ) * 0.5;
-	
-	visitor.SetPosition( position );
-	//pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
-	visitor.VisitList( pParentWorld->GetEnvMapList() );
-	
-	if( visitor.GetEnvMap() ){
-		SetRenderEnvMap( visitor.GetEnvMap() );
-		
-	}else if( pParentWorld->GetSkyEnvironmentMap() ){
-		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
-		
-	}else{
-		SetRenderEnvMap( NULL );
-		SetRenderEnvMapFade( NULL );
-		pRenderEnvMapFadeFactor = 1.0f;
-	}
-	//pOgl->LogInfoFormat( "update component %p render env map %p\n", pComponent, pRenderEnvMap );
-	
-	pDirtyRenderEnvMap = false;
+	pRequiresPrepareForRender();
 }
 
 void deoglRComponent::InvalidateRenderEnvMap(){
@@ -1285,6 +1214,8 @@ void deoglRComponent::InvalidateRenderEnvMap(){
 	SetRenderEnvMap( NULL );
 	SetRenderEnvMapFade( NULL );
 	pDirtyRenderEnvMap = true;
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRComponent::InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap ){
@@ -1304,23 +1235,15 @@ void deoglRComponent::WorldReferencePointChanged(){
 
 
 void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
+	pPrepareModelVBOs();
+	pPrepareLODVBOs();
+	pPrepareRenderEnvMap();
+	
 	pCheckRenderModifier( plan.GetCamera() );
+	pPrepareSkinStateRenderables();
+	pPrepareSolidity();
 	
-	if( pDirtyPrepareSkinStateRenderables ){
-		PrepareSkinStateRenderables();
-		pDirtyPrepareSkinStateRenderables = false;
-	}
-	
-	if( pDirtySolid ){
-		pUpdateSolid();
-		pDirtySolid = false;
-	}
-	
-	const int count = pDecals.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan );
-	}
+	pPrepareDecals( plan );
 }
 
 
@@ -1364,6 +1287,11 @@ void deoglRComponent::AddLOD( deoglRComponentLOD *lod ){
 
 void deoglRComponent::SetLODErrorScaling( float errorScaling ){
 	pLODErrorScaling = errorScaling;
+}
+
+void deoglRComponent::DirtyLODVBOs(){
+	pDirtyLODVBOs = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -1589,6 +1517,7 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 }
 
 void deoglRComponent::DecalRequiresPrepareForRender(){
+	pDirtyDecals = true;
 	pRequiresPrepareForRender();
 }
 
@@ -2053,7 +1982,7 @@ void deoglRComponent::pCheckRenderModifier( deoglRCamera *rcamera ){
 
 void deoglRComponent::pUpdateRenderMode(){
 	if( ! pModel ){
-		pRenderMode = ermStatic;
+		SetRenderMode( ermStatic );
 		return;
 	}
 	
@@ -2061,14 +1990,14 @@ void deoglRComponent::pUpdateRenderMode(){
 	
 	if( modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0 ){
 		if( pBoneMatrixCount == 0 ){
-			pRenderMode = ermStatic;
+			SetRenderMode( ermStatic );
 			
 		}else{
-			pRenderMode = ermDynamic;
+			SetRenderMode( ermDynamic );
 		}
 		
 	}else{
-		pRenderMode = ermStatic;
+		SetRenderMode( ermStatic );
 	}
 }
 
@@ -2083,7 +2012,14 @@ void deoglRComponent::pUpdateCullSphere(){
 	pCullSphereRadius = ( float )sphere.GetRadius();
 }
 
-void deoglRComponent::pUpdateSolid(){
+
+
+void deoglRComponent::pPrepareSolidity(){
+	if( ! pDirtySolid ){
+		return;
+	}
+	pDirtySolid = false;
+	
 	pSolid = true;
 	pOutlineSolid = true;
 	
@@ -2136,6 +2072,120 @@ void deoglRComponent::pUpdateSolid(){
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 		}
+	}
+}
+
+void deoglRComponent::pPrepareModelVBOs(){
+	if( ! pDirtyModelVBOs ){
+		return;
+	}
+	pDirtyModelVBOs = false;
+	
+	if( pModel ){
+		const int count = pModel->GetLODCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			pModel->GetLODAt( i ).GetVBOBlock()->Prepare(); // Prepare is deprecated, GetVBOBlock is not!
+		}
+	}
+}
+
+void deoglRComponent::pPrepareLODVBOs(){
+	if( ! pDirtyLODVBOs ){
+		return;
+	}
+	pDirtyLODVBOs = false;
+	
+	const int count = pLODs.GetCount();
+	int i;
+	
+	if( pRenderMode == ermDynamic ){
+		for( i=0; i<count; i++ ){
+			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->UpdateVBO();
+		}
+		
+	}else{
+		for( i=0; i<count; i++ ){
+			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->FreeVBO();
+		}
+	}
+}
+
+void deoglRComponent::pPrepareRenderEnvMap(){
+	if( ! pDirtyRenderEnvMap ){
+		return;
+	}
+	pDirtyRenderEnvMap = false;
+	
+	if( ! pParentWorld ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// for the time being we simply pick the environment map that is closest to the component position.
+	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
+	// first test.
+	// 
+	// for the time being we choose no region but visit all environment maps existing in the world.
+	// a more optimal solution would be to search in an area somewhat larger than the distance to the
+	// currently used environment map. the new environment map has to be closer than the current one
+	// to be better. if no environment map exists yet a full search could be done.
+	// 
+	// better solutions could be using grid like connection between environment maps. this way the next
+	// best environment map can be searched by following the grid.
+	// 
+	// for the time being the center of the bounding box is used as the reference point. for large
+	// components we've got the problem of what environment map to use. this though has to be solved
+	// later on most probably by splitting up the component into smaller components.
+	deoglFindBestEnvMap visitor;
+	decDVector position;
+	
+	position = ( pMinExtend + pMaxExtend ) * 0.5;
+	
+	visitor.SetPosition( position );
+	//pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
+	visitor.VisitList( pParentWorld->GetEnvMapList() );
+	
+	if( visitor.GetEnvMap() ){
+		SetRenderEnvMap( visitor.GetEnvMap() );
+		
+	}else if( pParentWorld->GetSkyEnvironmentMap() ){
+		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
+		
+	}else{
+		SetRenderEnvMap( NULL );
+		SetRenderEnvMapFade( NULL );
+		pRenderEnvMapFadeFactor = 1.0f;
+	}
+	//pOgl->LogInfoFormat( "update component %p render env map %p\n", pComponent, pRenderEnvMap );
+}
+
+void deoglRComponent::pPrepareSkinStateRenderables(){
+	if( ! pDirtyPrepareSkinStateRenderables ){
+		return;
+	}
+	pDirtyPrepareSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables();
+	}
+}
+
+void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan ){
+	if( ! pDirtyDecals ){
+		return;
+	}
+	pDirtyDecals = false;
+	
+	const int count = pDecals.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan );
 	}
 }
 

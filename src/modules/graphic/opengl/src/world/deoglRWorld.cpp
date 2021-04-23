@@ -173,12 +173,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 	if( pDirtyEnvMapLayout ){
 		pDirtyEnvMapLayout = false;
 		
-		deoglRComponent *component = pRootComponent;
-		while( component ){
-			component->UpdateRenderEnvMap();
-			component = component->GetLLWorldNext();
-		}
-		
 		deoglRBillboard *billboard = pRootBillboard;
 		while( billboard ){
 			billboard->UpdateRenderEnvMap();
@@ -239,7 +233,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 	}
 	
 	// prepare lights
-	
 	decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
 	while( pListPrepareForRenderLights.GetRoot() ){
 		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
@@ -252,13 +245,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 			break; // processed last light. re-added light will come next
 		}
 	}
-	
-	/*
-	count = pLights.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRLight* )pLights.GetAt( i ) )->PrepareForRender( plan );
-	}
-	*/
 	
 	// prepare prop fields
 	count = pPropFields.GetCount();

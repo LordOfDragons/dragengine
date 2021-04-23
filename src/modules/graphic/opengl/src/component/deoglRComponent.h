@@ -94,6 +94,7 @@ public:
 	deoglRSkin *pSkin;
 	deoglRDynamicSkin *pDynamicSkin;
 	bool pStaticTextures;
+	bool pDirtyModelVBOs;
 	
 	deoglROcclusionMesh *pOcclusionMesh;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
@@ -104,6 +105,7 @@ public:
 	
 	decObjectList pLODs;
 	float pLODErrorScaling;
+	bool pDirtyLODVBOs;
 	
 	deoglSPBlockUBO *pParamBlockOccMesh;
 	bool pDirtyParamBlockOccMesh;
@@ -144,6 +146,7 @@ public:
 	
 	decObjectList pTextures;
 	decObjectList pDecals;
+	bool pDirtyDecals;
 	
 	decDMatrix pMatrix;
 	decDMatrix pInverseMatrix;
@@ -242,9 +245,6 @@ public:
 	
 	/** Update. */
 	void Update( float elapsed );
-	
-	/** Update VBO. */
-	void UpdateVBO();
 	
 	
 	
@@ -351,7 +351,6 @@ public:
 	void UpdateSkinStateCalculatedProperties();
 	
 	void DirtyPrepareSkinStateRenderables();
-	void PrepareSkinStateRenderables();
 	
 	
 	
@@ -463,6 +462,9 @@ public:
 	/** Render mode. */
 	inline eRenderModes GetRenderMode() const{ return pRenderMode; }
 	
+	/** Set render mode. */
+	void SetRenderMode( eRenderModes renderMode );
+	
 	/** Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
 	
@@ -528,9 +530,6 @@ public:
 	/** World environment map layout changed. */
 	void WorldEnvMapLayoutChanged();
 	
-	/** Update render environment map. */
-	void UpdateRenderEnvMap();
-	
 	/** Invalidate render environment map. */
 	void InvalidateRenderEnvMap();
 	
@@ -570,6 +569,9 @@ public:
 	
 	/** Set LOD error scaling factor. */
 	void SetLODErrorScaling( float errorScaling );
+	
+	/** Mark LOD VBOs dirty requiring preparing. */
+	void DirtyLODVBOs();
 	/*@}*/
 	
 	
@@ -751,7 +753,13 @@ private:
 	void pCheckRenderModifier( deoglRCamera *oglCamera );
 	void pUpdateRenderMode();
 	void pUpdateCullSphere();
-	void pUpdateSolid();
+	
+	void pPrepareSolidity();
+	void pPrepareModelVBOs();
+	void pPrepareLODVBOs();
+	void pPrepareRenderEnvMap();
+	void pPrepareSkinStateRenderables();
+	void pPrepareDecals( deoglRenderPlan &plan );
 	
 	void pResizeBoneMatrices();
 	
