@@ -39,7 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskInstance::deoglPersistentRenderTaskInstance() :
+deoglPersistentRenderTaskInstance::deoglPersistentRenderTaskInstance(
+	deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ) :
 pParamBlock( NULL ),
 pParamBlockSpecial( NULL ),
 pOwner( NULL ),
@@ -55,8 +56,8 @@ pTessPatchVertexCount( 3 ),
 pSubInstances( NULL ),
 pSubInstanceCount( 0 ),
 pSubInstanceSize( 0 ),
-pSubInstanceSPB( NULL ),
-pSubInstanceSPBRGroup( NULL ),
+pSubInstanceSPB( spb ),
+pSubInstanceSPBRGroup( group ),
 pSIIndexInstanceSPB( NULL ),
 pSIIndexInstanceFirst( 0 ){
 }
@@ -152,14 +153,6 @@ void deoglPersistentRenderTaskInstance::RemoveSubInstance( int index ){
 
 void deoglPersistentRenderTaskInstance::RemoveAllSubInstances(){
 	pSubInstanceCount = 0;
-}
-
-void deoglPersistentRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb ){
-	pSubInstanceSPB = spb;
-}
-
-void deoglPersistentRenderTaskInstance::SetSubInstanceSPBGroup( deoglSharedSPBRTIGroup *group ){
-	pSubInstanceSPBRGroup = group;
 }
 
 void deoglPersistentRenderTaskInstance::SetSIIndexInstanceParam(

@@ -280,6 +280,15 @@ void deoglGIState::PrepareUBOClearProbes() const{
 
 
 
+#ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("GIState.Update: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
 void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
 const decDMatrix &cameraMatrix, float fovX, float fovY ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
@@ -293,21 +302,27 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
 	
 	// find content to track. only static and dynamic content is tracked
+	INIT_SPECIAL_TIMING
 	FindContent( world );
+	SPECIAL_TIMER_PRINT("FindContent")
 	
 	#ifdef GI_USE_RAY_LIMIT
 		FilterOcclusionMeshes();
 	#else
 		FilterComponents();
 	#endif
+	SPECIAL_TIMER_PRINT("FilterContent")
 	
 	// track changes in static instances has to be done first
 	pTrackInstanceChanges();
+	SPECIAL_TIMER_PRINT("TrackInstanceChanges")
 	
 	// prepare probes for tracing
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
+	SPECIAL_TIMER_PRINT("UpdatePosition")
 	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
+	SPECIAL_TIMER_PRINT("PrepareTraceProbes")
 	
 	#ifdef GI_USE_RAY_LIMIT
 		pPrepareRayLimitProbes();
@@ -315,9 +330,11 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	#ifdef GI_USE_RAY_CACHE
 		pPrepareRayCacheProbes();
 	#endif
+	SPECIAL_TIMER_PRINT("PrepareRayCacheProbes")
 	
 	// synchronize all tracked instances using new position
 	pSyncTrackedInstances();
+	SPECIAL_TIMER_PRINT("SyncTrackedInstances")
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -677,9 +694,13 @@ void deoglGIState::pPrepareTraceProbes( const decMatrix &matrixView, float fovX,
 	// keep only the remainder. this avoids updates to pile up if framerate drops or staggers
 	pElapsedUpdateProbe = fmodf( pElapsedUpdateProbe, pUpdateProbeInterval );
 	
+	INIT_SPECIAL_TIMING
 	pAgeProbes();
+	SPECIAL_TIMER_PRINT(">AgeProbes")
 	pFindProbesToUpdate( matrixView, fovX, fovY );
+	SPECIAL_TIMER_PRINT(">FindProbesToUpdate")
 	pPrepareProbeTexturesAndFBO();
+	SPECIAL_TIMER_PRINT(">PrepareProbeTexturesAndFBO")
 }
 
 void deoglGIState::pAgeProbes(){

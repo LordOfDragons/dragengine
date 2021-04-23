@@ -341,7 +341,17 @@ void deoglRenderPlan::PrepareRender(){
 	pIsRendering = false;
 }
 
+#ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT(w) if(pDebugTiming) pRenderThread.GetLogger().LogInfoFormat("RenderPlan.Prepare: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
 void deoglRenderPlan::pBarePrepareRender(){
+	INIT_SPECIAL_TIMING
 	deoglRenderCanvas &renderCanvas = pRenderThread.GetRenderers().GetCanvas();
 	
 	deoglRComponent *oglComponent;
@@ -360,6 +370,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	CleanUp(); // just to make sure everything is clean
 	
 	pDebugPrepare();
+	SPECIAL_TIMER_PRINT("Prepare1")
 	
 	// prepare the camera if existing
 	if( pCamera ){
@@ -417,9 +428,11 @@ void deoglRenderPlan::pBarePrepareRender(){
 		cameraFrustum.SetFrustum( pCameraMatrix * pFrustumMatrix );
 		frustum = &cameraFrustum;
 	}
+	SPECIAL_TIMER_PRINT("PrepareCamera")
 	
 	// prepare world for rendering
 	pWorld->PrepareForRender( *this );
+	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
 	// update environment maps
 	if( ! pNoReflections ){
@@ -428,15 +441,18 @@ void deoglRenderPlan::pBarePrepareRender(){
 	
 	// update the height terrain if present
 	pUpdateHTView();
+	SPECIAL_TIMER_PRINT("Prepare2")
 	
 	// plan what we can plan already
 	pPlanSky();
 	pPlanDominance();
 	pPlanShadowCasting();
 	pPlanOcclusionTesting();
+	SPECIAL_TIMER_PRINT("Plan1")
 	pPlanCollideList( frustum );
 	pDisableLights = pWorld->GetDisableLights();
 	renderCanvas.SampleDebugInfoPlanPrepareCollect( *this );
+	SPECIAL_TIMER_PRINT("Collide")
 	
 	// visibility
 	pPlanVisibility( frustum );
@@ -445,6 +461,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	lightCount = pCollideList.GetLightCount();
 	componentCount = pCollideList.GetComponentCount();
 	const int billboardCount = pCollideList.GetBillboardCount();
+	SPECIAL_TIMER_PRINT("Visibility")
 	
 	// update the blended environment map to use for rendering
 	if( deoglSkinShader::REFLECTION_TEST_MODE == 2 ){
@@ -452,6 +469,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	}
 	//PlanEnvMaps(); // doing this here kills the occlusion map causing all kinds of problems
 	renderCanvas.SampleDebugInfoPlanPrepareEnvMaps( *this );
+	SPECIAL_TIMER_PRINT("UpdateEnvMap")
 	
 	// update lod for visible elements
 	pPlanLODLevels();
@@ -461,6 +479,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 		pHTView->GetHeightTerrain().UpdateVBOs();
 		renderCanvas.SampleDebugInfoPlanPrepareHTViewVBOs( *this );
 	}
+	SPECIAL_TIMER_PRINT("Plan2")
 	
 	// prepare height terrain sectors
 	
@@ -528,6 +547,7 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender UpdateVBO(%i) = %iys", extDebugCompCount, (int)((extDebugCompCalculateWeights+extDebugCompTransformVertices+extDebugCompCalculateNormalsAndTangents+extDebugCompBuildVBO+extDebugCompTBO)*1e6f) );
 	#endif
 	renderCanvas.SampleDebugInfoPlanPrepareComponents( *this );
+	SPECIAL_TIMER_PRINT("Components")
 	
 	// update lights adding them to the list of all lights touched by an upcoming render call
 	for( l=0; l<lightCount; l++ ){
@@ -535,15 +555,18 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 		oglLight->TestCameraInside( *this );
 		GetLightFor( oglLight );
 	}
+	SPECIAL_TIMER_PRINT("Lights")
 	
 	// finish the collide list
 //	pCollideList.SortLinear( world->GetSectorSize(), pCameraSector, pCameraPosition, pCameraInverseMatrix.TransformView() );
 	pCollideList.SortComponentsByModels();
 	renderCanvas.SampleDebugInfoPlanPrepareSort( *this );
+	SPECIAL_TIMER_PRINT("Sort")
 	
 	// now we are ready to produce a render plan
 	pBuildRenderPlan();
 	renderCanvas.SampleDebugInfoPlanPrepareBuildPlan( *this );
+	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
 	
 	// prepare lights for rendering. this is done after the build render plan phase
 	// as there some light parameters can be set which affect the preparation
@@ -551,6 +574,7 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( l=0; l<pSkyLightCount; l++ ){
 		pSkyLights[ l ]->PrepareForRender( *this );
 	}
+	SPECIAL_TIMER_PRINT("PrepareForRenderSkyLight")
 	
 	// prepare particles for rendering
 	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
@@ -559,6 +583,7 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( i=0; i<particleEmitterCount; i++ ){
 		particleEmitterList.GetAt( i )->PrepareForRender();
 	}
+	SPECIAL_TIMER_PRINT("PrepareForRenderParticle")
 	
 	// determine the stencil properties for pass and mask rendering. right now the
 	// mask is always 1 bit and the rest is available to the render pass number
@@ -718,6 +743,7 @@ void deoglRenderPlan::pPlanOcclusionTesting(){
 }
 
 void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
+	INIT_SPECIAL_TIMING
 	// add elements to the collide list
 	pVisitorCullElements->Init( frustum );
 	pVisitorCullElements->SetCullPixelSize( 1.0f );
@@ -728,13 +754,16 @@ void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
 	
 	pVisitorCullElements->VisitWorldOctree( pWorld->GetOctree() );
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add elements colliding" );
+	SPECIAL_TIMER_PRINT(">Octree")
 	
 	if( pHTView ){
 		pCollideList.AddHTSectorsColliding( pHTView, frustum );
+		SPECIAL_TIMER_PRINT(">HTSector")
 	}
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add height terrain sectors colliding" );
 	
 	pCollideList.AddPropFieldsColliding( *pWorld, frustum );
+	SPECIAL_TIMER_PRINT(">PropField")
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add prop fields" );
 	
 	// HACK: add environment maps using a simple hack until we have something better
@@ -759,11 +788,13 @@ void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
 		}
 	}
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add Env-Map" );
+SPECIAL_TIMER_PRINT(">EnvMap")
 	
 	// collect occlusion test data and upload it. we do something else in the mean
 	// time until the GPU uploaded the data to avoid stalling as good as possible
 	pPlanOcclusionTestInputData();
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Prepare Occlusion Test Input Data" );
+	SPECIAL_TIMER_PRINT(">OccTestInpData")
 	
 	// debug information if demanded
 	pDebugVisibleNoCull();
@@ -2026,9 +2057,11 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// aggressively if the memory becomes scarce. for this to work
 	// we need though first a framework to keep track of statically
 	// spend GPU memory.
+	INIT_SPECIAL_TIMING
 	
 	// plan global illumination
 	pPlanGI();
+	SPECIAL_TIMER_PRINT(">GI")
 	
 	// determine if we need transparency
 	pCheckTransparency();
@@ -2038,9 +2071,11 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	for( m=0; m<pMaskedPlanCount; m++ ){
 		pMaskedPlans[ m ]->SetStencilMask( m + 1 );
 	}
+	SPECIAL_TIMER_PRINT(">Misc")
 	
 	// build sky light plan
 	pBuildSkyLightPlan();
+	SPECIAL_TIMER_PRINT(">SkyLight")
 	
 	// first let's simply print out the number of lights and what
 	// a conservative assignment would cause
@@ -2048,6 +2083,7 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	
 	// determine light probes
 	pBuildLightProbes();
+	SPECIAL_TIMER_PRINT(">Light")
 }
 
 void deoglRenderPlan::pBuildSkyLightPlan(){

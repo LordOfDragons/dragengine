@@ -117,8 +117,9 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith
 	return NULL;
 }
 
-deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::AddInstance(){
-	deoglPersistentRenderTaskInstance * const instance = new deoglPersistentRenderTaskInstance;
+deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::AddInstance(
+deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ){
+	deoglPersistentRenderTaskInstance * const instance = new deoglPersistentRenderTaskInstance( spb, group );
 	pInstances.Add( instance );
 	return instance;
 }

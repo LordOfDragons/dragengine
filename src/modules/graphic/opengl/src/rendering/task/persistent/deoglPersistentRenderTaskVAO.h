@@ -29,6 +29,7 @@
 
 class deoglQuickSorter;
 class deoglPersistentRenderTaskInstance;
+class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;
 class deoglVAO;
 
@@ -87,7 +88,8 @@ public:
 	deoglPersistentRenderTaskInstance *GetInstanceWith( deoglSharedSPBRTIGroup *group ) const;
 	
 	/** Add instance. */
-	deoglPersistentRenderTaskInstance *AddInstance();
+	deoglPersistentRenderTaskInstance *AddInstance( deoglSharedSPB *spb = NULL,
+		deoglSharedSPBRTIGroup *group = NULL );
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();

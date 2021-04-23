@@ -249,9 +249,7 @@ int firstFace, int faceCount, int lodLevel ){
 		
 		deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith( &group );
 		if( ! rti ){
-			rti = rtvao->AddInstance();
-			rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-			rti->SetSubInstanceSPBGroup( &group );
+			rti = rtvao->AddInstance( &spbElement->GetSPB(), &group );
 			rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
 			rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 			rti->SetIndexCount( faceCount * 3 );

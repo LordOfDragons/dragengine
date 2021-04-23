@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task instance. */
-	deoglPersistentRenderTaskInstance();
+	deoglPersistentRenderTaskInstance( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group );
 	
 	/** Clean up render task instance. */
 	~deoglPersistentRenderTaskInstance();
@@ -160,17 +160,11 @@ public:
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();
 	
-	/** Sub instances SPB or \em NULL. */
+	/** Sub instances SPB or NULL. */
 	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
 	
-	/** Set sub instances SPB or \em NULL. */
-	void SetSubInstanceSPB( deoglSharedSPB *element );
-	
-	/** Sub instances SPB Group or \em NULL. */
+	/** Sub instances SPB Group or NULL. */
 	inline deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBRGroup; }
-	
-	/** Set sub instances SPB Group or \em NULL. */
-	void SetSubInstanceSPBGroup( deoglSharedSPBRTIGroup *group );
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }

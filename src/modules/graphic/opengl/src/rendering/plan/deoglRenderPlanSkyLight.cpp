@@ -512,6 +512,7 @@ void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
+	bool taskRequiresPrepare = false;
 	int i, count;
 	
 	// remove components no more present in the collide list
@@ -534,6 +535,7 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 		i--;
 		
 		component.RemoveListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		taskRequiresPrepare = true;
 		
 // 		{
 // 			const decDVector p(component.GetMatrix().GetPosition());
@@ -559,6 +561,7 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 		pGIRenderTaskAdd.AddComponent( component, -1 );
 		
 		component.AddListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		taskRequiresPrepare = true;
 		
 // 		{
 // 			const decDVector p(component.GetMatrix().GetPosition());
@@ -568,5 +571,15 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 	}
 	
 	// prepare task
-	pGIRenderTask.PrepareForRender( pRenderThread );
+	if( taskRequiresPrepare ){
+		pGIRenderTask.PrepareForRender( pRenderThread );
+		
+		/*
+		pRenderThread.GetLogger().LogInfoFormat(
+			"GIUpdateRenderTask: shaders=%d textures=%d vaos=%d instances=%d subinstances=%d",
+			pGIRenderTask.GetShaderCount(), pGIRenderTask.GetTotalTextureCount(),
+			pGIRenderTask.GetTotalVAOCount(), pGIRenderTask.GetTotalInstanceCount(),
+			pGIRenderTask.GetTotalSubInstanceCount() );
+		*/
+	}
 }
