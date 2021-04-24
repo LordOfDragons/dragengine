@@ -114,6 +114,7 @@ deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pUseGIState( true ),
 pUseConstGIState( NULL ),
+pSkyLightCount( 0 ),
 pGIState( NULL )
 {
 	pWorld = NULL;
@@ -175,10 +176,6 @@ pGIState( NULL )
 	pLightCount = 0;
 	pLightSize = 0;
 	
-	pSkyLights = NULL;
-	pSkyLightCount = 0;
-	pSkyLightSize = 0;
-	
 	pMaskedPlans = NULL;
 	pMaskedPlanCount = 0;
 	pMaskedPlanSize = 0;
@@ -216,7 +213,8 @@ public:
 };
 
 deoglRenderPlan::~deoglRenderPlan(){
-	//RemoveAllMaskedPlans();
+	int i, count;
+	
 	if( pMaskedPlans ){
 		while( pMaskedPlanSize > 0 ){
 			pMaskedPlanSize--;
@@ -228,16 +226,11 @@ deoglRenderPlan::~deoglRenderPlan(){
 		delete [] pMaskedPlans;
 	}
 	
-	if( pSkyLights ){
-		while( pSkyLightSize > 0 ){
-			pSkyLightSize--;
-			if( pSkyLights[ pSkyLightSize ] ){
-				delete pSkyLights[ pSkyLightSize ];
-			}
-		}
-		
-		delete [] pSkyLights;
+	count = pSkyLights.GetCount();
+	for( i=0; i<count; i++ ){
+		delete ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
 	}
+	pSkyLights.RemoveAll();
 	
 	//RemoveAllLights();
 	if( pLights ){
@@ -341,6 +334,7 @@ void deoglRenderPlan::PrepareRender(){
 	pIsRendering = false;
 }
 
+#define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
@@ -567,14 +561,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	pBuildRenderPlan();
 	renderCanvas.SampleDebugInfoPlanPrepareBuildPlan( *this );
 	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
-	
-	// prepare lights for rendering. this is done after the build render plan phase
-	// as there some light parameters can be set which affect the preparation
-	// phase ( like for example no updating if not shadow casting )
-	for( l=0; l<pSkyLightCount; l++ ){
-		pSkyLights[ l ]->PrepareForRender( *this );
-	}
-	SPECIAL_TIMER_PRINT("PrepareForRenderSkyLight")
 	
 	// prepare particles for rendering
 	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
@@ -1456,10 +1442,14 @@ void deoglRenderPlan::Render(){
 }
 
 void deoglRenderPlan::CleanUp(){
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
+	}
+	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
 	RemoveAllLights();
-	RemoveAllSkyLights();
 	pDropLightsDynamic();
 	pCollideList.Clear();
 }
@@ -1838,42 +1828,12 @@ void deoglRenderPlan::RemoveAllLights(){
 ///////////////
 
 deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt( int index ) const{
-	if( index < 0 || index >= pSkyLightCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSkyLights[ index ];
-}
-
-deoglRenderPlanSkyLight *deoglRenderPlan::AddSkyLight( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer ){
-	if( ! sky || ! layer ) {
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pSkyLightCount == pSkyLightSize ){
-		const int newSize = pSkyLightSize + 1;
-		deoglRenderPlanSkyLight ** const newArray = new deoglRenderPlanSkyLight*[ newSize ];
-		memset( newArray, '\0', sizeof( deoglRenderPlanSkyLight* ) * newSize );
-		if( pSkyLights ){
-			memcpy( newArray, pSkyLights, sizeof( deoglRenderPlanSkyLight* ) * pSkyLightSize );
-			delete [] pSkyLights;
-		}
-		pSkyLights = newArray;
-		pSkyLightSize = newSize;
-	}
-	
-	if( ! pSkyLights[ pSkyLightCount ] ){
-		pSkyLights[ pSkyLightCount ] = new deoglRenderPlanSkyLight( pRenderThread );
-	}
-	
-	deoglRenderPlanSkyLight * const planSkyLight = pSkyLights[ pSkyLightCount++ ];
-	planSkyLight->SetLayer( sky, layer );
-	return planSkyLight;
+	return ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( index );
 }
 
 void deoglRenderPlan::RemoveAllSkyLights(){
 	while( pSkyLightCount > 0 ){
-		pSkyLightCount--;
-		pSkyLights[ pSkyLightCount ]->Clear();
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( --pSkyLightCount ) )->Clear();
 	}
 }
 
@@ -2088,19 +2048,57 @@ void deoglRenderPlan::pBuildRenderPlan(){
 
 void deoglRenderPlan::pBuildSkyLightPlan(){
 	const int skyCount = GetSkyInstanceCount();
-	int i, j;
+	int i, j, k;
 	
-	RemoveAllSkyLights(); // just to make sure
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->ClearPrepared();
+	}
 	
 	for( i=0; i<skyCount; i++ ){
 		deoglRSkyInstance &instance = *GetSkyInstanceAt( i );
+		
 		const int layerCount = instance.GetLayerCount();
 		for( j=0; j<layerCount; j++ ){
 			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt( j );
-			if( skyLayer.GetHasLightDirect() || skyLayer.GetHasLightAmbient() ){
-				AddSkyLight( &instance, &skyLayer )->Init( *this );
+			if( ! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient() ){
+				continue;
 			}
+			
+			deoglRenderPlanSkyLight *planSkyLight = NULL;
+			
+			for( k=0; k<pSkyLightCount; k++ ){
+				deoglRenderPlanSkyLight * const check = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( k );
+				if( check->GetLayer() == &skyLayer ){
+					planSkyLight = check;
+					break;
+				}
+			}
+			
+			if( ! planSkyLight ){
+				if( pSkyLightCount < pSkyLights.GetCount() ){
+					planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( pSkyLightCount );
+					
+				}else{
+					planSkyLight = new deoglRenderPlanSkyLight( pRenderThread );
+					pSkyLights.Add( planSkyLight );
+				}
+				
+				planSkyLight->SetLayer( &instance, &skyLayer );
+				pSkyLightCount++;
+			}
+			
+			planSkyLight->Prepare( *this );
 		}
+	}
+	
+	for( i=0; i<pSkyLightCount; i++ ){
+		deoglRenderPlanSkyLight * const planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
+		if( planSkyLight->GetPrepared() ){
+			continue;
+		}
+		
+		planSkyLight->Clear();
+		pSkyLights.Move( i--, --pSkyLightCount );
 	}
 }
 

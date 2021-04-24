@@ -51,6 +51,7 @@ class deoglRenderCache;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
+class deoglPersistentRenderTaskPool;
 class deoglRTUniqueKey;
 
 class deoglRTBufferObject;
@@ -130,6 +131,7 @@ private:
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
+	deoglPersistentRenderTaskPool *pPersistentRenderTaskPool;
 	deoglRTUniqueKey *pUniqueKey;
 	
 	deoglTimeHistory pTimeHistoryMain;
@@ -317,6 +319,8 @@ public:
 	/** Triangle sorter. */
 	deoglTriangleSorter &GetTriangleSorter() const{ return *pTriangleSorter; }
 	
+	/** Persistent render task pool. */
+	inline deoglPersistentRenderTaskPool &GetPersistentRenderTaskPool() const{ return *pPersistentRenderTaskPool; }
 	
 	/** Unique key. */
 	inline deoglRTUniqueKey &GetUniqueKey() const{ return *pUniqueKey; }

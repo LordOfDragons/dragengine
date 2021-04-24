@@ -32,8 +32,10 @@
 #include "../../debug/debugSnapshot.h"
 #include "../../gi/deoglGIState.h"
 #include "../../model/deoglRModel.h"
+#include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTLogger.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../utils/collision/deoglCollisionBox.h"
@@ -66,10 +68,13 @@ deoglRenderPlanSkyLight::deoglRenderPlanSkyLight( deoglRenderThread &renderThrea
 pRenderThread( renderThread ),
 pSky( NULL ),
 pLayer( NULL ),
+pPrepared( false ),
 pUseLight( true ),
 pUseShadow( false ),
 pShadowLayerCount( 0 ),
-pGIRenderTaskAdd( renderThread, pGIRenderTask )
+pGIRenderTask( renderThread.GetPersistentRenderTaskPool() ),
+pGIRenderTaskAdd( renderThread, pGIRenderTask ),
+pGIRenderTaskUpdateMarker( false )
 {
 	pGIRenderTaskAdd.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	pGIRenderTaskAdd.SetSolid( true );
@@ -82,12 +87,17 @@ pGIRenderTaskAdd( renderThread, pGIRenderTask )
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
+	Clear();
 }
 
 
 
 // Management
 ///////////////
+
+void deoglRenderPlanSkyLight::ClearPrepared(){
+	pPrepared = false;
+}
 
 deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowLayerAt( int index ){
 	if( index < 0 || index >= pShadowLayerCount ){
@@ -104,29 +114,34 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 }
 
 void deoglRenderPlanSkyLight::GIComponentChangedTUC( deoglRComponent &component ){
-	const int index = pGIComponents.IndexOf( &component );
-	if( index != -1 ){
-		pGIRenderTask.RemoveOwnedBy( &component );
-		pGIComponents.RemoveFrom( index );
-	}
 	component.RemoveListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+	
+	deoglPersistentRenderTaskOwner * const owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
+	if( owner ){
+		pGIRenderTask.RemoveOwnedBy( *owner );
+		pGIRenderTask.RemoveOwner( owner );
+	}
 }
 
 
 
 void deoglRenderPlanSkyLight::Clear(){
 	cGIComponentChangeListener * const giccl = ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener;
-	int i, count = pGIComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponent* )( deObject* )pGIComponents.GetAt( i ) )->RemoveListener( giccl );
+	decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
+	while( iterOwner ){
+		deoglPersistentRenderTaskOwner &owner = *( ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner() );
+		( ( deoglRComponent* )owner.GetOwner() )->RemoveListener( giccl );
+		iterOwner = iterOwner->GetNext();
 	}
+	pGIRenderTask.Clear();
+	pGICollideList.Clear();
+	
+	pCollideList.Clear();
+	pUseLight = false;
+	pUseShadow = false;
 	
 	pSky = NULL;
 	pLayer = NULL;
-	pCollideList.Clear();
-	pGICollideList.Clear();
-	pUseLight = false;
-	pUseShadow = false;
 }
 
 void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer ){
@@ -134,8 +149,8 @@ void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanc
 	pLayer = layer;
 }
 
+#define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
-#include "../../renderthread/deoglRTLogger.h"
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
 #define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("RenderPlanSkyLight.Init: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
@@ -145,9 +160,10 @@ void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanc
 #endif
 
 
-void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
+void deoglRenderPlanSkyLight::Prepare( deoglRenderPlan &plan ){
 	INIT_SPECIAL_TIMING
 	pShadowLayerCount = 4;
+	pPrepared = true;
 	
 	pDetermineShadowParameters( plan );
 	if( ! pUseShadow ){
@@ -169,7 +185,11 @@ void deoglRenderPlanSkyLight::Init( deoglRenderPlan &plan ){
 	SPECIAL_TIMER_PRINT("Collect")
 }
 
-void deoglRenderPlanSkyLight::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRenderPlanSkyLight::CleanUp(){
+	pGICollideList.Clear();
+	pCollideList.Clear();
+	pUseLight = false;
+	pUseShadow = false;
 }
 
 
@@ -512,56 +532,30 @@ void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
-	bool taskRequiresPrepare = false;
+			decTimer timer;
+	int countAdded = 0, countRemoved = 0;
 	int i, count;
 	
-	// remove components no more present in the collide list
-	count = pGIComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponent* )pGIComponents.GetAt( i ) )->SetMarked( false );
-	}
+	// flip update marker. allows to track changes with the least amount of work
+	pGIRenderTaskUpdateMarker = ! pGIRenderTaskUpdateMarker;
 	
-	pGICollideList.MarkComponents( true );
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent &component = *( ( deoglRComponent* )pGIComponents.GetAt( i ) );
-		if( component.GetMarked() ){
-			continue;
-		}
-		
-		pGIRenderTask.RemoveOwnedBy( &component );
-		pGIComponents.RemoveFrom( i );
-		count--;
-		i--;
-		
-		component.RemoveListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
-		taskRequiresPrepare = true;
-		
-// 		{
-// 			const decDVector p(component.GetMatrix().GetPosition());
-// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
-// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-// 		}
-	}
-	
-	// add components now present in the collide list
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponent* )pGIComponents.GetAt( i ) )->SetMarked( false );
-	}
-	
+	// add components not in task yet
 	count = pGICollideList.GetComponentCount();
 	for( i=0; i<count; i++ ){
 		deoglRComponent &component = *pGICollideList.GetComponentAt( i )->GetComponent();
-		if( ! component.GetMarked() ){
+		deoglPersistentRenderTaskOwner *owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
+		if( owner ){
+			owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
 			continue;
 		}
 		
-		pGIComponents.Add( &component );
+		owner = pGIRenderTask.AddOwner( &component, component.GetUniqueKey() );
+		owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
 		
-		pGIRenderTaskAdd.AddComponent( component, -1 );
+		pGIRenderTaskAdd.AddComponent( *owner, component, -1 );
 		
 		component.AddListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
-		taskRequiresPrepare = true;
+		countAdded++;
 		
 // 		{
 // 			const decDVector p(component.GetMatrix().GetPosition());
@@ -569,17 +563,45 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 // 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
 // 		}
 	}
+			const int elapsedAdd = ( int )( timer.GetElapsedTime() * 1e6f );
+	
+	// remove components no more in task
+	decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
+	while( iterOwner ){
+		deoglPersistentRenderTaskOwner * const owner = ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner();
+		iterOwner = iterOwner->GetNext();
+		
+		if( owner->GetUpdateMarker() == pGIRenderTaskUpdateMarker ){
+			continue;
+		}
+		
+// 		{
+// 			const deoglRComponent &component = *( ( deoglRComponent* )owner->GetOwner() );
+// 			const decDVector p(component.GetMatrix().GetPosition());
+// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
+// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
+// 		}
+		
+		( ( deoglRComponent* )owner->GetOwner() )->RemoveListener(
+			( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		countRemoved++;
+		
+		pGIRenderTask.RemoveOwnedBy( *owner );
+		pGIRenderTask.RemoveOwner( owner );
+	}
+			const int elapsedRemove = ( int )( timer.GetElapsedTime() * 1e6f );
 	
 	// prepare task
-	if( taskRequiresPrepare ){
+	if( countAdded > 0 || countRemoved > 0 ){
 		pGIRenderTask.PrepareForRender( pRenderThread );
 		
-		/*
+		
 		pRenderThread.GetLogger().LogInfoFormat(
-			"GIUpdateRenderTask: shaders=%d textures=%d vaos=%d instances=%d subinstances=%d",
-			pGIRenderTask.GetShaderCount(), pGIRenderTask.GetTotalTextureCount(),
-			pGIRenderTask.GetTotalVAOCount(), pGIRenderTask.GetTotalInstanceCount(),
-			pGIRenderTask.GetTotalSubInstanceCount() );
-		*/
+			"GIUpdateRenderTask: owners=%d shaders=%d textures=%d vaos=%d instances=%d subinstances=%d (+%d -%d) [%dys; +%dys -%dys]",
+			pGIRenderTask.GetOwnerCount(), pGIRenderTask.GetShaderCount(),
+			pGIRenderTask.GetTotalTextureCount(), pGIRenderTask.GetTotalVAOCount(),
+			pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount(),
+			countAdded, countRemoved, ( int )( timer.GetElapsedTime() * 1e6f ), elapsedAdd, elapsedRemove );
+		
 	}
 }

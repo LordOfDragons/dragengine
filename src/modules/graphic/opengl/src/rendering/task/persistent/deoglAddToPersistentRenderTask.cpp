@@ -29,6 +29,7 @@
 #include "deoglPersistentRenderTaskShader.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
+#include "deoglPersistentRenderTaskOwner.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../component/deoglRComponent.h"
 #include "../../../component/deoglRComponentTexture.h"
@@ -163,7 +164,8 @@ void deoglAddToPersistentRenderTask::SetEnforceParamBlock( deoglSPBlockUBO *bloc
 	pEnforceParamBlock = block;
 }
 
-void deoglAddToPersistentRenderTask::AddComponent( deoglRComponent &component, int lodLevel ){
+void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
+deoglRComponent &component, int lodLevel ){
 	if( ! component.GetParentWorld() || ! component.GetModel() ){
 		return;
 	}
@@ -179,28 +181,30 @@ void deoglAddToPersistentRenderTask::AddComponent( deoglRComponent &component, i
 	for( i=0; i<textureCount; i++ ){
 		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
 		if( texture.GetFaceCount() > 0 ){
-			AddComponentFaces( component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel );
+			AddComponentFaces( owner, component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel );
 		}
 	}
 }
 
-void deoglAddToPersistentRenderTask::AddComponent( const deoglCollideListComponent &clcomponent ){
-	AddComponent( *clcomponent.GetComponent(), clcomponent.GetLODLevel() );
+void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
+const deoglCollideListComponent &clcomponent ){
+	AddComponent( owner, *clcomponent.GetComponent(), clcomponent.GetLODLevel() );
 }
 
-void deoglAddToPersistentRenderTask::AddComponentFaces( deoglRComponent &component, int texture, int lodLevel ){
+void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
+deoglRComponent &component, int texture, int lodLevel ){
 	if( ! component.GetModel() ){
 		return;
 	}
 	
 	const deoglModelTexture &t = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
 	if( t.GetFaceCount() > 0 ){
-		AddComponentFaces( component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel );
+		AddComponentFaces( owner, component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel );
 	}
 }
 
-void deoglAddToPersistentRenderTask::AddComponentFaces( deoglRComponent &component, int texture,
-int firstFace, int faceCount, int lodLevel ){
+void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
+deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel ){
 	deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
@@ -256,7 +260,7 @@ int firstFace, int faceCount, int lodLevel ){
 			rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 		}
 		
-		rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags(), &component );
+		rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags(), &owner );
 		
 	}else{
 		deoglPersistentRenderTaskInstance * const rti = rtvao->AddInstance();
@@ -266,7 +270,7 @@ int firstFace, int faceCount, int lodLevel ){
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
-		rti->SetOwner( &component );
+		rti->SetOwner( &owner );
 	}
 }
 

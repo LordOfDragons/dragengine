@@ -59,6 +59,7 @@
 #include "../rendering/deoglRenderCanvas.h"
 #include "../rendering/cache/deoglRenderCache.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
@@ -120,6 +121,7 @@ pGI( NULL ),
 pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
+pPersistentRenderTaskPool( NULL ),
 pUniqueKey( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
@@ -952,6 +954,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pUniqueKey = new deoglRTUniqueKey;
 	pTriangleSorter = new deoglTriangleSorter;
+	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pDelayedOperations = new deoglDelayedOperations( *this );
 	pRenderCache = new deoglRenderCache( *this );
 	pShadowMapper = new deoglShadowMapper( *this );
@@ -1886,6 +1889,10 @@ void deoglRenderThread::pCleanUpThread(){
 		if( pLightBoundarybox ){
 			delete pLightBoundarybox;
 			pLightBoundarybox = NULL;
+		}
+		if( pPersistentRenderTaskPool ){
+			delete pPersistentRenderTaskPool;
+			pPersistentRenderTaskPool = NULL;
 		}
 		if( pTriangleSorter ){
 			delete pTriangleSorter;

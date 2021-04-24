@@ -24,6 +24,11 @@
 
 #include "../../../deoglBasics.h"
 
+#include <dragengine/common/collection/decPointerLinkedList.h>
+
+class deoglPersistentRenderTaskPool;
+class deoglPersistentRenderTaskVAO;
+class deoglPersistentRenderTaskOwner;
 class deoglShaderParameterBlock;
 class deoglRenderThread;
 class deoglSharedSPB;
@@ -39,15 +44,19 @@ public:
 	struct sSubInstance{
 		int indexInstance;
 		int flags;
-		void *owner;
+		deoglPersistentRenderTaskOwner *owner;
 	};
 	
 	
 	
 private:
+	deoglPersistentRenderTaskPool &pPool;
+	decPointerLinkedList::cListEntry pLLVAO;
+	
+	deoglPersistentRenderTaskVAO *pParentVAO;
 	deoglShaderParameterBlock *pParamBlock;
 	deoglShaderParameterBlock *pParamBlockSpecial;
-	void *pOwner;
+	deoglPersistentRenderTaskOwner *pOwner;
 	
 	int pFirstPoint;
 	int pPointCount;
@@ -61,7 +70,7 @@ private:
 	int pSubInstanceCount;
 	int pSubInstanceSize;
 	deoglSharedSPB *pSubInstanceSPB;
-	deoglSharedSPBRTIGroup *pSubInstanceSPBRGroup;
+	deoglSharedSPBRTIGroup *pSubInstanceSPBGroup;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
 	
@@ -71,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task instance. */
-	deoglPersistentRenderTaskInstance( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group );
+	deoglPersistentRenderTaskInstance( deoglPersistentRenderTaskPool &pool );
 	
 	/** Clean up render task instance. */
 	~deoglPersistentRenderTaskInstance();
@@ -81,6 +90,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Parent VAO. */
+	inline deoglPersistentRenderTaskVAO *GetParentVAO() const{ return pParentVAO; }
+	
+	/** Set parent VAO. */
+	void SetParentVAO( deoglPersistentRenderTaskVAO *vao );
+	
 	/** Shader parameter block or \em NULL. */
 	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
@@ -94,10 +109,10 @@ public:
 	void SetParameterBlockSpecial( deoglShaderParameterBlock *block );
 	
 	/** Owner object or NULL. */
-	inline void *GetOwner() const{ return pOwner; }
+	inline deoglPersistentRenderTaskOwner *GetOwner() const{ return pOwner; }
 	
 	/** Set owner object or NULL. */
-	void SetOwner( void *owner );
+	void SetOwner( deoglPersistentRenderTaskOwner *owner );
 	
 	
 	
@@ -152,7 +167,7 @@ public:
 	const sSubInstance &GetSubinstanceAt( int index ) const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( int indexInstance, int flags, void *owner );
+	void AddSubInstance( int indexInstance, int flags, deoglPersistentRenderTaskOwner *owner );
 	
 	/** Remove sub instance. */
 	void RemoveSubInstance( int index );
@@ -164,7 +179,10 @@ public:
 	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
 	
 	/** Sub instances SPB Group or NULL. */
-	inline deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBRGroup; }
+	inline deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBGroup; }
+	
+	/** Set Sub instances SPB and group. */
+	void SetSubInstanceSPB( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group );
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }
@@ -184,7 +202,16 @@ public:
 	
 	
 	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( void *owner );
+	void RemoveOwnedBy( deoglPersistentRenderTaskOwner *owner );
+	
+	/** Clear. */
+	void Clear();
+	
+	
+	
+	/** Render task linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLVAO(){ return pLLVAO; }
+	inline const decPointerLinkedList::cListEntry &GetLLVAO() const{ return pLLVAO; }
 	/*@}*/
 };
 

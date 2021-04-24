@@ -78,6 +78,7 @@ private:
 	decVector pFrustumBoxMinExtend;
 	decVector pFrustumBoxMaxExtend;
 	
+	bool pPrepared;
 	bool pUseLight;
 	bool pUseShadow;
 	int pShadowLayerCount;
@@ -87,9 +88,9 @@ private:
 	decVector pGIBoxMinExtend;
 	decVector pGIBoxMaxExtend;
 	sShadowLayer pGIShadowLayer;
-	decObjectList pGIComponents;
 	deoglPersistentRenderTask pGIRenderTask;
 	deoglAddToPersistentRenderTask pGIRenderTaskAdd;
+	bool pGIRenderTaskUpdateMarker;
 	deObjectReference pGIComponentChangeListener;
 	
 	
@@ -129,6 +130,12 @@ public:
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
 	
+	
+	/** Plan is prepared. */
+	inline bool GetPrepared() const{ return pPrepared; }
+	
+	/** Clear plan is prepared. */
+	void ClearPrepared();
 	
 	/** Use light. */
 	inline bool GetUseLight() const{ return pUseLight; }
@@ -171,16 +178,11 @@ public:
 	/** Clear. */
 	void Clear();
 	
-	/** Initialize plan. */
-	void Init( deoglRenderPlan &plan );
+	/** Prepare plan. */
+	void Prepare( deoglRenderPlan &plan );
 	
-	/**
-	 * Prepare for render.
-	 * 
-	 * \warning After this call various render states including temporary render targets are
-	 *          potentially invalid. Call this only before doing any kind of rendering.
-	 */
-	void PrepareForRender( deoglRenderPlan &plan );
+	/** Clean up after rendering. */
+	void CleanUp();
 	
 	
 	

@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -38,24 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskTexture::deoglPersistentRenderTaskTexture( deoglTexUnitsConfig *tuc ) :
+deoglPersistentRenderTaskTexture::deoglPersistentRenderTaskTexture( deoglPersistentRenderTaskPool &pool ) :
+pPool( pool ),
+pLLShader( this ),
+
+pParentShader( NULL ),
 pTUC( NULL ),
-pParamBlock( NULL )
-{
-	if( ! tuc ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTUC = tuc;
-	tuc->AddUsage();
+pParamBlock( NULL ){
 }
 
 deoglPersistentRenderTaskTexture::~deoglPersistentRenderTaskTexture(){
-	RemoveAllVAOs();
-	
-	if( pTUC ){
-		pTUC->RemoveUsage();
-	}
+	Clear();
 }
 
 
@@ -63,37 +57,57 @@ deoglPersistentRenderTaskTexture::~deoglPersistentRenderTaskTexture(){
 // Management
 ///////////////
 
-int deoglPersistentRenderTaskTexture::GetTotalPointCount() const{
-	const int count = pVAOs.GetCount();
-	int pointCount = 0;
-	int i;
+void deoglPersistentRenderTaskTexture::SetParentShader( deoglPersistentRenderTaskShader *shader ){
+	pParentShader = shader;
+}
+
+void deoglPersistentRenderTaskTexture::SetTUC( deoglTexUnitsConfig *tuc ){
+	if( tuc == pTUC ){
+		return;
+	}
 	
-	for( i=0; i<count; i++ ){
-		pointCount += ( ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalPointCount();
+	if( pTUC ){
+		pTUC->RemoveUsage();
+	}
+	
+	pTUC = tuc;
+	
+	if( tuc ){
+		tuc->AddUsage();
+	}
+}
+
+int deoglPersistentRenderTaskTexture::GetTotalPointCount() const{
+	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	int pointCount = 0;
+	
+	while( iter ){
+		pointCount += ( ( deoglPersistentRenderTaskVAO* )iter->GetOwner() )->GetTotalPointCount();
+		iter = iter->GetNext();
 	}
 	
 	return pointCount;
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalInstanceCount() const{
-	const int count = pVAOs.GetCount();
+	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
 	int instanceCount = 0;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		instanceCount += ( ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i ) )->GetInstanceCount();
+	while( iter ){
+		instanceCount += ( ( deoglPersistentRenderTaskVAO* )iter->GetOwner() )->GetInstanceCount();
+		iter = iter->GetNext();
 	}
 	
 	return instanceCount;
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalSubInstanceCount() const{
-	const int count = pVAOs.GetCount();
+	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
 	int subInstanceCount = 0;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		subInstanceCount += ( ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalSubInstanceCount();
+	while( iter ){
+		subInstanceCount += ( ( deoglPersistentRenderTaskVAO* )iter->GetOwner() )->GetTotalSubInstanceCount();
+		iter = iter->GetNext();
 	}
 	
 	return subInstanceCount;
@@ -111,18 +125,34 @@ int deoglPersistentRenderTaskTexture::GetVAOCount() const{
 	return pVAOs.GetCount();
 }
 
-deoglPersistentRenderTaskVAO * deoglPersistentRenderTaskTexture::GetVAOAt( int index ) const{
-	return ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( index );
+decPointerLinkedList::cListEntry *deoglPersistentRenderTaskTexture::GetRootVAO() const{
+	return pVAOs.GetRoot();
 }
 
 deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith( deoglVAO *vao ) const{
-	const int count = pVAOs.GetCount();
-	int i;
+	decPointerLinkedList::cListEntry *iterLeft = pVAOs.GetRoot();
+	int left = 0, right = pVAOs.GetCount() - 1;
 	
-	for( i=0; i<count; i++ ){
-		deoglPersistentRenderTaskVAO * const rtvao = ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i );
+	while( left <= right ){
+		const int middle = left + ( right - left ) / 2;
+		
+		decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
+		int mover = left;
+		while( mover++ < middle ){
+			iterMiddle = iterMiddle->GetNext();
+		}
+		
+		deoglPersistentRenderTaskVAO * const rtvao = ( deoglPersistentRenderTaskVAO* )iterMiddle->GetOwner();
+		
 		if( rtvao->GetVAO() == vao ){
 			return rtvao;
+			
+		}else if( rtvao->GetVAO() < vao ){
+			left = middle + 1;
+			iterLeft = iterMiddle->GetNext();
+			
+		}else{
+			right = middle - 1;
 		}
 	}
 	
@@ -134,43 +164,64 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO( deoglVAO
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglPersistentRenderTaskVAO * const rtvao = new deoglPersistentRenderTaskVAO( vao );
-	pVAOs.Add( rtvao );
+	decPointerLinkedList::cListEntry *iterLeft = pVAOs.GetRoot();
+	int left = 0, right = pVAOs.GetCount() - 1;
+	
+	while( left <= right ){
+		const int middle = left + ( right - left ) / 2;
+		
+		decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
+		int mover = left;
+		while( mover++ < middle ){
+			iterMiddle = iterMiddle->GetNext();
+		}
+		
+		if( ( ( deoglPersistentRenderTaskVAO* )iterMiddle->GetOwner() )->GetVAO() <= vao ){
+			left = middle + 1;
+			iterLeft = iterMiddle->GetNext();
+			
+		}else{
+			right = middle - 1;
+		}
+	}
+	
+	deoglPersistentRenderTaskVAO * const rtvao = pPool.GetVAO();
+	
+	if( iterLeft ){
+		pVAOs.InsertBefore( &rtvao->GetLLTexture(),
+			&( ( deoglPersistentRenderTaskVAO* )iterLeft->GetOwner() )->GetLLTexture() );
+		
+	}else{
+		pVAOs.Add( &rtvao->GetLLTexture() );
+	}
+	
+	rtvao->SetParentTexture( this );
+	rtvao->SetVAO( vao );
 	return rtvao;
 }
 
-void deoglPersistentRenderTaskTexture::RemoveAllVAOs(){
-	const int count = pVAOs.GetCount();
-	int i;
+void deoglPersistentRenderTaskTexture::RemoveVAO( deoglPersistentRenderTaskVAO *vao ){
+	if( ! vao ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i );
+	pVAOs.Remove( &vao->GetLLTexture() );
+	pPool.ReturnVAO( vao );
+}
+
+void deoglPersistentRenderTaskTexture::RemoveAllVAOs(){
+	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	while( iter ){
+		pPool.ReturnVAO( ( deoglPersistentRenderTaskVAO* )iter->GetOwner() );
+		iter = iter->GetNext();
 	}
 	pVAOs.RemoveAll();
 }
 
-
-
-void deoglPersistentRenderTaskTexture::RemoveOwnedBy( void *owner ){
-	int i, count = pVAOs.GetCount();
-	for( i=0; i<count; i++ ){
-		deoglPersistentRenderTaskVAO * const vao = ( deoglPersistentRenderTaskVAO* )pVAOs.GetAt( i );
-		
-		if( ! ( vao->GetOwner() && vao->GetOwner() == owner ) ){
-			vao->RemoveOwnedBy( owner );
-			
-			if( vao->GetInstanceCount() > 0 ){
-				continue;
-			}
-		}
-		
-		if( i < count - 1 ){
-			pVAOs.SetAt( i, pVAOs.GetAt( count - 1 ) );
-		}
-		pVAOs.RemoveFrom( count - 1 );
-		count--;
-		i--;
-		
-		delete vao;
-	}
+void deoglPersistentRenderTaskTexture::Clear(){
+	RemoveAllVAOs();
+	
+	pParentShader = NULL;
+	SetTUC( NULL );
+	pParamBlock = NULL;
 }

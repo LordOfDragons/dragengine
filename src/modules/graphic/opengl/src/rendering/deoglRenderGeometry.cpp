@@ -421,8 +421,8 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 }
 
 void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTask ){
-	const int shaderCount = renderTask.GetShaderCount();
-	if( shaderCount == 0 ){
+	decPointerLinkedList::cListEntry *iterShader = renderTask.GetRootShader();
+	if( ! iterShader ){
 		return;
 	}
 	
@@ -436,9 +436,8 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
-	int i;
-	for( i=0; i<shaderCount; i++ ){
-		const deoglPersistentRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
+	while( iterShader ){
+		const deoglPersistentRenderTaskShader &rtshader = *( ( deoglPersistentRenderTaskShader* )iterShader->GetOwner() );
 		deoglShaderCompiled &shader = *rtshader.GetShader()->GetCompiled();
 		
 		renderThread.GetShader().ActivateShader( rtshader.GetShader() );
@@ -447,23 +446,21 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 			renderParamBlock->Activate();
 		}
 		
-		const int textureCount = rtshader.GetTextureCount();
-		int j;
-		for( j=0; j<textureCount; j++ ){
-			const deoglPersistentRenderTaskTexture &texture = *rtshader.GetTextureAt( j );
+		decPointerLinkedList::cListEntry *iterTexture = rtshader.GetRootTexture();
+		while( iterTexture ){
+			deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
 			
 			if( texture.GetParameterBlock() ){
 				texture.GetParameterBlock()->Activate();
 			}
 			texture.GetTUC()->Apply();
 			
-			const int vaoCount = texture.GetVAOCount();
-			int k;
-			for( k=0; k<vaoCount; k++ ){
-				const deoglPersistentRenderTaskVAO &rtvao = *texture.GetVAOAt( k );
-				
-				const int instanceCount = rtvao.GetInstanceCount();
-				if( instanceCount == 0 ){
+			decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
+			while( iterVAO ){
+				deoglPersistentRenderTaskVAO &rtvao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
+				decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
+				if( ! iterInstance ){
+					iterVAO = iterVAO->GetNext();
 					continue;
 				}
 				
@@ -476,9 +473,8 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 				const GLenum indexGLType = vao->GetIndexGLType();
 				const int indexSize = vao->GetIndexSize();
 				
-				int l;
-				for( l=0; l<instanceCount; l++ ){
-					const deoglPersistentRenderTaskInstance &instance = *rtvao.GetInstanceAt( l );
+				while( iterInstance ){
+					deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
 					const bool doubleSided = instance.GetDoubleSided();
 					
 					if( instance.GetParameterBlock() ){
@@ -564,9 +560,14 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 								instance.GetSubInstanceCount() ) );
 						}
 					}
+					
+					iterInstance = iterInstance->GetNext();
 				}
+				iterVAO = iterVAO->GetNext();
 			}
+			iterTexture = iterTexture->GetNext();
 		}
+		iterShader = iterShader->GetNext();
 	}
 	
 	pglBindVertexArray( 0 );

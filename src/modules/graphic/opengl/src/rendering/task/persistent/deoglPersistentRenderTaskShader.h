@@ -22,8 +22,9 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKSHADER_H_
 #define _DEOGLPERSISTENTRENDERTASKSHADER_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
+class deoglPersistentRenderTaskPool;
 class deoglShaderProgram;
 class deoglPersistentRenderTaskTexture;
 class deoglSPBlockUBO;
@@ -35,10 +36,13 @@ class deoglTexUnitsConfig;
  */
 class deoglPersistentRenderTaskShader{
 private:
+	deoglPersistentRenderTaskPool &pPool;
+	decPointerLinkedList::cListEntry pLLTask;
+	
 	deoglShaderProgram *pShader;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
-	decPointerList pTextures;
+	decPointerLinkedList pTextures;
 	
 	
 	
@@ -46,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task shader. */
-	deoglPersistentRenderTaskShader( deoglShaderProgram *shader );
+	deoglPersistentRenderTaskShader( deoglPersistentRenderTaskPool &pool );
 	
 	/** Clean up persistent render task shader. */
 	~deoglPersistentRenderTaskShader();
@@ -59,9 +63,6 @@ public:
 	/** Total amount of points in this shader. */
 	int GetTotalPointCount() const;
 	
-	/** Total amount of textures in this shader. */
-	int GetTotalTextureCount() const;
-	
 	/** Total amount of vaos in this shader. */
 	int GetTotalVAOCount() const;
 	
@@ -73,6 +74,9 @@ public:
 	
 	/** Shader. */
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	
+	/** Set shader. */
+	void SetShader( deoglShaderProgram *shader );
 	
 	/** Shader parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
@@ -91,8 +95,8 @@ public:
 	/** Number of textures. */
 	int GetTextureCount() const;
 	
-	/** Texture at index. */
-	deoglPersistentRenderTaskTexture *GetTextureAt( int index ) const;
+	/** Root texture. */
+	decPointerLinkedList::cListEntry *GetRootTexture() const;
 	
 	/** Texture with TUC or NULL. */
 	deoglPersistentRenderTaskTexture *GetTextureWith( deoglTexUnitsConfig *tuc ) const;
@@ -100,13 +104,22 @@ public:
 	/** Add texture. */
 	deoglPersistentRenderTaskTexture *AddTexture( deoglTexUnitsConfig *tuc );
 	
+	/** Remove texture. */
+	void RemoveTexture( deoglPersistentRenderTaskTexture *texture );
+	
 	/** Remove all textuures. */
 	void RemoveAllTextures();
 	
 	
 	
-	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( void *owner );
+	/** Clear. */
+	void Clear();
+	
+	
+	
+	/** Render task linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
+	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

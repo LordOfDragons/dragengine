@@ -22,10 +22,10 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKTEXTURE_H_
 #define _DEOGLPERSISTENTRENDERTASKTEXTURE_H_
 
-#include "../../../deoglBasics.h"
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
-#include <dragengine/common/collection/decPointerList.h>
-
+class deoglPersistentRenderTaskPool;
+class deoglPersistentRenderTaskShader;
 class deoglTexUnitsConfig;
 class deoglPersistentRenderTaskVAO;
 class deoglSPBlockUBO;
@@ -37,9 +37,13 @@ class deoglVAO;
  */
 class deoglPersistentRenderTaskTexture{
 private:
+	deoglPersistentRenderTaskPool &pPool;
+	decPointerLinkedList::cListEntry pLLShader;
+	
+	deoglPersistentRenderTaskShader *pParentShader;
 	deoglTexUnitsConfig *pTUC;
 	deoglSPBlockUBO *pParamBlock;
-	decPointerList pVAOs;
+	decPointerLinkedList pVAOs;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task shader. */
-	deoglPersistentRenderTaskTexture( deoglTexUnitsConfig *tuc );
+	deoglPersistentRenderTaskTexture( deoglPersistentRenderTaskPool &pool );
 	
 	/** Cleans up the render task shader. */
 	~deoglPersistentRenderTaskTexture();
@@ -64,8 +68,17 @@ public:
 	/** Retrieves the total amount of subinstances in this texture. */
 	int GetTotalSubInstanceCount() const;
 	
+	/** Parent shader. */
+	inline deoglPersistentRenderTaskShader *GetParentShader() const{ return pParentShader; }
+	
+	/** Set parent shader. */
+	void SetParentShader( deoglPersistentRenderTaskShader *shader );
+	
 	/** Texture units configuration. */
 	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
+	
+	/** Set texture units configuration. */
+	void SetTUC( deoglTexUnitsConfig *tuc );
 	
 	/** Shader parameter block or NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
@@ -78,8 +91,8 @@ public:
 	/** Number of VAOs. */
 	int GetVAOCount() const;
 	
-	/** VAO at index. */
-	deoglPersistentRenderTaskVAO *GetVAOAt( int index ) const;
+	/** Root VAO. */
+	decPointerLinkedList::cListEntry *GetRootVAO() const;
 	
 	/** Texture with TUC or NULL. */
 	deoglPersistentRenderTaskVAO *GetVAOWith( deoglVAO *vao ) const;
@@ -87,13 +100,22 @@ public:
 	/** Add texture. */
 	deoglPersistentRenderTaskVAO *AddVAO( deoglVAO *vao );
 	
+	/** Remove vao. */
+	void RemoveVAO( deoglPersistentRenderTaskVAO *vao );
+	
 	/** Remove all VAOs. */
 	void RemoveAllVAOs();
 	
 	
 	
-	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( void *owner );
+	/** Clear. */
+	void Clear();
+	
+	
+	
+	/** Render task linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLShader(){ return pLLShader; }
+	inline const decPointerLinkedList::cListEntry &GetLLShader() const{ return pLLShader; }
 	/*@}*/
 };
 

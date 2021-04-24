@@ -22,16 +22,19 @@
 #ifndef _DEOGLPERSISTENTRENDERTASK_H_
 #define _DEOGLPERSISTENTRENDERTASK_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../../deoglBasics.h"
 #include "../../../shaders/paramblock/deoglShaderParameterBlockList.h"
 
+class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskShader;
 class deoglPersistentRenderTaskTexture;
 class deoglPersistentRenderTaskVAO;
+class deoglPersistentRenderTaskOwner;
 class deoglRenderThread;
 class deoglRTLogger;
 class deoglShaderProgram;
@@ -40,6 +43,7 @@ class deoglSPBlockUBO;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglVAO;
+class deObject;
 
 
 /**
@@ -47,12 +51,16 @@ class deoglVAO;
  */
 class deoglPersistentRenderTask{
 private:
+	deoglPersistentRenderTaskPool &pPool;
+	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	decPointerList pShaders;
+	decPointerLinkedList pOwners;
+	decPointerDictionaryExt pOwnersMap;
+	decPointerLinkedList pShaders;
 	
 	
 	
@@ -60,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task. */
-	deoglPersistentRenderTask();
+	deoglPersistentRenderTask( deoglPersistentRenderTaskPool &pool );
 	
 	/** Clean up render task. */
 	~deoglPersistentRenderTask();
@@ -93,11 +101,31 @@ public:
 	
 	
 	
+	/** Number of owners. */
+	int GetOwnerCount() const;
+	
+	/** Get root owner. */
+	decPointerLinkedList::cListEntry *GetRootOwner() const;
+	
+	/** Get matching owner or NULL. */
+	deoglPersistentRenderTaskOwner *GetOwnerWith( deObject *owner, unsigned int hash ) const;
+	
+	/** Add owner. */
+	deoglPersistentRenderTaskOwner *AddOwner( deObject *owner, unsigned int hash );
+	
+	/** Remove owner. */
+	void RemoveOwner( deoglPersistentRenderTaskOwner *owner );
+	
+	/** Remove all owners. */
+	void RemoveAllOwners();
+	
+	
+	
 	/** Number of shaders. */
 	int GetShaderCount() const;
 	
-	/** Shader at index. */
-	deoglPersistentRenderTaskShader *GetShaderAt( int index ) const;
+	/** Root shader. */
+	decPointerLinkedList::cListEntry *GetRootShader() const;
 	
 	/** Shader with shader or NULL. */
 	deoglPersistentRenderTaskShader *GetShaderWith( deoglShaderProgram *shader ) const;
@@ -125,8 +153,11 @@ public:
 	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
 	
+	/** Clear. */
+	void Clear();
+	
 	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( void *owner );
+	void RemoveOwnedBy( deoglPersistentRenderTaskOwner &owner );
 	/*@}*/
 
 	

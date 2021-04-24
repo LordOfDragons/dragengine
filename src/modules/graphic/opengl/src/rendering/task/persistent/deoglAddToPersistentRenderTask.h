@@ -35,6 +35,7 @@ class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskStep;
 class deoglPersistentRenderTaskTexture;
 class deoglPersistentRenderTaskVAO;
+class deoglPersistentRenderTaskOwner;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
@@ -210,23 +211,26 @@ public:
 	
 	
 	/** Add component. */
-	void AddComponent( deoglRComponent &component, int lodLevel );
+	void AddComponent( deoglPersistentRenderTaskOwner &owner,
+		deoglRComponent &component, int lodLevel );
 	
 	/** Add component. */
-	void AddComponent( const deoglCollideListComponent &clcomponent );
+	void AddComponent( deoglPersistentRenderTaskOwner &owner,
+		const deoglCollideListComponent &clcomponent );
 	
 	/**
 	 * Add continuous run of all faces of texture of component. Component is supposed to be
 	 * updated already and model and skin exist as well as parent world exists.
 	 */
-	void AddComponentFaces( deoglRComponent &component, int texture, int lodLevel );
+	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
+		deoglRComponent &component, int texture, int lodLevel );
 	
 	/**
 	 * Add continuous run of faces of component. Component is supposed to be updated already
 	 * and that model and skin exist as well as parent world exist.
 	 */
-	void AddComponentFaces( deoglRComponent &component, int texture, int firstFace,
-		int faceCount, int lodLevel );
+	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner, deoglRComponent &component,
+		int texture, int firstFace, int faceCount, int lodLevel );
 	/*@}*/
 	
 	

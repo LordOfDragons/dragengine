@@ -24,9 +24,11 @@
 
 #include "../../../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
+class deoglPersistentRenderTaskPool;
+class deoglPersistentRenderTaskTexture;
 class deoglQuickSorter;
 class deoglPersistentRenderTaskInstance;
 class deoglSharedSPB;
@@ -39,9 +41,12 @@ class deoglVAO;
  */
 class deoglPersistentRenderTaskVAO{
 private:
+	deoglPersistentRenderTaskPool &pPool;
+	decPointerLinkedList::cListEntry pLLTexture;
+	
+	deoglPersistentRenderTaskTexture *pParentTexture;
 	deoglVAO *pVAO;
-	void *pOwner;
-	decPointerList pInstances;
+	decPointerLinkedList pInstances;
 	
 	
 	
@@ -49,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task vao. */
-	deoglPersistentRenderTaskVAO( deoglVAO *vao );
+	deoglPersistentRenderTaskVAO( deoglPersistentRenderTaskPool &pool );
 	
 	/** Clean up persistent render task vao. */
 	~deoglPersistentRenderTaskVAO();
@@ -59,14 +64,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Parent texture. */
+	inline deoglPersistentRenderTaskTexture *GetParentTexture() const{ return pParentTexture; }
+	
+	/** Set parent texture. */
+	void SetParentTexture( deoglPersistentRenderTaskTexture *texture );
+	
 	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
-	/** Owner object or NULL. */
-	inline void *GetOwner() const{ return pOwner; }
-	
-	/** Set owner object or NULL. */
-	void SetOwner( void *owner );
+	/** Set VAO. */
+	void SetVAO( deoglVAO *vao );
 	
 	
 	
@@ -81,8 +89,8 @@ public:
 	/** Number of instances. */
 	int GetInstanceCount() const;
 	
-	/** Instance at index. */
-	deoglPersistentRenderTaskInstance *GetInstanceAt( int index ) const;
+	/** Root instance. */
+	decPointerLinkedList::cListEntry *GetRootInstance() const;
 	
 	/** Instance with shared sub instance spb. */
 	deoglPersistentRenderTaskInstance *GetInstanceWith( deoglSharedSPBRTIGroup *group ) const;
@@ -91,13 +99,22 @@ public:
 	deoglPersistentRenderTaskInstance *AddInstance( deoglSharedSPB *spb = NULL,
 		deoglSharedSPBRTIGroup *group = NULL );
 	
+	/** Remove instance. */
+	void RemoveInstance( deoglPersistentRenderTaskInstance *instance );
+	
 	/** Remove all instances. */
 	void RemoveAllInstances();
 	
 	
 	
-	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( void *owner );
+	/** Clear. */
+	void Clear();
+	
+	
+	
+	/** Render task linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
+	inline const decPointerLinkedList::cListEntry &GetLLTexture() const{ return pLLTexture; }
 	/*@}*/
 };
 

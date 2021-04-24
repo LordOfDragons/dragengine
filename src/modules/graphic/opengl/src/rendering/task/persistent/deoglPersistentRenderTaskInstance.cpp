@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskInstance.h"
 #include "../../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../../shaders/paramblock/deoglSPBlockSSBO.h"
@@ -39,8 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskInstance::deoglPersistentRenderTaskInstance(
-	deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ) :
+deoglPersistentRenderTaskInstance::deoglPersistentRenderTaskInstance( deoglPersistentRenderTaskPool &pool ) :
+pPool( pool ),
+pLLVAO( this ),
+
+pParentVAO( NULL ),
 pParamBlock( NULL ),
 pParamBlockSpecial( NULL ),
 pOwner( NULL ),
@@ -56,8 +60,8 @@ pTessPatchVertexCount( 3 ),
 pSubInstances( NULL ),
 pSubInstanceCount( 0 ),
 pSubInstanceSize( 0 ),
-pSubInstanceSPB( spb ),
-pSubInstanceSPBRGroup( group ),
+pSubInstanceSPB( NULL ),
+pSubInstanceSPBGroup( NULL ),
 pSIIndexInstanceSPB( NULL ),
 pSIIndexInstanceFirst( 0 ){
 }
@@ -73,6 +77,10 @@ deoglPersistentRenderTaskInstance::~deoglPersistentRenderTaskInstance(){
 // Management
 ///////////////
 
+void deoglPersistentRenderTaskInstance::SetParentVAO( deoglPersistentRenderTaskVAO *vao ){
+	pParentVAO = vao;
+}
+
 void deoglPersistentRenderTaskInstance::SetParameterBlock( deoglShaderParameterBlock *block ){
 	pParamBlock = block;
 }
@@ -81,7 +89,7 @@ void deoglPersistentRenderTaskInstance::SetParameterBlockSpecial( deoglShaderPar
 	pParamBlockSpecial = block;
 }
 
-void deoglPersistentRenderTaskInstance::SetOwner( void *owner ){
+void deoglPersistentRenderTaskInstance::SetOwner( deoglPersistentRenderTaskOwner *owner ){
 	pOwner = owner;
 }
 
@@ -115,6 +123,11 @@ void deoglPersistentRenderTaskInstance::SetTessPatchVertexCount( int count ){
 
 
 
+void deoglPersistentRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ){
+	pSubInstanceSPB = spb;
+	pSubInstanceSPBGroup = group;
+}
+
 const deoglPersistentRenderTaskInstance::sSubInstance &deoglPersistentRenderTaskInstance::GetSubinstanceAt( int index ) const{
 	if( index < 0 || index >= pSubInstanceCount ){
 		DETHROW( deeInvalidParam );
@@ -122,7 +135,7 @@ const deoglPersistentRenderTaskInstance::sSubInstance &deoglPersistentRenderTask
 	return pSubInstances[ index ];
 }
 
-void deoglPersistentRenderTaskInstance::AddSubInstance( int indexInstance, int flags, void *owner ){
+void deoglPersistentRenderTaskInstance::AddSubInstance( int indexInstance, int flags, deoglPersistentRenderTaskOwner *owner ){
 	if( pSubInstanceCount == pSubInstanceSize ){
 		const int newSize = pSubInstanceCount * 3 / 2 + 1;
 		sSubInstance * const newArray = new sSubInstance[ newSize ];
@@ -215,7 +228,7 @@ void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags
 
 
 
-void deoglPersistentRenderTaskInstance::RemoveOwnedBy( void *owner ){
+void deoglPersistentRenderTaskInstance::RemoveOwnedBy( deoglPersistentRenderTaskOwner *owner ){
 	int i;
 	for( i=0; i<pSubInstanceCount; i++ ){
 		if( pSubInstances[ i ].owner != owner ){
@@ -228,4 +241,27 @@ void deoglPersistentRenderTaskInstance::RemoveOwnedBy( void *owner ){
 		pSubInstanceCount--;
 		i--;
 	}
+}
+
+void deoglPersistentRenderTaskInstance::Clear(){
+	RemoveAllSubInstances();
+	
+	pParentVAO = NULL;
+	pParamBlock = NULL;
+	pParamBlockSpecial = NULL;
+	
+	pOwner = NULL;
+	
+	pFirstPoint = 0;
+	pPointCount = 0;
+	pFirstIndex = 0;
+	pIndexCount = 0;
+	pDoubleSided = false;
+	pPrimitiveType = GL_TRIANGLES;
+	pTessPatchVertexCount = 3;
+	
+	pSubInstanceSPB = NULL;
+	pSubInstanceSPBGroup = NULL;
+	pSIIndexInstanceSPB = NULL;
+	pSIIndexInstanceFirst = 0;
 }

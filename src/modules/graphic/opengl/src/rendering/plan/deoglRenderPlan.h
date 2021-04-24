@@ -141,9 +141,8 @@ private:
 	int pLightCount;
 	int pLightSize;
 	
-	deoglRenderPlanSkyLight **pSkyLights;
+	decPointerList pSkyLights;
 	int pSkyLightCount;
-	int pSkyLightSize;
 	
 	deoglRenderPlanMasked **pMaskedPlans;
 	int pMaskedPlanCount;
@@ -629,14 +628,11 @@ public:
 	
 	/** \name Sky lights */
 	/*@{*/
-	/** Number of sky lights. */
+	/** Count of sky lights. */
 	inline int GetSkyLightCount() const{ return pSkyLightCount; }
 	
 	/** Sky light at index. */
 	deoglRenderPlanSkyLight *GetSkyLightAt( int index ) const;
-	
-	/** Add sky light. */
-	deoglRenderPlanSkyLight *AddSkyLight( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
 	/** Remove sky lights. */
 	void RemoveAllSkyLights();
