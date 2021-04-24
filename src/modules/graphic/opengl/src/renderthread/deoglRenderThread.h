@@ -51,6 +51,7 @@ class deoglRenderCache;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
+class deoglRTUniqueKey;
 
 class deoglRTBufferObject;
 class deoglRTContext;
@@ -74,7 +75,7 @@ class deoglQuickSorter;
 
 
 /**
- * \brief Render thread.
+ * Render thread.
  */
 class deoglRenderThread : public deThread{
 private:
@@ -129,6 +130,7 @@ private:
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
+	deoglRTUniqueKey *pUniqueKey;
 	
 	deoglTimeHistory pTimeHistoryMain;
 	deoglTimeHistory pTimeHistoryRender;
@@ -197,10 +199,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread. */
+	/** Create render thread. */
 	deoglRenderThread( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up render thread. */
+	/** Clean up render thread. */
 	virtual ~deoglRenderThread();
 	/*@}*/
 	
@@ -208,160 +210,164 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
 	
 	
-	/** \brief Asynchronous rendering. */
+	/** Asynchronous rendering. */
 	inline bool GetAsyncRendering() const{ return pAsyncRendering; }
 	
 	
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
-	/** \brief Render render window list. */
+	/** Render render window list. */
 	inline decObjectOrderedSet &GetRRenderWindowList(){ return pRRenderWindowList; }
 	
-	/** \brief Rendr capture canvas list. */
+	/** Rendr capture canvas list. */
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
-	/** \brief Input overlay canvas view or \em NULL if not present. */
+	/** Input overlay canvas view or \em NULL if not present. */
 	inline deoglRCanvas *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
-	/** \brief Set input overlay canvas view or \em NULL if not present. */
+	/** Set input overlay canvas view or \em NULL if not present. */
 	void SetCanvasInputOverlay( deoglRCanvas *canvas );
 	
-	/** \brief Debug overlay canvas view or \em NULL if not present. */
+	/** Debug overlay canvas view or \em NULL if not present. */
 	inline deoglRCanvas *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
-	/** \brief Set debug overlay canvas view or \em NULL if not present. */
+	/** Set debug overlay canvas view or \em NULL if not present. */
 	void SetCanvasDebugOverlay( deoglRCanvas *canvas );
 	
 	
 	
-	/** \brief Choices. */
+	/** Choices. */
 	inline const deoglRTChoices &GetChoices() const{ return *pChoices; }
 	
-	/** \brief Buffer objects. */
+	/** Buffer objects. */
 	inline deoglRTBufferObject &GetBufferObject() const{ return *pBufferObject; }
 	
-	/** \brief Has context. */
+	/** Has context. */
 	bool HasContext() const;
 	
-	/** \brief Context. */
+	/** Context. */
 	inline deoglRTContext &GetContext() const{ return *pContext; }
 	
-	/** \brief Debug. */
+	/** Debug. */
 	inline deoglRTDebug &GetDebug() const{ return *pDebug; }
 	
-	/** \brief Default textures. */
+	/** Default textures. */
 	inline deoglRTDefaultTextures &GetDefaultTextures() const{ return *pDefaultTextures; }
 	
-	/** \brief Framebuffer related. */
+	/** Framebuffer related. */
 	inline deoglRTFramebuffer &GetFramebuffer() const{ return *pFramebuffer; }
 	
-	/** \brief Logger. */
+	/** Logger. */
 	inline deoglRTLogger &GetLogger() const{ return *pLogger; }
 	
-	/** \brief Renderers. */
+	/** Renderers. */
 	inline deoglRTRenderers &GetRenderers() const{ return *pRenderers; }
 	
-	/** \brief Shader related. */
+	/** Shader related. */
 	inline deoglRTShader &GetShader() const{ return *pShader; }
 	
-	/** \brief Texture related. */
+	/** Texture related. */
 	inline deoglRTTexture &GetTexture() const{ return *pTexture; }
 	
 	
 	
-	/** \brief Memory  manager. */
+	/** Memory  manager. */
 	inline deoglMemoryManager &GetMemoryManager(){ return pMemoryManager; }
 	
-	/** \brief Extensions. */
+	/** Extensions. */
 	inline deoglExtensions &GetExtensions() const{ return *pExtensions; }
 	
-	/** \brief Capabilities. */
+	/** Capabilities. */
 	inline deoglCapabilities &GetCapabilities() const{ return *pCapabilities; }
 	
-	/** \brief Delayed operations manager. */
+	/** Delayed operations manager. */
 	inline deoglDelayedOperations &GetDelayedOperations() const{ return *pDelayedOperations; }
 	
-	/** \brief Render cache. */
+	/** Render cache. */
 	inline deoglRenderCache &GetRenderCache() const{ return *pRenderCache; }
 	
-	/** \brief Shadow mapper. */
+	/** Shadow mapper. */
 	inline deoglShadowMapper &GetShadowMapper() const{ return *pShadowMapper; }
 	
-	/** \brief Deferred rendering. */
+	/** Deferred rendering. */
 	inline deoglDeferredRendering &GetDeferredRendering() const{ return *pDeferredRendering; }
 	
-	/** \brief Environment map slot manager. */
+	/** Environment map slot manager. */
 	inline deoglEnvMapSlotManager &GetEnvMapSlotManager() const{ return *pEnvMapSlotManager; }
 	
-	/** \brief Occlusion query manager. */
+	/** Occlusion query manager. */
 	inline deoglOcclusionQueryManager &GetOcclusionQueryManager() const{ return *pOccQueryMgr; }
 	
-	/** \brief Occlusion test. */
+	/** Occlusion test. */
 	inline deoglOcclusionTest &GetOcclusionTest() const{ return *pOcclusionTest; }
 	
-	/** \brief Global illumination. */
+	/** Global illumination. */
 	inline deoglGI &GetGI() const{ return *pGI; }
 	
-	/** \brief Light boundary box having at least the given size. */
+	/** Light boundary box having at least the given size. */
 	deoglLightBoundaryMap &GetLightBoundaryMap( int size );
 	
-	/** \brief Triangle sorter. */
+	/** Triangle sorter. */
 	deoglTriangleSorter &GetTriangleSorter() const{ return *pTriangleSorter; }
 	
 	
+	/** Unique key. */
+	inline deoglRTUniqueKey &GetUniqueKey() const{ return *pUniqueKey; }
 	
-	/** \brief Main thread time history. */
+	
+	
+	/** Main thread time history. */
 	inline deoglTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
 	inline const deoglTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
 	
-	/** \brief Render thread time history. */
+	/** Render thread time history. */
 	inline deoglTimeHistory &GetTimeHistoryRender(){ return pTimeHistoryRender; }
 	inline const deoglTimeHistory &GetTimeHistoryRender() const{ return pTimeHistoryRender; }
 	
 	
 	
-	/** \brief Leak tracker. */
+	/** Leak tracker. */
 	inline deoglRTLeakTracker &GetLeakTracker(){ return pLeakTracker; }
 	
 	
 	
-	/** \brief Initialize. */
+	/** Initialize. */
 	void Init( deRenderWindow *renderWindow );
 	
-	/** \brief Clean up. */
+	/** Clean up. */
 	void CleanUp();
 	
 	#ifdef ANDROID
-	/** \brief Application window has been created. */
+	/** Application window has been created. */
 	void InitAppWindow();
 	
-	/** \brief Application window has been closed. */
+	/** Application window has been closed. */
 	void TerminateAppWindow();
 	#endif
 	
 	
 	
-	/** \brief Run render thread. */
+	/** Run render thread. */
 	virtual void Run();
 	
-	/** \brief Finalize asynchronously loaded resources. */
+	/** Finalize asynchronously loaded resources. */
 	void FinalizeAsyncResLoading();
 	
-	/** \brief Synchronize to render next frame. */
+	/** Synchronize to render next frame. */
 	void Synchronize();
 	
-	/** \brief Wait for render thread to finish rendering. */
+	/** Wait for render thread to finish rendering. */
 	void WaitFinishRendering();
 	
 	/**
-	 * \brief Main thread wait for render thread to finish rendering.
+	 * Main thread wait for render thread to finish rendering.
 	 * 
 	 * Called only by main thread. Wraps WaitFinishRendering with debug time measuring
 	 * if enabled and waiting optimization. If rendering is done asynchronously time history
@@ -380,7 +386,7 @@ public:
 	bool MainThreadWaitFinishRendering();
 	
 	/**
-	 * \brief Freeze render thread.
+	 * Freeze render thread.
 	 * \details Waits until the render thread finished rendering and no parallel
 	 *          task is running. Upon returning from this function data members
 	 *          of the render thread can be accessed directly for example for
@@ -388,10 +394,10 @@ public:
 	 */
 	void Freeze();
 	
-	/** \brief Unfreeze render thread. */
+	/** Unfreeze render thread. */
 	void Unfreeze();
 	
-	/** \brief Create a render window thread safe. */
+	/** Create a render window thread safe. */
 	void CreateRenderWindow( deoglRRenderWindow *window );
 	/*@}*/
 	
@@ -399,15 +405,15 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Sample debug timer render thread render windows prepare. */
+	/** Sample debug timer render thread render windows prepare. */
 	void SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
-	/** \brief Sample debug timer render thread render windows render. */
+	/** Sample debug timer render thread render windows render. */
 	void SampleDebugTimerRenderThreadRenderWindowsRender();
 	
 	
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	void DevModeDebugInfoChanged();
 	
 	#ifdef OS_ANDROID
@@ -421,16 +427,16 @@ public:
 	
 	/** \name Deprecated */
 	/*@{*/
-	/** \brief Quick sorter. */
+	/** Quick sorter. */
 	inline deoglQuickSorter &GetQuickSorter() const{ return *pQuickSorter; }
 	
-	/** \brief Preloader. */
+	/** Preloader. */
 	inline deoglPreloader &GetPreloader() const{ return *pPreloader; }
 	
-	/** \brief Edge finder. */
+	/** Edge finder. */
 	inline deoglEdgeFinder &GetEdgeFinder() const{ return *pEdgeFinder; }
 	
-	/** \brief Optimizer. */
+	/** Optimizer. */
 	inline deoglOptimizerManager &GetOptimizerManager() const{ return *pOptimizerManager; }
 	/*@}*/
 	

@@ -164,6 +164,8 @@ public:
 	
 	int pSkyShadowSplitMask;
 	
+	unsigned int pUniqueKey;
+	
 	decObjectOrderedSet pListeners;
 	int pListenerIndex;
 	
@@ -500,6 +502,9 @@ public:
 	
 	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask( int mask );
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	
 	

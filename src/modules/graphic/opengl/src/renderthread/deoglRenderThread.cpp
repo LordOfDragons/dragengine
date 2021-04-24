@@ -36,6 +36,7 @@
 #include "deoglRTRenderers.h"
 #include "deoglRTShader.h"
 #include "deoglRTTexture.h"
+#include "deoglRTUniqueKey.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
 #include "../deoglPreloader.h"
@@ -119,6 +120,7 @@ pGI( NULL ),
 pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
+pUniqueKey( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -948,6 +950,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pBufferObject = new deoglRTBufferObject( *this );
 	pBufferObject->Init();
 	
+	pUniqueKey = new deoglRTUniqueKey;
 	pTriangleSorter = new deoglTriangleSorter;
 	pDelayedOperations = new deoglDelayedOperations( *this );
 	pRenderCache = new deoglRenderCache( *this );
@@ -1887,6 +1890,10 @@ void deoglRenderThread::pCleanUpThread(){
 		if( pTriangleSorter ){
 			delete pTriangleSorter;
 			pTriangleSorter = NULL;
+		}
+		if( pUniqueKey ){
+			delete pUniqueKey;
+			pUniqueKey = NULL;
 		}
 		
 		if( pOccQueryMgr ){

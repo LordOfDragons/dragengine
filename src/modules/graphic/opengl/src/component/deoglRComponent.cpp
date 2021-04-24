@@ -55,6 +55,7 @@
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
@@ -191,6 +192,7 @@ pLLPrepareForRenderWorld( this )
 	}
 	
 	try{
+		pUniqueKey = renderThread.GetUniqueKey().Get();
 		pSkinState = new deoglSkinState( renderThread, *this );
 		
 	}catch( const deException & ){
@@ -1796,6 +1798,8 @@ void deoglRComponent::pCleanUp(){
 	if( pSkinState ){
 		pSkinState->DropDelayedDeletionObjects();
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 	
 	// delayed deletion of opengl containing objects
 	deoglRComponentDeletion *delayedDeletion = NULL;
