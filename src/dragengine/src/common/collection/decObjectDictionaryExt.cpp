@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -23,51 +23,73 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "decPointerDictionary.h"
+#include "decObjectDictionaryExt.h"
+#include "decObjectList.h"
 #include "decPointerList.h"
-
 #include "../exceptions.h"
-#include "../string/decStringList.h"
+#include "../../deObject.h"
 
 
 
-// Struct decPointerDictionary::sDictEntry
-////////////////////////////////////////////
+// Struct decObjectDictionaryExt::sDictEntry
+//////////////////////////////////////////////
 
-decPointerDictionary::sDictEntry::sDictEntry() :
+decObjectDictionaryExt::sDictEntry::sDictEntry() :
 hash( 0 ),
 value( NULL ),
 next( NULL ){
 }
 
-decPointerDictionary::sDictEntry::sDictEntry( const decPointerDictionary::sDictEntry &entry ) :
+decObjectDictionaryExt::sDictEntry::sDictEntry( const decObjectDictionaryExt::sDictEntry &entry ) :
 hash( entry.hash ),
 key( entry.key ),
 value( entry.value ),
-next( NULL ){
+next( NULL )
+{
+	if( value ){
+		value->AddReference();
+	}
 }
 
-decPointerDictionary::sDictEntry::sDictEntry( unsigned int nhash, const char *nkey, void *nvalue ) :
+decObjectDictionaryExt::sDictEntry::sDictEntry( unsigned int nhash, const void *nkey, deObject *nvalue ) :
 hash( nhash ),
 key( nkey ),
 value( nvalue ),
-next( NULL ){
+next( NULL )
+{
+	if( value ){
+		value->AddReference();
+	}
 }
 
-decPointerDictionary::sDictEntry::~sDictEntry(){
-	value = NULL;
+decObjectDictionaryExt::sDictEntry::~sDictEntry(){
+	SetValue( NULL );
 	next = NULL;
 }
 
+void decObjectDictionaryExt::sDictEntry::SetValue( deObject *nvalue ){
+	if( nvalue != value ){
+		if( value ){
+			value->FreeReference();
+		}
+		
+		value = nvalue;
+		
+		if( nvalue ){
+			nvalue->AddReference();
+		}
+	}
+}
 
 
-// Class decPointerDictionary
+
+// Class decObjectDictionaryExt
 //////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-decPointerDictionary::decPointerDictionary(){
+decObjectDictionaryExt::decObjectDictionaryExt(){
 	pBuckets = NULL;
 	pBucketCount = 8;
 	pEntryCount = 0;
@@ -80,7 +102,7 @@ decPointerDictionary::decPointerDictionary(){
 	}
 }
 
-decPointerDictionary::decPointerDictionary( int bucketCount ){
+decObjectDictionaryExt::decObjectDictionaryExt( int bucketCount ){
 	if( bucketCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -97,7 +119,7 @@ decPointerDictionary::decPointerDictionary( int bucketCount ){
 	}
 }
 
-decPointerDictionary::decPointerDictionary( const decPointerDictionary &dict ){
+decObjectDictionaryExt::decObjectDictionaryExt( const decObjectDictionaryExt &dict ){
 	pBuckets = NULL;
 	pBucketCount = dict.pBucketCount;
 	pEntryCount = dict.pEntryCount;
@@ -139,7 +161,7 @@ decPointerDictionary::decPointerDictionary( const decPointerDictionary &dict ){
 	}
 }
 
-decPointerDictionary::~decPointerDictionary(){
+decObjectDictionaryExt::~decObjectDictionaryExt(){
 	RemoveAll();
 	
 	if( pBuckets ){
@@ -155,12 +177,12 @@ decPointerDictionary::~decPointerDictionary(){
 // Management
 ///////////////
 
-bool decPointerDictionary::Has( const char *key ) const{
+bool decObjectDictionaryExt::Has( const void *key, unsigned int hash ) const{
 	if( ! key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
 	
 	while( iterEntry ){
 		if( iterEntry->key == key ){
@@ -172,22 +194,22 @@ bool decPointerDictionary::Has( const char *key ) const{
 	return false;
 }
 
-void *decPointerDictionary::GetAt( const char *key ) const{
-	void *object;
+deObject *decObjectDictionaryExt::GetAt( const void *key, unsigned int hash ) const{
+	deObject *object;
 	
-	if( ! GetAt( key, &object ) ){
+	if( ! GetAt( key, hash, &object ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	return object;
 }
 
-bool decPointerDictionary::GetAt( const char *key, void **object ) const{
+bool decObjectDictionaryExt::GetAt( const void *key, unsigned int hash, deObject **object ) const{
 	if( ! key || ! object ){
 		DETHROW( deeNullPointer );
 	}
 	
-	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
 	
 	while( iterEntry ){
 		if( iterEntry->key == key ){
@@ -200,12 +222,11 @@ bool decPointerDictionary::GetAt( const char *key, void **object ) const{
 	return false;
 }
 
-void decPointerDictionary::SetAt( const char *key, void *value ){
+void decObjectDictionaryExt::SetAt( const void *key, unsigned int hash, deObject *value ){
 	if( ! key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	const unsigned int hash = decString::Hash( key );
 	const int bucketIndex = hash % pBucketCount;
 	
 	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
@@ -213,7 +234,7 @@ void decPointerDictionary::SetAt( const char *key, void *value ){
 	
 	while( iterEntry ){
 		if( iterEntry->key == key ){
-			iterEntry->value = value;
+			iterEntry->SetValue( value );
 			pEntryCount++;
 			CheckLoad();
 			return;
@@ -244,12 +265,12 @@ void decPointerDictionary::SetAt( const char *key, void *value ){
 	CheckLoad();
 }
 
-void decPointerDictionary::Remove( const char *key ){
+void decObjectDictionaryExt::Remove( const void *key, unsigned int hash ){
 	if( ! key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	const int bucketIndex = decString::Hash( key ) % pBucketCount;
+	const int bucketIndex = hash % pBucketCount;
 	
 	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
 	sDictEntry *lastEntry = NULL;
@@ -276,12 +297,12 @@ void decPointerDictionary::Remove( const char *key ){
 	DETHROW( deeInvalidParam );
 }
 
-void decPointerDictionary::RemoveIfPresent( const char *key ){
+void decObjectDictionaryExt::RemoveIfPresent( const void *key, unsigned int hash ){
 	if( ! key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	const int bucketIndex = decString::Hash( key ) % pBucketCount;
+	const int bucketIndex = hash % pBucketCount;
 	
 	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
 	sDictEntry *lastEntry = NULL;
@@ -306,7 +327,11 @@ void decPointerDictionary::RemoveIfPresent( const char *key ){
 	}
 }
 
-void decPointerDictionary::RemoveAll(){
+void decObjectDictionaryExt::RemoveAll(){
+	if( pEntryCount == 0 ){
+		return;
+	}
+	
 	if( pBuckets ){
 		int i;
 		
@@ -329,15 +354,15 @@ void decPointerDictionary::RemoveAll(){
 
 
 
-decStringList decPointerDictionary::GetKeys() const{
-	decStringList keys;
+decPointerList decObjectDictionaryExt::GetKeys() const{
+	decPointerList keys;
 	int i;
 	
 	for( i=0; i<pBucketCount; i++ ){
 		sDictEntry *iterEntry = pBuckets[ i ];
 		
 		while( iterEntry ){
-			keys.Add( iterEntry->key );
+			keys.Add( ( void* )iterEntry->key ); // this is bad, I know, but necessary
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -345,8 +370,8 @@ decStringList decPointerDictionary::GetKeys() const{
 	return keys;
 }
 
-decPointerList decPointerDictionary::GetValues() const{
-	decPointerList values;
+decObjectList decObjectDictionaryExt::GetValues() const{
+	decObjectList values;
 	int i;
 	
 	for( i=0; i<pBucketCount; i++ ){
@@ -363,8 +388,8 @@ decPointerList decPointerDictionary::GetValues() const{
 
 
 
-bool decPointerDictionary::Equals( const decPointerDictionary &dict ) const{
-	void *object;
+bool decObjectDictionaryExt::Equals( const decObjectDictionaryExt &dict ) const{
+	deObject *object;
 	int i;
 	
 	if( dict.pEntryCount != pEntryCount ){
@@ -375,7 +400,7 @@ bool decPointerDictionary::Equals( const decPointerDictionary &dict ) const{
 		sDictEntry *iterEntry = pBuckets[ i ];
 		
 		while( iterEntry ){
-			if( ! dict.GetAt( iterEntry->key, &object ) || object != iterEntry->value ){
+			if( ! dict.GetAt( iterEntry->key, iterEntry->hash, &object ) || object != iterEntry->value ){
 				return false;
 			}
 			iterEntry = iterEntry->next;
@@ -387,7 +412,7 @@ bool decPointerDictionary::Equals( const decPointerDictionary &dict ) const{
 
 
 
-void decPointerDictionary::CheckLoad(){
+void decObjectDictionaryExt::CheckLoad(){
 	if( ( float )pEntryCount / ( float )pBucketCount > 0.7 ){
 		const int newBucketCount = pBucketCount + ( pBucketCount >> 1 ); // +50%
 		sDictEntry ** const newBuckets = new sDictEntry*[ newBucketCount ];
@@ -407,7 +432,7 @@ void decPointerDictionary::CheckLoad(){
 				sDictEntry * const moveEntry = iterEntry;
 				iterEntry = iterEntry->next;
 				
-				const int bucketIndex = moveEntry->hash % newBucketCount;
+				const int bucketIndex = ( moveEntry->hash % newBucketCount );
 				sDictEntry *iterEntry2 = newBuckets[ bucketIndex ];
 				
 				if( iterEntry2 ){
@@ -436,19 +461,19 @@ void decPointerDictionary::CheckLoad(){
 // Operators
 //////////////
 
-bool decPointerDictionary::operator==( const decPointerDictionary &dict ) const{
+bool decObjectDictionaryExt::operator==( const decObjectDictionaryExt &dict ) const{
 	return Equals( dict );
 }
 
-decPointerDictionary decPointerDictionary::operator+( const decPointerDictionary &dict ) const{
-	decPointerDictionary ndict( *this );
+decObjectDictionaryExt decObjectDictionaryExt::operator+( const decObjectDictionaryExt &dict ) const{
+	decObjectDictionaryExt ndict( *this );
 	int i;
 	
 	for( i=0; i<dict.pBucketCount; i++ ){
 		sDictEntry *iterEntry = dict.pBuckets[ i ];
 		
 		while( iterEntry ){
-			ndict.SetAt( iterEntry->key, iterEntry->value );
+			ndict.SetAt( iterEntry->key, iterEntry->hash, iterEntry->value );
 			iterEntry = iterEntry->next;
 		}
 	}
@@ -456,25 +481,21 @@ decPointerDictionary decPointerDictionary::operator+( const decPointerDictionary
 	return ndict;
 }
 
-void *decPointerDictionary::operator[]( const char *key ) const{
-	return GetAt( key );
-}
 
 
-
-decPointerDictionary &decPointerDictionary::operator=( const decPointerDictionary &dict ){
+decObjectDictionaryExt &decObjectDictionaryExt::operator=( const decObjectDictionaryExt &dict ){
 	RemoveAll();
 	return *this += dict;
 }
 
-decPointerDictionary &decPointerDictionary::operator+=( const decPointerDictionary &dict ){
+decObjectDictionaryExt &decObjectDictionaryExt::operator+=( const decObjectDictionaryExt &dict ){
 	int i;
 	
 	for( i=0; i<dict.pBucketCount; i++ ){
 		sDictEntry *iterEntry = dict.pBuckets[ i ];
 		
 		while( iterEntry ){
-			SetAt( iterEntry->key, iterEntry->value );
+			SetAt( iterEntry->key, iterEntry->hash, iterEntry->value );
 			iterEntry = iterEntry->next;
 		}
 	}
