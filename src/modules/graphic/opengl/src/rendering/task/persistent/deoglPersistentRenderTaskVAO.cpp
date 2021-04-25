@@ -209,7 +209,11 @@ void deoglPersistentRenderTaskVAO::Clear(){
 }
 
 void deoglPersistentRenderTaskVAO::RemoveFromParentIfEmpty(){
-	if( pInstances.GetCount() == 0 ){
-		pParentTexture->RemoveVAO( this );
+	if( pInstances.GetCount() > 0 ){
+		return;
 	}
+	
+	deoglPersistentRenderTaskTexture * const texture = pParentTexture;
+	texture->RemoveVAO( this ); // clears pParentTexture
+	texture->RemoveFromParentIfEmpty();
 }

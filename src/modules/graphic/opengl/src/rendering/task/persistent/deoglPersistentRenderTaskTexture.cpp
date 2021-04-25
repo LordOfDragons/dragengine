@@ -228,7 +228,11 @@ void deoglPersistentRenderTaskTexture::Clear(){
 }
 
 void deoglPersistentRenderTaskTexture::RemoveFromParentIfEmpty(){
-	if( pVAOs.GetCount() == 0 ){
-		pParentShader->RemoveTexture( this );
+	if( pVAOs.GetCount() > 0 ){
+		return;
 	}
+	
+	deoglPersistentRenderTaskShader * const shader = pParentShader;
+	shader->RemoveTexture( this ); // clears pParentShader
+	shader->RemoveFromParentIfEmpty();
 }

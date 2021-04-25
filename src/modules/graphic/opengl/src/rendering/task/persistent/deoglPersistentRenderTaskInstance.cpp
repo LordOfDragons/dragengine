@@ -49,7 +49,6 @@ pLLVAO( this ),
 pParentVAO( NULL ),
 pParamBlock( NULL ),
 pParamBlockSpecial( NULL ),
-pOwner( NULL ),
 
 pFirstPoint( 0 ),
 pPointCount( 0 ),
@@ -84,10 +83,6 @@ void deoglPersistentRenderTaskInstance::SetParameterBlock( deoglShaderParameterB
 
 void deoglPersistentRenderTaskInstance::SetParameterBlockSpecial( deoglShaderParameterBlock *block ){
 	pParamBlockSpecial = block;
-}
-
-void deoglPersistentRenderTaskInstance::SetOwner( deoglPersistentRenderTaskOwner *owner ){
-	pOwner = owner;
 }
 
 void deoglPersistentRenderTaskInstance::SetFirstPoint( int firstPoint ){
@@ -250,8 +245,6 @@ void deoglPersistentRenderTaskInstance::Clear(){
 	pParamBlock = NULL;
 	pParamBlockSpecial = NULL;
 	
-	pOwner = NULL;
-	
 	pFirstPoint = 0;
 	pPointCount = 0;
 	pFirstIndex = 0;
@@ -267,7 +260,11 @@ void deoglPersistentRenderTaskInstance::Clear(){
 }
 
 void deoglPersistentRenderTaskInstance::RemoveFromParentIfEmpty(){
-	if( pSubInstances.GetCount() == 0 ){
-		pParentVAO->RemoveInstance( this );
+	if( pSubInstances.GetCount() > 0 ){
+		return;
 	}
+	
+	deoglPersistentRenderTaskVAO * const vao = pParentVAO;
+	vao->RemoveInstance( this ); // clears pParentVAO
+	vao->RemoveFromParentIfEmpty();
 }

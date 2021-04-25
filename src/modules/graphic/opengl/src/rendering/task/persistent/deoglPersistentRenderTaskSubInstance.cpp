@@ -39,10 +39,7 @@
 deoglPersistentRenderTaskSubInstance::deoglPersistentRenderTaskSubInstance( deoglPersistentRenderTaskPool &pool ) :
 pPool( pool ),
 pLLInstance( this ),
-
 pParentInstance( NULL ),
-pOwner( NULL ),
-
 pIndexInstance( 0 ),
 pFlags( 0 ){
 }
@@ -59,10 +56,6 @@ void deoglPersistentRenderTaskSubInstance::SetParentInstance( deoglPersistentRen
 	pParentInstance = instance;
 }
 
-void deoglPersistentRenderTaskSubInstance::SetOwner( deoglPersistentRenderTaskOwner *owner ){
-	pOwner = owner;
-}
-
 void deoglPersistentRenderTaskSubInstance::SetIndexInstance( int indexInstance ){
 	pIndexInstance = indexInstance;
 }
@@ -73,7 +66,6 @@ void deoglPersistentRenderTaskSubInstance::SetFlags( int flags ){
 
 void deoglPersistentRenderTaskSubInstance::Clear(){
 	pParentInstance = NULL;
-	pOwner = NULL;
 	
 	pIndexInstance = 0;
 	pFlags = 0;

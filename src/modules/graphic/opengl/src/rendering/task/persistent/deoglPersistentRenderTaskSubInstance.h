@@ -26,7 +26,6 @@
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
-class deoglPersistentRenderTaskOwner;
 
 
 
@@ -39,7 +38,6 @@ private:
 	decPointerLinkedList::cListEntry pLLInstance;
 	
 	deoglPersistentRenderTaskInstance *pParentInstance;
-	deoglPersistentRenderTaskOwner *pOwner;
 	
 	int pIndexInstance;
 	int pFlags;
@@ -65,14 +63,6 @@ public:
 	
 	/** Set parent instance. */
 	void SetParentInstance( deoglPersistentRenderTaskInstance *instance );
-	
-	/** Owner object or NULL. */
-	inline deoglPersistentRenderTaskOwner *GetOwner() const{ return pOwner; }
-	
-	/** Set owner object or NULL. */
-	void SetOwner( deoglPersistentRenderTaskOwner *owner );
-	
-	
 	
 	/** Instance index. */
 	inline int GetIndexInstance() const{ return pIndexInstance; }

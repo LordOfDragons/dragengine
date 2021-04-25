@@ -261,10 +261,7 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 			rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 		}
 		
-		deoglPersistentRenderTaskSubInstance *rtsi =
-			rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
-		rtsi->SetOwner( &owner );
-		owner.AddSubInstance( rtsi );
+		owner.AddSubInstance( rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() ) );
 		
 	}else{
 		deoglPersistentRenderTaskInstance * const rti = rtvao->AddInstance();
@@ -274,7 +271,6 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
-		rti->SetOwner( &owner );
 		owner.AddInstance( rti );
 	}
 }

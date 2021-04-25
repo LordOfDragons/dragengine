@@ -172,6 +172,7 @@ deoglPersistentRenderTaskShader *deoglPersistentRenderTask::GetShaderWith( deogl
 deoglPersistentRenderTaskShader *deoglPersistentRenderTask::AddShader( deoglShaderProgram *shader ){
 	deoglPersistentRenderTaskShader * const rtshader = pPool.GetShader();
 	pShaders.Add( &rtshader->GetLLTask() );
+	rtshader->SetParentTask( this );
 	rtshader->SetShader( shader );
 	return rtshader;
 }

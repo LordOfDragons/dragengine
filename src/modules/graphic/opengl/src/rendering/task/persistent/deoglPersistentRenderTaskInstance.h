@@ -28,7 +28,6 @@
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskVAO;
-class deoglPersistentRenderTaskOwner;
 class deoglPersistentRenderTaskSubInstance;
 class deoglShaderParameterBlock;
 class deoglRenderThread;
@@ -48,7 +47,6 @@ private:
 	deoglPersistentRenderTaskVAO *pParentVAO;
 	deoglShaderParameterBlock *pParamBlock;
 	deoglShaderParameterBlock *pParamBlockSpecial;
-	deoglPersistentRenderTaskOwner *pOwner;
 	
 	int pFirstPoint;
 	int pPointCount;
@@ -97,12 +95,6 @@ public:
 	
 	/** Set special shader parameter block or \em NULL. */
 	void SetParameterBlockSpecial( deoglShaderParameterBlock *block );
-	
-	/** Owner object or NULL. */
-	inline deoglPersistentRenderTaskOwner *GetOwner() const{ return pOwner; }
-	
-	/** Set owner object or NULL. */
-	void SetOwner( deoglPersistentRenderTaskOwner *owner );
 	
 	
 	
