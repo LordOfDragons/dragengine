@@ -153,7 +153,7 @@ void deoglRenderPlanSkyLight::SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanc
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
-#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("RenderPlanSkyLight.Init: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("RenderPlanSkyLight.Prepare: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
 #else
 #define INIT_SPECIAL_TIMING
 #define SPECIAL_TIMER_PRINT(w)

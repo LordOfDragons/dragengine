@@ -28,6 +28,7 @@
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
 #include "deoglPersistentRenderTaskInstance.h"
+#include "deoglPersistentRenderTaskSubInstance.h"
 #include "deoglPersistentRenderTaskOwner.h"
 
 #include <dragengine/common/exceptions.h>
@@ -40,12 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskPool::deoglPersistentRenderTaskPool() :
+deoglPersistentRenderTaskPool::deoglPersistentRenderTaskPool()
+/*:
 pOwners( 20000 ),
 pShaders( 100 ),
 pTextures( 200 ),
 pVAOs( 2000 ),
 pInstances( 5000 )
+*/
 {
 	try{
 		pCreateInitial();
@@ -140,6 +143,21 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskPool::GetInstance(){
 	return instance;
 }
 
+deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskPool::GetSubInstance(){
+	deoglPersistentRenderTaskSubInstance *subInstance;
+	
+	const int index = pSubInstances.GetCount() - 1;
+	if( index > -1 ){
+		subInstance = ( deoglPersistentRenderTaskSubInstance* )pSubInstances.GetAt( index );
+		pSubInstances.RemoveFrom( index );
+		
+	}else{
+		subInstance = new deoglPersistentRenderTaskSubInstance( *this );
+	}
+	
+	return subInstance;
+}
+
 
 
 void deoglPersistentRenderTaskPool::ReturnOwner( deoglPersistentRenderTaskOwner *owner ){
@@ -187,13 +205,27 @@ void deoglPersistentRenderTaskPool::ReturnInstance( deoglPersistentRenderTaskIns
 	pInstances.Add( instance );
 }
 
+void deoglPersistentRenderTaskPool::ReturnSubInstance( deoglPersistentRenderTaskSubInstance *subInstance ){
+	if( ! subInstance ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	subInstance->Clear();
+	pSubInstances.Add( subInstance );
+}
+
 
 
 // Private Functions
 //////////////////////
 
 void deoglPersistentRenderTaskPool::pCleanUp(){
-	int i, count = pInstances.GetCount();
+	int i, count = pSubInstances.GetCount();
+	for( i=0; i<count; i++ ){
+		delete ( deoglPersistentRenderTaskSubInstance* )pSubInstances.GetAt( i );
+	}
+	
+	count = pInstances.GetCount();
 	for( i=0; i<count; i++ ){
 		delete ( deoglPersistentRenderTaskInstance* )pInstances.GetAt( i );
 	}
@@ -237,6 +269,7 @@ void deoglPersistentRenderTaskPool::pCreateInitial(){
 	// 
 	// the arrays use the amounts also as capacities in the constructors. this allocates
 	// the memory ahead of time so it is faster to build the initial elements
+	/*
 	int i;
 	
 	for( i=0; i<20000; i++ ){
@@ -258,4 +291,5 @@ void deoglPersistentRenderTaskPool::pCreateInitial(){
 	for( i=0; i<5000; i++ ){
 		pInstances.Add( new deoglPersistentRenderTaskInstance( *this ) );
 	}
+	*/
 }

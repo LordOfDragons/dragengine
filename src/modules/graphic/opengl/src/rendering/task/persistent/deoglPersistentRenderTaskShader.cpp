@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglPersistentRenderTask.h"
 #include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskShader.h"
 #include "deoglPersistentRenderTaskTexture.h"
@@ -41,7 +42,7 @@
 deoglPersistentRenderTaskShader::deoglPersistentRenderTaskShader( deoglPersistentRenderTaskPool &pool ) :
 pPool( pool ),
 pLLTask( this ),
-
+pParentTask( NULL ),
 pParamBlock( NULL ),
 pSPBInstanceIndexBase( -1 ){
 }
@@ -101,6 +102,10 @@ int deoglPersistentRenderTaskShader::GetTotalSubInstanceCount() const{
 	}
 	
 	return subInstanceCount;
+}
+
+void deoglPersistentRenderTaskShader::SetParentTask( deoglPersistentRenderTask *task ){
+	pParentTask = task;
 }
 
 
@@ -226,4 +231,10 @@ void deoglPersistentRenderTaskShader::Clear(){
 	RemoveAllTextures();
 	pParamBlock = NULL;
 	pSPBInstanceIndexBase = -1;
+}
+
+void deoglPersistentRenderTaskShader::RemoveFromParentIfEmpty(){
+	if( pTextures.GetCount() == 0 ){
+		pParentTask->RemoveShader( this );
+	}
 }

@@ -27,6 +27,7 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 
 class deoglPersistentRenderTaskInstance;
+class deoglPersistentRenderTaskSubInstance;
 
 
 /**
@@ -42,6 +43,7 @@ private:
 	bool pUpdateMarker;
 	
 	decPointerList pInstances;
+	decPointerList pSubInstances;
 	
 	
 	
@@ -83,10 +85,24 @@ public:
 	deoglPersistentRenderTaskInstance *GetInstanceAt( int index ) const;
 	
 	/** Add instance. */
-	void AddInstance( deoglPersistentRenderTaskOwner *instance );
+	void AddInstance( deoglPersistentRenderTaskInstance *instance );
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();
+	
+	
+	
+	/** Count of sub instances. */
+	int GetSubInstanceCount() const;
+	
+	/** Sub instance at index. */
+	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt( int index ) const;
+	
+	/** Add sub instance. */
+	void AddSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	
+	/** Remove all sub instances. */
+	void RemoveAllSubInstances();
 	
 	
 	

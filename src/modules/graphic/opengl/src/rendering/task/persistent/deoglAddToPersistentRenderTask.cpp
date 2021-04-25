@@ -29,6 +29,7 @@
 #include "deoglPersistentRenderTaskShader.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
+#include "deoglPersistentRenderTaskSubInstance.h"
 #include "deoglPersistentRenderTaskOwner.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../component/deoglRComponent.h"
@@ -260,7 +261,10 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 			rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 		}
 		
-		rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags(), &owner );
+		deoglPersistentRenderTaskSubInstance *rtsi =
+			rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
+		rtsi->SetOwner( &owner );
+		owner.AddSubInstance( rtsi );
 		
 	}else{
 		deoglPersistentRenderTaskInstance * const rti = rtvao->AddInstance();
@@ -271,6 +275,7 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 		rti->SetOwner( &owner );
+		owner.AddInstance( rti );
 	}
 }
 

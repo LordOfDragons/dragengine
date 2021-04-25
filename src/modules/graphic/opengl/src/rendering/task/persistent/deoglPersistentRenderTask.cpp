@@ -29,6 +29,7 @@
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
 #include "deoglPersistentRenderTaskInstance.h"
+#include "deoglPersistentRenderTaskSubInstance.h"
 #include "deoglPersistentRenderTaskOwner.h"
 #include "../../../capabilities/deoglCapabilities.h"
 #include "../../../renderthread/deoglRenderThread.h"
@@ -175,6 +176,15 @@ deoglPersistentRenderTaskShader *deoglPersistentRenderTask::AddShader( deoglShad
 	return rtshader;
 }
 
+void deoglPersistentRenderTask::RemoveShader( deoglPersistentRenderTaskShader *shader ){
+	if( ! shader ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pShaders.Remove( &shader->GetLLTask() );
+	pPool.ReturnShader( shader );
+}
+
 void deoglPersistentRenderTask::RemoveAllShaders(){
 	decPointerLinkedList::cListEntry *iter = pShaders.GetRoot();
 	while( iter ){
@@ -252,32 +262,23 @@ void deoglPersistentRenderTask::Clear(){
 }
 
 void deoglPersistentRenderTask::RemoveOwnedBy( deoglPersistentRenderTaskOwner &owner ){
-	// remove instances
-	int i, count = owner.GetInstanceCount();
+	// remove sub instances
+	int i, count = owner.GetSubInstanceCount();
 	for( i=0; i<count; i++ ){
-		deoglPersistentRenderTaskInstance * const instance =
-			( deoglPersistentRenderTaskInstance* )owner.GetInstanceAt( i );
-		instance->RemoveOwnedBy( &owner );
-		
-		if( instance->GetSubInstanceCount() == 0 ){
-			deoglPersistentRenderTaskVAO * const vao = instance->GetParentVAO();
-			vao->RemoveInstance( instance );
-			
-			if( vao->GetInstanceCount() == 0 ){
-				deoglPersistentRenderTaskTexture * const texture = vao->GetParentTexture();
-				texture->RemoveVAO( vao );
-				
-				if( texture->GetVAOCount() == 0 ){
-					deoglPersistentRenderTaskShader * const shader = texture->GetParentShader();
-					shader->RemoveTexture( texture );
-					
-					if( shader->GetTextureCount() == 0 ){
-						pShaders.Remove( &shader->GetLLTask() );
-						pPool.ReturnShader( shader );
-					}
-				}
-			}
-		}
+		deoglPersistentRenderTaskSubInstance * const subInstance = owner.GetSubInstanceAt( i );
+		deoglPersistentRenderTaskInstance * const instance = subInstance->GetParentInstance();
+		instance->RemoveSubInstance( subInstance );
+		instance->RemoveFromParentIfEmpty();
+	}
+	owner.RemoveAllSubInstances();
+	
+	// remove instances
+	count = owner.GetInstanceCount();
+	for( i=0; i<count; i++ ){
+		deoglPersistentRenderTaskInstance * const instance = owner.GetInstanceAt( i );
+		deoglPersistentRenderTaskVAO * const vao = instance->GetParentVAO();
+		vao->RemoveInstance( instance );
+		vao->RemoveFromParentIfEmpty();
 	}
 	owner.RemoveAllInstances();
 }

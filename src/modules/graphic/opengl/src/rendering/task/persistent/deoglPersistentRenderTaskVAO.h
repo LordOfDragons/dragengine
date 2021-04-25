@@ -110,6 +110,9 @@ public:
 	/** Clear. */
 	void Clear();
 	
+	/** Remove from parent if empty. */
+	void RemoveFromParentIfEmpty();
+	
 	
 	
 	/** Render task linked list. */

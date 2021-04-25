@@ -24,6 +24,7 @@
 
 #include <dragengine/common/collection/decPointerList.h>
 
+class deoglPersistentRenderTaskSubInstance;
 class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskOwner;
 class deoglPersistentRenderTaskShader;
@@ -41,6 +42,7 @@ private:
 	decPointerList pTextures;
 	decPointerList pVAOs;
 	decPointerList pInstances;
+	decPointerList pSubInstances;
 	
 	
 	
@@ -73,6 +75,9 @@ public:
 	/** Get instance. */
 	deoglPersistentRenderTaskInstance *GetInstance();
 	
+	/** Get sub instance. */
+	deoglPersistentRenderTaskSubInstance *GetSubInstance();
+	
 	
 	
 	/** Return owner. */
@@ -89,6 +94,9 @@ public:
 	
 	/** Return instance. */
 	void ReturnInstance( deoglPersistentRenderTaskInstance *instance );
+	
+	/** Return sub instance. */
+	void ReturnSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
 	/*@}*/
 	
 	

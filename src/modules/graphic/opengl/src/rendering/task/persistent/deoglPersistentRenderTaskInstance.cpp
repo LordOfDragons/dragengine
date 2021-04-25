@@ -25,6 +25,8 @@
 
 #include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskInstance.h"
+#include "deoglPersistentRenderTaskSubInstance.h"
+#include "deoglPersistentRenderTaskVAO.h"
 #include "../../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../../shaders/paramblock/deoglSPBlockMemory.h"
@@ -57,9 +59,6 @@ pDoubleSided( false ),
 pPrimitiveType( GL_TRIANGLES ),
 pTessPatchVertexCount( 3 ),
 
-pSubInstances( NULL ),
-pSubInstanceCount( 0 ),
-pSubInstanceSize( 0 ),
 pSubInstanceSPB( NULL ),
 pSubInstanceSPBGroup( NULL ),
 pSIIndexInstanceSPB( NULL ),
@@ -67,9 +66,7 @@ pSIIndexInstanceFirst( 0 ){
 }
 
 deoglPersistentRenderTaskInstance::~deoglPersistentRenderTaskInstance(){
-	if( pSubInstances ){
-		delete [] pSubInstances;
-	}
+	Clear();
 }
 
 
@@ -128,44 +125,40 @@ void deoglPersistentRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb, 
 	pSubInstanceSPBGroup = group;
 }
 
-const deoglPersistentRenderTaskInstance::sSubInstance &deoglPersistentRenderTaskInstance::GetSubinstanceAt( int index ) const{
-	if( index < 0 || index >= pSubInstanceCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSubInstances[ index ];
+int deoglPersistentRenderTaskInstance::GetSubInstanceCount() const{
+	return pSubInstances.GetCount();
 }
 
-void deoglPersistentRenderTaskInstance::AddSubInstance( int indexInstance, int flags, deoglPersistentRenderTaskOwner *owner ){
-	if( pSubInstanceCount == pSubInstanceSize ){
-		const int newSize = pSubInstanceCount * 3 / 2 + 1;
-		sSubInstance * const newArray = new sSubInstance[ newSize ];
-		if( pSubInstances ){
-			memcpy( newArray, pSubInstances, sizeof( sSubInstance ) * pSubInstanceCount );
-			delete [] pSubInstances;
-		}
-		pSubInstances = newArray;
-		pSubInstanceSize = newSize;
-	}
+decPointerLinkedList::cListEntry *deoglPersistentRenderTaskInstance::GetRootSubInstance() const{
+	return pSubInstances.GetRoot();
+}
+
+deoglPersistentRenderTaskSubInstance *deoglPersistentRenderTaskInstance::AddSubInstance( int indexInstance, int flags ){
+	deoglPersistentRenderTaskSubInstance * const subInstance = pPool.GetSubInstance();
+	pSubInstances.Add( &subInstance->GetLLInstance() );
 	
-	sSubInstance &subInstance = pSubInstances[ pSubInstanceCount++ ];
-	subInstance.indexInstance = indexInstance;
-	subInstance.flags = flags;
-	subInstance.owner = owner;
+	subInstance->SetParentInstance( this );
+	subInstance->SetIndexInstance( indexInstance );
+	subInstance->SetFlags( flags );
+	return subInstance;
 }
 
-void deoglPersistentRenderTaskInstance::RemoveSubInstance( int index ){
-	if( index < 0 || index >= pSubInstanceCount ){
+void deoglPersistentRenderTaskInstance::RemoveSubInstance( deoglPersistentRenderTaskSubInstance *subInstance ){
+	if( ! subInstance ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( index < pSubInstanceCount - 1 ){
-		pSubInstances[ index ] = pSubInstances[ pSubInstanceCount - 1 ];
-	}
-	pSubInstanceCount--;
+	pSubInstances.Remove( &subInstance->GetLLInstance() );
+	pPool.ReturnSubInstance( subInstance );
 }
 
 void deoglPersistentRenderTaskInstance::RemoveAllSubInstances(){
-	pSubInstanceCount = 0;
+	decPointerLinkedList::cListEntry *iter = pSubInstances.GetRoot();
+	while( iter ){
+		pPool.ReturnSubInstance( ( deoglPersistentRenderTaskSubInstance* )iter->GetOwner() );
+		iter = iter->GetNext();
+	}
+	pSubInstances.RemoveAll();
 }
 
 void deoglPersistentRenderTaskInstance::SetSIIndexInstanceParam(
@@ -179,23 +172,34 @@ void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags )
 		DETHROW( deeInvalidParam );
 	}
 	
-	int i;
 	if( useFlags ){
 		struct sIndexFlags{
 			GLuint index;
 			GLuint flags;
-		} * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLuint )pSubInstances[ i ].indexInstance;
-			data[ i ].flags = ( GLuint )pSubInstances[ i ].flags;
+		} *data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		
+		decPointerLinkedList::cListEntry *iterSubInstance = pSubInstances.GetRoot();
+		while( iterSubInstance ){
+			const deoglPersistentRenderTaskSubInstance &subInstance =
+				*( ( deoglPersistentRenderTaskSubInstance* )iterSubInstance->GetOwner() );
+			data->index = ( GLuint )subInstance.GetIndexInstance();
+			data->flags = ( GLuint )subInstance.GetFlags();
+			data++;
+			iterSubInstance = iterSubInstance->GetNext();
 		}
 		
 	}else{
 		struct sIndex{
 			GLuint index;
-		} * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLuint )pSubInstances[ i ].indexInstance;
+		} *data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		
+		decPointerLinkedList::cListEntry *iterSubInstance = pSubInstances.GetRoot();
+		while( iterSubInstance ){
+			const deoglPersistentRenderTaskSubInstance &subInstance =
+				*( ( deoglPersistentRenderTaskSubInstance* )iterSubInstance->GetOwner() );
+			data->index = ( GLuint )subInstance.GetIndexInstance();
+			data++;
+			iterSubInstance = iterSubInstance->GetNext();
 		}
 	}
 }
@@ -205,43 +209,39 @@ void deoglPersistentRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags
 		DETHROW( deeInvalidParam );
 	}
 	
-	int i;
 	if( useFlags ){
 		struct sIndexFlags{
 			GLushort index;
 			GLushort flags;
-		} * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLushort )pSubInstances[ i ].indexInstance;
-			data[ i ].flags = ( GLushort )pSubInstances[ i ].flags;
+		} *data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		
+		decPointerLinkedList::cListEntry *iterSubInstance = pSubInstances.GetRoot();
+		while( iterSubInstance ){
+			const deoglPersistentRenderTaskSubInstance &subInstance =
+				*( ( deoglPersistentRenderTaskSubInstance* )iterSubInstance->GetOwner() );
+			data->index = ( GLushort )subInstance.GetIndexInstance();
+			data->flags = ( GLushort )subInstance.GetFlags();
+			data++;
+			iterSubInstance = iterSubInstance->GetNext();
 		}
 		
 	}else{
 		struct sIndex{
 			GLuint index;
-		} * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
-		for( i=0; i<pSubInstanceCount; i++ ){
-			data[ i ].index = ( GLushort )pSubInstances[ i ].indexInstance;
-		}
-	}
-}
-
-
-
-void deoglPersistentRenderTaskInstance::RemoveOwnedBy( deoglPersistentRenderTaskOwner *owner ){
-	int i;
-	for( i=0; i<pSubInstanceCount; i++ ){
-		if( pSubInstances[ i ].owner != owner ){
-			continue;
-		}
+		} *data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
 		
-		if( i < pSubInstanceCount - 1 ){
-			pSubInstances[ i ] = pSubInstances[ pSubInstanceCount - 1 ];
+		decPointerLinkedList::cListEntry *iterSubInstance = pSubInstances.GetRoot();
+		while( iterSubInstance ){
+			const deoglPersistentRenderTaskSubInstance &subInstance =
+				*( ( deoglPersistentRenderTaskSubInstance* )iterSubInstance->GetOwner() );
+			data->index = ( GLushort )subInstance.GetIndexInstance();
+			data++;
+			iterSubInstance = iterSubInstance->GetNext();
 		}
-		pSubInstanceCount--;
-		i--;
 	}
 }
+
+
 
 void deoglPersistentRenderTaskInstance::Clear(){
 	RemoveAllSubInstances();
@@ -264,4 +264,10 @@ void deoglPersistentRenderTaskInstance::Clear(){
 	pSubInstanceSPBGroup = NULL;
 	pSIIndexInstanceSPB = NULL;
 	pSIIndexInstanceFirst = 0;
+}
+
+void deoglPersistentRenderTaskInstance::RemoveFromParentIfEmpty(){
+	if( pSubInstances.GetCount() == 0 ){
+		pParentVAO->RemoveInstance( this );
+	}
 }

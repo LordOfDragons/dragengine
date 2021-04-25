@@ -133,6 +133,9 @@ public:
 	/** Add shader. */
 	deoglPersistentRenderTaskShader *AddShader( deoglShaderProgram *shader );
 	
+	/** Remove shader. */
+	void RemoveShader( deoglPersistentRenderTaskShader *shader );
+	
 	/** Remove all shaders. */
 	void RemoveAllShaders();
 	

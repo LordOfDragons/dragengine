@@ -26,6 +26,7 @@
 #include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
+#include "deoglPersistentRenderTaskShader.h"
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../vao/deoglVAO.h"
 
@@ -224,4 +225,10 @@ void deoglPersistentRenderTaskTexture::Clear(){
 	pParentShader = NULL;
 	SetTUC( NULL );
 	pParamBlock = NULL;
+}
+
+void deoglPersistentRenderTaskTexture::RemoveFromParentIfEmpty(){
+	if( pVAOs.GetCount() == 0 ){
+		pParentShader->RemoveTexture( this );
+	}
 }

@@ -29,6 +29,7 @@
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskVAO;
 class deoglPersistentRenderTaskOwner;
+class deoglPersistentRenderTaskSubInstance;
 class deoglShaderParameterBlock;
 class deoglRenderThread;
 class deoglSharedSPB;
@@ -40,15 +41,6 @@ class deoglSharedSPBRTIGroup;
  * Persistent render task instance.
  */
 class deoglPersistentRenderTaskInstance{
-public:
-	struct sSubInstance{
-		int indexInstance;
-		int flags;
-		deoglPersistentRenderTaskOwner *owner;
-	};
-	
-	
-	
 private:
 	deoglPersistentRenderTaskPool &pPool;
 	decPointerLinkedList::cListEntry pLLVAO;
@@ -66,9 +58,7 @@ private:
 	GLenum pPrimitiveType;
 	int pTessPatchVertexCount;
 	
-	sSubInstance *pSubInstances;
-	int pSubInstanceCount;
-	int pSubInstanceSize;
+	decPointerLinkedList pSubInstances;
 	deoglSharedSPB *pSubInstanceSPB;
 	deoglSharedSPBRTIGroup *pSubInstanceSPBGroup;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
@@ -161,16 +151,16 @@ public:
 	
 	
 	/** Count of sub instances to render. */
-	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
+	int GetSubInstanceCount() const;
 	
-	/** Sub instance at index. */
-	const sSubInstance &GetSubinstanceAt( int index ) const;
+	/** Root sub instance. */
+	decPointerLinkedList::cListEntry *GetRootSubInstance() const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( int indexInstance, int flags, deoglPersistentRenderTaskOwner *owner );
+	deoglPersistentRenderTaskSubInstance *AddSubInstance( int indexInstance, int flags );
 	
 	/** Remove sub instance. */
-	void RemoveSubInstance( int index );
+	void RemoveSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
 	
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();
@@ -201,11 +191,11 @@ public:
 	
 	
 	
-	/** Remove elements owned by owner. */
-	void RemoveOwnedBy( deoglPersistentRenderTaskOwner *owner );
-	
 	/** Clear. */
 	void Clear();
+	
+	/** Remove from parent if empty. */
+	void RemoveFromParentIfEmpty();
 	
 	
 	

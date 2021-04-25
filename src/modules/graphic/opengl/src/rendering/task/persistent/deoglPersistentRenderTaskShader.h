@@ -24,6 +24,7 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 
+class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskPool;
 class deoglShaderProgram;
 class deoglPersistentRenderTaskTexture;
@@ -39,6 +40,7 @@ private:
 	deoglPersistentRenderTaskPool &pPool;
 	decPointerLinkedList::cListEntry pLLTask;
 	
+	deoglPersistentRenderTask *pParentTask;
 	deoglShaderProgram *pShader;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
@@ -71,6 +73,12 @@ public:
 	
 	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
+	
+	/** Parent task. */
+	inline deoglPersistentRenderTask *GetParentTask() const{ return pParentTask; }
+	
+	/** Set parent task. */
+	void SetParentTask( deoglPersistentRenderTask *task );
 	
 	/** Shader. */
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
@@ -114,6 +122,9 @@ public:
 	
 	/** Clear. */
 	void Clear();
+	
+	/** Remove from parent if empty. */
+	void RemoveFromParentIfEmpty();
 	
 	
 	

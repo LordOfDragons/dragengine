@@ -25,6 +25,7 @@
 
 #include "deoglPersistentRenderTaskPool.h"
 #include "deoglPersistentRenderTaskVAO.h"
+#include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskInstance.h"
 #include "../../../vbo/deoglVBOLayout.h"
 #include "../../../utils/deoglQuickSorter.h"
@@ -205,4 +206,10 @@ void deoglPersistentRenderTaskVAO::Clear(){
 	
 	pParentTexture = NULL;
 	pVAO = NULL;
+}
+
+void deoglPersistentRenderTaskVAO::RemoveFromParentIfEmpty(){
+	if( pInstances.GetCount() == 0 ){
+		pParentTexture->RemoveVAO( this );
+	}
 }
