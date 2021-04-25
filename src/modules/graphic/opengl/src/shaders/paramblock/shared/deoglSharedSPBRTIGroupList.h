@@ -24,16 +24,18 @@
 
 #include <dragengine/common/collection/decPointerList.h>
 
+class deoglRenderThread;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;
 
 
 
 /**
- * \brief OpenGL shared SPB render task instance group list.
+ * OpenGL shared SPB render task instance group list.
  */
 class deoglSharedSPBRTIGroupList{
 private:
+	deoglRenderThread &pRenderThread;
 	decPointerList pGroups;
 	
 	
@@ -41,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared SPB render task instance group list. */
-	deoglSharedSPBRTIGroupList();
+	/** Create shared SPB render task instance group list. */
+	deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shared SPB list. */
+	/** Clean up shared SPB list. */
 	~deoglSharedSPBRTIGroupList();
 	/*@}*/
 	
@@ -52,14 +54,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of groups. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Count of groups. */
 	int GetCount() const;
 	
-	/** \brief Group at index. */
+	/** Group at index. */
 	deoglSharedSPBRTIGroup *GetAt( int index ) const;
 	
 	/**
-	 * \brief Group group with shared SPB.
+	 * Group group with shared SPB.
 	 * 
 	 * If group does not exist creates it first.
 	 * 
@@ -71,7 +76,7 @@ public:
 	
 	
 	/**
-	 * \brief Remove group.
+	 * Remove group.
 	 * 
 	 * \warning For use by deoglSharedSPBRTIGroup only.
 	 */

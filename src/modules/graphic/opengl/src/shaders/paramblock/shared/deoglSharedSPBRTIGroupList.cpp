@@ -36,7 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBRTIGroupList::deoglSharedSPBRTIGroupList(){
+deoglSharedSPBRTIGroupList::deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ){
 }
 
 deoglSharedSPBRTIGroupList::~deoglSharedSPBRTIGroupList(){

@@ -61,6 +61,7 @@ private:
 	decPointerLinkedList pOwners;
 	decPointerDictionaryExt pOwnersMap;
 	decPointerLinkedList pShaders;
+	decPointerDictionaryExt pShadersMap;
 	
 	
 	

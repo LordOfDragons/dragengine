@@ -26,6 +26,7 @@
 #include "deoglVAO.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -51,12 +52,16 @@ pRenderThread( renderThread ){
 	if( ! pVAO ){
 		DETHROW( deeOutOfMemory );
 	}
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
 deoglVAO::~deoglVAO(){
 	if( pVAO ){
 		pglDeleteVertexArrays( 1, &pVAO );
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 

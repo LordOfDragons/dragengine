@@ -40,6 +40,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -61,6 +62,7 @@ pMaterialIndex( -1 ),
 pMaterialUsageCount( 0 ),
 pUsageCount( 1 ),
 pHashCode( 0 ),
+pUniqueKey( renderThread.GetUniqueKey().Get() ),
 pLLPrev( NULL ),
 pLLNext( NULL ){
 }
@@ -69,6 +71,7 @@ deoglTexUnitsConfig::~deoglTexUnitsConfig(){
 	if( pUnits ){
 		delete [] pUnits;
 	}
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 

@@ -1577,16 +1577,7 @@ int minWidth, int maxWidth, bool alignSidewards ){
 	int i;
 	
 	if( ! alignSidewards ){
-		for( i=0; i<count; i++ ){
-			const deoglDebugInformation &child = *list.GetAt( i );
-			if( ! child.GetVisible() ){
-				continue;
-			}
-			
-			maxNameWidth = decMath::max( maxNameWidth, child.GetName().GetLength() + 1 );
-			siblingsHaveElapsedTime |= child.HasElapsedTime();
-			siblingsHaveCounter |= child.HasCounter();
-		}
+		ChildMaxNameLen( list, maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
 	}
 	
 	decPoint childPos( position );
@@ -1641,6 +1632,25 @@ int minWidth, int maxWidth, bool alignSidewards ){
 	}
 	
 	size.y = childPos.y - position.y;
+}
+
+void deoglRenderDevMode::ChildMaxNameLen( const deoglDebugInformationList &list,
+int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const{
+	const int count = list.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglDebugInformation &child = *list.GetAt( i );
+		if( ! child.GetVisible() ){
+			continue;
+		}
+		
+		maxNameWidth = decMath::max( maxNameWidth, child.GetName().GetLength() + 1 );
+		siblingsHaveElapsedTime |= child.HasElapsedTime();
+		siblingsHaveCounter |= child.HasCounter();
+		
+		ChildMaxNameLen( child.GetChildren(), maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
+	}
 }
 
 void deoglRenderDevMode::LayoutDebugInformation( deoglRenderPlan& plan, int maxNameWidth,

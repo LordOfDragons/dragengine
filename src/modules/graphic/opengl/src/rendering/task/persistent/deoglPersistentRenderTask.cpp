@@ -157,23 +157,29 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTask::GetRootShader() con
 }
 
 deoglPersistentRenderTaskShader *deoglPersistentRenderTask::GetShaderWith( deoglShaderProgram *shader ) const{
-	decPointerLinkedList::cListEntry *iter = pShaders.GetRoot();
-	while( iter ){
-		deoglPersistentRenderTaskShader * const rtshader = ( deoglPersistentRenderTaskShader* )iter->GetOwner();
-		if( rtshader->GetShader() == shader ){
-			return rtshader;
-		}
-		iter = iter->GetNext();
+	if( ! shader ){
+		DETHROW( deeInvalidParam );
 	}
 	
-	return NULL;
+	deoglPersistentRenderTaskShader *rtshader;
+	return pShadersMap.GetAt( shader, shader->GetUniqueKey(), ( void** )&rtshader ) ? rtshader : NULL;
 }
 
 deoglPersistentRenderTaskShader *deoglPersistentRenderTask::AddShader( deoglShaderProgram *shader ){
+	if( ! shader ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// commented out in the name of performance
+// 	if( pShadersMap.Has( shader, shader->GetUniqueKey() ) ){
+// 		DETHROW( deeInvalidParam );
+// 	}
+	
 	deoglPersistentRenderTaskShader * const rtshader = pPool.GetShader();
 	pShaders.Add( &rtshader->GetLLTask() );
 	rtshader->SetParentTask( this );
 	rtshader->SetShader( shader );
+	pShadersMap.SetAt( shader, shader->GetUniqueKey(), rtshader );
 	return rtshader;
 }
 
@@ -182,6 +188,7 @@ void deoglPersistentRenderTask::RemoveShader( deoglPersistentRenderTaskShader *s
 		DETHROW( deeInvalidParam );
 	}
 	
+	pShadersMap.Remove( shader->GetShader(), shader->GetShader()->GetUniqueKey() );
 	pShaders.Remove( &shader->GetLLTask() );
 	pPool.ReturnShader( shader );
 }
@@ -193,6 +200,7 @@ void deoglPersistentRenderTask::RemoveAllShaders(){
 		iter = iter->GetNext();
 	}
 	pShaders.RemoveAll();
+	pShadersMap.RemoveAll();
 }
 
 

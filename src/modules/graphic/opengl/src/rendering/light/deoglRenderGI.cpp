@@ -263,7 +263,7 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-		const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		
 		pDebugInfoGI = new deoglDebugInformation( "GI", colorText, colorBg );

@@ -57,6 +57,8 @@ const deOcclusionMesh &occlusionmesh ) :
 pRenderThread( renderThread ),
 pFilename( occlusionmesh.GetFilename() ),
 pSharedSPBListUBO( NULL ),
+pRTIGroupsSingle( renderThread ),
+pRTIGroupsDouble( renderThread ),
 pBVH( NULL ),
 pRayTraceField( NULL )
 {

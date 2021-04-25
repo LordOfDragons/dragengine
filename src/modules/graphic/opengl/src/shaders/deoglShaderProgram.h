@@ -24,6 +24,7 @@
 
 #include "deoglShaderDefines.h"
 
+class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderSources;
 class deoglShaderCompiled;
@@ -38,6 +39,7 @@ class deoglRenderTaskShader;
  */
 class deoglShaderProgram{
 private:
+	deoglRenderThread &pRenderThread;
 	deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
 	
@@ -53,15 +55,17 @@ private:
 	deoglRenderTaskShader *pRenderTaskShader;
 	unsigned int pRenderTaskTrackingNumber;
 	
+	unsigned int pUniqueKey;
+	
 	int pUsageCount;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglShaderSources *sources );
+	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources );
 	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglShaderSources *sources, const deoglShaderDefines &defines );
+	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources, const deoglShaderDefines &defines );
 	/** Cleans up the shader program object. */
 	~deoglShaderProgram();
 	/*@}*/
@@ -115,6 +119,9 @@ public:
 	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
 	/** Sets the render task tracking number. */
 	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	/** Retrieves the usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

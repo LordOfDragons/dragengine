@@ -34,12 +34,10 @@ class deoglDebugInformation;
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
 	deoglDebugInformation *infoWorld;
-	deoglDebugInformation *infoPrepare;
 	deoglDebugInformation *infoPassMasked;
 	deoglDebugInformation *infoSolidGeometry;
 	deoglDebugInformation *infoReflection;
 	deoglDebugInformation *infoSSR;
-	deoglDebugInformation *infoGI;
 	deoglDebugInformation *infoSolidGeometryLights;
 	deoglDebugInformation *infoTransparent;
 	deoglDebugInformation *infoToneMapping;

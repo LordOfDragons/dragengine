@@ -430,7 +430,7 @@ deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderSources *sour
 	deoglShaderProgram *program = NULL;
 	
 	try{
-		program = new deoglShaderProgram( sources, defines );
+		program = new deoglShaderProgram( pRenderThread, sources, defines );
 		
 		if( ! sources->GetPathGeometrySourceCode().IsEmpty() ){
 			program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode().GetString() ) );

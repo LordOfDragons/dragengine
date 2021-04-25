@@ -876,6 +876,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pOptimizerManager = new deoglOptimizerManager;
 	// deprecated
 	
+	// required to be present before anything else
+	pUniqueKey = new deoglRTUniqueKey;
+	
+	// init extensions
 	pInitExtensions();
 	
 	// below depends on extensions to be initialized first
@@ -888,7 +892,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// debug information
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 	const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
@@ -952,7 +956,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pBufferObject = new deoglRTBufferObject( *this );
 	pBufferObject->Init();
 	
-	pUniqueKey = new deoglRTUniqueKey;
 	pTriangleSorter = new deoglTriangleSorter;
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pDelayedOperations = new deoglDelayedOperations( *this );
@@ -1898,10 +1901,6 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pTriangleSorter;
 			pTriangleSorter = NULL;
 		}
-		if( pUniqueKey ){
-			delete pUniqueKey;
-			pUniqueKey = NULL;
-		}
 		
 		if( pOccQueryMgr ){
 			delete pOccQueryMgr;
@@ -2119,6 +2118,12 @@ void deoglRenderThread::pCleanUpThread(){
 			pQuickSorter = NULL;
 		}
 		// deprecated
+		
+		// has to come last
+		if( pUniqueKey ){
+			delete pUniqueKey;
+			pUniqueKey = NULL;
+		}
 		
 		// free context
 // 		cleanUpWindow->FreeReference();

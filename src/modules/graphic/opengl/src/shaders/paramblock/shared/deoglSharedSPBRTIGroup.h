@@ -44,6 +44,7 @@ public:
 	deoglSharedSPBRTIGroupList &pParent;
 	deoglSharedSPB &pSharedSPB;
 	deoglRenderTaskInstanceGroup pGroup;
+	unsigned int pUniqueKey;
 	
 	
 	
@@ -69,6 +70,9 @@ public:
 	
 	/** \brief Render task instance group. */
 	inline deoglRenderTaskInstanceGroup &GetGroup(){ return pGroup; }
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	/*@}*/
 };
 

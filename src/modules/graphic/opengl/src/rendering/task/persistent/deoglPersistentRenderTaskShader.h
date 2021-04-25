@@ -23,6 +23,7 @@
 #define _DEOGLPERSISTENTRENDERTASKSHADER_H_
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decPointerDictionaryExt.h>
 
 class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskPool;
@@ -45,6 +46,7 @@ private:
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
 	decPointerLinkedList pTextures;
+	decPointerDictionaryExt pTexturesMap;
 	
 	
 	

@@ -34,13 +34,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglModelTexture::deoglModelTexture() :
+deoglModelTexture::deoglModelTexture( deoglRenderThread &renderThread ) :
 pFirstFace( 0 ),
 pFaceCount( 0 ),
 pDoubleSided( false ),
 pDecal( false ),
-pDecalOffset( 0 )
-{
+pDecalOffset( 0 ),
+pRTIGroups( renderThread ){
 }
 
 deoglModelTexture::~deoglModelTexture(){

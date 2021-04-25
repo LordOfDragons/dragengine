@@ -45,6 +45,7 @@ public:
 	
 	unsigned int pRenderTaskTrackingNumber;
 	int pRenderTaskVAOIndex;
+	unsigned int pUniqueKey;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -80,6 +81,9 @@ public:
 	inline int GetRenderTaskVAOIndex() const{ return pRenderTaskVAOIndex; }
 	/** Sets the render task vao index. */
 	void SetRenderTaskVAOIndex( int vaoIndex );
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	/*@}*/
 };
 

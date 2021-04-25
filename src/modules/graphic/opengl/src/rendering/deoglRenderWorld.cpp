@@ -42,6 +42,7 @@
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskParticles.h"
 #include "../debug/deoglDebugSnapshot.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -339,10 +340,6 @@ DEBUG_RESET_TIMER
 		DebugTimer2Sample( plan, *pDebugInfo.infoPassMasked, true );
 		
 // 		ClearScreen( plan, false, false );
-	}
-	
-	if( debugMainPass ){
-		DebugTimer2Sample( plan, *pDebugInfo.infoPrepare, true );
 	}
 	
 	// prepare for one render turn with this camera

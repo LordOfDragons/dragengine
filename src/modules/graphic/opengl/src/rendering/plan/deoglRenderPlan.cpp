@@ -359,7 +359,6 @@ void deoglRenderPlan::pBarePrepareRender(){
 	}
 	
 	renderCanvas.ClearAllDebugInfoPlanPrepare( *this );
-	pRenderThread.GetRenderers().GetWorld().GetDebugInfo().infoGI->Clear();
 	
 	CleanUp(); // just to make sure everything is clean
 	
@@ -426,6 +425,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	
 	// prepare world for rendering
 	pWorld->PrepareForRender( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
 	// update environment maps
@@ -521,7 +521,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	for( c=0; c<componentCount; c++ ){
 		oglComponent = pCollideList.GetComponentAt( c )->GetComponent();
 		oglComponent->TestCameraInside( pCameraPosition );
-		renderCanvas.SampleDebugInfoPlanPrepareComponentsVBO( *this );
 		oglComponent->AddSkinStateRenderPlans( *this );
 	}
 	
@@ -826,10 +825,14 @@ void deoglRenderPlan::pPlanGI(){
 		return;
 	}
 	
+	pRenderThread.GetRenderers().GetCanvas().ResetDebugInfoTimerGI( *this );
+	
 	if( ! pGIState ){
 		pGIState = new deoglGIState( pRenderThread );
 	}
 	pGIState->Update( *pWorld, pCameraPosition, pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
+	
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
 #endif
 }
 

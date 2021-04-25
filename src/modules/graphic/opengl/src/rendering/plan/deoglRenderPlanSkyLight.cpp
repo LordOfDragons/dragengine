@@ -30,8 +30,10 @@
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
+#include "../../debug/deoglDebugInformation.h"
 #include "../../gi/deoglGIState.h"
 #include "../../model/deoglRModel.h"
+#include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
@@ -171,12 +173,15 @@ void deoglRenderPlanSkyLight::Prepare( deoglRenderPlan &plan ){
 	}
 	
 	if( plan.GetUpdateGIState() ){
+		pRenderThread.GetRenderers().GetCanvas().ResetDebugInfoTimerGI( plan );
+		
 		pGICalcShadowLayerParams( plan );
 		pGICollectElements( plan ); // has to come before pCollectElements due to
 			// deoglRComponent::SetSkyShadowSplitMask overwriting mask
 		SPECIAL_TIMER_PRINT("GI Collect")
 		
 		pGIUpdateRenderTask();
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGISkyShadowRenderTask( plan );
 		SPECIAL_TIMER_PRINT("GI Update Render Task")
 	}
 	

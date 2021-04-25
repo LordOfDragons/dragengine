@@ -45,12 +45,10 @@ deoglRenderWorldInfo::deoglRenderWorldInfo( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 infoWorld( NULL ),
-infoPrepare( NULL ),
 infoPassMasked( NULL ),
 infoSolidGeometry( NULL ),
 infoReflection( NULL ),
 infoSSR( NULL ),
-infoGI( NULL ),
 infoSolidGeometryLights( NULL ),
 infoTransparent( NULL ),
 infoToneMapping( NULL ),
@@ -82,15 +80,12 @@ infoTransparentLights( NULL ),
 infoTransparentVolumetric( NULL )
 {
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	//const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 	
 	try{
 		infoWorld = new deoglDebugInformation( "World", colorText, colorBg );
-		
-		infoPrepare = new deoglDebugInformation( "Prepare", colorText, colorBgSub );
-		infoWorld->GetChildren().Add( infoPrepare );
 		
 		infoPassMasked = new deoglDebugInformation( "Masked", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoPassMasked );
@@ -103,9 +98,6 @@ infoTransparentVolumetric( NULL )
 		
 		infoSSR = new deoglDebugInformation( "SSR", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSSR );
-		
-		infoGI = new deoglDebugInformation( "GI", colorText, colorBgSub );
-		infoWorld->GetChildren().Add( infoGI );
 		
 		infoSolidGeometryLights = new deoglDebugInformation( "Solid Lights", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSolidGeometryLights );
@@ -207,7 +199,6 @@ deoglRenderWorldInfo::~deoglRenderWorldInfo(){
 
 void deoglRenderWorldInfo::ClearAll(){
 	infoWorld->Clear();
-	infoPrepare->Clear();
 	infoPassMasked->Clear();
 	infoSolidGeometry->Clear();
 	infoReflection->Clear();
@@ -274,9 +265,6 @@ void deoglRenderWorldInfo::pCleanUp(){
 			.RemoveIfPresent( infoWorld );
 		infoWorld->FreeReference();
 	}
-	if( infoPrepare ){
-		infoPrepare->FreeReference();
-	}
 	if( infoPassMasked ){
 		infoPassMasked->FreeReference();
 	}
@@ -288,9 +276,6 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	if( infoSSR ){
 		infoSSR->FreeReference();
-	}
-	if( infoGI ){
-		infoGI->FreeReference();
 	}
 	if( infoSolidGeometryLights ){
 		infoSolidGeometryLights->FreeReference();

@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -29,6 +29,7 @@
 #include "deoglPersistentRenderTaskInstance.h"
 #include "../../../vbo/deoglVBOLayout.h"
 #include "../../../utils/deoglQuickSorter.h"
+#include "../../../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -105,79 +106,19 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith
 		DETHROW( deeInvalidParam );
 	}
 	
-	decPointerLinkedList::cListEntry *iterLeft = pInstances.GetRoot();
-	int left = 0, right = pInstances.GetCount() - 1;
-	
-	while( left <= right ){
-		const int middle = left + ( right - left ) / 2;
-		
-		decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
-		int mover = left;
-		while( mover++ < middle ){
-			iterMiddle = iterMiddle->GetNext();
-		}
-		
-		deoglPersistentRenderTaskInstance * const instance = ( deoglPersistentRenderTaskInstance* )iterMiddle->GetOwner();
-		
-		if( instance->GetSubInstanceSPBGroup() == group ){
-			return instance;
-			
-		}else if( instance->GetSubInstanceSPBGroup() < group ){
-			left = middle + 1;
-			iterLeft = iterMiddle->GetNext();
-			
-		}else{
-			right = middle - 1;
-		}
-	}
-	
-	return NULL;
+	deoglPersistentRenderTaskInstance *instance;
+	return pInstancesMap.GetAt( group, group->GetUniqueKey(), ( void** )&instance ) ? instance : NULL;
 }
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::AddInstance(
 deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ){
-	decPointerLinkedList::cListEntry *iterInsert;
-	
-	if( group ){
-		decPointerLinkedList::cListEntry *iterLeft = pInstances.GetRoot();
-		int left = 0, right = pInstances.GetCount() - 1;
-		
-		while( left <= right ){
-			const int middle = left + ( right - left ) / 2;
-			
-			decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
-			int mover = left;
-			while( mover++ < middle ){
-				iterMiddle = iterMiddle->GetNext();
-			}
-			
-			if( ( ( deoglPersistentRenderTaskInstance* )iterMiddle->GetOwner() )->GetSubInstanceSPBGroup() <= group ){
-				left = middle + 1;
-				iterLeft = iterMiddle->GetNext();
-				
-			}else{
-				right = middle - 1;
-			}
-		}
-		
-		iterInsert = iterLeft;
-		
-	}else{
-		iterInsert = pInstances.GetTail();
-	}
-	
 	deoglPersistentRenderTaskInstance * const instance = pPool.GetInstance();
-	
-	if( iterInsert ){
-		pInstances.InsertBefore( &instance->GetLLVAO(),
-			&( ( deoglPersistentRenderTaskInstance* )iterInsert->GetOwner() )->GetLLVAO() );
-		
-	}else{
-		pInstances.Add( &instance->GetLLVAO() );
-	}
-	
+	pInstances.Add( &instance->GetLLVAO() );
 	instance->SetParentVAO( this );
 	instance->SetSubInstanceSPB( spb, group );
+	if( group ){
+		pInstancesMap.SetAt( group, group->GetUniqueKey(), instance );
+	}
 	return instance;
 }
 
@@ -186,6 +127,9 @@ void deoglPersistentRenderTaskVAO::RemoveInstance( deoglPersistentRenderTaskInst
 		DETHROW( deeInvalidParam );
 	}
 	
+	if( instance->GetSubInstanceSPBGroup() ){
+		pInstancesMap.Remove( instance->GetSubInstanceSPBGroup(), instance->GetSubInstanceSPBGroup()->GetUniqueKey() );
+	}
 	pInstances.Remove( &instance->GetLLVAO() );
 	pPool.ReturnInstance( instance );
 }
@@ -197,6 +141,7 @@ void deoglPersistentRenderTaskVAO::RemoveAllInstances(){
 		iter = iter->GetNext();
 	}
 	pInstances.RemoveAll();
+	pInstancesMap.RemoveAll();
 }
 
 

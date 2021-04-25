@@ -57,6 +57,8 @@ public:
 	
 	int pUsageCount;
 	unsigned int pHashCode;
+	unsigned int pUniqueKey;
+	
 	deoglTexUnitsConfig *pLLPrev;
 	deoglTexUnitsConfig *pLLNext;
 	
@@ -158,6 +160,11 @@ public:
 	
 	/** Calculate hash code for set of unit configurations. */
 	static unsigned int CalcHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount );
+	
+	
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	
 	

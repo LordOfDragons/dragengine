@@ -162,7 +162,6 @@ pDebugInfoTransparent( NULL ),
 
 pDebugInfoSolidDetail( NULL ),
 pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowElements( NULL ),
 pDebugInfoSolidShadowOcclusion( NULL ),
 pDebugInfoSolidShadowOcclusionStart( NULL ),
 pDebugInfoSolidShadowOcclusionVBO( NULL ),
@@ -206,7 +205,7 @@ pDebugInfoTransparentLight( NULL )
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
 		const decColor colorBgUp( 0.05f, 0.05f, 0.05f, 0.75f );
-		const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
@@ -220,9 +219,6 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
-		
-		pDebugInfoSolidShadowElements = new deoglDebugInformation( "Add Elements", colorText, colorBgSub2 );
-		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowElements );
 		
 		pDebugInfoSolidShadowOcclusion = new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowOcclusion );
@@ -1261,7 +1257,6 @@ void deoglRenderLightSky::ResetDebugInfo(){
 	pDebugInfoTransparent->Clear();
 	
 	pDebugInfoSolidShadow->Clear();
-	pDebugInfoSolidShadowElements->Clear();
 	pDebugInfoSolidShadowOcclusion->Clear();
 	pDebugInfoSolidShadowOcclusionStart->Clear();
 	pDebugInfoSolidShadowOcclusionVBO->Clear();
@@ -1338,9 +1333,6 @@ void deoglRenderLightSky::pCleanUp(){
 	}
 	if( pDebugInfoSolidShadow ){
 		pDebugInfoSolidShadow->FreeReference();
-	}
-	if( pDebugInfoSolidShadowElements ){
-		pDebugInfoSolidShadowElements->FreeReference();
 	}
 	if( pDebugInfoSolidShadowOcclusion ){
 		pDebugInfoSolidShadowOcclusion->FreeReference();

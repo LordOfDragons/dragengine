@@ -73,6 +73,8 @@ pOccMeshInstanceArraySizeSSBO( 0 ),
 
 pBillboardSPBListUBO( NULL ),
 
+pBillboardRTIGroups( renderThread ),
+
 pTemporaryVBOData( NULL ),
 pTemporaryVBODataSize( 0 )
 {

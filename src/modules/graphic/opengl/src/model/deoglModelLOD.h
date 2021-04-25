@@ -72,7 +72,7 @@ public:
 	deoglRModel &pModel;
 	const int pLODIndex;
 	
-	deoglModelTexture *pTextures;
+	deoglModelTexture **pTextures;
 	int pTextureCount;
 	
 	oglModelPosition *pPositions;

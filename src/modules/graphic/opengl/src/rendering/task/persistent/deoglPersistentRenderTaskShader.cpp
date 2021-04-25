@@ -137,33 +137,8 @@ deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskShader::GetTextureWi
 		DETHROW( deeInvalidParam );
 	}
 	
-	decPointerLinkedList::cListEntry *iterLeft = pTextures.GetRoot();
-	int left = 0, right = pTextures.GetCount() - 1;
-	
-	while( left <= right ){
-		const int middle = left + ( right - left ) / 2;
-		
-		decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
-		int mover = left;
-		while( mover++ < middle ){
-			iterMiddle = iterMiddle->GetNext();
-		}
-		
-		deoglPersistentRenderTaskTexture * const texture = ( deoglPersistentRenderTaskTexture* )iterMiddle->GetOwner();
-		
-		if( texture->GetTUC() == tuc ){
-			return texture;
-			
-		}else if( texture->GetTUC() < tuc ){
-			left = middle + 1;
-			iterLeft = iterMiddle->GetNext();
-			
-		}else{
-			right = middle - 1;
-		}
-	}
-	
-	return NULL;
+	deoglPersistentRenderTaskTexture *texture;
+	return pTexturesMap.GetAt( tuc, tuc->GetUniqueKey(), ( void** )&texture ) ? texture : NULL;
 }
 
 deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskShader::AddTexture( deoglTexUnitsConfig *tuc ){
@@ -171,39 +146,16 @@ deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskShader::AddTexture( d
 		DETHROW( deeInvalidParam );
 	}
 	
-	decPointerLinkedList::cListEntry *iterLeft = pTextures.GetRoot();
-	int left = 0, right = pTextures.GetCount() - 1;
-	
-	while( left <= right ){
-		const int middle = left + ( right - left ) / 2;
-		
-		decPointerLinkedList::cListEntry *iterMiddle = iterLeft;
-		int mover = left;
-		while( mover++ < middle ){
-			iterMiddle = iterMiddle->GetNext();
-		}
-		
-		if( ( ( deoglPersistentRenderTaskTexture* )iterMiddle->GetOwner() )->GetTUC() <= tuc ){
-			left = middle + 1;
-			iterLeft = iterMiddle->GetNext();
-			
-		}else{
-			right = middle - 1;
-		}
-	}
+	// commented out in the name of performance
+// 	if( pShadersMap.Has( tuc, tuc->GetUniqueKey() ) ){
+// 		DETHROW( deeInvalidParam );
+// 	}
 	
 	deoglPersistentRenderTaskTexture * const texture = pPool.GetTexture();
-	
-	if( iterLeft ){
-		pTextures.InsertBefore( &texture->GetLLShader(),
-			&( ( deoglPersistentRenderTaskTexture* )iterLeft->GetOwner() )->GetLLShader() );
-		
-	}else{
-		pTextures.Add( &texture->GetLLShader() );
-	}
-	
+	pTextures.Add( &texture->GetLLShader() );
 	texture->SetParentShader( this );
 	texture->SetTUC( tuc );
+	pTexturesMap.SetAt( tuc, tuc->GetUniqueKey(), texture );
 	return texture;
 }
 
@@ -212,6 +164,7 @@ void deoglPersistentRenderTaskShader::RemoveTexture( deoglPersistentRenderTaskTe
 		DETHROW( deeInvalidParam );
 	}
 	
+	pTexturesMap.Remove( texture->GetTUC(), texture->GetTUC()->GetUniqueKey() );
 	pTextures.Remove( &texture->GetLLShader() );
 	pPool.ReturnTexture( texture );
 }
@@ -223,6 +176,7 @@ void deoglPersistentRenderTaskShader::RemoveAllTextures(){
 		iter = iter->GetNext();
 	}
 	pTextures.RemoveAll();
+	pTexturesMap.RemoveAll();
 }
 
 

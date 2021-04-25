@@ -93,7 +93,7 @@ pGIBVHLocal( NULL )
 	pTexCoordCount = 0;
 	
 	pTextures = NULL;
-	pTextureCount = engModel.GetTextureCount();
+	pTextureCount = 0;
 	
 	pNormals = NULL;
 	pNormalCount = 0;
@@ -401,14 +401,14 @@ const deoglModelTexture &deoglModelLOD::GetTextureAt( int index ) const{
 	if( index < 0 || index >= pTextureCount ){
 		DETHROW( deeInvalidParam );
 	}
-	return pTextures[ index ];
+	return *pTextures[ index ];
 }
 
 deoglSharedSPBRTIGroupList &deoglModelLOD::GetSharedSPBRTIGroupListAt( int texture ) const{
 	if( texture < 0 || texture >= pTextureCount ){
 		DETHROW( deeInvalidParam );
 	}
-	return pTextures[ texture ].GetRTIGroups();
+	return pTextures[ texture ]->GetRTIGroups();
 }
 
 
@@ -556,17 +556,18 @@ void deoglModelLOD::LoadFromCache( decBaseFileReader &reader ){
 	
 	count = reader.ReadInt();
 	if( count > 0 ){
-		pTextures = new deoglModelTexture[ count ];
-		pTextureCount = count;
+		pTextures = new deoglModelTexture*[ count ];
 		
 		sCacheTexture cacheTextures;
-		for( i=0; i<count; i++ ){
+		for( pTextureCount=0; pTextureCount<count; pTextureCount++ ){
 			reader.Read( &cacheTextures, sizeof( sCacheTexture ) );
-			pTextures[ i ].SetFirstFace( cacheTextures.firstFace );
-			pTextures[ i ].SetFaceCount( cacheTextures.faceCount );
-			pTextures[ i ].SetDoubleSided( cacheTextures.doubleSided );
-			pTextures[ i ].SetDecal( cacheTextures.decal );
-			pTextures[ i ].SetDecalOffset( cacheTextures.decalOffset );
+			deoglModelTexture * const texture = new deoglModelTexture( pModel.GetRenderThread() );
+			texture->SetFirstFace( cacheTextures.firstFace );
+			texture->SetFaceCount( cacheTextures.faceCount );
+			texture->SetDoubleSided( cacheTextures.doubleSided );
+			texture->SetDecal( cacheTextures.decal );
+			texture->SetDecalOffset( cacheTextures.decalOffset );
+			pTextures[ pTextureCount ] = texture;
 		}
 	}
 	
@@ -664,11 +665,12 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 	
 	sCacheTexture cacheTextures;
 	for( i=0; i<pTextureCount; i++ ){
-		cacheTextures.firstFace = pTextures[ i ].GetFirstFace();
-		cacheTextures.faceCount = pTextures[ i ].GetFaceCount();
-		cacheTextures.doubleSided = pTextures[ i ].GetDoubleSided();
-		cacheTextures.decal = pTextures[ i ].GetDecal();
-		cacheTextures.decalOffset = pTextures[ i ].GetDecalOffset();
+		const deoglModelTexture &texture = *pTextures[ i ];
+		cacheTextures.firstFace = texture.GetFirstFace();
+		cacheTextures.faceCount = texture.GetFaceCount();
+		cacheTextures.doubleSided = texture.GetDoubleSided();
+		cacheTextures.decal = texture.GetDecal();
+		cacheTextures.decalOffset = texture.GetDecalOffset();
 		writer.Write( &cacheTextures, sizeof( sCacheTexture ) );
 	}
 	
@@ -883,6 +885,9 @@ void deoglModelLOD::pCleanUp(){
 		delete [] pPositions;
 	}
 	if( pTextures ){
+		while( pTextureCount > 0 ){
+			delete pTextures[ --pTextureCount ];
+		}
 		delete [] pTextures;
 	}
 }
@@ -1148,18 +1153,20 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 	}
 	
 	// add textures
-	pTextures = new deoglModelTexture[ pTextureCount ];
+	const int textureCount = engModel.GetTextureCount();;
+	pTextures = new deoglModelTexture*[ textureCount ];
 	
-	for( i=0; i<pTextureCount; i++ ){
-		const deModelTexture &in = *engModel.GetTextureAt( i );
-		deoglModelTexture &out = pTextures[ i ];
+	for( pTextureCount=0; pTextureCount<textureCount; pTextureCount++ ){
+		const deModelTexture &engTexture = *engModel.GetTextureAt( pTextureCount );
 		
-		out.SetDoubleSided( in.GetDoubleSided() );
-		out.SetDecal( in.GetDecal() );
-		out.SetDecalOffset( in.GetDecalOffset() );
+		deoglModelTexture * const texture = new deoglModelTexture( pModel.GetRenderThread() );
+		texture->SetDoubleSided( engTexture.GetDoubleSided() );
+		texture->SetDecal( engTexture.GetDecal() );
+		texture->SetDecalOffset( engTexture.GetDecalOffset() );
+		pTextures[ pTextureCount ] = texture;
 		
-		pDoubleSided |= in.GetDoubleSided();
-		pDecal |= in.GetDecal();
+		pDoubleSided |= engTexture.GetDoubleSided();
+		pDecal |= engTexture.GetDecal();
 	}
 	
 	// add texture coordinate sets and set the texture coordinate count
@@ -1210,7 +1217,7 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			pFaceCount = modelFaceCount;
 			
 			for( i=0; i<pTextureCount; i++ ){
-				deoglModelTexture &texture = pTextures[ i ];
+				deoglModelTexture &texture = *pTextures[ i ];
 				int texFaceCount = 0;
 				
 				texture.SetFirstFace( f );
@@ -1353,7 +1360,7 @@ void deoglModelLOD::pOptimizeVertexCache(){
 	
 	optimizer.SetGroupCount( pTextureCount );
 	for( i=0; i<pTextureCount; i++ ){
-		optimizer.SetGroupAt( i, pTextures[ i ].GetFirstFace(), pTextures[ i ].GetFaceCount() );
+		optimizer.SetGroupAt( i, pTextures[ i ]->GetFirstFace(), pTextures[ i ]->GetFaceCount() );
 	}
 	
 	optimizer.Optimize();

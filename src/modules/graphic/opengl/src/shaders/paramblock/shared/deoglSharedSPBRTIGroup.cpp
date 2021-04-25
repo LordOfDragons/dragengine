@@ -21,6 +21,8 @@
 
 #include "deoglSharedSPBRTIGroup.h"
 #include "deoglSharedSPBRTIGroupList.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -35,9 +37,11 @@
 deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent,
 deoglSharedSPB &sharedSPB ) :
 pParent( parent ),
-pSharedSPB( sharedSPB ){
+pSharedSPB( sharedSPB ),
+pUniqueKey( parent.GetRenderThread().GetUniqueKey().Get() ){
 }
 
 deoglSharedSPBRTIGroup::~deoglSharedSPBRTIGroup(){
+	pParent.GetRenderThread().GetUniqueKey().Return( pUniqueKey );
 	pParent.Remove( this );
 }

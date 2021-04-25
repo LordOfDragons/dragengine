@@ -25,6 +25,8 @@
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
 #include "deoglShaderUnitSourceCode.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -36,7 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
+pRenderThread( renderThread )
+{
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
 	}
@@ -53,11 +57,16 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
 	
 	pRenderTaskShader = NULL;
 	pRenderTaskTrackingNumber = 0;
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 	
 	pUsageCount = 1;
 }
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deoglShaderDefines &defines ){
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
+deoglShaderSources *sources, const deoglShaderDefines &defines ) :
+pRenderThread( renderThread )
+{
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
 	}
@@ -75,15 +84,19 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deogl
 	pRenderTaskShader = NULL;
 	pRenderTaskTrackingNumber = 0;
 	
-	pUsageCount = 1;
-	
 	pDefines = defines;
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
+	
+	pUsageCount = 1;
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
 	if( pCompiled ){
 		delete pCompiled;
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 

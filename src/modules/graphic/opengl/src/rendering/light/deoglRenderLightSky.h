@@ -58,7 +58,6 @@ private:
 	
 	deoglDebugInformation *pDebugInfoSolidDetail;
 	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowElements;
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusion;
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusionStart;
 	deoglDebugInformation *pDebugInfoSolidShadowOcclusionVBO;
