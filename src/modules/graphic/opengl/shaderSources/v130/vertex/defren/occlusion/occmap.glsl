@@ -19,24 +19,24 @@ UBOLAYOUT uniform RenderParameters{
 
 in vec3 inPosition;
 
-#if defined PERSPECTIVE_TO_LINEAR && ! defined GS_RENDER_CUBE
+#if defined PERSPECTIVE_TO_LINEAR && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
 out float vDepth;
 #endif
 #ifdef DEPTH_DISTANCE
 out vec3 vPosition;
 #endif
-#ifdef GS_RENDER_CUBE
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	flat out int vSPBIndex;
-	#ifdef GS_RENDER_CUBE_CULLING
-		flat out int vSPBFlags;
-	#endif
+#endif
+#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
+	flat out int vSPBFlags;
 #endif
 
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
 	vec4 position = vec4( pMatrixModel * vec4( inPosition, 1.0 ), 1.0 );
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		gl_Position = position;
 	#else
 		gl_Position = pMatrixVP[ 0 ] * position;
@@ -48,10 +48,10 @@ void main( void ){
 		#endif
 	#endif
 	
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		vSPBIndex = spbIndex;
-		#ifdef GS_RENDER_CUBE_CULLING
-			vSPBFlags = spbFlags;
-		#endif
+	#endif
+	#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
+		vSPBFlags = spbFlags;
 	#endif
 }

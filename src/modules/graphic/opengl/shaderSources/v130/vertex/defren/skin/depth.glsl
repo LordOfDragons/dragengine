@@ -93,7 +93,7 @@ NODE_VERTEX_INPUTS
 		#define vReflectDir vTCSReflectDir
 	#endif
 	
-#elif defined GS_RENDER_CUBE
+#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vGSTCColor;
 		#define vTCColor vGSTCColor
@@ -228,7 +228,7 @@ void main( void ){
 	#endif
 	
 	// non-perspective depth values if required
-	#ifndef HAS_TESSELLATION_SHADER
+	#if ! defined HAS_TESSELLATION_SHADER && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
 		#ifdef DEPTH_ORTHOGONAL
 			#ifdef NO_ZCLIP
 				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself

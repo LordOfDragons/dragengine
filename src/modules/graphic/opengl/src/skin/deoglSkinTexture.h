@@ -117,6 +117,7 @@ public:
 		estComponentCounterClipPlane,
 		estComponentShadowProjection,
 		estComponentShadowOrthogonal,
+		estComponentShadowOrthogonalCascaded,
 		estComponentShadowDistance,
 		estComponentShadowDistanceCube,
 		estComponentEnvMap,

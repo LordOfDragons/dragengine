@@ -146,6 +146,7 @@ pRenderGI( NULL ),
 
 pLightPB( NULL ),
 pShadowPB( NULL ),
+pShadowCascadedPB( NULL ),
 pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
@@ -171,8 +172,9 @@ pDebugInfoTransparentSSSSS( NULL )
 		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 		
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pShadowCascadedPB = deoglSkinShader::CreateSPBRender( renderThread, false, true );
+		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
 		pRenderTask = new deoglRenderTask;
@@ -777,6 +779,9 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pShadowCubePB ){
 		pShadowCubePB->FreeReference();
+	}
+	if( pShadowCascadedPB ){
+		pShadowCascadedPB->FreeReference();
 	}
 	if( pShadowPB ){
 		pShadowPB->FreeReference();

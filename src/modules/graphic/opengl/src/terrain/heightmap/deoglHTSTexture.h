@@ -105,9 +105,15 @@ public:
 	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
 	/**
 	 * Retrieves the depth shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for the shader types estComponentDepth, estComponentDepthClipPlane,
-	 * estComponentCounter, estComponentCounterClipPlane, estComponentShadowProjection, estComponentShadowOrthogonal
-	 * and estComponentShadowDistance.
+	 * This texture units configuration works for these shader types:
+	 * - estComponentDepth
+	 * - estComponentDepthClipPlane
+	 * - estComponentCounter
+	 * - estComponentCounterClipPlane
+	 * - estComponentShadowProjection
+	 * - estComponentShadowOrthogonal
+	 * - estComponentShadowOrthogonalCascaded
+	 * - estComponentShadowDistance
 	 */
 	deoglSPBlockUBO *GetParamBlockDepth();
 	/**
@@ -142,8 +148,11 @@ public:
 	deoglTexUnitsConfig *GetTUCGeometry();
 	/**
 	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentShadowProjection,
-	 * estComponentShadowOrthogonal and estComponentShadowDistance.
+	 * This texture units configuration works for these shader types:
+	 * - estComponentShadowProjection
+	 * - estComponentShadowOrthogonal
+	 * - estComponentShadowOrthogonalCascaded
+	 * - estComponentShadowDistance
 	 */
 	deoglTexUnitsConfig *GetTUCShadow();
 	/**

@@ -575,11 +575,19 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 }
 
+// #define SKY_SHADOW_LAYERED_RENDERING 1
+#define SKY_SHADOW_FILTERED 1
+#define SKY_SHADOW_OCCMAP_VISIBLE 1
+
 void deoglRenderLightSky::RenderShadowMap( deoglRenderPlan &plan,
 deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglRWorld &world = *plan.GetWorld();
+#ifdef SKY_SHADOW_LAYERED_RENDERING
+	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
+#else
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+#endif
 	const bool bugClearEntireArrTex = renderThread.GetCapabilities().GetClearEntireArrayTexture().Broken();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
@@ -589,26 +597,22 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRSkyInstanceLayer &skyLayer = *planSkyLight.GetLayer();
 	deoglLODCalculator lodCalculator;
-	float lodBoxWidth, lodBoxHeight;
-	deoglRComponent *component;
 	decMatrix matrixCamera;
 	
 	const decDMatrix &matCamInv = plan.GetInverseCameraMatrix();
 	const decDVector &camPos = plan.GetCameraPosition();
-	int c, componentCount;
+// 	int c, componentCount;
 	deoglDCollisionBox box;
 	decVector position;
 	int i;
 	
 	// limitations
-	const int layerLimit = planSkyLight.GetShadowLayerCount();
-	
-//	DebugTimer3Sample( plan, *pDebugInfoSolidShadowElements, false );  // done in deoglRenderPlan
-	
-	// occlusion test the content to remove as much as possible
-//#if 0
 	DebugTimer4Reset( plan, false );
 	
+	deoglCollideList &collideList = planSkyLight.GetCollideList();
+	
+	// occlusion test the content to remove as much as possible
+#ifdef SKY_SHADOW_OCCMAP_VISIBLE
 	/* NOTE
 	 * in the collector test against all splits from smallest to largest. if an object is too small
 	 * in screen space for a split and no previous split considers it large enough skip the object
@@ -617,13 +621,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	 * (with the correct lod that is).
 	 * testing the occ map then requires only testing objects not too small
 	 */
-	deoglCollideList &collideList = planSkyLight.GetCollideList();
 	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
 	occtest.RemoveAllInputData();
 	
-	componentCount = collideList.GetComponentCount();
+	const int componentCount = collideList.GetComponentCount();
+	int c;
 	for( c=0; c<componentCount; c++ ){
-		component = collideList.GetComponentAt( c )->GetComponent();
+		deoglRComponent * const component = collideList.GetComponentAt( c )->GetComponent();
 		component->SetRenderVisible( true );
 		component->StartOcclusionTest( referencePosition );
 	}
@@ -637,7 +641,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		planSkyLight.GetFrustumBoxMaxExtend() );
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionTest, true );
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
-//#endif
+#endif
 	
 	// set up lod calculator
 	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
@@ -686,41 +690,68 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	// clear shadow map
 	shadowMapper.SetForeignSolidDepthArrayTexture( pSolidShadowMap->GetTexture() );
 	
+#ifdef SKY_SHADOW_LAYERED_RENDERING
+	if( bugClearEntireArrTex ){
+		for( i=0; i<layerCount; i++ ){
+			shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
+			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+		}
+		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
+		
+	}else{
+		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+	}
+#else
 	if( ! bugClearEntireArrTex ){
 		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
-		DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
 	}
+#endif
+	DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
 	
 	// render all layers into the shadow map
-	const int faceCountLimitNear = 100000;
-	const int faceCountLimitFar = 100;
-	const double faceCountLimitDistanceNear = 1.0;
-	const double faceCountLimitDistanceFar = 51.0;
-	const double faceCountLimitRange = faceCountLimitDistanceFar - faceCountLimitDistanceNear;
-	const double faceCountLimitFactor = ( double )( faceCountLimitFar - faceCountLimitNear ) / faceCountLimitRange;
-	
 	DebugTimer4Reset( plan, true );
 	
-	for( i=0; i<layerCount; i++ ){
-		deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
+#ifndef SKY_SHADOW_FILTERED
+	// render task "all in one". calculating the optimal LOD to use would require using
+	// SetComponentLODOrtho() on the lowest split the component is visible in. since this
+	// is calculated on the GPU this can not be done here without expensive CPU calculations.
+	// as a makeshift solution the LOD is calculated the same way as with the camera view
+	lodCalculator.SetComponentLODProjection( collideList, plan.GetCameraPosition(),
+		plan.GetInverseCameraMatrix().TransformView(), plan.GetCameraFov(),
+		plan.GetCameraFov() * plan.GetCameraFovRatio(), plan.GetViewportWidth(),
+		plan.GetViewportHeight() );
+	
+	renderTask.Clear();
+	renderTask.SetRenderParamBlock( renderParamBlock );
+	
+	addToRenderTask.Reset();
+#ifdef SKY_SHADOW_LAYERED_RENDERING
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonalCascaded );
+#else
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+#endif
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoShadowNone( true );
+	addToRenderTask.SetForceDoubleSided( true );
+	addToRenderTask.AddComponents( collideList );
+	
+	renderTask.PrepareForRender( renderThread );
+	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
+#endif
+	
+	// render layers
+	
+#ifdef SKY_SHADOW_LAYERED_RENDERING
+	// render solid content. two different depth offsets for front and back faces are used. double sided always
+	// counts as front facing. this way all can be rendered in one go
+	renderParamBlock->MapBuffer();
+	try{
+		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
 		
-		if( i < layerLimit ){
-			const int splitMask = 1 << i;
-			
-			// determine split content
-			pColList2->Clear();
-			
-			componentCount = collideList.GetComponentCount();
-			
-			for( c=0; c<componentCount; c++ ){
-				component = collideList.GetComponentAt( c )->GetComponent();
-				
-				if( ( component->GetSkyShadowSplitMask() & splitMask ) == splitMask ){
-					pColList2->AddComponent( component );
-				}
-			}
-			DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );
+		for( i=0; i<layerCount; i++ ){
+			deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
 			
 			// determine the shadow limits
 			position.x = ( sl.minExtend.x + sl.maxExtend.x ) * 0.5f;
@@ -733,19 +764,98 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			sl.scale.y = 1.0f / ( sl.maxExtend.y - sl.minExtend.y );
 			sl.scale.z = 1.0f / ( sl.maxExtend.z - sl.minExtend.z );
 			
-			// calculate lod levels to use
-			lodBoxWidth = sl.maxExtend.x - sl.minExtend.x;
-			lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
-			
-			lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
-			DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitLODLevels, false );
-			
 			// setup matrix
 			sl.matrix = matCL * decMatrix::CreateTranslation( -sl.minExtend ) * decMatrix::CreateScale( sl.scale );
 			
 			matrixCamera = decMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() )
 				* decMatrix::CreateScale( sl.scale * 2.0f );
+			
+			renderParamBlock->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
+			renderParamBlock->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
+			renderParamBlock->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
+				i, matrixCamera.GetRotationMatrix().Invert() );
+			renderParamBlock->SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
+				i, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		}
+		
+	}catch( const deException & ){
+		renderParamBlock->UnmapBuffer();
+		throw;
+	}
+	renderParamBlock->UnmapBuffer();
+	
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
+	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+	
+	rengeom.RenderTask( renderTask );
+	
+	// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
+	// casting. the idea here is to consider back facing fragments hit before any front facing
+	// fragments to belong to the outer hull of a map. this is similar to a fragment blocking
+	// the sky light right at the near end of the shadow map. by clearing back facing fragments
+	// to 0 artifacts for back faces are eliminated altogether. this though won't help with
+	// issues on front facing fragments but makes underground scenes safe
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderClearDepth );
+	
+	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
+	
+	defren.RenderFSQuadVAO();
+	
+	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
+	DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, 1, false );
+	
+#else
+	for( i=0; i<layerCount; i++ ){
+		deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
+		
+#ifdef SKY_SHADOW_FILTERED
+		const int splitMask = 1 << i;
+		
+		// determine split content
+		pColList2->Clear();
+		
+		const int componentCount = collideList.GetComponentCount();
+		int j;
+		
+		for( j=0; j<componentCount; j++ ){
+			deoglRComponent * const component = collideList.GetComponentAt( j )->GetComponent();
+			
+			if( ( component->GetSkyShadowSplitMask() & splitMask ) == splitMask ){
+				pColList2->AddComponent( component );
+			}
+		}
+		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );
+#endif
+		
+		// determine the shadow limits
+		position.x = ( sl.minExtend.x + sl.maxExtend.x ) * 0.5f;
+		position.y = ( sl.minExtend.y + sl.maxExtend.y ) * 0.5f;
+		position.z = ( sl.minExtend.z + sl.maxExtend.z ) * 0.5f;
+		//position.z = sl.minExtend.z;
+		
+		sl.position = ( camPos - referencePosition ).ToVector() + ( matLig * position );
+		sl.scale.x = 1.0f / ( sl.maxExtend.x - sl.minExtend.x );
+		sl.scale.y = 1.0f / ( sl.maxExtend.y - sl.minExtend.y );
+		sl.scale.z = 1.0f / ( sl.maxExtend.z - sl.minExtend.z );
+		
+		// calculate lod levels to use
+#ifdef SKY_SHADOW_FILTERED
+		const float lodBoxWidth = sl.maxExtend.x - sl.minExtend.x;
+		const float lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
+		
+		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
+		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitLODLevels, false );
+#endif
+		
+		// setup matrix
+		sl.matrix = matCL * decMatrix::CreateTranslation( -sl.minExtend ) * decMatrix::CreateScale( sl.scale );
+		
+		matrixCamera = decMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() )
+			* decMatrix::CreateScale( sl.scale * 2.0f );
 		
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
@@ -760,7 +870,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitClear, true );
 		}
 		
-		if( i < layerLimit ){
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
 		renderParamBlock->MapBuffer();
@@ -777,6 +886,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		}
 		renderParamBlock->UnmapBuffer();
 		
+#ifdef SKY_SHADOW_FILTERED
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
 		
@@ -786,40 +896,47 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		addToRenderTask.SetNoShadowNone( true );
 		addToRenderTask.SetForceDoubleSided( true );
 		
-		if( false ){
-			const decDVector &fclcampos = plan.GetCameraPosition();
-			const decDVector &fclcamview = plan.GetInverseCameraMatrix().TransformView();
-			const double fclcamdist = fclcamview * fclcampos + faceCountLimitDistanceNear;
-			double fclcompdist;
-			int faceCountLimit;
-			componentCount = pColList2->GetComponentCount();
-			for( c=0; c<componentCount; c++ ){
-				const deoglCollideListComponent &clcomponent = *pColList2->GetComponentAt( c );
-				component = clcomponent.GetComponent();
-				fclcompdist = fclcamview * component->GetMatrix().GetPosition() - fclcamdist;
+		#if 0
+		const int faceCountLimitNear = 100000;
+		const int faceCountLimitFar = 100;
+		const double faceCountLimitDistanceNear = 1.0;
+		const double faceCountLimitDistanceFar = 51.0;
+		
+		const decDVector &fclcampos = plan.GetCameraPosition();
+		const decDVector &fclcamview = plan.GetInverseCameraMatrix().TransformView();
+		const double fclcamdist = fclcamview * fclcampos + faceCountLimitDistanceNear;
+		double fclcompdist;
+		int faceCountLimit;
+		componentCount = pColList2->GetComponentCount();
+		for( c=0; c<componentCount; c++ ){
+			const double faceCountLimitRange = faceCountLimitDistanceFar - faceCountLimitDistanceNear;
+			
+			const deoglCollideListComponent &clcomponent = *pColList2->GetComponentAt( c );
+			component = clcomponent.GetComponent();
+			fclcompdist = fclcamview * component->GetMatrix().GetPosition() - fclcamdist;
+			
+			if( fclcompdist < 0.0 ){
+				faceCountLimit = faceCountLimitNear;
 				
-				if( fclcompdist < 0.0 ){
-					faceCountLimit = faceCountLimitNear;
-					
-				}else if( fclcompdist > faceCountLimitRange ){
-					faceCountLimit = faceCountLimitFar;
-					
-				}else{
-					faceCountLimit = faceCountLimitNear + ( int )( fclcompdist * faceCountLimitFactor );
-				}
+			}else if( fclcompdist > faceCountLimitRange ){
+				faceCountLimit = faceCountLimitFar;
 				
-				if( ! component->GetModel() ){
-					continue;
-				}
-				
-				if( component->GetModel()->GetLODAt( clcomponent.GetLODLevel() ).GetFaceCount() <= faceCountLimit ){
-					addToRenderTask.AddComponent( clcomponent );
-				}
+			}else{
+				const double faceCountLimitFactor = ( double )( faceCountLimitFar - faceCountLimitNear ) / faceCountLimitRange;
+				faceCountLimit = faceCountLimitNear + ( int )( fclcompdist * faceCountLimitFactor );
 			}
 			
-		}else{
-			addToRenderTask.AddComponents( *pColList2 );
+			if( ! component->GetModel() ){
+				continue;
+			}
+			
+			if( component->GetModel()->GetLODAt( clcomponent.GetLODLevel() ).GetFaceCount() <= faceCountLimit ){
+				addToRenderTask.AddComponent( clcomponent );
+			}
 		}
+		#else
+		addToRenderTask.AddComponents( *pColList2 );
+		#endif
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
 			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );
@@ -828,9 +945,8 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
 		
 		renderTask.PrepareForRender( renderThread );
+#endif
 		rengeom.RenderTask( renderTask );
-		
-		addToRenderTask.SetForceDoubleSided( false );
 		
 		// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
 		// casting. the idea here is to consider back facing fragments hit before any front facing
@@ -887,10 +1003,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			printf( "objSplit.rotation_mode = 'QUATERNION'\n" );
 			printf( "objSplit.rotation_quaternion = cquat( [%g,%g,%g,%g] )\n", rot.x, rot.y, rot.z, rot.w );
 		}
-		}
+		
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
 		DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, 1, false );
 	}
+#endif
+	
+	addToRenderTask.SetForceDoubleSided( false );
 	
 	shadowMapper.DropForeignArrayTextures();
 	

@@ -493,8 +493,7 @@ deoglShaderProgram *deoglSkinShader::GetShader(){
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRender(
-deoglRenderThread &renderThread, bool cubeMap ){
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread, bool cubeMap, bool cascaded ){
 	if( ! pglUniformBlockBinding ){
 		DETHROW( deeInvalidParam );
 	}
@@ -505,27 +504,28 @@ deoglRenderThread &renderThread, bool cubeMap ){
 	
 	deoglSPBlockUBO *spb = NULL;
 	
+	int matrixLayerCount = 1;
+	int depthOffsetLayerCount = 1;
+	
+	if( cubeMap ){
+		matrixLayerCount = 6;
+		
+	}else if( cascaded ){
+		matrixLayerCount = 4;
+		depthOffsetLayerCount = 4;
+	}
+	
 	try{
 		spb = new deoglSPBlockUBO( renderThread );
 		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 		spb->SetParameterCount( ERUT_COUNT );
 		
-		if( cubeMap ){
-			spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-			spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3[6]
-			spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-			spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4[6]
-			spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3[6]
-			spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-			
-		}else{
-			spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-			spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-			spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-			spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-			spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-			spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		}
+		spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, matrixLayerCount ); // mat4x3
+		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
+		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
+		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, matrixLayerCount ); // mat3
+		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
 		
 		spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
@@ -537,7 +537,9 @@ deoglRenderThread &renderThread, bool cubeMap ){
 		spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		
+		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, depthOffsetLayerCount ); // vec4
+		
 		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
@@ -1806,6 +1808,17 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
 			defines.AddDefine( "GS_RENDER_CUBE_INSTANCING", "1" );
 		}
+		
+	}else if( pConfig.GetGSRenderCascaded() ){
+		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
+			DETHROW( deeInvalidParam );
+		}
+		
+		defines.AddDefine( "GS_RENDER_CASCADED", "1" );
+		
+		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
+			defines.AddDefine( "GS_RENDER_CASCADED_INSTANCING", "1" );
+		}
 	}
 	
 	if( pConfig.GetSharedSPB() ){
@@ -2054,7 +2067,7 @@ void deoglSkinShader::GenerateGeometrySC(){
 		break;
 		
 	default:
-		if( pConfig.GetGSRenderCube() ){
+		if( pConfig.GetGSRenderCube() || pConfig.GetGSRenderCascaded() ){
 			switch( pConfig.GetShaderMode() ){
 			case deoglSkinShaderConfig::esmDepth:
 				unitSourceCodePath = deoglSkinShaderManager::euscpGeometryDepth;

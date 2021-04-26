@@ -306,8 +306,8 @@ public:
 	 * If \em cubeMap is \em true the created shader parameter block has transformation
 	 * matrices changed to a 6-element array.
 	 */
-	static deoglSPBlockUBO *CreateSPBRender(
-		deoglRenderThread &renderThread, bool cubeMap );
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
+		bool cubeMap, bool cascaded );
 	
 	/** \brief Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );

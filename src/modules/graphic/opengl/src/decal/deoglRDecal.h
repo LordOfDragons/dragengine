@@ -265,8 +265,11 @@ public:
 	deoglTexUnitsConfig *GetTUCGeometry();
 	/**
 	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentShadowProjection,
-	 * estComponentShadowOrthogonal and estComponentShadowDistance.
+	 * This texture units configuration works for these shader types:
+	 * - estComponentShadowProjection
+	 * - estComponentShadowOrthogonal
+	 * - estComponentShadowOrthogonalCascaded
+	 * - estComponentShadowDistance
 	 */
 	deoglTexUnitsConfig *GetTUCShadow();
 	/**

@@ -206,6 +206,7 @@ public:
 	 *          - deoglSkinTexture::estComponentCounterClipPlane
 	 *          - deoglSkinTexture::estComponentShadowProjection
 	 *          - deoglSkinTexture::estComponentShadowOrthogonal
+	 *          - deoglSkinTexture::estComponentShadowOrthogonalCascaded
 	 *          - deoglSkinTexture::estComponentShadowDistance
 	 */
 	deoglSPBlockUBO *GetParamBlockDepth();
@@ -261,6 +262,7 @@ public:
 	 * \details This texture units configuration works for the shader types
 	 *          - deoglSkinTexture::estComponentShadowProjection
 	 *          - deoglSkinTexture::estComponentShadowOrthogonal
+	 *          - deoglSkinTexture::estComponentShadowOrthogonalCascaded
 	 *          - deoglSkinTexture::estComponentShadowDistance
 	 */
 	deoglTexUnitsConfig *GetTUCShadow();

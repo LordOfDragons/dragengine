@@ -507,6 +507,7 @@ deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eSh
 	case deoglSkinTexture::estComponentCounterClipPlane:
 	case deoglSkinTexture::estComponentShadowProjection:
 	case deoglSkinTexture::estComponentShadowOrthogonal:
+	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
 	case deoglSkinTexture::estComponentShadowDistance:
 	case deoglSkinTexture::estComponentShadowDistanceCube:
 	case deoglSkinTexture::estOutlineDepth:
@@ -708,6 +709,7 @@ deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForShaderType( deoglSkinTextu
 		
 	case deoglSkinTexture::estComponentShadowProjection:
 	case deoglSkinTexture::estComponentShadowOrthogonal:
+	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
 	case deoglSkinTexture::estComponentShadowDistance:
 		return GetTUCShadow();
 		

@@ -108,7 +108,7 @@ NODE_VERTEX_INPUTS
 		out float vTCSRenderCondition;
 	#endif
 	
-#elif defined GS_RENDER_CUBE
+#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	out vec2 vGSTCColor;
 	#define vTCColor vGSTCColor
 	#ifdef TEXTURE_COLOR_TINT_MASK

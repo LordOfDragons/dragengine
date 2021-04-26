@@ -40,7 +40,7 @@ class deoglRenderPlanSkyLight;
 
 
 /**
- * \brief Render sky lights.
+ * Render sky lights.
  */
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
@@ -80,10 +80,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderLightSky( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLightSky();
 	/*@}*/
 	
@@ -91,56 +91,56 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Render lights. */
+	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
-	/** \brief Render sky light ambient occlusion. */
+	/** Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
-	/** \brief Render sky light. */
+	/** Render sky light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
 		deoglRenderPlanSkyLight &planSkyLight );
 	
-	/** \brief Render shadows maps. */
+	/** Render shadows maps. */
 	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
 		deoglRenderPlanSkyLight &planSkyLight );
 	
-	/** \brief Render shadow map. */
+	/** Render shadow map. */
 	void RenderShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
 		deoglShadowMapper &shadowMapper );
 	
-	/** \brief Render GI shadow map. */
+	/** Render GI shadow map. */
 	void RenderGIShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
 		deoglShadowMapper &shadowMapper );
 	
-	/** \brief Update light shader parameter block. */
+	/** Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );
 	
-	/** \brief Updates instance shader parameter block. */
+	/** Updates instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight, int shadowMapSize, int passCount );
 	
 	
 	
-	/** \brief Debug information solid lighting. */
+	/** Debug information solid lighting. */
 	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
-	/** \brief Debug information transparent lighting. */
+	/** Debug information transparent lighting. */
 	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	
-	/** \brief Reset debug information. */
+	/** Reset debug information. */
 	void ResetDebugInfo();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoSolid();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

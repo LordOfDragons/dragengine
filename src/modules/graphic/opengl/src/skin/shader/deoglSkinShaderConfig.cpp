@@ -72,6 +72,7 @@ void deoglSkinShaderConfig::Reset(){
 	pVariations = false;
 	pUseNormalRoughnessCorrection = true;
 	pGSRenderCube = false;
+	pGSRenderCascaded = false;
 	pSharedSPB = false;
 	pSharedSPBUsingSSBO = false;
 	pSharedSPBArraySize = 0;
@@ -232,6 +233,10 @@ void deoglSkinShaderConfig::SetUseNormalRoughnessCorrection( bool useNormalRough
 
 void deoglSkinShaderConfig::SetGSRenderCube( bool gsRenderCube ){
 	pGSRenderCube = gsRenderCube;
+}
+
+void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
+	pGSRenderCascaded = gsRenderCascaded;
 }
 
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
@@ -597,6 +602,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGSRenderCube ){
 		string.Append( " gsRenderCube" );
 	}
+	if( pGSRenderCascaded ){
+		string.Append( " gsRenderCascaded" );
+	}
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
 	}
@@ -819,6 +827,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pVariations = config.pVariations;
 	pUseNormalRoughnessCorrection = config.pUseNormalRoughnessCorrection;
 	pGSRenderCube = config.pGSRenderCube;
+	pGSRenderCascaded = config.pGSRenderCascaded;
 	pSharedSPB = config.pSharedSPB;
 	pSharedSPBUsingSSBO = config.pSharedSPBUsingSSBO;
 	pSharedSPBArraySize = config.pSharedSPBArraySize;
@@ -912,6 +921,7 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pVariations == config.pVariations
 		&& pUseNormalRoughnessCorrection == config.pUseNormalRoughnessCorrection
 		&& pGSRenderCube == config.pGSRenderCube
+		&& pGSRenderCascaded == config.pGSRenderCascaded
 		&& pSharedSPB == config.pSharedSPB
 		&& pSharedSPBUsingSSBO == config.pSharedSPBUsingSSBO
 		&& pSharedSPBArraySize == config.pSharedSPBArraySize

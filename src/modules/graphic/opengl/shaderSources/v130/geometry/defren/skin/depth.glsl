@@ -1,4 +1,4 @@
-#ifdef GS_RENDER_CUBE_INSTANCING
+#if defined GS_RENDER_CUBE_INSTANCING || defined GS_RENDER_CASCADED_INSTANCING
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
@@ -12,6 +12,15 @@
 	#else
 		layout( triangles ) in;
 		layout( triangle_strip, max_vertices=18 ) out;
+	#endif
+	
+#elif defined GS_RENDER_CASCADED
+	#ifdef GS_RENDER_CASCADED_INSTANCING
+		layout( triangles, invocations=4 ) in;
+		layout( triangle_strip, max_vertices=3 ) out;
+	#else
+		layout( triangles ) in;
+		layout( triangle_strip, max_vertices=12 ) out;
 	#endif
 #endif
 
@@ -105,7 +114,7 @@
 // Layered rendering
 //////////////////////
 
-#if defined GS_RENDER_CUBE or defined GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
@@ -122,7 +131,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#ifdef BILLBOARD
 			vClipCoord = vGSClipCoord[ corner ];
 		#else
-			vClipCoord = pLayerMatrixV[ layer ] * vec4( vGSClipCoord[ corner ], 1.0 );
+			vClipCoord = pMatrixV[ layer ] * vec4( vGSClipCoord[ corner ], 1.0 );
 		#endif
 	#endif
 	
@@ -139,7 +148,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#ifdef BILLBOARD
 			vPosition = position;
 		#else
-			vPosition = pLayerMatrixV[ layer ] * position;
+			vPosition = pMatrixV[ layer ] * position;
 		#endif
 	#endif
 	
@@ -148,12 +157,12 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	#endif
 	
 	#ifdef REQUIRES_NORMAL
-		vNormal = normalize( vGSNormal[ corner ] * pLayerMatrixVn[ layer ] );
+		vNormal = normalize( vGSNormal[ corner ] * pMatrixVn[ layer ] );
 		#ifdef WITH_TANGENT
-			vTangent = normalize( vGSTangent[ corner ] * pLayerMatrixVn[ layer ] );
+			vTangent = normalize( vGSTangent[ corner ] * pMatrixVn[ layer ] );
 		#endif
 		#ifdef WITH_BITANGENT
-			vBitangent = normalize( vGSBitangent[ corner ] * pLayerMatrixVn[ layer ] );
+			vBitangent = normalize( vGSBitangent[ corner ] * pMatrixVn[ layer ] );
 		#endif
 	#endif
 	
@@ -161,7 +170,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = ( pLayerMatrixV[ layer ] * position.z;
+			vFadeZ = ( pMatrixV[ layer ] * position.z;
 		#endif
 	#endif
 	
@@ -177,7 +186,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 	#ifdef BILLBOARD
 		preTransformedPosition = pMatrixP * position;
 	#else
-		preTransformedPosition = pLayerMatrixVP[ layer ] * position;
+		preTransformedPosition = pMatrixVP[ layer ] * position;
 	#endif
 	
 	emitCorner( layer, corner, position, preTransformedPosition );
@@ -197,7 +206,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 #include "v130/shared/defren/skin/ubo_special_parameters.glsl"
 
 void main( void ){
-	int i, face;
+	int face;
 	
 	#ifdef GS_RENDER_CUBE_INSTANCING
 	face = gl_InvocationID;
@@ -243,10 +252,11 @@ void main( void ){
 		//          loop. sometimes continue works but especially here it results in the GPU
 		//          dying horribly. the only working solution is to use the code in a way
 		//          no 'continue' statement is required to be used
-		if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) != 0 ){
+		if( ( pCubeFaceVisible & ( 1 << face ) ) != 0 ){
 		#endif
 			
 			// emit triangle
+			int i;
 			for( i=0; i<3; i++ ){
 				emitCorner( face, i, gl_in[ i ].gl_Position );
 			}
@@ -262,79 +272,75 @@ void main( void ){
 }
 
 #endif // GS_RENDER_CUBE
+
+
+
+// Cascaded Rendering
+///////////////////////
+
+#ifdef GS_RENDER_CASCADED
+
+void main( void ){
+	int cascade;
+	
+	#ifdef GS_RENDER_CASCADED_INSTANCING
+	cascade = gl_InvocationID;
+	#else
+	for( cascade=0; cascade<4; cascade++ ){
+	#endif
 		
-		// emit triangle
+		// determine if the triangle has to be emitted in this cascade. for this transform
+		// the triangle as if it is emitted. the triangle is now in cascade space which is
+		// orthogonal. if the triangle extends intersects the (-0.5,-0.5) - (0.5,0.5) box
+		// then the triangle affects the cascade.
+		// 
+		// NOTE: since cascade space is orthogonal pMatrixP is identify and can be omitted
+		// 
+		// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
+		//          skip the loop increment if used in if-statements resulting in GPU infinite
+		//          loop. sometimes continue works but especially here it results in the GPU
+		//          dying horribly. the only working solution is to use the code in a way
+		//          no 'continue' statement is required to be used
+		
+		vec3 position[ 3 ];
+		int i;
+		
 		for( i=0; i<3; i++ ){
 			#ifdef BILLBOARD
-				gl_Position = pMatrixP * gl_in[ i ].gl_Position;
+			position[ i ] = gl_in[ i ].gl_Position;
 			#else
-				gl_Position = pCubeMatrixVP[ gl_Layer ] * gl_in[ i ].gl_Position;
+			position[ i ] = pMatrixV[ cascade ] * gl_in[ i ].gl_Position;
 			#endif
-			
-			#ifdef REQUIRES_TEX_COLOR
-				vTCColor = vGSTCColor[ i ];
-			#endif
-			
-			#ifdef CLIP_PLANE
-				#ifdef BILLBOARD
-					vClipCoord = vGSClipCoord[ i ];
-				#else
-					vClipCoord = pCubeMatrixV[ gl_Layer ] * vec4( vGSClipCoord[ i ], 1.0 );
-				#endif
-			#endif
-			
-			#ifdef DEPTH_ORTHOGONAL
-				#ifdef NO_ZCLIP
-					vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-					gl_Position.z = 0.0;
-				#else
-					vZCoord = gl_Position.z;
-				#endif
-			#endif
-			
-			#ifdef DEPTH_DISTANCE
-				#ifdef BILLBOARD
-					vPosition = gl_in[ i ].gl_Position;
-				#else
-					vPosition = pCubeMatrixV[ gl_Layer ] * gl_in[ i ].gl_Position;
-				#endif
-			#endif
-			
-			#ifdef HEIGHT_MAP
-				vHTMask = vGSHTMask[ i ];
-			#endif
-			
-			#ifdef REQUIRES_NORMAL
-				vNormal = normalize( vGSNormal[ i ] * pCubeMatrixVn[ gl_Layer ] );
-				#ifdef WITH_TANGENT
-					vTangent = normalize( vGSTangent[ i ] * pCubeMatrixVn[ gl_Layer ] );
-				#endif
-				#ifdef WITH_BITANGENT
-					vBitangent = normalize( vGSBitangent[ i ] * pCubeMatrixVn[ gl_Layer ] );
-				#endif
-			#endif
-			
-			#ifdef FADEOUT_RANGE
-				#ifdef BILLBOARD
-					vFadeZ = gl_in[ i ].gl_Position.z;
-				#else
-					vFadeZ = ( pCubeMatrixV[ gl_Layer ] * gl_in[ i ].gl_Position ).z;
-				#endif
-			#endif
-			
-			EmitVertex();
 		}
 		
-		EndPrimitive();
+		// it would be possible to box check also the Z coordinate. with orthogonal
+		// depth though elements outside the Z range have been already culled.
+		// this speeds up the test by just checking the X and Y coordinates
+		// 
+		// the test below is like this in full terms (for all components):
+		//   maxExtend > -1 and minExtend < 1
+		// 
+		// since two coordinates are checked this can be collapsed into a single
+		// vec4 value. with the following formula transformation one lessThan call
+		// is enough to check all conditions:
+		//   -(maxExtend) < -(-1) and minExtend < 1   =>
+		//   -maxExtend < 1 and minExtend < 1
+		//
+		vec4 boxCheck = vec4(
+			 min( min( position[ 0 ].xy, position[ 1 ].xy ), position[ 2 ].xy ),
+			-max( max( position[ 0 ].xy, position[ 1 ].xy ), position[ 2 ].xy ) );
 		
-		
-		#if defined GS_RENDER_CUBE_CULLING && ! defined GS_RENDER_CUBE_INSTANCING
+		if( all( lessThan( boxCheck, vec4( 1.0 ) ) ) ){
+			// emit triangle
+			for( i=0; i<3; i++ ){
+				emitCorner( cascade, i, gl_in[ i ].gl_Position, vec4( position[ i ], 1.0 ) );
+			}
+			EndPrimitive();
 		}
-		#endif
 		
-	#ifndef GS_RENDER_CUBE_INSTANCING
+	#ifndef GS_RENDER_CASCADED_INSTANCING
 	}
 	#endif
 }
 
-#endif // GS_RENDER_CUBE
+#endif // GS_RENDER_CASCADED

@@ -141,6 +141,8 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	SCIE(Shadow, false, false, Depth, Component, Projection, Particle, None),
 	// estComponentShadowOrthogonal
 	SCIE(Shadow, false, false, Depth, Component, Orthogonal, Particle, None),
+	// estComponentShadowOrthogonalCascaded
+	SCIE(Shadow, false, false, Depth, Component, Orthogonal, Particle, None),
 	// estComponentShadowDistance
 	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
 	// estComponentShadowDistanceCube
@@ -1031,6 +1033,10 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
 		
 		switch( shaderType ){
+		case estComponentShadowOrthogonalCascaded:
+			config.SetGSRenderCascaded( true );
+			break;
+			
 		case estComponentShadowDistanceCube:
 			config.SetGSRenderCube( true );
 			break;

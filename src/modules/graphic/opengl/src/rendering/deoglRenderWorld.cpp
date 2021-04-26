@@ -169,9 +169,9 @@ pDebugInfo( renderThread )
 	deoglShaderDefines defines;
 	
 	try{
-		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		
 		pRenderTask = new deoglRenderTask;
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
