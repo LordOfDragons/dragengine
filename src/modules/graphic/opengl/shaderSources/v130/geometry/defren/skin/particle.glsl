@@ -107,21 +107,6 @@ const vec2 tc[4] = vec2[4]( vec2(  0.0,  0.0 ), vec2(  0.0,  1.0 ), vec2(  1.0, 
 //////////////////
 
 void main( void ){
-	int i;
-	
-	// this is the same for all points
-	vParticleColor = vParticle1[ 0 ];
-	#ifdef WITH_EMISSIVITY
-		vParticleEmissivity = vParticle0[ 0 ].y;
-	#endif
-	
-	#ifdef SHARED_SPB
-	vSPBIndex = spbIndex;
-	#endif
-	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	gl_Layer = 0;
-	
 	// generate billboard
 	vec4 tempRotMat; // cos(z), -sin(z), sin(z), cos(z)
 	tempRotMat.xw = cos( vec2( vParticle0[ 0 ].z ) );
@@ -132,20 +117,24 @@ void main( void ){
 	vec4 position = gl_in[ 0 ].gl_Position; // z and w stays the same for all vertices
 	
 	// calculate normal, tangent and bitangent. the same for all vertices
-	vNormal = vec3( 0.0, 0.0, -1.0 );
+	vec3 normal = vec3( 0.0, 0.0, -1.0 );
 	#ifdef WITH_TANGENT
-		vTangent = vec3( rotmat * vec2( 1.0, 0.0 ), 0.0 );
+		vec3 tangent = vec3( rotmat * vec2( 1.0, 0.0 ), 0.0 );
 	#endif
 	#ifdef WITH_BITANGENT
-		vBitangent = vec3( rotmat * vec2( 0.0, -1.0 ), 0.0 );
+		vec3 bitangent = vec3( rotmat * vec2( 0.0, -1.0 ), 0.0 );
 	#endif
 	
 	// emit vertices
+	int i;
 	for( i=0; i<4; i++ ){
 		position.xy = rotmat * bc[i] + gl_in[ 0 ].gl_Position.xy;
 		gl_Position = pMatrixP * position;
 		
 		vTCColor = tc[i];
+		#ifdef SHARED_SPB
+		vSPBIndex = spbIndex;
+		#endif
 		#ifdef TEXTURE_COLOR_TINT_MASK
 			vTCColorTintMask = tc[i];
 		#endif
@@ -171,6 +160,22 @@ void main( void ){
 		#ifdef FADEOUT_RANGE
 			vFadeZ = position.z;
 		#endif
+		
+		vParticleColor = vParticle1[ 0 ];
+		#ifdef WITH_EMISSIVITY
+			vParticleEmissivity = vParticle0[ 0 ].y;
+		#endif
+		
+		vNormal = normal;
+		#ifdef WITH_TANGENT
+			vTangent = tangent;
+		#endif
+		#ifdef WITH_BITANGENT
+			vBitangent = bitangent;
+		#endif
+		
+		gl_Layer = 0;
+		gl_PrimitiveID = gl_PrimitiveIDIn;
 		
 		EmitVertex();
 	}

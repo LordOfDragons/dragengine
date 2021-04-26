@@ -102,6 +102,91 @@
 
 
 
+// Layered rendering
+//////////////////////
+
+#if defined GS_RENDER_CUBE or defined GS_RENDER_CASCADED
+
+void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
+	gl_Position = preTransformedPosition;
+	
+	#ifdef SHARED_SPB
+	vSPBIndex = spbIndex;
+	#endif
+	
+	#ifdef REQUIRES_TEX_COLOR
+		vTCColor = vGSTCColor[ corner ];
+	#endif
+	
+	#ifdef CLIP_PLANE
+		#ifdef BILLBOARD
+			vClipCoord = vGSClipCoord[ corner ];
+		#else
+			vClipCoord = pLayerMatrixV[ layer ] * vec4( vGSClipCoord[ corner ], 1.0 );
+		#endif
+	#endif
+	
+	#ifdef DEPTH_ORTHOGONAL
+		#ifdef NO_ZCLIP
+			vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
+			gl_Position.z = 0.0;
+		#else
+			vZCoord = gl_Position.z;
+		#endif
+	#endif
+	
+	#ifdef DEPTH_DISTANCE
+		#ifdef BILLBOARD
+			vPosition = position;
+		#else
+			vPosition = pLayerMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
+	#ifdef HEIGHT_MAP
+		vHTMask = vGSHTMask[ corner ];
+	#endif
+	
+	#ifdef REQUIRES_NORMAL
+		vNormal = normalize( vGSNormal[ corner ] * pLayerMatrixVn[ layer ] );
+		#ifdef WITH_TANGENT
+			vTangent = normalize( vGSTangent[ corner ] * pLayerMatrixVn[ layer ] );
+		#endif
+		#ifdef WITH_BITANGENT
+			vBitangent = normalize( vGSBitangent[ corner ] * pLayerMatrixVn[ layer ] );
+		#endif
+	#endif
+	
+	#ifdef FADEOUT_RANGE
+		#ifdef BILLBOARD
+			vFadeZ = position.z;
+		#else
+			vFadeZ = ( pLayerMatrixV[ layer ] * position.z;
+		#endif
+	#endif
+	
+	gl_Layer = layer;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	
+	EmitVertex();
+}
+
+void emitCorner( in int layer, in int corner, in vec4 position ){
+	vec4 preTransformedPosition;
+	
+	#ifdef BILLBOARD
+		preTransformedPosition = pMatrixP * position;
+	#else
+		preTransformedPosition = pLayerMatrixVP[ layer ] * position;
+	#endif
+	
+	emitCorner( layer, corner, position, preTransformedPosition );
+}
+
+#endif
+
+
+
 // Cube Map Rendering
 ///////////////////////
 
@@ -112,19 +197,12 @@
 #include "v130/shared/defren/skin/ubo_special_parameters.glsl"
 
 void main( void ){
-	int i;
-	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	
-	#ifdef SHARED_SPB
-	vSPBIndex = spbIndex;
-	#endif
+	int i, face;
 	
 	#ifdef GS_RENDER_CUBE_INSTANCING
-	gl_Layer = gl_InvocationID;
+	face = gl_InvocationID;
 	#else
-	for( int face=0; face<6; face++ ){
-		gl_Layer = face;
+	for( face=0; face<6; face++ ){
 	#endif
 		
 		// TODO per-face matrix. has to be applied to pMatrixVP, pMatrixV and pMatrixVn.
@@ -158,22 +236,32 @@ void main( void ){
 		//       gl_Position = pMatrixP
 		//          * vec4( cRotFace[gl_InvocationID]
 		//             * ( pMatrixV * vec4( gl_in[ i ].gl_Position ), 1.0 ), 1.0 );
+		
 		#ifdef GS_RENDER_CUBE_CULLING
-			// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
-			//          skip the loop increment if used in if-statements resulting in GPU infinite
-			//          loop. sometimes continue works but especially here it results in the GPU
-			//          dying horribly. the only working solution is to use the code in a way
-			//          no 'continue' statement is required to be used
+		// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
+		//          skip the loop increment if used in if-statements resulting in GPU infinite
+		//          loop. sometimes continue works but especially here it results in the GPU
+		//          dying horribly. the only working solution is to use the code in a way
+		//          no 'continue' statement is required to be used
+		if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) != 0 ){
+		#endif
 			
-			#ifdef GS_RENDER_CUBE_INSTANCING
-			if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) == 0 ){
-				return;
+			// emit triangle
+			for( i=0; i<3; i++ ){
+				emitCorner( face, i, gl_in[ i ].gl_Position );
 			}
-			#else
-			if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) != 0 ){
-			#endif
+			EndPrimitive();
+			
+		#ifdef GS_RENDER_CUBE_CULLING
+		}
 		#endif
 		
+	#ifndef GS_RENDER_CUBE_INSTANCING
+	}
+	#endif
+}
+
+#endif // GS_RENDER_CUBE
 		
 		// emit triangle
 		for( i=0; i<3; i++ ){

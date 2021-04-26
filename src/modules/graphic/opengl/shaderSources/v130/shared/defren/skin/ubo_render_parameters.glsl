@@ -11,6 +11,10 @@ UBOLAYOUT uniform RenderParameters{
 		#define pMatrixVP pCubeMatrixVP[ 0 ]
 		#define pMatrixVn pCubeMatrixVn[ 0 ]
 		
+		#define pLayerMatrixV pCubeMatrixV
+		#define pLayerMatrixVP pCubeMatrixVP
+		#define pLayerMatrixVn pCubeMatrixVn
+		
 	#else
 		vec4 pAmbient;
 		mat4x3 pMatrixV;

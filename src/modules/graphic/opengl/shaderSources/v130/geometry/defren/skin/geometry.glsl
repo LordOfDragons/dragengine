@@ -117,19 +117,13 @@ void main( void ){
 	}
 	
 	int i;
-	
-	// pass through all parameters
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	gl_Layer = 0;
-	
-	#ifdef SHARED_SPB
-	vSPBIndex = spbIndex;
-	#endif
-	
 	for( i=0; i<3; i++ ){
 		gl_Position = gl_in[ i ].gl_Position;
 		
 		vTCColor = vGSTCColor[ i ];
+		#ifdef SHARED_SPB
+		vSPBIndex = spbIndex;
+		#endif
 		#ifdef TEXTURE_COLOR_TINT_MASK
 			vTCColorTintMask = vGSTCColorTintMask[ i ];
 		#endif
@@ -165,6 +159,9 @@ void main( void ){
 		#ifdef FADEOUT_RANGE
 			vFadeZ = vGSFadeZ[ i ];
 		#endif
+		
+		gl_Layer = 0;
+		gl_PrimitiveID = gl_PrimitiveIDIn;
 		
 		EmitVertex();
 	}
