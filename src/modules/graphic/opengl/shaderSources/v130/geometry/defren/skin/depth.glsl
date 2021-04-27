@@ -137,10 +137,10 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef DEPTH_ORTHOGONAL
 		#ifdef NO_ZCLIP
-			vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
+			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
 			gl_Position.z = 0.0;
 		#else
-			vZCoord = gl_Position.z;
+			vZCoord = preTransformedPosition.z;
 		#endif
 	#endif
 	

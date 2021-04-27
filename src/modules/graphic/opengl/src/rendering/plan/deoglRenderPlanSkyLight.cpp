@@ -131,8 +131,10 @@ void deoglRenderPlanSkyLight::Clear(){
 	cGIComponentChangeListener * const giccl = ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener;
 	decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
 	while( iterOwner ){
-		deoglPersistentRenderTaskOwner &owner = *( ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner() );
-		( ( deoglRComponent* )owner.GetOwner() )->RemoveListener( giccl );
+		const deoglPersistentRenderTaskOwner &owner = *( ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner() );
+		if( owner.GetComponent() ){
+			owner.GetComponent()->RemoveListener( giccl );
+		}
 		iterOwner = iterOwner->GetNext();
 	}
 	pGIRenderTask.Clear();
@@ -551,11 +553,14 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 		deoglPersistentRenderTaskOwner *owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
 		if( owner ){
 			owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
+			//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
 			continue;
 		}
 		
 		owner = pGIRenderTask.AddOwner( &component, component.GetUniqueKey() );
 		owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
+		owner->SetComponent( &component );
+		//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
 		
 		pGIRenderTaskAdd.AddComponent( *owner, component, -1 );
 		
@@ -587,8 +592,10 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 // 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
 // 		}
 		
-		( ( deoglRComponent* )owner->GetOwner() )->RemoveListener(
-			( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		if( owner->GetComponent() ){
+			owner->GetComponent()->RemoveListener(
+				( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+		}
 		countRemoved++;
 		
 		pGIRenderTask.RemoveOwnedBy( *owner );

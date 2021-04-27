@@ -25,7 +25,9 @@
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/math/decMath.h>
 
+class deoglRComponent;
 class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskSubInstance;
 
@@ -41,6 +43,11 @@ private:
 	deObjectReference pOwner;
 	unsigned int pHash;
 	bool pUpdateMarker;
+	
+	deoglRComponent *pComponent;
+	
+	decDVector pMinExtend;
+	decDVector pMaxExtend;
 	
 	decPointerList pInstances;
 	decPointerList pSubInstances;
@@ -75,6 +82,23 @@ public:
 	
 	/** Set update marker. */
 	inline void SetUpdateMarker( bool marker ){ pUpdateMarker = marker; }
+	
+	/** Minimum extend. */
+	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	
+	/** Maximum extend. */
+	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	
+	/** Set extends. */
+	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	
+	
+	
+	/** Owner component or NULL. */
+	inline deoglRComponent *GetComponent() const{ return pComponent; }
+	
+	/** Set owner component or NULL. */
+	void SetComponent( deoglRComponent *component );
 	
 	
 	

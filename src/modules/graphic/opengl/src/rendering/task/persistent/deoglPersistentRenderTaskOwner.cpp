@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglPersistentRenderTaskOwner.h"
+#include "../../../component/deoglRComponent.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -37,7 +38,8 @@
 
 deoglPersistentRenderTaskOwner::deoglPersistentRenderTaskOwner() :
 pLLTask( this ),
-pHash( 0 ){
+pHash( 0 ),
+pComponent( NULL ){
 }
 
 deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
@@ -51,6 +53,17 @@ deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
 void deoglPersistentRenderTaskOwner::SetOwner( deObject *owner, unsigned int hash ){
 	pOwner = owner;
 	pHash = hash;
+}
+
+void deoglPersistentRenderTaskOwner::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+	pMinExtend = minExtend;
+	pMaxExtend = maxExtend;
+}
+
+
+
+void deoglPersistentRenderTaskOwner::SetComponent( deoglRComponent *component ){
+	pComponent = component;
 }
 
 
@@ -99,6 +112,7 @@ void deoglPersistentRenderTaskOwner::RemoveAllSubInstances(){
 
 void deoglPersistentRenderTaskOwner::Clear(){
 	pOwner = NULL;
+	pComponent = NULL;
 	pInstances.RemoveAll();
 	pSubInstances.RemoveAll();
 }

@@ -27,13 +27,12 @@ class deoglRComponent;
 
 
 /**
- * \brief Collide List Component.
- * \details Keeps track of a component in a collide list. Stores the component as well
- *          as the used lod level. It is possible for the component to be NULL. This
- *          allows the collide list to clear a colider list component not in use
- *          to avoid costly allocations. The component object is only a pointer and is
- *          not referenced. Care has to be taken to clear collide lists of a component
- *          is no more existing.
+ * Keeps track of a component in a collide list. Stores the component as well
+ * as the used lod level. It is possible for the component to be NULL. This
+ * allows the collide list to clear a colider list component not in use
+ * to avoid costly allocations. The component object is only a pointer and is
+ * not referenced. Care has to be taken to clear collide lists of a component
+ * is no more existing.
  */
 class deoglCollideListComponent{
 private:
@@ -43,25 +42,25 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new collide list component. */
+	/** Creates a new collide list component. */
 	deoglCollideListComponent();
-	/** \brief Cleans up the collide list component. */
+	/** Cleans up the collide list component. */
 	~deoglCollideListComponent();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clears the collide list component setting the component to NULL and removing all strips. */
+	/** Clears the collide list component setting the component to NULL and removing all strips. */
 	void Clear();
 	
-	/** \brief Retrieves the component. */
+	/** Retrieves the component. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
-	/** \brief Sets the component. */
+	/** Sets the component. */
 	void SetComponent( deoglRComponent *component );
 	
-	/** \brief Retrieves the lod level to use. */
+	/** Retrieves the lod level to use. */
 	inline int GetLODLevel() const{ return pLODLevel; }
-	/** \brief Sets the lod level to use. */
+	/** Sets the lod level to use. */
 	void SetLODLevel( int lodLevel );
 	/*@}*/
 };
