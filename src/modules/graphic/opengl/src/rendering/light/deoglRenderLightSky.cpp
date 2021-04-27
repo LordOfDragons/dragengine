@@ -579,6 +579,10 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 #define SKY_SHADOW_FILTERED 1
 #define SKY_SHADOW_OCCMAP_VISIBLE 1
 
+#if defined SKY_SHADOW_LAYERED_RENDERING && defined SKY_SHADOW_FILTERED
+	#undef SKY_SHADOW_FILTERED
+#endif
+
 void deoglRenderLightSky::RenderShadowMap( deoglRenderPlan &plan,
 deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();

@@ -541,14 +541,14 @@ void deoglRenderPlanSkyLight::pGICollectElements( deoglRenderPlan &plan ){
 void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 			decTimer timer;
 	int countAdded = 0, countRemoved = 0;
-	int i, count;
+	int i;
 	
 	// flip update marker. allows to track changes with the least amount of work
 	pGIRenderTaskUpdateMarker = ! pGIRenderTaskUpdateMarker;
 	
 	// add components not in task yet
-	count = pGICollideList.GetComponentCount();
-	for( i=0; i<count; i++ ){
+	const int countComponents = pGICollideList.GetComponentCount();
+	for( i=0; i<countComponents; i++ ){
 		deoglRComponent &component = *pGICollideList.GetComponentAt( i )->GetComponent();
 		deoglPersistentRenderTaskOwner *owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
 		if( owner ){
@@ -576,30 +576,33 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 			const int elapsedAdd = ( int )( timer.GetElapsedTime() * 1e6f );
 	
 	// remove components no more in task
-	decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
-	while( iterOwner ){
-		deoglPersistentRenderTaskOwner * const owner = ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner();
-		iterOwner = iterOwner->GetNext();
-		
-		if( owner->GetUpdateMarker() == pGIRenderTaskUpdateMarker ){
-			continue;
+	const int allCollideCounts = countComponents; // + countBillboards...
+	if( allCollideCounts < pGIRenderTask.GetOwnerCount() ){
+		decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
+		while( iterOwner ){
+			deoglPersistentRenderTaskOwner * const owner = ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner();
+			iterOwner = iterOwner->GetNext();
+			
+			if( owner->GetUpdateMarker() == pGIRenderTaskUpdateMarker ){
+				continue;
+			}
+			
+	// 		{
+	// 			const deoglRComponent &component = *( ( deoglRComponent* )owner->GetOwner() );
+	// 			const decDVector p(component.GetMatrix().GetPosition());
+	// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
+	// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
+	// 		}
+			
+			if( owner->GetComponent() ){
+				owner->GetComponent()->RemoveListener(
+					( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
+			}
+			countRemoved++;
+			
+			pGIRenderTask.RemoveOwnedBy( *owner );
+			pGIRenderTask.RemoveOwner( owner );
 		}
-		
-// 		{
-// 			const deoglRComponent &component = *( ( deoglRComponent* )owner->GetOwner() );
-// 			const decDVector p(component.GetMatrix().GetPosition());
-// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
-// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-// 		}
-		
-		if( owner->GetComponent() ){
-			owner->GetComponent()->RemoveListener(
-				( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
-		}
-		countRemoved++;
-		
-		pGIRenderTask.RemoveOwnedBy( *owner );
-		pGIRenderTask.RemoveOwner( owner );
 	}
 			const int elapsedRemove = ( int )( timer.GetElapsedTime() * 1e6f );
 	
