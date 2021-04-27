@@ -143,6 +143,6 @@
 
 
 // redirect flags if used
-#ifdef GS_RENDER_CUBE
-	#define pCubeFaceVisible spbFlags
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+	#define pLayerVisibility spbFlags
 #endif

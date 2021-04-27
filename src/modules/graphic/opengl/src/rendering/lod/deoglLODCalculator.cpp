@@ -250,3 +250,43 @@ int screenWidth, int screenHeight ){
 		clistComponent.SetLODLevel( lodLevel );
 	}
 }
+
+void deoglLODCalculator::SetComponentLODOrtho( deoglCollideListComponent &clistComponent,
+float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
+	const float factorX = ( float )screenWidth / boxWidth;
+	const float factorY = ( float )screenHeight / boxHeight;
+	const float factor = ( factorX > factorY ) ? factorX : factorY;
+	
+	deoglRComponent &component = *clistComponent.GetComponent();
+	
+	if( ! component.GetModel() ){
+		clistComponent.SetLODLevel( 0 );
+		return;
+	}
+	
+	const deoglRModel &model = *component.GetModel();
+	const int lodLevelCount = model.GetLODCount();
+	
+	if( lodLevelCount < 2 ){
+		clistComponent.SetLODLevel( 0 );
+		return;
+	}
+	
+	const float errorScaling = component.GetLODErrorScaling();
+	float clampError = pMaxErrorPerLevel;
+	int i, lodLevel = 0;
+	
+	for( i=1; i<lodLevelCount; i++ ){
+		const deoglModelLOD &lod = model.GetLODAt( i );
+		
+		const float maxError = decMath::min( lod.GetMaxError() * errorScaling, clampError );
+		if( maxError * factor > pMaxPixelError ){
+			break;
+		}
+		
+		lodLevel = i;
+		clampError += pMaxErrorPerLevel;
+	}
+	
+	clistComponent.SetLODLevel( lodLevel );
+}

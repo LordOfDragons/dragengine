@@ -847,7 +847,7 @@ void deoglRBillboard::UpdateSpecialSPBCubeRender(){
 	
 	spb.MapBuffer();
 	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutCubeFaceVisible, pSpecialFlags );
+		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
 		
 	}catch( const deException & ){
 		spb.UnmapBuffer();

@@ -400,6 +400,9 @@ public:
 	/** Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
 	
+	/** Set special flags from sky shadow layer mask. */
+	void SetSpecialFlagsFromSkyShadowLayerMask();
+	
 	/**
 	 * Update special shader parameter block.
 	 * 
@@ -407,6 +410,7 @@ public:
 	 * - UpdateCubeFaceVisibility(): for use by geometry shader cube rendering.
 	 */
 	void UpdateSpecialSPBCubeRender();
+	void UpdateSpecialSPBCascadedRender();
 	
 	
 	

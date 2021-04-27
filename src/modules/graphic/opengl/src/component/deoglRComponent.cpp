@@ -702,6 +702,10 @@ void deoglRComponent::SetSpecialFlagsFromFaceVisibility(){
 	}
 }
 
+void deoglRComponent::SetSpecialFlagsFromSkyShadowLayerMask(){
+	pSpecialFlags = pSkyShadowSplitMask;
+}
+
 void deoglRComponent::UpdateSpecialSPBCubeRender(){
 	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
 	
@@ -709,7 +713,23 @@ void deoglRComponent::UpdateSpecialSPBCubeRender(){
 	
 	spb.MapBuffer();
 	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutCubeFaceVisible, pSpecialFlags );
+		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
+		
+	}catch( const deException & ){
+		spb.UnmapBuffer();
+		throw;
+	}
+	spb.UnmapBuffer();
+}
+
+void deoglRComponent::UpdateSpecialSPBCascadedRender(){
+	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
+	
+	SetSpecialFlagsFromSkyShadowLayerMask();
+	
+	spb.MapBuffer();
+	try{
+		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
 		
 	}catch( const deException & ){
 		spb.UnmapBuffer();

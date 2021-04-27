@@ -64,7 +64,7 @@
 	flat in int vGSSPBIndex[ 3 ];
 	#define spbIndex vGSSPBIndex[0]
 	
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		flat in int vGSSPBFlags[ 3 ];
 		#define spbFlags vGSSPBFlags[0]
 	#endif
@@ -252,7 +252,7 @@ void main( void ){
 		//          loop. sometimes continue works but especially here it results in the GPU
 		//          dying horribly. the only working solution is to use the code in a way
 		//          no 'continue' statement is required to be used
-		if( ( pCubeFaceVisible & ( 1 << face ) ) != 0 ){
+		if( ( pLayerVisibility & ( 1 << face ) ) != 0 ){
 		#endif
 			
 			// emit triangle
@@ -302,6 +302,7 @@ void main( void ){
 		//          dying horribly. the only working solution is to use the code in a way
 		//          no 'continue' statement is required to be used
 		
+		/*
 		vec3 position[ 3 ];
 		int i;
 		
@@ -337,6 +338,22 @@ void main( void ){
 			}
 			EndPrimitive();
 		}
+		*/
+		
+		if( ( pLayerVisibility & ( 1 << cascade ) ) != 0 ){
+			// emit triangle
+			int i;
+			for( i=0; i<3; i++ ){
+				#ifdef BILLBOARD
+					emitCorner( cascade, i, gl_in[ i ].gl_Position, gl_in[ i ].gl_Position );
+				#else
+					emitCorner( cascade, i, gl_in[ i ].gl_Position,
+						vec4( pMatrixV[ cascade ] * gl_in[ i ].gl_Position, 1.0 ) );
+				#endif
+			}
+			EndPrimitive();
+		}
+		
 		
 	#ifndef GS_RENDER_CASCADED_INSTANCING
 	}

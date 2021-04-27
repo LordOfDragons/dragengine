@@ -599,7 +599,7 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThr
 		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 		spb->SetParameterCount( 1 );
 		
-		spb->GetParameterAt( esutCubeFaceVisible ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pCubeFaceVisible
+		spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubSpecialParameters );

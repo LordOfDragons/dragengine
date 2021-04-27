@@ -25,11 +25,11 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;
+class deoglCollideListComponent;
 
 
 
 /**
- * @brief LOD Calculator.
  * Helper class calculating LOD levels to use for different objects. Supports storing results
  * accross multiple frames if required.
  */
@@ -39,7 +39,7 @@ private:
 	float pMaxErrorPerLevel;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new lod calculator. */
 	deoglLODCalculator();
@@ -47,7 +47,7 @@ public:
 	~deoglLODCalculator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Sets the maximum pixel error on screen. */
 	void SetMaxPixelError( int maxPixelError );
@@ -67,6 +67,10 @@ public:
 	/** Calculates orthographic lod levels for all components. */
 	void SetComponentLODOrtho( deoglCollideList &collideList, float boxWidth, float boxHeight,
 		int screenWidth, int screenHeight );
+	
+	/** Calculates orthographic lod levels for all components. */
+	void SetComponentLODOrtho( deoglCollideListComponent &clistComponent, float boxWidth,
+		float boxHeight, int screenWidth, int screenHeight );
 	/*@}*/
 };
 

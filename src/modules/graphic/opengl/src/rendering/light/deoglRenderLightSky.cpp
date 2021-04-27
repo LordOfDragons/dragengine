@@ -600,7 +600,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRSkyInstanceLayer &skyLayer = *planSkyLight.GetLayer();
-	deoglLODCalculator lodCalculator;
 	decMatrix matrixCamera;
 	
 	const decDMatrix &matCamInv = plan.GetInverseCameraMatrix();
@@ -614,6 +613,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	DebugTimer4Reset( plan, false );
 	
 	deoglCollideList &collideList = planSkyLight.GetCollideList();
+	int componentCount;
 	
 	// occlusion test the content to remove as much as possible
 #ifdef SKY_SHADOW_OCCMAP_VISIBLE
@@ -628,7 +628,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
 	occtest.RemoveAllInputData();
 	
-	const int componentCount = collideList.GetComponentCount();
+	componentCount = collideList.GetComponentCount();
 	int c;
 	for( c=0; c<componentCount; c++ ){
 		deoglRComponent * const component = collideList.GetComponentAt( c )->GetComponent();
@@ -646,10 +646,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionTest, true );
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 #endif
-	
-	// set up lod calculator
-	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
-	lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
 	
 	// get light properties
 	const decMatrix matLig = decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * skyLayer.GetMatrix();
@@ -722,16 +718,61 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	// SetComponentLODOrtho() on the lowest split the component is visible in. since this
 	// is calculated on the GPU this can not be done here without expensive CPU calculations.
 	// as a makeshift solution the LOD is calculated the same way as with the camera view
+// 	deoglLODCalculator lodCalculator[ 4 ];
+// 	float lodBoxWidth[ 4 ], lodBoxHeight[ 4 ];
+// 	
+// 	for( i=0; i<layerCount; i++ ){
+// 		lodCalculator[ i ].SetMaxPixelError( config.GetLODMaxPixelError() );
+// 		lodCalculator[ i ].SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
+// 		
+// 		const deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
+// 		lodBoxWidth[ i ] = sl.maxExtend.x - sl.minExtend.x;
+// 		lodBoxHeight[ i ] = sl.maxExtend.y - sl.minExtend.y;
+// 	}
+	
+	componentCount = collideList.GetComponentCount();
+	for( i=0; i<componentCount; i++ ){
+		deoglCollideListComponent &cl = *collideList.GetComponentAt( i );
+		deoglRComponent &component = *cl.GetComponent();
+// 		const int mask = component.GetSkyShadowSplitMask();
+// 		
+// 		if( mask ){
+// 			int lowest;
+// 			for( lowest=0; lowest<layerCount && ( mask & ( 1 << lowest ) ) == 0; lowest++ );
+// 			lodCalculator[ lowest ].SetComponentLODOrtho( cl, lodBoxWidth[ lowest ],
+// 				lodBoxHeight[ lowest ], shadowMapSize, shadowMapSize );
+// 			
+// 		}else{
+// 			cl.SetLODLevel( component.GetLODCount() - 1 );
+// 		}
+		
+		if( deoglSkinShader::USE_SHARED_SPB ){
+			component.SetSpecialFlagsFromSkyShadowLayerMask();
+			
+		}else{
+			component.UpdateSpecialSPBCascadedRender();
+		}
+	}
+	
+	
+	deoglLODCalculator lodCalculator;
+	
+	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+	lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
+	
 	lodCalculator.SetComponentLODProjection( collideList, plan.GetCameraPosition(),
 		plan.GetInverseCameraMatrix().TransformView(), plan.GetCameraFov(),
 		plan.GetCameraFov() * plan.GetCameraFovRatio(), plan.GetViewportWidth(),
 		plan.GetViewportHeight() );
+	
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renderParamBlock );
 	
 	addToRenderTask.Reset();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
+	renderTask.SetUseSPBInstanceFlags( true );
+	addToRenderTask.SetUseSpecialParamBlock( true );
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonalCascaded );
 #else
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
@@ -850,6 +891,11 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 #ifdef SKY_SHADOW_FILTERED
 		const float lodBoxWidth = sl.maxExtend.x - sl.minExtend.x;
 		const float lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
+		
+		deoglLODCalculator lodCalculator;
+		
+		lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+		lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
 		
 		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitLODLevels, false );

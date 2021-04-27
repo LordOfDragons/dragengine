@@ -221,7 +221,7 @@ public:
 	
 	/** \brief Special parameter uniform targets. */
 	enum eSpecialUniformTargets{
-		esutCubeFaceVisible
+		esutLayerVisibility
 	};
 	
 	/** \brief Uniform blocks. */

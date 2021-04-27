@@ -131,7 +131,7 @@ NODE_VERTEX_INPUTS
 		flat out int vGSSPBIndex;
 		#define vSPBIndex vGSSPBIndex
 		
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			flat out int vGSSPBFlags;
 		#endif
 	#endif
@@ -280,7 +280,7 @@ void main( void ){
 	
 	#ifdef SHARED_SPB
 		vSPBIndex = spbIndex;
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			vGSSPBFlags = spbFlags;
 		#endif
 	#endif

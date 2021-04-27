@@ -52,7 +52,7 @@ out vec3 vPosition;
 #ifdef SHARED_SPB
 	#define pMatrixModel pSharedSPB[ spbIndex ].pSPBMatrixModel
 	#ifdef GS_RENDER_CUBE_CULLING
-		#define pCubeFaceVisible spbFlags
+		#define pLayerVisibility spbFlags
 	#endif
 #endif
 
@@ -94,7 +94,7 @@ void main( void ){
 		//          loop. sometimes continue works but especially here it results in the GPU
 		//          dying horribly. the only working solution is to use the code in a way
 		//          no 'continue' statement is required to be used
-		if( ( pCubeFaceVisible & ( 1 << face ) ) != 0 ){
+		if( ( pLayerVisibility & ( 1 << face ) ) != 0 ){
 		#endif
 			
 			// emit triangle
