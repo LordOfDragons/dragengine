@@ -71,7 +71,7 @@ private:
 	
 	
 	
-	deoglRenderThread &pRenderThread;
+	deoglRenderPlan &pPlan;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
 	
@@ -81,7 +81,7 @@ private:
 	
 	deoglOcclusionTest *pOcclusionTest;
 	
-	bool pPrepared;
+	bool pPlanned;
 	bool pUseLight;
 	bool pUseShadow;
 	int pShadowLayerCount;
@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan light. */
-	deoglRenderPlanSkyLight( deoglRenderThread &renderThread );
+	deoglRenderPlanSkyLight( deoglRenderPlan &plan );
 	
 	/** Clean up render plan light. */
 	~deoglRenderPlanSkyLight();
@@ -111,6 +111,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render plan. */
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
+	
 	/** Sky instance. */
 	inline deoglRSkyInstance *GetSky() const{ return pSky; }
 	
@@ -142,11 +145,11 @@ public:
 	
 	
 	
-	/** Plan is prepared. */
-	inline bool GetPrepared() const{ return pPrepared; }
+	/** Plan has been planed. */
+	inline bool GetPlanned() const{ return pPlanned; }
 	
-	/** Clear plan is prepared. */
-	void ClearPrepared();
+	/** Clear plan is planned. */
+	void ClearPlanned();
 	
 	/** Use light. */
 	inline bool GetUseLight() const{ return pUseLight; }
@@ -189,8 +192,17 @@ public:
 	/** Clear. */
 	void Clear();
 	
-	/** Prepare plan. */
-	void Prepare( deoglRenderPlan &plan );
+	/** Plan sky light. */
+	void Plan();
+	
+	/** Start find content. */
+	void StartFindContent();
+	
+	/** Start occlusion tests*/
+	void StartOcclusionTests();
+	
+	/** Prepare for rendering. */
+	void Prepare();
 	
 	/** Clean up after rendering. */
 	void CleanUp();
@@ -198,11 +210,11 @@ public:
 	
 	
 private:
-	void pDetermineShadowParameters( deoglRenderPlan &plan );
-	void pCalcShadowLayerParams( deoglRenderPlan &plan );
-	void pCollectElements( deoglRenderPlan &plan );
-	void pGICalcShadowLayerParams( deoglRenderPlan &plan );
-	void pGICollectElements( deoglRenderPlan &plan );
+	void pDetermineShadowParameters();
+	void pCalcShadowLayerParams();
+	void pCollectElements();
+	void pGICalcShadowLayerParams();
+	void pGICollectElements();
 	void pGIUpdateRenderTask();
 	/*@}*/
 };

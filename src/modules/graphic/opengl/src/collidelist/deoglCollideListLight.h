@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,38 +19,36 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLCOLLIDELISTCOMPONENT_H_
-#define _DEOGLCOLLIDELISTCOMPONENT_H_
+#ifndef _DEOGLCOLLIDELISTLIGHT_H_
+#define _DEOGLCOLLIDELISTLIGHT_H_
 
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRComponent;
+class deoglRLight;
 class deoglOcclusionTest;
 
 
 
 /**
- * Component in collide list.
+ * Light in collide list.
  */
-class deoglCollideListComponent : public deoglOcclusionTestListener{
+class deoglCollideListLight : public deoglOcclusionTestListener{
 private:
-	deoglRComponent *pComponent;
-	int pLODLevel;
+	deoglRLight *pLight;
 	bool pCulled;
-	int pCascadeMask;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create collide list component. */
-	deoglCollideListComponent();
+	/** Create collide list light. */
+	deoglCollideListLight();
 	
-	/** Clean up collide list component. */
-	~deoglCollideListComponent();
+	/** Clean up collide list light. */
+	~deoglCollideListLight();
 	/*@}*/
 	
 	
@@ -60,34 +58,19 @@ public:
 	/** Clear collide list. */
 	void Clear();
 	
-	/** Component. */
-	inline deoglRComponent *GetComponent() const{ return pComponent; }
+	/** Light. */
+	inline deoglRLight *GetLight() const{ return pLight; }
 	
-	/** Set component. */
-	void SetComponent( deoglRComponent *component );
-	
-	/** LOD level to use. */
-	inline int GetLODLevel() const{ return pLODLevel; }
-	
-	/** Set LOD level to use. */
-	void SetLODLevel( int lodLevel );
-	
-	/** Set LOD level to use to maximum LOD level. */
-	void SetLODLevelMax();
+	/** Set light. */
+	void SetLight( deoglRLight *light );
 	
 	
 	
-	/** Component is culled. */
+	/** Light is culled. */
 	inline bool GetCulled() const{ return pCulled; }
 	
-	/** Set component is culled. */
+	/** Set light is culled. */
 	void SetCulled( bool visible );
-	
-	/** Cascade mask. */
-	inline int GetCascadeMask() const{ return pCascadeMask; }
-	
-	/** Set cascade mask. */
-	void SetCascadeMask( int mask );
 	
 	/** Start occlusion test. */
 	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );

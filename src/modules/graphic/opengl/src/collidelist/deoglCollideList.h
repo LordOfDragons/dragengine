@@ -29,6 +29,7 @@
 
 class deoglCollideListComponent;
 class deoglCollideListHTSector;
+class deoglCollideListLight;
 class deoglCollideListPropField;
 class deoglDCollisionFrustum;
 class deoglDCollisionVolume;
@@ -46,7 +47,7 @@ class deoglWorldOctree;
 
 
 /**
- * @brief Collide List.
+ * \brief Collide List.
  */
 class deoglCollideList{
 private:
@@ -57,8 +58,9 @@ private:
 	int pComponentCount;
 	int pComponentSize;
 	
-	deoglRLight **pLights;
-	int pLightCount, pLightSize;
+	deoglCollideListLight **pLights;
+	int pLightCount;
+	int pLightSize;
 	
 	deoglRBillboard **pBillboards;
 	int pBillboardCount;
@@ -75,7 +77,7 @@ private:
 	deoglTransformVolume *pTransformVolume;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collide list. */
 	deoglCollideList();
@@ -83,7 +85,7 @@ public:
 	~deoglCollideList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Clears all objects from the list. */
 	void Clear();
@@ -98,10 +100,8 @@ public:
 	/** Adds world elements colliding with the given volume. */
 	void AddElementsColliding( deoglWorldOctree *octree, deoglDCollisionFrustum *volume );
 	
-	/** Mark all elements visible. */
-	void MarkElementsVisible( bool visible );
-	/** Removes all elements flagged invisible. */
-	void RemoveVisibleElements( bool visible );
+	/** Remove all culled elements. */
+	void RemoveCulledElements();
 	
 	/** Retrieves the list of particle emitters. */
 	inline deoglParticleEmitterInstanceList &GetParticleEmitterList(){ return pParticleEmitterList; }
@@ -116,37 +116,46 @@ public:
 	void AddEnvironmentMapsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume );
 	/*@}*/
 	
-	/** @name Components */
+	
+	
+	/** \name Components */
 	/*@{*/
-	/** Retrieves the number of components. */
+	/** Count of components. */
 	inline int GetComponentCount() const{ return pComponentCount; }
-	/** Retrieves the component at the given index. */
+	
+	/** Component at index. */
 	deoglCollideListComponent *GetComponentAt( int index ) const;
-	/** Retrieves the index of the given component or -1 if not found. */
+	
+	/** Index of component or -1 if absent. */
 	int IndexOfComponent( deoglRComponent *component ) const;
-	/** Determines if the given component exists. */
+	
+	/** Component is present. */
 	bool HasComponent( deoglRComponent *component ) const;
-	/** Adds a component. */
+	
+	/** Add component. */
 	void AddComponent( deoglRComponent *component );
-	/** Removes a component. */
+	
+	/** Remove component. */
 	void RemoveComponent( deoglRComponent *component );
-	/** Removes a component from the given index. */
+	
+	/** Remove component from index. */
 	void RemoveComponentFrom( int index );
-	/** Removes all components. */
+	
+	/** Remove all components. */
 	void RemoveAllComponents();
 	
-	/** Adds all components colliding with the given volume. */
+	/** Add all components colliding with volume. */
 	void AddComponentsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume );
 	
-	/** Mark all components visible. */
-	void MarkComponentsVisible( bool visible );
-	/** Removes components matching the visible state. */
-	void RemoveVisibleComponents( bool visible );
-	/** Removes solid components. */
+	/** Remove culled components. */
+	void RemoveCulledComponents();
+	
+	/** Remove solid components. */
 	void RemoveSolidComponents();
 	
 	/** Sort components by models. */
 	void SortComponentsByModels();
+	
 	/** Sort components by distance. */
 	void SortComponentsByDistance( const decVector &pos, const decVector &view );
 	
@@ -157,54 +166,70 @@ public:
 	void LogComponents() const;
 	/*@}*/
 	
-	/** @name Lights */
+	
+	
+	/** \name Lights */
 	/*@{*/
-	/** Retrieves the number of lights. */
+	/** Count of lights. */
 	inline int GetLightCount() const{ return pLightCount; }
-	/** Retrieves the light at the given index. */
-	deoglRLight *GetLightAt( int index ) const;
-	/** Adds a light. */
+	
+	/** Light at index. */
+	deoglCollideListLight *GetLightAt( int index ) const;
+	
+	/** Index of light or -1 if absent. */
+	int IndexOfLight( deoglRLight *light ) const;
+	
+	/** Light is present. */
+	bool HasLight( deoglRLight *light ) const;
+	
+	/** Add light. */
 	void AddLight( deoglRLight *light );
-	/** Removes all lights. */
+	
+	/** Remove light. */
+	void RemoveLight( deoglRLight *light );
+	
+	/** Remove light from index. */
+	void RemoveLightFrom( int index );
+	
+	/** Remove all lights. */
 	void RemoveAllLights();
-	/** Adds all lights colliding with the given volume. */
+	
+	/** Add all lights colliding with volume. */
 	void AddLightsColliding( deoglWorldOctree *octree, deoglDCollisionVolume *volume );
 	
-	/** Mark all lights visible. */
-	void MarkLightsVisible( bool visible );
-	/** Removes invisible lights. */
-	void RemoveVisibleLights( bool visible );
+	/** Mark all lights culled. */
+	void MarkLightsCulled( bool culled );
+	
+	/** Remove culled lights. */
+	void RemoveCulledLights();
 	/*@}*/
 	
 	
 	
 	/** \name Billboards */
 	/*@{*/
-	/** \brief Count of billboards. */
+	/** Count of billboards. */
 	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
-	/** \brief Billboard at index. */
+	/** Billboard at index. */
 	deoglRBillboard *GetBillboardAt( int index ) const;
 	
-	/** \brief Add billboard. */
+	/** Add billboard. */
 	void AddBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Remove all billboards. */
+	/** Remove all billboards. */
 	void RemoveAllBillboards();
 	
-	/** \brief Add all billboards colliding with volume. */
+	/** Add all billboards colliding with volume. */
 	void AddBillboardsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume );
 	
-	/** \brief Mark all billboards visible. */
-	void MarkBillboardsVisible( bool visible );
-	
-	/** \brief Remove invisible billboards. */
-	void RemoveVisibleBillboards( bool visible );
+	/** Remove culled billboards. */
+	void RemoveCulledBillboards();
 	/*@}*/
 	
 	
 	
-	/** @name Height Terrain Sectors */
+	/** \name Height Terrain Sectors */
 	/*@{*/
 	/** Retrieves the number of height terrain sectors. */
 	inline int GetHTSectorCount() const{ return pHTSectorCount; }
@@ -218,7 +243,7 @@ public:
 	void AddHTSectorsColliding( deoglHTView *htview, deoglDCollisionVolume *volume );
 	/*@}*/
 	
-	/** @name Prop Fields */
+	/** \name Prop Fields */
 	/*@{*/
 	/** Retrieves the number of prop fields. */
 	inline int GetPropFieldCount() const{ return pPropFieldCount; }

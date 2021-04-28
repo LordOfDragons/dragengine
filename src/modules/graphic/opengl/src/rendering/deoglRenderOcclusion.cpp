@@ -475,8 +475,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	
 	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
 		plan.GetOcclusionMapBaseLevel(), -1.0f, matrixCamera );
-	plan.GetCollideList().RemoveVisibleComponents( false );
-	plan.GetCollideList().RemoveVisibleLights( false );
+	plan.GetCollideList().RemoveCulledElements();
 	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
 	if( renderPlanDebug ){
 		renderPlanDebug->SetOccTestTime( timer.GetElapsedTime() );
@@ -625,7 +624,7 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	
 	RenderOcclusionTestsSun( *planSkyLight.GetOcclusionTest(), occlusionMap,
 		baselevel, -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
-	collideList.RemoveVisibleComponents( false );
+	collideList.RemoveCulledComponents();
 	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
 }
 

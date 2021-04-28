@@ -141,7 +141,6 @@ pLLPrepareForRenderWorld( this )
 	pDirtyCollideLists = true;
 	pStaticCollideList = NULL;
 	pDynamicCollideList = NULL;
-	pVisible = true;
 	
 	pLightVolume = NULL;
 	pLightVolumeCropBox = NULL;
@@ -1248,12 +1247,6 @@ void deoglRLight::DropShaders(){
 
 
 
-void deoglRLight::SetVisible( bool visible ){
-	pVisible = visible;
-}
-
-
-
 void deoglRLight::SetDirtyTouching(){
 	pDirtyTouching = true;
 	pRequiresPrepareForRender();
@@ -1488,25 +1481,6 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 
 // Culling
 ////////////
-
-void deoglRLight::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
-	UpdateLightVolume();
-	
-	if( pDirtyExtends ){
-		pUpdateExtends();
-	}
-	
-	const decVector minExtend = ( pMinExtend - cameraPosition ).ToVector();
-	const decVector maxExtend = ( pMaxExtend - cameraPosition ).ToVector();
-	
-	occlusionTest.AddInputData( minExtend, maxExtend, this );
-}
-
-void deoglRLight::OcclusionTestInvisible(){
-	pVisible = false;
-}
-
-
 
 deoglOcclusionQuery &deoglRLight::GetOcclusionQuery(){
 	if( ! pOcclusionQuery ){

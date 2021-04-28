@@ -38,8 +38,9 @@
 #include "../light/deoglRenderLight.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../../billboard/deoglRBillboard.h"
-#include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
 #include "../../collidelist/deoglCollideListManager.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -446,18 +447,21 @@ void deoglRenderPlan::pBarePrepareRender(){
 	SPECIAL_TIMER_PRINT("Prepare2")
 	
 	// plan what we can plan already
-	pPlanSky();
-	pPlanDominance();
-	pPlanShadowCasting();
-	pPlanOcclusionTesting();
-	SPECIAL_TIMER_PRINT("Plan1")
-	pPlanCollideList( frustum );
 	pDisableLights = pWorld->GetDisableLights();
+	
+	pPlanDominance();
+	pPlanGI();
+	pPlanSky();
+	pPlanSkyLight();
+	pPlanShadowCasting();
+	SPECIAL_TIMER_PRINT("Plan1")
+	
+	pStartFindContent( frustum );
 	renderCanvas.SampleDebugInfoPlanPrepareCollect( *this );
 	SPECIAL_TIMER_PRINT("Collide")
 	
 	// visibility
-	pPlanVisibility( frustum );
+	pStartOcclusionTests( frustum );
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
 	
 	lightCount = pCollideList.GetLightCount();
@@ -552,7 +556,7 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	
 	// update lights adding them to the list of all lights touched by an upcoming render call
 	for( l=0; l<lightCount; l++ ){
-		oglLight = pCollideList.GetLightAt( l );
+		oglLight = pCollideList.GetLightAt( l )->GetLight();
 		oglLight->TestCameraInside( *this );
 		GetLightFor( oglLight );
 	}
@@ -614,6 +618,62 @@ void deoglRenderPlan::pPlanSky(){
 		}
 		
 		pSkyInstances.Add( instance );
+	}
+}
+
+void deoglRenderPlan::pPlanSkyLight(){
+	const int skyCount = GetSkyInstanceCount();
+	int i, j, k;
+	
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->ClearPlanned();
+	}
+	
+	for( i=0; i<skyCount; i++ ){
+		deoglRSkyInstance &instance = *GetSkyInstanceAt( i );
+		
+		const int layerCount = instance.GetLayerCount();
+		for( j=0; j<layerCount; j++ ){
+			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt( j );
+			if( ! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient() ){
+				continue;
+			}
+			
+			deoglRenderPlanSkyLight *planSkyLight = NULL;
+			
+			for( k=0; k<pSkyLightCount; k++ ){
+				deoglRenderPlanSkyLight * const check = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( k );
+				if( check->GetLayer() == &skyLayer ){
+					planSkyLight = check;
+					break;
+				}
+			}
+			
+			if( ! planSkyLight ){
+				if( pSkyLightCount < pSkyLights.GetCount() ){
+					planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( pSkyLightCount );
+					
+				}else{
+					planSkyLight = new deoglRenderPlanSkyLight( *this );
+					pSkyLights.Add( planSkyLight );
+				}
+				
+				planSkyLight->SetLayer( &instance, &skyLayer );
+				pSkyLightCount++;
+			}
+			
+			planSkyLight->Plan();
+		}
+	}
+	
+	for( i=0; i<pSkyLightCount; i++ ){
+		deoglRenderPlanSkyLight * const planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
+		if( planSkyLight->GetPlanned() ){
+			continue;
+		}
+		
+		planSkyLight->Clear();
+		pSkyLights.Move( i--, --pSkyLightCount );
 	}
 }
 
@@ -710,15 +770,19 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }
 
-void deoglRenderPlan::pPlanOcclusionTesting(){
-// 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 512, 512 ) );
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) );
+void deoglRenderPlan::pStartFindContent( deoglDCollisionFrustum *frustum ){
+	INIT_SPECIAL_TIMING
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
-}
-
-void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
-	INIT_SPECIAL_TIMING
+	
+	// TODO find content using parallel tasks (each using one task). this also includes
+	//      adding occlusion test inputs since these are not shared and do not require
+	//      opengl access yet
+	// 
+	// pAddOcclusionTestInputs();
+	// pCollideList.MarkElementsVisible( true );
+	
 	// add elements to the collide list
 	pVisitorCullElements->Init( frustum );
 	pVisitorCullElements->SetCullPixelSize( 1.0f );
@@ -740,6 +804,12 @@ void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
 	pCollideList.AddPropFieldsColliding( *pWorld, frustum );
 	SPECIAL_TIMER_PRINT(">PropField")
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add prop fields" );
+	
+	// sky lights
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
+	}
 	
 	// HACK: add environment maps using a simple hack until we have something better
 	const deoglEnvironmentMapList &envMapList = pWorld->GetEnvMapList();
@@ -765,17 +835,12 @@ void deoglRenderPlan::pPlanCollideList( deoglDCollisionFrustum *frustum ){
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add Env-Map" );
 SPECIAL_TIMER_PRINT(">EnvMap")
 	
-	// collect occlusion test data and upload it. we do something else in the mean
-	// time until the GPU uploaded the data to avoid stalling as good as possible
-	pPlanOcclusionTestInputData();
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Prepare Occlusion Test Input Data" );
-	SPECIAL_TIMER_PRINT(">OccTestInpData")
-	
 	// debug information if demanded
 	pDebugVisibleNoCull();
 }
 
-void deoglRenderPlan::pPlanOcclusionTestInputData(){
+void deoglRenderPlan::pAddOcclusionTestInputs(){
+	INIT_SPECIAL_TIMING
 	const int componentCount = pCollideList.GetComponentCount();
 	const int lightCount = pCollideList.GetLightCount();
 	int i;
@@ -787,9 +852,8 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 	occlusionTest.RemoveAllInputData();
 	
 	for( i=0; i<componentCount; i++ ){
-		pCollideList.GetComponentAt( i )->GetComponent()->StartOcclusionTest( occlusionTest, pCameraPosition );
+		pCollideList.GetComponentAt( i )->StartOcclusionTest( occlusionTest, pCameraPosition );
 	}
-	
 	for( i=0; i<lightCount; i++ ){
 		pCollideList.GetLightAt( i )->StartOcclusionTest( occlusionTest, pCameraPosition );
 	}
@@ -802,6 +866,7 @@ void deoglRenderPlan::pPlanOcclusionTestInputData(){
 	if( pDebug ){
 		pDebug->IncrementOccTestCount( occlusionTest.GetInputDataCount() );
 	}
+	SPECIAL_TIMER_PRINT(">OccTestInpData")
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -811,6 +876,7 @@ void deoglRenderPlan::pPlanGI(){
 		return;
 	}
 	
+	INIT_SPECIAL_TIMING
 	pRenderThread.GetRenderers().GetCanvas().ResetDebugInfoTimerGI( *this );
 	
 	if( ! pGIState ){
@@ -819,6 +885,7 @@ void deoglRenderPlan::pPlanGI(){
 	pGIState->Update( *pWorld, pCameraPosition, pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
 	
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
+	SPECIAL_TIMER_PRINT(">GI")
 #endif
 }
 
@@ -1183,11 +1250,10 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 }
 
-void deoglRenderPlan::pPlanVisibility( deoglDCollisionFrustum *frustum ){
+void deoglRenderPlan::pStartOcclusionTests( deoglDCollisionFrustum *frustum ){
 	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	
-	// mark all elements in the view visible
-	pCollideList.MarkElementsVisible( true );
+	pAddOcclusionTestInputs(); // TODO remove
 	
 	if( config.GetDebugNoCulling() ){
 		pSkyVisible = true;
@@ -1212,12 +1278,23 @@ void deoglRenderPlan::pPlanVisibility( deoglDCollisionFrustum *frustum ){
 		// to do some other small work before fetching the results ).
 		
 		// if there are no input points skip the test
+		
+		// TODO wait for pStartFindContent() parallel task to finish. this updates collide
+		//      list and adds occlusion test inputs
+		
 		if( pOcclusionTest->GetInputDataCount() > 0 ){
 			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this );
 		}
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Occlusion Testing" );
 	}
 	
+	// sky lights
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartOcclusionTests();
+	}
+	
+	// debug
 	pDebugVisibleCulled();
 }
 
@@ -1361,7 +1438,7 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 		int i;
 		
 		for( i=0; i<lightCount; i++ ){
-			deoglRLight &light = *pCollideList.GetLightAt( i );
+			deoglRLight &light = *pCollideList.GetLightAt( i )->GetLight();
 			
 			deoglShadowCaster &scaster = *light.GetShadowCaster();
 			
@@ -2030,22 +2107,20 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// spend GPU memory.
 	INIT_SPECIAL_TIMING
 	
-	// plan global illumination
-	pPlanGI();
-	SPECIAL_TIMER_PRINT(">GI")
-	
 	// determine if we need transparency
 	pCheckTransparency();
 	
 	// assing the stencil mask to all masked plans
-	int m;
-	for( m=0; m<pMaskedPlanCount; m++ ){
-		pMaskedPlans[ m ]->SetStencilMask( m + 1 );
+	int i;
+	for( i=0; i<pMaskedPlanCount; i++ ){
+		pMaskedPlans[ i ]->SetStencilMask( i + 1 );
 	}
 	SPECIAL_TIMER_PRINT(">Misc")
 	
 	// build sky light plan
-	pBuildSkyLightPlan();
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->Prepare();
+	}
 	SPECIAL_TIMER_PRINT(">SkyLight")
 	
 	// first let's simply print out the number of lights and what
@@ -2055,62 +2130,6 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// determine light probes
 	pBuildLightProbes();
 	SPECIAL_TIMER_PRINT(">Light")
-}
-
-void deoglRenderPlan::pBuildSkyLightPlan(){
-	const int skyCount = GetSkyInstanceCount();
-	int i, j, k;
-	
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->ClearPrepared();
-	}
-	
-	for( i=0; i<skyCount; i++ ){
-		deoglRSkyInstance &instance = *GetSkyInstanceAt( i );
-		
-		const int layerCount = instance.GetLayerCount();
-		for( j=0; j<layerCount; j++ ){
-			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt( j );
-			if( ! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient() ){
-				continue;
-			}
-			
-			deoglRenderPlanSkyLight *planSkyLight = NULL;
-			
-			for( k=0; k<pSkyLightCount; k++ ){
-				deoglRenderPlanSkyLight * const check = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( k );
-				if( check->GetLayer() == &skyLayer ){
-					planSkyLight = check;
-					break;
-				}
-			}
-			
-			if( ! planSkyLight ){
-				if( pSkyLightCount < pSkyLights.GetCount() ){
-					planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( pSkyLightCount );
-					
-				}else{
-					planSkyLight = new deoglRenderPlanSkyLight( pRenderThread );
-					pSkyLights.Add( planSkyLight );
-				}
-				
-				planSkyLight->SetLayer( &instance, &skyLayer );
-				pSkyLightCount++;
-			}
-			
-			planSkyLight->Prepare( *this );
-		}
-	}
-	
-	for( i=0; i<pSkyLightCount; i++ ){
-		deoglRenderPlanSkyLight * const planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
-		if( planSkyLight->GetPrepared() ){
-			continue;
-		}
-		
-		planSkyLight->Clear();
-		pSkyLights.Move( i--, --pSkyLightCount );
-	}
 }
 
 void deoglRenderPlan::pBuildLightPlan(){
@@ -2139,7 +2158,7 @@ void deoglRenderPlan::pBuildLightPlan(){
 	int i;
 	
 	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *pCollideList.GetLightAt( i );
+		deoglRLight &light = *pCollideList.GetLightAt( i )->GetLight();
 		int sizeTranspStatic, sizeTranspDynamic;
 		int sizeSolidStatic, sizeSolidDynamic;
 		
@@ -2379,6 +2398,6 @@ void deoglRenderPlan::pDropLightsDynamic(){
 	const int count = pCollideList.GetLightCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		pCollideList.GetLightAt( i )->GetShadowCaster()->DropDynamic();
+		pCollideList.GetLightAt( i )->GetLight()->GetShadowCaster()->DropDynamic();
 	}
 }

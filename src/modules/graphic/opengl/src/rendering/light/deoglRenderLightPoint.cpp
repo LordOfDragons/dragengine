@@ -37,8 +37,9 @@
 #include "../../canvas/render/deoglRCanvasView.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
-#include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
 #include "../../collidelist/deoglCollideListManager.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -603,13 +604,13 @@ DEBUG_RESET_TIMER_TOTAL
 	// DEBUG DEBUG this should NOT be needed
 	
 	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *clist.GetLightAt( i );
+		deoglRLight &light = *clist.GetLightAt( i )->GetLight();
 		if( light.GetLightType() != deLight::eltPoint ){
 			continue;
 		}
 		
 		if( light.IsHiddenByOccQuery() ){
-			light.SetVisible( false );
+			clist.GetLightAt( i )->SetCulled( true );
 			
 		}else{
 			RenderLight( plan, solid, mask, light );

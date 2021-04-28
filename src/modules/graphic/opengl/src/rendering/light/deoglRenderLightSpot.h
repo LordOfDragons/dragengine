@@ -113,7 +113,7 @@ public:
 	
 	/** \brief Render light. */
 	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
-		deoglRLight &light );
+		deoglCollideListLight &cllight );
 	
 	/** \brief Activate textures for lighting. */
 	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,

@@ -23,7 +23,6 @@
 #define _DEOGLRLIGHT_H_
 
 #include "../component/deoglComponentList.h"
-#include "../occlusiontest/deoglOcclusionTestListener.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -61,7 +60,7 @@ class decShapeBox;
 /**
  * Render light.
  */
-class deoglRLight : public deObject, deoglOcclusionTestListener{
+class deoglRLight : public deObject{
 public:
 	/** Shader Types. */
 	enum eShaderTypes{
@@ -186,7 +185,6 @@ public:
 	bool pDirtyColVol;
 	bool pCameraInside;
 	
-	bool pVisible;
 	bool pDirtyTouching;
 	bool pInsideCamera;
 	
@@ -568,14 +566,6 @@ public:
 	
 	
 	
-	/** Light is visible. */
-	inline bool GetVisible() const{ return pVisible; }
-	
-	/** Set if light is visible. */
-	void SetVisible( bool visible );
-	
-	
-	
 	/** Set touching dirty. */
 	void SetDirtyTouching();
 	
@@ -614,12 +604,6 @@ public:
 	
 	/** \name Culling */
 	/*@{*/
-	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
-	
-	/** The occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
-	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();
 	

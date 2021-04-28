@@ -688,15 +688,15 @@ public:
 private:
 	void pBarePrepareRender();
 	void pPlanSky();
+	void pPlanSkyLight();
 	void pPlanDominance();
 	void pPlanShadowCasting();
-	void pPlanOcclusionTesting();
-	void pPlanCollideList( deoglDCollisionFrustum *frustum );
-	void pPlanOcclusionTestInputData();
+	void pStartFindContent( deoglDCollisionFrustum *frustum );
+	void pAddOcclusionTestInputs();
 	void pPlanGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
-	void pPlanVisibility( deoglDCollisionFrustum *frustum );
+	void pStartOcclusionTests( deoglDCollisionFrustum *frustum );
 	
 	void pDebugPrepare();
 	void pDebugVisibleNoCull();
@@ -706,7 +706,6 @@ private:
 	
 	void pCheckTransparency();
 	void pBuildRenderPlan();
-	void pBuildSkyLightPlan();
 	void pBuildLightPlan();
 	void pCalcShadowMemoryConsumption( deoglRenderCacheLight &light,
 		deoglRenderCacheLightShadow &shadow, bool withColor );

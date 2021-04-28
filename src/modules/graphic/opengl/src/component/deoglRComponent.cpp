@@ -45,7 +45,6 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
-#include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/mesh/deoglDynamicOcclusionMesh.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -154,7 +153,6 @@ pLLPrepareForRenderWorld( this )
 	
 	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
-	pRenderVisible = true;
 	
 	pFirstRender = true;
 	pRenderStatic = true;
@@ -1093,10 +1091,6 @@ void deoglRComponent::DirtySolid(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::SetRenderVisible( bool visible ){
-	pRenderVisible = visible;
-}
-
 void deoglRComponent::SetRenderStatic( bool isStatic ){
 	if( isStatic == pRenderStatic ){
 		return;
@@ -1568,30 +1562,6 @@ float deoglRComponent::GetCullSphereRadius(){
 
 void deoglRComponent::SetDirtyCulling(){
 	pDirtyCulling = true;
-}
-
-
-
-void deoglRComponent::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
-	if( ! pModel || ! pSkin ){
-		return;
-	}
-	/*
-	if( pRenderMode == ermDynamic ){
-		if( pComponent->GetBoneCount() > 8 ){
-			return;
-		}
-	}
-	*/
-	
-	const decVector minExtend = ( pMinExtend - cameraPosition ).ToVector();
-	const decVector maxExtend = ( pMaxExtend - cameraPosition ).ToVector();
-	
-	occlusionTest.AddInputData( minExtend, maxExtend, this );
-}
-
-void deoglRComponent::OcclusionTestInvisible(){
-	pRenderVisible = false;
 }
 
 

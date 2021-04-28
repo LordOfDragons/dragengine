@@ -36,8 +36,9 @@
 #include "../task/deoglRenderTaskShader.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../canvas/render/deoglRCanvasView.h"
-#include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
 #include "../../collidelist/deoglCollideListManager.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -503,12 +504,12 @@ void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, deog
 	DebugTimersReset( plan, false );
 	
 	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *clist.GetLightAt( i );
+		deoglCollideListLight &cllight = *clist.GetLightAt( i );
 		
-		switch( light.GetLightType() ){
+		switch( cllight.GetLight()->GetLightType() ){
 		case deLight::eltSpot:
 		case deLight::eltProjector:
-			RenderLight( plan, solid, mask, light );
+			RenderLight( plan, solid, mask, cllight );
 			break;
 			
 		default:
@@ -527,8 +528,9 @@ void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, deog
 
 #include "../../debug/deoglDebugStateSnapshot.h"
 void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglRLight &light ){
+deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	deoglRLight &light = *cllight.GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
@@ -636,7 +638,7 @@ deoglRenderPlanMasked *mask, deoglRLight &light ){
 	
 	// check if the light is hidden or not
 	if( light.IsHiddenByOccQuery() ){
-		light.SetVisible( false );
+		cllight.SetCulled( true );
 		return;
 	}
 	

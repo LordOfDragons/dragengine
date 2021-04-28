@@ -33,8 +33,9 @@
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
-#include "../collidelist/deoglCollideListComponent.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../collidelist/deoglCollideListComponent.h"
+#include "../collidelist/deoglCollideListLight.h"
 #include "../collidelist/deoglCollideListManager.h"
 #include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugInformation.h"
@@ -535,14 +536,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 			for( i=0; i<componentCount; i++ ){
 				const deoglCollideListComponent &clistComponent = *collideList.GetComponentAt( i );
 				const deoglRComponent &component = *clistComponent.GetComponent();
-				
-				if( ! component.GetRenderVisible() ){
-					continue;
-				}
-				if( ! component.GetModel() ){
-					continue;
-				}
-				
 				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
 				
 				planDebug->IncrementRenderedObjects();
@@ -763,7 +756,7 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// can return. not much one can do here except reintroducing the assigning
 	// of lights to rooms to cull them this way. solution pending.
 	
-	collideList.MarkLightsVisible( true );
+	collideList.MarkLightsCulled( false );
 	
 	if( lightCount == 0 ){
 		DBG_EXIT("RenderOcclusionQueryPass(earily)")
@@ -808,7 +801,7 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// spdoPFMatrix // not used for light
 	
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
+		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 		light.UpdateLightVolume();
 		
 		const decDVector &lminext = light.GetMinimumExtend();

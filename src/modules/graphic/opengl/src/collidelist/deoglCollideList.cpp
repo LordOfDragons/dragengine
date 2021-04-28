@@ -25,6 +25,7 @@
 
 #include "deoglCollideList.h"
 #include "deoglCollideListComponent.h"
+#include "deoglCollideListLight.h"
 #include "deoglCollideListPropField.h"
 #include "deoglCollideListPropFieldType.h"
 #include "deoglCollideListHTSector.h"
@@ -159,16 +160,10 @@ void deoglCollideList::AddElementsColliding( deoglWorldOctree *octree, deoglDCol
 	octree->VisitNodesCollidingVolume( &visitor, volume );
 }
 
-void deoglCollideList::MarkElementsVisible( bool visible ){
-	MarkComponentsVisible( visible );
-	MarkLightsVisible( visible );
-	MarkBillboardsVisible( visible );
-}
-
-void deoglCollideList::RemoveVisibleElements( bool visible ){
-	RemoveVisibleComponents( visible );
-	RemoveVisibleLights( visible );
-	RemoveVisibleBillboards( visible );
+void deoglCollideList::RemoveCulledElements(){
+	RemoveCulledComponents();
+	RemoveCulledLights();
+	RemoveCulledBillboards();
 }
 
 
@@ -197,8 +192,9 @@ void deoglCollideList::AddEnvironmentMapsColliding( deoglWorldOctree &octree, de
 ///////////////
 
 deoglCollideListComponent *deoglCollideList::GetComponentAt( int index ) const{
-	if( index < 0 || index >= pComponentCount ) DETHROW( deeInvalidParam );
-	
+	if( index < 0 || index >= pComponentCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pComponents[ index ];
 }
 
@@ -229,12 +225,16 @@ bool deoglCollideList::HasComponent( deoglRComponent *component ) const{
 }
 
 void deoglCollideList::AddComponent( deoglRComponent *component ){
-	if( ! component ) DETHROW( deeInvalidParam );
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pComponentCount == pComponentSize ){
 		int i, newSize = pComponentCount * 3 / 2 + 1;
 		deoglCollideListComponent **newArray = new deoglCollideListComponent*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		if( ! newArray ){
+			DETHROW( deeOutOfMemory );
+		}
 		for( i=pComponentSize; i<newSize; i++ ){
 			newArray[ i ] = NULL;
 		}
@@ -250,7 +250,9 @@ void deoglCollideList::AddComponent( deoglRComponent *component ){
 	
 	if( ! pComponents[ pComponentCount ] ){
 		pComponents[ pComponentCount ] = new deoglCollideListComponent;
-		if( ! pComponents[ pComponentCount ] ) DETHROW( deeOutOfMemory );
+		if( ! pComponents[ pComponentCount ] ){
+			DETHROW( deeOutOfMemory );
+		}
 	}
 	pComponents[ pComponentCount ]->SetComponent( component );
 	pComponentCount++;
@@ -291,28 +293,20 @@ void deoglCollideList::AddComponentsColliding( deoglWorldOctree &octree, deoglDC
 	octree.VisitNodesCollidingVolume( &visitor, volume );
 }
 
-void deoglCollideList::MarkComponentsVisible( bool visible ){
-	int c;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		pComponents[ c ]->GetComponent()->SetRenderVisible( visible );
-	}
-}
-
-void deoglCollideList::RemoveVisibleComponents( bool visible ){
-	deoglCollideListComponent *exchange;
-	int c, last = 0;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		if( pComponents[ c ]->GetComponent()->GetRenderVisible() != visible ){
-			if( c != last ){
-				pComponents[ last ]->Clear();
-				exchange = pComponents[ last ];
-				pComponents[ last ] = pComponents[ c ];
-				pComponents[ c ] = exchange;
-			}
-			last++;
+void deoglCollideList::RemoveCulledComponents(){
+	int i, last = 0;
+	for( i=0; i<pComponentCount; i++ ){
+		if( pComponents[ i ]->GetCulled() ){
+			continue;
 		}
+		
+		if( i != last ){
+			pComponents[ last ]->Clear();
+			deoglCollideListComponent * const exchange = pComponents[ last ];
+			pComponents[ last ] = pComponents[ i ];
+			pComponents[ i ] = exchange;
+		}
+		last++;
 	}
 	pComponentCount = last;
 }
@@ -418,28 +412,92 @@ void deoglCollideList::LogComponents() const{
 // Lights
 ///////////
 
-deoglRLight *deoglCollideList::GetLightAt( int index ) const{
-	if( index < 0 || index >= pLightCount ) DETHROW( deeInvalidParam );
+deoglCollideListLight *deoglCollideList::GetLightAt( int index ) const{
+	if( index < 0 || index >= pLightCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pLights[ index ];
 }
 
-void deoglCollideList::AddLight( deoglRLight *light ){
+int deoglCollideList::IndexOfLight( deoglRLight *light ) const{
 	if( ! light ) DETHROW( deeInvalidParam );
+	int i;
+	
+	for( i=0; i<pLightCount; i++ ){
+		if( light == pLights[ i ]->GetLight() ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+bool deoglCollideList::HasLight( deoglRLight *light ) const{
+	if( ! light ) DETHROW( deeInvalidParam );
+	int i;
+	
+	for( i=0; i<pLightCount; i++ ){
+		if( light == pLights[ i ]->GetLight() ){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void deoglCollideList::AddLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pLightCount == pLightSize ){
 		int i, newSize = pLightCount * 3 / 2 + 1;
-		deoglRLight **newArray = new deoglRLight*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglCollideListLight **newArray = new deoglCollideListLight*[ newSize ];
+		if( ! newArray ){
+			DETHROW( deeOutOfMemory );
+		}
+		for( i=pLightSize; i<newSize; i++ ){
+			newArray[ i ] = NULL;
+		}
 		if( pLights ){
-			for( i=0; i<pLightCount; i++ ) newArray[ i ] = pLights[ i ];
+			for( i=0; i<pLightSize; i++ ){
+				newArray[ i ] = pLights[ i ];
+			}
 			delete [] pLights;
 		}
 		pLights = newArray;
 		pLightSize = newSize;
 	}
 	
-	pLights[ pLightCount ] = light;
+	if( ! pLights[ pLightCount ] ){
+		pLights[ pLightCount ] = new deoglCollideListLight;
+		if( ! pLights[ pLightCount ] ){
+			DETHROW( deeOutOfMemory );
+		}
+	}
+	pLights[ pLightCount ]->SetLight( light );
 	pLightCount++;
+}
+
+void deoglCollideList::RemoveLight( deoglRLight *light ){
+	RemoveLightFrom( IndexOfLight( light ) );
+}
+
+void deoglCollideList::RemoveLightFrom( int index ){
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglCollideListLight * const cllight = pLights[ index ];
+	int i;
+	
+	cllight->Clear();
+	
+	for( i=index+1; i<pLightCount; i++ ){
+		pLights[ i - 1 ] = pLights[ i ];
+	}
+	pLightCount--;
+	pLights[ pLightCount ] = cllight;
 }
 
 void deoglCollideList::RemoveAllLights(){
@@ -447,33 +505,38 @@ void deoglCollideList::RemoveAllLights(){
 }
 
 void deoglCollideList::AddLightsColliding( deoglWorldOctree *octree, deoglDCollisionVolume *colVol ){
-	if( ! octree || ! colVol ) DETHROW( deeInvalidParam );
-	deoglCLVisitorElements visitor( this, colVol );
+	if( ! octree || ! colVol ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	deoglCLVisitorElements visitor( this, colVol );
 	visitor.SetVisitAll( false );
 	visitor.SetVisitLights( true );
 	
 	octree->VisitNodesCollidingVolume( &visitor, colVol );
 }
 
-void deoglCollideList::MarkLightsVisible( bool visible ){
-	int l;
-	
-	for( l=0; l<pLightCount; l++ ){
-		pLights[ l ]->SetVisible( visible );
+void deoglCollideList::MarkLightsCulled( bool culled ){
+	int i;
+	for( i=0; i<pLightCount; i++ ){
+		pLights[ i ]->SetCulled( culled );
 	}
 }
 
-void deoglCollideList::RemoveVisibleLights( bool visible ){
-	int l, last = 0;
-	
-	for( l=0; l<pLightCount; l++ ){
-		if( pLights[ l ]->GetVisible() != visible ){
-			if( l != last ){
-				pLights[ last ] = pLights[ l ];
-			}
-			last++;
+void deoglCollideList::RemoveCulledLights(){
+	int i, last = 0;
+	for( i=0; i<pLightCount; i++ ){
+		if( pLights[ i ]->GetCulled() ){
+			continue;
 		}
+		
+		if( i != last ){
+			pLights[ last ]->Clear();
+			deoglCollideListLight * const exchange = pLights[ last ];
+			pLights[ last ] = pLights[ i ];
+			pLights[ i ] = exchange;
+		}
+		last++;
 	}
 	pLightCount = last;
 }
@@ -527,24 +590,18 @@ void deoglCollideList::AddBillboardsColliding( deoglWorldOctree &octree, deoglDC
 	octree.VisitNodesCollidingVolume( &visitor, colVol );
 }
 
-void deoglCollideList::MarkBillboardsVisible( bool visible ){
-	int l;
-	
-	for( l=0; l<pBillboardCount; l++ ){
-		pBillboards[ l ]->SetRenderVisible( visible );
-	}
-}
-
-void deoglCollideList::RemoveVisibleBillboards( bool visible ){
-	int l, last = 0;
-	
-	for( l=0; l<pBillboardCount; l++ ){
-		if( pBillboards[ l ]->GetVisible() != visible ){
-			if( l != last ){
-				pBillboards[ last ] = pBillboards[ l ];
-			}
-			last++;
+void deoglCollideList::RemoveCulledBillboards(){
+	int i, last = 0;
+	for( i=0; i<pBillboardCount; i++ ){
+		//if( ! pBillboards[ i ]->GetCulled() ){
+		if( pBillboards[ i ]->GetVisible() ){
+			continue;
 		}
+		
+		if( i != last ){
+			pBillboards[ last ] = pBillboards[ i ];
+		}
+		last++;
 	}
 	pBillboardCount = last;
 }
@@ -805,7 +862,15 @@ void deoglCollideList::pCleanUp(){
 		delete [] pHTSectors;
 	}
 	
-	if( pLights ) delete [] pLights;
+	if( pLights ){
+		while( pLightSize > 0 ){
+			pLightSize--;
+			if( pLights[ pLightSize ] ){
+				delete pLights[ pLightSize ];
+			}
+		}
+		delete [] pLights;
+	}
 	
 	if( pComponents ){
 		while( pComponentSize > 0 ){

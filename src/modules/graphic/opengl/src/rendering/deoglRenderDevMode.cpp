@@ -30,6 +30,7 @@
 #include "plan/deoglRenderPlanDebug.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../collidelist/deoglCollideListComponent.h"
+#include "../collidelist/deoglCollideListLight.h"
 #include "../collidelist/deoglCollideListManager.h"
 #include "../collidelist/deoglCollideListPropField.h"
 #include "../collidelist/deoglCollideListPropFieldType.h"
@@ -283,26 +284,18 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	
 	shader.SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
-		
-		if( light.GetVisible() ){
-			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-			
-			shapeBox.RenderFaces();
-		}
+		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
+		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		shapeBox.RenderFaces();
 	}
 	
 	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
-		
-		if( light.GetVisible() ){
-			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-			
-			shapeBox.RenderLines();
-		}
+		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
+		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		shapeBox.RenderLines();
 	}
 	pglBindVertexArray( 0 );
 }
@@ -566,7 +559,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 			
 			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
 			
@@ -586,7 +579,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 			
 			box.SetFromExtends( light.GetFullMinExtend(), light.GetFullMaxExtend() );
 			
@@ -608,7 +601,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
 			pglBindVertexArray( lightVolume.GetVAO() );
@@ -638,7 +631,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
-		deoglRLight &light = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
+		deoglRLight &light = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() )->GetLight();
 		decMatrix matrix1, matrix2;
 		decDMatrix matrixMVP;
 		

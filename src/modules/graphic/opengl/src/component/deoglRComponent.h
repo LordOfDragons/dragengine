@@ -24,7 +24,6 @@
 
 #include "../deoglBasics.h"
 #include "../light/deoglLightList.h"
-#include "../occlusiontest/deoglOcclusionTestListener.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 
 #include <dragengine/deObject.h>
@@ -60,7 +59,6 @@ class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
-class deoglOcclusionTest;
 
 class deComponent;
 
@@ -68,7 +66,7 @@ class deComponent;
 /**
  * Render component.
  */
-class deoglRComponent : public deObject, public deoglOcclusionTestListener{
+class deoglRComponent : public deObject{
 public:
 	/** Render modes. */
 	enum eRenderModes{
@@ -126,7 +124,6 @@ public:
 	bool pDirtyModelRigMappings;
 	
 	bool pCameraInside;
-	bool pRenderVisible;
 	
 	bool pFirstRender;
 	bool pRenderStatic;
@@ -484,12 +481,6 @@ public:
 	/** Component is render static right now. */
 	inline bool GetRenderStatic() const{ return pRenderStatic; }
 	
-	/** Component is render visible. */
-	inline bool GetRenderVisible() const{ return pRenderVisible; }
-	
-	/** Set if component is render visible. */
-	void SetRenderVisible( bool visible );
-	
 	/** Set render static. */
 	void SetRenderStatic( bool isStatic );
 	
@@ -665,12 +656,6 @@ public:
 	
 	/** Set culling parameters dirty. */
 	void SetDirtyCulling();
-	
-	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
-	
-	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
 	/*@}*/
 	
 	
