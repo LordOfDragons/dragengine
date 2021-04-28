@@ -631,9 +631,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	componentCount = collideList.GetComponentCount();
 	int c;
 	for( c=0; c<componentCount; c++ ){
-		deoglRComponent * const component = collideList.GetComponentAt( c )->GetComponent();
-		component->SetRenderVisible( true );
-		component->StartOcclusionTest( occlusionTest, referencePosition );
+		collideList.GetComponentAt( c )->StartOcclusionTest( occlusionTest, referencePosition );
 	}
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionStart, false );
 	

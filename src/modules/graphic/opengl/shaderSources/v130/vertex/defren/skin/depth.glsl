@@ -222,7 +222,11 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vReflectDir = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vReflectDir = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
@@ -245,7 +249,11 @@ void main( void ){
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				vPosition = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vPosition = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vPosition = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
@@ -258,7 +266,11 @@ void main( void ){
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				vClipCoord = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vClipCoord = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vClipCoord = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
@@ -274,7 +286,11 @@ void main( void ){
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
+			#ifdef GS_RENDER_CUBE
+				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1.0 ) ).z;
+			#else
+				vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
+			#endif
 		#endif
 	#endif
 	
