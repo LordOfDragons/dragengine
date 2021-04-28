@@ -53,7 +53,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../gi/deoglGI.h"
 #include "../light/deoglLightBoundaryMap.h"
-#include "../occlusiontest/deoglOcclusionTest.h"
+#include "../occlusiontest/deoglOcclusionTestPool.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
@@ -116,13 +116,13 @@ pEnvMapSlotManager( NULL ),
 pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
-pOcclusionTest( NULL ),
 pGI( NULL ),
 pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
 pPersistentRenderTaskPool( NULL ),
 pUniqueKey( NULL ),
+pOcclusionTestPool( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -957,6 +957,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pBufferObject->Init();
 	
 	pTriangleSorter = new deoglTriangleSorter;
+	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pDelayedOperations = new deoglDelayedOperations( *this );
 	pRenderCache = new deoglRenderCache( *this );
@@ -965,7 +966,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pOcclusionTest = new deoglOcclusionTest( *this );
 	pGI = new deoglGI( *this );
 	pLightBoundarybox = new deoglLightBoundaryMap( *this, pConfiguration.GetShadowMapSize() >> 1 );
 	
@@ -1893,6 +1893,10 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pLightBoundarybox;
 			pLightBoundarybox = NULL;
 		}
+		if( pOcclusionTestPool ){
+			delete pOcclusionTestPool;
+			pOcclusionTestPool = NULL;
+		}
 		if( pPersistentRenderTaskPool ){
 			delete pPersistentRenderTaskPool;
 			pPersistentRenderTaskPool = NULL;
@@ -1909,10 +1913,6 @@ void deoglRenderThread::pCleanUpThread(){
 		if( pGI ){
 			delete pGI;
 			pGI = NULL;
-		}
-		if( pOcclusionTest ){
-			delete pOcclusionTest;
-			pOcclusionTest = NULL;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );

@@ -36,10 +36,8 @@ class deoglVBOLayout;
 
 
 /**
- * @brief Occlusion Test.
- * Provides support for occlusion tests using a simplified hardware approach.
- * Depending on the screen size the starting lod level of the occlusion map
- * can be altered.
+ * Provides support for occlusion tests using a simplified hardware approach. Depending on
+ * the screen size the starting lod level of the occlusion map can be altered.
  */
 class deoglOcclusionTest{
 private:
@@ -48,12 +46,10 @@ private:
 		oglVector3 maxExtend;
 	};
 	
-private:
+	
+	
 	deoglRenderThread &pRenderThread;
 	
-	deoglOcclusionMap *pOcclusionMapMain;
-	deoglOcclusionMap *pOcclusionMapMask;
-	deoglOcclusionMap *pOcclusionMapSky;
 	deoglTexture *pTextureResult;
 	deoglFramebuffer *pFBOResult;
 	
@@ -75,58 +71,72 @@ private:
 	int pResultWidth;
 	int pResultHeight;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new occlusion test object. */
+	/** Create occlusion test. */
 	deoglOcclusionTest( deoglRenderThread &renderThread );
-	/** Cleans up the occlusion test. */
+	
+	/** Clean up occlusion test. */
 	~deoglOcclusionTest();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main occlusion map. */
-	inline deoglOcclusionMap *GetOcclisionMapMain() const{ return pOcclusionMapMain; }
-	/** Retrieves the mask occlusion map. */
-	inline deoglOcclusionMap *GetOcclisionMapMask() const{ return pOcclusionMapMask; }
-	/** Retrieves the sky occlusion map. */
-	inline deoglOcclusionMap *GetOcclisionMapSky() const{ return pOcclusionMapSky; }
-	/** Retrieves the result texture. */
+	/** Result texture. */
 	inline deoglTexture *GetTextureResult() const{ return pTextureResult; }
-	/** Retrieves the result fbo. */
+	
+	/** Result fbo. */
 	inline deoglFramebuffer *GetFBOResult() const{ return pFBOResult; }
 	
-	/** Retrieves the number of input data. */
+	
+	
+	/** Count of input data. */
 	inline int GetInputDataCount() const{ return pInputDataCount; }
-	/** Retrieves the input data (for debugging purpose only). */
+	
+	/** Input data for debugging purpose only. */
 	inline void *GetInputData() const{ return pInputData; }
+	
 	/**
-	 * Adds an input data returning the index to fetch the result later. The test box is defined using
-	 * the world minimum and maximum extends translated translated by the camera position. Hence only
-	 * the translation part of the camera matrix has to be applied to the world box extends before
-	 * using them as input data. The rotation and projection is handled on the shader side.
+	 * Add input data returning the index to fetch the result later. The test box is
+	 * defined using the world minimum and maximum extends translated translated by
+	 * the camera position. Hence only the translation part of the camera matrix has
+	 * to be applied to the world box extends before using them as input data.
+	 * The rotation and projection is handled on the shader side.
 	 */
-	int AddInputData( const decVector &minExtend, const decVector &maxExtend, deoglOcclusionTestListener *listener );
+	int AddInputData( const decVector &minExtend, const decVector &maxExtend,
+		deoglOcclusionTestListener *listener );
+	
 	/** Remove all input data. */
 	void RemoveAllInputData();
 	
 	/** Update VBO using the collected input data. */
 	void UpdateVBO();
-	/** Retrieves the VAO. */
+	
+	/** VAO. */
 	GLuint GetVAO();
-	/** Retrieves the result vbo. */
+	
+	/** Result vbo. */
 	inline GLuint GetVBOResult() const{ return pVBOResult; }
-	/** Updates the results from the result texture. */
+	
+	/** Update results from result texture. */
 	void UpdateResults();
 	
-	/** Retrieves the result at the given index. */
+	/** Result at index. */
 	bool GetResultAt( int index ) const;
-	/** Retrieves the result width. */
+	
+	/** Result width. */
 	inline int GetResultWidth() const{ return pResultWidth; }
-	/** Retrieves the result height. */
+	
+	/** Result height. */
 	inline int GetResultHeight() const{ return pResultHeight; }
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

@@ -45,7 +45,6 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglOcclusionTest;
 class deoglRCanvas;
 class deoglRenderCache;
 class deoglRRenderWindow;
@@ -53,6 +52,7 @@ class deoglShadowMapper;
 class deoglTriangleSorter;
 class deoglPersistentRenderTaskPool;
 class deoglRTUniqueKey;
+class deoglOcclusionTestPool;
 
 class deoglRTBufferObject;
 class deoglRTContext;
@@ -126,13 +126,13 @@ private:
 	deoglExtensions *pExtensions;
 	deoglLightBoundaryMap *pLightBoundarybox;
 	deoglOcclusionQueryManager *pOccQueryMgr;
-	deoglOcclusionTest *pOcclusionTest;
 	deoglGI *pGI;
 	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
 	deoglPersistentRenderTaskPool *pPersistentRenderTaskPool;
 	deoglRTUniqueKey *pUniqueKey;
+	deoglOcclusionTestPool *pOcclusionTestPool;
 	
 	deoglTimeHistory pTimeHistoryMain;
 	deoglTimeHistory pTimeHistoryRender;
@@ -307,9 +307,6 @@ public:
 	/** Occlusion query manager. */
 	inline deoglOcclusionQueryManager &GetOcclusionQueryManager() const{ return *pOccQueryMgr; }
 	
-	/** Occlusion test. */
-	inline deoglOcclusionTest &GetOcclusionTest() const{ return *pOcclusionTest; }
-	
 	/** Global illumination. */
 	inline deoglGI &GetGI() const{ return *pGI; }
 	
@@ -324,6 +321,9 @@ public:
 	
 	/** Unique key. */
 	inline deoglRTUniqueKey &GetUniqueKey() const{ return *pUniqueKey; }
+	
+	/** Occlusion test pool. */
+	inline deoglOcclusionTestPool &GetOcclusionTestPool() const{ return *pOcclusionTestPool; }
 	
 	
 	

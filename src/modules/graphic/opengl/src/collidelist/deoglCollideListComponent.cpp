@@ -24,6 +24,8 @@
 
 #include "deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../occlusiontest/deoglOcclusionTest.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -35,9 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListComponent::deoglCollideListComponent(){
-	pComponent = NULL;
-	pLODLevel = 0;
+deoglCollideListComponent::deoglCollideListComponent() :
+pComponent( NULL ),
+pLODLevel( 0 ),
+pCulled( false ),
+pCascadeMask( 0 ){
 }
 
 deoglCollideListComponent::~deoglCollideListComponent(){
@@ -51,6 +55,8 @@ deoglCollideListComponent::~deoglCollideListComponent(){
 void deoglCollideListComponent::Clear(){
 	SetComponent( NULL );
 	pLODLevel = 0;
+	pCulled = false;
+	pCascadeMask = 0;
 }
 
 void deoglCollideListComponent::SetComponent( deoglRComponent *component ){
@@ -60,4 +66,41 @@ void deoglCollideListComponent::SetComponent( deoglRComponent *component ){
 
 void deoglCollideListComponent::SetLODLevel( int lodLevel ){
 	pLODLevel = lodLevel;
+}
+
+void deoglCollideListComponent::SetLODLevelMax(){
+	if( ! pComponent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pLODLevel = pComponent->GetLODCount() - 1;
+}
+
+void deoglCollideListComponent::SetCulled( bool culled ){
+	pCulled = culled;
+}
+
+void deoglCollideListComponent::SetCascadeMask( int mask ){
+	pCascadeMask = mask;
+}
+
+void deoglCollideListComponent::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
+const decDVector &cameraPosition ){
+	if( ! pComponent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( ! pComponent->GetModel() || ! pComponent->GetSkin() ){
+		OcclusionTestInvisible();
+		return;
+	}
+	
+	pCulled = false;
+	occlusionTest.AddInputData(
+		( pComponent->GetMinimumExtend() - cameraPosition ).ToVector(),
+		( pComponent->GetMaximumExtend() - cameraPosition ).ToVector(), this );
+}
+
+void deoglCollideListComponent::OcclusionTestInvisible(){
+	pCulled = true;
 }

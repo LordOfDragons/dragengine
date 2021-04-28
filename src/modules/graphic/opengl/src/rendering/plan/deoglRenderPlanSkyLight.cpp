@@ -33,6 +33,8 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../gi/deoglGIState.h"
 #include "../../model/deoglRModel.h"
+#include "../../occlusiontest/deoglOcclusionTest.h"
+#include "../../occlusiontest/deoglOcclusionTestPool.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -70,6 +72,7 @@ deoglRenderPlanSkyLight::deoglRenderPlanSkyLight( deoglRenderThread &renderThrea
 pRenderThread( renderThread ),
 pSky( NULL ),
 pLayer( NULL ),
+pOcclusionTest( NULL ),
 pPrepared( false ),
 pUseLight( true ),
 pUseShadow( false ),
@@ -96,6 +99,18 @@ deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 
 // Management
 ///////////////
+
+void deoglRenderPlanSkyLight::SetOcclusionTest( deoglOcclusionTest *occlusionTest ){
+	if( occlusionTest == pOcclusionTest ){
+		return;
+	}
+	
+	if( pOcclusionTest ){
+		pRenderThread.GetOcclusionTestPool().Return( pOcclusionTest );
+	}
+	
+	pOcclusionTest = occlusionTest;
+}
 
 void deoglRenderPlanSkyLight::ClearPrepared(){
 	pPrepared = false;
@@ -140,6 +155,7 @@ void deoglRenderPlanSkyLight::Clear(){
 	pGIRenderTask.Clear();
 	pGICollideList.Clear();
 	
+	SetOcclusionTest( NULL );
 	pCollideList.Clear();
 	pUseLight = false;
 	pUseShadow = false;
@@ -187,6 +203,7 @@ void deoglRenderPlanSkyLight::Prepare( deoglRenderPlan &plan ){
 		SPECIAL_TIMER_PRINT("GI Update Render Task")
 	}
 	
+	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pCalcShadowLayerParams( plan );
 	pCollectElements( plan );
 	SPECIAL_TIMER_PRINT("Collect")
@@ -197,6 +214,7 @@ void deoglRenderPlanSkyLight::CleanUp(){
 	pCollideList.Clear();
 	pUseLight = false;
 	pUseShadow = false;
+	SetOcclusionTest( NULL );
 }
 
 

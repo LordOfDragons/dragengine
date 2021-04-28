@@ -22,7 +22,12 @@
 #ifndef _DEOGLCOLLIDELISTCOMPONENT_H_
 #define _DEOGLCOLLIDELISTCOMPONENT_H_
 
+#include "../occlusiontest/deoglOcclusionTestListener.h"
+
+#include <dragengine/common/math/decMath.h>
+
 class deoglRComponent;
+class deoglOcclusionTest;
 
 
 
@@ -34,34 +39,66 @@ class deoglRComponent;
  * not referenced. Care has to be taken to clear collide lists of a component
  * is no more existing.
  */
-class deoglCollideListComponent{
+class deoglCollideListComponent : public deoglOcclusionTestListener{
 private:
 	deoglRComponent *pComponent;
 	int pLODLevel;
+	bool pCulled;
+	int pCascadeMask;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new collide list component. */
+	/** Create collide list component. */
 	deoglCollideListComponent();
-	/** Cleans up the collide list component. */
+	
+	/** Clean up collide list component. */
 	~deoglCollideListComponent();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Clears the collide list component setting the component to NULL and removing all strips. */
+	/** Clear collide list. */
 	void Clear();
 	
-	/** Retrieves the component. */
+	/** Component. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
-	/** Sets the component. */
+	
+	/** Set component. */
 	void SetComponent( deoglRComponent *component );
 	
-	/** Retrieves the lod level to use. */
+	/** LOD level to use. */
 	inline int GetLODLevel() const{ return pLODLevel; }
-	/** Sets the lod level to use. */
+	
+	/** Set LOD level to use. */
 	void SetLODLevel( int lodLevel );
+	
+	/** Set LOD level to use to maximum LOD level. */
+	void SetLODLevelMax();
+	
+	
+	
+	/** Component is culled. */
+	inline bool GetCulled() const{ return pCulled; }
+	
+	/** Set component is culled. */
+	void SetCulled( bool visible );
+	
+	/** Cascade mask. */
+	inline int GetCascadeMask() const{ return pCascadeMask; }
+	
+	/** Set cascade mask. */
+	void SetCascadeMask( int mask );
+	
+	/** Start occlusion test. */
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
+	
+	/** Occlusion test finished with a result of invisible for the element. */
+	virtual void OcclusionTestInvisible();
 	/*@}*/
 };
 

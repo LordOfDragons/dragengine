@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglOcclusionMap.h"
 #include "deoglOcclusionTest.h"
 #include "deoglOcclusionTestListener.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -51,9 +50,6 @@
 
 deoglOcclusionTest::deoglOcclusionTest( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ){
-	pOcclusionMapMain = NULL;
-	pOcclusionMapMask = NULL;
-	pOcclusionMapSky = NULL;
 	pTextureResult = NULL;
 	pVAO = 0;
 	pVBO = 0;
@@ -74,10 +70,6 @@ pRenderThread( renderThread ){
 	pResultHeight = 0;
 	
 	try{
-		pOcclusionMapMain = new deoglOcclusionMap( pRenderThread, 256, 256 ); // 512, 512
-		pOcclusionMapMask = new deoglOcclusionMap( pRenderThread, 256, 256 ); // 512, 512
-		//pOcclusionMapSky = new deoglOcclusionMap( pRenderThread, 256, 256 ); // 512, 512
-		
 		pTextureResult = new deoglTexture( renderThread );
 		pTextureResult->SetMipMapped( false );
 		
@@ -278,16 +270,6 @@ void deoglOcclusionTest::pCleanUp(){
 	}
 	if( pPBResults ){
 		delete pPBResults;
-	}
-	
-	if( pOcclusionMapMain ){
-		delete pOcclusionMapMain;
-	}
-	if( pOcclusionMapMask ){
-		delete pOcclusionMapMask;
-	}
-	if( pOcclusionMapSky ){
-		delete pOcclusionMapSky;
 	}
 	
 	if( pVBOResultData ){

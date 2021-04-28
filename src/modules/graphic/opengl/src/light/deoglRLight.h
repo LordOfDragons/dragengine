@@ -50,6 +50,7 @@ class deoglShadowCaster;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglWorldOctree;
+class deoglOcclusionTest;
 
 class decConvexVolumeList;
 class deoglDCollisionVolume;
@@ -614,7 +615,7 @@ public:
 	/** \name Culling */
 	/*@{*/
 	/** Start occlusion test. */
-	void StartOcclusionTest( const decDVector &cameraPosition );
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
 	
 	/** The occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

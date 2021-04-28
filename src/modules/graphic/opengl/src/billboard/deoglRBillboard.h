@@ -44,6 +44,7 @@ class deoglShaderParameterBlock;
 class deoglSharedSPBElement;
 class deoglSharedSPBRTIGroup;
 class deoglRenderPlan;
+class deoglOcclusionTest;
 
 class deBillboard;
 
@@ -425,7 +426,7 @@ public:
 	void SetDirtyCulling();
 	
 	/** \brief Start occlusion test. */
-	void StartOcclusionTest( const decDVector &cameraPosition );
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
 	
 	/** \brief Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

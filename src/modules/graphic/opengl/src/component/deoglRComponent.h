@@ -60,6 +60,7 @@ class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
+class deoglOcclusionTest;
 
 class deComponent;
 
@@ -666,7 +667,7 @@ public:
 	void SetDirtyCulling();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( const decDVector &cameraPosition );
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

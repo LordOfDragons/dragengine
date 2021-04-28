@@ -40,6 +40,7 @@ class deoglFramebuffer;
 class deoglGraphicContext;
 class deoglHTView;
 class deoglOcclusionMap;
+class deoglOcclusionTest;
 class deoglGIState;
 class deoglRenderPlanEnvMap;
 class deoglPlanVisitorCullElements;
@@ -167,6 +168,7 @@ private:
 	int pStencilWriteMask;
 	
 	deoglOcclusionMap *pOcclusionMap;
+	deoglOcclusionTest *pOcclusionTest;
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
 	deoglGIState *pGIState;
@@ -552,7 +554,13 @@ public:
 	inline deoglOcclusionMap *GetOcclusionMap() const{ return pOcclusionMap; }
 	
 	/** Set occlusion map. */
-	void SetOcclusionMap( deoglOcclusionMap *map );
+	void SetOcclusionMap( deoglOcclusionMap *occlusionMap );
+	
+	/** Occlusion test. */
+	inline deoglOcclusionTest *GetOcclusionTest() const{ return pOcclusionTest; }
+	
+	/** Set occlusion test. */
+	void SetOcclusionTest( deoglOcclusionTest *occlusionTest );
 	
 	/** Occlusion map base level. */
 	inline int GetOcclusionMapBaseLevel() const{ return pOcclusionMapBaseLevel; }

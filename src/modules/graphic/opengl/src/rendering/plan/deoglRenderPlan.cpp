@@ -53,6 +53,8 @@
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
+#include "../../occlusiontest/deoglOcclusionMapPool.h"
+#include "../../occlusiontest/deoglOcclusionTestPool.h"
 #include "../../gi/deoglGI.h"
 #include "../../gi/deoglGIState.h"
 #include "../../particle/deoglRParticleEmitter.h"
@@ -66,6 +68,8 @@
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTTexture.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../skin/deoglRSkin.h"
 #include "../../skin/deoglSkinTexture.h"
@@ -115,6 +119,8 @@ pRenderThread( renderThread ),
 pUseGIState( true ),
 pUseConstGIState( NULL ),
 pSkyLightCount( 0 ),
+pOcclusionMap( NULL ),
+pOcclusionTest( NULL ),
 pGIState( NULL )
 {
 	pWorld = NULL;
@@ -213,6 +219,8 @@ public:
 };
 
 deoglRenderPlan::~deoglRenderPlan(){
+	CleanUp();
+	
 	int i, count;
 	
 	if( pMaskedPlans ){
@@ -703,27 +711,9 @@ void deoglRenderPlan::pPlanShadowCasting(){
 }
 
 void deoglRenderPlan::pPlanOcclusionTesting(){
-	deoglOcclusionTest &occtest = pRenderThread.GetOcclusionTest();
-	
-	// determine the occlusion map and base level to use for rendering. depending on the aspect
-	// ratio of the screen the 1:1 or 2:1 occlusion map is used. using the 1:1 for aspect ratios
-	// less than 1.5 allows to save half the render work as half the pixels are rendered. the
-	// base level is used to start at a smaller occlusion map size if the screen size is small.
-	// this allows to save render work as well.
-	/*if( pAspectRatio < 1.5f ){
-		pOcclusionMap = occtest.GetOcclisionMap1();
-		
-	}else{
-		pOcclusionMap = occtest.GetOcclisionMap2();
-	}*/
-	
-	if( pNoRenderedOccMesh ){
-		pOcclusionMap = occtest.GetOcclisionMapMask();
-		
-	}else{
-		pOcclusionMap = occtest.GetOcclisionMapMain();
-	}
-	
+// 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 512, 512 ) );
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) );
+	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 }
 
@@ -787,34 +777,30 @@ SPECIAL_TIMER_PRINT(">EnvMap")
 
 void deoglRenderPlan::pPlanOcclusionTestInputData(){
 	const int componentCount = pCollideList.GetComponentCount();
-	deoglOcclusionTest &occtest = pRenderThread.GetOcclusionTest();
 	const int lightCount = pCollideList.GetLightCount();
 	int i;
 	
 	// add input data for all elements. skip a group of elements if there are not enough
 	// elements visible. this avoids spending more time on testing than is used up for
 	// rendering them
-	occtest.RemoveAllInputData();
+	deoglOcclusionTest &occlusionTest = *pOcclusionTest;
+	occlusionTest.RemoveAllInputData();
 	
-// 	if( componentCount >= 10 ){ // at least 10 components before testing them
-		for( i=0; i<componentCount; i++ ){
-			pCollideList.GetComponentAt( i )->GetComponent()->StartOcclusionTest( pCameraPosition );
-		}
-// 	}
+	for( i=0; i<componentCount; i++ ){
+		pCollideList.GetComponentAt( i )->GetComponent()->StartOcclusionTest( occlusionTest, pCameraPosition );
+	}
 	
-// 	if( lightCount >= 3 ){ // at least 3 lights before testing them
-		for( i=0; i<lightCount; i++ ){
-			pCollideList.GetLightAt( i )->StartOcclusionTest( pCameraPosition );
-		}
-// 	}
+	for( i=0; i<lightCount; i++ ){
+		pCollideList.GetLightAt( i )->StartOcclusionTest( occlusionTest, pCameraPosition );
+	}
 	
-	if( occtest.GetInputDataCount() > 0 ){
-		occtest.UpdateVBO();
+	if( occlusionTest.GetInputDataCount() > 0 ){
+		occlusionTest.UpdateVBO();
 	}
 	
 	// debug information if demanded
 	if( pDebug ){
-		pDebug->IncrementOccTestCount( occtest.GetInputDataCount() );
+		pDebug->IncrementOccTestCount( occlusionTest.GetInputDataCount() );
 	}
 }
 
@@ -1226,7 +1212,7 @@ void deoglRenderPlan::pPlanVisibility( deoglDCollisionFrustum *frustum ){
 		// to do some other small work before fetching the results ).
 		
 		// if there are no input points skip the test
-		if( pRenderThread.GetOcclusionTest().GetInputDataCount() > 0 ){
+		if( pOcclusionTest->GetInputDataCount() > 0 ){
 			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this );
 		}
 // DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Occlusion Testing" );
@@ -1455,6 +1441,8 @@ void deoglRenderPlan::CleanUp(){
 	RemoveAllLights();
 	pDropLightsDynamic();
 	pCollideList.Clear();
+	SetOcclusionTest( NULL );
+	SetOcclusionMap( NULL );
 }
 
 
@@ -1704,8 +1692,28 @@ void deoglRenderPlan::SetStencilWriteMask( int writeMask ){
 	pStencilWriteMask = writeMask;
 }
 
-void deoglRenderPlan::SetOcclusionMap( deoglOcclusionMap *map ){
-	pOcclusionMap = map;
+void deoglRenderPlan::SetOcclusionMap( deoglOcclusionMap *occlusionMap ){
+	if( occlusionMap == pOcclusionMap ){
+		return;
+	}
+	
+	if( pOcclusionMap ){
+		pRenderThread.GetTexture().GetOcclusionMapPool().Return( pOcclusionMap );
+	}
+	
+	pOcclusionMap = occlusionMap;
+}
+
+void deoglRenderPlan::SetOcclusionTest( deoglOcclusionTest *occlusionTest ){
+	if( occlusionTest == pOcclusionTest ){
+		return;
+	}
+	
+	if( pOcclusionTest ){
+		pRenderThread.GetOcclusionTestPool().Return( pOcclusionTest );
+	}
+	
+	pOcclusionTest = occlusionTest;
 }
 
 void deoglRenderPlan::SetOcclusionMapBaseLevel( int level ){

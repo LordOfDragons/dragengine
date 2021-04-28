@@ -625,24 +625,22 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	 * (with the correct lod that is).
 	 * testing the occ map then requires only testing objects not too small
 	 */
-	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
-	occtest.RemoveAllInputData();
+	deoglOcclusionTest &occlusionTest = *planSkyLight.GetOcclusionTest();
+	occlusionTest.RemoveAllInputData();
 	
 	componentCount = collideList.GetComponentCount();
 	int c;
 	for( c=0; c<componentCount; c++ ){
 		deoglRComponent * const component = collideList.GetComponentAt( c )->GetComponent();
 		component->SetRenderVisible( true );
-		component->StartOcclusionTest( referencePosition );
+		component->StartOcclusionTest( occlusionTest, referencePosition );
 	}
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionStart, false );
 	
-	occtest.UpdateVBO();
+	occlusionTest.UpdateVBO();
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionVBO, true );
 	
-	GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer(
-		plan, skyLayer, collideList, planSkyLight.GetFrustumBoxMinExtend(),
-		planSkyLight.GetFrustumBoxMaxExtend() );
+	GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( plan, planSkyLight );
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionTest, true );
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 #endif

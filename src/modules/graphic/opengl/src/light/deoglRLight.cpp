@@ -1489,7 +1489,7 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 // Culling
 ////////////
 
-void deoglRLight::StartOcclusionTest( const decDVector &cameraPosition ){
+void deoglRLight::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
 	UpdateLightVolume();
 	
 	if( pDirtyExtends ){
@@ -1499,7 +1499,7 @@ void deoglRLight::StartOcclusionTest( const decDVector &cameraPosition ){
 	const decVector minExtend = ( pMinExtend - cameraPosition ).ToVector();
 	const decVector maxExtend = ( pMaxExtend - cameraPosition ).ToVector();
 	
-	pRenderThread.GetOcclusionTest().AddInputData( minExtend, maxExtend, this );
+	occlusionTest.AddInputData( minExtend, maxExtend, this );
 }
 
 void deoglRLight::OcclusionTestInvisible(){

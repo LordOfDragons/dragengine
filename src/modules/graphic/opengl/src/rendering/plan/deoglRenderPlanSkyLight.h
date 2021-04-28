@@ -36,6 +36,7 @@ class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlan;
+class deoglOcclusionTest;
 
 
 /**
@@ -77,6 +78,8 @@ private:
 	deoglCollideList pCollideList;
 	decVector pFrustumBoxMinExtend;
 	decVector pFrustumBoxMaxExtend;
+	
+	deoglOcclusionTest *pOcclusionTest;
 	
 	bool pPrepared;
 	bool pUseLight;
@@ -128,6 +131,14 @@ public:
 	
 	/** Frustum box max extend. */
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
+	
+	
+	
+	/** Occlusion test. */
+	inline deoglOcclusionTest *GetOcclusionTest() const{ return pOcclusionTest; }
+	
+	/** Set occlusion test. */
+	void SetOcclusionTest( deoglOcclusionTest *occlusionTest );
 	
 	
 	

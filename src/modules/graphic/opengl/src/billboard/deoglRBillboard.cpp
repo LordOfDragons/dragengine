@@ -882,14 +882,14 @@ void deoglRBillboard::SetDirtyCulling(){
 
 
 
-void deoglRBillboard::StartOcclusionTest( const decDVector &cameraPosition ){
+void deoglRBillboard::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
 	if( ! pUseSkinTexture ){
 		return;
 	}
 	
 	const decVector minExtend( pMinExtend - cameraPosition );
 	const decVector maxExtend( pMaxExtend - cameraPosition );
-	pRenderThread.GetOcclusionTest().AddInputData( minExtend, maxExtend, this );
+	occlusionTest.AddInputData( minExtend, maxExtend, this );
 }
 
 void deoglRBillboard::OcclusionTestInvisible(){

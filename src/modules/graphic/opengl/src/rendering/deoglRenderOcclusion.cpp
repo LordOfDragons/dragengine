@@ -30,6 +30,7 @@
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlanDebug.h"
 #include "plan/deoglRenderPlan.h"
+#include "plan/deoglRenderPlanSkyLight.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskShader.h"
@@ -389,7 +390,7 @@ the use inverse depth mode.
 
 The occlusion texture has to use depthFloat instead of depth if enabled
 
-The convertionof z position to depth value has to be removed and projective depth
+The convertion of z position to depth value has to be removed and projective depth
 written out by the fixed function pipeline.
 
 In the test shader max() calls are used for filtering down. For inverse depth this
@@ -472,7 +473,8 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	matrixCamera = matrixCamera.GetRotationMatrix() * matrixProjection;
 	plan.SetOcclusionTestMatrix( matrixCamera );
 	
-	RenderOcclusionTests( *plan.GetOcclusionMap(), plan.GetOcclusionMapBaseLevel(), -1.0f, matrixCamera );
+	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
+		plan.GetOcclusionMapBaseLevel(), -1.0f, matrixCamera );
 	plan.GetCollideList().RemoveVisibleComponents( false );
 	plan.GetCollideList().RemoveVisibleLights( false );
 	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
@@ -585,8 +587,7 @@ deoglCollideList &collideList, const decVector &minExtend, const decVector &maxE
 #endif
 
 void deoglRenderOcclusion::RenderTestsSkyLayer( deoglRenderPlan &plan,
-deoglRSkyInstanceLayer &skyLayer, deoglCollideList &collideList,
-const decVector &minExtend, const decVector &maxExtend ){
+deoglRenderPlanSkyLight &planSkyLight ){
 	DEBUG_RESET_TIMERS;
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	
@@ -594,8 +595,12 @@ const decVector &minExtend, const decVector &maxExtend ){
 		return;
 	}
 	
-	deoglOcclusionMap &occmap = *plan.GetOcclusionMap();
+	deoglRSkyInstanceLayer &skyLayer = *planSkyLight.GetLayer();
+	deoglCollideList &collideList = planSkyLight.GetCollideList();
+	deoglOcclusionMap &occlusionMap = *plan.GetOcclusionMap();
 	const int baselevel = plan.GetOcclusionMapBaseLevel();
+	const decVector &minExtend = planSkyLight.GetFrustumBoxMinExtend();
+	const decVector &maxExtend = planSkyLight.GetFrustumBoxMaxExtend();
 	
 	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
 	const decDVector &camPos = plan.GetCameraPosition();
@@ -618,7 +623,8 @@ const decVector &minExtend, const decVector &maxExtend ){
 	matrixCamera2 = matrixCamera.Invert() * decMatrix::CreateTranslation( ( referencePosition - camPos ).ToVector() ) * plan.GetOcclusionTestMatrix();
 	DEBUG_PRINT_TIMER( "Prepare" );
 	
-	RenderOcclusionTestsSun( occmap, baselevel, -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
+	RenderOcclusionTestsSun( *planSkyLight.GetOcclusionTest(), occlusionMap,
+		baselevel, -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
 	collideList.RemoveVisibleComponents( false );
 	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
 }
@@ -790,35 +796,34 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
 
 
 
-void deoglRenderOcclusion::RenderOcclusionTests( deoglOcclusionMap &occmap, int baselevel,
-float clipNear, const decMatrix &matrixCamera ){
+void deoglRenderOcclusion::RenderOcclusionTests( deoglOcclusionTest &occlusionTest,
+deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
 	
 	// render tests if required
-	if( occtest.GetInputDataCount() == 0 ){
+	if( occlusionTest.GetInputDataCount() == 0 ){
 		return;
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int resultHeight = occtest.GetResultHeight();
-	const int resultWidth = occtest.GetResultWidth();
+	const int resultHeight = occlusionTest.GetResultHeight();
+	const int resultWidth = occlusionTest.GetResultWidth();
 	deoglShaderCompiled *shader;
 	
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Tests" );
 	
-	if( occtest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
+	if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 		renderThread.GetShader().ActivateShader( pShaderOccTestTFB );
 		shader = pShaderOccTestTFB->GetCompiled();
 		DEBUG_PRINT_TIMER( "Activate FBO" );
 		
 		shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-		shader->SetParameterFloat( spttfbScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+		shader->SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 		shader->SetParameterFloat( spttfbClipNear, clipNear );
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
-		tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		DEBUG_PRINT_TIMER( "Set Texture" );
 		
 		if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
@@ -827,10 +832,10 @@ float clipNear, const decMatrix &matrixCamera ){
 		}
 		
 		OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
-		OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occtest.GetVBOResult() ) );
-		OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occlusionTest.GetVBOResult() ) );
+		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 		OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglEndTransformFeedback() );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
@@ -838,7 +843,7 @@ float clipNear, const decMatrix &matrixCamera ){
 		DEBUG_PRINT_TIMER2( "Time until render tests" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		renderThread.GetFramebuffer().Activate( occtest.GetFBOResult() );
+		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
 		
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -858,34 +863,34 @@ float clipNear, const decMatrix &matrixCamera ){
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
 		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
-		shader->SetParameterFloat( sptScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
 		
-		tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
-		OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
+		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	}
 	
 	// read back results
-	occtest.UpdateResults();
+	occlusionTest.UpdateResults();
 	DEBUG_PRINT_TIMER( "Update Results" );
 	DEBUG_PRINT_TIMER2( "Time until update results" );
 }
 
-void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglOcclusionMap &occmap, int baselevel, float clipNear,
-const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
+void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglOcclusionTest &occlusionTest,
+deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
+float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
 	
-	if( occtest.GetInputDataCount() == 0 ){
+	if( occlusionTest.GetInputDataCount() == 0 ){
 		return;
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int resultHeight = occtest.GetResultHeight();
-	const int resultWidth = occtest.GetResultWidth();
+	const int resultHeight = occlusionTest.GetResultHeight();
+	const int resultWidth = occlusionTest.GetResultWidth();
 	deoglShaderCompiled *shader;
 	
 	decVector frustumPlaneNormal[ 4 ]; // left, top, right, bottom
@@ -930,13 +935,13 @@ const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, 
 	
 	DEBUG_PRINT_TIMER( "RenderOcclusionTestsSun Entering" );
 	
-	if( occtest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
+	if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 		renderThread.GetShader().ActivateShader( pShaderOccTestTFBSun );
 		shader = pShaderOccTestTFBSun->GetCompiled();
 		DEBUG_PRINT_TIMER( "Activate FBO" );
 		
 		shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-		shader->SetParameterFloat( spttfbScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+		shader->SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 		shader->SetParameterFloat( spttfbClipNear, clipNear );
 		shader->SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
@@ -949,7 +954,7 @@ const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, 
 		shader->SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ], frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
-		tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		DEBUG_PRINT_TIMER( "Set Texture" );
 		
 		if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
@@ -958,17 +963,17 @@ const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, 
 		}
 		
 		OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
-		OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occtest.GetVBOResult() ) );
-		OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
+		OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occlusionTest.GetVBOResult() ) );
+		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 		OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglEndTransformFeedback() );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		renderThread.GetFramebuffer().Activate( occtest.GetFBOResult() );
+		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
 		
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -988,7 +993,7 @@ const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, 
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
 		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
-		shader->SetParameterFloat( sptScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
 		shader->SetParameterDMatrix4x4( sptMatrix2, matrixCamera2 );
 		shader->SetParameterVector3( sptFrustumNormal1, frustumPlaneNormal[ 0 ] );
@@ -998,64 +1003,64 @@ const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2, 
 		shader->SetParameterFloat( sptFrustumTestAdd, frustumFactorAdd[ 0 ], frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
 		shader->SetParameterFloat( sptFrustumTestMul, frustumFactorMul[ 0 ], frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
 		
-		tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
-		OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
+		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	}
 	
 	// read back results
-	occtest.UpdateResults();
+	occlusionTest.UpdateResults();
 	DEBUG_PRINT_TIMER( "Update Results" );
 }
 
-void deoglRenderOcclusion::RenderOcclusionTestsDual( deoglOcclusionMap &occmap, int baselevel, float clipNear,
-const decMatrix &matrixCamera, deoglOcclusionMap &occmap2, int baselevel2, float clipNear2, const decMatrix& matrixCamera2 ){
+void deoglRenderOcclusion::RenderOcclusionTestsDual( deoglOcclusionTest &occlusionTest,
+deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
+deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix& matrixCamera2 ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	//const deoglConfiguration &config = *ogl.GetConfiguration();
-	deoglOcclusionTest &occtest = renderThread.GetOcclusionTest();
 	
 	// render tests if required
-	if( occtest.GetInputDataCount() > 0 ){
+	if( occlusionTest.GetInputDataCount() > 0 ){
 		deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-		const int resultHeight = occtest.GetResultHeight();
-		const int resultWidth = occtest.GetResultWidth();
+		const int resultHeight = occlusionTest.GetResultHeight();
+		const int resultWidth = occlusionTest.GetResultWidth();
 		deoglShaderCompiled *shader;
 		
 		DEBUG_PRINT_TIMER( "Entering Render Occlusion Tests" );
 		
-		if( occtest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
+		if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 			renderThread.GetShader().ActivateShader( pShaderOccTestTFBDual );
 			shader = pShaderOccTestTFBDual->GetCompiled();
 			DEBUG_PRINT_TIMER( "Activate FBO" );
 			
 			shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
-			shader->SetParameterFloat( spttfbScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+			shader->SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 			shader->SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 			shader->SetParameterFloat( spttfbClipNear, clipNear );
 			shader->SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
-			shader->SetParameterFloat( spttfbScaleSize2, ( float )occmap2.GetWidth(), ( float )occmap2.GetHeight() );
+			shader->SetParameterFloat( spttfbScaleSize2, ( float )occlusionMap2.GetWidth(), ( float )occlusionMap2.GetHeight() );
 			shader->SetParameterFloat( spttfbBaseLevel2, ( float )baselevel2 );
 			shader->SetParameterFloat( spttfbClipNear2, clipNear2 );
 			DEBUG_PRINT_TIMER( "Set Uniforms" );
 			
-			tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
-			tsmgr.EnableTexture( 1, *occmap2.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
 			DEBUG_PRINT_TIMER( "Set Texture" );
 			
 			OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
-			OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occtest.GetVBOResult() ) );
-			OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
+			OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, occlusionTest.GetVBOResult() ) );
+			OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 			OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-			OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+			OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 			OGL_CHECK( renderThread, pglEndTransformFeedback() );
 			OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 			OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 			DEBUG_PRINT_TIMER( "Draw with Feedback" );
 			
 		}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-			renderThread.GetFramebuffer().Activate( occtest.GetFBOResult() );
+			renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
 			
 			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 			OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -1075,22 +1080,22 @@ const decMatrix &matrixCamera, deoglOcclusionMap &occmap2, int baselevel2, float
 			shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
 			shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
 			shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
-			shader->SetParameterFloat( sptScaleSize, ( float )occmap.GetWidth(), ( float )occmap.GetHeight() );
+			shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 			shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
 			shader->SetParameterDMatrix4x4( sptMatrix2, matrixCamera2 );
-			shader->SetParameterFloat( sptScaleSize2, ( float )occmap2.GetWidth(), ( float )occmap2.GetHeight() );
+			shader->SetParameterFloat( sptScaleSize2, ( float )occlusionMap2.GetWidth(), ( float )occlusionMap2.GetHeight() );
 			shader->SetParameterFloat( sptBaseLevel2, ( float )baselevel2 );
 			
-			tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
-			tsmgr.EnableTexture( 1, *occmap2.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
 			
-			OGL_CHECK( renderThread, pglBindVertexArray( occtest.GetVAO() ) );
-			OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occtest.GetInputDataCount() ) );
+			OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
+			OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 			OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		}
 		
 		// read back results
-		occtest.UpdateResults();
+		occlusionTest.UpdateResults();
 		DEBUG_PRINT_TIMER( "Update Results" );
 	}
 }
