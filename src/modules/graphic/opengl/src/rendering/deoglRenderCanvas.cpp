@@ -1053,6 +1053,12 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pDebugInfoPlanPrepareSort ){
 		pDebugInfoPlanPrepareSort->FreeReference();
 	}
+	if( pDebugInfoPlanPrepareGIUpdate ){
+		pDebugInfoPlanPrepareGIUpdate->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareGISkyShadowRenderTask ){
+		pDebugInfoPlanPrepareGISkyShadowRenderTask->FreeReference();
+	}
 	if( pDebugInfoPlanPrepareBuildPlan ){
 		pDebugInfoPlanPrepareBuildPlan->FreeReference();
 	}
