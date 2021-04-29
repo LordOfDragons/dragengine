@@ -199,9 +199,11 @@ deoglCollideListComponent *deoglCollideList::GetComponentAt( int index ) const{
 }
 
 int deoglCollideList::IndexOfComponent( deoglRComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pComponentCount; i++ ){
 		if( component == pComponents[ i ]->GetComponent() ){
 			return i;
@@ -212,9 +214,11 @@ int deoglCollideList::IndexOfComponent( deoglRComponent *component ) const{
 }
 
 bool deoglCollideList::HasComponent( deoglRComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pComponentCount; i++ ){
 		if( component == pComponents[ i ]->GetComponent() ){
 			return true;
@@ -224,7 +228,7 @@ bool deoglCollideList::HasComponent( deoglRComponent *component ) const{
 	return false;
 }
 
-void deoglCollideList::AddComponent( deoglRComponent *component ){
+deoglCollideListComponent *deoglCollideList::AddComponent( deoglRComponent *component ){
 	if( ! component ){
 		DETHROW( deeInvalidParam );
 	}
@@ -232,9 +236,6 @@ void deoglCollideList::AddComponent( deoglRComponent *component ){
 	if( pComponentCount == pComponentSize ){
 		int i, newSize = pComponentCount * 3 / 2 + 1;
 		deoglCollideListComponent **newArray = new deoglCollideListComponent*[ newSize ];
-		if( ! newArray ){
-			DETHROW( deeOutOfMemory );
-		}
 		for( i=pComponentSize; i<newSize; i++ ){
 			newArray[ i ] = NULL;
 		}
@@ -250,12 +251,11 @@ void deoglCollideList::AddComponent( deoglRComponent *component ){
 	
 	if( ! pComponents[ pComponentCount ] ){
 		pComponents[ pComponentCount ] = new deoglCollideListComponent;
-		if( ! pComponents[ pComponentCount ] ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
-	pComponents[ pComponentCount ]->SetComponent( component );
-	pComponentCount++;
+	
+	deoglCollideListComponent * const clcomponent = pComponents[ pComponentCount++ ];
+	clcomponent->SetComponent( component );
+	return clcomponent;
 }
 
 void deoglCollideList::RemoveComponent( deoglRComponent *component ){
@@ -263,30 +263,34 @@ void deoglCollideList::RemoveComponent( deoglRComponent *component ){
 }
 
 void deoglCollideList::RemoveComponentFrom( int index ){
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	deoglCollideListComponent *clcomp = pComponents[ index ];
-	int i;
-	
+	deoglCollideListComponent * const clcomp = pComponents[ index ];
 	clcomp->Clear();
 	
+	int i;
 	for( i=index+1; i<pComponentCount; i++ ){
 		pComponents[ i - 1 ] = pComponents[ i ];
 	}
-	pComponentCount--;
-	pComponents[ pComponentCount ] = clcomp;
+	pComponents[ --pComponentCount ] = clcomp;
 }
 
 void deoglCollideList::RemoveAllComponents(){
-	pComponentCount = 0;
+	while( pComponentCount > 0 ){
+		pComponents[ --pComponentCount ]->Clear();
+	}
 }
 
 
 
 void deoglCollideList::AddComponentsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume ){
-	if( ! volume ) DETHROW( deeInvalidParam );
-	deoglCLVisitorElements visitor( this, volume );
+	if( ! volume ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	deoglCLVisitorElements visitor( this, volume );
 	visitor.SetVisitAll( false );
 	visitor.SetVisitComponents( true );
 	
@@ -297,11 +301,11 @@ void deoglCollideList::RemoveCulledComponents(){
 	int i, last = 0;
 	for( i=0; i<pComponentCount; i++ ){
 		if( pComponents[ i ]->GetCulled() ){
+			pComponents[ i ]->Clear();
 			continue;
 		}
 		
 		if( i != last ){
-			pComponents[ last ]->Clear();
 			deoglCollideListComponent * const exchange = pComponents[ last ];
 			pComponents[ last ] = pComponents[ i ];
 			pComponents[ i ] = exchange;
@@ -312,19 +316,18 @@ void deoglCollideList::RemoveCulledComponents(){
 }
 
 void deoglCollideList::RemoveSolidComponents(){
-	deoglCollideListComponent *exchange;
-	int c, last = 0;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		deoglRSkin * const skin = pComponents[ c ]->GetComponent()->GetSkin();
+	int i, last = 0;
+	for( i=0; i<pComponentCount; i++ ){
+		deoglRSkin * const skin = pComponents[ i ]->GetComponent()->GetSkin();
 		if( skin && ! skin->GetIsSolid() ){
+			pComponents[ i ]->Clear();
 			continue;
 		}
-		if( c != last ){
-			pComponents[ last ]->Clear();
-			exchange = pComponents[ last ];
-			pComponents[ last ] = pComponents[ c ];
-			pComponents[ c ] = exchange;
+		
+		if( i != last ){
+			deoglCollideListComponent * const exchange = pComponents[ last ];
+			pComponents[ last ] = pComponents[ i ];
+			pComponents[ i ] = exchange;
 		}
 		last++;
 	}
@@ -332,18 +335,15 @@ void deoglCollideList::RemoveSolidComponents(){
 }
 
 void deoglCollideList::SortComponentsByModels(){
-	deoglCollideListComponent *exchange;
-	deoglRModel *referenceModel;
 	int i = 0, j;
-	
 	while( i < pComponentCount ){
-		referenceModel = pComponents[ i ]->GetComponent()->GetModel();
+		deoglRModel * const referenceModel = pComponents[ i ]->GetComponent()->GetModel();
 		i++;
 		
 		for( j=i; j<pComponentCount; j++ ){
 			if( pComponents[ j ]->GetComponent()->GetModel() == referenceModel ){
 				if( j > i ){
-					exchange = pComponents[ i ];
+					deoglCollideListComponent * const exchange = pComponents[ i ];
 					pComponents[ i ] = pComponents[ j ];
 					pComponents[ j ] = exchange;
 				}
@@ -420,9 +420,11 @@ deoglCollideListLight *deoglCollideList::GetLightAt( int index ) const{
 }
 
 int deoglCollideList::IndexOfLight( deoglRLight *light ) const{
-	if( ! light ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pLightCount; i++ ){
 		if( light == pLights[ i ]->GetLight() ){
 			return i;
@@ -433,9 +435,11 @@ int deoglCollideList::IndexOfLight( deoglRLight *light ) const{
 }
 
 bool deoglCollideList::HasLight( deoglRLight *light ) const{
-	if( ! light ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pLightCount; i++ ){
 		if( light == pLights[ i ]->GetLight() ){
 			return true;
@@ -445,7 +449,7 @@ bool deoglCollideList::HasLight( deoglRLight *light ) const{
 	return false;
 }
 
-void deoglCollideList::AddLight( deoglRLight *light ){
+deoglCollideListLight *deoglCollideList::AddLight( deoglRLight *light ){
 	if( ! light ){
 		DETHROW( deeInvalidParam );
 	}
@@ -453,9 +457,6 @@ void deoglCollideList::AddLight( deoglRLight *light ){
 	if( pLightCount == pLightSize ){
 		int i, newSize = pLightCount * 3 / 2 + 1;
 		deoglCollideListLight **newArray = new deoglCollideListLight*[ newSize ];
-		if( ! newArray ){
-			DETHROW( deeOutOfMemory );
-		}
 		for( i=pLightSize; i<newSize; i++ ){
 			newArray[ i ] = NULL;
 		}
@@ -471,12 +472,11 @@ void deoglCollideList::AddLight( deoglRLight *light ){
 	
 	if( ! pLights[ pLightCount ] ){
 		pLights[ pLightCount ] = new deoglCollideListLight;
-		if( ! pLights[ pLightCount ] ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
-	pLights[ pLightCount ]->SetLight( light );
-	pLightCount++;
+	
+	deoglCollideListLight * const cllight = pLights[ pLightCount++ ];
+	cllight->SetLight( light );
+	return cllight;
 }
 
 void deoglCollideList::RemoveLight( deoglRLight *light ){
@@ -489,19 +489,19 @@ void deoglCollideList::RemoveLightFrom( int index ){
 	}
 	
 	deoglCollideListLight * const cllight = pLights[ index ];
-	int i;
-	
 	cllight->Clear();
 	
+	int i;
 	for( i=index+1; i<pLightCount; i++ ){
 		pLights[ i - 1 ] = pLights[ i ];
 	}
-	pLightCount--;
-	pLights[ pLightCount ] = cllight;
+	pLights[ --pLightCount ] = cllight;
 }
 
 void deoglCollideList::RemoveAllLights(){
-	pLightCount = 0;
+	while( pLightCount > 0 ){
+		pLights[ --pLightCount ]->Clear();
+	}
 }
 
 void deoglCollideList::AddLightsColliding( deoglWorldOctree *octree, deoglDCollisionVolume *colVol ){
@@ -527,11 +527,11 @@ void deoglCollideList::RemoveCulledLights(){
 	int i, last = 0;
 	for( i=0; i<pLightCount; i++ ){
 		if( pLights[ i ]->GetCulled() ){
+			pLights[ i ]->Clear();
 			continue;
 		}
 		
 		if( i != last ){
-			pLights[ last ]->Clear();
 			deoglCollideListLight * const exchange = pLights[ last ];
 			pLights[ last ] = pLights[ i ];
 			pLights[ i ] = exchange;

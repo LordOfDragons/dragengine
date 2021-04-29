@@ -133,7 +133,7 @@ public:
 	bool HasComponent( deoglRComponent *component ) const;
 	
 	/** Add component. */
-	void AddComponent( deoglRComponent *component );
+	deoglCollideListComponent *AddComponent( deoglRComponent *component );
 	
 	/** Remove component. */
 	void RemoveComponent( deoglRComponent *component );
@@ -183,7 +183,7 @@ public:
 	bool HasLight( deoglRLight *light ) const;
 	
 	/** Add light. */
-	void AddLight( deoglRLight *light );
+	deoglCollideListLight *AddLight( deoglRLight *light );
 	
 	/** Remove light. */
 	void RemoveLight( deoglRLight *light );

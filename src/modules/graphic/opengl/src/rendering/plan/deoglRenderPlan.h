@@ -54,6 +54,7 @@ class deoglTexture;
 class deoglRWorld;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
+class deoglRenderPlanTaskFindContent;
 
 
 
@@ -116,6 +117,8 @@ private:
 	deoglDCollisionFrustum pCustomFrustum;
 	bool pUseCustomFrustum;
 	decBoundary pCustomFrustumScreenArea;
+	deoglDCollisionFrustum *pUseFrustum;
+	deoglDCollisionFrustum pCameraFrustum;
 	
 	bool pDirtyProjMat;
 	
@@ -172,6 +175,8 @@ private:
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
 	deoglGIState *pGIState;
+	
+	deoglRenderPlanTaskFindContent *pTaskFindContent;
 	
 	deoglRenderPlanDebug *pDebug;
 	bool pDebugTiming;
@@ -397,11 +402,11 @@ public:
 	/** Set if tone mapping is used. */
 	void SetUseToneMap( bool useToneMap );
 	
-	/** Static components are ignored. */
-	inline bool GetIgnoreStaticComponents() const{ return pIgnoreDynamicComponents; }
+	/** Dynamic components are ignored. */
+	inline bool GetIgnoreDynamicComponents() const{ return pIgnoreDynamicComponents; }
 	
-	/** Set if static components are ignored. */
-	void SetIgnoreStaticComponents( bool ignoreStaticComponents );
+	/** Set if dynamic components are ignored. */
+	void SetIgnoreDynamicComponents( bool ignoreStaticComponents );
 	
 	/** Debug pass is rendered. */
 	inline bool GetRenderDebugPass() const{ return pRenderDebugPass; }
@@ -460,6 +465,9 @@ public:
 	/** Set custom frustum screen area. */
 	void SetCustomFrustumScreenArea( const decBoundary &area );
 	
+	/** Frustum to use. */
+	inline deoglDCollisionFrustum *GetUseFrustum() const{ return pUseFrustum; }
+	
 	
 	
 	/** Height terrain view. */
@@ -467,6 +475,9 @@ public:
 	
 	/** Collider list. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
+	
+	/** For internal use. */
+	inline deoglPlanVisitorCullElements *GetVisitorCullElements() const{ return pVisitorCullElements; }
 	
 	
 	
@@ -687,16 +698,16 @@ public:
 	
 private:
 	void pBarePrepareRender();
+	void pPlanCamera();
 	void pPlanSky();
 	void pPlanSkyLight();
 	void pPlanDominance();
 	void pPlanShadowCasting();
-	void pStartFindContent( deoglDCollisionFrustum *frustum );
-	void pAddOcclusionTestInputs();
+	void pStartFindContent();
 	void pPlanGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
-	void pStartOcclusionTests( deoglDCollisionFrustum *frustum );
+	void pStartOcclusionTests();
 	
 	void pDebugPrepare();
 	void pDebugVisibleNoCull();

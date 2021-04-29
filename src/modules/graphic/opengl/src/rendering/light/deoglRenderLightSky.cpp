@@ -613,7 +613,9 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	DebugTimer4Reset( plan, false );
 	
 	deoglCollideList &collideList = planSkyLight.GetCollideList();
+	#ifdef SKY_SHADOW_OCCMAP_VISIBLE
 	int componentCount;
+	#endif
 	
 	// occlusion test the content to remove as much as possible
 #ifdef SKY_SHADOW_OCCMAP_VISIBLE

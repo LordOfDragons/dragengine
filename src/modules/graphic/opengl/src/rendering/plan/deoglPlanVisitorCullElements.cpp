@@ -25,9 +25,12 @@
 #include "deoglPlanVisitorCullElements.h"
 #include "deoglRenderPlan.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
 #include "../../billboard/deoglRBillboard.h"
 #include "../../component/deoglRComponent.h"
 #include "../../light/deoglRLight.h"
+#include "../../occlusiontest/deoglOcclusionTest.h"
 #include "../../particle/deoglRParticleEmitterInstance.h"
 #include "../../world/deoglWorldOctree.h"
 #include "../../utils/collision/deoglDCollisionVolume.h"
@@ -205,6 +208,7 @@ void deoglPlanVisitorCullElements::VisitWorldOctree( deoglWorldOctree &octree ){
 void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersection ){
 	bool cullWithVolume = ( intersection != deoglDCollisionDetection::eirInside );
 	const deoglWorldOctree &sonode = *( ( deoglWorldOctree* )node );
+	deoglOcclusionTest &occlusionTest = *pPlan->GetOcclusionTest();
 	const decDVector &cameraPosition = pPlan->GetCameraPosition();
 	deoglCollideList &collideList = pPlan->GetCollideList();
 	deoglDCollisionBox box;
@@ -220,6 +224,7 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 	intersection = deoglDCollisionDetection::eirPartial;
 	cullWithVolume = true;
 	*/
+	
 	
 	// visit components
 	count = sonode.GetComponentCount();
@@ -266,9 +271,10 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 			continue;
 		}
 		
-		// add component
-		collideList.AddComponent( component );
+		// add component and add occlusion test input
+		collideList.AddComponent( component )->StartOcclusionTest( occlusionTest, cameraPosition );
 	}
+	
 	
 	// visit billboards
 	count = sonode.GetBillboardList().GetCount();
@@ -313,6 +319,7 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		collideList.AddBillboard( billboard );
 	}
 	
+	
 	// visit lights
 	count = sonode.GetLightCount();
 	
@@ -325,7 +332,7 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 				continue;
 			}
 			
-			collideList.AddLight( light );
+			collideList.AddLight( light )->StartOcclusionTest( occlusionTest, cameraPosition );
 		}
 		
 	}else{
@@ -341,9 +348,10 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 				continue;
 			}
 			
-			collideList.AddLight( light );
+			collideList.AddLight( light )->StartOcclusionTest( occlusionTest, cameraPosition );
 		}
 	}
+	
 	
 	// visit particle emitters
 	const deoglParticleEmitterInstanceList &nodeParticleEmitterInstanceList = sonode.GetParticleEmittersList();

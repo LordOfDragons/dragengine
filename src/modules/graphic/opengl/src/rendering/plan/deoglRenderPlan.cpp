@@ -29,6 +29,7 @@
 #include "deoglRenderPlanMasked.h"
 #include "deoglPlanVisitorCullElements.h"
 #include "deoglRenderPlanEnvMap.h"
+#include "deoglRenderPlanTaskFindContent.h"
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
@@ -37,6 +38,7 @@
 #include "../defren/deoglDeferredRendering.h"
 #include "../light/deoglRenderLight.h"
 #include "../lod/deoglLODCalculator.h"
+#include "../../deGraphicOpenGl.h"
 #include "../../billboard/deoglRBillboard.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../collidelist/deoglCollideListComponent.h"
@@ -88,7 +90,9 @@
 #include "../../world/deoglRCamera.h"
 #include "../../world/deoglRWorld.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 
 #ifdef OS_W32
 #undef near
@@ -122,7 +126,8 @@ pUseConstGIState( NULL ),
 pSkyLightCount( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
-pGIState( NULL )
+pGIState( NULL ),
+pTaskFindContent( NULL )
 {
 	pWorld = NULL;
 	
@@ -359,7 +364,6 @@ void deoglRenderPlan::pBarePrepareRender(){
 	
 	deoglRComponent *oglComponent;
 	int c, componentCount;
-	decDMatrix matCamProj;
 	deoglRLight *oglLight;
 	int i, l, lightCount;
 	
@@ -374,62 +378,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	pDebugPrepare();
 	SPECIAL_TIMER_PRINT("Prepare1")
 	
-	// prepare the camera if existing
-	if( pCamera ){
-		pCamera->PrepareForRender();
-	}
-	
-	// check reference position and update reference position camera matrix
-	pWorld->CheckReferencePosition( pCameraPosition );
-	UpdateRefPosCameraMatrix();
-	
-	// prepare the projection matrix if dirty
-	if( pDirtyProjMat ){
-		const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-		
-		pProjectionMatrix = defren.CreateProjectionDMatrix( pViewportWidth, pViewportHeight,
-			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
-		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
-			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
-		
-		if( defren.GetUseInverseDepth() ){
-			pDepthToPosition.x = -pCameraImageDistance;
-			pDepthToPosition.y = 0.0f;
-			
-		}else{
-			pDepthToPosition.x = pCameraImageDistance;
-			pDepthToPosition.y = 1.0f;
-		}
-		
-		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
-		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
-		
-		// depth sample offset is required to reconstruct depth from nearby depth samples.
-		// offset is relative to 1 fragment texel step
-		pDepthSampleOffset.x = 2.0f / ( float )pViewportWidth;
-		pDepthSampleOffset.y = 2.0f / ( float )pViewportHeight;
-		
-		/* non-infinite projection matrix
-		const int q = pCameraViewDistance / ( pCameraViewDistance - pCameraImageDistance );
-		pDepthToPosition.x = q * pCameraImageDistance;
-		pDepthToPosition.y = q;
-		*/
-		
-		pDirtyProjMat = false;
-	}
-	matCamProj = pCameraMatrix * pProjectionMatrix;
-	
-	// determine frustum to use
-	deoglDCollisionFrustum *frustum = NULL;
-	deoglDCollisionFrustum cameraFrustum;
-	
-	if( pUseCustomFrustum ){
-		frustum = &pCustomFrustum;
-		
-	}else{
-		cameraFrustum.SetFrustum( pCameraMatrix * pFrustumMatrix );
-		frustum = &cameraFrustum;
-	}
+	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
 	
 	// prepare world for rendering
@@ -456,12 +405,12 @@ void deoglRenderPlan::pBarePrepareRender(){
 	pPlanShadowCasting();
 	SPECIAL_TIMER_PRINT("Plan1")
 	
-	pStartFindContent( frustum );
+	pStartFindContent();
 	renderCanvas.SampleDebugInfoPlanPrepareCollect( *this );
 	SPECIAL_TIMER_PRINT("Collide")
 	
 	// visibility
-	pStartOcclusionTests( frustum );
+	pStartOcclusionTests();
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
 	
 	lightCount = pCollideList.GetLightCount();
@@ -595,6 +544,61 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 	pCurTransparencyLayer = 0;
 	
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
+}
+
+void deoglRenderPlan::pPlanCamera(){
+	// prepare the camera if existing
+	if( pCamera ){
+		pCamera->PrepareForRender();
+	}
+	
+	// check reference position and update reference position camera matrix
+	pWorld->CheckReferencePosition( pCameraPosition );
+	UpdateRefPosCameraMatrix();
+	
+	// prepare the projection matrix if dirty
+	if( pDirtyProjMat ){
+		const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
+		
+		pProjectionMatrix = defren.CreateProjectionDMatrix( pViewportWidth, pViewportHeight,
+			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
+		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
+			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
+		
+		if( defren.GetUseInverseDepth() ){
+			pDepthToPosition.x = -pCameraImageDistance;
+			pDepthToPosition.y = 0.0f;
+			
+		}else{
+			pDepthToPosition.x = pCameraImageDistance;
+			pDepthToPosition.y = 1.0f;
+		}
+		
+		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
+		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
+		
+		// depth sample offset is required to reconstruct depth from nearby depth samples.
+		// offset is relative to 1 fragment texel step
+		pDepthSampleOffset.x = 2.0f / ( float )pViewportWidth;
+		pDepthSampleOffset.y = 2.0f / ( float )pViewportHeight;
+		
+		/* non-infinite projection matrix
+		const int q = pCameraViewDistance / ( pCameraViewDistance - pCameraImageDistance );
+		pDepthToPosition.x = q * pCameraImageDistance;
+		pDepthToPosition.y = q;
+		*/
+		
+		pDirtyProjMat = false;
+	}
+	
+	// determine frustum to use
+	if( pUseCustomFrustum ){
+		pUseFrustum = &pCustomFrustum;
+		
+	}else{
+		pCameraFrustum.SetFrustum( pCameraMatrix * pFrustumMatrix );
+		pUseFrustum = &pCameraFrustum;
+	}
 }
 
 void deoglRenderPlan::pPlanSky(){
@@ -770,103 +774,26 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }
 
-void deoglRenderPlan::pStartFindContent( deoglDCollisionFrustum *frustum ){
+void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
-	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
-	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
-	
-	// TODO find content using parallel tasks (each using one task). this also includes
-	//      adding occlusion test inputs since these are not shared and do not require
-	//      opengl access yet
-	// 
-	// pAddOcclusionTestInputs();
-	// pCollideList.MarkElementsVisible( true );
-	
-	// add elements to the collide list
-	pVisitorCullElements->Init( frustum );
-	pVisitorCullElements->SetCullPixelSize( 1.0f );
-	pVisitorCullElements->SetCullDynamicComponents( pIgnoreDynamicComponents );
-	
-	pVisitorCullElements->SetCullLayerMask( pUseLayerMask );
-	pVisitorCullElements->SetLayerMask( pLayerMask );
-	
-	pVisitorCullElements->VisitWorldOctree( pWorld->GetOctree() );
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add elements colliding" );
-	SPECIAL_TIMER_PRINT(">Octree")
-	
-	if( pHTView ){
-		pCollideList.AddHTSectorsColliding( pHTView, frustum );
-		SPECIAL_TIMER_PRINT(">HTSector")
-	}
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add height terrain sectors colliding" );
-	
-	pCollideList.AddPropFieldsColliding( *pWorld, frustum );
-	SPECIAL_TIMER_PRINT(">PropField")
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add prop fields" );
-	
 	// sky lights
 	int i;
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
 	}
 	
-	// HACK: add environment maps using a simple hack until we have something better
-	const deoglEnvironmentMapList &envMapList = pWorld->GetEnvMapList();
-	deoglDCollisionSphere envMapSphere( decDVector(), 20.0 );
-	const int envMapCount = envMapList.GetCount();
-	deoglEnvironmentMap *envMap;
-	int envMapIndex;
-	
-	for( envMapIndex=0; envMapIndex<envMapCount; envMapIndex++ ){
-		envMap = envMapList.GetAt( envMapIndex );
-		
-		if( envMap->GetSkyOnly() ){
-			//pCollideList.GetEnvironmentMapList().Add( envMap );
-			
-		}else{
-			envMapSphere.SetCenter( envMap->GetPosition() );
-			
-			if( frustum->SphereHitsFrustum( &envMapSphere ) ){
-				pCollideList.GetEnvironmentMapList().Add( envMap );
-			}
-		}
-	}
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Add Env-Map" );
-SPECIAL_TIMER_PRINT(">EnvMap")
-	
-	// debug information if demanded
-	pDebugVisibleNoCull();
-}
-
-void deoglRenderPlan::pAddOcclusionTestInputs(){
-	INIT_SPECIAL_TIMING
-	const int componentCount = pCollideList.GetComponentCount();
-	const int lightCount = pCollideList.GetLightCount();
-	int i;
-	
-	// add input data for all elements. skip a group of elements if there are not enough
-	// elements visible. this avoids spending more time on testing than is used up for
-	// rendering them
-	deoglOcclusionTest &occlusionTest = *pOcclusionTest;
-	occlusionTest.RemoveAllInputData();
-	
-	for( i=0; i<componentCount; i++ ){
-		pCollideList.GetComponentAt( i )->StartOcclusionTest( occlusionTest, pCameraPosition );
-	}
-	for( i=0; i<lightCount; i++ ){
-		pCollideList.GetLightAt( i )->StartOcclusionTest( occlusionTest, pCameraPosition );
+	// camera view
+	if( pTaskFindContent ){
+		DETHROW( deeInvalidParam );
 	}
 	
-	if( occlusionTest.GetInputDataCount() > 0 ){
-		occlusionTest.UpdateVBO();
-	}
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
+	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
+	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
+	pOcclusionTest->RemoveAllInputData();
 	
-	// debug information if demanded
-	if( pDebug ){
-		pDebug->IncrementOccTestCount( occlusionTest.GetInputDataCount() );
-	}
-	SPECIAL_TIMER_PRINT(">OccTestInpData")
+	pTaskFindContent = new deoglRenderPlanTaskFindContent( *this );
+	pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1250,10 +1177,26 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 }
 
-void deoglRenderPlan::pStartOcclusionTests( deoglDCollisionFrustum *frustum ){
+void deoglRenderPlan::pStartOcclusionTests(){
+	if( pTaskFindContent ){
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().WaitForTask( pTaskFindContent );
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
+	}
+	
+	// debug information if demanded
+	pDebugVisibleNoCull();
+	
+	
+	
 	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	
-	pAddOcclusionTestInputs(); // TODO remove
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
+		pOcclusionTest->UpdateVBO();
+		if( pDebug ){
+			pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
+		}
+	}
 	
 	if( config.GetDebugNoCulling() ){
 		pSkyVisible = true;
@@ -1278,9 +1221,6 @@ void deoglRenderPlan::pStartOcclusionTests( deoglDCollisionFrustum *frustum ){
 		// to do some other small work before fetching the results ).
 		
 		// if there are no input points skip the test
-		
-		// TODO wait for pStartFindContent() parallel task to finish. this updates collide
-		//      list and adds occlusion test inputs
 		
 		if( pOcclusionTest->GetInputDataCount() > 0 ){
 			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this );
@@ -1513,6 +1453,13 @@ void deoglRenderPlan::CleanUp(){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
 	}
 	
+	if( pTaskFindContent ){
+		pTaskFindContent->Cancel();
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().WaitForTask( pTaskFindContent );
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
+	}
+	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
 	RemoveAllLights();
@@ -1647,7 +1594,7 @@ void deoglRenderPlan::SetUseToneMap( bool useToneMap ){
 	pUseToneMap = useToneMap;
 }
 
-void deoglRenderPlan::SetIgnoreStaticComponents( bool ignoreStaticComponents ){
+void deoglRenderPlan::SetIgnoreDynamicComponents( bool ignoreStaticComponents ){
 	pIgnoreDynamicComponents = ignoreStaticComponents;
 }
 
