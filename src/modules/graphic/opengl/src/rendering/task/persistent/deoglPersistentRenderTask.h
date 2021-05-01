@@ -129,10 +129,10 @@ public:
 	decPointerLinkedList::cListEntry *GetRootShader() const;
 	
 	/** Shader with shader or NULL. */
-	deoglPersistentRenderTaskShader *GetShaderWith( deoglShaderProgram *shader ) const;
+	deoglPersistentRenderTaskShader *GetShaderWith( const deoglShaderProgram *shader ) const;
 	
 	/** Add shader. */
-	deoglPersistentRenderTaskShader *AddShader( deoglShaderProgram *shader );
+	deoglPersistentRenderTaskShader *AddShader( const deoglShaderProgram *shader );
 	
 	/** Remove shader. */
 	void RemoveShader( deoglPersistentRenderTaskShader *shader );

@@ -115,7 +115,7 @@ void deoglTexUnitsConfig::SetUnits( const deoglTexUnitConfig *units, int unitCou
 
 
 
-void deoglTexUnitsConfig::Apply(){
+void deoglTexUnitsConfig::Apply() const{
 	//deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	//tsmgr.DisableStagesAbove( pUnitCount - 1 );
 	

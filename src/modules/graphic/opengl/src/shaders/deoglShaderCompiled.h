@@ -111,76 +111,76 @@ public:
 	/** Retrieves the parameter location or -1 if not used. */
 	int GetParameterAt( int parameter ) const;
 	/** Sets the parameter location. */
-	void SetParameterAt( int parameter, int location );
+	void SetParameterAt( int parameter, int location ) const;
 	
 	/** Sets the values of the parameter at the given position. */
-	void SetParameterFloat( int index, float p1 );
-	void SetParameterFloat( int index, float p1, float p2 );
-	void SetParameterFloat( int index, float p1, float p2, float p3 );
-	void SetParameterFloat( int index, float p1, float p2, float p3, float p4 );
-	void SetParameterInt( int index, int p1 );
-	void SetParameterInt( int index, int p1, int p2 );
-	void SetParameterInt( int index, int p1, int p2, int p3 );
-	void SetParameterInt( int index, int p1, int p2, int p3, int p4 );
+	void SetParameterFloat( int index, float p1 ) const;
+	void SetParameterFloat( int index, float p1, float p2 ) const;
+	void SetParameterFloat( int index, float p1, float p2, float p3 ) const;
+	void SetParameterFloat( int index, float p1, float p2, float p3, float p4 ) const;
+	void SetParameterInt( int index, int p1 ) const;
+	void SetParameterInt( int index, int p1, int p2 ) const;
+	void SetParameterInt( int index, int p1, int p2, int p3 ) const;
+	void SetParameterInt( int index, int p1, int p2, int p3, int p4 ) const;
 	
-	void SetParameterPoint2( int index, const decPoint &point );
-	void SetParameterPoint3( int index, const decPoint3 &point );
+	void SetParameterPoint2( int index, const decPoint &point ) const;
+	void SetParameterPoint3( int index, const decPoint3 &point ) const;
 	
 	/** Sets a 3-color parameter. */
-	void SetParameterColor3( int index, const decColor &color );
+	void SetParameterColor3( int index, const decColor &color ) const;
 	/** Sets a 4-color parameter. */
-	void SetParameterColor4( int index, const decColor &color );
+	void SetParameterColor4( int index, const decColor &color ) const;
 	/** Sets a 4-color parameter with explicit alpha. */
-	void SetParameterColor4( int index, const decColor &color, float alpha );
+	void SetParameterColor4( int index, const decColor &color, float alpha ) const;
 	
 	/** Sets a 3-component vector parameter. */
-	void SetParameterVector3( int index, const decVector &vector );
+	void SetParameterVector3( int index, const decVector &vector ) const;
 	/** Sets a 3-component double vector parameter. */
-	void SetParameterDVector3( int index, const decDVector &vector );
+	void SetParameterDVector3( int index, const decDVector &vector ) const;
 	
 	/** Sets a 4-component vector parameter. */
-	void SetParameterVector4( int index, const decVector4 &vector );
+	void SetParameterVector4( int index, const decVector4 &vector ) const;
 	/** Sets a 4-component double vector parameter. */
-	void SetParameterDVector4( int index, const decDVector4 &vector );
+	void SetParameterDVector4( int index, const decDVector4 &vector ) const;
 	
 	/** Sets a 4x4 matrix parameter. */
-	void SetParameterMatrix4x4( int index, const decMatrix &matrix );
+	void SetParameterMatrix4x4( int index, const decMatrix &matrix ) const;
 	/** Sets a 4x3 matrix parameter. */
-	void SetParameterMatrix4x3( int index, const decMatrix &matrix );
+	void SetParameterMatrix4x3( int index, const decMatrix &matrix ) const;
 	/** Sets a 3x3 matrix parameter. */
-	void SetParameterMatrix3x3( int index, const decMatrix &matrix );
+	void SetParameterMatrix3x3( int index, const decMatrix &matrix ) const;
 	/** Sets a 3x2 matrix parameter. */
-	void SetParameterMatrix3x2( int index, const decMatrix &matrix );
+	void SetParameterMatrix3x2( int index, const decMatrix &matrix ) const;
 	/** Sets a 4x4 double matrix parameter. */
-	void SetParameterDMatrix4x4( int index, const decDMatrix &matrix );
+	void SetParameterDMatrix4x4( int index, const decDMatrix &matrix ) const;
 	/** Sets a 4x3 double matrix parameter. */
-	void SetParameterDMatrix4x3( int index, const decDMatrix &matrix );
+	void SetParameterDMatrix4x3( int index, const decDMatrix &matrix ) const;
 	/** Sets a 3x3 double matrix parameter. */
-	void SetParameterDMatrix3x3( int index, const decDMatrix &matrix );
+	void SetParameterDMatrix3x3( int index, const decDMatrix &matrix ) const;
 	/** Sets a 3x2 double matrix parameter. */
-	void SetParameterDMatrix3x2( int index, const decDMatrix &matrix );
+	void SetParameterDMatrix3x2( int index, const decDMatrix &matrix ) const;
 	/** Sets a 4x4 matrix parameter using an array of float values. */
-	void SetParameterMatrix4x4( int index, const float *values );
+	void SetParameterMatrix4x4( int index, const float *values ) const;
 	/** Sets a 4x3 matrix parameter using an array of float values. */
-	void SetParameterMatrix4x3( int index, const float *values );
+	void SetParameterMatrix4x3( int index, const float *values ) const;
 	/** Sets a 3x3 matrix parameter using an array of float values. */
-	void SetParameterMatrix3x3( int index, const float *values );
+	void SetParameterMatrix3x3( int index, const float *values ) const;
 	/** Sets a 3x2 matrix parameter using an array of float values. */
-	void SetParameterMatrix3x2( int index, const float *values );
+	void SetParameterMatrix3x2( int index, const float *values ) const;
 	
 	/** Sets a 3x3 texture matrix parameter. */
-	void SetParameterTexMatrix3x3( int index, const decTexMatrix &matrix );
+	void SetParameterTexMatrix3x3( int index, const decTexMatrix &matrix ) const;
 	/** Sets a 3x2 texture matrix parameter. */
-	void SetParameterTexMatrix3x2( int index, const decTexMatrix &matrix );
+	void SetParameterTexMatrix3x2( int index, const decTexMatrix &matrix ) const;
 	/** Sets a 3x2 texture matrix parameter. */
-	void SetParameterTexMatrix3x2( int index, const decTexMatrix2 &matrix );
+	void SetParameterTexMatrix3x2( int index, const decTexMatrix2 &matrix ) const;
 	
 	/**
 	 * Set color matrix parameters.
 	 * \details The left most 4x4 part is set to the first parameter and the
 	 *          right most colon to the second parameter.
 	 */
-	void SetParameterColorMatrix5x4( int index1, int index2, const decColorMatrix &matrix );
+	void SetParameterColorMatrix5x4( int index1, int index2, const decColorMatrix &matrix ) const;
 	/*@}*/
 };
 

@@ -35,6 +35,7 @@
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
+class deoglRPTSkyLightFindContent;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 
@@ -66,6 +67,7 @@ private:
 		
 	public:
 		cGIComponentChangeListener( deoglRenderPlanSkyLight &plan );
+		virtual void ComponentDestroyed( deoglRComponent &component );
 		virtual void TUCChanged( deoglRComponent &component );
 	};
 	
@@ -95,6 +97,9 @@ private:
 	deoglAddToPersistentRenderTask pGIRenderTaskAdd;
 	bool pGIRenderTaskUpdateMarker;
 	deObjectReference pGIComponentChangeListener;
+	
+	deoglRPTSkyLightFindContent *pTaskFindContent;
+	
 	
 	
 public:
@@ -134,6 +139,9 @@ public:
 	
 	/** Frustum box max extend. */
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
+	
+	/** Set frustom box extends. */
+	void SetFrustumBoxExtend( const decVector &minExtend, const decVector &maxExtend );
 	
 	
 	
@@ -184,6 +192,9 @@ public:
 	inline deoglPersistentRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
 	inline const deoglPersistentRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
 	
+	/** GI component destroyed. */
+	void GIComponentDestroyed( deoglRComponent &component );
+	
 	/** GI component changed TUC. */
 	void GIComponentChangedTUC( deoglRComponent &component );
 	
@@ -212,7 +223,7 @@ public:
 private:
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
-	void pCollectElements();
+	void pWaitFinishedFindContent();
 	void pGICalcShadowLayerParams();
 	void pGICollectElements();
 	void pGIUpdateRenderTask();

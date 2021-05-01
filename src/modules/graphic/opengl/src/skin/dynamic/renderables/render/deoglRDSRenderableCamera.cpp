@@ -73,19 +73,13 @@ void deoglRDSRenderableCamera::SetCamera( deoglRCamera *camera ){
 }
 
 void deoglRDSRenderableCamera::PrepareForRender(){
-	if( ! pCamera ){
-		return;
+	if( pCamera ){
+		pCamera->GetPlan().PrepareRender();
 	}
-	
-	pCamera->GetPlan().PrepareRender();
 }
 
-deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan(){
-	if( ! pCamera ){
-		return NULL;
-	}
-	
-	return &pCamera->GetPlan();
+deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan() const{
+	return pCamera ? &pCamera->GetPlan() : NULL;
 }
 
 

@@ -104,7 +104,7 @@ deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmpty(){
 	return pTUCEmpty;
 }
 
-deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmptyNoUsage(){
+deoglTexUnitsConfig *deoglTexUnitsConfigList::GetEmptyNoUsage() const{
 	return pTUCEmpty;
 }
 

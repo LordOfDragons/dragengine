@@ -856,7 +856,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
 		
 #ifdef SKY_SHADOW_FILTERED
-		const int splitMask = 1 << i;
+		const int cascadeMask = 1 << i;
 		
 		// determine split content
 		pColList2->Clear();
@@ -865,10 +865,10 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		int j;
 		
 		for( j=0; j<componentCount; j++ ){
-			deoglRComponent * const component = collideList.GetComponentAt( j )->GetComponent();
+			const deoglCollideListComponent &clcomponent = *collideList.GetComponentAt( j );
 			
-			if( ( component->GetSkyShadowSplitMask() & splitMask ) == splitMask ){
-				pColList2->AddComponent( component );
+			if( ( clcomponent.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+				pColList2->AddComponent( clcomponent.GetComponent() );
 			}
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );

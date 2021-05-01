@@ -234,16 +234,12 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVec
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
 	componentLOD.PrepareNormalsTangents();
 	const oglVector * const compFaceNormals = componentLOD.GetFaceNormals();
 	const oglVector * const compPositions = componentLOD.GetPositions();
 	
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	const int faceCount = modelLOD.GetFaceCount();
@@ -316,12 +312,8 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	int f, faceCount = modelLOD.GetFaceCount();

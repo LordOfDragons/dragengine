@@ -67,6 +67,6 @@ deoglCubeMap *deoglRDSRenderable::GetRenderCubeMap(){
 	return NULL;
 }
 
-deoglRenderPlan *deoglRDSRenderable::GetRenderPlan(){
+deoglRenderPlan *deoglRDSRenderable::GetRenderPlan() const{
 	return NULL;
 }

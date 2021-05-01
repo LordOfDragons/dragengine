@@ -68,8 +68,7 @@ private:
 	
 	deoglPixelBuffer *pPBResults;
 	GLubyte *pResults;
-	int pResultWidth;
-	int pResultHeight;
+	decPoint pResultSize;
 	
 	
 	
@@ -114,7 +113,11 @@ public:
 	/** Remove all input data. */
 	void RemoveAllInputData();
 	
-	/** Update VBO using the collected input data. */
+	/**
+	 * Update VBO using the collected input data. This also resizes the result textures
+	 * if required. Always call UpdateVBO before calling GetVBOResult(), GetVAO(),
+	 * GetTextureResult() or GetFBOResult().
+	 */
 	void UpdateVBO();
 	
 	/** VAO. */
@@ -129,11 +132,8 @@ public:
 	/** Result at index. */
 	bool GetResultAt( int index ) const;
 	
-	/** Result width. */
-	inline int GetResultWidth() const{ return pResultWidth; }
-	
-	/** Result height. */
-	inline int GetResultHeight() const{ return pResultHeight; }
+	/** Result size. */
+	inline const decPoint &GetResultSize() const{ return pResultSize; }
 	/*@}*/
 	
 	
@@ -141,9 +141,9 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateFBO();
 	void pCreateVBOLayout();
-	void pResizeResult( int width, int height );
+	void pResizeResult( const decPoint &size );
+	void pUpdateTexturesFBO();
 };
 
 #endif

@@ -62,7 +62,7 @@ void deoglPersistentRenderTaskVAO::SetParentTexture( deoglPersistentRenderTaskTe
 	pParentTexture = texture;
 }
 
-void deoglPersistentRenderTaskVAO::SetVAO( deoglVAO *vao ){
+void deoglPersistentRenderTaskVAO::SetVAO( const deoglVAO *vao ){
 	pVAO = vao;
 }
 
@@ -101,7 +101,8 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskVAO::GetRootInstance(
 	return pInstances.GetRoot();
 }
 
-deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith( deoglSharedSPBRTIGroup *group ) const{
+deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith(
+const deoglSharedSPBRTIGroup *group ) const{
 	if( ! group ){
 		DETHROW( deeInvalidParam );
 	}
@@ -111,7 +112,7 @@ deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith
 }
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::AddInstance(
-deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ){
+deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group ){
 	deoglPersistentRenderTaskInstance * const instance = pPool.GetInstance();
 	pInstances.Add( &instance->GetLLVAO() );
 	instance->SetParentVAO( this );

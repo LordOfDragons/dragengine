@@ -36,6 +36,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../utils/vcoptimizer/deoglVCOptimizer.h"
@@ -227,9 +228,10 @@ deoglModelLOD::~deoglModelLOD(){
 // Management
 ///////////////
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlock(){
+
+void deoglModelLOD::PrepareVBOBlock(){
 	if( pVBOBlock ){
-		return pVBOBlock;
+		return;
 	}
 	
 	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModel;
@@ -254,92 +256,90 @@ deoglSharedVBOBlock *deoglModelLOD::GetVBOBlock(){
 	pVBOBlock = svbolist.AddData( pVertexCount, pFaceCount * 3 );
 	
 	pWriteVBOData();
-	
-	return pVBOBlock;
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockPositionWeight(){
-	if( ! pVBOBlockPositionWeight ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelPositionWeightIndices );
-		
-		if( pPositionCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared position weight VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pPositionCount );
-		}
-		
-		pVBOBlockPositionWeight = svbolist.AddData( pPositionCount );
-		
-		pWriteVBODataPositionWeight();
+void deoglModelLOD::PrepareVBOBlockPositionWeight(){
+	if( pVBOBlockPositionWeight ){
+		return;
 	}
 	
-	return pVBOBlockPositionWeight;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelPositionWeightIndices );
+	
+	if( pPositionCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared position weight VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pPositionCount );
+	}
+	
+	pVBOBlockPositionWeight = svbolist.AddData( pPositionCount );
+	
+	pWriteVBODataPositionWeight();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockCalcNormalTangent(){
-	if( ! pVBOBlockCalcNormalTangent ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelCalcNormalTangent );
-		
-		if( pFaceCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared calc normal tangent VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
-		}
-		
-		pVBOBlockCalcNormalTangent = svbolist.AddData( pFaceCount );
-		
-		pWriteVBODataCalcNormalTangent();
+void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
+	if( pVBOBlockCalcNormalTangent ){
+		return;
 	}
 	
-	return pVBOBlockCalcNormalTangent;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelCalcNormalTangent );
+	
+	if( pFaceCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared calc normal tangent VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+	}
+	
+	pVBOBlockCalcNormalTangent = svbolist.AddData( pFaceCount );
+	
+	pWriteVBODataCalcNormalTangent();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockWriteSkinnedVBO(){
-	if( ! pVBOBlockWriteSkinnedVBO ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelWriteSkinnedVBO );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared write skinned vbo VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
-		}
-		
-		pVBOBlockWriteSkinnedVBO = svbolist.AddData( pVertexCount );
-		
-		pWriteVBODataWriteSkinnedVBO();
+void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
+	if( pVBOBlockWriteSkinnedVBO ){
+		return;
 	}
 	
-	return pVBOBlockWriteSkinnedVBO;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelWriteSkinnedVBO );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared write skinned vbo VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
+	}
+	
+	pVBOBlockWriteSkinnedVBO = svbolist.AddData( pVertexCount );
+	
+	pWriteVBODataWriteSkinnedVBO();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockWithWeight(){
-	if( ! pVBOBlockWithWeight ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolStaticModelWeight );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared model with weight VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
-		}
-		
-		pVBOBlockWithWeight = svbolist.AddData( pVertexCount );
-		
-		pWriteVBODataWithWeight();
+void deoglModelLOD::PrepareVBOBlockWithWeight(){
+	if( pVBOBlockWithWeight ){
+		return;
 	}
 	
-	return pVBOBlockWithWeight;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolStaticModelWeight );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared model with weight VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
+	}
+	
+	pVBOBlockWithWeight = svbolist.AddData( pVertexCount );
+	
+	pWriteVBODataWithWeight();
 }
 
 GLuint deoglModelLOD::GetIBO(){

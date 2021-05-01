@@ -69,8 +69,9 @@ public:
 	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units, int unitCount );
 	/** Retrieves the empty texture units configuration. */
 	deoglTexUnitsConfig *GetEmpty();
+	
 	/** Retrieves the empty texture units configuration without adding a usage. */
-	deoglTexUnitsConfig *GetEmptyNoUsage();
+	deoglTexUnitsConfig *GetEmptyNoUsage() const;
 	
 	/** Removes a configuration. This is for deoglTexUnitsConfig only. Do not call directly yourself. */
 	void Remove( deoglTexUnitsConfig *config );

@@ -125,10 +125,6 @@ pSharedSPBListUBO( NULL )
 		pInitBoneNames( model );
 		pInitTextureNames( model );
 		
-		// TODO this only prepares the vbo block of each lod level. with render threads this is
-		//      not the biggest issue anymore. remove this some time later to make it all simpler
-		renderThread.GetDelayedOperations().AddInitModel( this );
-		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -328,8 +324,6 @@ public:
 };
 
 void deoglRModel::pCleanUp(){
-	pRenderThread.GetDelayedOperations().RemoveInitModel( this );
-	
 	if( pBoneExtends ){
 		delete [] pBoneExtends;
 		pBoneExtends = NULL;

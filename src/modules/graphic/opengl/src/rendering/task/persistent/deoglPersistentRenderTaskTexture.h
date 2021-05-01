@@ -42,8 +42,8 @@ private:
 	decPointerLinkedList::cListEntry pLLShader;
 	
 	deoglPersistentRenderTaskShader *pParentShader;
-	deoglTexUnitsConfig *pTUC;
-	deoglSPBlockUBO *pParamBlock;
+	const deoglTexUnitsConfig *pTUC;
+	const deoglSPBlockUBO *pParamBlock;
 	decPointerLinkedList pVAOs;
 	decPointerDictionaryExt pVAOsMap;
 	
@@ -77,16 +77,16 @@ public:
 	void SetParentShader( deoglPersistentRenderTaskShader *shader );
 	
 	/** Texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
+	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	
 	/** Set texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
+	void SetTUC( const deoglTexUnitsConfig *tuc );
 	
 	/** Shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	inline const deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
+	void SetParameterBlock( const deoglSPBlockUBO *block );
 	
 	
 	
@@ -97,10 +97,10 @@ public:
 	decPointerLinkedList::cListEntry *GetRootVAO() const;
 	
 	/** Texture with TUC or NULL. */
-	deoglPersistentRenderTaskVAO *GetVAOWith( deoglVAO *vao ) const;
+	deoglPersistentRenderTaskVAO *GetVAOWith( const deoglVAO *vao ) const;
 	
 	/** Add texture. */
-	deoglPersistentRenderTaskVAO *AddVAO( deoglVAO *vao );
+	deoglPersistentRenderTaskVAO *AddVAO( const deoglVAO *vao );
 	
 	/** Remove vao. */
 	void RemoveVAO( deoglPersistentRenderTaskVAO *vao );

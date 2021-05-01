@@ -73,8 +73,8 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	deoglShaderProgram *pEnforceShader;
-	deoglSPBlockUBO *pEnforceParamBlock;
+	const deoglShaderProgram *pEnforceShader;
+	const deoglSPBlockUBO *pEnforceParamBlock;
 	
 	
 	
@@ -197,22 +197,22 @@ public:
 	
 	
 	/** Shader to enforce or \em NULL if free. */
-	inline deoglShaderProgram *GetEnforcedShader() const{ return pEnforceShader; }
+	inline const deoglShaderProgram *GetEnforcedShader() const{ return pEnforceShader; }
 	
 	/** Set shader to enforce or \em NULL if free. */
-	void SetEnforceShader( deoglShaderProgram *shader );
+	void SetEnforceShader( const deoglShaderProgram *shader );
 	
 	/** Shader parameter block to enforce or \em NULL if free. */
-	inline deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
+	inline const deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
 	
 	/** Set shader parameter block to enforce or \em NULL if free. */
-	void SetEnforceParamBlock( deoglSPBlockUBO *block );
+	void SetEnforceParamBlock( const deoglSPBlockUBO *block );
 	
 	
 	
 	/** Add component. */
 	void AddComponent( deoglPersistentRenderTaskOwner &owner,
-		deoglRComponent &component, int lodLevel );
+		const deoglRComponent &component, int lodLevel );
 	
 	/** Add component. */
 	void AddComponent( deoglPersistentRenderTaskOwner &owner,
@@ -223,13 +223,13 @@ public:
 	 * updated already and model and skin exist as well as parent world exists.
 	 */
 	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-		deoglRComponent &component, int texture, int lodLevel );
+		const deoglRComponent &component, int texture, int lodLevel );
 	
 	/**
 	 * Add continuous run of faces of component. Component is supposed to be updated already
 	 * and that model and skin exist as well as parent world exist.
 	 */
-	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner, deoglRComponent &component,
+	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner, const deoglRComponent &component,
 		int texture, int firstFace, int faceCount, int lodLevel );
 	/*@}*/
 	
@@ -240,7 +240,7 @@ private:
 	bool pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const;
 	
 	deoglPersistentRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
-		deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
+		const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const;
 };
 
 #endif

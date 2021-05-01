@@ -47,6 +47,7 @@
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../vao/deoglVAO.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 
@@ -156,7 +157,8 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTask::GetRootShader() con
 	return pShaders.GetRoot();
 }
 
-deoglPersistentRenderTaskShader *deoglPersistentRenderTask::GetShaderWith( deoglShaderProgram *shader ) const{
+deoglPersistentRenderTaskShader *deoglPersistentRenderTask::GetShaderWith(
+const deoglShaderProgram *shader ) const{
 	if( ! shader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -165,7 +167,8 @@ deoglPersistentRenderTaskShader *deoglPersistentRenderTask::GetShaderWith( deogl
 	return pShadersMap.GetAt( shader, shader->GetUniqueKey(), ( void** )&rtshader ) ? rtshader : NULL;
 }
 
-deoglPersistentRenderTaskShader *deoglPersistentRenderTask::AddShader( deoglShaderProgram *shader ){
+deoglPersistentRenderTaskShader *deoglPersistentRenderTask::AddShader(
+const deoglShaderProgram *shader ){
 	if( ! shader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -421,22 +424,15 @@ void deoglPersistentRenderTask::pUpdateSPBInstances(){
 void deoglPersistentRenderTask::pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread ){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4]
-	deoglSPBlockUBO * const ubo = new deoglSPBlockUBO( renderThread );
+	deObjectReference uboRef;
+	uboRef.TakeOver( new deoglSPBlockUBO( renderThread ) );
 	
-	try{
-		ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ubo->SetParameterCount( 1 );
-		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
-		ubo->MapToStd140();
-		ubo->SetBindingPoint( deoglSkinShader::eubInstanceIndex );
-		pSPBInstances.Add( ubo );
-		
-	}catch( const deException & ){
-		if( ubo ){
-			ubo->FreeReference();
-		}
-		throw;
-	}
+	deoglSPBlockUBO &ubo = ( deoglSPBlockUBO& )( deObject& )uboRef;
+	ubo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo.SetParameterCount( 1 );
+	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	ubo.MapToStd140();
+	ubo.SetBindingPoint( deoglSkinShader::eubInstanceIndex );
 	
-	ubo->FreeReference();
+	pSPBInstances.Add( &ubo );
 }

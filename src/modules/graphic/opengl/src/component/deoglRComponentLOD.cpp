@@ -214,33 +214,18 @@ void deoglRComponentLOD::UpdateVBO(){
 			
 			pPrepareVBOLayout( modelLOD );
 			
-			#ifdef OS_ANDROID
-			const int version = 0; // 0=cpu, 1=gpuAcc, 2=gpuApprox
-			#else
-			const int version = 2; // 0=cpu, 1=gpuAcc, 2=gpuApprox
-			#endif
-			
-			// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
-			//      another input VBO can be used (uniform buffers are too small). this requires only
-			//      changing the generation of TBO to be a generation of VBO data instead and changing
-			//      the shader to use VBO input instead of TBO sampling. the VBO requires indexing to
-			//      get the right weights. we use already an index in the model VBO to sample the right
-			//      TBO texel. this indexing though is relative to the vertex but the model VBO is indexed
-			//      relative to face points. this is a problem since it would require storing weight
-			//      matrices per point not per vertex. if this is done it requires a copy of weight data
-			//      to the VBO which would allow to reduce the resolution to 16-bit. all in all tricky
-			//      
-			//      the TBO uses GL_RGBA32F to allow copy the weight matrices right into the texture
-			//      without additional conversion. the same is possible for VBOs.
-			
-			if( version == 0 ){
+			switch( pComponent.GetRenderThread().GetChoices().GetGPUTransformVertices() ){
+			case deoglRTChoices::egputvNone:
 				UpdateVBOOnCPU();
+				break;
 				
-			}else if( version == 1 ){
+			case deoglRTChoices::egputvAccurate:
 				UpdateVBOOnGPUAccurate();
+				break;
 				
-			}else{ // version == 2
+			case deoglRTChoices::egputvApproximate:
 				UpdateVBOOnGPUApproximate();
+				break;
 			}
 			
 			pUpdateVAO( modelLOD );
@@ -723,11 +708,7 @@ deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
 }
 
 deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
-	const deoglRModel * const model = pComponent.GetModel();
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
-	return model->GetLODAt( pLODIndex );
+	return pComponent.GetModelRef().GetLODAt( pLODIndex );
 }
 
 void deoglRComponentLOD::PrepareWeights(){

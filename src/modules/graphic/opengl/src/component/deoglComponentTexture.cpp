@@ -170,24 +170,34 @@ void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable
 
 void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	// skin
+	deoglSkin *skin = NULL;
 	if( texture.GetSkin() ){
-		pSkin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
-		
-	}else{
-		pSkin = NULL;
+		skin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
+	}
+	
+	if( skin != pSkin ){
+		pSkin = skin;
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	// dynamic skin
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	deoglDynamicSkin *dynamicSkin = NULL;
+	if( texture.GetDynamicSkin() ){
+		dynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
 	}
 	
-	if( texture.GetDynamicSkin() ){
-		pDynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->AddListener( this );
+	if( dynamicSkin != pDynamicSkin ){
+		if( pDynamicSkin ){
+			pDynamicSkin->RemoveListener( this );
+		}
 		
-	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = dynamicSkin;
+		
+		if( dynamicSkin ){
+			dynamicSkin->AddListener( this );
+		}
+		
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	pDirtyTexture = true;

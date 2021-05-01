@@ -46,7 +46,7 @@ private:
 	decPointerLinkedList::cListEntry pLLTexture;
 	
 	deoglPersistentRenderTaskTexture *pParentTexture;
-	deoglVAO *pVAO;
+	const deoglVAO *pVAO;
 	decPointerLinkedList pInstances;
 	decPointerDictionaryExt pInstancesMap;
 	
@@ -73,10 +73,10 @@ public:
 	void SetParentTexture( deoglPersistentRenderTaskTexture *texture );
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( deoglVAO *vao );
+	void SetVAO( const deoglVAO *vao );
 	
 	
 	
@@ -95,11 +95,11 @@ public:
 	decPointerLinkedList::cListEntry *GetRootInstance() const;
 	
 	/** Instance with shared sub instance spb. */
-	deoglPersistentRenderTaskInstance *GetInstanceWith( deoglSharedSPBRTIGroup *group ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceWith( const deoglSharedSPBRTIGroup *group ) const;
 	
 	/** Add instance. */
 	deoglPersistentRenderTaskInstance *AddInstance( deoglSharedSPB *spb = NULL,
-		deoglSharedSPBRTIGroup *group = NULL );
+		const deoglSharedSPBRTIGroup *group = NULL );
 	
 	/** Remove instance. */
 	void RemoveInstance( deoglPersistentRenderTaskInstance *instance );

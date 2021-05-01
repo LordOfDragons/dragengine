@@ -22,7 +22,6 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKOWNER_H_
 #define _DEOGLPERSISTENTRENDERTASKOWNER_H_
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
@@ -40,7 +39,7 @@ class deoglPersistentRenderTaskOwner{
 private:
 	decPointerLinkedList::cListEntry pLLTask;
 	
-	deObjectReference pOwner;
+	void *pOwner;
 	unsigned int pHash;
 	bool pUpdateMarker;
 	
@@ -69,13 +68,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner object or NULL. */
-	inline deObject *GetOwner() const{ return pOwner; }
+	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Hash. */
 	inline unsigned int GetHash() const{ return pHash; }
 	
 	/** Set owner object or NULL. */
-	void SetOwner( deObject *owner, unsigned int hash );
+	void SetOwner( void *owner, unsigned int hash );
 	
 	/** Update marker. */
 	inline bool GetUpdateMarker() const{ return pUpdateMarker; }

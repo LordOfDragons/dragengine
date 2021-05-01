@@ -161,15 +161,14 @@ pElementUpper( 0 )
 	
 	int i;
 	for( i=0; i<pParameterCount; i++ ){
-		const deoglSPBParameter &src = paramBlock.pParameters[ i ];
-		deoglSPBParameter &dest = pParameters[ i ];
+		const deoglSPBParameter &s = paramBlock.pParameters[ i ];
+		deoglSPBParameter &d = pParameters[ i ];
 		
-		dest.SetAll( src.GetValueType(), src.GetComponentCount(),
-			src.GetVectorCount(), src.GetArrayCount() );
-		dest.SetOffset( src.GetOffset() );
-		dest.SetStride( src.GetStride() );
-		dest.SetArrayStride( src.GetArrayStride() );
-		dest.SetDataSize( src.GetDataSize() );
+		d.SetAll( s.GetValueType(), s.GetComponentCount(), s.GetVectorCount(), s.GetArrayCount() );
+		d.SetOffset( s.GetOffset() );
+		d.SetStride( s.GetStride() );
+		d.SetArrayStride( s.GetArrayStride() );
+		d.SetDataSize( s.GetDataSize() );
 	}
 }
 

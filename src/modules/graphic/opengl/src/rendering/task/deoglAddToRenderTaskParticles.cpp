@@ -229,7 +229,7 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 			rtps->SetPrimitiveType( GL_POINTS );
 		}
 		
-		rtps->SetParameterBlockTexture( skinTexture->GetParameterBlockFor( skinShaderType ) );
+		rtps->SetParameterBlockTexture( skinTexture->GetParameterBlock() );
 		rtps->SetParameterBlockInstance( itype.GetParamBlockFor( skinShaderType ) );
 	}
 	

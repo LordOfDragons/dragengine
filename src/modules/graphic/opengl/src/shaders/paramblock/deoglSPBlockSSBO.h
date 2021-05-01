@@ -71,16 +71,16 @@ public:
 	void SetBindingPoint( int bindingPoint );
 	
 	/** \brief Activate buffer. */
-	virtual void Activate();
+	virtual void Activate() const;
 	
 	/** \brief Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint );
+	virtual void Activate( int bindingPoint ) const;
 	
 	/** \brief Deactivate buffer. */
-	virtual void Deactivate();
+	virtual void Deactivate() const;
 	
 	/** \brief Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint );
+	virtual void Deactivate( int bindingPoint ) const;
 	
 	/** \brief Map buffer discarding content. */
 	virtual void MapBuffer();

@@ -19,10 +19,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLRENDERPLANTASKFINDCONTENT_H_
-#define _DEOGLRENDERPLANTASKFINDCONTENT_H_
+#ifndef _DEOGLRPTFINDCONTENT_H_
+#define _DEOGLRPTFINDCONTENT_H_
 
 #include <dragengine/parallel/deParallelTask.h>
+#include <dragengine/threading/deSemaphore.h>
 
 class deoglRenderPlan;
 
@@ -30,19 +31,20 @@ class deoglRenderPlan;
 /**
  * Parallel task finding content.
  */
-class deoglRenderPlanTaskFindContent : public deParallelTask{
+class deoglRPTFindContent : public deParallelTask{
 private:
 	deoglRenderPlan &pPlan;
+	deSemaphore pSemaphore;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRenderPlanTaskFindContent( deoglRenderPlan &plan );
+	deoglRPTFindContent( deoglRenderPlan &plan );
 	
 	/** Clean up task. */
-	virtual ~deoglRenderPlanTaskFindContent();
+	virtual ~deoglRPTFindContent();
 	/*@}*/
 	
 	
@@ -57,6 +59,9 @@ public:
 	
 	/** Debug name. */
 	virtual decString GetDebugName() const;
+	
+	/** Finished semaphore. */
+	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
 	/*@}*/
 };
 

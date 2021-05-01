@@ -24,9 +24,11 @@
 
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
+#include "deoglRPTSkyLightFindContent.h"
 #include "../light/deoglRenderGI.h"
 #include "../light/deoglRenderLight.h"
 #include "../light/deoglRLSVisitorCollectElements.h"
+#include "../../deGraphicOpenGl.h"
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
@@ -45,7 +47,9 @@
 #include "../../utils/collision/deoglCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 
 
 
@@ -54,6 +58,10 @@
 
 deoglRenderPlanSkyLight::cGIComponentChangeListener::cGIComponentChangeListener( deoglRenderPlanSkyLight &plan ) :
 pPlan( plan ){
+}
+
+void deoglRenderPlanSkyLight::cGIComponentChangeListener::ComponentDestroyed( deoglRComponent &component ){
+	pPlan.GIComponentDestroyed( component );
 }
 
 void deoglRenderPlanSkyLight::cGIComponentChangeListener::TUCChanged( deoglRComponent &component ){
@@ -79,7 +87,8 @@ pUseShadow( false ),
 pShadowLayerCount( 0 ),
 pGIRenderTask( plan.GetRenderThread().GetPersistentRenderTaskPool() ),
 pGIRenderTaskAdd( plan.GetRenderThread(), pGIRenderTask ),
-pGIRenderTaskUpdateMarker( false )
+pGIRenderTaskUpdateMarker( false ),
+pTaskFindContent( NULL )
 {
 	pGIRenderTaskAdd.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	pGIRenderTaskAdd.SetSolid( true );
@@ -112,6 +121,11 @@ void deoglRenderPlanSkyLight::SetOcclusionTest( deoglOcclusionTest *occlusionTes
 	pOcclusionTest = occlusionTest;
 }
 
+void deoglRenderPlanSkyLight::SetFrustumBoxExtend( const decVector &minExtend, const decVector &maxExtend ){
+	pFrustumBoxMinExtend = minExtend;
+	pFrustumBoxMaxExtend = maxExtend;
+}
+
 void deoglRenderPlanSkyLight::ClearPlanned(){
 	pPlanned = false;
 }
@@ -128,6 +142,14 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 		DETHROW( deeInvalidParam );
 	}
 	return pShadowLayers[ index ];
+}
+
+void deoglRenderPlanSkyLight::GIComponentDestroyed( deoglRComponent &component ){
+	deoglPersistentRenderTaskOwner * const owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
+	if( owner ){
+		pGIRenderTask.RemoveOwnedBy( *owner );
+		pGIRenderTask.RemoveOwner( owner );
+	}
 }
 
 void deoglRenderPlanSkyLight::GIComponentChangedTUC( deoglRComponent &component ){
@@ -196,17 +218,19 @@ void deoglRenderPlanSkyLight::Plan(){
 }
 
 void deoglRenderPlanSkyLight::StartFindContent(){
-	if( ! pUseShadow ){
+	if( ! pLayer || ! pUseShadow ){
 		return;
+	}
+	
+	if( pTaskFindContent ){
+		DETHROW( deeInvalidParam );
 	}
 	
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
 	
-	// TODO find content using parallel tasks (each using one task). this also includes
-	//      adding occlusion test inputs since these are not shared and do not require
-	//      opengl access yet
-	
-	// pCollectElements();
+// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) StartFindContent(%p)", this, &pPlan, pTaskFindContent );
+	pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
+	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
 	
 	if( pPlan.GetUpdateGIState() ){
 		// TODO same here but only finding content. no occlusion tests are done here
@@ -215,12 +239,7 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 }
 
 void deoglRenderPlanSkyLight::StartOcclusionTests(){
-	if( ! pUseShadow ){
-		return;
-	}
-	
-	// TODO wait for pCollectElements parallel task to finish. this has filled the collide
-	//      list and added occlusion test inputs
+	pWaitFinishedFindContent();
 	
 	// TODO start render occlusion test. this is not so trime consuming (<0.5ms) but still
 	//      reading back the results can be delayed
@@ -246,12 +265,12 @@ void deoglRenderPlanSkyLight::Prepare(){
 		SPECIAL_TIMER_PRINT("GI Update Render Task")
 	}
 	
-	pCollectElements(); // TODO remove
-	// TODO wait for occlusion test to finish and apply results
 	SPECIAL_TIMER_PRINT("Collect")
 }
 
 void deoglRenderPlanSkyLight::CleanUp(){
+	pWaitFinishedFindContent();
+	
 	pGICollideList.Clear();
 	pCollideList.Clear();
 	pUseLight = false;
@@ -518,34 +537,15 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	}
 }
 
-void deoglRenderPlanSkyLight::pCollectElements(){
-	if( ! pLayer ){
+void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
+	if( ! pTaskFindContent ){
 		return;
 	}
 	
-	deoglRLSVisitorCollectElements collectElements( pCollideList );
-	const int shadowMapSize = pPlan.GetShadowSkySize();
-	const float splitSizeLimitPixels = 1.0f;
-	int i;
-	
-	collectElements.InitFromFrustum( pPlan, *pLayer, 2000.0f );
-	collectElements.SetCullLayerMask( pPlan.GetUseLayerMask() );
-	collectElements.SetLayerMask( pPlan.GetLayerMask() );
-	
-	for( i=0; i<pShadowLayerCount; i++ ){
-		const sShadowLayer &sl = pShadowLayers[ i ];
-		const decVector splitMinExtend = decVector( sl.minExtend.x, sl.minExtend.y, sl.minExtend.z - 2000.0f );
-		const decVector &splitMaxExtend = sl.maxExtend;
-		const float sizeThresholdX = ( ( sl.maxExtend.x - sl.minExtend.x ) / ( float )shadowMapSize ) * splitSizeLimitPixels;
-		const float sizeThresholdY = ( ( sl.maxExtend.y - sl.minExtend.y ) / ( float )shadowMapSize ) * splitSizeLimitPixels;
-		
-		collectElements.AddSplit( splitMinExtend, splitMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
-	}
-	
-	collectElements.VisitWorldOctree( pPlan.GetWorld()->GetOctree() );
-	
-	pFrustumBoxMinExtend = collectElements.GetFrustumBoxMinExtend();
-	pFrustumBoxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
+// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
+	pTaskFindContent->GetSemaphore().Wait();
+	pTaskFindContent->FreeReference();
+	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
@@ -671,6 +671,7 @@ void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
 	
 	// prepare task
 	if( countAdded > 0 || countRemoved > 0 ){
+		// WARNING this call does modify a shader parameter block and can thus not be parallel
 		pGIRenderTask.PrepareForRender( pPlan.GetRenderThread() );
 		
 		

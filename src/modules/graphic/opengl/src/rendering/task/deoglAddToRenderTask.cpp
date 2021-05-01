@@ -671,7 +671,7 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 		if( ! renderTaskTexture ){
 			renderTaskTexture = pRenderTask.TextureFromPool();
 			renderTaskTexture->SetTUC( tuc );
-			renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
+			renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
 			renderTaskTexture->SetTexture( skinTexture );
 			renderTaskShader->AddTexture( renderTaskTexture );
 		}
@@ -793,7 +793,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	if( ! renderTaskTexture ){
 		renderTaskTexture = pRenderTask.TextureFromPool();
 		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
+		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
 		renderTaskTexture->SetTexture( skinTexture );
 		renderTaskShader->AddTexture( renderTaskTexture );
 	}
@@ -1249,7 +1249,7 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
 	if( ! renderTaskTexture ){
 		renderTaskTexture = pRenderTask.TextureFromPool();
 		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
+		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
 		renderTaskTexture->SetTexture( skinTexture );
 		renderTaskShader->AddTexture( renderTaskTexture );
 	}

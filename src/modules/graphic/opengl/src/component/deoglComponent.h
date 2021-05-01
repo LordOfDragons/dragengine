@@ -86,6 +86,7 @@ public:
 	bool pNotifyTexturesChanged;
 	bool pNotifyTUCChanged;
 	bool pDirtySolid;
+	bool pDirtyTextureUseSkin;
 	
 	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
@@ -166,6 +167,7 @@ public:
 	void TextureDynamicSkinRequiresSync();
 	
 	void DirtyRenderableMapping();
+	void DirtyTextureUseSkin();
 	
 	/** Decal needs sync. */
 	void DecalRequiresSync();

@@ -25,7 +25,7 @@
 #include "deoglRLSVisitorCollectElements.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../../collidelist/deoglCollideList.h"
-
+#include "../../collidelist/deoglCollideListComponent.h"
 #include "../../world/deoglWorldOctree.h"
 #include "../../billboard/deoglRBillboard.h"
 #include "../../component/deoglRComponent.h"
@@ -403,8 +403,7 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 	
 	// test content
 	const deoglWorldOctree &sonode = *( ( deoglWorldOctree* )node );
-	int i, count, splitMask;
-	deoglDCollisionBox box;
+	int i, count, cascadeMask;
 	
 	// test components
 	count = sonode.GetComponentCount();
@@ -419,13 +418,13 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 			continue;
 		}
 		
-		if( ! TestAxisAlignedBox( component->GetMinimumExtend(), component->GetMaximumExtend(), splitMask ) ){
+		if( ! TestAxisAlignedBox( component->GetMinimumExtend(), component->GetMaximumExtend(), cascadeMask ) ){
 			continue;
 		}
 		
-		component->SetSkyShadowSplitMask( splitMask );
-		//component->SetVisible( true );
-		pCollideList.AddComponent( component );
+		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( component );
+		clcomponent.SetCascadeMask( cascadeMask );
+		// TODO add occlusion test input
 	}
 	
 	// test billboards
@@ -441,13 +440,13 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 			continue;
 		}
 		
-		if( ! TestAxisAlignedBox( billboard->GetMinimumExtend(), billboard->GetMaximumExtend(), splitMask ) ){
+		if( ! TestAxisAlignedBox( billboard->GetMinimumExtend(), billboard->GetMaximumExtend(), cascadeMask ) ){
 			continue;
 		}
 		
-		billboard->SetSkyShadowSplitMask( splitMask );
-		//billboard->SetVisible( true );
+		billboard->SetSkyShadowSplitMask( cascadeMask );
 		pCollideList.AddBillboard( billboard );
+		// TODO add occlusion test input
 	}
 }
 

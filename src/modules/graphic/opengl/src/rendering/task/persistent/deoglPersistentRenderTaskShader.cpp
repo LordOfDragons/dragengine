@@ -110,7 +110,7 @@ void deoglPersistentRenderTaskShader::SetParentTask( deoglPersistentRenderTask *
 
 
 
-void deoglPersistentRenderTaskShader::SetShader( deoglShaderProgram *shader ){
+void deoglPersistentRenderTaskShader::SetShader( const deoglShaderProgram *shader ){
 	pShader = shader;
 }
 
@@ -132,7 +132,8 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskShader::GetRootTextur
 	return pTextures.GetRoot();
 }
 
-deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskShader::GetTextureWith( deoglTexUnitsConfig *tuc ) const{
+deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskShader::GetTextureWith(
+const deoglTexUnitsConfig *tuc ) const{
 	if( ! tuc ){
 		DETHROW( deeInvalidParam );
 	}
@@ -141,7 +142,8 @@ deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskShader::GetTextureWi
 	return pTexturesMap.GetAt( tuc, tuc->GetUniqueKey(), ( void** )&texture ) ? texture : NULL;
 }
 
-deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskShader::AddTexture( deoglTexUnitsConfig *tuc ){
+deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskShader::AddTexture(
+const deoglTexUnitsConfig *tuc ){
 	if( ! tuc ){
 		DETHROW( deeInvalidParam );
 	}

@@ -187,7 +187,7 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	if( ! renderTaskTexture ){
 		renderTaskTexture = pRenderTask.TextureFromPool();
 		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
+		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
 		renderTaskTexture->SetTexture( skinTexture );
 		renderTaskShader->AddTexture( renderTaskTexture );
 	}

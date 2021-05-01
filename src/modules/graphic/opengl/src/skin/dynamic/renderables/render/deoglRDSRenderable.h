@@ -95,7 +95,7 @@ public:
 	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan();
+	virtual deoglRenderPlan *GetRenderPlan() const;
 	/*@}*/
 };
 

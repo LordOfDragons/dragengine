@@ -344,7 +344,8 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 
 deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
 pRenderThread( renderThread ),
-pName( texture.GetName() )
+pName( texture.GetName() ),
+pParamBlock( NULL )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -369,7 +370,6 @@ pName( texture.GetName() )
 	
 	for( i=0; i<ShaderTypeCount; i++ ){
 		pShaders[ i ] = NULL;
-		pParamBlocks[ i ] = NULL;
 	}
 	
 	pAbsorption.Set( 0.0f, 0.0f, 0.0f );
@@ -654,19 +654,28 @@ bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) 
 	return pChannels[ type ] != NULL;
 }
 
-deoglSkinShader *deoglSkinTexture::GetShaderFor( eShaderTypes shaderType ){
-	if( ! pShaders[ shaderType ] ){
-		deoglSkinShaderConfig config;
-		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pRenderThread.GetShader().GetSkinShaderManager().GetShaderWith( config );
-			pShaders[ shaderType ]->EnsureShaderExists();
-		}
-	}
-	
+deoglSkinShader *deoglSkinTexture::GetShaderFor( eShaderTypes shaderType ) const{
 	return pShaders[ shaderType ];
 }
 
-bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ){
+void deoglSkinTexture::PrepareShaders(){
+	int i;
+	for( i=0; i<ShaderTypeCount; i++ ){
+		if( pShaders[ i ] ){
+			continue;
+		}
+		
+		deoglSkinShaderConfig config;
+		if( ! GetShaderConfigFor( ( eShaderTypes )i, config ) ){
+			continue;
+		}
+		
+		pShaders[ i ] = pRenderThread.GetShader().GetSkinShaderManager().GetShaderWith( config );
+		pShaders[ i ]->PrepareShader();
+	}
+}
+
+bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ) const{
 	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	const sShaderConfigInfo &shaderConfigInfo = vShaderConfigInfo[ shaderType ];
 	const bool useEquiEnvMap = pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap();
@@ -1136,231 +1145,136 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		return false;
 	}
 	
-	decString debugString;
-	config.DebugGetConfigString( debugString );
+// 	decString debugString;
+// 	config.DebugGetConfigString( debugString );
 // 	GetRenderThread().GetLogger().LogInfoFormat( "GetShaderConfigFor(%d): %s", shaderType, debugString.GetString() );
 	return true;
 }
 
-deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType ){
-	if( pParamBlocks[ shaderType ] ){
-		return pParamBlocks[ shaderType ];
+void deoglSkinTexture::PrepareParamBlock(){
+	if( pParamBlock ){
+		return;
 	}
 	
-	deoglSkinShader * const shader = GetShaderFor( shaderType );
-	if( ! shader ){
-		return NULL;
-	}
-	
-	pParamBlocks[ shaderType ] = shader->CreateSPBTexParam();
-	if( ! pParamBlocks[ shaderType ] ){
-		return NULL;
-	}
+	pParamBlock = deoglSkinShader::CreateSPBTexParam( pRenderThread );
 	
 	// etutValueColorTransparency,
 	// etutValueNormalHeight,
 	// etutValueReflectivityRoughness,
 	// etutValueRefractionDistort,
 	// etutValueAO,
-	pParamBlocks[ shaderType ]->MapBuffer();
+	deoglSPBlockUBO &spb = *pParamBlock;
+	spb.MapBuffer();
 	try{
-		int target;
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexColorTint,
+			powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorTint );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexColorGamma, pColorGamma );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorGamma );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pColorGamma );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexColorSolidMultiplier,
+			pColorSolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorSolidMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pColorSolidityMultiplier );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexAOSolidityMultiplier,
+			pAmbientOcclusionSolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexAOSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pAmbientOcclusionSolidityMultiplier );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier,
+			pTransparencyMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexTransparencyMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pTransparencyMultiplier );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexSolidityMultiplier,
+			pSolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pSolidityMultiplier );
-		}
+		// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
+		spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap,
+			pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexHeightRemap );
-		if( target != -1 ){
-			// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target, pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalStrength, pNormalStrength );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexNormalStrength );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pNormalStrength );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalSolidityMultiplier,
+			pNormalSolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexNormalSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pNormalSolidityMultiplier );
-		}
+		spb.SetParameterDataVec2( deoglSkinShader::etutTexRoughnessRemap,
+			pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessRemap );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target, pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessGamma, pRoughnessGamma );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessGamma );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRoughnessGamma );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessSolidityMultiplier,
+			pRoughnessSolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRoughnessSolidityMultiplier );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivitySolidityMultiplier,
+			pReflectivitySolidityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexReflectivitySolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pReflectivitySolidityMultiplier );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexRefractionDistortStrength,
+			pRefractDistortStrength );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRefractionDistortStrength );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRefractDistortStrength );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexEmissivityIntensity,
+			powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
+			powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
+			powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEmissivityIntensity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
-				powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
-				powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
-		}
+		spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize,
+			1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomSize );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target,
-				1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomOffset,
+			pEnvironmentRoomOffset );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomOffset );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, pEnvironmentRoomOffset );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomEmissivityIntensity,
+			powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+			powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+			powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomEmissivityIntensity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-				powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-				powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexThickness, pThickness );
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexAbsorptionRange, pAbsorptionRange );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexThickness );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pThickness );
-		}
+		spb.SetParameterDataVec2( deoglSkinShader::etutTexVariationEnableScale,
+			pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexAbsorptionRange );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pAbsorptionRange );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivityMultiplier,
+			pReflectivityMultiplier );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexVariationEnableScale );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target,
-				pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
-		}
+		// see shader source geometry/defren/skin/particle_ribbon.glsl for the
+		// calculation of the maximum number of supported sheets (8)
+		spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount,
+			decMath::clamp( pParticleSheetCount, 1, 8 ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexReflectivityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pReflectivityMultiplier );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity,
+			powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
+			powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
+			powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexParticleSheetCount );
-		if( target != -1 ){
-			// see shader source geometry/defren/skin/particle_ribbon.glsl for the
-			// calculation of the maximum number of supported sheets (8)
-			pParamBlocks[ shaderType ]->SetParameterDataInt( target,
-				decMath::clamp( pParticleSheetCount, 1, 8 ) );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexRimAngle,
+			pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimEmissivityIntensity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
-				powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
-				powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexRimExponent,
+			decMath::max( pRimExponent, 0.001f ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimAngle );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target,
-				pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColor,
+			powf( pOutlineColor.r, 2.2f ), powf( pOutlineColor.g, 2.2f ),
+			powf( pOutlineColor.b, 2.2f ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRimExponent );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, decMath::max( pRimExponent, 0.001f ) );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColorTint,
+			powf( pOutlineColorTint.r, 2.2f ), powf( pOutlineColorTint.g, 2.2f ),
+			powf( pOutlineColorTint.b, 2.2f ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineColor );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineColor.r, 2.2f ),
-				powf( pOutlineColor.g, 2.2f ), powf( pOutlineColor.b, 2.2f ) );
-		}
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineThickness, pOutlineThickness );
+		spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineSolidity, pOutlineSolidity );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineColorTint );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineColorTint.r, 2.2f ),
-				powf( pOutlineColorTint.g, 2.2f ), powf( pOutlineColorTint.b, 2.2f ) );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivity,
+			powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
+			powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
+			powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineThickness );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pOutlineThickness );
-		}
+		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivityTint,
+			powf( pOutlineEmissivityTint.r, 2.2f ), powf( pOutlineEmissivityTint.g, 2.2f ),
+			powf( pOutlineEmissivityTint.b, 2.2f ) );
 		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineSolidity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pOutlineSolidity );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineEmissivity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
-				powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
-				powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineEmissivityTint );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineEmissivityTint.r, 2.2f ),
-				powf( pOutlineEmissivityTint.g, 2.2f ), powf( pOutlineEmissivityTint.b, 2.2f ) );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEmissivityCameraAdapted );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataBool( target, pEmissivityCameraAdapted );
-		}
+		spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted,
+			pEmissivityCameraAdapted );
 		
 	}catch( const deException & ){
-		pParamBlocks[ shaderType ]->UnmapBuffer();
+		spb.UnmapBuffer();
 		throw;
 	}
-	pParamBlocks[ shaderType ]->UnmapBuffer();
-	
-	return pParamBlocks[ shaderType ];
+	spb.UnmapBuffer();
 }
 
 
@@ -1710,14 +1624,14 @@ void deoglSkinTexture::pCleanUp(){
 	int i;
 	
 	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pParamBlocks[ i ] ){
-			pParamBlocks[ i ]->FreeReference();
-			pParamBlocks[ i ] = NULL;
-		}
 		if( pShaders[ i ] ){
 			pShaders[ i ]->FreeReference();
 			pShaders[ i ] = NULL;
 		}
+	}
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
+		pParamBlock = NULL;
 	}
 	
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){

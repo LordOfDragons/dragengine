@@ -159,7 +159,6 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor ){
 }
 
 
-
 void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 	int i, count;
 	

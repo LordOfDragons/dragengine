@@ -191,8 +191,8 @@ static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = 
 	"pInstOutlineColor", // eiutInstOutlineColor
 	"pInstOutlineThickness", // eiutInstOutlineThickness
 	"pInstOutlineColorTint", // eiutInstOutlineColorTint
-	"pInstOutlineSolidity", // eiutInstOutlineSolidity
 	"pInstOutlineEmissivity", // eiutInstOutlineEmissivity
+	"pInstOutlineSolidity", // eiutInstOutlineSolidity
 	"pInstOutlineEmissivityTint", // eiutInstOutlineEmissivityTint
 };
 
@@ -258,7 +258,7 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexOutlineEmissivityTint ( vec3 )
 	
-	{ deoglSPBParameter::evtBool, 1, 1, 1 }, // etutTexEmissivityCameraAdapted ( bool )
+	{ deoglSPBParameter::evtBool, 1, 1, 1 }  // etutTexEmissivityCameraAdapted ( bool )
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIUT_COUNT ] = {
@@ -312,9 +312,9 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColor ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineThickness ( float )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColorTint ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineSolidity ( float )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivity ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivityTint ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineSolidity ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }  // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
 static const int vUBOInstParamMapCount = 43;
@@ -382,10 +382,12 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	
 	deoglSkinShader::eiutInstOutlineColor, // eiutInstOutlineColor ( vec3 )
 	deoglSkinShader::eiutInstOutlineThickness, // eiutInstOutlineThickness ( float )
+	
 	deoglSkinShader::eiutInstOutlineColorTint, // eiutInstOutlineColorTint ( vec3 )
 	deoglSkinShader::eiutInstOutlineSolidity, // eiutInstOutlineSolidity ( float )
+	
 	deoglSkinShader::eiutInstOutlineEmissivity, // eiutInstOutlineEmissivity ( vec3 )
-	deoglSkinShader::eiutInstOutlineEmissivityTint, // eiutInstOutlineEmissivityTint ( vec3 )
+	deoglSkinShader::eiutInstOutlineEmissivityTint // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
 
@@ -403,7 +405,6 @@ pRenderThread( renderThread ),
 
 pConfig( config ),
 pUsedTextureTargetCount( 0 ),
-pUsedTextureUniformTargetCount( 0 ),
 pUsedInstanceUniformTargetCount( 0 ),
 pTargetSPBInstanceIndexBase( -1 ),
 pSources( NULL ),
@@ -413,9 +414,6 @@ pShader( NULL )
 	
 	for( i=0; i<ETT_COUNT; i++ ){
 		pTextureTargets[ i ] = -1;
-	}
-	for( i=0; i<ETUT_COUNT; i++ ){
-		pTextureUniformTargets[ i ] = -1;
 	}
 	for( i=0; i<EIUT_COUNT; i++ ){
 		pInstanceUniformTargets[ i ] = -1;
@@ -456,17 +454,6 @@ void deoglSkinShader::SetUsedTextureTargetCount( int usedTextureTargetCount ){
 
 
 
-int deoglSkinShader::GetTextureUniformTarget( deoglSkinShader::eTextureUniformTargets target ) const{
-	return pTextureUniformTargets[ target ];
-}
-
-void deoglSkinShader::SetTextureUniformTarget( deoglSkinShader::eTextureUniformTargets target, int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
-	pTextureUniformTargets[ target ] = index;
-}
-
 int deoglSkinShader::GetInstanceUniformTarget( deoglSkinShader::eInstanceUniformTargets target ) const{
 	return pInstanceUniformTargets[ target ];
 }
@@ -480,15 +467,10 @@ void deoglSkinShader::SetInstanceUniformTarget( deoglSkinShader::eInstanceUnifor
 
 
 
-void deoglSkinShader::EnsureShaderExists(){
+void deoglSkinShader::PrepareShader(){
 	if( ! pShader ){
 		GenerateShader();
 	}
-}
-
-deoglShaderProgram *deoglSkinShader::GetShader(){
-	EnsureShaderExists();
-	return pShader;
 }
 
 
@@ -616,27 +598,22 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThr
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBTexParam() const{
+deoglSPBlockUBO *deoglSkinShader::CreateSPBTexParam( deoglRenderThread &renderThread ){
 	if( ! pglUniformBlockBinding ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	deoglSPBlockUBO *spb = NULL;
-	int i, target;
 	
 	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( pUsedTextureUniformTargetCount );
+		spb = new deoglSPBlockUBO( renderThread );
+		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		spb->SetParameterCount( ETUT_COUNT );
 		
+		int i;
 		for( i=0; i<ETUT_COUNT; i++ ){
-			target = pTextureUniformTargets[ i ];
-			
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-					vTextureSPBParamDefs[ i ].componentCount,
-					vTextureSPBParamDefs[ i ].vectorCount, 1 );
-			}
+			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 		}
 		
 		spb->MapToStd140();
@@ -658,7 +635,7 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBInstParam() const{
 	}
 	
 	deoglSPBlockUBO *spb = NULL;
-	int i, target;
+	int i;
 	
 	try{
 		spb = new deoglSPBlockUBO( pRenderThread );
@@ -666,8 +643,7 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBInstParam() const{
 		spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 		
 		for( i=0; i<EIUT_COUNT; i++ ){
-			target = pInstanceUniformTargets[ i ];
-			
+			const int target = pInstanceUniformTargets[ i ];
 			if( target != -1 ){
 				spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
 					vInstanceSPBParamDefs[ i ].componentCount,
@@ -747,13 +723,13 @@ deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThre
 
 
 void deoglSkinShader::SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
-const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
+const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ) const{
 	SetDynTexParamsInInstParamSPB( paramBlock, 0, skinTexture, skinState, dynamicSkin );
 }
 
 void deoglSkinShader::SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 int element, const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-deoglRDynamicSkin *dynamicSkin ){
+deoglRDynamicSkin *dynamicSkin ) const{
 	/*
 	if( pInstanceUniformTargets[ eiutTCTransformColor ] != -1 ){
 		paramBlock.SetParameterDataVec4( pInstanceUniformTargets[ eiutTCTransformColor ],
@@ -2256,19 +2232,10 @@ void deoglSkinShader::UpdateTextureTargets(){
 void deoglSkinShader::UpdateUniformTargets(){
 	int i;
 	
-	for( i=0; i<ETUT_COUNT; i++ ){
-		pTextureUniformTargets[ i ] = -1;
-	}
-	pUsedTextureUniformTargetCount = 0;
 	for( i=0; i<EIUT_COUNT; i++ ){
 		pInstanceUniformTargets[ i ] = -1;
 	}
 	pUsedInstanceUniformTargetCount = 0;
-	
-	// texture parameters
-	for( i=0; i<ETUT_COUNT; i++ ){
-		pTextureUniformTargets[ i ] = pUsedTextureUniformTargetCount++;
-	}
 	
 	// instance parameters
 	if( pConfig.GetGIMaterial() ){
@@ -2327,93 +2294,35 @@ void deoglSkinShader::UpdateUniformTargets(){
 	*/
 	
 	if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle ){
-		if( pConfig.GetDynamicColorTint() ){
-			pInstanceUniformTargets[ eiutInstColorTint ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicColorGamma() ){
-			pInstanceUniformTargets[ eiutInstColorGamma ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicColorSolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstColorSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicAmbientOcclusionSolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstAOSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicTransparencyMultiplier() ){
-			pInstanceUniformTargets[ eiutInstTransparencyMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicSolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicHeightRemap() ){
-			pInstanceUniformTargets[ eiutInstHeightRemap ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicNormalStrength() ){
-			pInstanceUniformTargets[ eiutInstNormalStrength ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicNormalSolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstNormalSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRoughnessRemap() ){
-			pInstanceUniformTargets[ eiutInstRoughnessRemap ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRoughnessGamma() ){
-			pInstanceUniformTargets[ eiutInstRoughnessGamma ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRoughnessSolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstRoughnessSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicReflectivitySolidityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstReflectivitySolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRefractionDistortStrength() ){
-			pInstanceUniformTargets[ eiutInstRefractionDistortStrength ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicEmissivityIntensity() || pConfig.GetDynamicEmissivityTint() ){
-			pInstanceUniformTargets[ eiutInstEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicEnvRoomSize() ){
-			pInstanceUniformTargets[ eiutInstEnvRoomSize ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicEnvRoomOffset() ){
-			pInstanceUniformTargets[ eiutInstEnvRoomOffset ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicEnvRoomEmissivityIntensity() || pConfig.GetDynamicEnvRoomEmissivityTint() ){
-			pInstanceUniformTargets[ eiutInstEnvRoomEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicVariation() ){
-			pInstanceUniformTargets[ eiutInstVariationEnableScale ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicReflectivityMultiplier() ){
-			pInstanceUniformTargets[ eiutInstReflectivityMultiplier ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRimEmissivityIntensity() || pConfig.GetDynamicRimEmissivityTint() ){
-			pInstanceUniformTargets[ eiutInstRimEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRimAngle() ){
-			pInstanceUniformTargets[ eiutInstRimAngle ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicRimExponent() ){
-			pInstanceUniformTargets[ eiutInstRimExponent ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineColor() ){
-			pInstanceUniformTargets[ eiutInstOutlineColor ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineColorTint() ){
-			pInstanceUniformTargets[ eiutInstOutlineColorTint ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineThickness() ){
-			pInstanceUniformTargets[ eiutInstOutlineThickness ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineSolidity() ){
-			pInstanceUniformTargets[ eiutInstOutlineSolidity ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineEmissivity() ){
-			pInstanceUniformTargets[ eiutInstOutlineEmissivity ] = pUsedInstanceUniformTargetCount++;
-		}
-		if( pConfig.GetDynamicOutlineEmissivityTint() ){
-			pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ] = pUsedInstanceUniformTargetCount++;
-		}
+		pInstanceUniformTargets[ eiutInstColorTint ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstColorGamma ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstColorSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstAOSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstTransparencyMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstHeightRemap ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstNormalStrength ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstNormalSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRoughnessRemap ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRoughnessGamma ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRoughnessSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstReflectivitySolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRefractionDistortStrength ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstEnvRoomSize ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstEnvRoomOffset ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstEnvRoomEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstVariationEnableScale ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstReflectivityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRimEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRimAngle ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstRimExponent ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineColor ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineColorTint ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineThickness ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineEmissivity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineSolidity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutInstOutlineEmissivityTint ] = pUsedInstanceUniformTargetCount++;
 	}
 	
 	// shared parameter block support
@@ -2474,9 +2383,7 @@ void deoglSkinShader::InitShaderParameters(){
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){
-		if( pTextureUniformTargets[ i ] != -1 ){
-			parameterList.Add( vTextureUniformTargetNames[ i ] );
-		}
+		parameterList.Add( vTextureUniformTargetNames[ i ] );
 	}
 	
 	if( ! pConfig.GetSharedSPB() ){

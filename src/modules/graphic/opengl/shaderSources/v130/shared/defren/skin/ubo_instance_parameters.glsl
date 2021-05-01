@@ -64,8 +64,10 @@ struct sInstanceParameters{
 	
 	vec3 pSPBInstOutlineColor;
 	float pSPBInstOutlineThickness;
+	
 	vec3 pSPBInstOutlineColorTint;
 	float pSPBInstOutlineSolidity;
+	
 	vec3 pSPBInstOutlineEmissivity;
 	vec3 pSPBInstOutlineEmissivityTint;
 	
@@ -140,111 +142,59 @@ UBOLAYOUT uniform InstanceParameters{
 	// texture coordinate transformations used for dynamic textures only
 	/*
 	vec4 pTCTransformColor;
-	#ifdef TEXTURE_NORMAL
-		vec4 pTCTransformNormal;
-	#endif
-	#ifdef TEXTURE_REFLECTIVITY
-		vec4 pTCTransformReflectivity;
-	#endif
-	#ifdef TEXTURE_EMISSIVITY
-		vec4 pTCTransformEmissivity;
-	#endif
-	#ifdef TEXTURE_REFRACTION_DISTORT
-		vec4 pTCTransformRefractionDistort;
-	#endif
-	#ifdef TEXTURE_AO
-		vec4 pTCTransformAO;
-	#endif
+	vec4 pTCTransformNormal;
+	vec4 pTCTransformReflectivity;
+	vec4 pTCTransformEmissivity;
+	vec4 pTCTransformRefractionDistort;
+	vec4 pTCTransformAO;
 	*/
 	
 	// per texture dynamic texture properties not using textures
-	#ifdef DYNAMIC_COLOR_TINT
-		vec3 pInstColorTint; // color.tint
-	#endif
-	#ifdef DYNAMIC_COLOR_GAMMA
-		float pInstColorGamma; // color.gamma
-	#endif
-	#ifdef DYNAMIC_COLOR_SOLIDITY_MULTIPLIER
-		float pInstColorSolidityMultiplier; // color.solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_TRANSPARENCY_MULTIPLIER
-		float pInstTransparencyMultiplier; // transparency.multiplier
-	#endif
-	#ifdef DYNAMIC_SOLIDITY_MULTIPLIER
-		float pInstSolidityMultiplier; // solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_AO_SOLIDITY_MULTIPLIER
-		float pInstAOSolidityMultiplier; // ambient.occlusion.solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_HEIGHT_REMAP
-		vec2 pInstHeightRemap; // height.scale, height.offset
-	#endif
-	#ifdef DYNAMIC_NORMAL_STRENGTH
-		float pInstNormalStrength; // normal.strength
-	#endif
-	#ifdef DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER
-		float pInstNormalSolidityMultiplier; // normal.solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_ROUGHNESS_REMAP
-		vec2 pInstRoughnessRemap; // roughness.remap.* (x=scale, y=offset)
-	#endif
-	#ifdef DYNAMIC_ROUGHNESS_GAMMA
-		float pInstRoughnessGamma; // roughness.gamma
-	#endif
-	#ifdef DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER
-		float pInstRoughnessSolidityMultiplier; // roughness.solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_REFRACTION_DISTORT_STRENGTH
-		float pInstRefractionDistortStrength; // refraction.distort.strength
-	#endif
-	#ifdef DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER
-		float pInstReflectivitySolidityMultiplier; // reflectivity.solidity.multiplier
-	#endif
-	#ifdef DYNAMIC_EMISSIVITY_INTENSITY
-		vec3 pInstEmissivityIntensity; // emissivity.intensity
-	#endif
-	#ifdef DYNAMIC_ENVROOM_SIZE
-		vec2 pInstEnvRoomSize; // environmentroom.size
-	#endif
-	#ifdef DYNAMIC_ENVROOM_OFFSET
-		vec3 pInstEnvRoomOffset; // environmentroom.offset
-	#endif
-	#ifdef DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY
-		vec3 pInstEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
-	#endif
-	#ifdef DYNAMIC_VARIATION
-		vec2 pInstVariationEnableScale; // variation.u, variation.v
-	#endif
-	#ifdef DYNAMIC_REFLECTIVITY_MULTIPLIER
-		float pInstReflectivityMultiplier; // reflectivity.multiplier
-	#endif
-	#ifdef DYNAMIC_RIM_EMISSIVITY_INTENSITY
-		vec3 pInstRimEmissivityIntensity; // rim.emissivity.intensity
-	#endif
-	#ifdef DYNAMIC_RIM_ANGLE
-		vec3 pInstRimAngle; // rim.angle
-	#endif
-	#ifdef DYNAMIC_RIM_EXPONENT
-		vec3 pInstRimExponent; // rim.exponent
-	#endif
-	#ifdef DYNAMIC_OUTLINE_COLOR
-		vec3 pInstOutlineColor;
-	#endif
-	#ifdef DYNAMIC_OUTLINE_COLOR_TINT
-		vec3 pInstOutlineColorTint;
-	#endif
-	#ifdef DYNAMIC_OUTLINE_THICKNESS
-		float pInstOutlineThickness;
-	#endif
-	#ifdef DYNAMIC_OUTLINE_SOLIDITY
-		float pInstOutlineSolidity;
-	#endif
-	#ifdef DYNAMIC_OUTLINE_EMISSIVITY
-		vec3 pInstOutlineEmissivity;
-	#endif
-	#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
-		vec3 pInstOutlineEmissivityTint;
-	#endif
+	vec3 pInstColorTint; // color.tint
+	float pInstColorGamma; // color.gamma
+	
+	float pInstColorSolidityMultiplier; // color.solidity.multiplier
+	float pInstTransparencyMultiplier; // transparency.multiplier
+	float pInstSolidityMultiplier; // solidity.multiplier
+	float pInstAOSolidityMultiplier; // ambient.occlusion.solidity.multiplier
+	
+	vec2 pInstHeightRemap; // height.scale, height.offset
+	float pInstNormalStrength; // normal.strength
+	float pInstNormalSolidityMultiplier; // normal.solidity.multiplier
+	
+	vec2 pInstRoughnessRemap; // roughness.remap.* (x=scale, y=offset)
+	float pInstRoughnessGamma; // roughness.gamma
+	float pInstRoughnessSolidityMultiplier; // roughness.solidity.multiplier
+	
+	float pInstRefractionDistortStrength; // refraction.distort.strength
+	float pInstReflectivitySolidityMultiplier; // reflectivity.solidity.multiplier
+	
+	vec3 pInstEmissivityIntensity; // emissivity.intensity
+	
+	vec2 pInstEnvRoomSize; // environmentroom.size
+	
+	vec3 pInstEnvRoomOffset; // environmentroom.offset
+	
+	vec3 pInstEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
+	
+	vec2 pInstVariationEnableScale; // variation.u, variation.v
+	float pInstReflectivityMultiplier; // reflectivity.multiplier
+	
+	vec3 pInstRimEmissivityIntensity; // rim.emissivity.intensity
+	
+	vec3 pInstRimAngle; // rim.angle
+	
+	vec3 pInstRimExponent; // rim.exponent
+	
+	vec3 pInstOutlineColor;
+	
+	vec3 pInstOutlineColorTint;
+	float pInstOutlineThickness;
+	
+	vec3 pInstOutlineEmissivity;
+	float pInstOutlineSolidity;
+	
+	vec3 pInstOutlineEmissivityTint;
 };
 
 #endif  // SHARED_SPB

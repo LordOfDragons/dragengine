@@ -402,15 +402,9 @@ deoglSPBlockUBO *deoglRBillboard::GetParamBlockDepth(){
 			pParamBlockDepth = NULL;
 		}
 		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardDepth );
-			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockDepth = new deoglSPBlockUBO( *pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockDepth = skinShader.CreateSPBInstParam();
-			}
+		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
+			pParamBlockDepth = pUseSkinTexture->GetShaderFor(
+				deoglSkinTexture::estBillboardDepth )->CreateSPBInstParam();
 		}
 		
 		pValidParamBlockDepth = true;
@@ -444,15 +438,9 @@ deoglSPBlockUBO *deoglRBillboard::GetParamBlockGeometry(){
 			pParamBlockGeometry = NULL;
 		}
 		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
-			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			}
+		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
+			pParamBlockGeometry = pUseSkinTexture->GetShaderFor(
+				deoglSkinTexture::estBillboardGeometry )->CreateSPBInstParam();
 		}
 		
 		pValidParamBlockGeometry = true;

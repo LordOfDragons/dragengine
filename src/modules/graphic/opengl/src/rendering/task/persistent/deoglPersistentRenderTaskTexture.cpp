@@ -62,20 +62,8 @@ void deoglPersistentRenderTaskTexture::SetParentShader( deoglPersistentRenderTas
 	pParentShader = shader;
 }
 
-void deoglPersistentRenderTaskTexture::SetTUC( deoglTexUnitsConfig *tuc ){
-	if( tuc == pTUC ){
-		return;
-	}
-	
-	if( pTUC ){
-		pTUC->RemoveUsage();
-	}
-	
+void deoglPersistentRenderTaskTexture::SetTUC( const deoglTexUnitsConfig *tuc ){
 	pTUC = tuc;
-	
-	if( tuc ){
-		tuc->AddUsage();
-	}
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalPointCount() const{
@@ -116,7 +104,7 @@ int deoglPersistentRenderTaskTexture::GetTotalSubInstanceCount() const{
 
 
 
-void deoglPersistentRenderTaskTexture::SetParameterBlock( deoglSPBlockUBO *block ){
+void deoglPersistentRenderTaskTexture::SetParameterBlock( const deoglSPBlockUBO *block ){
 	pParamBlock = block;
 }
 
@@ -130,7 +118,7 @@ decPointerLinkedList::cListEntry *deoglPersistentRenderTaskTexture::GetRootVAO()
 	return pVAOs.GetRoot();
 }
 
-deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith( deoglVAO *vao ) const{
+deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith( const deoglVAO *vao ) const{
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
 	}
@@ -139,7 +127,7 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith( deog
 	return pVAOsMap.GetAt( vao, vao->GetUniqueKey(), ( void** )&rtvao ) ? rtvao : NULL;
 }
 
-deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO( deoglVAO *vao ){
+deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO( const deoglVAO *vao ){
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
 	}
@@ -181,7 +169,7 @@ void deoglPersistentRenderTaskTexture::Clear(){
 	RemoveAllVAOs();
 	
 	pParentShader = NULL;
-	SetTUC( NULL );
+	pTUC = NULL;
 	pParamBlock = NULL;
 }
 

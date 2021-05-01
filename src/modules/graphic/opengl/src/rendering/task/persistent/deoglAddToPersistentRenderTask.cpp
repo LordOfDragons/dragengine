@@ -157,16 +157,16 @@ void deoglAddToPersistentRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
 }
 
-void deoglAddToPersistentRenderTask::SetEnforceShader( deoglShaderProgram *shader ){
+void deoglAddToPersistentRenderTask::SetEnforceShader( const deoglShaderProgram *shader ){
 	pEnforceShader = shader;
 }
 
-void deoglAddToPersistentRenderTask::SetEnforceParamBlock( deoglSPBlockUBO *block ){
+void deoglAddToPersistentRenderTask::SetEnforceParamBlock( const deoglSPBlockUBO *block ){
 	pEnforceParamBlock = block;
 }
 
 void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
-deoglRComponent &component, int lodLevel ){
+const deoglRComponent &component, int lodLevel ){
 	if( ! component.GetParentWorld() || ! component.GetModel() ){
 		return;
 	}
@@ -193,7 +193,7 @@ const deoglCollideListComponent &clcomponent ){
 }
 
 void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-deoglRComponent &component, int texture, int lodLevel ){
+const deoglRComponent &component, int texture, int lodLevel ){
 	if( ! component.GetModel() ){
 		return;
 	}
@@ -205,13 +205,12 @@ deoglRComponent &component, int texture, int lodLevel ){
 }
 
 void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel ){
-	deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
-	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
+const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel ){
+	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
+	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return;
 	}
-	
 	if( pFilterReject( skinTexture ) ){
 		return;
 	}
@@ -220,17 +219,16 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 	if( pFilterDoubleSided && pDoubleSided != doubleSided ){
 		return;
 	}
-	
 	if( pFilterDecal && pDecal != componentTexture.GetUseDecal() ){
 		return;
 	}
 	
 	// hack style test for a camera renderable
-	deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
+	const deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
+	const deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
 	
 	if( skinChannel && useSkinState ){
-		const deoglRDynamicSkin *dynamicSkin = component.GetDynamicSkin();
+		const deoglRDynamicSkin * const dynamicSkin = component.GetDynamicSkin();
 		const int skinRenderable = skinChannel->GetRenderable();
 		
 		if( skinRenderable >= 0 && skinRenderable < useSkinState->GetRenderableCount() && dynamicSkin ){
@@ -245,23 +243,23 @@ deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLe
 	}
 	
 	// obtain render task vao and add faces
-	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, skinTexture,
+	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, *skinTexture,
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
 	
 	if( deoglSkinShader::USE_SHARED_SPB ){
-		deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
-		deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
+		const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
+		const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
 		
 		deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith( &group );
 		if( ! rti ){
-			rti = rtvao->AddInstance( &spbElement->GetSPB(), &group );
+			rti = rtvao->AddInstance( &spbElement.GetSPB(), &group );
 			rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
 			rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 			rti->SetIndexCount( faceCount * 3 );
 			rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 		}
 		
-		owner.AddSubInstance( rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() ) );
+		owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), component.GetSpecialFlags() ) );
 		
 	}else{
 		deoglPersistentRenderTaskInstance * const rti = rtvao->AddInstance();
@@ -321,14 +319,14 @@ bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid( const deoglSkinTextur
 }
 
 deoglPersistentRenderTaskVAO *deoglAddToPersistentRenderTask::pGetTaskVAO(
-deoglSkinTexture::eShaderTypes shaderType, deoglSkinTexture *skinTexture,
-deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
+deoglSkinTexture::eShaderTypes shaderType, const deoglSkinTexture &skinTexture,
+const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
 	// retrieve the shader and texture units configuration to use
-	deoglShaderProgram *shader = pEnforceShader;
+	const deoglShaderProgram *shader = pEnforceShader;
 	int spbInstanceIndexBase = -1;
 	
 	if( ! shader ){
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( shaderType );
+		const deoglSkinShader * const skinShader = skinTexture.GetShaderFor( shaderType );
 		if( skinShader ){
 			shader = skinShader->GetShader();
 			spbInstanceIndexBase = skinShader->GetTargetSPBInstanceIndexBase();
@@ -353,7 +351,7 @@ deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
 	deoglPersistentRenderTaskTexture *rttexture = rtshader->GetTextureWith( tuc );
 	if( ! rttexture ){
 		rttexture = rtshader->AddTexture( tuc );
-		rttexture->SetParameterBlock( skinTexture->GetParameterBlockFor( pSkinShaderType ) );
+		rttexture->SetParameterBlock( skinTexture.GetParameterBlock() );
 	}
 	
 	deoglPersistentRenderTaskVAO *rtvao = rttexture->GetVAOWith( vao );

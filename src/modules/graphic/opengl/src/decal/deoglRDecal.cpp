@@ -498,16 +498,9 @@ deoglSPBlockUBO *deoglRDecal::GetParamBlockGeometry(){
 			pParamBlockGeometry = NULL;
 		}
 		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estDecalGeometry );
-			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO(
-					*pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			}
+		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
+			pParamBlockGeometry = pUseSkinTexture->GetShaderFor(
+				deoglSkinTexture::estDecalGeometry )->CreateSPBInstParam();
 		}
 		
 		pValidParamBlockGeometry = true;

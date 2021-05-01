@@ -54,7 +54,7 @@ class deoglTexture;
 class deoglRWorld;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRenderPlanTaskFindContent;
+class deoglRPTFindContent;
 
 
 
@@ -176,7 +176,7 @@ private:
 	decMatrix pOcclusionTestMatrix;
 	deoglGIState *pGIState;
 	
-	deoglRenderPlanTaskFindContent *pTaskFindContent;
+	deoglRPTFindContent *pTaskFindContent;
 	
 	deoglRenderPlanDebug *pDebug;
 	bool pDebugTiming;
@@ -704,6 +704,7 @@ private:
 	void pPlanDominance();
 	void pPlanShadowCasting();
 	void pStartFindContent();
+	void pWaitFinishedFindContent();
 	void pPlanGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();

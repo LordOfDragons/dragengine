@@ -200,7 +200,7 @@ public:
 		estOutlineDepthReversed,
 		estOutlineDepthClipPlaneReversed,
 		estOutlineCounter,
-		estOutlineCounterClipPlane,
+		estOutlineCounterClipPlane
 	};
 	
 	static const int ShaderTypeCount = estOutlineCounterClipPlane + 1;
@@ -225,7 +225,7 @@ private:
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
 	deoglSkinShader *pShaders[ ShaderTypeCount ];
-	deoglSPBlockUBO *pParamBlocks[ ShaderTypeCount ];
+	deoglSPBlockUBO *pParamBlock;
 	
 	decColor pAbsorption;
 	float pAbsorptionHalfIntensityDistance;
@@ -417,11 +417,19 @@ public:
 	void SetRenderableMaterialProperties( bool renderableMaterialProperties );
 	
 	/** Retrieves the shader for a shader type. */
-	deoglSkinShader *GetShaderFor( eShaderTypes shaderType );
+	deoglSkinShader *GetShaderFor( eShaderTypes shaderType ) const;
+	
+	/** Prepare shaders. */
+	void PrepareShaders();
+	
 	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config );
-	/** Retrieves the parameter block for a shader type for static texture properties shared across components. */
-	deoglSPBlockUBO *GetParameterBlockFor( eShaderTypes shaderType );
+	bool GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ) const;
+	
+	/** Parameter block. */
+	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	
+	/** Prepare parameter block. */
+	void PrepareParamBlock();
 	/*@}*/
 	
 	/** @name Material Properties */

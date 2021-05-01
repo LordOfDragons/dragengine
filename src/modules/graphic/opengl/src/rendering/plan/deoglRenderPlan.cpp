@@ -29,7 +29,7 @@
 #include "deoglRenderPlanMasked.h"
 #include "deoglPlanVisitorCullElements.h"
 #include "deoglRenderPlanEnvMap.h"
-#include "deoglRenderPlanTaskFindContent.h"
+#include "deoglRPTFindContent.h"
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
@@ -97,18 +97,6 @@
 #ifdef OS_W32
 #undef near
 #undef far
-#endif
-
-
-
-// #define SPECIAL_DEBUG_ON 1
-#ifdef SPECIAL_DEBUG_ON
-extern int extDebugCompCount;
-extern float extDebugCompCalculateWeights;
-extern float extDebugCompTransformVertices;
-extern float extDebugCompCalculateNormalsAndTangents;
-extern float extDebugCompBuildVBO;
-extern float extDebugCompTBO;
 #endif
 
 
@@ -449,34 +437,7 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 	}
 	*/
 	
-	// prepare components for rendering.
-	// visibility is already taken care of by the component. it does
-	// not place itself in the octree if not visible.
-/*
-#ifdef DO_TIMING_COMP
-debugCompReset();
-#endif
-	for( c=0; c<colList->GetComponentCount(); c++ ){
-		oglComp = colList->GetComponentAt( c );
-		oglComp->UpdateVBO();
-	}
-DEBUG_PRINT_TIMER( "PrepareWorld: Update component VBOs" );
-#ifdef DO_TIMING_COMP
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Calculate VBO Data = %iys", ( int )( elapsedCompCalcVBO * 1000000.0 ) );
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Build VBO = %iys", ( int )( elapsedCompBuildVBO * 1000000.0 ) );
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Weights = %iys", ( int )( elapsedCompWeights * 1000000.0 ) );
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Transform vertices = %iys", ( int )( elapsedCompTVert * 1000000.0 ) );
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normals/tangents = %iys", ( int )( elapsedCompNorTan * 1000000.0 ) );
-ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", ( int )( elapsedCompNormalize * 1000000.0 ) );
-#endif
-*/
-	
 	// update dynamic skins and masked rendering if required
-	#ifdef SPECIAL_DEBUG_ON
-	extDebugCompCalculateWeights = 0.0f; extDebugCompTransformVertices = 0.0f; extDebugCompCount = 0;
-	extDebugCompCalculateNormalsAndTangents = 0.0f; extDebugCompBuildVBO = 0.0f; extDebugCompTBO = 0.0f;
-	#endif
-	
 	renderCanvas.DebugTimer3Reset( *this, false );
 	
 	for( c=0; c<componentCount; c++ ){
@@ -491,15 +452,6 @@ ogl.LogInfoFormat( "RenderPlan Timer: Update Component VBO: Normalize = %iys", (
 		//renderCanvas.SampleDebugInfoPlanPrepareBillboardsRenderables( *this );
 		billboard.AddSkinStateRenderPlans( *this );
 	}
-	
-	#ifdef SPECIAL_DEBUG_ON
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender CompCalculateWeights(%i) = %iys", extDebugCompCount, (int)(extDebugCompCalculateWeights*1e6f) );
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender CompTransformVertices(%i) = %iys", extDebugCompCount, (int)(extDebugCompTransformVertices*1e6f) );
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender CompCalculateNormalsAndTangents(%i) = %iys", extDebugCompCount, (int)(extDebugCompCalculateNormalsAndTangents*1e6f) );
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender CompBuildVBO(%i) = %iys", extDebugCompCount, (int)(extDebugCompBuildVBO*1e6f) );
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender CompTBO(%i) = %iys", extDebugCompCount, (int)(extDebugCompTBO*1e6f) );
-	pRenderThread.GetLogger().LogInfoFormat( "deoglRenderPlan::PrepareRender UpdateVBO(%i) = %iys", extDebugCompCount, (int)((extDebugCompCalculateWeights+extDebugCompTransformVertices+extDebugCompCalculateNormalsAndTangents+extDebugCompBuildVBO+extDebugCompTBO)*1e6f) );
-	#endif
 	renderCanvas.SampleDebugInfoPlanPrepareComponents( *this );
 	SPECIAL_TIMER_PRINT("Components")
 	
@@ -792,8 +744,20 @@ void deoglRenderPlan::pStartFindContent(){
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	pTaskFindContent = new deoglRenderPlanTaskFindContent( *this );
+	pTaskFindContent = new deoglRPTFindContent( *this );
+// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) StartFindContent(%p)", this, pTaskFindContent );
 	pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+}
+
+void deoglRenderPlan::pWaitFinishedFindContent(){
+	if( ! pTaskFindContent ){
+		return;
+	}
+	
+// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
+	pTaskFindContent->GetSemaphore().Wait();
+	pTaskFindContent->FreeReference();
+	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1178,11 +1142,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 }
 
 void deoglRenderPlan::pStartOcclusionTests(){
-	if( pTaskFindContent ){
-		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().WaitForTask( pTaskFindContent );
-		pTaskFindContent->FreeReference();
-		pTaskFindContent = NULL;
-	}
+	pWaitFinishedFindContent();
 	
 	// debug information if demanded
 	pDebugVisibleNoCull();
@@ -1453,12 +1413,7 @@ void deoglRenderPlan::CleanUp(){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
 	}
 	
-	if( pTaskFindContent ){
-		pTaskFindContent->Cancel();
-		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().WaitForTask( pTaskFindContent );
-		pTaskFindContent->FreeReference();
-		pTaskFindContent = NULL;
-	}
+	pWaitFinishedFindContent();
 	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();

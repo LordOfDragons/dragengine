@@ -421,16 +421,16 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 }
 
 void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTask ){
-	decPointerLinkedList::cListEntry *iterShader = renderTask.GetRootShader();
+	const decPointerLinkedList::cListEntry *iterShader = renderTask.GetRootShader();
 	if( ! iterShader ){
 		return;
 	}
 	
-	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
-	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
+	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	deoglRenderThread &renderThread = GetRenderThread();
 	bool curDoubleSided = false;
-	deoglVAO *curVAO = NULL;
+	const deoglVAO *curVAO = NULL;
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
@@ -438,7 +438,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	
 	while( iterShader ){
 		const deoglPersistentRenderTaskShader &rtshader = *( ( deoglPersistentRenderTaskShader* )iterShader->GetOwner() );
-		deoglShaderCompiled &shader = *rtshader.GetShader()->GetCompiled();
+		const deoglShaderCompiled &shader = *rtshader.GetShader()->GetCompiled();
 		
 		renderThread.GetShader().ActivateShader( rtshader.GetShader() );
 		
@@ -446,25 +446,25 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 			renderParamBlock->Activate();
 		}
 		
-		decPointerLinkedList::cListEntry *iterTexture = rtshader.GetRootTexture();
+		const decPointerLinkedList::cListEntry *iterTexture = rtshader.GetRootTexture();
 		while( iterTexture ){
-			deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
+			const deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
 			
 			if( texture.GetParameterBlock() ){
 				texture.GetParameterBlock()->Activate();
 			}
 			texture.GetTUC()->Apply();
 			
-			decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
+			const decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
 			while( iterVAO ){
-				deoglPersistentRenderTaskVAO &rtvao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
-				decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
+				const deoglPersistentRenderTaskVAO &rtvao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
+				const decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
 				if( ! iterInstance ){
 					iterVAO = iterVAO->GetNext();
 					continue;
 				}
 				
-				deoglVAO * const vao = rtvao.GetVAO();
+				const deoglVAO * const vao = rtvao.GetVAO();
 				if( vao != curVAO ){
 					pglBindVertexArray( vao->GetVAO() );
 					curVAO = vao;
@@ -474,7 +474,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 				const int indexSize = vao->GetIndexSize();
 				
 				while( iterInstance ){
-					deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
+					const deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
 					const bool doubleSided = instance.GetDoubleSided();
 					
 					if( instance.GetParameterBlock() ){

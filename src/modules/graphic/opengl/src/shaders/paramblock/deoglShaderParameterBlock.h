@@ -107,16 +107,16 @@ public:
 	
 	
 	/** \brief Activate parameter block. */
-	virtual void Activate() = 0;
+	virtual void Activate() const = 0;
 	
 	/** \brief Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) = 0;
+	virtual void Activate( int bindingPoint ) const = 0;
 	
 	/** \brief Deactivate parameter block. */
-	virtual void Deactivate() = 0;
+	virtual void Deactivate() const = 0;
 	
 	/** \brief Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) = 0;
+	virtual void Deactivate( int bindingPoint ) const = 0;
 	
 	
 	

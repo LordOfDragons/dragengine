@@ -212,8 +212,8 @@ public:
 		eiutInstOutlineColor,
 		eiutInstOutlineThickness,
 		eiutInstOutlineColorTint,
-		eiutInstOutlineSolidity,
 		eiutInstOutlineEmissivity,
+		eiutInstOutlineSolidity,
 		eiutInstOutlineEmissivityTint,
 		
 		EIUT_COUNT
@@ -247,8 +247,6 @@ private:
 	
 	int pTextureTargets[ ETT_COUNT ];
 	int pUsedTextureTargetCount;
-	int pTextureUniformTargets[ ETUT_COUNT ];
-	int pUsedTextureUniformTargetCount;
 	int pInstanceUniformTargets[ EIUT_COUNT ];
 	int pUsedInstanceUniformTargetCount;
 	
@@ -283,10 +281,6 @@ public:
 	/** Sets the used texture target count. */
 	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
-	/** Retrieves the index for a texture parameter uniform target or -1 if not used. */
-	int GetTextureUniformTarget( eTextureUniformTargets target ) const;
-	/** Sets the index for a texture parameter uniform target or -1 if not used. */
-	void SetTextureUniformTarget( eTextureUniformTargets target, int index );
 	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
 	/** Sets the index for an instance parameter uniform target or -1 if not used. */
@@ -295,10 +289,11 @@ public:
 	/** \brief Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
 	
-	/** Ensures the shader is created if not existing already. */
-	void EnsureShaderExists();
-	/** Retrieves the shader generating it if not existing already. */
-	deoglShaderProgram *GetShader();
+	/** Prepare shader. */
+	void PrepareShader();
+	
+	/** Shader. */
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/**
 	 * \brief Create render skin shader shader parameter block.
@@ -316,7 +311,7 @@ public:
 	static deoglSPBlockUBO *CreateSPBSpecial( deoglRenderThread &renderThread );
 	
 	/** \brief Create texture parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBTexParam() const;
+	static deoglSPBlockUBO *CreateSPBTexParam( deoglRenderThread &renderThread );
 	
 	/** \brief Create instance parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBInstParam() const;
@@ -330,12 +325,12 @@ public:
 	/** \brief Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
 	/** \brief Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		int element, const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
 	/**
 	 * \brief Set texture unit configurations.

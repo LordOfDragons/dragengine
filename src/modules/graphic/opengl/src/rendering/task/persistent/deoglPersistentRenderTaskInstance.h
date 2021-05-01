@@ -45,8 +45,8 @@ private:
 	decPointerLinkedList::cListEntry pLLVAO;
 	
 	deoglPersistentRenderTaskVAO *pParentVAO;
-	deoglShaderParameterBlock *pParamBlock;
-	deoglShaderParameterBlock *pParamBlockSpecial;
+	const deoglShaderParameterBlock *pParamBlock;
+	const deoglShaderParameterBlock *pParamBlockSpecial;
 	
 	int pFirstPoint;
 	int pPointCount;
@@ -58,7 +58,7 @@ private:
 	
 	decPointerLinkedList pSubInstances;
 	deoglSharedSPB *pSubInstanceSPB;
-	deoglSharedSPBRTIGroup *pSubInstanceSPBGroup;
+	const deoglSharedSPBRTIGroup *pSubInstanceSPBGroup;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
 	
@@ -85,16 +85,16 @@ public:
 	void SetParentVAO( deoglPersistentRenderTaskVAO *vao );
 	
 	/** Shader parameter block or \em NULL. */
-	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
+	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or \em NULL. */
-	void SetParameterBlock( deoglShaderParameterBlock *block );
+	void SetParameterBlock( const deoglShaderParameterBlock *block );
 	
 	/** Special shader parameter block or \em NULL. */
-	inline deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
+	inline const deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
 	
 	/** Set special shader parameter block or \em NULL. */
-	void SetParameterBlockSpecial( deoglShaderParameterBlock *block );
+	void SetParameterBlockSpecial( const deoglShaderParameterBlock *block );
 	
 	
 	
@@ -161,10 +161,10 @@ public:
 	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
 	
 	/** Sub instances SPB Group or NULL. */
-	inline deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBGroup; }
+	inline const deoglSharedSPBRTIGroup *GetSubInstanceSPBGroup() const{ return pSubInstanceSPBGroup; }
 	
 	/** Set Sub instances SPB and group. */
-	void SetSubInstanceSPB( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group );
+	void SetSubInstanceSPB( deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group );
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }

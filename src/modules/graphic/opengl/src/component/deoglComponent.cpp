@@ -100,6 +100,7 @@ pDirtyStaticTexture( true ),
 pNotifyTexturesChanged( false ),
 pNotifyTUCChanged( false ),
 pDirtySolid( true ),
+pDirtyTextureUseSkin( true ),
 
 pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( true ),
@@ -315,6 +316,10 @@ void deoglComponent::SyncToRender(){
 		#endif
 	}
 	
+	if( pDirtyTextureUseSkin ){
+		pRComponent->UpdateTexturesUseSkin();
+		pDirtyTextureUseSkin = false;
+	}
 	if( pDirtyStaticTexture ){
 		pRComponent->UpdateStaticTextures();
 		pDirtyStaticTexture = false;
@@ -411,6 +416,11 @@ void deoglComponent::TextureDynamicSkinRequiresSync(){
 
 void deoglComponent::DirtyRenderableMapping(){
 	pDirtyRenderableMapping = true;
+	pRequiresSync();
+}
+
+void deoglComponent::DirtyTextureUseSkin(){
+	pDirtyTextureUseSkin = true;
 	pRequiresSync();
 }
 
@@ -513,6 +523,7 @@ void deoglComponent::ModelChanged(){
 	pDirtyCullSphere = true;
 	pDirtyResetStatic = true;
 	pDirtyStaticTexture = true;
+	pDirtyTextureUseSkin = true;
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
@@ -528,6 +539,7 @@ void deoglComponent::SkinChanged(){
 	pDirtySkinStateCalculatedProperties = true;
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
+	pDirtyTextureUseSkin = true;
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
@@ -557,6 +569,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pDirtySkinStateCalculatedProperties = true;
 	pSkinStatePrepareRenderables = true;
 	pDirtyStaticTexture = true;
+	pDirtyTextureUseSkin = true;
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;

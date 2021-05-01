@@ -114,6 +114,7 @@ pDirtyEnvMapNotifyLightChanged( true ),
 
 pDirtyRenderableMapping( true ),
 pDirtySkinStateController( true ),
+pDirtySkinStateCalculatedProperties( true ),
 pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( false ),
 pLightCanvasRequiresSync( false ),

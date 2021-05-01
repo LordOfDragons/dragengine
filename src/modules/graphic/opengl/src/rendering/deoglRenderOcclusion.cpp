@@ -638,7 +638,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglRenderGeometry &rengeom = GetRenderThread().GetRenderers().GetGeometry();
+	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	const int levelCount = occmap.GetLevelCount();
 	deoglShaderCompiled *shader;
 	int i, width, height;
@@ -805,8 +805,7 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int resultHeight = occlusionTest.GetResultHeight();
-	const int resultWidth = occlusionTest.GetResultWidth();
+	const decPoint &resultSize = occlusionTest.GetResultSize();
 	deoglShaderCompiled *shader;
 	
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Tests" );
@@ -849,7 +848,7 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, resultWidth, resultHeight ) );
+		OGL_CHECK( renderThread, glViewport( 0, 0, resultSize.x, resultSize.y ) );
 		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 		
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -859,8 +858,8 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		shader = pShaderOccTest->GetCompiled();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
-		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
-		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
+		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
+		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultSize.x );
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
 		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
@@ -888,8 +887,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int resultHeight = occlusionTest.GetResultHeight();
-	const int resultWidth = occlusionTest.GetResultWidth();
+	const decPoint &resultSize = occlusionTest.GetResultSize();
 	deoglShaderCompiled *shader;
 	
 	decVector frustumPlaneNormal[ 4 ]; // left, top, right, bottom
@@ -979,7 +977,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, resultWidth, resultHeight ) );
+		OGL_CHECK( renderThread, glViewport( 0, 0, resultSize.x, resultSize.y ) );
 		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 		
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -989,8 +987,8 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		shader = pShaderOccTestSun->GetCompiled();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
-		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
-		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
+		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
+		shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultSize.x );
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
 		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
@@ -1023,8 +1021,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	// render tests if required
 	if( occlusionTest.GetInputDataCount() > 0 ){
 		deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-		const int resultHeight = occlusionTest.GetResultHeight();
-		const int resultWidth = occlusionTest.GetResultWidth();
+		const decPoint &resultSize = occlusionTest.GetResultSize();
 		deoglShaderCompiled *shader;
 		
 		DEBUG_PRINT_TIMER( "Entering Render Occlusion Tests" );
@@ -1066,7 +1063,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 			OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, resultWidth, resultHeight ) );
+			OGL_CHECK( renderThread, glViewport( 0, 0, resultSize.x, resultSize.y ) );
 			OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 			
 			const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1076,8 +1073,8 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 			shader = pShaderOccTestDual->GetCompiled();
 			
 			// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
-			shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultHeight - 1 ), -1.0f, -1.0f );
-			shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultWidth );
+			shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
+			shader->SetParameterFloat( sptInvWidth, 1.0f / ( float )resultSize.x );
 			shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
 			shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 			shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );

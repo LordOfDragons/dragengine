@@ -142,20 +142,19 @@ public:
 	
 	
 	
-	/** Retrieves the VBO block. */
-	deoglSharedVBOBlock *GetVBOBlock();
+	/** Prepare VBO block. */
+	void PrepareVBOBlock();
+	void PrepareVBOBlockPositionWeight();
+	void PrepareVBOBlockCalcNormalTangent();
+	void PrepareVBOBlockWriteSkinnedVBO();
+	void PrepareVBOBlockWithWeight();
 	
-	/** Retrieves the position weight VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockPositionWeight();
-	
-	/** Retrieves the calculate normal tangent VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent();
-	
-	/** Retrieves the write skinned vbo VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO();
-	
-	/** Retrieves the vbo block with weight. */
-	deoglSharedVBOBlock *GetVBOBlockWithWeight();
+	/** VBO block. */
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
+	inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
+	inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
+	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
 	
 	/** Index buffer object. */
 	GLuint GetIBO();

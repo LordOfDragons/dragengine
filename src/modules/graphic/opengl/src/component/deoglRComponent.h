@@ -120,7 +120,6 @@ public:
 	// for world
 	bool pLit;
 	bool pOccluded;
-	bool pDirtyTextureUseSkin;
 	bool pDirtyModelRigMappings;
 	
 	bool pCameraInside;
@@ -143,6 +142,9 @@ public:
 	bool pDirtyPrepareSkinStateRenderables;
 	
 	decObjectList pTextures;
+	bool pDirtyTextureTUCs;
+	bool pDirtyTextureParamBlocks;
+	
 	decObjectList pDecals;
 	bool pDirtyDecals;
 	
@@ -159,8 +161,6 @@ public:
 	bool pDirtyCulling;
 	
 	deoglLightList pLightList;
-	
-	int pSkyShadowSplitMask;
 	
 	unsigned int pUniqueKey;
 	
@@ -203,17 +203,17 @@ public:
 	
 	
 	
-	/** Parent world or \em NULL if not part of a world. */
+	/** Parent world or NULL if not part of a world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
-	/** Octree node or \em NULL if not inserted into the parent world octree. */
+	/** Octree node or NULL if not inserted into the parent world octree. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
-	 * Set octree node or \em NULL if not inserted into the parent world octree.
+	 * Set octree node or NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by deoglWorldOctree.
 	 */
 	void SetOctreeNode( deoglWorldOctree *octreeNode );
@@ -292,37 +292,40 @@ public:
 	
 	
 	
-	/** Model or \em NULL if not set. */
+	/** Model or NULL if not set. */
 	inline deoglRModel *GetModel() const{ return pModel; }
 	
-	/** Set model or \em NULL if not set. */
+	/** Model throwing exception if NULL. */
+	deoglRModel &GetModelRef() const;
+	
+	/** Set model or NULL if not set. */
 	void SetModel( deoglRModel *model );
 	
-	/** Skin or \em NULL if not set. */
+	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** Set skin or \em NULL if not set. */
+	/** Set skin or NULL if not set. */
 	void SetSkin( deoglRSkin *skin );
 	
 	/** Rig changed. */
 	void RigChanged();
 	
-	/** Dynamic skin or \em NULL if not set. */
+	/** Dynamic skin or NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/**
-	 * Set dynamic skin or \em NULL if not set.
+	 * Set dynamic skin or NULL if not set.
 	 * \note Called from main thread during synchronization.
 	 */
 	void SetDynamicSkin( deoglComponent &component, deoglRDynamicSkin *dynamicSkin );
 	
-	/** Occlusion mesh or \em NULL if not set. */
+	/** Occlusion mesh or NULL if not set. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
-	/** Set occlusion mesh or \em NULL if not set. */
+	/** Set occlusion mesh or NULL if not set. */
 	void SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh );
 	
-	/** Dynamic occlusion mesh or \em NULL if not set. */
+	/** Dynamic occlusion mesh or NULL if not set. */
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
 	
 	/** Occlusion mesh shared shader parameter block element. */
@@ -355,7 +358,7 @@ public:
 	
 	
 	/** Shader parameter block for a occlusion meshes (both static and dynamic). */
-	deoglSPBlockUBO *GetParamBlockOccMesh();
+	inline deoglSPBlockUBO *GetParamBlockOccMesh() const{ return pParamBlockOccMesh; }
 	
 	/** Mark occlusion mesh shader parameter block dirty. */
 	void MarkOccMeshParamBlockDirty();
@@ -365,12 +368,8 @@ public:
 	
 	
 	
-	/**
-	 * Special shader parameter block.
-	 * 
-	 * Has to be updated by caller.
-	 */
-	deoglSPBlockUBO *GetParamBlockSpecial();
+	/** Special shader parameter block. Has to be updated by caller. */
+	inline deoglSPBlockUBO *GetParamBlockSpecial() const{ return pParamBlockSpecial; }
 	
 	/**
 	 * Update cube face visibility.
@@ -399,7 +398,7 @@ public:
 	void SetSpecialFlagsFromFaceVisibility();
 	
 	/** Set special flags from sky shadow layer mask. */
-	void SetSpecialFlagsFromSkyShadowLayerMask();
+	void SetSpecialFlagsFromSkyShadowLayerMask( int mask );
 	
 	/**
 	 * Update special shader parameter block.
@@ -408,7 +407,7 @@ public:
 	 * - UpdateCubeFaceVisibility(): for use by geometry shader cube rendering.
 	 */
 	void UpdateSpecialSPBCubeRender();
-	void UpdateSpecialSPBCascadedRender();
+	void UpdateSpecialSPBCascadedRender( int mask );
 	
 	
 	
@@ -430,7 +429,7 @@ public:
 	int GetIndexOffset( int lodLevel ) const;
 	
 	/** VAO for the vertices of the given lod level. */
-	deoglVAO *GetVAO( int lodLevel );
+	deoglVAO *GetVAO( int lodLevel ) const;
 	
 	/** Invalidate VAO. */
 	void InvalidateVAO();
@@ -492,12 +491,6 @@ public:
 	inline const deoglLightList &GetLightList() const{ return pLightList; }
 	
 	
-	
-	/** Sky shadow split mask. */
-	inline int GetSkyShadowSplitMask() const{ return pSkyShadowSplitMask; }
-	
-	/** Set sky shadow split mask. */
-	void SetSkyShadowSplitMask( int mask );
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
@@ -583,16 +576,13 @@ public:
 	int GetTextureCount() const;
 	
 	/** Texture at index. */
-	deoglRComponentTexture &GetTextureAt( int index );
+	deoglRComponentTexture &GetTextureAt( int index ) const;
 	
 	/** Remove all textures. */
 	void RemoveAllTextures();
 	
 	/** Add texture. */
 	void AddTexture( deoglRComponentTexture *texture );
-	
-	/** Mark texture use skins dirty. */
-	void MarkTextureUseSkinDirty();
 	
 	/** Invalidate parameter blocks of all textures. */
 	void InvalidateAllTexturesParamBlocks();
@@ -611,6 +601,9 @@ public:
 	void TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture );
 	
 	void UpdateRenderableMapping();
+	void UpdateTexturesUseSkin();
+	void DirtyTextureTUCs();
+	void DirtyTextureParamBlocks();
 	
 	/** Textures are static. */
 	inline bool GetStaticTextures() const{ return pStaticTextures; }
@@ -752,8 +745,11 @@ private:
 	void pPrepareSolidity();
 	void pPrepareModelVBOs();
 	void pPrepareLODVBOs();
+	void pPrepareParamBlocks();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables();
+	void pPrepareTextureTUCs();
+	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan );
 	
 	void pResizeBoneMatrices();

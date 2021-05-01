@@ -77,11 +77,11 @@ void deoglPersistentRenderTaskInstance::SetParentVAO( deoglPersistentRenderTaskV
 	pParentVAO = vao;
 }
 
-void deoglPersistentRenderTaskInstance::SetParameterBlock( deoglShaderParameterBlock *block ){
+void deoglPersistentRenderTaskInstance::SetParameterBlock( const deoglShaderParameterBlock *block ){
 	pParamBlock = block;
 }
 
-void deoglPersistentRenderTaskInstance::SetParameterBlockSpecial( deoglShaderParameterBlock *block ){
+void deoglPersistentRenderTaskInstance::SetParameterBlockSpecial( const deoglShaderParameterBlock *block ){
 	pParamBlockSpecial = block;
 }
 
@@ -115,7 +115,8 @@ void deoglPersistentRenderTaskInstance::SetTessPatchVertexCount( int count ){
 
 
 
-void deoglPersistentRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb, deoglSharedSPBRTIGroup *group ){
+void deoglPersistentRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb,
+const deoglSharedSPBRTIGroup *group ){
 	pSubInstanceSPB = spb;
 	pSubInstanceSPBGroup = group;
 }

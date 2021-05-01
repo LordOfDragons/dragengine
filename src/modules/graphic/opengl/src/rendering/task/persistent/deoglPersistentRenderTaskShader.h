@@ -42,7 +42,7 @@ private:
 	decPointerLinkedList::cListEntry pLLTask;
 	
 	deoglPersistentRenderTask *pParentTask;
-	deoglShaderProgram *pShader;
+	const deoglShaderProgram *pShader;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
 	decPointerLinkedList pTextures;
@@ -83,10 +83,10 @@ public:
 	void SetParentTask( deoglPersistentRenderTask *task );
 	
 	/** Shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/** Set shader. */
-	void SetShader( deoglShaderProgram *shader );
+	void SetShader( const deoglShaderProgram *shader );
 	
 	/** Shader parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
@@ -109,10 +109,10 @@ public:
 	decPointerLinkedList::cListEntry *GetRootTexture() const;
 	
 	/** Texture with TUC or NULL. */
-	deoglPersistentRenderTaskTexture *GetTextureWith( deoglTexUnitsConfig *tuc ) const;
+	deoglPersistentRenderTaskTexture *GetTextureWith( const deoglTexUnitsConfig *tuc ) const;
 	
 	/** Add texture. */
-	deoglPersistentRenderTaskTexture *AddTexture( deoglTexUnitsConfig *tuc );
+	deoglPersistentRenderTaskTexture *AddTexture( const deoglTexUnitsConfig *tuc );
 	
 	/** Remove texture. */
 	void RemoveTexture( deoglPersistentRenderTaskTexture *texture );

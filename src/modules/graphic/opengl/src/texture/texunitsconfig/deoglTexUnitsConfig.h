@@ -97,7 +97,7 @@ public:
 	void SetUnits( const deoglTexUnitConfig *units, int unitCount );
 	
 	/** Apply texture units configuration. */
-	void Apply();
+	void Apply() const;
 	
 	
 	

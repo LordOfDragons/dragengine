@@ -49,38 +49,30 @@
 ////////////////////////////
 
 deoglOcclusionTest::deoglOcclusionTest( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
-	pTextureResult = NULL;
-	pVAO = 0;
-	pVBO = 0;
-	pVBOLayout = NULL;
-	pVBOResult = 0;
-	pVBOResultData = NULL;
-	pVBOResultDataSize = 0;
-	
-	pInputListeners = NULL;
-	pInputData = NULL;
-	pInputDataCount = 0;
-	pInputDataSize = 0;
-	pFBOResult = NULL;
-	
-	pPBResults = NULL;
-	pResults = NULL;
-	pResultWidth = 0;
-	pResultHeight = 0;
-	
+pRenderThread( renderThread ),
+
+pTextureResult( NULL ),
+pFBOResult( NULL ),
+
+pVBO( 0 ),
+pVAO( 0 ),
+pVBOLayout( NULL ),
+
+pVBOResult( 0 ),
+pVBOResultData( NULL ),
+pVBOResultDataSize( 0 ),
+
+pInputListeners( NULL ),
+pInputData( NULL ),
+pInputDataCount( 0 ),
+pInputDataSize( 0 ),
+
+pPBResults( NULL ),
+pResults( NULL )
+{
 	try{
-		pTextureResult = new deoglTexture( renderThread );
-		pTextureResult->SetMipMapped( false );
-		
-		//pTextureResult->SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR4 );
-		//pTextureResult->SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8 );
-		pTextureResult->SetFBOFormat( 1, false );
-		
-		pCreateFBO();
 		pCreateVBOLayout();
-		
-		pResizeResult( 128, 32 );
+		pResizeResult( decPoint( 128, 32 ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -97,18 +89,18 @@ deoglOcclusionTest::~deoglOcclusionTest(){
 // Management
 ///////////////
 
-int deoglOcclusionTest::AddInputData( const decVector &minExtend, const decVector &maxExtend, deoglOcclusionTestListener *listener ){
+int deoglOcclusionTest::AddInputData( const decVector &minExtend, const decVector &maxExtend,
+deoglOcclusionTestListener *listener ){
 	if( pInputDataCount == pInputDataSize ){
-		int height = pTextureResult->GetHeight();
-		int width = pTextureResult->GetWidth();
+		decPoint size( pResultSize );
 		
-		if( height == width ) {
-			width <<= 1;
-			height >>= 1;
+		if( size.y == size.x ) {
+			size.x <<= 1;
+			size.y >>= 1;
 		}
-		height++;
+		size.y++;
 		
-		pResizeResult( width, height );
+		pResizeResult( size );
 	}
 	
 	sInputData &inputData = pInputData[ pInputDataCount ];
@@ -134,6 +126,7 @@ void deoglOcclusionTest::RemoveAllInputData(){
 void deoglOcclusionTest::UpdateVBO(){
 	const int dataSize = sizeof( sInputData ) * pInputDataCount;
 	
+	// input vbo
 	if( ! pVBO ){
 		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
 		if( ! pVBO ){
@@ -174,6 +167,9 @@ void deoglOcclusionTest::UpdateVBO(){
 			pVBOResult = 0;
 		}
 	}
+	
+	// textures and FBO
+	pUpdateTexturesFBO();
 }
 
 GLuint deoglOcclusionTest::GetVAO(){
@@ -201,8 +197,6 @@ void deoglOcclusionTest::UpdateResults(){
 		return;
 	}
 	
-	int i;
-	
 	if( pVBOResult ){
 		if( pInputDataCount > pVBOResultDataSize ){
 			if( pVBOResultData ){
@@ -218,6 +212,7 @@ void deoglOcclusionTest::UpdateResults(){
 		OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER, 0, pInputDataCount * 4, pVBOResultData ) );
 		
 		// evaluate the results
+		int i;
 		for( i=0; i<pInputDataCount; i++ ){
 			if( pVBOResultData[ i ] < 0.5f && pInputListeners[ i ] ){
 				pInputListeners[ i ]->OcclusionTestInvisible();
@@ -228,6 +223,7 @@ void deoglOcclusionTest::UpdateResults(){
 		pTextureResult->GetPixels( *pPBResults );
 		
 		// evaluate the results
+		int i;
 		for( i=0; i<pInputDataCount; i++ ){
 			if( pResults[ i ] == 0 && pInputListeners[ i ] ){
 				pInputListeners[ i ]->OcclusionTestInvisible();
@@ -296,18 +292,6 @@ void deoglOcclusionTest::pCleanUp(){
 	}
 }
 
-
-
-void deoglOcclusionTest::pCreateFBO(){
-	pFBOResult = new deoglFramebuffer( pRenderThread, false );
-	
-	pRenderThread.GetFramebuffer().Activate( pFBOResult );
-	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-}
-
 void deoglOcclusionTest::pCreateVBOLayout(){
 	// name       | offset | type  | components
 	// -----------+--------+-------+------------
@@ -331,46 +315,64 @@ void deoglOcclusionTest::pCreateVBOLayout(){
 	attributeExtends.SetOffset( 12 );
 }
 
-void deoglOcclusionTest::pResizeResult( int width, int height ){
+void deoglOcclusionTest::pResizeResult( const decPoint &size ){
 	// resize input data array
-	sInputData *newInputData = NULL;
-	
-	newInputData = new sInputData[ width * height ];
+	sInputData * const newInputData = new sInputData[ size.x * size.y ];
 	if( pInputData ){
 		memcpy( newInputData, pInputData, sizeof( sInputData ) * pInputDataSize );
 		delete [] pInputData;
 	}
-	pInputDataSize = width * height;
+	pInputDataSize = size.x * size.y;
 	pInputData = newInputData;
 	
 	// resize listener array
 	deoglOcclusionTestListener ** const newListeners = new deoglOcclusionTestListener*[ pInputDataSize ];
-	
 	if( pInputListeners ){
 		memcpy( newListeners, pInputListeners, sizeof( deoglOcclusionTestListener* ) * pInputDataCount );
 		delete [] pInputListeners;
 	}
-	
 	pInputListeners = newListeners;
 	
-	// resize result arrays
+	pResultSize = size;
+}
+
+void deoglOcclusionTest::pUpdateTexturesFBO(){
+	if( pTextureResult && pTextureResult->GetSize() == pResultSize ){
+		return;
+	}
+	
+	// result pixel buffer
 	if( pPBResults ){
 		delete pPBResults;
 		pPBResults = NULL;
 		pResults = NULL;
 	}
-	pPBResults = new deoglPixelBuffer( deoglPixelBuffer::epfByte1, width, height, 1 );
+	pPBResults = new deoglPixelBuffer( deoglPixelBuffer::epfByte1, pResultSize.x, pResultSize.y, 1 );
 	pResults = ( GLubyte* )pPBResults->GetPointerByte1();
 	
-	pRenderThread.GetFramebuffer().Activate( pFBOResult );
-	pFBOResult->DetachColorImage( 0 );
+	// texture
+	if( ! pTextureResult ){
+		pTextureResult = new deoglTexture( pRenderThread );
+		pTextureResult->SetMipMapped( false );
+		pTextureResult->SetFBOFormat( 1, false );
+	}
 	
-	pTextureResult->SetSize( width, height );
+	pTextureResult->SetSize( pResultSize );
 	pTextureResult->CreateTexture();
 	
-	pFBOResult->AttachColorTexture( 0, pTextureResult );
-	pFBOResult->Verify();
+	// fbo
+	if( ! pFBOResult ){
+		pFBOResult = new deoglFramebuffer( pRenderThread, false );
+	}
 	
-	pResultWidth = width;
-	pResultHeight = height;
+	pRenderThread.GetFramebuffer().Activate( pFBOResult );
+	pFBOResult->DetachAllImages(); // important
+	
+	pFBOResult->AttachColorTexture( 0, pTextureResult );
+	
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBOResult->Verify();
 }
