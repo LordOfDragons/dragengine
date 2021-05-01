@@ -15,7 +15,23 @@
 // for convenience this calculations are located in a function. The camera space position
 // is returned in position while the transformed position is stored in gl_Position.
 // gl_Position can be equal to position if tessellation is used.
-void transformPosition( out vec3 position, in int spbIndex ){
+#if defined PROP_FIELD && defined BILLBOARD
+#define REQUIRES_TRANSFORM_TRANSFER 1
+#endif
+
+#ifdef REQUIRES_TRANSFORM_TRANSFER
+struct sTransformTransfer{
+	mat4x3 matRSMV;
+	mat3 bbMat;
+};
+#endif
+
+#ifdef REQUIRES_TRANSFORM_TRANSFER
+void transformPosition( out vec3 position, in int spbIndex, out sTransformTransfer transformTransfer )
+#else
+void transformPosition( out vec3 position, in int spbIndex )
+#endif
+{
 	// prop fiels
 	#ifdef PROP_FIELD
 		// see doc/shader_propfield
@@ -65,6 +81,9 @@ void transformPosition( out vec3 position, in int spbIndex ){
 			float bbRot = dot( bendState1.xy, bbAxis );
 			mat2 matBend = mat2( cos( bbRot ), -sin( bbRot ), sin( bbRot ), cos( bbRot ) );
 			position = bbMat * vec3( inPosition.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw, 0.0 );
+			
+			transformTransfer.matRSMV = matRSMV;
+			transformTransfer.bbMat = bbMat;
 			
 		#else
 			// create bend matrix

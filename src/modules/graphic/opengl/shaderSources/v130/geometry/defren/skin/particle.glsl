@@ -66,6 +66,15 @@ out vec2 vTCColor;
 	out vec2 vTCAO;
 #endif
 
+#ifdef CLIP_PLANE
+	out vec3 vClipCoord;
+#endif
+#ifdef DEPTH_ORTHOGONAL
+	out float vZCoord;
+#endif
+#ifdef DEPTH_DISTANCE
+	out vec3 vPosition;
+#endif
 out vec3 vNormal;
 #ifdef WITH_TANGENT
 	out vec3 vTangent;
@@ -159,6 +168,22 @@ void main( void ){
 		#endif
 		#ifdef FADEOUT_RANGE
 			vFadeZ = position.z;
+		#endif
+		#ifdef CLIP_PLANE
+			vClipCoord = position.xyz;
+		#endif
+		#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
+			#ifdef DEPTH_ORTHOGONAL
+				#ifdef NO_ZCLIP
+					vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
+					gl_Position.z = 0.0;
+				#else
+					vZCoord = gl_Position.z;
+				#endif
+			#endif
+		#endif
+		#ifdef DEPTH_DISTANCE
+			vPosition = position.xyz;
 		#endif
 		
 		vParticleColor = vParticle1[ 0 ];

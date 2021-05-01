@@ -260,12 +260,16 @@ void main( void ){
 		vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
 	#endif
 	
-	// transform position
+	// transform position and normal
 	vec3 position;
-	transformPosition( position, spbIndex );
-	
-	// normal calculation
-	transformNormal( spbIndex );
+	#ifdef REQUIRES_TRANSFORM_TRANSFER
+		sTransformTransfer transformTransfer;
+		transformPosition( position, spbIndex, transformTransfer );
+		transformNormal( spbIndex, transformTransfer );
+	#else
+		transformPosition( position, spbIndex );
+		transformNormal( spbIndex );
+	#endif
 	
 	// reflection directory for environment map reflections
 	#ifdef WITH_REFLECT_DIR

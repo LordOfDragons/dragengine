@@ -448,14 +448,11 @@ void main( void ){
 		#endif
 	#endif
 	
-	// Node based calculations
-	#ifdef NODE_FRAGMENT_MAIN
-	NODE_FRAGMENT_MAIN
-	#endif
-	
 	// for height map adjust alpha value
-	#ifdef HEIGHT_MAP
-		color.a *= vHTMask;
+	#ifndef LUMINANCE_ONLY
+		#ifdef HEIGHT_MAP
+			color.a *= vHTMask;
+		#endif
 	#endif
 	
 	

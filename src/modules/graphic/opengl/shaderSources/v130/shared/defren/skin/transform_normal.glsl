@@ -4,12 +4,17 @@
 	#define NO_TRANSFORMATION 1
 #endif
 
-void transformNormal( in int spbIndex ){
+#ifdef REQUIRES_TRANSFORM_TRANSFER
+void transformNormal( in int spbIndex, out sTransformTransfer transformTransfer )
+#else
+void transformNormal( in int spbIndex )
+#endif
+{
 	#ifdef BILLBOARD
 		#ifdef PROP_FIELD
-			vNormal = normalize( mat3( matRSMV ) * -bbMat[ 2 ] );
+			vNormal = normalize( mat3( transformTransfer.matRSMV ) * -transformTransfer.bbMat[ 2 ] );
 			#ifdef TEXTURE_NORMAL
-				vTangent = normalize( mat3( matRSMV ) * bbMat[ 0 ] );
+				vTangent = normalize( mat3( transformTransfer.matRSMV ) * transformTransfer.bbMat[ 0 ] );
 				vBitangent = cross( vNormal, vTangent );
 			#endif
 		#else

@@ -107,6 +107,11 @@ UBOLAYOUT uniform InstanceParameters{
 			int pRibbonSheetCount;
 		#endif
 		
+		#define pDoubleSided true
+		#ifdef WITH_VARIATIONS
+			#define pVariationSeed vec2(0)
+		#endif
+		
 	#else  // PARTICLE
 		// component properties. the same for all textures in a component
 		mat4x3 pMatrixModel;

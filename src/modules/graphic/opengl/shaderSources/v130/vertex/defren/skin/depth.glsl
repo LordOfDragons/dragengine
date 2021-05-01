@@ -207,11 +207,20 @@ void main( void ){
 	
 	// transform position
 	vec3 position;
-	transformPosition( position, spbIndex );
+	#ifdef REQUIRES_TRANSFORM_TRANSFER
+		sTransformTransfer transformTransfer;
+		transformPosition( position, spbIndex, transformTransfer );
+	#else
+		transformPosition( position, spbIndex );
+	#endif
 	
 	// normal calculation
 	#ifdef REQUIRES_NORMAL
-		transformNormal( spbIndex );
+		#ifdef REQUIRES_TRANSFORM_TRANSFER
+			transformNormal( spbIndex, transformTransfer );
+		#else
+			transformNormal( spbIndex );
+		#endif
 	#endif
 	
 	// reflection directory for environment map reflections
